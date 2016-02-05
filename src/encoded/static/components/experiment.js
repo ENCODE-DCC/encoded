@@ -491,7 +491,7 @@ var ReplicateTable = React.createClass({
         'technical_replicate_number': {title: 'Technical replicate'},
         'summary': {
             title: 'Summary',
-            getValue: replicate => {
+            display: replicate => {
                 // Display protein concentration if it exists
                 if (replicate.rbns_protein_concentration) {
                     return (
@@ -509,25 +509,40 @@ var ReplicateTable = React.createClass({
 
                 // Else, display nothing
                 return null;
-            }
+            },
+            sorter: false
         },
         'biosample_accession': {
             title: 'Biosample',
-            getValue: replicate => {
+            display: replicate => {
                 if (replicate.library && replicate.library.biosample) {
                     var biosample = replicate.library.biosample;
                     return <a href={biosample['@id']} title={'View biosample ' + biosample.accession}>{biosample.accession}</a>;
                 }
                 return null;
+            },
+            objSorter: (a, b) => {
+                if ((a.library && a.library.biosample) && (b.library && b.library.biosample)) {
+                    var aAccession = a.library.biosample.accession;
+                    var bAccession = b.library.biosample.accession;
+                    return (aAccession < bAccession) ? -1 : ((aAccession > bAccession) ? 1 : 0);
+                }
+                return (a.library && a.library.biosample) ? -1 : ((b.library && b.library.biosample) ? 1 : 0);
             }
         },
-        'antibody': {
+        'antibody_accession': {
             title: 'Antibody',
             display: replicate => {
                 if (replicate.antibody) {
                     return <a href={replicate.antibody['@id']} title={'View antibody ' + replicate.antibody.accession}>{replicate.antibody.accession}</a>;
                 }
                 return null;
+            },
+            objSorter: (a, b) => {
+                if (a.antibody && b.antibody) {
+                    return (a.antibody.accession < b.antibody.accession) ? -1 : ((a.antibody.accession > b.antibody.accession) ? 1 : 0);
+                }
+                return (a.antibody) ? -1 : ((b.antibody) ? 1 : 0);
             }
         },
         'library': {
