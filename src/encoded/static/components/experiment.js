@@ -68,26 +68,35 @@ var Experiment = module.exports.Experiment = React.createClass({
     },
 
     render: function() {
+        var condensedReplicates = [];
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
-        var replicates = _(context.replicates).sortBy(item => {
-            return item.biological_replicate_number;
-        });
+        var replicates = context.replicates;
+        if (replicates) {
+            var condensedReplicatesKeyed = _(replicates).groupBy(replicate => replicate.library && replicate.library['@id']);
+            if (Object.keys(condensedReplicatesKeyed).length) {
+                condensedReplicates = _.toArray(condensedReplicatesKeyed);
+            }
+        }
 
         // Collect all documents from all replicate libraries for display.
         var documents = {};
-        replicates.forEach(replicate => {
-            if (replicate.library && replicate.library.documents && replicate.library.documents.length) {
-                replicate.library.documents.forEach((doc, i) => {
-                    documents[doc['@id']] = PanelLookup({context: doc, key: i + 1});
-                });
-            }
-        });
+        if (replicates) {
+            replicates.forEach(replicate => {
+                if (replicate.library && replicate.library.documents && replicate.library.documents.length) {
+                    replicate.library.documents.forEach((doc, i) => {
+                        documents[doc['@id']] = PanelLookup({context: doc, key: i + 1});
+                    });
+                }
+            });
+        }
 
         // Make array of all replicate biosamples, not including biosample-less replicates.
-        var biosamples = _.compact(replicates.map(function(replicate) {
-            return replicate.library && replicate.library.biosample;
-        }));
+        if (replicates) {
+            var biosamples = _.compact(replicates.map(replicate => {
+                return replicate.library && replicate.library.biosample;
+            }));
+        }
 
         // Create platforms array from file platforms; ignore duplicate platforms
         var platforms = {};
@@ -191,7 +200,7 @@ var Experiment = module.exports.Experiment = React.createClass({
             documents[document['@id']] = PanelLookup({context: document, key: i + 1});
         });
         var antibodies = {};
-        replicates.forEach(function (replicate) {
+        replicates.forEach(replicate => {
             if (replicate.antibody) {
                 antibodies[replicate.antibody['@id']] = replicate.antibody;
             }
@@ -412,8 +421,8 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {replicates && replicates.length ?
-                    <ReplicateTable replicates={replicates} replicationType={context.replication_type} />
+                {Object.keys(condensedReplicates).length ?
+                    <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
                 : null}
 
                 {Object.keys(documents).length ?
@@ -459,16 +468,24 @@ globals.content_views.register(Experiment, 'Experiment');
 // Display the table of replicates
 var ReplicateTable = React.createClass({
     propTypes: {
-        replicates: React.PropTypes.array.isRequired, // Array of replicate objects
+        condensedReplicates: React.PropTypes.array.isRequired, // Condensed 'array' of replicate objects
         replicationType: React.PropTypes.string // Type of replicate so we can tell what's isongenic/anisogenic/whatnot
     },
 
     replicateColumns: {
-        'biological_replicate_number': {title: 'Biological replicate'},
-        'technical_replicate_number': {title: 'Technical replicate'},
+        'biological_replicate_number': {
+            title: 'Biological replicate',
+            getValue: condensedReplicate => condensedReplicate[0].biological_replicate_number
+        },
+        'technical_replicate_number': {
+            title: 'Technical replicate',
+            getValue: condensedReplicate => condensedReplicate.map(replicate => replicate.technical_replicate_number).join()
+        },
         'summary': {
             title: 'Summary',
-            display: replicate => {
+            display: condensedReplicate => {
+                var replicate = condensedReplicate[0];
+
                 // Display protein concentration if it exists
                 if (replicate.rbns_protein_concentration) {
                     return (
@@ -491,7 +508,8 @@ var ReplicateTable = React.createClass({
         },
         'biosample_accession': {
             title: 'Biosample',
-            display: replicate => {
+            display: condensedReplicate => {
+                var replicate = condensedReplicate[0];
                 if (replicate.library && replicate.library.biosample) {
                     var biosample = replicate.library.biosample;
                     return <a href={biosample['@id']} title={'View biosample ' + biosample.accession}>{biosample.accession}</a>;
@@ -499,38 +517,43 @@ var ReplicateTable = React.createClass({
                 return null;
             },
             objSorter: (a, b) => {
-                if ((a.library && a.library.biosample) && (b.library && b.library.biosample)) {
-                    var aAccession = a.library.biosample.accession;
-                    var bAccession = b.library.biosample.accession;
+                var aReplicate = a[0];
+                var bReplicate = b[0];
+                if ((aReplicate.library && aReplicate.library.biosample) && (bReplicate.library && bReplicate.library.biosample)) {
+                    var aAccession = aReplicate.library.biosample.accession;
+                    var bAccession = bReplicate.library.biosample.accession;
                     return (aAccession < bAccession) ? -1 : ((aAccession > bAccession) ? 1 : 0);
                 }
-                return (a.library && a.library.biosample) ? -1 : ((b.library && b.library.biosample) ? 1 : 0);
+                return (aReplicate.library && aReplicate.library.biosample) ? -1 : ((bReplicate.library && bReplicate.library.biosample) ? 1 : 0);
             }
         },
         'antibody_accession': {
             title: 'Antibody',
-            display: replicate => {
+            display: condensedReplicate => {
+                var replicate = condensedReplicate[0];
                 if (replicate.antibody) {
                     return <a href={replicate.antibody['@id']} title={'View antibody ' + replicate.antibody.accession}>{replicate.antibody.accession}</a>;
                 }
                 return null;
             },
             objSorter: (a, b) => {
-                if (a.antibody && b.antibody) {
-                    return (a.antibody.accession < b.antibody.accession) ? -1 : ((a.antibody.accession > b.antibody.accession) ? 1 : 0);
+                var aReplicate = a[0];
+                var bReplicate = b[0];
+                if (aReplicate.antibody && bReplicate.antibody) {
+                    return (aReplicate.antibody.accession < bReplicate.antibody.accession) ? -1 : ((aReplicate.antibody.accession > bReplicate.antibody.accession) ? 1 : 0);
                 }
-                return (a.antibody) ? -1 : ((b.antibody) ? 1 : 0);
+                return (aReplicate.antibody) ? -1 : ((bReplicate.antibody) ? 1 : 0);
             }
         },
         'library': {
             title: 'Library',
-            getValue: replicate => replicate.library ? replicate.library.accession : ''
+            getValue: condensedReplicate => condensedReplicate[0].library ? condensedReplicate[0].library.accession : ''
         }
     },
 
     render: function() {
         var tableTitle;
-        var {replicates, replicationType} = this.props;
+        var {condensedReplicates, replicationType} = this.props;
 
         // Determine replicate table title based on the replicate type. Also override the biosample replicate column title
         if (replicationType === 'anisogenic') {
@@ -546,7 +569,7 @@ var ReplicateTable = React.createClass({
 
         return (
             <SortTablePanel>
-                <SortTable title={tableTitle} list={replicates} columns={this.replicateColumns} />
+                <SortTable title={tableTitle} list={condensedReplicates} columns={this.replicateColumns} />
             </SortTablePanel>
         );
     }
