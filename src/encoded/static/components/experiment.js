@@ -122,6 +122,8 @@ var Experiment = module.exports.Experiment = React.createClass({
             });
         }
 
+        // If we have replicates, handle what we used to call Assay Details -- display data about each of the replicates, breaking out details
+        // if they differ between replicates.
         if (replicates && replicates.length) {
             // Prepare to collect values from each replicate's library. Each key in this object refers to a property in the libraries.
             var libraryValues1 = {
