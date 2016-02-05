@@ -140,9 +140,10 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
     def assay_title(self, registry, assay_term_id, assay_term_name):
         # This is the preferred name in generate_ontology.py if exists
         if assay_term_id in registry['ontology']:
-            return registry['ontology'][assay_term_id].get('preferred_name', assay_term_name)
+            preferred_name = registry['ontology'][assay_term_id].get('preferred_name', assay_term_name)
+            return preferred_name or assay_term_name
         return assay_term_name
-        
+
     @calculated_property(condition='assay_term_id', schema={
         "title": "Assay category",
         "type": "array",

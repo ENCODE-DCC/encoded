@@ -126,19 +126,16 @@ slim_shims = {
         'OBI:0002039': 'DNA accessibility',  # 'OBI:0000870',
         'OBI:0001853': 'DNA accessibility',  # 'OBI:0000870',
         'OBI:0001859': 'DNA accessibility',  # 'OBI:0000870',
+        'OBI:0002044': 'RNA binding',  # RNA binding
     }
 
 }
 
 preferred_name = {
-    "NTR:0000762": "shRNA/RNA-seq",
-    "NTR:0000763": "siRNA/RNA-seq",
-    "NTR:0003082": "single cell RNA-seq",
-    "NTR:0003508": "WGS",
     "OBI:0000626": "WGS",
     "OBI:0001247": "genotyping",
     "OBI:0001332": "DNAme array",
-    "OBI:0001335": "microRNA array",
+    "OBI:0001335": "microRNA quantification",
     "OBI:0001463": "expression array",
     "OBI:0001863": "WGBS",
     "OBI:0001923": "MS/MS",
@@ -147,7 +144,6 @@ preferred_name = {
     "OBI:0001853": "DNase-seq",
     "OBI:0001920": "Repli-Seq",
     "OBI:0001864": "RAMPAGE",
-    "NTR:0000020": "microRNA count"
 }
 
 category_slims = {
@@ -181,6 +177,126 @@ type_slims = {
     'OBI:0000435': 'genotyping assay'
 }
 
+# Note this also shows the final datastructure for ontology.json
+ntr_assays = {
+    "NTR:0000612": {
+        "assay": ['RNA Binding'],
+        "category": [],
+        "developmental": [],
+        "name": "Switchgear",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000762": {
+        "assay": ['transcription'],
+        "category": [],
+        "developmental": [],
+        "name": "shRNA knockdown followed by RNA-seq",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "shRNA/RNA-seq",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000763": {
+        "assay": ['transcription'],
+        "category": [],
+        "developmental": [],
+        "name": "siRNA knockdown followed by RNA-seq",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "siRNA/RNA-seq",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0001684": {
+        "assay": ['transcription'],
+        "category": [],
+        "developmental": [],
+        "name": "5' RLM RACE",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0002490": {
+        "assay": ['Methylation'],
+        "category": [],
+        "developmental": [],
+        "name": "TAB-seq",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0003027": {
+        "assay": ['RNA binding'],
+        "category": [],
+        "developmental": [],
+        "name": "eCLIP",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0001132": {
+        "assay": ['RNA binding'],
+        "category": [],
+        "developmental": [],
+        "name": "RNA Bind-N-Seq",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "RNA Bind-N-Seq",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0003082": {
+        "assay": ['transciption'],
+        "category": [],
+        "developmental": [],
+        "name": "single cell isolation followed by RNA-seq",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "single-cell RNA-seq",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0003508": {
+        "assay": ['genotyping'],
+        "category": [],
+        "developmental": [],
+        "name": "Whole genome shotgun sequencing",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "WGS",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    }
+}
 
 
 class Inspector(object):
@@ -479,9 +595,9 @@ def getSlims(goid, terms, slimType):
             if slimTerm in terms[goid]['closure']:
                 slims.append(slimTerms[slimTerm])
 
-    if not slims and slim_shims.get(slimType, {}):
-        shim = slim_shims[slimType].get(goid,'')
-        if shim: 
+    if slim_shims.get(slimType, {}):
+        shim = slim_shims[slimType].get(goid, '')
+        if shim:
             slims.append(shim)
     return slims
 
@@ -567,7 +683,6 @@ def main():
                     terms[term_id]['name'] = ''
 
                 terms[term_id]['preferred_name'] = preferred_name.get(term_id, '')
-
                 # Get all parents
                 for parent in data.get_classDirectSupers(c, excludeBnodes=False):
                     if isBlankNode(parent):
@@ -627,6 +742,7 @@ def main():
         del terms[term]['has_part'], terms[term]['achieves_planned_objective']
         del terms[term]['id'], terms[term]['data'], terms[term]['data_with_develops_from']
 
+    terms.update(ntr_assays)
     with open('ontology.json', 'w') as outfile:
         json.dump(terms, outfile)
 
