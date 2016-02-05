@@ -1424,13 +1424,15 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                         {goodGraph ?
                             <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick}>
                                 <div id="graph-node-info">
-                                    {meta ? <div className="panel-insert">{meta}</div> : null}
+                                    {meta ? <PanelBody>{meta}</PanelBody> : null}
                                 </div>
                             </Graph>
                         :
-                            <div className="panel-full">
-                                <p className="browser-error">Currently selected assembly and genomic annocation hides the graph</p>
-                            </div>
+                            <Panel>
+                                <PanelBody>
+                                    <p className="browser-error">Currently selected assembly and genomic annocation hides the graph</p>
+                                </PanelBody>
+                            </Panel>
                         }
                     </div>
                 );
