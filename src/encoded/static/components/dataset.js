@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react/addons');
+var panel = require('../libs/bootstrap/panel');
 var _ = require('underscore');
 var cx = require('react/lib/cx');
 var moment = require('moment');
@@ -13,6 +14,7 @@ var graph = require('./graph');
 var reference = require('./reference');
 var software = require('./software');
 var sortTable = require('./sorttable');
+var image = require('./image');
 
 var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -26,8 +28,10 @@ var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
 var SortTablePanel = sortTable.SortTablePanel;
 var SortTable = sortTable.SortTable;
+var ProjectBadge = image.ProjectBadge;
+var {Panel, PanelBody, PanelHeading} = panel;
 
-var Panel = function (props) {
+var PanelLookup = function (props) {
     // XXX not all panels have the same markup
     var context;
     if (props['@id']) {
@@ -62,7 +66,7 @@ var Dataset = module.exports.Dataset = React.createClass({
         // Build up array of documents attached to this dataset
         var datasetDocuments = {};
         context.documents.forEach(function (document, i) {
-            datasetDocuments[document['@id']] = Panel({context: document, key: i});
+            datasetDocuments[document['@id']] = PanelLookup({context: document, key: i});
         }, this);
 
         // Make string of alternate accessions
@@ -189,7 +193,7 @@ var Annotation = React.createClass({
         // Build up array of documents attached to this dataset
         var datasetDocuments = {};
         context.documents.forEach(function (document, i) {
-            datasetDocuments[document['@id']] = Panel({context: document, key: i});
+            datasetDocuments[document['@id']] = PanelLookup({context: document, key: i});
         }, this);
 
         // Make a biosample summary string
@@ -226,104 +230,119 @@ var Annotation = React.createClass({
                     </div>
                 </header>
                 <AuditDetail context={context} id="dataset-audit" />
-                <div className="panel">
-                    <dl className="key-value">
-                        {context.assay_term_name && context.assay_term_name.length ?
-                            <div data-test="assaytermname">
-                                <dt>Assay(s)</dt>
-                                <dd>{context.assay_term_name.join(', ')}</dd>
-                            </div>
-                        : null}
+                <Panel addClasses="data-display">
+                    <PanelBody addClasses="panel-body-with-header">
+                        <div className="flexrow">
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
+                                <dl className="key-value">
+                                    {context.assay_term_name && context.assay_term_name.length ?
+                                        <div data-test="assaytermname">
+                                            <dt>Assay(s)</dt>
+                                            <dd>{context.assay_term_name.join(', ')}</dd>
+                                        </div>
+                                    : null}
 
-                        <div data-test="accession">
-                            <dt>Accession</dt>
-                            <dd>{context.accession}</dd>
+                                    <div data-test="accession">
+                                        <dt>Accession</dt>
+                                        <dd>{context.accession}</dd>
+                                    </div>
+
+                                    {context.description ?
+                                        <div data-test="description">
+                                            <dt>Description</dt>
+                                            <dd>{context.description}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.biosample_term_name || biosampleSummary ?
+                                        <div data-test="biosample">
+                                            <dt>Biosample summary</dt>
+                                            <dd>
+                                                {context.biosample_term_name}
+                                                {context.biosample_term_name ? <span>{' '}</span> : null}
+                                                {biosampleSummary ? <span>({biosampleSummary})</span> : null}
+                                            </dd>
+                                        </div>
+                                    : null}
+
+                                    {context.biosample_type ?
+                                        <div data-test="biosampletype">
+                                            <dt>Biosample type</dt>
+                                            <dd>{context.biosample_type}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.organism ?
+                                        <div data-test="organism">
+                                            <dt>Organism</dt>
+                                            <dd>{context.organism.name}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.annotation_type ?
+                                        <div data-test="type">
+                                            <dt>Annotation type</dt>
+                                            <dd className="sentence-case">{context.annotation_type}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.target ?
+                                        <div data-test="target">
+                                            <dt>Target</dt>
+                                            <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
+                                        </div>
+                                    : null}
+
+                                    {context.software_used && context.software_used.length ?
+                                        <div data-test="softwareused">
+                                            <dt>Software used</dt>
+                                            <dd>{SoftwareVersionList(context.software_used)}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
+
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading">
+                                    <h4>Attribution</h4>
+                                    <ProjectBadge award={context.award} addClasses="badge-heading" />
+                                </div>
+                                <dl className="key-value">
+                                    {context.lab ?
+                                        <div data-test="lab">
+                                            <dt>Lab</dt>
+                                            <dd>{context.lab.title}</dd>
+                                        </div>
+                                    : null}
+                                    
+                                    {context.aliases.length ?
+                                        <div data-test="aliases">
+                                            <dt>Aliases</dt>
+                                            <dd><DbxrefList values={context.aliases} /></dd>
+                                        </div>
+                                    : null}
+
+                                    <div data-test="externalresources">
+                                        <dt>External resources</dt>
+                                        <dd>
+                                            {context.dbxrefs && context.dbxrefs.length ?
+                                                <DbxrefList values={context.dbxrefs} />
+                                            : <em>None submitted</em> }
+                                        </dd>
+                                    </div>
+
+                                    {references ?
+                                        <div data-test="references">
+                                            <dt>Publications</dt>
+                                            <dd>{references}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
                         </div>
-
-                        {context.description ?
-                            <div data-test="description">
-                                <dt>Description</dt>
-                                <dd>{context.description}</dd>
-                            </div>
-                        : null}
-
-                        {context.biosample_term_name || biosampleSummary ?
-                            <div data-test="biosample">
-                                <dt>Biosample summary</dt>
-                                <dd>
-                                    {context.biosample_term_name}
-                                    {context.biosample_term_name ? <span>{' '}</span> : null}
-                                    {biosampleSummary ? <span>({biosampleSummary})</span> : null}
-                                </dd>
-                            </div>
-                        : null}
-
-                        {context.biosample_type ?
-                            <div data-test="biosampletype">
-                                <dt>Biosample type</dt>
-                                <dd>{context.biosample_type}</dd>
-                            </div>
-                        : null}
-
-                        {context.organism ?
-                            <div data-test="organism">
-                                <dt>Organism</dt>
-                                <dd>{context.organism.name}</dd>
-                            </div>
-                        : null}
-
-                        {context.annotation_type ?
-                            <div data-test="type">
-                                <dt>Annotation type</dt>
-                                <dd className="sentence-case">{context.annotation_type}</dd>
-                            </div>
-                        : null}
-
-                        {context.target ?
-                            <div data-test="target">
-                                <dt>Target</dt>
-                                <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
-                            </div>
-                        : null}
-
-                        {context.software_used && context.software_used.length ?
-                            <div>
-                                <dt>Software used</dt>
-                                <dd>{SoftwareVersionList(context.software_used)}</dd>
-                            </div>
-                        : null}
-
-                        {context.lab ?
-                            <div data-type="lab">
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
-                            </div>
-                        : null}
-                        
-                        {context.aliases.length ?
-                            <div data-type="aliases">
-                                <dt>Aliases</dt>
-                                <dd><DbxrefList values={context.aliases} /></dd>
-                            </div>
-                        : null}
-
-                        <div data-type="externalresources">
-                            <dt>External resources</dt>
-                            <dd>
-                                {context.dbxrefs && context.dbxrefs.length ?
-                                    <DbxrefList values={context.dbxrefs} />
-                                : <em>None submitted</em> }
-                            </dd>
-                        </div>
-
-                        {references ?
-                            <div data-test="references">
-                                <dt>Publications</dt>
-                                <dd>{references}</dd>
-                            </div>
-                        : null}
-                    </dl>
-                </div>
+                    </PanelBody>
+                </Panel>
 
                 {Object.keys(datasetDocuments).length ?
                     <div>
@@ -371,7 +390,7 @@ var PublicationData = React.createClass({
         // Build up array of documents attached to this dataset
         var datasetDocuments = {};
         context.documents.forEach(function (document, i) {
-            datasetDocuments[document['@id']] = Panel({context: document, key: i});
+            datasetDocuments[document['@id']] = PanelLookup({context: document, key: i});
         }, this);
 
         // Set up the breadcrumbs
@@ -405,72 +424,87 @@ var PublicationData = React.createClass({
                     </div>
                 </header>
                 <AuditDetail context={context} id="dataset-audit" />
-                <div className="panel">
-                    <dl className="key-value">
-                        {context.assay_term_name && context.assay_term_name.length ?
-                            <div data-test="assaytermname">
-                                <dt>Assay(s)</dt>
-                                <dd>{context.assay_term_name.join(', ')}</dd>
-                            </div>
-                        : null}
+                <Panel addClasses="data-display">
+                    <PanelBody addClasses="panel-body-with-header">
+                        <div className="flexrow">
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
+                                <dl className="key-value">
+                                    {context.assay_term_name && context.assay_term_name.length ?
+                                        <div data-test="assaytermname">
+                                            <dt>Assay(s)</dt>
+                                            <dd>{context.assay_term_name.join(', ')}</dd>
+                                        </div>
+                                    : null}
 
-                        <div data-test="accession">
-                            <dt>Accession</dt>
-                            <dd>{context.accession}</dd>
+                                    <div data-test="accession">
+                                        <dt>Accession</dt>
+                                        <dd>{context.accession}</dd>
+                                    </div>
+
+                                    {context.description ?
+                                        <div data-test="description">
+                                            <dt>Description</dt>
+                                            <dd>{context.description}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.biosample_term_name && context.biosample_term_name.length ?
+                                        <div data-test="biosampletermname">
+                                            <dt>Biosample term name</dt>
+                                            <dd>{context.biosample_term_name.join(', ')}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.biosample_type && context.biosample_type.length ?
+                                        <div data-test="biosampletype">
+                                            <dt>Biosample type</dt>
+                                            <dd>{context.biosample_type.join(', ')}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.dataset_type ?
+                                        <div data-test="type">
+                                            <dt>Dataset type</dt>
+                                            <dd className="sentence-case">{context.dataset_type}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
+
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading">
+                                    <h4>Attribution</h4>
+                                    <ProjectBadge award={context.award} addClasses="badge-heading" />
+                                </div>
+                                <dl className="key-value">
+                                    {context.lab ?
+                                        <div data-test="lab">
+                                            <dt>Lab</dt>
+                                            <dd>{context.lab.title}</dd>
+                                        </div>
+                                    : null}
+                                    
+                                    <div data-test="externalresources">
+                                        <dt>External resources</dt>
+                                        <dd>
+                                            {context.dbxrefs && context.dbxrefs.length ?
+                                                <DbxrefList values={context.dbxrefs} />
+                                            : <em>None submitted</em> }
+                                        </dd>
+                                    </div>
+
+                                    {referenceList ?
+                                        <div data-test="references">
+                                            <dt>Publications</dt>
+                                            <dd>{referenceList}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
                         </div>
-
-                        {context.description ?
-                            <div data-test="description">
-                                <dt>Description</dt>
-                                <dd>{context.description}</dd>
-                            </div>
-                        : null}
-
-                        {context.biosample_term_name && context.biosample_term_name.length ?
-                            <div data-test="biosampletermname">
-                                <dt>Biosample term name</dt>
-                                <dd>{context.biosample_term_name.join(', ')}</dd>
-                            </div>
-                        : null}
-
-                        {context.biosample_type && context.biosample_type.length ?
-                            <div data-test="biosampletype">
-                                <dt>Biosample type</dt>
-                                <dd>{context.biosample_type.join(', ')}</dd>
-                            </div>
-                        : null}
-
-                        {context.dataset_type ?
-                            <div data-test="type">
-                                <dt>Dataset type</dt>
-                                <dd className="sentence-case">{context.dataset_type}</dd>
-                            </div>
-                        : null}
-
-                        {context.lab ?
-                            <div data-type="lab">
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
-                            </div>
-                        : null}
-                        
-                        <div data-type="externalresources">
-                            <dt>External resources</dt>
-                            <dd>
-                                {context.dbxrefs && context.dbxrefs.length ?
-                                    <DbxrefList values={context.dbxrefs} />
-                                : <em>None submitted</em> }
-                            </dd>
-                        </div>
-
-                        {referenceList ?
-                            <div data-test="references">
-                                <dt>Publications</dt>
-                                <dd>{referenceList}</dd>
-                            </div>
-                        : null}
-                    </dl>
-                </div>
+                    </PanelBody>
+                </Panel>
 
                 {Object.keys(datasetDocuments).length ?
                     <div>
@@ -517,7 +551,7 @@ var Reference = React.createClass({
         // Build up array of documents attached to this dataset
         var datasetDocuments = {};
         context.documents.forEach(function (document, i) {
-            datasetDocuments[document['@id']] = Panel({context: document, key: i});
+            datasetDocuments[document['@id']] = PanelLookup({context: document, key: i});
         }, this);
 
         // Set up the breadcrumbs
@@ -551,72 +585,87 @@ var Reference = React.createClass({
                     </div>
                 </header>
                 <AuditDetail context={context} id="dataset-audit" />
-                <div className="panel">
-                    <dl className="key-value">
-                        <div data-test="accession">
-                            <dt>Accession</dt>
-                            <dd>{context.accession}</dd>
+                <Panel addClasses="data-display">
+                    <PanelBody addClasses="panel-body-with-header">
+                        <div className="flexrow">
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
+                                <dl className="key-value">
+                                    <div data-test="accession">
+                                        <dt>Accession</dt>
+                                        <dd>{context.accession}</dd>
+                                    </div>
+
+                                    {context.description ?
+                                        <div data-test="description">
+                                            <dt>Description</dt>
+                                            <dd>{context.description}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.reference_type ?
+                                        <div data-test="type">
+                                            <dt>Reference type</dt>
+                                            <dd>{context.reference_type}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.organism ?
+                                        <div data-test="organism">
+                                            <dt>Organism</dt>
+                                            <dd>{context.organism.name}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.software_used && context.software_used.length ?
+                                        <div data-test="softwareused">
+                                            <dt>Software used</dt>
+                                            <dd>{SoftwareVersionList(context.software_used)}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
+
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading">
+                                    <h4>Attribution</h4>
+                                    <ProjectBadge award={context.award} addClasses="badge-heading" />
+                                </div>
+                                <dl className="key-value">
+                                    {context.lab ?
+                                        <div data-test="lab">
+                                            <dt>Lab</dt>
+                                            <dd>{context.lab.title}</dd>
+                                        </div>
+                                    : null}
+                                    
+                                    {context.aliases.length ?
+                                        <div data-test="aliases">
+                                            <dt>Aliases</dt>
+                                            <dd><DbxrefList values={context.aliases} /></dd>
+                                        </div>
+                                    : null}
+
+                                    <div data-test="externalresources">
+                                        <dt>External resources</dt>
+                                        <dd>
+                                            {context.dbxrefs && context.dbxrefs.length ?
+                                                <DbxrefList values={context.dbxrefs} />
+                                            : <em>None submitted</em> }
+                                        </dd>
+                                    </div>
+
+                                    {references ?
+                                        <div data-test="references">
+                                            <dt>Publications</dt>
+                                            <dd>{references}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
                         </div>
-
-                        {context.description ?
-                            <div data-test="description">
-                                <dt>Description</dt>
-                                <dd>{context.description}</dd>
-                            </div>
-                        : null}
-
-                        {context.reference_type ?
-                            <div data-test="type">
-                                <dt>Reference type</dt>
-                                <dd>{context.reference_type}</dd>
-                            </div>
-                        : null}
-
-                        {context.organism ?
-                            <div data-test="organism">
-                                <dt>Organism</dt>
-                                <dd>{context.organism.name}</dd>
-                            </div>
-                        : null}
-
-                        {context.software_used && context.software_used.length ?
-                            <div>
-                                <dt>Software used</dt>
-                                <dd>{SoftwareVersionList(context.software_used)}</dd>
-                            </div>
-                        : null}
-
-                        {context.lab ?
-                            <div data-test="lab">
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
-                            </div>
-                        : null}
-                        
-                        {context.aliases.length ?
-                            <div data-test="aliases">
-                                <dt>Aliases</dt>
-                                <dd><DbxrefList values={context.aliases} /></dd>
-                            </div>
-                        : null}
-
-                        <div data-test="externalresources">
-                            <dt>External resources</dt>
-                            <dd>
-                                {context.dbxrefs && context.dbxrefs.length ?
-                                    <DbxrefList values={context.dbxrefs} />
-                                : <em>None submitted</em> }
-                            </dd>
-                        </div>
-
-                        {references ?
-                            <div data-test="references">
-                                <dt>Publications</dt>
-                                <dd>{references}</dd>
-                            </div>
-                        : null}
-                    </dl>
-                </div>
+                    </PanelBody>
+                </Panel>
 
                 {Object.keys(datasetDocuments).length ?
                     <div>
@@ -657,7 +706,7 @@ var Project = React.createClass({
         // Build up array of documents attached to this dataset
         var datasetDocuments = {};
         context.documents.forEach(function (document, i) {
-            datasetDocuments[document['@id']] = Panel({context: document, key: i});
+            datasetDocuments[document['@id']] = PanelLookup({context: document, key: i});
         }, this);
 
         // Collect organisms
@@ -697,93 +746,108 @@ var Project = React.createClass({
                     </div>
                 </header>
                 <AuditDetail context={context} id="dataset-audit" />
-                <div className="panel">
-                    <dl className="key-value">
-                        {context.assay_term_name && context.assay_term_name.length ?
-                            <div data-test="assaytermname">
-                                <dt>Assay(s)</dt>
-                                <dd>{context.assay_term_name.join(', ')}</dd>
-                            </div>
-                        : null}
+                <Panel addClasses="data-display">
+                    <PanelBody addClasses="panel-body-with-header">
+                        <div className="flexrow">
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
+                                <dl className="key-value">
+                                    {context.assay_term_name && context.assay_term_name.length ?
+                                        <div data-test="assaytermname">
+                                            <dt>Assay(s)</dt>
+                                            <dd>{context.assay_term_name.join(', ')}</dd>
+                                        </div>
+                                    : null}
 
-                        <div data-test="accession">
-                            <dt>Accession</dt>
-                            <dd>{context.accession}</dd>
+                                    <div data-test="accession">
+                                        <dt>Accession</dt>
+                                        <dd>{context.accession}</dd>
+                                    </div>
+
+                                    {context.description ?
+                                        <div data-test="description">
+                                            <dt>Description</dt>
+                                            <dd>{context.description}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.project_type ?
+                                        <div data-test="type">
+                                            <dt>Project type</dt>
+                                            <dd className="sentence-case">{context.project_type}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.biosample_term_name && context.biosample_term_name.length ?
+                                        <div data-test="biosampletermname">
+                                            <dt>Biosample term name</dt>
+                                            <dd>{context.biosample_term_name.join(', ')}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.biosample_type && context.biosample_type.length ?
+                                        <div data-test="biosampletype">
+                                            <dt>Biosample type</dt>
+                                            <dd>{context.biosample_type.join(', ')}</dd>
+                                        </div>
+                                    : null}
+
+                                    {organisms.length ?
+                                        <div data-test="organism">
+                                            <dt>Organism</dt>
+                                            <dd>{organisms.join(', ')}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.software_used && context.software_used.length ?
+                                        <div data-test="softwareused">
+                                            <dt>Software used</dt>
+                                            <dd>{SoftwareVersionList(context.software_used)}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
+
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading">
+                                    <h4>Attribution</h4>
+                                    <ProjectBadge award={context.award} addClasses="badge-heading" />
+                                </div>
+                                <dl className="key-value">
+                                    {context.lab ?
+                                        <div data-test="lab">
+                                            <dt>Lab</dt>
+                                            <dd>{context.lab.title}</dd>
+                                        </div>
+                                    : null}
+                                    
+                                    {context.aliases.length ?
+                                        <div data-test="aliases">
+                                            <dt>Aliases</dt>
+                                            <dd><DbxrefList values={context.aliases} /></dd>
+                                        </div>
+                                    : null}
+
+                                    <div data-test="externalresources">
+                                        <dt>External resources</dt>
+                                        <dd>
+                                            {context.dbxrefs && context.dbxrefs.length ?
+                                                <DbxrefList values={context.dbxrefs} />
+                                            : <em>None submitted</em> }
+                                        </dd>
+                                    </div>
+
+                                    {references ?
+                                        <div data-test="references">
+                                            <dt>Publications</dt>
+                                            <dd>{references}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
                         </div>
-
-                        {context.description ?
-                            <div data-test="description">
-                                <dt>Description</dt>
-                                <dd>{context.description}</dd>
-                            </div>
-                        : null}
-
-                        {context.project_type ?
-                            <div data-test="type">
-                                <dt>Project type</dt>
-                                <dd className="sentence-case">{context.project_type}</dd>
-                            </div>
-                        : null}
-
-                        {context.biosample_term_name && context.biosample_term_name.length ?
-                            <div data-test="biosampletermname">
-                                <dt>Biosample term name</dt>
-                                <dd>{context.biosample_term_name.join(', ')}</dd>
-                            </div>
-                        : null}
-
-                        {context.biosample_type && context.biosample_type.length ?
-                            <div data-test="biosampletype">
-                                <dt>Biosample type</dt>
-                                <dd>{context.biosample_type.join(', ')}</dd>
-                            </div>
-                        : null}
-
-                        {organisms.length ?
-                            <div data-test="organism">
-                                <dt>Organism</dt>
-                                <dd>{organisms.join(', ')}</dd>
-                            </div>
-                        : null}
-
-                        {context.software_used && context.software_used.length ?
-                            <div>
-                                <dt>Software used</dt>
-                                <dd>{SoftwareVersionList(context.software_used)}</dd>
-                            </div>
-                        : null}
-
-                        {context.lab ?
-                            <div data-type="lab">
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
-                            </div>
-                        : null}
-                        
-                        {context.aliases.length ?
-                            <div data-type="aliases">
-                                <dt>Aliases</dt>
-                                <dd><DbxrefList values={context.aliases} /></dd>
-                            </div>
-                        : null}
-
-                        <div data-type="externalresources">
-                            <dt>External resources</dt>
-                            <dd>
-                                {context.dbxrefs && context.dbxrefs.length ?
-                                    <DbxrefList values={context.dbxrefs} />
-                                : <em>None submitted</em> }
-                            </dd>
-                        </div>
-
-                        {references ?
-                            <div data-test="references">
-                                <dt>Publications</dt>
-                                <dd>{references}</dd>
-                            </div>
-                        : null}
-                    </dl>
-                </div>
+                    </PanelBody>
+                </Panel>
 
                 {Object.keys(datasetDocuments).length ?
                     <div>
@@ -831,7 +895,7 @@ var UcscBrowserComposite = React.createClass({
         // Build up array of documents attached to this dataset
         var datasetDocuments = {};
         context.documents.forEach(function (document, i) {
-            datasetDocuments[document['@id']] = Panel({context: document, key: i});
+            datasetDocuments[document['@id']] = PanelLookup({context: document, key: i});
         }, this);
 
         // Collect organisms
@@ -871,79 +935,94 @@ var UcscBrowserComposite = React.createClass({
                     </div>
                 </header>
                 <AuditDetail context={context} id="dataset-audit" />
-                <div className="panel">
-                    <dl className="key-value">
-                        {context.assay_term_name && context.assay_term_name.length ?
-                            <div data-test="assays">
-                                <dt>Assay(s)</dt>
-                                <dd>{context.assay_term_name.join(', ')}</dd>
-                            </div>
-                        : null}
+                <Panel addClasses="data-display">
+                    <PanelBody addClasses="panel-body-with-header">
+                        <div className="flexrow">
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
+                                <dl className="key-value">
+                                    {context.assay_term_name && context.assay_term_name.length ?
+                                        <div data-test="assays">
+                                            <dt>Assay(s)</dt>
+                                            <dd>{context.assay_term_name.join(', ')}</dd>
+                                        </div>
+                                    : null}
 
-                        <div data-test="accession">
-                            <dt>Accession</dt>
-                            <dd>{context.accession}</dd>
+                                    <div data-test="accession">
+                                        <dt>Accession</dt>
+                                        <dd>{context.accession}</dd>
+                                    </div>
+
+                                    {context.description ?
+                                        <div data-test="description">
+                                            <dt>Description</dt>
+                                            <dd>{context.description}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.dataset_type ?
+                                        <div data-test="type">
+                                            <dt>Dataset type</dt>
+                                            <dd className="sentence-case">{context.dataset_type}</dd>
+                                        </div>
+                                    : null}
+
+                                    {organisms.length ?
+                                        <div data-test="organism">
+                                            <dt>Organism</dt>
+                                            <dd>{organisms.join(', ')}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.software_used && context.software_used.length ?
+                                        <div data-test="software-used">
+                                            <dt>Software used</dt>
+                                            <dd>{SoftwareVersionList(context.software_used)}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
+
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading">
+                                    <h4>Attribution</h4>
+                                    <ProjectBadge award={context.award} addClasses="badge-heading" />
+                                </div>
+                                <dl className="key-value">
+                                    {context.lab ?
+                                        <div data-test="lab">
+                                            <dt>Lab</dt>
+                                            <dd>{context.lab.title}</dd>
+                                        </div>
+                                    : null}
+                                    
+                                    {context.aliases.length ?
+                                        <div data-test="aliases">
+                                            <dt>Aliases</dt>
+                                            <dd><DbxrefList values={context.aliases} /></dd>
+                                        </div>
+                                    : null}
+
+                                    <div data-test="externalresources">
+                                        <dt>External resources</dt>
+                                        <dd>
+                                            {context.dbxrefs && context.dbxrefs.length ?
+                                                <DbxrefList values={context.dbxrefs} />
+                                            : <em>None submitted</em> }
+                                        </dd>
+                                    </div>
+
+                                    {references ?
+                                        <div data-test="references">
+                                            <dt>Publications</dt>
+                                            <dd>{references}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
                         </div>
-
-                        {context.description ?
-                            <div data-test="description">
-                                <dt>Description</dt>
-                                <dd>{context.description}</dd>
-                            </div>
-                        : null}
-
-                        {context.dataset_type ?
-                            <div data-test="type">
-                                <dt>Dataset type</dt>
-                                <dd className="sentence-case">{context.dataset_type}</dd>
-                            </div>
-                        : null}
-
-                        {organisms.length ?
-                            <div data-test="organism">
-                                <dt>Organism</dt>
-                                <dd>{organisms.join(', ')}</dd>
-                            </div>
-                        : null}
-
-                        {context.software_used && context.software_used.length ?
-                            <div>
-                                <dt>Software used</dt>
-                                <dd>{SoftwareVersionList(context.software_used)}</dd>
-                            </div>
-                        : null}
-
-                        {context.lab ?
-                            <div data-type="lab">
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
-                            </div>
-                        : null}
-                        
-                        {context.aliases.length ?
-                            <div data-type="aliases">
-                                <dt>Aliases</dt>
-                                <dd><DbxrefList values={context.aliases} /></dd>
-                            </div>
-                        : null}
-
-                        <div data-type="externalresources">
-                            <dt>External resources</dt>
-                            <dd>
-                                {context.dbxrefs && context.dbxrefs.length ?
-                                    <DbxrefList values={context.dbxrefs} />
-                                : <em>None submitted</em> }
-                            </dd>
-                        </div>
-
-                        {references ?
-                            <div data-test="references">
-                                <dt>Publications</dt>
-                                <dd>{references}</dd>
-                            </div>
-                        : null}
-                    </dl>
-                </div>
+                    </PanelBody>
+                </Panel>
 
                 {Object.keys(datasetDocuments).length ?
                     <div>
@@ -1442,7 +1521,7 @@ var Series = module.exports.Series = React.createClass({
         // Build up array of documents attached to this dataset
         var datasetDocuments = {};
         context.documents.forEach(function (document, i) {
-            datasetDocuments[document['@id']] = Panel({context: document, key: i});
+            datasetDocuments[document['@id']] = PanelLookup({context: document, key: i});
         }, this);
 
         // Set up the breadcrumbs
@@ -1501,66 +1580,81 @@ var Series = module.exports.Series = React.createClass({
                     </div>
                 </header>
                 <AuditDetail context={context} id="dataset-audit" />
-                <div className="panel">
-                    <dl className="key-value">
-                        {context.description ?
-                            <div data-test="description">
-                                <dt>Description</dt>
-                                <dd>{context.description}</dd>
-                            </div>
-                        : null}
+                <Panel addClasses="data-display">
+                    <PanelBody addClasses="panel-body-with-header">
+                        <div className="flexrow">
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
+                                <dl className="key-value">
+                                    {context.description ?
+                                        <div data-test="description">
+                                            <dt>Description</dt>
+                                            <dd>{context.description}</dd>
+                                        </div>
+                                    : null}
 
-                        {context.assay_term_name && context.assay_term_name.length ?
-                            <div data-test="description">
-                                <dt>Assay</dt>
-                                <dd>{context.assay_term_name.join(', ')}</dd>
-                            </div>
-                        : null}
+                                    {context.assay_term_name && context.assay_term_name.length ?
+                                        <div data-test="description">
+                                            <dt>Assay</dt>
+                                            <dd>{context.assay_term_name.join(', ')}</dd>
+                                        </div>
+                                    : null}
 
-                        {terms.length || speciesRender ?
-                            <div data-test="biosamplesummary">
-                                <dt>Biosample summary</dt>
-                                <dd>
-                                    {terms.length ? <span>{terms.join(' and ')} </span> : null}
-                                    {speciesRender ? <span>({speciesRender})</span> : null}
-                                </dd>
+                                    {terms.length || speciesRender ?
+                                        <div data-test="biosamplesummary">
+                                            <dt>Biosample summary</dt>
+                                            <dd>
+                                                {terms.length ? <span>{terms.join(' and ')} </span> : null}
+                                                {speciesRender ? <span>({speciesRender})</span> : null}
+                                            </dd>
+                                        </div>
+                                    : null}
+                                </dl>
                             </div>
-                        : null}
 
-                        <div data-test="lab">
-                            <dt>Lab</dt>
-                            <dd>{context.lab.title}</dd>
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading">
+                                    <h4>Attribution</h4>
+                                    <ProjectBadge award={context.award} addClasses="badge-heading" />
+                                </div>
+                                <dl className="key-value">
+                                    <div data-test="lab">
+                                        <dt>Lab</dt>
+                                        <dd>{context.lab.title}</dd>
+                                    </div>
+
+                                    <div data-test="project">
+                                        <dt>Project</dt>
+                                        <dd>{context.award.project}</dd>
+                                    </div>
+
+                                    {context.aliases.length ?
+                                        <div data-test="aliases">
+                                            <dt>Aliases</dt>
+                                            <dd>{context.aliases.join(", ")}</dd>
+                                        </div>
+                                    : null}
+
+                                    <div data-test="externalresources">
+                                        <dt>External resources</dt>
+                                        <dd>
+                                            {context.dbxrefs && context.dbxrefs.length ?
+                                                <DbxrefList values={context.dbxrefs} />
+                                            : <em>None submitted</em> }
+                                        </dd>
+                                    </div>
+
+                                    {references ?
+                                        <div data-test="references">
+                                            <dt>References</dt>
+                                            <dd>{references}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
                         </div>
-
-                        <div data-test="project">
-                            <dt>Project</dt>
-                            <dd>{context.award.project}</dd>
-                        </div>
-
-                        {context.aliases.length ?
-                            <div data-test="aliases">
-                                <dt>Aliases</dt>
-                                <dd>{context.aliases.join(", ")}</dd>
-                            </div>
-                        : null}
-
-                        <div data-type="externalresources">
-                            <dt>External resources</dt>
-                            <dd>
-                                {context.dbxrefs && context.dbxrefs.length ?
-                                    <DbxrefList values={context.dbxrefs} />
-                                : <em>None submitted</em> }
-                            </dd>
-                        </div>
-
-                        {references ?
-                            <div data-test="references">
-                                <dt>References</dt>
-                                <dd>{references}</dd>
-                            </div>
-                        : null}
-                    </dl>
-                </div>
+                    </PanelBody>
+                </Panel>
 
                 {Object.keys(datasetDocuments).length ?
                     <div>
