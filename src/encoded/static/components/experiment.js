@@ -70,47 +70,24 @@ var Experiment = module.exports.Experiment = React.createClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
-        var replicates = _.sortBy(context.replicates, function(item) {
+        var replicates = _(context.replicates).sortBy(item => {
             return item.biological_replicate_number;
         });
-        var aliasList = context.aliases.join(", ");
 
+        // Collect all documents from all replicate libraries for display.
         var documents = {};
-        replicates.forEach(function (replicate) {
-            if (!replicate.library) return;
-            replicate.library.documents.forEach(function (doc, i) {
-                documents[doc['@id']] = PanelLookup({context: doc, key: i + 1});
-            });
+        replicates.forEach(replicate => {
+            if (replicate.library && replicate.library.documents && replicate.library.documents.length) {
+                replicate.library.documents.forEach((doc, i) => {
+                    documents[doc['@id']] = PanelLookup({context: doc, key: i + 1});
+                });
+            }
         });
-
-        // Get the first replicate's library for items needing one library
-        var lib = (replicates && replicates.length) ? replicates[0].library : null;
-        var libraries = _.compact(replicates.map(replicate => {
-            return replicate.library ? replicate.library : null;
-        }));
 
         // Make array of all replicate biosamples, not including biosample-less replicates.
         var biosamples = _.compact(replicates.map(function(replicate) {
             return replicate.library && replicate.library.biosample;
         }));
-
-        // Build the text of the Treatment, Synchronization string arrays. Theoretically these could be a part of the
-        // AssayDetails function, but these appear before 'target' so they're out of order.
-        var treatments = {};
-        var synchText = [];
-        biosamples.map(function(biosample) {
-            // Collect treatments
-            treatments = treatments || !!(biosample.treatments && biosample.treatments.length);
-
-            // Collect synchronizations
-            if (biosample.synchronization) {
-                synchText.push(biosample.synchronization +
-                    (biosample.post_synchronization_time ?
-                        ' + ' + biosample.post_synchronization_time + (biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : '')
-                    : ''));
-            }
-        });
-        synchText = synchText && _.uniq(synchText);
 
         // Create platforms array from file platforms; ignore duplicate platforms
         var platforms = {};
@@ -412,7 +389,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
-                                            <dd>{aliasList}</dd>
+                                            <dd>{context.aliases.join(", ")}</dd>
                                         </div>
                                     : null}
 
