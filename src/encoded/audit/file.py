@@ -527,7 +527,17 @@ def audit_file_read_depth(value, system):
 
     quality_metrics = value.get('quality_metrics')
 
+    excluded_pipelines = ['Raw mapping with no filtration',
+                          'WGBS single-end pipeline - version 2',
+                          'WGBS single-end pipeline']
     if (quality_metrics is None) or (quality_metrics == []):
+        '''
+        Excluding ChIP-seq - Raw mapping with no filtration BAMs
+        '''
+        for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
+            if pipeline['title'] in excluded_pipelines:
+                return
+
         detail = 'ENCODE Processed alignment file {} has no quality_metrics'.format(
             value['@id'])
         yield AuditFailure('missing quality metrics', detail, level='DCC_ACTION')
@@ -823,6 +833,14 @@ def audit_file_mad_qc_spearman_correlation(value, system):
         return
 
     if value['lab'] != '/labs/encode-processing-pipeline/':
+        return
+
+    '''
+    Excluding unreplicated experiments
+    '''
+    if 'dataset' in value and\
+       'replication_type' in value['dataset'] and \
+       value['dataset']['replication_type'] == 'unreplicated':
         return
 
     if 'analysis_step_version' not in value:
