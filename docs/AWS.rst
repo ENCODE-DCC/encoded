@@ -22,7 +22,7 @@ After a few moments, it will return the domain name of your instance::
 
 The deployment can take some time, especially if it's been a while since the last full database backup.
 
-Once the demo is deployed ratchet down the instance size
+Once the demo is indexed ratchet down the instance size
   * Login to https://us-west-2.console.aws.amazon.com/ec2/v2/home?region=us-west-2#Instances:sort=instanceState
   * Select your instance
   * Select Action - Instance State - Stop
