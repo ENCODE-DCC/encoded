@@ -23,11 +23,10 @@ After a few moments, it will return the domain name of your instance::
 The deployment can take some time, especially if it's been a while since the last full database backup.
 
 Once the demo is deployed ratchet down the instance size
-
-    * Login to https://us-west-2.console.aws.amazon.com/ec2/v2/home?region=us-west-2#Instances:sort=instanceState
-    * Select your instance
-    * Select Action - Instance State - Stop
-    * Select Action - Instance Settings - Change Instance Type
+* Login to https://us-west-2.console.aws.amazon.com/ec2/v2/home?region=us-west-2#Instances:sort=instanceState
+* Select your instance
+* Select Action - Instance State - Stop
+* Select Action - Instance Settings - Change Instance Type
 
 To login to a demo machine, we first need to `sign your ssh public key`_ (the one uploaded to github, normally ~/.ssh/id_rsa.pub) with the demo_users_ca private key. This creates an id_rsa-cert.pub which you should place in your ~/.ssh/ alongside your keypair::
 
