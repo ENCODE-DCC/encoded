@@ -264,7 +264,7 @@ var App = React.createClass({
                                 {errors}
                                 <div id="layout-footer"></div>
                             </div>
-                            <Footer />
+                            <Footer version={this.props.context.app_version} />
                         </div>
                     </div>
                 </body>

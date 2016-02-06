@@ -7,14 +7,33 @@
     }
 }
 
+.app-version {
+    height: $appVersionHeight;
+    line-height: $appVersionHeight;
+    text-align: center;
+    @include font-size(0.9);
+    color: #a0a0a0;
+}
+
 // make footer look good on larger screens
 // and activate sticky footer
-@media (min-width: $screen-sm) {
+@media (min-width: $screen-sm-min) {
     .footer-row { margin-left: 0; margin-right: 0; }
-    #page-footer, .page-footer {
+
+    #page-footer {
         height: $footerHeight;
     }
+
+    .page-footer {
+        height: $footerHeight - $appVersionHeight;
+    }
+
+    .app-version {
+        text-align: left;
+    }
+
     @include sticky-footer($footerHeight, $footerTopBorderHeight, "#layout", "#layout-footer", "#page-footer");
+
     .footer-links {
         list-style: none outside none;
         margin-left: -5px;
