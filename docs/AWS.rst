@@ -18,6 +18,8 @@ To deploy your currently checked out branch, run::
 
 After a few moments, it will return the domain name of your instance::
 
+For faster indexing you can use c4.4xlarge, but after indexing stop instance at console and restart it with an m4.xlarge or t2.large
+
     branchname-789abc-username.instance.encodedcc.org
 
 The deployment can take some time, especially if it's been a while since the last full database backup.
