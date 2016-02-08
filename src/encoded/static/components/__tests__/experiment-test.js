@@ -49,11 +49,15 @@ describe('Experiment Page', function() {
         });
 
         it('has proper biosample summary for no-biosample case (code adds space always)', function() {
-            expect(defDescs[2].textContent).toEqual('K562 ');
+            var item = summary[0].getDOMNode().querySelector('[data-test="biosample-summary"]');
+            var desc = item.getElementsByTagName('dd')[0];
+            expect(desc.textContent).toEqual('K562 ');
         });
 
         it('has proper links in dbxrefs key-value', function() {
-            var dbxrefs = defDescs[6].getElementsByTagName('a');
+            var item = summary[0].getDOMNode().querySelector('[data-test="external-resources"]');
+            var desc = item.getElementsByTagName('dd')[0];
+            var dbxrefs = desc.getElementsByTagName('a');
             expect(dbxrefs.length).toEqual(2);
             expect(dbxrefs[0].getAttribute('href')).toEqual('http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=hg19&hgt_mdbVal1=wgEncodeEH003317');
             expect(dbxrefs[1].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1010811');
@@ -89,7 +93,7 @@ describe('Experiment Page', function() {
             expect(fileTables.length).toEqual(1);
         });
 
-        it('has three rows in the file list, including secion title', function() {
+        it('has three rows in the file list, including section title', function() {
             var fileList = fileTables[0].getDOMNode();
             expect(fileList.hasChildNodes()).toBeTruthy();
             expect(fileList.childNodes.length).toEqual(3);
@@ -187,61 +191,17 @@ describe('Experiment Page', function() {
                     <Experiment context={context_rep} />
                 );
             });
-            replicates = TestUtils.scryRenderedDOMComponentsWithClass(experiment, 'panel-replicate');
         });
 
         it('has proper biosample summary ', function() {
             var summary = TestUtils.scryRenderedDOMComponentsWithClass(experiment, 'data-display');
-            var defDescs = summary[0].getDOMNode().getElementsByTagName('dd');
-            expect(defDescs[2].textContent).toEqual('K562 (Homo sapiens and Mus musculus)');
-            var italics = defDescs[2].getElementsByTagName('em');
+            var item = summary[0].getDOMNode().querySelector('[data-test="biosample-summary"]');
+            var desc = item.getElementsByTagName('dd')[0];
+            expect(desc.textContent).toEqual('K562 (Homo sapiens and Mus musculus)');
+            var italics = desc.getElementsByTagName('em');
             expect(italics.length).toEqual(2);
             expect(italics[0].textContent).toEqual('Homo sapiens');
             expect(italics[1].textContent).toEqual('Mus musculus');
-        });
-
-        it('has two replicate panels', function() {
-            expect(replicates.length).toEqual(2);
-        });
-
-        it('has links to the proper biosamples in both replicate panels', function() {
-            var anchors = replicates[0].getDOMNode().getElementsByTagName('a');
-            expect(anchors.length).toEqual(1);
-            expect(anchors[0].textContent).toEqual('ENCBS087RNA');
-            expect(anchors[0].getAttribute('href')).toEqual('/biosamples/ENCBS087RNA/');
-            anchors = replicates[1].getDOMNode().getElementsByTagName('a');
-            expect(anchors.length).toEqual(1);
-            expect(anchors[0].textContent).toEqual('ENCBS989WPD');
-            expect(anchors[0].getAttribute('href')).toEqual('/biosamples/ENCBS989WPD/');
-        });
-
-        describe('Assay Panel', function() {
-            var assay, defTerms, defDescs;
-
-            beforeEach(function() {
-                assay = TestUtils.scryRenderedDOMComponentsWithClass(experiment, 'panel-assay');
-                defTerms = assay[0].getDOMNode().getElementsByTagName('dt');
-                defDescs = assay[0].getDOMNode().getElementsByTagName('dd');
-            });
-
-            it('has one assay panel and seven key-value pairs', function() {
-                expect(assay.length).toEqual(1);
-                expect(defTerms.length).toEqual(8);
-                expect(defDescs.length).toEqual(8);
-            });
-
-            it('has a proper link to a platform in the seventh key-value pair', function() {
-                var anchors = defDescs[6].getElementsByTagName('a');
-                expect(anchors.length).toEqual(1);
-                expect(anchors[0].getAttribute('href')).toEqual('/platforms/NTR%3A0000007');
-            });
-
-            it('has good spikeins links', function() {
-                var item = assay[0].getDOMNode().querySelector('[data-test="spikeins"]');
-                var spikeins = item.getElementsByTagName('dd')[0];
-                var spikeinsa = spikeins.getElementsByTagName('a')[0];
-                expect(spikeinsa.getAttribute('href')).toEqual('/datasets/ENCSR000AJW/');
-            });
         });
     });
 
