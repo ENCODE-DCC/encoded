@@ -291,6 +291,7 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         'x': {
             'facets': [
                 'assay_title',
+                'assay_slims',
                 'target.investigated_as',
                 'month_released',
                 'files.file_type',

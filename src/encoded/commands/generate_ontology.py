@@ -116,6 +116,7 @@ assay_slims = {
     'OBI:0000870': 'DNA accessibility',  # 'single-nucleotide-resolution nucleic acid structure mapping assay'
     'OBI:0001916': 'replication',
     'OBI:0000435': 'genotyping',
+    'OBI:0000615': 'proteomics',
 }
 
 slim_shims = {
@@ -125,8 +126,10 @@ slim_shims = {
         'OBI:0001924': 'DNA accessibility',  # 'OBI:0000870',
         'OBI:0002039': 'DNA accessibility',  # 'OBI:0000870',
         'OBI:0001853': 'DNA accessibility',  # 'OBI:0000870',
-        'OBI:0001859': 'DNA accessibility',  # 'OBI:0000870',
-        'OBI:0002044': 'RNA binding',  # RNA binding
+        'OBI:0001859': 'DNA accessibility',  # 'OBI:0000870', / OBI:0000424
+        'OBI:0001848': '3D chromatin structure ',  # ChIA-PET / OBI:000870
+        'OBI:0001923': 'proteomics',  # 'OBI:0000615': 'MS/MS'
+        'OBI:0001849': 'genotyping',  #  OBI:0000435 (DNA-PET)
     }
 
 }
@@ -135,7 +138,7 @@ preferred_name = {
     "OBI:0000626": "WGS",
     "OBI:0001247": "genotyping",
     "OBI:0001332": "DNAme array",
-    "OBI:0001335": "microRNA quantification",
+    "OBI:0001335": "microRNA quant.",
     "OBI:0001463": "expression array",
     "OBI:0001863": "WGBS",
     "OBI:0001923": "MS/MS",
@@ -144,6 +147,7 @@ preferred_name = {
     "OBI:0001853": "DNase-seq",
     "OBI:0001920": "Repli-Seq",
     "OBI:0001864": "RAMPAGE",
+    "OBI:0001393": "Genotyping array"
 }
 
 category_slims = {
@@ -271,7 +275,7 @@ ntr_assays = {
         "types": []
     },
     "NTR:0003082": {
-        "assay": ['transciption'],
+        "assay": ['transcription'],
         "category": [],
         "developmental": [],
         "name": "single cell isolation followed by RNA-seq",
