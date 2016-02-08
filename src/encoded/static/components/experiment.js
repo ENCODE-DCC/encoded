@@ -12,12 +12,12 @@ var image = require('./image');
 var statuslabel = require('./statuslabel');
 var audit = require('./audit');
 var fetched = require('./fetched');
-var AuditMixin = audit.AuditMixin;
 var pipeline = require('./pipeline');
 var reference = require('./reference');
 var software = require('./software');
 var sortTable = require('./sorttable');
 var objectutils = require('./objectutils');
+var doc = require('./doc');
 
 var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -27,16 +27,16 @@ var FetchedItems = fetched.FetchedItems;
 var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
 var StatusLabel = statuslabel.StatusLabel;
-var AuditIndicators = audit.AuditIndicators;
-var AuditDetail = audit.AuditDetail;
+var {AuditMixin, AuditIndicators, AuditDetail} = audit;
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
 var PubReferenceList = reference.PubReferenceList;
 var ExperimentTable = dataset.ExperimentTable;
 var SingleTreatment = objectutils.SingleTreatment;
 var SoftwareVersionList = software.SoftwareVersionList;
-var ProjectBadge = image.ProjectBadge;
 var {SortTablePanel, SortTable} = sortTable;
+var ProjectBadge = image.ProjectBadge;
+var DocumentsPanel = doc.DocumentsPanel;
 var {Panel, PanelBody, PanelHeading} = panel;
 
 
@@ -91,10 +91,17 @@ var Experiment = module.exports.Experiment = React.createClass({
             });
         }
 
-        // Make array of all replicate biosamples, not including biosample-less replicates.
+        // Make array of all replicate biosamples, not including biosample-less replicates. Also collect up library documents.
+        var libraryDocs = [];
         if (replicates) {
             var biosamples = _.compact(replicates.map(replicate => {
-                return replicate.library && replicate.library.biosample;
+                if (replicate.library) {
+                    if (replicate.library.documents && replicate.library.documents.length){
+                        Array.prototype.push.apply(libraryDocs, replicate.library.documents);
+                    }
+                    return replicate.library.biosample;
+                }
+                return null;
             }));
         }
 
@@ -192,13 +199,116 @@ var Experiment = module.exports.Experiment = React.createClass({
             }
         }
 
+        // Build the text of the Treatment, synchronization, and mutatedGene string arrays; collect biosample docs
+        var treatments;
+        var synchText = [];
+        var biosampleCharacterizationDocs = [];
+        var biosampleDocs = [];
+        var biosampleTalenDocs = [];
+        var biosampleRnaiDocs = [];
+        var biosampleConstructDocs = [];
+        var biosampleDonorDocs = [];
+        var biosampleDonorCharacterizations = [];
+        biosamples.forEach(biosample => {
+            // Collect treatments
+            treatments = treatments || !!(biosample.treatments && biosample.treatments.length);
+
+            // Collect synchronizations
+            if (biosample.synchronization) {
+                synchText.push(biosample.synchronization +
+                    (biosample.post_synchronization_time ?
+                        ' + ' + biosample.post_synchronization_time + (biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : '')
+                    : ''));
+            }
+
+            // Collect biosample characterizations
+            if (biosample.characterizations && biosample.characterizations.length) {
+                biosampleCharacterizationDocs = biosampleCharacterizationDocs.concat(biosample.characterizations);
+            }
+
+            // Collect biosample protocol documents
+            if (biosample.protocol_documents && biosample.protocol_documents.length) {
+                biosampleDocs = biosampleDocs.concat(biosample.protocol_documents);
+            }
+
+            // Collect TALEN documents
+            if (biosample.talens && biosample.talens.length) {
+                biosample.talens.forEach(talen => {
+                    if (talen.documents && talen.documents.length) {
+                        Array.prototype.push.apply(biosampleTalenDocs, talen.documents)
+                    }
+                });
+            }
+
+            // Collect RNAi documents
+            if (biosample.rnais && biosample.rnais.length) {
+                biosample.rnais.forEach(rnai => {
+                    if (rnai.documents && rnai.documents.length) {
+                        Array.prototype.push.apply(biosampleRnaiDocs, rnai.documents);
+                    }
+                });
+            }
+
+            // Collect RNAi documents
+            if (biosample.constructs && biosample.constructs.length) {
+                biosample.constructs.forEach(construct => {
+                    if (construct.documents && construct.documents.length) {
+                        Array.prototype.push.apply(biosampleConstructDocs, construct.documents);
+                    }
+                });
+            }
+
+            // Collect donor documents
+            if (biosample.donor && biosample.donor.donor_documents && biosample.donor.donor_documents.length) {
+                Array.prototype.push.apply(biosampleDonorDocs, biosample.donor.donor_documents);
+            }
+
+            // Collect donor characterizations
+            if (biosample.donor && biosample.donor.characterizations && biosample.donor.characterizations.length) {
+                Array.prototype.push.apply(biosampleDonorCharacterizations, biosample.donor.characterizations);
+            }
+        });
+        synchText = synchText && _.uniq(synchText);
+        biosampleCharacterizationDocs = biosampleCharacterizationDocs.length ? globals.uniqueObjectsArray(biosampleCharacterizationDocs) : [];
+        biosampleDocs = biosampleDocs.length ? globals.uniqueObjectsArray(biosampleDocs) : [];
+        biosampleTalenDocs = biosampleTalenDocs.length ? globals.uniqueObjectsArray(biosampleTalenDocs) : [];
+        biosampleRnaiDocs = biosampleRnaiDocs.length ? globals.uniqueObjectsArray(biosampleRnaiDocs) : [];
+        biosampleConstructDocs = biosampleConstructDocs.length ? globals.uniqueObjectsArray(biosampleConstructDocs) : [];
+        biosampleDonorDocs = biosampleDonorDocs.length ? globals.uniqueObjectsArray(biosampleDonorDocs) : [];
+        biosampleDonorCharacterizations = biosampleDonorCharacterizations.length ? globals.uniqueObjectsArray(biosampleDonorCharacterizations) : [];
+
+        // Collect pipeline-related documents
+        var analysisStepDocs = [];
+        var pipelineDocs = [];
+        if (context.files && context.files.length) {
+            context.files.forEach(file => {
+                var fileAnalysisStepVersion = file.analysis_step_version;
+                if (fileAnalysisStepVersion) {
+                    var fileAnalysisStep = fileAnalysisStepVersion.analysis_step;
+                    if (fileAnalysisStep) {
+                        // Collect analysis step docs
+                        if (fileAnalysisStep.documents && fileAnalysisStep.documents.length) {
+                            analysisStepDocs = analysisStepDocs.concat(fileAnalysisStep.documents);
+                        }
+
+                        // Collect pipeline docs
+                        if (fileAnalysisStep.pipelines && fileAnalysisStep.pipelines.length) {
+                            fileAnalysisStep.pipelines.forEach(pipeline => {
+                                if (pipeline.documents && pipeline.documents.length) {
+                                    pipelineDocs = pipelineDocs.concat(pipeline.documents);
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        }
+        analysisStepDocs = analysisStepDocs.length ? globals.uniqueObjectsArray(analysisStepDocs) : [];
+        pipelineDocs = pipelineDocs.length ? globals.uniqueObjectsArray(pipelineDocs) : [];
+
         // Generate biosample summaries
         var fullSummaries = biosampleSummaries(biosamples);
 
-        // Adding experiment specific documents
-        context.documents.forEach(function (document, i) {
-            documents[document['@id']] = PanelLookup({context: document, key: i + 1});
-        });
         var antibodies = {};
         replicates.forEach(replicate => {
             if (replicate.antibody) {
@@ -256,6 +366,20 @@ var Experiment = module.exports.Experiment = React.createClass({
             {id: names.length ? names : null, query: nameQuery, tip: nameTip},
             {id: biosampleTermName, query: biosampleTermQuery, tip: biosampleTermName}
         ];
+
+        // Compile the document list
+        var combinedDocuments = [].concat(
+            biosampleCharacterizationDocs,
+            libraryDocs,
+            biosampleDocs,
+            biosampleTalenDocs,
+            biosampleRnaiDocs,
+            biosampleConstructDocs,
+            biosampleDonorDocs,
+            biosampleDonorCharacterizations,
+            pipelineDocs,
+            analysisStepDocs
+        );
 
         var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
 
@@ -425,15 +549,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                     <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
                 : null}
 
-                {Object.keys(documents).length ?
-                    <div data-test="protocols">
-                        <h3>Documents</h3>
-                        <div className="row multi-columns-row">
-                            {documents}
-                        </div>
-                    </div>
-                : null}
-
                 {context.visualize_ucsc  && context.status == "released" ?
                     <span className="pull-right">
                         <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
@@ -457,6 +572,8 @@ var Experiment = module.exports.Experiment = React.createClass({
                 : null}
 
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} />
+
+                <DocumentsPanel documentSpecs={[{documents: combinedDocuments}]} />
             </div>
         );
     }
