@@ -1303,6 +1303,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
                 shape: 'rect',
                 cornerRadius: 16,
                 parentNode: replicateNode,
+                contributing: fileContributed,
                 ref: fileRef
             }, metricsInfo);
 
