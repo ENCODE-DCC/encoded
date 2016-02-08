@@ -21,12 +21,19 @@ $projects:
         background-position: 0 0;
         background-size: contain;
 
-        &.center {
-            background-position: center 0;
-        }
-
         .no-svg & {
             background-image: url(/static/img/#{$badgefilenosvg});
+        }
+
+        &.badge-heading {
+            position: absolute;
+            margin-top: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            height: auto;
+            background-position: top right;
         }
     }
 }
