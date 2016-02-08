@@ -12,33 +12,44 @@ var FacetList = search.FacetList;
 
 
 var columnChoices = function(schema, selected) {
+    // start with id
     var columns = {};
-    // use 'columns' if explicitly defined,
-    // otherwise all properties
-    if (schema.columns !== undefined) {
-        _.each(schema.columns, (column, path) => {
-            columns[path] = {
-                title: column.title,
-                visible: true,
-            };
-        });
-    } else {
-        columns['@id'] = {
-            title: 'ID',
-            visible: true,
-        };
-        _.each(schema.properties, (property, name) => {
-            if (name.slice(0, 1) == '@' || name.search(/(uuid|_no|accession)/) != -1) {
-                return;
+    columns['@id'] = {
+        title: 'ID',
+        visible: true
+    };
+    // default selected columns are the schema's `columns`,
+    // or whichever of title, description, name, accession & aliases
+    // are found in the schema's properties
+    // (note, this has to match the defaults sent from the server)
+    var schemaColumns = schema.columns;
+    if (schemaColumns === undefined) {
+        schemaColumns = {};
+        _.each(['title', 'description', 'name', 'accession', 'aliases'], name => {
+            if (schema.properties[name] !== undefined) {
+                schemaColumns[name] = 1;
             }
-            columns[name] = {
-                title: property.title,
-                visible: true,
-            };
         });
     }
+    // add all properties (with a few exceptions)
+    _.each(schema.properties, (property, name) => {
+        if (name == '@id' || name == '@type' || name == 'uuid') return;
+        columns[name] = {
+            title: property.title,
+            visible: schemaColumns.hasOwnProperty(name)
+        };
+    });
+    // add embedded columns
+    _.each(schemaColumns, (column, path) => {
+        if (!columns.hasOwnProperty(path)) {
+            columns[path] = {
+                title: column.title,
+                visible: true
+            };
+        }
+    });
 
-    // if fields are selected, update visibility
+    // if selected fields are specified, update visibility
     if (selected) {
         _.each(columns, (column, path) => {
             column.visible = _.contains(selected, path);
@@ -63,13 +74,26 @@ var visibleColumns = function(columns) {
 };
 
 
-var lookup_column = function (result, column) {
-    var value = result;
+var lookupColumn = function (result, column) {
+    var nodes = [result];
     var names = column.split('.');
-    for (var i = 0, len = names.length; i < len && value !== undefined; i++) {
-        value = value[names[i]];
+    for (var i = 0, len = names.length; i < len && nodes.length; i++) {
+        var nextnodes = [];
+        _.each(nodes.map(node => node[names[i]]), v => {
+            if (v === undefined) return;
+            if (Array.isArray(v)) {
+                nextnodes = nextnodes.concat(v);
+            } else {
+                nextnodes.push(v);
+            }
+        });
+        nodes = nextnodes;
     }
-    return value;
+    // if we ended with an embedded object, show the @id
+    if (nodes.length && nodes[0]['@id'] !== undefined) {
+        nodes = nodes.map(node => node['@id']);
+    }
+    return _.uniq(nodes).join(', ');
 };
 
 
@@ -116,7 +140,7 @@ var Table = module.exports.Table = React.createClass({
         var rows = items.map(function (item) {
             var cells = columns.map(column => {
                 var factory;
-                var value = lookup_column(item, column.path);
+                var value = lookupColumn(item, column.path);
                 if (column.path == '@id') {
                     factory = globals.listing_titles.lookup(item);
                     value = factory({context: item});
@@ -247,9 +271,11 @@ var Report = React.createClass({
     componentWillReceiveProps: function(nextProps, nextContext) {
         // reset pagination when filter is changed
         if (nextContext.location_href != this.context.location_href) {
+            var parsed_url = url.parse(this.context.location_href, true);
+            var from = parseInt(parsed_url.query.from) || 0;
             this.setState({
-                from: nextProps.from,
-                to: nextProps.from + this.props.size,
+                from: from,
+                to: from + this.props.size,
                 more: [],
             });
         }
