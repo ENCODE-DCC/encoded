@@ -384,7 +384,7 @@ def audit_experiment_replicates_with_no_libraries(value, system):
 @audit_checker('experiment', frame=['replicates', 'replicates.library.biosample'])
 def audit_experiment_isogeneity(value, system):
 
-    if value['status'] in ['deleted', 'replaced']:
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
     if len(value['replicates']) < 2:
