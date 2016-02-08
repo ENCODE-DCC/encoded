@@ -487,7 +487,7 @@ var ReplicateTable = React.createClass({
                 var replicate = condensedReplicate[0];
 
                 // Display protein concentration if it exists
-                if (replicate.rbns_protein_concentration) {
+                if (typeof replicate.rbns_protein_concentration === 'number') {
                     return (
                         <span>
                             Protein concentration {replicate.rbns_protein_concentration}
