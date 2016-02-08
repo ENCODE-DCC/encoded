@@ -7,6 +7,7 @@ var navbar = require('./navbar');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
+var image = require('./image');
 var statuslabel = require('./statuslabel');
 var audit = require('./audit');
 var fetched = require('./fetched');
@@ -32,6 +33,7 @@ var PubReferenceList = reference.PubReferenceList;
 var ExperimentTable = dataset.ExperimentTable;
 var SingleTreatment = objectutils.SingleTreatment;
 var SoftwareVersionList = software.SoftwareVersionList;
+var ProjectBadge = image.ProjectBadge;
 
 
 var anisogenicValues = [
@@ -56,6 +58,10 @@ var Panel = function (props) {
 
 var Experiment = module.exports.Experiment = React.createClass({
     mixins: [AuditMixin],
+
+    contextTypes: {
+        session: React.PropTypes.object
+    },
 
     render: function() {
         var context = this.props.context;
@@ -130,6 +136,15 @@ var Experiment = module.exports.Experiment = React.createClass({
         // Determine whether the experiment is isogenic or anisogenic. No replication_type indicates isogenic.
         var anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
 
+        // Get a list of related datasets, possibly filtering on their status
+        var seriesList = [];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
+        if (context.related_series && context.related_series.length) {
+            seriesList = _(context.related_series).filter(dataset => {
+                return loggedIn || dataset.status === 'released';
+            });
+        }
+
         // Set up the breadcrumbs
         var assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
         var assayName = context[assayTerm];
@@ -155,6 +170,9 @@ var Experiment = module.exports.Experiment = React.createClass({
 
         var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
 
+        // Make a list of reference links, if any
+        var references = PubReferenceList(context.references);
+
         // XXX This makes no sense.
         //var control = context.possible_controls[0];
         return (
@@ -175,137 +193,149 @@ var Experiment = module.exports.Experiment = React.createClass({
                    </div>
                 </header>
                 <AuditDetail context={context} id="experiment-audit" />
-                <div className="panel data-display">
-                    <dl className="key-value">
-                        <div data-test="assay">
-                            <dt>Assay</dt>
-                            <dd>{context.assay_term_name}</dd>
-                        </div>
-
-                        {context.replication_type ?
-                            <div data-test="replicationtype">
-                                <dt>Replication type</dt>
-                                <dd>{context.replication_type}</dd>
+                <div className="panel panel-default data-display">
+                    <div className="panel-heading">
+                        <ProjectBadge project={context.award.project} />
+                    </div>
+                    <div className="panel-body">
+                        <dl className="key-value">
+                            <div data-test="assay">
+                                <dt>Assay</dt>
+                                <dd>{context.assay_term_name}</dd>
                             </div>
-                        : null}
 
-                        {biosamples.length || context.biosample_term_name ?
-                            <div data-test="biosample-summary">
-                                <dt>Biosample summary</dt>
-                                <dd>{context.biosample_term_name ? <span>{context.biosample_term_name}{' '}{fullSummaries}</span> : <span>{fullSummaries}</span>}</dd>
+                            {context.replication_type ?
+                                <div data-test="replicationtype">
+                                    <dt>Replication type</dt>
+                                    <dd>{context.replication_type}</dd>
+                                </div>
+                            : null}
+
+                            {biosamples.length || context.biosample_term_name ?
+                                <div data-test="biosample-summary">
+                                    <dt>Biosample summary</dt>
+                                    <dd>{context.biosample_term_name ? <span>{context.biosample_term_name}{' '}{fullSummaries}</span> : <span>{fullSummaries}</span>}</dd>
+                                </div>
+                            : null}
+
+                            {synchText.length ?
+                                <div data-test="biosample-synchronization">
+                                    <dt>Synchronization timepoint</dt>
+                                    <dd>
+                                        {synchText.join(', ')}
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {context.biosample_type ?
+                                <div data-test="biosample-type">
+                                    <dt>Type</dt>
+                                    <dd>{context.biosample_type}</dd>
+                                </div>
+                            : null}
+
+                            {treatments ?
+                                <div data-test="treatment">
+                                    <dt>Treatments</dt>
+                                    <dd>{BiosampleTreatments(biosamples)}</dd>
+                                </div>
+                            : null}
+
+                            {context.target ?
+                                <div data-test="target">
+                                    <dt>Target</dt>
+                                    <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
+                                </div>
+                            : null}
+
+                            {Object.keys(antibodies).length ?
+                                <div data-test="antibody">
+                                    <dt>Antibody</dt>
+                                    <dd>{Object.keys(antibodies).map(function(antibody, i) {
+                                        return (<span key={antibody}>{i !== 0 ? ', ' : ''}<a href={antibody}>{antibodies[antibody].accession}</a></span>);
+                                    })}</dd>
+                                </div>
+                            : null}
+
+                            {context.possible_controls && context.possible_controls.length ?
+                                <div data-test="possible-controls">
+                                    <dt>Controls</dt>
+                                    <dd>
+                                        <ul>
+                                            {context.possible_controls.map(function (control) {
+                                                return (
+                                                    <li key={control['@id']} className="multi-comma">
+                                                        <a href={control['@id']}>
+                                                            {control.accession}
+                                                        </a>
+                                                    </li>
+                                                );
+                                            })}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {context.description ?
+                                <div data-test="description">
+                                    <dt>Description</dt>
+                                    <dd>{context.description}</dd>
+                                </div>
+                            : null}
+
+                            <div data-test="lab">
+                                <dt>Lab</dt>
+                                <dd>{context.lab.title}</dd>
                             </div>
-                        : null}
 
-                        {synchText.length ?
-                            <div data-test="biosample-synchronization">
-                                <dt>Synchronization timepoint</dt>
-                                <dd>
-                                    {synchText.join(', ')}
-                                </dd>
+                            {context.award.pi && context.award.pi.lab ?
+                                <div data-test="awardpi">
+                                    <dt>Award PI</dt>
+                                    <dd>{context.award.pi.lab.title}</dd>
+                                </div>
+                            : null}
+
+                            <div data-test="project">
+                                <dt>Project</dt>
+                                <dd>{context.award.project}</dd>
                             </div>
-                        : null}
 
-                        {context.biosample_type ?
-                            <div data-test="biosample-type">
-                                <dt>Type</dt>
-                                <dd>{context.biosample_type}</dd>
-                            </div>
-                        : null}
+                            {context.dbxrefs && context.dbxrefs.length ?
+                                <div data-test="external-resources">
+                                    <dt>External resources</dt>
+                                    <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                </div>
+                            : null}
 
-                        {treatments ?
-                            <div data-test="treatment">
-                                <dt>Treatments</dt>
-                                <dd>{BiosampleTreatments(biosamples)}</dd>
-                            </div>
-                        : null}
+                            {references ?
+                                <div data-test="references">
+                                    <dt>References</dt>
+                                    <dd>{references}</dd>
+                                </div>
+                            : null}
 
-                        {context.target ?
-                            <div data-test="target">
-                                <dt>Target</dt>
-                                <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
-                            </div>
-                        : null}
+                            {context.aliases.length ?
+                                <div data-test="aliases">
+                                    <dt>Aliases</dt>
+                                    <dd>{aliasList}</dd>
+                                </div>
+                            : null}
 
-                        {Object.keys(antibodies).length ?
-                            <div data-test="antibody">
-                                <dt>Antibody</dt>
-                                <dd>{Object.keys(antibodies).map(function(antibody, i) {
-                                    return (<span key={antibody}>{i !== 0 ? ', ' : ''}<a href={antibody}>{antibodies[antibody].accession}</a></span>);
-                                })}</dd>
-                            </div>
-                        : null}
+                            {seriesList.length ?
+                                <div data-test="relatedseries">
+                                    <dt>Related datasets</dt>
+                                    <dd><RelatedSeriesList seriesList={seriesList} /></dd>
+                                </div>
+                            : null}
 
-                        {context.possible_controls && context.possible_controls.length ?
-                            <div data-test="possible-controls">
-                                <dt>Controls</dt>
-                                <dd>
-                                    <ul>
-                                        {context.possible_controls.map(function (control) {
-                                            return (
-                                                <li key={control['@id']} className="multi-comma">
-                                                    <a href={control['@id']}>
-                                                        {control.accession}
-                                                    </a>
-                                                </li>
-                                            );
-                                        })}
-                                    </ul>
-                                </dd>
-                            </div>
-                        : null}
-
-                        {context.description ?
-                            <div data-test="description">
-                                <dt>Description</dt>
-                                <dd>{context.description}</dd>
-                            </div>
-                        : null}
-
-                        <div data-test="lab">
-                            <dt>Lab</dt>
-                            <dd>{context.lab.title}</dd>
-                        </div>
-
-                        {context.award.pi && context.award.pi.lab ?
-                            <div data-test="awardpi">
-                                <dt>Award PI</dt>
-                                <dd>{context.award.pi.lab.title}</dd>
-                            </div>
-                        : null}
-
-                        <div data-test="project">
-                            <dt>Project</dt>
-                            <dd>{context.award.project}</dd>
-                        </div>
-
-                        {context.dbxrefs.length ?
-                            <div data-test="external-resources">
-                                <dt>External resources</dt>
-                                <dd><DbxrefList values={context.dbxrefs} /></dd>
-                            </div>
-                        : null}
-
-                        {context.references && context.references.length ?
-                            <div data-test="references">
-                                <dt>References</dt>
-                                <dd><PubReferenceList values={context.references} /></dd>
-                            </div>
-                        : null}
-
-                        {context.aliases.length ?
-                            <div data-test="aliases">
-                                <dt>Aliases</dt>
-                                <dd>{aliasList}</dd>
-                            </div>
-                        : null}
-
-                        {context.date_released ?
-                            <div data-test="date-released">
-                                <dt>Date released</dt>
-                                <dd>{context.date_released}</dd>
-                            </div>
-                        : null}
-                    </dl>
+                            {context.date_released ?
+                                <div data-test="date-released">
+                                    <dt>Date released</dt>
+                                    <dd>{context.date_released}</dd>
+                                </div>
+                            : null}
+                        </dl>
+                    </div>
                 </div>
 
                 {AssayDetails({context: context, replicates: replicates})}
@@ -331,7 +361,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                 <FetchedData>
                     <Param name="data" url={dataset.unreleased_files_url(context)} />
-                    <ExperimentGraph context={context} />
+                    <ExperimentGraph context={context} session={this.context.session} />
                 </FetchedData>
 
                 {context.files.length ?
@@ -709,6 +739,117 @@ var biosampleSummaries = function(biosamples) {
 };
 
 
+// Display a list of datasets related to the experiment
+var RelatedSeriesList = React.createClass({
+    propTypes: {
+        seriesList: React.PropTypes.array.isRequired // Array of Series dataset objects to display
+    },
+
+    getInitialState: function() {
+        return {
+            currInfoItem: '', // Accession of item whose detail info appears; empty string to display no detail info
+            touchScreen: false, // True if we know we got a touch event; ignore clicks without touch indiciation
+            clicked: false // True if info button was clicked (vs hovered)
+        }
+    },
+
+    // Handle the mouse entering/existing an info icon. Ignore if the info tooltip is open because the icon had
+    // been clicked. 'entering' is true if the mouse entered the icon, and false if exiting.
+    handleInfoHover: function(series, entering) {
+        if (!this.state.clicked) {
+            this.setState({currInfoItem: entering ? series.accession : ''});
+        }
+    },
+
+    // Handle click in info icon by setting the currInfoItem state to the accession of the item to display.
+    // If opening the tooltip, note that hover events should be ignored until the icon is clicked to close the tooltip.
+    handleInfoClick: function(series, touch, e) {
+        var currTouchScreen = this.state.touchScreen;
+
+        // Remember if we know we've had a touch event
+        if (touch && !currTouchScreen) {
+            currTouchScreen = true;
+            this.setState({touchScreen: true});
+            console.log('SET TOUCHSCREEN TRUE');
+        }
+
+        // Now handle the click. Ignore if we know we have a touch screen, but this wasn't a touch event
+        if (!currTouchScreen || touch) {
+            console.log('STAT: %s:%o', currTouchScreen, touch);
+            if (this.state.currInfoItem === series.accession && this.state.clicked) {
+                this.setState({currInfoItem: '', clicked: false});
+            } else {
+                this.setState({currInfoItem: series.accession, clicked: true});
+            }
+        }
+    },
+
+    render: function() {
+        var seriesList = this.props.seriesList;
+
+        return (
+            <span>
+                {seriesList.map((series, i) => {
+                    return (
+                        <span key={series.uuid}>
+                            {i > 0 ? <span>, </span> : null}
+                            <RelatedSeriesItem series={series} detailOpen={this.state.currInfoItem === series.accession}
+                                handleInfoHover={this.handleInfoHover} handleInfoClick={this.handleInfoClick} />
+                        </span>
+                    );
+                })}
+            </span>
+        );
+    }
+});
+
+
+// Display a one dataset related to the experiment
+var RelatedSeriesItem = React.createClass({
+    propTypes: {
+        series: React.PropTypes.object.isRequired, // Series object to display
+        detailOpen: React.PropTypes.bool, // TRUE to open the series' detail tooltip
+        handleInfoClick: React.PropTypes.func, // Function to call to handle click in info icon
+        handleInfoHover: React.PropTypes.func // Function to call when mouse enters or leaves info icon
+    },
+
+    getInitialState: function() {
+        return {
+            touchOn: false // True if icon has been touched
+        }
+    },
+
+    // Touch screen
+    touchStart: function(series, e) {
+        this.setState({touchOn: !this.state.touchOn});
+        this.props.handleInfoClick(series, true);
+    },
+
+    render: function() {
+        var {series, detailOpen} = this.props;
+
+        return (
+            <span>
+                <a href={series['@id']} title={'View page for series dataset ' + series.accession}>{series.accession}</a>&nbsp;
+                <div className="tooltip-trigger">
+                    <i className="icon icon-info-circle"
+                        onMouseEnter={this.props.handleInfoHover.bind(null, series, true)}
+                        onMouseLeave={this.props.handleInfoHover.bind(null, series, false)}
+                        onClick={this.props.handleInfoClick.bind(null, series, false)}
+                        onTouchStart={this.touchStart.bind(null, series)}></i>
+                    <div className={'tooltip bottom' + (detailOpen ? ' tooltip-open' : '')}>
+                        <div className="tooltip-arrow"></div>
+                        <div className="tooltip-inner">
+                            {series.description ? <span>{series.description}</span> : <em>No description available</em>}
+                        </div>
+                    </div>
+                </div>
+            </span>
+        );
+    }
+});
+
+
 // Handle graphing throws
 function graphException(message, file0, file1) {
 /*jshint validthis: true */
@@ -724,7 +865,7 @@ function graphException(message, file0, file1) {
 module.exports.graphException = graphException;
 
 
-var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId, files, filterAssembly, filterAnnotation) {
+var assembleGraph = module.exports.assembleGraph = function(context, session, infoNodeId, files, filterAssembly, filterAnnotation) {
 
     // Calculate a step ID from a file's derived_from array
     function _derivedFileIds(file) {
@@ -789,7 +930,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     var allReplicates = {}; // All file's replicates as keys; each key references an array of files
     var allPipelines = {}; // List of all pipelines indexed by step @id
     var allMetricsInfo = []; // List of all QC metrics found attached to files
-    var allContributing = {}; // List of all contributing files
     var fileQcMetrics = {}; // List of all file QC metrics indexed by file ID
     var filterOptions = {}; // List of graph filters; annotations and assemblies
     var stepExists = false; // True if at least one file has an analysis_step
@@ -819,35 +959,21 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         }
     });
 
-    // Add contributing files to the allFiles object that other files derive from.
-    // Don't worry about files they derive from; they're not included in the graph.
-    // If an allFiles entry already exists for the file, it gets overwritten so that
-    // allFiles and allContributingFiles point at the same object.
-    if (context.contributing_files && context.contributing_files.length) {
-        context.contributing_files.forEach(function(file) {
-            if (allFiles[file['@id']]) {
-                // Contributing file already existed in file array for some reason; use its existing file object
-                allContributing[file['@id']] = allFiles[file['@id']];
-            } else {
-                // Seeing contributed file for the first time; save it in both allFiles and allContributingFiles
-                allFiles[file['@id']] = allContributing[file['@id']] = file;
-            }
-        });
-    }
-
-    // Collect derived_from files, used replicates, and used pipelines
+    // Collect derived_from files, used replicates, and used pipelines. allFiles has all files directly involved
+    // with this experiment if we're logged in, or just released files directly involved with experiment if we're not.
     Object.keys(allFiles).forEach(function(fileId) {
         var file = allFiles[fileId];
 
         // Build an object keyed with all files that other files derive from. If the file is contributed,
         // we don't care about its derived_from because we don't render that.
-        if (!allContributing[fileId] && file.derived_from && file.derived_from.length) {
+        if (file.derived_from && file.derived_from.length) {
             file.derived_from.forEach(function(derived_from) {
                 var derivedFromId = derived_from['@id'];
                 var derivedFile = allFiles[derivedFromId];
                 if (!derivedFile) {
                     // The derived-from file wasn't in the given file list. Copy the file object from the file's
-                    // derived_from so we can examine it later -- and mark it as missing.
+                    // derived_from so we can examine it later -- and mark it as missing. It could be because a
+                    // derived-from file isn't released and we're not logged in, or because it's a contributing file.
                     derivedFromFiles[derivedFromId] = derived_from;
                     derived_from.missing = true;
                 } else if (!derivedFromFiles[derivedFromId]) {
@@ -879,7 +1005,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         }
 
         // File is derived; collect any QC info that applies to this file
-        if (file.quality_metrics) {
+        if (file.quality_metrics && file.quality_metrics.length) {
             var matchingQc = [];
 
             // Search file's quality_metrics array to find one with a quality_metric_of field referring to this file.
@@ -902,6 +1028,30 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     });
     // At this stage, allFiles, allReplicates, and derivedFromFiles point to the same file objects;
     // allPipelines points to pipelines.
+
+    // Now find contributing files by subtracting original_files from the list of derived_from files. Note: derivedFromFiles is
+    // an object keyed by each file's @id. allContributingArray is an array of file objects.
+    var allContributingArray = _(derivedFromFiles).filter((derivedFromFile, derivedFromId) => {
+        return !_(context.original_files).any(originalFileId => originalFileId === derivedFromId);
+    });
+
+    // Process the contributing files array
+    var allContributing = {};
+    allContributingArray.forEach(contributingFile => {
+        // Convert array of contributing files to a keyed object to help with searching later
+        contributingFile.missing = false;
+        var contributingFileId = contributingFile['@id'];
+        allContributing[contributingFileId] = contributingFile;
+
+        // Also add contributing files to the allFiles object
+        if (allFiles[contributingFileId]) {
+            // Contributing file already existed in file array for some reason; use its existing file object
+            allContributing[contributingFileId] = allFiles[contributingFileId];
+        } else {
+            // Seeing contributed file for the first time; save it in allFiles
+            allFiles[contributingFileId] = allContributing[contributingFileId];
+        }
+    });
 
     // Don't draw anything if no files have an analysis_step
     if (!stepExists) {
@@ -1074,13 +1224,26 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             }
 
             // Add file to the graph as a node
-            jsonGraph.addNode(fileNodeId, file.title + ' (' + file.output_type + ')', {
-                cssClass: 'pipeline-node-file' + (fileContributed ? ' contributing' : '') + (infoNodeId === fileNodeId ? ' active' : ''),
+            var fileNodeLabel, fileCssClass, fileRef;
+            var loggedIn = session && session['auth.userid'];
+            if (fileContributed && fileContributed.status !== 'released' && !loggedIn) {
+                // A contributed file isn't released and we're not logged in
+                fileNodeLabel = 'Unreleased';
+                fileCssClass = 'pipeline-node-file contributing error' + (infoNodeId === fileNodeId ? ' active' : '');
+                fileRef = null;
+            } else {
+                fileNodeLabel = file.title + ' (' + file.output_type + ')';
+                fileCssClass = 'pipeline-node-file' + (fileContributed ? ' contributing' : '') + (infoNodeId === fileNodeId ? ' active' : '');
+                fileRef = file;
+            }
+            jsonGraph.addNode(fileNodeId, fileNodeLabel, {
+                cssClass: fileCssClass,
                 type: 'File',
                 shape: 'rect',
                 cornerRadius: 16,
                 parentNode: replicateNode,
-                ref: file
+                contributing: fileContributed,
+                ref: fileRef
             }, metricsInfo);
 
             // If the file has an analysis step, prepare it for graph insertion
@@ -1189,8 +1352,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
     },
 
     render: function() {
-        var context = this.props.context;
-        var data = this.props.data;
+        var {context, session, data} = this.props;
         var items = data ? data['@graph'] : [];
         var files = context.files.concat(items);
 
@@ -1199,7 +1361,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
             // Build the graph; place resulting graph in this.jsonGraph
             var filterOptions = {};
             try {
-                this.jsonGraph = assembleGraph(context, this.state.infoNodeId, files, this.state.selectedAssembly, this.state.selectedAnnotation);
+                this.jsonGraph = assembleGraph(context, session, this.state.infoNodeId, files, this.state.selectedAssembly, this.state.selectedAnnotation);
             } catch(e) {
                 this.jsonGraph = null;
                 console.warn(e.message + (e.file0 ? ' -- file0:' + e.file0 : '') + (e.file1 ? ' -- file1:' + e.file1: ''));
@@ -1234,7 +1396,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                             </Graph>
                         :
                             <div className="panel-full">
-                                <p className="browser-error">Currently selected assembly and genomic annocation hides the graph</p>
+                                <p className="browser-error">Currently selected assembly and genomic annotation hides the graph</p>
                             </div>
                         }
                     </div>
@@ -1355,7 +1517,7 @@ var FileDetailView = function(node) {
             </dl>
         );
     } else {
-        return null;
+        return <p className="browser-error">No information available</p>;
     }
 };
 

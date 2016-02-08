@@ -12,12 +12,10 @@
     &.panel-default {
         padding: 0;
 
-        .panel-body {
-            border-top: 1px solid #e0e0e0;
-
-            &:first-child {
-                border-top: none;
-            }
+        & > .panel-heading {
+            padding: 0;
+            background-color: #fff;
+            border: 0 solid transparent;
         }
     }
 }

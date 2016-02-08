@@ -1,7 +1,8 @@
 /* Variables */
 $mainThemeColor: 			#e8ecef; /* i.e. the background color ..for now */
 
-$footerHeight: 				80px;
+$appVersionHeight:          30px;
+$footerHeight: 				80px + $appVersionHeight;
 $footerTopBorderHeight:		0px;
 $footerBackground:          rgba(10,37,61,0.3) !default;
 $footerBackgroundHighlight: #294b6a !default;

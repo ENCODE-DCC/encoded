@@ -162,6 +162,7 @@
             "type": "object",
             "additionalProperties": false,
             "formInput": "file",
+            "attachment": true,
             "properties": {
                 "download": {
                     "title": "File Name",
@@ -264,7 +265,18 @@
             "title": "Notes",
             "description": "Additional information.",
             "type": "string",
-            "permission": "import_items"
+            "permission": "import_items",
+            "elasticsearch_mapping_index_type": {
+                "title": "Field mapping index type",
+                "description": "Defines one of three types of indexing available",
+                "type": "string",
+                "default": "analyzed",
+                "enum": [
+                    "analyzed",
+                    "not_analyzed",
+                    "no"
+                ]
+            }
         }
     },
     "strains": {
@@ -348,7 +360,8 @@
                 "protein",
                 "chemical",
                 "exposure",
-                "infection"
+                "infection",
+                "antibody"
             ]
         },
         "treatment_term_id": {

@@ -101,6 +101,23 @@
                 "type": "string",
                 "linkTo": "File"
             }
+        },
+        "internal_status": {
+            "type": "string",
+            "description": "The status of an experiment in the DCC process.",
+            "comment":"unreviewed:wrangler has not evaluated, unrunable:experiment requires more metadata to run, pipeline ready:experiment is ready for the pipeline, processing:pipeline is running, pipeline completed: pipeline has run through completion, requires lab review:there are QC concerns about this data, release ready:DCC feels that this is ready for release",
+            "default": "unreviewed",
+            "title": "Status",
+            "enum": [
+                "unreviewed",
+                "no available pipeline",
+                "unrunnable",
+                "pipeline ready",
+                "processing",
+                "pipeline completed",
+                "requires lab review",
+                "release ready"
+            ]
         }
     },
     "facets": {
@@ -307,6 +324,7 @@
         "target.organism.name": 1.0,
         "target.organism.scientific_name": 1.0,
         "references.title": 1.0,
-        "replicates.library.biosample.rnais.product_id": 1.0
+        "replicates.library.biosample.rnais.product_id": 1.0,
+        "notes": 1.0
     }
 }
