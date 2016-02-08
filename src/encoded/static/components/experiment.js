@@ -479,7 +479,7 @@ var ReplicateTable = React.createClass({
         },
         'technical_replicate_number': {
             title: 'Technical replicate',
-            getValue: condensedReplicate => condensedReplicate.map(replicate => replicate.technical_replicate_number).join()
+            getValue: condensedReplicate => condensedReplicate.map(replicate => replicate.technical_replicate_number).sort().join()
         },
         'summary': {
             title: 'Summary',
