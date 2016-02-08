@@ -189,11 +189,59 @@ var Biosample = module.exports.Biosample = React.createClass({
                 </header>
                 <AuditDetail context={context} id="biosample-audit" />
                 <div className="panel data-display">
-                    <dl className="key-value">
-                        <div data-test="term-name">
-                            <dt>Term name</dt>
-                            <dd>{context.biosample_term_name}</dd>
-                        </div>
+                    <div className="panel-heading">
+                        <ProjectBadge project={context.award.project} />
+                    </div>
+                    <div className="panel-body">
+                        <dl className="key-value">
+                            <div data-test="term-name">
+                                <dt>Term name</dt>
+                                <dd>{context.biosample_term_name}</dd>
+                            </div>
+
+                            <div data-test="term-id">
+                                <dt>Term ID</dt>
+                                <dd>{context.biosample_term_id}</dd>
+                            </div>
+
+                            {context.description ? 
+                                <div data-test="description">
+                                    <dt>Description</dt>
+                                    <dd className="sentence-case">{context.description}</dd>
+                                </div>
+                            : null}
+
+                            {context.donor && context.donor.organism.name !== 'human' ?
+                                <div>
+                                    {context.life_stage ?
+                                        <div data-test="life-stage">
+                                            <dt>Life stage</dt>
+                                            <dd className="sentence-case">{context.life_stage}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.age ?
+                                        <div data-test="age">
+                                            <dt>Age</dt>
+                                            <dd className="sentence-case">{context.age}{context.age_units ? ' ' + context.age_units : null}</dd>
+                                        </div>
+                                    : null}
+                                </div>
+                            : null}
+
+                            {synchText ?
+                                <div data-test="biosample-synchronization">
+                                    <dt>Synchronization timepoint</dt>
+                                    <dd className="sentence-case">{synchText}</dd>
+                                </div>
+                            : null}
+
+                            {context.subcellular_fraction_term_name ?
+                                <div data-test="subcellulartermname">
+                                    <dt>Subcellular fraction</dt>
+                                    <dd>{context.subcellular_fraction_term_name}</dd>
+                                </div>
+                            : null}
 
                         <div data-test="term-id">
                             <dt>Term ID</dt>
@@ -546,6 +594,13 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                         </div>
                     : null}
 
+                    {context.dbxrefs && context.dbxrefs.length ?
+                        <div data-test="external-resources">
+                            <dt>External resources</dt>
+                            <dd><DbxrefList values={context.dbxrefs} /></dd>
+                        </div>
+                    : null}
+
                     {references ?
                         <div data-test="references">
                             <dt>References</dt>
@@ -652,6 +707,23 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                         <div data-test="strain-name">
                             <dt>Strain name</dt>
                             <dd>{context.strain_name}</dd>
+                        </div>
+                    : null}
+
+                    {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
+                        <section className="multi-columns-row">
+                            <hr />
+                            <h4>Characterizations</h4>
+                            <div className="row multi-columns-row">
+                                {biosample.donor.characterizations.map(Panel)}
+                            </div>
+                        </section>
+                    : null}
+
+                    {context.dbxrefs && context.dbxrefs.length ?
+                        <div data-test="external-resources">
+                            <dt>External resources</dt>
+                            <dd><DbxrefList values={context.dbxrefs} /></dd>
                         </div>
                     : null}
 
@@ -771,6 +843,13 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                         <div data-test="strain-name">
                             <dt>Strain name</dt>
                             <dd>{context.strain_name}</dd>
+                        </div>
+                    : null}
+
+                    {context.dbxrefs && context.dbxrefs.length ?
+                        <div data-test="external-resources">
+                            <dt>External resources</dt>
+                            <dd><DbxrefList values={context.dbxrefs} /></dd>
                         </div>
                     : null}
                 </dl>

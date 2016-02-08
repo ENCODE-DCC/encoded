@@ -188,7 +188,7 @@ var Annotation = React.createClass({
                         <div data-test="externalresources">
                             <dt>External resources</dt>
                             <dd>
-                                {context.dbxrefs.length ?
+                                {context.dbxrefs && context.dbxrefs.length ?
                                     <DbxrefList values={context.dbxrefs} />
                                 : <em>None submitted</em> }
                             </dd>
@@ -323,7 +323,7 @@ var PublicationData = React.createClass({
                         <div data-test="externalresources">
                             <dt>External resources</dt>
                             <dd>
-                                {context.dbxrefs.length ?
+                                {context.dbxrefs && context.dbxrefs.length ?
                                     <DbxrefList values={context.dbxrefs} />
                                 : <em>None submitted</em> }
                             </dd>
@@ -457,7 +457,7 @@ var Reference = React.createClass({
                         <div data-test="externalresources">
                             <dt>External resources</dt>
                             <dd>
-                                {context.dbxrefs.length ?
+                                {context.dbxrefs && context.dbxrefs.length ?
                                     <DbxrefList values={context.dbxrefs} />
                                 : <em>None submitted</em> }
                             </dd>
@@ -612,7 +612,7 @@ var Project = React.createClass({
                         <div data-test="externalresources">
                             <dt>External resources</dt>
                             <dd>
-                                {context.dbxrefs.length ?
+                                {context.dbxrefs && context.dbxrefs.length ?
                                     <DbxrefList values={context.dbxrefs} />
                                 : <em>None submitted</em> }
                             </dd>
@@ -760,7 +760,7 @@ var UcscBrowserComposite = React.createClass({
                         <div data-test="externalresources">
                             <dt>External resources</dt>
                             <dd>
-                                {context.dbxrefs.length ?
+                                {context.dbxrefs && context.dbxrefs.length ?
                                     <DbxrefList values={context.dbxrefs} />
                                 : <em>None submitted</em> }
                             </dd>
@@ -1365,7 +1365,7 @@ var Series = module.exports.Series = React.createClass({
                         <div data-test="externalresources">
                             <dt>External resources</dt>
                             <dd>
-                                {context.dbxrefs.length ?
+                                {context.dbxrefs && context.dbxrefs.length ?
                                     <DbxrefList values={context.dbxrefs} />
                                 : <em>None submitted</em> }
                             </dd>
