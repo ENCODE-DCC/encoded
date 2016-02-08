@@ -115,7 +115,7 @@ var AdvSearch = React.createClass({
                             }, this)}
                             <input ref="annotation" defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange}
                                 placeholder="Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID" />
-                            {this.state.showAutoSuggest ?
+                            {(this.state.showAutoSuggest && this.state.searchTerm) ?
                                 <FetchedData loadingComplete={true}>
                                     <Param name="auto" url={'/suggest/?q=' + this.state.searchTerm} />
                                     <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} />

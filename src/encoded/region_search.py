@@ -16,7 +16,6 @@ from collections import OrderedDict
 import requests
 from urllib.parse import urlencode
 
-import pprint
 import logging
 
 
@@ -314,7 +313,6 @@ def region_search(context, request):
 
 @view_config(route_name='suggest', request_method='GET', permission='search')
 def suggest(context, request):
-    log.warn('multiple same requests')
     text = ''
     result = {
         '@id': '/suggest/?' + urlencode({'q': text}),
