@@ -14,6 +14,7 @@ from .search import (
 )
 from collections import OrderedDict
 import requests
+from urllib.parse import urlencode
 
 import pprint
 import logging
@@ -313,9 +314,10 @@ def region_search(context, request):
 
 @view_config(route_name='suggest', request_method='GET', permission='search')
 def suggest(context, request):
+    log.warn('multiple same requests')
     text = ''
     result = {
-        '@id': '/suggest/' + ('?q=' + text),
+        '@id': '/suggest/?' + urlencode({'q': text}),
         '@type': ['suggest'],
         'title': 'Suggest',
         '@graph': [],
@@ -339,6 +341,6 @@ def suggest(context, request):
     except:
         return {}
     else:
-        result['@id'] = '/suggest/' + ('?q=' + text)
+        result['@id'] = '/suggest/?' + urlencode({'q': text})
         result['@graph'] = [x for x in results['suggester'][0]['options'] if '(homo sapiens)' in x['text']]
         return result

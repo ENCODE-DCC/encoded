@@ -36,7 +36,7 @@ var AutocompleteBox = React.createClass({
                         } else {
                             preText = term.text;
                         }
-                        return <li key={term.payload.id} tabIndex="0" onClick={this.props.handleClick.bind(null, term.text, term.payload.id, this.props.name)}>{preText}<b>{matchText}</b>{postText}</li>;
+                        return <li key={term.text} tabIndex="0" onClick={this.props.handleClick.bind(null, term.text, term.payload.id, this.props.name)}>{preText}<b>{matchText}</b>{postText}</li>;
                     }, this)}
                 </ul>
             );
@@ -50,6 +50,7 @@ var AdvSearch = React.createClass({
     getInitialState: function() {
         return {
             disclosed: false,
+            showAutoSuggest: false,
             searchTerm: '',
             terms: {}
         };
@@ -67,17 +68,18 @@ var AdvSearch = React.createClass({
     },
 
     handleChange: function(e) {
+        this.setState({showAutoSuggest: true});
         this.newSearchTerm = e.target.value;
     },
 
     handleAutocompleteClick: function(term, id, name) {
+
         var newTerms = {};
         var inputNode = this.refs.annotation.getDOMNode();
-
         inputNode.value = this.newSearchTerm = term;
-        console.log(inputNode);
         newTerms[name] = id;
         this.setState({terms: newTerms});
+        this.setState({showAutoSuggest: false});
         inputNode.focus();
         // Now let the timer update the terms state when it gets around to it.
     },
@@ -113,7 +115,7 @@ var AdvSearch = React.createClass({
                             }, this)}
                             <input ref="annotation" defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange}
                                 placeholder="Enter any one of Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID" />
-                            {this.state.searchTerm ?
+                            {this.state.showAutoSuggest ?
                                 <FetchedData loadingComplete={true}>
                                     <Param name="auto" url={'/suggest/?q=' + this.state.searchTerm} />
                                     <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} />
