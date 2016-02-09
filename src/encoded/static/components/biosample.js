@@ -158,9 +158,15 @@ var Biosample = module.exports.Biosample = React.createClass({
             });
         }
         rnai_documents = globals.uniqueObjectsArray(rnai_documents);
+        var donorDocuments = [];
         var donorCharacterizations = [];
-        if (context.donor && context.donor.characterizations && context.donor.characterizations.length) {
-            donorCharacterizations = context.donor.characterizations;
+        if (context.donor) {
+            if (context.donor.characterizations && context.donor.characterizations.length) {
+                donorCharacterizations = context.donor.characterizations;
+            }
+            if (context.donor.donor_documents && context.donor.donor_documents.length) {
+                donorDocuments = context.donor.donor_documents;
+            }
         }
         var donorConstructs = [];
         if (context.model_organism_donor_constructs && context.model_organism_donor_constructs.length) {
@@ -168,6 +174,16 @@ var Biosample = module.exports.Biosample = React.createClass({
                 if (construct.documents && construct.documents.length) {
                     donorConstructs = donorConstructs.concat(construct.documents);
                 }
+            });
+        }
+
+        // Set up TALENs panel for multiple TALENs, and TALEN document display
+        var talenDocuments = [];
+        var talens = null;
+        if (context.talens && context.talens.length) {
+            talens = context.talens.map(talen => {
+                Array.prototype.push.apply(talenDocuments, talen.documents);
+                return PanelLookup({context: talen});
             });
         }
 
@@ -179,17 +195,12 @@ var Biosample = module.exports.Biosample = React.createClass({
             construct_documents,
             rnai_documents,
             donorCharacterizations,
-            donorConstructs
+            donorConstructs,
+            donorDocuments,
+            talenDocuments
         );
         var documentSpecs = [{documents: combinedDocuments}];
 
-        // Set up TALENs panel for multiple TALENs
-        var talens = null;
-        if (context.talens && context.talens.length) {
-            talens = context.talens.map(function(talen) {
-                return PanelLookup({context: talen});
-            });
-        }
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
@@ -541,6 +552,7 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
         var context = this.props.context;
         var biosample = this.props.biosample;
         var references = PubReferenceList(context.references);
+
         return (
             <div>
                 <Panel>
@@ -635,16 +647,6 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
         if (biosample && biosample.donor && biosample.donor.url) {
             var donorUrl = url.parse(biosample.donor.url);
             donorUrlDomain = donorUrl.hostname || '';
-        }
-
-        // Collect the characterization documents
-        var characterizations = [];
-        if (biosample && biosample.donor.characterizations && biosample.donor.characterizations.length) {
-            characterizations = biosample.donor.characterizations;
-        }
-        var documentSpec;
-        if (characterizations.length) {
-            documentSpec = {title: 'Construct documents', documents: characterizations};
         }
 
         return (
@@ -743,10 +745,6 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                                     <dd>{PubReferenceList(context.references)}</dd>
                                 </div>
                             : null}
-
-                            {documentSpec ?
-                                <DocumentsSubpanels documentSpec={documentSpec} />
-                            : null}
                         </dl>
                     </PanelBody>
                 </Panel>
@@ -763,19 +761,6 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
         var context = this.props.context;
         var biosample = this.props.biosample;
         var donorUrlDomain;
-        var donorConstructs = [];
-
-        // Collect donor construct and characterization documents if we're not embedding into the biosample page.
-        // The biosample page displays these documents itself.
-        if (!biosample && context.constructs && context.constructs.length) {
-            donorConstructs = context.constructs;
-        }
-
-        // Get the domain name of the donor URL
-        if (biosample && biosample.donor && biosample.donor.url) {
-            var donorUrl = url.parse(biosample.donor.url);
-            donorUrlDomain = donorUrl.hostname || '';
-        }
 
         return (
             <div>
@@ -859,10 +844,6 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                         </dl>
                     </PanelBody>
                 </Panel>
-
-                {donorConstructs.length ?
-                    <DocumentsPanel documentSpecs={[{documents: donorConstructs}]} />
-                : null}
             </div>
         );
     }
@@ -877,6 +858,22 @@ var Donor = module.exports.Donor = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
+        var characterizationDocuments = [];
+        var donorDocuments = [];
+        var combinedDocuments = [];
+
+        // Collect the characterization documents
+        if (context.characterizations && context.characterizations.length) {
+            characterizationDocuments = context.characterizations;
+        }
+
+        // Collect the donor documents
+        if (context.donor_documents && context.donor_documents.length) {
+            donorDocuments = context.donor_documents;
+        }
+
+        // Combine characterization and donor documents
+        combinedDocuments = [].concat(characterizationDocuments, donorDocuments);
 
         // Set up breadcrumbs
         var crumbs = [
@@ -905,6 +902,9 @@ var Donor = module.exports.Donor = React.createClass({
                               url={'/search/?type=biosample&donor.uuid=' + context.uuid}
                               Component={BiosampleTable} />
 
+                {combinedDocuments.length ?
+                    <DocumentsPanel documentSpecs={[{documents: combinedDocuments}]} />
+                : null}
             </div>
         );
     }

@@ -6,7 +6,7 @@ var panel = require('../libs/bootstrap/panel');
 var globals = require('./globals');
 var image = require('./image');
 
-var {Panel, PanelBody} = panel;
+var {Panel, PanelHeading, PanelBody} = panel;
 var Attachment = image.Attachment;
 
 const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
@@ -48,8 +48,10 @@ var DocumentsPanel = module.exports.DocumentsPanel = React.createClass({
         if (documentSpecs.length) {
             return (
                 <div>
-                    <h3>Documents</h3>
                     <Panel addClasses="clearfix">
+                        <PanelHeading>
+                            <h4>Documents</h4>
+                        </PanelHeading>
                         {documentSpecs.map(documentSpec => {
                             if (documentSpec.documents.length) {
                                 return (

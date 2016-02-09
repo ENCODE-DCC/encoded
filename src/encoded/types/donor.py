@@ -20,7 +20,17 @@ from .base import (
     })
 class Donor(Item):
     base_types = ['Donor'] + Item.base_types
-    embedded = ['organism']
+    embedded = [
+        'organism',
+        'characterizations',
+        'characterizations.award',
+        'characterizations.lab',
+        'characterizations.submitted_by',
+        'donor_documents',
+        'donor_documents.award',
+        'donor_documents.lab',
+        'donor_documents.submitted_by'
+    ]
     name_key = 'accession'
     rev = {
         'characterizations': ('DonorCharacterization', 'characterizes'),
