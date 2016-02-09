@@ -164,19 +164,39 @@ def generate_trackDb(embedded, visibility, assembly=None):
     if len(new_files):
         files = new_files
 
+    #   Datasets may have >1  assays, biosamples, or targets
+    if type(embedded.get('assay_term_name', 'Unknown')) == list:
+        assays = ', '.join(embedded['assay_term_name'])
+    else:
+        assays = embedded.get('assay_term_name', 'Unknown Assay')
+
+    #   Datasets may have >1  assays, biosamples, or targets
+    if type(embedded.get('biosample_term_name', 'Unknown')) == list:
+        biosamples = ', '.join(embedded['biosample_term_name'])
+    else:
+        biosamples = embedded.get('biosample_term_name', 'Unknown Biosample')
+
+    #   Datasets may have >1  assays, biosamples, or targets
+    if type(embedded.get('target', None)) == list:
+        targets = ', '.join([ t['label'] for t in embedded['target'] ])
+    elif embedded.get('target', None):
+        targets = embedded['target']['label']
+    else:
+        targets = ''
+
     long_label = '{assay_term_name} of {biosample_term_name} - {accession}'.format(
-        assay_term_name=embedded['assay_term_name'],
-        biosample_term_name=embedded['biosample_term_name'],
+        assay_term_name=assays,
+        biosample_term_name=biosamples,
         accession=embedded['accession']
     )
-    if 'target' in embedded:
+    if targets:
         long_label = long_label + '(Target - {label})'.format(
-            label=embedded['target']['label']
+            label=targets
         )
     parent = get_parent_track(embedded['accession'], long_label, visibility)
     track_label = '{assay} of {biosample} - {accession}'.format(
-        assay=embedded['assay_term_name'],
-        biosample=embedded['biosample_term_name'],
+        assay=assays,
+        biosample=biosamples,
         accession=embedded['accession']
     )
     peak_view = ''

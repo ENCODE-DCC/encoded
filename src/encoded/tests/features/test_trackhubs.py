@@ -33,3 +33,15 @@ def test_genomes(testapp, workbook, expected):
 def test_trackDb(testapp, workbook, expected):
     res = testapp.get("/batch_hub/type%3Dexperiment/hg19/trackDb.txt")
     assert expected in res.text
+
+
+@pytest.mark.parametrize('expected', [
+    "shortLabel Unknown Assay of IMR-90 - ENCSR575ZXX",
+    "longLabel Unknown Assay of IMR-90 - ENCSR575ZXX",
+    "bigDataUrl /files/ENCFF762DWI/@@download/ENCFF762DWI.bigBed?proxy=true",
+    "track ENCSR575ZXX",
+    "longLabel Unknown Assay of IMR-90 - ENCSR575ZXX - ENCFF762DWI narrowPeak semi-automated genome annotation rep unknown",
+])
+def test_dataset_trackEb(testapp, workbook, expected):
+    res = testapp.get("/annotations/ENCSR575ZXX/@@hub/hg19/trackDb.txt")
+    assert expected in res.text
