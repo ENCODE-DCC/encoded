@@ -25,10 +25,12 @@
         },
         "CpG pairs with atleast 10 reads each": {
             "type": "number",
-            "description": "CpG pairs with at least 10 reads each"
+            "description": "CpG pairs with atleast 10 reads each"
         },
-        "Pearson's correlation": {
+        "Pearson Correlation Coefficient": {
             "type": "number",
+            "minimum": -1,
+            "maximum": 1,
             "description": "Pearson's correlation of CpG pairs with at least 10 reads each"
         }
     }
