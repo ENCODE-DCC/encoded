@@ -158,6 +158,18 @@ var Biosample = module.exports.Biosample = React.createClass({
             });
         }
         rnai_documents = globals.uniqueObjectsArray(rnai_documents);
+        var donorCharacterizations = [];
+        if (context.donor && context.donor.characterizations && context.donor.characterizations.length) {
+            donorCharacterizations = context.donor.characterizations;
+        }
+        var donorConstructs = [];
+        if (context.model_organism_donor_constructs && context.model_organism_donor_constructs.length) {
+            context.model_organism_donor_constructs.forEach(construct => {
+                if (construct.documents && construct.documents.length) {
+                    donorConstructs = donorConstructs.concat(construct.documents);
+                }
+            });
+        }
 
         // Put together the document list for rendering
         // Compile the document list
@@ -165,7 +177,9 @@ var Biosample = module.exports.Biosample = React.createClass({
             protocol_documents,
             characterizations,
             construct_documents,
-            rnai_documents
+            rnai_documents,
+            donorCharacterizations,
+            donorConstructs
         );
         var documentSpecs = [{documents: combinedDocuments}];
 
@@ -466,11 +480,9 @@ var Biosample = module.exports.Biosample = React.createClass({
                 {context.donor ?
                     <div>
                         <h3>{context.donor.organism.name === 'human' ? 'Donor' : 'Strain'} information</h3>
-                        <Panel>
-                            <div className="data-display">
-                                {PanelLookup({context: context.donor, biosample: context})}
-                            </div>
-                        </Panel>
+                        <div className="data-display">
+                            {PanelLookup({context: context.donor, biosample: context})}
+                        </div>
                     </div>
                 : null}
 
@@ -530,77 +542,81 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
         var biosample = this.props.biosample;
         var references = PubReferenceList(context.references);
         return (
-            <PanelBody>
-                <dl className="key-value">
-                    <div data-test="accession">
-                        <dt>Accession</dt>
-                        <dd>{biosample ? <a href={context['@id']}>{context.accession}</a> : context.accession}</dd>
-                    </div>
+            <div>
+                <Panel>
+                    <PanelBody>
+                        <dl className="key-value">
+                            <div data-test="accession">
+                                <dt>Accession</dt>
+                                <dd>{biosample ? <a href={context['@id']}>{context.accession}</a> : context.accession}</dd>
+                            </div>
 
-                    {context.aliases.length ?
-                        <div data-test="aliases">
-                            <dt>Aliases</dt>
-                            <dd>{context.aliases.join(", ")}</dd>
-                        </div>
-                    : null}
+                            {context.aliases.length ?
+                                <div data-test="aliases">
+                                    <dt>Aliases</dt>
+                                    <dd>{context.aliases.join(", ")}</dd>
+                                </div>
+                            : null}
 
-                    {context.organism.scientific_name ?
-                        <div data-test="species">
-                            <dt>Species</dt>
-                            <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd>
-                        </div>
-                    : null}
+                            {context.organism.scientific_name ?
+                                <div data-test="species">
+                                    <dt>Species</dt>
+                                    <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd>
+                                </div>
+                            : null}
 
-                    {context.life_stage ?
-                        <div data-test="life-stage">
-                            <dt>Life stage</dt>
-                            <dd className="sentence-case">{context.life_stage}</dd>
-                        </div>
-                    : null}
+                            {context.life_stage ?
+                                <div data-test="life-stage">
+                                    <dt>Life stage</dt>
+                                    <dd className="sentence-case">{context.life_stage}</dd>
+                                </div>
+                            : null}
 
-                    {context.age ?
-                        <div data-test="age">
-                            <dt>Age</dt>
-                            <dd className="sentence-case">{context.age}{context.age_units ? ' ' + context.age_units : null}</dd>
-                        </div>
-                    : null}
+                            {context.age ?
+                                <div data-test="age">
+                                    <dt>Age</dt>
+                                    <dd className="sentence-case">{context.age}{context.age_units ? ' ' + context.age_units : null}</dd>
+                                </div>
+                            : null}
 
-                    {context.sex ?
-                        <div data-test="sex">
-                            <dt>Sex</dt>
-                            <dd className="sentence-case">{context.sex}</dd>
-                        </div>
-                    : null}
+                            {context.sex ?
+                                <div data-test="sex">
+                                    <dt>Sex</dt>
+                                    <dd className="sentence-case">{context.sex}</dd>
+                                </div>
+                            : null}
 
-                    {context.health_status ?
-                        <div data-test="health-status">
-                            <dt>Health status</dt>
-                            <dd className="sentence-case">{context.health_status}</dd>
-                        </div>
-                    : null}
+                            {context.health_status ?
+                                <div data-test="health-status">
+                                    <dt>Health status</dt>
+                                    <dd className="sentence-case">{context.health_status}</dd>
+                                </div>
+                            : null}
 
-                    {context.ethnicity ?
-                        <div data-test="ethnicity">
-                            <dt>Ethnicity</dt>
-                            <dd className="sentence-case">{context.ethnicity}</dd>
-                        </div>
-                    : null}
+                            {context.ethnicity ?
+                                <div data-test="ethnicity">
+                                    <dt>Ethnicity</dt>
+                                    <dd className="sentence-case">{context.ethnicity}</dd>
+                                </div>
+                            : null}
 
-                    {context.dbxrefs && context.dbxrefs.length ?
-                        <div data-test="external-resources">
-                            <dt>External resources</dt>
-                            <dd><DbxrefList values={context.dbxrefs} /></dd>
-                        </div>
-                    : null}
+                            {context.dbxrefs && context.dbxrefs.length ?
+                                <div data-test="external-resources">
+                                    <dt>External resources</dt>
+                                    <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                </div>
+                            : null}
 
-                    {references ?
-                        <div data-test="references">
-                            <dt>References</dt>
-                            <dd>{references}</dd>
-                        </div>
-                    : null}
-                </dl>
-            </PanelBody>
+                            {references ?
+                                <div data-test="references">
+                                    <dt>References</dt>
+                                    <dd>{references}</dd>
+                                </div>
+                            : null}
+                        </dl>
+                    </PanelBody>
+                </Panel>
+            </div>
         );
     }
 });
@@ -632,105 +648,109 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
         }
 
         return (
-            <PanelBody>
-                <dl className="key-value">
-                    <div data-test="accession">
-                        <dt>Accession</dt>
-                        <dd>{biosample ? <a href={context['@id']}>{context.accession}</a> : context.accession}</dd>
-                    </div>
-
-                    {context.aliases.length ?
-                        <div data-test="aliases">
-                            <dt>Aliases</dt>
-                            <dd>{context.aliases.join(", ")}</dd>
-                        </div>
-                    : null}
-
-                    {context.organism.scientific_name ?
-                        <div data-test="organism">
-                            <dt>Species</dt>
-                            <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd>
-                        </div>
-                    : null}
-
-                    {context.genotype ?
-                        <div data-test="genotype">
-                            <dt>Genotype</dt>
-                            <dd>{context.genotype}</dd>
-                        </div>
-                    : null}
-
-                    {context.mutated_gene && biosample && biosample.donor && biosample.donor.mutated_gene && biosample.donor.mutated_gene.label ?
-                        <div data-test="mutatedgene">
-                            <dt>Mutated gene</dt>
-                            <dd><a href={context.mutated_gene}>{biosample.donor.mutated_gene.label}</a></dd>
-                        </div>
-                    : null}
-
-                    {biosample && biosample.sex ?
-                        <div data-test="sex">
-                            <dt>Sex</dt>
-                            <dd className="sentence-case">{biosample.sex}</dd>
-                        </div>
-                    : null}
-
-                    {biosample && biosample.health_status ?
-                        <div data-test="health-status">
-                            <dt>Health status</dt>
-                            <dd className="sentence-case">{biosample.health_status}</dd>
-                        </div>
-                    : null}
-
-                    {donorUrlDomain ?
-                        <div data-test="mutatedgene">
-                            <dt>Strain reference</dt>
-                            <dd><a href={biosample.donor.url}>{donorUrlDomain}</a></dd>
-                        </div>
-                    : null}
-
-                    {context.strain_background ?
-                        <div data-test="strain-background">
-                            <dt>Strain background</dt>
-                            <dd className="sentence-case">{context.strain_background}</dd>
-                        </div>
-                    : null}
-
-                    {context.strain_name ?
-                        <div data-test="strain-name">
-                            <dt>Strain name</dt>
-                            <dd>{context.strain_name}</dd>
-                        </div>
-                    : null}
-
-                    {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
-                        <section className="multi-columns-row">
-                            <hr />
-                            <h4>Characterizations</h4>
-                            <div className="row multi-columns-row">
-                                {biosample.donor.characterizations.map(PanelLookup)}
+            <div>
+                <Panel>
+                    <PanelBody>
+                        <dl className="key-value">
+                            <div data-test="accession">
+                                <dt>Accession</dt>
+                                <dd>{biosample ? <a href={context['@id']}>{context.accession}</a> : context.accession}</dd>
                             </div>
-                        </section>
-                    : null}
 
-                    {context.dbxrefs && context.dbxrefs.length ?
-                        <div data-test="external-resources">
-                            <dt>External resources</dt>
-                            <dd><DbxrefList values={context.dbxrefs} /></dd>
-                        </div>
-                    : null}
+                            {context.aliases.length ?
+                                <div data-test="aliases">
+                                    <dt>Aliases</dt>
+                                    <dd>{context.aliases.join(", ")}</dd>
+                                </div>
+                            : null}
 
-                    {context.references && context.references.length ?
-                        <div data-test="references">
-                            <dt>References</dt>
-                            <dd><PubReferenceList values={context.references} /></dd>
-                        </div>
-                    : null}
+                            {context.organism.scientific_name ?
+                                <div data-test="organism">
+                                    <dt>Species</dt>
+                                    <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd>
+                                </div>
+                            : null}
 
-                    {documentSpec ?
-                        <DocumentsSubpanels documentSpec={documentSpec} />
-                    : null}
-                </dl>
-            </PanelBody>
+                            {context.genotype ?
+                                <div data-test="genotype">
+                                    <dt>Genotype</dt>
+                                    <dd>{context.genotype}</dd>
+                                </div>
+                            : null}
+
+                            {context.mutated_gene && biosample && biosample.donor && biosample.donor.mutated_gene && biosample.donor.mutated_gene.label ?
+                                <div data-test="mutatedgene">
+                                    <dt>Mutated gene</dt>
+                                    <dd><a href={context.mutated_gene}>{biosample.donor.mutated_gene.label}</a></dd>
+                                </div>
+                            : null}
+
+                            {biosample && biosample.sex ?
+                                <div data-test="sex">
+                                    <dt>Sex</dt>
+                                    <dd className="sentence-case">{biosample.sex}</dd>
+                                </div>
+                            : null}
+
+                            {biosample && biosample.health_status ?
+                                <div data-test="health-status">
+                                    <dt>Health status</dt>
+                                    <dd className="sentence-case">{biosample.health_status}</dd>
+                                </div>
+                            : null}
+
+                            {donorUrlDomain ?
+                                <div data-test="mutatedgene">
+                                    <dt>Strain reference</dt>
+                                    <dd><a href={biosample.donor.url}>{donorUrlDomain}</a></dd>
+                                </div>
+                            : null}
+
+                            {context.strain_background ?
+                                <div data-test="strain-background">
+                                    <dt>Strain background</dt>
+                                    <dd className="sentence-case">{context.strain_background}</dd>
+                                </div>
+                            : null}
+
+                            {context.strain_name ?
+                                <div data-test="strain-name">
+                                    <dt>Strain name</dt>
+                                    <dd>{context.strain_name}</dd>
+                                </div>
+                            : null}
+
+                            {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
+                                <section className="multi-columns-row">
+                                    <hr />
+                                    <h4>Characterizations</h4>
+                                    <div className="row multi-columns-row">
+                                        {biosample.donor.characterizations.map(PanelLookup)}
+                                    </div>
+                                </section>
+                            : null}
+
+                            {context.dbxrefs && context.dbxrefs.length ?
+                                <div data-test="external-resources">
+                                    <dt>External resources</dt>
+                                    <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                </div>
+                            : null}
+
+                            {context.references && context.references.length ?
+                                <div data-test="references">
+                                    <dt>References</dt>
+                                    <dd>{PubReferenceList(context.references)}</dd>
+                                </div>
+                            : null}
+
+                            {documentSpec ?
+                                <DocumentsSubpanels documentSpec={documentSpec} />
+                            : null}
+                        </dl>
+                    </PanelBody>
+                </Panel>
+            </div>
         );
     }
 });
@@ -743,22 +763,12 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
         var context = this.props.context;
         var biosample = this.props.biosample;
         var donorUrlDomain;
-
-        // Collect donor construct documents
         var donorConstructs = [];
-        if (biosample && biosample.model_organism_donor_constructs && biosample.model_organism_donor_constructs.length) {
-            donorConstructs = biosample.model_organism_donor_constructs;
-        }
-        var donorCharacterizations = [];
-        if (biosample && biosample.donor.characterizations && biosample.donor.characterizations.length) {
-            donorCharacterizations = biosample.donor.characterizations;
-        }
-        var constructSpec, characterizationSpec;
-        if (donorConstructs.length) {
-            constructSpec = {title: 'Construct documents', documents: donorConstructs};
-        }
-        if (donorCharacterizations.length) {
-            characterizationSpec = {title: 'Characterizations', documents: donorCharacterizations};
+
+        // Collect donor construct and characterization documents if we're not embedding into the biosample page.
+        // The biosample page displays these documents itself.
+        if (!biosample && context.constructs && context.constructs.length) {
+            donorConstructs = context.constructs;
         }
 
         // Get the domain name of the donor URL
@@ -768,92 +778,92 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
         }
 
         return (
-            <PanelBody>
-                <dl className="key-value">
-                    <div data-test="accession">
-                        <dt>Accession</dt>
-                        <dd>{biosample ? <a href={context['@id']}>{context.accession}</a> : context.accession}</dd>
-                    </div>
+            <div>
+                <Panel>
+                    <PanelBody>
+                        <dl className="key-value">
+                            <div data-test="accession">
+                                <dt>Accession</dt>
+                                <dd>{biosample ? <a href={context['@id']}>{context.accession}</a> : context.accession}</dd>
+                            </div>
 
-                    {context.aliases.length ?
-                        <div data-test="aliases">
-                            <dt>Aliases</dt>
-                            <dd>{context.aliases.join(", ")}</dd>
-                        </div>
-                    : null}
+                            {context.aliases.length ?
+                                <div data-test="aliases">
+                                    <dt>Aliases</dt>
+                                    <dd>{context.aliases.join(", ")}</dd>
+                                </div>
+                            : null}
 
-                    {context.organism.scientific_name ?
-                        <div data-test="species">
-                            <dt>Species</dt>
-                            <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd>
-                        </div>
-                    : null}
+                            {context.organism.scientific_name ?
+                                <div data-test="species">
+                                    <dt>Species</dt>
+                                    <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd>
+                                </div>
+                            : null}
 
-                    {context.genotype ?
-                        <div data-test="genotype">
-                            <dt>Genotype</dt>
-                            <dd>{context.genotype}</dd>
-                        </div>
-                    : null}
+                            {context.genotype ?
+                                <div data-test="genotype">
+                                    <dt>Genotype</dt>
+                                    <dd>{context.genotype}</dd>
+                                </div>
+                            : null}
 
-                    {context.mutated_gene && biosample && biosample.donor && biosample.donor.mutated_gene && biosample.donor.mutated_gene.label ?
-                        <div data-test="mutatedgene">
-                            <dt>Mutated gene</dt>
-                            <dd><a href={context.mutated_gene['@id']}>{biosample.donor.mutated_gene.label}</a></dd>
-                        </div>
-                    : null}
+                            {context.mutated_gene && biosample && biosample.donor && biosample.donor.mutated_gene && biosample.donor.mutated_gene.label ?
+                                <div data-test="mutatedgene">
+                                    <dt>Mutated gene</dt>
+                                    <dd><a href={context.mutated_gene['@id']}>{biosample.donor.mutated_gene.label}</a></dd>
+                                </div>
+                            : null}
 
-                    {biosample && biosample.sex ?
-                        <div data-test="sex">
-                            <dt>Sex</dt>
-                            <dd className="sentence-case">{biosample.sex}</dd>
-                        </div>
-                    : null}
+                            {biosample && biosample.sex ?
+                                <div data-test="sex">
+                                    <dt>Sex</dt>
+                                    <dd className="sentence-case">{biosample.sex}</dd>
+                                </div>
+                            : null}
 
-                    {biosample && biosample.health_status ?
-                        <div data-test="health-status">
-                            <dt>Health status</dt>
-                            <dd className="sentence-case">{biosample.health_status}</dd>
-                        </div>
-                    : null}
+                            {biosample && biosample.health_status ?
+                                <div data-test="health-status">
+                                    <dt>Health status</dt>
+                                    <dd className="sentence-case">{biosample.health_status}</dd>
+                                </div>
+                            : null}
 
-                    {donorUrlDomain ?
-                        <div data-test="mutatedgene">
-                            <dt>Strain reference</dt>
-                            <dd><a href={biosample.donor.url}>{donorUrlDomain}</a></dd>
-                        </div>
-                    : null}
+                            {donorUrlDomain ?
+                                <div data-test="mutatedgene">
+                                    <dt>Strain reference</dt>
+                                    <dd><a href={biosample.donor.url}>{donorUrlDomain}</a></dd>
+                                </div>
+                            : null}
 
-                    {context.strain_background ?
-                        <div data-test="strain-background">
-                            <dt>Strain background</dt>
-                            <dd className="sentence-case">{context.strain_background}</dd>
-                        </div>
-                    : null}
+                            {context.strain_background ?
+                                <div data-test="strain-background">
+                                    <dt>Strain background</dt>
+                                    <dd className="sentence-case">{context.strain_background}</dd>
+                                </div>
+                            : null}
 
-                    {context.strain_name ?
-                        <div data-test="strain-name">
-                            <dt>Strain name</dt>
-                            <dd>{context.strain_name}</dd>
-                        </div>
-                    : null}
+                            {context.strain_name ?
+                                <div data-test="strain-name">
+                                    <dt>Strain name</dt>
+                                    <dd>{context.strain_name}</dd>
+                                </div>
+                            : null}
 
-                    {context.dbxrefs && context.dbxrefs.length ?
-                        <div data-test="external-resources">
-                            <dt>External resources</dt>
-                            <dd><DbxrefList values={context.dbxrefs} /></dd>
-                        </div>
-                    : null}
-                </dl>
+                            {context.dbxrefs && context.dbxrefs.length ?
+                                <div data-test="external-resources">
+                                    <dt>External resources</dt>
+                                    <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                </div>
+                            : null}
+                        </dl>
+                    </PanelBody>
+                </Panel>
 
-                {constructSpec ?
-                    <DocumentsSubpanels documentSpec={constructSpec} />
+                {donorConstructs.length ?
+                    <DocumentsPanel documentSpecs={[{documents: donorConstructs}]} />
                 : null}
-
-                {characterizationSpec ?
-                    <DocumentsSubpanels documentSpec={characterizationSpec} />
-                : null}
-            </PanelBody>
+            </div>
         );
     }
 });
@@ -889,9 +899,7 @@ var Donor = module.exports.Donor = React.createClass({
                     </div>
                 </header>
 
-                <div className="panel data-display">
-                    {PanelLookup(context)}
-                </div>
+                <div>{PanelLookup(context)}</div>
 
                 <RelatedItems title={"Biosamples from this " + (context.organism.name == 'human' ? 'donor': 'strain')}
                               url={'/search/?type=biosample&donor.uuid=' + context.uuid}

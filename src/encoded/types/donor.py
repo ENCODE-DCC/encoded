@@ -66,7 +66,7 @@ class MouseDonor(Donor):
 class FlyDonor(Donor):
     item_type = 'fly_donor'
     schema = load_schema('encoded:schemas/fly_donor.json')
-    embedded = ['organism', 'constructs', 'constructs.target']
+    embedded = ['organism', 'constructs', 'constructs.target', 'characterizations']
 
 
 @collection(
