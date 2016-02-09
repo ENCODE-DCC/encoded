@@ -223,7 +223,9 @@ var DocumentFile = module.exports.DocumentFile = React.createClass({
                     </a>
                     {detailSwitch ?
                         <div className={'detail-switch' + (detailOpen ? ' open' : '')}>
-                            <i className={'icon detail-trigger' + (detailOpen ? ' open' : '')} onClick={detailSwitch}></i>
+                            <i className={'icon detail-trigger' + (detailOpen ? ' open' : '')} onClick={detailSwitch}>
+                                <span className="sr-only">More</span>
+                            </i>
                         </div>
                     : null}
                 </div>

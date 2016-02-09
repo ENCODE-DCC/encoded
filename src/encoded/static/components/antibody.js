@@ -389,7 +389,9 @@ var CharacterizationFile = React.createClass({
             <div className="dl-bar">
                 {detailSwitch ?
                     <div className={'detail-switch' + (detailOpen ? ' open' : '')}>
-                        <i className={'icon detail-trigger' + (detailOpen ? ' open' : '')} onClick={detailSwitch}></i>
+                        <i className={'icon detail-trigger' + (detailOpen ? ' open' : '')} onClick={detailSwitch}>
+                            <span className="sr-only">More</span>
+                        </i>
                     </div>
                 : null}
             </div>
