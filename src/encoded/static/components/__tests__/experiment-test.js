@@ -120,7 +120,7 @@ describe('Experiment Page', function() {
                     <Experiment context={context_doc} />
                 );
             });
-            doc = TestUtils.findRenderedDOMComponentWithClass(experiment, 'type-Document').getDOMNode();
+            doc = TestUtils.findRenderedDOMComponentWithClass(experiment, 'type-Document').getDOMNode();;
         });
 
         it('has one document panel with a PDF image anchor', function() {
@@ -141,14 +141,14 @@ describe('Experiment Page', function() {
         });
 
         it('has two key-value pairs, and proper DL link', function() {
-            var trigger = doc.getElementsByTagName('button');
+            var trigger = doc.getElementsByClassName('detail-switch');
             TestUtils.Simulate.click(trigger[0]);
 
-            var docKeyValue = doc.getElementsByClassName('key-value-left');
-            expect(docKeyValue.length).toEqual(2);
-            var defTerms = docKeyValue[1].getElementsByTagName('dt');
+            var docKeyValue = doc.getElementsByClassName('key-value-doc');
+            expect(docKeyValue.length).toEqual(1);
+            var defTerms = docKeyValue[0].getElementsByTagName('dt');
             expect(defTerms.length).toEqual(3);
-            var defDescs = docKeyValue[1].getElementsByTagName('dd');
+            var defDescs = docKeyValue[0].getElementsByTagName('dd');
             expect(defDescs.length).toEqual(3);
         });
     });
@@ -170,11 +170,11 @@ describe('Experiment Page', function() {
 
         it('has five key-value pairs, and two good references links', function() {
             var url = require('url');
-            var docKeyValue = doc.getElementsByClassName('key-value-left');
-            expect(docKeyValue.length).toEqual(2);
-            var defTerms = docKeyValue[1].getElementsByTagName('dt');
+            var docKeyValue = doc.getElementsByClassName('key-value-doc');
+            expect(docKeyValue.length).toEqual(1);
+            var defTerms = docKeyValue[0].getElementsByTagName('dt');
             expect(defTerms.length).toEqual(3);
-            var defDescs = docKeyValue[1].getElementsByTagName('dd');
+            var defDescs = docKeyValue[0].getElementsByTagName('dd');
             expect(defDescs.length).toEqual(3);
         });
     });

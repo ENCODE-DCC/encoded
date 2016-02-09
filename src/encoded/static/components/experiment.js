@@ -79,17 +79,8 @@ var Experiment = module.exports.Experiment = React.createClass({
             }
         }
 
-        // Collect all documents from all replicate libraries for display.
-        var documents = {};
-        if (replicates) {
-            replicates.forEach(replicate => {
-                if (replicate.library && replicate.library.documents && replicate.library.documents.length) {
-                    replicate.library.documents.forEach((doc, i) => {
-                        documents[doc['@id']] = PanelLookup({context: doc, key: i + 1});
-                    });
-                }
-            });
-        }
+        // Collect all documents from the experiment itself.
+        var documents = (context.documents && context.documents.length) ? context.documents : [];
 
         // Make array of all replicate biosamples, not including biosample-less replicates. Also collect up library documents.
         var libraryDocs = [];
@@ -368,7 +359,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         ];
 
         // Compile the document list
-        var combinedDocuments = [].concat(
+        var combinedDocuments = documents.concat(
             biosampleCharacterizationDocs,
             libraryDocs,
             biosampleDocs,
