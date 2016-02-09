@@ -80,7 +80,7 @@ def histone_target(testapp, fly_organism):
     item = {
         'organism': fly_organism['uuid'],
         'label': 'Histone',
-        'investigated_as': ['histone modification']
+        'investigated_as': ['histone modification', 'histone']
     }
     return testapp.post_json('/target', item, status=201).json['@graph'][0]
 
@@ -153,7 +153,7 @@ def base_antibody_characterization2(testapp, lab, award, target, antibody_lot, o
         'lab': lab['uuid'],
         'characterizes': antibody_lot['uuid'],
         'secondary_characterization_method': 'dot blot assay',
-        'attachment': {'download': 'red-dot.png', 'href': RED_DOT},
+        'attachment': {'download': 'red-dot.png', 'href': RED_DOT}
     }
     return testapp.post_json('/antibody-characterizations', item, status=201).json['@graph'][0]
 

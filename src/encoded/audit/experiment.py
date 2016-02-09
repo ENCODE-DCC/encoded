@@ -858,6 +858,7 @@ def audit_experiment_biosample_term(value, system):
         'target',
         'replicates',
         'replicates.antibody',
+        'replicates.antibody.targets',
         'replicates.antibody.lot_reviews'
         'replicates.antibody.lot_reviews.organisms',
         'replicates.library',
@@ -898,11 +899,16 @@ def audit_experiment_antibody_eligible(value, system):
 
         biosample = lib['biosample']
         organism = biosample['organism']['@id']
+        antibody_targets = antibody['targets']
+        ab_targets_investigated_as = set()
+        for t in antibody_targets:
+            for i in t['investigated_as']:
+                ab_targets_investigated_as.add(i)
 
         # We only want the audit raised if the organism in lot reviews matches that of the biosample
         # and if is not eligible for new data. Otherwise, it doesn't apply and we shouldn't raise a stink
 
-        if 'histone modification' in target['investigated_as']:
+        if 'histone modification' in ab_targets_investigated_as:
             for lot_review in antibody['lot_reviews']:
                 if (lot_review['status'] == 'awaiting lab characterization'):
                     for lot_organism in lot_review['organisms']:
