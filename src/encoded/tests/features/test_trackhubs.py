@@ -47,7 +47,7 @@ def test_dataset_trackDb(testapp, workbook, expected):
     assert expected in res.text
 
 
-@pytest.mark.parameterize('expected', [
+@pytest.mark.parametrize('expected', [
     "bigDataUrl /files/ENCFF003COS/@@download/ENCFF003COS.bigBed?proxy=true"
 ])
 def test_related_files_trackDb(testapp, workbook, expected):
