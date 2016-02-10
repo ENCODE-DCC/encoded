@@ -391,7 +391,7 @@ def test_audit_experiment_single_cell_replicated(testapp, base_experiment, base_
 def test_audit_experiment_roadmap_replicated(testapp, base_experiment, base_replicate, base_library, award):
     testapp.patch_json(award['@id'], {'rfa': 'Roadmap'})
     testapp.patch_json(base_experiment['@id'], {'award': award['@id']})
-    testapp.patch_json(base_experiment['@id'], {'status': 'released'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -642,7 +642,7 @@ def test_audit_experiment_with_RNA_library_array_size_range(testapp, base_experi
 
 
 def test_audit_experiment_needs_pipeline(testapp,  replicate, library, experiment, fastq_file):
-    testapp.patch_json(experiment['@id'], {'status': 'released'})
+    testapp.patch_json(experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
     testapp.patch_json(library['@id'], {'size_range': '>200'})
     testapp.patch_json(replicate['@id'], {'library': library['@id']})
     testapp.patch_json(fastq_file['@id'], {'run_type': 'single-ended'})
@@ -658,7 +658,8 @@ def test_audit_experiment_needs_pipeline(testapp,  replicate, library, experimen
 def test_audit_experiment_biosample_term_id(testapp, base_experiment):
     testapp.patch_json(base_experiment['@id'], {'biosample_term_id': 'CL:349829',
                                                 'biosample_type': 'tissue',
-                                                'status': 'released'})
+                                                'status': 'released',
+                                                'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -671,7 +672,8 @@ def test_audit_experiment_biosample_term_id(testapp, base_experiment):
 def test_audit_experiment_biosample_ntr_term_id(testapp, base_experiment):
     testapp.patch_json(base_experiment['@id'], {'biosample_term_id': 'NTR:349829',
                                                 'biosample_type': 'tissue',
-                                                'status': 'released'})
+                                                'status': 'released',
+                                                'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -686,7 +688,7 @@ def test_audit_experiment_replicate_with_file(testapp, file_fastq,
                                               base_replicate,
                                               base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
-    testapp.patch_json(base_experiment['@id'], {'status': 'released'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -701,7 +703,7 @@ def test_audit_experiment_needs_pipeline_and_has_one(testapp,  replicate, librar
                                                      analysis_step_run_bam,
                                                      analysis_step_version_bam, analysis_step_bam,
                                                      pipeline_bam):
-    testapp.patch_json(experiment['@id'], {'status': 'released'})
+    testapp.patch_json(experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
     testapp.patch_json(library['@id'], {'size_range': '>200'})
     testapp.patch_json(replicate['@id'], {'library': library['@id']})
     testapp.patch_json(fastq_file['@id'], {'run_type': 'single-ended'})
@@ -721,7 +723,8 @@ def test_audit_experiment_needs_pipeline_chip_seq(testapp, replicate, library,
                                                   experiment, fastq_file,
                                                   target_H3K27ac):
     testapp.patch_json(experiment['@id'], {'status': 'released',
-                                           'target': target_H3K27ac['@id']})
+                                           'target': target_H3K27ac['@id'],
+                                           'date_released': '2016-01-01'})
     testapp.patch_json(library['@id'], {'size_range': '200-600'})
     testapp.patch_json(replicate['@id'], {'library': library['@id']})
     testapp.patch_json(fastq_file['@id'], {'run_type': 'single-ended'})
@@ -742,7 +745,8 @@ def test_audit_experiment_needs_pipeline_chip_seq_and_has_one(testapp, replicate
                                                               analysis_step_bam,
                                                               pipeline_bam):
     testapp.patch_json(experiment['@id'], {'status': 'released',
-                                           'target': target_H3K27ac['@id']})
+                                           'target': target_H3K27ac['@id'],
+                                           'date_released': '2016-01-01'})
     testapp.patch_json(library['@id'], {'size_range': '200-600'})
     testapp.patch_json(replicate['@id'], {'library': library['@id']})
     testapp.patch_json(fastq_file['@id'], {'run_type': 'single-ended'})
@@ -763,7 +767,7 @@ def test_audit_experiment_replicate_with_no_files(testapp,
                                                   base_replicate,
                                                   base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
-    testapp.patch_json(base_experiment['@id'], {'status': 'released'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -834,7 +838,7 @@ def test_audit_experiment_replicate_with_no_fastq_files(testapp, file_bam,
                                                         base_replicate,
                                                         base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
-    testapp.patch_json(base_experiment['@id'], {'status': 'released'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
