@@ -54,6 +54,17 @@ class BismarkQualityMetric(QualityMetric):
 
 
 @collection(
+    name='cpg-correlation-quality-metrics',
+    properties={
+        'title': "WGBS replicate correlation CpG quality metrics",
+        'description': 'A set of QC metrics from WGBS replicate CpG correlations',
+    })
+class CpgCorrelationQualityMetric(QualityMetric):
+    item_type = 'cpg_correlation_quality_metric'
+    schema = load_schema('encoded:schemas/cpg_correlation_quality_metric.json')
+
+
+@collection(
     name='encode2-chipseq-quality-metrics',
     properties={
         'title': "Quality metrics for ChIP-seq (ENCODE2)",
