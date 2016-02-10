@@ -117,6 +117,9 @@
         "target.investigated_as": {
             "title": "Target of assay"
         },
+        "target.name": {
+            "title": "Target name"
+        },
         "replicates.library.biosample.biosample_type": {
             "title": "Biosample type"
         },
@@ -173,6 +176,9 @@
         },
         "target.label": {
             "title": "Target"
+        },
+        "target.investigated_as": {
+            "title": "Target of assay"
         },
         "biosample_term_name": {
             "title": "Biosample"
