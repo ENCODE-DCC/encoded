@@ -651,6 +651,9 @@ var ReplicateTable = React.createClass({
                     return (aReplicate.antibody.accession < bReplicate.antibody.accession) ? -1 : ((aReplicate.antibody.accession > bReplicate.antibody.accession) ? 1 : 0);
                 }
                 return (aReplicate.antibody) ? -1 : ((bReplicate.antibody) ? 1 : 0);
+            },
+            hide: (list, columns, meta) => {
+                return _(list).all(condensedReplicate => !condensedReplicate[0].antibody);
             }
         },
         'library': {
