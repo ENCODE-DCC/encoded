@@ -514,7 +514,7 @@ def test_audit_file_read_depth_chip_seq_paired_end(testapp, file_exp, file6, fil
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'insufficient read depth' for error in errors_list)
+    assert any(error['category'] == 'low read depth' for error in errors_list)
 
 
 def test_audit_file_mad_qc_spearman_correlation(testapp, pipeline_bam,
