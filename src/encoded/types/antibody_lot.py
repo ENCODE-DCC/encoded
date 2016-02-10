@@ -316,8 +316,7 @@ def lot_reviews(characterizations, targets, request):
                 if pending_secondary:
                     new_review['detail'] = 'Pending review of primary and secondary characterizations.'
                 if not secondary_chars:
-                    new_review['detail'] = 'Pending review of primary and awaiting submission of \
-                        secondary characterization(s).'
+                    new_review['detail'] = 'Pending review of primary and awaiting submission of secondary characterization(s).'
             elif lane_review['lane_status'] == 'not compliant':
                 if not_compliant_secondary or len(secondary_chars) == 0 or \
                         (not_reviewed_secondary == len(secondary_chars)):
