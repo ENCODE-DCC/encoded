@@ -632,72 +632,71 @@ def audit_file_read_depth(value, system):
                 if read_depth >= marks['narrow'] and read_depth < marks['broad']:
                     detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                                  read_depth) + \
-                             'usable fragments. It can not be used as a control ' + \
+                             'usable fragments. It cannot be used as a control ' + \
                              'in experiments studying broad histone marks, which ' + \
-                             'require {} usable fragments, acording to '.format(marks['broad']) + \
-                             'June 2015 standard'
+                             'require {} usable fragments, according to '.format(marks['broad']) + \
+                             'June 2015 standards.'
                     yield AuditFailure('insufficient read depth', detail, level='WARNING')
                 if read_depth >= 10000000 and read_depth < marks['narrow']:
                     detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                                  read_depth) + \
-                             'usable fragments. It can not be used as a control ' + \
+                             'usable fragments. It cannot be used as a control ' + \
                              'in experiments studying narrow histone marks or ' + \
                              'transcription factors, which ' + \
-                             'require {} usable fragments, acording to '.format(marks['narrow']) + \
-                             'June 2015 standard'
+                             'require {} usable fragments, according to '.format(marks['narrow']) + \
+                             'June 2015 standards.'
                     yield AuditFailure('low read depth', detail, level='WARNING')
                 if read_depth < 10000000:
                     detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                                  read_depth) + \
-                             'usable fragments. It can not be used as a control ' + \
+                             'usable fragments. It cannot be used as a control ' + \
                              'in experiments studying narrow histone marks or ' + \
                              'transcription factors, which ' + \
-                             'require {} usable fragments, acording to '.format(marks['narrow']) + \
-                             'June 2015 standard'
+                             'require {} usable fragments, according to '.format(marks['narrow']) + \
+                             'June 2015 standards.'
                     yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
                 return
-            if target_name == 'empty':
+            elif target_name == 'empty':
                 detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
                          'belongs to ChIP-seq experiment {} '.format(value['dataset']['@id']) + \
                          'with no target specified.'
                 yield AuditFailure('ChIP-seq missing target', detail, level='ERROR')
                 return
-            if target_name in broadPeaksTargets:
+            elif target_name in broadPeaksTargets:
                 if read_depth >= marks['narrow'] and read_depth < marks['broad']:
                     detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                                  read_depth) + \
                              'usable fragments. Replicates for ChIP-seq ' + \
-                             'assay and target {} require '.format(target_name) + \
-                             '{} usable fragments, acording to '.format(marks['broad']) + \
-                             'June 2015 standard'
+                             'assays and target {} require '.format(target_name) + \
+                             '{} usable fragments, according to '.format(marks['broad']) + \
+                             'June 2015 standards.'
                     yield AuditFailure('low read depth', detail, level='NOT_COMPLIANT')
-                if read_depth < marks['narrow']:
+                elif read_depth < marks['narrow']:
                     detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                                  read_depth) + \
                              'usable fragments. Replicates for ChIP-seq ' + \
-                             'assay and target {} require '.format(target_name) + \
-                             '{} usable fragments, acording to '.format(marks['broad']) + \
-                             'June 2015 standard'
+                             'assays and target {} require '.format(target_name) + \
+                             '{} usable fragments, according to '.format(marks['broad']) + \
+                             'June 2015 standards.'
                     yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
-                return
             else:
                 if read_depth >= 10000000 and read_depth < marks['narrow']:
                     detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                                  read_depth) + \
                              'usable fragments. Replicates for ChIP-seq ' + \
-                             'assay and target {} require '.format(target_name) + \
-                             '{} usable fragments, acording to '.format(marks['narrow']) + \
-                             'June 2015 standard'
+                             'assays and target {} require '.format(target_name) + \
+                             '{} usable fragments, according to '.format(marks['narrow']) + \
+                             'June 2015 standards.'
                     yield AuditFailure('low read depth', detail, level='WARNING')
-                if read_depth < 10000000:
+                elif read_depth < 10000000:
                     detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                                  read_depth) + \
                              'usable fragments. Replicates for ChIP-seq ' + \
-                             'assay and target {} require '.format(target_name) + \
-                             '{} usable fragments, acording to '.format(marks['narrow']) + \
-                             'June 2015 standard'
+                             'assays and target {} require '.format(target_name) + \
+                             '{} usable fragments, according to '.format(marks['narrow']) + \
+                             'June 2015 standards.'
                     yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
-                return
+            return
         else:
             if special_assay_name != 'empty':  # either shRNA or single cell
                 if read_depth < read_depths_special[special_assay_name]:
