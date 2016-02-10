@@ -353,7 +353,7 @@ def construct(testapp, lab, award, target, source):
         'lab': lab['@id'],
         'source': source['@id'],
         'construct_type': 'fusion protein',
-        'tags': [],
+        'tags': [{'name': 'eGFP', 'location': 'C-terminal'}],
     }
     return testapp.post_json('/construct', item).json['@graph'][0]
 

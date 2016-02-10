@@ -322,8 +322,8 @@ def audit_experiment_release_date(value, system):
     Released experiments need release date.
     This should eventually go to schema
     '''
-    if value['status'] == 'released' and 'date_released' not in value:
-        detail = 'Experiment {} is released and requires a value in date_released'.format(value['@id'])
+    if value['status'] in ['released', 'revoked'] and 'date_released' not in value:
+        detail = 'Experiment {} is released or revoked and requires a value in date_released'.format(value['@id'])
         raise AuditFailure('missing date_released', detail, level='DCC_ACTION')
 
 
@@ -858,6 +858,7 @@ def audit_experiment_biosample_term(value, system):
         'target',
         'replicates',
         'replicates.antibody',
+        'replicates.antibody.targets',
         'replicates.antibody.lot_reviews'
         'replicates.antibody.lot_reviews.organisms',
         'replicates.library',
@@ -898,11 +899,16 @@ def audit_experiment_antibody_eligible(value, system):
 
         biosample = lib['biosample']
         organism = biosample['organism']['@id']
+        antibody_targets = antibody['targets']
+        ab_targets_investigated_as = set()
+        for t in antibody_targets:
+            for i in t['investigated_as']:
+                ab_targets_investigated_as.add(i)
 
         # We only want the audit raised if the organism in lot reviews matches that of the biosample
         # and if is not eligible for new data. Otherwise, it doesn't apply and we shouldn't raise a stink
 
-        if 'histone modification' in target['investigated_as']:
+        if 'histone modification' in ab_targets_investigated_as:
             for lot_review in antibody['lot_reviews']:
                 if (lot_review['status'] == 'awaiting lab characterization'):
                     for lot_organism in lot_review['organisms']:
@@ -910,25 +916,33 @@ def audit_experiment_antibody_eligible(value, system):
                             detail = '{} is not eligible for {}'.format(antibody["@id"], organism)
                             yield AuditFailure('not eligible antibody',
                                                detail, level='NOT_COMPLIANT')
+                if lot_review['status'] == 'eligible for new data (via exemption)':
+                    for lot_organism in lot_review['organisms']:
+                        if organism == lot_organism:
+                            detail = '{} is eligible via exemption for {}'.format(antibody["@id"],
+                                                                                  organism)
+                            yield AuditFailure('antibody eligible via exemption',
+                                               detail, level='WARNING')
 
         else:
             biosample_term_id = value['biosample_term_id']
             biosample_term_name = value['biosample_term_name']
             experiment_biosample = (biosample_term_id, organism)
             eligible_biosamples = set()
-            warning_flag = False
+            exempt_biosamples = set()
             for lot_review in antibody['lot_reviews']:
                 if lot_review['status'] in ['eligible for new data',
                                             'eligible for new data (via exemption)']:
                     for lot_organism in lot_review['organisms']:
                         eligible_biosample = (lot_review['biosample_term_id'], lot_organism)
+                        if lot_review['status'] == 'eligible for new data (via exemption)':
+                            exempt_biosamples.add(eligible_biosample)
                         eligible_biosamples.add(eligible_biosample)
-                if lot_review['status'] == 'eligible for new data (via exemption)':
-                    warning_flag = True
-            if warning_flag is True:
-                detail = '{} is eligible via exempt for {} in {}'.format(antibody["@id"],
-                                                                         biosample_term_name,
-                                                                         organism)
+
+            if experiment_biosample in exempt_biosamples:
+                detail = '{} is eligible via exemption for {} in {}'.format(antibody["@id"],
+                                                                            biosample_term_name,
+                                                                            organism)
                 yield AuditFailure('antibody eligible via exemption', detail, level='WARNING')
 
             if experiment_biosample not in eligible_biosamples:
