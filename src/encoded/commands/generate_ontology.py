@@ -600,9 +600,10 @@ def getSlims(goid, terms, slimType):
                 slims.append(slimTerms[slimTerm])
 
     if slim_shims.get(slimType, {}):
+        # Overrides all Ontology based-slims
         shim = slim_shims[slimType].get(goid, '')
         if shim:
-            slims.append(shim)
+            slims = [shim]
     return slims
 
 
