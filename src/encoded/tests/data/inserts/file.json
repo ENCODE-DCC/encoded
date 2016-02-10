@@ -1161,7 +1161,7 @@
         "derived_from": [
             "ENCFF000VUQ"
         ],
-        "file_format": "bed",
+        "file_format": "bigBed",
         "file_format_type": "narrowPeak",
         "file_size": 2433593,
         "lab": "j-michael-cherry",

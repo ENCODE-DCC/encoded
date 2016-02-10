@@ -42,6 +42,14 @@ def test_trackDb(testapp, workbook, expected):
     "track ENCSR575ZXX",
     "longLabel Unknown Assay of IMR-90 - ENCSR575ZXX - ENCFF762DWI narrowPeak semi-automated genome annotation rep unknown",
 ])
-def test_dataset_trackEb(testapp, workbook, expected):
+def test_dataset_trackDb(testapp, workbook, expected):
     res = testapp.get("/annotations/ENCSR575ZXX/@@hub/hg19/trackDb.txt")
+    assert expected in res.text
+
+
+@pytest.mark.parameterize('expected', [
+    "bigDataUrl /files/ENCFF003COS/@@download/ENCFF003COS.bigBed?proxy=true"
+])
+def test_related_files_trackDb(testapp, workbook, expected):
+    res = testapp.get("/publication-data/ENCSR727WCB/@@hub/hg19/trackDb.txt")
     assert expected in res.text
