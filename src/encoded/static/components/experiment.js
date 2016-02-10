@@ -300,7 +300,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                                 <dd>{context.award.project}</dd>
                             </div>
 
-                            {context.dbxrefs.length ?
+                            {context.dbxrefs && context.dbxrefs.length ?
                                 <div data-test="external-resources">
                                     <dt>External resources</dt>
                                     <dd><DbxrefList values={context.dbxrefs} /></dd>
@@ -361,7 +361,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                 <FetchedData>
                     <Param name="data" url={dataset.unreleased_files_url(context)} />
-                    <ExperimentGraph context={context} />
+                    <ExperimentGraph context={context} session={this.context.session} />
                 </FetchedData>
 
                 {context.files.length ?
@@ -865,7 +865,7 @@ function graphException(message, file0, file1) {
 module.exports.graphException = graphException;
 
 
-var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId, files, filterAssembly, filterAnnotation) {
+var assembleGraph = module.exports.assembleGraph = function(context, session, infoNodeId, files, filterAssembly, filterAnnotation) {
 
     // Calculate a step ID from a file's derived_from array
     function _derivedFileIds(file) {
@@ -930,7 +930,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     var allReplicates = {}; // All file's replicates as keys; each key references an array of files
     var allPipelines = {}; // List of all pipelines indexed by step @id
     var allMetricsInfo = []; // List of all QC metrics found attached to files
-    var allContributing = {}; // List of all contributing files
     var fileQcMetrics = {}; // List of all file QC metrics indexed by file ID
     var filterOptions = {}; // List of graph filters; annotations and assemblies
     var stepExists = false; // True if at least one file has an analysis_step
@@ -960,35 +959,21 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         }
     });
 
-    // Add contributing files to the allFiles object that other files derive from.
-    // Don't worry about files they derive from; they're not included in the graph.
-    // If an allFiles entry already exists for the file, it gets overwritten so that
-    // allFiles and allContributingFiles point at the same object.
-    if (context.contributing_files && context.contributing_files.length) {
-        context.contributing_files.forEach(function(file) {
-            if (allFiles[file['@id']]) {
-                // Contributing file already existed in file array for some reason; use its existing file object
-                allContributing[file['@id']] = allFiles[file['@id']];
-            } else {
-                // Seeing contributed file for the first time; save it in both allFiles and allContributingFiles
-                allFiles[file['@id']] = allContributing[file['@id']] = file;
-            }
-        });
-    }
-
-    // Collect derived_from files, used replicates, and used pipelines
+    // Collect derived_from files, used replicates, and used pipelines. allFiles has all files directly involved
+    // with this experiment if we're logged in, or just released files directly involved with experiment if we're not.
     Object.keys(allFiles).forEach(function(fileId) {
         var file = allFiles[fileId];
 
         // Build an object keyed with all files that other files derive from. If the file is contributed,
         // we don't care about its derived_from because we don't render that.
-        if (!allContributing[fileId] && file.derived_from && file.derived_from.length) {
+        if (file.derived_from && file.derived_from.length) {
             file.derived_from.forEach(function(derived_from) {
                 var derivedFromId = derived_from['@id'];
                 var derivedFile = allFiles[derivedFromId];
                 if (!derivedFile) {
                     // The derived-from file wasn't in the given file list. Copy the file object from the file's
-                    // derived_from so we can examine it later -- and mark it as missing.
+                    // derived_from so we can examine it later -- and mark it as missing. It could be because a
+                    // derived-from file isn't released and we're not logged in, or because it's a contributing file.
                     derivedFromFiles[derivedFromId] = derived_from;
                     derived_from.missing = true;
                 } else if (!derivedFromFiles[derivedFromId]) {
@@ -1020,7 +1005,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         }
 
         // File is derived; collect any QC info that applies to this file
-        if (file.quality_metrics) {
+        if (file.quality_metrics && file.quality_metrics.length) {
             var matchingQc = [];
 
             // Search file's quality_metrics array to find one with a quality_metric_of field referring to this file.
@@ -1043,6 +1028,30 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     });
     // At this stage, allFiles, allReplicates, and derivedFromFiles point to the same file objects;
     // allPipelines points to pipelines.
+
+    // Now find contributing files by subtracting original_files from the list of derived_from files. Note: derivedFromFiles is
+    // an object keyed by each file's @id. allContributingArray is an array of file objects.
+    var allContributingArray = _(derivedFromFiles).filter((derivedFromFile, derivedFromId) => {
+        return !_(context.original_files).any(originalFileId => originalFileId === derivedFromId);
+    });
+
+    // Process the contributing files array
+    var allContributing = {};
+    allContributingArray.forEach(contributingFile => {
+        // Convert array of contributing files to a keyed object to help with searching later
+        contributingFile.missing = false;
+        var contributingFileId = contributingFile['@id'];
+        allContributing[contributingFileId] = contributingFile;
+
+        // Also add contributing files to the allFiles object
+        if (allFiles[contributingFileId]) {
+            // Contributing file already existed in file array for some reason; use its existing file object
+            allContributing[contributingFileId] = allFiles[contributingFileId];
+        } else {
+            // Seeing contributed file for the first time; save it in allFiles
+            allFiles[contributingFileId] = allContributing[contributingFileId];
+        }
+    });
 
     // Don't draw anything if no files have an analysis_step
     if (!stepExists) {
@@ -1215,13 +1224,26 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             }
 
             // Add file to the graph as a node
-            jsonGraph.addNode(fileNodeId, file.title + ' (' + file.output_type + ')', {
-                cssClass: 'pipeline-node-file' + (fileContributed ? ' contributing' : '') + (infoNodeId === fileNodeId ? ' active' : ''),
+            var fileNodeLabel, fileCssClass, fileRef;
+            var loggedIn = session && session['auth.userid'];
+            if (fileContributed && fileContributed.status !== 'released' && !loggedIn) {
+                // A contributed file isn't released and we're not logged in
+                fileNodeLabel = 'Unreleased';
+                fileCssClass = 'pipeline-node-file contributing error' + (infoNodeId === fileNodeId ? ' active' : '');
+                fileRef = null;
+            } else {
+                fileNodeLabel = file.title + ' (' + file.output_type + ')';
+                fileCssClass = 'pipeline-node-file' + (fileContributed ? ' contributing' : '') + (infoNodeId === fileNodeId ? ' active' : '');
+                fileRef = file;
+            }
+            jsonGraph.addNode(fileNodeId, fileNodeLabel, {
+                cssClass: fileCssClass,
                 type: 'File',
                 shape: 'rect',
                 cornerRadius: 16,
                 parentNode: replicateNode,
-                ref: file
+                contributing: fileContributed,
+                ref: fileRef
             }, metricsInfo);
 
             // If the file has an analysis step, prepare it for graph insertion
@@ -1330,8 +1352,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
     },
 
     render: function() {
-        var context = this.props.context;
-        var data = this.props.data;
+        var {context, session, data} = this.props;
         var items = data ? data['@graph'] : [];
         var files = context.files.concat(items);
 
@@ -1340,7 +1361,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
             // Build the graph; place resulting graph in this.jsonGraph
             var filterOptions = {};
             try {
-                this.jsonGraph = assembleGraph(context, this.state.infoNodeId, files, this.state.selectedAssembly, this.state.selectedAnnotation);
+                this.jsonGraph = assembleGraph(context, session, this.state.infoNodeId, files, this.state.selectedAssembly, this.state.selectedAnnotation);
             } catch(e) {
                 this.jsonGraph = null;
                 console.warn(e.message + (e.file0 ? ' -- file0:' + e.file0 : '') + (e.file1 ? ' -- file1:' + e.file1: ''));
@@ -1375,7 +1396,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                             </Graph>
                         :
                             <div className="panel-full">
-                                <p className="browser-error">Currently selected assembly and genomic annocation hides the graph</p>
+                                <p className="browser-error">Currently selected assembly and genomic annotation hides the graph</p>
                             </div>
                         }
                     </div>
@@ -1496,7 +1517,7 @@ var FileDetailView = function(node) {
             </dl>
         );
     } else {
-        return null;
+        return <p className="browser-error">No information available</p>;
     }
 };
 

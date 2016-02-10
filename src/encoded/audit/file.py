@@ -5,6 +5,7 @@ from contentbase import (
 from .conditions import (
     rfa,
 )
+import datetime
 
 current_statuses = ['released', 'in progress']
 not_current_statuses = ['revoked', 'obsolete', 'deleted']
@@ -125,7 +126,8 @@ def audit_file_platform(value, system):
         raise AuditFailure('missing platform', detail, level='NOT_COMPLIANT')
 
 
-@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN', 'ENCODE2', 'ENCODE2-Mouse'))
+@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN', 'ENCODE',
+                                                     'ENCODE2', 'ENCODE2-Mouse'))
 def audit_file_read_length(value, system):
     '''
     Reads files should have a read_length
@@ -139,7 +141,31 @@ def audit_file_read_length(value, system):
 
     if 'read_length' not in value:
         detail = 'Reads file {} missing read_length'.format(value['@id'])
-        raise AuditFailure('missing read_length', detail, level='DCC_ACTION')
+        yield AuditFailure('missing read_length', detail, level='DCC_ACTION')
+        return
+
+    creation_date = value['date_created'][:10].split('-')
+    year = int(creation_date[0])
+    month = int(creation_date[1])
+    day = int(creation_date[2])
+    created_date = str(year)+'-'+str(month)+'-'+str(day)
+    file_date_creation = datetime.date(year, month, day)
+    threshold_date = datetime.date(2015, 6, 30)
+
+    read_length = value['read_length']
+    if read_length < 50:
+        detail = 'Fastq file {} '.format(value['@id']) + \
+                 'that was created on {} '.format(created_date) + \
+                 'has read length of {}bp.'.format(read_length) + \
+                 ' It is not compliant with ENCODE3 standards.' + \
+                 ' According to ENCODE3 standards files submitted after 2015-6-30 ' + \
+                 'should be at least 50bp long.'
+        if file_date_creation < threshold_date:
+            yield AuditFailure('insufficient read length', detail, level='WARNING')
+            return
+        else:
+            yield AuditFailure('insufficient read length', detail, level='NOT_COMPLIANT')
+            return
 
 
 @audit_checker('file',
@@ -333,6 +359,9 @@ def audit_modERN_ChIP_pipeline_steps(value, system):
         return
 
     if value['file_format'] == 'fastq':
+        if 'step_run' in value:
+            detail = 'Fastq file {} should not have an associated step_run'.format(value['@id'])
+            yield AuditFailure('unexpected step_run', detail, level='ERROR')
         return
 
     if 'step_run' not in value:
@@ -498,7 +527,17 @@ def audit_file_read_depth(value, system):
 
     quality_metrics = value.get('quality_metrics')
 
+    excluded_pipelines = ['Raw mapping with no filtration',
+                          'WGBS single-end pipeline - version 2',
+                          'WGBS single-end pipeline']
     if (quality_metrics is None) or (quality_metrics == []):
+        '''
+        Excluding ChIP-seq - Raw mapping with no filtration BAMs
+        '''
+        for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
+            if pipeline['title'] in excluded_pipelines:
+                return
+
         detail = 'ENCODE Processed alignment file {} has no quality_metrics'.format(
             value['@id'])
         yield AuditFailure('missing quality metrics', detail, level='DCC_ACTION')
@@ -794,6 +833,14 @@ def audit_file_mad_qc_spearman_correlation(value, system):
         return
 
     if value['lab'] != '/labs/encode-processing-pipeline/':
+        return
+
+    '''
+    Excluding unreplicated experiments
+    '''
+    if 'dataset' in value and\
+       'replication_type' in value['dataset'] and \
+       value['dataset']['replication_type'] == 'unreplicated':
         return
 
     if 'analysis_step_version' not in value:
