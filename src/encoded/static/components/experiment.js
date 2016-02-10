@@ -427,6 +427,13 @@ var Experiment = module.exports.Experiment = React.createClass({
                                         </div>
                                     : null}
 
+                                    {context.description ?
+                                        <div data-test="description">
+                                            <dt>Description</dt>
+                                            <dd>{context.description}</dd>
+                                        </div>
+                                    : null}
+
                                     {AssayDetails(replicates, libraryValues1, librarySpecials1)}
 
                                     {context.target ?
@@ -675,7 +682,7 @@ var ReplicateTable = React.createClass({
             this.replicateColumns.biological_replicate_number.title = 'Isogenic replicate';
         } else {
             tableTitle = 'Replicates';
-            this.replicateColumns.biological_replicate_number.title = 'Biosample replicate';
+            this.replicateColumns.biological_replicate_number.title = 'Biological replicate';
         }
 
         return (

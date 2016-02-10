@@ -163,7 +163,7 @@ var SortTable = module.exports.SortTable = React.createClass({
 
         // See if any columns hidden by making an array keyed by column ID that's true for each hidden column.
         // Also keep a count of hidden columns so we can calculate colspan later.
-        columnIds.forEach(function(columnId) {
+        columnIds.forEach(columnId => {
             var hidden = !!(columns[columnId].hide && columns[columnId].hide(list, columns, meta));
             hiddenColumns[columnId] = hidden;
             hiddenCount += hidden ? 1 : 0;
