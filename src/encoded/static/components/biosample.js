@@ -95,6 +95,78 @@ var BiosampleTableFooter = React.createClass({
 });
 
 
+// Collect up all the documents associated with the given biosample. They get combined all into one array of
+// documents (with @type of Document or Characterization). If the given biosample has no documdents, this
+// function returns null. Protocol documents, characterizations, construct documents, and RNAi documents
+// all get included.
+function collectBiosampleDocs(biosample) {
+    // Collect up the various biosample documents
+    var protocolDocuments = [];
+    if (biosample.protocol_documents && biosample.protocol_documents.length) {
+        protocolDocuments = globals.uniqueObjectsArray(biosample.protocol_documents);
+    }
+    var characterizations = [];
+    if (biosample.characterizations && biosample.characterizations.length) {
+        characterizations = globals.uniqueObjectsArray(biosample.characterizations);
+    }
+    var constructDocuments = [];
+    if (biosample.constructs && biosample.constructs.length) {
+        biosample.constructs.forEach(construct => {
+            if (construct.documents && construct.documents.length) {
+                constructDocuments = constructDocuments.concat(construct.documents);
+            }
+        });
+    }
+    var rnaiDocuments = [];
+    if (biosample.rnais && biosample.rnais.length) {
+        biosample.rnais.forEach(rnai => {
+            if (rnai.documents && rnai.documents.length) {
+                rnaiDocuments = rnaiDocuments.concat(rnai.documents);
+            }
+        });
+    }
+    var donorDocuments = [];
+    var donorCharacterizations = [];
+    if (biosample.donor) {
+        if (biosample.donor.characterizations && biosample.donor.characterizations.length) {
+            donorCharacterizations = biosample.donor.characterizations;
+        }
+        if (biosample.donor.donor_documents && biosample.donor.donor_documents.length) {
+            donorDocuments = biosample.donor.donor_documents;
+        }
+    }
+    var donorConstructs = [];
+    if (biosample.model_organism_donor_constructs && biosample.model_organism_donor_constructs.length) {
+        biosample.model_organism_donor_constructs.forEach(construct => {
+            if (construct.documents && construct.documents.length) {
+                donorConstructs = donorConstructs.concat(construct.documents);
+            }
+        });
+    }
+    var talenDocuments = [];
+    if (biosample.talens && biosample.talens.length) {
+        biosample.talens.forEach(talen => {
+            talenDocuments = talenDocuments.concat(talen.documents);
+        });
+    }
+
+    // Put together the document list for rendering
+    // Compile the document list
+    var combinedDocuments = [].concat(
+        protocolDocuments,
+        characterizations,
+        constructDocuments,
+        rnaiDocuments,
+        donorDocuments,
+        donorCharacterizations,
+        donorConstructs,
+        talenDocuments
+    );
+
+    return combinedDocuments;
+}
+
+
 var Biosample = module.exports.Biosample = React.createClass({
     mixins: [AuditMixin],
     render: function() {
@@ -110,17 +182,6 @@ var Biosample = module.exports.Biosample = React.createClass({
             {id: context.biosample_term_name, query: 'biosample_term_name=' + context.biosample_term_name, tip: context.biosample_term_name}
         ];
 
-        // set up RNAi documents panels
-        var rnais = _.sortBy(context.rnais, function(item) {
-            return item.uuid; //may need to change
-        });
-        var rnai_documents = {};
-        rnais.forEach(function (rnai) {
-            rnai.documents.forEach(function (doc, i) {
-                rnai_documents[doc['@id']] = PanelLookup({context: doc, key: i + 1});
-            });
-        });
-
         // Build the text of the synchronization string
         var synchText;
         if (context.synchronization) {
@@ -130,76 +191,24 @@ var Biosample = module.exports.Biosample = React.createClass({
                 : '');
         }
 
-        // Collect up the various biosample documents
-        var protocol_documents = [];
-        if (context.protocol_documents && context.protocol_documents.length) {
-            protocol_documents = globals.uniqueObjectsArray(context.protocol_documents);
-        }
-        var characterizations = [];
-        if (context.characterizations && context.characterizations.length) {
-            characterizations = globals.uniqueObjectsArray(context.characterizations);
-        }
-        var construct_documents = [];
-        if (context.constructs && context.constructs.length) {
-            context.constructs.forEach(construct => {
-                if (construct.documents && construct.documents.length) {
-                    Array.prototype.push.apply(construct_documents, construct.documents);
-                }
-            });
-        }
-        construct_documents = globals.uniqueObjectsArray(construct_documents);
-        var rnai_documents = [];
-        if (context.rnais && context.rnais.length) {
-            context.rnais.forEach(rnai => {
-                if (rnai.documents && rnai.documents.length) {
-                    Array.prototype.push.apply(rnai_documents, rnai.documents);
-                }
-            });
-        }
-        rnai_documents = globals.uniqueObjectsArray(rnai_documents);
-        var donorDocuments = [];
-        var donorCharacterizations = [];
-        if (context.donor) {
-            if (context.donor.characterizations && context.donor.characterizations.length) {
-                donorCharacterizations = context.donor.characterizations;
-            }
-            if (context.donor.donor_documents && context.donor.donor_documents.length) {
-                donorDocuments = context.donor.donor_documents;
-            }
-        }
-        var donorConstructs = [];
-        if (context.model_organism_donor_constructs && context.model_organism_donor_constructs.length) {
-            context.model_organism_donor_constructs.forEach(construct => {
-                if (construct.documents && construct.documents.length) {
-                    donorConstructs = donorConstructs.concat(construct.documents);
-                }
-            });
-        }
+        // Collect all documents in this biosample
+        var combinedDocs = collectBiosampleDocs(context);
 
-        // Set up TALENs panel for multiple TALENs, and TALEN document display
-        var talenDocuments = [];
+        // If this biosample is part of another, collect those documents too, then remove
+        // any duplicate documents in the combinedDocs array.
+        if (context.part_of) {
+            var parentCombinedDocs = collectBiosampleDocs(context.part_of);
+            combinedDocs = combinedDocs.concat(parentCombinedDocs);
+        }
+        combinedDocs = globals.uniqueObjectsArray(combinedDocs);
+
+        // Set up TALENs panel for multiple TALENs
         var talens = null;
         if (context.talens && context.talens.length) {
             talens = context.talens.map(talen => {
-                Array.prototype.push.apply(talenDocuments, talen.documents);
                 return PanelLookup({context: talen});
             });
         }
-
-        // Put together the document list for rendering
-        // Compile the document list
-        var combinedDocuments = [].concat(
-            protocol_documents,
-            characterizations,
-            construct_documents,
-            rnai_documents,
-            donorCharacterizations,
-            donorConstructs,
-            donorDocuments,
-            talenDocuments
-        );
-        var documentSpecs = [{documents: combinedDocuments}];
-
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
@@ -354,6 +363,34 @@ var Biosample = module.exports.Biosample = React.createClass({
                                             <dd>{context.phase}</dd>
                                         </div>
                                     : null}
+
+                                    {context.derived_from ?
+                                        <div data-test="derivedfrom">
+                                            <dt>Derived from biosample</dt>
+                                            <dd><a href={context.derived_from['@id']}>{context.derived_from.accession}</a></dd>
+                                        </div>
+                                    : null}
+
+                                    {context.part_of ?
+                                        <div data-test="separatedfrom">
+                                            <dt>Separated from biosample</dt>
+                                            <dd><a href={context.part_of['@id']}>{context.part_of.accession}</a></dd>
+                                        </div>
+                                    : null}
+
+                                    {context.parent_of && context.parent_of.length ?
+                                        <div data-test="parentof">
+                                            <dt>Parent of biosamples</dt>
+                                            <dd>
+                                                {context.parent_of.map((biosample, i) =>
+                                                    <span>
+                                                        {i > 0 ? <span>, </span> : null}
+                                                        <a href={biosample['@id']}>{biosample.accession}</a>
+                                                    </span>
+                                                )}
+                                            </dd>
+                                        </div>
+                                    : null}
                                 </dl>
                             </div>
 
@@ -428,22 +465,6 @@ var Biosample = module.exports.Biosample = React.createClass({
                                 </dl>
                             </div>
                         </div>
-
-                        {context.derived_from ?
-                            <section data-test="derivedfrom">
-                                <hr />
-                                <h4>Derived from biosample</h4>
-                                <a className="non-dl-item" href={context.derived_from['@id']}> {context.derived_from.accession} </a>
-                            </section>
-                        : null}
-
-                        {context.part_of ?
-                            <section data-test="separatedfrom">
-                                <hr />
-                                <h4>Separated from biosample</h4>
-                                <a className="non-dl-item" href={context.part_of['@id']}> {context.part_of.accession} </a>
-                            </section>
-                        : null}
 
                         {context.pooled_from.length ?
                             <section data-test="pooledfrom">
@@ -524,7 +545,9 @@ var Biosample = module.exports.Biosample = React.createClass({
                               url={'/search/?type=biosample&pooled_from.uuid=' + context.uuid}
                               Component={BiosampleTable} />
 
-                <DocumentsPanel documentSpecs={documentSpecs} />
+                {combinedDocs.length ?
+                    <DocumentsPanel documentSpecs={[{documents: combinedDocs}]} />
+                : null}
             </div>
         );
     }

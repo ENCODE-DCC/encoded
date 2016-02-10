@@ -26,6 +26,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
     name_key = 'accession'
     rev = {
         'characterizations': ('BiosampleCharacterization', 'characterizes'),
+        'parent_of': ('Biosample', 'part_of'),
     }
     embedded = [
         'donor',
@@ -66,6 +67,22 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'protocol_documents.submitted_by',
         'derived_from',
         'part_of',
+        'part_of.protocol_documents',
+        'part_of.protocol_documents.award',
+        'part_of.protocol_documents.lab',
+        'part_of.protocol_documents.submitted_by',
+        'part_of.characterizations.documents',
+        'part_of.characterizations.documents.award',
+        'part_of.characterizations.documents.lab',
+        'part_of.characterizations.documents.submitted_by',
+        'part_of.constructs.documents',
+        'part_of.constructs.documents.award',
+        'part_of.constructs.documents.lab',
+        'part_of.constructs.documents.submitted_by',
+        'part_of.rnais.documents.award',
+        'part_of.rnais.documents.lab',
+        'part_of.rnais.documents.submitted_by',
+        'parent_of',
         'pooled_from',
         'characterizations.submitted_by',
         'characterizations.award',
@@ -250,6 +267,17 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
     })
     def characterizations(self, request, characterizations):
         return paths_filtered_by_status(request, characterizations)
+
+    @calculated_property(schema={
+        "title": "Child biosamples",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Biosample.part_of",
+        },
+    })
+    def parent_of(self, request, parent_of):
+        return paths_filtered_by_status(request, parent_of)
 
     @calculated_property(schema={
         "title": "Age",

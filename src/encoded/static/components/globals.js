@@ -77,11 +77,7 @@ module.exports.truncateString = function (str, len) {
 
 // Given an array of objects with @id properties, this returns the same array but with any
 // duplicate @id objects removed.
-module.exports.uniqueObjectsArray = function(objects) {
-    return _(objects).uniq(object => {
-        return object['@id'];
-    });
-};
+module.exports.uniqueObjectsArray = objects => _(objects).uniq(object =>  object['@id']);
 
 module.exports.bindEvent = function (el, eventName, eventHandler) {
     if (el.addEventListener) {
