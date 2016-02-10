@@ -110,10 +110,8 @@ var Experiment = module.exports.Experiment = React.createClass({
         // if they differ between replicates.
         if (replicates && replicates.length) {
             // Prepare to collect values from each replicate's library. Each key in this object refers to a property in the libraries.
-            var libraryValues1 = {
-                treatments:                     {values: {}, value: undefined, component: {}, title: 'Treatments',                test: 'treatments'}
-            };
-            var libraryValues2 = {
+            var libraryValues = {
+                treatments:                     {values: {}, value: undefined, component: {}, title: 'Treatments',                test: 'treatments'},
                 nucleic_acid_term_name:         {values: {}, value: undefined, component: {}, title: 'Nucleic acid type',         test: 'nucleicacid'},
                 depleted_in_term_name:          {values: {}, value: undefined, component: {}, title: 'Depleted in',               test: 'depletedin'},
                 nucleic_acid_starting_quantity: {values: {}, value: undefined, component: {}, title: 'Library starting quantity', test: 'startingquantity'},
@@ -128,16 +126,14 @@ var Experiment = module.exports.Experiment = React.createClass({
             // For any library properties that aren't simple values, put functions to process them into simple values in this object,
             // keyed by their library property name. Returned JS undefined if no complex value exists so that we can reliably test it
             // momentarily. We have a couple properties too complex even for this, so they'll get added separately at the end.
-            var librarySpecials1 = {
+            var librarySpecials = {
                 treatments: function(library) {
                     var treatments = library.treatments;
                     if (treatments && treatments.length) {
                         return treatments.map(treatment => treatment.treatment_term_name).sort().join(', ');
                     }
                     return undefined;
-                }
-            };
-            var librarySpecials2 = {
+                },
                 nucleic_acid_starting_quantity: function(library) {
                     var quantity = library.nucleic_acid_starting_quantity;
                     if (quantity) {
@@ -162,7 +158,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                     return undefined;
                 }
             };
-            var libraryComponents2 = {
+            var libraryComponents = {
                 nucleic_acid_starting_quantity: function(library) {
                     if (library.nucleic_acid_starting_quantity && library.nucleic_acid_starting_quantity_units) {
                         return <span>{library.nucleic_acid_starting_quantity}<span className="unit">{library.nucleic_acid_starting_quantity_units}</span></span>;
@@ -406,10 +402,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                                         <dd>{context.assay_term_name}</dd>
                                     </div>
 
-                                    {context.replication_type ?
-                                        <div data-test="replicationtype">
-                                            <dt>Replication type</dt>
-                                            <dd>{context.replication_type}</dd>
+                                    {context.target ?
+                                        <div data-test="target">
+                                            <dt>Target</dt>
+                                            <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
                                         </div>
                                     : null}
 
@@ -427,6 +423,13 @@ var Experiment = module.exports.Experiment = React.createClass({
                                         </div>
                                     : null}
 
+                                    {context.replication_type ?
+                                        <div data-test="replicationtype">
+                                            <dt>Replication type</dt>
+                                            <dd>{context.replication_type}</dd>
+                                        </div>
+                                    : null}
+
                                     {context.description ?
                                         <div data-test="description">
                                             <dt>Description</dt>
@@ -434,16 +437,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                                         </div>
                                     : null}
 
-                                    {AssayDetails(replicates, libraryValues1, librarySpecials1)}
-
-                                    {context.target ?
-                                        <div data-test="target">
-                                            <dt>Target</dt>
-                                            <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
-                                        </div>
-                                    : null}
-
-                                    {AssayDetails(replicates, libraryValues2, librarySpecials2, libraryComponents2)}
+                                    {AssayDetails(replicates, libraryValues, librarySpecials, libraryComponents)}
 
                                     {Object.keys(platforms).length ?
                                         <div data-test="platform">

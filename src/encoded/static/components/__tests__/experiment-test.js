@@ -44,8 +44,8 @@ describe('Experiment Page', function() {
 
         it('has correct summary panel and key-value elements counts within it', function() {
             expect(summary.length).toEqual(1);
-            expect(defTerms.length).toEqual(8);
-            expect(defDescs.length).toEqual(8);
+            expect(defTerms.length).toEqual(9);
+            expect(defDescs.length).toEqual(9);
         });
 
         it('has proper biosample summary for no-biosample case (code adds space always)', function() {
@@ -64,7 +64,9 @@ describe('Experiment Page', function() {
         });
 
         it('has proper release date', function() {
-            expect(defDescs[7].textContent).toEqual('2011-10-29');
+            var item = summary[0].getDOMNode().querySelector('[data-test="date-released"]');
+            var desc = item.getElementsByTagName('dd')[0];
+            expect(desc.textContent).toEqual('2011-10-29');
         });
 
         it('has two experiment status elements in header', function() {
