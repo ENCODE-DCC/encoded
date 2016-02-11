@@ -128,8 +128,9 @@ slim_shims = {
         'OBI:0001853': 'DNA accessibility',  # 'OBI:0000870',
         'OBI:0001859': 'DNA accessibility',  # 'OBI:0000870', / OBI:0000424
         'OBI:0001848': '3D chromatin structure',  # ChIA-PET / OBI:000870
-        'OBI:0001923': 'Proteomics',  # 'OBI:0000615': 'MS/MS'
-        'OBI:0001849': 'Genotyping',  #  OBI:0000435 (DNA-PET)
+        'OBI:0001923': 'Proteomics',  # OBI:0000615': 'MS/MS'
+        'OBI:0001849': 'Genotyping',  # OBI:0000435 (DNA-PET)
+        'OBI:0002044': 'RNA binding',  # OBI:0001854 (RNA-Bind-N-Seq)
     }
 
 }
@@ -184,7 +185,7 @@ type_slims = {
 # Note this also shows the final datastructure for ontology.json
 ntr_assays = {
     "NTR:0000612": {
-        "assay": ['RNA Binding'],
+        "assay": ['RNA binding'],
         "category": [],
         "developmental": [],
         "name": "Switchgear",
@@ -236,7 +237,7 @@ ntr_assays = {
         "types": []
     },
     "NTR:0002490": {
-        "assay": ['DNA Methylation'],
+        "assay": ['DNA methylation'],
         "category": [],
         "developmental": [],
         "name": "TAB-seq",
