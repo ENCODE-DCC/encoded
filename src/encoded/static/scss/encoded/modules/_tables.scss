@@ -148,6 +148,12 @@ form.table-filter {
 .table-file {
     margin-bottom: 20px;
 
+    .table {
+        margin-bottom: 0;
+    }
+}
+
+.table-sortable {
     thead {
         tr {
             border-bottom: 1px solid #e0e0e0;
@@ -164,10 +170,6 @@ form.table-filter {
                 }
             }
         }
-    }
-
-    .table {
-        margin-bottom: 0;
     }
 }
 

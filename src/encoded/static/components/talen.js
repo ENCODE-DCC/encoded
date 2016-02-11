@@ -1,15 +1,19 @@
 'use strict';
 var React = require('react');
+var panel = require('../libs/bootstrap/panel');
 var globals = require('./globals');
 var search = require('./search');
 var statuslabel = require('./statuslabel');
 var navbar = require('./navbar');
+var doc = require('./doc');
 
 var StatusLabel = statuslabel.StatusLabel;
 var Breadcrumbs = navbar.Breadcrumbs;
+var {Panel, PanelBody, PanelHeading} = panel;
+var {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile} = doc;
 
 
-var Panel = function (props) {
+var PanelLookup = function (props) {
     // XXX not all panels have the same markup
     var context;
     if (props['@id']) {
@@ -25,13 +29,16 @@ var Panel = function (props) {
 var TalenPage = React.createClass({
     render: function() {
         var context = this.props.context;
-        var talen = Panel({context: context});
+        var talen = PanelLookup({context: context});
         var itemClass = globals.itemClass(context, 'view-item');
 
         var crumbs = [
             {id: 'TALENs'},
             {id: context.talen_platform, query: 'talen_platform=' + context.talen_platform, tip: context.talen_platform}
         ];
+
+        // Collect the TALEN construct documents
+        var constructDocuments = (context.documents && context.documents.length) ? context.documents : [];
 
         return (
             <div className={itemClass}>
@@ -46,9 +53,11 @@ var TalenPage = React.createClass({
                         </div>
                     </div>
                 </header>
-                <div className="panel panel-default">
-                    {talen}
-                </div>
+                <Panel>{talen}</Panel>
+
+                {constructDocuments.length ?
+                    <DocumentsPanel documentSpecs={[{documents: constructDocuments}]} />
+                : null}
             </div>
         );
     }
@@ -67,12 +76,6 @@ var Talen = React.createClass({
         var context = this.props.context;
         var coordinates = context.target_genomic_coordinates;
 
-        // Collect the TALEN construct documents
-        var construct_documents = {};
-        context.documents.forEach(function (doc, i) {
-            construct_documents[doc['@id']] = Panel({context: doc, key: i + 1});
-        });
-
         return (
             <div className="panel-body">
                 <dl className="key-value">
@@ -83,7 +86,7 @@ var Talen = React.createClass({
 
                     <div data-test="rvd">
                         <dt>RVD sequence</dt>
-                        <dd>{context.RVD_sequence}</dd>
+                        <dd className="sequence">{context.RVD_sequence}</dd>
                     </div>
 
                     <div data-test="targetsequence">
@@ -111,15 +114,6 @@ var Talen = React.createClass({
                         <dd>{context.vector_backbone_name}</dd>
                     </div>
                 </dl>
-
-                {Object.keys(construct_documents).length ?
-                    <div>
-                        <h3>Construct documents</h3>
-                        <div className="row multi-columns-row">
-                            {construct_documents}
-                        </div>
-                    </div>
-                : null}
             </div>
         );
     }
