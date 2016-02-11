@@ -1442,18 +1442,19 @@
         "uuid": "b144041d-7913-4c29-aeca-412bf62c7473"
     },
     {
-        "_test": "original file for a series",
+        "_test": "original file for a series (vizualizable)",
         "accession": "ENCFF001JEV",
         "assembly": "ce10",
         "award": "U41HG007355",
         "dataset": "/organism-development-series/ENCSR300DEV/",
-        "file_format": "gtf",
+        "file_format": "bigBed",
+        "file_format_type": "bed6",
         "output_type": "transcript quantifications",
         "lab": "/labs/robert-waterston/",
         "md5sum": "33be360467d9b7f9bfcf1329adc9d753",
         "status": "released",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "submitted_file_name": "test_celegans_quantifications.gtf.gz",
+        "submitted_file_name": "test_celegans_quantifications.bb",
         "uuid": "54fe214f-fe3d-4014-ac96-13c3b651127f"
     },
     {

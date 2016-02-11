@@ -153,7 +153,7 @@ def get_hub(label):
 
 def generate_trackDb(embedded, visibility, assembly=None):
 
-    files = embedded.get('files', None) or embedded.get('related_files', None)
+    files = embedded.get('files', []) or embedded.get('related_files', [])
 
     # checks if there is assembly specified for each experiment
     new_files = []
