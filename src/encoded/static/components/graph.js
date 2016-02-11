@@ -1,8 +1,11 @@
 'use strict';
 var React = require('react');
+var panel = require('../libs/bootstrap/panel');
 var _ = require('underscore');
 var globals = require('./globals');
 var BrowserFeat = require('./browserfeat').BrowserFeat;
+
+var {Panel, PanelBody, PanelHeading} = panel;
 
 
 // The JsonGraph object helps build JSON graph objects. Create a new object
@@ -357,14 +360,14 @@ var Graph = module.exports.Graph = React.createClass({
         var orientBtnClass = (this.state.verticalGraph ? 'btn-orient-horizontal' : 'btn-orient-vertical');
         var orientBtnAlt = 'Orient graph ' + (this.state.verticalGraph ? 'horizontally' : 'vertically');
         return (
-            <div className="panel-full">
+            <Panel>
                 <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler}></div>
                 <div className="graph-dl clearfix">
                     <button className="btn btn-info btn-sm btn-orient-wrapper" title={orientBtnAlt} onClick={this.handleOrientationClick}><span className={orientBtnClass}><span className="sr-only">{orientBtnAlt}</span></span></button>
                     <button ref="dlButton" className="btn btn-info btn-sm pull-right" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
                 </div>
                 {this.props.children}
-            </div>
+            </Panel>
         );
     }
 });

@@ -59,6 +59,7 @@ ORDER = [
     'file',
     'star_quality_metric',
     'bismark_quality_metric',
+    'cpg_correlation_quality_metric',
     'chipseq_filter_quality_metric',
     'encode2_chipseq_quality_metric',
     'fastqc_quality_metric',
@@ -541,7 +542,7 @@ PHASE1_PIPELINES = {
         remove_keys('lab', 'submits_for'),
     ],
     'biosample': [
-        remove_keys('derived_from', 'pooled_from'),
+        remove_keys('derived_from', 'pooled_from', 'part_of'),
     ],
     'library': [
         remove_keys('spikeins_used'),
@@ -600,7 +601,7 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('lab', 'submits_for'),
     ],
     'biosample': [
-        skip_rows_missing_all_keys('derived_from', 'pooled_from'),
+        skip_rows_missing_all_keys('derived_from', 'pooled_from', 'part_of'),
     ],
     'library': [
         skip_rows_missing_all_keys('spikeins_used'),

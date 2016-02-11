@@ -11,7 +11,8 @@ def file_exp(lab, award, testapp, experiment):
         'biosample_term_id': 'NTR:000012',
         'biosample_term_name': 'Some body part',
         'possible_controls': [experiment['uuid']],
-        'status': 'released'
+        'status': 'released',
+        'date_released': '2016-01-01'
         }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
@@ -35,7 +36,8 @@ def file_exp2(lab, award, testapp):
         'assay_term_id': 'OBI:0001864',
         'biosample_term_id': 'NTR:000013',
         'biosample_term_name': 'Some other body part',
-        'status': 'released'
+        'status': 'released',
+        'date_released': '2016-01-01'
         }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
@@ -514,7 +516,7 @@ def test_audit_file_read_depth_chip_seq_paired_end(testapp, file_exp, file6, fil
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'insufficient read depth' for error in errors_list)
+    assert any(error['category'] == 'low read depth' for error in errors_list)
 
 
 def test_audit_file_mad_qc_spearman_correlation(testapp, pipeline_bam,
