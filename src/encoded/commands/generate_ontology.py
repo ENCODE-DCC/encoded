@@ -123,10 +123,11 @@ slim_shims = {
     # this allows us to manually assign term X to slim Y while waiting for ontology updates
     'assay': {
         # DNA accessibility
-        'OBI:0001924': 'DNA accessibility',  # 'OBI:0000870',
-        'OBI:0002039': 'DNA accessibility',  # 'OBI:0000870',
-        'OBI:0001853': 'DNA accessibility',  # 'OBI:0000870',
-        'OBI:0001859': 'DNA accessibility',  # 'OBI:0000870', / OBI:0000424
+        'OBI:0001924': 'DNA accessibility',  # 'OBI:0000870' / MNase-seq
+        'OBI:0002039': 'DNA accessibility',  # 'OBI:0000870', / ATAC-seq
+        'OBI:0001853': 'DNA accessibility',  # 'OBI:0000870', / DNase-seq
+        'OBI:0001859': 'DNA accessibility',  # 'OBI:0000870', / OBI:0000424  / FAIRE-seq
+        'OBI:0002042': '3D chromatin structure',  # 'OBI:0000870' (Hi-C)
         'OBI:0001848': '3D chromatin structure',  # ChIA-PET / OBI:000870
         'OBI:0001923': 'Proteomics',  # OBI:0000615': 'MS/MS'
         'OBI:0001849': 'Genotyping',  # OBI:0000435 (DNA-PET)
@@ -140,7 +141,7 @@ preferred_name = {
     "OBI:0001247": "genotyping HTS",
     "OBI:0001332": "DNAme array",
     "OBI:0001335": "microRNA counts",
-    "OBI:0001463": "expression array",
+    "OBI:0001463": "RNA microarray",
     "OBI:0001863": "WGBS",
     "OBI:0001923": "MS/MS",
     "OBI:0001271": "RNA-seq",
@@ -148,7 +149,8 @@ preferred_name = {
     "OBI:0001853": "DNase-seq",
     "OBI:0001920": "Repli-Seq",
     "OBI:0001864": "RAMPAGE",
-    "OBI:0001393": "genotyping array"
+    "OBI:0001393": "genotyping array",
+    "OBI:0002042": "Hi-C",
 }
 
 category_slims = {

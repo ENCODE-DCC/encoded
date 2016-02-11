@@ -179,10 +179,10 @@
     {
         "_test": "NTR for assay and no replicates",
         "accession": "ENCSR000AJK",
-        "assay_term_id": "NTR:0000020",
-        "assay_term_name": "Nanostring",
+        "assay_term_id": "OBI:0002042",
+        "assay_term_name": "carbon-copy chromosome conformation capture assay followed by sequencing assay",
         "award": "U54HG006998",
-        "description": "Irvine Nanostring GM12878",
+        "description": "Irvine Hi-C GM12878",
         "lab": "ali-mortazavi",
         "status": "released",
         "date_released": "2016-01-01",
