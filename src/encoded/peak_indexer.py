@@ -4,7 +4,6 @@ import gzip
 import csv
 import logging
 import collections
-import pprint
 from pyramid.view import view_config
 from elasticsearch.exceptions import (
     NotFoundError
@@ -137,7 +136,6 @@ def index_peaks(uuid, request):
         return
 
 
-    log.warn('bed file found {}'.format(pprint.pformat(context)))
 
 
     urllib3.disable_warnings()
@@ -186,7 +184,6 @@ def index_peaks(uuid, request):
 
 @view_config(route_name='index_file', request_method='POST', permission="index")
 def index_file(request):
-    log.warn('File indexing restarted')
     INDEX = request.registry.settings['contentbase.elasticsearch.index']
     request.datastore = 'database'
     dry_run = request.json.get('dry_run', False)
