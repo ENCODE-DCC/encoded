@@ -604,6 +604,16 @@ var AuditMixin = audit.AuditMixin;
         return count;
     }
 
+    var SubTerm = search.SubTerm = React.createClass({
+        render: function() {
+            <ul className="facet-list nav">
+                <div>
+                    {terms.map(term => <Term {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />)}
+                </div>
+            </ul>
+        }
+    });
+
     var Term = search.Term = React.createClass({
         render: function () {
             var filters = this.props.filters;
