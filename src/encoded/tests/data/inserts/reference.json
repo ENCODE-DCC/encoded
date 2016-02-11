@@ -8,7 +8,8 @@
         "lab": "john-stamatoyannopoulos",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "1986343c-a156-43f3-b1a4-1761f1786df5"
+        "uuid": "1986343c-a156-43f3-b1a4-1761f1786df5",
+        "date_released": "2016-01-01"
     },
     {
         "_test": "spikes2",
@@ -19,7 +20,8 @@
         "lab": "barbara-wold",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "01235afd-85c6-4d01-be18-06b0eb2266ed"
+        "uuid": "01235afd-85c6-4d01-be18-06b0eb2266ed",
+        "date_released": "2016-01-01"
     },
     {
         "_test": "RAMPAGE spike-ins",
@@ -54,7 +56,8 @@
         "lab": "/labs/encode-processing-pipeline/",
         "organism": "human",
         "software_used": ["/software_version/cf999bd4-0a93-453d-9e0e-69d1cfe6292d"],
-        "date_released": "2013-11-18"
+        "date_released": "2013-11-18",
+        "status": "released"
     },
     {
         "_test": "reference file dataset ",
@@ -66,6 +69,7 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "8bd36e84-f20e-48d3-8c03-c99df8cd6b2b",
-        "software_used": ["/software_version/cf999bd4-0a93-453d-9e0e-69d1cfe6292d"]
+        "software_used": ["/software_version/cf999bd4-0a93-453d-9e0e-69d1cfe6292d"],
+        "date_released": "2016-01-01"
     }
 ]
