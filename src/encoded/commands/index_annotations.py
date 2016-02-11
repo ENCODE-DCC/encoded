@@ -1,6 +1,6 @@
 from pyramid.paster import get_app
 from elasticsearch import RequestError
-from contentbase.elasticsearch import SNP_SEARCH_ES
+from contentbase.elasticsearch import ELASTIC_SEARCH
 import logging
 import json
 
