@@ -606,21 +606,35 @@ var AuditMixin = audit.AuditMixin;
 
     var SubTerm = search.SubTerm = React.createClass({
         render: function() {
-            <ul className="facet-list nav">
-                <div>
-                    {terms.map(term => <Term {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />)}
-                </div>
-            </ul>
+            var {facet, filters} = this.props;
+            var terms = facet.terms.filter(term => term.doc_count > 0 || _(filters).any(filter => filter.term === term.key));
+
+            return (
+                <ul className="facet-list nav">
+                    <div>
+                        {terms.map(term => <Term key={term.key} term={term} filters={filters} total={facet.total} facet={facet} />)}
+                    </div>
+                </ul>
+            );
         }
     });
 
     var Term = search.Term = React.createClass({
+        propTypes: {
+            term: React.PropTypes.object.isRequired, // Info on term to display
+            filters: React.PropTypes.array, // Filtering information
+            facet: React.PropTypes.object, // Facet this term appears in
+            subfacet: React.PropTypes.object, // Subfacet of this term
+            total: React.PropTypes.number // Total number of objects with this term
+        },
+
         render: function () {
             var filters = this.props.filters;
             var term = this.props.term['key'];
             var count = this.props.term['doc_count'];
             var title = this.props.title || term;
             var field = this.props.facet['field'];
+            var subfacet = this.props.subfacet;
             var em = field === 'target.organism.scientific_name' ||
                      field === 'organism.scientific_name' ||
                      field === 'replicates.library.biosample.donor.organism.scientific_name';
@@ -636,6 +650,8 @@ var AuditMixin = audit.AuditMixin;
             } else {
                 href = this.props.searchBase + field + '=' + encodeURIComponent(term).replace(/%20/g, '+')
             }
+            console.log('TERM: %o', term);
+            console.log('SUBFACET: %o', subfacet);
             return (
                 <li id={selected ? "selected" : null} key={term}>
                     {selected ? '' : <span className="bar" style={barStyle}></span>}
@@ -645,6 +661,9 @@ var AuditMixin = audit.AuditMixin;
                         <span className="facet-item">
                             {em ? <em>{title}</em> : <span>{title}</span>}
                         </span>
+                        {subfacet ?
+                            <SubTerm {...this.props} facet={subfacet} filters={filters} />
+                        : null}
                     </a>
                 </li>
             );
@@ -662,7 +681,7 @@ var AuditMixin = audit.AuditMixin;
                 title = term;
             }
             var total = this.props.total;
-            return <Term {...this.props} title={title} filters={filters} total={total} />;
+            return <Term {...this.props} title={title} subfacet={this.props.subfacet} filters={filters} total={total} />;
         }
     });
 
@@ -673,7 +692,8 @@ var AuditMixin = audit.AuditMixin;
         },
 
         render: function() {
-            var {facet, filters} = this.props;
+            var {facet, filters, context, facets} = this.props;
+            var targetNameFacet;
             var hideTypeFacet = false; // True if we need to hide the 'Data type' facet.
 
             // Get array of all terms from facets whose doc_count > 0. Include terms whose keys are specified in a filter's term
@@ -691,6 +711,57 @@ var AuditMixin = audit.AuditMixin;
                 }
             }
 
+            // Subfacet detection
+            var subfacets = {};
+            var termHierarchy = {};
+            if (facet.field === 'target.investigated_as') {
+                // target.investigated_as => target.name
+                // Search through all experiments matching the current search that has target.investigated_as
+                context['@graph'].forEach(item => {
+                    if (_(item['@type']).any(type => type === 'Experiment')) {
+                        // Now we have an object (item) of type Experiment. 
+                        if (item.target && item.target.investigated_as && item.target.investigated_as.length && item.target.name) {
+                            item.target.investigated_as.forEach(target => {
+                                if (termHierarchy[target]) {
+                                    termHierarchy[target].push(item.target.name);
+                                } else {
+                                    termHierarchy[target] = [item.target.name];
+                                }
+                            });
+                        }
+                    }
+                });
+
+                // Remove duplicate items in each target's array of names
+                Object.keys(termHierarchy).forEach(target => {
+                    termHierarchy[target] = _.uniq(termHierarchy[target]);
+                });
+
+                // termHierarchy now has a key for each target.investigated_as containing an array of target.name that applies to it.
+                // Assemble the subfacet object for each term. subfacets will be keyed by 'target.name'
+
+                // First find 'target.name' facet entry so we can get the doc_count for each item
+                targetNameFacet = _(facets).find(facet => facet.field === 'target.name');
+                if (targetNameFacet) {
+                    // For each target.investigated_as term, build a subfacet
+                    facet.terms.forEach(term => {
+                        if (termHierarchy[term.key]) {
+                            termHierarchy[term.key].forEach(name => {
+                                var subfacetTerm = _(targetNameFacet.terms).find(term => term.key === name);
+                                if (subfacetTerm) {
+                                    if (subfacets[term.key]) {
+                                        subfacets[term.key].push(subfacetTerm);
+                                    } else {
+                                        subfacets[term.key] = [subfacetTerm];
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+                console.log(subfacets);
+            }
+
             if (!hideTypeFacet) {
                 var {title, field, total} = facet;
                 var termID = title.replace(/\s+/g, '');
@@ -704,7 +775,18 @@ var AuditMixin = audit.AuditMixin;
                         <h5>{title}</h5>
                         <ul className="facet-list nav">
                             <div>
-                                {terms.map(term => <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />)}
+                                {terms.map(term => {
+                                    var subfacet = {};
+                                    if (facet.field === 'target.investigated_as' && subfacets[term.key]) {
+                                        subfacet.field = targetNameFacet.field;
+                                        subfacet.terms = subfacets[term.key];
+                                        subfacet.title = targetNameFacet.title;
+                                        subfacet.total = targetNameFacet.total;
+                                    } else{
+                                        subfacet = null;
+                                    }
+                                    return <TermComponent {...this.props} key={term.key} term={term} subfacet={subfacet} filters={filters} total={total} canDeselect={canDeselect} />;
+                                })}
                             </div>
                         </ul>
                     </div>

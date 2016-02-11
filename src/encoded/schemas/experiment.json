@@ -140,6 +140,9 @@
         "target.investigated_as": {
             "title": "Target of assay"
         },
+        "target.name": {
+            "title": "Target name"
+        },
         "replicates.library.biosample.biosample_type": {
             "title": "Biosample type"
         },
