@@ -10,59 +10,63 @@ dd.h3, dd.h4 {
     font-weight: normal;
 }
 
-.key-value {
+dl.key-value, dl.key-value-doc {
     margin: 0;
 
-    > div {
-        @extend .clearfix;
+    dt, dd {
+        display: block;
+        float: none;
+        margin: 0;
+        padding: 0;
+        line-height: 1.3;
+        text-align: left;
+        vertical-align: top;
+        width: auto;
+        word-wrap: break-word;
     }
 
     dt {
-        padding-top: 0;
-        padding-bottom: 2px;
-        text-align: left;
+        font-weight: bold;
 
         &:after {
-            content: ": ";
+            content: ":";
         }
-    }
-
-    dt, dd {
-        margin-left: 0;
-        padding-top: 0;
-        margin-bottom: 0px;
-        @include font-size(1);
     }
 
     dd {
-        margin-bottom: 10px;
-        padding-bottom: 0;
-
-        a.stacked-link {
-            display: block;
+        // For things like gene sequences that are multi-line sequences with no spaces
+        &.sequence {
+            overflow-wrap: break-word;
+            word-break: break-all;
         }
+    }
+
+    [data-test] {
+        clear: both;
+        margin: 6px 0;
     }
 }
 
 @media screen and (min-width: $screen-xs-min) {
-    .key-value {
-        dt {
-            float: left;
-            width: $component-offset-horizontal;
-            text-align: right;
-            clear: left;
-
-        }
+    dl.key-value {
+        display: table;
 
         dt, dd {
-            padding-top: 5px;
-            line-height: 18px;
+            display: table-cell;
+        }
+
+        dt {
+            min-width: 140px;
+            padding: 8px 0;
         }
 
         dd {
-            margin-left: 200px;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
+            padding: 8px 0 8px 10px;
+        }
+
+        [data-test] {
+            clear: none;
+            display: table-row;
         }
     }
 }
@@ -140,17 +144,17 @@ dd.h3, dd.h4 {
     }
 }
 
-.unit::before {
-    content: " ";
+// When multiple items in a <dd> need to be displayed on their own lines.
+// Apply to each <span> within a <dd> that needs its own line.
+.line-item {
+    &:before {
+        content: ' ';
+        display: block;
+    }
 }
 
-.horizontal-list {
-    @include clearfix;
-
-    li {
-        float: left;
-        margin-right: 0.5em;
-    }
+.unit::before {
+    content: " ";
 }
 
 dd ul, .multi-value {
@@ -190,13 +194,21 @@ dd ul, .multi-value {
     line-height: 1.6 !important;
 }
 
+.sw-step-versions {
+    display: inline-block;
+    margin-top: 8px;
+
+    &:first-child {
+        margin-top: 0;
+    }
+}
+
 .software-version-list {
-    @extend .clearfix;
+    display: inline;
 }
 
 .software-version {
-    display: block;
-    float: left;
+    display: inline-block;
     padding: 0;
     margin-right: 5px;
     @include border-radius(2px);
@@ -216,12 +228,10 @@ dd ul, .multi-value {
     }
 
     .software {
-        float: left;
         padding: 0 5px;
     }
 
     .version {
-        float: left;
         padding: 0 5px;
         font-weight: bold;
         background-color: #e0e0e0;
