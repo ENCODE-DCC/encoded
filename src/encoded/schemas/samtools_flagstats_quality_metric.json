@@ -19,6 +19,14 @@
         "schema_version": {
             "default": "2"
         },
+        "processing_stage": {
+            "type": "string",
+            "description": "The post-mapping processing stage to which the statistics apply",
+            "enum": [
+                "raw",
+                "filtered for ChIP"
+            ]
+        },
         "diff_chroms": {
             "type": "number",
             "description": "flagstats: mate mapped different chr (mapQ>=5)"
