@@ -109,14 +109,14 @@ organ_slims = {
 assay_slims = {
     # Note shortened synonyms are provided
     'OBI:0000634': 'DNA methylation',  # 'DNA methylation profiling'
-    'OBI:0000424': 'transcription',  # 'transcription profiling'
+    'OBI:0000424': 'Transcription',  # 'transcription profiling'
     'OBI:0001398': 'DNA binding',  # "protein and DNA interaction"
     'OBI:0001854': 'RNA binding',  # "protein and RNA interaction"
     'OBI:0001917': '3D chromatin structure',  # 'chromosome conformation identification objective'
     'OBI:0000870': 'DNA accessibility',  # 'single-nucleotide-resolution nucleic acid structure mapping assay'
-    'OBI:0001916': 'replication',
-    'OBI:0000435': 'genotyping',
-    'OBI:0000615': 'proteomics',
+    'OBI:0001916': 'Replication',
+    'OBI:0000435': 'Genotyping',
+    'OBI:0000615': 'Proteomics',
 }
 
 slim_shims = {
@@ -128,8 +128,8 @@ slim_shims = {
         'OBI:0001853': 'DNA accessibility',  # 'OBI:0000870',
         'OBI:0001859': 'DNA accessibility',  # 'OBI:0000870', / OBI:0000424
         'OBI:0001848': '3D chromatin structure ',  # ChIA-PET / OBI:000870
-        'OBI:0001923': 'proteomics',  # 'OBI:0000615': 'MS/MS'
-        'OBI:0001849': 'genotyping',  #  OBI:0000435 (DNA-PET)
+        'OBI:0001923': 'Proteomics',  # 'OBI:0000615': 'MS/MS'
+        'OBI:0001849': 'Genotyping',  #  OBI:0000435 (DNA-PET)
     }
 
 }
@@ -138,7 +138,7 @@ preferred_name = {
     "OBI:0000626": "WGS",
     "OBI:0001247": "genotyping",
     "OBI:0001332": "DNAme array",
-    "OBI:0001335": "microRNA quant.",
+    "OBI:0001335": "microRNA counts",
     "OBI:0001463": "expression array",
     "OBI:0001863": "WGBS",
     "OBI:0001923": "MS/MS",
@@ -281,7 +281,7 @@ ntr_assays = {
         "name": "single cell isolation followed by RNA-seq",
         "objectives": [],
         "organs": [],
-        "preferred_name": "single-cell RNA-seq",
+        "preferred_name": "single cell RNA-seq",
         "slims": [],
         "synonyms": [],
         "systems": [],
