@@ -418,7 +418,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                                     {context.biosample_type ?
                                         <div data-test="biosample-type">
-                                            <dt>Type</dt>
+                                            <dt>Biosample Type</dt>
                                             <dd>{context.biosample_type}</dd>
                                         </div>
                                     : null}
