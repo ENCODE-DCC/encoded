@@ -114,7 +114,7 @@ assay_slims = {
     'OBI:0001854': 'RNA binding',  # "protein and RNA interaction"
     'OBI:0001917': '3D chromatin structure',  # 'chromosome conformation identification objective'
     'OBI:0000870': 'DNA accessibility',  # 'single-nucleotide-resolution nucleic acid structure mapping assay'
-    'OBI:0001916': 'Replication',
+    'OBI:0001916': 'Replication timing',
     'OBI:0000435': 'Genotyping',
     'OBI:0000615': 'Proteomics',
 }
@@ -127,7 +127,7 @@ slim_shims = {
         'OBI:0002039': 'DNA accessibility',  # 'OBI:0000870',
         'OBI:0001853': 'DNA accessibility',  # 'OBI:0000870',
         'OBI:0001859': 'DNA accessibility',  # 'OBI:0000870', / OBI:0000424
-        'OBI:0001848': '3D chromatin structure ',  # ChIA-PET / OBI:000870
+        'OBI:0001848': '3D chromatin structure',  # ChIA-PET / OBI:000870
         'OBI:0001923': 'Proteomics',  # 'OBI:0000615': 'MS/MS'
         'OBI:0001849': 'Genotyping',  #  OBI:0000435 (DNA-PET)
     }
@@ -136,7 +136,7 @@ slim_shims = {
 
 preferred_name = {
     "OBI:0000626": "WGS",
-    "OBI:0001247": "genotyping",
+    "OBI:0001247": "genotyping HTS",
     "OBI:0001332": "DNAme array",
     "OBI:0001335": "microRNA counts",
     "OBI:0001463": "expression array",
@@ -147,7 +147,7 @@ preferred_name = {
     "OBI:0001853": "DNase-seq",
     "OBI:0001920": "Repli-Seq",
     "OBI:0001864": "RAMPAGE",
-    "OBI:0001393": "Genotyping array"
+    "OBI:0001393": "genotyping array"
 }
 
 category_slims = {
@@ -197,7 +197,7 @@ ntr_assays = {
         "types": []
     },
     "NTR:0000762": {
-        "assay": ['transcription'],
+        "assay": ['Transcription'],
         "category": [],
         "developmental": [],
         "name": "shRNA knockdown followed by RNA-seq",
@@ -210,7 +210,7 @@ ntr_assays = {
         "types": []
     },
     "NTR:0000763": {
-        "assay": ['transcription'],
+        "assay": ['Transcription'],
         "category": [],
         "developmental": [],
         "name": "siRNA knockdown followed by RNA-seq",
@@ -223,7 +223,7 @@ ntr_assays = {
         "types": []
     },
     "NTR:0001684": {
-        "assay": ['transcription'],
+        "assay": ['Transcription'],
         "category": [],
         "developmental": [],
         "name": "5' RLM RACE",
@@ -236,7 +236,7 @@ ntr_assays = {
         "types": []
     },
     "NTR:0002490": {
-        "assay": ['Methylation'],
+        "assay": ['DNA Methylation'],
         "category": [],
         "developmental": [],
         "name": "TAB-seq",
@@ -275,7 +275,7 @@ ntr_assays = {
         "types": []
     },
     "NTR:0003082": {
-        "assay": ['transcription'],
+        "assay": ['Transcription'],
         "category": [],
         "developmental": [],
         "name": "single cell isolation followed by RNA-seq",
@@ -288,7 +288,7 @@ ntr_assays = {
         "types": []
     },
     "NTR:0003508": {
-        "assay": ['genotyping'],
+        "assay": ['Genotyping'],
         "category": [],
         "developmental": [],
         "name": "Whole genome shotgun sequencing",
