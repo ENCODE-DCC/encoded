@@ -4,8 +4,8 @@
     border: 1px solid #a0a0a0;
     @include border-radius($border-radius-base);
     @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
-    margin-top: 10px;
-    margin-bottom: 20px;
+    margin-top: 15px;
+    margin-bottom: 15px;
     padding: 15px 20px;
     overflow: visible;
 
@@ -13,11 +13,21 @@
         padding: 0;
 
         & > .panel-heading {
-            padding: 0;
-            background-color: #fff;
-            border: 0 solid transparent;
+            background-color: #d8d8d8;
+
+            h1, h2, h3, h4, h5, h6 {
+                margin: 0;
+            }
         }
     }
+}
+
+.panel-body {
+    padding: 10px;
+}
+
+.panel-body-with-header {
+    padding-top: 0;
 }
 
 .item-row {
@@ -142,8 +152,6 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     }
 }
 
-.sub-panel {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    border: 1px solid #e0e0e0;
+.panel-body-doc {
+    padding-bottom: 0 !important;
 }
