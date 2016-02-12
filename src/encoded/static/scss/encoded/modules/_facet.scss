@@ -37,27 +37,31 @@
 
 .facet-list { margin: 0; }
 
-.facet-list li {
-    padding: 3px 10px;
+.facet-list li .facet-line-item {
+    padding: 3px 10px 3px 15px;
     margin-bottom: 1px;
     border-radius: 5px;
     position: relative;
     @include font-size(0.9);
     line-height: 1;
 
-    i {
-        line-height: 14px;
+    &.parent-term {
+        padding-left: 0;
     }
-}
 
-.facet-list li#selected {
-    background: #4183c4;
-}
+    &.selected {
+        background: #4183c4;
+    }
 
-.facet-list a#selected {
+    a.selected {
     color: #fff;
     text-decoration: none;
     font-weight: normal;
+    }
+
+    i {
+        line-height: 14px;
+    }
 }
 
 .facet-list li a {
@@ -213,7 +217,6 @@ div.meta-status {
             margin-bottom: 10px;
             @include font-size(0.9);
         }
-
     }
 
     &:before {
@@ -234,12 +237,12 @@ div.meta-status {
 }
 
 span.bar {
-    background-color: #E5E5E5;
+    background-color: #d0d0d0;
     position: absolute;
     display: inline-block;
     right: 0;
     top: 0;
-    bottom:0;
+    height: 20px;
     z-index: -1;
 }
 
@@ -280,4 +283,24 @@ span.bar {
         vertical-align: baseline;
         border: none;
     }
+}
+
+// Icon within .detail-switch to show the current state of the switch
+.facet-trigger {
+    @extend .icon-caret-right;
+    display: block;
+    width: 10px;
+    margin-right: 5px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    text-align: right;
+    transition: 0.1s linear;
+
+    &.open {
+        transform: rotate(90deg);
+    }
+}
+
+.subfacet {
+    margin-left: 15px;
 }

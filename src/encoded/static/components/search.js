@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+var queryString = require('query-string');
 var cloneWithProps = require('react/lib/cloneWithProps');
 var Modal = require('react-bootstrap/lib/Modal');
 var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
@@ -590,11 +591,10 @@ var AuditMixin = audit.AuditMixin;
     // If the given term is selected, return the href for the term. This usually returns to the
     // deselected state of this term.
     function termSelected(term, field, filters) {
+        // See if the given term value and field matches a given selected filter.
         var matchedFilter = _(filters).find(filter => filter.field === field && filter.term === term);
-        console.log('TERM: %s, field: %s, filters %o', term, field, filters);
-        if (matchedFilter) {
-            console.log('MATCHED: %o', matchedFilter);
-        }
+    
+        // If we have a matching filter, get the query string portion of the given 'remove' URI. That 
         return matchedFilter ? url.parse(matchedFilter.remove).search : null;
     }
 
@@ -609,6 +609,23 @@ var AuditMixin = audit.AuditMixin;
         return count;
     }
 
+    // Given an href query string, trim out any terms that match anything in the subfacet
+    function trimSelected(href, subfacet) {
+        // Convert the query string into an object.
+        var terms = queryString.parse(href);
+
+        // Copy any terms not matching the subfacet term to a destination object to be stringified
+        var trimmedTerms = {};
+        Object.keys(terms).forEach(termKey => {
+            if (termKey !== subfacet.field) {
+                trimmedTerms[termKey] = terms[termKey];
+            }
+        });
+
+        // Return the trimmed query string
+        return '?' + queryString.stringify(trimmedTerms);
+    }
+
     // Display a subfacet of a parent term.
     var SubTerm = search.SubTerm = React.createClass({
         render: function() {
@@ -616,9 +633,9 @@ var AuditMixin = audit.AuditMixin;
             var terms = facet.terms.filter(term => term.doc_count > 0 || _(filters).any(filter => filter.term === term.key));
 
             return (
-                <ul className="facet-list nav">
+                <ul className="facet-list subfacet nav">
                     <div>
-                        {terms.map(term => <Term key={term.key} term={term} filters={filters} total={facet.total} facet={facet} searchBase={this.props.searchBase} subterm />)}
+                        {terms.map(term => <Term key={term.key} term={term} filters={filters} canDeselect={this.props.canDeselect} total={facet.total} facet={facet} searchBase={this.props.searchBase} subterm />)}
                     </div>
                 </ul>
             );
@@ -636,6 +653,17 @@ var AuditMixin = audit.AuditMixin;
             searchBase: React.PropTypes.string // Search string we're adding to to form the href
         },
 
+        getInitialState: function() {
+            return {
+                // If a subfacet is selected, initialize the subfacet to be open on first render
+                subfacetOpen: this.props.subfacet && _(this.props.filters).find(filter => filter.field === this.props.subfacet.field)
+            }
+        },
+
+        subfacetToggle: function() {
+            this.setState({subfacetOpen: !this.state.subfacetOpen});
+        },
+
         render: function () {
             var filters = this.props.filters;
             var term = this.props.term['key'];
@@ -650,26 +678,40 @@ var AuditMixin = audit.AuditMixin;
                 width:  Math.ceil( (count/this.props.total) * 100) + "%"
             };
             var selected = termSelected(term, field, filters);
-            var href;
+            var href, subhref;
             if (selected && !this.props.canDeselect) {
                 href = null;
             } else if (selected) {
                 href = selected;
             } else {
-                href = this.props.searchBase + field + '=' + encodeURIComponent(term).replace(/%20/g, '+')
+                href = this.props.searchBase + field + '=' + encodeURIComponent(term).replace(/%20/g, '+');
             }
+
+            // If this term has a subfacet, remove anything in the subfacet from the href
+            if (subfacet) {
+                subhref = href;
+                href = trimSelected(href, subfacet);
+            }
+
             return (
-                <li id={selected ? "selected" : null} key={term}>
-                    {selected ? '' : <span className="bar" style={barStyle}></span>}
-                    {field === 'lot_reviews.status' ? <span className={globals.statusClass(term, 'indicator pull-left facet-term-key icon icon-circle')}></span> : null}
-                    <a id={selected ? "selected" : null} href={href} onClick={href ? this.props.onFilter : null}>
-                        <span className="pull-right">{count} {selected && this.props.canDeselect ? <i className="icon icon-times-circle-o"></i> : ''}</span>
-                        <span className="facet-item">
-                            {em ? <em>{title}</em> : <span>{title}</span>}
-                        </span>
-                    </a>
-                    {subfacet ?
-                        <SubTerm {...this.props} facet={subfacet} filters={filters} searchBase={href ? href + '&' : href + '?'} />
+                <li className={subfacet ? 'parent-term' : ''} key={term}>
+                    <div className={'facet-line-item' + (subfacet ? ' parent-term' : '') + (selected ? ' selected' : '')}>
+                        {selected ? '' : <span className="bar" style={barStyle}></span>}
+                        {field === 'lot_reviews.status' ? <span className={globals.statusClass(term, 'indicator pull-left facet-term-key icon icon-circle')}></span> : null}
+                        {subfacet ?
+                            <i className={'icon facet-trigger pull-left' + (this.state.subfacetOpen ? ' open' : '')} onClick={this.subfacetToggle}>
+                                <span className="sr-only">Subterms</span>
+                            </i>
+                        : null}
+                        <a className={selected ? "selected" : null} href={href} onClick={href ? this.props.onFilter : null}>
+                            <span className="pull-right">{count} {selected && this.props.canDeselect ? <i className="icon icon-times-circle-o"></i> : ''}</span>
+                            <span className="facet-item">
+                                {em ? <em>{title}</em> : <span>{title}</span>}
+                            </span>
+                        </a>
+                    </div>
+                    {subfacet && this.state.subfacetOpen ?
+                        <SubTerm facet={subfacet} filters={filters} canDeselect={this.props.canDeselect} searchBase={subhref ? subhref + '&' : subhref + '?'} />
                     : null}
                 </li>
             );
@@ -701,6 +743,7 @@ var AuditMixin = audit.AuditMixin;
             var {facet, filters, context, facets} = this.props;
             var targetNameFacet;
             var hideTypeFacet = false; // True if we need to hide the 'Data type' facet.
+            var hideFacet = false; // Hide a facet for any other reason
 
             // Get array of all terms from facets whose doc_count > 0. Include terms whose keys are specified in a filter's term
             // regardless of their doc_count.
@@ -767,7 +810,12 @@ var AuditMixin = audit.AuditMixin;
                 }
             }
 
-            if (!hideTypeFacet) {
+            // 'target.name' already under target.investigated_as
+            if (facet.field === 'target.name') {
+                hideFacet = true;
+            }
+
+            if (!hideTypeFacet && !hideFacet) {
                 var {title, field, total} = facet;
                 var termID = title.replace(/\s+/g, '');
                 var moreTerms = terms.slice(5);
@@ -787,7 +835,7 @@ var AuditMixin = audit.AuditMixin;
                                         subfacet.terms = subfacets[term.key];
                                         subfacet.title = targetNameFacet.title;
                                         subfacet.total = targetNameFacet.total;
-                                    } else{
+                                    } else {
                                         subfacet = null;
                                     }
                                     return <TermComponent key={term.key} term={term} facet={this.props.facet} subfacet={subfacet} filters={filters} total={total} canDeselect={canDeselect} searchBase={this.props.searchBase} />;

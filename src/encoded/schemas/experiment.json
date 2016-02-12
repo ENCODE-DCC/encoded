@@ -124,6 +124,12 @@
         "assay_term_name": {
             "title": "Assay"
         },
+        "target.investigated_as": {
+            "title": "Target of assay"
+        },
+        "target.name": {
+            "title": "Target name"
+        },
         "award.project": {
             "title": "Project",
             "type": "string"
@@ -136,12 +142,6 @@
         },
         "replicates.library.biosample.donor.organism.scientific_name": {
             "title": "Organism"
-        },
-        "target.investigated_as": {
-            "title": "Target of assay"
-        },
-        "target.name": {
-            "title": "Target name"
         },
         "replicates.library.biosample.biosample_type": {
             "title": "Biosample type"
