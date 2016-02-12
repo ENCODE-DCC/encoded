@@ -923,7 +923,7 @@ def test_audit_experiment_mismatched_length_sequencing_files(testapp, file_bam, 
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched intra-replicate pairing statuses'
+    assert any(error['category'] == 'mixed intra-replicate endedness'
                for error in errors_list)
 
 
@@ -946,7 +946,7 @@ def test_audit_experiment_mismatched_inter_paired_sequencing_files(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched inter-replicate pairing statuses'
+    assert any(error['category'] == 'mixed inter-replicate endedness'
                for error in errors_list)
 
 
@@ -971,5 +971,5 @@ def test_audit_experiment_mismatched_inter_length_sequencing_files(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched inter-replicate sequencing reads lengths'
+    assert any(error['category'] == 'mixed inter-replicate read lengths'
                for error in errors_list)

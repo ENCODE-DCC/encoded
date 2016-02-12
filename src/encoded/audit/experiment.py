@@ -280,9 +280,7 @@ def audit_experiment_consistent_sequencing_runs(value, system):
         return
     if 'assay_term_name' not in value:  # checked in audit_experiment_assay
         return
-    '''
-     ask Tim if RNA should have such a check as well
-    '''
+
     if value.get('assay_term_name') not in ['ChIP-seq', 'DNase-seq']:
         return
 
@@ -310,18 +308,16 @@ def audit_experiment_consistent_sequencing_runs(value, system):
         if len(replicate_read_lengths[key]) > 1:
             detail = 'Biological replicate {} '.format(key) + \
                      'in experiment {} '.format(value['@id']) + \
-                     'has multiple sequencing read lengths {} '.format(replicate_read_lengths[key]) + \
-                     ' associated with it.'
-            yield AuditFailure('mismatched intra-replicate sequencing reads lengths',
+                     'has mixed sequencing read lengths {}.'.format(replicate_read_lengths[key])
+            yield AuditFailure('mixed intra-replicate read lengths',
                                detail, level='WARNING')
 
     for key in replicate_pairing_statuses:
         if len(replicate_pairing_statuses[key]) > 1:
             detail = 'Biological replicate {} '.format(key) + \
                      'in experiment {} '.format(value['@id']) + \
-                     'has multiple pairing statuses {} '.format(replicate_pairing_statuses[key]) + \
-                     ' associated with it.'
-            yield AuditFailure('mismatched intra-replicate pairing statuses',
+                     'has mixed endedness {}.'.format(replicate_pairing_statuses[key])
+            yield AuditFailure('mixed intra-replicate endedness',
                                detail, level='WARNING')
 
     keys = list(replicate_read_lengths.keys())
@@ -343,9 +339,8 @@ def audit_experiment_consistent_sequencing_runs(value, system):
                              'in experiment {} '.format(value['@id']) + \
                              'has sequencing read lengths {} '.format(i_lengths) + \
                              ' that differ from replicate {},'.format(keys[index_j]) + \
-                             ' which has {} sequencing read lengths '.format(j_lengths) + \
-                             'associated with it.'
-                    yield AuditFailure('mismatched inter-replicate sequencing reads lengths',
+                             ' which has {} sequencing read lengths.'.format(j_lengths)
+                    yield AuditFailure('mixed inter-replicate read lengths',
                                        detail, level='WARNING')
 
     keys = list(replicate_pairing_statuses.keys())
@@ -364,11 +359,10 @@ def audit_experiment_consistent_sequencing_runs(value, system):
                 if diff_flag is True:
                     detail = 'Biological replicate {} '.format(keys[index_i]) + \
                              'in experiment {} '.format(value['@id']) + \
-                             'has pairing statuses {} '.format(i_pairs) + \
+                             'has endedness {} '.format(i_pairs) + \
                              ' that differ from replicate {},'.format(keys[index_j]) + \
-                             ' which has {} pairing statuses '.format(j_pairs) + \
-                             'associated with it.'
-                    yield AuditFailure('mismatched inter-replicate pairing statuses',
+                             ' which has {}.'.format(j_pairs)
+                    yield AuditFailure('mixed inter-replicate endedness',
                                        detail, level='WARNING')
 
     return
