@@ -693,6 +693,19 @@ def matrix(context, request):
     matrix['search_base'] = request.route_path('search', slash='/') + search_base
     matrix['clear_matrix'] = request.route_path('matrix', slash='/') + '?type=' + item_type
 
+    result['views'] = [
+        {
+            'href': request.route_path('search', slash='/') + search_base,
+            'title': 'View results as list',
+            'icon': 'list-alt',
+        },
+        {
+            'href': request.route_path('report', slash='/') + search_base,
+            'title': 'View tabular report',
+            'icon': 'table',
+        }
+    ]
+
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
     es_index = request.registry.settings['contentbase.elasticsearch.index']
