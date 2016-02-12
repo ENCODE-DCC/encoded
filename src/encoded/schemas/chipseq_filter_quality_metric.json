@@ -3,7 +3,7 @@
     "id": "/profiles/chipseq_filter_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step_run"],
+    "required": ["step_run","quality_metric_of"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
