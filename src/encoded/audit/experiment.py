@@ -271,6 +271,18 @@ def audit_experiment_biosample_term_id(value, system):
                frame=['replicates', 'original_files', 'original_files.replicate'],
                condition=rfa("ENCODE3", "modERN", "ENCODE2", "GGR",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
+def audit_experiment_consistent_sequencing_runs(value, system):
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+    if 'replicates' not in value:
+        return
+    if len(value['replicates']) == 0:
+        return
+    if 'assay_term_name' not in value:  # checked in audit_experiment_assay
+        return
+    '''
+    '''
+        return
 def audit_experiment_replicate_with_no_files(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
