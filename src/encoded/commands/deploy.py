@@ -16,7 +16,7 @@ def nameify(s):
     return re.subn(r'\-+', '-', name)[0]
 
 
-def run(wale_s3_prefix, image_id, instance_type,
+def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
         branch=None, name=None, role='demo', profile_name=None):
     if branch is None:
         branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode('utf-8').strip()
@@ -30,6 +30,8 @@ def run(wale_s3_prefix, image_id, instance_type,
 
     if name is None:
         name = nameify('%s-%s-%s' % (branch, commit, username))
+        if elasticsearch == 'yes':
+            name ='elasticsearch-' + name
 
     conn = boto.ec2.connect_to_region("us-west-2", profile_name=profile_name)
 
@@ -47,17 +49,24 @@ def run(wale_s3_prefix, image_id, instance_type,
     # Don't attach instance storage so we can support auto recovery
     bdm['/dev/sdb'] = BlockDeviceType(no_device=True)
     bdm['/dev/sdc'] = BlockDeviceType(no_device=True)
-    user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml']).decode('utf-8')
-    user_data = user_data % {
-        'WALE_S3_PREFIX': wale_s3_prefix,
-        'COMMIT': commit,
-        'ROLE': role,
-    }
+    
+
+    if not elasticsearch == 'yes':
+        user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml']).decode('utf-8')
+        user_data = user_data % {
+            'WALE_S3_PREFIX': wale_s3_prefix,
+            'COMMIT': commit,
+            'ROLE': role,
+        }
+        security_groups = ['ssh-http-https']
+    else:
+        user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config-elasticsearch.yml']).decode('utf-8')
+        security_groups = ['elasticsearch-https']
 
     reservation = conn.run_instances(
         image_id=image_id,
         instance_type=instance_type,
-        security_groups=['ssh-http-https'],
+        security_groups=security_groups,
         user_data=user_data,
         block_device_map=bdm,
         instance_initiated_shutdown_behavior='terminate',
@@ -119,6 +128,7 @@ def main():
         help="specify 'c4.4xlarge' for faster indexing (you should switch to a smaller "
              "instance afterwards.)")
     parser.add_argument('--profile-name', default=None, help="AWS creds profile")
+    parser.add_argument('--elasticsearch', default=None, help="Launch an Elasticsearch instance")
     args = parser.parse_args()
 
     return run(**vars(args))
