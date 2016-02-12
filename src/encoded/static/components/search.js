@@ -591,6 +591,10 @@ var AuditMixin = audit.AuditMixin;
     // deselected state of this term.
     function termSelected(term, field, filters) {
         var matchedFilter = _(filters).find(filter => filter.field === field && filter.term === term);
+        console.log('TERM: %s, field: %s, filters %o', term, field, filters);
+        if (matchedFilter) {
+            console.log('MATCHED: %o', matchedFilter);
+        }
         return matchedFilter ? url.parse(matchedFilter.remove).search : null;
     }
 
