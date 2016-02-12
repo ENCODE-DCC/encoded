@@ -192,7 +192,7 @@ var App = React.createClass({
         var context = this.props.context;
         var href_url = url.parse(this.props.href);
         // Switching between collections may leave component in place
-        var key = context && context['@id'];
+        var key = context && context['@id'] && context['@id'].split('?')[0];
         var current_action = this.currentAction();
         if (!current_action && context.default_page) {
             context = context.default_page;
