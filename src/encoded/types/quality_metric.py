@@ -165,17 +165,6 @@ class MadQualityMetric(QualityMetric):
 
 
 @collection(
-    name='pbc-quality-metrics',
-    properties={
-        'title': "Quality Metrics 'PCR Bottleneck Coefficient' (PBC) of Mapping Sample",
-        'description': 'A set of sampled mapping QC metrics',
-    })
-class PbcQualityMetric(QualityMetric):
-    item_type = 'pbc_quality_metric'
-    schema = load_schema('encoded:schemas/pbc_quality_metric.json')
-
-
-@collection(
     name='phantompeaktooks-spp-quality-metrics',
     properties={
         'title': "Mapping quality metrics from 'phantompeakqualtools run_spp.R'",
