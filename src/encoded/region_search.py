@@ -5,15 +5,22 @@ from contentbase.elasticsearch.interfaces import (
 )
 from pyramid.security import effective_principals
 from .search import (
-    load_results,
+    format_results,
     set_filters,
     set_facets,
     get_filtered_query,
-    load_facets,
+    format_facets,
     hgConnect
 )
 from collections import OrderedDict
 import requests
+from urllib.parse import urlencode
+
+import logging
+
+
+log = logging.getLogger(__name__)
+
 
 _ENSEMBL_URL = 'http://rest.ensembl.org/'
 
@@ -269,14 +276,15 @@ def region_search(context, request):
         return result
     file_uuids = []
     for hit in peak_results['hits']['hits']:
-        if hit['_id']not in file_uuids:
+        if hit['_id'] not in file_uuids:
             file_uuids.append(hit['_id'])
     file_uuids = list(set(file_uuids))
     result['notification'] = 'No results found'
 
+
     # if more than one peak found return the experiments with those peak files
     if len(file_uuids):
-        query = get_filtered_query('', [], set(), principals)
+        query = get_filtered_query('', [], set(), principals, ['Item'])
         del query['query']
         query['filter']['and']['filters'].append({
             'terms': {
@@ -285,12 +293,13 @@ def region_search(context, request):
         })
         used_filters = set_filters(request, query, result)
         used_filters['files.uuid'] = file_uuids
-        set_facets(_FACETS, used_filters, query, principals)
+        query['aggs'] = set_facets(_FACETS, used_filters, principals, ['Item'])
         es_results = es.search(
             body=query, index='encoded', doc_type='experiment', size=size
         )
-        load_results(request, es_results, result)
-        load_facets(es_results, _FACETS, result)
+
+        result['@graph'] = list(format_results(request, es_results['hits']['hits']))
+        result['facets'] = format_facets(es_results, _FACETS)
         if len(result['@graph']):
             result['notification'] = 'Success'
             result['total'] = es_results['hits']['total']
@@ -306,7 +315,7 @@ def region_search(context, request):
 def suggest(context, request):
     text = ''
     result = {
-        '@id': '/suggest/' + ('?q=' + text),
+        '@id': '/suggest/?' + urlencode({'q': text}),
         '@type': ['suggest'],
         'title': 'Suggest',
         '@graph': [],
@@ -330,6 +339,12 @@ def suggest(context, request):
     except:
         return {}
     else:
-        result['@id'] = '/suggest/' + ('?q=' + text)
-        result['@graph'] = results['suggester'][0]['options']
+        result['@id'] = '/suggest/?' + urlencode({'q': text})
+        result['@graph'] = []
+        for item in results['suggester'][0]['options']:
+            if not any(x in item['text'] for x in ['(C. elegans)','(mus musculus)','(D. melanogaster)']):
+                result['@graph'].append(item)
+
+
+        # result['@graph'] = [x for x in results['suggester'][0]['options'] if x['text'] not in []]
         return result

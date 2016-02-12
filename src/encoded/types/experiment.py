@@ -158,6 +158,65 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
     def replicates(self, request, replicates):
         return paths_filtered_by_status(request, replicates)
 
+    @calculated_property(condition='assay_term_id', schema={
+        "title": "Assay type",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def assay_slims(self, registry, assay_term_id):
+        if assay_term_id in registry['ontology']:
+            return registry['ontology'][assay_term_id]['assay']
+        return []
+
+    @calculated_property(condition='assay_term_id', schema={
+        "title": "Assay title",
+        "type": "string",
+    })
+    def assay_title(self, registry, assay_term_id, assay_term_name):
+        # This is the preferred name in generate_ontology.py if exists
+        if assay_term_id in registry['ontology']:
+            preferred_name = registry['ontology'][assay_term_id].get('preferred_name', assay_term_name)
+            return preferred_name or assay_term_name
+        return assay_term_name
+
+    @calculated_property(condition='assay_term_id', schema={
+        "title": "Assay category",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def category_slims(self, registry, assay_term_id):
+        if assay_term_id in registry['ontology']:
+            return registry['ontology'][assay_term_id]['category']
+        return []
+
+    @calculated_property(condition='assay_term_id', schema={
+        "title": "Assay type",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def type_slims(self, registry, assay_term_id):
+        if assay_term_id in registry['ontology']:
+            return registry['ontology'][assay_term_id]['types']
+        return []
+
+    @calculated_property(condition='assay_term_id', schema={
+        "title": "Assay objective",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def objective_slims(self, registry, assay_term_id):
+        if assay_term_id in registry['ontology']:
+            return registry['ontology'][assay_term_id]['objectives']
+        return []
+
     @calculated_property(schema={
         "title": "Related series",
         "type": "array",
@@ -175,7 +234,7 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         "type": "string"
     })
     def replication_type(self, request, replicates=None):
-        # Compare the biosamples to see if for humans they are the same donor and for 
+        # Compare the biosamples to see if for humans they are the same donor and for
         # model organisms if they are sex-matched and age-matched
         biosample_dict = {}
         biosample_age_list = []
@@ -266,12 +325,13 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         },
         'x': {
             'facets': [
-                'assay_term_name',
+                'assay_title',
+                'assay_slims',
                 'target.investigated_as',
                 'month_released',
                 'files.file_type',
             ],
-            'group_by': 'assay_term_name',
+            'group_by': 'assay_title',
             'label': 'Assay',
         },
     }

@@ -23,6 +23,7 @@ require('./navbar');
 require('./platform');
 require('./statuslabel');
 require('./search');
+require('./report');
 require('./matrix');
 require('./talen');
 require('./target');
