@@ -6,18 +6,15 @@ $indicator-awaiting:        #ebe310;
 $indicator-notreviewed:     #1475c9;
 $indicator-notpursued:      #d0d0d0;
 
-$document-figure-width: 130px;
-$document-figure-height: 130px;
-$characterization-figure-width: 200px;
-$characterization-figure-height: 200px;
+$document-figure-width: 64px;
+$document-figure-height: 64px;
+$characterization-figure-width: 64px;
+$characterization-figure-height: 64px;
 
 
 
 /* clear first in row in ie 8 or lower */
 .multi-columns-row {
-    margin-top: 10px;
-    margin-bottom: 10px;
-
     .first-in-row {
         clear: left;
     }
@@ -407,11 +404,11 @@ $characterization-figure-height: 200px;
 %file-icon {
     @include img-responsive();
     @include text-hide;
-    width: 100px;
-    height: 100px;
+    width: 80%;
+    height: 80%;
     background-position: center center;
     background-repeat: no-repeat;
-    background-size: 100px 100px;
+    background-size: 80% 80%;
 }
 
 .file-pdf {
@@ -492,8 +489,8 @@ $characterization-figure-height: 200px;
 
                 img {
                     display: inline-block;
-                    max-height: $figure-height;
-                    max-width: $figure-width;
+                    max-height: .8 * $figure-height;
+                    max-width: .8 * $figure-width;
                     height: auto;
                     width: auto;
                 }
@@ -604,13 +601,57 @@ $characterization-figure-height: 200px;
     padding: 10px;
 }
 
+
+// ***************************************
+// Document download file bar classes
+$dl-bar-height: 30px;
+
+// THe file bar itself
 .dl-bar {
-    height: 32px;
+    position: relative;
+    height: $dl-bar-height;
     padding: 0 10px 0 10px;
-    line-height: 32px;
+    line-height: $dl-bar-height;
     border-bottom: 1px solid #e8e8e8;
     white-space: nowrap;
     overflow: hidden;
+}
+
+// Box containing the switch to drop down the details panel
+.detail-switch {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: $dl-bar-height;
+    height: $dl-bar-height;
+    background-color: #fff;
+    border-left: 1px solid #e8e8e8;
+
+    &:hover {
+        background-color: #f0f0f0;
+    }
+
+    &.open {
+        transition: 0.1s linear;
+        background-color: #c0c0c0;
+    }
+}
+
+// Icon within .detail-switch to show the current state of the switch
+.detail-trigger {
+    @extend .icon-caret-left;
+    display: block;
+    height: $dl-bar-height;
+    line-height: $dl-bar-height;
+    font-size: 1.4rem;
+    cursor: pointer;
+    text-align: center;
+    transition: 0.1s linear;
+
+    &.open {
+        transform: rotate(-90deg);
+    }
 }
 
 
@@ -651,7 +692,7 @@ $characterization-figure-height: 200px;
 .document-slider {
     display: none;
     margin: 0;
-    padding: 10px 5px 0;
+    padding: 10px 5px;
     border-bottom: 1px solid #e8e8e8;
 
     &.active {

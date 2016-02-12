@@ -20,7 +20,17 @@ from .base import (
     })
 class Donor(Item):
     base_types = ['Donor'] + Item.base_types
-    embedded = ['organism']
+    embedded = [
+        'organism',
+        'characterizations',
+        'characterizations.award',
+        'characterizations.lab',
+        'characterizations.submitted_by',
+        'donor_documents',
+        'donor_documents.award',
+        'donor_documents.lab',
+        'donor_documents.submitted_by'
+    ]
     name_key = 'accession'
     rev = {
         'characterizations': ('DonorCharacterization', 'characterizes'),
@@ -66,7 +76,7 @@ class MouseDonor(Donor):
 class FlyDonor(Donor):
     item_type = 'fly_donor'
     schema = load_schema('encoded:schemas/fly_donor.json')
-    embedded = ['organism', 'constructs', 'constructs.target']
+    embedded = ['organism', 'constructs', 'constructs.target', 'characterizations']
 
 
 @collection(
