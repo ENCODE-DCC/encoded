@@ -587,7 +587,8 @@ var AuditMixin = audit.AuditMixin;
     globals.listing_views.register(Image, 'Image');
 
 
-    // If the given term is selected, return the href for the term
+    // If the given term is selected, return the href for the term. This usually returns to the
+    // deselected state of this term.
     function termSelected(term, field, filters) {
         var matchedFilter = _(filters).find(filter => filter.field === field && filter.term === term);
         return matchedFilter ? url.parse(matchedFilter.remove).search : null;
@@ -604,6 +605,7 @@ var AuditMixin = audit.AuditMixin;
         return count;
     }
 
+    // Display a subfacet of a parent term.
     var SubTerm = search.SubTerm = React.createClass({
         render: function() {
             var {facet, filters} = this.props;
@@ -612,7 +614,7 @@ var AuditMixin = audit.AuditMixin;
             return (
                 <ul className="facet-list nav">
                     <div>
-                        {terms.map(term => <Term key={term.key} term={term} filters={filters} total={facet.total} facet={facet} />)}
+                        {terms.map(term => <Term key={term.key} term={term} filters={filters} total={facet.total} facet={facet} searchBase={this.props.searchBase} subterm />)}
                     </div>
                 </ul>
             );
@@ -625,7 +627,9 @@ var AuditMixin = audit.AuditMixin;
             filters: React.PropTypes.array, // Filtering information
             facet: React.PropTypes.object, // Facet this term appears in
             subfacet: React.PropTypes.object, // Subfacet of this term
-            total: React.PropTypes.number // Total number of objects with this term
+            total: React.PropTypes.number, // Total number of objects with this term
+            subterm: React.PropTypes.bool, // True if displaying a term within a subfacet
+            searchBase: React.PropTypes.string // Search string we're adding to to form the href
         },
 
         render: function () {
@@ -650,8 +654,6 @@ var AuditMixin = audit.AuditMixin;
             } else {
                 href = this.props.searchBase + field + '=' + encodeURIComponent(term).replace(/%20/g, '+')
             }
-            console.log('TERM: %o', term);
-            console.log('SUBFACET: %o', subfacet);
             return (
                 <li id={selected ? "selected" : null} key={term}>
                     {selected ? '' : <span className="bar" style={barStyle}></span>}
@@ -661,10 +663,10 @@ var AuditMixin = audit.AuditMixin;
                         <span className="facet-item">
                             {em ? <em>{title}</em> : <span>{title}</span>}
                         </span>
-                        {subfacet ?
-                            <SubTerm {...this.props} facet={subfacet} filters={filters} />
-                        : null}
                     </a>
+                    {subfacet ?
+                        <SubTerm {...this.props} facet={subfacet} filters={filters} searchBase={href ? href + '&' : href + '?'} />
+                    : null}
                 </li>
             );
         }
@@ -759,7 +761,6 @@ var AuditMixin = audit.AuditMixin;
                         }
                     });
                 }
-                console.log(subfacets);
             }
 
             if (!hideTypeFacet) {
@@ -785,7 +786,7 @@ var AuditMixin = audit.AuditMixin;
                                     } else{
                                         subfacet = null;
                                     }
-                                    return <TermComponent {...this.props} key={term.key} term={term} subfacet={subfacet} filters={filters} total={total} canDeselect={canDeselect} />;
+                                    return <TermComponent key={term.key} term={term} facet={this.props.facet} subfacet={subfacet} filters={filters} total={total} canDeselect={canDeselect} searchBase={this.props.searchBase} />;
                                 })}
                             </div>
                         </ul>
