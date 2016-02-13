@@ -187,16 +187,6 @@ class SamtoolsFlagstatsQualityMetric(QualityMetric):
 
 
 @collection(
-    name='samtools-stats-quality-metrics',
-    properties={
-        'title': "Mapping Quality Metrics from the Summary of 'samtools --stats'",
-        'description': "A set of mapping QC metrics from 'samtools --stats'",
-    })
-class SamtoolsStatsQualityMetric(QualityMetric):
-    item_type = 'samtools_stats_quality_metric'
-    schema = load_schema('encoded:schemas/samtools_stats_quality_metric.json')
-
-@collection(
     name='idr-quality-metrics',
     properties={
         'title': "IDR Metrics",
