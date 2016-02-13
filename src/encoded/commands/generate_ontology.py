@@ -720,7 +720,8 @@ def main():
                     except:
                         pass
     for term in terms:
-        terms[term]['data'] = list(set(terms[term]['parents']) | set(terms[term]['part_of']))
+        terms[term]['data'] = list(set(terms[term]['parents']) | set(terms[term]['part_of']) | set(terms[term]['achieves_planned_objective']))
+
         terms[term]['data_with_develops_from'] = list(set(terms[term]['data']) | set(terms[term]['develops_from']))
 
     for term in terms:
