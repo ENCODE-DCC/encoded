@@ -1,0 +1,147 @@
+{
+    "description": "Schema for reporting 'samtools --stats' summary as a quality metric",
+    "id": "/profiles/samtools_stats_quality_metric.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["step_run","quality_metric_of"],
+    "additionalProperties": false,
+    "identifyingProperties": ["uuid"],
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "quality_metric.json#/properties" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/assay" }
+   ],
+    "properties": {
+        "schema_version": {
+            "default": "2"
+        },
+        "1st fragments": {
+            "type": "number",
+            "description": "samtools --stats: 1st fragments"
+        },
+        "average length": {
+            "type": "number",
+            "description": "samtools --stats: average length"
+        },
+        "average quality": {
+            "type": "number",
+            "description": "samtools --stats: average quality"
+        },
+        "bases duplicated": {
+            "type": "number",
+            "description": "samtools --stats: bases duplicated"
+        },
+        "bases mapped": {
+            "type": "number",
+            "description": "samtools --stats: bases mapped"
+        },
+        "bases mapped (cigar)": {
+            "type": "number",
+            "description": "samtools --stats: bases mapped (cigar)"
+        },
+        "bases trimmed": {
+            "type": "number",
+            "description": "samtools --stats: bases trimmed"
+        },
+        "error rate": {
+            "type": "number",
+            "description": "samtools --stats: error rate"
+        },
+        "filtered sequences": {
+            "type": "number",
+            "description": "samtools --stats: filtered sequences"
+        },
+        "insert size average": {
+            "type": "number",
+            "description": "samtools --stats: insert size - average"
+        },
+        "insert size standard deviation": {
+            "type": "number",
+            "description": "samtools --stats: insert size - standard deviation"
+        },
+        "inward oriented pairs": {
+            "type": "number",
+            "description": "samtools --stats: inward oriented pairs"
+        },
+        "is sorted": {
+            "type": "number",
+            "description": "samtools --stats: is sorted"
+        },
+        "last fragments": {
+            "type": "number",
+            "description": "samtools --stats: last fragments"
+        },
+        "maximum length": {
+            "type": "number",
+            "description": "samtools --stats: maximum length"
+        },
+        "mismatches": {
+            "type": "number",
+            "description": "samtools --stats: mismatches"
+        },
+        "non-primary alignments": {
+            "type": "number",
+            "description": "samtools --stats: non-primary alignments"
+        },
+        "outward oriented pairs": {
+            "type": "number",
+            "description": "samtools --stats: outward oriented pairs"
+        },
+        "pairs on different chromosomes": {
+            "type": "number",
+            "description": "samtools --stats: pairs on different chromosomes"
+        },
+        "pairs with other orientation": {
+            "type": "number",
+            "description": "samtools --stats: pairs with other orientation"
+        },
+        "raw total sequences": {
+            "type": "number",
+            "description": "samtools --stats: raw total sequences"
+        },
+        "reads MQ0": {
+            "type": "number",
+            "description": "samtools --stats: reads MQ0"
+        },
+        "reads QC failed": {
+            "type": "number",
+            "description": "samtools --stats: reads QC failed"
+        },
+        "reads duplicated": {
+            "type": "number",
+            "description": "samtools --stats: reads duplicated"
+        },
+        "reads mapped": {
+            "type": "number",
+            "description": "samtools --stats: reads mapped"
+        },
+        "reads mapped and paired": {
+            "type": "number",
+            "description": "samtools --stats: reads mapped and paired"
+        },
+        "reads paired": {
+            "type": "number",
+            "description": "samtools --stats: reads paired"
+        },
+        "reads properly paired": {
+            "type": "number",
+            "description": "samtools --stats: reads properly paired"
+        },
+        "reads unmapped": {
+            "type": "number",
+            "description": "samtools --stats: reads unmapped"
+        },
+        "sequences": {
+            "type": "number",
+            "description": "samtools --stats: sequences"
+        },
+        "total length": {
+            "type": "number",
+            "description": "samtools --stats: total length"
+        }
+    }
+}

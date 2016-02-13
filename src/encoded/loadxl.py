@@ -71,6 +71,7 @@ ORDER = [
     'edwcomparepeaks_quality_metric',
     'hotspot_quality_metric',
     'idr_summary_quality_metric',
+    'samtools_stats_quality_metric',
     'idr_quality_metric',
     'image',
     'page'
