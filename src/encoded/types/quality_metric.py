@@ -165,17 +165,6 @@ class MadQualityMetric(QualityMetric):
 
 
 @collection(
-    name='phantompeaktooks-spp-quality-metrics',
-    properties={
-        'title': "Mapping quality metrics from 'phantompeakqualtools run_spp.R'",
-        'description': "A set of sampled mapping QC metrics from 'phantompeakqualtools run_spp.R'",
-    })
-class PhantompeaktoolsSppQualityMetric(QualityMetric):
-    item_type = 'phantompeaktools_spp_quality_metric'
-    schema = load_schema('encoded:schemas/phantompeaktools_spp_quality_metric.json')
-
-
-@collection(
     name='samtools-flagstats-quality-metrics',
     properties={
         'title': "Mapping Quality Metrics from 'samtools --flagstats'",
