@@ -60,7 +60,7 @@ def get_mapping(assembly_name='hg19'):
                 'enabled': False
             },
             '_source': {
-                'enabled': False
+                'enabled': True
             },
             'properties': {
                 'uuid': {
