@@ -741,7 +741,7 @@ var AuditMixin = audit.AuditMixin;
 
         render: function() {
             var {facet, filters, context, facets} = this.props;
-            var targetNameFacet;
+            var targetNameFacet, awardRfaFacet;
             var hideTypeFacet = false; // True if we need to hide the 'Data type' facet.
             var hideFacet = false; // Hide a facet for any other reason
 
@@ -808,10 +808,55 @@ var AuditMixin = audit.AuditMixin;
                         }
                     });
                 }
+            } else if (facet.field === 'award.rfa') {
+                // award.project => target.rfa
+                // Search through all experiments matching the current search that has target.investigated_as
+                context['@graph'].forEach(item => {
+                    if (_(item['@type']).any(type => type === 'Experiment')) {
+                        // Now we have an object (item) of type Experiment. 
+                        if (item.award && item.award.project && item.award.rfa) {
+                            if (termHierarchy[item.award.project]) {
+                                termHierarchy[item.award.project].push(item.award.rfa);
+                            } else {
+                                termHierarchy[item.award.project] = [item.award.rfa];
+                            }
+                        }
+                    }
+                });
+
+                // Remove duplicate items in each target's array of names
+                Object.keys(termHierarchy).forEach(project => {
+                    termHierarchy[project] = _.uniq(termHierarchy[project]);
+                });
+
+                // termHierarchy now has a key for each award.project containing an array of award.rfa that applies to it.
+                // Assemble the subfacet object for each term. subfacets will be keyed by 'award.rfa'
+
+                // First find 'target.rfa' facet entry so we can get the doc_count for each item
+                awardRfaFacet = _(facets).find(facet => facet.field === 'award.rfa');
+                if (awardRfaFacet) {
+                    // For each award.project term, build a subfacet
+                    facet.terms.forEach(term => {
+                        if (termHierarchy[term.key]) {
+                            termHierarchy[term.key].forEach(rfa => {
+                                var subfacetTerm = _(awardRfaFacet.terms).find(term => term.key === rfa);
+                                if (subfacetTerm) {
+                                    if (subfacets[term.key]) {
+                                        subfacets[term.key].push(subfacetTerm);
+                                    } else {
+                                        subfacets[term.key] = [subfacetTerm];
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
             }
 
             // 'target.name' already under target.investigated_as
             if (facet.field === 'target.name') {
+                hideFacet = true;
+            } else if (facet.field === 'award.rfa') {
                 hideFacet = true;
             }
 
@@ -831,6 +876,11 @@ var AuditMixin = audit.AuditMixin;
                                 {terms.map(term => {
                                     var subfacet = {};
                                     if (facet.field === 'target.investigated_as' && subfacets[term.key]) {
+                                        subfacet.field = targetNameFacet.field;
+                                        subfacet.terms = subfacets[term.key];
+                                        subfacet.title = targetNameFacet.title;
+                                        subfacet.total = targetNameFacet.total;
+                                    } else if (facet.field === 'award.project' && subfacets[term.key]) {
                                         subfacet.field = targetNameFacet.field;
                                         subfacet.terms = subfacets[term.key];
                                         subfacet.title = targetNameFacet.title;
