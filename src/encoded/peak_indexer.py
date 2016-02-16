@@ -299,7 +299,7 @@ def index_file(request):
         result['index'] = len(invalidated)
         if record:
             if not es_peaks.indices.exists('encoded_peaks'):
-                es_peaks.create(index='encoded_peaks', body=get_mapping())
+                es_peaks.indices.create(index='encoded_peaks', body=index_settings())
             es_peaks.index(index='encoded_peaks', doc_type='meta', body=result, id='indexing')
 
 
