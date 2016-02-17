@@ -23,14 +23,17 @@ def _award_viewing_group(award_uuid, root):
 
 ALLOW_EVERYONE_VIEW = [
     (Allow, Everyone, 'view'),
+    (Deny, Everyone, ['view', 'edit']),
 ]
 
 ALLOW_SUBMITTER_ADD = [
-    (Allow, 'group.submitter', 'add')
+    (Allow, 'group.submitter', 'add'),
+    (Deny, Everyone, ['view', 'edit']),
 ]
 
 ALLOW_VIEWING_GROUP_VIEW = [
     (Allow, 'role.viewing_group_member', 'view'),
+    (Deny, Everyone, ['view', 'edit']),
 ]
 
 ALLOW_LAB_SUBMITTER_EDIT = [
