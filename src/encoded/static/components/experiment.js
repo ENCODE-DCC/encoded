@@ -132,12 +132,12 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                     // First get the treatments in the library
                     if (library.treatments && library.treatments.length) {
-                        treatments = library.treatments.map(treatment => treatment.treatment_term_name);
+                        treatments = library.treatments.map(treatment => SingleTreatment(treatment));
                     }
 
                     // Now get the treatments in the biosamples
                     if (library.biosample && library.biosample.treatments && library.biosample.treatments.length) {
-                        treatments = treatments.concat(library.biosample.treatments.map(treatment => treatment.treatment_term_name));
+                        treatments = treatments.concat(library.biosample.treatments.map(treatment => SingleTreatment(treatment)));
                     }
 
                     if (treatments.length) {
