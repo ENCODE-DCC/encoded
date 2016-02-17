@@ -25,7 +25,6 @@ from contentbase.elasticsearch import (
     PyramidJSONSerializer,
     TimedUrllib3HttpConnection,
 )
-from contentbase.elasticsearch.interfaces import SNP_SEARCH_ES
 from contentbase.json_renderer import json_renderer
 from elasticsearch import Elasticsearch
 STATIC_MAX_AGE = 0
@@ -239,7 +238,7 @@ def main(global_config, **local_config):
             serializer=PyramidJSONSerializer(json_renderer),
             connection_class=TimedUrllib3HttpConnection,
             retry_on_timeout=True,
-            timeout=10,
+            timeout=30,
         )
         config.include('.region_search')
         config.include('.peak_indexer')
