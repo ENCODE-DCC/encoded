@@ -20,6 +20,7 @@ def _award_viewing_group(award_uuid, root):
     award = root.get_by_uuid(award_uuid)
     return award.upgrade_properties().get('viewing_group')
 
+# Item acls
 
 ONLY_ADMIN_VIEW = [
     (Allow, 'group.admin', ['view', 'edit']),
@@ -33,9 +34,6 @@ ALLOW_EVERYONE_VIEW = [
     (Allow, Everyone, 'view'),
 ] + ONLY_ADMIN_VIEW
 
-ALLOW_SUBMITTER_ADD = [
-    (Allow, 'group.submitter', ['add']),
-]
 
 ALLOW_VIEWING_GROUP_VIEW = [
     (Allow, 'role.viewing_group_member', 'view'),
@@ -58,6 +56,14 @@ ALLOW_CURRENT = [
 DELETED = [
     (Deny, Everyone, 'visible_for_edit')
 ] + ONLY_ADMIN_VIEW
+
+
+# Collection acls
+
+ALLOW_SUBMITTER_ADD = [
+    (Allow, 'group.submitter', ['add']),
+]
+
 
 
 def paths_filtered_by_status(request, paths, exclude=('deleted', 'replaced'), include=None):
