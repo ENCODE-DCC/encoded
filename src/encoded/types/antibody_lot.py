@@ -158,8 +158,8 @@ def lot_reviews(characterizations, targets, request):
     if not characterizations:
         # If there are no characterizations, then default to awaiting lab characterization.
         return [{
-            'biosample_term_name': 'any cell type or tissue',
-            'biosample_term_id': 'NTR:00000000',
+            'biosample_term_name': 'any cell type or tissues',
+            'biosample_term_id': 'NTR:99999999',
             'organisms': sorted(target_organisms['all']),
             'targets': sorted(targets),  # Copy to prevent modification of original data
             'status': 'eligible for new data' if is_control else 'awaiting lab characterization',
@@ -330,8 +330,6 @@ def lot_reviews(characterizations, targets, request):
             elif lane_review['lane_status'] == 'exempt from standards':
                 if not histone_mod_target:
                     if compliant_secondary or exempted_secondary:
-                        new_review['biosample_term_name'] = 'any cell type and tissues'
-                        new_review['biosample_term_id'] = 'NTR:99999999'
                         new_review['status'] = 'eligible for new data (via exemption)'
                     if not secondary_chars or (not_reviewed_secondary == len(secondary_chars)):
                         new_review['detail'] = 'Awaiting submission of secondary characterization(s).'
@@ -339,6 +337,8 @@ def lot_reviews(characterizations, targets, request):
                         new_review['detail'] = 'Secondary characterization(s) in progress.'
                 else:
                     # exempted_organisms.add(lane_organism)
+                    new_review['biosample_term_name'] = 'any cell type and tissues'
+                    new_review['biosample_term_id'] = 'NTR:99999999'
                     if lane_organism in target_organisms:
                         new_review['targets'] = [target_organisms[lane_organism]]
                         if compliant_secondary or exempted_secondary:
