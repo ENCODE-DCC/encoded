@@ -234,11 +234,12 @@ def main(global_config, **local_config):
 
     if 'snp_search.server' in config.registry.settings:
         addresses = aslist(config.registry.settings['snp_search.server'])
-        config.registry[SNP_SEARCH_ES] = Elasticsearch(
+        config.registry['snp_search'] = Elasticsearch(
             addresses,
             serializer=PyramidJSONSerializer(json_renderer),
             connection_class=TimedUrllib3HttpConnection,
             retry_on_timeout=True,
+            timeout=10,
         )
         config.include('.region_search')
         config.include('.peak_indexer')
