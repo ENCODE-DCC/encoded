@@ -202,7 +202,7 @@ class SharedItem(Item):
 
 @contentbase.calculated_property(context=Item.Collection, category='action')
 def add(context, request):
-    if request.has_permission('add') and request.has_permission('forms', request.root):
+    if request.has_permission('add'):
         return {
             'name': 'add',
             'title': 'Add',
