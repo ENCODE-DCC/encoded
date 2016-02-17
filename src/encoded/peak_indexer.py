@@ -188,6 +188,7 @@ def index_file(request):
     request.datastore = 'database'
     dry_run = request.json.get('dry_run', False)
     recovery = request.json.get('recovery', False)
+    record = request.json.get('record', False)
     es = request.registry[ELASTIC_SEARCH]
     es_peaks = request.registry[SNP_SEARCH_ES]
 
