@@ -375,7 +375,9 @@ var CharacterizationCaption = React.createClass({
 
 var CharacterizationFile = React.createClass({
     propTypes: {
-        doc: React.PropTypes.object.isRequired // Document object to render
+        doc: React.PropTypes.object.isRequired, // Document object to render
+        detailOpen: React.PropTypes.bool, // True if detail panel is visible
+        detailSwitch: React.PropTypes.func // Parent component function to call when detail switch clicked
     },
 
     render: function() {
@@ -387,6 +389,7 @@ var CharacterizationFile = React.createClass({
 
         return (
             <div className="dl-bar">
+                <div className="characterization-badge"><StatusLabel status={doc.status} /></div>
                 {detailSwitch ?
                     <div className={'detail-switch' + (detailOpen ? ' open' : '')}>
                         <i className={'icon detail-trigger' + (detailOpen ? ' open' : '')} onClick={detailSwitch}>
