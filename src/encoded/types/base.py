@@ -23,28 +23,31 @@ def _award_viewing_group(award_uuid, root):
 
 ALLOW_EVERYONE_VIEW = [
     (Allow, Everyone, 'view'),
-    (Deny, Everyone, ['view', 'edit']),
+    (Allow, 'group.admin', ['view', 'edit']),
+    (Deny, Everyone, ['edit']),
 ]
 
 ALLOW_SUBMITTER_ADD = [
-    (Allow, 'group.submitter', 'add'),
+    (Allow, 'group.submitter', ['add']),
+    (Allow, 'group.admin', ['view', 'edit']),
     (Deny, Everyone, ['view', 'edit']),
 ]
 
 ALLOW_VIEWING_GROUP_VIEW = [
     (Allow, 'role.viewing_group_member', 'view'),
+    (Allow, 'group.admin', ['view', 'edit']),
     (Deny, Everyone, ['view', 'edit']),
 ]
 
 ALLOW_LAB_SUBMITTER_EDIT = [
     (Allow, 'role.viewing_group_member', 'view'),
-    (Allow, 'group.admin', 'edit'),
+    (Allow, 'group.admin', ['view', 'edit']),
     (Allow, 'role.lab_submitter', 'edit'),
 ]
 
 ALLOW_CURRENT_AND_SUBMITTER_EDIT = [
     (Allow, Everyone, 'view'),
-    (Allow, 'group.admin', 'edit'),
+    (Allow, 'group.admin', ['view', 'edit']),
     (Allow, 'role.lab_submitter', 'edit')
 ]
 
