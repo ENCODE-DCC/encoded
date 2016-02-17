@@ -226,7 +226,7 @@ var Lot = module.exports.Lot = React.createClass({
                               url={'/search/?type=experiment&replicates.antibody.accession=' + context.accession}
                               Component={ExperimentTable} />
 
-                <DocumentsPanel documentSpecs={documentSpecs} />
+                <DocumentsPanel title="Characterizations" documentSpecs={documentSpecs} />
             </div>
         );
     }
