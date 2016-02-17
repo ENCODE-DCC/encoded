@@ -1,8 +1,5 @@
 from pyramid.view import view_config
-from contentbase.elasticsearch.interfaces import (
-    ELASTIC_SEARCH,
-    SNP_SEARCH_ES,
-)
+from contentbase.elasticsearch.interfaces import ELASTIC_SEARCH
 from pyramid.security import effective_principals
 from .search import (
     format_results,
@@ -218,7 +215,7 @@ def region_search(context, request):
     }
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
-    snp_es = request.registry[SNP_SEARCH_ES]
+    snp_es = request.registry['snp_search']
     region = request.params.get('region', '*')
 
     # handling limit
@@ -240,7 +237,7 @@ def region_search(context, request):
             reference = regular_name
     annotation = request.params.get('annotation', '*')
     if annotation != '*':
-        chromosome, start, end = get_annotation_coordinates(es, annotation, reference)
+        chromosome, start, end = get_annotation_coordinates(snp_es, annotation, reference)
     elif region != '*':
         region = region.lower()
         if region.startswith('rs'):
@@ -324,7 +321,7 @@ def suggest(context, request):
         text = request.params.get('q', '')
     else:
         return []
-    es = request.registry[ELASTIC_SEARCH]
+    es = request.registry['snp_search']
     query = {
         "suggester": {
             "text": text,
@@ -344,7 +341,4 @@ def suggest(context, request):
         for item in results['suggester'][0]['options']:
             if not any(x in item['text'] for x in ['(C. elegans)','(mus musculus)','(D. melanogaster)']):
                 result['@graph'].append(item)
-
-
-        # result['@graph'] = [x for x in results['suggester'][0]['options'] if x['text'] not in []]
         return result
