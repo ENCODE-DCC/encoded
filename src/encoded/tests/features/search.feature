@@ -52,10 +52,10 @@ Feature: Search
         Then I should see at least 13 elements with the css selector "ul.nav.result-table > li"
         And I should see at least 3 elements with the css selector "div.box.facets > div.facet"
 
-        When I click the link to "?type=Experiment&assay_term_name=ChIP-seq"
+        When I click the link to "?type=Experiment&assay_title=ChIP-seq"
         And I wait for the content to load
         Then I should see at least 3 elements with the css selector "ul.nav.result-table > li"
 
-        When I click the link to "?type=Experiment&assay_term_name=ChIP-seq&assay_term_name=MethylArray"
+        When I click the link to "?type=Experiment&assay_title=ChIP-seq&assay_title=DNAme+array"
         And I wait for the content to load
         Then I should see at least 5 elements with the css selector "ul.nav.result-table > li"

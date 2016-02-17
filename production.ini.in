@@ -5,6 +5,7 @@ file_upload_bucket = ${file_upload_bucket}
 blob_bucket = ${blob_bucket}
 blob_store_profile_name = encoded-files-upload
 accession_factory = ${accession_factory}
+snp_search.server = ${es_instance}
 
 [composite:indexer]
 use = config:base.ini#indexer

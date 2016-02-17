@@ -3,6 +3,7 @@ var React = require('react');
 var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
+var panel = require('../libs/bootstrap/panel');
 var globals = require('./globals');
 var navbar = require('./navbar');
 var dataset = require('./dataset');
@@ -11,6 +12,7 @@ var image = require('./image');
 var item = require('./item');
 var audit = require('./audit');
 var statuslabel = require('./statuslabel');
+var doc = require('./doc');
 
 var Breadcrumbs = navbar.Breadcrumbs;
 var Attachment = image.Attachment;
@@ -22,6 +24,8 @@ var ExperimentTable = dataset.ExperimentTable;
 var StatusLabel = statuslabel.StatusLabel;
 var statusOrder = globals.statusOrder;
 var RelatedItems = item.RelatedItems;
+var {Panel, PanelBody} = panel;
+var {DocumentsPanel, Document, DocumentPreview, DocumentFile} = doc;
 
 
 var Lot = module.exports.Lot = React.createClass({
@@ -30,15 +34,14 @@ var Lot = module.exports.Lot = React.createClass({
         var context = this.props.context;
 
         // Sort characterization arrays
-        var sortedChars = _(context.characterizations).sortBy(function(characterization) {
+        var characterizations = _(context.characterizations).sortBy(function(characterization) {
             return [characterization.target.label, characterization.target.organism.name];
         });
 
-        // Build array of characterization panels
-        var characterizations = sortedChars.map(function(item) {
-            var PanelView = globals.panel_views.lookup(item);
-            return <PanelView context={item} key={item['@id']} />;
-        });
+        // Compile the document list
+        var documentSpecs = [
+            {documents: characterizations}
+        ];
 
         // Build antibody status panel
         var PanelView = globals.panel_views.lookup(context);
@@ -124,106 +127,106 @@ var Lot = module.exports.Lot = React.createClass({
                     </div>
                 }
 
-                <div className="panel data-display">
-                    <dl className="key-value">
-                        <div data-test="source">
-                            <dt>Source (vendor)</dt>
-                            <dd><a href={context.source.url}>{context.source.title}</a></dd>
-                        </div>
-
-                        <div data-test="productid">
-                            <dt>Product ID</dt>
-                            <dd><a href={context.url}>{context.product_id}</a></dd>
-                        </div>
-
-                        <div data-test="lotid">
-                            <dt>Lot ID</dt>
-                            <dd>{context.lot_id}</dd>
-                        </div>
-
-                        {Object.keys(targets).length ?
-                            <div data-test="targets">
-                                <dt>Targets</dt>
-                                <dd>
-                                    {targetKeys.map(function(target, i) {
-                                        var targetObj = targets[target];
-                                        return <span key={i}>{i !== 0 ? ', ' : ''}<a href={target}>{targetObj.label}{' ('}<em>{targetObj.organism.scientific_name}</em>{')'}</a></span>;
-                                    })}
-                                </dd>
+                <Panel addClasses="data-display">
+                    <PanelBody>
+                        <dl className="key-value">
+                            <div data-test="source">
+                                <dt>Source (vendor)</dt>
+                                <dd><a href={context.source.url}>{context.source.title}</a></dd>
                             </div>
-                        : null}
 
-                        {context.lot_id_alias && context.lot_id_alias.length ?
-                            <div data-test="lotidalias">
-                                <dt>Lot ID aliases</dt>
-                                <dd>{context.lot_id_alias.join(', ')}</dd>
+                            <div data-test="productid">
+                                <dt>Product ID</dt>
+                                <dd><a href={context.url}>{context.product_id}</a></dd>
                             </div>
-                        : null}
 
-                        <div data-test="host">
-                            <dt>Host</dt>
-                            <dd className="sentence-case">{context.host_organism.name}</dd>
-                        </div>
-
-                        {context.clonality ?
-                            <div data-test="clonality">
-                                <dt>Clonality</dt>
-                                <dd className="sentence-case">{context.clonality}</dd>
+                            <div data-test="lotid">
+                                <dt>Lot ID</dt>
+                                <dd>{context.lot_id}</dd>
                             </div>
-                        : null}
 
-                        {context.purifications && context.purifications.length ?
-                            <div data-test="purifications">
-                                <dt>Purification</dt>
-                                <dd className="sentence-case">{context.purifications.join(', ')}</dd>
+                            {Object.keys(targets).length ?
+                                <div data-test="targets">
+                                    <dt>Targets</dt>
+                                    <dd>
+                                        {targetKeys.map(function(target, i) {
+                                            var targetObj = targets[target];
+                                            return <span key={i}>{i !== 0 ? ', ' : ''}<a href={target}>{targetObj.label}{' ('}<em>{targetObj.organism.scientific_name}</em>{')'}</a></span>;
+                                        })}
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {context.lot_id_alias && context.lot_id_alias.length ?
+                                <div data-test="lotidalias">
+                                    <dt>Lot ID aliases</dt>
+                                    <dd>{context.lot_id_alias.join(', ')}</dd>
+                                </div>
+                            : null}
+
+                            <div data-test="host">
+                                <dt>Host</dt>
+                                <dd className="sentence-case">{context.host_organism.name}</dd>
                             </div>
-                        : null}
 
-                        {context.isotype ?
-                            <div data-test="isotype">
-                                <dt>Isotype</dt>
-                                <dd className="sentence-case">{context.isotype}</dd>
-                            </div>
-                        : null}
+                            {context.clonality ?
+                                <div data-test="clonality">
+                                    <dt>Clonality</dt>
+                                    <dd className="sentence-case">{context.clonality}</dd>
+                                </div>
+                            : null}
 
-                        {context.antigen_description ?
-                            <div data-test="antigendescription">
-                                <dt>Antigen description</dt>
-                                <dd>{context.antigen_description}</dd>
-                            </div>
-                        : null}
+                            {context.purifications && context.purifications.length ?
+                                <div data-test="purifications">
+                                    <dt>Purification</dt>
+                                    <dd className="sentence-case">{context.purifications.join(', ')}</dd>
+                                </div>
+                            : null}
 
-                        {context.antigen_sequence ?
-                            <div data-test="antigensequence">
-                                <dt>Antigen sequence</dt>
-                                <dd>{context.antigen_sequence}</dd>
-                            </div>
-                        : null}
+                            {context.isotype ?
+                                <div data-test="isotype">
+                                    <dt>Isotype</dt>
+                                    <dd className="sentence-case">{context.isotype}</dd>
+                                </div>
+                            : null}
 
-                        {context.aliases && context.aliases.length ?
-                            <div data-test="aliases">
-                                <dt>Aliases</dt>
-                                <dd>{context.aliases.join(", ")}</dd>
-                            </div>
-                        : null}
-                        
-                        {context.dbxrefs && context.dbxrefs.length ?
-                            <div data-test="dbxrefs">
-                                <dt>External resources</dt>
-                                <dd><DbxrefList values={context.dbxrefs} /></dd>
-                            </div>
-                        : null}
+                            {context.antigen_description ?
+                                <div data-test="antigendescription">
+                                    <dt>Antigen description</dt>
+                                    <dd>{context.antigen_description}</dd>
+                                </div>
+                            : null}
 
-                    </dl>
-                </div>
+                            {context.antigen_sequence ?
+                                <div data-test="antigensequence">
+                                    <dt>Antigen sequence</dt>
+                                    <dd className="sequence">{context.antigen_sequence}</dd>
+                                </div>
+                            : null}
 
-                <div className="characterizations row multi-columns-row">
-                    {characterizations}
-                </div>
+                            {context.aliases && context.aliases.length ?
+                                <div data-test="aliases">
+                                    <dt>Aliases</dt>
+                                    <dd>{context.aliases.join(", ")}</dd>
+                                </div>
+                            : null}
+                            
+                            {context.dbxrefs && context.dbxrefs.length ?
+                                <div data-test="dbxrefs">
+                                    <dt>External resources</dt>
+                                    <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                </div>
+                            : null}
+
+                        </dl>
+                    </PanelBody>
+                </Panel>
 
                 <RelatedItems title={'Experiments using antibody ' + context.accession}
                               url={'/search/?type=experiment&replicates.antibody.accession=' + context.accession}
                               Component={ExperimentTable} />
+
+                <DocumentsPanel documentSpecs={documentSpecs} />
             </div>
         );
     }
@@ -253,145 +256,6 @@ var Documents = React.createClass({
         );
     }
 });
-
-
-var Characterization = module.exports.Characterization = React.createClass({
-    getInitialState: function() {
-        return {panelOpen: false};
-    },
-
-    // Clicking the Lab bar inverts visible state of the popover
-    handleClick: function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        // Tell parent (App component) about new popover state
-        // Pass it this component's React unique node ID
-        this.setState({panelOpen: !this.state.panelOpen});
-    },
-
-    render: function() {
-        var context = this.props.context;
-        var keyClass = cx({
-            "characterization-meta-data": true,
-            "key-value-left": true,
-            "characterization-slider": true,
-            "active": this.state.panelOpen
-        });
-        var figure = <Attachment context={this.props.context} className="characterization" />;
-
-        var attachmentHref, download;
-        if (context.attachment && context.attachment.href && context.attachment.download) {
-            attachmentHref = url.resolve(context['@id'], context.attachment.href);
-            download = (
-                <dd className="dl-link">
-                    <i className="icon icon-download"></i>&nbsp;<a data-bypass="true" href={attachmentHref} download={context.attachment.download}>
-                        {context.attachment.download}
-                    </a>
-                </dd>
-            );
-        } else {
-            download = (
-                <em>Document not available</em>
-            );
-        }
-
-        var excerpt;
-        if (context.caption && context.caption.length > 200) {
-            excerpt = globals.truncateString(context.caption, 200);
-        }
-
-        return (
-            // Each section is a panel; name all Bootstrap 3 sizes so .multi-columns-row class works
-            <section className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <div className={globals.itemClass(context, 'view-detail panel')}>
-                    <div className="panel-heading characterization-title">
-                        {context.target.label} {context.target.organism.scientific_name ? <span>{' ('}<i>{context.target.organism.scientific_name}</i>{')'}</span> : ''}
-                    </div>
-                    <div className="panel-body characterization-header">
-                        <figure>
-                            {figure}
-                            <div className="characterization-badge"><StatusLabel status={context.status} /></div>
-                        </figure>
-
-                        <dl className="characterization-intro characterization-meta-data">
-                            {context.characterization_method ?
-                                <div data-test="method">
-                                    <strong>Method: </strong>
-                                    {context.characterization_method}
-                                </div>
-                            : null}
-
-                            {excerpt || (context.caption && context.caption.length) ?
-                                <div data-test="caption">
-                                    <strong>{excerpt ? 'Caption excerpt' : 'Caption'}: </strong>
-                                    {excerpt ? excerpt : context.caption}
-                                </div>
-                            : null}
-                        </dl>
-                    </div>
-                    <dl ref="collapse" className={keyClass}>
-                        {context.caption && context.caption.length ?
-                            <div data-test="caption">
-                                <dt>Caption</dt>
-                                <dd className="sentence-case para-text">{context.caption}</dd>
-                            </div>
-                        : null}
-
-                        {context.comment ?
-                            <div data-test="comment">
-                                <dt>Submitter comment</dt>
-                                <dd className="para-text">{context.comment}</dd>
-                            </div>
-                        : null}
-
-                        {context.notes ?
-                            <div data-test="comment">
-                                <dt>Reviewer comment</dt>
-                                <dd className="para-text">{context.notes}</dd>
-                            </div>
-                        : null}
-
-                        {context.submitted_by && context.submitted_by.title ?
-                            <div data-test="submitted">
-                                <dt>Submitted by</dt>
-                                <dd>{context.submitted_by.title}</dd>
-                            </div>
-                        : null}
-
-                        <div data-test="lab">
-                            <dt>Lab</dt>
-                            <dd>{context.lab.title}</dd>
-                        </div>
-
-                        <div data-test="grant">
-                            <dt>Grant</dt>
-                            <dd>{context.award.name}</dd>
-                        </div>
-
-                        <div data-test="download">
-                            <dt>Download</dt>
-                            {download}
-                        </div>
-
-                        {context.documents && context.documents.length ?
-                            <div data-test="documents">
-                                <dt>Documents</dt>
-                                <Documents docs={context.documents} />
-                            </div>
-                        : null}
-                    </dl>
-
-                    <button onClick={this.handleClick} className="key-value-trigger panel-footer">
-                        {this.state.panelOpen ? 'Less' : 'More'}
-                    </button>
-                </div>
-            </section>
-        );
-    }
-});
-
-globals.panel_views.register(Characterization, 'AntibodyCharacterization');
 
 
 var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
@@ -463,3 +327,169 @@ var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
 });
 
 globals.panel_views.register(AntibodyStatus, 'AntibodyLot');
+
+
+//**********************************************************************
+// Antibody characterization documents
+
+const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
+
+// Document header component -- antibody characterization
+var CharacterizationHeader = React.createClass({
+    propTypes: {
+        doc: React.PropTypes.object.isRequired // Document object to render
+    },
+
+    render: function() {
+        var doc = this.props.doc;
+
+        return (
+            <div className="panel-header document-title">
+                {doc.target.label} {doc.target.organism.scientific_name ? <span>{' ('}<i>{doc.target.organism.scientific_name}</i>{')'}</span> : ''}
+            </div>
+        );
+    }
+});
+
+// Document caption component -- antibody characterization
+var CharacterizationCaption = React.createClass({
+    propTypes: {
+        doc: React.PropTypes.object.isRequired // Document object to render
+    },
+
+    render: function() {
+        var doc = this.props.doc;
+
+        return (
+            <div className="document-intro document-meta-data">
+                {doc.characterization_method ?
+                    <div data-test="method">
+                        <strong>Method: </strong>
+                        {doc.characterization_method}
+                    </div>
+                : null}
+            </div>
+        );
+    }
+});
+
+var CharacterizationFile = React.createClass({
+    propTypes: {
+        doc: React.PropTypes.object.isRequired // Document object to render
+    },
+
+    render: function() {
+        var {doc, detailOpen, detailSwitch} = this.props;
+        var excerpt, caption = doc.caption;
+        if (caption && caption.length > EXCERPT_LENGTH) {
+            excerpt = globals.truncateString(caption, 44);
+        }
+
+        return (
+            <div className="dl-bar">
+                {detailSwitch ?
+                    <div className={'detail-switch' + (detailOpen ? ' open' : '')}>
+                        <i className={'icon detail-trigger' + (detailOpen ? ' open' : '')} onClick={detailSwitch}>
+                            <span className="sr-only">More</span>
+                        </i>
+                    </div>
+                : null}
+            </div>
+        );
+    }
+});
+
+var CharacterizationDetail = React.createClass({
+    propTypes: {
+        doc: React.PropTypes.object.isRequired, // Document object to render
+        detailOpen: React.PropTypes.bool, // True if detail panel is visible
+        key: React.PropTypes.string // Unique key for identification
+    },
+
+    render: function() {
+        var doc = this.props.doc;
+        var keyClass = 'document-slider' + (this.props.detailOpen ? ' active' : '');
+        var excerpt = doc.caption && doc.caption.length > EXCERPT_LENGTH;
+
+        var download, attachmentHref;
+        if (doc.attachment && doc.attachment.href && doc.attachment.download) {
+            attachmentHref = url.resolve(doc['@id'], doc.attachment.href);
+            download = (
+                <dd className="dl-link">
+                    <i className="icon icon-download"></i>&nbsp;
+                    <a data-bypass="true" href={attachmentHref} download={doc.attachment.download}>
+                        {doc.attachment.download}
+                    </a>
+                </dd>
+            );
+        } else {
+            download = (
+                <em>Document not available</em>
+            );
+        }
+
+        return (
+            <div className={keyClass}>
+                <dl className='key-value-doc' id={'panel' + this.props.key} aria-labeledby={'tab' + this.props.key} role="tabpanel">
+                    {excerpt ?
+                        <div data-test="caption">
+                            <dt>Caption</dt>
+                            <dd className="sentence-case para-text">{doc.caption}</dd>
+                        </div>
+                    : null}
+
+                    {doc.comment ?
+                        <div data-test="comment">
+                            <dt>Submitter comment</dt>
+                            <dd className="para-text">{doc.comment}</dd>
+                        </div>
+                    : null}
+
+                    {doc.notes ?
+                        <div data-test="comment">
+                            <dt>Reviewer comment</dt>
+                            <dd className="para-text">{doc.notes}</dd>
+                        </div>
+                    : null}
+
+                    {doc.submitted_by && doc.submitted_by.title ?
+                        <div data-test="submitted">
+                            <dt>Submitted by</dt>
+                            <dd>{doc.submitted_by.title}</dd>
+                        </div>
+                    : null}
+
+                    <div data-test="lab">
+                        <dt>Lab</dt>
+                        <dd>{doc.lab.title}</dd>
+                    </div>
+
+                    <div data-test="grant">
+                        <dt>Grant</dt>
+                        <dd>{doc.award.name}</dd>
+                    </div>
+
+                    <div data-test="download">
+                        <dt>Download</dt>
+                        {download}
+                    </div>
+
+                    {doc.documents && doc.documents.length ?
+                        <div data-test="documents">
+                            <dt>Documents</dt>
+                            <Documents docs={doc.documents} />
+                        </div>
+                    : null}
+                </dl>
+            </div>
+        );
+    }
+});
+
+// Parts of individual document panels
+globals.panel_views.register(Document, 'AntibodyCharacterization');
+globals.document_views.header.register(CharacterizationHeader, 'AntibodyCharacterization');
+globals.document_views.caption.register(CharacterizationCaption, 'AntibodyCharacterization');
+globals.document_views.preview.register(DocumentPreview, 'AntibodyCharacterization');
+globals.document_views.file.register(CharacterizationFile, 'AntibodyCharacterization');
+globals.document_views.detail.register(CharacterizationDetail, 'AntibodyCharacterization');

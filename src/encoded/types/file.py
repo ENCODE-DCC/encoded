@@ -289,10 +289,16 @@ class File(Item):
              permission='edit')
 def get_upload(context, request):
     external = context.propsheets.get('external', {})
+    upload_credentials = external.get('upload_credentials')
+    # Show s3 location info for files originally submitted to EDW.
+    if upload_credentials is None and external.get('service') == 's3':
+        upload_credentials = {
+            'upload_url': 's3://{bucket}/{key}'.format(**external),
+        }
     return {
         '@graph': [{
             '@id': request.resource_path(context),
-            'upload_credentials': external.get('upload_credentials'),
+            'upload_credentials': upload_credentials,
         }],
     }
 

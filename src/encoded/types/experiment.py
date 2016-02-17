@@ -36,7 +36,15 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         'files.derived_from.analysis_step_version.software_versions.software',
         'files.derived_from.replicate',
         'files.analysis_step_version.analysis_step',
+        'files.analysis_step_version.analysis_step.documents',
+        'files.analysis_step_version.analysis_step.documents.award',
+        'files.analysis_step_version.analysis_step.documents.lab',
+        'files.analysis_step_version.analysis_step.documents.submitted_by',
         'files.analysis_step_version.analysis_step.pipelines',
+        'files.analysis_step_version.analysis_step.pipelines.documents',
+        'files.analysis_step_version.analysis_step.pipelines.documents.award',
+        'files.analysis_step_version.analysis_step.pipelines.documents.lab',
+        'files.analysis_step_version.analysis_step.pipelines.documents.submitted_by',
         'files.analysis_step_version.analysis_step.versions',
         'files.analysis_step_version.analysis_step.versions.software_versions',
         'files.analysis_step_version.analysis_step.versions.software_versions.software',
@@ -63,9 +71,36 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         'replicates.library.documents.award',
         'replicates.library.biosample.submitted_by',
         'replicates.library.biosample.source',
+        'replicates.library.biosample.characterizations',
+        'replicates.library.biosample.characterizations.award',
+        'replicates.library.biosample.characterizations.lab',
+        'replicates.library.biosample.characterizations.submitted_by',
+        'replicates.library.biosample.constructs.documents',
+        'replicates.library.biosample.constructs.documents.award',
+        'replicates.library.biosample.constructs.documents.lab',
+        'replicates.library.biosample.constructs.documents.submitted_by',
+        'replicates.library.biosample.protocol_documents',
+        'replicates.library.biosample.protocol_documents.award',
+        'replicates.library.biosample.protocol_documents.lab',
+        'replicates.library.biosample.protocol_documents.submitted_by',
+        'replicates.library.biosample.talens.documents',
+        'replicates.library.biosample.talens.documents.award',
+        'replicates.library.biosample.talens.documents.lab',
+        'replicates.library.biosample.talens.documents.submitted_by',
         'replicates.library.biosample.organism',
-        'replicates.library.biosample.rnais',
+        'replicates.library.biosample.rnais.documents',
+        'replicates.library.biosample.rnais.documents.award',
+        'replicates.library.biosample.rnais.documents.lab',
+        'replicates.library.biosample.rnais.documents.submitted_by',
         'replicates.library.biosample.donor',
+        'replicates.library.biosample.donor.donor_documents',
+        'replicates.library.biosample.donor.donor_documents.award',
+        'replicates.library.biosample.donor.donor_documents.lab',
+        'replicates.library.biosample.donor.donor_documents.submitted_by',
+        'replicates.library.biosample.donor.characterizations',
+        'replicates.library.biosample.donor.characterizations.award',
+        'replicates.library.biosample.donor.characterizations.lab',
+        'replicates.library.biosample.donor.characterizations.submitted_by',
         'replicates.library.biosample.donor.organism',
         'replicates.library.biosample.donor.mutated_gene',
         'replicates.library.biosample.treatments',
@@ -123,6 +158,65 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
     def replicates(self, request, replicates):
         return paths_filtered_by_status(request, replicates)
 
+    @calculated_property(condition='assay_term_id', schema={
+        "title": "Assay type",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def assay_slims(self, registry, assay_term_id):
+        if assay_term_id in registry['ontology']:
+            return registry['ontology'][assay_term_id]['assay']
+        return []
+
+    @calculated_property(condition='assay_term_id', schema={
+        "title": "Assay title",
+        "type": "string",
+    })
+    def assay_title(self, registry, assay_term_id, assay_term_name):
+        # This is the preferred name in generate_ontology.py if exists
+        if assay_term_id in registry['ontology']:
+            preferred_name = registry['ontology'][assay_term_id].get('preferred_name', assay_term_name)
+            return preferred_name or assay_term_name
+        return assay_term_name
+
+    @calculated_property(condition='assay_term_id', schema={
+        "title": "Assay category",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def category_slims(self, registry, assay_term_id):
+        if assay_term_id in registry['ontology']:
+            return registry['ontology'][assay_term_id]['category']
+        return []
+
+    @calculated_property(condition='assay_term_id', schema={
+        "title": "Assay type",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def type_slims(self, registry, assay_term_id):
+        if assay_term_id in registry['ontology']:
+            return registry['ontology'][assay_term_id]['types']
+        return []
+
+    @calculated_property(condition='assay_term_id', schema={
+        "title": "Assay objective",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def objective_slims(self, registry, assay_term_id):
+        if assay_term_id in registry['ontology']:
+            return registry['ontology'][assay_term_id]['objectives']
+        return []
+
     @calculated_property(schema={
         "title": "Related series",
         "type": "array",
@@ -140,7 +234,7 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         "type": "string"
     })
     def replication_type(self, request, replicates=None):
-        # Compare the biosamples to see if for humans they are the same donor and for 
+        # Compare the biosamples to see if for humans they are the same donor and for
         # model organisms if they are sex-matched and age-matched
         biosample_dict = {}
         biosample_age_list = []
@@ -231,12 +325,13 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         },
         'x': {
             'facets': [
-                'assay_term_name',
+                'assay_title',
+                'assay_slims',
                 'target.investigated_as',
                 'month_released',
                 'files.file_type',
             ],
-            'group_by': 'assay_term_name',
+            'group_by': 'assay_title',
             'label': 'Assay',
         },
     }

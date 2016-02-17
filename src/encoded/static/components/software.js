@@ -74,7 +74,7 @@ var Software = module.exports.Software = React.createClass({
                 </header>
                 <AuditDetail context={context} id="publication-audit" />
 
-                <div className="panel data-display">
+                <div className="panel">
                     <dl className="key-value">
                         <div data-test="title">
                             <dt>Title</dt>
@@ -204,7 +204,7 @@ globals.listing_views.register(Listing, 'Software');
 // in a panel.
 var SoftwareVersionList = module.exports.SoftwareVersionList = function(softwareVersions) {
     return (
-        <div className="software-version-list">
+        <span className="software-version-list">
             {softwareVersions.map(function(version, i) {
                 var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
                 return (
@@ -216,6 +216,6 @@ var SoftwareVersionList = module.exports.SoftwareVersionList = function(software
                     </a>
                 );
             })}
-        </div>
+        </span>
     );
 };
