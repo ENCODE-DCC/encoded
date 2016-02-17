@@ -21,11 +21,17 @@ def _award_viewing_group(award_uuid, root):
     return award.upgrade_properties().get('viewing_group')
 
 
-ALLOW_EVERYONE_VIEW = [
-    (Allow, Everyone, 'view'),
+ONLY_ADMIN_VIEW = [
     (Allow, 'group.admin', ['view', 'edit']),
+    (Allow, 'group.read-only-admin', ['view']),
+    (Allow, 'remoteuser.INDEXER', ['view']),
+    (Allow, 'remoteuser.EMBED', ['view']),
     (Deny, Everyone, ['view', 'edit']),
 ]
+
+ALLOW_EVERYONE_VIEW = [
+    (Allow, Everyone, 'view'),
+] + ONLY_ADMIN_VIEW
 
 ALLOW_SUBMITTER_ADD = [
     (Allow, 'group.submitter', ['add']),
@@ -33,38 +39,21 @@ ALLOW_SUBMITTER_ADD = [
 
 ALLOW_VIEWING_GROUP_VIEW = [
     (Allow, 'role.viewing_group_member', 'view'),
-    (Allow, 'group.admin', ['view', 'edit']),
-    (Deny, Everyone, ['view', 'edit']),
-]
+] + ONLY_ADMIN_VIEW
 
 ALLOW_LAB_SUBMITTER_EDIT = [
     (Allow, 'role.viewing_group_member', 'view'),
-    (Allow, 'group.admin', ['view', 'edit']),
     (Allow, 'role.lab_submitter', 'edit'),
-    (Deny, Everyone, ['view', 'edit']),
-]
+] + ONLY_ADMIN_VIEW
 
 ALLOW_CURRENT_AND_SUBMITTER_EDIT = [
     (Allow, Everyone, 'view'),
-    (Allow, 'group.admin', ['view', 'edit']),
     (Allow, 'role.lab_submitter', 'edit'),
-    (Deny, Everyone, ['view', 'edit']),
-]
+] + ONLY_ADMIN_VIEW
 
 ALLOW_CURRENT = [
     (Allow, Everyone, 'view'),
-    (Allow, 'group.admin', ['view', 'edit']),
-    (Deny, Everyone, ['view', 'edit']),
-]
-
-ONLY_ADMIN_VIEW = [
-    (Allow, 'group.admin', ALL_PERMISSIONS),
-    (Allow, 'group.read-only-admin', ['view']),
-    # Avoid schema validation errors during audit
-    (Allow, 'remoteuser.EMBED', ['view', 'expand', 'audit', 'import_items']),
-    (Allow, 'remoteuser.INDEXER', ['view', 'index']),
-    DENY_ALL,
-]
+] + ONLY_ADMIN_VIEW
 
 DELETED = [
     (Deny, Everyone, 'visible_for_edit')
