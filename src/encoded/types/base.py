@@ -206,7 +206,7 @@ def add(context, request):
 
 @contentbase.calculated_property(context=Item, category='action')
 def edit(context, request):
-    if request.has_permission('edit') and request.has_permission('forms', request.root):
+    if request.has_permission('edit'):
         return {
             'name': 'edit',
             'title': 'Edit',
