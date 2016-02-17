@@ -808,7 +808,7 @@ var AuditMixin = audit.AuditMixin;
                         }
                     });
                 }
-            } else if (facet.field === 'award.rfa') {
+            } else if (facet.field === 'award.project') {
                 // award.project => target.rfa
                 // Search through all experiments matching the current search that has target.investigated_as
                 context['@graph'].forEach(item => {
@@ -881,10 +881,10 @@ var AuditMixin = audit.AuditMixin;
                                         subfacet.title = targetNameFacet.title;
                                         subfacet.total = targetNameFacet.total;
                                     } else if (facet.field === 'award.project' && subfacets[term.key]) {
-                                        subfacet.field = targetNameFacet.field;
+                                        subfacet.field = awardRfaFacet.field;
                                         subfacet.terms = subfacets[term.key];
-                                        subfacet.title = targetNameFacet.title;
-                                        subfacet.total = targetNameFacet.total;
+                                        subfacet.title = awardRfaFacet.title;
+                                        subfacet.total = awardRfaFacet.total;
                                     } else {
                                         subfacet = null;
                                     }
