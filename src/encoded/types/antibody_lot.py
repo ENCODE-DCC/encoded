@@ -339,8 +339,6 @@ def lot_reviews(characterizations, targets, request):
                         new_review['detail'] = 'Secondary characterization(s) in progress.'
                 else:
                     # exempted_organisms.add(lane_organism)
-                    new_review['biosample_term_name'] = 'any cell type and tissues'
-                    new_review['biosample_term_id'] = 'NTR:99999999'
                     if lane_organism in target_organisms:
                         new_review['targets'] = [target_organisms[lane_organism]]
                         if compliant_secondary or exempted_secondary:
