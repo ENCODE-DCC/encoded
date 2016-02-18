@@ -651,7 +651,8 @@ def report(context, request):
         'title': 'View results as list',
         'icon': 'list-alt',
     }
-    res['@id'] = res['@id'].replace('search', 'report')
+    search_base = normalize_query(request)
+    res['@id'] = '/report/' + search_base
     res['title'] = 'Report'
     res['@type'] = ['Report']
     return res
