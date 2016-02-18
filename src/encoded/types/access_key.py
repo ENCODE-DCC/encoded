@@ -9,10 +9,8 @@ from pyramid.security import (
 from pyramid.settings import asbool
 from .base import (
     Item,
-    ALLOW_CURRENT,
-    ALLOW_CURRENT_AND_SUBMITTER_EDIT,
     DELETED,
-    ONLY_ADMIN_VIEW
+    ONLY_ADMIN_VIEW,
 )
 from ..authentication import (
     generate_password,
@@ -29,7 +27,6 @@ from snowfort.crud_views import (
 )
 from snowfort.validators import (
     validate_item_content_post,
-    validate_item_content_put,
 )
 
 
@@ -41,13 +38,12 @@ from snowfort.validators import (
         'description': 'Programmatic access keys',
     },
     acl=[
-        (Allow, 'role.owner', ['edit', 'view']),
         (Allow, Authenticated, 'add'),
-        (Allow, 'group.admin', ['list', 'view']),
-        (Allow, 'group.read-only-admin', ['list', 'view']),
-        (Allow, 'remoteuser.INDEXER', ['list', 'view']),
-        (Allow, 'remoteuser.EMBED', ['list', 'view']),
-        (Deny, Everyone, ['list', 'view']),
+        (Allow, 'group.admin', 'list'),
+        (Allow, 'group.read-only-admin', 'list'),
+        (Allow, 'remoteuser.INDEXER', 'list'),
+        (Allow, 'remoteuser.EMBED', 'list'),
+        (Deny, Everyone, 'list'),
     ])
 class AccessKey(Item):
     item_type = 'access_key'
@@ -55,12 +51,10 @@ class AccessKey(Item):
     name_key = 'access_key_id'
 
     STATUS_ACL = {
-        'released': ALLOW_CURRENT,
+        'current': [(Allow, 'role.owner', ['view', 'edit'])] + ONLY_ADMIN_VIEW,
         'deleted': DELETED,
-        'replaced': DELETED,
-        'current': [(Allow, 'role.owner', 'edit')] + ALLOW_CURRENT,
-        'disabled': ONLY_ADMIN_VIEW,
     }
+
     def __ac_local_roles__(self):
         owner = 'userid.%s' % self.properties['user']
         return {owner: 'role.owner'}
