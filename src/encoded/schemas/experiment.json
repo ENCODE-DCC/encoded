@@ -129,7 +129,10 @@
             "title": "Assay"
         },
         "target.investigated_as": {
-            "title": "Target of assay"
+            "title": "Target of assay",
+            "target.name": {
+                "title": "Target name"
+            }
         },
         "target.name": {
             "title": "Target name"

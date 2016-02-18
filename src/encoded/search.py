@@ -12,6 +12,8 @@ from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
 
+import pprint
+
 
 def includeme(config):
     config.add_route('search', '/search{slash:/?}')
@@ -378,6 +380,7 @@ def format_facets(es_results, facets):
     if 'aggregations' not in es_results:
         return result
 
+
     aggregations = es_results['aggregations']
     for field, facet in facets:
         agg_name = field.replace('.', '-')
@@ -386,6 +389,8 @@ def format_facets(es_results, facets):
         terms = aggregations[agg_name][agg_name]['buckets']
         if len(terms) < 2:
             continue
+
+        # Find subfacets
         result.append({
             'field': field,
             'title': facet.get('title', field),
@@ -451,14 +456,14 @@ def search(context, request, search_type=None):
 
     # handling pagination
     from_ = request.params.get('from') or 0
-    size = request.params.get('limit', 25)
+    size = request.params.get('limit', 9)
     if size in ('all', ''):
         size = None
     else:
         try:
             size = int(size)
         except ValueError:
-            size = 25
+            size = 9
 
     search_term = prepare_search_term(request)
 
@@ -553,11 +558,18 @@ def search(context, request, search_type=None):
     # Decide whether to use scan for results.
     do_scan = size is None or size > 1000
 
+    pp = pprint.PrettyPrinter()
+    pp.pprint(query)
+
     # Execute the query
     if do_scan:
         es_results = es.search(body=query, index=es_index, search_type='count')
     else:
         es_results = es.search(body=query, index=es_index, from_=from_, size=size)
+
+    es_count_results = es.search(body=query, index=es_index, search_type='count')
+
+    pp.pprint(es_count_results)
 
     result['total'] = es_results['hits']['total']
 
