@@ -1,8 +1,8 @@
-from contentbase import (
+from snowfort import (
     Item,
     collection,
 )
-from contentbase.upgrader import (
+from snowfort.upgrader import (
     upgrade_step,
     upgrade_finalizer,
 )

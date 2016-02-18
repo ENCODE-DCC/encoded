@@ -9,11 +9,11 @@ To load the initial data:
 from pyramid.paster import get_app
 from elasticsearch import RequestError
 from functools import reduce
-from contentbase import (
+from snowfort import (
     COLLECTIONS,
     TYPES,
 )
-from contentbase.schema_utils import combine_schemas
+from snowfort.schema_utils import combine_schemas
 from .interfaces import ELASTIC_SEARCH
 import collections
 import json
@@ -421,7 +421,7 @@ def type_mapping(types, item_type, embed=True):
 
 
 def run(app, collections=None, dry_run=False):
-    index = app.registry.settings['contentbase.elasticsearch.index']
+    index = app.registry.settings['snowfort.elasticsearch.index']
     registry = app.registry
     if not dry_run:
         es = app.registry[ELASTIC_SEARCH]

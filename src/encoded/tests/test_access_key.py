@@ -143,7 +143,7 @@ def test_access_key_view_hides_secret_access_key_hash(testapp, access_key, frame
 
 def test_access_key_uses_edw_hash(app, access_key):
     from encoded.edw_hash import EDWHash
-    from contentbase import ROOT
+    from snowfort import ROOT
     root = app.registry[ROOT]
     obj = root.by_item_type['access_key'][access_key['access_key_id']]
     pwhash = obj.properties['secret_access_key_hash']

@@ -1,11 +1,11 @@
-from contentbase import (
+from snowfort import (
     collection,
     load_schema,
 )
 from .base import (
     Item,
 )
-from contentbase.attachment import ItemWithAttachment
+from snowfort.attachment import ItemWithAttachment
 
 
 @collection(

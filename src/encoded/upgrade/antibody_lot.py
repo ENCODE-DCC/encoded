@@ -1,5 +1,5 @@
-from contentbase import CONNECTION
-from contentbase import upgrade_step
+from snowfort import CONNECTION
+from snowfort import upgrade_step
 from .shared import ENCODE2_AWARDS
 from pyramid.traversal import find_root
 

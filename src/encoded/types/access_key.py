@@ -19,15 +19,15 @@ from ..authentication import (
     generate_user,
     CRYPT_CONTEXT,
 )
-from contentbase import (
+from snowfort import (
     collection,
     load_schema,
 )
-from contentbase.crud_views import (
+from snowfort.crud_views import (
     collection_add,
     item_edit,
 )
-from contentbase.validators import (
+from snowfort.validators import (
     validate_item_content_post,
     validate_item_content_put,
 )

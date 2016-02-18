@@ -1,5 +1,5 @@
 from pyramid.decorator import reify
-from contentbase import (
+from snowfort import (
     Root,
     calculated_property,
     root,
@@ -83,4 +83,4 @@ class EncodedRoot(Root):
         "type": "string",
     })
     def app_version(self, registry):
-        return registry.settings['contentbase.app_version']
+        return registry.settings['snowfort.app_version']
