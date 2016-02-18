@@ -7,7 +7,13 @@ from pyramid.security import (
     Everyone,
 )
 from pyramid.settings import asbool
-from .base import Item
+from .base import (
+    Item,
+    ALLOW_CURRENT,
+    ALLOW_CURRENT_AND_SUBMITTER_EDIT,
+    DELETED,
+    ONLY_ADMIN_VIEW
+)
 from ..authentication import (
     generate_password,
     generate_user,
@@ -48,6 +54,13 @@ class AccessKey(Item):
     schema = load_schema('encoded:schemas/access_key.json')
     name_key = 'access_key_id'
 
+    STATUS_ACL = {
+        'released': ALLOW_CURRENT,
+        'deleted': DELETED,
+        'replaced': DELETED,
+        'current': [(Allow, 'role.owner', 'edit')] + ALLOW_CURRENT,
+        'disabled': ONLY_ADMIN_VIEW,
+    }
     def __ac_local_roles__(self):
         owner = 'userid.%s' % self.properties['user']
         return {owner: 'role.owner'}
