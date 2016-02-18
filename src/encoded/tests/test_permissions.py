@@ -202,3 +202,8 @@ def test_disabled_user_denied_submitter(submitter_testapp, disabled_user):
 
 def test_disabled_user_wrangler(wrangler_testapp, disabled_user):
     wrangler_testapp.get(disabled_user['@id'], status=200)
+
+def test_labs_view_wrangler(wrangler_testapp, other_lab):
+    labs = wrangler_testapp.get('/labs/', status=200)
+    assert(len(labs.json['@graph']) == 1)
+
