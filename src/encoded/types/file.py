@@ -1,4 +1,4 @@
-from contentbase import (
+from snowfort import (
     AfterModified,
     BeforeModified,
     CONNECTION,
@@ -6,7 +6,7 @@ from contentbase import (
     collection,
     load_schema,
 )
-from contentbase.schema_utils import schema_validator
+from snowfort.schema_utils import schema_validator
 from .base import (
     Item,
     paths_filtered_by_status,

@@ -1,8 +1,8 @@
-from contentbase import (
+from snowfort import (
     collection,
     load_schema,
 )
-from contentbase.resource_views import (
+from snowfort.resource_views import (
     item_view,
     item_view_page,
 )

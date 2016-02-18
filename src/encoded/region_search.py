@@ -1,5 +1,5 @@
 from pyramid.view import view_config
-from contentbase.elasticsearch.interfaces import (
+from snowfort.elasticsearch.interfaces import (
     ELASTIC_SEARCH,
     SNP_SEARCH_ES,
 )

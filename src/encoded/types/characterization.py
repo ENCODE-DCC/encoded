@@ -1,4 +1,4 @@
-from contentbase import (
+from snowfort import (
     abstract_collection,
     calculated_property,
     collection,
@@ -8,7 +8,7 @@ from .base import (
     Item,
     SharedItem,
 )
-from contentbase.attachment import ItemWithAttachment
+from snowfort.attachment import ItemWithAttachment
 
 
 @abstract_collection(

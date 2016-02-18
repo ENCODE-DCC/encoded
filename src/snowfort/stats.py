@@ -8,7 +8,7 @@ from .util import get_root_request
 
 
 def includeme(config):
-    config.add_tween('contentbase.stats.stats_tween_factory', under=pyramid.tweens.INGRESS)
+    config.add_tween('snowfort.stats.stats_tween_factory', under=pyramid.tweens.INGRESS)
 
 
 def requests_timing_hook(prefix='requests'):
