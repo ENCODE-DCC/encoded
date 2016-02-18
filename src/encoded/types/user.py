@@ -11,15 +11,15 @@ from pyramid.security import (
 from .base import (
     Item,
 )
-from contentbase import (
+from snowfort import (
     CONNECTION,
     calculated_property,
     collection,
     load_schema,
 )
-from contentbase.calculated import calculate_properties
-from contentbase.resource_views import item_view_object
-from contentbase.util import expand_path
+from snowfort.calculated import calculate_properties
+from snowfort.resource_views import item_view_object
+from snowfort.util import expand_path
 
 
 @collection(

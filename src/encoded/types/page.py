@@ -1,5 +1,5 @@
-from contentbase.schema_utils import VALIDATOR_REGISTRY
-from contentbase import (
+from snowfort.schema_utils import VALIDATOR_REGISTRY
+from snowfort import (
     COLLECTIONS,
     CONNECTION,
     Collection,
@@ -9,7 +9,7 @@ from contentbase import (
     collection,
     load_schema,
 )
-from contentbase.resource_views import item_view_page
+from snowfort.resource_views import item_view_page
 from .base import (
     ALLOW_EVERYONE_VIEW,
     Item,

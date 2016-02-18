@@ -82,7 +82,7 @@ def es_update_data(event):
     if renamed:
         response.headers['X-Renamed'] = ','.join(renamed)
 
-    record = data.get('_contentbase_transaction_record')
+    record = data.get('_snowfort_transaction_record')
     if record is None:
         return
 

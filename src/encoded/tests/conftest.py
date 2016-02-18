@@ -66,7 +66,7 @@ def engine_url(request):
 
 @fixture(scope='session')
 def app_settings(request, server_host_port, connection, DBSession):
-    from contentbase import DBSESSION
+    from snowfort import DBSESSION
     settings = _app_settings.copy()
     settings['persona.audiences'] = 'http://%s:%s' % server_host_port
     settings[DBSESSION] = DBSession
@@ -157,13 +157,13 @@ def registry(app):
 
 @fixture
 def elasticsearch(registry):
-    from contentbase.elasticsearch import ELASTIC_SEARCH
+    from snowfort.elasticsearch import ELASTIC_SEARCH
     return registry[ELASTIC_SEARCH]
 
 
 @fixture
 def upgrader(registry):
-    from contentbase import UPGRADER
+    from snowfort import UPGRADER
     return registry[UPGRADER]
 
 
@@ -336,7 +336,7 @@ def server(_server, external_tx):
 @pytest.yield_fixture(scope='session')
 def connection(engine_url):
     from encoded import configure_engine
-    from contentbase.storage import Base
+    from snowfort.storage import Base
 
     engine_settings = {
         'sqlalchemy.url': engine_url,
@@ -356,13 +356,13 @@ def connection(engine_url):
 
 @pytest.fixture(scope='session')
 def _DBSession(connection):
-    import contentbase.storage
+    import snowfort.storage
     import zope.sqlalchemy
     from sqlalchemy import orm
     # ``server`` thread must be in same scope
     DBSession = orm.scoped_session(orm.sessionmaker(bind=connection), scopefunc=lambda: 0)
     zope.sqlalchemy.register(DBSession)
-    contentbase.storage.register(DBSession)
+    snowfort.storage.register(DBSession)
     return DBSession
 
 
@@ -377,7 +377,7 @@ def external_tx(request, connection):
     tx = connection.begin_nested()
     request.addfinalizer(tx.rollback)
     # # The database should be empty unless a data fixture was loaded
-    # from contentbase.storage import Base
+    # from snowfort.storage import Base
     # for table in Base.metadata.sorted_tables:
     #     assert connection.execute(table.count()).scalar() == 0
     return tx

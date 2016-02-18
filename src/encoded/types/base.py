@@ -11,7 +11,7 @@ from pyramid.traversal import (
     find_root,
     traverse,
 )
-import contentbase
+import snowfort
 from ..schema_formats import is_accession
 
 
@@ -77,7 +77,7 @@ def paths_filtered_by_status(request, paths, exclude=('deleted', 'replaced'), in
         ]
 
 
-class AbstractCollection(contentbase.AbstractCollection):
+class AbstractCollection(snowfort.AbstractCollection):
     def get(self, name, default=None):
         resource = super(AbstractCollection, self).get(name, None)
         if resource is not None:
@@ -91,7 +91,7 @@ class AbstractCollection(contentbase.AbstractCollection):
         return default
 
 
-class Collection(contentbase.Collection, AbstractCollection):
+class Collection(snowfort.Collection, AbstractCollection):
     def __init__(self, *args, **kw):
         super(Collection, self).__init__(*args, **kw)
         if hasattr(self, '__acl__'):
@@ -102,7 +102,7 @@ class Collection(contentbase.Collection, AbstractCollection):
             self.__acl__ = ALLOW_SUBMITTER_ADD
 
 
-class Item(contentbase.Item):
+class Item(snowfort.Item):
     AbstractCollection = AbstractCollection
     Collection = Collection
     STATUS_ACL = {
@@ -193,7 +193,7 @@ class SharedItem(Item):
         return roles
 
 
-@contentbase.calculated_property(context=Item.Collection, category='action')
+@snowfort.calculated_property(context=Item.Collection, category='action')
 def add(context, request):
     if request.has_permission('add') and request.has_permission('forms', request.root):
         return {
@@ -204,7 +204,7 @@ def add(context, request):
         }
 
 
-@contentbase.calculated_property(context=Item, category='action')
+@snowfort.calculated_property(context=Item, category='action')
 def edit(context, request):
     if request.has_permission('edit') and request.has_permission('forms', request.root):
         return {
@@ -215,7 +215,7 @@ def edit(context, request):
         }
 
 
-@contentbase.calculated_property(context=Item, category='action')
+@snowfort.calculated_property(context=Item, category='action')
 def edit_json(context, request):
     if request.has_permission('edit'):
         return {

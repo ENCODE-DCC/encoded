@@ -1,4 +1,4 @@
-from contentbase import upgrade_step
+from snowfort import upgrade_step
 import re
 
 
