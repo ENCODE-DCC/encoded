@@ -61,6 +61,12 @@
                 "encyclopedia"
             ]
         },
+        "encyclopedia_version": {
+            "title": "ENCODE encyclopedia version",
+            "description": " The version of the ENCODE encyclopeida to which this annotation belongs.",
+            "comment": "The model should be something like version 1.0",
+            "type": "string"
+        },
         "organism": {
             "title": "Organism",
             "comment": "See organism.json for available identifiers.",
