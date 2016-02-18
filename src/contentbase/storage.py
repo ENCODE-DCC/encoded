@@ -483,7 +483,8 @@ class Resource(Base):
 
     @property
     def tid(self):
-        return self.data[''].propsheet.tid
+        tids = (str(self.data[k].propsheet.tid) for k in self.data.keys())
+        return ','.join(sorted(set(tids)))
 
     def invalidated(self):
         return False

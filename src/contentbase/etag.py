@@ -2,14 +2,14 @@ from pyramid.httpexceptions import (
     HTTPNotModified,
     HTTPPreconditionFailed,
 )
-from uuid import UUID
+from .interfaces import CONNECTION
 
 
 def etag_tid(view_callable):
     def wrapped(context, request):
         result = view_callable(context, request)
-        root = request.root
-        embedded = (root.get_by_uuid(uuid) for uuid in sorted(request._embedded_uuids))
+        conn = request.registry[CONNECTION]
+        embedded = (conn.get_by_uuid(uuid) for uuid in sorted(request._embedded_uuids))
         uuid_tid = ((item.uuid, item.tid) for item in embedded)
         request.response.etag = '&'.join('%s=%s' % (u, t) for u, t in uuid_tid)
         cache_control = request.response.cache_control
@@ -31,9 +31,9 @@ def if_match_tid(view_callable):
         if if_match == '*':
             return view_callable(context, request)
         uuid_tid = (v.split('=', 1) for v in if_match.strip('"').split('&'))
-        root = request.root
+        conn = request.registry[CONNECTION]
         mismatching = (
-            root.get_by_uuid(uuid).tid != UUID(tid)
+            conn.get_by_uuid(uuid).tid != tid
             for uuid, tid in uuid_tid)
         if any(mismatching):
             raise HTTPPreconditionFailed("The resource has changed.")
