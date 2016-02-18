@@ -886,220 +886,6 @@ var UcscBrowserComposite = React.createClass({
 globals.content_views.register(UcscBrowserComposite, 'UcscBrowserComposite');
 
 
-var SeriesTable = React.createClass({
-    render: function() {
-        var experiments = this.props.experiments;
-
-        return (
-            <table className="table table-panel table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Accession</th>
-                        <th>Assay</th>
-                        <th>Target</th>
-                        <th>Description</th>
-                        <th>Lab</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {experiments.map(function (experiment) {
-                    // Ensure this can work with search result columns too
-                    return (
-                        <tr key={experiment['@id']}>
-                            <td><a href={experiment['@id']}>{experiment.accession}</a></td>
-                            <td>{experiment.assay_term_name}</td>
-                            <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
-                            <td>{experiment.description}</td>
-                            <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
-                        </tr>
-                    );
-                })}
-                </tbody>
-            </table>
-        );
-    }
-});
-
-var TreatmentSeriesTable = React.createClass({
-    render: function() {
-        var experiments = this.props.experiments;
-
-        return (
-            <table className="table table-panel table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Accession</th>
-                        <th>Possible controls</th>
-                        <th>Assay</th>
-                        <th>Target</th>
-                        <th>Treatment term name</th>
-                        <th>Treatment duration</th>
-                        <th>Treatment concentration</th>
-                        <th>Description</th>
-                        <th>Lab</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {experiments.map(function (experiment) {
-                    // Get an array of all treatments in all replicates
-                    var treatments = [];
-                    if (experiment.replicates && experiment.replicates.length) {
-                        experiment.replicates.forEach(function(replicate) {
-                            var biosampleTreatments = replicate.library && replicate.library.biosample && replicate.library.biosample.treatments && replicate.library.biosample.treatments;
-                            treatments = treatments.concat(biosampleTreatments);
-                        });
-                    }
-                    var treatmentTermNames = _.uniq(treatments.map(function(treatment) {
-                        return treatment.treatment_term_name;
-                    }));
-                    var treatmentDurations = _.chain(treatments.map(function(treatment) {
-                        return (treatment.duration && treatment.duration_units) ? treatment.duration + ' ' + treatment.duration_units : '';
-                    })).compact().uniq().value();
-                    var treatmentConcentrations = _.chain(treatments.map(function(treatment) {
-                        return (treatment.concentration && treatment.concentration_units) ? treatment.concentration + ' ' + treatment.concentration_units : '';
-                    })).compact().uniq().value();
-                    var possibleControls = experiment.possible_controls.map(function(control, i) {
-                        return <span>{i > 0 ? ', ' : ''}<a key={control.uuid} href={control['@id']}>{control.accession}</a></span>;
-                    });
-                    return (
-                        <tr key={experiment['@id']}>
-                            <td><a href={experiment['@id']}>{experiment.accession}</a></td>
-                            <td>{possibleControls}</td>
-                            <td>{experiment.assay_term_name}</td>
-                            <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
-                            <td>{treatmentTermNames[0]} {treatmentTermNames.length > 1 ? <abbr title={'Multiple term names: ' + treatmentTermNames.join(', ')}>*</abbr> : null}</td>
-                            <td>{treatmentDurations[0]} {treatmentDurations.length > 1 ? <abbr title={'Multiple durations: ' + treatmentDurations.join(', ')}>*</abbr> : null}</td>
-                            <td>{treatmentConcentrations[0]} {treatmentConcentrations.length > 1 ? <abbr title={'Multiple concentrations: ' + treatmentConcentrations.join(', ')}>*</abbr> : null}</td>
-                            <td>{experiment.description}</td>
-                            <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
-                        </tr>
-                    );
-                })}
-                </tbody>
-            </table>
-        );
-    }
-});
-
-var ReplicationTimingSeriesTable = React.createClass({
-    render: function() {
-        var experiments = this.props.experiments;
-
-        return (
-            <table className="table table-panel table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Accession</th>
-                        <th>Possible controls</th>
-                        <th>Assay</th>
-                        <th>Biosample phase</th>
-                        <th>Target</th>
-                        <th>Description</th>
-                        <th>Lab</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {experiments.map(function (experiment) {
-                    // Get an array of all treatments in all replicates
-                    var biosamples;
-                    if (experiment.replicates && experiment.replicates.length) {
-                        biosamples = experiment.replicates.map(function(replicate) {
-                            return replicate.library && replicate.library.biosample;
-                        });
-                    }
-                    var phases = _.chain(biosamples.map(function(biosample) {
-                        return biosample.phase;
-                    })).compact().uniq().value();
-                    var possibleControls = experiment.possible_controls.map(function(control, i) {
-                        return <span>{i > 0 ? ', ' : ''}<a key={control.uuid} href={control['@id']}>{control.accession}</a></span>;
-                    });
-                    return (
-                        <tr key={experiment['@id']}>
-                            <td><a href={experiment['@id']}>{experiment.accession}</a></td>
-                            <td>{possibleControls}</td>
-                            <td>{experiment.assay_term_name}</td>
-                            <td>{phases.join(', ')}</td>
-                            <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
-                            <td>{experiment.description}</td>
-                            <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
-                        </tr>
-                    );
-                })}
-                </tbody>
-            </table>
-        );
-    }
-});
-
-var OrganismDevelopmentSeriesTable = React.createClass({
-    render: function() {
-        var experiments = this.props.experiments;
-
-        return (
-            <table className="table table-panel table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Accession</th>
-                        <th>Possible controls</th>
-                        <th>Assay</th>
-                        <th>Relative age</th>
-                        <th>Life stage</th>
-                        <th>Target</th>
-                        <th>Description</th>
-                        <th>Lab</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {experiments.map(function (experiment) {
-                    // Get an array of all treatments in all replicates
-                    var biosamples, synchronizationBiosample, lifeStageBiosample, ages;
-                    if (experiment.replicates && experiment.replicates.length) {
-                        biosamples = experiment.replicates.map(function(replicate) {
-                            return replicate.library && replicate.library.biosample;
-                        });
-                    }
-                    if (biosamples && biosamples.length) {
-                        synchronizationBiosample = _(biosamples).find(function(biosample) {
-                            return biosample.synchronization;
-                        });
-                        lifeStageBiosample = _(biosamples).find(function(biosample) {
-                            return biosample.life_stage;
-                        });
-                        if (!synchronizationBiosample) {
-                            ages = _.chain(biosamples.map(function(biosample) {
-                                return biosample.age_display;
-                            })).compact().uniq().value();
-                        }
-                    }
-                    var possibleControls = experiment.possible_controls.map(function(control, i) {
-                        return <span>{i > 0 ? ', ' : ''}<a key={control.uuid} href={control['@id']}>{control.accession}</a></span>;
-                    });
-                    return (
-                        <tr key={experiment['@id']}>
-                            <td><a href={experiment['@id']}>{experiment.accession}</a></td>
-                            <td>{possibleControls}</td>
-                            <td>{experiment.assay_term_name}</td>
-                            <td>
-                                {synchronizationBiosample ?
-                                    <span>{synchronizationBiosample.synchronization + ' + ' + synchronizationBiosample.age_display}</span>
-                                :
-                                    <span>{ages.length ? <span>{ages.join(', ')}</span> : null}</span>
-                                }
-                            </td>
-                            <td>{lifeStageBiosample && lifeStageBiosample.life_stage}</td>
-                            <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
-                            <td>{experiment.description}</td>
-                            <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
-                        </tr>
-                    );
-                })}
-                </tbody>
-            </table>
-        );
-    }
-});
-
-
 var getValuePossibleControls = function(item) {
     if (item.possible_controls && item.possible_controls.length) {
         return item.possible_controls.map(function(control) {
@@ -1626,54 +1412,39 @@ var FileTable = module.exports.FileTable = React.createClass({
     rawTableColumns: {
         'accession': {
             title: 'Accession',
-            display: function(item) {
-                return (
-                    <span>
-                        {item.title}<br />
-                        <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
-                        {humanFileSize(item.file_size)}
-                    </span>
-                );
-            }
+            display: item =>
+                <span>
+                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                </span>
         },
         'file_type': {title: 'File type'},
+        'file_size': {
+            title: 'File size',
+            display: item => <span>{humanFileSize(item.file_size)}</span>
+        },
         'biological_replicates': {
-            title: function(list, columns, meta) {
-                return (
-                    <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>
-                );
-            },
-            getValue: function(item) {
-                return item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : '';
-            }
+            title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
+            getValue: item => item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''
         },
         'technical_replicate_number': {
             title: 'Technical replicate',
-            getValue: function(item) {
-                return item.replicate ? item.replicate.technical_replicate_number : null;
-            }
+            getValue: item => item.replicate ? item.replicate.technical_replicate_number : null
         },
         'read_length': {
             title: 'Read length',
-            display: function(item) {
-                return <span>{item.read_length ? <span>{item.read_length + ' ' + item.read_length_units}</span> : null}</span>;
-            }
+            display: item => <span>{item.read_length ? <span>{item.read_length + ' ' + item.read_length_units}</span> : null}</span>
         },
         'run_type': {title: 'Run type'},
         'paired_end': {title: 'Paired end'},
         'assembly': {title: 'Mapping assembly'},
         'title': {
             title: 'Lab',
-            getValue: function(item) {
-                return item.lab && item.lab.title ? item.lab.title : null;
-            }
+            getValue: item => item.lab && item.lab.title ? item.lab.title : null
         },
         'date_created': {
             title: 'Date added',
-            getValue: function(item) {
-                return moment.utc(item.date_created).format('YYYY-MM-DD');
-            },
-            objSorter: function(a, b) {
+            getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
+            objSorter: (a, b) => {
                 if (a.date_created && b.date_created) {
                     return Date.parse(a.date_created) - Date.parse(b.date_created);
                 }
@@ -1682,12 +1453,8 @@ var FileTable = module.exports.FileTable = React.createClass({
         },
         'status': {
             title: 'Validation status',
-            display: function(item) {
-                return <div className="characterization-meta-data"><StatusLabel status="pending" /></div>;
-            },
-            hide: function(list, columns, meta) {
-                return meta.encodevers !== '3';
-            },
+            display: item => <div className="characterization-meta-data"><StatusLabel status="pending" /></div>,
+            hide: (list, columns, meta) => meta.encodevers !== '3',
             sorter: false
         }
     },
@@ -1696,48 +1463,35 @@ var FileTable = module.exports.FileTable = React.createClass({
     procTableColumns: {
         'accession': {
             title: 'Accession',
-            display: function(item) {
-                return (
-                    <span>
-                        {item.title}<br />
-                        <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
-                        {humanFileSize(item.file_size)}
-                    </span>
-                );
-            }
+            display: item =>
+                <span>
+                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                </span>
         },
         'file_type': {title: 'File type'},
+        'file_size': {
+            title: 'File size',
+            display: item => <span>{humanFileSize(item.file_size)}</span>
+        },
         'output_type': {title: 'Output type'},
         'biological_replicates': {
-            title: function(list, columns, meta) {
-                return (
-                    <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>
-                );
-            },
-            getValue: function(item) {
-                return item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : '';
-            }
+            title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
+            getValue: item => item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''
         },
         'technical_replicate_number': {
             title: 'Technical replicate',
-            getValue: function(item) {
-                return item.replicate ? item.replicate.technical_replicate_number : null;
-            }
+            getValue: item => item.replicate ? item.replicate.technical_replicate_number : null
         },
         'assembly': {title: 'Mapping assembly'},
         'genome_annotation': {title: 'Genome annotation'},
         'title': {
             title: 'Lab',
-            getValue: function(item) {
-                return item.lab && item.lab.title ? item.lab.title : null;
-            }
+            getValue: item => item.lab && item.lab.title ? item.lab.title : null
         },
         'date_created': {
             title: 'Date added',
-            getValue: function(item) {
-                return moment.utc(item.date_created).format('YYYY-MM-DD');
-            },
-            sorter: function(a, b) {
+            getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
+            sorter: (a, b) => {
                 if (a.date_created && b.date_created) {
                     return Date.parse(a.date_created) - Date.parse(b.date_created);
                 }
@@ -1746,12 +1500,8 @@ var FileTable = module.exports.FileTable = React.createClass({
         },
         'status': {
             title: 'Validation status',
-            display: function(item) {
-                return <div className="characterization-meta-data"><StatusLabel status="pending" /></div>;
-            },
-            hide: function(list, columns, meta) {
-                return meta.encodevers !== '3';
-            },
+            display: item => <div className="characterization-meta-data"><StatusLabel status="pending" /></div>,
+            hide: (list, columns, meta) => meta.encodevers !== '3',
             sorter: false
         }
     },
@@ -1760,32 +1510,27 @@ var FileTable = module.exports.FileTable = React.createClass({
     refTableColumns: {
         'accession': {
             title: 'Accession',
-            display: function(item) {
-                return (
-                    <span>
-                        {item.title}<br />
-                        <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
-                        {humanFileSize(item.file_size)}
-                    </span>
-                );
-            }
+            display: item =>
+                <span>
+                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                </span>
         },
         'file_type': {title: 'File type'},
+        'file_size': {
+            title: 'File size',
+            display: item => <span>{humanFileSize(item.file_size)}</span>
+        },
         'output_type': {title: 'Output type'},
         'assembly': {title: 'Mapping assembly'},
         'genome_annotation': {title: 'Genome annotation'},
         'title': {
             title: 'Lab',
-            getValue: function(item) {
-                return item.lab && item.lab.title ? item.lab.title : null;
-            }
+            getValue: item => item.lab && item.lab.title ? item.lab.title : null
         },
         'date_created': {
             title: 'Date added',
-            getValue: function(item) {
-                return moment.utc(item.date_created).format('YYYY-MM-DD');
-            },
-            sorter: function(a, b) {
+            getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
+            sorter: (a, b) => {
                 if (a.date_created && b.date_created) {
                     return Date.parse(a.date_created) - Date.parse(b.date_created);
                 }
