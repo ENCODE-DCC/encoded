@@ -53,10 +53,10 @@ var DocumentsPanel = module.exports.DocumentsPanel = React.createClass({
                         <PanelHeading>
                             <h4>{this.props.title ? <span>{this.props.title}</span> : <span>Documents</span>}</h4>
                         </PanelHeading>
-                        {documentSpecs.map(documentSpec => {
+                        {documentSpecs.map((documentSpec, i) => {
                             if (documentSpec.documents.length) {
                                 return (
-                                    <PanelBody addClasses="panel-body-doc">
+                                    <PanelBody key={i} addClasses="panel-body-doc">
                                         <DocumentsSubpanels documentSpec={documentSpec} />
                                     </PanelBody>
                                 );
