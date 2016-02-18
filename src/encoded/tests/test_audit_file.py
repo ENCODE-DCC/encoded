@@ -519,6 +519,25 @@ def test_audit_file_read_depth_chip_seq_paired_end(testapp, file_exp, file6, fil
     assert any(error['category'] == 'low read depth' for error in errors_list)
 
 
+def test_audit_file_insufficient_read_depth_chip_seq_paired_end(testapp, file_exp, file6, file4,
+                                                                chipseq_bam_quality_metric,
+                                                                analysis_step_run_bam,
+                                                                analysis_step_version_bam,
+                                                                analysis_step_bam, target_H3K27ac,
+                                                                pipeline_bam):
+    testapp.patch_json(file_exp['@id'], {'target': target_H3K27ac['@id']})
+    testapp.patch_json(chipseq_bam_quality_metric['@id'], {'total': 10000000})
+    testapp.patch_json(file6['@id'], {'dataset': file_exp['@id']})
+    testapp.patch_json(file4['@id'], {'run_type': 'paired-ended'})
+    testapp.patch_json(file6['@id'], {'derived_from': [file4['@id']]})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'insufficient read depth' for error in errors_list)
+
+
 def test_audit_file_mad_qc_spearman_correlation(testapp, pipeline_bam,
                                                 base_experiment, file7,
                                                 donor_1, mad_quality_metric,
