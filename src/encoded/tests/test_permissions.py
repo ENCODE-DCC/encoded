@@ -111,6 +111,19 @@ def test_users_view_details_self(submitter, access_key, submitter_testapp):
     assert 'access_key_id' in res.json['access_keys'][0]
 
 
+def test_users_patch_self(submitter, access_key, submitter_testapp):
+    submitter_testapp.patch_json(submitter['@id'], {})
+
+
+def test_users_post_disallowed(submitter, access_key, submitter_testapp):
+    item = {
+        'first_name': 'ENCODE',
+        'last_name': 'Submitter2',
+        'email': 'encode_submitter2@example.org',
+    }
+    submitter_testapp.post_json('/user', item, status=403)
+
+
 def test_users_view_basic_authenticated(submitter, authenticated_testapp):
     res = authenticated_testapp.get(submitter['@id'])
     assert 'title' in res.json
@@ -130,10 +143,6 @@ def test_users_view_basic_indexer(submitter, indexer_testapp):
     assert 'title' in res.json
     assert 'email' not in res.json
     assert 'access_keys' not in res.json
-
-
-def test_users_list_denied_authenticated(authenticated_testapp):
-    authenticated_testapp.get('/users/', status=403)
 
 
 def test_viewing_group_member_view(viewing_group_member_testapp, experiment):
