@@ -653,7 +653,8 @@ def audit_file_read_depth(value, system):
                              'in experiments studying narrow histone marks or ' + \
                              'transcription factors, which ' + \
                              'require {} usable fragments, according to '.format(marks['narrow']) + \
-                             'June 2015 standards.'
+                             'June 2015 standards, and 10000000 usable fragments according to' + \
+                             ' ENCODE2 standards.'
                     yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
                 return
             elif target_name == 'empty':
@@ -677,7 +678,8 @@ def audit_file_read_depth(value, system):
                              'usable fragments. Replicates for ChIP-seq ' + \
                              'assays and target {} require '.format(target_name) + \
                              '{} usable fragments, according to '.format(marks['broad']) + \
-                             'June 2015 standards.'
+                             'June 2015 standards, and 20000000 usable fragments according to' + \
+                             ' ENCODE2 standards.'
                     yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
             else:
                 if read_depth >= 10000000 and read_depth < marks['narrow']:
@@ -694,7 +696,8 @@ def audit_file_read_depth(value, system):
                              'usable fragments. Replicates for ChIP-seq ' + \
                              'assays and target {} require '.format(target_name) + \
                              '{} usable fragments, according to '.format(marks['narrow']) + \
-                             'June 2015 standards.'
+                             'June 2015 standards, and 10000000 usable fragments according to' + \
+                             ' ENCODE2 standards.'
                     yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
             return
         else:
