@@ -128,18 +128,6 @@ def access_key_reset_secret(context, request):
     return result
 
 
-@view_config(name='disable-secret', context=AccessKey, permission='edit',
-             request_method='POST', subpath_segments=0)
-def access_key_disable_secret(context, request):
-    request.validated = context.properties.copy()
-    crypt_context = request.registry[CRYPT_CONTEXT]
-    new_hash = crypt_context.encrypt('', scheme='unix_disabled')
-    request.validated['secret_access_key_hash'] = new_hash
-    result = item_edit(context, request, render=False)
-    result['secret_access_key'] = None
-    return result
-
-
 @view_config(context=AccessKey, permission='view_raw', request_method='GET',
              name='raw')
 def access_key_view_raw(context, request):
