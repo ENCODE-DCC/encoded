@@ -11,6 +11,19 @@ def remote_user_testapp(app, remote_user):
 
 
 @pytest.fixture
+def disabled_user(testapp, lab, award):
+    item = {
+        'first_name': 'ENCODE',
+        'last_name': 'Submitter',
+        'email': 'no_login_submitter@example.org',
+        'submits_for': [lab['@id']],
+        'status': 'disabled',
+    }
+    # User @@object view has keys omitted.
+    res = testapp.post_json('/user', item)
+    return testapp.get(res.location).json
+
+@pytest.fixture
 def other_lab(testapp):
     item = {
         'title': 'Other lab',
@@ -180,3 +193,12 @@ def test_wrangler_patch_viewing_groups_disallowed(submitter, other_lab, wrangler
     res = wrangler_testapp.get(submitter['@id'])
     vgroups = {'viewing_groups': res.json['viewing_groups'] + ['GGR']}
     wrangler_testapp.patch_json(res.json['@id'], vgroups, status=200)
+
+def test_disabled_user_denied_authenticated(authenticated_testapp, disabled_user):
+    authenticated_testapp.get(disabled_user['@id'], status=403)
+
+def test_disabled_user_denied_submitter(submitter_testapp, disabled_user):
+    submitter_testapp.get(disabled_user['@id'], status=403)
+
+def test_disabled_user_wrangler(wrangler_testapp, disabled_user):
+    wrangler_testapp.get(disabled_user['@id'], status=200)
