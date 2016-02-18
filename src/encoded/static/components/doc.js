@@ -37,7 +37,8 @@ const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
 
 var DocumentsPanel = module.exports.DocumentsPanel = React.createClass({
     propTypes: {
-        documentSpecs: React.PropTypes.array.isRequired // List of document arrays and their titles
+        documentSpecs: React.PropTypes.array.isRequired, // List of document arrays and their titles
+        title: React.PropTypes.string // Title of the document panel
     },
 
     render: function() {
@@ -50,7 +51,7 @@ var DocumentsPanel = module.exports.DocumentsPanel = React.createClass({
                 <div>
                     <Panel addClasses="clearfix">
                         <PanelHeading>
-                            <h4>Documents</h4>
+                            <h4>{this.props.title ? <span>{this.props.title}</span> : <span>Documents</span>}</h4>
                         </PanelHeading>
                         {documentSpecs.map(documentSpec => {
                             if (documentSpec.documents.length) {
