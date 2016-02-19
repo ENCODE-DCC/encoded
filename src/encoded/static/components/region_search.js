@@ -1,7 +1,5 @@
 'use strict';
 var React = require('react');
-var Modal = require('react-bootstrap/lib/Modal');
-var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var globals = require('./globals');
 var fetched = require('./fetched');
 var TabbedArea = require('react-bootstrap').TabbedArea;
@@ -161,6 +159,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
         var facets = context['facets'];
         var total = context['total'];
         var batch_hub_disabled = total > 500;
+        console.log(context['batch_download']);
         return (
           <div>
               <h2>Region search</h2>

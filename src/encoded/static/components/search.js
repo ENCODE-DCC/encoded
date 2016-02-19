@@ -821,7 +821,8 @@ var AuditMixin = audit.AuditMixin;
 
           handleToggle: function () {
             this.setState({
-              isModalOpen: !this.state.isModalOpen
+              isModalOpen: !this.state.isModalOpen;
+              console.log(this.state.isModalOpen);
             });
           },
 
