@@ -55,11 +55,24 @@
             "description": "The category that best describes the annotation set.",
             "type": "string",
             "enum": [
+                "binding sites",
+                "candidate enhancers",
+                "candidate promoters",
                 "enhancer prediction",
-                "segmentation",
+                "DNase hypersensitive regions",
+                "transcription factor motifs",
+                "SAGA",
                 "overlap",
+                "validated enhancers",
+                "segmentation",
                 "encyclopedia"
             ]
+        },
+        "encyclopedia_version": {
+            "title": "ENCODE encyclopedia version",
+            "description": " The version of the ENCODE encyclopeida to which this annotation belongs.",
+            "comment": "The model should be something like version 1.0",
+            "type": "string"
         },
         "organism": {
             "title": "Organism",

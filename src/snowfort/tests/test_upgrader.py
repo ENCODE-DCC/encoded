@@ -18,7 +18,7 @@ def finalizer(value, system, version):
 
 @pytest.fixture
 def schema_upgrader():
-    from contentbase.upgrader import SchemaUpgrader
+    from snowfort.upgrader import SchemaUpgrader
     schema_upgrader = SchemaUpgrader('test', '3')
     schema_upgrader.add_upgrade_step(step1, dest='2')
     schema_upgrader.add_upgrade_step(step2, source='2', dest='3')
@@ -39,10 +39,10 @@ def test_finalizer(schema_upgrader):
 
 def test_declarative_config():
     from pyramid.config import Configurator
-    from contentbase.interfaces import UPGRADER
+    from snowfort.interfaces import UPGRADER
     config = Configurator()
-    config.include('contentbase.config')
-    config.include('contentbase.upgrader')
+    config.include('snowfort.config')
+    config.include('snowfort.upgrader')
     config.include('.testing_upgrader')
     config.commit()
 

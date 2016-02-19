@@ -1,10 +1,10 @@
-from contentbase import (
+from snowfort import (
     abstract_collection,
     collection,
     calculated_property,
     load_schema,
 )
-from contentbase.attachment import ItemWithAttachment
+from snowfort.attachment import ItemWithAttachment
 from .base import (
     Item,
 )

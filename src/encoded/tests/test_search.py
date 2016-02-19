@@ -29,7 +29,7 @@ def test_matrix_view(workbook, testapp):
     assert 'matrix' in res
     assert res['matrix']['max_cell_doc_count'] > 0
     assert res['matrix']['search_base'] == '/search/?type=Experiment'
-    assert res['matrix']['x']['group_by'] == 'assay_term_name'
+    assert res['matrix']['x']['group_by'] == 'assay_title'
     assert res['matrix']['x']['label'] == 'Assay'
     assert res['matrix']['x']['limit'] == 20
     assert len(res['matrix']['x']['buckets']) > 0

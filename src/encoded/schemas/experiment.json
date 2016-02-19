@@ -121,7 +121,11 @@
         }
     },
     "facets": {
-        "assay_term_name": {
+        "assay_slims": {
+            "title": "Assay category",
+            "type": "array"
+        },
+        "assay_title": {
             "title": "Assay"
         },
         "award.project": {
@@ -276,6 +280,9 @@
         "biosample_type": 1.0,
         "organ_slims": 1.0,
         "developmental_slims": 1.0,
+        "category_slims": 1.0,
+        "objective_slims": 1.0,
+        "type_slims": 1.0,
         "assay_synonyms": 1.0,
         "biosample_synonyms": 1.0,
         "files.accession": 1.0,

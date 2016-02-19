@@ -483,7 +483,8 @@ class Resource(Base):
 
     @property
     def tid(self):
-        return self.data[''].propsheet.tid
+        tids = (str(self.data[k].propsheet.tid) for k in self.data.keys())
+        return ','.join(sorted(set(tids)))
 
     def invalidated(self):
         return False
@@ -516,16 +517,16 @@ class TransactionRecord(Base):
 
 notify_ddl = DDL("""
     ALTER TABLE %(table)s ALTER COLUMN "xid" SET DEFAULT txid_current();
-    CREATE OR REPLACE FUNCTION contentbase_transaction_notify() RETURNS trigger AS $$
+    CREATE OR REPLACE FUNCTION snowfort_transaction_notify() RETURNS trigger AS $$
     DECLARE
     BEGIN
-        PERFORM pg_notify('contentbase.transaction', NEW.xid::TEXT);
+        PERFORM pg_notify('snowfort.transaction', NEW.xid::TEXT);
         RETURN NEW;
     END;
     $$ LANGUAGE plpgsql;
 
-    CREATE TRIGGER contentbase_transactions_insert AFTER INSERT ON %(table)s
-    FOR EACH ROW EXECUTE PROCEDURE contentbase_transaction_notify();
+    CREATE TRIGGER snowfort_transactions_insert AFTER INSERT ON %(table)s
+    FOR EACH ROW EXECUTE PROCEDURE snowfort_transaction_notify();
 """)
 
 event.listen(
@@ -553,7 +554,7 @@ def add_transaction_record(session, flush_context, instances):
     txn = transaction.get()
     # Set data with txn.setExtendedInfo(name, value)
     data = txn._extension
-    record = data.get('_contentbase_transaction_record')
+    record = data.get('_snowfort_transaction_record')
     if record is not None:
         if orm.object_session(record) is None:
             # Savepoint rolled back
@@ -563,17 +564,17 @@ def add_transaction_record(session, flush_context, instances):
 
     tid = data['tid'] = uuid.uuid4()
     record = TransactionRecord(tid=tid)
-    data['_contentbase_transaction_record'] = record
+    data['_snowfort_transaction_record'] = record
     session.add(record)
 
 
 def record_transaction_data(session):
     txn = transaction.get()
     data = txn._extension
-    if '_contentbase_transaction_record' not in data:
+    if '_snowfort_transaction_record' not in data:
         return
 
-    record = data['_contentbase_transaction_record']
+    record = data['_snowfort_transaction_record']
 
     # txn.note(text)
     if txn.description:
