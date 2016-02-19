@@ -68,8 +68,12 @@ _tsv_mapping = OrderedDict([
 
 @view_config(route_name='metadata', request_method='GET')
 def metadata_tsv(context, request):
-
     param_list = parse_qs(request.matchdict['search_params'])
+    if 'referrer' in param_list:
+        search_path = '/{}/'.format(param_list['referrer'])
+        del param_list['referrer']
+    else:
+        search_path = '/search/'
     param_list['field'] = []
     header = []
     file_attributes = []
@@ -79,7 +83,7 @@ def metadata_tsv(context, request):
         if _tsv_mapping[prop][0].startswith('files'):
             file_attributes = file_attributes + [_tsv_mapping[prop][0]]
     param_list['limit'] = ['all']
-    path = '/search/?%s' % urlencode(param_list, True)
+    path = '{}?{}'.format(search_path, urlencode(param_list, True))
     results = request.embed(path, as_user=True)
     rows = []
     for row in results['@graph']:
@@ -146,12 +150,14 @@ def metadata_tsv(context, request):
 @view_config(route_name='batch_download', request_method='GET')
 def batch_download(context, request):
 
-    # adding extra params to get requied columsn
+    # adding extra params to get required columns
     param_list = parse_qs(request.matchdict['search_params'])
     param_list['field'] = ['files.href', 'files.file_type']
     param_list['limit'] = ['all']
-
-    path = '/search/?%s' % urlencode(param_list, True)
+    search_path = request.referrer.split("?")[0].split(request.host_url)[-1]
+    if 'region-search' in search_path:
+        request.matchdict['search_params'] = request.matchdict['search_params'] + '&referrer={}'.format(search_path.replace('/', ''))
+    path = '{}?{}'.format(search_path, urlencode(param_list, True))
     results = request.embed(path, as_user=True)
     metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv'.format(
         host_url=request.host_url,

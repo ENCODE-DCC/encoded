@@ -7,7 +7,8 @@ from .search import (
     set_facets,
     get_filtered_query,
     format_facets,
-    hgConnect
+    hgConnect,
+    search_result_actions
 )
 from collections import OrderedDict
 import requests
@@ -281,7 +282,7 @@ def region_search(context, request):
 
     # if more than one peak found return the experiments with those peak files
     if len(file_uuids):
-        query = get_filtered_query('', [], set(), principals, ['Item'])
+        query = get_filtered_query('', [], set(), principals, ['Experiment'])
         del query['query']
         query['filter']['and']['filters'].append({
             'terms': {
@@ -290,21 +291,18 @@ def region_search(context, request):
         })
         used_filters = set_filters(request, query, result)
         used_filters['files.uuid'] = file_uuids
-        query['aggs'] = set_facets(_FACETS, used_filters, principals, ['Item'])
+        query['aggs'] = set_facets(_FACETS, used_filters, principals, ['Experiment'])
         es_results = es.search(
             body=query, index='encoded', doc_type='experiment', size=size
         )
 
         result['@graph'] = list(format_results(request, es_results['hits']['hits']))
+        result['total'] = es_results['hits']['total']
         result['facets'] = format_facets(es_results, _FACETS)
-        if len(result['@graph']):
+        if result['total'] > 0:
             result['notification'] = 'Success'
-            result['total'] = es_results['hits']['total']
-            search_params = request.query_string.replace('&', ',,')
-            hub = request.route_url('batch_hub',
-                                    search_params=search_params,
-                                    txt='hub.txt')
-            result['batch_hub'] = hgConnect + hub
+            result.update(search_result_actions(request, ['Experiment'], es_results))
+
     return result
 
 
