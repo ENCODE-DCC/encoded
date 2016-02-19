@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+var Modal = require('react-bootstrap/lib/Modal');
 var globals = require('./globals');
 var fetched = require('./fetched');
 var TabbedArea = require('react-bootstrap').TabbedArea;
