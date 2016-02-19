@@ -11,6 +11,7 @@ var FacetList = search.FacetList;
 var Facet = search.Facet;
 var TextFilter = search.TextFilter;
 var Listing = search.Listing;
+var BatchDownload = search.BatchDownload;
 var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
 
@@ -189,6 +190,12 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                                           : null}
                                       </span>
                                   }
+
+                                  {context['batch_download'] ?
+                                      <span className="pull-right">
+                                          <BatchDownload context={context} />&nbsp;
+                                      </span>
+                                  : null}
 
                                   {context['batch_hub'] ?
                                       <span className="pull-right">

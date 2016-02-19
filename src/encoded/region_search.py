@@ -51,7 +51,7 @@ _FACETS = [
     }),
     ('organ_slims', {'title': 'Organ'}),
     ('assembly', {'title': 'Genome assembly'}),
-    ('files.file_type', {'title': {'Available data'}})
+    ('files.file_type', {'title': 'Available data'})
 ]
 
 
