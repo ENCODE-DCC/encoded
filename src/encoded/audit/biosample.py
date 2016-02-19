@@ -1,4 +1,4 @@
-from contentbase import (
+from snowfort import (
     AuditFailure,
     audit_checker,
 )

@@ -1,5 +1,5 @@
-from contentbase.schema_utils import VALIDATOR_REGISTRY
-from contentbase import (
+from snowfort.schema_utils import VALIDATOR_REGISTRY
+from snowfort import (
     COLLECTIONS,
     CONNECTION,
     Collection,
@@ -9,10 +9,10 @@ from contentbase import (
     collection,
     load_schema,
 )
-from contentbase.resource_views import item_view_page
+from snowfort.resource_views import item_view_page
 from .base import (
     ALLOW_EVERYONE_VIEW,
-    Item,
+    SharedItem,
     ONLY_ADMIN_VIEW,
 )
 from pyramid.location import lineage
@@ -30,15 +30,10 @@ from pyramid.view import view_config
         'title': 'Pages',
         'description': 'Portal pages',
     })
-class Page(Item):
+class Page(SharedItem):
     item_type = 'page'
     schema = load_schema('encoded:schemas/page.json')
     name_key = 'name'
-    STATUS_ACL = {
-        'in progress': ONLY_ADMIN_VIEW,
-        'released': ALLOW_EVERYONE_VIEW,
-        'deleted': ONLY_ADMIN_VIEW,
-    }
 
     embedded = [
         'layout.blocks.image',
