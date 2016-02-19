@@ -56,7 +56,6 @@ class EncodedRoot(Root):
             (Allow, Everyone, ['list', 'search']),
             (Allow, 'group.submitter', ['search_audit', 'audit']),
             (Allow, 'group.admin', ALL_PERMISSIONS),
-            (Allow, 'group.forms', ('forms',)),
             # Avoid schema validation errors during audit
             (Allow, 'remoteuser.EMBED', 'import_items'),
         ] + Root.__acl__

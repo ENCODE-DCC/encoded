@@ -22,6 +22,23 @@ from snowfort.resource_views import item_view_object
 from snowfort.util import expand_path
 
 
+ONLY_ADMIN_VIEW_DETAILS = [
+    (Allow, 'group.admin', ['view', 'view_details', 'edit']),
+    (Allow, 'group.read-only-admin', ['view', 'view_details']),
+    (Allow, 'remoteuser.INDEXER', ['view']),
+    (Allow, 'remoteuser.EMBED', ['view']),
+    (Deny, Everyone, ['view', 'view_details', 'edit']),
+]
+
+USER_ALLOW_CURRENT = [
+    (Allow, Everyone, 'view'),
+] + ONLY_ADMIN_VIEW_DETAILS
+
+USER_DELETED = [
+    (Deny, Everyone, 'visible_for_edit')
+] + ONLY_ADMIN_VIEW_DETAILS
+
+
 @collection(
     name='users',
     unique_key='user:email',
@@ -29,15 +46,7 @@ from snowfort.util import expand_path
         'title': 'DCC Users',
         'description': 'Listing of current ENCODE DCC users',
     },
-    acl=[
-        (Allow, 'group.admin', ['list', 'view_details']),
-        (Allow, 'group.read-only-admin', ['list', 'view_details']),
-        (Allow, 'role.owner', ['edit', 'view_details']),
-        (Allow, 'remoteuser.INDEXER', ['list', 'view']),
-        (Allow, 'remoteuser.EMBED', ['list', 'view']),
-        (Allow, Everyone, ['view']),
-        (Deny, Everyone, ['list', 'view_details']),
-    ])
+    acl=[])
 class User(Item):
     item_type = 'user'
     schema = load_schema('encoded:schemas/user.json')
@@ -45,6 +54,12 @@ class User(Item):
     embedded = [
         'lab',
     ]
+    STATUS_ACL = {
+        'current': [(Allow, 'role.owner', ['edit', 'view_details'])] + USER_ALLOW_CURRENT,
+        'deleted': USER_DELETED,
+        'replaced': USER_DELETED,
+        'disabled': ONLY_ADMIN_VIEW_DETAILS,
+    }
 
     @calculated_property(schema={
         "title": "Title",

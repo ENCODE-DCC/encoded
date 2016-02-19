@@ -7,7 +7,11 @@ from pyramid.security import (
     Everyone,
 )
 from pyramid.settings import asbool
-from .base import Item
+from .base import (
+    Item,
+    DELETED,
+    ONLY_ADMIN_VIEW,
+)
 from ..authentication import (
     generate_password,
     generate_user,
@@ -23,7 +27,6 @@ from snowfort.crud_views import (
 )
 from snowfort.validators import (
     validate_item_content_post,
-    validate_item_content_put,
 )
 
 
@@ -35,18 +38,22 @@ from snowfort.validators import (
         'description': 'Programmatic access keys',
     },
     acl=[
-        (Allow, 'role.owner', ['edit', 'view']),
         (Allow, Authenticated, 'add'),
-        (Allow, 'group.admin', ['list', 'view']),
-        (Allow, 'group.read-only-admin', ['list', 'view']),
-        (Allow, 'remoteuser.INDEXER', ['list', 'view']),
-        (Allow, 'remoteuser.EMBED', ['list', 'view']),
-        (Deny, Everyone, ['list', 'view']),
+        (Allow, 'group.admin', 'list'),
+        (Allow, 'group.read-only-admin', 'list'),
+        (Allow, 'remoteuser.INDEXER', 'list'),
+        (Allow, 'remoteuser.EMBED', 'list'),
+        (Deny, Everyone, 'list'),
     ])
 class AccessKey(Item):
     item_type = 'access_key'
     schema = load_schema('encoded:schemas/access_key.json')
     name_key = 'access_key_id'
+
+    STATUS_ACL = {
+        'current': [(Allow, 'role.owner', ['view', 'edit'])] + ONLY_ADMIN_VIEW,
+        'deleted': DELETED,
+    }
 
     def __ac_local_roles__(self):
         owner = 'userid.%s' % self.properties['user']
@@ -112,18 +119,6 @@ def access_key_reset_secret(context, request):
     result = item_edit(context, request, render=False)
     result['access_key_id'] = request.validated['access_key_id']
     result['secret_access_key'] = password
-    return result
-
-
-@view_config(name='disable-secret', context=AccessKey, permission='edit',
-             request_method='POST', subpath_segments=0)
-def access_key_disable_secret(context, request):
-    request.validated = context.properties.copy()
-    crypt_context = request.registry[CRYPT_CONTEXT]
-    new_hash = crypt_context.encrypt('', scheme='unix_disabled')
-    request.validated['secret_access_key_hash'] = new_hash
-    result = item_edit(context, request, render=False)
-    result['secret_access_key'] = None
     return result
 
 

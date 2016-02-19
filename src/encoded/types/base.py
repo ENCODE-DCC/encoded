@@ -20,48 +20,50 @@ def _award_viewing_group(award_uuid, root):
     award = root.get_by_uuid(award_uuid)
     return award.upgrade_properties().get('viewing_group')
 
+# Item acls
+
+ONLY_ADMIN_VIEW = [
+    (Allow, 'group.admin', ['view', 'edit']),
+    (Allow, 'group.read-only-admin', ['view']),
+    (Allow, 'remoteuser.INDEXER', ['view']),
+    (Allow, 'remoteuser.EMBED', ['view']),
+    (Deny, Everyone, ['view', 'edit']),
+]
 
 ALLOW_EVERYONE_VIEW = [
     (Allow, Everyone, 'view'),
-]
+] + ONLY_ADMIN_VIEW
 
-ALLOW_SUBMITTER_ADD = [
-    (Allow, 'group.submitter', 'add')
-]
 
 ALLOW_VIEWING_GROUP_VIEW = [
     (Allow, 'role.viewing_group_member', 'view'),
-]
+] + ONLY_ADMIN_VIEW
 
 ALLOW_LAB_SUBMITTER_EDIT = [
     (Allow, 'role.viewing_group_member', 'view'),
-    (Allow, 'group.admin', 'edit'),
     (Allow, 'role.lab_submitter', 'edit'),
-]
+] + ONLY_ADMIN_VIEW
 
 ALLOW_CURRENT_AND_SUBMITTER_EDIT = [
     (Allow, Everyone, 'view'),
-    (Allow, 'group.admin', 'edit'),
-    (Allow, 'role.lab_submitter', 'edit')
-]
+    (Allow, 'role.lab_submitter', 'edit'),
+] + ONLY_ADMIN_VIEW
 
 ALLOW_CURRENT = [
     (Allow, Everyone, 'view'),
-    (Allow, 'group.admin', 'edit'),
-]
-
-ONLY_ADMIN_VIEW = [
-    (Allow, 'group.admin', ALL_PERMISSIONS),
-    (Allow, 'group.read-only-admin', ['view']),
-    # Avoid schema validation errors during audit
-    (Allow, 'remoteuser.EMBED', ['view', 'expand', 'audit', 'import_items']),
-    (Allow, 'remoteuser.INDEXER', ['view', 'index']),
-    DENY_ALL,
-]
+] + ONLY_ADMIN_VIEW
 
 DELETED = [
     (Deny, Everyone, 'visible_for_edit')
 ] + ONLY_ADMIN_VIEW
+
+
+# Collection acls
+
+ALLOW_SUBMITTER_ADD = [
+    (Allow, 'group.submitter', ['add']),
+]
+
 
 
 def paths_filtered_by_status(request, paths, exclude=('deleted', 'replaced'), include=None):
@@ -195,7 +197,7 @@ class SharedItem(Item):
 
 @snowfort.calculated_property(context=Item.Collection, category='action')
 def add(context, request):
-    if request.has_permission('add') and request.has_permission('forms', request.root):
+    if request.has_permission('add'):
         return {
             'name': 'add',
             'title': 'Add',
@@ -206,7 +208,7 @@ def add(context, request):
 
 @snowfort.calculated_property(context=Item, category='action')
 def edit(context, request):
-    if request.has_permission('edit') and request.has_permission('forms', request.root):
+    if request.has_permission('edit'):
         return {
             'name': 'edit',
             'title': 'Edit',
