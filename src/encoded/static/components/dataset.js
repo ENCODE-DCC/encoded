@@ -1434,8 +1434,52 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: 'Read length',
             display: item => <span>{item.read_length ? <span>{item.read_length + ' ' + item.read_length_units}</span> : null}</span>
         },
+        'paired_status': {title: 'Paired status'},
+        'title': {
+            title: 'Lab',
+            getValue: item => item.lab && item.lab.title ? item.lab.title : null
+        },
+        'date_created': {
+            title: 'Date added',
+            getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
+            objSorter: (a, b) => {
+                if (a.date_created && b.date_created) {
+                    return Date.parse(a.date_created) - Date.parse(b.date_created);
+                }
+                return a.date_created ? -1 : (b.date_created ? 1 : 0);
+            }
+        },
+        'status': {
+            title: 'Validation status',
+            display: item => <div className="characterization-meta-data"><StatusLabel status="pending" /></div>,
+            hide: (list, columns, meta) => meta.encodevers !== '3',
+            sorter: false
+        }
+    },
+
+    // Configuration for raw file table
+    rawArrayTableColumns: {
+        'accession': {
+            title: 'Accession',
+            display: item =>
+                <span>
+                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                </span>
+        },
+        'file_type': {title: 'File type'},
+        'file_size': {
+            title: 'File size',
+            display: item => <span>{humanFileSize(item.file_size)}</span>
+        },
+        'biological_replicates': {
+            title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
+            getValue: item => item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''
+        },
+        'technical_replicate_number': {
+            title: 'Technical replicate',
+            getValue: item => item.replicate ? item.replicate.technical_replicate_number : null
+        },
         'run_type': {title: 'Run type'},
-        'paired_end': {title: 'Paired end'},
         'assembly': {title: 'Mapping assembly'},
         'title': {
             title: 'Lab',
@@ -1542,8 +1586,9 @@ var FileTable = module.exports.FileTable = React.createClass({
     render: function() {
         // Extract three kinds of file arrays
         var files = _(this.props.items).groupBy(function(file) {
+            console.log('%s:%s', file.output_category, file.output_type);
             if (file.output_category === 'raw data') {
-                return 'raw';
+                return file.output_type === 'reads' ? 'raw' : 'rawArray';
             } else if (file.output_category === 'reference') {
                 return 'ref';
             } else {
@@ -1554,6 +1599,7 @@ var FileTable = module.exports.FileTable = React.createClass({
         return (
             <SortTablePanel>
                 <SortTable title="Raw data" list={files.raw} columns={this.rawTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
+                <SortTable title="Raw array data" list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
                 <SortTable title="Processed data" list={files.proc} columns={this.procTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
                 <SortTable title="Reference data" list={files.ref} columns={this.refTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
             </SortTablePanel>
