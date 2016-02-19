@@ -1,4 +1,4 @@
-from contentbase import (
+from snowfort import (
     TYPES,
 )
 from pyramid.events import (
@@ -16,8 +16,8 @@ from .util import ensurelist
 
 def includeme(config):
     settings = config.registry.settings
-    jsonld_base = settings.setdefault('contentbase.jsonld.terms_namespace', '/terms/')
-    settings.setdefault('contentbase.jsonld.terms_prefix', 'term')
+    jsonld_base = settings.setdefault('snowfort.jsonld.terms_namespace', '/terms/')
+    settings.setdefault('snowfort.jsonld.terms_prefix', 'term')
     term_path = urlparse(jsonld_base).path
 
     config.add_route('jsonld_context', term_path)
@@ -31,8 +31,8 @@ def make_jsonld_context(event):
     app = event.app
     registry = app.registry
     types = registry[TYPES]
-    jsonld_base = registry.settings['contentbase.jsonld.terms_namespace']
-    prefix = registry.settings['contentbase.jsonld.terms_prefix']
+    jsonld_base = registry.settings['snowfort.jsonld.terms_namespace']
+    prefix = registry.settings['snowfort.jsonld.terms_prefix']
     term_path = urlparse(jsonld_base).path
 
     context = {
@@ -80,7 +80,7 @@ def make_jsonld_context(event):
         context.update(context_from_schema(
             schema, prefix, type_info.name, type_info.base_types))
 
-    namespaces = registry.settings.get('contentbase.jsonld.namespaces', {})
+    namespaces = registry.settings.get('snowfort.jsonld.namespaces', {})
     context.update(namespaces)
 
     ontology = {
@@ -173,7 +173,7 @@ def make_jsonld_context(event):
                         'owl:unionOf': sorted(classes),
                     }
 
-    app.registry['contentbase.jsonld.context'] = ontology
+    app.registry['snowfort.jsonld.context'] = ontology
 
 
 def context_from_schema(schema, prefix, class_name, base_types):
@@ -285,12 +285,12 @@ def ontology_from_schema(schema, prefix, term_path, item_type, class_name, base_
 @view_config(route_name='jsonld_context_no_slash', request_method='GET')
 @view_config(route_name='jsonld_context', request_method='GET')
 def jsonld_context(context, request):
-    return request.registry['contentbase.jsonld.context']
+    return request.registry['snowfort.jsonld.context']
 
 
 @view_config(route_name='jsonld_term', request_method='GET')
 def jsonld_term(context, request):
-    ontology = request.registry['contentbase.jsonld.context']
+    ontology = request.registry['snowfort.jsonld.context']
     term = request.matchdict['term']
     try:
         return ontology['defines'][term]

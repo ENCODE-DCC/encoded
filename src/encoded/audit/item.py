@@ -1,12 +1,12 @@
-from contentbase import (
+from snowfort import (
     AuditFailure,
     audit_checker,
 )
-from contentbase import (
+from snowfort import (
     UPGRADER,
 )
-from contentbase.schema_utils import validate
-from contentbase.util import simple_path_ids
+from snowfort.schema_utils import validate
+from snowfort.util import simple_path_ids
 
 
 @audit_checker('Item', frame='object')

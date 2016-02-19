@@ -1,11 +1,11 @@
 import re
 from pyramid.view import view_config
-from contentbase import (
+from snowfort import (
     AbstractCollection,
     TYPES,
 )
-from contentbase.elasticsearch import ELASTIC_SEARCH
-from contentbase.resource_views import collection_view_listing_db
+from snowfort.elasticsearch import ELASTIC_SEARCH
+from snowfort.resource_views import collection_view_listing_db
 from elasticsearch.helpers import scan
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import effective_principals
@@ -15,6 +15,7 @@ from collections import OrderedDict
 
 def includeme(config):
     config.add_route('search', '/search{slash:/?}')
+    config.add_route('report', '/report{slash:/?}')
     config.add_route('matrix', '/matrix{slash:/?}')
     config.scan(__name__)
 
@@ -86,27 +87,53 @@ def prepare_search_term(request):
     return search_term
 
 
-def get_sort_order(sort_order=None):
+def set_sort_order(request, search_term, types, doc_types, query, result):
     """
-    specifies sort order for elasticsearch results
+    sets sort order for elasticsearch results
     """
-    if sort_order is not None:
-        order = {}
-        for field in sort_order:
-            # Should always sort on raw field rather than analyzed field
-            order['embedded.' + field + '.raw'] = sort_order[field]
-        return order
-    return {
-        'embedded.date_created.raw': {
-            'order': 'desc',
+    sort = OrderedDict()
+    result_sort = OrderedDict()
+
+    # Prefer sort order specified in request, if any
+    requested_sort = request.params.get('sort')
+    if requested_sort:
+        if requested_sort.startswith('-'):
+            name = requested_sort[1:]
+            order = 'desc'
+        else:
+            name = requested_sort
+            order = 'asc'
+        sort['embedded.' + name + '.raw'] = result_sort[name] = {
+            'order': order,
             'ignore_unmapped': True,
-        },
-        'embedded.label.raw': {
-            'order': 'asc',
-            'missing': '_last',
-            'ignore_unmapped': True,
-        },
-    }
+        }
+
+    # Otherwise we use a default sort only when there's no text search to be ranked
+    if not sort and search_term == '*':
+
+        # If searching for a single type, look for sort options in its schema
+        if len(doc_types) == 1:
+            type_schema = types[doc_types[0]].schema
+            if 'sort_by' in type_schema:
+                for k, v in type_schema['sort_by'].items():
+                    # Should always sort on raw field rather than analyzed field
+                    sort['embedded.' + k + '.raw'] = result_sort[k] = v
+
+        # Default is most recent first, then alphabetical by label
+        if not sort:
+            sort['embedded.date_created.raw'] = result_sort['date_created'] = {
+                'order': 'desc',
+                'ignore_unmapped': True,
+            }
+            sort['embedded.label.raw'] = result_sort['label'] = {
+                'order': 'asc',
+                'missing': '_last',
+                'ignore_unmapped': True,
+            }
+
+    if sort:
+        query['sort'] = sort
+        result['sort'] = result_sort
 
 
 def get_search_fields(request, doc_types):
@@ -164,7 +191,8 @@ def set_filters(request, query, result):
     used_filters = {}
     for field, term in request.params.items():
         if field in ['type', 'limit', 'y.limit', 'x.limit', 'mode', 'annotation',
-                     'format', 'frame', 'datastore', 'field', 'region', 'genome']:
+                     'format', 'frame', 'datastore', 'field', 'region', 'genome',
+                     'sort', 'from']:
             continue
 
         # Add filter to result
@@ -416,10 +444,11 @@ def search(context, request, search_type=None):
 
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
-    es_index = request.registry.settings['contentbase.elasticsearch.index']
+    es_index = request.registry.settings['snowfort.elasticsearch.index']
     search_audit = request.has_permission('search_audit')
 
-    # handling limit
+    # handling pagination
+    from_ = request.params.get('from') or 0
     size = request.params.get('limit', 25)
     if size in ('all', ''):
         size = None
@@ -466,8 +495,19 @@ def search(context, request, search_type=None):
                 'term': ti.name,
                 'remove': '{}?{}'.format(request.path, qs)
             })
-        if len(doc_types) == 1 and hasattr(ti.factory, 'matrix'):
-            result['matrix'] = request.route_path('matrix', slash='/') + search_base
+        if len(doc_types) == 1:
+            result['views'] = views = []
+            views.append({
+                'href': request.route_path('report', slash='/') + search_base,
+                'title': 'View tabular report',
+                'icon': 'table',
+            })
+            if hasattr(ti.factory, 'matrix'):
+                views.append({
+                    'href': request.route_path('matrix', slash='/') + search_base,
+                    'title': 'View summary matrix',
+                    'icon': 'th',
+                })
 
     search_fields, highlights = get_search_fields(request, doc_types)
 
@@ -481,17 +521,16 @@ def search(context, request, search_type=None):
     if not result['columns']:
         del result['columns']
 
-    # Sorting the files when search term is not specified
+    # If no text search, use match_all query instead of query_string
     if search_term == '*':
-        query['sort'] = [get_sort_order()]
-        if len(doc_types) == 1:
-            type_schema = types[doc_types[0]].schema
-            if 'sort_by' in type_schema and len(type_schema['sort_by']):
-                query['sort'] = [get_sort_order(type_schema['sort_by'])]
         query['query']['match_all'] = {}
         del query['query']['query_string']
+    # If searching for more than one type, don't specify which fields to search
     elif len(doc_types) != 1:
         del query['query']['query_string']['fields']
+
+    # Set sort order
+    set_sort_order(request, search_term, types, doc_types, query, result)
 
     # Setting filters
     used_filters = set_filters(request, query, result)
@@ -516,7 +555,7 @@ def search(context, request, search_type=None):
     if do_scan:
         es_results = es.search(body=query, index=es_index, search_type='count')
     else:
-        es_results = es.search(body=query, index=es_index, size=size)
+        es_results = es.search(body=query, index=es_index, from_=from_, size=size)
 
     result['total'] = es_results['hits']['total']
 
@@ -565,7 +604,7 @@ def search(context, request, search_type=None):
     if size is None:
         hits = scan(es, query=query, index=es_index)
     else:
-        hits = scan(es, query=query, index=es_index, size=size)
+        hits = scan(es, query=query, index=es_index, from_=from_, size=size)
     graph = format_results(request, hits)
 
     # Support for request.embed()
@@ -592,6 +631,29 @@ def collection_view_listing_es(context, request):
         return collection_view_listing_db(context, request)
 
     return search(context, request, context.type_info.name)
+
+
+@view_config(route_name='report', request_method='GET', permission='search')
+def report(context, request):
+    types = request.params.getall('type')
+    if len(types) != 1:
+        msg = 'Report view requires specifying a single type.'
+        raise HTTPBadRequest(explanation=msg)
+
+    # Reuse search view
+    res = search(context, request)
+
+    # change @id, @type, and views
+    res['views'][0] = {
+        'href': res['@id'],
+        'title': 'View results as list',
+        'icon': 'list-alt',
+    }
+    search_base = normalize_query(request)
+    res['@id'] = '/report/' + search_base
+    res['title'] = 'Report'
+    res['@type'] = ['Report']
+    return res
 
 
 @view_config(route_name='matrix', request_method='GET', permission='search')
@@ -630,9 +692,22 @@ def matrix(context, request):
     matrix['search_base'] = request.route_path('search', slash='/') + search_base
     matrix['clear_matrix'] = request.route_path('matrix', slash='/') + '?type=' + item_type
 
+    result['views'] = [
+        {
+            'href': request.route_path('search', slash='/') + search_base,
+            'title': 'View results as list',
+            'icon': 'list-alt',
+        },
+        {
+            'href': request.route_path('report', slash='/') + search_base,
+            'title': 'View tabular report',
+            'icon': 'table',
+        }
+    ]
+
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
-    es_index = request.registry.settings['contentbase.elasticsearch.index']
+    es_index = request.registry.settings['snowfort.elasticsearch.index']
 
     search_term = prepare_search_term(request)
 

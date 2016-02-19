@@ -11,6 +11,7 @@
         "description": "RNA Evaluation K562 Long Total RAMPAGE from Gingeras",
         "lab": "thomas-gingeras",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "5a6d5a57-e62d-44b9-a1bd-5d1815247348"
     },
@@ -26,6 +27,7 @@
         "description": "RNA Evaluation K562 Long Poly-A+  RNA-seq from Gingeras",
         "lab": "thomas-gingeras",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "a357b33b-cdaa-4312-91c0-086bfec24181"
     },
@@ -41,6 +43,7 @@
         "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
         "lab": "thomas-gingeras",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "d8e3c296-ae36-417b-855a-8bfbe3d33e3b"
     },
@@ -64,6 +67,7 @@
         ],
         "lab": "sherman-weissman",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "amet.fusce@est.fermentum",
         "target": "Control-mouse",
         "uuid": "df02f3f9-a6d4-40e4-a8dc-c1c7387e4556"
@@ -91,6 +95,7 @@
             "df02f3f9-a6d4-40e4-a8dc-c1c7387e4556"
         ],
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "amet.fusce@est.fermentum",
         "target": "H3K4me3-mouse",
         "uuid": "c05a9d79-713e-4d54-8d8e-6daae94368b3"
@@ -118,6 +123,7 @@
             "df02f3f9-a6d4-40e4-a8dc-c1c7387e4556"
         ],
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "amet.fusce@est.fermentum",
         "target": "H3K4me3-mouse",
         "uuid": "2629336f-0f99-4f30-9457-b2a4834e9e69"
@@ -141,6 +147,7 @@
         ],
         "lab": "richard-myers",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "target": "TAF1-human",
         "uuid": "8f8085dd-8e9c-4b75-a187-21dbafe46de1"
@@ -163,28 +170,30 @@
         "documents": [
             "ENCODE:Myers_Methyl450_protocol"
         ],
-       "lab": "richard-myers",
+        "lab": "richard-myers",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "b29de469-ed4b-4acf-8b4d-f1af02def8e8"
     },
     {
         "_test": "NTR for assay and no replicates",
         "accession": "ENCSR000AJK",
-        "assay_term_id": "NTR:0000020",
-        "assay_term_name": "Nanostring",
+        "assay_term_id": "OBI:0002042",
+        "assay_term_name": "carbon-copy chromosome conformation capture assay followed by sequencing assay",
         "award": "U54HG006998",
-        "description": "Irvine Nanostring GM12878",
+        "description": "Irvine Hi-C GM12878",
         "lab": "ali-mortazavi",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "netus.lorem@risus.lobortis",
         "uuid": "355ffbf8-0bc9-4545-ad3c-1ae71b4e2d85"
     },
     {
         "_test": "shared biosample",
         "accession": "ENCSR000AEN",
-        "assay_term_id": "OBI:0001271",
-        "assay_term_name": "RNA-seq",
+        "assay_term_id": "NTR:0000762",
+        "assay_term_name": "shRNA knockdown followed by RNA-seq",
         "award": "U54HG007005",
         "biosample_term_id": "EFO:0002067",
         "biosample_term_name": "K562",
@@ -192,6 +201,7 @@
         "description": "RNA Evaluation K562 Long Total from Graveley",
         "lab": "brenton-graveley",
         "status": "released",
+        "date_released": "2016-01-01",
         "references": [
             "4cb65ec0-bd49-11e4-bb52-0800200c9a66",
             "b163ba10-bd4a-11e4-bb52-0800200c9a66"
@@ -211,6 +221,7 @@
         "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
         "lab": "thomas-gingeras",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "ddd11381-7958-4d58-af02-fc56255c838b"
     },
@@ -226,6 +237,7 @@
         "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
         "lab": "thomas-gingeras",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "223af596-e5ca-4048-9ea8-9a41c240181d"
     },
@@ -241,6 +253,7 @@
         "description": "UW  SAEC",
         "lab": "richard-myers",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "509cf1b1-4113-4a1e-a49f-d62ebf3367cf"
     },
@@ -253,6 +266,7 @@
         "description": "Sample “RNA Bind-n-Seq” (RBNS) experiment against PTBP1",
         "lab": "chris-burge",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "32bd1f35-d011-4b8e-9601-2929d9688474"
     },
@@ -268,6 +282,7 @@
         "biosample_term_name": "K562",
         "assay_term_id": "OBI:0001863",
         "status": "released",
+        "date_released": "2016-01-01",
         "description": "HAIB Whole Genome Bisulfite Sequencing K562",
         "assay_term_name": "whole genome bisulfite sequencing",
         "lab": "richard-myers",
@@ -289,6 +304,7 @@
         "description": "Control ChIP-seq on human GM12878",
         "lab": "michael-snyder",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "amet.fusce@est.fermentum",
         "target": "Control-human",
         "uuid": "4b180e2c-f469-4ffc-b7ad-e14ff6e41f78"
@@ -312,6 +328,7 @@
             "ENCSR000EYX"
         ],
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "amet.fusce@est.fermentum",
         "target": "EBF1-human",
         "uuid": "d9161058-d8c4-4b17-b03b-bfaeabe75e02"
@@ -319,16 +336,17 @@
     {
         "_test": "treatment control",
         "accession": "ENCSR001CTL",
-        "assay_term_id": "OBI:0000716",
-        "assay_term_name": "ChIP-seq",
+        "assay_term_id": "OBI:0001919",
+        "assay_term_name": "5C",
         "award": "U54HG007004",
         "biosample_term_id": "EFO:0001086",
         "biosample_term_name": "A549",
         "biosample_type": "immortalized cell line",
         "target": "/targets/Control-human",
-        "description": "Control ChIP-seq on A549 cell line.",
+        "description": "Control ChIP-seq on A549 cell line. (set to type 5C for testing)",
         "lab": "robert-waterston",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "e162561a-08c0-463c-93d8-c4f924584e13"
     },
@@ -346,6 +364,7 @@
         "description": "TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone for 8 hours.",
         "lab": "robert-waterston",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "4cead359-10e9-49a8-9d20-f05b2499b919"
     },
@@ -363,6 +382,7 @@
         "description": "TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone for 10 hours.",
         "lab": "robert-waterston",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "2e83f6f9-6744-4ab1-893b-0c14d0a6e8ed"
     },
@@ -379,6 +399,7 @@
         "description": "TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone for 12 hours.",
         "lab": "robert-waterston",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "fe9fe0cb-b859-461c-8d0f-4fa5f8e9377f"
     },
@@ -396,6 +417,7 @@
         "description": "TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone for 8 hours.",
         "lab": "robert-waterston",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "7a9ac6d3-278f-4a0f-bc6b-8356ff10fa8b"
     },
@@ -413,6 +435,7 @@
         "description": "TCF4 ChIP-seq on A549 cell line treated with 80 nM dexamethasone for 8 hours.",
         "lab": "robert-waterston",
         "status": "proposed",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "4c1be4ea-22ae-4880-9002-03617e3dde92"
     },
@@ -430,6 +453,7 @@
         "description": "TCF4 ChIP-seq on A549 cell line treated with 60 nM dexamethasone for 8 hours.",
         "lab": "robert-waterston",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "aca3295c-755b-4495-91cf-8a4c00a0db00"
     },
@@ -446,6 +470,7 @@
         "description": "RNA-seq on fkh-10 deletion strain (RB884) embryos, 80 minutes after egg bleaching.",
         "lab": "robert-waterston",
         "status": "released",
+        "date_released": "2016-01-01",
         "aliases": ["robert-waterston:experiment:RB884_80_1"],
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "25ee48a4-d372-42a8-9366-33a8ca387daf"
@@ -463,6 +488,7 @@
         "description": "RNA-seq on fkh-10 deletion strain (RB884) embryos, 680 minutes after egg bleaching.",
         "lab": "robert-waterston",
         "status": "released",
+        "date_released": "2016-01-01",
         "aliases": ["robert-waterston:experiment:RB884_680_1"],
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "8669b9e5-5b8e-4814-8625-6fbb29372b84"
@@ -480,6 +506,7 @@
         "description": "RNA-seq on fkh-10 deletion strain (RB884) embryos, 880 minutes after egg bleaching.",
         "lab": "robert-waterston",
         "status": "revoked",
+        "date_released": "2016-01-01",
         "aliases": ["robert-waterston:experiment:RB884_880_1"],
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "785f86d8-9d3e-4c29-b007-b1b615ba6076"
@@ -496,6 +523,7 @@
         "description": "Repli-seq on SK-N-SH cell line at G2 phase.",
         "lab": "john-stamatoyannopoulos",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "87958f5b-27f8-4e54-b398-d5bd5ba3e2a0"
     },
@@ -511,6 +539,7 @@
         "description": "Repli-seq on SK-N-SH cell line at S1 phase.",
         "lab": "john-stamatoyannopoulos",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "fe9d124e-9ca1-488f-a1f2-2f9d389562f1"
     },
@@ -526,6 +555,7 @@
         "description": "Repli-seq on SK-N-SH cell line at S2 phase.",
         "lab": "john-stamatoyannopoulos",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "8dc4b825-a5d9-4663-9f1a-cf769c1a0f8c"
     },
@@ -541,14 +571,15 @@
         "description": "RNA-seq of K562",
         "lab": "thomas-gingeras",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "dc7baa06-bd53-4b5c-809a-85e0c6bd23d6"
     },
     {
         "_test": "reference epigenome series 2: WGBS",
         "accession": "ENCSR002EPI",
-        "assay_term_id": "OBI:0001863",
-        "assay_term_name": "whole genome bisulfite sequencing",
+        "assay_term_id": "OBI:0001862",
+        "assay_term_name": "RRBS",
         "award": "ENCODE2",
         "biosample_term_id": "EFO:0002067",
         "biosample_term_name": "K562",
@@ -556,6 +587,7 @@
         "description": "WGBS of K562",
         "lab": "richard-myers",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "4e0a5e53-fc05-4c9b-8d86-8572c8d227a2"
     },
@@ -572,6 +604,7 @@
         "description": "ChIP-seq of K562",
         "lab": "bradley-bernstein",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "59584793-f9ad-4cb3-a6e9-e2bd6112116b"
     },
@@ -588,6 +621,7 @@
         "description": "ChIP-seq of K562",
         "lab": "bradley-bernstein",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "b7a37424-cc23-4c28-ac0d-5dd311f993f4"
     },
@@ -604,6 +638,7 @@
         "description": "ChIP-seq of K562",
         "lab": "bradley-bernstein",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "36bb66bc-c6d6-4fde-a0b6-b984926ca081"
     },
@@ -620,6 +655,7 @@
         "description": "ChIP-seq of K562",
         "lab": "bradley-bernstein",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "c70c0fb9-08c5-404f-9905-11aac1069b4e"
     },
@@ -636,6 +672,7 @@
         "description": "ChIP-seq of K562",
         "lab": "bradley-bernstein",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "0fd18fa0-eeab-48d1-b249-84eca0ea0d6f"
     },
@@ -652,6 +689,7 @@
         "description": "ChIP-seq of K562",
         "lab": "bradley-bernstein",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "d63e3ea5-86b2-4780-9c07-becbc6c4a63f"
     },
@@ -668,6 +706,7 @@
         "description": "ChIP-seq of K562",
         "lab": "bradley-bernstein",
         "status": "released",
+        "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "ce9bb310-d52d-464c-9e2d-c250ab287c7a"
     },

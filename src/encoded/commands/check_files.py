@@ -42,6 +42,7 @@ GZIP_TYPES = [
     "fastq",
     "gff",
     "gtf",
+    "tagAlign",
     "tar",
     "sam",
     "wig"

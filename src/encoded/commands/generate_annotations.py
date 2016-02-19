@@ -73,7 +73,8 @@ def human_annotations(es):
                       r['Approved Symbol'] + species,
                       r['HGNC ID'],
                       r['Entrez Gene ID'] + ' (Gene ID)'],
-            'payload': {'id': r['HGNC ID']}
+            'payload': {'id': r['HGNC ID'],
+                        'species': species}
         }
         doc['id'] = r['HGNC ID']
 
@@ -145,7 +146,8 @@ def mouse_annotations(mouse_file):
         species = ' (mus musculus)'
         doc['name_suggest'] = {
             'input': [],
-            'payload': {'id': r['Ensembl Gene ID']}
+            'payload': {'id': r['Ensembl Gene ID'],
+                        'species': species}
         }
         doc['id'] = r['Ensembl Gene ID']
 
@@ -211,7 +213,8 @@ def other_annotations(file, species, assembly):
 
         doc['name_suggest'] = {
             'input': [r['Associated Gene Name'] + species],
-            'payload': {'id': r['Ensembl Gene ID']}
+            'payload': {'id': r['Ensembl Gene ID'],
+                        'species': species}
         }
         doc['id'] = r['Ensembl Gene ID']
         annotation['assembly_name'] = assembly

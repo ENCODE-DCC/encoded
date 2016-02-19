@@ -151,13 +151,26 @@ globals.content_views.register(Image, 'Image');
 // Displays a graphic badge for the award project.
 var ProjectBadge = module.exports.ProjectBadge = React.createClass({
     propTypes: {
-        project: React.PropTypes.string.isRequired // Project whose badge we display
+        award: React.PropTypes.object.isRequired, // Award whose project's badge we display
+        addClasses: React.PropTypes.string // Classes to add to image
     },
 
     projectMap: {
         'ENCODE': {
             imageClass: 'badge-encode',
             alt: 'ENCODE project'
+        },
+        'ENCODE2': {
+            imageClass: 'badge-encode2',
+            alt: 'ENCODE2 project'
+        },
+        'ENCODE3': {
+            imageClass: 'badge-encode3',
+            alt: 'ENCODE3 project'
+        },
+        'ENCODE4': {
+            imageClass: 'badge-encode4',
+            alt: 'ENCODE4 project'
         },
         'Roadmap': {
             imageClass: 'badge-roadmap',
@@ -175,22 +188,21 @@ var ProjectBadge = module.exports.ProjectBadge = React.createClass({
             imageClass: 'badge-ggr',
             alt: 'Genomics of Gene Regulation Project'
         },
-        'mouse-ENCODE': {
+        'ENCODE2-mouse': {
             imageClass: 'badge-mouseencode',
             alt: 'ENCODE Mouse Project'
         }
     },
 
     render: function() {
-        var project = this.props.project;
+        var award = this.props.award;
+        var project = award.project;
         var projectMeta = this.projectMap[project];
+        var imageClass = projectMeta.imageClass + (this.props.addClasses ? (' ' + this.props.addClasses) : '');
 
-        return (
-            <div>
-                {projectMeta ?
-                    <div className={projectMeta.imageClass}><span className="sr-only">{projectMeta.alt}</span></div>
-                : null}
-            </div>
-        );
+        if (projectMeta) {
+            return <div className={imageClass}><span className="sr-only">{projectMeta.alt}</span></div>;
+        }
+        return null;
     }
 });
