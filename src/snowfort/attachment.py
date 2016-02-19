@@ -13,7 +13,7 @@ from urllib.parse import (
     quote,
     unquote,
 )
-from contentbase import (
+from snowfort import (
     BLOBS,
     Item,
 )

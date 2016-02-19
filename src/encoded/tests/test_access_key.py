@@ -104,14 +104,6 @@ def test_access_key_reset(anontestapp, access_key, submitter):
     assert res.json['authenticated_userid'] == 'accesskey.' + access_key['access_key_id']
 
 
-def test_access_key_disable(anontestapp, access_key, submitter):
-    headers = {'Authorization': auth_header(access_key)}
-    extra_environ = {'REMOTE_USER': str(submitter['email'])}
-    anontestapp.post_json(
-        access_key['@id'] + '@@disable-secret', {}, extra_environ=extra_environ)
-    anontestapp.get('/@@testing-user', headers=headers, status=401)
-
-
 def test_access_key_delete_disable_login(anontestapp, testapp, access_key):
     testapp.patch_json(access_key['@id'], {'status': 'deleted'})
     headers = {'Authorization': auth_header(access_key)}
@@ -143,7 +135,7 @@ def test_access_key_view_hides_secret_access_key_hash(testapp, access_key, frame
 
 def test_access_key_uses_edw_hash(app, access_key):
     from encoded.edw_hash import EDWHash
-    from contentbase import ROOT
+    from snowfort import ROOT
     root = app.registry[ROOT]
     obj = root.by_item_type['access_key'][access_key['access_key_id']]
     pwhash = obj.properties['secret_access_key_hash']

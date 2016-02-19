@@ -71,8 +71,8 @@ setup(
     },
     entry_points='''
         [console_scripts]
-        batchupgrade = contentbase.batchupgrade:main
-        create-mapping = contentbase.elasticsearch.create_mapping:main
+        batchupgrade = snowfort.batchupgrade:main
+        create-mapping = snowfort.elasticsearch.create_mapping:main
 
         add-date-created = encoded.commands.add_date_created:main
         check-files = encoded.commands.check_files:main
