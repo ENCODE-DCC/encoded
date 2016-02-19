@@ -352,18 +352,12 @@ def audit_biosample_part_of_consistency(value, system):
         part_of_biosample = value['part_of']
         term_id = value['biosample_term_id']
         part_of_term_id = part_of_biosample['biosample_term_id']
-
-        if term_id == part_of_term_id:
+        if term_id == part_of_term_id or part_of_term_id == 'UBERON:0000468':
             return
-
         ontology = system['registry']['ontology']
         if (term_id in ontology) and (part_of_term_id in ontology):
             if is_part_of(term_id, part_of_term_id, ontology) is True:
                 return
-            # ontology_child = ontology[term_id]
-            # ontology_parent = ontology[part_of_term_id]
-            # if 'name' in ontology_parent and ontology_parent['name'] == 'multi-cellular organism':
-            #    return
 
         detail = 'Biosample {} '.format(value['@id']) + \
                  'with biosample_term_id {} '.format(term_id) + \
