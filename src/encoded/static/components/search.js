@@ -881,7 +881,7 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
             var context = this.props.context;
             var results = context['@graph'];
             var total = context['total'];
-            var batch_hub_disabled = total > 10;
+            var batch_hub_disabled = total > 500;
             var columns = context['columns'];
             var filters = context['filters'];
             var label = 'results';
@@ -943,7 +943,7 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
                                         : null}
 
                                         {context['batch_hub'] ?
-                                            <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to 500 to visualize' : 'Visualize'}>
+                                            <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to 500 to visualize' : 'Visualize'>
                                                 <DropdownMenu>
                                                     {Object.keys(context['batch_hub']).map(assembly =>
                                                         <a data-bypass="true" target="_blank" private-browsing="true" href={context['batch_hub'][assembly]}>
