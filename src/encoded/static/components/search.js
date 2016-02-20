@@ -3,6 +3,8 @@ var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
 var Modal = require('react-bootstrap/lib/Modal');
 var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
+var button = require('../libs/bootstrap/button');
+var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
@@ -20,6 +22,8 @@ var SingleTreatment = objectutils.SingleTreatment;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
+var DropdownButton = button.DropdownButton;
+var DropdownMenu = dropdownMenu.DropdownMenu;
 
     // Should really be singular...
     var types = {
@@ -877,7 +881,7 @@ var AuditMixin = audit.AuditMixin;
             var context = this.props.context;
             var results = context['@graph'];
             var total = context['total'];
-            var batch_hub_disabled = total > 500;
+            var batch_hub_disabled = total > 10;
             var columns = context['columns'];
             var filters = context['filters'];
             var label = 'results';
@@ -905,70 +909,66 @@ var AuditMixin = audit.AuditMixin;
             }
 
             return (
-                    <div>
-                        <div className="row">
-                            {facets.length ? <div className="col-sm-5 col-md-4 col-lg-3">
-                                <FacetList {...this.props} facets={facets} filters={filters}
-                                           searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
-                            </div> : ''}
-                            <div className="col-sm-7 col-md-8 col-lg-9">
-                                {context['notification'] === 'Success' ?
+                <div>
+                    <div className="row">
+                        {facets.length ? <div className="col-sm-5 col-md-4 col-lg-3">
+                            <FacetList {...this.props} facets={facets} filters={filters}
+                                       searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
+                        </div> : ''}
+                        <div className="col-sm-7 col-md-8 col-lg-9">
+                            {context['notification'] === 'Success' ?
+                                <div>
                                     <h4>
                                         Showing {results.length} of {total} {label}
                                         {context.views && context.views.map((view, i) => <span key={i}> <a href={view.href} title={view.title}><i className={'icon icon-' + view.icon}></i></a></span>)}
+                                    </h4>
+
+                                    <div className="results-table-control">
                                         {total > results.length && searchBase.indexOf('limit=all') === -1 ?
-                                            <span className="pull-right">
-                                                <a rel="nofollow" className="btn btn-info btn-sm"
-                                                     href={searchBase ? searchBase + '&limit=all' : '?limit=all'}
-                                                     onClick={this.onFilter}>View All</a>
-                                            </span>
+                                            <a rel="nofollow" className="btn btn-info btn-sm"
+                                                 href={searchBase ? searchBase + '&limit=all' : '?limit=all'}
+                                                 onClick={this.onFilter}>View All</a>
                                         :
                                             <span>
                                                 {results.length > 25 ?
-                                                    <span className="pull-right">
-                                                        <a className="btn btn-info btn-sm"
-                                                           href={trimmedSearchBase ? trimmedSearchBase : "/search/"}
-                                                           onClick={this.onFilter}>View 25</a>
-                                                    </span>
+                                                    <a className="btn btn-info btn-sm"
+                                                       href={trimmedSearchBase ? trimmedSearchBase : "/search/"}
+                                                       onClick={this.onFilter}>View 25</a>
                                                 : null}
                                             </span>
                                         }
 
                                         {context['batch_download'] ?
-                                            <span className="pull-right">
-                                                <BatchDownload context={context} />&nbsp;
-                                            </span>
+                                            <BatchDownload context={context} />
                                         : null}
 
-                                 {context['batch_hub'] ?
-                                    <span className="pull-right">
-                                        {Object.keys(context['batch_hub']).map(function(assembly) {
-                                            return (
-                                                <span>
-                                                    <a disabled={batch_hub_disabled} data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['batch_hub'][assembly]}>
-                                                        {batch_hub_disabled ? 'Filter to 500 to visualize' :'Visualize'+' '+ assembly}
-                                                    </a>
-                                                    &nbsp;
-                                                </span>
-                                            );
-                                        })}
-                                    </span>
+                                        {context['batch_hub'] ?
+                                            <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to 500 to visualize' : 'Visualize'}>
+                                                <DropdownMenu>
+                                                    {Object.keys(context['batch_hub']).map(assembly =>
+                                                        <a data-bypass="true" target="_blank" private-browsing="true" href={context['batch_hub'][assembly]}>
+                                                            {assembly}
+                                                        </a>
+                                                    )}
+                                                </DropdownMenu>
+                                            </DropdownButton>
+                                        : null}
+                                    </div>
+                                </div>
+                            :
+                                <h4>{context['notification']}</h4>
+                            }
+                            <hr />
+                            <ul className="nav result-table" id="result-table">
+                                {results.length ?
+                                    results.map(function (result) {
+                                        return Listing({context:result, columns: columns, key: result['@id']});
+                                    })
                                 : null}
-                                    </h4>
-                                :
-                                    <h4>{context['notification']}</h4>
-                                }
-                                <hr />
-                                <ul className="nav result-table" id="result-table">
-                                    {results.length ?
-                                        results.map(function (result) {
-                                            return Listing({context:result, columns: columns, key: result['@id']});
-                                        })
-                                    : null}
-                                </ul>
-                            </div>
+                            </ul>
                         </div>
                     </div>
+                </div>
             );
         },
 
