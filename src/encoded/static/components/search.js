@@ -943,7 +943,7 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
                                         : null}
 
                                         {context['batch_hub'] ?
-                                            <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to 500 to visualize' : 'Visualize'>
+                                            <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to 500 to visualize' : 'Visualize'}>
                                                 <DropdownMenu>
                                                     {Object.keys(context['batch_hub']).map(assembly =>
                                                         <a data-bypass="true" target="_blank" private-browsing="true" href={context['batch_hub'][assembly]}>
