@@ -5,16 +5,27 @@
     overflow: hidden;
 }
 
-.facets.horizontal {
-    display: table;
-    width: 100%;
-    .facet {
-        display: table-cell;
-        padding: 0 10px;
+@media screen and (max-width: $screen-sm-min) {
+    .sm-no-padding {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
     }
-    .facet[hidden] {
-        display: table-cell !important;
-        visibility: hidden;
+    .facets.horizontal .facet {
+        width: auto !important;
+    }
+}
+@media screen and (min-width: $screen-sm-min) {
+    .facets.horizontal {
+        display: table;
+        width: 100%;
+        .facet {
+            display: table-cell;
+            padding: 0 10px;
+        }
+        .facet[hidden] {
+            display: table-cell !important;
+            visibility: hidden;
+        }
     }
 }
 
