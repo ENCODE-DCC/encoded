@@ -205,6 +205,10 @@
             "title": "Software used",
             "type": "array"
         },
+        "encyclopedia_version": {
+            "title": "Encyclopedia version",
+            "type": "string"
+        },
         "lab.title": {
             "title": "Lab",
             "type": "string"
