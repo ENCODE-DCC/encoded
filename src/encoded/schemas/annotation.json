@@ -55,9 +55,16 @@
             "description": "The category that best describes the annotation set.",
             "type": "string",
             "enum": [
+                "binding sites",
+                "candidate enhancers",
+                "candidate promoters",
                 "enhancer prediction",
-                "segmentation",
+                "DNase hypersensitive regions",
+                "transcription factor motifs",
+                "SAGA",
                 "overlap",
+                "validated enhancers",
+                "segmentation",
                 "encyclopedia"
             ]
         },

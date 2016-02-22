@@ -1,4 +1,4 @@
-from contentbase import upgrade_step
+from snowfort import upgrade_step
 from .shared import ENCODE2_AWARDS, REFERENCES_UUID
 from pyramid.traversal import find_root
 import re

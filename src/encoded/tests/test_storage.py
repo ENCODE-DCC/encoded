@@ -3,7 +3,7 @@ pytestmark = pytest.mark.storage
 
 
 def test_storage_creation(session):
-    from contentbase.storage import (
+    from snowfort.storage import (
         PropertySheet,
         CurrentPropertySheet,
         TransactionRecord,
@@ -20,7 +20,7 @@ def test_storage_creation(session):
 
 
 def test_transaction_record(session):
-    from contentbase.storage import (
+    from snowfort.storage import (
         Resource,
         PropertySheet,
         TransactionRecord,
@@ -43,7 +43,7 @@ def test_transaction_record(session):
 def test_transaction_record_rollback(session):
     import transaction
     import uuid
-    from contentbase.storage import (
+    from snowfort.storage import (
         Resource,
         PropertySheet,
         TransactionRecord,
@@ -65,7 +65,7 @@ def test_transaction_record_rollback(session):
 
 
 def test_current_propsheet(session):
-    from contentbase.storage import (
+    from snowfort.storage import (
         CurrentPropertySheet,
         Resource,
         PropertySheet,
@@ -91,7 +91,7 @@ def test_current_propsheet(session):
 
 
 def test_current_propsheet_update(session):
-    from contentbase.storage import (
+    from snowfort.storage import (
         CurrentPropertySheet,
         Resource,
         PropertySheet,
@@ -116,7 +116,7 @@ def test_current_propsheet_update(session):
 
 def test_keys(session):
     from sqlalchemy.orm.exc import FlushError
-    from contentbase.storage import (
+    from snowfort.storage import (
         Resource,
         Key,
     )
@@ -149,7 +149,7 @@ def test_keys(session):
 
 
 def test_S3BlobStorage(mocker):
-    from contentbase.storage import S3BlobStorage
+    from snowfort.storage import S3BlobStorage
     mocker.patch('boto.connect_s3')
     bucket = 'test'
     fake_key = mocker.Mock()
@@ -178,7 +178,7 @@ def test_S3BlobStorage(mocker):
 
 
 def test_S3BlobStorage_get_blob_url_for_non_s3_file(mocker):
-    from contentbase.storage import S3BlobStorage
+    from snowfort.storage import S3BlobStorage
     mocker.patch('boto.connect_s3')
     bucket = 'test'
     storage = S3BlobStorage(bucket)

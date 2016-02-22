@@ -32,10 +32,10 @@ def app(app_settings):
     yield app
 
     # Shutdown multiprocessing pool to close db conns.
-    from contentbase.elasticsearch import INDEXER
+    from snowfort.elasticsearch import INDEXER
     app.registry[INDEXER].shutdown()
 
-    from contentbase import DBSESSION
+    from snowfort import DBSESSION
     DBSession = app.registry[DBSESSION]
     # Dispose connections so postgres can tear down.
     DBSession.bind.pool.dispose()
@@ -43,13 +43,13 @@ def app(app_settings):
 
 @pytest.fixture(scope='session')
 def DBSession(app):
-    from contentbase import DBSESSION
+    from snowfort import DBSESSION
     return app.registry[DBSESSION]
 
 
 @pytest.fixture(autouse=True)
 def teardown(app, dbapi_conn):
-    from contentbase.elasticsearch import create_mapping
+    from snowfort.elasticsearch import create_mapping
     create_mapping.run(app)
     cursor = dbapi_conn.cursor()
     cursor.execute("""TRUNCATE resources, transactions CASCADE;""")
@@ -74,7 +74,7 @@ def dbapi_conn(DBSession):
 @pytest.yield_fixture
 def listening_conn(dbapi_conn):
     cursor = dbapi_conn.cursor()
-    cursor.execute("""LISTEN "contentbase.transaction";""")
+    cursor.execute("""LISTEN "snowfort.transaction";""")
     yield dbapi_conn
     cursor.close()
 
@@ -123,5 +123,5 @@ def test_listening(testapp, listening_conn):
     listening_conn.poll()
     assert len(listening_conn.notifies) == 1
     notify = listening_conn.notifies.pop()
-    assert notify.channel == 'contentbase.transaction'
+    assert notify.channel == 'snowfort.transaction'
     assert int(notify.payload) > 0

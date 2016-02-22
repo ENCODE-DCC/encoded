@@ -1,4 +1,4 @@
-from contentbase import (
+from snowfort import (
     abstract_collection,
     calculated_property,
     collection,
