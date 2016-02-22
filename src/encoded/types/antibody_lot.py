@@ -352,6 +352,8 @@ def lot_reviews(characterizations, targets, request):
                         new_review['status'] = 'eligible for new data'
                     elif exempted_secondary:
                         new_review['status'] = 'eligible for new data (via exemption)'
+                    elif not secondary_chars:
+                        new_review['detail'] = 'Awaiting submission of secondary characterization(s).'
                     else:
                         new_review['detail'] = 'Awaiting a compliant secondary characterization.'
                         pass
