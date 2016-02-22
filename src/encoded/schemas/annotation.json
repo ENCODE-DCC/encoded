@@ -55,7 +55,7 @@
             "description": "The category that best describes the annotation set.",
             "type": "string",
             "enum": [
-                "aggregated binding sites",
+                "binding sites",
                 "candidate enhancers",
                 "candidate promoters",
                 "enhancer prediction",
