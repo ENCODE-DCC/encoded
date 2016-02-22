@@ -202,6 +202,15 @@ def scanFilesForPipeline(files_to_scan, pipeline_title):
     return False
 
 
+def is_gtex_experiment(experiment_to_check):
+    for rep in experiment_to_check['replicates']:
+        if ('library' in rep) and ('biosample' in rep['library']) and \
+           ('donor' in rep['library']['biosample']):
+            if rep['library']['biosample']['donor'] in gtexDonorsList:
+                return True
+    return False
+
+
 @audit_checker('experiment', frame=['replicates',
                                     'replicates.library',
                                     'replicates.library.biosample',
@@ -217,26 +226,15 @@ def audit_experiment_gtex_biosample(value, system):
     if len(value['replicates']) < 2:
         return
 
+    if is_gtex_experiment(value) is False:
+        return
+
     biosample_set = set()
-    donor_set = set()
 
     for rep in value['replicates']:
-        if ('library' in rep) and ('biosample' in rep['library']) and \
-           ('donor' in rep['library']['biosample']):
-
+        if ('library' in rep) and ('biosample' in rep['library']):
             biosampleObject = rep['library']['biosample']
-            donorObject = biosampleObject['donor']
-
             biosample_set.add(biosampleObject['accession'])
-            donor_set.add(donorObject['accession'])
-
-    gtex_experiment_flag = False
-    for entry in donor_set:
-        if entry in gtexDonorsList:
-            gtex_experiment_flag = True
-
-    if gtex_experiment_flag is False:
-        return
 
     if len(biosample_set) > 1:
         detail = 'GTEx experiment {} '.format(value['@id']) + \
@@ -328,7 +326,10 @@ def audit_experiment_release_date(value, system):
 
 
 @audit_checker('experiment',
-               frame=['replicates', 'award', 'target'],
+               frame=['replicates', 'award', 'target',
+                      'replicates.library',
+                      'replicates.library.biosample',
+                      'replicates.library.biosample.donor'],
                condition=rfa("ENCODE3", "modERN", "GGR",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicated(value, system):
@@ -340,9 +341,15 @@ def audit_experiment_replicated(value, system):
         return
     '''
     Excluding single cell isolation experiments from the replication requirement
+    Excluding RNA-bind-and-Seq from the replication requirment
     '''
     if value['assay_term_name'] in ['single cell isolation followed by RNA-seq',
                                     'RNA Bind-n-Seq']:
+        return
+    '''
+    Excluding GTEX experiments from the replication requirement
+    '''
+    if is_gtex_experiment(value) is True:
         return
 
     if 'target' in value:
