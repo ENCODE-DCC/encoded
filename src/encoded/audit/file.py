@@ -6,6 +6,10 @@ from .conditions import (
     rfa,
 )
 import datetime
+from .standards_data import broad_peaks_targets
+from .standards_data import pipelines_with_read_depth
+from .standards_data import special_assays_with_read_depth
+
 
 current_statuses = ['released', 'in progress']
 not_current_statuses = ['revoked', 'obsolete', 'deleted']
@@ -23,26 +27,6 @@ paired_end_assays = [
     'ChIA-PET',
     'DNA-PET',
     ]
-
-broadPeaksTargets = [
-    'H3K4me1-mouse',
-    'H3K36me3-mouse',
-    'H3K79me2-mouse',
-    'H3K27me3-mouse',
-    'H3K9me1-mouse',
-    'H3K9me3-mouse',
-    'H3K4me1-human',
-    'H3K36me3-human',
-    'H3K79me2-human',
-    'H3K27me3-human',
-    'H3K9me1-human',
-    'H3K9me3-human',
-    'H3F3A-human',
-    'H4K20me1-human',
-    'H3K79me3-human',
-    'H3K79me3-mouse',
-    ]
-
 
 @audit_checker('file', frame=['replicate', 'replicate.experiment',
                               'derived_from', 'derived_from.replicate',
@@ -459,6 +443,103 @@ def audit_file_paired_ended_run_type(value, system):
             raise AuditFailure('missing mate pair', detail, level='DCC_ACTION')
 
 
+def get_bam_read_depth(bam_file):
+    if bam_file['status'] in ['deleted', 'replaced', 'revoked']:
+        return False
+
+    if bam_file['file_format'] != 'bam':
+        return False
+
+    if bam_file['output_type'] == 'transcriptome alignments':
+        return False
+
+    if bam_file['lab'] != '/labs/encode-processing-pipeline/':
+        return False
+
+    if 'analysis_step_version' not in bam_file:
+        return False
+
+    if 'analysis_step' not in bam_file['analysis_step_version']:
+        return False
+
+    if 'pipelines' not in bam_file['analysis_step_version']['analysis_step']:
+        return False
+
+    if 'software_versions' not in bam_file['analysis_step_version']:
+        return False
+
+    if bam_file['analysis_step_version']['software_versions'] == []:
+        return False
+
+    '''
+    excluding bam files from TopHat
+    '''
+    for record in bam_file['analysis_step_version']['software_versions']:
+        if record['software']['title'] == 'TopHat':
+            return False
+
+    quality_metrics = bam_file.get('quality_metrics')
+
+    if (quality_metrics is None) or (quality_metrics == []):
+        return False
+
+    chip_seq_flag = False
+    interesting_pipeline = False
+    for pipeline in bam_file['analysis_step_version']['analysis_step']['pipelines']:
+        if pipeline['title'] in pipelines_with_read_depth:
+            if pipeline['title'] == 'Histone ChIP-seq' or \
+               pipeline['title'] == 'Transcription factor ChIP-seq':
+                chip_seq_flag = True
+            interesting_pipeline = pipeline
+            break
+
+    if interesting_pipeline is False:
+        return False
+
+    read_depth = 0
+
+    derived_from_files = bam_file.get('derived_from')
+    if (derived_from_files is None) or (derived_from_files == []):
+        return False
+
+    paring_status_detected = False
+    for derived_from_file in derived_from_files:
+        if 'file_type' in derived_from_file and derived_from_file['file_type'] == 'fastq' and \
+           'run_type' in derived_from_file:
+            if derived_from_file['run_type'] == 'single-ended':
+                paired_ended_status = False
+                paring_status_detected = True
+                break
+            else:
+                if derived_from_file['run_type'] == 'paired-ended':
+                    paired_ended_status = True
+                    paring_status_detected = True
+                    break
+
+    if paring_status_detected is False:
+        return False
+
+    read_depth_value_name = 'Uniquely mapped reads number'
+    if chip_seq_flag is True:
+        read_depth_value_name = 'total'
+
+    for metric in quality_metrics:
+        if chip_seq_flag is False and read_depth_value_name in metric:
+            read_depth = metric[read_depth_value_name]
+            break
+        elif chip_seq_flag is True and read_depth_value_name in metric:
+                if paired_ended_status is False:
+                    read_depth = metric[read_depth_value_name]
+                else:
+                    read_depth = int(metric[read_depth_value_name]/2)
+                break
+
+    if read_depth == 0:
+        return False
+
+    return read_depth
+
+
 @audit_checker('file', frame=['quality_metrics',
                               'analysis_step_version',
                               'analysis_step_version.analysis_step',
@@ -600,29 +681,6 @@ def audit_file_read_depth(value, system):
         if 'target' in value['dataset']:
             target_name = value['dataset']['target']['name']
 
-    pipeline_titles = [
-        'Small RNA-seq single-end pipeline',
-        'RNA-seq of long RNAs (paired-end, stranded)',
-        'RNA-seq of long RNAs (single-end, unstranded)',
-        'RAMPAGE (paired-end, stranded)',
-        'Histone ChIP-seq'
-    ]
-
-    read_depths_special = {
-        'shRNA knockdown followed by RNA-seq': 10000000,
-        'single cell isolation followed by RNA-seq': 5000000
-    }
-    read_depths = {
-        'Small RNA-seq single-end pipeline': 30000000,
-        'RNA-seq of long RNAs (paired-end, stranded)': 30000000,
-        'RNA-seq of long RNAs (single-end, unstranded)': 30000000,
-        'RAMPAGE (paired-end, stranded)': 25000000
-    }
-
-    marks = {
-        'narrow': 20000000,
-        'broad': 45000000
-    }
 
     for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
         if pipeline['title'] not in pipeline_titles:
