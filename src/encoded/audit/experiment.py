@@ -341,7 +341,8 @@ def audit_experiment_replicated(value, system):
     '''
     Excluding single cell isolation experiments from the replication requirement
     '''
-    if value['assay_term_name'] == 'single cell isolation followed by RNA-seq':
+    if value['assay_term_name'] in ['single cell isolation followed by RNA-seq',
+                                    'RNA Bind-n-Seq']:
         return
 
     if 'target' in value:
