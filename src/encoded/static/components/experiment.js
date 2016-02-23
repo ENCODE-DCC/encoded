@@ -564,10 +564,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 </FetchedData>
 
                 {context.files.length ?
-                    <div>
-                        <h3>Files linked to {context.accession}</h3>
-                        <FileTable items={context.files} encodevers={encodevers} anisogenic={anisogenic} />
-                    </div>
+                    <FileTable items={context.files} encodevers={encodevers} anisogenic={anisogenic} />
                 : null }
 
                 {{'released': 1, 'release ready': 1}[context.status] ?
