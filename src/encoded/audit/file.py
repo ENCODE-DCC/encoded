@@ -531,6 +531,119 @@ def get_bam_read_depth(bam_file):
 
     return read_depth
 
+'''
+LOGIC FOR GETTING BAM CONTROL - SHOULD BE USED IN PROCESSING BAM FILE OF NON CONTROL CHipSEQ
+SHOULD Be enhanced to get the real corresponding BAM - using the pipeline? koro4e ne BAM shel
+raw mapping when checking normal filtered mapping...
+>>> ZOPA ZOPA ZOPA
+@audit_checker('file', frame=['derived_from', 'derived_from.controlled_by',
+                              'derived_from.controlled_by.dataset',
+                              'derived_from.controlled_by.dataset.original_files',
+                              'derived_from.controlled_by.dataset.original_files.derived_from'])
+def audit_file_control_read_depth(value, system):
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+
+    if value['file_format'] != 'bam':
+        return
+
+    #  get representative FASTQ file
+    if 'derived_from' not in value or len(value['derived_from']) < 1:
+        return
+    derived_from_fastq = value['derived_from']
+
+    # get representative fstq from control
+    if 'controlled_by' not in derived_from_fastq and len(derived_from_fastq['controlled_by']) < 1:
+        return
+    else:
+        control_fastq = derived_from_fastq['controlled_by']
+        if 'original_files' not in control_fastq['dataset']:
+            return
+
+        control_bam = False
+        control_files = control_fastq['dataset']['original_files']
+        for control_file in control_files:
+            if control_file['status'] in ['deleted', 'replaced', 'revoked']:
+                continue
+            if control_file['file_format'] == 'bam':
+                if 'derived_from' in control_file and len(control_file['derived_from']) > 0:
+                    derived_list = control_file['derived_from']
+                    for entry in derived_list:
+                        if entry['accession'] == control_fastq['accession']:
+                            control_bam = control_file
+                            break
+        if control_bam is False:
+            return
+
+        # chech the read depth of the control bam (it is not clear waht to do with ,multiple bams
+        # derived from the same fastq
+        result = check_bam_read_depth(control_bam) 
+        if result is False:
+            return
+        else:
+            audit_message = result[0]
+            audit_level =result[1] 
+            yield AuditFailure('control read depth issues', audit_detail, level=audit_level)
+            return
+
+'''
+
+
+def get_control_bam(experiment_bam, pipeline_name):
+    #  get representative FASTQ file
+    if 'derived_from' not in experiment_bam or len(experiment_bam['derived_from']) < 1:
+        return False
+
+    derived_from_fastqs = experiment_bam['derived_from']
+    control_fastq = False
+    for entry in derived_from_fastqs:
+        if 'controlled_by' in entry and len(entry['controlled_by']) > 0:
+            control_fastq = entry['controlled_by'][0]  # getting representative FASTQ
+            break
+
+    # get representative fastq from control
+    if control_fastq is False:
+        return False
+    else:
+        if 'original_files' not in control_fastq['dataset']:
+            return False
+
+        control_bam = False
+        control_files = control_fastq['dataset']['original_files']
+        for control_file in control_files:
+            if control_file['status'] in ['deleted', 'replaced', 'revoked']:
+                continue
+            if control_file['file_format'] == 'bam':
+                #  we have bam file, now we have to make sure it was created by pipeline
+                #  with similar pipeline_name
+                is_same_pipeline = False
+                if has_pipelines(control_file) is True:
+                    for pipeline in \
+                            control_file['analysis_step_version']['analysis_step']['pipelines']:
+                        if pipeline['title'] == pipeline_name:
+                            is_same_pipeline = True
+                            break
+
+                if is_same_pipeline is True and \
+                   'derived_from' in control_file and \
+                   len(control_file['derived_from']) > 0:
+                    derived_list = control_file['derived_from']
+                    for entry in derived_list:
+                        if entry['accession'] == control_fastq['accession']:
+                            control_bam = control_file
+                            break
+        return control_bam
+
+
+def has_pipelines(bam_file):
+    if 'analysis_step_version' not in bam_file:
+        return False
+    if 'analysis_step' not in bam_file['analysis_step_version']:
+        return False
+    if 'pipelines' not in bam_file['analysis_step_version']['analysis_step']:
+        return False
+    return True
+
 
 @audit_checker('file', frame=['quality_metrics',
                               'analysis_step_version',
@@ -644,7 +757,7 @@ def audit_file_read_depth(value, system):
     read_depth = get_bam_read_depth(value)
 
     if read_depth is False:
-        detail = 'ENCODE Processed alignment file {} has no resad depth information'.format(
+        detail = 'ENCODE Processed alignment file {} has no read depth information'.format(
             value['@id'])
         yield AuditFailure('missing read depth', detail, level='DCC_ACTION')
         return
@@ -663,80 +776,24 @@ def audit_file_read_depth(value, system):
 
 
     for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
-        if pipeline['title'] not in pipeline_titles:
+        if pipeline['title'] not in pipelines_with_read_depth:
             return
         if pipeline['title'] == 'Histone ChIP-seq':  # do the chipseq narrow broad ENCODE3
+            # DEAL WITH CHIP_SEQ BY CALLING THE FUNCTION (INCLUDIGN THE CONTROL BAMs)
             if target_name in ['Control-human', 'Control-mouse']:
-                if read_depth >= marks['narrow'] and read_depth < marks['broad']:
-                    detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
-                                                                                 read_depth) + \
-                             'usable fragments. It cannot be used as a control ' + \
-                             'in experiments studying broad histone marks, which ' + \
-                             'require {} usable fragments, according to '.format(marks['broad']) + \
-                             'June 2015 standards.'
-                    yield AuditFailure('insufficient read depth', detail, level='WARNING')
-                if read_depth >= 10000000 and read_depth < marks['narrow']:
-                    detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
-                                                                                 read_depth) + \
-                             'usable fragments. It cannot be used as a control ' + \
-                             'in experiments studying narrow histone marks or ' + \
-                             'transcription factors, which ' + \
-                             'require {} usable fragments, according to '.format(marks['narrow']) + \
-                             'June 2015 standards.'
-                    yield AuditFailure('low read depth', detail, level='WARNING')
-                if read_depth < 10000000:
-                    detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
-                                                                                 read_depth) + \
-                             'usable fragments. It cannot be used as a control ' + \
-                             'in experiments studying narrow histone marks or ' + \
-                             'transcription factors, which ' + \
-                             'require {} usable fragments, according to '.format(marks['narrow']) + \
-                             'June 2015 standards, and 10000000 usable fragments according to' + \
-                             ' ENCODE2 standards.'
-                    yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
-                return
-            elif target_name == 'empty':
-                detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
-                         'belongs to ChIP-seq experiment {} '.format(value['dataset']['@id']) + \
-                         'with no target specified.'
-                yield AuditFailure('ChIP-seq missing target', detail, level='ERROR')
-                return
-            elif target_name in broadPeaksTargets:
-                if read_depth >= marks['narrow'] and read_depth < marks['broad']:
-                    detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
-                                                                                 read_depth) + \
-                             'usable fragments. Replicates for ChIP-seq ' + \
-                             'assays and target {} require '.format(target_name) + \
-                             '{} usable fragments, according to '.format(marks['broad']) + \
-                             'June 2015 standards.'
-                    yield AuditFailure('low read depth', detail, level='NOT_COMPLIANT')
-                elif read_depth < marks['narrow']:
-                    detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
-                                                                                 read_depth) + \
-                             'usable fragments. Replicates for ChIP-seq ' + \
-                             'assays and target {} require '.format(target_name) + \
-                             '{} usable fragments, according to '.format(marks['broad']) + \
-                             'June 2015 standards, and 20000000 usable fragments according to' + \
-                             ' ENCODE2 standards.'
-                    yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
-            else:
-                if read_depth >= 10000000 and read_depth < marks['narrow']:
-                    detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
-                                                                                 read_depth) + \
-                             'usable fragments. Replicates for ChIP-seq ' + \
-                             'assays and target {} require '.format(target_name) + \
-                             '{} usable fragments, according to '.format(marks['narrow']) + \
-                             'June 2015 standards.'
-                    yield AuditFailure('low read depth', detail, level='WARNING')
-                elif read_depth < 10000000:
-                    detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
-                                                                                 read_depth) + \
-                             'usable fragments. Replicates for ChIP-seq ' + \
-                             'assays and target {} require '.format(target_name) + \
-                             '{} usable fragments, according to '.format(marks['narrow']) + \
-                             'June 2015 standards, and 10000000 usable fragments according to' + \
-                             ' ENCODE2 standards.'
-                    yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
+                #  this is control chip-seq
+                check_chip_seq_standards(value, read_depth, target_name, False, None) #  regular bam read depth
+            else:    
+                # this is experiment chip-seq
+                check_chip_seq_standards(value, read_depth, target_name, False, None) #  regular bam read depth
+                # checking the control read depth
+                #  getting the control bam and read depth
+                control_bam  = get_control_bam(value, pipeline['title'])
+
+                if control_bam is not False:
+                     # calculate the depth of the control with the fancy function you wrote
+                     # not sure about the control target name - XUI ego znaet kakoi eto tam name
+                    check_chip_seq_standards(control_bam, control_read_depth, control_target_name, True, target_name)
             return
         else:
             if special_assay_name != 'empty':  # either shRNA or single cell
