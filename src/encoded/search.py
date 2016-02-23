@@ -558,9 +558,6 @@ def search(context, request, search_type=None):
     # Decide whether to use scan for results.
     do_scan = size is None or size > 1000
 
-    pp = pprint.PrettyPrinter()
-    pp.pprint(query)
-
     # Execute the query
     if do_scan:
         es_results = es.search(body=query, index=es_index, search_type='count')
@@ -568,8 +565,6 @@ def search(context, request, search_type=None):
         es_results = es.search(body=query, index=es_index, from_=from_, size=size)
 
     es_count_results = es.search(body=query, index=es_index, search_type='count')
-
-    pp.pprint(es_count_results)
 
     result['total'] = es_results['hits']['total']
 

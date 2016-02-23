@@ -18,6 +18,8 @@ from .interfaces import ELASTIC_SEARCH
 import collections
 import json
 import logging
+import pprint
+import pdb
 
 EPILOG = __doc__
 
@@ -50,6 +52,8 @@ def sorted_dict(d):
 def schema_mapping(name, schema):
     if 'linkFrom' in schema:
         type_ = 'string'
+    elif name == 'facet_hierarchy':
+        return None
     else:
         type_ = schema['type']
 
@@ -357,7 +361,11 @@ def combined_mapping(types, *item_types):
 def type_mapping(types, item_type, embed=True):
     type_info = types[item_type]
     schema = type_info.schema
+
     mapping = schema_mapping(item_type, schema)
+    if mapping is None:
+        return None
+
     if not embed:
         return mapping
 
