@@ -26,10 +26,10 @@ class Donor(Item):
         'characterizations.award',
         'characterizations.lab',
         'characterizations.submitted_by',
-        'donor_documents',
-        'donor_documents.award',
-        'donor_documents.lab',
-        'donor_documents.submitted_by'
+        'documents',
+        'documents.award',
+        'documents.lab',
+        'documents.submitted_by'
     ]
     name_key = 'accession'
     rev = {
