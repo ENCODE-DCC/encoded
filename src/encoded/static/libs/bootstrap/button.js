@@ -52,9 +52,9 @@ var DropdownButton = module.exports.DropdownButton = React.createClass({
     render: function() {
         return (
             <div className={'btn-group' + (this.state.open ? ' open' : '')}>
-                <a disabled={this.props.disabled} className="btn btn-info btn-sm dropdown-toggle" href="#" onClick={this.triggerClickHandler}>
+                <button disabled={this.props.disabled} className="btn btn-info btn-sm dropdown-toggle" onClick={this.triggerClickHandler}>
                     {this.props.title}&nbsp;<span className="caret"></span>
-                </a>
+                </button>
                 {this.props.children}
             </div>
         );
