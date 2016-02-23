@@ -535,6 +535,9 @@ def test_audit_file_insufficient_read_depth_chip_seq_paired_end(testapp, file_ex
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
+        print (error_type)
+        for e in errors[error_type]:
+            print (e)
     assert any(error['category'] == 'insufficient read depth' for error in errors_list)
 
 
