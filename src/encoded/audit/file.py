@@ -550,7 +550,7 @@ def get_control_bam(experiment_bam, pipeline_name):
             control_fastq = entry['controlled_by'][0]  # getting representative FASTQ
             break
 
-    # get representative fastq from control
+    # get representative FASTQ from control
     if control_fastq is False:
         return False
     else:
@@ -563,7 +563,7 @@ def get_control_bam(experiment_bam, pipeline_name):
             if control_file['status'] in ['deleted', 'replaced', 'revoked']:
                 continue
             if control_file['file_format'] == 'bam':
-                #  we have bam file, now we have to make sure it was created by pipeline
+                #  we have BAM file, now we have to make sure it was created by pipeline
                 #  with similar pipeline_name
                 is_same_pipeline = False
                 if has_pipelines(control_file) is True:
@@ -772,7 +772,7 @@ def audit_file_read_depth(value, system):
 
 def check_chip_seq_standards(value, read_depth, target_name, is_control_file, control_to_target):
     marks = pipelines_with_read_depth['Histone ChIP-seq']
- 
+
     if is_control_file is True:  # treat this file as control_bam -
         # raising insufficient control read depth
         if target_name not in ['Control-human', 'Control-mouse']:
@@ -780,10 +780,10 @@ def check_chip_seq_standards(value, read_depth, target_name, is_control_file, co
                      'has a target {} that is not '.format(target_name) + \
                      'Control-human nor Control-mouse.'
             yield AuditFailure('mismatched target of control experiment', detail, level='WARNING')
-            return 
+            return
 
         if control_to_target == 'empty':
-            return 
+            return
 
         elif control_to_target in broad_peaks_targets:
             if read_depth >= marks['narrow'] and read_depth < marks['broad']:
