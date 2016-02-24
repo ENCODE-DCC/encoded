@@ -1426,9 +1426,9 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
             getValue: item => item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''
         },
-        'technical_replicate_number': {
-            title: 'Technical replicate',
-            getValue: item => item.replicate ? item.replicate.technical_replicate_number : null
+        'library': {
+            title: 'Library',
+            getValue: item => (item.replicate && item.replicate.library) ? item.replicate.library.accession : null
         },
         'read_length': {
             title: 'Read length',
@@ -1475,11 +1475,10 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
             getValue: item => item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''
         },
-        'technical_replicate_number': {
-            title: 'Technical replicate',
-            getValue: item => item.replicate ? item.replicate.technical_replicate_number : null
+        'library': {
+            title: 'Library',
+            getValue: item => (item.replicate && item.replicate.library) ? item.replicate.library.accession : null
         },
-        'run_type': {title: 'Run type'},
         'assembly': {title: 'Mapping assembly'},
         'title': {
             title: 'Lab',
@@ -1522,9 +1521,9 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
             getValue: item => item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''
         },
-        'technical_replicate_number': {
-            title: 'Technical replicate',
-            getValue: item => item.replicate ? item.replicate.technical_replicate_number : null
+        'library': {
+            title: 'Library',
+            getValue: item => (item.replicate && item.replicate.library) ? item.replicate.library.accession : null
         },
         'assembly': {title: 'Mapping assembly'},
         'genome_annotation': {title: 'Genome annotation'},
