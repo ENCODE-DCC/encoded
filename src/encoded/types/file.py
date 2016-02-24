@@ -156,14 +156,14 @@ class File(Item):
         return request.resource_path(item)
 
     @calculated_property(schema={
-        "title": "Paired status",
+        "title": "Run type",
         "type": "string"
     })
     def paired_status(self, run_type=None, paired_end=None):
         if run_type is None or run_type == 'unknown':
             return ''
         elif run_type == 'single-ended':
-            return 'unpaired'
+            return 'single-ended'
         elif paired_end is not None:
             return 'paired - ' + paired_end
         else:

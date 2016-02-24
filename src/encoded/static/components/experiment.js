@@ -22,7 +22,7 @@ var doc = require('./doc');
 var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
-var UnreleasedFiles = dataset.UnreleasedFiles;
+var DatasetFiles = dataset.DatasetFiles;
 var FetchedItems = fetched.FetchedItems;
 var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
@@ -563,13 +563,8 @@ var Experiment = module.exports.Experiment = React.createClass({
                     <ExperimentGraph context={context} session={this.context.session} />
                 </FetchedData>
 
-                {context.files.length ?
-                    <FileTable items={context.files} encodevers={encodevers} anisogenic={anisogenic} />
-                : null }
-
-                {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} anisogenic={anisogenic} />
-                : null}
+                {/* Display list of released and unreleased files */}
+                <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={DatasetFiles} anisogenic={anisogenic} />
 
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} />
 
@@ -700,13 +695,16 @@ var ControllingExperiments = React.createClass({
     render: function () {
         var context = this.props.context;
 
-        return (
-            <div>
-                <ExperimentTable {...this.props}
-                    items={this.props.items} limit={5} url={this.props.url}
-                    title={'Experiments with ' + context.accession + ' as a control:'} />
-            </div>
-        );
+        if (this.props.items && this.props.items.length) {
+            return (
+                <div>
+                    <ExperimentTable {...this.props}
+                        items={this.props.items} limit={5} url={this.props.url}
+                        title={'Experiments with ' + context.accession + ' as a control:'} />
+                </div>
+            );
+        }
+        return null;
     }
 });
 

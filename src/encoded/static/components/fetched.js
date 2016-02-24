@@ -185,7 +185,6 @@ var Items = React.createClass({
         var Component = this.props.Component;
         var data = this.props.data;
         var items = data ? data['@graph'] : [];
-        if (!items.length) return null;
         return <Component {...this.props} items={items} total={data.total} />;
     }
 
