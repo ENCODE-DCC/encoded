@@ -878,10 +878,11 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
         },
 
         render: function() {
+            const batchHubLimit = 200;
             var context = this.props.context;
             var results = context['@graph'];
             var total = context['total'];
-            var batch_hub_disabled = total > 500;
+            var batch_hub_disabled = total > batchHubLimit;
             var columns = context['columns'];
             var filters = context['filters'];
             var label = 'results';
@@ -905,6 +906,16 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
                     if (filter.field === 'type') {
                         specificFilter = specificFilter ? '' : filter.term;
                     }
+                });
+            }
+
+            // Get a sorted list of batch hubs keys with case-insensitive sort
+            var batchHubKeys = [];
+            if (context.batch_hub && Object.keys(context.batch_hub).length) {
+                batchHubKeys = Object.keys(context.batch_hub).sort((a, b) => {
+                    var aLower = a.toLowerCase();
+                    var bLower = b.toLowerCase();
+                    return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
                 });
             }
 
@@ -942,10 +953,10 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
                                             <BatchDownload context={context} />
                                         : null}
 
-                                        {context['batch_hub'] ?
-                                            <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to 500 to visualize' : 'Visualize'}>
+                                        {batchHubKeys ?
+                                            <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'}>
                                                 <DropdownMenu>
-                                                    {Object.keys(context['batch_hub']).map(assembly =>
+                                                    {batchHubKeys.map(assembly =>
                                                         <a data-bypass="true" target="_blank" private-browsing="true" href={context['batch_hub'][assembly]}>
                                                             {assembly}
                                                         </a>

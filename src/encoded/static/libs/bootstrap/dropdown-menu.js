@@ -17,7 +17,7 @@ var DropdownMenu = module.exports.DropdownMenu = React.createClass({
     render: function() {
         return (
             <ul className="dropdown-menu" role="menu">
-                {this.props.children.map(child => <li>{child}</li>)}
+                {this.props.children.map((child, i) => <li key={i}>{child}</li>)}
             </ul>
         );
     }
