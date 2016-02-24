@@ -6,8 +6,8 @@ from elasticsearch.exceptions import (
 )
 from pyramid.view import view_config
 from sqlalchemy.exc import StatementError
-from contentbase import DBSESSION
-from contentbase.storage import (
+from snowfort import DBSESSION
+from snowfort.storage import (
     TransactionRecord,
 )
 from urllib3.exceptions import ReadTimeoutError
@@ -34,7 +34,7 @@ def includeme(config):
 
 @view_config(route_name='index', request_method='POST', permission="index")
 def index(request):
-    INDEX = request.registry.settings['contentbase.elasticsearch.index']
+    INDEX = request.registry.settings['snowfort.elasticsearch.index']
     # Setting request.datastore here only works because routed views are not traversed.
     request.datastore = 'database'
     record = request.json.get('record', False)
@@ -191,7 +191,7 @@ def all_uuids(root, types=None):
 class Indexer(object):
     def __init__(self, registry):
         self.es = registry[ELASTIC_SEARCH]
-        self.index = registry.settings['contentbase.elasticsearch.index']
+        self.index = registry.settings['snowfort.elasticsearch.index']
 
     def update_objects(self, request, uuids, xmin, snapshot_id):
         errors = []

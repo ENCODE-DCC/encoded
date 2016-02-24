@@ -1,4 +1,4 @@
-from contentbase import (
+from snowfort import (
     AuditFailure,
     audit_checker,
 )
@@ -108,7 +108,8 @@ def audit_file_replicate_match(value, system):
         raise AuditFailure('mismatched replicate', detail, level='ERROR')
 
 
-@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN', 'ENCODE2', 'ENCODE2-Mouse'))
+@audit_checker('file', frame='object',
+               condition=rfa('ENCODE3', 'modERN', 'ENCODE2', 'ENCODE2-Mouse'))
 def audit_file_platform(value, system):
     '''
     A raw data file should have a platform specified.
@@ -126,8 +127,9 @@ def audit_file_platform(value, system):
         raise AuditFailure('missing platform', detail, level='NOT_COMPLIANT')
 
 
-@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN', 'ENCODE',
-                                                     'ENCODE2', 'ENCODE2-Mouse'))
+@audit_checker('file', frame=['dataset'],
+               condition=rfa('ENCODE3', 'modERN', 'ENCODE',
+                             'ENCODE2', 'ENCODE2-Mouse'))
 def audit_file_read_length(value, system):
     '''
     Reads files should have a read_length
@@ -143,6 +145,10 @@ def audit_file_read_length(value, system):
         detail = 'Reads file {} missing read_length'.format(value['@id'])
         yield AuditFailure('missing read_length', detail, level='DCC_ACTION')
         return
+
+    if 'dataset' in value:
+        if value['dataset']['assay_term_name'] == 'RNA Bind-n-Seq':
+            return
 
     creation_date = value['date_created'][:10].split('-')
     year = int(creation_date[0])
@@ -653,7 +659,8 @@ def audit_file_read_depth(value, system):
                              'in experiments studying narrow histone marks or ' + \
                              'transcription factors, which ' + \
                              'require {} usable fragments, according to '.format(marks['narrow']) + \
-                             'June 2015 standards.'
+                             'June 2015 standards, and 10000000 usable fragments according to' + \
+                             ' ENCODE2 standards.'
                     yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
                 return
             elif target_name == 'empty':
@@ -677,7 +684,8 @@ def audit_file_read_depth(value, system):
                              'usable fragments. Replicates for ChIP-seq ' + \
                              'assays and target {} require '.format(target_name) + \
                              '{} usable fragments, according to '.format(marks['broad']) + \
-                             'June 2015 standards.'
+                             'June 2015 standards, and 20000000 usable fragments according to' + \
+                             ' ENCODE2 standards.'
                     yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
             else:
                 if read_depth >= 10000000 and read_depth < marks['narrow']:
@@ -694,7 +702,8 @@ def audit_file_read_depth(value, system):
                              'usable fragments. Replicates for ChIP-seq ' + \
                              'assays and target {} require '.format(target_name) + \
                              '{} usable fragments, according to '.format(marks['narrow']) + \
-                             'June 2015 standards.'
+                             'June 2015 standards, and 10000000 usable fragments according to' + \
+                             ' ENCODE2 standards.'
                     yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
             return
         else:

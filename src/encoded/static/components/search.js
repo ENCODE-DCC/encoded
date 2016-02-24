@@ -915,6 +915,7 @@ var AuditMixin = audit.AuditMixin;
                                 {context['notification'] === 'Success' ?
                                     <h4>
                                         Showing {results.length} of {total} {label}
+                                        {context.views && context.views.map((view, i) => <span key={i}> <a href={view.href} title={view.title}><i className={'icon icon-' + view.icon}></i></a></span>)}
                                         {total > results.length && searchBase.indexOf('limit=all') === -1 ?
                                             <span className="pull-right">
                                                 <a rel="nofollow" className="btn btn-info btn-sm"

@@ -128,9 +128,20 @@ var Experiment = module.exports.Experiment = React.createClass({
             // momentarily. We have a couple properties too complex even for this, so they'll get added separately at the end.
             var librarySpecials = {
                 treatments: function(library) {
-                    var treatments = library.treatments;
-                    if (treatments && treatments.length) {
-                        return treatments.map(treatment => treatment.treatment_term_name).sort().join(', ');
+                    var treatments = []; // Array of treatment_term_name
+
+                    // First get the treatments in the library
+                    if (library.treatments && library.treatments.length) {
+                        treatments = library.treatments.map(treatment => SingleTreatment(treatment));
+                    }
+
+                    // Now get the treatments in the biosamples
+                    if (library.biosample && library.biosample.treatments && library.biosample.treatments.length) {
+                        treatments = treatments.concat(library.biosample.treatments.map(treatment => SingleTreatment(treatment)));
+                    }
+
+                    if (treatments.length) {
+                        return treatments.sort().join(', ');
                     }
                     return undefined;
                 },
@@ -355,7 +366,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         ];
 
         // Compile the document list
-        var combinedDocuments = documents.concat(
+        var combinedDocuments = _(documents.concat(
             biosampleCharacterizationDocs,
             libraryDocs,
             biosampleDocs,
@@ -366,7 +377,7 @@ var Experiment = module.exports.Experiment = React.createClass({
             biosampleDonorCharacterizations,
             pipelineDocs,
             analysisStepDocs
-        );
+        )).uniq(doc => doc.uuid);
 
         var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
 
@@ -780,7 +791,7 @@ var AssayDetails = function (replicates, libraryValues, librarySpecials, library
         var libraryEntry = libraryValues[key];
         if (libraryEntry.value !== undefined || (libraryEntry.values && Object.keys(libraryEntry.values).length)) {
             return (
-                <div data-test={libraryEntry.test}>
+                <div key={key} data-test={libraryEntry.test}>
                     <dt>{libraryEntry.title}</dt>
                     <dd>
                         {libraryEntry.value !== undefined ?

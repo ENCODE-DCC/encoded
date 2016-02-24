@@ -21,12 +21,12 @@ from pyramid.settings import (
 )
 from sqlalchemy import engine_from_config
 from webob.cookies import JSONSerializer
-from contentbase.elasticsearch import (
+from snowfort.elasticsearch import (
     PyramidJSONSerializer,
     TimedUrllib3HttpConnection,
 )
-from contentbase.elasticsearch.interfaces import SNP_SEARCH_ES
-from contentbase.json_renderer import json_renderer
+from snowfort.elasticsearch.interfaces import SNP_SEARCH_ES
+from snowfort.json_renderer import json_renderer
 from elasticsearch import Elasticsearch
 STATIC_MAX_AGE = 0
 
@@ -107,23 +107,23 @@ def set_postgresql_statement_timeout(engine, timeout=20 * 1000):
 
 
 def configure_dbsession(config):
-    from contentbase import DBSESSION
+    from snowfort import DBSESSION
     settings = config.registry.settings
     DBSession = settings.pop(DBSESSION, None)
     if DBSession is None:
         engine = configure_engine(settings)
 
         if asbool(settings.get('create_tables', False)):
-            from contentbase.storage import Base
+            from snowfort.storage import Base
             Base.metadata.create_all(engine)
 
-        import contentbase.storage
+        import snowfort.storage
         import zope.sqlalchemy
         from sqlalchemy import orm
 
         DBSession = orm.scoped_session(orm.sessionmaker(bind=engine))
         zope.sqlalchemy.register(DBSession)
-        contentbase.storage.register(DBSession)
+        snowfort.storage.register(DBSession)
 
     config.registry[DBSESSION] = DBSession
 
@@ -183,7 +183,7 @@ def app_version(config):
         ['git', '-C', os.path.dirname(__file__), 'diff', '--no-ext-diff'])
     if diff:
         version += '-patch' + hashlib.sha1(diff).hexdigest()[:7]
-    config.registry.settings['contentbase.app_version'] = version
+    config.registry.settings['snowfort.app_version'] = version
 
 
 def main(global_config, **local_config):
@@ -192,10 +192,10 @@ def main(global_config, **local_config):
     settings = global_config
     settings.update(local_config)
 
-    settings['contentbase.jsonld.namespaces'] = json_asset('encoded:schemas/namespaces.json')
-    settings['contentbase.jsonld.terms_namespace'] = 'https://www.encodeproject.org/terms/'
-    settings['contentbase.jsonld.terms_prefix'] = 'encode'
-    settings['contentbase.elasticsearch.index'] = 'encoded'
+    settings['snowfort.jsonld.namespaces'] = json_asset('encoded:schemas/namespaces.json')
+    settings['snowfort.jsonld.terms_namespace'] = 'https://www.encodeproject.org/terms/'
+    settings['snowfort.jsonld.terms_prefix'] = 'encode'
+    settings['snowfort.elasticsearch.index'] = 'encoded'
     hostname_command = settings.get('hostname_command', '').strip()
     if hostname_command:
         hostname = subprocess.check_output(hostname_command, shell=True).strip()
@@ -204,7 +204,7 @@ def main(global_config, **local_config):
         settings['persona.audiences'] += '\nhttp://%s:6543' % hostname
 
     config = Configurator(settings=settings)
-    from contentbase.elasticsearch import APP_FACTORY
+    from snowfort.elasticsearch import APP_FACTORY
     config.registry[APP_FACTORY] = main  # used by mp_indexer
     config.include(app_version)
 
@@ -216,7 +216,7 @@ def main(global_config, **local_config):
     config.include('.persona')
 
     config.include(configure_dbsession)
-    config.include('contentbase')
+    config.include('snowfort')
     config.commit()  # commit so search can override listing
 
     # Render an HTML page to browsers and a JSON document for API clients
@@ -229,7 +229,7 @@ def main(global_config, **local_config):
     config.include('.visualization')
 
     if 'elasticsearch.server' in config.registry.settings:
-        config.include('contentbase.elasticsearch')
+        config.include('snowfort.elasticsearch')
         config.include('.search')
 
     if 'snp_search.server' in config.registry.settings:

@@ -3,19 +3,22 @@ import io
 import gzip
 import csv
 import logging
+import collections
 from pyramid.view import view_config
 from elasticsearch.exceptions import (
     NotFoundError
 )
-from contentbase import DBSESSION
-from contentbase.storage import (
+from snowfort import DBSESSION
+from snowfort.storage import (
     TransactionRecord,
 )
-from contentbase.elasticsearch.indexer import all_uuids
-from contentbase.elasticsearch.interfaces import (
+from snowfort.elasticsearch.indexer import all_uuids
+from snowfort.elasticsearch.interfaces import (
     ELASTIC_SEARCH,
     SNP_SEARCH_ES,
 )
+
+
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
 log = logging.getLogger(__name__)
 
@@ -49,10 +52,10 @@ def tsvreader(file):
     for row in reader:
         yield row
 
-
-def get_mapping():
+# Mapping should be generated dynamically for each assembly type
+def get_mapping(assembly_name='hg19'):
     return {
-        'hg19': {
+        assembly_name: {
             '_all': {
                 'enabled': False
             },
@@ -103,18 +106,27 @@ def index_peaks(uuid, request):
     """
     Indexes bed files in elasticsearch index
     """
-    context = request.embed(uuid)
+    context = request.embed('/', str(uuid), '@@object')
+
+
+
     if 'File' not in context['@type'] or 'dataset' not in context:
         return
 
-    if 'status' not in context and context['status'] is not 'released':
+    if 'status' not in context or context['status'] != 'released':
+        return
+
+    # Index human data for now       
+    if 'assembly' not in context or 'hg19' not in context['assembly']:
         return
 
     assay_term_name = get_assay_term_name(context['dataset'], request)
-    if assay_term_name is None:
+    if assay_term_name is None or isinstance(assay_term_name, collections.Hashable) is False:
         return
 
+    
     flag = False
+    
     for k, v in _INDEXED_DATA.get(assay_term_name, {}).items():
         if k in context and context[k] in v:
             if 'file_format' in context and context['file_format'] == 'bed':
@@ -122,16 +134,25 @@ def index_peaks(uuid, request):
                 break
     if not flag:
         return
+
+
+
+
     urllib3.disable_warnings()
     es = request.registry.get(SNP_SEARCH_ES, None)
     http = urllib3.PoolManager()
     r = http.request('GET', request.host_url + context['href'])
+    if r.status != 200:
+        log.warn('File status is not 200: {}, will not index file'.format(r.status))
+        return
     comp = io.BytesIO()
     comp.write(r.data)
     comp.seek(0)
     r.release_conn()
     file_data = dict()
-    with gzip.open(comp, mode="rt") as file:
+
+
+    with gzip.open(comp, mode='rt') as file:
         for row in tsvreader(file):
             chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
             if isinstance(start, int) and isinstance(end, int):
@@ -142,6 +163,11 @@ def index_peaks(uuid, request):
                     })
                 else:
                     file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
+            else:
+                log.warn('positions are not integers, will not index file')
+
+
+        
     for key in file_data:
         doc = {
             'uuid': context['uuid'],
@@ -149,15 +175,16 @@ def index_peaks(uuid, request):
         }
         if not es.indices.exists(key):
             es.indices.create(index=key, body=index_settings())
-            es.indices.put_mapping(index=key, doc_type='hg19',
-                                   body=get_mapping())
+            es.indices.put_mapping(index=key, doc_type=context['assembly'],
+                                   body=get_mapping(context['assembly']))
         es.index(index=key, doc_type=context['assembly'], body=doc,
                  id=context['uuid'])
+    
 
 
 @view_config(route_name='index_file', request_method='POST', permission="index")
 def index_file(request):
-    INDEX = request.registry.settings['contentbase.elasticsearch.index']
+    INDEX = request.registry.settings['snowfort.elasticsearch.index']
     request.datastore = 'database'
     dry_run = request.json.get('dry_run', False)
     recovery = request.json.get('recovery', False)
@@ -193,6 +220,8 @@ def index_file(request):
         'xmin': xmin,
         'last_xmin': last_xmin,
     }
+
+
     if last_xmin is None:
         result['types'] = types = request.json.get('types', None)
         invalidated = list(all_uuids(request.root, types))
@@ -246,6 +275,8 @@ def index_file(request):
             referencing = {hit['_id'] for hit in res['hits']['hits']}
             invalidated = referencing | updated
     if not dry_run:
+
+
         for uuid in invalidated:
             index_peaks(uuid, request)
     return result
