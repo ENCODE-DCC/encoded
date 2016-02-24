@@ -70,8 +70,7 @@ _tsv_mapping = OrderedDict([
 def metadata_tsv(context, request):
     param_list = parse_qs(request.matchdict['search_params'])
     if 'referrer' in param_list:
-        search_path = '/{}/'.format(param_list['referrer'])
-        del param_list['referrer']
+        search_path = '/{}/'.format(param_list.pop('referrer')[0])
     else:
         search_path = '/search/'
     param_list['field'] = []
