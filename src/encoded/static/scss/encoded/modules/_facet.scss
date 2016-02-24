@@ -16,11 +16,21 @@
 }
 @media screen and (min-width: $screen-sm-min) {
     .facets.horizontal {
+        .facet {
+            width: 50% !important;
+            padding: 0 10px;
+            float: left;
+        }
+    }
+}
+@media screen and (min-width: $screen-lg-min) {
+    .facets.horizontal {
         display: table;
         width: 100%;
         .facet {
+            width: initial !important;
             display: table-cell;
-            padding: 0 10px;
+            float: none;
         }
         .facet[hidden] {
             display: table-cell !important;
