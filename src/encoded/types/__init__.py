@@ -1,5 +1,5 @@
-from contentbase.attachment import ItemWithAttachment
-from contentbase import (
+from snowfort.attachment import ItemWithAttachment
+from snowfort import (
     calculated_property,
     collection,
     load_schema,

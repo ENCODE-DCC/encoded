@@ -11,6 +11,20 @@ def remote_user_testapp(app, remote_user):
 
 
 @pytest.fixture
+def disabled_user(testapp, lab, award):
+    item = {
+        'first_name': 'ENCODE',
+        'last_name': 'Submitter',
+        'email': 'no_login_submitter@example.org',
+        'submits_for': [lab['@id']],
+        'status': 'disabled',
+    }
+    # User @@object view has keys omitted.
+    res = testapp.post_json('/user', item)
+    return testapp.get(res.location).json
+
+
+@pytest.fixture
 def other_lab(testapp):
     item = {
         'title': 'Other lab',
@@ -97,6 +111,19 @@ def test_users_view_details_self(submitter, access_key, submitter_testapp):
     assert 'access_key_id' in res.json['access_keys'][0]
 
 
+def test_users_patch_self(submitter, access_key, submitter_testapp):
+    submitter_testapp.patch_json(submitter['@id'], {})
+
+
+def test_users_post_disallowed(submitter, access_key, submitter_testapp):
+    item = {
+        'first_name': 'ENCODE',
+        'last_name': 'Submitter2',
+        'email': 'encode_submitter2@example.org',
+    }
+    submitter_testapp.post_json('/user', item, status=403)
+
+
 def test_users_view_basic_authenticated(submitter, authenticated_testapp):
     res = authenticated_testapp.get(submitter['@id'])
     assert 'title' in res.json
@@ -116,10 +143,6 @@ def test_users_view_basic_indexer(submitter, indexer_testapp):
     assert 'title' in res.json
     assert 'email' not in res.json
     assert 'access_keys' not in res.json
-
-
-def test_users_list_denied_authenticated(authenticated_testapp):
-    authenticated_testapp.get('/users/', status=403)
 
 
 def test_viewing_group_member_view(viewing_group_member_testapp, experiment):
@@ -180,3 +203,20 @@ def test_wrangler_patch_viewing_groups_disallowed(submitter, other_lab, wrangler
     res = wrangler_testapp.get(submitter['@id'])
     vgroups = {'viewing_groups': res.json['viewing_groups'] + ['GGR']}
     wrangler_testapp.patch_json(res.json['@id'], vgroups, status=200)
+
+
+def test_disabled_user_denied_authenticated(authenticated_testapp, disabled_user):
+    authenticated_testapp.get(disabled_user['@id'], status=403)
+
+
+def test_disabled_user_denied_submitter(submitter_testapp, disabled_user):
+    submitter_testapp.get(disabled_user['@id'], status=403)
+
+
+def test_disabled_user_wrangler(wrangler_testapp, disabled_user):
+    wrangler_testapp.get(disabled_user['@id'], status=200)
+
+
+def test_labs_view_wrangler(wrangler_testapp, other_lab):
+    labs = wrangler_testapp.get('/labs/', status=200)
+    assert(len(labs.json['@graph']) == 1)

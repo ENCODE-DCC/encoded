@@ -19,7 +19,7 @@ from pyramid.traversal import (
     _join_path_tuple,
 )
 
-from contentbase.validation import CSRFTokenError
+from snowfort.validation import CSRFTokenError
 from subprocess_middleware.tween import SubprocessTween
 import logging
 import os
@@ -33,7 +33,7 @@ log = logging.getLogger(__name__)
 def includeme(config):
     config.add_tween(
         '.renderers.fix_request_method_tween_factory',
-        under='contentbase.stats.stats_tween_factory')
+        under='snowfort.stats.stats_tween_factory')
     config.add_tween(
         '.renderers.normalize_cookie_tween_factory',
         under='.renderers.fix_request_method_tween_factory')

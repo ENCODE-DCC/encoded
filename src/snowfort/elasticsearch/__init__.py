@@ -1,5 +1,5 @@
-from contentbase.json_renderer import json_renderer
-from contentbase.util import get_root_request
+from snowfort.json_renderer import json_renderer
+from snowfort.util import get_root_request
 from elasticsearch import Elasticsearch
 from elasticsearch.connection import Urllib3HttpConnection
 from elasticsearch.serializer import SerializationError
@@ -19,7 +19,7 @@ PY2 = sys.version_info.major == 2
 
 def includeme(config):
     settings = config.registry.settings
-    settings.setdefault('contentbase.elasticsearch.index', 'contentbase')
+    settings.setdefault('snowfort.elasticsearch.index', 'snowfort')
 
     config.add_request_method(datastore, 'datastore', reify=True)
 

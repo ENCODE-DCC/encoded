@@ -1,5 +1,5 @@
 from pyramid.traversal import find_root
-from contentbase import (
+from snowfort import (
     calculated_property,
     collection,
     load_schema,
