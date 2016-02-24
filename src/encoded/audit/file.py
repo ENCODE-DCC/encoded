@@ -450,6 +450,7 @@ def audit_file_paired_ended_run_type(value, system):
 
 
 def get_bam_read_depth(bam_file):
+    
     if bam_file['status'] in ['deleted', 'replaced', 'revoked']:
         return False
 
@@ -565,6 +566,7 @@ def get_control_bam(experiment_bam, pipeline_name):
             if control_file['file_format'] == 'bam':
                 #  we have BAM file, now we have to make sure it was created by pipeline
                 #  with similar pipeline_name
+
                 is_same_pipeline = False
                 if has_pipelines(control_file) is True:
                     for pipeline in \
@@ -609,7 +611,21 @@ def get_target_name(bam_file):
                               'analysis_step_version.software_versions.software',
                               'dataset',
                               'dataset.target',
-                              'derived_from'],
+                              'derived_from',
+                              'derived_from.controlled_by',
+                              'derived_from.controlled_by.dataset',
+                              'derived_from.controlled_by.dataset.target',
+                              'derived_from.controlled_by.dataset.original_files',
+                              'derived_from.controlled_by.dataset.original_files.quality_metrics',
+                              'derived_from.controlled_by.dataset.original_files.dataset',
+                              'derived_from.controlled_by.dataset.original_files.dataset.target',
+                              'derived_from.controlled_by.dataset.original_files.derived_from',
+                              'derived_from.controlled_by.dataset.original_files.analysis_step_version',
+                              'derived_from.controlled_by.dataset.original_files.analysis_step_version.analysis_step',
+                              'derived_from.controlled_by.dataset.original_files.analysis_step_version.analysis_step.pipelines',
+                              'derived_from.controlled_by.dataset.original_files.analysis_step_version.software_versions',
+                              'derived_from.controlled_by.dataset.original_files.analysis_step_version.software_versions.software'
+                              ],
                condition=rfa('ENCODE3', 'ENCODE'))
 def audit_file_read_depth(value, system):
     '''
@@ -742,6 +758,7 @@ def audit_file_read_depth(value, system):
                 if control_bam is not False:
                     control_depth = get_bam_read_depth(control_bam)
                     control_target = get_target_name(control_bam)
+
                     if control_depth is not False and control_target is not False:
                         for failure in check_chip_seq_standards(control_bam,
                                                                 control_depth,
