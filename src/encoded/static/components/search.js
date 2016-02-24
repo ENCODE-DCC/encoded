@@ -957,7 +957,7 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
                                             <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'}>
                                                 <DropdownMenu>
                                                     {batchHubKeys.map(assembly =>
-                                                        <a data-bypass="true" target="_blank" private-browsing="true" href={context['batch_hub'][assembly]}>
+                                                        <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context['batch_hub'][assembly]}>
                                                             {assembly}
                                                         </a>
                                                     )}
