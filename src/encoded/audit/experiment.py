@@ -409,10 +409,12 @@ def audit_experiment_replicate_with_no_files(value, system):
             yield AuditFailure('missing file in replicate', detail, level=audit_level)
         else:
             if seq_assay_flag is True:
-                if 'fastq' not in rep_dictionary[key]:
+                if 'fasta' not in rep_dictionary[key] and \
+                   'csfasta' not in rep_dictionary[key] and \
+                   'fastq' not in rep_dictionary[key]:
                     detail = 'Sequencing experiment {} replicate '.format(value['@id']) + \
-                             '{} does not have FASTQ files associated with'.format(key)
-                    yield AuditFailure('missing FASTQ file in replicate',
+                             '{} does not have sequence files associated with it.'.format(key)
+                    yield AuditFailure('missing sequence file in replicate',
                                        detail, level=audit_level)
     return
 

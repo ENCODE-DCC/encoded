@@ -760,7 +760,7 @@ def test_audit_experiment_replicate_with_file(testapp, file_fastq,
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert all(((error['category'] != 'missing file in replicate') and
-               (error['category'] != 'missing FASTQ file in replicate')) for error in errors_list)
+               (error['category'] != 'missing sequence file in replicate')) for error in errors_list)
 
 
 def test_audit_experiment_needs_pipeline_and_has_one(testapp,  replicate, library,
@@ -910,7 +910,7 @@ def test_audit_experiment_replicate_with_no_fastq_files(testapp, file_bam,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing FASTQ file in replicate' for error in errors_list)
+    assert any(error['category'] == 'missing sequence file in replicate' for error in errors_list)
 
 
 def test_audit_experiment_mismatched_length_sequencing_files(testapp, file_bam, file_fastq,
