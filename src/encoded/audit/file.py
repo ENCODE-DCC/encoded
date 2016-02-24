@@ -712,9 +712,6 @@ def audit_file_read_depth(value, system):
         yield AuditFailure('missing read depth', detail, level='DCC_ACTION')
         return
 
-    '''
-    Now we have the read depth and can proceed to the standards checkup
-    '''
     special_assay_name = 'empty'
     target_name = 'empty'
 
@@ -728,26 +725,24 @@ def audit_file_read_depth(value, system):
         if pipeline['title'] not in pipelines_with_read_depth:
             return
         if pipeline['title'] == 'Histone ChIP-seq':
+            for failure in check_chip_seq_standards(value, read_depth, target_name, False, None):
+                yield failure
+
             # DEAL WITH CHIP_SEQ BY CALLING THE FUNCTION (INCLUDIGN THE CONTROL BAMs)
-            if target_name in ['Control-human', 'Control-mouse']:
+            if target_name not in ['Control-human', 'Control-mouse']:
                 #  this is control chip-seq
-                check_chip_seq_standards(value, read_depth, target_name, False, None)
-            else:
-                
-                # this is experiment chip-seq
-                check_chip_seq_standards(value, read_depth, target_name, False, None)
-                #yield AuditFailure('TESTER TESTER TESTER TESTER',  str(x), level='ERROR')
-                #return
-                # checking the control read depth
-                #  getting the control bam and read depth
                 control_bam = get_control_bam(value, pipeline['title'])
 
                 if control_bam is not False:
                     control_depth = get_bam_read_depth(control_bam)
                     control_target = get_target_name(control_bam)
                     if control_depth is not False and control_target is not False:
-                        check_chip_seq_standards(control_bam, control_depth, control_target,
-                                                 True, target_name)
+                        for failure in check_chip_seq_standards(control_bam,
+                                                                control_depth,
+                                                                control_target,
+                                                                True,
+                                                                target_name):
+                            yield failure
             return
         else:
             if special_assay_name != 'empty':  # either shRNA or single cell
@@ -769,21 +764,9 @@ def audit_file_read_depth(value, system):
                     return
 
 
-# figure out how to return yields and auditFailures without being @audit_checker!!!
-@audit_checker('file', frame=['quality_metrics',
-                              'analysis_step_version',
-                              'analysis_step_version.analysis_step',
-                              'analysis_step_version.analysis_step.pipelines',
-                              'analysis_step_version.software_versions',
-                              'analysis_step_version.software_versions.software',
-                              'dataset',
-                              'dataset.target',
-                              'derived_from'],
-               condition=rfa('ENCODE3', 'ENCODE'))
 def check_chip_seq_standards(value, read_depth, target_name, is_control_file, control_to_target):
     marks = pipelines_with_read_depth['Histone ChIP-seq']
-    yield AuditFailure('TESTER TESTER TESTER TESTER', 'zopa', level='ERROR')
-    return
+ 
     if is_control_file is True:  # treat this file as control_bam -
         # raising insufficient control read depth
         if target_name not in ['Control-human', 'Control-mouse']:
@@ -791,10 +774,10 @@ def check_chip_seq_standards(value, read_depth, target_name, is_control_file, co
                      'has a target {} that is not '.format(target_name) + \
                      'Control-human nor Control-mouse.'
             yield AuditFailure('mismatched target of control experiment', detail, level='WARNING')
-            return
+            return 
 
         if control_to_target == 'empty':
-            return
+            return 
 
         elif control_to_target in broad_peaks_targets:
             if read_depth >= marks['narrow'] and read_depth < marks['broad']:
@@ -905,7 +888,6 @@ def check_chip_seq_standards(value, read_depth, target_name, is_control_file, co
                          'June 2015 standards, and 10000000 usable fragments according to' + \
                          ' ENCODE2 standards.'
                 yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
-        return
 
 
 @audit_checker('file', frame=['quality_metrics',
