@@ -180,6 +180,7 @@ var SortTable = module.exports.SortTable = React.createClass({
         var columnIds = Object.keys(columns);
         var hiddenColumns = {};
         var hiddenCount = 0;
+        var widthStyle = {};
 
         // See if any columns hidden by making an array keyed by column ID that's true for each hidden column.
         // Also keep a count of hidden columns so we can calculate colspan later.

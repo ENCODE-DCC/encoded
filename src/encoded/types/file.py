@@ -165,7 +165,7 @@ class File(Item):
         elif run_type == 'single-ended':
             return 'single-ended'
         elif paired_end is not None:
-            return 'paired - ' + paired_end
+            return 'paired - ' + str(paired_end)
         else:
             return ''
 

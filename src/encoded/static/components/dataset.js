@@ -1405,7 +1405,19 @@ var FileTable = module.exports.FileTable = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // Optional parent object of file list
         items: React.PropTypes.array.isRequired, // Array of files to appear in the table
-        originating: React.PropTypes.bool // TRUE to display originating dataset column
+        originating: React.PropTypes.bool, // TRUE to display originating dataset column
+        session: React.PropTypes.object // Persona user session
+    },
+
+    getInitialState: function() {
+        return {
+            maxWidth: 'auto' // Width of widest table
+        }
+    },
+
+    cv: {
+        maxWidthRef: '', // ref key of table with this.state.maxWidth width
+        maxWidthNode: null // DOM node of table with this.state.maxWidth width 
     },
 
     // Configuration for raw file table
@@ -1457,7 +1469,8 @@ var FileTable = module.exports.FileTable = React.createClass({
         },
         'status': {
             title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>
+            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
+            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
         }
     },
 
@@ -1506,7 +1519,8 @@ var FileTable = module.exports.FileTable = React.createClass({
         },
         'status': {
             title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>
+            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
+            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
         }
     },
 
@@ -1557,7 +1571,8 @@ var FileTable = module.exports.FileTable = React.createClass({
         },
         'status': {
             title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>
+            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
+            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
         }
     },
 
@@ -1594,7 +1609,8 @@ var FileTable = module.exports.FileTable = React.createClass({
         },
         'status': {
             title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>
+            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
+            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
         }
     },
 
@@ -1602,7 +1618,6 @@ var FileTable = module.exports.FileTable = React.createClass({
         if (this.props.items && this.props.items.length) {
             // Extract three kinds of file arrays
             var files = _(this.props.items).groupBy(function(file) {
-                console.log('%s:%s', file.output_category, file.output_type);
                 if (file.output_category === 'raw data') {
                     return file.output_type === 'reads' ? 'raw' : 'rawArray';
                 } else if (file.output_category === 'reference') {
@@ -1614,10 +1629,10 @@ var FileTable = module.exports.FileTable = React.createClass({
 
             return (
                 <SortTablePanel header={this.props.filePanelHeader}>
-                    <SortTable title="Raw data files" list={files.raw} columns={this.rawTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
-                    <SortTable title="Raw data files" list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
-                    <SortTable title="Processed data files" list={files.proc} columns={this.procTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
-                    <SortTable title="Reference data files" list={files.ref} columns={this.refTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
+                    <SortTable title="Raw data files" list={files.raw} columns={this.rawTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic, session: this.props.session}} />
+                    <SortTable title="Raw data files" list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic, session: this.props.session}} />
+                    <SortTable title="Processed data files" list={files.proc} columns={this.procTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic, session: this.props.session}} />
+                    <SortTable title="Reference data files" list={files.ref} columns={this.refTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic, session: this.props.session}} />
                 </SortTablePanel>
             );
         }
