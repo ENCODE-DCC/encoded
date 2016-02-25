@@ -558,9 +558,9 @@ var Experiment = module.exports.Experiment = React.createClass({
                 </FetchedData>
 
                 {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} />
+                <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} ignoreErrors />
 
-                <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} />
+                <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} ignoreErrors />
 
                 <DocumentsPanel documentSpecs={[{documents: combinedDocuments}]} />
             </div>
