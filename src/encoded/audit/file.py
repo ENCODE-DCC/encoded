@@ -450,7 +450,6 @@ def audit_file_paired_ended_run_type(value, system):
 
 
 def get_bam_read_depth(bam_file):
-    
     if bam_file['status'] in ['deleted', 'replaced', 'revoked']:
         return False
 
@@ -501,23 +500,6 @@ def get_bam_read_depth(bam_file):
     if (derived_from_files is None) or (derived_from_files == []):
         return False
 
-    paring_status_detected = False
-    for derived_from_file in derived_from_files:
-        if 'file_type' in derived_from_file and derived_from_file['file_type'] == 'fastq' and \
-           'run_type' in derived_from_file:
-            if derived_from_file['run_type'] == 'single-ended':
-                paired_ended_status = False
-                paring_status_detected = True
-                break
-            else:
-                if derived_from_file['run_type'] == 'paired-ended':
-                    paired_ended_status = True
-                    paring_status_detected = True
-                    break
-
-    if paring_status_detected is False:
-        return False
-
     read_depth_value_name = 'Uniquely mapped reads number'
     if chip_seq_flag is True:
         read_depth_value_name = 'total'
@@ -527,10 +509,10 @@ def get_bam_read_depth(bam_file):
             read_depth = metric[read_depth_value_name]
             break
         elif chip_seq_flag is True and read_depth_value_name in metric:
-                if paired_ended_status is False:
-                    read_depth = metric[read_depth_value_name]
-                else:
+                if "read1" in metric and "read2" in metric:
                     read_depth = int(metric[read_depth_value_name]/2)
+                else:
+                    read_depth = metric[read_depth_value_name]
                 break
 
     if read_depth == 0:
@@ -712,19 +694,12 @@ def audit_file_read_depth(value, system):
     for derived_from_file in derived_from_files:
         if 'file_type' in derived_from_file and derived_from_file['file_type'] == 'fastq' and \
            'run_type' in derived_from_file:
-            if derived_from_file['run_type'] == 'single-ended':
-                paring_status_detected = True
-                break
-            else:
-                if derived_from_file['run_type'] == 'paired-ended':
-                    paring_status_detected = True
-                    break
+            paring_status_detected = True
 
     if paring_status_detected is False:
         detail = 'ENCODE Processed alignment file {} has no run_type in derived_from files'.format(
             value['@id'])
         yield AuditFailure('missing run_type in derived_from files', detail, level='DCC_ACTION')
-        return
 
     read_depth = get_bam_read_depth(value)
 
