@@ -175,8 +175,18 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                 : null}
                                                 {' '}
                                                 {context['batch_hub'] ?
-                                                    <a disabled={batch_hub_disabled} data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm"
-                                                       href={context['batch_hub']}>{batch_hub_disabled ? 'Filter to 500 to visualize' :'Visualize'}</a>
+                                                    <span className="pull-right">
+                                                        {Object.keys(context['batch_hub']).map(function(assembly) {
+                                                            return (
+                                                                <span>
+                                                                    <a disabled={batch_hub_disabled} data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['batch_hub'][assembly]}>
+                                                                        {batch_hub_disabled ? 'Filter to 500 to visualize' :'Visualize'+' '+ assembly}
+                                                                    </a>
+                                                                    &nbsp;
+                                                                </span>
+                                                            );
+                                                        })}
+                                                    </span>
                                                 : null}
                                             </th>
                                         </tr>
