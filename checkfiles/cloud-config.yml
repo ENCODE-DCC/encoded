@@ -1,0 +1,83 @@
+#cloud-config
+
+# Launch instance with network interfaces configured to the local IP addresses we references in the config.
+# $ aws ec2 run-instances --user-data file://check-files.yml --iam-instance-profile Name="encoded-instance" --image-id ami-5a928a3b --region us-west-2 --security-groups ssh-http-https --instance-type c4.xlarge
+
+bootcmd:
+- cloud-init-per once ssh-users-ca echo "TrustedUserCAKeys /etc/ssh/users_ca.pub" >> /etc/ssh/sshd_config
+
+output:
+  all: '| tee -a /var/log/cloud-init-output.log'
+
+packages:
+- fuse
+## - golang
+- git
+- awscli
+- curl
+- ntp
+- python3-dev
+- python3-venv
+
+## power_state:
+##   mode: poweroff
+
+runcmd:
+
+- set -ex
+- systemctl daemon-reload  # See https://bugs.launchpad.net/cloud-init/+bug/1449318
+- mkdir -p /s3/encode-files
+- mkdir -p /s3/encoded-files-dev
+
+## - curl -sS -L -o /usr/local/bin/goofys https://github.com/kahing/goofys/releases/download/v0.0.4/goofys
+- curl -sS -L -o /usr/local/bin/goofys https://s3-us-west-1.amazonaws.com/encoded-build/goofys/goofys-aee8168
+- chmod +x /usr/local/bin/goofys
+
+## - mkdir -p /opt/goofys/bin
+## - chown -R build:build /opt/goofys
+## - sudo -u build GOPATH=/opt/goofys go get github.com/kahing/goofys
+## - mv /opt/goofys/bin/goofys /usr/local/bin/
+
+- mount -a
+
+- mkdir /opt/encValData
+- chown build:build /opt/encValData
+- sudo -u build git clone --depth 1 https://github.com/ENCODE-DCC/encValData /opt/encValData
+
+- curl -sS -L -o /usr/local/bin/validateFiles https://github.com/ENCODE-DCC/kentUtils/raw/master/bin/linux.x86_64/validateFiles
+- chmod +x /usr/local/bin/validateFiles
+
+- mkdir /opt/encoded
+- chown build:build /opt/encoded
+- sudo -u build git clone --no-checkout https://github.com/ENCODE-DCC/encoded.git /opt/encoded
+- sudo -u build git -C /opt/encoded checkout %(COMMIT)s
+
+- cd /opt/encoded/checkfiles
+- sudo -u build pyvenv .
+- sudo -u build bin/pip install -r requirements.txt
+
+- sudo -u ubuntu bin/python checkfiles.py $(cat /opt/checkfiles_args.txt)
+
+
+users:
+- default
+- name: build
+  gecos: Build user
+  inactive: true
+  system: true
+
+mounts:
+- [ "goofys#encode-files", "/s3/encode-files", "fuse", "_netdev,allow_other,--file-mode=0444,--dir-mode=0555,--stat-cache-ttl=0", "0", "0" ]
+- [ "goofys#encoded-files-dev", "/s3/encoded-files-dev", "fuse", "_netdev,allow_other,--file-mode=0444,--dir-mode=0555,--stat-cache-ttl=0", "0", "0" ]
+
+write_files:
+- path: /opt/checkfiles_args.txt
+  content: |
+    %(ARGS)s
+- path: /etc/ssh/users_ca.pub
+  content: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAv/ymOcnN4LhM4NACc3Or116XXJ6KytuOgB/+1qNkOFBqBosrn7cmJ35rsoNHRgYNrCsRE9ch74RKsN6H72FtSJgBhGh/9oUK7Os6Fqt3/ZZXxgxIx6ubs/MTgrxrAnujiBxUXMXQhLKMriNMpo8mt4nGYVtLk9PBjiyfncaS8H9ZKoNio9dhP8bmTuYvioAI35dqKdSlVLyzr/XkZxia8Ki+pQ0N6uuiEwMR3ToM+LSp8wpFOOAiu4PEAujRW7us/+1hlpKWfn0J7/V3826joHE+I967Vg/+ikcVhF77JjK1nib879VgCWfmn1HPQosIpk4yJfVgGvRVI7I2nfBPVw== encoded@demo-l.encodedcc.org
+- path: /etc/systemd/system/cloud-final.service.d/override.conf
+  content: |
+    [Service]
+    # See https://bugs.launchpad.net/cloud-init/+bug/1449318
+    KillMode=process
