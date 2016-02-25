@@ -1269,8 +1269,7 @@ var Series = module.exports.Series = React.createClass({
 
                 {context.related_datasets.length ?
                     <div>
-                        <h3>{'Experiments in ' + seriesTitle + ' ' + context.accession}</h3>
-                        <SortTablePanel>
+                        <SortTablePanel title={'Experiments in ' + seriesTitle + ' ' + context.accession}>
                             <SortTable list={context.related_datasets} columns={seriesComponent.table} />
                         </SortTablePanel>
                     </div>
@@ -1386,8 +1385,7 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
 
         return (
             <div>
-                {this.props.title ? <h3>{this.props.title}</h3> : null}
-                <SortTablePanel>
+                <SortTablePanel title={this.props.title}>
                     <SortTable list={experiments} columns={this.tableColumns} footer={<ExperimentTableFooter items={experiments} total={this.props.total} url={this.props.url} />} />
                 </SortTablePanel>
             </div>
@@ -1451,11 +1449,15 @@ var FileTable = module.exports.FileTable = React.createClass({
                 return a.date_created ? -1 : (b.date_created ? 1 : 0);
             }
         },
-        'status': {
+        'validation_status': {
             title: 'Validation status',
             display: item => <div className="characterization-meta-data"><StatusLabel status="pending" /></div>,
             hide: (list, columns, meta) => meta.encodevers !== '3',
             sorter: false
+        },
+        'status': {
+            title: 'File status',
+            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>
         }
     },
 
@@ -1496,11 +1498,15 @@ var FileTable = module.exports.FileTable = React.createClass({
                 return a.date_created ? -1 : (b.date_created ? 1 : 0);
             }
         },
-        'status': {
+        'validation_status': {
             title: 'Validation status',
             display: item => <div className="characterization-meta-data"><StatusLabel status="pending" /></div>,
             hide: (list, columns, meta) => meta.encodevers !== '3',
             sorter: false
+        },
+        'status': {
+            title: 'File status',
+            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>
         }
     },
 
@@ -1543,11 +1549,15 @@ var FileTable = module.exports.FileTable = React.createClass({
                 return a.date_created ? -1 : (b.date_created ? 1 : 0);
             }
         },
-        'status': {
+        'validation_status': {
             title: 'Validation status',
             display: item => <div className="characterization-meta-data"><StatusLabel status="pending" /></div>,
             hide: (list, columns, meta) => meta.encodevers !== '3',
             sorter: false
+        },
+        'status': {
+            title: 'File status',
+            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>
         }
     },
 
@@ -1581,6 +1591,10 @@ var FileTable = module.exports.FileTable = React.createClass({
                 }
                 return a.date_created ? -1 : (b.date_created ? 1 : 0);
             }
+        },
+        'status': {
+            title: 'File status',
+            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>
         }
     },
 
@@ -1599,7 +1613,7 @@ var FileTable = module.exports.FileTable = React.createClass({
             });
 
             return (
-                <SortTablePanel>
+                <SortTablePanel header={this.props.filePanelHeader}>
                     <SortTable title="Raw data files" list={files.raw} columns={this.rawTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
                     <SortTable title="Raw data files" list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
                     <SortTable title="Processed data files" list={files.proc} columns={this.procTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />

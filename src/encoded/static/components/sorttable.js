@@ -61,18 +61,38 @@
 var React = require('react');
 var _ = require('underscore');
 var moment = require('moment');
+var panel = require('../libs/bootstrap/panel');
+
+var {Panel, PanelHeading} = panel;
 
 
 // Required sortable table wrapper component. Takes no parameters but puts the table in a Bootstrap panel
 // and makes it responsive. You can place multiple <SortTable />s as children of this component.
 var SortTablePanel = module.exports.SortTablePanel = React.createClass({
+    propTypes: {
+        // Note: `title` overrides `header`
+        title: React.PropTypes.oneOfType([ // Title to display in table panel header
+            React.PropTypes.string, // When title is a simple string
+            React.PropTypes.object // When title is JSX
+        ]),
+        header: React.PropTypes.object // React component to render inside header
+    },
+
     render: function() {
         return (
-            <div className="table-panel table-file">
+            <Panel addClasses="table-panel table-file">
+                {this.props.title ?
+                    <PanelHeading>
+                        <h4>{this.props.title ? <span>{this.props.title}</span> : null}</h4>
+                    </PanelHeading>
+                : (this.props.header ?
+                    <PanelHeading addClasses="clearfix">{this.props.header}</PanelHeading>
+                : null)}
+
                 <div className="table-responsive">
                     {this.props.children}
                 </div>
-            </div>
+            </Panel>
         );
     }
 });

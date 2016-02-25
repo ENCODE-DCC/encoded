@@ -73,7 +73,7 @@ var BiosampleTable = React.createClass({
         }
 
         return (
-            <SortTablePanel>
+            <SortTablePanel title={this.props.title}>
                 <SortTable list={this.props.items} columns={this.columns} footer={<BiosampleTableFooter items={biosamples} total={this.props.total} url={this.props.url} />} />
             </SortTablePanel>
         );
@@ -529,7 +529,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                 : null}
 
                 <RelatedItems
-                    title={'Experiments using biosample ' + context.accession}
+                    title="Experiments using this biosample"
                     url={'/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid}
                     Component={ExperimentTable} />
 

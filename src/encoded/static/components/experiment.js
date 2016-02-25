@@ -552,19 +552,13 @@ var Experiment = module.exports.Experiment = React.createClass({
                     <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
                 : null}
 
-                {context.visualize_ucsc  && context.status == "released" ?
-                    <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
-                    </span>
-                : null }
-
                 <FetchedData>
                     <Param name="data" url={dataset.unreleased_files_url(context)} />
                     <ExperimentGraph context={context} session={this.context.session} />
                 </FetchedData>
 
                 {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={DatasetFiles} anisogenic={anisogenic} />
+                <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} />
 
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} />
 
@@ -575,6 +569,24 @@ var Experiment = module.exports.Experiment = React.createClass({
 });
 
 globals.content_views.register(Experiment, 'Experiment');
+
+
+var FilePanelHeader = React.createClass({
+    render: function() {
+        var context = this.props.context;
+
+        return (
+            <div>
+                {context.visualize_ucsc && context.status === "released" ?
+                    <span className="pull-right">
+                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-xs" href={context['visualize_ucsc']}>Visualize Data</a>
+                    </span>
+                : null}
+                <h4>File summary</h4>
+            </div>
+        );
+    }
+});
 
 
 // Display the table of replicates
@@ -683,8 +695,8 @@ var ReplicateTable = React.createClass({
         }
 
         return (
-            <SortTablePanel>
-                <SortTable title={tableTitle} list={condensedReplicates} columns={this.replicateColumns} />
+            <SortTablePanel title={tableTitle}>
+                <SortTable list={condensedReplicates} columns={this.replicateColumns} />
             </SortTablePanel>
         );
     }
