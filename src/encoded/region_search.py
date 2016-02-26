@@ -203,11 +203,6 @@ def get_ensemblid_coordinates(id):
             return('', '', '')
         return assembly_mapper(location, 'human', 'GRCh38', 'GRCh37')
 
-def filter_inner_hits(peak_file_uuids, es_result_list):
-    filtered_peaks = []
-    for item in peak_result_list:
-        if not (any(item['_id']== ))
-
 
 @view_config(route_name='region-search', request_method='GET', permission='search')
 def region_search(context, request):
