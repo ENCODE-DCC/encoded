@@ -56,7 +56,7 @@ var BiosampleTable = React.createClass({
         },
         'biosample_type': {title: 'Type'},
         'biosample_term_name': {title: 'Term'},
-        'description': {title: 'Description', sorter: false}
+        'summary': {title: 'Summary', sorter: false}
     },
 
     render: function() {
@@ -249,6 +249,13 @@ var Biosample = module.exports.Biosample = React.createClass({
                                         <dt>Term ID</dt>
                                         <dd>{context.biosample_term_id}</dd>
                                     </div>
+
+                                    {context.summary ?
+                                        <div data-test="summary">
+                                            <dt>Summary</dt>
+                                            <dd>{context.summary}</dd>
+                                        </div>
+                                    : null}
 
                                     {context.description ? 
                                         <div data-test="description">
