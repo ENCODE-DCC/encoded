@@ -87,7 +87,6 @@ def peak_metadata_tsv(context, request):
     param_list['field'] = []
     header = ['coordinates', 'target name', 'biosample accession', 'file accession', 'experiment accession']
     param_list['limit'] = ['all']
-    param_list['include_peaks'] = ['yes']
     path = '/region-search/?{}'.format(urlencode(param_list, True))
     results = request.embed(path, as_user=True)
     log.warn(pprint.pprint(results))
