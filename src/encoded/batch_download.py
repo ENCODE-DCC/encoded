@@ -14,6 +14,7 @@ import io
 def includeme(config):
     config.add_route('batch_download', '/batch_download/{search_params}')
     config.add_route('metadata', '/metadata/{search_params}/{tsv}')
+    config.add_route('peak_metadata', '/peak_metadata/{search_params}/{tsv}')
     config.scan(__name__)
 
 
