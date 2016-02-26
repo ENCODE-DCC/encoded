@@ -209,6 +209,8 @@ def region_search(context, request):
     """
     Search files by region.
     """
+    include_peaks = request.params.get('include_peaks', False)
+    del request.params['include_peaks']
     result = {
         '@id': '/region-search/' + ('?' + request.query_string if request.query_string else ''),
         '@type': ['region-search'],
@@ -223,7 +225,7 @@ def region_search(context, request):
     es = request.registry[ELASTIC_SEARCH]
     snp_es = request.registry['snp_search']
     region = request.params.get('region', '*')
-    include_peaks = request.params.get('include_peaks', False)
+    
 
     # handling limit
     size = request.params.get('limit', 25)
@@ -310,7 +312,8 @@ def region_search(context, request):
         result['total'] = es_results['hits']['total']
         result['facets'] = format_facets(es_results, _FACETS)
         if result['total'] > 0:
-            result['peaks'] = list(peak_results['hits']['hits'])
+            if include_peaks:
+                result['peaks'] = list(peak_results['hits']['hits'])
             result['notification'] = 'Success'
             result.update(search_result_actions(request, ['Experiment'], es_results))
 
