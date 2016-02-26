@@ -109,6 +109,7 @@ def peak_metadata_tsv(context, request):
         content_type='text/tsv',
         body=fout.getvalue(),
         content_disposition='attachment;filename="%s"' % 'peak_metadata.tsv'
+    )
 
 
 @view_config(route_name='metadata', request_method='GET')
