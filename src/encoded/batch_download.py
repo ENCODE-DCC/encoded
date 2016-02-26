@@ -10,6 +10,12 @@ from urllib.parse import (
 import csv
 import io
 
+import logging
+import pprint
+
+
+log = logging.getLogger(__name__)
+
 
 def includeme(config):
     config.add_route('batch_download', '/batch_download/{search_params}')
@@ -80,13 +86,11 @@ def peak_metadata_tsv(context, request):
     param_list = parse_qs(request.matchdict['search_params'])
     param_list['field'] = []
     header = ['coordinates', 'target name', 'biosample accession', 'file accession', 'experiment accession']
-    for prop in _tsv_mapping:
-        header.append(prop)
-        param_list['field'] = param_list['field'] + _tsv_mapping[prop]
     param_list['limit'] = ['all']
     param_list['include_peaks'] = ['yes']
     path = '/region-search/?{}'.format(urlencode(param_list, True))
     results = request.embed(path, as_user=True)
+    log.warn(pprint.pprint(results))
     uuids_in_results = get_file_uuids(results)
     rows = []
     for row in results['peaks']:
