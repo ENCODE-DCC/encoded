@@ -75,7 +75,7 @@ def get_file_uuids(result_dict):
     return list(set(file_uuids))
 
 
-@view_config(route_name='peak_metadata', request='GET')
+@view_config(route_name='peak_metadata', request_method='GET')
 def peak_metadata_tsv(context, request):
     param_list = parse_qs(request.matchdict['search_params'])
     param_list['field'] = []
