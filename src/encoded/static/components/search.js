@@ -689,9 +689,6 @@ var AuditMixin = audit.AuditMixin;
                 // Hide the facet if all the terms' doc_count values are the same, or if there's only one term
                 if (terms.length <= 1) {
                     hideTypeFacet = true;
-                } else {
-                    var firstDocCount = terms[0].doc_count;
-                    hideTypeFacet = _(terms).all(term => term.doc_count === firstDocCount);
                 }
             }
 
