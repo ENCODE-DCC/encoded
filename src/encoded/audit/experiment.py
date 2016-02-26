@@ -271,6 +271,107 @@ def audit_experiment_biosample_term_id(value, system):
                frame=['replicates', 'original_files', 'original_files.replicate'],
                condition=rfa("ENCODE3", "modERN", "ENCODE2", "GGR",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
+def audit_experiment_consistent_sequencing_runs(value, system):
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+    if 'replicates' not in value:
+        return
+    if len(value['replicates']) == 0:
+        return
+    if 'assay_term_name' not in value:  # checked in audit_experiment_assay
+        return
+
+    if value.get('assay_term_name') not in ['ChIP-seq', 'DNase-seq']:
+        return
+
+    replicate_pairing_statuses = {}
+    replicate_read_lengths = {}
+
+    for file_object in value['original_files']:
+        if file_object['status'] in ['deleted', 'replaced', 'revoked']:
+            continue
+        if file_object['file_format'] == 'fastq':
+            if 'replicate' in file_object:
+                bio_rep_number = file_object['replicate']['biological_replicate_number']
+
+                if 'read_length' in file_object:
+                    if bio_rep_number not in replicate_read_lengths:
+                        replicate_read_lengths[bio_rep_number] = set()
+                    replicate_read_lengths[bio_rep_number].add(file_object['read_length'])
+
+                if 'run_type' in file_object:
+                    if bio_rep_number not in replicate_pairing_statuses:
+                        replicate_pairing_statuses[bio_rep_number] = set()
+                    replicate_pairing_statuses[bio_rep_number].add(file_object['run_type'])
+
+    for key in replicate_read_lengths:
+        if len(replicate_read_lengths[key]) > 1:
+            detail = 'Biological replicate {} '.format(key) + \
+                     'in experiment {} '.format(value['@id']) + \
+                     'has mixed sequencing read lengths {}.'.format(replicate_read_lengths[key])
+            yield AuditFailure('mixed intra-replicate read lengths',
+                               detail, level='WARNING')
+
+    for key in replicate_pairing_statuses:
+        if len(replicate_pairing_statuses[key]) > 1:
+            detail = 'Biological replicate {} '.format(key) + \
+                     'in experiment {} '.format(value['@id']) + \
+                     'has mixed endedness {}.'.format(replicate_pairing_statuses[key])
+            yield AuditFailure('mixed intra-replicate endedness',
+                               detail, level='WARNING')
+
+    keys = list(replicate_read_lengths.keys())
+
+    if len(keys) > 1:
+        for index_i in range(len(keys)):
+            for index_j in range(index_i+1, len(keys)):
+                i_lengths = replicate_read_lengths[keys[index_i]]
+                j_lengths = replicate_read_lengths[keys[index_j]]
+                diff_flag = False
+                for entry in i_lengths:
+                    if entry not in j_lengths:
+                        diff_flag = True
+                for entry in j_lengths:
+                    if entry not in i_lengths:
+                        diff_flag = True
+                if diff_flag is True:
+                    detail = 'Biological replicate {} '.format(keys[index_i]) + \
+                             'in experiment {} '.format(value['@id']) + \
+                             'has sequencing read lengths {} '.format(i_lengths) + \
+                             ' that differ from replicate {},'.format(keys[index_j]) + \
+                             ' which has {} sequencing read lengths.'.format(j_lengths)
+                    yield AuditFailure('mixed inter-replicate read lengths',
+                                       detail, level='WARNING')
+
+    keys = list(replicate_pairing_statuses.keys())
+    if len(keys) > 1:
+        for index_i in range(len(keys)):
+            for index_j in range(index_i+1, len(keys)):
+                i_pairs = replicate_pairing_statuses[keys[index_i]]
+                j_pairs = replicate_pairing_statuses[keys[index_j]]
+                diff_flag = False
+                for entry in i_pairs:
+                    if entry not in j_pairs:
+                        diff_flag = True
+                for entry in j_pairs:
+                    if entry not in i_pairs:
+                        diff_flag = True
+                if diff_flag is True:
+                    detail = 'Biological replicate {} '.format(keys[index_i]) + \
+                             'in experiment {} '.format(value['@id']) + \
+                             'has endedness {} '.format(i_pairs) + \
+                             ' that differ from replicate {},'.format(keys[index_j]) + \
+                             ' which has {}.'.format(j_pairs)
+                    yield AuditFailure('mixed inter-replicate endedness',
+                                       detail, level='WARNING')
+
+    return
+
+
+@audit_checker('experiment',
+               frame=['replicates', 'original_files', 'original_files.replicate'],
+               condition=rfa("ENCODE3", "modERN", "ENCODE2", "GGR",
+                             "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicate_with_no_files(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
@@ -308,10 +409,12 @@ def audit_experiment_replicate_with_no_files(value, system):
             yield AuditFailure('missing file in replicate', detail, level=audit_level)
         else:
             if seq_assay_flag is True:
-                if 'fastq' not in rep_dictionary[key]:
+                if 'fasta' not in rep_dictionary[key] and \
+                   'csfasta' not in rep_dictionary[key] and \
+                   'fastq' not in rep_dictionary[key]:
                     detail = 'Sequencing experiment {} replicate '.format(value['@id']) + \
-                             '{} does not have FASTQ files associated with'.format(key)
-                    yield AuditFailure('missing FASTQ file in replicate',
+                             '{} does not have sequence files associated with it.'.format(key)
+                    yield AuditFailure('missing sequence file in replicate',
                                        detail, level=audit_level)
     return
 
