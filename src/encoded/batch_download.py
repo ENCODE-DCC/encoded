@@ -89,7 +89,6 @@ def peak_metadata_tsv(context, request):
     param_list['limit'] = ['all']
     path = '/region-search/?{}'.format(urlencode(param_list, True))
     results = request.embed(path, as_user=True)
-    log.warn(pprint.pprint(results))
     uuids_in_results = get_file_uuids(results)
     rows = []
     for row in results['peaks']:
