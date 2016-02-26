@@ -85,7 +85,7 @@ def get_file_uuids(result_dict):
 def peak_metadata_tsv(context, request):
     param_list = parse_qs(request.matchdict['search_params'])
     param_list['field'] = []
-    header = ['coordinates', 'target name', 'biosample accession', 'file accession', 'experiment accession']
+    header = ['coordinates', 'file accession', 'experiment accession', 'target name', 'biosample accession', ]
     param_list['limit'] = ['all']
     path = '/region-search/?{}'.format(urlencode(param_list, True))
     results = request.embed(path, as_user=True)
