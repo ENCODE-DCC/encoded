@@ -769,7 +769,7 @@ def check_chip_seq_standards(value, read_depth, target_name, is_control_file, co
         # raising insufficient control read depth
         if target_name not in ['Control-human', 'Control-mouse']:
             detail = 'Control ENCODE Processed alignment file {} '.format(value['@id']) + \
-                     'has a target {} that is not '.format(target_name) + \
+                     'has a target {} that is neither '.format(target_name) + \
                      'Control-human nor Control-mouse.'
             yield AuditFailure('mismatched target of control experiment', detail, level='WARNING')
             return
@@ -782,7 +782,7 @@ def check_chip_seq_standards(value, read_depth, target_name, is_control_file, co
                 detail = 'Control ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                                      read_depth) + \
                          'usable fragments. Control for ChIP-seq ' + \
-                         'assays and target {} require '.format(control_to_target) + \
+                         'assays and target {} requires '.format(control_to_target) + \
                          '{} usable fragments, according to '.format(marks['broad']) + \
                          'June 2015 standards.'
                 yield AuditFailure('control low read depth', detail, level='NOT_COMPLIANT')
@@ -790,7 +790,7 @@ def check_chip_seq_standards(value, read_depth, target_name, is_control_file, co
                 detail = 'Control ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                                      read_depth) + \
                          'usable fragments. Control for ChIP-seq ' + \
-                         'assays and target {} require '.format(control_to_target) + \
+                         'assays and target {} requires '.format(control_to_target) + \
                          '{} usable fragments, according to '.format(marks['broad']) + \
                          'June 2015 standards, and 20000000 usable fragments according to' + \
                          ' ENCODE2 standards.'
@@ -800,7 +800,7 @@ def check_chip_seq_standards(value, read_depth, target_name, is_control_file, co
                 detail = 'Control ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                                      read_depth) + \
                          'usable fragments. Control for ChIP-seq ' + \
-                         'assays and target {} require '.format(control_to_target) + \
+                         'assays and target {} requires '.format(control_to_target) + \
                          '{} usable fragments, according to '.format(marks['narrow']) + \
                          'June 2015 standards.'
                 yield AuditFailure('control low read depth', detail, level='WARNING')
@@ -808,7 +808,7 @@ def check_chip_seq_standards(value, read_depth, target_name, is_control_file, co
                 detail = 'Control ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                                      read_depth) + \
                          'usable fragments. Control for ChIP-seq ' + \
-                         'assays and target {} require '.format(control_to_target) + \
+                         'assays and target {} requires '.format(control_to_target) + \
                          '{} usable fragments, according to '.format(marks['narrow']) + \
                          'June 2015 standards, and 10000000 usable fragments according to' + \
                          ' ENCODE2 standards.'
