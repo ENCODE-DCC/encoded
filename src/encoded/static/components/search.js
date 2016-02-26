@@ -790,7 +790,6 @@ var AuditMixin = audit.AuditMixin;
         },
 
         render: function() {
-            var term = this.props.term;
             var facets = this.props.facets;
             var filters = this.props.filters;
             var width = 'inherit';

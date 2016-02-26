@@ -17,6 +17,7 @@ var reference = require('./reference');
 var software = require('./software');
 var sortTable = require('./sorttable');
 var objectutils = require('./objectutils');
+var search = require('./search');
 var doc = require('./doc');
 
 var Breadcrumbs = navbar.Breadcrumbs;
@@ -552,13 +553,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                     <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
                 : null}
 
-                <FetchedData ignoreErrors>
-                    <Param name="data" url={dataset.unreleased_files_url(context)} />
-                    <ExperimentGraph context={context} session={this.context.session} />
-                </FetchedData>
+                <FileGallery context={context} />
 
                 {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} session={this.context.session} ignoreErrors />
+                <FetchedItems {...this.props} url={dataset.files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} session={this.context.session} ignoreErrors />
 
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} ignoreErrors />
 
@@ -569,6 +567,27 @@ var Experiment = module.exports.Experiment = React.createClass({
 });
 
 globals.content_views.register(Experiment, 'Experiment');
+
+
+// File display widget, showing a facet list, a table, and a graph (and maybe a BioDalliance)
+var FileGallery = React.createClass({
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
+    render: function() {
+        var {context, data} = this.props;
+        console.log(this.props);
+
+        return (
+            <FetchedData ignoreErrors>
+                <Param name="data" url={dataset.files_url(context)} />
+                {/*<search.FacetList facets={data.facets} filters={data.filters} />*/}
+                <ExperimentGraph context={context} session={this.context.session} />
+            </FetchedData>
+        );
+    }
+});
 
 
 var FilePanelHeader = React.createClass({

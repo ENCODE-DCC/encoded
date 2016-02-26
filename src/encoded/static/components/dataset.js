@@ -238,7 +238,7 @@ var Annotation = React.createClass({
                 : null }
 
                 {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} />
+                    <FetchedItems {...this.props} url={files_url(context)} Component={DatasetFiles} />
                 : null}
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
@@ -389,7 +389,7 @@ var PublicationData = React.createClass({
                 : null }
 
                 {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} />
+                    <FetchedItems {...this.props} url={files_url(context)} Component={DatasetFiles} />
                 : null}
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
@@ -533,7 +533,7 @@ var Reference = React.createClass({
                 : null }
 
                 {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} />
+                    <FetchedItems {...this.props} url={files_url(context)} Component={DatasetFiles} />
                 : null}
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
@@ -710,7 +710,7 @@ var Project = React.createClass({
                 : null }
 
                 {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} />
+                    <FetchedItems {...this.props} url={files_url(context)} Component={DatasetFiles} />
                 : null}
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
@@ -874,7 +874,7 @@ var UcscBrowserComposite = React.createClass({
                 : null }
 
                 {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} />
+                    <FetchedItems {...this.props} url={files_url(context)} Component={DatasetFiles} />
                 : null}
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
@@ -1297,29 +1297,17 @@ var Series = module.exports.Series = React.createClass({
 globals.content_views.register(Series, 'Series');
 
 
-var unreleased_files_url = module.exports.unreleased_files_url = function (context) {
-    var file_states = [
-        '',
-        "uploading",
-        "uploaded",
-        "upload failed",
-        "format check failed",
-        "in progress"
-    ].map(encodeURIComponent).join('&status=');
-    return '/search/?limit=all&frame=embedded&type=file&dataset=' + context['@id'] + file_states;
+var files_url = module.exports.files_url = function (context) {
+    return '/search/?limit=all&frame=embedded&type=file&dataset=' + context['@id'];
 };
 
 
 // Called once searches for unreleased files returns results in this.props.items. Displays both released and
 // unreleased files.
 var DatasetFiles = module.exports.DatasetFiles = React.createClass({
-    render: function () {
-        var context = this.props.context;
-
-        // this.props.items has a list of unreleased files, while context.files is a list of released files
-        var files = (context.files && context.files.length) ? context.files.concat(this.props.items) : this.props.items;
-
-        return <FileTable {...this.props} items={files} />;
+    render: function() {
+        // Temporary Note to self: this.props.data contains the search results, including data['@graph'][] and data.facets[].
+        return <FileTable {...this.props} items={this.props.items} />;
     }
 });
 
