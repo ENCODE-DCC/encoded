@@ -61,11 +61,11 @@ def includeme(config):
     config.scan(__name__)
 
 
-def get_peak_query(start, end):
+def get_peak_query(start, end, with_inner_hits=False):
     """
     return peak query
     """
-    return {
+    query = {
         'query': {
             'filtered': {
                 'filter': {
@@ -95,8 +95,12 @@ def get_peak_query(start, end):
                 },
                 '_cache': True,
             }
-        }
+        },
+        '_source': False,
     }
+    if with_inner_hits:
+        query['query']['filtered']['filter']['nested']['inner_hits'] = {'size': 99999}
+    return query
 
 
 def sanitize_coordinates(term):
@@ -138,7 +142,7 @@ def get_annotation_coordinates(es, id, assembly):
                     start=annotation['start'],
                     end=annotation['end']
                 )
-        return assembly_mapper(location, species,
+        return assembly_mapper(location, 'human',
                                annotations[0]['assembly_name'], assembly)
 
 
@@ -199,6 +203,11 @@ def get_ensemblid_coordinates(id):
             return('', '', '')
         return assembly_mapper(location, 'human', 'GRCh38', 'GRCh37')
 
+def filter_inner_hits(peak_file_uuids, es_result_list):
+    filtered_peaks = []
+    for item in peak_result_list:
+        if not (any(item['_id']== ))
+
 
 @view_config(route_name='region-search', request_method='GET', permission='search')
 def region_search(context, request):
@@ -219,6 +228,7 @@ def region_search(context, request):
     es = request.registry[ELASTIC_SEARCH]
     snp_es = request.registry['snp_search']
     region = request.params.get('region', '*')
+    include_peaks = request.params.get('include_peaks', False)
 
     # handling limit
     size = request.params.get('limit', 25)
@@ -266,7 +276,11 @@ def region_search(context, request):
 
     # Search for peaks for the coordinates we got
     try:
-        peak_results = snp_es.search(body=get_peak_query(start, end),
+        if include_peaks:
+            peak_query = get_peak_query(start, end, with_inner_hits=True)
+        else:
+            peak_query = get_peak_query(start, end)
+        peak_results = snp_es.search(body=peak_query,
                                      index=chromosome.lower(),
                                      doc_type=assembly,
                                      size=99999)
@@ -301,6 +315,7 @@ def region_search(context, request):
         result['total'] = es_results['hits']['total']
         result['facets'] = format_facets(es_results, _FACETS)
         if result['total'] > 0:
+            result['peaks'] = list(peak_results['hits']['hits'])
             result['notification'] = 'Success'
             result.update(search_result_actions(request, ['Experiment'], es_results))
 

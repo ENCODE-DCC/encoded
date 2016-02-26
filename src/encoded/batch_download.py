@@ -66,6 +66,51 @@ _tsv_mapping = OrderedDict([
 ])
 
 
+def get_file_uuids(result_dict):
+    file_uuids = []
+    for item in result_dict['graph']:
+        for file in item['files']:
+            file_uuids.append(file['uuid'])
+    return list(set(file_uuids))
+
+
+@view_config(route_name='peak_metadata', request='GET')
+def peak_metadata_tsv(context, request):
+    param_list = parse_qs(request.matchdict['search_params'])
+    param_list['field'] = []
+    header = ['coordinates', 'target name', 'biosample accession', 'file accession', 'experiment accession']
+    for prop in _tsv_mapping:
+        header.append(prop)
+        param_list['field'] = param_list['field'] + _tsv_mapping[prop]
+    param_list['limit'] = ['all']
+    param_list['include_peaks'] = ['yes']
+    path = '/region-search/?{}'.format(urlencode(param_list, True))
+    results = request.embed(path, as_user=True)
+    uuids_in_results = get_file_uuids(results)
+    rows = []
+    for row in results['peaks']:
+        if row['_id'] in uuids_in_results:
+            file_json = request.embed(row['_id'])
+            experiment_json = request.embed(file_json['dataset'])
+            for hit in row['inner_hits']['positions']['hits']['hits']:
+                data_row = []
+                coordinates = '{}:{}-{}'.format(hit['_index'], hit['_source']['start'], hit['_source']['end'])
+                file_accession = file_json['accession']
+                experiment_accession = experiment_json['accession']
+                target_name = experiment_json['assay_term_name']
+                biosample_accession = None # figure out how to get biosample accession
+                data_row.extend([coordinates, file_accession, experiment_accession, target_name, biosample_accession])
+                rows.append(data_row)
+    fout = io.StringIO()
+    writer = csv.writer(fout, delimiter='\t')
+    writer.writerow(header)
+    writer.writerows(rows)
+    return Response(
+        content_type='text/tsv',
+        body=fout.getvalue(),
+        content_disposition='attachment;filename="%s"' % 'peak_metadata.tsv'
+
+
 @view_config(route_name='metadata', request_method='GET')
 def metadata_tsv(context, request):
     param_list = parse_qs(request.matchdict['search_params'])
