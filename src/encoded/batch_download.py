@@ -69,7 +69,7 @@ _tsv_mapping = OrderedDict([
 
 def get_file_uuids(result_dict):
     file_uuids = []
-    for item in result_dict['graph']:
+    for item in result_dict['@graph']:
         for file in item['files']:
             file_uuids.append(file['uuid'])
     return list(set(file_uuids))
