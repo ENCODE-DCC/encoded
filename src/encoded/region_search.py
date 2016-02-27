@@ -271,7 +271,12 @@ def region_search(context, request):
 
     # Search for peaks for the coordinates we got
     try:
-        peak_query = get_peak_query(start, end, with_inner_hits=True)
+        include_peaks = False
+        if not 'region-search' in request.referrer:
+            peak_query = get_peak_query(start, end, with_inner_hits=True)
+        else:
+            peak_query = get_peak_query(start, end)
+            include_peaks = True
         peak_results = snp_es.search(body=peak_query,
                                      index=chromosome.lower(),
                                      doc_type=assembly,
@@ -307,7 +312,10 @@ def region_search(context, request):
         result['total'] = es_results['hits']['total']
         result['facets'] = format_facets(es_results, _FACETS)
         if result['total'] > 0:
-            result['peaks'] = list(peak_results['hits']['hits'])
+            if include_peaks:
+                result['peaks'] = list(peak_results['hits']['hits'])
+            else:
+                result['peaks'] = []
             result['notification'] = 'Success'
             result.update(search_result_actions(request, ['Experiment'], es_results))
 
