@@ -206,7 +206,7 @@ def is_gtex_experiment(experiment_to_check):
     for rep in experiment_to_check['replicates']:
         if ('library' in rep) and ('biosample' in rep['library']) and \
            ('donor' in rep['library']['biosample']):
-            if rep['library']['biosample']['donor'] in gtexDonorsList:
+            if rep['library']['biosample']['donor']['accession'] in gtexDonorsList:
                 return True
     return False
 
