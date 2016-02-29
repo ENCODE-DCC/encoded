@@ -1,5 +1,5 @@
-from contentbase import calculated_property
-from contentbase.util import ensurelist
+from snowfort import calculated_property
+from snowfort.util import ensurelist
 
 
 class CalculatedBiosampleSlims:

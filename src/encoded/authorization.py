@@ -1,4 +1,4 @@
-from contentbase import ROOT
+from snowfort import ROOT
 
 
 def groupfinder(login, request):

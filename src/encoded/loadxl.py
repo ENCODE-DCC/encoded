@@ -88,7 +88,8 @@ IS_ATTACHMENT = [
     'IDR_parameters_true',
     'IDR_parameters_rep1_pr',
     'IDR_parameters_rep2_pr',
-    'IDR_parameters_pool_pr'
+    'IDR_parameters_pool_pr',
+    'cross_correlation_plot'
 ]
 
 ##############################################################################

@@ -1,11 +1,11 @@
 import re
 from pyramid.view import view_config
-from contentbase import (
+from snowfort import (
     AbstractCollection,
     TYPES,
 )
-from contentbase.elasticsearch import ELASTIC_SEARCH
-from contentbase.resource_views import collection_view_listing_db
+from snowfort.elasticsearch import ELASTIC_SEARCH
+from snowfort.resource_views import collection_view_listing_db
 from elasticsearch.helpers import scan
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import effective_principals
@@ -446,7 +446,7 @@ def search(context, request, search_type=None):
 
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
-    es_index = request.registry.settings['contentbase.elasticsearch.index']
+    es_index = request.registry.settings['snowfort.elasticsearch.index']
     search_audit = request.has_permission('search_audit')
 
     # handling pagination
@@ -651,7 +651,8 @@ def report(context, request):
         'title': 'View results as list',
         'icon': 'list-alt',
     }
-    res['@id'] = res['@id'].replace('search', 'report')
+    search_base = normalize_query(request)
+    res['@id'] = '/report/' + search_base
     res['title'] = 'Report'
     res['@type'] = ['Report']
     return res
@@ -708,7 +709,7 @@ def matrix(context, request):
 
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
-    es_index = request.registry.settings['contentbase.elasticsearch.index']
+    es_index = request.registry.settings['snowfort.elasticsearch.index']
 
     search_term = prepare_search_term(request)
 

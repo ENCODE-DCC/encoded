@@ -4,7 +4,7 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from subprocess import Popen, PIPE
 from xml.sax.saxutils import quoteattr, escape
-from contentbase import TYPES
+from snowfort import TYPES
 
 
 def includeme(config):

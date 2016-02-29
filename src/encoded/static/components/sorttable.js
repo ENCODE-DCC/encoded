@@ -178,8 +178,8 @@ var SortTable = module.exports.SortTable = React.createClass({
                 <table className="table table-striped table-sortable">
 
                     <thead>
-                        {this.props.title ? <tr className="table-section"><th colSpan={colCount}>{this.props.title}</th></tr> : null}
-                        <tr>
+                        {this.props.title ? <tr className="table-section" key="title"><th colSpan={colCount}>{this.props.title}</th></tr> : null}
+                        <tr key="header">
                             {columnIds.map(columnId => {
                                 if (!hiddenColumns[columnId]) {
                                     var columnClass;
@@ -206,9 +206,9 @@ var SortTable = module.exports.SortTable = React.createClass({
                     </thead>
 
                     <tbody>
-                        {list.sort(this.sortColumn).map(item => {
+                        {list.sort(this.sortColumn).map((item, i) => {
                             return (
-                                <tr key={item['@id']}>
+                                <tr key={i}>
                                     {columnIds.map(columnId => {
                                         if (!hiddenColumns[columnId]) {
                                             if (columns[columnId].display) {
