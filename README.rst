@@ -35,6 +35,10 @@ Step 3: Run buildout::
     NOTE:  If you have issues with postgres or the python interface to it (psycogpg2) you probably need to install postgresql 
     via homebrew (as above)
 
+If you wish to completely rebuild the application, or have updated dependencies:
+    $ make clean
+
+    Then goto Step 3.
 
 Step 4: Start the application locally
 
