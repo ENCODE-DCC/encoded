@@ -1,7 +1,7 @@
 
 Log into existing instance: (ubuntu@v{YY}.production.encodedcc.org) - {XX} is the new version number
 
-$ sudo -i -u postgres /opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-push /var/lib/postgresql/9.3/main
+$ sudo -i -u postgres /opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-push /var/lib/postgresql/9.3/main
 
 In a clean checkout of master
 
@@ -65,7 +65,7 @@ Wait for /_indexer snapshot on new instance to match snapshot on old instance
 # - sudo pg_ctlcluster 9.3 main promote
 # - cd /srv/encoded
 # - sudo -i -u encoded bin/batchupgrade production.ini --app-name app
-# - sudo -i -u postgres /opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-push /var/lib/postgresql/9.3/main
+# - sudo -i -u postgres /opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-push /var/lib/postgresql/9.3/main
 
 
 # Save logs from old instance
