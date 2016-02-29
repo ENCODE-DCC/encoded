@@ -80,13 +80,13 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
         SecurityGroups=security_groups,
         UserData=user_data,
         BlockDeviceMappings=bdm,
-        instanceInitiatedShutdownBehavior='terminate',
+        InstanceInitiatedShutdownBehavior='terminate',
         IamInstanceProfile={
             "Name": 'encoded-instance',
         }
     )
 
-    instance = reservation.instances[0]  # Instance:i-34edd56f
+    instance = reservation[0]  # Instance:i-34edd56f
     print('%s.%s.encodedcc.org' % (instance.id, domain))
     instance.wait_until_exists()
     instance.create_tags(Tags=[
@@ -129,9 +129,9 @@ def main():
         '--image-id', default='ami-1c1eff2f',
         help="ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-20151015")
     parser.add_argument(
-        '--instance-type', default='t2.large',
-        help="specify 'c4.4xlarge' for faster indexing (you should switch to a smaller "
-             "instance afterwards.)")
+        '--instance-type', default='c4.4xlarge',
+        help="(defualts toc4.4xlarge for indexing) Switch to a smaller instance afterwards"
+        "(m4.xlarge or c4.xlarge)")
     parser.add_argument('--profile-name', default=None, help="AWS creds profile")
     parser.add_argument('--elasticsearch', default=None, help="Launch an Elasticsearch instance")
     args = parser.parse_args()
