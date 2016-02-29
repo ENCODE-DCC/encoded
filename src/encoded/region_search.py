@@ -271,12 +271,9 @@ def region_search(context, request):
 
     # Search for peaks for the coordinates we got
     try:
-        include_peaks = False
-        if not 'region-search' in request.referrer:
-            peak_query = get_peak_query(start, end, with_inner_hits=True)
-        else:
-            peak_query = get_peak_query(start, end)
-            include_peaks = True
+        # including inner hits is very slow
+        # figure out how to distinguish browser requests from .embed method requests
+        peak_query = get_peak_query(start, end, with_inner_hits=True)
         peak_results = snp_es.search(body=peak_query,
                                      index=chromosome.lower(),
                                      doc_type=assembly,
