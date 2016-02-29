@@ -242,7 +242,7 @@ def audit_experiment_gtex_biosample(value, system):
         detail = 'GTEx experiment {} '.format(value['@id']) + \
                  'contains {} '.format(len(biosample_set)) + \
                  'biosamples, while according to HRWG decision it should have only 1'
-        yield AuditFailure('invalid modelling of GTEx experiment ', detail, level='ERROR')
+        yield AuditFailure('invalid modelling of GTEx experiment ', detail, level='NOT_COMPLIANT')
 
     return
 
@@ -406,7 +406,7 @@ def audit_experiment_replicate_with_no_files(value, system):
         if len(rep_dictionary[key]) == 0:
             detail = 'Experiment {} replicate '.format(value['@id']) + \
                      '{} does not have files associated with'.format(key)
-            yield AuditFailure('missing file in replicate', detail, level=audit_level)
+            yield AuditFailure('missing file in replicate', detail, level='ERROR')
         else:
             if seq_assay_flag is True:
                 if 'fasta' not in rep_dictionary[key] and \
@@ -590,13 +590,8 @@ def audit_experiment_replicates_biosample(value, system):
                               associated with the same biosample {}'.format(
                         value['@id'],
                         biosample['@id'])
-                    # different levels of severity for different rfas
-                    if value['award']['rfa'] in ['ENCODE3', 'GGR', 'modERN']:
-                        raise AuditFailure('biological replicates with identical biosample',
-                                           detail, level='ERROR')
-                    else:
-                        raise AuditFailure('biological replicates with identical biosample',
-                                           detail, level='DCC_ACTION')
+                    raise AuditFailure('biological replicates with identical biosample',
+                                       detail, level='DCC_ACTION')
                 else:
                     biosamples_list.append(biosample['accession'])
 
@@ -775,7 +770,7 @@ def audit_experiment_control(value, system):
         detail = '{} experiments require a value in possible_control'.format(
             value['assay_term_name']
             )
-        raise AuditFailure('missing possible_controls', detail, level='NOT_COMPLIANT')
+        raise AuditFailure('missing possible_controls', detail, level='ERROR')
 
     for control in value['possible_controls']:
         if control.get('biosample_term_id') != value.get('biosample_term_id'):
@@ -1103,4 +1098,4 @@ def audit_library_RNA_size_range(value, system):
         lib = rep['library']
         if (lib['nucleic_acid_term_id'] in RNAs) and ('size_range' not in lib):
             detail = 'RNA library {} requires a value for size_range'.format(rep['library']['@id'])
-            raise AuditFailure('missing size_range', detail, level='ERROR')
+            raise AuditFailure('missing size_range', detail, level='NOT_COMPLIANT')

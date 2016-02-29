@@ -200,7 +200,7 @@ def audit_file_controlled_by(value, system):
             value['@id'],
             value['dataset']['assay_term_name']
             )
-        yield AuditFailure('missing controlled_by', detail, level='NOT_COMPLIANT')
+        yield AuditFailure('missing controlled_by', detail, level='ERROR')
         return
 
     possible_controls = value['dataset'].get('possible_controls')
@@ -254,7 +254,7 @@ def audit_file_controlled_by(value, system):
                     ff['@id'],
                     control_run
                     )
-                yield AuditFailure('mismatched controlled_by run_type', detail, level='WARNING')
+                yield AuditFailure('mismatched controlled_by run_type', detail, level='NOT_COMPLIANT')
 
             if read_length != control_length:
                 detail = 'File {} is {} but its control file {} is {}'.format(
@@ -263,7 +263,7 @@ def audit_file_controlled_by(value, system):
                     ff['@id'],
                     ff['read_length']
                     )
-                yield AuditFailure('mismatched controlled_by read length', detail, level='WARNING')
+                yield AuditFailure('mismatched controlled_by read length', detail, level='NOT_COMPLIANT')
                 return
 
 
@@ -323,7 +323,7 @@ def audit_paired_with(value, system):
         detail = 'File {} has paired_end = {}. It requires a paired file'.format(
             value['@id'],
             value['paired_end'])
-        raise AuditFailure('missing paired_with', detail, level='NOT_COMPLIANT')
+        raise AuditFailure('missing paired_with', detail, level='ERROR')
 
     if 'replicate' not in value['paired_with']:
         return
