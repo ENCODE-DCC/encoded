@@ -273,7 +273,11 @@ def region_search(context, request):
     try:
         # including inner hits is very slow
         # figure out how to distinguish browser requests from .embed method requests
-        peak_query = get_peak_query(start, end, with_inner_hits=True)
+        if not request.referrer:
+            peak_query = get_peak_query(start, end, with_inner_hits=True)
+        else:
+            peak_query = get_peak_query(start, end)
+
         peak_results = snp_es.search(body=peak_query,
                                      index=chromosome.lower(),
                                      doc_type=assembly,
@@ -308,8 +312,8 @@ def region_search(context, request):
         result['@graph'] = list(format_results(request, es_results['hits']['hits']))
         result['total'] = es_results['hits']['total']
         result['facets'] = format_facets(es_results, _FACETS)
+        result['peaks'] = list(peak_results['hits']['hits'])
         if result['total'] > 0:
-            result['peaks'] = list(peak_results['hits']['hits'])
             result['notification'] = 'Success'
             result.update(search_result_actions(request, ['Experiment'], es_results))
 
