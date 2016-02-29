@@ -1,14 +1,8 @@
-from boto.ec2.blockdevicemapping import (
-    BlockDeviceMapping,
-    BlockDeviceType,
-)
-import boto.ec2
-import boto.exception
+import boto3
 import getpass
 import re
 import subprocess
 import sys
-import time
 
 
 def nameify(s):
@@ -31,25 +25,40 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
     if name is None:
         name = nameify('%s-%s-%s' % (branch, commit, username))
         if elasticsearch == 'yes':
-            name ='elasticsearch-' + name
+            name = 'elasticsearch-' + name
 
-    conn = boto.ec2.connect_to_region("us-west-2", profile_name=profile_name)
+    session = boto3.Session(region_name='us-west-2', profile_name=profile_name)
+    ec2 = session.resource('ec2')
 
     domain = 'production' if profile_name == 'production' else 'instance'
 
-    if any(name == i.tags.get('Name')
-           for reservation in conn.get_all_instances()
-           for i in reservation.instances
-           if i.state != 'terminated'):
+    if any(ec2.instances.filter(
+            Filters=[
+                {'Name': 'tag:Name', 'Values': [name]},
+                {'Name': 'instance-state-name',
+                 'Values': ['pending', 'running', 'stopping', 'stopped']},
+            ])):
         print('An instance already exists with name: %s' % name)
         sys.exit(1)
 
-    bdm = BlockDeviceMapping()
-    bdm['/dev/sda1'] = BlockDeviceType(volume_type='gp2', delete_on_termination=True, size=60)
-    # Don't attach instance storage so we can support auto recovery
-    bdm['/dev/sdb'] = BlockDeviceType(no_device=True)
-    bdm['/dev/sdc'] = BlockDeviceType(no_device=True)
-    
+    bdm = [
+        {
+            'DeviceName': '/dev/sda1',
+            'Ebs': {
+                'VolumeSize': 60,
+                'VolumeType': 'gp2',
+                'DeleteOnTermination': True
+            }
+        },
+        {
+            'DeviceName': '/dev/sdb',
+            'NoDevice': "",
+        },
+        {
+            'DeviceName': '/dev/sdc',
+            'NoDevice': "",
+        },
+    ]
 
     if not elasticsearch == 'yes':
         user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml']).decode('utf-8')
@@ -63,40 +72,36 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
         user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config-elasticsearch.yml']).decode('utf-8')
         security_groups = ['elasticsearch-https']
 
-    reservation = conn.run_instances(
-        image_id=image_id,
-        instance_type=instance_type,
-        security_groups=security_groups,
-        user_data=user_data,
-        block_device_map=bdm,
-        instance_initiated_shutdown_behavior='terminate',
-        instance_profile_name='encoded-instance',
+    reservation = ec2.create_instances(
+        ImageId=image_id,
+        MinCount=1,
+        MaxCount=1,
+        InstanceType=instance_type,
+        SecurityGroups=security_groups,
+        UserData=user_data,
+        BlockDeviceMappings=bdm,
+        instanceInitiatedShutdownBehavior='terminate',
+        IamInstanceProfile={
+            "Name": 'encoded-instance',
+        }
     )
 
-    time.sleep(0.5)  # sleep for a moment to ensure instance exists...
     instance = reservation.instances[0]  # Instance:i-34edd56f
     print('%s.%s.encodedcc.org' % (instance.id, domain))
-    instance.add_tags({
-        'Name': name,
-        'branch': branch,
-        'commit': commit,
-        'started_by': username,
-    })
+    instance.wait_until_exists()
+    instance.create_tags(Tags=[
+        {'Key': 'Name', 'Value': name},
+        {'Key': 'branch', 'Value': branch},
+        {'Key': 'commit', 'Value': commit},
+        {'Key': 'started_by', 'Value': username},
+    ])
     print('ssh %s.%s.encodedcc.org' % (name, domain))
     if domain == 'instance':
         print('https://%s.demo.encodedcc.org' % name)
 
-    sys.stdout.write(instance.state)
-    while instance.state == 'pending':
-        sys.stdout.write('.')
-        sys.stdout.flush()
-        time.sleep(1)
-        try:
-            instance.update()
-        except boto.exception.EC2ResponseError:
-            pass
-    print('')
-    print(instance.state)
+    print('pending...')
+    instance.wait_until_running()
+    print(instance.state['Name'])
 
 
 def main():
