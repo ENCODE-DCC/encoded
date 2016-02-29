@@ -29,8 +29,7 @@ runcmd:
 - mkdir -p /s3/encode-files
 - mkdir -p /s3/encoded-files-dev
 
-## - curl -sS -L -o /usr/local/bin/goofys https://github.com/kahing/goofys/releases/download/v0.0.4/goofys
-- curl -sS -L -o /usr/local/bin/goofys https://s3-us-west-1.amazonaws.com/encoded-build/goofys/goofys-aee8168
+- curl -sS -L -o /usr/local/bin/goofys https://github.com/kahing/goofys/releases/download/v0.0.5/goofys
 - chmod +x /usr/local/bin/goofys
 
 ## - mkdir -p /opt/goofys/bin
@@ -56,7 +55,8 @@ runcmd:
 - sudo -u build pyvenv .
 - sudo -u build bin/pip install -r requirements.txt
 
-- sudo -u ubuntu bin/python checkfiles.py $(cat /opt/checkfiles_args.txt)
+- cd /home/ubuntu
+- sudo -iu ubuntu /opt/encoded/checkfiles/bin/python /opt/encoded/checkfiles/checkfiles.py $(cat /opt/checkfiles_args.txt)
 
 
 users:
