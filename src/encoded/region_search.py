@@ -309,10 +309,7 @@ def region_search(context, request):
         result['total'] = es_results['hits']['total']
         result['facets'] = format_facets(es_results, _FACETS)
         if result['total'] > 0:
-            if include_peaks:
-                result['peaks'] = list(peak_results['hits']['hits'])
-            else:
-                result['peaks'] = []
+            result['peaks'] = list(peak_results['hits']['hits'])
             result['notification'] = 'Success'
             result.update(search_result_actions(request, ['Experiment'], es_results))
 
