@@ -189,6 +189,13 @@ var Annotation = React.createClass({
                                     <ProjectBadge award={context.award} addClasses="badge-heading" />
                                 </div>
                                 <dl className="key-value">
+                                    {context.encyclopedia_version ?
+                                        <div data-test="encyclopediaversion">
+                                            <dt>Encyclopedia version</dt>
+                                            <dd>{context.encyclopedia_version}</dd>
+                                        </div>
+                                    : null}
+
                                     {context.lab ?
                                         <div data-test="lab">
                                             <dt>Lab</dt>

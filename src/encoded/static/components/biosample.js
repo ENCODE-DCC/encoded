@@ -149,10 +149,16 @@ function collectBiosampleDocs(biosample) {
             talenDocuments = talenDocuments.concat(talen.documents);
         });
     }
+    var treatmentDocuments = [];
+    if (biosample.treatments && biosample.treatments.length) {
+        biosample.treatments.forEach(treatment => {
+            treatmentDocuments = treatmentDocuments.concat(treatment.protocols);
+        });
+    }
 
     // Put together the document list for rendering
     // Compile the document list
-    var combinedDocuments = [].concat(
+    var combinedDocuments = _([].concat(
         protocolDocuments,
         characterizations,
         constructDocuments,
@@ -160,8 +166,9 @@ function collectBiosampleDocs(biosample) {
         donorDocuments,
         donorCharacterizations,
         donorConstructs,
-        talenDocuments
-    );
+        talenDocuments,
+        treatmentDocuments
+    )).uniq(doc => doc.uuid);
 
     return combinedDocuments;
 }
