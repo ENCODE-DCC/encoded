@@ -953,7 +953,7 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
                                             <BatchDownload context={context} />
                                         : null}
 
-                                        {batchHubKeys ?
+                                        {batchHubKeys && context.batch_hub ?
                                             <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'}>
                                                 <DropdownMenu>
                                                     {batchHubKeys.map(assembly =>

@@ -361,19 +361,25 @@ def search_result_actions(request, doc_types, es_results):
     aggregations = es_results['aggregations']
 
     # generate batch hub URL for experiments
+    # TODO we could enable them for Datasets as well here, but not sure how well it will work
     if doc_types == ['Experiment']:
         for bucket in aggregations['assembly']['assembly']['buckets']:
             if bucket['doc_count'] > 0:
                 assembly = bucket['key']
+                if assembly == 'GRCh38':
+                    ucsc_assembly = 'hg20'
+                else:
+                    ucsc_assembly = assembly
                 search_params = request.query_string.replace('&', ',,')
                 if not request.params.getall('assembly') or assembly in request.params.getall('assembly'):
                     # filter  assemblies that are not selected
                     hub = request.route_url('batch_hub',
                                             search_params=search_params,
                                             txt='hub.txt')
-                    actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + assembly
+                    actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly
 
     # generate batch download URL for experiments
+    # TODO we could enable them for Datasets as well here, but not sure how well it will work
     if doc_types == ['Experiment'] and any(
             bucket['doc_count'] > 0
             for bucket in aggregations['files-file_type']['files-file_type']['buckets']):

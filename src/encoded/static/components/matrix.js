@@ -5,10 +5,14 @@ var globals = require('./globals');
 var search = require('./search');
 var url = require('url');
 var _ = require('underscore');
+var button = require('../libs/bootstrap/button');
+var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 
 var BatchDownload = search.BatchDownload;
 var FacetList = search.FacetList;
 var TextFilter = search.TextFilter;
+var DropdownButton = button.DropdownButton;
+var DropdownMenu = dropdownMenu.DropdownMenu;
 
 
 var HIGHLIGHT_COLOR = color('#4e7294');
@@ -55,6 +59,16 @@ var Matrix = module.exports.Matrix = React.createClass({
 
             var colCount = Math.min(x_buckets.length, x_limit + 1);
             var rowCount = y_groups.length ? y_groups.map(g => Math.min(g[secondary_y_grouping].buckets.length, y_limit ? y_limit + 1 : g[secondary_y_grouping].buckets.length) + 1).reduce((a, b) => a + b) : 0;
+
+            // Get a sorted list of batch hubs keys with case-insensitive sort
+            var batchHubKeys = [];
+            if (context.batch_hub && Object.keys(context.batch_hub).length) {
+                batchHubKeys = Object.keys(context.batch_hub).sort((a, b) => {
+                    var aLower = a.toLowerCase();
+                    var bLower = b.toLowerCase();
+                    return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
+                });
+            }
 
             return (
                 <div>
@@ -174,19 +188,16 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                     <BatchDownload context={context} />
                                                 : null}
                                                 {' '}
-                                                {context['batch_hub'] ?
-                                                    <span className="pull-right">
-                                                        {Object.keys(context['batch_hub']).map(function(assembly) {
-                                                            return (
-                                                                <span>
-                                                                    <a disabled={batch_hub_disabled} data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['batch_hub'][assembly]}>
-                                                                        {batch_hub_disabled ? 'Filter to 500 to visualize' :'Visualize'+' '+ assembly}
-                                                                    </a>
-                                                                    &nbsp;
-                                                                </span>
-                                                            );
-                                                        })}
-                                                    </span>
+                                                {batchHubKeys ?
+                                                    <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'}>
+                                                        <DropdownMenu>
+                                                            {batchHubKeys.map(assembly =>
+                                                                <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context['batch_hub'][assembly]}>
+                                                                    {assembly}
+                                                                </a>
+                                                            )}
+                                                        </DropdownMenu>
+                                                    </DropdownButton>
                                                 : null}
                                             </th>
                                         </tr>
