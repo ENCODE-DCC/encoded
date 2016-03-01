@@ -91,7 +91,7 @@ def get_biosample_accessions(file_json, experiment_json):
     accessions = []
     for replicate in experiment_json.get('replicates', []):
         accession = replicate['library']['biosample']['accession']
-        accessions.append(accessions)
+        accessions.append(accession)
     return ', '.join(list(set(accessions)))
 
 
