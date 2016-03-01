@@ -253,16 +253,14 @@ var Report = React.createClass({
         fetch: React.PropTypes.func,
     },
 
-    getDefaultProps: function() {
-        return {size: 25};
-    },
-
     getInitialState: function() {
         var parsed_url = url.parse(this.context.location_href, true);
         var from = parseInt(parsed_url.query.from) || 0;
+        var size = parseInt(parsed_url.query.limit) || 25;
         return {
-            from: from,
-            to: from + this.props.size,
+            from,
+            size,
+            to: from + size,
             loading: false,
             more: [],
         };
@@ -273,9 +271,10 @@ var Report = React.createClass({
         if (nextContext.location_href != this.context.location_href) {
             var parsed_url = url.parse(this.context.location_href, true);
             var from = parseInt(parsed_url.query.from) || 0;
+            var size = parseInt(parsed_url.query.limit) || 25;
             this.setState({
                 from: from,
-                to: from + this.props.size,
+                to: from + size,
                 more: [],
             });
         }
@@ -374,7 +373,7 @@ var Report = React.createClass({
 
         this.setState({
             request: request,
-            to: this.state.to + this.props.size,
+            to: this.state.to + this.state.size,
             loading: true,
         });
     },
