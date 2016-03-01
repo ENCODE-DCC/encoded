@@ -50,6 +50,19 @@ DEFAULT_DOC_TYPES = [
 ]
 
 
+def get_pagination(request):
+    from_ = request.params.get('from') or 0
+    size = request.params.get('limit', 25)
+    if size in ('all', ''):
+        size = None
+    else:
+        try:
+            size = int(size)
+        except ValueError:
+            size = 25
+    return from_, size
+
+
 def get_filtered_query(term, search_fields, result_fields, principals, doc_types):
     return {
         'query': {
@@ -449,16 +462,7 @@ def search(context, request, search_type=None):
     es_index = request.registry.settings['snowfort.elasticsearch.index']
     search_audit = request.has_permission('search_audit')
 
-    # handling pagination
-    from_ = request.params.get('from') or 0
-    size = request.params.get('limit', 25)
-    if size in ('all', ''):
-        size = None
-    else:
-        try:
-            size = int(size)
-        except ValueError:
-            size = 25
+    from_, size = get_pagination(request)
 
     search_term = prepare_search_term(request)
 
@@ -642,6 +646,10 @@ def report(context, request):
         msg = 'Report view requires specifying a single type.'
         raise HTTPBadRequest(explanation=msg)
 
+    # Ignore large limits, which make `search` return a Response
+    from_, size = get_pagination(request)
+    if 'limit' in request.GET and (size is None or size > 1000):
+        del request.GET['limit']
     # Reuse search view
     res = search(context, request)
 
