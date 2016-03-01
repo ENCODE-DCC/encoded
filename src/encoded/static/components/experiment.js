@@ -21,7 +21,7 @@ var doc = require('./doc');
 
 var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
-var DatasetFiles = dataset.DatasetFiles;
+var {DatasetFiles, FilePanelHeader, ExperimentTable} = dataset;
 var FetchedItems = fetched.FetchedItems;
 var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
@@ -30,7 +30,6 @@ var {AuditMixin, AuditIndicators, AuditDetail} = audit;
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
 var PubReferenceList = reference.PubReferenceList;
-var ExperimentTable = dataset.ExperimentTable;
 var SingleTreatment = objectutils.SingleTreatment;
 var SoftwareVersionList = software.SoftwareVersionList;
 var {SortTablePanel, SortTable} = sortTable;
@@ -314,14 +313,8 @@ var Experiment = module.exports.Experiment = React.createClass({
         });
 
         // Determine this experiment's ENCODE version
-        var encodevers = "";
-        if (context.award.rfa) {
-            encodevers = globals.encodeVersionMap[context.award.rfa.substring(0,7)];
-            if (typeof encodevers === "undefined") {
-                encodevers = "";
-            }
-        }
-
+        var encodevers = globals.encodeVersion(context);
+    
         // Make list of statuses
         var statuses = [{status: context.status, title: "Status"}];
         if (encodevers === "3" && context.status === "released") {
@@ -568,24 +561,6 @@ var Experiment = module.exports.Experiment = React.createClass({
 });
 
 globals.content_views.register(Experiment, 'Experiment');
-
-
-var FilePanelHeader = React.createClass({
-    render: function() {
-        var context = this.props.context;
-
-        return (
-            <div>
-                {context.visualize_ucsc && context.status === "released" ?
-                    <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-xs" href={context['visualize_ucsc']}>Visualize Data</a>
-                    </span>
-                : null}
-                <h4>File summary</h4>
-            </div>
-        );
-    }
-});
 
 
 // Display the table of replicates

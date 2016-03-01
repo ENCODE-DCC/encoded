@@ -68,6 +68,11 @@ var annotationBiosampleSummary = module.exports.annotationBiosampleSummary = fun
 // Display Annotation page, a subtype of Dataset.
 var Annotation = React.createClass({
     mixins: [AuditMixin],
+
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -231,14 +236,8 @@ var Annotation = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {context.visualize_ucsc  && context.status == "released" ?
-                    <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
-                    </span>
-                : null }
-
                 {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={dataset.files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} session={this.context.session} ignoreErrors />
+                <FetchedItems {...this.props} url={files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -252,6 +251,11 @@ globals.content_views.register(Annotation, 'Annotation');
 // Display Annotation page, a subtype of Dataset.
 var PublicationData = React.createClass({
     mixins: [AuditMixin],
+
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     render: function() {
         var context = this.props.context;
         var files = context.files;
@@ -374,14 +378,8 @@ var PublicationData = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {context.visualize_ucsc  && context.status == "released" ?
-                    <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
-                    </span>
-                : null }
-
                 {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={dataset.files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} session={this.context.session} ignoreErrors />
+                <FetchedItems {...this.props} url={files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -395,6 +393,11 @@ globals.content_views.register(PublicationData, 'PublicationData');
 // Display Annotation page, a subtype of Dataset.
 var Reference = React.createClass({
     mixins: [AuditMixin],
+
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -517,7 +520,7 @@ var Reference = React.createClass({
                 </Panel>
 
                 {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={dataset.files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} session={this.context.session} ignoreErrors />
+                <FetchedItems {...this.props} url={files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -531,6 +534,11 @@ globals.content_views.register(Reference, 'Reference');
 // Display Annotation page, a subtype of Dataset.
 var Project = React.createClass({
     mixins: [AuditMixin],
+
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -679,14 +687,8 @@ var Project = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {context.visualize_ucsc  && context.status == "released" ?
-                    <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
-                    </span>
-                : null }
-
                 {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={dataset.files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} session={this.context.session} ignoreErrors />
+                <FetchedItems {...this.props} url={files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -700,6 +702,11 @@ globals.content_views.register(Project, 'Project');
 // Display Annotation page, a subtype of Dataset.
 var UcscBrowserComposite = React.createClass({
     mixins: [AuditMixin],
+
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     render: function() {
         var context = this.props.context;
         var files = context.files;
@@ -835,14 +842,8 @@ var UcscBrowserComposite = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {context.visualize_ucsc  && context.status == "released" ?
-                    <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
-                    </span>
-                : null }
-
                 {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={dataset.files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} session={this.context.session} ignoreErrors />
+                <FetchedItems {...this.props} url={files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -851,6 +852,24 @@ var UcscBrowserComposite = React.createClass({
 });
 
 globals.content_views.register(UcscBrowserComposite, 'UcscBrowserComposite');
+
+
+var FilePanelHeader = module.exports.FilePanelHeader = React.createClass({
+    render: function() {
+        var context = this.props.context;
+
+        return (
+            <div>
+                {context.visualize_ucsc && context.status === "released" ?
+                    <span className="pull-right">
+                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-xs" href={context['visualize_ucsc']}>Visualize Data</a>
+                    </span>
+                : null}
+                <h4>File summary</h4>
+            </div>
+        );
+    }
+});
 
 
 var getValuePossibleControls = function(item) {
@@ -1272,10 +1291,23 @@ var files_url = module.exports.files_url = function (context) {
 // Called once searches for unreleased files returns results in this.props.items. Displays both released and
 // unreleased files.
 var DatasetFiles = module.exports.DatasetFiles = React.createClass({
-    render: function () {
-        var context = this.props.context;
+    contextTypes: {
+        session: React.PropTypes.object
+    },
 
-        return <FileTable {...this.props} items={this.props.items} />;
+    render: function () {
+        var fileList;
+        var context = this.props.context;
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
+
+        if (loggedIn) {
+            fileList = this.props.items;
+        } else {
+            // Even if not logged in, revoked files appear in returned file list. Filter them out.
+            fileList = _(this.props.items).filter(file => file.status !== 'revoked');
+        }
+
+        return <FileTable {...this.props} items={fileList} />;
     }
 });
 
