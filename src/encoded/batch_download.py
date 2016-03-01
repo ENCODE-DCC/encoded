@@ -9,6 +9,7 @@ from urllib.parse import (
 
 import csv
 import io
+import json
 
 import logging
 import pprint
@@ -80,17 +81,32 @@ def get_file_uuids(result_dict):
             file_uuids.append(file['uuid'])
     return list(set(file_uuids))
 
+def get_biosample_accessions(file_json, experiment_json):
+    for f in experiment_json['files']:
+        if file_json['uuid'] == f['uuid']:
+            accession = f.get('replicate', {}).get('library', {}).get('biosample', {}).get('accession')
+            if accession:
+                log.warn('found a bed narrowPeak file with path replicate.library.biosample {}'.format(file_json['uuid']))
+                return accession
+    accessions = []
+    for replicate in experiment_json.get('replicates', []):
+        accession = replicate['library']['biosample']['accession']
+        accessions.append(accessions)
+    return ', '.join(list(set(accessions)))
+
+
 
 @view_config(route_name='peak_metadata', request_method='GET')
 def peak_metadata_tsv(context, request):
     param_list = parse_qs(request.matchdict['search_params'])
     param_list['field'] = []
-    header = ['coordinates', 'file accession', 'experiment accession', 'target name', 'biosample accession', ]
+    header = ['assay_term_name', 'coordinates', 'target.label', 'biosample.accession', 'file.accession', 'experiment.accession']
     param_list['limit'] = ['all']
     path = '/region-search/?{}'.format(urlencode(param_list, True))
     results = request.embed(path, as_user=True)
     uuids_in_results = get_file_uuids(results)
     rows = []
+    json_doc = {}
     for row in results['peaks']:
         if row['_id'] in uuids_in_results:
             file_json = request.embed(row['_id'])
@@ -100,10 +116,23 @@ def peak_metadata_tsv(context, request):
                 coordinates = '{}:{}-{}'.format(hit['_index'], hit['_source']['start'], hit['_source']['end'])
                 file_accession = file_json['accession']
                 experiment_accession = experiment_json['accession']
-                target_name = experiment_json['assay_term_name']
-                biosample_accession = None # figure out how to get biosample accession
-                data_row.extend([coordinates, file_accession, experiment_accession, target_name, biosample_accession])
+                assay_name = experiment_json['assay_term_name']
+                target_name = experiment_json.get('target', {}).get('label') # not all experiments have targets
+                biosample_accession = get_biosample_accessions(file_json, experiment_json)
+                data_row.extend([assay_name, coordinates, target_name, biosample_accession, file_accession, experiment_accession])
                 rows.append(data_row)
+                if assay_name not in json_doc:
+                    json_doc[assay_name] = []
+                else:
+                    json_doc[assay_name].append({
+                        'coordinates': coordinates,
+                        'target.name': target_name,
+                        'biosample.accession': list(biosample_accession.split(', ')),
+                        'file.accession': file_accession,
+                        'experiment.accession': experiment_accession
+                    })
+    if 'peak_metadata.json' in request.url:
+        return Response(json.dumps(json_doc))
     fout = io.StringIO()
     writer = csv.writer(fout, delimiter='\t')
     writer.writerow(header)
