@@ -230,16 +230,8 @@ var Annotation = React.createClass({
                     </span>
                 : null }
 
-                {context.files.length ?
-                    <div>
-                        <h3>Files in annotation file set {context.accession}</h3>
-                        <FileTable context={context} items={context.files} originating />
-                    </div>
-                : null }
-
-                {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} />
-                : null}
+                {/* Display list of released and unreleased files */}
+                <FetchedItems {...this.props} url={dataset.files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} session={this.context.session} ignoreErrors />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -381,16 +373,8 @@ var PublicationData = React.createClass({
                     </span>
                 : null }
 
-                {context.files.length ?
-                    <div>
-                        <h3>Files for publication file set {context.accession}</h3>
-                        <FileTable context={context} items={context.files} originating />
-                    </div>
-                : null }
-
-                {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} />
-                : null}
+                {/* Display list of released and unreleased files */}
+                <FetchedItems {...this.props} url={dataset.files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} session={this.context.session} ignoreErrors />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -525,16 +509,8 @@ var Reference = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {context.files.length ?
-                    <div>
-                        <h3>Files in reference file set {context.accession}</h3>
-                        <FileTable context={context} items={context.files} originating />
-                    </div>
-                : null }
-
-                {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} />
-                : null}
+                {/* Display list of released and unreleased files */}
+                <FetchedItems {...this.props} url={dataset.files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} session={this.context.session} ignoreErrors />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -702,16 +678,8 @@ var Project = React.createClass({
                     </span>
                 : null }
 
-                {context.files.length ?
-                    <div>
-                        <h3>Files in project file set {context.accession}</h3>
-                        <FileTable context={context} items={context.files} originating />
-                    </div>
-                : null }
-
-                {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} />
-                : null}
+                {/* Display list of released and unreleased files */}
+                <FetchedItems {...this.props} url={dataset.files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} session={this.context.session} ignoreErrors />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -866,16 +834,8 @@ var UcscBrowserComposite = React.createClass({
                     </span>
                 : null }
 
-                {context.files.length ?
-                    <div>
-                        <h3>Files in UCSC browser composite file set {context.accession}</h3>
-                        <FileTable context={context} items={context.files} originating />
-                    </div>
-                : null }
-
-                {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} />
-                : null}
+                {/* Display list of released and unreleased files */}
+                <FetchedItems {...this.props} url={dataset.files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} session={this.context.session} ignoreErrors />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -1297,16 +1257,8 @@ var Series = module.exports.Series = React.createClass({
 globals.content_views.register(Series, 'Series');
 
 
-var unreleased_files_url = module.exports.unreleased_files_url = function (context) {
-    var file_states = [
-        '',
-        "uploading",
-        "uploaded",
-        "upload failed",
-        "format check failed",
-        "in progress"
-    ].map(encodeURIComponent).join('&status=');
-    return '/search/?limit=all&frame=embedded&type=file&dataset=' + context['@id'] + file_states;
+var files_url = module.exports.files_url = function (context) {
+    return '/search/?limit=all&frame=embedded&type=file&dataset=' + context['@id'];
 };
 
 
@@ -1316,10 +1268,7 @@ var DatasetFiles = module.exports.DatasetFiles = React.createClass({
     render: function () {
         var context = this.props.context;
 
-        // this.props.items has a list of unreleased files, while context.files is a list of released files
-        var files = (context.files && context.files.length) ? context.files.concat(this.props.items) : this.props.items;
-
-        return <FileTable {...this.props} items={files} />;
+        return <FileTable {...this.props} items={this.props.items} />;
     }
 });
 
@@ -1629,9 +1578,9 @@ var FileTable = module.exports.FileTable = React.createClass({
 
             return (
                 <SortTablePanel header={this.props.filePanelHeader}>
-                    <SortTable title="Raw data files" list={files.raw} columns={this.rawTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic, session: this.props.session}} />
-                    <SortTable title="Raw data files" list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic, session: this.props.session}} />
-                    <SortTable title="Processed data files" list={files.proc} columns={this.procTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic, session: this.props.session}} />
+                    <SortTable title="Raw data files" list={files.raw} columns={this.rawTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic, session: this.props.session}} sortColumn="biological_replicates" />
+                    <SortTable title="Raw data files" list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic, session: this.props.session}} sortColumn="biological_replicates" />
+                    <SortTable title="Processed data files" list={files.proc} columns={this.procTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic, session: this.props.session}} sortColumn="biological_replicates" />
                     <SortTable title="Reference data files" list={files.ref} columns={this.refTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic, session: this.props.session}} />
                 </SortTablePanel>
             );
