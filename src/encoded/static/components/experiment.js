@@ -2,7 +2,9 @@
 var React = require('react');
 var panel = require('../libs/bootstrap/panel');
 var _ = require('underscore');
+var queryString = require('query-string');
 var moment = require('moment');
+var url = require('url');
 var graph = require('./graph');
 var navbar = require('./navbar');
 var globals = require('./globals');
@@ -26,6 +28,7 @@ var FileTable = dataset.FileTable;
 var DatasetFiles = dataset.DatasetFiles;
 var FetchedItems = fetched.FetchedItems;
 var FetchedData = fetched.FetchedData;
+var FacetList = search.FacetList;
 var Param = fetched.Param;
 var StatusLabel = statuslabel.StatusLabel;
 var {AuditMixin, AuditIndicators, AuditDetail} = audit;
@@ -569,22 +572,75 @@ var Experiment = module.exports.Experiment = React.createClass({
 globals.content_views.register(Experiment, 'Experiment');
 
 
-// File display widget, showing a facet list, a table, and a graph (and maybe a BioDalliance)
+// File display widget, showing a facet list, a table, and a graph (and maybe a BioDalliance).
+// This component only triggers the data retrieval, which is done with a search for files associated
+// with the given experiment (in this.props.context). An odd thing is we specify query-string parameters
+// to the experiment URL, but they apply to the file search -- not the experiment itself.
+
 var FileGallery = React.createClass({
     contextTypes: {
-        session: React.PropTypes.object
+        session: React.PropTypes.object, // Login information
+        location_href: React.PropTypes.string // URL of this experiment page, including query string stuff
+    },
+
+    nonSearchQueries: ['format'],
+
+    render: function() {
+        var fileSearchQuery; // Query string from experiment URL to pass to file search.
+        var searchQueryStr; // Query string to use for file searches
+        var {context} = this.props;
+
+        // Get the file-search URL from the current experiment, and add the current query string parameters from the
+        // experiment URL to it.
+        var fileSearchUrl = dataset.files_url(context);
+        if (this.context.location_href) {
+            // Get the query string from the current URL. Some query string terms only apply to files -- not the experiment.
+            fileSearchQuery = url.parse(this.context.location_href).query;
+
+            // Extract query string parameters that only apply to searches into searchQueryTerms
+            var searchQueryTerms = {};
+            var queryTerms = queryString.parse(fileSearchQuery);
+            Object.keys(queryTerms).forEach(queryTerm => {
+                // For each term in the query string, see if it exists in the searchQueries array. If it does, add it to the
+                // file-search query string we'll be building.
+                if (this.nonSearchQueries.indexOf(queryTerm) === -1) {
+                    searchQueryTerms[queryTerm] = queryTerms[queryTerm];
+                }
+            });
+
+            // Convert the object of query string key-values to a query string.
+            if (Object.keys(searchQueryTerms)) {
+                searchQueryStr = queryString.stringify(searchQueryTerms);
+            }
+        }
+
+        return (
+            <FetchedData>
+                <Param name="data" url={fileSearchUrl + (searchQueryStr ? '&' + searchQueryStr : '')} />
+                <FileGalleryRenderer context={context} session={this.context.session} />
+            </FetchedData>
+        );
+    }
+});
+
+
+// Function to render the file gallery, and it gets called after the file search results (for files associated with
+// the displayed experiment) return.
+var FileGalleryRenderer = React.createClass({
+    contextTypes: {
+        session: React.PropTypes.object,
+        location_href: React.PropTypes.string
     },
 
     render: function() {
         var {context, data} = this.props;
-        console.log(this.props);
+        var searchBase = url.parse(this.context.location_href).search || '?type=Experiment';
 
         return (
-            <FetchedData ignoreErrors>
-                <Param name="data" url={dataset.files_url(context)} />
-                {/*<search.FacetList facets={data.facets} filters={data.filters} />*/}
-                <ExperimentGraph context={context} session={this.context.session} />
-            </FetchedData>
+            <div>
+                <FacetList facets={data.facets} filters={data.filters} searchBase={searchBase ? searchBase + '&' : searchBase + '?'} />
+                <ExperimentGraph context={context} data={data} session={this.context.session} />
+            </div>
         );
     }
 });
@@ -1563,8 +1619,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
     render: function() {
         var {context, session, data} = this.props;
-        var items = data ? data['@graph'] : [];
-        var files = context.files.concat(items);
+        var files = data ? data['@graph'] : [];
 
         // Build node graph of the files and analysis steps with this experiment
         if (files && files.length) {
