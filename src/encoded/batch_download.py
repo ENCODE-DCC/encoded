@@ -131,8 +131,8 @@ def peak_metadata_tsv(context, request):
                         'file.accession': file_accession,
                         'experiment.accession': experiment_accession
                     })
-    if 'peak_metadata.json' in request.url:
-        return Response(json.dumps(json_doc))
+    # if 'peak_metadata.json' in request.url:
+    #     return Response(json.dumps(json_doc))
     fout = io.StringIO()
     writer = csv.writer(fout, delimiter='\t')
     writer.writerow(header)
