@@ -167,6 +167,9 @@
             "title": "Project",
             "type": "string"
         },
+        "award.rfa": {
+            "title": "RFA"
+        },
         "status": {
             "title": "Status",
             "type": "string"

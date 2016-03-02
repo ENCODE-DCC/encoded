@@ -213,6 +213,9 @@
         "award.project": {
             "title": "Project"
         },
+        "award.rfa": {
+            "title": "RFA"
+        },
         "status": {
             "title": "Status"
         },
