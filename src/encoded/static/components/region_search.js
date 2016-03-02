@@ -104,14 +104,6 @@ var AdvSearch = React.createClass({
         var context = this.props.context;
         var id = url.parse(this.context.location_href, true);
         var region = id.query['region'] || '';
-        var coordinates = context['coordinates'];
-        if (typeof(coordinates) != 'undefined') {
-          var regionWithCoordinates = region + " " + coordinates;  
-        } else {
-          var regionWithCoordinates = region;
-        } 
-
-        
         return (
             <div className="adv-search-form">
                 <form id="panel1" ref="adv-search" role="form" autoComplete="off" aria-labeledby="tab1">
@@ -121,7 +113,7 @@ var AdvSearch = React.createClass({
                             {Object.keys(this.state.terms).map(function(key) {
                                 return <input type="hidden" name={key} value={this.state.terms[key]} />;
                             }, this)}
-                            <input ref="annotation" defaultValue={regionWithCoordinates} name="region" type="text" className="form-control" onChange={this.handleChange}
+                            <input ref="annotation" defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange}
                             
                                 placeholder="Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID" />
                             {(this.state.showAutoSuggest && this.state.searchTerm) ?
@@ -167,7 +159,6 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
         var facets = context['facets'];
         var total = context['total'];
         var batch_hub_disabled = total > 500;
-        console.log(context['batch_download']);
         return (
           <div>
               <h2>Region search</h2>
