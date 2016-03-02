@@ -1284,30 +1284,24 @@ globals.content_views.register(Series, 'Series');
 
 
 var files_url = module.exports.files_url = function (context) {
-    return '/search/?limit=all&frame=embedded&type=file&dataset=' + context['@id'];
+    var file_states = [
+        '',
+        "uploading",
+        "uploaded",
+        "upload failed",
+        "format check failed",
+        "in progress",
+        "released"
+    ].map(encodeURIComponent).join('&status=');
+    return '/search/?limit=all&frame=embedded&type=file&dataset=' + context['@id'] + file_states;
 };
 
 
 // Called once searches for unreleased files returns results in this.props.items. Displays both released and
 // unreleased files.
 var DatasetFiles = module.exports.DatasetFiles = React.createClass({
-    contextTypes: {
-        session: React.PropTypes.object
-    },
-
     render: function () {
-        var fileList;
-        var context = this.props.context;
-        var loggedIn = this.context.session && this.context.session['auth.userid'];
-
-        if (loggedIn) {
-            fileList = this.props.items;
-        } else {
-            // Even if not logged in, revoked files appear in returned file list. Filter them out.
-            fileList = _(this.props.items).filter(file => file.status !== 'revoked');
-        }
-
-        return <FileTable {...this.props} items={fileList} />;
+        return <FileTable {...this.props} items={this.props.items} />;
     }
 });
 
