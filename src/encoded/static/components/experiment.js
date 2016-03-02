@@ -24,8 +24,7 @@ var doc = require('./doc');
 
 var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
-var FileTable = dataset.FileTable;
-var DatasetFiles = dataset.DatasetFiles;
+var {DatasetFiles, FilePanelHeader, ExperimentTable} = dataset;
 var FetchedItems = fetched.FetchedItems;
 var FetchedData = fetched.FetchedData;
 var FacetList = search.FacetList;
@@ -35,7 +34,6 @@ var {AuditMixin, AuditIndicators, AuditDetail} = audit;
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
 var PubReferenceList = reference.PubReferenceList;
-var ExperimentTable = dataset.ExperimentTable;
 var SingleTreatment = objectutils.SingleTreatment;
 var SoftwareVersionList = software.SoftwareVersionList;
 var {SortTablePanel, SortTable} = sortTable;
@@ -319,14 +317,8 @@ var Experiment = module.exports.Experiment = React.createClass({
         });
 
         // Determine this experiment's ENCODE version
-        var encodevers = "";
-        if (context.award.rfa) {
-            encodevers = globals.encodeVersionMap[context.award.rfa.substring(0,7)];
-            if (typeof encodevers === "undefined") {
-                encodevers = "";
-            }
-        }
-
+        var encodevers = globals.encodeVersion(context);
+    
         // Make list of statuses
         var statuses = [{status: context.status, title: "Status"}];
         if (encodevers === "3" && context.status === "released") {
