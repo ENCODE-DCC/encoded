@@ -248,7 +248,7 @@ def batch_download(context, request):
             host_url=request.host_url,
             search_params=request.matchdict['search_params']
         )
-        files.extend(peak_metadata_tsv_link, peak_metadata_json_link)
+        files.extend([peak_metadata_tsv_link, peak_metadata_json_link])
     path = '{}?{}'.format(search_path, urlencode(param_list, True))
     results = request.embed(path, as_user=True)
     metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv'.format(
