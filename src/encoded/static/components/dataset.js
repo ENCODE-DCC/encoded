@@ -1301,7 +1301,11 @@ var files_url = module.exports.files_url = function (context) {
 // unreleased files.
 var DatasetFiles = module.exports.DatasetFiles = React.createClass({
     render: function () {
-        return <FileTable {...this.props} items={this.props.items} />;
+        if (this.props.items) {
+            return <FileTable {...this.props} items={this.props.items} />;
+        } else {
+            return null;
+        }
     }
 });
 
