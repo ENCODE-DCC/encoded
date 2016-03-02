@@ -104,6 +104,7 @@ var AdvSearch = React.createClass({
         var context = this.props.context;
         var id = url.parse(this.context.location_href, true);
         var region = id.query['region'] || '';
+        var coordinates = context['coordinates'] || ''
 
         return (
             <div className="adv-search-form">
@@ -114,7 +115,7 @@ var AdvSearch = React.createClass({
                             {Object.keys(this.state.terms).map(function(key) {
                                 return <input type="hidden" name={key} value={this.state.terms[key]} />;
                             }, this)}
-                            <input ref="annotation" defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange}
+                            <input ref="annotation" defaultValue={region + coordinates } name="region" type="text" className="form-control" onChange={this.handleChange}
                                 placeholder="Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID" />
                             {(this.state.showAutoSuggest && this.state.searchTerm) ?
                                 <FetchedData loadingComplete={true}>
