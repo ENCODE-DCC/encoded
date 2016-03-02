@@ -59,11 +59,11 @@
                 "candidate enhancers",
                 "candidate promoters",
                 "enhancer prediction",
-                "DNase hypersensitive regions",
+                "DNase master peaks",
                 "transcription factor motifs",
                 "SAGA",
-                "overlap",
                 "validated enhancers",
+                "overlap",
                 "segmentation",
                 "encyclopedia"
             ]
@@ -204,6 +204,10 @@
         "software_used.software.name": {
             "title": "Software used",
             "type": "array"
+        },
+        "encyclopedia_version": {
+            "title": "Encyclopedia version",
+            "type": "string"
         },
         "lab.title": {
             "title": "Lab",

@@ -255,6 +255,17 @@ def test_audit_file_read_length_insufficient(testapp, file1):
     assert any(error['category'] == 'insufficient read length' for error in errors_list)
 
 
+def test_audit_file_read_length_insufficient_excluding_bind_n_seq(testapp, file1, file_exp):
+    testapp.patch_json(file_exp['@id'], {'assay_term_name': 'RNA Bind-n-Seq'})
+    testapp.patch_json(file1['@id'], {'read_length': 20})
+    res = testapp.get(file1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'insufficient read length' for error in errors_list)
+
+
 def test_audit_file_read_length_sufficient(testapp, file1):
     testapp.patch_json(file1['@id'], {'read_length': 100})
     res = testapp.get(file1['@id'] + '@@index-data')
@@ -436,7 +447,7 @@ def test_audit_file_read_depth_chip_seq_paired_end_no_target(testapp, file_exp, 
                                                              analysis_step_bam,
                                                              pipeline_bam):
     testapp.patch_json(file6['@id'], {'dataset': file_exp['@id']})
-    testapp.patch_json(file4['@id'], {'run_type': 'paired-ended'})
+    testapp.patch_json(chipseq_bam_quality_metric['@id'], {'read1': 100, 'read2': 100})
     testapp.patch_json(file6['@id'], {'derived_from': [file4['@id']]})
     res = testapp.get(file6['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -509,7 +520,7 @@ def test_audit_file_read_depth_chip_seq_paired_end(testapp, file_exp, file6, fil
                                                    pipeline_bam):
     testapp.patch_json(file_exp['@id'], {'target': target_H3K27ac['@id']})
     testapp.patch_json(file6['@id'], {'dataset': file_exp['@id']})
-    testapp.patch_json(file4['@id'], {'run_type': 'paired-ended'})
+    testapp.patch_json(chipseq_bam_quality_metric['@id'], {'read1': 100, 'read2': 100})
     testapp.patch_json(file6['@id'], {'derived_from': [file4['@id']]})
     res = testapp.get(file6['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -526,9 +537,9 @@ def test_audit_file_insufficient_read_depth_chip_seq_paired_end(testapp, file_ex
                                                                 analysis_step_bam, target_H3K27ac,
                                                                 pipeline_bam):
     testapp.patch_json(file_exp['@id'], {'target': target_H3K27ac['@id']})
-    testapp.patch_json(chipseq_bam_quality_metric['@id'], {'total': 10000000})
+    testapp.patch_json(chipseq_bam_quality_metric['@id'], {'total': 10000000,
+                                                           'read1': 100, 'read2': 100})
     testapp.patch_json(file6['@id'], {'dataset': file_exp['@id']})
-    testapp.patch_json(file4['@id'], {'run_type': 'paired-ended'})
     testapp.patch_json(file6['@id'], {'derived_from': [file4['@id']]})
     res = testapp.get(file6['@id'] + '@@index-data')
     errors = res.json['audit']

@@ -64,7 +64,7 @@ def etag_app_version_effective_principals(view_callable):
         request.response.etag = etag
         cache_control = request.response.cache_control
         cache_control.private = True
-        cache_control.max_age = 3600
+        cache_control.max_age = 0
         cache_control.must_revalidate = True
         return result
 
