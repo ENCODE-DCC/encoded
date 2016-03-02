@@ -105,7 +105,7 @@ var AdvSearch = React.createClass({
         var id = url.parse(this.context.location_href, true);
         var region = id.query['region'] || '';
         var coordinates = context['coordinates'];
-        if (coordinates !== undefined) {
+        if (typeof(coordinates) != 'undefined') {
           var regionWithCoordinates = region + " " + coordinates;  
         } else {
           var regionWithCoordinates = region;
