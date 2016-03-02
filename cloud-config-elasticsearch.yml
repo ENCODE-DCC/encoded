@@ -130,16 +130,6 @@ runcmd:
 - update-rc.d elasticsearch defaults
 - service elasticsearch start
 
-# - sleep 10
-# - sudo -u postgres echo "include 'master.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
-# - pg_ctlcluster 9.3 main reload
-# - pg_ctlcluster 9.3 main promote
-# - sudo -u encoded bin/update-keys-links production.ini --app-name app
-# - sudo -u encoded bin/upgrade production.ini --app-name app
-# - sudo -i -u postgres /opt/wal-e/bin/wal-e --aws-profile default --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" backup-push /var/lib/postgresql/9.3/main
-# - sleep 60
-# - sudo -i -u encoded PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH" bin/test -m "not bdd" > tests.out
-
 users:
 - default
 - name: build
