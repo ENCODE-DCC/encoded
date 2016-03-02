@@ -351,19 +351,23 @@ def audit_biosample_part_of_consistency(value, system):
     else:
         part_of_biosample = value['part_of']
         term_id = value['biosample_term_id']
+        term_name = value['biosample_term_name']
+        part_of_term_name = part_of_biosample['biosample_term_name']
         part_of_term_id = part_of_biosample['biosample_term_id']
         if term_id == part_of_term_id or part_of_term_id == 'UBERON:0000468':
             return
+
         ontology = system['registry']['ontology']
         if (term_id in ontology) and (part_of_term_id in ontology):
             if is_part_of(term_id, part_of_term_id, ontology) is True:
                 return
 
         detail = 'Biosample {} '.format(value['@id']) + \
-                 'with biosample_term_id {} '.format(term_id) + \
+                 'with biosample term {} '.format(term_name) + \
                  'was separated from biosample {} '.format(part_of_biosample['@id']) + \
-                 'that has different ' + \
-                 'biosample_term_id {}'.format(part_of_term_id)
+                 'with biosample term {}. '.format(part_of_term_name) + \
+                 'The {} '.format(term_id) + \
+                 'ontology does not note that part_of relationship.'
         yield AuditFailure('inconsistent biosample_term_id', detail,
                            level='WARNING')
         return
