@@ -57,7 +57,7 @@ def audit_reference_epigenome_assay_types_requirments(value, system):
                        ('ChIP-seq', 'H3K4me3'): 0,
                        ('ChIP-seq', 'H3K27ac'): 0,
                        ('ChIP-seq', 'H3K9me3'): 0,
-                       'WGBS': 0,
+                       'whole-genome shotgun bisulfite sequencing': 0,
 
                        'RNA-seq': 0,
                        'transcription profiling by array assay': 0,
@@ -103,7 +103,7 @@ def audit_reference_epigenome_assay_types_requirments(value, system):
         detail = 'Reference Epigenome {} '.format(value['@id']) + \
                  'missing IHEC required H3K9me3 ChIP-seq assay.'
         yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
-    if required_assays['WGBS'] == 0:
+    if required_assays['whole-genome shotgun bisulfite sequencing'] == 0:
         detail = 'Reference Epigenome {} '.format(value['@id']) + \
                  'missing IHEC required WGBS assay.'
         yield AuditFailure('missing IHEC required assay', detail, level='WARNING')

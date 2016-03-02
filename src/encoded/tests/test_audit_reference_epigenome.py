@@ -40,7 +40,7 @@ def reference_experiment_WGBS(testapp, lab, award):
         'award': award['uuid'],
         'lab': lab['uuid'],
         'status': 'in progress',
-        'assay_term_name': 'WGBS'
+        'assay_term_name': 'whole-genome shotgun bisulfite sequencing'
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
