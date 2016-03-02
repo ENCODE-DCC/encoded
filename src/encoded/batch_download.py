@@ -134,7 +134,7 @@ def peak_metadata_tsv(context, request):
                     })
     if 'peak_metadata.json' in request.url:
         return Response(
-            content_type='application/json',
+            content_type='text/plain',
             body=json.dumps(json_doc),
             content_disposition='attachment;filename="%s"' % 'peak_metadata.json'
         )
