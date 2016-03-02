@@ -695,6 +695,7 @@ def audit_file_read_depth(value, system):
         if 'file_type' in derived_from_file and derived_from_file['file_type'] == 'fastq' and \
            'run_type' in derived_from_file:
             paring_status_detected = True
+            break
 
     if paring_status_detected is False:
         detail = 'ENCODE Processed alignment file {} has no run_type in derived_from files'.format(
