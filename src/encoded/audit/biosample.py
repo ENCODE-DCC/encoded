@@ -369,5 +369,5 @@ def audit_biosample_part_of_consistency(value, system):
                  'The {} '.format(term_id) + \
                  'ontology does not note that part_of relationship.'
         yield AuditFailure('inconsistent biosample_term_id', detail,
-                           level='WARNING')
+                           level='DCC_ACTION')
         return
