@@ -128,6 +128,9 @@
         "award.project": {
             "title": "Project",
             "type": "string"
+        },
+        "award.rfa": {
+            "title": "RFA"
         }
     },
     "columns": {
@@ -166,9 +169,6 @@
         "award.project": {
             "title": "Project",
             "type": "string"
-        },
-        "award.rfa": {
-            "title": "RFA"
         },
         "status": {
             "title": "Status",

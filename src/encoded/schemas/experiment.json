@@ -132,6 +132,9 @@
             "title": "Project",
             "type": "string"
         },
+        "award.rfa": {
+            "title": "RFA"
+        },
         "status": {
             "title": "Experiment status"
         },
@@ -212,9 +215,6 @@
         },
         "award.project": {
             "title": "Project"
-        },
-        "award.rfa": {
-            "title": "RFA"
         },
         "status": {
             "title": "Status"
