@@ -12,7 +12,6 @@ import io
 import json
 
 import logging
-import pprint
 
 
 log = logging.getLogger(__name__)
@@ -86,7 +85,6 @@ def get_biosample_accessions(file_json, experiment_json):
         if file_json['uuid'] == f['uuid']:
             accession = f.get('replicate', {}).get('library', {}).get('biosample', {}).get('accession')
             if accession:
-                log.warn('found a bed narrowPeak file with path replicate.library.biosample {}'.format(file_json['uuid']))
                 return accession
     accessions = []
     for replicate in experiment_json.get('replicates', []):
