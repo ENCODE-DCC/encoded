@@ -60,7 +60,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                 <div>
                     <div className="panel data-display main-panel">
                         <div className="row">
-                            <div className="col-sm-5 col-md-4 col-lg-3" style={{paddingRight: 0}}>
+                            <div className="col-sm-5 col-md-4 col-lg-3 sm-no-padding" style={{paddingRight: 0}}>
                                 <div className="row">
                                     <div className="col-sm-11">
                                         <div>
@@ -71,17 +71,17 @@ var Matrix = module.exports.Matrix = React.createClass({
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-sm-7 col-md-8 col-lg-9" style={{paddingLeft: 0}}>
+                            <div className="col-sm-7 col-md-8 col-lg-9 sm-no-padding" style={{paddingLeft: 0}}>
                                 <FacetList facets={x_facets} filters={context.filters} orientation="horizontal"
                                            searchBase={matrix_search} onFilter={this.onFilter} />
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-sm-5 col-md-4 col-lg-3" style={{paddingRight: 0}}>
+                            <div className="col-sm-5 col-md-4 col-lg-3 sm-no-padding" style={{paddingRight: 0}}>
                                 <FacetList facets={y_facets} filters={context.filters}
                                            searchBase={matrix_search} onFilter={this.onFilter} />
                             </div>
-                            <div className="col-sm-7 col-md-8 col-lg-9" style={{paddingLeft: 0, overflow: 'auto'}}>
+                            <div className="col-sm-7 col-md-8 col-lg-9 sm-no-padding" style={{paddingLeft: 0, overflow: 'auto'}}>
                                 <table className="matrix">
                                     <tbody>
                                         <tr>

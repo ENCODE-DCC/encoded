@@ -562,21 +562,13 @@ def audit_file_read_depth(value, system):
     for derived_from_file in derived_from_files:
         if 'file_type' in derived_from_file and derived_from_file['file_type'] == 'fastq' and \
            'run_type' in derived_from_file:
-            if derived_from_file['run_type'] == 'single-ended':
-                paired_ended_status = False
                 paring_status_detected = True
                 break
-            else:
-                if derived_from_file['run_type'] == 'paired-ended':
-                    paired_ended_status = True
-                    paring_status_detected = True
-                    break
 
     if paring_status_detected is False:
         detail = 'ENCODE Processed alignment file {} has no run_type in derived_from files'.format(
             value['@id'])
         yield AuditFailure('missing run_type in derived_from files', detail, level='DCC_ACTION')
-        return
 
     for metric in quality_metrics:
         if 'Uniquely mapped reads number' in metric:  # start_quality_metric.json
@@ -584,10 +576,10 @@ def audit_file_read_depth(value, system):
             break  # continue
         else:
             if "total" in metric:
-                if paired_ended_status is False:
-                    read_depth = metric['total']
-                else:
+                if "read1" in metric and "read2" in metric:
                     read_depth = int(metric['total']/2)
+                else:
+                    read_depth = metric['total']
                 break
 
     if read_depth == 0:
