@@ -316,7 +316,8 @@ var AuditMixin = audit.AuditMixin;
                         </div>
                         <div className="data-row">
                             <div><strong>Type: </strong>{result['biosample_type']}</div>
-                            {rnais ?<div><strong>RNAi target: </strong>{rnais}</div> : null}
+                            {result.summary ? <div><strong>Summary: </strong>{globals.truncateString(result.summary, 80)}</div> : null}
+                            {rnais ? <div><strong>RNAi target: </strong>{rnais}</div> : null}
                             {constructs ? <div><strong>Construct: </strong>{constructs}</div> : null}
                             {treatment ? <div><strong>Treatment: </strong>{treatment}</div> : null}
                             {mutatedGenes ? <div><strong>Mutated gene: </strong>{mutatedGenes}</div> : null}
