@@ -45,10 +45,10 @@
                         "text/plain",
                         "text/tab-separated-values",
                         "image/jpeg",
+                        "image/png",
                         "image/tiff",
                         "image/gif",
-                        "text/html",
-                        "image/png",
+                        "text/html"                       
                      ]
                 },
                 "size": {
