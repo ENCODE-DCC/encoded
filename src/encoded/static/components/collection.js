@@ -249,7 +249,7 @@ var lookup_column = function (result, column) {
             data.sort(sortOn, reversed);
             var self = this;
             var headers = columns.map(function (column, index) {
-                var className = "sortdirection icon";
+                var className = "icon";
                 if (index === sortOn) {
                     className += reversed ? " icon-chevron-down" : " icon-chevron-up";
                 }

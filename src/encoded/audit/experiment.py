@@ -1,4 +1,4 @@
-from contentbase import (
+from snowfort import (
     AuditFailure,
     audit_checker,
 )
@@ -202,6 +202,15 @@ def scanFilesForPipeline(files_to_scan, pipeline_title):
     return False
 
 
+def is_gtex_experiment(experiment_to_check):
+    for rep in experiment_to_check['replicates']:
+        if ('library' in rep) and ('biosample' in rep['library']) and \
+           ('donor' in rep['library']['biosample']):
+            if rep['library']['biosample']['donor']['accession'] in gtexDonorsList:
+                return True
+    return False
+
+
 @audit_checker('experiment', frame=['replicates',
                                     'replicates.library',
                                     'replicates.library.biosample',
@@ -217,26 +226,15 @@ def audit_experiment_gtex_biosample(value, system):
     if len(value['replicates']) < 2:
         return
 
+    if is_gtex_experiment(value) is False:
+        return
+
     biosample_set = set()
-    donor_set = set()
 
     for rep in value['replicates']:
-        if ('library' in rep) and ('biosample' in rep['library']) and \
-           ('donor' in rep['library']['biosample']):
-
+        if ('library' in rep) and ('biosample' in rep['library']):
             biosampleObject = rep['library']['biosample']
-            donorObject = biosampleObject['donor']
-
             biosample_set.add(biosampleObject['accession'])
-            donor_set.add(donorObject['accession'])
-
-    gtex_experiment_flag = False
-    for entry in donor_set:
-        if entry in gtexDonorsList:
-            gtex_experiment_flag = True
-
-    if gtex_experiment_flag is False:
-        return
 
     if len(biosample_set) > 1:
         detail = 'GTEx experiment {} '.format(value['@id']) + \
@@ -264,6 +262,107 @@ def audit_experiment_biosample_term_id(value, system):
             detail = 'Experiment {} '.format(value['@id']) + \
                      'has no biosample_type'
             yield AuditFailure('experiment missing biosample_type', detail, level='DCC_ACTION')
+    return
+
+
+@audit_checker('experiment',
+               frame=['replicates', 'original_files', 'original_files.replicate'],
+               condition=rfa("ENCODE3", "modERN", "ENCODE2", "GGR",
+                             "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
+def audit_experiment_consistent_sequencing_runs(value, system):
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+    if 'replicates' not in value:
+        return
+    if len(value['replicates']) == 0:
+        return
+    if 'assay_term_name' not in value:  # checked in audit_experiment_assay
+        return
+
+    if value.get('assay_term_name') not in ['ChIP-seq', 'DNase-seq']:
+        return
+
+    replicate_pairing_statuses = {}
+    replicate_read_lengths = {}
+
+    for file_object in value['original_files']:
+        if file_object['status'] in ['deleted', 'replaced', 'revoked']:
+            continue
+        if file_object['file_format'] == 'fastq':
+            if 'replicate' in file_object:
+                bio_rep_number = file_object['replicate']['biological_replicate_number']
+
+                if 'read_length' in file_object:
+                    if bio_rep_number not in replicate_read_lengths:
+                        replicate_read_lengths[bio_rep_number] = set()
+                    replicate_read_lengths[bio_rep_number].add(file_object['read_length'])
+
+                if 'run_type' in file_object:
+                    if bio_rep_number not in replicate_pairing_statuses:
+                        replicate_pairing_statuses[bio_rep_number] = set()
+                    replicate_pairing_statuses[bio_rep_number].add(file_object['run_type'])
+
+    for key in replicate_read_lengths:
+        if len(replicate_read_lengths[key]) > 1:
+            detail = 'Biological replicate {} '.format(key) + \
+                     'in experiment {} '.format(value['@id']) + \
+                     'has mixed sequencing read lengths {}.'.format(replicate_read_lengths[key])
+            yield AuditFailure('mixed intra-replicate read lengths',
+                               detail, level='WARNING')
+
+    for key in replicate_pairing_statuses:
+        if len(replicate_pairing_statuses[key]) > 1:
+            detail = 'Biological replicate {} '.format(key) + \
+                     'in experiment {} '.format(value['@id']) + \
+                     'has mixed endedness {}.'.format(replicate_pairing_statuses[key])
+            yield AuditFailure('mixed intra-replicate endedness',
+                               detail, level='WARNING')
+
+    keys = list(replicate_read_lengths.keys())
+
+    if len(keys) > 1:
+        for index_i in range(len(keys)):
+            for index_j in range(index_i+1, len(keys)):
+                i_lengths = replicate_read_lengths[keys[index_i]]
+                j_lengths = replicate_read_lengths[keys[index_j]]
+                diff_flag = False
+                for entry in i_lengths:
+                    if entry not in j_lengths:
+                        diff_flag = True
+                for entry in j_lengths:
+                    if entry not in i_lengths:
+                        diff_flag = True
+                if diff_flag is True:
+                    detail = 'Biological replicate {} '.format(keys[index_i]) + \
+                             'in experiment {} '.format(value['@id']) + \
+                             'has sequencing read lengths {} '.format(i_lengths) + \
+                             ' that differ from replicate {},'.format(keys[index_j]) + \
+                             ' which has {} sequencing read lengths.'.format(j_lengths)
+                    yield AuditFailure('mixed inter-replicate read lengths',
+                                       detail, level='WARNING')
+
+    keys = list(replicate_pairing_statuses.keys())
+    if len(keys) > 1:
+        for index_i in range(len(keys)):
+            for index_j in range(index_i+1, len(keys)):
+                i_pairs = replicate_pairing_statuses[keys[index_i]]
+                j_pairs = replicate_pairing_statuses[keys[index_j]]
+                diff_flag = False
+                for entry in i_pairs:
+                    if entry not in j_pairs:
+                        diff_flag = True
+                for entry in j_pairs:
+                    if entry not in i_pairs:
+                        diff_flag = True
+                if diff_flag is True:
+                    detail = 'Biological replicate {} '.format(keys[index_i]) + \
+                             'in experiment {} '.format(value['@id']) + \
+                             'has endedness {} '.format(i_pairs) + \
+                             ' that differ from replicate {},'.format(keys[index_j]) + \
+                             ' which has {}.'.format(j_pairs)
+                    yield AuditFailure('mixed inter-replicate endedness',
+                                       detail, level='WARNING')
+
     return
 
 
@@ -308,10 +407,12 @@ def audit_experiment_replicate_with_no_files(value, system):
             yield AuditFailure('missing file in replicate', detail, level=audit_level)
         else:
             if seq_assay_flag is True:
-                if 'fastq' not in rep_dictionary[key]:
+                if 'fasta' not in rep_dictionary[key] and \
+                   'csfasta' not in rep_dictionary[key] and \
+                   'fastq' not in rep_dictionary[key]:
                     detail = 'Sequencing experiment {} replicate '.format(value['@id']) + \
-                             '{} does not have FASTQ files associated with'.format(key)
-                    yield AuditFailure('missing FASTQ file in replicate',
+                             '{} does not have sequence files associated with it.'.format(key)
+                    yield AuditFailure('missing sequence file in replicate',
                                        detail, level=audit_level)
     return
 
@@ -322,13 +423,16 @@ def audit_experiment_release_date(value, system):
     Released experiments need release date.
     This should eventually go to schema
     '''
-    if value['status'] == 'released' and 'date_released' not in value:
-        detail = 'Experiment {} is released and requires a value in date_released'.format(value['@id'])
+    if value['status'] in ['released', 'revoked'] and 'date_released' not in value:
+        detail = 'Experiment {} is released or revoked and requires a value in date_released'.format(value['@id'])
         raise AuditFailure('missing date_released', detail, level='DCC_ACTION')
 
 
 @audit_checker('experiment',
-               frame=['replicates', 'award', 'target'],
+               frame=['replicates', 'award', 'target',
+                      'replicates.library',
+                      'replicates.library.biosample',
+                      'replicates.library.biosample.donor'],
                condition=rfa("ENCODE3", "modERN", "GGR",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicated(value, system):
@@ -340,8 +444,15 @@ def audit_experiment_replicated(value, system):
         return
     '''
     Excluding single cell isolation experiments from the replication requirement
+    Excluding RNA-bind-and-Seq from the replication requirment
     '''
-    if value['assay_term_name'] == 'single cell isolation followed by RNA-seq':
+    if value['assay_term_name'] in ['single cell isolation followed by RNA-seq',
+                                    'RNA Bind-n-Seq']:
+        return
+    '''
+    Excluding GTEX experiments from the replication requirement
+    '''
+    if is_gtex_experiment(value) is True:
         return
 
     if 'target' in value:
@@ -384,7 +495,7 @@ def audit_experiment_replicates_with_no_libraries(value, system):
 @audit_checker('experiment', frame=['replicates', 'replicates.library.biosample'])
 def audit_experiment_isogeneity(value, system):
 
-    if value['status'] in ['deleted', 'replaced']:
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
     if len(value['replicates']) < 2:
@@ -858,6 +969,7 @@ def audit_experiment_biosample_term(value, system):
         'target',
         'replicates',
         'replicates.antibody',
+        'replicates.antibody.targets',
         'replicates.antibody.lot_reviews'
         'replicates.antibody.lot_reviews.organisms',
         'replicates.library',
@@ -898,11 +1010,16 @@ def audit_experiment_antibody_eligible(value, system):
 
         biosample = lib['biosample']
         organism = biosample['organism']['@id']
+        antibody_targets = antibody['targets']
+        ab_targets_investigated_as = set()
+        for t in antibody_targets:
+            for i in t['investigated_as']:
+                ab_targets_investigated_as.add(i)
 
         # We only want the audit raised if the organism in lot reviews matches that of the biosample
         # and if is not eligible for new data. Otherwise, it doesn't apply and we shouldn't raise a stink
 
-        if 'histone modification' in target['investigated_as']:
+        if 'histone modification' in ab_targets_investigated_as:
             for lot_review in antibody['lot_reviews']:
                 if (lot_review['status'] == 'awaiting lab characterization'):
                     for lot_organism in lot_review['organisms']:
@@ -910,25 +1027,33 @@ def audit_experiment_antibody_eligible(value, system):
                             detail = '{} is not eligible for {}'.format(antibody["@id"], organism)
                             yield AuditFailure('not eligible antibody',
                                                detail, level='NOT_COMPLIANT')
+                if lot_review['status'] == 'eligible for new data (via exemption)':
+                    for lot_organism in lot_review['organisms']:
+                        if organism == lot_organism:
+                            detail = '{} is eligible via exemption for {}'.format(antibody["@id"],
+                                                                                  organism)
+                            yield AuditFailure('antibody eligible via exemption',
+                                               detail, level='WARNING')
 
         else:
             biosample_term_id = value['biosample_term_id']
             biosample_term_name = value['biosample_term_name']
             experiment_biosample = (biosample_term_id, organism)
             eligible_biosamples = set()
-            warning_flag = False
+            exempt_biosamples = set()
             for lot_review in antibody['lot_reviews']:
                 if lot_review['status'] in ['eligible for new data',
                                             'eligible for new data (via exemption)']:
                     for lot_organism in lot_review['organisms']:
                         eligible_biosample = (lot_review['biosample_term_id'], lot_organism)
+                        if lot_review['status'] == 'eligible for new data (via exemption)':
+                            exempt_biosamples.add(eligible_biosample)
                         eligible_biosamples.add(eligible_biosample)
-                if lot_review['status'] == 'eligible for new data (via exemption)':
-                    warning_flag = True
-            if warning_flag is True:
-                detail = '{} is eligible via exempt for {} in {}'.format(antibody["@id"],
-                                                                         biosample_term_name,
-                                                                         organism)
+
+            if experiment_biosample in exempt_biosamples:
+                detail = '{} is eligible via exemption for {} in {}'.format(antibody["@id"],
+                                                                            biosample_term_name,
+                                                                            organism)
                 yield AuditFailure('antibody eligible via exemption', detail, level='WARNING')
 
             if experiment_biosample not in eligible_biosamples:

@@ -230,7 +230,8 @@ var jsonSchemaToFormSchema = function(attrs) {
         id = attrs.id,
         skip = attrs.skip || [],
         readonly = p.readonly || attrs.readonly || false,
-        showReadOnly = attrs.showReadOnly;
+        showReadOnly = attrs.showReadOnly,
+        depth = attrs.depth || 1;
     if (props === undefined) {
         props = {};
     }
@@ -261,6 +262,7 @@ var jsonSchemaToFormSchema = function(attrs) {
                 props: subprops,
                 readonly: readonly,
                 showReadOnly: showReadOnly,
+                depth: depth,
             });
             if (subschema) {
                 properties[name] = subschema;
@@ -268,11 +270,13 @@ var jsonSchemaToFormSchema = function(attrs) {
         }
         return ReactForms.schema.Mapping(props, properties);
     } else if (p.type == 'array') {
+        if (depth > 1 && p.items.linkFrom !== undefined) return null;
         var subschema = jsonSchemaToFormSchema({
             schemas: schemas,
             jsonNode: p.items,
             readonly: readonly,
             showReadOnly: showReadOnly,
+            depth: depth,
         });
         if (!subschema) {
             return null;
@@ -314,7 +318,8 @@ var jsonSchemaToFormSchema = function(attrs) {
             var linkFormSchema = jsonSchemaToFormSchema({
                 schemas: schemas,
                 jsonNode: schemas[linkType],
-                skip: [linkProp]
+                skip: [linkProp],
+                depth: depth + 1,
             });
             // Use a special FetchedFieldset component which can take either an IRI
             // or a full object as its value, and render a sub-form using the child

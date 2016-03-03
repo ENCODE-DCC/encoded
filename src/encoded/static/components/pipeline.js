@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+var panel = require('../libs/bootstrap/panel');
 var url = require('url');
 var _ = require('underscore');
 var graph = require('./graph');
@@ -11,6 +12,7 @@ var software = require('./software');
 var StatusLabel = require('./statuslabel').StatusLabel;
 var Citation = require('./publication').Citation;
 var audit = require('./audit');
+var doc = require('./doc');
 
 var Breadcrumbs = navbar.Breadcrumbs;
 var Graph = graph.Graph;
@@ -19,11 +21,13 @@ var SoftwareVersionList = software.SoftwareVersionList;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
+var DocumentsPanel = doc.DocumentsPanel;
+var {Panel, PanelBody, PanelHeading} = panel;
 
 
 var DbxrefList = dbxref.DbxrefList;
 
-var Panel = function (props) {
+var PanelLookup = function (props) {
     // XXX not all panels have the same markup
     var context;
     if (props['@id']) {
@@ -170,7 +174,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
         var documents = {};
         if (context.documents) {
             context.documents.forEach(function(doc, i) {
-                documents[doc['@id']] = Panel({context: doc, key: i + 1});
+                documents[doc['@id']] = PanelLookup({context: doc, key: i + 1});
             });
         }
 
@@ -201,63 +205,58 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                     </div>
                 </header>
                 <AuditDetail context={context} id="biosample-audit" />
-                <div className="panel data-display">
-                    <dl className="key-value">
-                        <div data-test="title">
-                            <dt>Title</dt>
-                            <dd>{context.source_url ? <a href={context.source_url}>{context.title}</a> : context.title}</dd>
-                        </div>
-
-                        {context.assay_term_name ?
-                            <div data-test="assay">
-                                <dt>Assay</dt>
-                                <dd>{context.assay_term_name}</dd>
+                <Panel addClasses="data-display">
+                    <PanelBody>
+                        <dl className="key-value">
+                            <div data-test="title">
+                                <dt>Title</dt>
+                                <dd>{context.source_url ? <a href={context.source_url}>{context.title}</a> : context.title}</dd>
                             </div>
-                        : null}
 
-                        {context.description ?
-                            <div data-test="description">
-                                <dt>Description</dt>
-                                <dd>{context.description}</dd>
+                            {context.assay_term_name ?
+                                <div data-test="assay">
+                                    <dt>Assay</dt>
+                                    <dd>{context.assay_term_name}</dd>
+                                </div>
+                            : null}
+
+                            {context.description ?
+                                <div data-test="description">
+                                    <dt>Description</dt>
+                                    <dd>{context.description}</dd>
+                                </div>
+                            : null}
+
+                            <div data-test="lab">
+                                <dt>Lab</dt>
+                                <dd>{context.lab.title}</dd>
                             </div>
-                        : null}
 
-                        <div data-test="lab">
-                            <dt>Lab</dt>
-                            <dd>{context.lab.title}</dd>
-                        </div>
-
-                        {context.award.pi && context.award.pi.lab ?
-                            <div data-test="awardpi">
-                                <dt>Award PI</dt>
-                                <dd>{context.award.pi.lab.title}</dd>
-                            </div>
-                        : null}
-                    </dl>
-                </div>
+                            {context.award.pi && context.award.pi.lab ?
+                                <div data-test="awardpi">
+                                    <dt>Award PI</dt>
+                                    <dd>{context.award.pi.lab.title}</dd>
+                                </div>
+                            : null}
+                        </dl>
+                    </PanelBody>
+                </Panel>
                 {this.jsonGraph ?
                     <div>
                         <h3>Pipeline schematic</h3>
                         <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick}>
                             <div className="graph-node-info">
                                 {selectedStep ?
-                                    <div className="step-info">
+                                    <PanelBody>
                                         <AnalysisStep step={selectedStep} node={selectedNode} />
-                                    </div>
+                                    </PanelBody>
                                 : null}
                             </div>
                         </Graph>
                     </div>
                 : null}
                 {context.documents && context.documents.length ?
-                    <div data-test="documents">
-                        <h3>Documents</h3>
-                        <div className="row multi-columns-row">
-                            {context.documents.map(function(doc) {
-                                return <Panel context={doc} />;
-                            })}
-                        </div>
-                    </div>
+                    <DocumentsPanel documentSpecs={[{documents: context.documents}]} />
                 : null}
             </div>
 
@@ -270,7 +269,7 @@ globals.content_views.register(Pipeline, 'Pipeline');
 
 var AnalysisStep = module.exports.AnalysisStep = React.createClass({
     render: function() {
-        var stepVersions, swVersions;
+        var stepVersions, swVersions, swStepVersions;
         var step = this.props.step;
         var node = this.props.node;
         var typesList = step.analysis_step_types.join(", ");
@@ -282,125 +281,117 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
         } else {
             // Get the analysis_step_version array from the step for pipeline graph display.
             stepVersions = step.versions && _(step.versions).sortBy(function(version) { return version.version; });
+            swStepVersions = _.compact(stepVersions.map(function(version) {
+                if (version.software_versions && version.software_versions.length) {
+                    return (
+                        <span className="sw-step-versions" key={version.uuid}><strong>Version {version.version}</strong>: {SoftwareVersionList(version.software_versions)}<br /></span>
+                    );
+                }
+                return null;
+            }));
         }
 
         return (
-            <div>
-                <dl className="key-value">
-                    {swVersions ?
-                        <div data-test="stepversionname">
-                            <dt>Name</dt>
-                            <dd>{step.title + '— Version ' + node.metadata.stepVersion.version}</dd>
-                        </div>
-                    :
-                        <div data-test="stepversionname">
-                            <dt>Name</dt>
-                            <dd>{step.title}</dd>
-                        </div>
-                    }
-
-                    <div data-test="steptype">
-                        <dt>Step type</dt>
-                        <dd>{step.analysis_step_types.join(', ')}</dd>
+            <dl className="key-value">
+                {swVersions ?
+                    <div data-test="stepversionname">
+                        <dt>Name</dt>
+                        <dd>{step.title + '— Version ' + node.metadata.stepVersion.version}</dd>
                     </div>
+                :
+                    <div data-test="stepversionname">
+                        <dt>Name</dt>
+                        <dd>{step.title}</dd>
+                    </div>
+                }
 
-                    {step.aliases && step.aliases.length ?
-                        <div data-test="stepname">
-                            <dt>Step aliases</dt>
-                            <dd>{step.aliases.join(', ')}</dd>
-                        </div>
-                    : null}
+                <div data-test="steptype">
+                    <dt>Step type</dt>
+                    <dd>{step.analysis_step_types.join(', ')}</dd>
+                </div>
 
-                    {step.input_file_types && step.input_file_types.length ?
-                        <div data-test="inputtypes">
-                            <dt>Input</dt>
-                            <dd>{step.input_file_types.join(', ')}</dd>
-                        </div>
-                    : null}
+                {step.aliases && step.aliases.length ?
+                    <div data-test="stepname">
+                        <dt>Step aliases</dt>
+                        <dd>{step.aliases.join(', ')}</dd>
+                    </div>
+                : null}
 
-                    {step.output_file_types && step.output_file_types.length ?
-                        <div data-test="outputtypes">
-                            <dt>Output</dt>
-                            <dd>{step.output_file_types.map(function(type, i) {
+                {step.input_file_types && step.input_file_types.length ?
+                    <div data-test="inputtypes">
+                        <dt>Input</dt>
+                        <dd>{step.input_file_types.join(', ')}</dd>
+                    </div>
+                : null}
+
+                {step.output_file_types && step.output_file_types.length ?
+                    <div data-test="outputtypes">
+                        <dt>Output</dt>
+                        <dd>{step.output_file_types.map(function(type, i) {
+                            return (
+                                <span key={i}>
+                                    {i > 0 ? <span>{','}<br /></span> : null}
+                                    {type}
+                                </span>
+                            );
+                        })}</dd>
+                    </div>
+                : null}
+
+                {node && node.metadata.pipelines && node.metadata.pipelines.length ?
+                    <div data-test="pipeline">
+                        <dt>Pipeline</dt>
+                        <dd>
+                            {node.metadata.pipelines.map(function(pipeline, i) {
                                 return (
                                     <span key={i}>
                                         {i > 0 ? <span>{','}<br /></span> : null}
-                                        {type}
+                                        <a href={pipeline['@id']}>{pipeline.title}</a>
                                     </span>
                                 );
-                            })}</dd>
-                        </div>
-                    : null}
+                            })}
+                        </dd>
+                    </div>
+                : null}
 
-                    {node && node.metadata.pipelines && node.metadata.pipelines.length ?
-                        <div data-test="pipeline">
-                            <dt>Pipeline</dt>
-                            <dd>
-                                {node.metadata.pipelines.map(function(pipeline, i) {
-                                    return (
-                                        <span key={i}>
-                                            {i > 0 ? <span>{','}<br /></span> : null}
-                                            <a href={pipeline['@id']}>{pipeline.title}</a>
-                                        </span>
-                                    );
-                                })}
-                            </dd>
-                        </div>
-                    : null}
+                {step.qa_stats_generated && step.qa_stats_generated.length ?
+                    <div data-test="qastats">
+                        <dt>QA statistics</dt>
+                        <dd>{step.qa_stats_generated.map(function(stat, i) {
+                            return (
+                                <span key={i}>
+                                    {i > 0 ? <span>{','}<br /></span> : null}
+                                    {stat}
+                                </span>
+                            );
+                        })}</dd>
+                    </div>
+                : null}
 
-                    {step.qa_stats_generated && step.qa_stats_generated.length ?
-                        <div data-test="qastats">
-                            <dt>QA statistics</dt>
-                            <dd>{step.qa_stats_generated.map(function(stat, i) {
-                                return (
-                                    <span key={i}>
-                                        {i > 0 ? <span>{','}<br /></span> : null}
-                                        {stat}
-                                    </span>
-                                );
-                            })}</dd>
-                        </div>
-                    : null}
+                {swVersions ?
+                    <div data-test="swversions">
+                        <dt>Software</dt>
+                        <dd>{SoftwareVersionList(swVersions)}</dd>
+                    </div>
+                : stepVersions && stepVersions.length ?
+                    <div data-test="swstepversions">
+                        <dt>Software</dt>
+                        <dd>{swStepVersions}</dd>
+                    </div>
+                : null}
 
-                    {swVersions ?
-                        <div data-test="swversions">
-                            <dt>Software</dt>
-                            <dd>{SoftwareVersionList(swVersions)}</dd>
-                        </div>
-                    :
-                        <div>
-                            {stepVersions && stepVersions.length ?
-                                <div>
-                                    {stepVersions.map(function(version) {
-                                        if (version.software_versions && version.software_versions.length) {
-                                            return (
-                                                <div data-test="swversions" key={version['@id']}>
-                                                    <dt>Version {version.version} — software</dt>
-                                                    <dd>{SoftwareVersionList(version.software_versions)}</dd>
-                                                </div>
-                                            );
-                                        } else {
-                                            return null;
-                                        }
-                                    })}
-                                </div>
-                            : null}
-                        </div>
-                    }
-
-                    {step.documents && step.documents.length ?
-                        <div data-test="documents">
-                            <dt>Documents</dt>
-                            <dd>
-                                {step.documents.map(function(document, i) {
-                                    var docName = document.attachment ? document.attachment.download : document['@id'];
-                                    return (<span>{i > 0 ? ', ' : null}<a href={document['@id']}>{docName}</a></span>);
-                                })}
-                            </dd>
-                        </div>
-                    : null}
-                </dl>
-            </div>
+                {step.documents && step.documents.length ?
+                    <div data-test="documents">
+                        <dt>Documents</dt>
+                        <dd>
+                            {step.documents.map(function(document, i) {
+                                var docName = document.attachment ? document.attachment.download : document['@id'];
+                                return (<span>{i > 0 ? ', ' : null}<a href={document['@id']}>{docName}</a></span>);
+                            })}
+                        </dd>
+                    </div>
+                : null}
+            </dl>
         );
     }
 });
@@ -416,7 +407,7 @@ var StepDetailView = module.exports.StepDetailView = function(node) {
     if (selectedStep) {
         return <AnalysisStep step={selectedStep} node={node} />;
     } else {
-        return (<p className="browser-error">Missing step_run derivation information for {node.metadata.fileAccession}</p>);
+        return <p className="browser-error">Missing step_run derivation information for {node.metadata.fileAccession}</p>;
     }
 };
 

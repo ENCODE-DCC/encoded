@@ -25,6 +25,8 @@ IntersectionOf = OWLNS["intersectionOf"]
 PART_OF = "http://purl.obolibrary.org/obo/BFO_0000050"
 DEVELOPS_FROM = "http://purl.obolibrary.org/obo/RO_0002202"
 HUMAN_TAXON = "http://purl.obolibrary.org/obo/NCBITaxon_9606"
+HAS_PART = "http://purl.obolibrary.org/obo/BFO_0000051"
+ACHIEVES_PLANNED_OBJECTIVE = "http://purl.obolibrary.org/obo/OBI_0000417"
 DEFAULT_LANGUAGE = "en"
 
 developental_slims = {
@@ -102,6 +104,205 @@ organ_slims = {
     'UBERON:0000007': 'pituitary gland',
     'UBERON:0002370': 'thymus',
     'UBERON:0000478': 'extraembryonic structure'
+}
+
+assay_slims = {
+    # Note shortened synonyms are provided
+    'OBI:0000634': 'DNA methylation',  # 'DNA methylation profiling'
+    'OBI:0000424': 'Transcription',  # 'transcription profiling'
+    'OBI:0001398': 'DNA binding',  # "protein and DNA interaction"
+    'OBI:0001854': 'RNA binding',  # "protein and RNA interaction"
+    'OBI:0001917': '3D chromatin structure',  # 'chromosome conformation identification objective'
+    'OBI:0000870': 'DNA accessibility',  # 'single-nucleotide-resolution nucleic acid structure mapping assay'
+    'OBI:0001916': 'Replication timing',
+    'OBI:0000435': 'Genotyping',
+    'OBI:0000615': 'Proteomics',
+}
+
+slim_shims = {
+    # this allows us to manually assign term X to slim Y while waiting for ontology updates
+    'assay': {
+        # DNA accessibility
+        'OBI:0001924': 'DNA accessibility',  # 'OBI:0000870' / MNase-seq
+        'OBI:0002039': 'DNA accessibility',  # 'OBI:0000870', / ATAC-seq
+        'OBI:0001853': 'DNA accessibility',  # 'OBI:0000870', / DNase-seq
+        'OBI:0001859': 'DNA accessibility',  # 'OBI:0000870', / OBI:0000424  / FAIRE-seq
+        'OBI:0002042': '3D chromatin structure',  # 'OBI:0000870' (Hi-C)
+        'OBI:0001848': '3D chromatin structure',  # ChIA-PET / OBI:000870
+        'OBI:0001923': 'Proteomics',  # OBI:0000615': 'MS/MS'
+        'OBI:0001849': 'Genotyping',  # OBI:0000435 (DNA-PET)
+        'OBI:0002044': 'RNA binding',  # OBI:0001854 (RNA-Bind-N-Seq)
+    }
+
+}
+
+preferred_name = {
+    "OBI:0000626": "WGS",
+    "OBI:0001247": "genotyping HTS",
+    "OBI:0001332": "DNAme array",
+    "OBI:0001335": "microRNA counts",
+    "OBI:0001463": "RNA microarray",
+    "OBI:0001863": "WGBS",
+    "OBI:0001923": "MS/MS",
+    "OBI:0001271": "RNA-seq",
+    "OBI:0000716": "ChIP-seq",
+    "OBI:0001853": "DNase-seq",
+    "OBI:0001920": "Repli-Seq",
+    "OBI:0001864": "RAMPAGE",
+    "OBI:0001393": "genotyping array",
+    "OBI:0002042": "Hi-C",
+}
+
+category_slims = {
+    'OBI:0000634': 'DNA methylation profiling',
+    'OBI:0000424': 'transcription profiling',
+    'OBI:0000435': 'genotyping',
+    'OBI:0000615': 'proteomics',
+    'OBI:0001916': 'replication',
+    'OBI:0001398': "protein and DNA interaction",
+    'OBI:0001854': "protein and RNA interaction"
+}
+
+objective_slims = {
+    'OBI:0000218': 'cellular feature identification objective',
+    'OBI:0001691': 'cellular structure feature identification objective',
+    'OBI:0001916': 'DNA replication identification objective',
+    'OBI:0001917': 'chromosome conformation identification objective',
+    'OBI:0001234': 'epigenetic modification identification objective',
+    'OBI:0001331': 'transcription profiling identification objective',
+    'OBI:0001690': 'molecular function identification objective',
+    'OBI:0000268': 'organism feature identification objective',
+    'OBI:0001623': 'organism identification objective',
+    'OBI:0001398': 'protein and DNA interaction identification objective',
+    'OBI:0001854': 'protein and RNA interaction identification objective'
+}
+
+type_slims = {
+    'OBI:0001700': 'immunoprecipitation assay',
+    'OBI:0000424': 'transcription profiling assay',
+    'OBI:0000634': 'DNA methylation profiling assay',
+    'OBI:0000435': 'genotyping assay'
+}
+
+# Note this also shows the final datastructure for ontology.json
+ntr_assays = {
+    "NTR:0000612": {
+        "assay": ['RNA binding'],
+        "category": [],
+        "developmental": [],
+        "name": "Switchgear",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000762": {
+        "assay": ['Transcription'],
+        "category": [],
+        "developmental": [],
+        "name": "shRNA knockdown followed by RNA-seq",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "shRNA/RNA-seq",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000763": {
+        "assay": ['Transcription'],
+        "category": [],
+        "developmental": [],
+        "name": "siRNA knockdown followed by RNA-seq",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "siRNA/RNA-seq",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0001684": {
+        "assay": ['Transcription'],
+        "category": [],
+        "developmental": [],
+        "name": "5' RLM RACE",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0002490": {
+        "assay": ['DNA methylation'],
+        "category": [],
+        "developmental": [],
+        "name": "TAB-seq",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0003027": {
+        "assay": ['RNA binding'],
+        "category": [],
+        "developmental": [],
+        "name": "eCLIP",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0001132": {
+        "assay": ['RNA binding'],
+        "category": [],
+        "developmental": [],
+        "name": "RNA Bind-N-Seq",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "RNA Bind-N-Seq",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0003082": {
+        "assay": ['Transcription'],
+        "category": [],
+        "developmental": [],
+        "name": "single cell isolation followed by RNA-seq",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "single cell RNA-seq",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0003508": {
+        "assay": ['Genotyping'],
+        "category": [],
+        "developmental": [],
+        "name": "Whole genome shotgun sequencing",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "WGS",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    }
 }
 
 
@@ -378,13 +579,21 @@ def getSlims(goid, terms, slimType):
     ''' Get Slims '''
 
     slims = []
-    slimTerms = []
+    slimTerms = {}
     if slimType == 'developmental':
         slimTerms = developental_slims
     elif slimType == 'organ':
         slimTerms = organ_slims
     elif slimType == 'system':
         slimTerms = system_slims
+    elif slimType == 'assay':
+        slimTerms = assay_slims
+    elif slimType == 'category':
+        slimTerms = category_slims
+    elif slimType == 'objective':
+        slimTerms = objective_slims
+    elif slimType == 'type':
+        slimTerms = type_slims
     for slimTerm in slimTerms:
         if slimType == 'developmental':
             if slimTerm in terms[goid]['closure_with_develops_from']:
@@ -392,6 +601,12 @@ def getSlims(goid, terms, slimType):
         else:
             if slimTerm in terms[goid]['closure']:
                 slims.append(slimTerms[slimTerm])
+
+    if slim_shims.get(slimType, {}):
+        # Overrides all Ontology based-slims
+        shim = slim_shims[slimType].get(goid, '')
+        if shim:
+            slims = [shim]
     return slims
 
 
@@ -399,16 +614,23 @@ def getTermStructure():
     return {
         'id': '',
         'name': '',
+        'preferred_name': '',
         'parents': [],
         'part_of': [],
+        'has_part': [],
         'develops_from': [],
+        'achieves_planned_objective': [],
         'organs': [],
         'closure': [],
         'slims': [],
         'data': [],
         'closure_with_develops_from': [],
         'data_with_develops_from': [],
-        'synonyms': []
+        'synonyms': [],
+        'category': [],
+        'assay': [],
+        'types': [],
+        'objectives': []
     }
 
 
@@ -468,6 +690,7 @@ def main():
                 except:
                     terms[term_id]['name'] = ''
 
+                terms[term_id]['preferred_name'] = preferred_name.get(term_id, '')
                 # Get all parents
                 for parent in data.get_classDirectSupers(c, excludeBnodes=False):
                     if isBlankNode(parent):
@@ -480,6 +703,14 @@ def main():
                                 for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
                                     if not isBlankNode(o1):
                                         terms[term_id]['develops_from'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
+                            elif o.__str__() == HAS_PART:
+                                for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
+                                    if not isBlankNode(o1):
+                                        terms[term_id]['has_part'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
+                            elif o.__str__() == ACHIEVES_PLANNED_OBJECTIVE:
+                                for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
+                                    if not isBlankNode(o1):
+                                        terms[term_id]['achieves_planned_objective'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
                     else:
                         terms[term_id]['parents'].append(splitNameFromNamespace(parent)[0].replace('_', ':'))
                 
@@ -489,7 +720,8 @@ def main():
                     except:
                         pass
     for term in terms:
-        terms[term]['data'] = list(set(terms[term]['parents']) | set(terms[term]['part_of']))
+        terms[term]['data'] = list(set(terms[term]['parents']) | set(terms[term]['part_of']) | set(terms[term]['achieves_planned_objective']))
+
         terms[term]['data_with_develops_from'] = list(set(terms[term]['data']) | set(terms[term]['develops_from']))
 
     for term in terms:
@@ -507,12 +739,19 @@ def main():
         terms[term]['systems'] = getSlims(term, terms, 'system')
         terms[term]['organs'] = getSlims(term, terms, 'organ')
         terms[term]['developmental'] = getSlims(term, terms, 'developmental')
+        terms[term]['assay'] = getSlims(term, terms, 'assay')
+        terms[term]['category'] = getSlims(term, terms, 'category')
+        terms[term]['objectives'] = getSlims(term, terms, 'objective')
+        terms[term]['types'] = getSlims(term, terms, 'type')
+
         del terms[term]['closure'], terms[term]['closure_with_develops_from']
 
     for term in terms:
         del terms[term]['parents'], terms[term]['part_of'], terms[term]['develops_from']
+        del terms[term]['has_part'], terms[term]['achieves_planned_objective']
         del terms[term]['id'], terms[term]['data'], terms[term]['data_with_develops_from']
 
+    terms.update(ntr_assays)
     with open('ontology.json', 'w') as outfile:
         json.dump(terms, outfile)
 

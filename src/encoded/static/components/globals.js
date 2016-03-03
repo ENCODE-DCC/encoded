@@ -1,5 +1,6 @@
 'use strict';
 var Registry = require('../libs/registry');
+var _ = require('underscore');
 
 // Item pages
 module.exports.content_views = new Registry();
@@ -18,6 +19,26 @@ module.exports.blocks = new Registry();
 
 // Graph detail view
 module.exports.graph_detail = new Registry();
+
+// Document panel components
+// +---------------------------------------+
+// | header                                |
+// +---------------------------+-----------+
+// |                           |           |
+// |          caption          |  preview  |
+// |                           |           |
+// +---------------------------+-----------+
+// | file                                  |
+// +---------------------------------------+
+// | detail                                |
+// +---------------------------------------+
+var document_views = {};
+document_views.header = new Registry();
+document_views.caption = new Registry();
+document_views.preview = new Registry();
+document_views.file = new Registry();
+document_views.detail = new Registry();
+module.exports.document_views = document_views;
 
 
 var itemClass = module.exports.itemClass = function (context, htmlClass) {
@@ -53,6 +74,10 @@ module.exports.truncateString = function (str, len) {
     }
     return str;
 };
+
+// Given an array of objects with @id properties, this returns the same array but with any
+// duplicate @id objects removed.
+module.exports.uniqueObjectsArray = objects => _(objects).uniq(object =>  object['@id']);
 
 module.exports.bindEvent = function (el, eventName, eventHandler) {
     if (el.addEventListener) {
@@ -103,6 +128,7 @@ module.exports.dbxref_prefix_map = {
     "Caltech": "http://jumpgate.caltech.edu/library/",
     "FlyBase": "http://flybase.org/cgi-bin/quicksearch_solr.cgi?caller=quicksearch&tab=basic_tab&data_class=FBgn&species=Dmel&search_type=all&context=",
     "WormBase": "http://www.wormbase.org/species/c_elegans/gene/",
+    "MGI": "http://www.informatics.jax.org/marker/",
     "RefSeq": "http://www.ncbi.nlm.nih.gov/gene/?term=",
     // UCSC links need assembly (&db=) and accession (&hgt_mdbVal1=) added to url
     "UCSC-ENCODE-mm9": "http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=mm9&hgt_mdbVal1=",

@@ -1,4 +1,4 @@
-from contentbase import (
+from snowfort import (
     collection,
     calculated_property,
     load_schema,

@@ -1,10 +1,10 @@
-from contentbase import (
+from snowfort import (
     abstract_collection,
     collection,
     calculated_property,
     load_schema,
 )
-from contentbase.attachment import ItemWithAttachment
+from snowfort.attachment import ItemWithAttachment
 from .base import (
     Item,
 )
@@ -51,6 +51,17 @@ class FastqcQualityMetric(QualityMetric):
 class BismarkQualityMetric(QualityMetric):
     item_type = 'bismark_quality_metric'
     schema = load_schema('encoded:schemas/bismark_quality_metric.json')
+
+
+@collection(
+    name='cpg-correlation-quality-metrics',
+    properties={
+        'title': "WGBS replicate correlation CpG quality metrics",
+        'description': 'A set of QC metrics from WGBS replicate CpG correlations',
+    })
+class CpgCorrelationQualityMetric(QualityMetric):
+    item_type = 'cpg_correlation_quality_metric'
+    schema = load_schema('encoded:schemas/cpg_correlation_quality_metric.json')
 
 
 @collection(
@@ -195,4 +206,14 @@ class SamtoolsFlagstatsQualityMetric(QualityMetric):
 class SamtoolsStatsQualityMetric(QualityMetric):
     item_type = 'samtools_stats_quality_metric'
     schema = load_schema('encoded:schemas/samtools_stats_quality_metric.json')
+
+@collection(
+    name='idr-quality-metrics',
+    properties={
+        'title': "IDR Metrics",
+        'description': "Quality metrics from Irreproducible Discovery Rate (IDR) analysis",
+    })
+class IDRQualityMetric(QualityMetric):
+    item_type = 'idr_quality_metric'
+    schema = load_schema('encoded:schemas/idr_quality_metric.json')
 

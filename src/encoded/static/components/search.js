@@ -316,7 +316,8 @@ var AuditMixin = audit.AuditMixin;
                         </div>
                         <div className="data-row">
                             <div><strong>Type: </strong>{result['biosample_type']}</div>
-                            {rnais ?<div><strong>RNAi target: </strong>{rnais}</div> : null}
+                            {result.summary ? <div><strong>Summary: </strong>{globals.truncateString(result.summary, 80)}</div> : null}
+                            {rnais ? <div><strong>RNAi target: </strong>{rnais}</div> : null}
                             {constructs ? <div><strong>Construct: </strong>{constructs}</div> : null}
                             {treatment ? <div><strong>Treatment: </strong>{treatment}</div> : null}
                             {mutatedGenes ? <div><strong>Mutated gene: </strong>{mutatedGenes}</div> : null}
@@ -689,9 +690,6 @@ var AuditMixin = audit.AuditMixin;
                 // Hide the facet if all the terms' doc_count values are the same, or if there's only one term
                 if (terms.length <= 1) {
                     hideTypeFacet = true;
-                } else {
-                    var firstDocCount = terms[0].doc_count;
-                    hideTypeFacet = _(terms).all(term => term.doc_count === firstDocCount);
                 }
             }
 
@@ -915,6 +913,7 @@ var AuditMixin = audit.AuditMixin;
                                 {context['notification'] === 'Success' ?
                                     <h4>
                                         Showing {results.length} of {total} {label}
+                                        {context.views && context.views.map((view, i) => <span key={i}> <a href={view.href} title={view.title}><i className={'icon icon-' + view.icon}></i></a></span>)}
                                         {total > results.length && searchBase.indexOf('limit=all') === -1 ?
                                             <span className="pull-right">
                                                 <a rel="nofollow" className="btn btn-info btn-sm"
