@@ -709,6 +709,7 @@
         "fasta": ".fasta.gz",
         "fastq": ".fastq.gz",
         "gff": ".gff.gz",
+        "gff3": ".gff3.gz",
         "gtf": ".gtf.gz",
         "hdf5": ".h5",
         "idat": ".idat",
