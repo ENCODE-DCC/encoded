@@ -590,6 +590,7 @@ def test_audit_file_mad_qc_MAD_value(testapp, pipeline_bam,
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'insufficient MAD value' for error in errors_list)
 
+
 def test_audit_file_insufficient_control_read_depth_chip_seq_paired_end(testapp,
                                                                         file_exp,
                                                                         file_exp2,
