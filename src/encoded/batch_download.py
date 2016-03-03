@@ -1,11 +1,13 @@
 from collections import OrderedDict
 from pyramid.view import view_config
 from pyramid.response import Response
+from snowfort import TYPES
 from snowfort.util import simple_path_ids
 from urllib.parse import (
     parse_qs,
     urlencode,
 )
+from .search import list_visible_columns_for_schemas
 
 import csv
 import io
@@ -14,6 +16,7 @@ import io
 def includeme(config):
     config.add_route('batch_download', '/batch_download/{search_params}')
     config.add_route('metadata', '/metadata/{search_params}/{tsv}')
+    config.add_route('report_download', '/report.tsv')
     config.scan(__name__)
 
 
@@ -177,4 +180,29 @@ def batch_download(context, request):
         content_type='text/plain',
         body='\n'.join(files),
         content_disposition='attachment; filename="%s"' % 'files.txt'
+    )
+
+
+@view_config(route_name='report_download', request_method='GET')
+def report_download(context, request):
+    params = parse_qs(request.query_string)
+    params['limit'] = ['all']
+
+    path = '/report/?{}'.format(urlencode(params, True))
+    results = request.embed(path, as_user=True)
+
+    types = request.params.getall('type')
+    schemas = [request.registry[TYPES][types[0]].schema]
+    columns = list_visible_columns_for_schemas(request, schemas)
+    header = [column.get('title') or field for field, column in columns.items()]
+    fout = io.StringIO()
+    writer = csv.writer(fout, delimiter='\t')
+    writer.writerow(header)
+    for item in results['@graph']:
+        row = ['bar'] * len(header)
+        writer.writerow(row)
+    return Response(
+        content_type='text/tsv',
+        body=fout.getvalue(),
+        content_disposition='attachment;filename="%s"' % 'report.tsv'
     )

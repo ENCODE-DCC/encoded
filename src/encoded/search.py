@@ -167,9 +167,45 @@ def get_search_fields(request, doc_types):
     return fields, highlights
 
 
-def load_columns(request, doc_types, result):
+def list_visible_columns_for_schemas(request, schemas):
     """
-    Returns fields that are requested by user or default fields
+    Returns mapping of default columns for a set of schemas.
+    """
+    columns = OrderedDict()
+    for schema in schemas:
+        if 'columns' in schema:
+            columns.update(schema['columns'])
+        else:
+            # default columns if not explicitly specified
+            columns.update(OrderedDict(
+                (name, schema['properties'][name].get('title', name))
+                for name in [
+                    '@id', 'title', 'description', 'name', 'accession',
+                    'aliases'
+                ] if name in schema['properties']
+            ))
+
+    fields_requested = request.params.getall('field')
+    if fields_requested:
+        limited_columns = OrderedDict()
+        for field in fields_requested:
+            if field in columns:
+                limited_columns[field] = columns[field]
+            else:
+                for schema in schemas:
+                    if field in schema['properties']:
+                        limited_columns[field] = {
+                            'title': schema['properties'][field]['title']
+                        }
+                        break
+        columns = limited_columns
+
+    return columns
+
+
+def list_result_fields(request, doc_types):
+    """
+    Returns set of fields that are requested by user or default fields
     """
     frame = request.params.get('frame')
     fields_requested = request.params.getall('field')
@@ -184,18 +220,9 @@ def load_columns(request, doc_types, result):
         if request.has_permission('search_audit'):
             fields.add('audit.*')
         types = request.registry[TYPES]
-        for doc_type in doc_types:
-            type_info = types[doc_type]
-            if 'columns' not in type_info.schema:
-                columns = OrderedDict(
-                    (name, type_info.schema['properties'][name].get('title', name))
-                    for name in ['@id', 'title', 'description', 'name', 'accession', 'aliases']
-                    if name in type_info.schema['properties']
-                )
-            else:
-                columns = type_info.schema['columns']
-            fields.update('embedded.' + column for column in columns)
-            result['columns'].update(columns)
+        schemas = [types[doc_type].schema for doc_type in doc_types]
+        columns = list_visible_columns_for_schemas(request, schemas)
+        fields.update('embedded.' + column for column in columns)
     return fields
 
 
@@ -453,7 +480,6 @@ def search(context, request, search_type=None):
         '@id': '/search/' + search_base,
         '@type': ['Search'],
         'title': 'Search',
-        'columns': OrderedDict(),
         'filters': [],
     }
 
@@ -520,12 +546,14 @@ def search(context, request, search_type=None):
     # Builds filtered query which supports multiple facet selection
     query = get_filtered_query(search_term,
                                search_fields,
-                               sorted(load_columns(request, doc_types, result)),
+                               sorted(list_result_fields(request, doc_types)),
                                principals,
                                doc_types)
 
-    if not result['columns']:
-        del result['columns']
+    schemas = [types[doc_type].schema for doc_type in doc_types]
+    columns = list_visible_columns_for_schemas(request, schemas)
+    if columns:
+        result['columns'] = columns
 
     # If no text search, use match_all query instead of query_string
     if search_term == '*':
