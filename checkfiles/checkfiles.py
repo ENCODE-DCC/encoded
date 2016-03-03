@@ -6,31 +6,15 @@ Example.
     %(prog)s --username ACCESS_KEY_ID --password SECRET_ACCESS_KEY \\
         --output check_files.log https://www.encodeproject.org
 """
-import boto
-import requests
+import datetime
+import os.path
+import json
 import sys
-try:
-    from shlex import quote
-except ImportError:
-    from pipes import quote
-try:
-    import subprocess32 as subprocess  # Needed on Python 2.6
-except ImportError:
-    import subprocess
-try:
-    from urllib.parse import urljoin
-except ImportError:
-    from urlparse import urljoin
+from shlex import quote
+import subprocess
+from urllib.parse import urljoin
 
 EPILOG = __doc__
-
-HEADERS = {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-}
-
-BUCKET = None
-CONFIG = None
 
 GZIP_TYPES = [
     "CEL",
@@ -45,21 +29,8 @@ GZIP_TYPES = [
     "tagAlign",
     "tar",
     "sam",
-    "wig"
+    "wig",
 ]
-
-
-def set_config(url, username, password, encValData, bucket, mirror):
-    global CONFIG
-    global BUCKET
-    BUCKET = boto.connect_s3().get_bucket(bucket)
-    CONFIG = {
-        'url': url,
-        'username': username,
-        'password': password,
-        'encValData': encValData,
-        'mirror': mirror,
-    }
 
 
 def is_path_gzipped(path):
@@ -68,11 +39,12 @@ def is_path_gzipped(path):
     return magic_number == b'\x1f\x8b'
 
 
-def check_format(item, path):
+def check_format(encValData, job, path):
     """ Local validation
     """
-    encValData = CONFIG['encValData']
-    errors = {}
+    errors = job['errors']
+    item = job['item']
+    result = job['result']
 
     if item['file_format'] == 'bam' and item.get('output_type') == 'transcriptome alignments':
         if 'assembly' not in item:
@@ -91,7 +63,7 @@ def check_format(item, path):
         ('fastq', None): ['-type=fastq'],
         ('bam', None): ['-type=bam', chromInfo],
         ('bigWig', None): ['-type=bigWig', chromInfo],
-        #standard bed formats
+        # standard bed formats
         ('bed', 'bed3'): ['-type=bed3', chromInfo],
         ('bigBed', 'bed3'): ['-type=bigBed3', chromInfo],
         ('bed', 'bed6'): ['-type=bed6', chromInfo],
@@ -99,17 +71,17 @@ def check_format(item, path):
         ('bed', 'bed9'): ['-type=bed9', chromInfo],
         ('bigBed', 'bed9'): ['-type=bigBed9', chromInfo],
         ('bedGraph', None): ['-type=bedGraph', chromInfo],
-        #extended "bed+" formats, -tab is required to allow for text fields to contain spaces
+        # extended "bed+" formats, -tab is required to allow for text fields to contain spaces
         ('bed', 'bed3+'): ['-tab', '-type=bed3+', chromInfo],
         ('bigBed', 'bed3+'): ['-tab', '-type=bigBed3+', chromInfo],
         ('bed', 'bed6+'): ['-tab', '-type=bed6+', chromInfo],
         ('bigBed', 'bed6+'): ['-tab', '-type=bigBed6+', chromInfo],
         ('bed', 'bed9+'): ['-tab', '-type=bed9+', chromInfo],
         ('bigBed', 'bed9+'): ['-tab', '-type=bigBed9+', chromInfo],
-        #a catch-all shoe-horn (as long as it's tab-delimited)
+        # a catch-all shoe-horn (as long as it's tab-delimited)
         ('bed', 'unknown'): ['-tab', '-type=bed3+', chromInfo],
         ('bigBed', 'unknown'): ['-tab', '-type=bigBed3+', chromInfo],
-        #special bed types
+        # special bed types
         ('bed', 'bedLogR'): ['-type=bed9+1', chromInfo, '-as=%s/as/bedLogR.as' % encValData],
         ('bigBed', 'bedLogR'): ['-type=bigBed9+1', chromInfo, '-as=%s/as/bedLogR.as' % encValData],
         ('bed', 'bedMethyl'): ['-type=bed9+2', chromInfo, '-as=%s/as/bedMethyl.as' % encValData],
@@ -162,7 +134,7 @@ def check_format(item, path):
 
         ('bedpe', None): ['-type=bed3+', chromInfo],
         ('bedpe', 'mango'): ['-type=bed3+', chromInfo],
-        #non-bed types
+        # non-bed types
         ('rcc', None): ['-type=rcc'],
         ('idat', None): ['-type=idat'],
         ('gtf', None): None,
@@ -183,66 +155,62 @@ def check_format(item, path):
 
     validate_args = validate_map.get((item['file_format'], item.get('file_format_type')))
     if validate_args is None:
-        return errors
+        return
 
     if chromInfo in validate_args and 'assembly' not in item:
         errors['assembly'] = 'missing assembly'
-        return errors
+        return
+
+    result['validateFiles_args'] = ' '.join(validate_args)
 
     try:
-        subprocess.check_output(['validateFiles'] + validate_args + [path])
+        output = subprocess.check_output(
+            ['validateFiles'] + validate_args + [path], stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
-        errors['validateFiles'] = e.output
+        errors['validateFiles'] = e.output.decode(errors='replace').rstrip('\n')
+    else:
+        result['validateFiles'] = output.decode(errors='replace').rstrip('\n')
 
-    return errors
 
+def check_file(config, job):
+    item = job['item']
+    errors = job['errors']
+    result = job['result'] = {}
 
-def check_file(item):
-    import os.path
+    if job.get('skip'):
+        return job
+
+    upload_url = job['upload_url']
+    local_path = os.path.join(config['mirror'], upload_url[len('s3://'):])
+
     try:
-        from urllib.parse import urlparse
-    except ImportError:
-        from urlparse import urlparse
+        file_stat = os.stat(local_path)
+    except FileNotFoundError:
+        errors['file_not_found'] = 'File has not been uploaded yet.'
+        if job['run'] < job['upload_expiration']:
+            job['skip'] = True
+        return job
 
-    result = None
-    errors = {}
-    r = requests.get(
-        urljoin(CONFIG['url'], item['@id'] + '@@upload'),
-        auth=(CONFIG['username'], CONFIG['password']), headers=HEADERS)
-    upload_url = r.json()['@graph'][0]['upload_credentials']['upload_url']
-    path = urlparse(upload_url).path[1:]
-    local_path = CONFIG['mirror'] + path
+    if 'file_size' in item and file_stat.st_size != item['file_size']:
+        errors['file_size'] = 'uploaded {} does not match item {}'.format(
+            file_stat.st_size, item['file_size'])
 
-    key = BUCKET.get_key(path)
-    if key is None:
-        errors['key'] = 'not in s3'
-        return item, result, errors
-
-    if not os.path.exists(local_path):
-        errors['sync'] = 'not synced'
-        return item, result, errors
-
-    if os.path.getsize(local_path) != key.size:
-        errors['sync'] = 'sync size mismatch'
-        return item, result, errors
-
-    if 'file_size' in item and key.size != item['file_size']:
-        errors['file_size'] = \
-            'uploaded %d does not match item %d' % (key.size, item['file_size'])
-
-    result = {
-        "@id": item['@id'],
-        "path": path,
-        "file_size": key.size,
-    }
+    result["file_size"] = file_stat.st_size
+    result["last_modified"] = datetime.datetime.utcfromtimestamp(
+        file_stat.st_mtime).isoformat() + 'Z'
 
     # Faster than doing it in Python.
     try:
-        output = subprocess.check_output(['md5sum', local_path])
+        output = subprocess.check_output(
+            ['md5sum', local_path], stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
-        errors['md5sum'] = e.output
+        errors['md5sum'] = e.output.decode(errors='replace').rstrip('\n')
     else:
-        result['md5sum'] = output[:32].decode('ascii')
+        result['md5sum'] = output[:32].decode(errors='replace')
+        try:
+            int(result['md5sum'], 16)
+        except ValueError:
+            errors['md5sum'] = output.decode(errors='replace').rstrip('\n')
         if result['md5sum'] != item['md5sum']:
             errors['md5sum'] = \
                 'checked %s does not match item %s' % (result['md5sum'], item['md5sum'])
@@ -259,47 +227,126 @@ def check_file(item):
         # or http://stackoverflow.com/a/15343686/199100
         try:
             output = subprocess.check_output(
-                'set -o pipefail; gunzip --stdout  %s | md5sum' % quote(local_path), shell=True)
+                'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
+                shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as e:
-            errors['content_md5sum'] = e.output
+            errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
         else:
-            result['content_md5sum'] = output[:32].decode('ascii')
+            result['content_md5sum'] = output[:32].decode(errors='replace')
             try:
                 int(result['content_md5sum'], 16)
             except ValueError:
-                errors['content_md5sum'] = output
+                errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
 
     if not errors:
-        errors.update(check_format(item, local_path))
+        check_format(config['encValData'], job, local_path)
 
-    return item, result, errors
+    if item['status'] != 'uploading':
+        errors['status_check'] = \
+            "status '{}' is not 'uploading'".format(item['status'])
+
+    return job
 
 
-def fetch_files(url, username, password):
-    r = requests.get(
-        urljoin(url, '/search/?type=file&status=uploading&frame=object&limit=all'),
-        auth=(username, password), headers=HEADERS)
+def fetch_files(session, url, search_query, include_unexpired_upload=False):
+    r = session.get(
+        urljoin(url, '/search/?field=@id&limit=all&type=File&' + search_query))
     r.raise_for_status()
-    return r.json()['@graph']
+    for result in r.json()['@graph']:
+        job = {
+            '@id': result['@id'],
+            'errors': {},
+            'run': datetime.datetime.utcnow().isoformat() + 'Z',
+        }
+        errors = job['errors']
+        item_url = urljoin(url, job['@id'])
 
+        r = session.get(item_url + '@@upload?datastore=database')
+        if r.ok:
+            upload_credentials = r.json()['@graph'][0]['upload_credentials']
+            job['upload_url'] = upload_credentials['upload_url']
+            # Files grandfathered from EDW have no upload expiration.
+            job['upload_expiration'] = upload_credentials.get('expiration', '')
+            # Only check files that will not be changed during the check.
+            if job['run'] < job['upload_expiration']:
+                if not include_unexpired_upload:
+                    continue
+        else:
+            job['errors']['get_upload_url_request'] = \
+                '{} {}\n{}'.format(r.status_code, r.reason, r.text)
 
-def run(output, url, username, password, encValData, bucket, mirror):
-    import json
-    import multiprocessing
-    pool = multiprocessing.Pool(
-        processes=16,
-        initializer=set_config,
-        initargs=(url, username, password, encValData, bucket, mirror),
-    )
-    imap = pool.imap_unordered
-    # from itertools import imap
-    # set_config(url, username, password, encValData, bucket, mirror)
+        r = session.get(item_url + '?frame=edit&datastore=database')
+        if r.ok:
+            item = job['item'] = r.json()
+            job['etag'] = r.headers['etag']
+        else:
+            errors['get_edit_request'] = \
+                '{} {}\n{}'.format(r.status_code, r.reason, r.text)
 
-    files = fetch_files(url, username, password)
-    for item, result, errors in imap(check_file, files):
-        output.write(json.dumps([item, result, errors]) + '\n')
         if errors:
-            sys.stderr.write(json.dumps([item['@id'], errors]) + '\n')
+            job['skip'] = True  # Probably a transient error
+
+        yield job
+
+
+def patch_file(session, url, job):
+    item = job['item']
+    result = job['result']
+    errors = job['errors']
+    if errors:
+        return
+    item_url = urljoin(url, job['@id'])
+
+    if not errors:
+        data = {
+            'status': 'in progress',
+            'file_size': result['file_size'],
+        }
+        if 'content_md5sum' in result:
+            data['content_md5sum'] = result['content_md5sum']
+        r = session.patch(
+            item_url,
+            data=json.dumps(data),
+            headers={
+                'If-Match': job['etag'],
+                'Content-Type': 'application/json',
+            },
+        )
+        if not r.ok:
+            errors['patch_file_request'] = \
+                '{} {}\n{}'.format(r.status_code, r.reason, r.text)
+        else:
+            job['patched'] = True
+
+
+def run(out, err, url, username, password, encValData, mirror, search_query,
+        processes=None, include_unexpired_upload=False, dry_run=False):
+    import functools
+    import multiprocessing
+    import requests
+    session = requests.Session()
+    session.auth = (username, password)
+    session.headers['Accept'] = 'application/json'
+
+    config = {
+        'encValData': encValData,
+        'mirror': mirror,
+    }
+
+    if processes == 0:
+        # Easier debugging without multiprocessing.
+        imap = map
+    else:
+        pool = multiprocessing.Pool(processes=processes)
+        imap = pool.imap_unordered
+
+    jobs = fetch_files(session, url, search_query, include_unexpired_upload)
+    for job in imap(functools.partial(check_file, config), jobs):
+        if not dry_run:
+            patch_file(session, url, job)
+        out.write(json.dumps(job) + '\n')
+        if job['errors']:
+            err.write(json.dumps(job) + '\n')
 
 
 def main():
@@ -308,19 +355,34 @@ def main():
         description="Update file status", epilog=EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument('--bucket', default='encode-files', help="S3 files bucket")
-    parser.add_argument('--mirror', default='/external/encode/s3/encode-files/')
-    # From http://hgwdev.cse.ucsc.edu/~galt/encode3/validatePackage/validateEncode3-latest.tgz
+    parser.add_argument('--mirror', default='/s3')
     parser.add_argument(
-        '--encValData', default='/external/encode/encValData', help="encValData location")
-    parser.add_argument('--username', '-u', default='', help="HTTP username (access_key_id)")
-    parser.add_argument('--password', '-p', default='', help="HTTP password (secret_access_key)")
+        '--encValData', default='/opt/encValData', help="encValData location")
     parser.add_argument(
-        '--output', '-o', type=argparse.FileType('w'), default=sys.stdout, help="Output file.")
+        '--username', '-u', default='', help="HTTP username (access_key_id)")
+    parser.add_argument(
+        '--password', '-p', default='',
+        help="HTTP password (secret_access_key)")
+    parser.add_argument(
+        '--out', '-o', type=argparse.FileType('w'), default=sys.stdout,
+        help="file to write json lines of results with or without errors")
+    parser.add_argument(
+        '--err', '-e', type=argparse.FileType('w'), default=sys.stderr,
+        help="file to write json lines of results with errors")
+    parser.add_argument(
+        '--processes', type=int,
+        help="defaults to cpu count, use 0 for debugging in a single process")
+    parser.add_argument(
+        '--include-unexpired-upload', action='store_true',
+        help="include files whose upload credentials have not yet expired (may be replaced!)")
+    parser.add_argument(
+        '--dry-run', action='store_true', help="Don't update status, just check")
+    parser.add_argument(
+        '--search-query', default='status=uploading',
+        help="override the file search query, e.g. 'accession=ENCFF000ABC'")
     parser.add_argument('url', help="server to post to")
     args = parser.parse_args()
-    run(args.output, args.url, args.username, args.password, args.encValData,
-        args.bucket, args.mirror)
+    run(**vars(args))
 
 
 if __name__ == '__main__':

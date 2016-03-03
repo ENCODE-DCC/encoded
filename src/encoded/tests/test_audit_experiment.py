@@ -866,7 +866,7 @@ def test_audit_experiment_replicate_with_no_files_warning(testapp,
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
-        if error_type == 'WARNING':
+        if error_type == 'ERROR':
             errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing file in replicate' for error in errors_list)
 
