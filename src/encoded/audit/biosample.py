@@ -351,9 +351,17 @@ def audit_biosample_part_of_consistency(value, system):
     else:
         part_of_biosample = value['part_of']
         term_id = value['biosample_term_id']
-        term_name = value['biosample_term_name']
-        part_of_term_name = part_of_biosample['biosample_term_name']
         part_of_term_id = part_of_biosample['biosample_term_id']
+
+        if 'biosample_term_name' in value:
+            term_name = value['biosample_term_name']
+        else:
+            term_name = term_id
+        if 'biosample_term_name' in part_of_biosample:
+            part_of_term_name = part_of_biosample['biosample_term_name']
+        else:
+            part_of_term_name = part_of_term_id
+
         if term_id == part_of_term_id or part_of_term_id == 'UBERON:0000468':
             return
 
