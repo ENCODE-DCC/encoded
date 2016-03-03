@@ -297,6 +297,16 @@ def target_H3K27ac(testapp, organism):
     return testapp.post_json('/target', item).json['@graph'][0]
 
 
+@pytest.fixture
+def target_control(testapp, organism):
+    item = {
+        'label': 'Control',
+        'organism': organism['@id'],
+        'investigated_as': ['control']
+    }
+    return testapp.post_json('/target', item).json['@graph'][0]
+
+
 RED_DOT = """data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
 AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
 9TXL0Y4OHwAAAABJRU5ErkJggg=="""
