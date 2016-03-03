@@ -25,6 +25,7 @@ from .shared_calculated_properties import (
 
 from itertools import chain
 import datetime
+from region_search import _ASSEMBLY_MAPPER
 
 
 def item_is_revoked(request, path):
@@ -185,10 +186,7 @@ class Dataset(Item):
         hub_url = urljoin(request.resource_url(request.root), hub)
         viz = {}
         for assembly_hub in assembly:
-            if assembly_hub == 'GRCh38':
-                ucsc_assembly = 'hg20'
-            else:
-                ucsc_assembly = assembly_hub
+            ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly_hub, assembly_hub)
             ucsc_url = (
                 'http://genome.ucsc.edu/cgi-bin/hgTracks'
                 '?hubClear='

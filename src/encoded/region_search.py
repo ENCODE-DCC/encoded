@@ -25,6 +25,7 @@ log = logging.getLogger(__name__)
 _ENSEMBL_URL = 'http://rest.ensembl.org/'
 
 _ASSEMBLY_MAPPER = {
+    'GRCh38-minimal': 'hg38',
     'GRCh38': 'hg38',
     'GRCh37': 'hg19',
     'GRCm38': 'mm10',

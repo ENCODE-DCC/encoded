@@ -80,7 +80,7 @@ def test_series_trackDb(testapp, workbook, expected):
 
 
 @pytest.mark.parametrize('expected', [
-    "GRCh38",
+    "hg38",
     "hg19"
 ])
 def test_assembly(testapp, workbook, expected):
@@ -98,7 +98,7 @@ def test_hub_field(testapp, workbook, expected):
 
 def test_visualize_ucsc(testapp, workbook):
     expected = {
-        'GRCh38': 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt&db=GRCh38', 
+        'GRCh38': 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt&db=h38', 
         'hg19': 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt&db=hg19'
     }
     res = testapp.get("/experiments/ENCSR000AEN/")

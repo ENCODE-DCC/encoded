@@ -396,9 +396,17 @@ var PublicationData = React.createClass({
 
                 {context.visualize_ucsc  && context.status == "released" ?
                     <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
+                        <DropdownButton title='Visualize Data'>
+                            <DropdownMenu>
+                                {Object.keys(context.visualize_ucsc).map(assembly =>
+                                    <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context.visualize_ucsc[assembly]}>
+                                        {assembly}
+                                    </a>
+                                )}
+                            </DropdownMenu>
+                        </DropdownButton>
                     </span>
-                : null }
+                : null}
 
                 {context.files.length ?
                     <div>
@@ -717,9 +725,17 @@ var Project = React.createClass({
 
                 {context.visualize_ucsc  && context.status == "released" ?
                     <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
+                        <DropdownButton title='Visualize Data'>
+                            <DropdownMenu>
+                                {Object.keys(context.visualize_ucsc).map(assembly =>
+                                    <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context.visualize_ucsc[assembly]}>
+                                        {assembly}
+                                    </a>
+                                )}
+                            </DropdownMenu>
+                        </DropdownButton>
                     </span>
-                : null }
+                : null}
 
                 {context.files.length ?
                     <div>
@@ -881,9 +897,17 @@ var UcscBrowserComposite = React.createClass({
 
                 {context.visualize_ucsc  && context.status == "released" ?
                     <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
+                        <DropdownButton title='Visualize Data'>
+                            <DropdownMenu>
+                                {Object.keys(context.visualize_ucsc).map(assembly =>
+                                    <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context.visualize_ucsc[assembly]}>
+                                        {assembly}
+                                    </a>
+                                )}
+                            </DropdownMenu>
+                        </DropdownButton>
                     </span>
-                : null }
+                : null}
 
                 {context.files.length ?
                     <div>
@@ -1511,9 +1535,17 @@ var Series = module.exports.Series = React.createClass({
 
                 {context.visualize_ucsc  && context.status == "released" ?
                     <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
+                        <DropdownButton title='Visualize Data'>
+                            <DropdownMenu>
+                                {Object.keys(context.visualize_ucsc).map(assembly =>
+                                    <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context.visualize_ucsc[assembly]}>
+                                        {assembly}
+                                    </a>
+                                )}
+                            </DropdownMenu>
+                        </DropdownButton>
                     </span>
-                : null }
+                : null}
 
                 {context.files && context.files.length ?
                     <div>

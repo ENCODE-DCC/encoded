@@ -12,6 +12,8 @@ from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
 
+from region_search import _ASSEMBLY_MAPPER
+
 
 def includeme(config):
     config.add_route('search', '/search{slash:/?}')
@@ -366,10 +368,7 @@ def search_result_actions(request, doc_types, es_results):
         for bucket in aggregations['assembly']['assembly']['buckets']:
             if bucket['doc_count'] > 0:
                 assembly = bucket['key']
-                if assembly == 'GRCh38':
-                    ucsc_assembly = 'hg20'
-                else:
-                    ucsc_assembly = assembly
+                ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
                 search_params = request.query_string.replace('&', ',,')
                 if not request.params.getall('assembly') or assembly in request.params.getall('assembly'):
                     # filter  assemblies that are not selected
