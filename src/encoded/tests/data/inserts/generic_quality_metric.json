@@ -1,7 +1,7 @@
 [
     {
         "status": "released",
-        "step_run": "635ac7ff-7822-4f72-aad5-5d8b51b60d95",
+        "step_run": "e2c67389-1e84-4506-8ddc-03b566ce4995",
         "uuid": "9002ac49-95a4-46a3-ac0a-0219d25e1e3f",
         "attachment": "rna_qc_attachment.txt",
         "name": "Common RNA filtering counts metric"
