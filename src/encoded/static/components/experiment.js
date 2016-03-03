@@ -39,7 +39,7 @@ var SoftwareVersionList = software.SoftwareVersionList;
 var {SortTablePanel, SortTable} = sortTable;
 var ProjectBadge = image.ProjectBadge;
 var DocumentsPanel = doc.DocumentsPanel;
-var {Panel, PanelBody, PanelHeading} = panel;
+var {Panel, PanelBody, PanelHeading, TabPanel, TabPanelPane} = panel;
 
 
 var anisogenicValues = [
@@ -548,7 +548,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                     <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
                 : null}
 
-                <FileGallery context={context} />
+                <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} />
 
                 {/* Display list of released and unreleased files */}
                 <FetchedItems {...this.props} url={dataset.files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} session={this.context.session} ignoreErrors />
@@ -570,6 +570,11 @@ globals.content_views.register(Experiment, 'Experiment');
 // to the experiment URL, but they apply to the file search -- not the experiment itself.
 
 var FileGallery = React.createClass({
+    propTypes: {
+        encodevers: React.PropTypes.string, // ENCODE version number
+        anisogenic: React.PropTypes.bool // True if anisogenic experiment
+    },
+
     contextTypes: {
         session: React.PropTypes.object, // Login information
         location_href: React.PropTypes.string // URL of this experiment page, including query string stuff
@@ -609,7 +614,7 @@ var FileGallery = React.createClass({
         return (
             <FetchedData>
                 <Param name="data" url={fileSearchUrl + (searchQueryStr ? '&' + searchQueryStr : '')} />
-                <FileGalleryRenderer context={context} session={this.context.session} />
+                <FileGalleryRenderer context={context} session={this.context.session} encodevers={this.props.encodevers} anisogenic={this.props.anisogenic} />
             </FetchedData>
         );
     }
@@ -619,6 +624,11 @@ var FileGallery = React.createClass({
 // Function to render the file gallery, and it gets called after the file search results (for files associated with
 // the displayed experiment) return.
 var FileGalleryRenderer = React.createClass({
+    propTypes: {
+        encodevers: React.PropTypes.string, // ENCODE version number
+        anisogenic: React.PropTypes.bool // True if anisogenic experiment
+    },
+
     contextTypes: {
         session: React.PropTypes.object,
         location_href: React.PropTypes.string
@@ -629,9 +639,20 @@ var FileGalleryRenderer = React.createClass({
         var searchBase = url.parse(this.context.location_href).search || '?type=Experiment';
 
         return (
-            <div>
-                <FacetList facets={data.facets} filters={data.filters} searchBase={searchBase ? searchBase + '&' : searchBase + '?'} />
-                <ExperimentGraph context={context} data={data} session={this.context.session} />
+            <div className="row">
+                <div className="col-md-3">
+                    <FacetList facets={data.facets} filters={data.filters} searchBase={searchBase ? searchBase + '&' : searchBase + '?'} />
+                </div>
+                <div className="col-md-9">
+                    <TabPanel tabs={{graph: 'Graph', table: 'Table'}}>
+                        <TabPanelPane key="graph">
+                            <ExperimentGraph context={context} data={data} session={this.context.session} />
+                        </TabPanelPane>
+                        <TabPanelPane key="table">
+                            <FetchedItems {...this.props} url={dataset.files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={this.props.encodevers} anisogenic={this.props.anisogenic} session={this.context.session} ignoreErrors />
+                        </TabPanelPane>
+                    </TabPanel>
+                </div>
             </div>
         );
     }
@@ -1028,12 +1049,10 @@ var RelatedSeriesList = React.createClass({
         if (touch && !currTouchScreen) {
             currTouchScreen = true;
             this.setState({touchScreen: true});
-            console.log('SET TOUCHSCREEN TRUE');
         }
 
         // Now handle the click. Ignore if we know we have a touch screen, but this wasn't a touch event
         if (!currTouchScreen || touch) {
-            console.log('STAT: %s:%o', currTouchScreen, touch);
             if (this.state.currInfoItem === series.accession && this.state.clicked) {
                 this.setState({currInfoItem: '', clicked: false});
             } else {

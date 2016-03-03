@@ -1633,6 +1633,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                 </SortTablePanel>
             );
         }
+        return null;
     }
 });
 
