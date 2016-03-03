@@ -75,15 +75,14 @@
             "enum" : [
                 "in progress",
                 "started",
-                "verified",
                 "submitted",
-                "preliminary",
                 "proposed",
                 "release ready",
                 "released",
                 "deleted",
                 "replaced",
                 "revoked",
+                "archived",
                 "ready for review",
                 "in review"
             ]
