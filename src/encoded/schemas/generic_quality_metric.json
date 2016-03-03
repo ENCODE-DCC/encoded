@@ -1,0 +1,27 @@
+{
+    "description": "Schema for reporting generic quality metric",
+    "id": "/profiles/generic_quality_metric.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["step_run", "name"],
+    "additionalProperties": false,
+    "identifyingProperties": ["uuid"],
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "quality_metric.json#/properties" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/aliases"},
+        { "$ref": "mixins.json#/attachment" },
+        { "$ref": "mixins.json#/standard_status"}
+   ],
+    "properties": {
+        "schema_version": {
+            "default": "2"
+        },
+        "name": {
+            "description": "The name of the quality metric",
+            "type": "string"
+        },
+    }
+}
