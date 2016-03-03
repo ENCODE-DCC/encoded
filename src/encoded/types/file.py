@@ -173,6 +173,20 @@ class File(Item):
             return ''
 
     @calculated_property(schema={
+        "title": "Assembly + annotation",
+        "type": "string"
+    })
+    def assembly_annotation(self, assembly=None, genome_annotation=None):
+        if assembly and genome_annotation:
+            return assembly + ' ' + genome_annotation
+        elif assembly:
+            return assembly
+        elif genome_annotation:
+            return genome_annotation
+        else:
+            return 'No assembly nor annotation'
+
+    @calculated_property(schema={
         "title": "Download URL",
         "type": "string",
     })
