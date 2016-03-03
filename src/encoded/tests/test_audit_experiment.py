@@ -80,7 +80,7 @@ def histone_target(testapp, fly_organism):
     item = {
         'organism': fly_organism['uuid'],
         'label': 'Histone',
-        'investigated_as': ['histone modification']
+        'investigated_as': ['histone modification', 'histone']
     }
     return testapp.post_json('/target', item, status=201).json['@graph'][0]
 
@@ -153,7 +153,7 @@ def base_antibody_characterization2(testapp, lab, award, target, antibody_lot, o
         'lab': lab['uuid'],
         'characterizes': antibody_lot['uuid'],
         'secondary_characterization_method': 'dot blot assay',
-        'attachment': {'download': 'red-dot.png', 'href': RED_DOT},
+        'attachment': {'download': 'red-dot.png', 'href': RED_DOT}
     }
     return testapp.post_json('/antibody-characterizations', item, status=201).json['@graph'][0]
 
@@ -243,6 +243,7 @@ def biosample_1(testapp, lab, award, source, organism):
     }
     return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
 
+
 @pytest.fixture
 def biosample_2(testapp, lab, award, source, organism):
     item = {        
@@ -262,7 +263,71 @@ def file_fastq(testapp, lab, award, base_experiment, base_replicate):
         'dataset': base_experiment['@id'],
         'replicate': base_replicate['@id'],
         'file_format': 'fastq',
-        'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
+        'md5sum': 'd41d8cd98f00b2042e9800998ecf8427e',
+        'output_type': 'raw data',
+        'run_type': "single-ended",
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_fastq_2(testapp, lab, award, base_experiment, base_replicate):
+    item = {
+        'dataset': base_experiment['@id'],
+        'replicate': base_replicate['@id'],
+        'file_format': 'fastq',
+        'md5sum': 'd41d8cd98f00b204e9800998ecf8427123e',
+        'run_type': "paired-ended",
+        'output_type': 'raw data',
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+@pytest.fixture
+def file_fastq_3(testapp, lab, award, base_experiment, replicate_1_1):
+    item = {
+        'dataset': base_experiment['@id'],
+        'replicate': replicate_1_1['@id'],
+        'file_format': 'fastq',
+        'md5sum': 'd41d8cd98f00b204e9dh5800998ecf8427123e',
+        'run_type': "paired-ended",
+        'output_type': 'raw data',
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_fastq_4(testapp, lab, award, base_experiment, replicate_2_1):
+    item = {
+        'dataset': base_experiment['@id'],
+        'replicate': replicate_2_1['@id'],
+        'file_format': 'fastq',
+        'md5sum': 'd41d8cd98f00b204e9800998ecww3f8427123e',
+        'run_type': "paired-ended",
+        'output_type': 'raw data',
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_fastq_5(testapp, lab, award, base_experiment, replicate_2_1):
+    item = {
+        'dataset': base_experiment['@id'],
+        'replicate': replicate_2_1['@id'],
+        'file_format': 'fastq',
+        'md5sum': 'd41d8cdq427123e',
+        'run_type': "paired-ended",
         'output_type': 'raw data',
         'lab': lab['@id'],
         'award': award['@id'],
@@ -377,9 +442,24 @@ def test_audit_experiment_with_libraryless_replicated(testapp, base_experiment, 
     assert any(error['category'] == 'replicate with no library' for error in errors_list)
 
 
-def test_audit_experiment_single_cell_replicated(testapp, base_experiment, base_replicate, base_library):
-    testapp.patch_json(base_experiment['@id'], {'status': 'release ready'})    
-    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'single cell isolation followed by RNA-seq'})    
+def test_audit_experiment_single_cell_replicated(testapp, base_experiment, base_replicate,
+                                                 base_library):
+    testapp.patch_json(base_experiment['@id'], {'status': 'release ready'})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name':
+                                                'single cell isolation followed by RNA-seq'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'unreplicated experiment' for error in errors_list)
+
+
+def test_audit_experiment_RNA_bind_n_seq_replicated(testapp, base_experiment, base_replicate,
+                                                    base_library):
+    testapp.patch_json(base_experiment['@id'], {'status': 'release ready'})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name':
+                                                'RNA Bind-n-Seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -391,7 +471,7 @@ def test_audit_experiment_single_cell_replicated(testapp, base_experiment, base_
 def test_audit_experiment_roadmap_replicated(testapp, base_experiment, base_replicate, base_library, award):
     testapp.patch_json(award['@id'], {'rfa': 'Roadmap'})
     testapp.patch_json(base_experiment['@id'], {'award': award['@id']})
-    testapp.patch_json(base_experiment['@id'], {'status': 'released'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -642,7 +722,7 @@ def test_audit_experiment_with_RNA_library_array_size_range(testapp, base_experi
 
 
 def test_audit_experiment_needs_pipeline(testapp,  replicate, library, experiment, fastq_file):
-    testapp.patch_json(experiment['@id'], {'status': 'released'})
+    testapp.patch_json(experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
     testapp.patch_json(library['@id'], {'size_range': '>200'})
     testapp.patch_json(replicate['@id'], {'library': library['@id']})
     testapp.patch_json(fastq_file['@id'], {'run_type': 'single-ended'})
@@ -658,7 +738,8 @@ def test_audit_experiment_needs_pipeline(testapp,  replicate, library, experimen
 def test_audit_experiment_biosample_term_id(testapp, base_experiment):
     testapp.patch_json(base_experiment['@id'], {'biosample_term_id': 'CL:349829',
                                                 'biosample_type': 'tissue',
-                                                'status': 'released'})
+                                                'status': 'released',
+                                                'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -671,7 +752,8 @@ def test_audit_experiment_biosample_term_id(testapp, base_experiment):
 def test_audit_experiment_biosample_ntr_term_id(testapp, base_experiment):
     testapp.patch_json(base_experiment['@id'], {'biosample_term_id': 'NTR:349829',
                                                 'biosample_type': 'tissue',
-                                                'status': 'released'})
+                                                'status': 'released',
+                                                'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -686,14 +768,14 @@ def test_audit_experiment_replicate_with_file(testapp, file_fastq,
                                               base_replicate,
                                               base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
-    testapp.patch_json(base_experiment['@id'], {'status': 'released'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert all(((error['category'] != 'missing file in replicate') and
-               (error['category'] != 'missing FASTQ file in replicate')) for error in errors_list)
+               (error['category'] != 'missing sequence file in replicate')) for error in errors_list)
 
 
 def test_audit_experiment_needs_pipeline_and_has_one(testapp,  replicate, library,
@@ -701,7 +783,7 @@ def test_audit_experiment_needs_pipeline_and_has_one(testapp,  replicate, librar
                                                      analysis_step_run_bam,
                                                      analysis_step_version_bam, analysis_step_bam,
                                                      pipeline_bam):
-    testapp.patch_json(experiment['@id'], {'status': 'released'})
+    testapp.patch_json(experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
     testapp.patch_json(library['@id'], {'size_range': '>200'})
     testapp.patch_json(replicate['@id'], {'library': library['@id']})
     testapp.patch_json(fastq_file['@id'], {'run_type': 'single-ended'})
@@ -721,7 +803,8 @@ def test_audit_experiment_needs_pipeline_chip_seq(testapp, replicate, library,
                                                   experiment, fastq_file,
                                                   target_H3K27ac):
     testapp.patch_json(experiment['@id'], {'status': 'released',
-                                           'target': target_H3K27ac['@id']})
+                                           'target': target_H3K27ac['@id'],
+                                           'date_released': '2016-01-01'})
     testapp.patch_json(library['@id'], {'size_range': '200-600'})
     testapp.patch_json(replicate['@id'], {'library': library['@id']})
     testapp.patch_json(fastq_file['@id'], {'run_type': 'single-ended'})
@@ -742,7 +825,8 @@ def test_audit_experiment_needs_pipeline_chip_seq_and_has_one(testapp, replicate
                                                               analysis_step_bam,
                                                               pipeline_bam):
     testapp.patch_json(experiment['@id'], {'status': 'released',
-                                           'target': target_H3K27ac['@id']})
+                                           'target': target_H3K27ac['@id'],
+                                           'date_released': '2016-01-01'})
     testapp.patch_json(library['@id'], {'size_range': '200-600'})
     testapp.patch_json(replicate['@id'], {'library': library['@id']})
     testapp.patch_json(fastq_file['@id'], {'run_type': 'single-ended'})
@@ -763,7 +847,7 @@ def test_audit_experiment_replicate_with_no_files(testapp,
                                                   base_replicate,
                                                   base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
-    testapp.patch_json(base_experiment['@id'], {'status': 'released'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -782,7 +866,7 @@ def test_audit_experiment_replicate_with_no_files_warning(testapp,
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
-        if error_type == 'WARNING':
+        if error_type == 'ERROR':
             errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing file in replicate' for error in errors_list)
 
@@ -834,10 +918,73 @@ def test_audit_experiment_replicate_with_no_fastq_files(testapp, file_bam,
                                                         base_replicate,
                                                         base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
-    testapp.patch_json(base_experiment['@id'], {'status': 'released'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released',
+                                                'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing FASTQ file in replicate' for error in errors_list)
+    assert any(error['category'] == 'missing sequence file in replicate' for error in errors_list)
+
+
+def test_audit_experiment_mismatched_length_sequencing_files(testapp, file_bam, file_fastq,
+                                                             base_experiment, file_fastq_2,
+                                                             base_replicate,
+                                                             base_library):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mixed intra-replicate endedness'
+               for error in errors_list)
+
+
+def test_audit_experiment_mismatched_inter_paired_sequencing_files(testapp,
+                                                                   base_experiment,
+                                                                   replicate_1_1,
+                                                                   replicate_2_1,
+                                                                   library_1,
+                                                                   library_2,
+                                                                   biosample_1,
+                                                                   biosample_2,
+                                                                   mouse_donor_1,
+                                                                   mouse_donor_2,
+                                                                   file_fastq_3,
+                                                                   file_fastq_4):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
+    testapp.patch_json(file_fastq_3['@id'], {'run_type': "single-ended"})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mixed inter-replicate endedness'
+               for error in errors_list)
+
+
+def test_audit_experiment_mismatched_inter_length_sequencing_files(testapp,
+                                                                   base_experiment,
+                                                                   replicate_1_1,
+                                                                   replicate_2_1,
+                                                                   library_1,
+                                                                   library_2,
+                                                                   biosample_1,
+                                                                   biosample_2,
+                                                                   mouse_donor_1,
+                                                                   mouse_donor_2,
+                                                                   file_fastq_3,
+                                                                   file_fastq_4,
+                                                                   file_fastq_5):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
+    testapp.patch_json(file_fastq_3['@id'], {'read_length': 50})
+    testapp.patch_json(file_fastq_5['@id'], {'read_length': 150})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mixed inter-replicate read lengths'
+               for error in errors_list)

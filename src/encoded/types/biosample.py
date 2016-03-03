@@ -1,4 +1,4 @@
-from contentbase import (
+from snowfort import (
     calculated_property,
     collection,
     load_schema,
@@ -26,6 +26,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
     name_key = 'accession'
     rev = {
         'characterizations': ('BiosampleCharacterization', 'characterizes'),
+        'parent_of': ('Biosample', 'part_of'),
     }
     embedded = [
         'donor',
@@ -35,6 +36,10 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'donor.characterizations.award',
         'donor.characterizations.lab',
         'donor.characterizations.submitted_by',
+        'donor.donor_documents',
+        'donor.donor_documents.award',
+        'donor.donor_documents.lab',
+        'donor.donor_documents.submitted_by',
         'donor.references',
         'model_organism_donor_constructs',
         'model_organism_donor_constructs.submitted_by',
@@ -62,6 +67,22 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'protocol_documents.submitted_by',
         'derived_from',
         'part_of',
+        'part_of.protocol_documents',
+        'part_of.protocol_documents.award',
+        'part_of.protocol_documents.lab',
+        'part_of.protocol_documents.submitted_by',
+        'part_of.characterizations.documents',
+        'part_of.characterizations.documents.award',
+        'part_of.characterizations.documents.lab',
+        'part_of.characterizations.documents.submitted_by',
+        'part_of.constructs.documents',
+        'part_of.constructs.documents.award',
+        'part_of.constructs.documents.lab',
+        'part_of.constructs.documents.submitted_by',
+        'part_of.rnais.documents.award',
+        'part_of.rnais.documents.lab',
+        'part_of.rnais.documents.submitted_by',
+        'parent_of',
         'pooled_from',
         'characterizations.submitted_by',
         'characterizations.award',
@@ -246,6 +267,17 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
     })
     def characterizations(self, request, characterizations):
         return paths_filtered_by_status(request, characterizations)
+
+    @calculated_property(schema={
+        "title": "Child biosamples",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Biosample.part_of",
+        },
+    })
+    def parent_of(self, request, parent_of):
+        return paths_filtered_by_status(request, parent_of)
 
     @calculated_property(schema={
         "title": "Age",

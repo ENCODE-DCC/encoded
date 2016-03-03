@@ -23,7 +23,28 @@
     ],
     "dependencies": {
         "relevant_timepoint": ["relevant_timepoint_units"],
-        "relevant_timepoint_units": ["relevant_timepoint"]
+        "relevant_timepoint_units": ["relevant_timepoint"],
+        "status": {
+            "oneOf": [
+                {
+                    "required": ["date_released"],
+                    "properties": {
+                        "status": {
+                            "enum": ["released", "revoked"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "status": {
+                                "enum": ["released", "revoked"]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
     },
     "properties": {
         "schema_version": {
@@ -34,11 +55,24 @@
             "description": "The category that best describes the annotation set.",
             "type": "string",
             "enum": [
+                "binding sites",
+                "candidate enhancers",
+                "candidate promoters",
                 "enhancer prediction",
-                "segmentation",
+                "DNase master peaks",
+                "transcription factor motifs",
+                "SAGA",
+                "validated enhancers",
                 "overlap",
+                "segmentation",
                 "encyclopedia"
             ]
+        },
+        "encyclopedia_version": {
+            "title": "ENCODE encyclopedia version",
+            "description": " The version of the ENCODE encyclopeida to which this annotation belongs.",
+            "comment": "The model should be something like version 1.0",
+            "type": "string"
         },
         "organism": {
             "title": "Organism",
@@ -170,6 +204,10 @@
         "software_used.software.name": {
             "title": "Software used",
             "type": "array"
+        },
+        "encyclopedia_version": {
+            "title": "Encyclopedia version",
+            "type": "string"
         },
         "lab.title": {
             "title": "Lab",

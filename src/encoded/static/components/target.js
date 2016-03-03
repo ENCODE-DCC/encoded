@@ -16,7 +16,7 @@ var RelatedItems = item.RelatedItems;
 var Target = module.exports.Target = React.createClass({
     render: function() {
         var context = this.props.context;
-        var itemClass = globals.itemClass(context, 'view-detail panel key-value');
+        var itemClass = globals.itemClass(context, 'view-detail key-value');
         var geneLink, geneRef, baseName, sep;
 
         if (context.organism.name == "human") {
@@ -59,20 +59,30 @@ var Target = module.exports.Target = React.createClass({
                     </div>
                 </header>
 
-                <dl className={itemClass}>
-                    <dt>Target name</dt>
-                    <dd>{context.label}</dd>
+                <div className="panel">
+                    <dl className={itemClass}>
+                        <div data-test="name">
+                            <dt>Target name</dt>
+                            <dd>{context.label}</dd>
+                        </div>
 
-                    {context.gene_name && geneLink ? <dt>Target gene</dt> : null}
-                    {context.gene_name && geneLink ? <dd><a href={geneLink}>{context.gene_name}</a></dd> : null}
+                        {context.gene_name && geneLink ?
+                            <div data-test="gene">
+                                <dt>Target gene</dt>
+                                <dd><a href={geneLink}>{context.gene_name}</a></dd>
+                            </div>
+                        : null}
 
-                    <dt>External resources</dt>
-                    <dd>
-                        {context.dbxref.length ?
-                            <DbxrefList values={context.dbxref} target_gene={context.gene_name} />
-                        : <em>None submitted</em> }
-                    </dd>
-                </dl>
+                        <div data-test="external">
+                            <dt>External resources</dt>
+                            <dd>
+                                {context.dbxref.length ?
+                                    <DbxrefList values={context.dbxref} target_gene={context.gene_name} />
+                                : <em>None submitted</em> }
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
 
                 <RelatedItems title={'Experiments using target ' + context.label}
                               url={'/search/?type=experiment&target.uuid=' + context.uuid}

@@ -59,6 +59,7 @@ ORDER = [
     'file',
     'star_quality_metric',
     'bismark_quality_metric',
+    'cpg_correlation_quality_metric',
     'chipseq_filter_quality_metric',
     'encode2_chipseq_quality_metric',
     'fastqc_quality_metric',
@@ -73,8 +74,22 @@ ORDER = [
     'pbc_quality_metric',
     'phantompeaktools_spp_quality_metric',
     'samtools_stats_quality_metric',
+    'idr_quality_metric',
     'image',
     'page'
+]
+
+IS_ATTACHMENT = [
+    'attachment',
+    'IDR_plot_true',
+    'IDR_plot_rep1_pr',
+    'IDR_plot_rep2_pr',
+    'IDR_plot_pool_pr',
+    'IDR_parameters_true',
+    'IDR_parameters_rep1_pr',
+    'IDR_parameters_rep2_pr',
+    'IDR_parameters_pool_pr',
+    'cross_correlation_plot'
 ]
 
 ##############################################################################
@@ -168,18 +183,18 @@ def skip_rows_with_all_falsey_value(*keys):
     return component
 
 
-def add_attachment(docsdir):
+def add_attachments(docsdir):
     def component(dictrows):
         for row in dictrows:
-            filename = row.get('attachment', None)
-            if filename is None:
-                yield row
-                continue
-            try:
-                path = find_doc(docsdir, filename)
-                row['attachment'] = attachment(path)
-            except ValueError as e:
-                row['_errors'] = repr(e)
+            for attachment_property in IS_ATTACHMENT:
+                filename = row.get(attachment_property, None)
+                if filename is None:
+                    continue
+                try:
+                    path = find_doc(docsdir, filename)
+                    row[attachment_property] = attachment(path)
+                except ValueError as e:
+                    row['_errors'] = repr(e)
             yield row
 
     return component
@@ -503,7 +518,7 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None
             'mouse_life_stage',
             # 'flowcell_details.machine',
         ),
-        add_attachment(docsdir),
+        add_attachments(docsdir),
     ]
     if phase == 1:
         method = 'POST'
@@ -528,7 +543,7 @@ PHASE1_PIPELINES = {
         remove_keys('lab', 'submits_for'),
     ],
     'biosample': [
-        remove_keys('derived_from', 'pooled_from'),
+        remove_keys('derived_from', 'pooled_from', 'part_of'),
     ],
     'library': [
         remove_keys('spikeins_used'),
@@ -587,7 +602,7 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('lab', 'submits_for'),
     ],
     'biosample': [
-        skip_rows_missing_all_keys('derived_from', 'pooled_from'),
+        skip_rows_missing_all_keys('derived_from', 'pooled_from', 'part_of'),
     ],
     'library': [
         skip_rows_missing_all_keys('spikeins_used'),

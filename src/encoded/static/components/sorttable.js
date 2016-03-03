@@ -163,7 +163,7 @@ var SortTable = module.exports.SortTable = React.createClass({
 
         // See if any columns hidden by making an array keyed by column ID that's true for each hidden column.
         // Also keep a count of hidden columns so we can calculate colspan later.
-        columnIds.forEach(function(columnId) {
+        columnIds.forEach(columnId => {
             var hidden = !!(columns[columnId].hide && columns[columnId].hide(list, columns, meta));
             hiddenColumns[columnId] = hidden;
             hiddenCount += hidden ? 1 : 0;
@@ -175,11 +175,11 @@ var SortTable = module.exports.SortTable = React.createClass({
         // Now display the table, but only if we were passed a non-empty list
         if (list && list.length) {
             return (
-                <table className="table table-striped">
+                <table className="table table-striped table-sortable">
 
                     <thead>
-                        {this.props.title ? <tr className="table-section"><th colSpan={colCount}>{this.props.title}</th></tr> : null}
-                        <tr>
+                        {this.props.title ? <tr className="table-section" key="title"><th colSpan={colCount}>{this.props.title}</th></tr> : null}
+                        <tr key="header">
                             {columnIds.map(columnId => {
                                 if (!hiddenColumns[columnId]) {
                                     var columnClass;
@@ -206,9 +206,9 @@ var SortTable = module.exports.SortTable = React.createClass({
                     </thead>
 
                     <tbody>
-                        {list.sort(this.sortColumn).map(item => {
+                        {list.sort(this.sortColumn).map((item, i) => {
                             return (
-                                <tr key={item['@id']}>
+                                <tr key={i}>
                                     {columnIds.map(columnId => {
                                         if (!hiddenColumns[columnId]) {
                                             if (columns[columnId].display) {

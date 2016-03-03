@@ -1,4 +1,4 @@
-from contentbase import (
+from snowfort import (
     AfterModified,
     BeforeModified,
     CONNECTION,
@@ -6,7 +6,7 @@ from contentbase import (
     collection,
     load_schema,
 )
-from contentbase.schema_utils import schema_validator
+from snowfort.schema_utils import schema_validator
 from .base import (
     Item,
     paths_filtered_by_status,
@@ -105,6 +105,8 @@ class File(Item):
         'replicate.experiment.target',
         'lab',
         'derived_from',
+        'derived_from.analysis_step_version.software_versions',
+        'derived_from.analysis_step_version.software_versions.software',
         'submitted_by',
         'analysis_step_version.analysis_step',
         'analysis_step_version.analysis_step.pipelines',
@@ -287,10 +289,16 @@ class File(Item):
              permission='edit')
 def get_upload(context, request):
     external = context.propsheets.get('external', {})
+    upload_credentials = external.get('upload_credentials')
+    # Show s3 location info for files originally submitted to EDW.
+    if upload_credentials is None and external.get('service') == 's3':
+        upload_credentials = {
+            'upload_url': 's3://{bucket}/{key}'.format(**external),
+        }
     return {
         '@graph': [{
             '@id': request.resource_path(context),
-            'upload_credentials': external.get('upload_credentials'),
+            'upload_credentials': upload_credentials,
         }],
     }
 

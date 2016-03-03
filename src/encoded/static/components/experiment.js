@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+var panel = require('../libs/bootstrap/panel');
 var _ = require('underscore');
 var moment = require('moment');
 var graph = require('./graph');
@@ -11,11 +12,12 @@ var image = require('./image');
 var statuslabel = require('./statuslabel');
 var audit = require('./audit');
 var fetched = require('./fetched');
-var AuditMixin = audit.AuditMixin;
 var pipeline = require('./pipeline');
 var reference = require('./reference');
 var software = require('./software');
+var sortTable = require('./sorttable');
 var objectutils = require('./objectutils');
+var doc = require('./doc');
 
 var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -25,15 +27,17 @@ var FetchedItems = fetched.FetchedItems;
 var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
 var StatusLabel = statuslabel.StatusLabel;
-var AuditIndicators = audit.AuditIndicators;
-var AuditDetail = audit.AuditDetail;
+var {AuditMixin, AuditIndicators, AuditDetail} = audit;
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
 var PubReferenceList = reference.PubReferenceList;
 var ExperimentTable = dataset.ExperimentTable;
 var SingleTreatment = objectutils.SingleTreatment;
 var SoftwareVersionList = software.SoftwareVersionList;
+var {SortTablePanel, SortTable} = sortTable;
 var ProjectBadge = image.ProjectBadge;
+var DocumentsPanel = doc.DocumentsPanel;
+var {Panel, PanelBody, PanelHeading} = panel;
 
 
 var anisogenicValues = [
@@ -44,7 +48,7 @@ var anisogenicValues = [
 ];
 
 
-var Panel = function (props) {
+var PanelLookup = function (props) {
     // XXX not all panels have the same markup
     var context;
     if (props['@id']) {
@@ -64,30 +68,146 @@ var Experiment = module.exports.Experiment = React.createClass({
     },
 
     render: function() {
+        var condensedReplicates = [];
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
-        var replicates = _.sortBy(context.replicates, function(item) {
-            return item.biological_replicate_number;
-        });
-        var aliasList = context.aliases.join(", ");
+        var replicates = context.replicates;
+        if (replicates) {
+            var condensedReplicatesKeyed = _(replicates).groupBy(replicate => replicate.library && replicate.library['@id']);
+            if (Object.keys(condensedReplicatesKeyed).length) {
+                condensedReplicates = _.toArray(condensedReplicatesKeyed);
+            }
+        }
 
-        var documents = {};
-        replicates.forEach(function (replicate) {
-            if (!replicate.library) return;
-            replicate.library.documents.forEach(function (doc, i) {
-                documents[doc['@id']] = Panel({context: doc, key: i + 1});
+        // Collect all documents from the experiment itself.
+        var documents = (context.documents && context.documents.length) ? context.documents : [];
+
+        // Make array of all replicate biosamples, not including biosample-less replicates. Also collect up library documents.
+        var libraryDocs = [];
+        if (replicates) {
+            var biosamples = _.compact(replicates.map(replicate => {
+                if (replicate.library) {
+                    if (replicate.library.documents && replicate.library.documents.length){
+                        Array.prototype.push.apply(libraryDocs, replicate.library.documents);
+                    }
+                    return replicate.library.biosample;
+                }
+                return null;
+            }));
+        }
+
+        // Create platforms array from file platforms; ignore duplicate platforms
+        var platforms = {};
+        if (context.files && context.files.length) {
+            context.files.forEach(file => {
+                if (file.platform && file.dataset === context['@id']) {
+                    platforms[file.platform['@id']] = file.platform;
+                }
             });
-        });
+        }
 
-        // Make array of all replicate biosamples, not including biosample-less replicates.
-        var biosamples = _.compact(replicates.map(function(replicate) {
-            return replicate.library && replicate.library.biosample;
-        }));
+        // If we have replicates, handle what we used to call Assay Details -- display data about each of the replicates, breaking out details
+        // if they differ between replicates.
+        if (replicates && replicates.length) {
+            // Prepare to collect values from each replicate's library. Each key in this object refers to a property in the libraries.
+            var libraryValues = {
+                treatments:                     {values: {}, value: undefined, component: {}, title: 'Treatments',                test: 'treatments'},
+                nucleic_acid_term_name:         {values: {}, value: undefined, component: {}, title: 'Nucleic acid type',         test: 'nucleicacid'},
+                depleted_in_term_name:          {values: {}, value: undefined, component: {}, title: 'Depleted in',               test: 'depletedin'},
+                nucleic_acid_starting_quantity: {values: {}, value: undefined, component: {}, title: 'Library starting quantity', test: 'startingquantity'},
+                size_range:                     {values: {}, value: undefined, component: {}, title: 'Size range',                test: 'sizerange'},
+                lysis_method:                   {values: {}, value: undefined, component: {}, title: 'Lysis method',              test: 'lysismethod'},
+                extraction_method:              {values: {}, value: undefined, component: {}, title: 'Extraction method',         test: 'extractionmethod'},
+                fragmentation_method:           {values: {}, value: undefined, component: {}, title: 'Fragmentation method',      test: 'fragmentationmethod'},
+                library_size_selection_method:  {values: {}, value: undefined, component: {}, title: 'Size selection method',     test: 'sizeselectionmethod'},
+                spikeins_used:                  {values: {}, value: undefined, component: {}, title: 'Spike-ins datasets',        test: 'spikeins'}
+            };
 
-        // Build the text of the Treatment, synchronization, and mutatedGene string arrays
+            // For any library properties that aren't simple values, put functions to process them into simple values in this object,
+            // keyed by their library property name. Returned JS undefined if no complex value exists so that we can reliably test it
+            // momentarily. We have a couple properties too complex even for this, so they'll get added separately at the end.
+            var librarySpecials = {
+                treatments: function(library) {
+                    var treatments = []; // Array of treatment_term_name
+
+                    // First get the treatments in the library
+                    if (library.treatments && library.treatments.length) {
+                        treatments = library.treatments.map(treatment => SingleTreatment(treatment));
+                    }
+
+                    // Now get the treatments in the biosamples
+                    if (library.biosample && library.biosample.treatments && library.biosample.treatments.length) {
+                        treatments = treatments.concat(library.biosample.treatments.map(treatment => SingleTreatment(treatment)));
+                    }
+
+                    if (treatments.length) {
+                        return treatments.sort().join(', ');
+                    }
+                    return undefined;
+                },
+                nucleic_acid_starting_quantity: function(library) {
+                    var quantity = library.nucleic_acid_starting_quantity;
+                    if (quantity) {
+                        return quantity + library.nucleic_acid_starting_quantity_units;
+                    }
+                    return undefined;
+                },
+                depleted_in_term_name: function(library) {
+                    var terms = library.depleted_in_term_name;
+                    if (terms && terms.length) {
+                        return terms.sort().join(', ');
+                    }
+                    return undefined;
+                },
+                spikeins_used: function(library) {
+                    var spikeins = library.spikeins_used;
+
+                    // Just track @id for deciding if all values are the same or not. Rendering handled in libraryComponents
+                    if (spikeins && spikeins.length) {
+                        return spikeins.map(spikein => spikein.accession).sort().join();
+                    }
+                    return undefined;
+                }
+            };
+            var libraryComponents = {
+                nucleic_acid_starting_quantity: function(library) {
+                    if (library.nucleic_acid_starting_quantity && library.nucleic_acid_starting_quantity_units) {
+                        return <span>{library.nucleic_acid_starting_quantity}<span className="unit">{library.nucleic_acid_starting_quantity_units}</span></span>;
+                    }
+                    return null;
+                },
+                spikeins_used: function(library) {
+                    var spikeins = library.spikeins_used;
+                    if (spikeins && spikeins.length) {
+                        return (
+                            <span>
+                                {spikeins.map(function(dataset, i) {
+                                    return (
+                                        <span key={dataset.uuid}>
+                                            {i > 0 ? ', ' : ''}
+                                            <a href={dataset['@id']}>{dataset.accession}</a>
+                                        </span>
+                                    );
+                                })}
+                            </span>
+                        );
+                    }
+                    return null;
+                }
+            }
+        }
+
+        // Build the text of the Treatment, synchronization, and mutatedGene string arrays; collect biosample docs
         var treatments;
         var synchText = [];
-        biosamples.map(function(biosample) {
+        var biosampleCharacterizationDocs = [];
+        var biosampleDocs = [];
+        var biosampleTalenDocs = [];
+        var biosampleRnaiDocs = [];
+        var biosampleConstructDocs = [];
+        var biosampleDonorDocs = [];
+        var biosampleDonorCharacterizations = [];
+        biosamples.forEach(biosample => {
             // Collect treatments
             treatments = treatments || !!(biosample.treatments && biosample.treatments.length);
 
@@ -98,18 +218,97 @@ var Experiment = module.exports.Experiment = React.createClass({
                         ' + ' + biosample.post_synchronization_time + (biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : '')
                     : ''));
             }
+
+            // Collect biosample characterizations
+            if (biosample.characterizations && biosample.characterizations.length) {
+                biosampleCharacterizationDocs = biosampleCharacterizationDocs.concat(biosample.characterizations);
+            }
+
+            // Collect biosample protocol documents
+            if (biosample.protocol_documents && biosample.protocol_documents.length) {
+                biosampleDocs = biosampleDocs.concat(biosample.protocol_documents);
+            }
+
+            // Collect TALEN documents
+            if (biosample.talens && biosample.talens.length) {
+                biosample.talens.forEach(talen => {
+                    if (talen.documents && talen.documents.length) {
+                        Array.prototype.push.apply(biosampleTalenDocs, talen.documents)
+                    }
+                });
+            }
+
+            // Collect RNAi documents
+            if (biosample.rnais && biosample.rnais.length) {
+                biosample.rnais.forEach(rnai => {
+                    if (rnai.documents && rnai.documents.length) {
+                        Array.prototype.push.apply(biosampleRnaiDocs, rnai.documents);
+                    }
+                });
+            }
+
+            // Collect RNAi documents
+            if (biosample.constructs && biosample.constructs.length) {
+                biosample.constructs.forEach(construct => {
+                    if (construct.documents && construct.documents.length) {
+                        Array.prototype.push.apply(biosampleConstructDocs, construct.documents);
+                    }
+                });
+            }
+
+            // Collect donor documents
+            if (biosample.donor && biosample.donor.donor_documents && biosample.donor.donor_documents.length) {
+                Array.prototype.push.apply(biosampleDonorDocs, biosample.donor.donor_documents);
+            }
+
+            // Collect donor characterizations
+            if (biosample.donor && biosample.donor.characterizations && biosample.donor.characterizations.length) {
+                Array.prototype.push.apply(biosampleDonorCharacterizations, biosample.donor.characterizations);
+            }
         });
         synchText = synchText && _.uniq(synchText);
+        biosampleCharacterizationDocs = biosampleCharacterizationDocs.length ? globals.uniqueObjectsArray(biosampleCharacterizationDocs) : [];
+        biosampleDocs = biosampleDocs.length ? globals.uniqueObjectsArray(biosampleDocs) : [];
+        biosampleTalenDocs = biosampleTalenDocs.length ? globals.uniqueObjectsArray(biosampleTalenDocs) : [];
+        biosampleRnaiDocs = biosampleRnaiDocs.length ? globals.uniqueObjectsArray(biosampleRnaiDocs) : [];
+        biosampleConstructDocs = biosampleConstructDocs.length ? globals.uniqueObjectsArray(biosampleConstructDocs) : [];
+        biosampleDonorDocs = biosampleDonorDocs.length ? globals.uniqueObjectsArray(biosampleDonorDocs) : [];
+        biosampleDonorCharacterizations = biosampleDonorCharacterizations.length ? globals.uniqueObjectsArray(biosampleDonorCharacterizations) : [];
+
+        // Collect pipeline-related documents
+        var analysisStepDocs = [];
+        var pipelineDocs = [];
+        if (context.files && context.files.length) {
+            context.files.forEach(file => {
+                var fileAnalysisStepVersion = file.analysis_step_version;
+                if (fileAnalysisStepVersion) {
+                    var fileAnalysisStep = fileAnalysisStepVersion.analysis_step;
+                    if (fileAnalysisStep) {
+                        // Collect analysis step docs
+                        if (fileAnalysisStep.documents && fileAnalysisStep.documents.length) {
+                            analysisStepDocs = analysisStepDocs.concat(fileAnalysisStep.documents);
+                        }
+
+                        // Collect pipeline docs
+                        if (fileAnalysisStep.pipelines && fileAnalysisStep.pipelines.length) {
+                            fileAnalysisStep.pipelines.forEach(pipeline => {
+                                if (pipeline.documents && pipeline.documents.length) {
+                                    pipelineDocs = pipelineDocs.concat(pipeline.documents);
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        }
+        analysisStepDocs = analysisStepDocs.length ? globals.uniqueObjectsArray(analysisStepDocs) : [];
+        pipelineDocs = pipelineDocs.length ? globals.uniqueObjectsArray(pipelineDocs) : [];
 
         // Generate biosample summaries
         var fullSummaries = biosampleSummaries(biosamples);
 
-        // Adding experiment specific documents
-        context.documents.forEach(function (document, i) {
-            documents[document['@id']] = Panel({context: document, key: i + 1});
-        });
         var antibodies = {};
-        replicates.forEach(function (replicate) {
+        replicates.forEach(replicate => {
             if (replicate.antibody) {
                 antibodies[replicate.antibody['@id']] = replicate.antibody;
             }
@@ -140,9 +339,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         var seriesList = [];
         var loggedIn = this.context.session && this.context.session['auth.userid'];
         if (context.related_series && context.related_series.length) {
-            seriesList = _(context.related_series).filter(dataset => {
-                return loggedIn || dataset.status === 'released';
-            });
+            seriesList = _(context.related_series).filter(dataset => loggedIn || dataset.status === 'released');
         }
 
         // Set up the breadcrumbs
@@ -168,6 +365,20 @@ var Experiment = module.exports.Experiment = React.createClass({
             {id: biosampleTermName, query: biosampleTermQuery, tip: biosampleTermName}
         ];
 
+        // Compile the document list
+        var combinedDocuments = _(documents.concat(
+            biosampleCharacterizationDocs,
+            libraryDocs,
+            biosampleDocs,
+            biosampleTalenDocs,
+            biosampleRnaiDocs,
+            biosampleConstructDocs,
+            biosampleDonorDocs,
+            biosampleDonorCharacterizations,
+            pipelineDocs,
+            analysisStepDocs
+        )).uniq(doc => doc.uuid);
+
         var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
 
         // Make a list of reference links, if any
@@ -180,9 +391,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 <header className="row">
                     <div className="col-sm-12">
                         <Breadcrumbs root='/search/?type=experiment' crumbs={crumbs} />
-                        <h2>
-                            Experiment summary for {context.accession}
-                        </h2>
+                        <h2>Experiment summary for {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
@@ -193,165 +402,155 @@ var Experiment = module.exports.Experiment = React.createClass({
                    </div>
                 </header>
                 <AuditDetail context={context} id="experiment-audit" />
-                <div className="panel panel-default data-display">
-                    <div className="panel-heading">
-                        <ProjectBadge project={context.award.project} />
-                    </div>
-                    <div className="panel-body">
-                        <dl className="key-value">
-                            <div data-test="assay">
-                                <dt>Assay</dt>
-                                <dd>{context.assay_term_name}</dd>
+                <Panel addClasses="data-display">
+                    <PanelBody addClasses="panel-body-with-header">
+                        <div className="flexrow">
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
+                                <dl className="key-value">
+                                    <div data-test="assay">
+                                        <dt>Assay</dt>
+                                        <dd>{context.assay_term_name}</dd>
+                                    </div>
+
+                                    {context.target ?
+                                        <div data-test="target">
+                                            <dt>Target</dt>
+                                            <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
+                                        </div>
+                                    : null}
+
+                                    {biosamples.length || context.biosample_term_name ?
+                                        <div data-test="biosample-summary">
+                                            <dt>Biosample summary</dt>
+                                            <dd>{context.biosample_term_name ? <span>{context.biosample_term_name}{' '}{fullSummaries}</span> : <span>{fullSummaries}</span>}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.biosample_type ?
+                                        <div data-test="biosample-type">
+                                            <dt>Biosample Type</dt>
+                                            <dd>{context.biosample_type}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.replication_type ?
+                                        <div data-test="replicationtype">
+                                            <dt>Replication type</dt>
+                                            <dd>{context.replication_type}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.description ?
+                                        <div data-test="description">
+                                            <dt>Description</dt>
+                                            <dd>{context.description}</dd>
+                                        </div>
+                                    : null}
+
+                                    {AssayDetails(replicates, libraryValues, librarySpecials, libraryComponents)}
+
+                                    {Object.keys(platforms).length ?
+                                        <div data-test="platform">
+                                            <dt>Platform</dt>
+                                            <dd>
+                                                {Object.keys(platforms).map((platformId, i) =>
+                                                    <span key={platformId}>
+                                                        {i > 0 ? <span>, </span> : null}
+                                                        <a className="stacked-link" href={platformId}>{platforms[platformId].title}</a>
+                                                    </span>
+                                                )}
+                                            </dd>
+                                        </div>
+                                    : null}
+
+                                    {context.possible_controls && context.possible_controls.length ?
+                                        <div data-test="possible-controls">
+                                            <dt>Controls</dt>
+                                            <dd>
+                                                <ul>
+                                                    {context.possible_controls.map(function (control) {
+                                                        return (
+                                                            <li key={control['@id']} className="multi-comma">
+                                                                <a href={control['@id']}>
+                                                                    {control.accession}
+                                                                </a>
+                                                            </li>
+                                                        );
+                                                    })}
+                                                </ul>
+                                            </dd>
+                                        </div>
+                                    : null}
+                                </dl>
                             </div>
 
-                            {context.replication_type ?
-                                <div data-test="replicationtype">
-                                    <dt>Replication type</dt>
-                                    <dd>{context.replication_type}</dd>
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading">
+                                    <h4>Attribution</h4>
+                                    <ProjectBadge award={context.award} addClasses="badge-heading" />
                                 </div>
-                            : null}
+                                <dl className="key-value">
+                                    <div data-test="lab">
+                                        <dt>Lab</dt>
+                                        <dd>{context.lab.title}</dd>
+                                    </div>
 
-                            {biosamples.length || context.biosample_term_name ?
-                                <div data-test="biosample-summary">
-                                    <dt>Biosample summary</dt>
-                                    <dd>{context.biosample_term_name ? <span>{context.biosample_term_name}{' '}{fullSummaries}</span> : <span>{fullSummaries}</span>}</dd>
-                                </div>
-                            : null}
+                                    {context.award.pi && context.award.pi.lab ?
+                                        <div data-test="awardpi">
+                                            <dt>Award PI</dt>
+                                            <dd>{context.award.pi.lab.title}</dd>
+                                        </div>
+                                    : null}
 
-                            {synchText.length ?
-                                <div data-test="biosample-synchronization">
-                                    <dt>Synchronization timepoint</dt>
-                                    <dd>
-                                        {synchText.join(', ')}
-                                    </dd>
-                                </div>
-                            : null}
+                                    <div data-test="project">
+                                        <dt>Project</dt>
+                                        <dd>{context.award.project}</dd>
+                                    </div>
 
-                            {context.biosample_type ?
-                                <div data-test="biosample-type">
-                                    <dt>Type</dt>
-                                    <dd>{context.biosample_type}</dd>
-                                </div>
-                            : null}
+                                    {context.dbxrefs.length ?
+                                        <div data-test="external-resources">
+                                            <dt>External resources</dt>
+                                            <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                        </div>
+                                    : null}
 
-                            {treatments ?
-                                <div data-test="treatment">
-                                    <dt>Treatments</dt>
-                                    <dd>{BiosampleTreatments(biosamples)}</dd>
-                                </div>
-                            : null}
+                                    {references ?
+                                        <div data-test="references">
+                                            <dt>References</dt>
+                                            <dd>{references}</dd>
+                                        </div>
+                                    : null}
 
-                            {context.target ?
-                                <div data-test="target">
-                                    <dt>Target</dt>
-                                    <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
-                                </div>
-                            : null}
+                                    {context.aliases.length ?
+                                        <div data-test="aliases">
+                                            <dt>Aliases</dt>
+                                            <dd>{context.aliases.join(", ")}</dd>
+                                        </div>
+                                    : null}
 
-                            {Object.keys(antibodies).length ?
-                                <div data-test="antibody">
-                                    <dt>Antibody</dt>
-                                    <dd>{Object.keys(antibodies).map(function(antibody, i) {
-                                        return (<span key={antibody}>{i !== 0 ? ', ' : ''}<a href={antibody}>{antibodies[antibody].accession}</a></span>);
-                                    })}</dd>
-                                </div>
-                            : null}
+                                    {context.date_released ?
+                                        <div data-test="date-released">
+                                            <dt>Date released</dt>
+                                            <dd>{context.date_released}</dd>
+                                        </div>
+                                    : null}
 
-                            {context.possible_controls && context.possible_controls.length ?
-                                <div data-test="possible-controls">
-                                    <dt>Controls</dt>
-                                    <dd>
-                                        <ul>
-                                            {context.possible_controls.map(function (control) {
-                                                return (
-                                                    <li key={control['@id']} className="multi-comma">
-                                                        <a href={control['@id']}>
-                                                            {control.accession}
-                                                        </a>
-                                                    </li>
-                                                );
-                                            })}
-                                        </ul>
-                                    </dd>
-                                </div>
-                            : null}
-
-                            {context.description ?
-                                <div data-test="description">
-                                    <dt>Description</dt>
-                                    <dd>{context.description}</dd>
-                                </div>
-                            : null}
-
-                            <div data-test="lab">
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
+                                    {seriesList.length ?
+                                        <div data-test="relatedseries">
+                                            <dt>Related datasets</dt>
+                                            <dd><RelatedSeriesList seriesList={seriesList} /></dd>
+                                        </div>
+                                    : null}
+                                </dl>
                             </div>
-
-                            {context.award.pi && context.award.pi.lab ?
-                                <div data-test="awardpi">
-                                    <dt>Award PI</dt>
-                                    <dd>{context.award.pi.lab.title}</dd>
-                                </div>
-                            : null}
-
-                            <div data-test="project">
-                                <dt>Project</dt>
-                                <dd>{context.award.project}</dd>
-                            </div>
-
-                            {context.dbxrefs && context.dbxrefs.length ?
-                                <div data-test="external-resources">
-                                    <dt>External resources</dt>
-                                    <dd><DbxrefList values={context.dbxrefs} /></dd>
-                                </div>
-                            : null}
-
-                            {references ?
-                                <div data-test="references">
-                                    <dt>References</dt>
-                                    <dd>{references}</dd>
-                                </div>
-                            : null}
-
-                            {context.aliases.length ?
-                                <div data-test="aliases">
-                                    <dt>Aliases</dt>
-                                    <dd>{aliasList}</dd>
-                                </div>
-                            : null}
-
-                            {seriesList.length ?
-                                <div data-test="relatedseries">
-                                    <dt>Related datasets</dt>
-                                    <dd><RelatedSeriesList seriesList={seriesList} /></dd>
-                                </div>
-                            : null}
-
-                            {context.date_released ?
-                                <div data-test="date-released">
-                                    <dt>Date released</dt>
-                                    <dd>{context.date_released}</dd>
-                                </div>
-                            : null}
-                        </dl>
-                    </div>
-                </div>
-
-                {AssayDetails({context: context, replicates: replicates})}
-
-                {Object.keys(documents).length ?
-                    <div data-test="protocols">
-                        <h3>Documents</h3>
-                        <div className="row multi-columns-row">
-                            {documents}
                         </div>
-                    </div>
-                : null}
+                    </PanelBody>
+                </Panel>
 
-                {replicates.map(function (replicate, index) {
-                    return Replicate({replicate: replicate, anisogenic: anisogenic, key: index});
-                })}
+                {Object.keys(condensedReplicates).length ?
+                    <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
+                : null}
 
                 {context.visualize_ucsc  && context.status == "released" ?
                     <span className="pull-right">
@@ -361,7 +560,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                 <FetchedData>
                     <Param name="data" url={dataset.unreleased_files_url(context)} />
-                    <ExperimentGraph context={context} />
+                    <ExperimentGraph context={context} session={this.context.session} />
                 </FetchedData>
 
                 {context.files.length ?
@@ -376,12 +575,128 @@ var Experiment = module.exports.Experiment = React.createClass({
                 : null}
 
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} />
+
+                <DocumentsPanel documentSpecs={[{documents: combinedDocuments}]} />
             </div>
         );
     }
 });
 
 globals.content_views.register(Experiment, 'Experiment');
+
+
+// Display the table of replicates
+var ReplicateTable = React.createClass({
+    propTypes: {
+        condensedReplicates: React.PropTypes.array.isRequired, // Condensed 'array' of replicate objects
+        replicationType: React.PropTypes.string // Type of replicate so we can tell what's isongenic/anisogenic/whatnot
+    },
+
+    replicateColumns: {
+        'biological_replicate_number': {
+            title: 'Biological replicate',
+            getValue: condensedReplicate => condensedReplicate[0].biological_replicate_number
+        },
+        'technical_replicate_number': {
+            title: 'Technical replicate',
+            getValue: condensedReplicate => condensedReplicate.map(replicate => replicate.technical_replicate_number).sort().join()
+        },
+        'summary': {
+            title: 'Summary',
+            display: condensedReplicate => {
+                var replicate = condensedReplicate[0];
+
+                // Display protein concentration if it exists
+                if (typeof replicate.rbns_protein_concentration === 'number') {
+                    return (
+                        <span>
+                            Protein concentration {replicate.rbns_protein_concentration}
+                            <span className="unit">{replicate.rbns_protein_concentration_units}</span>
+                        </span>
+                    );
+                }
+
+                // Else, display biosample summary if the biosample exists
+                if (replicate.library && replicate.library.biosample) {
+                    return <span>{replicate.library.biosample.summary}</span>;
+                }
+
+                // Else, display nothing
+                return null;
+            },
+            sorter: false
+        },
+        'biosample_accession': {
+            title: 'Biosample',
+            display: condensedReplicate => {
+                var replicate = condensedReplicate[0];
+                if (replicate.library && replicate.library.biosample) {
+                    var biosample = replicate.library.biosample;
+                    return <a href={biosample['@id']} title={'View biosample ' + biosample.accession}>{biosample.accession}</a>;
+                }
+                return null;
+            },
+            objSorter: (a, b) => {
+                var aReplicate = a[0];
+                var bReplicate = b[0];
+                if ((aReplicate.library && aReplicate.library.biosample) && (bReplicate.library && bReplicate.library.biosample)) {
+                    var aAccession = aReplicate.library.biosample.accession;
+                    var bAccession = bReplicate.library.biosample.accession;
+                    return (aAccession < bAccession) ? -1 : ((aAccession > bAccession) ? 1 : 0);
+                }
+                return (aReplicate.library && aReplicate.library.biosample) ? -1 : ((bReplicate.library && bReplicate.library.biosample) ? 1 : 0);
+            }
+        },
+        'antibody_accession': {
+            title: 'Antibody',
+            display: condensedReplicate => {
+                var replicate = condensedReplicate[0];
+                if (replicate.antibody) {
+                    return <a href={replicate.antibody['@id']} title={'View antibody ' + replicate.antibody.accession}>{replicate.antibody.accession}</a>;
+                }
+                return null;
+            },
+            objSorter: (a, b) => {
+                var aReplicate = a[0];
+                var bReplicate = b[0];
+                if (aReplicate.antibody && bReplicate.antibody) {
+                    return (aReplicate.antibody.accession < bReplicate.antibody.accession) ? -1 : ((aReplicate.antibody.accession > bReplicate.antibody.accession) ? 1 : 0);
+                }
+                return (aReplicate.antibody) ? -1 : ((bReplicate.antibody) ? 1 : 0);
+            },
+            hide: (list, columns, meta) => {
+                return _(list).all(condensedReplicate => !condensedReplicate[0].antibody);
+            }
+        },
+        'library': {
+            title: 'Library',
+            getValue: condensedReplicate => condensedReplicate[0].library ? condensedReplicate[0].library.accession : ''
+        }
+    },
+
+    render: function() {
+        var tableTitle;
+        var {condensedReplicates, replicationType} = this.props;
+
+        // Determine replicate table title based on the replicate type. Also override the biosample replicate column title
+        if (replicationType === 'anisogenic') {
+            tableTitle = 'Anisogenic replicates';
+            this.replicateColumns.biological_replicate_number.title = 'Anisogenic replicate';
+        } else if (replicationType === 'isogenic') {
+            tableTitle = 'Isogenic replicates';
+            this.replicateColumns.biological_replicate_number.title = 'Isogenic replicate';
+        } else {
+            tableTitle = 'Replicates';
+            this.replicateColumns.biological_replicate_number.title = 'Biological replicate';
+        }
+
+        return (
+            <SortTablePanel>
+                <SortTable title={tableTitle} list={condensedReplicates} columns={this.replicateColumns} />
+            </SortTablePanel>
+        );
+    }
+});
 
 
 var ControllingExperiments = React.createClass({
@@ -399,249 +714,118 @@ var ControllingExperiments = React.createClass({
 });
 
 
-var AssayDetails = module.exports.AssayDetails = function (props) {
-    var context = props.context;
+// Return an array of React components to render into the enclosing panel, given the experiment object in the context parameter
+var AssayDetails = function (replicates, libraryValues, librarySpecials, libraryComponents) {
 
-    // No replicates, so no assay panel
-    if (!props.replicates.length) return null;
+    // Little utility to convert a replicate to a unique index we can use for arrays (like libraryValues below)
+    function replicateToIndex(replicate) {
+        return replicate.biological_replicate_number + '-' + replicate.technical_replicate_number;
+    }
 
-    // Sort the replicates first by replicate number, then by technical replicate number
-    var replicates = props.replicates.sort(function(a, b) {
-        if (b.biological_replicate_number === a.biological_replicate_number) {
-            return a.technical_replicate_number - b.technical_replicate_number;
-        }
-        return a.biological_replicate_number - b.biological_replicate_number;
-    });
+    // No replicates, so no assay entries
+    if (!replicates.length) {
+        return [];
+    }
 
-    // Collect data from the libraries of all of the replicates, ignoring duplicates
-    var depleted = [];
-    var treatments = [];
-    var lib = replicates[0].library;
-    if (lib) {
-        // Get the array of depleted_in_term_name strings for display
-        if (lib.depleted_in_term_name && lib.depleted_in_term_name.length) {
-            depleted = lib.depleted_in_term_name;
-        }
+    // Collect library values to display from each replicate. Each key holds an array of values from each replicate's library,
+    // indexed by the replicate's biological replicate number. After this loop runs, libraryValues.values should all be filled
+    // with objects keyed by <bio rep num>-<tech rep num> and have the corresponding value or undefined if no value exists
+    // for that key. The 'value' properties of each object in libraryValues will all be undefined after this loop runs.
+    replicates.forEach(replicate => {
+        var library = replicate.library;
+        var replicateIndex = replicateToIndex(replicate);
 
-        // Make an array of treatment term names for display
-        if (lib.treatments && lib.treatments.length) {
-            treatments = lib.treatments.map(function(treatment) {
-                return treatment.treatment_term_name;
+        if (library) {
+            // Handle "normal" library properties
+            Object.keys(libraryValues).forEach(key => {
+                var libraryValue;
+
+                // For specific library properties, preprocess non-simple values into simple ones using librarySpecials
+                if (librarySpecials && librarySpecials[key]) {
+                    // Preprocess complex values into simple ones
+                    libraryValue = librarySpecials[key](library);
+                } else {
+                    // Simple value -- just copy it if it exists (copy undefined if it doesn't)
+                    libraryValue = library[key];
+                }
+
+                // If library property exists, add it to the values we're collecting, keyed by the biological replicate number.
+                // We'll prune it after this replicate loop.
+                libraryValues[key].values[replicateIndex] = libraryValue;
             });
         }
-    } else {
-        // No libraries, so no assay panel
-        return null;
-    }
+    });
 
-    // Create platforms array from file platforms; ignore duplicate platforms
-    var platforms = {};
-    if (context.files && context.files.length) {
-        context.files.forEach(function(file) {
-            if (file.platform && file.dataset === context['@id']) {
-                platforms[file.platform['@id']] = file.platform;
+    // Each property of libraryValues now has every value found in every existing library property in every replicate.
+    // Now for each library value in libraryValues, set the 'value' property if all values in the 'values' object are
+    // identical and existing. Otherwise, keep 'value' set to undefined.
+    var firstBiologicalReplicate = replicateToIndex(replicates[0]);
+    Object.keys(libraryValues).forEach(key => {
+        // Get the first key's value to compare against the others.
+        var firstValue = libraryValues[key].values[firstBiologicalReplicate];
+
+        // See if all values in the values array are identical. Treat 'undefined' as a value
+        if (_(Object.keys(libraryValues[key].values)).all(replicateId => libraryValues[key].values[replicateId] === firstValue)) {
+            // All values for the library value are the same. Set the 'value' field with that value.
+            libraryValues[key].value = firstValue;
+
+            // If the resulting value is undefined, then all values are undefined for this key. Null out the values array.
+            if (firstValue === undefined) {
+                libraryValues[key].values = [];
+            } else if (libraryComponents && libraryComponents[key]) {
+                // The current key shows a rendering component, call it and save the resulting React object for later rendering.
+                libraryValues[key].component[firstBiologicalReplicate] = libraryComponents[key](replicates[0].library);
             }
-        });
-    }
-    var platformKeys = Object.keys(platforms);
-
-    // If no platforms found in files, get the platform from the first replicate, if it has one
-    if (Object.keys(platforms).length === 0 && replicates[0].platform) {
-        platforms[replicates[0].platform['@id']] = replicates[0].platform;
-    }
-
-    return (
-        <div className = "panel-assay">
-            <h3>Assay details</h3>
-            <dl className="panel key-value">
-                {lib.nucleic_acid_term_name ?
-                    <div data-test="nucleicacid">
-                        <dt>Nucleic acid type</dt>
-                        <dd>{lib.nucleic_acid_term_name}</dd>
-                    </div>
-                : null}
-
-                {depleted.length ?
-                    <div data-test="depletedin">
-                        <dt>Depleted in</dt>
-                        <dd>{depleted.join(', ')}</dd>
-                    </div>
-                : null}
-
-                {lib.lysis_method ?
-                    <div data-test="lysismethod">
-                        <dt>Lysis method</dt>
-                        <dd>{lib.lysis_method}</dd>
-                    </div>
-                : null}
-
-                {lib.extraction_method ?
-                    <div data-test="extractionmethod">
-                        <dt>Extraction method</dt>
-                        <dd>{lib.extraction_method}</dd>
-                    </div>
-                : null}
-
-                {lib.fragmentation_method ?
-                    <div data-test="fragmentationmethod">
-                        <dt>Fragmentation method</dt>
-                        <dd>{lib.fragmentation_method}</dd>
-                    </div>
-                : null}
-
-                {lib.size_range ?
-                    <div data-test="sizerange">
-                        <dt>Size range</dt>
-                        <dd>{lib.size_range}</dd>
-                    </div>
-                : null}
-
-                {lib.library_size_selection_method ?
-                    <div data-test="sizeselectionmethod">
-                        <dt>Size selection method</dt>
-                        <dd>{lib.library_size_selection_method}</dd>
-                    </div>
-                : null}
-
-                {treatments.length ?
-                    <div data-test="treatments">
-                        <dt>Treatments</dt>
-                        <dd>
-                            {treatments.join(', ')}
-                        </dd>
-                    </div>
-                : null}
-
-                {platformKeys.length ?
-                    <div data-test="platform">
-                        <dt>Platform</dt>
-                        <dd>
-                            {platformKeys.map(function(platformId) {
-                                return(
-                                    <a className="stacked-link" key={platformId} href={platformId}>{platforms[platformId].title}</a>
-                                );
-                            })}
-                        </dd>
-                    </div>
-                : null}
-
-                {lib.spikeins_used && lib.spikeins_used.length ?
-                    <div data-test="spikeins">
-                        <dt>Spike-ins datasets</dt>
-                        <dd>
-                            {lib.spikeins_used.map(function(dataset, i) {
-                                return (
-                                    <span key={i}>
-                                        {i > 0 ? ', ' : ''}
-                                        <a href={dataset['@id']}>{dataset.accession}</a>
-                                    </span>
-                                );
-                            })}
-                        </dd>
-                    </div>
-                : null}
-            </dl>
-        </div>
-    );
-};
-
-
-var Replicate = module.exports.Replicate = function (props) {
-    var replicate = props.replicate;
-    var concentration = replicate.rbns_protein_concentration;
-    var library = replicate.library;
-    var biosample = library && library.biosample;
-    var paired_end = replicate.paired_ended;
-
-    // Build biosample summary string
-    var summary;
-    if (biosample) {
-        // Make an array of all the organism summary info to make it easy to comma separate
-        summary = biosampleSummaries([biosample]);
-    }
-
-    return (
-        <div className="panel-replicate" key={props.key}>
-            <h3>{props.anisogenic ? 'Anisogenic' : 'Biological'} replicate - {replicate.biological_replicate_number}</h3>
-            <dl className="panel key-value">
-                <div data-test="techreplicate">
-                    <dt>Technical replicate</dt>
-                    <dd>{replicate.technical_replicate_number}</dd>
-                </div>
-
-                {concentration ?
-                    <div data-test="proteinconcentration">
-                        <dt>Protein concentration</dt>
-                        <dd>{concentration}<span className="unit">{replicate.rbns_protein_concentration_units}</span></dd>
-                    </div>
-                : null}
-
-                {library ?
-                    <div data-test="library">
-                        <dt>Library</dt>
-                        <dd>{library.accession}</dd>
-                    </div>
-                : null}
-
-                {library && library.nucleic_acid_starting_quantity ?
-                    <div data-test="startingquantity">
-                        <dt>Library starting quantity</dt>
-                        <dd>{library.nucleic_acid_starting_quantity}<span className="unit">{library.nucleic_acid_starting_quantity_units}</span></dd>
-                    </div>
-                : null}
-
-                {biosample ?
-                    <div data-test="biosample">
-                        <dt>Biosample</dt>
-                        {biosample ?
-                            <dd>
-                                <a href={biosample['@id']}>
-                                    {biosample.accession}
-                                </a>
-                                {summary ? <span>{' - '}{summary}</span> : null}
-                            </dd>
-                        : null}
-                    </div>
-                : null}
-            </dl>
-        </div>
-    );
-};
-// Can't be a proper panel as the control must be passed in.
-//globals.panel_views.register(Replicate, 'replicate');
-
-
-var BiosampleTreatments = function(biosamples) {
-    var treatmentTexts = [];
-
-    // Build up array of treatment strings
-    if (biosamples && biosamples.length) {
-        biosamples.forEach(function(biosample) {
-            if (biosample.treatments && biosample.treatments.length) {
-                biosample.treatments.forEach(function(treatment) {
-                    treatmentTexts.push(SingleTreatment(treatment));
+        } else {
+            if (libraryComponents && libraryComponents[key]) {
+                replicates.forEach(replicate => {
+                    // If the current key shows a rendering component, call it and save the resulting React object for later rendering.
+                    libraryValues[key].component[replicateToIndex(replicate)] = libraryComponents[key](replicate.library);
                 });
             }
-        });
-    }
+        }
+    });
 
-    // Component output of treatment strings
-    if (treatmentTexts.length) {
-        treatmentTexts = _.uniq(treatmentTexts);
-        return (
-            <span>
-                {treatmentTexts.map(function(treatments, i) {
-                    return (
-                        <span key={i}>
-                            {i > 0 ? <span>{','}<br /></span> : null}
-                            {treatments}
-                        </span>
-                    );
-                })}
-            </span>
-        );
-    }
-    return null;
+    // Now begin the output process -- one React component per array element
+    var components = Object.keys(libraryValues).map(key => {
+        var libraryEntry = libraryValues[key];
+        if (libraryEntry.value !== undefined || (libraryEntry.values && Object.keys(libraryEntry.values).length)) {
+            return (
+                <div key={key} data-test={libraryEntry.test}>
+                    <dt>{libraryEntry.title}</dt>
+                    <dd>
+                        {libraryEntry.value !== undefined ?
+                            /* Single value for this property; render it or its React component */
+                            <span>{(libraryEntry.component && Object.keys(libraryEntry.component).length) ? <span>{libraryEntry.component}</span> : <span>{libraryEntry.value}</span>}</span>
+                        :
+                            /* Multiple values for this property */
+                            <span>
+                                {Object.keys(libraryEntry.values).map((replicateId) => {
+                                    var value = libraryEntry.values[replicateId];
+                                    if (libraryEntry.component && libraryEntry.component[replicateId]) {
+                                        /* Display the pre-rendered component */
+                                        return <span key={replicateId} className="line-item">{libraryEntry.component[replicateId]} [{replicateId}]</span>;
+                                    } else if (value) {
+                                        /* Display the simple value */
+                                        return <span key={replicateId} className="line-item">{value} [{replicateId}]</span>;
+                                    } else {
+                                        /* No value to display; happens when at least one replicate had a value for this property, but this one doesn't */
+                                        return null;
+                                    }
+                                })}
+                            </span>
+                        }
+                    </dd>
+                </div>
+            );
+        }
+
+        // No value exists for this property in any replicate; display nothing for this property.
+        return null;
+    });
+
+    // Finally, return the array of JSX renderings of all assay details.
+    return components;
 };
 
 
@@ -865,7 +1049,7 @@ function graphException(message, file0, file1) {
 module.exports.graphException = graphException;
 
 
-var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId, files, filterAssembly, filterAnnotation) {
+var assembleGraph = module.exports.assembleGraph = function(context, session, infoNodeId, files, filterAssembly, filterAnnotation) {
 
     // Calculate a step ID from a file's derived_from array
     function _derivedFileIds(file) {
@@ -930,7 +1114,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     var allReplicates = {}; // All file's replicates as keys; each key references an array of files
     var allPipelines = {}; // List of all pipelines indexed by step @id
     var allMetricsInfo = []; // List of all QC metrics found attached to files
-    var allContributing = {}; // List of all contributing files
     var fileQcMetrics = {}; // List of all file QC metrics indexed by file ID
     var filterOptions = {}; // List of graph filters; annotations and assemblies
     var stepExists = false; // True if at least one file has an analysis_step
@@ -960,35 +1143,21 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         }
     });
 
-    // Add contributing files to the allFiles object that other files derive from.
-    // Don't worry about files they derive from; they're not included in the graph.
-    // If an allFiles entry already exists for the file, it gets overwritten so that
-    // allFiles and allContributingFiles point at the same object.
-    if (context.contributing_files && context.contributing_files.length) {
-        context.contributing_files.forEach(function(file) {
-            if (allFiles[file['@id']]) {
-                // Contributing file already existed in file array for some reason; use its existing file object
-                allContributing[file['@id']] = allFiles[file['@id']];
-            } else {
-                // Seeing contributed file for the first time; save it in both allFiles and allContributingFiles
-                allFiles[file['@id']] = allContributing[file['@id']] = file;
-            }
-        });
-    }
-
-    // Collect derived_from files, used replicates, and used pipelines
+    // Collect derived_from files, used replicates, and used pipelines. allFiles has all files directly involved
+    // with this experiment if we're logged in, or just released files directly involved with experiment if we're not.
     Object.keys(allFiles).forEach(function(fileId) {
         var file = allFiles[fileId];
 
         // Build an object keyed with all files that other files derive from. If the file is contributed,
         // we don't care about its derived_from because we don't render that.
-        if (!allContributing[fileId] && file.derived_from && file.derived_from.length) {
+        if (file.derived_from && file.derived_from.length) {
             file.derived_from.forEach(function(derived_from) {
                 var derivedFromId = derived_from['@id'];
                 var derivedFile = allFiles[derivedFromId];
                 if (!derivedFile) {
                     // The derived-from file wasn't in the given file list. Copy the file object from the file's
-                    // derived_from so we can examine it later -- and mark it as missing.
+                    // derived_from so we can examine it later -- and mark it as missing. It could be because a
+                    // derived-from file isn't released and we're not logged in, or because it's a contributing file.
                     derivedFromFiles[derivedFromId] = derived_from;
                     derived_from.missing = true;
                 } else if (!derivedFromFiles[derivedFromId]) {
@@ -1020,7 +1189,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         }
 
         // File is derived; collect any QC info that applies to this file
-        if (file.quality_metrics) {
+        if (file.quality_metrics && file.quality_metrics.length) {
             var matchingQc = [];
 
             // Search file's quality_metrics array to find one with a quality_metric_of field referring to this file.
@@ -1043,6 +1212,30 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     });
     // At this stage, allFiles, allReplicates, and derivedFromFiles point to the same file objects;
     // allPipelines points to pipelines.
+
+    // Now find contributing files by subtracting original_files from the list of derived_from files. Note: derivedFromFiles is
+    // an object keyed by each file's @id. allContributingArray is an array of file objects.
+    var allContributingArray = _(derivedFromFiles).filter((derivedFromFile, derivedFromId) => {
+        return !_(context.original_files).any(originalFileId => originalFileId === derivedFromId);
+    });
+
+    // Process the contributing files array
+    var allContributing = {};
+    allContributingArray.forEach(contributingFile => {
+        // Convert array of contributing files to a keyed object to help with searching later
+        contributingFile.missing = false;
+        var contributingFileId = contributingFile['@id'];
+        allContributing[contributingFileId] = contributingFile;
+
+        // Also add contributing files to the allFiles object
+        if (allFiles[contributingFileId]) {
+            // Contributing file already existed in file array for some reason; use its existing file object
+            allContributing[contributingFileId] = allFiles[contributingFileId];
+        } else {
+            // Seeing contributed file for the first time; save it in allFiles
+            allFiles[contributingFileId] = allContributing[contributingFileId];
+        }
+    });
 
     // Don't draw anything if no files have an analysis_step
     if (!stepExists) {
@@ -1215,13 +1408,26 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             }
 
             // Add file to the graph as a node
-            jsonGraph.addNode(fileNodeId, file.title + ' (' + file.output_type + ')', {
-                cssClass: 'pipeline-node-file' + (fileContributed ? ' contributing' : '') + (infoNodeId === fileNodeId ? ' active' : ''),
+            var fileNodeLabel, fileCssClass, fileRef;
+            var loggedIn = session && session['auth.userid'];
+            if (fileContributed && fileContributed.status !== 'released' && !loggedIn) {
+                // A contributed file isn't released and we're not logged in
+                fileNodeLabel = 'Unreleased';
+                fileCssClass = 'pipeline-node-file contributing error' + (infoNodeId === fileNodeId ? ' active' : '');
+                fileRef = null;
+            } else {
+                fileNodeLabel = file.title + ' (' + file.output_type + ')';
+                fileCssClass = 'pipeline-node-file' + (fileContributed ? ' contributing' : '') + (infoNodeId === fileNodeId ? ' active' : '');
+                fileRef = file;
+            }
+            jsonGraph.addNode(fileNodeId, fileNodeLabel, {
+                cssClass: fileCssClass,
                 type: 'File',
                 shape: 'rect',
                 cornerRadius: 16,
                 parentNode: replicateNode,
-                ref: file
+                contributing: fileContributed,
+                ref: fileRef
             }, metricsInfo);
 
             // If the file has an analysis step, prepare it for graph insertion
@@ -1330,8 +1536,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
     },
 
     render: function() {
-        var context = this.props.context;
-        var data = this.props.data;
+        var {context, session, data} = this.props;
         var items = data ? data['@graph'] : [];
         var files = context.files.concat(items);
 
@@ -1340,7 +1545,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
             // Build the graph; place resulting graph in this.jsonGraph
             var filterOptions = {};
             try {
-                this.jsonGraph = assembleGraph(context, this.state.infoNodeId, files, this.state.selectedAssembly, this.state.selectedAnnotation);
+                this.jsonGraph = assembleGraph(context, session, this.state.infoNodeId, files, this.state.selectedAssembly, this.state.selectedAnnotation);
             } catch(e) {
                 this.jsonGraph = null;
                 console.warn(e.message + (e.file0 ? ' -- file0:' + e.file0 : '') + (e.file1 ? ' -- file1:' + e.file1: ''));
@@ -1370,13 +1575,15 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                         {goodGraph ?
                             <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick}>
                                 <div id="graph-node-info">
-                                    {meta ? <div className="panel-insert">{meta}</div> : null}
+                                    {meta ? <PanelBody>{meta}</PanelBody> : null}
                                 </div>
                             </Graph>
                         :
-                            <div className="panel-full">
-                                <p className="browser-error">Currently selected assembly and genomic annocation hides the graph</p>
-                            </div>
+                            <Panel>
+                                <PanelBody>
+                                    <p className="browser-error">Currently selected assembly and genomic annotation hides the graph</p>
+                                </PanelBody>
+                            </Panel>
                         }
                     </div>
                 );
@@ -1426,17 +1633,27 @@ var FileDetailView = function(node) {
                 : null}
 
                 {selectedFile.replicate ?
-                    <div data-test="replicate">
-                        <dt>Biological Replicate(s)</dt>
+                    <div data-test="bioreplicate">
+                        <dt>Biological replicate(s)</dt>
                         <dd>{'[' + selectedFile.replicate.biological_replicate_number + ']'}</dd>
                         <dt>Technical Replicate</dt>
                         <dd>{selectedFile.replicate.technical_replicate_number}</dd>
                     </div>
                 : selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
-                    <div data-test="replicate">
-                        <dt>Biological Replicate(s)</dt>
+                    <div data-test="bioreplicate">
+                        <dt>Biological replicate(s)</dt>
                         <dd>{'[' + selectedFile.biological_replicates.join(', ') + ']'}</dd>
-                        <dt>Technical Replicate</dt>
+                    </div>
+                : null}
+
+                {selectedFile.replicate ?
+                    <div data-test="techreplicate">
+                        <dt>Technical replicate</dt>
+                        <dd>{selectedFile.replicate.technical_replicate_number}</dd>
+                    </div>
+                : selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
+                    <div data-test="techreplicate">
+                        <dt>Technical replicate</dt>
                         <dd>{'-'}</dd>
                     </div>
                 : null}
@@ -1470,14 +1687,14 @@ var FileDetailView = function(node) {
                 : null}
 
                 {selectedFile.analysis_step_version ?
-                    <div>
+                    <div data-test="software">
                         <dt>Software</dt>
                         <dd>{SoftwareVersionList(selectedFile.analysis_step_version.software_versions)}</dd>
                     </div>
                 : null}
 
                 {node.metadata.contributing && selectedFile.dataset ?
-                    <div>
+                    <div data-test="contributedfrom">
                         <dt>Contributed from</dt>
                         <dd><a href={selectedFile.dataset}>{contributingAccession}</a></dd>
                     </div>
@@ -1496,7 +1713,7 @@ var FileDetailView = function(node) {
             </dl>
         );
     } else {
-        return null;
+        return <p className="browser-error">No information available</p>;
     }
 };
 

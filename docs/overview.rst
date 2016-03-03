@@ -16,7 +16,7 @@ The Browser accessible frontend is written in ReactJS_ and uses the same Pyramid
 SOURCE CODE ORGANIZATION
 ------------------------
 
-	*** WARNING THIS IS OUT OF DATE SINCE CONTENTBASE SPLIT OFF -- REWRITE WHEN IT'S TOTALLY DIVORCED ***
+	*** WARNING THIS IS OUT OF DATE SINCE snowfort SPLIT OFF -- REWRITE WHEN IT'S TOTALLY DIVORCED ***
 
 	* Root - the root directory contains configuration files and install scripts along with other accessory directories
 		- *bin* - command line excutables (see src/commmands) from buildout (see PyramidDocs_)
@@ -51,9 +51,9 @@ views
 		access_key.py - generation/modification of access keys for programatic access
 		search.py - constructs ES query and passes though to :9200
 
-contentbase.py
+snowfort.py
 --------------
-	contentbase.py defines the core Collection and Item classes which are the python representation of linked JSON objects and groups (collections) of linked JSON objects.   It contains the business logic for updating JSON objects via PATCH and the recursive GETs necessary for embedded objects.
+	snowfort.py defines the core Collection and Item classes which are the python representation of linked JSON objects and groups (collections) of linked JSON objects.   It contains the business logic for updating JSON objects via PATCH and the recursive GETs necessary for embedded objects.
 
 AuthZ
 -----

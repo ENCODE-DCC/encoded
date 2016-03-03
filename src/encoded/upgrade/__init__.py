@@ -1,9 +1,9 @@
 from pyramid.interfaces import PHASE2_CONFIG
-from contentbase import (
+from snowfort import (
     TYPES,
     UPGRADER,
 )
-from contentbase.upgrader import default_upgrade_finalizer
+from snowfort.upgrader import default_upgrade_finalizer
 
 LATE = 10
 

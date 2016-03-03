@@ -38,6 +38,9 @@
         "_test": "has references",
         "accession": "ENCDO000HUM",
         "award": "U41HG006992",
+        "donor_documents": [
+            "ENCODE:PanIsletD_Crawford_protocol"
+        ],
         "ethnicity": "unknown",
         "health_status": "unknown",
         "lab": "j-michael-cherry",

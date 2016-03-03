@@ -1,5 +1,5 @@
 from pyramid.decorator import reify
-from contentbase import (
+from snowfort import (
     Root,
     calculated_property,
     root,
@@ -56,7 +56,6 @@ class EncodedRoot(Root):
             (Allow, Everyone, ['list', 'search']),
             (Allow, 'group.submitter', ['search_audit', 'audit']),
             (Allow, 'group.admin', ALL_PERMISSIONS),
-            (Allow, 'group.forms', ('forms',)),
             # Avoid schema validation errors during audit
             (Allow, 'remoteuser.EMBED', 'import_items'),
         ] + Root.__acl__
@@ -84,4 +83,4 @@ class EncodedRoot(Root):
         "type": "string",
     })
     def app_version(self, registry):
-        return registry.settings['contentbase.app_version']
+        return registry.settings['snowfort.app_version']

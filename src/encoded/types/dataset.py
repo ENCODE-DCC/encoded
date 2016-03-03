@@ -1,4 +1,4 @@
-from contentbase import (
+from snowfort import (
     abstract_collection,
     calculated_property,
     collection,
@@ -463,21 +463,6 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
             path for path in related_datasets
             if item_is_revoked(request, path)
         ]
-
-    @calculated_property(define=True, schema={
-        "title": "Assembly",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def assembly(self, request, related_datasets):
-        assembly = []
-        for path in related_datasets:
-            properties = request.embed(path, '@@object')
-            if 'assembly' in properties:
-                assembly.extend(properties['assembly'])
-        return list(set(assembly))
 
 
 @collection(
