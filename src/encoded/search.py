@@ -385,14 +385,16 @@ def search_result_actions(request, doc_types, es_results):
     return actions
 
 
-def format_facets(es_results, facets):
+def format_facets(es_results, facets, used_filters, schemas, total):
     result = []
     # Loading facets in to the results
     if 'aggregations' not in es_results:
         return result
 
     aggregations = es_results['aggregations']
+    used_facets = set()
     for field, facet in facets:
+        used_facets.add(field)
         agg_name = field.replace('.', '-')
         if agg_name not in aggregations:
             continue
@@ -405,6 +407,22 @@ def format_facets(es_results, facets):
             'terms': terms,
             'total': aggregations[agg_name]['doc_count']
         })
+
+    # Show any filters that aren't facets as a fake facet with one entry,
+    # so that the filter can be viewed and removed
+    for field, values in used_filters.items():
+        if field not in used_facets:
+            title = field
+            for schema in schemas:
+                if field in schema['properties']:
+                    title = schema['properties'][field].get('title', field)
+                    break
+            result.append({
+                'field': field,
+                'title': title,
+                'terms': [{'key': v} for v in values],
+                'total': total,
+                })
 
     return result
 
@@ -563,24 +581,11 @@ def search(context, request, search_type=None):
     else:
         es_results = es.search(body=query, index=es_index, from_=from_, size=size)
 
-    result['total'] = es_results['hits']['total']
+    result['total'] = total = es_results['hits']['total']
 
-    result['facets'] = format_facets(es_results, facets)
-    # Show any filters that aren't facets as a fake facet with one entry,
-    # so that the filter can be viewed and removed
-    for field, values in used_filters.items():
-        if field not in facets:
-            title = field
-            for item_type in doc_types:
-                if field in types[item_type].schema['properties']:
-                    title = types[item_type].schema['properties'][field].get('title', field)
-                    break
-            result['facets'].append({
-                'field': field,
-                'title': title,
-                'terms': [{'key': v} for v in values],
-                'total': result['total'],
-                })
+    schemas = (types[item_type].schema for item_type in doc_types)
+    result['facets'] = format_facets(
+        es_results, facets, used_filters, schemas, total)
 
     # Add batch actions
     result.update(search_result_actions(request, doc_types, es_results))
@@ -741,13 +746,21 @@ def matrix(context, request):
     del query['filter']
 
     # Adding facets to the query
-    facets = schema['facets'].items()
+    facets = [(field, facet) for field, facet in schema['facets'].items() if
+              field in matrix['x']['facets'] or field in matrix['y']['facets']]
+    if request.has_permission('search_audit'):
+        for audit_facet in audit_facets:
+            facets.append(audit_facet)
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
     # Group results in 2 dimensions
     matrix_terms = []
     for q_field, q_terms in used_filters.items():
-        matrix_terms.append({'terms': {'embedded.' + q_field + '.raw': q_terms}})
+        if q_field.startswith('audit.'):
+            matrix_terms.append({'terms': {q_field: q_terms}})
+        else:
+            matrix_terms.append(
+                {'terms': {'embedded.' + q_field + '.raw': q_terms}})
     matrix_terms.extend((
         {'terms': {'principals_allowed.view': principals}},
         {'terms': {'embedded.@type.raw': doc_types}},
@@ -784,13 +797,14 @@ def matrix(context, request):
     # Execute the query
     es_results = es.search(body=query, index=es_index, search_type='count')
 
-    # Format facets for results
-    result['facets'] = format_facets(es_results, facets)
-
     # Format matrix for results
     aggregations = es_results['aggregations']
-    result['matrix']['doc_count'] = aggregations['matrix']['doc_count']
+    result['matrix']['doc_count'] = total = aggregations['matrix']['doc_count']
     result['matrix']['max_cell_doc_count'] = 0
+
+    # Format facets for results
+    result['facets'] = format_facets(
+        es_results, facets, used_filters, (schema,), total)
 
     def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
         group_by = grouping_fields[0]
