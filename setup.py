@@ -74,6 +74,7 @@ setup(
         [console_scripts]
         batchupgrade = snovault.batchupgrade:main
         create-mapping = snovault.elasticsearch.create_mapping:main
+        es-index-listener = snovault.elasticsearch.es_index_listener:main
 
         add-date-created = encoded.commands.add_date_created:main
         check-rendering = encoded.commands.check_rendering:main
@@ -81,7 +82,6 @@ setup(
         dev-servers = encoded.commands.dev_servers:main
         extract_test_data = encoded.commands.extract_test_data:main
         es-index-data = encoded.commands.es_index_data:main
-        es-index-listener = encoded.commands.es_index_listener:main
         es-file-index-listener = encoded.commands.es_file_index_listener:main
         generate-ontology = encoded.commands.generate_ontology:main
         import-data = encoded.commands.import_data:main
@@ -98,7 +98,7 @@ setup(
         main = encoded:main
 
         [paste.composite_factory]
-        indexer = encoded.commands.es_index_listener:composite
+        indexer = snovault.elasticsearch.es_index_listener:composite
 
         [paste.filter_app_factory]
         memlimit = encoded.memlimit:filter_app
