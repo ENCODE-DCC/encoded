@@ -554,6 +554,7 @@
                 "deleted",
                 "replaced",
                 "revoked",
+                "archived",
                 "released"
                 ]
         },
