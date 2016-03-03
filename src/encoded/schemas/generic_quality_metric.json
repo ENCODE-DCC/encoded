@@ -21,6 +21,54 @@
         "name": {
             "description": "The name of the quality metric",
             "type": "string"
+        },
+        "attachment": {
+            "title": "QC metric document metadata",
+            "type": "object",
+            "additionalProperties": false,
+            "attachment": true,
+            "formInput": "file",
+            "properties": {
+                "download": {
+                    "title": "File Name",
+                    "type": "string"
+                },
+                "href": {
+                    "comment": "Internal webapp URL for document file",
+                    "type": "string"
+                },
+                "type": {
+                    "title": "MIME type",
+                    "type": "string",
+                    "enum": [
+                        "application/pdf",
+                        "text/plain",
+                        "text/tab-separated-values",
+                        "image/jpeg",
+                        "image/tiff",
+                        "image/gif",
+                        "text/html",
+                        "image/png",
+                     ]
+                },
+                "size": {
+                    "title": "File size",
+                    "type": "integer"
+                },
+                "md5sum": {
+                    "format": "md5sum",
+                    "type": "string",
+                    "title": "MD5sum"
+                },
+                "width": {
+                    "title": "Image width",
+                    "type": "integer"
+                },
+                "height": {
+                    "title": "Image height",
+                    "type": "integer"
+                }
+            }
         }
     }
 }
