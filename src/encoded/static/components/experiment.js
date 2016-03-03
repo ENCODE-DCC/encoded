@@ -548,13 +548,13 @@ var Experiment = module.exports.Experiment = React.createClass({
                     <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
                 : null}
 
+                {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} />
 
-                {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={dataset.files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} session={this.context.session} ignoreErrors />
-
+                {/* Display the controlling experiments */}
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} ignoreErrors />
 
+                {/* Display the panel of all documents associated with the xperiment */}
                 <DocumentsPanel documentSpecs={[{documents: combinedDocuments}]} />
             </div>
         );
@@ -612,7 +612,7 @@ var FileGallery = React.createClass({
         }
 
         return (
-            <FetchedData>
+            <FetchedData ignoreErrors>
                 <Param name="data" url={fileSearchUrl + (searchQueryStr ? '&' + searchQueryStr : '')} />
                 <FileGalleryRenderer context={context} session={this.context.session} encodevers={this.props.encodevers} anisogenic={this.props.anisogenic} />
             </FetchedData>
