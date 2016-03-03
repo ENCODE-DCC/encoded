@@ -171,7 +171,7 @@ def list_visible_columns_for_schemas(request, schemas):
     """
     Returns mapping of default columns for a set of schemas.
     """
-    columns = OrderedDict()
+    columns = OrderedDict({'@id': {'title': 'ID'}})
     for schema in schemas:
         if 'columns' in schema:
             columns.update(schema['columns'])
@@ -675,8 +675,10 @@ def report(context, request):
         raise HTTPBadRequest(explanation=msg)
 
     # Ignore large limits, which make `search` return a Response
+    # -- UNLESS we're being embedded by the download_report view
     from_, size = get_pagination(request)
-    if 'limit' in request.GET and (size is None or size > 1000):
+    if ('limit' in request.GET and request.__parent__ is None
+            and (size is None or size > 1000)):
         del request.GET['limit']
     # Reuse search view
     res = search(context, request)
@@ -689,6 +691,7 @@ def report(context, request):
     }
     search_base = normalize_query(request)
     res['@id'] = '/report/' + search_base
+    res['download_tsv'] = request.route_path('report_download') + search_base
     res['title'] = 'Report'
     res['@type'] = ['Report']
     return res

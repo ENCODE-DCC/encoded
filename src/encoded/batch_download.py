@@ -183,13 +183,37 @@ def batch_download(context, request):
     )
 
 
+def lookup_column_value(value, path):
+    nodes = [value]
+    names = path.split('.')
+    for name in names:
+        nextnodes = []
+        for node in nodes:
+            if name not in node:
+                continue
+            value = node[name]
+            if isinstance(value, list):
+                nextnodes.extend(value)
+            else:
+                nextnodes.append(value)
+        nodes = nextnodes
+        if not nodes:
+            return ''
+    # if we ended with an embedded object, show the @id
+    if nodes and hasattr(nodes[0], '__contains__') and '@id' in nodes[0]:
+        nodes = [node['@id'] for node in nodes]
+    seen = set()
+    deduped_nodes = [n for n in nodes if not (n in seen or seen.add(n))]
+    return ','.join(str(n) for n in deduped_nodes)
+
+
 @view_config(route_name='report_download', request_method='GET')
 def report_download(context, request):
     params = parse_qs(request.query_string)
     params['limit'] = ['all']
 
-    path = '/report/?{}'.format(urlencode(params, True))
-    results = request.embed(path, as_user=True)
+    report_path = '/report/?{}'.format(urlencode(params, True))
+    results = request.embed(report_path, as_user=True)
 
     types = request.params.getall('type')
     schemas = [request.registry[TYPES][types[0]].schema]
@@ -199,7 +223,7 @@ def report_download(context, request):
     writer = csv.writer(fout, delimiter='\t')
     writer.writerow(header)
     for item in results['@graph']:
-        row = ['bar'] * len(header)
+        row = [lookup_column_value(item, path) for path in columns]
         writer.writerow(row)
     return Response(
         content_type='text/tsv',
