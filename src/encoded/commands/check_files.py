@@ -41,6 +41,7 @@ GZIP_TYPES = [
     "fasta",
     "fastq",
     "gff",
+    "gff3",
     "gtf",
     "tagAlign",
     "tar",
@@ -178,6 +179,7 @@ def check_format(item, path):
         ('wig', None): None,
         ('hdf5', None): None,
         ('gff', None): None,
+        ('gff3', None): None,
         ('vcf', None): None
     }
 
