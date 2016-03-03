@@ -13,7 +13,6 @@ requires = [
     'WSGIProxy2',
     'WebTest',
     'boto',
-    'boto3',
     'elasticsearch',
     'future',
     'humanfriendly',

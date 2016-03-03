@@ -316,7 +316,8 @@ var AuditMixin = audit.AuditMixin;
                         </div>
                         <div className="data-row">
                             <div><strong>Type: </strong>{result['biosample_type']}</div>
-                            {rnais ?<div><strong>RNAi target: </strong>{rnais}</div> : null}
+                            {result.summary ? <div><strong>Summary: </strong>{globals.truncateString(result.summary, 80)}</div> : null}
+                            {rnais ? <div><strong>RNAi target: </strong>{rnais}</div> : null}
                             {constructs ? <div><strong>Construct: </strong>{constructs}</div> : null}
                             {treatment ? <div><strong>Treatment: </strong>{treatment}</div> : null}
                             {mutatedGenes ? <div><strong>Mutated gene: </strong>{mutatedGenes}</div> : null}
@@ -689,9 +690,6 @@ var AuditMixin = audit.AuditMixin;
                 // Hide the facet if all the terms' doc_count values are the same, or if there's only one term
                 if (terms.length <= 1) {
                     hideTypeFacet = true;
-                } else {
-                    var firstDocCount = terms[0].doc_count;
-                    hideTypeFacet = _(terms).all(term => term.doc_count === firstDocCount);
                 }
             }
 
