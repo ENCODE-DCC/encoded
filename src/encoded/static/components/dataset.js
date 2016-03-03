@@ -1529,10 +1529,6 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
             getValue: item => item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''
         },
-        'library': {
-            title: 'Library',
-            getValue: item => (item.replicate && item.replicate.library) ? item.replicate.library.accession : null
-        },
         'assembly': {title: 'Mapping assembly'},
         'genome_annotation': {title: 'Genome annotation'},
         'title': {
