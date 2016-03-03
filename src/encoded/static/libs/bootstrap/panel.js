@@ -69,10 +69,10 @@ var TabPanel = module.exports.TabPanel = React.createClass({
 
         // We expect to find <TabPanelPane> child elements inside <TabPanel>. For any we find, get the React `key` value and
         // copy it to an `id` value that we add to each child component. That lets each child get an HTML ID matching `key`
-        // without having to pass both a key and id with the same value.
+        // without having to pass both a key and id with the same value. We also set the `active property in the TabPanelPane
+        // component here too.`
         if (this.props.children) {
             children = React.Children.map(this.props.children, (child, i) => {
-                console.log('IND: ' + i);
                 if (child.type === TabPanelPane.type) {
                     return cloneWithProps(child, {id: child.key, active: this.state.currentTab ? this.state.currentTab === child.key : i === 0});
                 }
