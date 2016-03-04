@@ -50,6 +50,7 @@ tests_require = [
     'pytest-bdd',
     'pytest-mock',
     'pytest-splinter',
+    'pytest_exact_fixtures',
 ]
 
 setup(

@@ -8,7 +8,6 @@ from pytest import fixture
 
 pytest_plugins = [
     'encoded.tests.datafixtures',
-    'encoded.tests.layers',
 ]
 
 _app_settings = {
