@@ -37,6 +37,20 @@ var Matrix = module.exports.Matrix = React.createClass({
         navigate: React.PropTypes.func
     },
 
+    // Called when the Visualize button dropdown menu gets opened or closed. `dropdownEl` is the DOM node for the dropdown menu.
+    // This sets inline CSS to set the height of the wrapper <div> to make room for the dropdown.
+    updateElement: function(dropdownEl) {
+        var wrapperEl = this.refs.hubscontrols.getDOMNode();
+        var dropdownHeight = dropdownEl.clientHeight
+        if (dropdownHeight === 0) {
+            // The dropdown menu has closed
+            wrapperEl.style.height = 'auto';
+        } else {
+            // The menu has dropped down
+            wrapperEl.style.height = wrapperEl.clientHeight + dropdownHeight + 'px';
+        }
+    },
+
     render: function() {
         var context = this.props.context;
         var matrix = context.matrix;
@@ -187,29 +201,24 @@ var Matrix = module.exports.Matrix = React.createClass({
                                             return rows;
                                         })}
                                     </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th></th>
-                                            <th colSpan={Math.min(x_buckets.length, x_limit + 1) + 1} style={{padding: "10px 0", textAlign: 'left'}}>
-                                                {context['batch_download'] ?
-                                                    <BatchDownload context={context} />
-                                                : null}
-                                                {' '}
-                                                {batchHubKeys ?
-                                                    <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'}>
-                                                        <DropdownMenu>
-                                                            {batchHubKeys.map(assembly =>
-                                                                <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context['batch_hub'][assembly]}>
-                                                                    {assembly}
-                                                                </a>
-                                                            )}
-                                                        </DropdownMenu>
-                                                    </DropdownButton>
-                                                : null}
-                                            </th>
-                                        </tr>
-                                    </tfoot>
                                 </table>
+                                <div className="hubs-controls" ref="hubscontrols">
+                                    {context['batch_download'] ?
+                                        <BatchDownload context={context} />
+                                    : null}
+                                    {' '}
+                                    {batchHubKeys ?
+                                        <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'}>
+                                            <DropdownMenu updateElement={this.updateElement}>
+                                                {batchHubKeys.map(assembly =>
+                                                    <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context['batch_hub'][assembly]}>
+                                                        {assembly}
+                                                    </a>
+                                                )}
+                                            </DropdownMenu>
+                                        </DropdownButton>
+                                    : null}
+                                </div>
                             </div>
                         </div>
                     </div>
