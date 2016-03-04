@@ -18,6 +18,7 @@ from .interfaces import ELASTIC_SEARCH
 import collections
 import json
 import logging
+import pdb
 
 EPILOG = __doc__
 
@@ -258,7 +259,8 @@ def es_mapping(mapping):
         'properties': {
             'uuid': {
                 'type': 'string',
-                'index': 'not_analyzed'
+                'index': 'not_analyzed',
+                'include_in_all': False
             },
             'tid': {
                 'type': 'string',
@@ -414,7 +416,7 @@ def type_mapping(types, item_type, embed=True):
         new_mapping[last]['search_analyzer'] = 'encoded_search_analyzer'
         new_mapping[last]['include_in_all'] = True
 
-    # Automatic boost for uuid
+    # uuid is not boosted anymore, it inherits include_in_all=False from root object
     if 'uuid' in mapping['properties']:
         mapping['properties']['uuid']['index'] = 'not_analyzed'
     return mapping
