@@ -9,12 +9,12 @@ import json
 import codecs
 import collections
 import copy
-from jsonschema import (
+from jsonschema_serialize_fork import (
     Draft4Validator,
     FormatChecker,
     RefResolver,
 )
-from jsonschema.exceptions import ValidationError
+from jsonschema_serialize_fork.exceptions import ValidationError
 from uuid import UUID
 from .util import ensurelist
 
