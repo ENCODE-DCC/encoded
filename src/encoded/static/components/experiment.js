@@ -1,6 +1,8 @@
 'use strict';
 var React = require('react');
 var panel = require('../libs/bootstrap/panel');
+var button = require('../libs/bootstrap/button');
+var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var _ = require('underscore');
 var moment = require('moment');
 var graph = require('./graph');
@@ -38,6 +40,8 @@ var {SortTablePanel, SortTable} = sortTable;
 var ProjectBadge = image.ProjectBadge;
 var DocumentsPanel = doc.DocumentsPanel;
 var {Panel, PanelBody, PanelHeading} = panel;
+var DropdownButton = button.DropdownButton;
+var DropdownMenu = dropdownMenu.DropdownMenu;
 
 
 var anisogenicValues = [
@@ -554,9 +558,17 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                 {context.visualize_ucsc  && context.status == "released" ?
                     <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
+                        <DropdownButton title='Visualize Data'>
+                            <DropdownMenu>
+                                {Object.keys(context.visualize_ucsc).map(assembly =>
+                                    <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context.visualize_ucsc[assembly]}>
+                                        {assembly}
+                                    </a>
+                                )}
+                            </DropdownMenu>
+                        </DropdownButton>
                     </span>
-                : null }
+                : null}
 
                 <FetchedData>
                     <Param name="data" url={dataset.unreleased_files_url(context)} />

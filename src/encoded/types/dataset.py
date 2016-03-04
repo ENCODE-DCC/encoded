@@ -181,14 +181,20 @@ class Dataset(Item):
         "title": "Visualize at UCSC",
         "type": "string",
     })
-    def visualize_ucsc(self, request, hub):
+    def visualize_ucsc(self, request, hub, assembly):
         hub_url = urljoin(request.resource_url(request.root), hub)
-        return (
-            'http://genome.ucsc.edu/cgi-bin/hgHubConnect'
-            '?hgHub_do_redirect=on'
-            '&hgHubConnect.remakeTrackHub=on'
-            '&hgHub_do_firstDb=1&hubUrl='
-        ) + quote_plus(hub_url, ':/@')
+        viz = {}
+        for assembly_hub in assembly:
+            if assembly_hub == 'GRCh38':
+                ucsc_assembly = 'hg20'
+            else:
+                ucsc_assembly = assembly_hub
+            ucsc_url = (
+                'http://genome.ucsc.edu/cgi-bin/hgTracks'
+                '?hubClear='
+            ) + quote_plus(hub_url, ':/@') + '&db=' + ucsc_assembly
+            viz[assembly_hub] = ucsc_url
+        return viz
 
     @calculated_property(condition='date_released', schema={
         "title": "Month released",

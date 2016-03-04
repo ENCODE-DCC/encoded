@@ -6,6 +6,8 @@ var TabbedArea = require('react-bootstrap').TabbedArea;
 var TabPane = require('react-bootstrap').TabPane;
 var url = require('url');
 var search = require('./search');
+var button = require('../libs/bootstrap/button');
+var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 
 var FacetList = search.FacetList;
 var Facet = search.Facet;
@@ -13,6 +15,9 @@ var TextFilter = search.TextFilter;
 var Listing = search.Listing;
 var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
+var DropdownButton = button.DropdownButton;
+var DropdownMenu = dropdownMenu.DropdownMenu;
+
 
 var AutocompleteBox = React.createClass({
     render: function() {
@@ -158,6 +163,17 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
         var facets = context['facets'];
         var total = context['total'];
         var batch_hub_disabled = total > 500;
+
+        // Get a sorted list of batch hubs keys with case-insensitive sort
+        var batchHubKeys = [];
+        if (context.batch_hub && Object.keys(context.batch_hub).length) {
+            batchHubKeys = Object.keys(context.batch_hub).sort((a, b) => {
+                var aLower = a.toLowerCase();
+                var bLower = b.toLowerCase();
+                return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
+            });
+        }
+
         return (
           <div>
               <h2>Region search</h2>
@@ -190,12 +206,17 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                                       </span>
                                   }
 
-                                  {context['batch_hub'] ?
-                                      <span className="pull-right">
-                                          <a disabled={batch_hub_disabled} data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm"
-                                             href={context['batch_hub']}>{batch_hub_disabled ? 'Filter to 500 to visualize' :'Visualize'}</a>&nbsp;
-                                      </span>
-                                  :null}
+                                  {batchHubKeys ?
+                                    <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'}>
+                                        <DropdownMenu>
+                                            {batchHubKeys.map(assembly =>
+                                                <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context['batch_hub'][assembly]}>
+                                                    {assembly}
+                                                </a>
+                                            )}
+                                        </DropdownMenu>
+                                    </DropdownButton>
+                                  : null}
 
                               </h4>
                               <hr />
