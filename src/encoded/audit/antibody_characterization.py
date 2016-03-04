@@ -170,7 +170,7 @@ def audit_antibody_characterization_status(value, system):
                 value['@id'],
                 value['status']
                 )
-            raise AuditFailure('mismatched lane status', detail, level='WARNING')
+            raise AuditFailure('mismatched lane status', detail, level='DCC_ACTION')
             continue
 
         if lane['lane_status'] == 'compliant':

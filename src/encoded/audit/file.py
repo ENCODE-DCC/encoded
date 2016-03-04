@@ -184,7 +184,7 @@ def audit_file_controlled_by(value, system):
             value['@id'],
             value['dataset']['assay_term_name']
             )
-        yield AuditFailure('missing controlled_by', detail, level='NOT_COMPLIANT')
+        yield AuditFailure('missing controlled_by', detail, level='ERROR')
         return
 
     possible_controls = value['dataset'].get('possible_controls')
@@ -238,7 +238,7 @@ def audit_file_controlled_by(value, system):
                     ff['@id'],
                     control_run
                     )
-                yield AuditFailure('mismatched controlled_by run_type', detail, level='WARNING')
+                yield AuditFailure('mismatched controlled_by run_type', detail, level='NOT_COMPLIANT')
 
             if read_length != control_length:
                 detail = 'File {} is {} but its control file {} is {}'.format(
@@ -247,7 +247,7 @@ def audit_file_controlled_by(value, system):
                     ff['@id'],
                     ff['read_length']
                     )
-                yield AuditFailure('mismatched controlled_by read length', detail, level='WARNING')
+                yield AuditFailure('mismatched controlled_by read length', detail, level='NOT_COMPLIANT')
                 return
 
 
@@ -307,7 +307,7 @@ def audit_paired_with(value, system):
         detail = 'File {} has paired_end = {}. It requires a paired file'.format(
             value['@id'],
             value['paired_end'])
-        raise AuditFailure('missing paired_with', detail, level='NOT_COMPLIANT')
+        raise AuditFailure('missing paired_with', detail, level='ERROR')
 
     if 'replicate' not in value['paired_with']:
         return
@@ -1058,20 +1058,26 @@ def audit_file_mad_qc_spearman_correlation(value, system):
             value['@id'])
         yield AuditFailure('missing quality metrics', detail, level='DCC_ACTION')
         return
+
     spearman_correlation = False
+    mad_value = False
     for metric in quality_metrics:
-        if 'Spearman correlation' in metric:
+        if 'Spearman correlation' in metric and 'MAD of log ratios' in metric:
             spearman_correlation = metric['Spearman correlation']
+            mad_value = metric['MAD of log ratios']
             break
+
     if spearman_correlation is False:
         detail = 'ENCODE Processed gene quantification file {} '.format(value['@id']) + \
                  'has no MAD quality metric'
+
         yield AuditFailure('missing Spearman correlation', detail, level='DCC_ACTION')
         return
-    spearman_pipelines = ['RAMPAGE (paired-end, stranded)',
-                          'Small RNA-seq single-end pipeline',
-                          'RNA-seq of long RNAs (single-end, unstranded)',
-                          'RNA-seq of long RNAs (paired-end, stranded)']
+
+    mad_pipelines = ['RAMPAGE (paired-end, stranded)',
+                     'Small RNA-seq single-end pipeline',
+                     'RNA-seq of long RNAs (single-end, unstranded)',
+                     'RNA-seq of long RNAs (paired-end, stranded)']
 
     experiment_replication_type = 'isogenic'
     if 'dataset' in value:
@@ -1081,27 +1087,54 @@ def audit_file_mad_qc_spearman_correlation(value, system):
                                                         'anisogenic, age-matched',
                                                         'anisogenic, sex-matched']:
                 experiment_replication_type = 'anisogenic'
-                required_value = 0.8
+                required_spearman = 0.8
+            elif value['dataset']['replication_type'] == 'isogenic':
+                required_spearman = 0.9
             else:
-                required_value = 0.9
+                return  # for unreplicated or unknown replication_type we can not calculate audit
 
     for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
-        if pipeline['title'] in spearman_pipelines:
-            if spearman_correlation < required_value:
-                border_value = (required_value - 0.07)  # 0.0713512755834)
+        if pipeline['title'] in mad_pipelines:
+            if spearman_correlation < required_spearman:
+                border_value = (required_spearman - 0.07)  # 0.0713512755834)
                 print_border = '%.2f' % border_value
                 detail = 'ENCODE processed gene quantification file {} '.format(value['@id']) + \
                          'has Spearman correlation of {}.'.format(spearman_correlation) + \
                          ' For gene quantification files from an {}'.format(experiment_replication_type) + \
                          ' assay in the {} '.format(pipeline['title']) + \
-                         'pipeline, >{} is recommended, but a value between '.format(required_value) + \
-                         '{} and one STD away ({}) is acceptable.'.format(required_value,
+                         'pipeline, >{} is recommended, but a value between '.format(required_spearman) + \
+                         '{} and one STD away ({}) is acceptable.'.format(required_spearman,
                                                                           print_border)
                 if spearman_correlation > border_value:
                     yield AuditFailure('low spearman correlation', detail,
                                        level='WARNING')
-                    return
                 else:
                     yield AuditFailure('insufficient spearman correlation', detail,
                                        level='NOT_COMPLIANT')
-                    return
+            if mad_value > 0.2:
+                detail = 'ENCODE processed gene quantification file {} '.format(value['@id']) + \
+                         'has Mean-Average-Deviation (MAD) ' + \
+                         'of replicate log ratios from quantification ' + \
+                         'value of {}.'.format(mad_value) + \
+                         ' For gene quantification files from an {}'.format(experiment_replication_type) + \
+                         ' assay in the {} '.format(pipeline['title']) + \
+                         'pipeline, a value <0.2 is recommended, but a value between ' + \
+                         '0.2 and 0.5 is acceptable.'
+                if experiment_replication_type == 'isogenic':
+                    if mad_value < 0.5:
+                        yield AuditFailure('borderline MAD value', detail,
+                                           level='WARNING')
+                    else:
+                        yield AuditFailure('insufficient MAD value', detail,
+                                           level='NOT_COMPLIANT')
+                elif experiment_replication_type == 'anisogenic' and mad_value > 0.5:
+                    detail = 'ENCODE processed gene quantification file {} '.format(value['@id']) + \
+                             'has Mean-Average-Deviation (MAD) ' + \
+                             'of replicate log ratios from quantification ' + \
+                             'value of {}.'.format(mad_value) + \
+                             ' For gene quantification files from an {}'.format(experiment_replication_type) + \
+                             ' assay in the {} '.format(pipeline['title']) + \
+                             'pipeline, a value <0.5 is recommended.'
+                    yield AuditFailure('borderline MAD value', detail,
+                                       level='WARNING')
+        return
