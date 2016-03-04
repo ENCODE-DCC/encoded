@@ -12,7 +12,16 @@ from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
 
-from region_search import _ASSEMBLY_MAPPER
+_ASSEMBLY_MAPPER = {
+    'GRCh38-minimal': 'hg38',
+    'GRCh38': 'hg38',
+    'GRCh37': 'hg19',
+    'GRCm38': 'mm10',
+    'GRCm37': 'mm9',
+    'BDGP6': 'dm4',
+    'BDGP5': 'dm3',
+    'WBcel235': 'WBcel235'
+}
 
 
 def includeme(config):

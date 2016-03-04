@@ -8,7 +8,7 @@ from urllib.parse import (
     urlencode,
 )
 
-from region_search import _ASSEMBLY_MAPPER
+from .search import _ASSEMBLY_MAPPER
 
 
 def includeme(config):

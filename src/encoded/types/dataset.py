@@ -25,7 +25,7 @@ from .shared_calculated_properties import (
 
 from itertools import chain
 import datetime
-from region_search import _ASSEMBLY_MAPPER
+from ..search import _ASSEMBLY_MAPPER
 
 
 def item_is_revoked(request, path):

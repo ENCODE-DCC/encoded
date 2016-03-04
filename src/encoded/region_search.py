@@ -10,7 +10,8 @@ from .search import (
     set_facets,
     get_filtered_query,
     format_facets,
-    hgConnect
+    hgConnect,
+    _ASSEMBLY_MAPPER
 )
 from collections import OrderedDict
 import requests
@@ -23,17 +24,6 @@ log = logging.getLogger(__name__)
 
 
 _ENSEMBL_URL = 'http://rest.ensembl.org/'
-
-_ASSEMBLY_MAPPER = {
-    'GRCh38-minimal': 'hg38',
-    'GRCh38': 'hg38',
-    'GRCh37': 'hg19',
-    'GRCm38': 'mm10',
-    'GRCm37': 'mm9',
-    'BDGP6': 'dm4',
-    'BDGP5': 'dm3',
-    'WBcel235': 'WBcel235'
-}
 
 _REGION_FIELDS = [
     'embedded.files.uuid',
