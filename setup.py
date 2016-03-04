@@ -83,7 +83,6 @@ setup(
         deploy = encoded.commands.deploy:main
         extract_test_data = encoded.commands.extract_test_data:main
         es-index-data = encoded.commands.es_index_data:main
-        es-file-index-listener = encoded.commands.es_file_index_listener:main
         generate-ontology = encoded.commands.generate_ontology:main
         import-data = encoded.commands.import_data:main
         jsonld-rdf = encoded.commands.jsonld_rdf:main
