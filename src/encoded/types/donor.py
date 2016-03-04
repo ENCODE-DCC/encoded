@@ -76,7 +76,7 @@ class MouseDonor(Donor):
 class FlyDonor(Donor):
     item_type = 'fly_donor'
     schema = load_schema('encoded:schemas/fly_donor.json')
-    embedded = ['organism', 'constructs', 'constructs.target', 'characterizations']
+    embedded = Donor.embedded + ['organism', 'constructs', 'constructs.target', 'characterizations']
 
 
 @collection(
@@ -89,7 +89,7 @@ class FlyDonor(Donor):
 class WormDonor(Donor):
     item_type = 'worm_donor'
     schema = load_schema('encoded:schemas/worm_donor.json')
-    embedded = ['organism', 'constructs', 'constructs.target']
+    embedded = Donor.embedded + ['organism', 'constructs', 'constructs.target']
 
 
 @collection(
