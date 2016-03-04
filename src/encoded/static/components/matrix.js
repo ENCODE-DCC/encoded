@@ -58,6 +58,7 @@ var Matrix = module.exports.Matrix = React.createClass({
         var matrix_base = parsed_url.search || '';
         var matrix_search = matrix_base + (matrix_base ? '&' : '?');
         var notification = context['notification'];
+        const batchHubLimit = 500;
         if (context.notification == 'Success' || context.notification == 'No results found') {
             var x_facets = matrix.x.facets.map(f => _.findWhere(context.facets, {field: f})).filter(f => f);
             var y_facets = matrix.y.facets.map(f => _.findWhere(context.facets, {field: f})).filter(f => f);
@@ -70,7 +71,7 @@ var Matrix = module.exports.Matrix = React.createClass({
             var y_groups = matrix.y[primary_y_grouping].buckets;
             var y_limit = matrix.y.limit;
             var search_base = context.matrix.search_base;
-            var batch_hub_disabled = matrix.doc_count > 500;
+            var batch_hub_disabled = matrix.doc_count > batchHubLimit;
 
             var colCount = Math.min(x_buckets.length, x_limit + 1);
             var rowCount = y_groups.length ? y_groups.map(g => Math.min(g[secondary_y_grouping].buckets.length, y_limit ? y_limit + 1 : g[secondary_y_grouping].buckets.length) + 1).reduce((a, b) => a + b) : 0;
