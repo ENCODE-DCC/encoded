@@ -102,10 +102,14 @@
 
 
 .dropdown-menu {
+    background-color: #fff;
+    @include background-image(linear-gradient(top,  #ffffff 0%,#f0f0f0 100%));
+
     &>li {
         &>a {
             padding: 5px 20px;
-            color: #fff !important;
+            color: #444 !important;
+            font-weight: 300;
         }
     }
 
@@ -113,14 +117,11 @@
         left: -1px;
         margin-top: -1px !important;
         padding: 10px 0;
-        background-color: #fff;
-        @include background-image(linear-gradient(top,  #ffffff 0%,#f0f0f0 100%));
 
         &>li {
             &>a {
                 padding: 2px 30px 2px 20px;
                 @include font-size(1.1);
-                font-weight: 300;
                 color: #444 !important;
                 border-top: 1px solid transparent;
                 border-bottom: 1px solid transparent;
