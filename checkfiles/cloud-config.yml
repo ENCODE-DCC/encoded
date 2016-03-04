@@ -67,16 +67,13 @@ users:
   system: true
 
 mounts:
-- [ "goofys#encode-files", "/s3/encode-files", "fuse", "_netdev,allow_other,--file-mode=0444,--dir-mode=0555,--stat-cache-ttl=0", "0", "0" ]
-- [ "goofys#encoded-files-dev", "/s3/encoded-files-dev", "fuse", "_netdev,allow_other,--file-mode=0444,--dir-mode=0555,--stat-cache-ttl=0", "0", "0" ]
+- [ "goofys-ulimit#encode-files", "/s3/encode-files", "fuse", "_netdev,allow_other,--file-mode=0444,--dir-mode=0555,--stat-cache-ttl=0", "0", "0" ]
+- [ "goofys-ulimit#encoded-files-dev", "/s3/encoded-files-dev", "fuse", "_netdev,allow_other,--file-mode=0444,--dir-mode=0555,--stat-cache-ttl=0", "0", "0" ]
 
 write_files:
 - path: /opt/checkfiles_args.txt
   content: |
     %(ARGS)s
-- path: /etc/security/limits.conf
-  content: |
-    root soft nofile 10240
 - path: /etc/ssh/users_ca.pub
   content: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAv/ymOcnN4LhM4NACc3Or116XXJ6KytuOgB/+1qNkOFBqBosrn7cmJ35rsoNHRgYNrCsRE9ch74RKsN6H72FtSJgBhGh/9oUK7Os6Fqt3/ZZXxgxIx6ubs/MTgrxrAnujiBxUXMXQhLKMriNMpo8mt4nGYVtLk9PBjiyfncaS8H9ZKoNio9dhP8bmTuYvioAI35dqKdSlVLyzr/XkZxia8Ki+pQ0N6uuiEwMR3ToM+LSp8wpFOOAiu4PEAujRW7us/+1hlpKWfn0J7/V3826joHE+I967Vg/+ikcVhF77JjK1nib879VgCWfmn1HPQosIpk4yJfVgGvRVI7I2nfBPVw== encoded@demo-l.encodedcc.org
 - path: /etc/systemd/system/cloud-final.service.d/override.conf
@@ -84,3 +81,9 @@ write_files:
     [Service]
     # See https://bugs.launchpad.net/cloud-init/+bug/1449318
     KillMode=process
+- path: /usr/local/bin/goofys-ulimit
+  permissions: 0755
+  content: |
+    #!/bin/sh
+    ulimit -n 60000
+    exec goofys "$@"

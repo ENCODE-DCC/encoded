@@ -682,59 +682,57 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
         },
 
         render: function() {
-            var {facet, filters} = this.props;
-            var hideTypeFacet = false; // True if we need to hide the 'Data type' facet.
-
-            // Get array of all terms from facets whose doc_count > 0. Include terms whose keys are specified in a filter's term
-            // regardless of their doc_count.
-            var terms = facet.terms.filter(term => term.doc_count > 0 || _(filters).any(filter => filter.term === term.key));
-
-            // If this is the 'Data type' facet, decide if we have to hide it or not
-            if (facet.field === 'type') {
-                // Hide the facet if all the terms' doc_count values are the same, or if there's only one term
-                if (terms.length <= 1) {
-                    hideTypeFacet = true;
+            var facet = this.props.facet;
+            var filters = this.props.filters;
+            var title = facet['title'];
+            var field = facet['field'];
+            var total = facet['total'];
+            var termID = title.replace(/\s+/g, '');
+            var terms = facet['terms'].filter(function (term) {
+                if (term.key) {
+                    for(var filter in filters) {
+                        if(filters[filter].term === term.key) {
+                            return true;
+                        }
+                    }
+                    return term.doc_count > 0;
+                } else {
+                    return false;
                 }
-            }
-
-            if (!hideTypeFacet) {
-                var {title, field, total} = facet;
-                var termID = title.replace(/\s+/g, '');
-                var moreTerms = terms.slice(5);
-                var TermComponent = field === 'type' ? TypeTerm : Term;
-                var selectedTermCount = countSelectedTerms(moreTerms, field, filters);
-                var moreTermSelected = selectedTermCount > 0;
-                var canDeselect = (!facet.restrictions || selectedTermCount >= 2);
-                var moreSecClass = 'collapse' + ((moreTermSelected || this.state.facetOpen) ? ' in' : '');
-                var seeMoreClass = 'btn btn-link' + ((moreTermSelected || this.state.facetOpen) ? '' : ' collapsed');
-                return (
-                    <div className="facet" hidden={terms.length === 0} style={{width: this.props.width}}>
-                        <h5>{title}</h5>
-                        <ul className="facet-list nav">
-                            <div>
-                                {terms.slice(0, 5).map(function (term) {
+            });
+            var moreTerms = terms.slice(5);
+            var TermComponent = field === 'type' ? TypeTerm : Term;
+            var selectedTermCount = countSelectedTerms(moreTerms, field, filters);
+            var moreTermSelected = selectedTermCount > 0;
+            var canDeselect = (!facet.restrictions || selectedTermCount >= 2);
+            var moreSecClass = 'collapse' + ((moreTermSelected || this.state.facetOpen) ? ' in' : '');
+            var seeMoreClass = 'btn btn-link' + ((moreTermSelected || this.state.facetOpen) ? '' : ' collapsed');
+            return (
+                <div className="facet" hidden={terms.length === 0} style={{width: this.props.width}}>
+                    <h5>{title}</h5>
+                    <ul className="facet-list nav">
+                        <div>
+                            {terms.slice(0, 5).map(function (term) {
+                                return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
+                            }.bind(this))}
+                        </div>
+                        {terms.length > 5 ?
+                            <div id={termID} className={moreSecClass}>
+                                {moreTerms.map(function (term) {
                                     return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
                                 }.bind(this))}
                             </div>
-                            {terms.length > 5 ?
-                                <div id={termID} className={moreSecClass}>
-                                    {moreTerms.map(function (term) {
-                                        return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
-                                    }.bind(this))}
-                                </div>
-                            : null}
-                            {(terms.length > 5 && !moreTermSelected) ?
-                                <label className="pull-right">
-                                        <small>
-                                            <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} onClick={this.handleClick} />
-                                        </small>
-                                </label>
-                            : null}
-                        </ul>
-                    </div>
-                );
-            }
-            return null;
+                        : null}
+                        {(terms.length > 5 && !moreTermSelected) ?
+                            <label className="pull-right">
+                                    <small>
+                                        <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} onClick={this.handleClick} />
+                                    </small>
+                            </label>
+                        : null}
+                    </ul>
+                </div>
+            );
         }
     });
 
@@ -793,20 +791,34 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
 
         render: function() {
             var term = this.props.term;
+
+            // Get all facets, and "normal" facets, meaning non-audit facets
             var facets = this.props.facets;
+            var normalFacets = facets.filter(facet => facet.field.substring(0, 6) !== 'audit.');
+
             var filters = this.props.filters;
             var width = 'inherit';
             if (!facets.length && this.props.mode != 'picker') return <div />;
+            var hideTypes;
+            if (this.props.mode == 'picker') {
+                hideTypes = false;
+            } else {
+                hideTypes = filters.filter(filter => filter.field === 'type').length === 1 && normalFacets.length > 1;
+            }
             if (this.props.orientation == 'horizontal') {
                 width = (100 / facets.length) + '%';
             }
             return (
                 <div className={"box facets " + this.props.orientation}>
                     {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
-                    {facets.map(facet =>
-                        <Facet {...this.props} key={facet.field} facet={facet} filters={filters}
-                                  width={width} />
-                    )}
+                    {facets.map(function (facet) {
+                        if (hideTypes && facet.field == 'type') {
+                            return <span key={facet.field} />;
+                        } else {
+                            return <Facet {...this.props} key={facet.field} facet={facet} filters={filters}
+                                          width={width} />;
+                        }
+                    }.bind(this))}
                 </div>
             );
         }
