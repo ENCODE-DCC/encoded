@@ -43,6 +43,7 @@ var Matrix = module.exports.Matrix = React.createClass({
         if (context.notification == 'Success' || context.notification == 'No results found') {
             var x_facets = matrix.x.facets.map(f => _.findWhere(context.facets, {field: f})).filter(f => f);
             var y_facets = matrix.y.facets.map(f => _.findWhere(context.facets, {field: f})).filter(f => f);
+            y_facets = y_facets.concat(_.reject(context.facets, f => _.contains(matrix.x.facets, f.field) || _.contains(matrix.y.facets, f.field)));
             var x_grouping = matrix.x.group_by;
             var primary_y_grouping = matrix.y.group_by[0];
             var secondary_y_grouping = matrix.y.group_by[1];
@@ -65,8 +66,10 @@ var Matrix = module.exports.Matrix = React.createClass({
                                     <div className="col-sm-11">
                                         <div>
                                             <h3 style={{marginTop: 0}}>{context.title}</h3>
-                                            <p>Click or enter search terms to filter the experiments included in the matrix.</p>
-                                            <TextFilter filters={context.filters} searchBase={matrix_search} onChange={this.onChange} />
+                                            <div>
+                                                <p>Click or enter search terms to filter the experiments included in the matrix.</p>
+                                                <TextFilter filters={context.filters} searchBase={matrix_search} onChange={this.onChange} />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -84,21 +87,25 @@ var Matrix = module.exports.Matrix = React.createClass({
                             <div className="col-sm-7 col-md-8 col-lg-9 sm-no-padding" style={{paddingLeft: 0, overflow: 'auto'}}>
                                 <table className="matrix">
                                     <tbody>
-                                        <tr>
-                                            <th style={{width: 20}}></th>
-                                            <th colSpan={colCount + 1}
-                                                style={{padding: "5px", borderBottom: "solid 1px #ddd", textAlign: "center"}}>{matrix.x.label.toUpperCase()}</th>
-                                        </tr>
+                                        {matrix.doc_count ?
+                                            <tr>
+                                                <th style={{width: 20}}></th>
+                                                <th colSpan={colCount + 1}
+                                                    style={{padding: "5px", borderBottom: "solid 1px #ddd", textAlign: "center"}}>{matrix.x.label.toUpperCase()}</th>
+                                            </tr>
+                                        : ''}
                                         <tr style={{borderBottom: "solid 1px #ddd"}}>
-                                            <th rowSpan={rowCount + 1}
-                                                className="rotate90"
-                                                style={{width: 25, borderRight: "solid 1px #ddd", borderBottom: "solid 2px transparent", padding: "5px"}}>
-                                                <div style={{width: 15}}><span>{matrix.y.label.toUpperCase()}</span></div>
-                                            </th>
+                                            {matrix.doc_count ?
+                                                <th rowSpan={rowCount + 1}
+                                                    className="rotate90"
+                                                    style={{width: 25, borderRight: "solid 1px #ddd", borderBottom: "solid 2px transparent", padding: "5px"}}>
+                                                    <div style={{width: 15}}><span>{matrix.y.label.toUpperCase()}</span></div>
+                                                </th>
+                                            : ''}
                                             <th style={{border: "solid 1px #ddd", textAlign: "center", width: 200}}>
                                                 <h3>
                                                   {matrix.doc_count} results 
-                                                  {context.views && context.views.map(view => <span> <a href={view.href} title={view.title}><i className={'icon icon-' + view.icon}></i></a></span>)}
+                                                  {matrix.doc_count && context.views ? context.views.map(view => <span> <a href={view.href} title={view.title}><i className={'icon icon-' + view.icon}></i></a></span>) : ''}
                                                 </h3>
                                                 {context.filters.length ?
                                                     <a href={context.matrix.clear_matrix} className="btn btn-info btn-sm"><i className="icon icon-times-circle-o"></i> Clear all filters</a>

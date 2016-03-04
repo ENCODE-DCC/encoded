@@ -716,6 +716,9 @@
         },
         "constructs.length": {
             "title": "Constructs"
+        },
+        "summary": {
+            "title": "Summary"
         }
     },
     "boost_values": {

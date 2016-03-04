@@ -30,6 +30,9 @@ var Dbxref = module.exports.Dbxref = function (props) {
     if (prefix === "UCSC-ENCODE-cv") {
         local = '"' + local + '"';
     }
+    if (prefix === "MGI") {
+        local = value;
+    }
 
     return <a href={base + local}>{value}</a>;
 };
