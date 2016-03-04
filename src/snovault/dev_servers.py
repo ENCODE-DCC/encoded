@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 def nginx_server_process(prefix='', echo=False):
     args = [
         os.path.join(prefix, 'nginx'),
-        '-c', resource_filename('encoded', '../../nginx-dev.conf'),
+        '-c', resource_filename('snovault', 'nginx-dev.conf'),
         '-g', 'daemon off;'
     ]
     process = subprocess.Popen(
@@ -58,14 +58,10 @@ def main():
     parser.add_argument('--clear', action="store_true", help="Clear existing data")
     parser.add_argument('--init', action="store_true", help="Init database")
     parser.add_argument('--load', action="store_true", help="Load test set")
-    parser.add_argument('--datadir', default='/tmp/encoded', help="path to datadir")
+    parser.add_argument('--datadir', default='/tmp/snovault', help="path to datadir")
     args = parser.parse_args()
 
-    logging.basicConfig()
-    # Loading app will have configured from config file. Reconfigure here:
-    logging.getLogger('encoded').setLevel(logging.DEBUG)
-
-    from encoded.tests import elasticsearch_fixture, postgresql_fixture
+    from snovault.tests import elasticsearch_fixture, postgresql_fixture
     from snovault.elasticsearch import create_mapping
     datadir = os.path.abspath(args.datadir)
     pgdata = os.path.join(datadir, 'pgdata')
@@ -100,18 +96,10 @@ def main():
         create_mapping.run(app)
 
     if args.load:
-        from webtest import TestApp
-        environ = {
-            'HTTP_ACCEPT': 'application/json',
-            'REMOTE_USER': 'TEST',
-        }
-        testapp = TestApp(app, environ)
-
-        from encoded.loadxl import load_all
-        from pkg_resources import resource_filename
-        inserts = resource_filename('encoded', 'tests/data/inserts/')
-        docsdir = [resource_filename('encoded', 'tests/data/documents/')]
-        load_all(testapp, inserts, docsdir)
+        from pyramid.path import DottedNameResolver
+        load_test_data = app.registry.settings.get('snovault.load_test_data')
+        load_test_data = DottedNameResolver().resolve(load_test_data)
+        load_test_data(app)
 
     print('Started. ^C to exit.')
 

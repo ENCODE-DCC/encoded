@@ -75,12 +75,12 @@ setup(
         [console_scripts]
         batchupgrade = snovault.batchupgrade:main
         create-mapping = snovault.elasticsearch.create_mapping:main
+        dev-servers = snovault.dev_servers:main
         es-index-listener = snovault.elasticsearch.es_index_listener:main
 
         add-date-created = encoded.commands.add_date_created:main
         check-rendering = encoded.commands.check_rendering:main
         deploy = encoded.commands.deploy:main
-        dev-servers = encoded.commands.dev_servers:main
         extract_test_data = encoded.commands.extract_test_data:main
         es-index-data = encoded.commands.es_index_data:main
         es-file-index-listener = encoded.commands.es_file_index_listener:main
