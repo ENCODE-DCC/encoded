@@ -73,18 +73,20 @@
             "type": "string",
             "default": "proposed",
             "enum" : [
-                "in progress",
-                "started",
-                "submitted",
                 "proposed",
-                "release ready",
-                "released",
+                "started",
+                "in progress",
+                "submitted",
+                "ready for review",
                 "deleted",
-                "replaced",
+                "released",
                 "revoked",
                 "archived",
-                "ready for review",
-                "in review"
+                "replaced",
+                "in review",
+                "release ready",
+                "verified",
+                "preliminary"
             ]
         }
     },
