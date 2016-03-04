@@ -332,6 +332,18 @@ def audit_biosample_transfection_type(value, system):
         raise AuditFailure('missing transfection_type', detail, level='ERROR')
 
 
+def is_part_of(term_id, part_of_term_id, ontology):
+    if 'part_of' not in ontology[term_id] or ontology[term_id]['part_of'] == []:
+        return False
+    if part_of_term_id in ontology[term_id]['part_of']:
+        return True
+    else:
+        parents = []
+        for x in ontology[term_id]['part_of']:
+            parents.append(is_part_of(x, part_of_term_id, ontology))
+        return any(parents)
+
+
 @audit_checker('biosample', frame=['part_of'])
 def audit_biosample_part_of_consistency(value, system):
     if 'part_of' not in value:
@@ -341,28 +353,29 @@ def audit_biosample_part_of_consistency(value, system):
         term_id = value['biosample_term_id']
         part_of_term_id = part_of_biosample['biosample_term_id']
 
-        if term_id == part_of_term_id:
+        if 'biosample_term_name' in value:
+            term_name = value['biosample_term_name']
+        else:
+            term_name = term_id
+        if 'biosample_term_name' in part_of_biosample:
+            part_of_term_name = part_of_biosample['biosample_term_name']
+        else:
+            part_of_term_name = part_of_term_id
+
+        if term_id == part_of_term_id or part_of_term_id == 'UBERON:0000468':
             return
 
         ontology = system['registry']['ontology']
         if (term_id in ontology) and (part_of_term_id in ontology):
-            # ontology_child = ontology[term_id]
-            ontology_parent = ontology[part_of_term_id]
-            if 'name' in ontology_parent and ontology_parent['name'] == 'multi-cellular organism':
+            if is_part_of(term_id, part_of_term_id, ontology) is True:
                 return
-            '''
-            if 'organs' in ontology_child and 'organs' in ontology_parent:
-                child_organs = ontology_child['organs']
-                parent_organs = ontology_parent['organs']
-                for org in child_organs:
-                    if org in parent_organs:
-                        return
-            '''
+
         detail = 'Biosample {} '.format(value['@id']) + \
-                 'with biosample_term_id {} '.format(term_id) + \
+                 'with biosample term {} '.format(term_name) + \
                  'was separated from biosample {} '.format(part_of_biosample['@id']) + \
-                 'that has different ' + \
-                 'biosample_term_id {}'.format(part_of_term_id)
+                 'with biosample term {}. '.format(part_of_term_name) + \
+                 'The {} '.format(term_id) + \
+                 'ontology does not note that part_of relationship.'
         yield AuditFailure('inconsistent biosample_term_id', detail,
-                           level='WARNING')
+                           level='DCC_ACTION')
         return
