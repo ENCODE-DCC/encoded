@@ -10,11 +10,11 @@ pytestmark = [pytest.mark.indexing]
 
 
 @pytest.fixture(scope='session')
-def app_settings(server_host_port, elasticsearch_server, postgresql_server):
+def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
     from .conftest import _app_settings
     settings = _app_settings.copy()
     settings['create_tables'] = True
-    settings['persona.audiences'] = 'http://%s:%s' % server_host_port
+    settings['persona.audiences'] = 'http://%s:%s' % wsgi_server_host_port
     settings['elasticsearch.server'] = elasticsearch_server
     settings['sqlalchemy.url'] = postgresql_server
     settings['collection_datastore'] = 'elasticsearch'

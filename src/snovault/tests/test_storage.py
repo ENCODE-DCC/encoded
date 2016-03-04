@@ -43,16 +43,12 @@ def test_transaction_record(session):
 def test_transaction_record_rollback(session):
     import transaction
     import uuid
-    from snovault.storage import (
-        Resource,
-        PropertySheet,
-        TransactionRecord,
-    )
+    from snovault.storage import Resource
     rid = uuid.uuid4()
     resource = Resource('test_item', {'': {}}, rid=rid)
     session.add(resource)
     transaction.commit()
-    txn = transaction.begin()
+    transaction.begin()
     sp = session.begin_nested()
     resource = Resource('test_item', {'': {}}, rid=rid)
     session.add(resource)
