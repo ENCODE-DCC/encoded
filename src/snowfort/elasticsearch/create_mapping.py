@@ -419,6 +419,7 @@ def type_mapping(types, item_type, embed=True):
     # uuid is not boosted anymore, it inherits include_in_all=False from root object
     if 'uuid' in mapping['properties']:
         mapping['properties']['uuid']['index'] = 'not_analyzed'
+        mapping['properties']['uuid']['include_in_all'] = False
     return mapping
 
 
