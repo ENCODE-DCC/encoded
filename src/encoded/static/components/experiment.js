@@ -1115,7 +1115,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
     var allPipelines = {}; // List of all pipelines indexed by step @id
     var allMetricsInfo = []; // List of all QC metrics found attached to files
     var fileQcMetrics = {}; // List of all file QC metrics indexed by file ID
-    var filterOptions = {}; // List of graph filters; annotations and assemblies
+    var filterOptions = []; // List of graph filters; annotations and assemblies
     var stepExists = false; // True if at least one file has an analysis_step
     var fileOutsideReplicate = false; // True if at least one file exists outside a replicate
     var abortGraph = false; // True if graph shouldn't be drawn
@@ -1253,11 +1253,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
 
         // Add to the filtering options to generate a <select>; don't include island files
         if (!islandFile && file.output_category !== 'raw data' && file.assembly) {
-            if (file.genome_annotation) {
-                filterOptions[file.assembly + '-' + file.genome_annotation] = file.assembly + ' ' + file.genome_annotation;
-            } else {
-                filterOptions[file.assembly] = file.assembly;
-            }
+            filterOptions.push({assembly: file.assembly, annotation: file.genome_annotation});
         }
     });
 
@@ -1479,7 +1475,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
         }
     }, this);
 
-    jsonGraph.filterOptions = filterOptions;
+    jsonGraph.filterOptions = filterOptions.length ? _(filterOptions).uniq(option => option.assembly + '!' + (option.annotation ? option.annotation : '')) : [];
     return jsonGraph;
 };
 
@@ -1489,10 +1485,25 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
     getInitialState: function() {
         return {
             infoNodeId: '', // @id of node whose info panel is open
-            selectedAssembly: '', // Value of selected mapping assembly filter
-            selectedAnnotation: '' // Value of selected genome annotation filter
+            selectedFilterValue: '' // <select> value of selected filter
         };
     },
+
+    // Order that assemblies should appear in filtering menu
+    assemblyPriority: [
+        'GRCh38',
+        'hg19',
+        'mm10',
+        'mm9',
+        'ce11',
+        'ce10',
+        'dm6',
+        'dm3',
+        'J02459.1'
+    ],
+
+    // Holds filtering option objects ({assembly: x, annotation: y}) in sorted order
+    sortedFilterOptions: [],
 
     // Render metadata if a graph node is selected.
     // jsonGraph: JSON graph data.
@@ -1525,17 +1536,31 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         this.setState({infoNodeId: this.state.infoNodeId !== nodeId ? nodeId : ''});
     },
 
-    handleFilterChange: function(e) {
-        var value = e.target.value;
-        if (value !== 'default') {
-            var filters = value.split('-');
-            this.setState({selectedAssembly: filters[0], selectedAnnotation: filters[1]});
-        } else {
-            this.setState({selectedAssembly: '', selectedAnnotation: ''});
+    // Set the graph filter based on the given <option> value
+    setFilter: function(value) {
+        if (value === 'default') {
+            value = '';
         }
+        this.setState({selectedFilterValue: value});
+    },
+
+    // React to a filter menu selection. The synthetic event given in `e`
+    handleFilterChange: function(e) {
+        this.setFilter(e.target.value);
+    },
+
+    // Set the default filter after the graph has been analayzed once.
+    componentDidMount: function() {
+        this.setFilter('0');
+    },
+
+    componentWillUnmount: function() {
+        this.sortedFilterOptions = [];
     },
 
     render: function() {
+        var selectedAssembly = '';
+        var selectedAnnotation = '';
         var {context, session, data} = this.props;
         var items = data ? data['@graph'] : [];
         var files = context.files.concat(items);
@@ -1544,14 +1569,24 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         if (files && files.length) {
             // Build the graph; place resulting graph in this.jsonGraph
             var filterOptions = {};
+            if (this.state.selectedFilterValue) {
+                var selectedAssembly = this.sortedFilterOptions[this.state.selectedFilterValue].assembly;
+                var selectedAnnotation = this.sortedFilterOptions[this.state.selectedFilterValue].annotation;
+            }
             try {
-                this.jsonGraph = assembleGraph(context, session, this.state.infoNodeId, files, this.state.selectedAssembly, this.state.selectedAnnotation);
+                this.jsonGraph = assembleGraph(context, session, this.state.infoNodeId, files, selectedAssembly, selectedAnnotation);
             } catch(e) {
                 this.jsonGraph = null;
                 console.warn(e.message + (e.file0 ? ' -- file0:' + e.file0 : '') + (e.file1 ? ' -- file1:' + e.file1: ''));
             }
             var goodGraph = this.jsonGraph && Object.keys(this.jsonGraph).length;
             filterOptions = goodGraph && this.jsonGraph.filterOptions;
+
+            // Sort filtering menu to an order specified by this.assemblyOrder
+            this.sortedFilterOptions = filterOptions.sort(item => {
+                // `item` is an object with {assembly: x, annotation: y|undefined}. Sort by assembly.
+                return this.assemblyPriority.indexOf(item.assembly);
+            });
 
             // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
             if (goodGraph || this.state.selectedAssembly || this.state.selectedAnnotation) {
@@ -1561,14 +1596,12 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                         <h3>Files generated by pipeline</h3>
                         {filterOptions && Object.keys(filterOptions).length ?
                             <div className="form-inline">
-                                <select className="form-control" defaultValue="default" onChange={this.handleFilterChange}>
+                                <select className="form-control" defaultValue="0" onChange={this.handleFilterChange}>
                                     <option value="default" key="title">All Assemblies and Annotations</option>
                                     <option disabled="disabled"></option>
-                                    {Object.keys(filterOptions).map(function(option) {
-                                        return (
-                                            <option key={option} value={option}>{filterOptions[option]}</option>
-                                        );
-                                    })}
+                                    {this.sortedFilterOptions.map((option, i) =>
+                                        <option key={i} value={i}>{option.assembly + (option.annotation ? ' ' + option.annotation : '')}</option>
+                                    )}
                                 </select>
                             </div>
                         : null}
