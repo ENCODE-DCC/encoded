@@ -21,8 +21,7 @@ var doc = require('./doc');
 
 var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
-var FileTable = dataset.FileTable;
-var UnreleasedFiles = dataset.UnreleasedFiles;
+var {DatasetFiles, FilePanelHeader, ExperimentTable} = dataset;
 var FetchedItems = fetched.FetchedItems;
 var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
@@ -31,7 +30,6 @@ var {AuditMixin, AuditIndicators, AuditDetail} = audit;
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
 var PubReferenceList = reference.PubReferenceList;
-var ExperimentTable = dataset.ExperimentTable;
 var SingleTreatment = objectutils.SingleTreatment;
 var SoftwareVersionList = software.SoftwareVersionList;
 var {SortTablePanel, SortTable} = sortTable;
@@ -315,14 +313,8 @@ var Experiment = module.exports.Experiment = React.createClass({
         });
 
         // Determine this experiment's ENCODE version
-        var encodevers = "";
-        if (context.award.rfa) {
-            encodevers = globals.encodeVersionMap[context.award.rfa.substring(0,7)];
-            if (typeof encodevers === "undefined") {
-                encodevers = "";
-            }
-        }
-
+        var encodevers = globals.encodeVersion(context);
+    
         // Make list of statuses
         var statuses = [{status: context.status, title: "Status"}];
         if (encodevers === "3" && context.status === "released") {
@@ -552,29 +544,15 @@ var Experiment = module.exports.Experiment = React.createClass({
                     <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
                 : null}
 
-                {context.visualize_ucsc  && context.status == "released" ?
-                    <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
-                    </span>
-                : null }
-
-                <FetchedData>
-                    <Param name="data" url={dataset.unreleased_files_url(context)} />
+                <FetchedData ignoreErrors>
+                    <Param name="data" url={dataset.files_url(context)} />
                     <ExperimentGraph context={context} session={this.context.session} />
                 </FetchedData>
 
-                {context.files.length ?
-                    <div>
-                        <h3>Files linked to {context.accession}</h3>
-                        <FileTable items={context.files} encodevers={encodevers} anisogenic={anisogenic} />
-                    </div>
-                : null }
+                {/* Display list of released and unreleased files */}
+                <FetchedItems {...this.props} url={dataset.files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} session={this.context.session} ignoreErrors />
 
-                {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} anisogenic={anisogenic} />
-                : null}
-
-                <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} />
+                <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} ignoreErrors />
 
                 <DocumentsPanel documentSpecs={[{documents: combinedDocuments}]} />
             </div>
@@ -691,8 +669,8 @@ var ReplicateTable = React.createClass({
         }
 
         return (
-            <SortTablePanel>
-                <SortTable title={tableTitle} list={condensedReplicates} columns={this.replicateColumns} />
+            <SortTablePanel title={tableTitle}>
+                <SortTable list={condensedReplicates} columns={this.replicateColumns} />
             </SortTablePanel>
         );
     }
@@ -703,13 +681,16 @@ var ControllingExperiments = React.createClass({
     render: function () {
         var context = this.props.context;
 
-        return (
-            <div>
-                <ExperimentTable {...this.props}
-                    items={this.props.items} limit={5} url={this.props.url}
-                    title={'Experiments with ' + context.accession + ' as a control:'} />
-            </div>
-        );
+        if (this.props.items && this.props.items.length) {
+            return (
+                <div>
+                    <ExperimentTable {...this.props}
+                        items={this.props.items} limit={5} url={this.props.url}
+                        title={'Experiments with ' + context.accession + ' as a control:'} />
+                </div>
+            );
+        }
+        return null;
     }
 });
 
