@@ -257,8 +257,8 @@ var Experiment = module.exports.Experiment = React.createClass({
             }
 
             // Collect donor documents
-            if (biosample.donor && biosample.donor.donor_documents && biosample.donor.donor_documents.length) {
-                Array.prototype.push.apply(biosampleDonorDocs, biosample.donor.donor_documents);
+            if (biosample.donor && biosample.donor.documents && biosample.donor.documents.length) {
+                Array.prototype.push.apply(biosampleDonorDocs, biosample.donor.documents);
             }
 
             // Collect donor characterizations

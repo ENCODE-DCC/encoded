@@ -19,11 +19,12 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/strains"}
     ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "littermates": {
             "title": "Littermates",

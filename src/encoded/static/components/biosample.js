@@ -131,8 +131,8 @@ function collectBiosampleDocs(biosample) {
         if (biosample.donor.characterizations && biosample.donor.characterizations.length) {
             donorCharacterizations = biosample.donor.characterizations;
         }
-        if (biosample.donor.donor_documents && biosample.donor.donor_documents.length) {
-            donorDocuments = biosample.donor.donor_documents;
+        if (biosample.donor.documents && biosample.donor.documents.length) {
+            donorDocuments = biosample.donor.documents;
         }
     }
     var donorConstructs = [];
@@ -904,8 +904,8 @@ var Donor = module.exports.Donor = React.createClass({
         }
 
         // Collect the donor documents
-        if (context.donor_documents && context.donor_documents.length) {
-            donorDocuments = context.donor_documents;
+        if (context.documents && context.documents.length) {
+            donorDocuments = context.documents;
         }
 
         // Combine characterization and donor documents

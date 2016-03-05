@@ -115,3 +115,18 @@ def fly_worm_donor_1_2(value, system):
 
     if 'constructs' in value:
         value['constructs'] = list(set(value['constructs']))
+
+
+@upgrade_step('fly_donor', '2', '3')
+@upgrade_step('worm_donor', '2', '3')
+def fly_worm_donor_2_3(value, system):
+    # http://redmine.encodedcc.org/issues/3743
+    if 'donor_documents' in value:
+        del value['donor_documents']
+
+@upgrade_step('human_donor', '5', '6')
+@upgrade_step('mouse_donor', '5', '6')
+def human_mouse_donor_5_6(value, system):
+    # http://redmine.encodedcc.org/issues/3743
+    if 'donor_documents' in value:
+        del value['donor_documents']
