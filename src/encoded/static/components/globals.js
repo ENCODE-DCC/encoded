@@ -112,9 +112,21 @@ module.exports.statusOrder = [
 
 module.exports.productionHost = {'www.encodeproject.org':1, 'encodeproject.org':1, 'www.encodedcc.org':1};
 
-module.exports.encodeVersionMap = {
+var encodeVersionMap = module.exports.encodeVersionMap = {
     "ENCODE2": "2",
     "ENCODE3": "3"
+};
+
+// Determine the given object's ENCODE version
+module.exports.encodeVersion = function(context) {
+    var encodevers = "";
+    if (context.award && context.award.rfa) {
+        encodevers = encodeVersionMap[context.award.rfa.substring(0,7)];
+        if (typeof encodevers === "undefined") {
+            encodevers = "";
+        }
+    }
+    return encodevers;
 };
 
 module.exports.dbxref_prefix_map = {

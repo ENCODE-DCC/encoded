@@ -101,14 +101,21 @@ def get_filtered_query(term, search_fields, result_fields, principals, doc_types
 
 
 def prepare_search_term(request):
+    from antlr4 import IllegalStateException
+    from lucenequery.prefixfields import prefixfields
+    from lucenequery import dialects
+
     search_term = request.params.get('searchTerm', '').strip() or '*'
-    if search_term != '*':
-        search_term = sanitize_search_string_re.sub(r'\\\g<0>', search_term.strip())
-        search_term_array = search_term.split()
-        if search_term_array[len(search_term_array) - 1] in ['AND', 'NOT', 'OR']:
-            del search_term_array[-1]
-            search_term = ' '.join(search_term_array)
-    return search_term
+    if search_term == '*':
+        return search_term
+
+    try:
+        query = prefixfields('embedded.', search_term, dialects.elasticsearch)
+    except (IllegalStateException):
+        msg = "Invalid query: {}".format(search_term)
+        raise HTTPBadRequest(explanation=msg)
+    else:
+        return query.getText()
 
 
 def set_sort_order(request, search_term, types, doc_types, query, result):

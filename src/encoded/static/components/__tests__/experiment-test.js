@@ -76,40 +76,6 @@ describe('Experiment Page', function() {
         });
     });
 
-    describe('Experiment with files', function() {
-        var experiment, fileTables;
-
-        beforeEach(function() {
-            var context_fs = _.clone(context);
-            context_fs.files = [require('../testdata/file/text'), require('../testdata/file/fastq')];
-            experiment = React.withContext(FetchContext, function() {
-                return TestUtils.renderIntoDocument(
-                    <Experiment context={context_fs} />
-                );
-            });
-
-            fileTables = TestUtils.scryRenderedDOMComponentsWithTag(experiment, 'table');
-        });
-
-        it('has one table', function() {
-            expect(fileTables.length).toEqual(1);
-        });
-
-        it('has three rows in the file list, including section title', function() {
-            var fileList = fileTables[0].getDOMNode();
-            expect(fileList.hasChildNodes()).toBeTruthy();
-            expect(fileList.childNodes.length).toEqual(3);
-        });
-
-        it('has two proper download links in the file list', function() {
-            var fileList = fileTables[0].getDOMNode();
-            var fileDl = fileList.getElementsByTagName('a');
-            expect(fileDl.length).toEqual(2);
-            expect(fileDl[0].getAttribute('href')).toEqual('/files/ENCFF001REL/@@download/ENCFF001REL.txt.gz');
-            expect(fileDl[1].getAttribute('href')).toEqual('/files/ENCFF001REQ/@@download/ENCFF001REQ.fastq.gz');
-        });
-    });
-
     describe('Document Panel', function() {
         var experiment, doc;
 
