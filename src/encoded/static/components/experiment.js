@@ -649,7 +649,7 @@ var FileGalleryRenderer = React.createClass({
                             <ExperimentGraph context={context} data={data} session={this.context.session} />
                         </TabPanelPane>
                         <TabPanelPane key="table">
-                            <FetchedItems {...this.props} url={dataset.files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={this.props.encodevers} anisogenic={this.props.anisogenic} session={this.context.session} ignoreErrors />
+                            <DatasetFiles {...this.props} items={this.props.data['@graph']} encodevers={this.props.encodevers} anisogenic={this.props.anisogenic} session={this.context.session} />
                         </TabPanelPane>
                     </TabPanel>
                 </div>
