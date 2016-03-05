@@ -1550,7 +1550,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         if (files && files.length) {
             // Build the graph; place resulting graph in this.jsonGraph
             var filterOptions = {};
-            if (this.state.selectedFilterValue) {
+            if (this.state.selectedFilterValue && this.sortedFilterOptions[this.state.selectedFilterValue]) {
                 var selectedAssembly = this.sortedFilterOptions[this.state.selectedFilterValue].assembly;
                 var selectedAnnotation = this.sortedFilterOptions[this.state.selectedFilterValue].annotation;
             }
