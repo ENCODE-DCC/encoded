@@ -78,6 +78,13 @@ def test_series_trackDb(testapp, workbook, expected):
     res = testapp.get("/experiments/ENCSR300DEV/@@hub/trackDb.txt")
     assert expected in res.text
 
+@pytest.mark.parametrize('expected', [
+    "genome hg38",
+    "trackDb GRCh38/trackDb.txt",
+])
+def test_genome_txt(testapp, workbook, expected):
+    res = testapp.get("/batch_hub/type=Experiment&assembly=GRCh38/genomes.txt")
+    assert expected in res.text
 
 @pytest.mark.parametrize('expected', [
     "GRCh38",

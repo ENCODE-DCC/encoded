@@ -136,10 +136,10 @@ def get_signal_view(accession, view):
 
 def get_genomes_txt(assembly):
     # UCSC shim
-    assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
+    ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
     genome = OrderedDict([
         ('trackDb', assembly + '/trackDb.txt'),
-        ('genome', assembly)
+        ('genome', ucsc_assembly)
     ])
     return render(genome)
 
