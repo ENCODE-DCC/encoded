@@ -1,6 +1,8 @@
 'use strict';
 var React = require('react');
 var panel = require('../libs/bootstrap/panel');
+var button = require('../libs/bootstrap/button');
+var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var _ = require('underscore');
 var moment = require('moment');
 var graph = require('./graph');
@@ -36,6 +38,8 @@ var {SortTablePanel, SortTable} = sortTable;
 var ProjectBadge = image.ProjectBadge;
 var DocumentsPanel = doc.DocumentsPanel;
 var {Panel, PanelBody, PanelHeading} = panel;
+var DropdownButton = button.DropdownButton;
+var DropdownMenu = dropdownMenu.DropdownMenu;
 
 
 var anisogenicValues = [

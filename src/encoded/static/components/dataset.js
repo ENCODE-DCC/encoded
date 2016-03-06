@@ -1,6 +1,8 @@
 'use strict';
 var React = require('react/addons');
 var panel = require('../libs/bootstrap/panel');
+var button = require('../libs/bootstrap/button');
+var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var _ = require('underscore');
 var moment = require('moment');
 var globals = require('./globals');
@@ -31,6 +33,8 @@ var SortTablePanel = sortTable.SortTablePanel;
 var SortTable = sortTable.SortTable;
 var ProjectBadge = image.ProjectBadge;
 var {Panel, PanelBody, PanelHeading} = panel;
+var DropdownButton = button.DropdownButton;
+var DropdownMenu = dropdownMenu.DropdownMenu;
 
 var PanelLookup = function (props) {
     // XXX not all panels have the same markup
