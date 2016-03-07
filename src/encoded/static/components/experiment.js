@@ -939,12 +939,10 @@ var RelatedSeriesList = React.createClass({
         if (touch && !currTouchScreen) {
             currTouchScreen = true;
             this.setState({touchScreen: true});
-            console.log('SET TOUCHSCREEN TRUE');
         }
 
         // Now handle the click. Ignore if we know we have a touch screen, but this wasn't a touch event
         if (!currTouchScreen || touch) {
-            console.log('STAT: %s:%o', currTouchScreen, touch);
             if (this.state.currInfoItem === series.accession && this.state.clicked) {
                 this.setState({currInfoItem: '', clicked: false});
             } else {
@@ -1567,11 +1565,9 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
             var goodGraph = this.jsonGraph && Object.keys(this.jsonGraph).length;
             filterOptions = (goodGraph && this.jsonGraph.filterOptions) ? this.jsonGraph.filterOptions : [];
 
-            // Sort filtering menu to an order specified by this.assemblyPriority
-            this.sortedFilterOptions = filterOptions.sort(item => {
-                // `item` is an object with {assembly: x, annotation: y|undefined}. Sort by assembly.
-                return this.assemblyPriority.indexOf(item.assembly);
-            });
+            // Sort filtering menu to an order specified by this.assemblyPriority. Sort by annotation and then by assembly so that
+            // annotation is a secondary key.
+            this.sortedFilterOptions = _(filterOptions).chain().sortBy('annotation').sortBy(item => _(this.assemblyPriority).indexOf(item.assembly)).value();
 
             // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
             if (goodGraph || this.state.selectedAssembly || this.state.selectedAnnotation) {
