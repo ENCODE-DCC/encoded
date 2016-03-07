@@ -1107,6 +1107,10 @@ var organismDevelopmentSeriesTableColumns = {
 var Series = module.exports.Series = React.createClass({
     mixins: [AuditMixin],
 
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     // Map series @id to title and table columns
     seriesComponents: {
         'MatchedSet': {title: 'matched set series', table: basicTableColumns},
@@ -1162,9 +1166,9 @@ var Series = module.exports.Series = React.createClass({
                 <span>
                     {speciesList.map((species, i) => {
                         return (
-                            <span>
+                            <span key={i}>
                                 {i > 0 ? <span> and </span> : null}
-                                <i key={i}>{species}</i>
+                                <i>{species}</i>
                             </span>
                         );
                     })}
@@ -1273,18 +1277,8 @@ var Series = module.exports.Series = React.createClass({
                     </div>
                 : null }
 
-                {context.visualize_ucsc  && context.status == "released" ?
-                    <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
-                    </span>
-                : null }
-
-                {context.files && context.files.length ?
-                    <div>
-                        <h3>Original files in {seriesTitle} {context.accession}</h3>
-                        <FileTable items={context.files} />
-                    </div>
-                : null }
+                {/* Display list of released and unreleased files */}
+                <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
