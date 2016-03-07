@@ -1566,7 +1566,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
             filterOptions = (goodGraph && this.jsonGraph.filterOptions) ? this.jsonGraph.filterOptions : [];
 
             // Sort filtering menu to an order specified by this.assemblyPriority. Sort by annotation and then by assembly so that
-            // annotation is a secondary key.
+            // annotation is the secondary key.
             this.sortedFilterOptions = _(filterOptions).chain().sortBy('annotation').sortBy(item => _(this.assemblyPriority).indexOf(item.assembly)).value();
 
             // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
