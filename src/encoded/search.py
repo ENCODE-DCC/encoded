@@ -195,7 +195,7 @@ def set_filters(request, query, result):
     for field, term in request.params.items():
         if field in ['type', 'limit', 'y.limit', 'x.limit', 'mode', 'annotation',
                      'format', 'frame', 'datastore', 'field', 'region', 'genome',
-                     'sort', 'from']:
+                     'sort', 'from', 'referrer']:
             continue
 
         # Add filter to result
@@ -346,7 +346,7 @@ def format_results(request, hits):
         yield item
 
 
-def search_result_actions(request, doc_types, es_results):
+def search_result_actions(request, doc_types, es_results, position=None):
     actions = {}
     aggregations = es_results['aggregations']
 
@@ -358,7 +358,10 @@ def search_result_actions(request, doc_types, es_results):
         hub = request.route_url('batch_hub',
                                 search_params=search_params,
                                 txt='hub.txt')
-        actions['batch_hub'] = hgConnect + hub
+        if 'region-search' in request.url and position is not None:
+            actions['batch_hub'] = hgConnect + hub + '&position='.format(position)
+        else:
+            actions['batch_hub'] = hgConnect + hub
 
     # generate batch download URL for experiments
     if doc_types == ['Experiment'] and any(

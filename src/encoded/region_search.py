@@ -210,7 +210,7 @@ def region_search(context, request):
     Search files by region.
     """
     result = {
-        '@id': '/region-search/' + ('?' + request.query_string if request.query_string else ''),
+        '@id': '/region-search/' + ('?' + request.query_string.split('&referrer')[0] if request.query_string else ''),
         '@type': ['region-search'],
         'title': 'Search by region',
         'facets': [],
@@ -273,7 +273,7 @@ def region_search(context, request):
     try:
         # including inner hits is very slow
         # figure out how to distinguish browser requests from .embed method requests
-        if not request.referrer:
+        if 'peak_metadata' in request.query_string:
             peak_query = get_peak_query(start, end, with_inner_hits=True)
         else:
             peak_query = get_peak_query(start, end)
@@ -315,7 +315,7 @@ def region_search(context, request):
         result['peaks'] = list(peak_results['hits']['hits'])
         if result['total'] > 0:
             result['notification'] = 'Success'
-            result.update(search_result_actions(request, ['Experiment'], es_results))
+            result.update(search_result_actions(request, ['Experiment'], es_results, position=result['coordinates']))
 
     return result
 

@@ -95,13 +95,13 @@ def get_biosample_accessions(file_json, experiment_json):
 
 
 @view_config(route_name='peak_metadata', request_method='GET')
-def peak_metadata_tsv(context, request):
+def peak_metadata(context, request):
     param_list = parse_qs(request.matchdict['search_params'])
     del param_list['referrer']
     param_list['field'] = []
     header = ['assay_term_name', 'coordinates', 'target.label', 'biosample.accession', 'file.accession', 'experiment.accession']
     param_list['limit'] = ['all']
-    path = '/region-search/?{}'.format(urlencode(param_list, True))
+    path = '/region-search/?{}&{}'.format(urlencode(param_list, True),'referrer=peak_metadata')
     results = request.embed(path, as_user=True)
     uuids_in_results = get_file_uuids(results)
     rows = []
