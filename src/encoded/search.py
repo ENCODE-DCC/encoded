@@ -359,7 +359,7 @@ def search_result_actions(request, doc_types, es_results, position=None):
                                 search_params=search_params,
                                 txt='hub.txt')
         if 'region-search' in request.url and position is not None:
-            actions['batch_hub'] = hgConnect + '&position='.format(position) + hub
+            actions['batch_hub'] = hgConnect + hub + '&position={}'.format(position)
         else:
             actions['batch_hub'] = hgConnect + hub
 
