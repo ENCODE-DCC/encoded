@@ -89,6 +89,7 @@ def audit_reference_epigenome_assay_types_requirments(value, system):
     if required_assays[('ChIP-seq', 'H3K4me3')] == 0:
         detail = 'Reference Epigenome {} '.format(value['@id']) + \
                  'missing IHEC required H3K4me3 ChIP-seq assay.'
+        yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
     if required_assays[('ChIP-seq', 'H3K27ac')] == 0:
         detail = 'Reference Epigenome {} '.format(value['@id']) + \
                  'missing IHEC required H3K27ac ChIP-seq assay.'
