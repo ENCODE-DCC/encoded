@@ -549,12 +549,12 @@ var Experiment = module.exports.Experiment = React.createClass({
                 : null}
 
                 <FetchedData ignoreErrors>
-                    <Param name="data" url={dataset.files_url(context)} />
+                    <Param name="data" url={dataset.unreleased_files_url(context)} />
                     <ExperimentGraph context={context} session={this.context.session} />
                 </FetchedData>
 
                 {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={dataset.files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} session={this.context.session} ignoreErrors />
+                <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} session={this.context.session} ignoreErrors />
 
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} ignoreErrors />
 
@@ -1565,9 +1565,9 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 console.warn(e.message + (e.file0 ? ' -- file0:' + e.file0 : '') + (e.file1 ? ' -- file1:' + e.file1: ''));
             }
             var goodGraph = this.jsonGraph && Object.keys(this.jsonGraph).length;
-            filterOptions = goodGraph && this.jsonGraph.filterOptions;
+            filterOptions = (goodGraph && this.jsonGraph.filterOptions) ? this.jsonGraph.filterOptions : [];
 
-            // Sort filtering menu to an order specified by this.assemblyOrder
+            // Sort filtering menu to an order specified by this.assemblyPriority
             this.sortedFilterOptions = filterOptions.sort(item => {
                 // `item` is an object with {assembly: x, annotation: y|undefined}. Sort by assembly.
                 return this.assemblyPriority.indexOf(item.assembly);
