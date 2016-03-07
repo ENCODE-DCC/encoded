@@ -5,10 +5,14 @@ var globals = require('./globals');
 var search = require('./search');
 var url = require('url');
 var _ = require('underscore');
+var button = require('../libs/bootstrap/button');
+var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 
 var BatchDownload = search.BatchDownload;
 var FacetList = search.FacetList;
 var TextFilter = search.TextFilter;
+var DropdownButton = button.DropdownButton;
+var DropdownMenu = dropdownMenu.DropdownMenu;
 
 
 var HIGHLIGHT_COLOR = color('#4e7294');
@@ -33,6 +37,20 @@ var Matrix = module.exports.Matrix = React.createClass({
         navigate: React.PropTypes.func
     },
 
+    // Called when the Visualize button dropdown menu gets opened or closed. `dropdownEl` is the DOM node for the dropdown menu.
+    // This sets inline CSS to set the height of the wrapper <div> to make room for the dropdown.
+    updateElement: function(dropdownEl) {
+        var wrapperEl = this.refs.hubscontrols.getDOMNode();
+        var dropdownHeight = dropdownEl.clientHeight
+        if (dropdownHeight === 0) {
+            // The dropdown menu has closed
+            wrapperEl.style.height = 'auto';
+        } else {
+            // The menu has dropped down
+            wrapperEl.style.height = wrapperEl.clientHeight + dropdownHeight + 'px';
+        }
+    },
+
     render: function() {
         var context = this.props.context;
         var matrix = context.matrix;
@@ -40,6 +58,7 @@ var Matrix = module.exports.Matrix = React.createClass({
         var matrix_base = parsed_url.search || '';
         var matrix_search = matrix_base + (matrix_base ? '&' : '?');
         var notification = context['notification'];
+        const batchHubLimit = 500;
         if (context.notification == 'Success' || context.notification == 'No results found') {
             var x_facets = matrix.x.facets.map(f => _.findWhere(context.facets, {field: f})).filter(f => f);
             var y_facets = matrix.y.facets.map(f => _.findWhere(context.facets, {field: f})).filter(f => f);
@@ -52,10 +71,20 @@ var Matrix = module.exports.Matrix = React.createClass({
             var y_groups = matrix.y[primary_y_grouping].buckets;
             var y_limit = matrix.y.limit;
             var search_base = context.matrix.search_base;
-            var batch_hub_disabled = matrix.doc_count > 500;
+            var batch_hub_disabled = matrix.doc_count > batchHubLimit;
 
             var colCount = Math.min(x_buckets.length, x_limit + 1);
             var rowCount = y_groups.length ? y_groups.map(g => Math.min(g[secondary_y_grouping].buckets.length, y_limit ? y_limit + 1 : g[secondary_y_grouping].buckets.length) + 1).reduce((a, b) => a + b) : 0;
+
+            // Get a sorted list of batch hubs keys with case-insensitive sort
+            var batchHubKeys = [];
+            if (context.batch_hub && Object.keys(context.batch_hub).length) {
+                batchHubKeys = Object.keys(context.batch_hub).sort((a, b) => {
+                    var aLower = a.toLowerCase();
+                    var bLower = b.toLowerCase();
+                    return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
+                });
+            }
 
             return (
                 <div>
@@ -173,22 +202,24 @@ var Matrix = module.exports.Matrix = React.createClass({
                                             return rows;
                                         })}
                                     </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th></th>
-                                            <th colSpan={Math.min(x_buckets.length, x_limit + 1) + 1} style={{padding: "10px 0", textAlign: 'left'}}>
-                                                {context['batch_download'] ?
-                                                    <BatchDownload context={context} />
-                                                : null}
-                                                {' '}
-                                                {context['batch_hub'] ?
-                                                    <a disabled={batch_hub_disabled} data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm"
-                                                       href={context['batch_hub']}>{batch_hub_disabled ? 'Filter to 500 to visualize' :'Visualize'}</a>
-                                                : null}
-                                            </th>
-                                        </tr>
-                                    </tfoot>
                                 </table>
+                                <div className="hubs-controls" ref="hubscontrols">
+                                    {context['batch_download'] ?
+                                        <BatchDownload context={context} />
+                                    : null}
+                                    {' '}
+                                    {batchHubKeys ?
+                                        <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'}>
+                                            <DropdownMenu updateElement={this.updateElement}>
+                                                {batchHubKeys.map(assembly =>
+                                                    <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context['batch_hub'][assembly]}>
+                                                        {assembly}
+                                                    </a>
+                                                )}
+                                            </DropdownMenu>
+                                        </DropdownButton>
+                                    : null}
+                                </div>
                             </div>
                         </div>
                     </div>

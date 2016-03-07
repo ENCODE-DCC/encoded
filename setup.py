@@ -14,6 +14,7 @@ requires = [
     'WebTest',
     'boto',
     'elasticsearch',
+    'lucenequery',
     'future',
     'humanfriendly',
     'jsonschema',

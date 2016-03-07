@@ -73,7 +73,7 @@ var BiosampleTable = React.createClass({
         }
 
         return (
-            <SortTablePanel>
+            <SortTablePanel title={this.props.title}>
                 <SortTable list={this.props.items} columns={this.columns} footer={<BiosampleTableFooter items={biosamples} total={this.props.total} url={this.props.url} />} />
             </SortTablePanel>
         );
@@ -131,8 +131,8 @@ function collectBiosampleDocs(biosample) {
         if (biosample.donor.characterizations && biosample.donor.characterizations.length) {
             donorCharacterizations = biosample.donor.characterizations;
         }
-        if (biosample.donor.donor_documents && biosample.donor.donor_documents.length) {
-            donorDocuments = biosample.donor.donor_documents;
+        if (biosample.donor.documents && biosample.donor.documents.length) {
+            donorDocuments = biosample.donor.documents;
         }
     }
     var donorConstructs = [];
@@ -543,7 +543,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                 : null}
 
                 <RelatedItems
-                    title={'Experiments using biosample ' + context.accession}
+                    title="Experiments using this biosample"
                     url={'/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid}
                     Component={ExperimentTable} />
 
@@ -904,8 +904,8 @@ var Donor = module.exports.Donor = React.createClass({
         }
 
         // Collect the donor documents
-        if (context.donor_documents && context.donor_documents.length) {
-            donorDocuments = context.donor_documents;
+        if (context.documents && context.documents.length) {
+            donorDocuments = context.documents;
         }
 
         // Combine characterization and donor documents

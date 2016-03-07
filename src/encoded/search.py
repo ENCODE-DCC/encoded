@@ -12,6 +12,17 @@ from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
 
+_ASSEMBLY_MAPPER = {
+    'GRCh38-minimal': 'hg38',
+    'GRCh38': 'hg38',
+    'GRCh37': 'hg19',
+    'GRCm38': 'mm10',
+    'GRCm37': 'mm9',
+    'BDGP6': 'dm4',
+    'BDGP5': 'dm3',
+    'WBcel235': 'WBcel235'
+}
+
 
 def includeme(config):
     config.add_route('search', '/search{slash:/?}')
@@ -23,11 +34,8 @@ def includeme(config):
 sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
 
 hgConnect = ''.join([
-    'http://genome.ucsc.edu/cgi-bin/hgHubConnect',
-    '?hgHub_do_redirect=on',
-    '&hgHubConnect.remakeTrackHub=on',
-    '&hgHub_do_firstDb=1',
-    '&hubUrl=',
+    'http://genome.ucsc.edu/cgi-bin/hgTracks',
+    '?hubClear=',
 ])
 
 audit_facets = [
@@ -93,14 +101,21 @@ def get_filtered_query(term, search_fields, result_fields, principals, doc_types
 
 
 def prepare_search_term(request):
+    from antlr4 import IllegalStateException
+    from lucenequery.prefixfields import prefixfields
+    from lucenequery import dialects
+
     search_term = request.params.get('searchTerm', '').strip() or '*'
-    if search_term != '*':
-        search_term = sanitize_search_string_re.sub(r'\\\g<0>', search_term.strip())
-        search_term_array = search_term.split()
-        if search_term_array[len(search_term_array) - 1] in ['AND', 'NOT', 'OR']:
-            del search_term_array[-1]
-            search_term = ' '.join(search_term_array)
-    return search_term
+    if search_term == '*':
+        return search_term
+
+    try:
+        query = prefixfields('embedded.', search_term, dialects.elasticsearch)
+    except (IllegalStateException):
+        msg = "Invalid query: {}".format(search_term)
+        raise HTTPBadRequest(explanation=msg)
+    else:
+        return query.getText()
 
 
 def set_sort_order(request, search_term, types, doc_types, query, result):
@@ -364,16 +379,22 @@ def search_result_actions(request, doc_types, es_results):
     aggregations = es_results['aggregations']
 
     # generate batch hub URL for experiments
-    if doc_types == ['Experiment'] and any(
-            bucket['doc_count'] > 0
-            for bucket in aggregations['assembly']['assembly']['buckets']):
-        search_params = request.query_string.replace('&', ',,')
-        hub = request.route_url('batch_hub',
-                                search_params=search_params,
-                                txt='hub.txt')
-        actions['batch_hub'] = hgConnect + hub
+    # TODO we could enable them for Datasets as well here, but not sure how well it will work
+    if doc_types == ['Experiment']:
+        for bucket in aggregations['assembly']['assembly']['buckets']:
+            if bucket['doc_count'] > 0:
+                assembly = bucket['key']
+                ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
+                search_params = request.query_string.replace('&', ',,')
+                if not request.params.getall('assembly') or assembly in request.params.getall('assembly'):
+                    # filter  assemblies that are not selected
+                    hub = request.route_url('batch_hub',
+                                            search_params=search_params,
+                                            txt='hub.txt')
+                    actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly
 
     # generate batch download URL for experiments
+    # TODO we could enable them for Datasets as well here, but not sure how well it will work
     if doc_types == ['Experiment'] and any(
             bucket['doc_count'] > 0
             for bucket in aggregations['files-file_type']['files-file_type']['buckets']):

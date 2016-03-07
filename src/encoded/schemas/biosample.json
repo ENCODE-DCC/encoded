@@ -642,6 +642,9 @@
         },
         "award.project": {
             "title": "Project"
+        },
+        "award.rfa": {
+            "title": "RFA"
         }
     },
     "columns": {

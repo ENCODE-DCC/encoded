@@ -8,6 +8,8 @@ from urllib.parse import (
     urlencode,
 )
 
+from .search import _ASSEMBLY_MAPPER
+
 
 def includeme(config):
     config.add_route('batch_hub', '/batch_hub/{search_params}/{txt}')
@@ -133,9 +135,11 @@ def get_signal_view(accession, view):
 
 
 def get_genomes_txt(assembly):
+    # UCSC shim
+    ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
     genome = OrderedDict([
         ('trackDb', assembly + '/trackDb.txt'),
-        ('genome', assembly)
+        ('genome', ucsc_assembly)
     ])
     return render(genome)
 
