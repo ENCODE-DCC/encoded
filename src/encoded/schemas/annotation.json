@@ -55,11 +55,24 @@
             "description": "The category that best describes the annotation set.",
             "type": "string",
             "enum": [
+                "binding sites",
+                "candidate enhancers",
+                "candidate promoters",
                 "enhancer prediction",
-                "segmentation",
+                "DNase master peaks",
+                "transcription factor motifs",
+                "SAGA",
+                "validated enhancers",
                 "overlap",
+                "segmentation",
                 "encyclopedia"
             ]
+        },
+        "encyclopedia_version": {
+            "title": "ENCODE encyclopedia version",
+            "description": " The version of the ENCODE encyclopeida to which this annotation belongs.",
+            "comment": "The model should be something like version 1.0",
+            "type": "string"
         },
         "organism": {
             "title": "Organism",
@@ -192,6 +205,10 @@
             "title": "Software used",
             "type": "array"
         },
+        "encyclopedia_version": {
+            "title": "Encyclopedia version",
+            "type": "string"
+        },
         "lab.title": {
             "title": "Lab",
             "type": "string"
@@ -199,6 +216,9 @@
         "award.project": {
             "title": "Project",
             "type": "string"
+        },
+        "award.rfa": {
+            "title": "RFA"
         }
     },
     "columns": {

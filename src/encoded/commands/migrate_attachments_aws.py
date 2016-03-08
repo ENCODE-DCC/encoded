@@ -9,11 +9,11 @@ from hashlib import md5
 from pyramid.paster import get_app
 from pyramid.threadlocal import manager
 from pyramid.testing import DummyRequest
-from contentbase.interfaces import (
+from snowfort.interfaces import (
     BLOBS,
     DBSESSION
 )
-from contentbase.storage import (
+from snowfort.storage import (
     PropertySheet,
     RDBBlobStorage,
 )

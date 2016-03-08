@@ -73,19 +73,20 @@
             "type": "string",
             "default": "proposed",
             "enum" : [
-                "in progress",
-                "started",
-                "verified",
-                "submitted",
-                "preliminary",
                 "proposed",
-                "release ready",
-                "released",
-                "deleted",
-                "replaced",
-                "revoked",
+                "started",
+                "in progress",
+                "submitted",
                 "ready for review",
-                "in review"
+                "deleted",
+                "released",
+                "revoked",
+                "archived",
+                "replaced",
+                "in review",
+                "release ready",
+                "verified",
+                "preliminary"
             ]
         }
     },
@@ -118,6 +119,9 @@
         },
         "award.project": {
             "title": "Project"
+        },
+        "award.rfa": {
+            "title": "RFA"
         },
         "status": {
             "title": "Status"

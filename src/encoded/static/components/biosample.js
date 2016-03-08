@@ -56,7 +56,7 @@ var BiosampleTable = React.createClass({
         },
         'biosample_type': {title: 'Type'},
         'biosample_term_name': {title: 'Term'},
-        'description': {title: 'Description', sorter: false}
+        'summary': {title: 'Summary', sorter: false}
     },
 
     render: function() {
@@ -73,7 +73,7 @@ var BiosampleTable = React.createClass({
         }
 
         return (
-            <SortTablePanel>
+            <SortTablePanel title={this.props.title}>
                 <SortTable list={this.props.items} columns={this.columns} footer={<BiosampleTableFooter items={biosamples} total={this.props.total} url={this.props.url} />} />
             </SortTablePanel>
         );
@@ -131,8 +131,8 @@ function collectBiosampleDocs(biosample) {
         if (biosample.donor.characterizations && biosample.donor.characterizations.length) {
             donorCharacterizations = biosample.donor.characterizations;
         }
-        if (biosample.donor.donor_documents && biosample.donor.donor_documents.length) {
-            donorDocuments = biosample.donor.donor_documents;
+        if (biosample.donor.documents && biosample.donor.documents.length) {
+            donorDocuments = biosample.donor.documents;
         }
     }
     var donorConstructs = [];
@@ -149,10 +149,16 @@ function collectBiosampleDocs(biosample) {
             talenDocuments = talenDocuments.concat(talen.documents);
         });
     }
+    var treatmentDocuments = [];
+    if (biosample.treatments && biosample.treatments.length) {
+        biosample.treatments.forEach(treatment => {
+            treatmentDocuments = treatmentDocuments.concat(treatment.protocols);
+        });
+    }
 
     // Put together the document list for rendering
     // Compile the document list
-    var combinedDocuments = [].concat(
+    var combinedDocuments = _([].concat(
         protocolDocuments,
         characterizations,
         constructDocuments,
@@ -160,8 +166,9 @@ function collectBiosampleDocs(biosample) {
         donorDocuments,
         donorCharacterizations,
         donorConstructs,
-        talenDocuments
-    );
+        talenDocuments,
+        treatmentDocuments
+    )).uniq(doc => doc.uuid);
 
     return combinedDocuments;
 }
@@ -249,6 +256,13 @@ var Biosample = module.exports.Biosample = React.createClass({
                                         <dt>Term ID</dt>
                                         <dd>{context.biosample_term_id}</dd>
                                     </div>
+
+                                    {context.summary ?
+                                        <div data-test="summary">
+                                            <dt>Summary</dt>
+                                            <dd>{context.summary}</dd>
+                                        </div>
+                                    : null}
 
                                     {context.description ? 
                                         <div data-test="description">
@@ -529,7 +543,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                 : null}
 
                 <RelatedItems
-                    title={'Experiments using biosample ' + context.accession}
+                    title="Experiments using this biosample"
                     url={'/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid}
                     Component={ExperimentTable} />
 
@@ -890,8 +904,8 @@ var Donor = module.exports.Donor = React.createClass({
         }
 
         // Collect the donor documents
-        if (context.donor_documents && context.donor_documents.length) {
-            donorDocuments = context.donor_documents;
+        if (context.documents && context.documents.length) {
+            donorDocuments = context.documents;
         }
 
         // Combine characterization and donor documents

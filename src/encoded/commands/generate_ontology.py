@@ -744,12 +744,12 @@ def main():
         terms[term]['types'] = getSlims(term, terms, 'type')
 
         del terms[term]['closure'], terms[term]['closure_with_develops_from']
-
+    
     for term in terms:
-        del terms[term]['parents'], terms[term]['part_of'], terms[term]['develops_from']
+        del terms[term]['parents'], terms[term]['develops_from']
         del terms[term]['has_part'], terms[term]['achieves_planned_objective']
         del terms[term]['id'], terms[term]['data'], terms[term]['data_with_develops_from']
-
+    
     terms.update(ntr_assays)
     with open('ontology.json', 'w') as outfile:
         json.dump(terms, outfile)

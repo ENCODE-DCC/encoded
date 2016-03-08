@@ -1,12 +1,14 @@
 from pyramid.response import Response
 from pyramid.view import view_config
-from contentbase import Item
+from snowfort import Item
 from collections import OrderedDict
 import cgi
 from urllib.parse import (
     parse_qs,
     urlencode,
 )
+
+from .search import _ASSEMBLY_MAPPER
 
 
 def includeme(config):
@@ -133,9 +135,11 @@ def get_signal_view(accession, view):
 
 
 def get_genomes_txt(assembly):
+    # UCSC shim
+    ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
     genome = OrderedDict([
         ('trackDb', assembly + '/trackDb.txt'),
-        ('genome', assembly)
+        ('genome', ucsc_assembly)
     ])
     return render(genome)
 

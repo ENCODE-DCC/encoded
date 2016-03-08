@@ -190,10 +190,7 @@ var FetchedRelatedItems = React.createClass({
         if (!items.length) return null;
 
         return (
-            <section>
-                <h3>{title}</h3>
-                <Component {...props} context={context} total={context.total} items={items} url={url} showControls={false} />
-            </section>
+            <Component {...props} title={title} context={context} total={context.total} items={items} url={url} showControls={false} />
         );
     },
 

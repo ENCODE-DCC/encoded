@@ -1,7 +1,7 @@
 from collections import OrderedDict
 from pyramid.view import view_config
 from pyramid.response import Response
-from contentbase.util import simple_path_ids
+from snowfort.util import simple_path_ids
 from urllib.parse import (
     parse_qs,
     urlencode,

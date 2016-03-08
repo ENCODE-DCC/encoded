@@ -1,6 +1,8 @@
 'use strict';
 var React = require('react');
 var panel = require('../libs/bootstrap/panel');
+var button = require('../libs/bootstrap/button');
+var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var _ = require('underscore');
 var moment = require('moment');
 var graph = require('./graph');
@@ -21,8 +23,7 @@ var doc = require('./doc');
 
 var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
-var FileTable = dataset.FileTable;
-var UnreleasedFiles = dataset.UnreleasedFiles;
+var {DatasetFiles, FilePanelHeader, ExperimentTable} = dataset;
 var FetchedItems = fetched.FetchedItems;
 var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
@@ -31,13 +32,14 @@ var {AuditMixin, AuditIndicators, AuditDetail} = audit;
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
 var PubReferenceList = reference.PubReferenceList;
-var ExperimentTable = dataset.ExperimentTable;
 var SingleTreatment = objectutils.SingleTreatment;
 var SoftwareVersionList = software.SoftwareVersionList;
 var {SortTablePanel, SortTable} = sortTable;
 var ProjectBadge = image.ProjectBadge;
 var DocumentsPanel = doc.DocumentsPanel;
 var {Panel, PanelBody, PanelHeading} = panel;
+var DropdownButton = button.DropdownButton;
+var DropdownMenu = dropdownMenu.DropdownMenu;
 
 
 var anisogenicValues = [
@@ -128,9 +130,20 @@ var Experiment = module.exports.Experiment = React.createClass({
             // momentarily. We have a couple properties too complex even for this, so they'll get added separately at the end.
             var librarySpecials = {
                 treatments: function(library) {
-                    var treatments = library.treatments;
-                    if (treatments && treatments.length) {
-                        return treatments.map(treatment => treatment.treatment_term_name).sort().join(', ');
+                    var treatments = []; // Array of treatment_term_name
+
+                    // First get the treatments in the library
+                    if (library.treatments && library.treatments.length) {
+                        treatments = library.treatments.map(treatment => SingleTreatment(treatment));
+                    }
+
+                    // Now get the treatments in the biosamples
+                    if (library.biosample && library.biosample.treatments && library.biosample.treatments.length) {
+                        treatments = treatments.concat(library.biosample.treatments.map(treatment => SingleTreatment(treatment)));
+                    }
+
+                    if (treatments.length) {
+                        return treatments.sort().join(', ');
                     }
                     return undefined;
                 },
@@ -246,8 +259,8 @@ var Experiment = module.exports.Experiment = React.createClass({
             }
 
             // Collect donor documents
-            if (biosample.donor && biosample.donor.donor_documents && biosample.donor.donor_documents.length) {
-                Array.prototype.push.apply(biosampleDonorDocs, biosample.donor.donor_documents);
+            if (biosample.donor && biosample.donor.documents && biosample.donor.documents.length) {
+                Array.prototype.push.apply(biosampleDonorDocs, biosample.donor.documents);
             }
 
             // Collect donor characterizations
@@ -304,14 +317,8 @@ var Experiment = module.exports.Experiment = React.createClass({
         });
 
         // Determine this experiment's ENCODE version
-        var encodevers = "";
-        if (context.award.rfa) {
-            encodevers = globals.encodeVersionMap[context.award.rfa.substring(0,7)];
-            if (typeof encodevers === "undefined") {
-                encodevers = "";
-            }
-        }
-
+        var encodevers = globals.encodeVersion(context);
+    
         // Make list of statuses
         var statuses = [{status: context.status, title: "Status"}];
         if (encodevers === "3" && context.status === "released") {
@@ -355,7 +362,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         ];
 
         // Compile the document list
-        var combinedDocuments = documents.concat(
+        var combinedDocuments = _(documents.concat(
             biosampleCharacterizationDocs,
             libraryDocs,
             biosampleDocs,
@@ -366,7 +373,7 @@ var Experiment = module.exports.Experiment = React.createClass({
             biosampleDonorCharacterizations,
             pipelineDocs,
             analysisStepDocs
-        );
+        )).uniq(doc => doc.uuid);
 
         var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
 
@@ -541,29 +548,15 @@ var Experiment = module.exports.Experiment = React.createClass({
                     <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
                 : null}
 
-                {context.visualize_ucsc  && context.status == "released" ?
-                    <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
-                    </span>
-                : null }
-
-                <FetchedData>
-                    <Param name="data" url={dataset.unreleased_files_url(context)} />
+                <FetchedData ignoreErrors>
+                    <Param name="data" url={dataset.files_url(context)} />
                     <ExperimentGraph context={context} session={this.context.session} />
                 </FetchedData>
 
-                {context.files.length ?
-                    <div>
-                        <h3>Files linked to {context.accession}</h3>
-                        <FileTable items={context.files} encodevers={encodevers} anisogenic={anisogenic} />
-                    </div>
-                : null }
+                {/* Display list of released and unreleased files */}
+                <FetchedItems {...this.props} url={dataset.files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} session={this.context.session} ignoreErrors />
 
-                {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} anisogenic={anisogenic} />
-                : null}
-
-                <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} />
+                <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} ignoreErrors />
 
                 <DocumentsPanel documentSpecs={[{documents: combinedDocuments}]} />
             </div>
@@ -680,8 +673,8 @@ var ReplicateTable = React.createClass({
         }
 
         return (
-            <SortTablePanel>
-                <SortTable title={tableTitle} list={condensedReplicates} columns={this.replicateColumns} />
+            <SortTablePanel title={tableTitle}>
+                <SortTable list={condensedReplicates} columns={this.replicateColumns} />
             </SortTablePanel>
         );
     }
@@ -692,13 +685,16 @@ var ControllingExperiments = React.createClass({
     render: function () {
         var context = this.props.context;
 
-        return (
-            <div>
-                <ExperimentTable {...this.props}
-                    items={this.props.items} limit={5} url={this.props.url}
-                    title={'Experiments with ' + context.accession + ' as a control:'} />
-            </div>
-        );
+        if (this.props.items && this.props.items.length) {
+            return (
+                <div>
+                    <ExperimentTable {...this.props}
+                        items={this.props.items} limit={5} url={this.props.url}
+                        title={'Experiments with ' + context.accession + ' as a control:'} />
+                </div>
+            );
+        }
+        return null;
     }
 });
 
@@ -780,7 +776,7 @@ var AssayDetails = function (replicates, libraryValues, librarySpecials, library
         var libraryEntry = libraryValues[key];
         if (libraryEntry.value !== undefined || (libraryEntry.values && Object.keys(libraryEntry.values).length)) {
             return (
-                <div data-test={libraryEntry.test}>
+                <div key={key} data-test={libraryEntry.test}>
                     <dt>{libraryEntry.title}</dt>
                     <dd>
                         {libraryEntry.value !== undefined ?
@@ -1104,7 +1100,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
     var allPipelines = {}; // List of all pipelines indexed by step @id
     var allMetricsInfo = []; // List of all QC metrics found attached to files
     var fileQcMetrics = {}; // List of all file QC metrics indexed by file ID
-    var filterOptions = {}; // List of graph filters; annotations and assemblies
+    var filterOptions = []; // List of graph filters; annotations and assemblies
     var stepExists = false; // True if at least one file has an analysis_step
     var fileOutsideReplicate = false; // True if at least one file exists outside a replicate
     var abortGraph = false; // True if graph shouldn't be drawn
@@ -1242,11 +1238,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
 
         // Add to the filtering options to generate a <select>; don't include island files
         if (!islandFile && file.output_category !== 'raw data' && file.assembly) {
-            if (file.genome_annotation) {
-                filterOptions[file.assembly + '-' + file.genome_annotation] = file.assembly + ' ' + file.genome_annotation;
-            } else {
-                filterOptions[file.assembly] = file.assembly;
-            }
+            filterOptions.push({assembly: file.assembly, annotation: file.genome_annotation});
         }
     });
 
@@ -1468,7 +1460,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
         }
     }, this);
 
-    jsonGraph.filterOptions = filterOptions;
+    jsonGraph.filterOptions = filterOptions.length ? _(filterOptions).uniq(option => option.assembly + '!' + (option.annotation ? option.annotation : '')) : [];
     return jsonGraph;
 };
 
@@ -1478,10 +1470,25 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
     getInitialState: function() {
         return {
             infoNodeId: '', // @id of node whose info panel is open
-            selectedAssembly: '', // Value of selected mapping assembly filter
-            selectedAnnotation: '' // Value of selected genome annotation filter
+            selectedFilterValue: '' // <select> value of selected filter
         };
     },
+
+    // Order that assemblies should appear in filtering menu
+    assemblyPriority: [
+        'GRCh38',
+        'hg19',
+        'mm10',
+        'mm9',
+        'ce11',
+        'ce10',
+        'dm6',
+        'dm3',
+        'J02459.1'
+    ],
+
+    // Holds filtering option objects ({assembly: x, annotation: y}) in sorted order
+    sortedFilterOptions: [],
 
     // Render metadata if a graph node is selected.
     // jsonGraph: JSON graph data.
@@ -1514,17 +1521,31 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         this.setState({infoNodeId: this.state.infoNodeId !== nodeId ? nodeId : ''});
     },
 
-    handleFilterChange: function(e) {
-        var value = e.target.value;
-        if (value !== 'default') {
-            var filters = value.split('-');
-            this.setState({selectedAssembly: filters[0], selectedAnnotation: filters[1]});
-        } else {
-            this.setState({selectedAssembly: '', selectedAnnotation: ''});
+    // Set the graph filter based on the given <option> value
+    setFilter: function(value) {
+        if (value === 'default') {
+            value = '';
         }
+        this.setState({selectedFilterValue: value});
+    },
+
+    // React to a filter menu selection. The synthetic event given in `e`
+    handleFilterChange: function(e) {
+        this.setFilter(e.target.value);
+    },
+
+    // Set the default filter after the graph has been analayzed once.
+    componentDidMount: function() {
+        this.setFilter('0');
+    },
+
+    componentWillUnmount: function() {
+        this.sortedFilterOptions = [];
     },
 
     render: function() {
+        var selectedAssembly = '';
+        var selectedAnnotation = '';
         var {context, session, data} = this.props;
         var items = data ? data['@graph'] : [];
         var files = context.files.concat(items);
@@ -1533,14 +1554,24 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         if (files && files.length) {
             // Build the graph; place resulting graph in this.jsonGraph
             var filterOptions = {};
+            if (this.state.selectedFilterValue && this.sortedFilterOptions[this.state.selectedFilterValue]) {
+                var selectedAssembly = this.sortedFilterOptions[this.state.selectedFilterValue].assembly;
+                var selectedAnnotation = this.sortedFilterOptions[this.state.selectedFilterValue].annotation;
+            }
             try {
-                this.jsonGraph = assembleGraph(context, session, this.state.infoNodeId, files, this.state.selectedAssembly, this.state.selectedAnnotation);
+                this.jsonGraph = assembleGraph(context, session, this.state.infoNodeId, files, selectedAssembly, selectedAnnotation);
             } catch(e) {
                 this.jsonGraph = null;
                 console.warn(e.message + (e.file0 ? ' -- file0:' + e.file0 : '') + (e.file1 ? ' -- file1:' + e.file1: ''));
             }
             var goodGraph = this.jsonGraph && Object.keys(this.jsonGraph).length;
             filterOptions = goodGraph && this.jsonGraph.filterOptions;
+
+            // Sort filtering menu to an order specified by this.assemblyOrder
+            this.sortedFilterOptions = filterOptions.sort(item => {
+                // `item` is an object with {assembly: x, annotation: y|undefined}. Sort by assembly.
+                return this.assemblyPriority.indexOf(item.assembly);
+            });
 
             // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
             if (goodGraph || this.state.selectedAssembly || this.state.selectedAnnotation) {
@@ -1550,14 +1581,12 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                         <h3>Files generated by pipeline</h3>
                         {filterOptions && Object.keys(filterOptions).length ?
                             <div className="form-inline">
-                                <select className="form-control" defaultValue="default" onChange={this.handleFilterChange}>
+                                <select className="form-control" defaultValue="0" onChange={this.handleFilterChange}>
                                     <option value="default" key="title">All Assemblies and Annotations</option>
                                     <option disabled="disabled"></option>
-                                    {Object.keys(filterOptions).map(function(option) {
-                                        return (
-                                            <option key={option} value={option}>{filterOptions[option]}</option>
-                                        );
-                                    })}
+                                    {this.sortedFilterOptions.map((option, i) =>
+                                        <option key={i} value={i}>{option.assembly + (option.annotation ? ' ' + option.annotation : '')}</option>
+                                    )}
                                 </select>
                             </div>
                         : null}

@@ -1,16 +1,27 @@
 import re
 from pyramid.view import view_config
-from contentbase import (
+from snowfort import (
     AbstractCollection,
     TYPES,
 )
-from contentbase.elasticsearch import ELASTIC_SEARCH
-from contentbase.resource_views import collection_view_listing_db
+from snowfort.elasticsearch import ELASTIC_SEARCH
+from snowfort.resource_views import collection_view_listing_db
 from elasticsearch.helpers import scan
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
+
+_ASSEMBLY_MAPPER = {
+    'GRCh38-minimal': 'hg38',
+    'GRCh38': 'hg38',
+    'GRCh37': 'hg19',
+    'GRCm38': 'mm10',
+    'GRCm37': 'mm9',
+    'BDGP6': 'dm4',
+    'BDGP5': 'dm3',
+    'WBcel235': 'WBcel235'
+}
 
 
 def includeme(config):
@@ -23,11 +34,8 @@ def includeme(config):
 sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
 
 hgConnect = ''.join([
-    'http://genome.ucsc.edu/cgi-bin/hgHubConnect',
-    '?hgHub_do_redirect=on',
-    '&hgHubConnect.remakeTrackHub=on',
-    '&hgHub_do_firstDb=1',
-    '&hubUrl=',
+    'http://genome.ucsc.edu/cgi-bin/hgTracks',
+    '?hubClear=',
 ])
 
 audit_facets = [
@@ -48,6 +56,19 @@ DEFAULT_DOC_TYPES = [
     'Software',
     'Target',
 ]
+
+
+def get_pagination(request):
+    from_ = request.params.get('from') or 0
+    size = request.params.get('limit', 25)
+    if size in ('all', ''):
+        size = None
+    else:
+        try:
+            size = int(size)
+        except ValueError:
+            size = 25
+    return from_, size
 
 
 def get_filtered_query(term, search_fields, result_fields, principals, doc_types):
@@ -80,14 +101,21 @@ def get_filtered_query(term, search_fields, result_fields, principals, doc_types
 
 
 def prepare_search_term(request):
+    from antlr4 import IllegalStateException
+    from lucenequery.prefixfields import prefixfields
+    from lucenequery import dialects
+
     search_term = request.params.get('searchTerm', '').strip() or '*'
-    if search_term != '*':
-        search_term = sanitize_search_string_re.sub(r'\\\g<0>', search_term.strip())
-        search_term_array = search_term.split()
-        if search_term_array[len(search_term_array) - 1] in ['AND', 'NOT', 'OR']:
-            del search_term_array[-1]
-            search_term = ' '.join(search_term_array)
-    return search_term
+    if search_term == '*':
+        return search_term
+
+    try:
+        query = prefixfields('embedded.', search_term, dialects.elasticsearch)
+    except (IllegalStateException):
+        msg = "Invalid query: {}".format(search_term)
+        raise HTTPBadRequest(explanation=msg)
+    else:
+        return query.getText()
 
 
 def set_sort_order(request, search_term, types, doc_types, query, result):
@@ -351,19 +379,25 @@ def search_result_actions(request, doc_types, es_results, position=None):
     aggregations = es_results['aggregations']
 
     # generate batch hub URL for experiments
-    if doc_types == ['Experiment'] and any(
-            bucket['doc_count'] > 0
-            for bucket in aggregations['assembly']['assembly']['buckets']):
-        search_params = request.query_string.replace('&', ',,')
-        hub = request.route_url('batch_hub',
-                                search_params=search_params,
-                                txt='hub.txt')
-        if 'region-search' in request.url and position is not None:
-            actions['batch_hub'] = hgConnect + hub + '&position={}'.format(position)
-        else:
-            actions['batch_hub'] = hgConnect + hub
+    # TODO we could enable them for Datasets as well here, but not sure how well it will work
+    if doc_types == ['Experiment']:
+        for bucket in aggregations['assembly']['assembly']['buckets']:
+            if bucket['doc_count'] > 0:
+                assembly = bucket['key']
+                ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
+                search_params = request.query_string.replace('&', ',,')
+                if not request.params.getall('assembly') or assembly in request.params.getall('assembly'):
+                    # filter  assemblies that are not selected
+                    hub = request.route_url('batch_hub',
+                                            search_params=search_params,
+                                            txt='hub.txt')
+                    if 'region-search' in request.url and position is not None:
+                        actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly + '&position={}'.format(position)
+                    else:
+                        actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly 
 
     # generate batch download URL for experiments
+    # TODO we could enable them for Datasets as well here, but not sure how well it will work
     if doc_types == ['Experiment'] and any(
             bucket['doc_count'] > 0
             for bucket in aggregations['files-file_type']['files-file_type']['buckets']):
@@ -375,14 +409,16 @@ def search_result_actions(request, doc_types, es_results, position=None):
     return actions
 
 
-def format_facets(es_results, facets):
+def format_facets(es_results, facets, used_filters, schemas, total):
     result = []
     # Loading facets in to the results
     if 'aggregations' not in es_results:
         return result
 
     aggregations = es_results['aggregations']
+    used_facets = set()
     for field, facet in facets:
+        used_facets.add(field)
         agg_name = field.replace('.', '-')
         if agg_name not in aggregations:
             continue
@@ -395,6 +431,22 @@ def format_facets(es_results, facets):
             'terms': terms,
             'total': aggregations[agg_name]['doc_count']
         })
+
+    # Show any filters that aren't facets as a fake facet with one entry,
+    # so that the filter can be viewed and removed
+    for field, values in used_filters.items():
+        if field not in used_facets:
+            title = field
+            for schema in schemas:
+                if field in schema['properties']:
+                    title = schema['properties'][field].get('title', field)
+                    break
+            result.append({
+                'field': field,
+                'title': title,
+                'terms': [{'key': v} for v in values],
+                'total': total,
+                })
 
     return result
 
@@ -449,19 +501,10 @@ def search(context, request, search_type=None):
 
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
-    es_index = request.registry.settings['contentbase.elasticsearch.index']
+    es_index = request.registry.settings['snowfort.elasticsearch.index']
     search_audit = request.has_permission('search_audit')
 
-    # handling pagination
-    from_ = request.params.get('from') or 0
-    size = request.params.get('limit', 25)
-    if size in ('all', ''):
-        size = None
-    else:
-        try:
-            size = int(size)
-        except ValueError:
-            size = 25
+    from_, size = get_pagination(request)
 
     search_term = prepare_search_term(request)
 
@@ -562,24 +605,11 @@ def search(context, request, search_type=None):
     else:
         es_results = es.search(body=query, index=es_index, from_=from_, size=size)
 
-    result['total'] = es_results['hits']['total']
+    result['total'] = total = es_results['hits']['total']
 
-    result['facets'] = format_facets(es_results, facets)
-    # Show any filters that aren't facets as a fake facet with one entry,
-    # so that the filter can be viewed and removed
-    for field, values in used_filters.items():
-        if field not in facets:
-            title = field
-            for item_type in doc_types:
-                if field in types[item_type].schema['properties']:
-                    title = types[item_type].schema['properties'][field].get('title', field)
-                    break
-            result['facets'].append({
-                'field': field,
-                'title': title,
-                'terms': [{'key': v} for v in values],
-                'total': result['total'],
-                })
+    schemas = (types[item_type].schema for item_type in doc_types)
+    result['facets'] = format_facets(
+        es_results, facets, used_filters, schemas, total)
 
     # Add batch actions
     result.update(search_result_actions(request, doc_types, es_results))
@@ -645,6 +675,10 @@ def report(context, request):
         msg = 'Report view requires specifying a single type.'
         raise HTTPBadRequest(explanation=msg)
 
+    # Ignore large limits, which make `search` return a Response
+    from_, size = get_pagination(request)
+    if 'limit' in request.GET and (size is None or size > 1000):
+        del request.GET['limit']
     # Reuse search view
     res = search(context, request)
 
@@ -654,7 +688,8 @@ def report(context, request):
         'title': 'View results as list',
         'icon': 'list-alt',
     }
-    res['@id'] = res['@id'].replace('search', 'report')
+    search_base = normalize_query(request)
+    res['@id'] = '/report/' + search_base
     res['title'] = 'Report'
     res['@type'] = ['Report']
     return res
@@ -711,7 +746,7 @@ def matrix(context, request):
 
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
-    es_index = request.registry.settings['contentbase.elasticsearch.index']
+    es_index = request.registry.settings['snowfort.elasticsearch.index']
 
     search_term = prepare_search_term(request)
 
@@ -735,13 +770,21 @@ def matrix(context, request):
     del query['filter']
 
     # Adding facets to the query
-    facets = schema['facets'].items()
+    facets = [(field, facet) for field, facet in schema['facets'].items() if
+              field in matrix['x']['facets'] or field in matrix['y']['facets']]
+    if request.has_permission('search_audit'):
+        for audit_facet in audit_facets:
+            facets.append(audit_facet)
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
     # Group results in 2 dimensions
     matrix_terms = []
     for q_field, q_terms in used_filters.items():
-        matrix_terms.append({'terms': {'embedded.' + q_field + '.raw': q_terms}})
+        if q_field.startswith('audit.'):
+            matrix_terms.append({'terms': {q_field: q_terms}})
+        else:
+            matrix_terms.append(
+                {'terms': {'embedded.' + q_field + '.raw': q_terms}})
     matrix_terms.extend((
         {'terms': {'principals_allowed.view': principals}},
         {'terms': {'embedded.@type.raw': doc_types}},
@@ -778,13 +821,14 @@ def matrix(context, request):
     # Execute the query
     es_results = es.search(body=query, index=es_index, search_type='count')
 
-    # Format facets for results
-    result['facets'] = format_facets(es_results, facets)
-
     # Format matrix for results
     aggregations = es_results['aggregations']
-    result['matrix']['doc_count'] = aggregations['matrix']['doc_count']
+    result['matrix']['doc_count'] = total = aggregations['matrix']['doc_count']
     result['matrix']['max_cell_doc_count'] = 0
+
+    # Format facets for results
+    result['facets'] = format_facets(
+        es_results, facets, used_filters, (schema,), total)
 
     def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
         group_by = grouping_fields[0]

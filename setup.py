@@ -14,6 +14,7 @@ requires = [
     'WebTest',
     'boto',
     'elasticsearch',
+    'lucenequery',
     'future',
     'humanfriendly',
     'jsonschema',
@@ -71,11 +72,10 @@ setup(
     },
     entry_points='''
         [console_scripts]
-        batchupgrade = contentbase.batchupgrade:main
-        create-mapping = contentbase.elasticsearch.create_mapping:main
+        batchupgrade = snowfort.batchupgrade:main
+        create-mapping = snowfort.elasticsearch.create_mapping:main
 
         add-date-created = encoded.commands.add_date_created:main
-        check-files = encoded.commands.check_files:main
         check-rendering = encoded.commands.check_rendering:main
         deploy = encoded.commands.deploy:main
         dev-servers = encoded.commands.dev_servers:main
@@ -89,7 +89,6 @@ setup(
         migrate-files-aws = encoded.commands.migrate_files_aws:main
         profile = encoded.commands.profile:main
         spreadsheet-to-json = encoded.commands.spreadsheet_to_json:main
-        update-file-status = encoded.commands.update_file_status:main
         generate-annotations = encoded.commands.generate_annotations:main
         index-annotations = encoded.commands.index_annotations:main
         migrate-attachments-aws = encoded.commands.migrate_attachments_aws:main

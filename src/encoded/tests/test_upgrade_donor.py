@@ -111,3 +111,11 @@ def test_mouse_donor_upgrade_references(root, upgrader, mouse_donor, mouse_donor
     value = upgrader.upgrade('mouse_donor', mouse_donor_3, target_version='4', context=context)
     assert value['schema_version'] == '4'
     assert value['references'] == [publication['uuid']]
+
+
+def test_mouse_donor_documents_upgrade(root, dummy_request, upgrader, mouse_donor, mouse_donor_3):
+    context = root.get_by_uuid(mouse_donor['uuid'])
+    dummy_request.context = context
+    value = upgrader.upgrade('mouse_donor', mouse_donor_3, target_version='6', context=context)
+    assert value['schema_version'] == '6'
+    assert 'donor_documents' not in value

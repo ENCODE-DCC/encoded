@@ -3,6 +3,8 @@ var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
 var Modal = require('react-bootstrap/lib/Modal');
 var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
+var button = require('../libs/bootstrap/button');
+var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
@@ -20,6 +22,8 @@ var SingleTreatment = objectutils.SingleTreatment;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
+var DropdownButton = button.DropdownButton;
+var DropdownMenu = dropdownMenu.DropdownMenu;
 
     // Should really be singular...
     var types = {
@@ -316,7 +320,8 @@ var AuditMixin = audit.AuditMixin;
                         </div>
                         <div className="data-row">
                             <div><strong>Type: </strong>{result['biosample_type']}</div>
-                            {rnais ?<div><strong>RNAi target: </strong>{rnais}</div> : null}
+                            {result.summary ? <div><strong>Summary: </strong>{globals.truncateString(result.summary, 80)}</div> : null}
+                            {rnais ? <div><strong>RNAi target: </strong>{rnais}</div> : null}
                             {constructs ? <div><strong>Construct: </strong>{constructs}</div> : null}
                             {treatment ? <div><strong>Treatment: </strong>{treatment}</div> : null}
                             {mutatedGenes ? <div><strong>Mutated gene: </strong>{mutatedGenes}</div> : null}
@@ -677,62 +682,57 @@ var AuditMixin = audit.AuditMixin;
         },
 
         render: function() {
-            var {facet, filters} = this.props;
-            var hideTypeFacet = false; // True if we need to hide the 'Data type' facet.
-
-            // Get array of all terms from facets whose doc_count > 0. Include terms whose keys are specified in a filter's term
-            // regardless of their doc_count.
-            var terms = facet.terms.filter(term => term.doc_count > 0 || _(filters).any(filter => filter.term === term.key));
-
-            // If this is the 'Data type' facet, decide if we have to hide it or not
-            if (facet.field === 'type') {
-                // Hide the facet if all the terms' doc_count values are the same, or if there's only one term
-                if (terms.length <= 1) {
-                    hideTypeFacet = true;
+            var facet = this.props.facet;
+            var filters = this.props.filters;
+            var title = facet['title'];
+            var field = facet['field'];
+            var total = facet['total'];
+            var termID = title.replace(/\s+/g, '');
+            var terms = facet['terms'].filter(function (term) {
+                if (term.key) {
+                    for(var filter in filters) {
+                        if(filters[filter].term === term.key) {
+                            return true;
+                        }
+                    }
+                    return term.doc_count > 0;
                 } else {
-                    var firstDocCount = terms[0].doc_count;
-                    hideTypeFacet = _(terms).all(term => term.doc_count === firstDocCount);
+                    return false;
                 }
-            }
-
-            if (!hideTypeFacet) {
-                var {title, field, total} = facet;
-                var termID = title.replace(/\s+/g, '');
-                var moreTerms = terms.slice(5);
-                var TermComponent = field === 'type' ? TypeTerm : Term;
-                var selectedTermCount = countSelectedTerms(moreTerms, field, filters);
-                var moreTermSelected = selectedTermCount > 0;
-                var canDeselect = (!facet.restrictions || selectedTermCount >= 2);
-                var moreSecClass = 'collapse' + ((moreTermSelected || this.state.facetOpen) ? ' in' : '');
-                var seeMoreClass = 'btn btn-link' + ((moreTermSelected || this.state.facetOpen) ? '' : ' collapsed');
-                return (
-                    <div className="facet" hidden={terms.length === 0} style={{width: this.props.width}}>
-                        <h5>{title}</h5>
-                        <ul className="facet-list nav">
-                            <div>
-                                {terms.slice(0, 5).map(function (term) {
+            });
+            var moreTerms = terms.slice(5);
+            var TermComponent = field === 'type' ? TypeTerm : Term;
+            var selectedTermCount = countSelectedTerms(moreTerms, field, filters);
+            var moreTermSelected = selectedTermCount > 0;
+            var canDeselect = (!facet.restrictions || selectedTermCount >= 2);
+            var moreSecClass = 'collapse' + ((moreTermSelected || this.state.facetOpen) ? ' in' : '');
+            var seeMoreClass = 'btn btn-link' + ((moreTermSelected || this.state.facetOpen) ? '' : ' collapsed');
+            return (
+                <div className="facet" hidden={terms.length === 0} style={{width: this.props.width}}>
+                    <h5>{title}</h5>
+                    <ul className="facet-list nav">
+                        <div>
+                            {terms.slice(0, 5).map(function (term) {
+                                return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
+                            }.bind(this))}
+                        </div>
+                        {terms.length > 5 ?
+                            <div id={termID} className={moreSecClass}>
+                                {moreTerms.map(function (term) {
                                     return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
                                 }.bind(this))}
                             </div>
-                            {terms.length > 5 ?
-                                <div id={termID} className={moreSecClass}>
-                                    {moreTerms.map(function (term) {
-                                        return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
-                                    }.bind(this))}
-                                </div>
-                            : null}
-                            {(terms.length > 5 && !moreTermSelected) ?
-                                <label className="pull-right">
-                                        <small>
-                                            <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} onClick={this.handleClick} />
-                                        </small>
-                                </label>
-                            : null}
-                        </ul>
-                    </div>
-                );
-            }
-            return null;
+                        : null}
+                        {(terms.length > 5 && !moreTermSelected) ?
+                            <label className="pull-right">
+                                    <small>
+                                        <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} onClick={this.handleClick} />
+                                    </small>
+                            </label>
+                        : null}
+                    </ul>
+                </div>
+            );
         }
     });
 
@@ -791,20 +791,34 @@ var AuditMixin = audit.AuditMixin;
 
         render: function() {
             var term = this.props.term;
+
+            // Get all facets, and "normal" facets, meaning non-audit facets
             var facets = this.props.facets;
+            var normalFacets = facets.filter(facet => facet.field.substring(0, 6) !== 'audit.');
+
             var filters = this.props.filters;
             var width = 'inherit';
             if (!facets.length && this.props.mode != 'picker') return <div />;
+            var hideTypes;
+            if (this.props.mode == 'picker') {
+                hideTypes = false;
+            } else {
+                hideTypes = filters.filter(filter => filter.field === 'type').length === 1 && normalFacets.length > 1;
+            }
             if (this.props.orientation == 'horizontal') {
                 width = (100 / facets.length) + '%';
             }
             return (
                 <div className={"box facets " + this.props.orientation}>
                     {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
-                    {facets.map(facet =>
-                        <Facet {...this.props} key={facet.field} facet={facet} filters={filters}
-                                  width={width} />
-                    )}
+                    {facets.map(function (facet) {
+                        if (hideTypes && facet.field == 'type') {
+                            return <span key={facet.field} />;
+                        } else {
+                            return <Facet {...this.props} key={facet.field} facet={facet} filters={filters}
+                                          width={width} />;
+                        }
+                    }.bind(this))}
                 </div>
             );
         }
@@ -874,10 +888,11 @@ var AuditMixin = audit.AuditMixin;
         },
 
         render: function() {
+            const batchHubLimit = 200;
             var context = this.props.context;
             var results = context['@graph'];
             var total = context['total'];
-            var batch_hub_disabled = total > 500;
+            var batch_hub_disabled = total > batchHubLimit;
             var columns = context['columns'];
             var filters = context['filters'];
             var label = 'results';
@@ -904,63 +919,77 @@ var AuditMixin = audit.AuditMixin;
                 });
             }
 
+            // Get a sorted list of batch hubs keys with case-insensitive sort
+            var batchHubKeys = [];
+            if (context.batch_hub && Object.keys(context.batch_hub).length) {
+                batchHubKeys = Object.keys(context.batch_hub).sort((a, b) => {
+                    var aLower = a.toLowerCase();
+                    var bLower = b.toLowerCase();
+                    return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
+                });
+            }
+
             return (
-                    <div>
-                        <div className="row">
-                            {facets.length ? <div className="col-sm-5 col-md-4 col-lg-3">
-                                <FacetList {...this.props} facets={facets} filters={filters}
-                                           searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
-                            </div> : ''}
-                            <div className="col-sm-7 col-md-8 col-lg-9">
-                                {context['notification'] === 'Success' ?
+                <div>
+                    <div className="row">
+                        {facets.length ? <div className="col-sm-5 col-md-4 col-lg-3">
+                            <FacetList {...this.props} facets={facets} filters={filters}
+                                       searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
+                        </div> : ''}
+                        <div className="col-sm-7 col-md-8 col-lg-9">
+                            {context['notification'] === 'Success' ?
+                                <div>
                                     <h4>
                                         Showing {results.length} of {total} {label}
-                                        {context.views && context.views.map(view => <span> <a href={view.href} title={view.title}><i className={'icon icon-' + view.icon}></i></a></span>)}
+                                        {context.views && context.views.map((view, i) => <span key={i}> <a href={view.href} title={view.title}><i className={'icon icon-' + view.icon}></i></a></span>)}
+                                    </h4>
+
+                                    <div className="results-table-control">
                                         {total > results.length && searchBase.indexOf('limit=all') === -1 ?
-                                            <span className="pull-right">
-                                                <a rel="nofollow" className="btn btn-info btn-sm"
-                                                     href={searchBase ? searchBase + '&limit=all' : '?limit=all'}
-                                                     onClick={this.onFilter}>View All</a>
-                                            </span>
+                                            <a rel="nofollow" className="btn btn-info btn-sm"
+                                                 href={searchBase ? searchBase + '&limit=all' : '?limit=all'}
+                                                 onClick={this.onFilter}>View All</a>
                                         :
                                             <span>
                                                 {results.length > 25 ?
-                                                    <span className="pull-right">
-                                                        <a className="btn btn-info btn-sm"
-                                                           href={trimmedSearchBase ? trimmedSearchBase : "/search/"}
-                                                           onClick={this.onFilter}>View 25</a>
-                                                    </span>
+                                                    <a className="btn btn-info btn-sm"
+                                                       href={trimmedSearchBase ? trimmedSearchBase : "/search/"}
+                                                       onClick={this.onFilter}>View 25</a>
                                                 : null}
                                             </span>
                                         }
 
                                         {context['batch_download'] ?
-                                            <span className="pull-right">
-                                                <BatchDownload context={context} />&nbsp;
-                                            </span>
+                                            <BatchDownload context={context} />
                                         : null}
 
-                                        {context['batch_hub'] ?
-                                            <span className="pull-right">
-                                                <a disabled={batch_hub_disabled} data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm"
-                                                   href={context['batch_hub']}>{batch_hub_disabled ? 'Filter to 500 to visualize' :'Visualize'}</a>&nbsp;
-                                            </span>
-                                        :null}
-                                    </h4>
-                                :
-                                    <h4>{context['notification']}</h4>
-                                }
-                                <hr />
-                                <ul className="nav result-table" id="result-table">
-                                    {results.length ?
-                                        results.map(function (result) {
-                                            return Listing({context:result, columns: columns, key: result['@id']});
-                                        })
-                                    : null}
-                                </ul>
-                            </div>
+                                        {batchHubKeys && context.batch_hub ?
+                                            <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'}>
+                                                <DropdownMenu>
+                                                    {batchHubKeys.map(assembly =>
+                                                        <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context['batch_hub'][assembly]}>
+                                                            {assembly}
+                                                        </a>
+                                                    )}
+                                                </DropdownMenu>
+                                            </DropdownButton>
+                                        : null}
+                                    </div>
+                                </div>
+                            :
+                                <h4>{context['notification']}</h4>
+                            }
+                            <hr />
+                            <ul className="nav result-table" id="result-table">
+                                {results.length ?
+                                    results.map(function (result) {
+                                        return Listing({context:result, columns: columns, key: result['@id']});
+                                    })
+                                : null}
+                            </ul>
                         </div>
                     </div>
+                </div>
             );
         },
 

@@ -75,6 +75,7 @@ ORDER = [
     'phantompeaktools_spp_quality_metric',
     'samtools_stats_quality_metric',
     'idr_quality_metric',
+    'generic_quality_metric',
     'image',
     'page'
 ]
@@ -88,7 +89,8 @@ IS_ATTACHMENT = [
     'IDR_parameters_true',
     'IDR_parameters_rep1_pr',
     'IDR_parameters_rep2_pr',
-    'IDR_parameters_pool_pr'
+    'IDR_parameters_pool_pr',
+    'cross_correlation_plot'
 ]
 
 ##############################################################################

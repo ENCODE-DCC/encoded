@@ -1,5 +1,5 @@
 from pyramid.view import view_config
-from contentbase.elasticsearch.interfaces import ELASTIC_SEARCH
+from snowfort.elasticsearch.interfaces import ELASTIC_SEARCH
 from pyramid.security import effective_principals
 from .search import (
     format_results,
@@ -8,7 +8,8 @@ from .search import (
     get_filtered_query,
     format_facets,
     hgConnect,
-    search_result_actions
+    search_result_actions,
+    _ASSEMBLY_MAPPER
 )
 from collections import OrderedDict
 import requests
@@ -21,16 +22,6 @@ log = logging.getLogger(__name__)
 
 
 _ENSEMBL_URL = 'http://rest.ensembl.org/'
-
-_ASSEMBLY_MAPPER = {
-    'GRCh38': 'hg38',
-    'GRCh37': 'hg19',
-    'GRCm38': 'mm10',
-    'GRCm37': 'mm9',
-    'BDGP6': 'dm4',
-    'BDGP5': 'dm3',
-    'WBcel235': 'WBcel235'
-}
 
 _REGION_FIELDS = [
     'embedded.files.uuid',

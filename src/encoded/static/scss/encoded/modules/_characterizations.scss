@@ -200,7 +200,7 @@ $characterization-figure-height: 64px;
     max-height: 360px;
 }
 
-.characterization-meta-data, .document-meta-data {
+.document-meta-data {
     margin: 0;
     padding: 10px;
 
@@ -208,6 +208,11 @@ $characterization-figure-height: 64px;
         display: inline-block;
         @include font-size(0.8);
     }
+}
+
+.characterization-meta-data {
+    @extend .document-meta-data;
+    padding: 0;
 }
 
 .characterization-status {
@@ -511,22 +516,19 @@ $characterization-figure-height: 64px;
 
 
 .characterization-badge {
-    position: absolute;
-    left: 50%;
-    bottom: 5px;
-    margin-left: -(($characterization-figure-width - 10) / 2);
-    width: $characterization-figure-width - 10;
+    .status-list {
+        display: inline-block;
+        width: auto;
 
-    @media screen and (min-width: $screen-sm-min) {
-        left: 5px;
-        margin-left: 0;
-    }
-
-    .label {
-        width: 100%;
-        padding: 8px 0;
-        text-align: center;
-        @include font-size(0.85);
+        .label {
+            display: inline-block;
+            margin: 3px 0 3px -7px;
+            width: 100%;
+            padding: 0 17px 0 10px;
+            text-align: center;
+            @include font-size(0.85);
+            line-height: 24px;
+        }
     }
 }
 
