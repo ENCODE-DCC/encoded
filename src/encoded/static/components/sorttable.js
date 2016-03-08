@@ -82,14 +82,14 @@ var SortTablePanel = module.exports.SortTablePanel = React.createClass({
         return (
             <Panel addClasses="table-panel table-file">
                 {this.props.title ?
-                    <PanelHeading>
+                    <PanelHeading key="heading">
                         <h4>{this.props.title ? <span>{this.props.title}</span> : null}</h4>
                     </PanelHeading>
                 : (this.props.header ?
-                    <PanelHeading addClasses="clearfix">{this.props.header}</PanelHeading>
+                    <PanelHeading key="heading" addClasses="clearfix">{this.props.header}</PanelHeading>
                 : null)}
 
-                <div className="table-responsive">
+                <div className="table-responsive" key="table">
                     {this.props.children}
                 </div>
             </Panel>
