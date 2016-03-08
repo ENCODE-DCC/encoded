@@ -867,7 +867,7 @@ def audit_experiment_spikeins(value, system):
 def audit_experiment_biosample_term(value, system):
     '''
     The biosample term and id and type information should be present and
-    concordent with library biosamples,
+    concordant with library biosamples,
     Exception: RNA Bind-n-Seq
     '''
     if value['status'] in ['deleted', 'replaced']:
@@ -940,6 +940,7 @@ def audit_experiment_biosample_term(value, system):
         biosample = lib['biosample']
         bs_type = biosample.get('biosample_type')
         bs_name = biosample.get('biosample_term_name')
+        bs_id = biosample.get('biosample_term_id')
 
         if bs_type != term_type:
             detail = '{} has mismatched biosample_type, {} - {}'.format(
@@ -957,6 +958,14 @@ def audit_experiment_biosample_term(value, system):
                 )
             yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
 
+        if bs_id != term_id:
+            detail = '{} has mismatched biosample_term_id, {} - {}'.format(
+                lib['@id'],
+                term_id,
+                bs_id
+                )
+            yield AuditFailure('mismatched biosample_term_id', detail, level='ERROR')
+    return
 
 @audit_checker(
     'experiment',

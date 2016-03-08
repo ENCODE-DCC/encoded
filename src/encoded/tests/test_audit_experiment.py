@@ -928,6 +928,24 @@ def test_audit_experiment_replicate_with_no_fastq_files(testapp, file_bam,
     assert any(error['category'] == 'missing sequence file in replicate' for error in errors_list)
 
 
+def test_audit_experiment_consistency_biosample_term_id(testapp, base_experiment,
+                                                        base_replicate,
+                                                        base_library,
+                                                        base_biosample):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
+                                                'status': 'released',
+                                                'date_released': '2016-01-01',
+                                                'biosample_term_id': 'UBERON:349829'})
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    testapp.patch_json(base_biosample['@id'], {'biosample_term_id': 'CL:0000121'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched biosample_term_id' for error in errors_list)
+
+
 def test_audit_experiment_mismatched_length_sequencing_files(testapp, file_bam, file_fastq,
                                                              base_experiment, file_fastq_2,
                                                              base_replicate,
