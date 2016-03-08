@@ -75,9 +75,10 @@ def audit_biosample_concordance(value, system):
 
     if bs_id != exp_id:
         detail = '{} has mismatched biosample_term_id: {}, but {} in {}'.format(
-            bio,
+            exp,
             exp_id,
             bs_id,
             bio
             )
         yield AuditFailure('mismatched biosample_term_id', detail, level='ERROR')
+    return
