@@ -109,6 +109,12 @@ def prepare_search_term(request):
     if search_term == '*':
         return search_term
 
+    # elasticsearch uses : as field delimiter, but we use it as namespace designator
+    # if you need to search fields you have to use @type:field
+    # if you need to search fields where the field contains ":", you will have to escape it
+    # yourself
+    if search_term.find("@type") < 0:
+        search_term = search_term.replace(':', '\:')
     try:
         query = prefixfields('embedded.', search_term, dialects.elasticsearch)
     except (IllegalStateException):
