@@ -682,6 +682,8 @@
         "predicted heart enhancers": "annotation",
         "predicted whole brain enhancers": "annotation",
         "predicted enhancers": "annotation",
+        "candidate enhancers": "annotation",
+        "candidate promoters": "annotation",
         "predicted transcription start sites": "annotation",
         "transcription start sites": "annotation",
         "candidate regulatory elements": "annotation",
