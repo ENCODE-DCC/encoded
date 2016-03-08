@@ -888,7 +888,7 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
         },
 
         render: function() {
-            const batchHubLimit = 200;
+            const batchHubLimit = 100;
             var context = this.props.context;
             var results = context['@graph'];
             var total = context['total'];
