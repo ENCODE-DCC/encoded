@@ -114,7 +114,8 @@ def get_peak_metadata_links(request):
 @view_config(route_name='peak_metadata', request_method='GET')
 def peak_metadata(context, request):
     param_list = parse_qs(request.matchdict['search_params'])
-    del param_list['referrer']
+    if param_list.get('referrer'):
+        del param_list['referrer']
     param_list['field'] = []
     header = ['assay_term_name', 'coordinates', 'target.label', 'biosample.accession', 'file.accession', 'experiment.accession']
     param_list['limit'] = ['all']
