@@ -59,3 +59,20 @@ Feature: Search
         When I click the link to "?type=Experiment&assay_title=ChIP-seq&assay_title=DNAme+array"
         And I wait for the content to load
         Then I should see at least 5 elements with the css selector "ul.nav.result-table > li"
+
+
+    Scenario: Search BoxI
+        When I fill in "searchTerm" with "ChIP-seq"
+        Then I should see at least 25 elements with the css selector "ul.nav.result-table > li"
+
+
+    Scenario: Search BoxII
+        When I fill in "searchTerm" with "PMID:23000965"
+        Then I should see at least 1 elements with the css selector "ul.nav.result-table > li"
+
+
+    Scenario: Search BoxIII
+        When I fill in "searchTerm" with "@type:Experiment date_released:[2016-01-01 TO 2016-02-01]"
+        Then I should see at least 25 elements with the css selector "ul.nav.result-table > li"
+
+
