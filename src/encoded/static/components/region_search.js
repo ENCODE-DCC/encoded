@@ -150,6 +150,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
         navigate: React.PropTypes.func
     },
     render: function() {
+        const batchHubLimit = 100;
         var context = this.props.context;
         var results = context['@graph'];
         var columns = context['columns'];
@@ -163,7 +164,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
         var filters = context['filters'];
         var facets = context['facets'];
         var total = context['total'];
-        var batch_hub_disabled = total > 500;
+        var batch_hub_disabled = total > batchHubLimit;
 
         // Get a sorted list of batch hubs keys with case-insensitive sort
         var batchHubKeys = [];
