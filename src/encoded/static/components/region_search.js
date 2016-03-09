@@ -180,63 +180,65 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
           <div>
               <h2>Region search</h2>
               <AdvSearch {...this.props} />
-              {results.length ?
                   <div className="panel data-display main-panel">
                       <div className="row">
                           <div className="col-sm-5 col-md-4 col-lg-3">
                               <FacetList {...this.props} facets={facets} filters={filters}
                                   searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
                           </div>
-                          <div className="col-sm-7 col-md-8 col-lg-9 search-list">
-                              <h4>
-                                  Showing {results.length} of {total}
-                                  {total > results.length && searchBase.indexOf('limit=all') === -1 ?
-                                      <span className="pull-right">
-                                          <a rel="nofollow" className="btn btn-info btn-sm"
-                                               href={searchBase ? searchBase + '&limit=all' : '?limit=all'}
-                                               onClick={this.onFilter}>View All</a>
-                                      </span>
-                                  :
-                                      <span>
-                                          {results.length > 25 ?
-                                              <span className="pull-right">
-                                                  <a className="btn btn-info btn-sm"
-                                                     href={trimmedSearchBase ? trimmedSearchBase : "/region-search/"}
-                                                     onClick={this.onFilter}>View 25</a>
-                                              </span>
-                                          : null}
-                                      </span>
-                                  }
+                          <div className="col-sm-7 col-md-8 col-lg-9">
+                            {context['notification'] === 'Success' ?
+                              <div>
+                                <h4>
+                                    Showing {results.length} of {total}
+                                </h4>
+                                <div className="results-table-control">  
+                                    {total > results.length && searchBase.indexOf('limit=all') === -1 ?
+                                            <a rel="nofollow" className="btn btn-info btn-sm"
+                                                 href={searchBase ? searchBase + '&limit=all' : '?limit=all'}
+                                                 onClick={this.onFilter}>View All</a>
+                                    :
+                                        <span>
+                                            {results.length > 25 ?
+                                                    <a className="btn btn-info btn-sm"
+                                                       href={trimmedSearchBase ? trimmedSearchBase : "/region-search/"}
+                                                       onClick={this.onFilter}>View 25</a>
+                                            : null}
+                                        </span>
+                                    }
 
-                                  {context['batch_download'] ?
-                                      <span className="pull-right">
-                                          <BatchDownload context={context} />&nbsp;
-                                      </span>
-                                  : null}
+                                    {context['batch_download'] ?
+                                        <span className="pull-right">
+                                            <BatchDownload context={context} />&nbsp;
+                                        </span>
+                                    : null}
 
-                                  {batchHubKeys ?
-                                    <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'}>
-                                        <DropdownMenu>
-                                            {batchHubKeys.map(assembly =>
-                                                <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context['batch_hub'][assembly]}>
-                                                    {assembly}
-                                                </a>
-                                            )}
-                                        </DropdownMenu>
-                                    </DropdownButton>
-                                  : null}
+                                    {batchHubKeys ?
+                                      <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'}>
+                                          <DropdownMenu>
+                                              {batchHubKeys.map(assembly =>
+                                                  <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context['batch_hub'][assembly]}>
+                                                      {assembly}
+                                                  </a>
+                                              )}
+                                          </DropdownMenu>
+                                      </DropdownButton>
+                                    : null}
 
-                              </h4>
-                              <hr />
-                              <ul className="nav result-table" id="result-table">
-                                  {results.map(function (result) {
-                                      return Listing({context:result, columns: columns, key: result['@id']});
-                                  })}
-                              </ul>
+                                </div>  
+                              </div>
+                            :
+                              <h4>{context['notification']}</h4>
+                            }
+                            <hr />
+                            <ul className="nav result-table" id="result-table">
+                                {results.map(function (result) {
+                                    return Listing({context:result, columns: columns, key: result['@id']});
+                                })}
+                            </ul>
                           </div>
                       </div>
                   </div>
-              :<h4>{notification}</h4>}
           </div>
         );
     }
