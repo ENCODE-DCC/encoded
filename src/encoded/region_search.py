@@ -12,6 +12,7 @@ from .search import (
     search_result_actions,
     _ASSEMBLY_MAPPER
 )
+from batch_download import get_peak_metadata_links
 from collections import OrderedDict
 import requests
 from urllib.parse import urlencode
@@ -307,6 +308,7 @@ def region_search(context, request):
         result['total'] = total = es_results['hits']['total']
         result['facets'] = format_facets(es_results, _FACETS, used_filters, schemas, total)
         result['peaks'] = list(peak_results['hits']['hits'])
+        result['download_elements'] = get_peak_metadata_links(request)
         if result['total'] > 0:
             result['notification'] = 'Success'
             result.update(search_result_actions(request, ['Experiment'], es_results, position=result['coordinates']))

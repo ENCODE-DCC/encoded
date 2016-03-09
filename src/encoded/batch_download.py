@@ -92,6 +92,18 @@ def get_biosample_accessions(file_json, experiment_json):
         accessions.append(accession)
     return ', '.join(list(set(accessions)))
 
+def get_peak_metadata_links(request):
+    peak_metadata_tsv_link = '{host_url}/peak_metadata/{search_params}/peak_metadata.tsv'.format(
+        host_url=request.host_url,
+        search_params=request.matchdict['search_params']
+    )
+    peak_metadata_json_link = '{host_url}/peak_metadata/{search_params}/peak_metadata.json'.format(
+        host_url=request.host_url,
+        search_params=request.matchdict['search_params']
+    )
+    return [peak_metadata_tsv_link, peak_metadata_json_link]
+
+
 
 
 @view_config(route_name='peak_metadata', request_method='GET')
@@ -238,15 +250,7 @@ def batch_download(context, request):
     search_path = request.referrer.split("?")[0].split(request.host_url)[-1]
     if 'region-search' in search_path:
         request.matchdict['search_params'] = request.matchdict['search_params'] + '&referrer={}'.format(search_path.replace('/', ''))
-        peak_metadata_tsv_link = '{host_url}/peak_metadata/{search_params}/peak_metadata.tsv'.format(
-            host_url=request.host_url,
-            search_params=request.matchdict['search_params']
-        )
-        peak_metadata_json_link = '{host_url}/peak_metadata/{search_params}/peak_metadata.json'.format(
-            host_url=request.host_url,
-            search_params=request.matchdict['search_params']
-        )
-        files.extend([peak_metadata_tsv_link, peak_metadata_json_link])
+        files.extend(get_peak_metadata_links(request))
     path = '{}?{}'.format(search_path, urlencode(param_list, True))
     results = request.embed(path, as_user=True)
     metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv'.format(

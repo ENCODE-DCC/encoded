@@ -207,8 +207,16 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                                         </span>
                                     }
 
-                                    {context['batch_download'] ?
-                                            <BatchDownload context={context} />
+                                    {context['download_elements'] ?
+                                        <DropdownButton title='Download Elements'>
+                                            <DropdownMenu>
+                                                {context['download_elements'].map(link =>
+                                                    <a key={link} data-bypass="true" target="_blank" private-browsing="true" href={link}>
+                                                        {link.split('.').pop()}
+                                                    </a>
+                                                )}
+                                            </DropdownMenu>
+                                        </DropdownButton>
                                     : null}
 
                                     {batchHubKeys ?
