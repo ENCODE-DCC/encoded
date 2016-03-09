@@ -1,4 +1,5 @@
 from pyramid.view import view_config
+from snowfort import TYPES
 from snowfort.elasticsearch.interfaces import ELASTIC_SEARCH
 from pyramid.security import effective_principals
 from .search import (
@@ -200,6 +201,7 @@ def region_search(context, request):
     """
     Search files by region.
     """
+    types = request.registry[TYPES]
     result = {
         '@id': '/region-search/' + ('?' + request.query_string.split('&referrer')[0] if request.query_string else ''),
         '@type': ['region-search'],
@@ -296,13 +298,14 @@ def region_search(context, request):
         used_filters = set_filters(request, query, result)
         used_filters['files.uuid'] = file_uuids
         query['aggs'] = set_facets(_FACETS, used_filters, principals, ['Experiment'])
+        schemas = (types[item_type].schema for item_type in ['Experiment'])
         es_results = es.search(
             body=query, index='encoded', doc_type='experiment', size=size
         )
 
         result['@graph'] = list(format_results(request, es_results['hits']['hits']))
-        result['total'] = es_results['hits']['total']
-        result['facets'] = format_facets(es_results, _FACETS)
+        result['total'] = total = es_results['hits']['total']
+        result['facets'] = format_facets(es_results, _FACETS, used_filters, schemas, total)
         result['peaks'] = list(peak_results['hits']['hits'])
         if result['total'] > 0:
             result['notification'] = 'Success'
