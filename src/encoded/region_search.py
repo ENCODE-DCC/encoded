@@ -12,7 +12,7 @@ from .search import (
     search_result_actions,
     _ASSEMBLY_MAPPER
 )
-from batch_download import get_peak_metadata_links
+from .batch_download import get_peak_metadata_links
 from collections import OrderedDict
 import requests
 from urllib.parse import urlencode
