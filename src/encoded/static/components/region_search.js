@@ -180,6 +180,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
           <div>
               <h2>Region search</h2>
               <AdvSearch {...this.props} />
+                {context['notification'] === 'Success' ?
                   <div className="panel data-display main-panel">
                       <div className="row">
                           <div className="col-sm-5 col-md-4 col-lg-3">
@@ -187,7 +188,6 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                                   searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
                           </div>
                           <div className="col-sm-7 col-md-8 col-lg-9">
-                            {context['notification'] === 'Success' ?
                               <div>
                                 <h4>
                                     Showing {results.length} of {total}
@@ -208,9 +208,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                                     }
 
                                     {context['batch_download'] ?
-                                        <span className="pull-right">
-                                            <BatchDownload context={context} />&nbsp;
-                                        </span>
+                                            <BatchDownload context={context} />
                                     : null}
 
                                     {batchHubKeys ?
@@ -227,9 +225,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
 
                                 </div>  
                               </div>
-                            :
-                              <h4>{context['notification']}</h4>
-                            }
+                            
                             <hr />
                             <ul className="nav result-table" id="result-table">
                                 {results.map(function (result) {
@@ -239,6 +235,9 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                           </div>
                       </div>
                   </div>
+                :
+                   <h4>{context['notification']}</h4>
+               }
           </div>
         );
     }
