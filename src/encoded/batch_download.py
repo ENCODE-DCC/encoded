@@ -93,13 +93,18 @@ def get_biosample_accessions(file_json, experiment_json):
     return ', '.join(list(set(accessions)))
 
 def get_peak_metadata_links(request):
+    if request.matchdict.get('search_params'):
+        search_params = request.matchdict['search_params']
+    else:
+        search_params = request.query_string
+
     peak_metadata_tsv_link = '{host_url}/peak_metadata/{search_params}/peak_metadata.tsv'.format(
         host_url=request.host_url,
-        search_params=request.matchdict['search_params']
+        search_params=search_params
     )
     peak_metadata_json_link = '{host_url}/peak_metadata/{search_params}/peak_metadata.json'.format(
         host_url=request.host_url,
-        search_params=request.matchdict['search_params']
+        search_params=search_params
     )
     return [peak_metadata_tsv_link, peak_metadata_json_link]
 
