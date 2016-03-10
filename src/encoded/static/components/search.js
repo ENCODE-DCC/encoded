@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
+var queryString = require('query-string');
 var Modal = require('react-bootstrap/lib/Modal');
 var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var button = require('../libs/bootstrap/button');
@@ -10,6 +11,7 @@ var url = require('url');
 var _ = require('underscore');
 var globals = require('./globals');
 var image = require('./image');
+var fetched = require('./fetched');
 var search = module.exports;
 var dbxref = require('./dbxref');
 var audit = require('./audit');
@@ -17,6 +19,7 @@ var objectutils = require('./objectutils');
 
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
+var FetchedItems = fetched.FetchedItems;
 var statusOrder = globals.statusOrder;
 var SingleTreatment = objectutils.SingleTreatment;
 var AuditIndicators = audit.AuditIndicators;
@@ -614,8 +617,16 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
     }
 
     var Term = search.Term = React.createClass({
+        // Facet hierarchy. The top-level keys specify which facet fields have sub facets. The term's object has one key
+        // for each sub facet's field.
+        facetHierarchy: {
+            'award.project': {
+                'award.rfa': {}
+            }
+        },
+
         render: function () {
-            var filters = this.props.filters;
+            var {filters, searchBase} = this.props;
             var term = this.props.term['key'];
             var count = this.props.term['doc_count'];
             var title = this.props.title || term;
@@ -633,7 +644,7 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
             } else if (selected) {
                 href = selected;
             } else {
-                href = this.props.searchBase + field + '=' + encodeURIComponent(term).replace(/%20/g, '+')
+                href = searchBase + field + '=' + encodeURIComponent(term).replace(/%20/g, '+')
             }
             return (
                 <li id={selected ? "selected" : null} key={term}>
@@ -645,8 +656,83 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
                             {em ? <em>{title}</em> : <span>{title}</span>}
                         </span>
                     </a>
+                    <Subfacet {...this.props} searchBase={searchBase} term={term} field={field} facetHierarchy={this.facetHierarchy} />
                 </li>
             );
+        }
+    });
+
+    // Handle a subfacet
+    var Subfacet = React.createClass({
+        propTypes: {
+            searchBase: React.PropTypes.string, // Current search query string
+            term: React.PropTypes.string, // Top-level facet term whose subfacets we display here, if any
+            field: React.PropTypes.string, // Field name for the top-level facet whose subfacets we displa here, if any
+            facetHierarchy: React.PropTypes.object // Object defining the facet hierarchy
+        },
+
+        render: function() {
+            var {searchBase, term, field, facetHierarchy} = this.props;
+
+            // For any hierarchical parent field, make a searchBase that uses the given field=term to find applicable subfacet terms
+            if (facetHierarchy[field]) {
+                // If the given searchBase includes the hierarchical parent field (because it's selected) we have to strip it from
+                // the searchBase so it doesn't interfere with the search. Start by converting the given searchBase query string to a
+                // corresponding object.
+                var searchTerms = queryString.parse(searchBase);
+
+                // In case an award.project is selected, we don't want to search for two award.project just to find each one's children.
+                // So make a new query string without award.project, if it's in the given searchBase query string.
+                var cleanSearchTerms = {};
+                Object.keys(searchTerms).forEach(key => {
+                    if (key !== field) {
+                        cleanSearchTerms[key] = searchTerms[key];
+                    }
+                });
+
+                // Build the new object without award.project. Convert that object to a new searchBase query string.
+                var cleanSearchBase = '?' + queryString.stringify(cleanSearchTerms) + '&';
+
+                return (
+                    <FetchedItems {...this.props} url={'/search/' + cleanSearchBase + field + '=' + encodeURIComponent(term).replace(/%20/g, '+')} subfacetHierarchy={facetHierarchy[field]} Component={SubfacetRender} />
+                );
+            }
+
+            // Not a hierarchical parent facet
+            return null;
+        }
+    });
+
+    var SubfacetRender = React.createClass({
+        propTypes: {
+            url: React.PropTypes.string // URL to add subfacet field=term to
+        },
+
+        render: function() {
+            var {data, subfacetHierarchy, url} = this.props;
+            var facet = _(data.facets).find(facet => facet.field in subfacetHierarchy);
+            console.log(this.props);
+            if (facet && facet.terms && facet.terms.length) {
+                var relevantTerms = facet.terms.filter(term => term.doc_count > 0);
+                if (relevantTerms && relevantTerms.length > 1) {
+                    return (
+                        <ul>
+                            {relevantTerms.map(term => {
+                                var href = url + '&' + facet.field + '=' + term.key;
+                                return (
+                                    <li key={term.key}>
+                                        <a href={href} onClick={href ? this.props.onFilter : null}>
+                                            <span className="pull-right">{term.doc_count}</span>
+                                            <span className="facet-item">{term.key}</span>
+                                        </a>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    );
+                }
+            }
+            return null;
         }
     });
 
