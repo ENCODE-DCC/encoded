@@ -1,8 +1,6 @@
 from pyramid.view import view_config
-from snowfort.elasticsearch.interfaces import (
-    ELASTIC_SEARCH,
-    SNP_SEARCH_ES,
-)
+from snowfort import TYPES
+from snowfort.elasticsearch.interfaces import ELASTIC_SEARCH
 from pyramid.security import effective_principals
 from .search import (
     format_results,
@@ -11,8 +9,10 @@ from .search import (
     get_filtered_query,
     format_facets,
     hgConnect,
+    search_result_actions,
     _ASSEMBLY_MAPPER
 )
+from .batch_download import get_peak_metadata_links
 from collections import OrderedDict
 import requests
 from urllib.parse import urlencode
@@ -43,7 +43,8 @@ _FACETS = [
         'title': 'Organism'
     }),
     ('organ_slims', {'title': 'Organ'}),
-    ('assembly', {'title': 'Genome assembly'})
+    ('assembly', {'title': 'Genome assembly'}),
+    ('files.file_type', {'title': 'Available data'})
 ]
 
 
@@ -53,11 +54,11 @@ def includeme(config):
     config.scan(__name__)
 
 
-def get_peak_query(start, end):
+def get_peak_query(start, end, with_inner_hits=False):
     """
     return peak query
     """
-    return {
+    query = {
         'query': {
             'filtered': {
                 'filter': {
@@ -87,8 +88,12 @@ def get_peak_query(start, end):
                 },
                 '_cache': True,
             }
-        }
+        },
+        '_source': False,
     }
+    if with_inner_hits:
+        query['query']['filtered']['filter']['nested']['inner_hits'] = {'size': 99999}
+    return query
 
 
 def sanitize_coordinates(term):
@@ -130,7 +135,7 @@ def get_annotation_coordinates(es, id, assembly):
                     start=annotation['start'],
                     end=annotation['end']
                 )
-        return assembly_mapper(location, species,
+        return assembly_mapper(location, 'human',
                                annotations[0]['assembly_name'], assembly)
 
 
@@ -197,8 +202,9 @@ def region_search(context, request):
     """
     Search files by region.
     """
+    types = request.registry[TYPES]
     result = {
-        '@id': '/region-search/' + ('?' + request.query_string if request.query_string else ''),
+        '@id': '/region-search/' + ('?' + request.query_string.split('&referrer')[0] if request.query_string else ''),
         '@type': ['region-search'],
         'title': 'Search by region',
         'facets': [],
@@ -209,8 +215,9 @@ def region_search(context, request):
     }
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
-    snp_es = request.registry[SNP_SEARCH_ES]
+    snp_es = request.registry['snp_search']
     region = request.params.get('region', '*')
+    
 
     # handling limit
     size = request.params.get('limit', 25)
@@ -231,7 +238,7 @@ def region_search(context, request):
             reference = regular_name
     annotation = request.params.get('annotation', '*')
     if annotation != '*':
-        chromosome, start, end = get_annotation_coordinates(es, annotation, reference)
+        chromosome, start, end = get_annotation_coordinates(snp_es, annotation, reference)
     elif region != '*':
         region = region.lower()
         if region.startswith('rs'):
@@ -258,7 +265,14 @@ def region_search(context, request):
 
     # Search for peaks for the coordinates we got
     try:
-        peak_results = snp_es.search(body=get_peak_query(start, end),
+        # including inner hits is very slow
+        # figure out how to distinguish browser requests from .embed method requests
+        if 'peak_metadata' in request.query_string:
+            peak_query = get_peak_query(start, end, with_inner_hits=True)
+        else:
+            peak_query = get_peak_query(start, end)
+
+        peak_results = snp_es.search(body=peak_query,
                                      index=chromosome.lower(),
                                      doc_type=assembly,
                                      size=99999)
@@ -275,7 +289,7 @@ def region_search(context, request):
 
     # if more than one peak found return the experiments with those peak files
     if len(file_uuids):
-        query = get_filtered_query('', [], set(), principals, ['Item'])
+        query = get_filtered_query('', [], set(), principals, ['Experiment'])
         del query['query']
         query['filter']['and']['filters'].append({
             'terms': {
@@ -284,21 +298,21 @@ def region_search(context, request):
         })
         used_filters = set_filters(request, query, result)
         used_filters['files.uuid'] = file_uuids
-        query['aggs'] = set_facets(_FACETS, used_filters, principals, ['Item'])
+        query['aggs'] = set_facets(_FACETS, used_filters, principals, ['Experiment'])
+        schemas = (types[item_type].schema for item_type in ['Experiment'])
         es_results = es.search(
             body=query, index='encoded', doc_type='experiment', size=size
         )
 
         result['@graph'] = list(format_results(request, es_results['hits']['hits']))
-        result['facets'] = format_facets(es_results, _FACETS)
-        if len(result['@graph']):
+        result['total'] = total = es_results['hits']['total']
+        result['facets'] = format_facets(es_results, _FACETS, used_filters, schemas, total)
+        result['peaks'] = list(peak_results['hits']['hits'])
+        result['download_elements'] = get_peak_metadata_links(request)
+        if result['total'] > 0:
             result['notification'] = 'Success'
-            result['total'] = es_results['hits']['total']
-            search_params = request.query_string.replace('&', ',,')
-            hub = request.route_url('batch_hub',
-                                    search_params=search_params,
-                                    txt='hub.txt')
-            result['batch_hub'] = hgConnect + hub
+            result.update(search_result_actions(request, ['Experiment'], es_results, position=result['coordinates']))
+
     return result
 
 
@@ -315,7 +329,7 @@ def suggest(context, request):
         text = request.params.get('q', '')
     else:
         return []
-    es = request.registry[ELASTIC_SEARCH]
+    es = request.registry['snp_search']
     query = {
         "suggester": {
             "text": text,
@@ -335,7 +349,4 @@ def suggest(context, request):
         for item in results['suggester'][0]['options']:
             if not any(x in item['text'] for x in ['(C. elegans)','(mus musculus)','(D. melanogaster)']):
                 result['@graph'].append(item)
-
-
-        # result['@graph'] = [x for x in results['suggester'][0]['options'] if x['text'] not in []]
         return result
