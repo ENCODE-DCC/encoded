@@ -102,6 +102,23 @@
                 "linkTo": "File"
             }
         },
+        "validation_status": {
+            "type": "string",
+            "description": "The grade of the experiment",
+            "comment":"",
+            "default": "unreviewed",
+            "permission": "import_items",
+            "title": "Validation status",
+            "enum": [
+                "platinum",
+                "gold",
+                "silver",
+                "bronze",
+                "unreleasable",
+                "ungraded",
+                "ungradable",
+            ]
+        }
         "internal_status": {
             "type": "string",
             "description": "The status of an experiment in the DCC process.",
