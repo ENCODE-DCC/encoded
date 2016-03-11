@@ -229,7 +229,7 @@ def set_filters(request, query, result):
     for field, term in request.params.items():
         if field in ['type', 'limit', 'y.limit', 'x.limit', 'mode', 'annotation',
                      'format', 'frame', 'datastore', 'field', 'region', 'genome',
-                     'sort', 'from']:
+                     'sort', 'from', 'referrer']:
             continue
 
         # Add filter to result
@@ -380,7 +380,7 @@ def format_results(request, hits):
         yield item
 
 
-def search_result_actions(request, doc_types, es_results):
+def search_result_actions(request, doc_types, es_results, position=None):
     actions = {}
     aggregations = es_results['aggregations']
 
@@ -397,17 +397,22 @@ def search_result_actions(request, doc_types, es_results):
                     hub = request.route_url('batch_hub',
                                             search_params=search_params,
                                             txt='hub.txt')
-                    actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly
+                    if 'region-search' in request.url and position is not None:
+                        actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly + '&position={}'.format(position)
+                    else:
+                        actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly 
 
     # generate batch download URL for experiments
     # TODO we could enable them for Datasets as well here, but not sure how well it will work
-    if doc_types == ['Experiment'] and any(
-            bucket['doc_count'] > 0
-            for bucket in aggregations['files-file_type']['files-file_type']['buckets']):
-        actions['batch_download'] = request.route_url(
-            'batch_download',
-            search_params=request.query_string
-        )
+    # batch download disabled for region-search results
+    if '/region-search/' not in request.url:
+        if doc_types == ['Experiment'] and any(
+                bucket['doc_count'] > 0
+                for bucket in aggregations['files-file_type']['files-file_type']['buckets']):
+            actions['batch_download'] = request.route_url(
+                'batch_download',
+                search_params=request.query_string
+            )
 
     return actions
 

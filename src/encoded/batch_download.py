@@ -9,11 +9,18 @@ from urllib.parse import (
 
 import csv
 import io
+import json
+
+import logging
+
+
+log = logging.getLogger(__name__)
 
 
 def includeme(config):
     config.add_route('batch_download', '/batch_download/{search_params}')
     config.add_route('metadata', '/metadata/{search_params}/{tsv}')
+    config.add_route('peak_metadata', '/peak_metadata/{search_params}/{tsv}')
     config.scan(__name__)
 
 
@@ -66,10 +73,105 @@ _tsv_mapping = OrderedDict([
 ])
 
 
+def get_file_uuids(result_dict):
+    file_uuids = []
+    for item in result_dict['@graph']:
+        for file in item['files']:
+            file_uuids.append(file['uuid'])
+    return list(set(file_uuids))
+
+def get_biosample_accessions(file_json, experiment_json):
+    for f in experiment_json['files']:
+        if file_json['uuid'] == f['uuid']:
+            accession = f.get('replicate', {}).get('library', {}).get('biosample', {}).get('accession')
+            if accession:
+                return accession
+    accessions = []
+    for replicate in experiment_json.get('replicates', []):
+        accession = replicate['library']['biosample']['accession']
+        accessions.append(accession)
+    return ', '.join(list(set(accessions)))
+
+def get_peak_metadata_links(request):
+    if request.matchdict.get('search_params'):
+        search_params = request.matchdict['search_params']
+    else:
+        search_params = request.query_string
+
+    peak_metadata_tsv_link = '{host_url}/peak_metadata/{search_params}/peak_metadata.tsv'.format(
+        host_url=request.host_url,
+        search_params=search_params
+    )
+    peak_metadata_json_link = '{host_url}/peak_metadata/{search_params}/peak_metadata.json'.format(
+        host_url=request.host_url,
+        search_params=search_params
+    )
+    return [peak_metadata_tsv_link, peak_metadata_json_link]
+
+
+
+
+@view_config(route_name='peak_metadata', request_method='GET')
+def peak_metadata(context, request):
+    param_list = parse_qs(request.matchdict['search_params'])
+    if param_list.get('referrer'):
+        del param_list['referrer']
+    param_list['field'] = []
+    header = ['assay_term_name', 'coordinates', 'target.label', 'biosample.accession', 'file.accession', 'experiment.accession']
+    param_list['limit'] = ['all']
+    path = '/region-search/?{}&{}'.format(urlencode(param_list, True),'referrer=peak_metadata')
+    results = request.embed(path, as_user=True)
+    uuids_in_results = get_file_uuids(results)
+    rows = []
+    json_doc = {}
+    for row in results['peaks']:
+        if row['_id'] in uuids_in_results:
+            file_json = request.embed(row['_id'])
+            experiment_json = request.embed(file_json['dataset'])
+            for hit in row['inner_hits']['positions']['hits']['hits']:
+                data_row = []
+                coordinates = '{}:{}-{}'.format(hit['_index'], hit['_source']['start'], hit['_source']['end'])
+                file_accession = file_json['accession']
+                experiment_accession = experiment_json['accession']
+                assay_name = experiment_json['assay_term_name']
+                target_name = experiment_json.get('target', {}).get('label') # not all experiments have targets
+                biosample_accession = get_biosample_accessions(file_json, experiment_json)
+                data_row.extend([assay_name, coordinates, target_name, biosample_accession, file_accession, experiment_accession])
+                rows.append(data_row)
+                if assay_name not in json_doc:
+                    json_doc[assay_name] = []
+                else:
+                    json_doc[assay_name].append({
+                        'coordinates': coordinates,
+                        'target.name': target_name,
+                        'biosample.accession': list(biosample_accession.split(', ')),
+                        'file.accession': file_accession,
+                        'experiment.accession': experiment_accession
+                    })
+    if 'peak_metadata.json' in request.url:
+        return Response(
+            content_type='text/plain',
+            body=json.dumps(json_doc),
+            content_disposition='attachment;filename="%s"' % 'peak_metadata.json'
+        )
+    fout = io.StringIO()
+    writer = csv.writer(fout, delimiter='\t')
+    writer.writerow(header)
+    writer.writerows(rows)
+    return Response(
+        content_type='text/tsv',
+        body=fout.getvalue(),
+        content_disposition='attachment;filename="%s"' % 'peak_metadata.tsv'
+    )
+
+
 @view_config(route_name='metadata', request_method='GET')
 def metadata_tsv(context, request):
-
     param_list = parse_qs(request.matchdict['search_params'])
+    if 'referrer' in param_list:
+        search_path = '/{}/'.format(param_list.pop('referrer')[0])
+    else:
+        search_path = '/search/'
     param_list['field'] = []
     header = []
     file_attributes = []
@@ -79,7 +181,7 @@ def metadata_tsv(context, request):
         if _tsv_mapping[prop][0].startswith('files'):
             file_attributes = file_attributes + [_tsv_mapping[prop][0]]
     param_list['limit'] = ['all']
-    path = '/search/?%s' % urlencode(param_list, True)
+    path = '{}?{}'.format(search_path, urlencode(param_list, True))
     results = request.embed(path, as_user=True)
     rows = []
     for row in results['@graph']:
@@ -146,18 +248,22 @@ def metadata_tsv(context, request):
 @view_config(route_name='batch_download', request_method='GET')
 def batch_download(context, request):
 
-    # adding extra params to get requied columsn
+    # adding extra params to get required columns
     param_list = parse_qs(request.matchdict['search_params'])
     param_list['field'] = ['files.href', 'files.file_type']
     param_list['limit'] = ['all']
-
-    path = '/search/?%s' % urlencode(param_list, True)
+    files = []
+    search_path = request.referrer.split("?")[0].split(request.host_url)[-1]
+    if 'region-search' in search_path:
+        request.matchdict['search_params'] = request.matchdict['search_params'] + '&referrer={}'.format(search_path.replace('/', ''))
+        files.extend(get_peak_metadata_links(request))
+    path = '{}?{}'.format(search_path, urlencode(param_list, True))
     results = request.embed(path, as_user=True)
     metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv'.format(
         host_url=request.host_url,
         search_params=request.matchdict['search_params']
     )
-    files = [metadata_link]
+    files.append(metadata_link)
     if 'files.file_type' in param_list:
         for exp in results['@graph']:
             for f in exp['files']:
