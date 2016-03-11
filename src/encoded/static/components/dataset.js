@@ -1421,10 +1421,6 @@ var FileTable = module.exports.FileTable = React.createClass({
                 </span>
         },
         'file_type': {title: 'File type'},
-        'file_size': {
-            title: 'File size',
-            display: item => <span>{humanFileSize(item.file_size)}</span>
-        },
         'biological_replicates': {
             title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
             getValue: item => item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''
@@ -1433,11 +1429,35 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: 'Library',
             getValue: item => (item.replicate && item.replicate.library) ? item.replicate.library.accession : null
         },
-        'read_length': {
-            title: 'Read length',
-            display: item => <span>{item.read_length ? <span>{item.read_length + ' ' + item.read_length_units}</span> : null}</span>
+        'run_type': {
+            title: 'Run type',
+            display: item => {
+                var runType;
+
+                if (item.run_type === 'single-ended') {
+                    runType = 'SE'
+                } else if (item.run_type === 'paired-ended') {
+                    runType = 'PE'
+                }
+
+                return (
+                    <span>
+                        <span>{runType ? runType : null}</span>
+                        <span>{item.read_length ? <span>{runType ? <span> </span> : null}{item.read_length + item.read_length_units}</span> : null}</span>
+                    </span>
+                );
+            },
+            objSorter: (a, b) => {
+                // Sort by their combined string values
+                var aStr = (a.run_type ? a.run_type : '') + (a.read_length ? a.read_length : '');
+                var bStr = (b.run_type ? b.run_type : '') + (b.read_length ? b.read_length : '');
+                return (aStr < bStr) ? -1 : (bStr < aStr ? 1 : 0);
+            }
         },
-        'paired_status': {title: 'Run type'},
+        'paired_end': {
+            title: 'Read',
+            display: item => <span>{item.paired_end ? <span>R{item.paired_end}</span> : null}</span>
+        },
         'title': {
             title: 'Lab',
             getValue: item => item.lab && item.lab.title ? item.lab.title : null
@@ -1451,6 +1471,10 @@ var FileTable = module.exports.FileTable = React.createClass({
                 }
                 return a.date_created ? -1 : (b.date_created ? 1 : 0);
             }
+        },
+        'file_size': {
+            title: 'File size',
+            display: item => <span>{humanFileSize(item.file_size)}</span>
         },
         'validation_status': {
             title: 'Validation status',
@@ -1475,10 +1499,6 @@ var FileTable = module.exports.FileTable = React.createClass({
                 </span>
         },
         'file_type': {title: 'File type'},
-        'file_size': {
-            title: 'File size',
-            display: item => <span>{humanFileSize(item.file_size)}</span>
-        },
         'biological_replicates': {
             title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
             getValue: item => item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''
@@ -1501,6 +1521,10 @@ var FileTable = module.exports.FileTable = React.createClass({
                 }
                 return a.date_created ? -1 : (b.date_created ? 1 : 0);
             }
+        },
+        'file_size': {
+            title: 'File size',
+            display: item => <span>{humanFileSize(item.file_size)}</span>
         },
         'validation_status': {
             title: 'Validation status',
@@ -1525,17 +1549,16 @@ var FileTable = module.exports.FileTable = React.createClass({
                 </span>
         },
         'file_type': {title: 'File type'},
-        'file_size': {
-            title: 'File size',
-            display: item => <span>{humanFileSize(item.file_size)}</span>
-        },
         'output_type': {title: 'Output type'},
         'biological_replicates': {
             title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
             getValue: item => item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''
         },
         'assembly': {title: 'Mapping assembly'},
-        'genome_annotation': {title: 'Genome annotation'},
+        'genome_annotation': {
+            title: 'Genome annotation',
+            hide: (list, columns, meta) => _(list).all(item => !item.genome_annotation)
+        },
         'title': {
             title: 'Lab',
             getValue: item => item.lab && item.lab.title ? item.lab.title : null
@@ -1549,6 +1572,10 @@ var FileTable = module.exports.FileTable = React.createClass({
                 }
                 return a.date_created ? -1 : (b.date_created ? 1 : 0);
             }
+        },
+        'file_size': {
+            title: 'File size',
+            display: item => <span>{humanFileSize(item.file_size)}</span>
         },
         'validation_status': {
             title: 'Validation status',
@@ -1573,13 +1600,12 @@ var FileTable = module.exports.FileTable = React.createClass({
                 </span>
         },
         'file_type': {title: 'File type'},
-        'file_size': {
-            title: 'File size',
-            display: item => <span>{humanFileSize(item.file_size)}</span>
-        },
         'output_type': {title: 'Output type'},
         'assembly': {title: 'Mapping assembly'},
-        'genome_annotation': {title: 'Genome annotation'},
+        'genome_annotation': {
+            title: 'Genome annotation',
+            hide: (list, columns, meta) => _(list).all(item => !item.genome_annotation)
+        },
         'title': {
             title: 'Lab',
             getValue: item => item.lab && item.lab.title ? item.lab.title : null
@@ -1593,6 +1619,10 @@ var FileTable = module.exports.FileTable = React.createClass({
                 }
                 return a.date_created ? -1 : (b.date_created ? 1 : 0);
             }
+        },
+        'file_size': {
+            title: 'File size',
+            display: item => <span>{humanFileSize(item.file_size)}</span>
         },
         'status': {
             title: 'File status',
