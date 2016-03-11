@@ -662,7 +662,8 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
         }
     });
 
-    // Handle a subfacet
+    // Handle a potential subfacet for every term in every facet. In most cases, this function detects there are no subfacets to
+    // render, and it returns null.
     var Subfacet = React.createClass({
         propTypes: {
             searchBase: React.PropTypes.string, // Current search query string
@@ -709,19 +710,28 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
         },
 
         render: function() {
-            var {data, subfacetHierarchy, url} = this.props;
+            var {data, subfacetHierarchy, searchBase, url} = this.props;
             var facet = _(data.facets).find(facet => facet.field in subfacetHierarchy);
-            console.log(this.props);
             if (facet && facet.terms && facet.terms.length) {
                 var relevantTerms = facet.terms.filter(term => term.doc_count > 0);
                 if (relevantTerms && relevantTerms.length > 1) {
                     return (
                         <ul>
                             {relevantTerms.map(term => {
-                                var href = url + '&' + facet.field + '=' + term.key;
+                                var href, selected = termSelected(term.key, facet.field, this.props.filters);
+                                if (selected) {
+                                    if (!this.props.canDeselect) {
+                                        href = null;
+                                    } else {
+                                        href = selected;
+                                    }
+                                } else {
+                                    href = '/search/' + searchBase + facet.field + '=' + encodeURIComponent(term.key).replace(/%20/g, '+');
+                                }
+
                                 return (
-                                    <li key={term.key}>
-                                        <a href={href} onClick={href ? this.props.onFilter : null}>
+                                    <li id={selected ? "selected" : null} key={term.key}>
+                                        <a id={selected ? "selected" : null} href={href} onClick={href ? this.props.onFilter : null}>
                                             <span className="pull-right">{term.doc_count}</span>
                                             <span className="facet-item">{term.key}</span>
                                         </a>
