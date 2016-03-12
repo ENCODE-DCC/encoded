@@ -710,7 +710,8 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
         },
 
         render: function() {
-            var {data, subfacetHierarchy, searchBase, url} = this.props;
+            var {data, subfacetHierarchy, searchBase, url, total} = this.props;
+            console.log(this.props);
             var facet = _(data.facets).find(facet => facet.field in subfacetHierarchy);
             if (facet && facet.terms && facet.terms.length) {
                 var relevantTerms = facet.terms.filter(term => term.doc_count > 0);
@@ -718,6 +719,9 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
                     return (
                         <ul>
                             {relevantTerms.map(term => {
+                                var barStyle = {
+                                    width:  Math.ceil((term.doc_count / total) * 100) + "%"
+                                };
                                 var href, selected = termSelected(term.key, facet.field, this.props.filters);
                                 if (selected) {
                                     if (!this.props.canDeselect) {
@@ -731,6 +735,7 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
 
                                 return (
                                     <li key={term.key}>
+                                        {selected ? '' : <span className="bar" style={barStyle}></span>}
                                         <a className={selected ? "selected" : null} href={href} onClick={href ? this.props.onFilter : null}>
                                             <span className="pull-right">{term.doc_count} {selected && this.props.canDeselect ? <i className="icon icon-times-circle-o"></i> : ''}</span>
                                             <span className="facet-item">{term.key}</span>

@@ -92,6 +92,7 @@
     // Subfacet
     ul {
         list-style: none;
+        margin-top: 1px;
         margin-left: -20px;
     }
 }
@@ -266,6 +267,7 @@ span.bar {
     right: 0;
     top: 0;
     bottom:0;
+    height: 1.4em;
     z-index: -1;
 }
 
