@@ -595,10 +595,11 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
     globals.listing_views.register(Image, 'Image');
 
 
-    // If the given term is selected, return the href for the term
+    // If the given term is selected for the given field, return the href for the term. Return null if the term
+    // isn't currently selected.
     function termSelected(term, field, filters) {
         for (var filter in filters) {
-            if (filters[filter]['field'] == field && filters[filter]['term'] == term) {
+            if (filters[filter]['field'] ===field && filters[filter]['term'] == term) {
                 return url.parse(filters[filter]['remove']).search;
             }
         }
@@ -617,16 +618,27 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
     }
 
     var Term = search.Term = React.createClass({
-        // Facet hierarchy. The top-level keys specify which facet fields have sub facets. The term's object has one key
-        // for each sub facet's field.
-        facetHierarchy: {
-            'award.project': {
-                'award.rfa': {}
+        getInitialState: function() {
+            return {
+                hasSubfacets: false, // True if term has subfacets in existence
+                subfacetsOpen: false // True if subfacets have been displayed with the disclosure triangle
             }
         },
 
+        // Called by SubfacetRender when subfacets get rendered -- displayed or not (i.e. open or closed).
+        // Useful for deciding whether to display the disclosure triangle or not.
+        subfacetsRendered: function(count) {
+            if (count) {
+                this.setState({hasSubfacets: true});
+            }
+        },
+
+        handleSubfacetTrigger: function(e) {
+            this.setState({subfacetsOpen: !this.state.subfacetsOpen});
+        },
+
         render: function () {
-            var {filters, searchBase} = this.props;
+            var {filters, searchBase, facetHierarchy} = this.props;
             var term = this.props.term['key'];
             var count = this.props.term['doc_count'];
             var title = this.props.title || term;
@@ -646,17 +658,22 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
             } else {
                 href = searchBase + field + '=' + encodeURIComponent(term).replace(/%20/g, '+')
             }
+
+            // Calculate subfacet disclosure triangle style
+            var subfacetTriggerClass = 'icon icon-caret-right' + (this.state.subfacetsOpen ? ' open' : '') + (selected ? ' selected' : '');
+
             return (
                 <li key={term}>
-                    {selected ? '' : <span className="bar" style={barStyle}></span>}
+                    {selected ? null : <span className="bar" style={barStyle}></span>}
                     {field === 'lot_reviews.status' ? <span className={globals.statusClass(term, 'indicator pull-left facet-term-key icon icon-circle')}></span> : null}
+                    {this.state.hasSubfacets ? <i className={subfacetTriggerClass} onClick={this.handleSubfacetTrigger}></i> : null}
                     <a className={selected ? "selected" : null} href={href} onClick={href ? this.props.onFilter : null}>
-                        <span className="pull-right">{count} {selected && this.props.canDeselect ? <i className="icon icon-times-circle-o"></i> : ''}</span>
+                        <span className="pull-right">{count}</span>
                         <span className="facet-item">
                             {em ? <em>{title}</em> : <span>{title}</span>}
                         </span>
                     </a>
-                    <Subfacet {...this.props} searchBase={searchBase} term={term} field={field} facetHierarchy={this.facetHierarchy} />
+                    <Subfacet {...this.props} subfacetsOpen={this.state.subfacetsOpen} searchBase={searchBase} term={term} field={field} facetHierarchy={facetHierarchy} subfacetsRendered={this.subfacetsRendered} />
                 </li>
             );
         }
@@ -695,7 +712,8 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
                 var cleanSearchBase = '?' + queryString.stringify(cleanSearchTerms) + '&';
 
                 return (
-                    <FetchedItems {...this.props} url={'/search/' + cleanSearchBase + field + '=' + encodeURIComponent(term).replace(/%20/g, '+')} subfacetHierarchy={facetHierarchy[field]} Component={SubfacetRender} />
+                    <FetchedItems {...this.props} url={'/search/' + cleanSearchBase + field + '=' + encodeURIComponent(term).replace(/%20/g, '+')} noSpinner
+                        subfacetHierarchy={facetHierarchy[field]} Component={SubfacetRender} subfacetsOpen={this.props.subfacetsOpen} subfacetsRendered={this.props.subfacetsRendered} />
                 );
             }
 
@@ -709,44 +727,60 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
             url: React.PropTypes.string // URL to add subfacet field=term to
         },
 
+        // Saves relevant facet terms recorded during render
+        relevantTerms: [],
+
+        componentDidMount: function() {
+            // Tell Term component we have subfacet terms to render
+            if (this.relevantTerms.length > 1) {
+                this.props.subfacetsRendered(this.relevantTerms.length);
+            }
+        },
+
         render: function() {
             var {data, subfacetHierarchy, searchBase, url, total} = this.props;
             console.log(this.props);
             var facet = _(data.facets).find(facet => facet.field in subfacetHierarchy);
             if (facet && facet.terms && facet.terms.length) {
-                var relevantTerms = facet.terms.filter(term => term.doc_count > 0);
-                if (relevantTerms && relevantTerms.length > 1) {
-                    return (
-                        <ul>
-                            {relevantTerms.map(term => {
-                                var barStyle = {
-                                    width:  Math.ceil((term.doc_count / total) * 100) + "%"
-                                };
-                                var href, selected = termSelected(term.key, facet.field, this.props.filters);
-                                if (selected) {
-                                    if (!this.props.canDeselect) {
-                                        href = null;
+                this.relevantTerms = facet.terms.filter(term => term.doc_count > 0);
+                if (this.relevantTerms && this.relevantTerms.length > 1) {
+                    // Now render all the subfacet terms
+                    if (this.props.subfacetsOpen) {
+                        return (
+                            <ul>
+                                {this.relevantTerms.map(term => {
+                                    var barStyle = {
+                                        width: Math.ceil((term.doc_count / total) * 100) + "%"
+                                    };
+                                    var href, selected = termSelected(term.key, facet.field, this.props.filters);
+                                    if (selected) {
+                                        if (!this.props.canDeselect) {
+                                            href = null;
+                                        } else {
+                                            href = selected;
+                                        }
                                     } else {
-                                        href = selected;
+                                        href = '/search/' + searchBase + facet.field + '=' + encodeURIComponent(term.key).replace(/%20/g, '+');
                                     }
-                                } else {
-                                    href = '/search/' + searchBase + facet.field + '=' + encodeURIComponent(term.key).replace(/%20/g, '+');
-                                }
 
-                                return (
-                                    <li key={term.key}>
-                                        {selected ? '' : <span className="bar" style={barStyle}></span>}
-                                        <a className={selected ? "selected" : null} href={href} onClick={href ? this.props.onFilter : null}>
-                                            <span className="pull-right">{term.doc_count} {selected && this.props.canDeselect ? <i className="icon icon-times-circle-o"></i> : ''}</span>
-                                            <span className="facet-item">{term.key}</span>
-                                        </a>
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    );
+                                    return (
+                                        <li key={term.key}>
+                                            {selected ? '' : <span className="bar" style={barStyle}></span>}
+                                            <a className={selected ? "selected" : null} href={href} onClick={href ? this.props.onFilter : null}>
+                                                <span className="pull-right">{term.doc_count}</span>
+                                                <span className="facet-item">{term.key}</span>
+                                            </a>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        );
+                    }
+                    return null;
                 }
             }
+
+            // No subfacets
             return null;
         }
     });
@@ -754,7 +788,7 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
     var TypeTerm = search.TypeTerm = React.createClass({
         render: function () {
             var term = this.props.term['key'];
-            var filters = this.props.filters;
+            var {filters, facetHierarchy} = this.props;
             var title;
             try {
                 title = types[term];
@@ -762,7 +796,7 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
                 title = term;
             }
             var total = this.props.total;
-            return <Term {...this.props} title={title} filters={filters} total={total} />;
+            return <Term {...this.props} title={title} filters={filters} total={total} facetHierarchy={facetHierarchy} />;
         }
     });
 
@@ -783,7 +817,7 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
         },
 
         render: function() {
-            var facet = this.props.facet;
+            var {facet, facetHierarchy} = this.props;
             var filters = this.props.filters;
             var title = facet['title'];
             var field = facet['field'];
@@ -814,13 +848,13 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
                     <ul className="facet-list nav">
                         <div>
                             {terms.slice(0, 5).map(function (term) {
-                                return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
+                                return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} facetHierarchy={facetHierarchy} />;
                             }.bind(this))}
                         </div>
                         {terms.length > 5 ?
                             <div id={termID} className={moreSecClass}>
                                 {moreTerms.map(function (term) {
-                                    return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
+                                    return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} facetHierarchy={facetHierarchy} />;
                                 }.bind(this))}
                             </div>
                         : null}
@@ -885,9 +919,22 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
         }
     });
 
+    // Return true if the given `field` is a subfacet of any facet in the given `facetHierarchy`.
+    function isSubfacet(field, facetHierarchy) {
+        return _(Object.keys(facetHierarchy)).any(facetField => _(Object.keys(facetHierarchy[facetField])).any(subfacetField => subfacetField === field));
+    }
+
     var FacetList = search.FacetList = React.createClass({
         getDefaultProps: function() {
             return {orientation: 'vertical'};
+        },
+
+        // Facet hierarchy. The top-level keys specify which facet fields have sub facets. The term's object has one key
+        // for each sub facet's field.
+        facetHierarchy: {
+            'award.project': {
+                'award.rfa': {}
+            }
         },
 
         render: function() {
@@ -912,14 +959,14 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
             return (
                 <div className={"box facets " + this.props.orientation}>
                     {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
-                    {facets.map(function (facet) {
-                        if (hideTypes && facet.field == 'type') {
+                    {facets.map(facet => {
+                        if ((hideTypes && facet.field == 'type') || isSubfacet(facet.field, this.facetHierarchy)) {
                             return <span key={facet.field} />;
                         } else {
                             return <Facet {...this.props} key={facet.field} facet={facet} filters={filters}
-                                          width={width} />;
+                                          width={width} facetHierarchy={this.facetHierarchy} />;
                         }
-                    }.bind(this))}
+                    })}
                 </div>
             );
         }

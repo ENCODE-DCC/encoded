@@ -152,7 +152,9 @@ var FetchedData = module.exports.FetchedData = React.createClass({
         if (!this.context.session) {
             return (
                 <div className="communicating">
+                {!this.props.noSpinner ?
                     <div className="loading-spinner"></div>
+                : null}
                 </div>
             );
         }
@@ -177,7 +179,9 @@ var FetchedData = module.exports.FetchedData = React.createClass({
         if (communicating) {
             return (
                 <div className="communicating">
-                    <div className="loading-spinner"></div>
+                    {!this.props.noSpinner ?
+                        <div className="loading-spinner"></div>
+                    : null}
                     {params}
                 </div>
             );
@@ -210,7 +214,7 @@ var FetchedItems = module.exports.FetchedItems = React.createClass({
     
     render: function() {
         return (
-            <FetchedData ignoreErrors={this.props.ignoreErrors}>
+            <FetchedData noSpinner={this.props.noSpinner} ignoreErrors={this.props.ignoreErrors}>
                 <Param name="data" url={this.props.url} />
                 <Items {...this.props} />
             </FetchedData>

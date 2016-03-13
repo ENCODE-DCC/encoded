@@ -64,17 +64,11 @@
     @include font-size(0.9);
     line-height: 1;
 
-    i {
-        line-height: 14px;
-    }
-}
-
-.facet-list li {
     a {
         display: block;
-        padding: 3px 5px 3px 10px;
+        padding: 3px 5px 3px 20px;
         color: #000;
-        border-radius: 20px;
+        border-radius: 5px;
 
         &.selected,&:hover.selected {
             color: #fff;
@@ -89,11 +83,34 @@
         }
     }
 
+    // Disclosure triangle for subfacets
+    i {
+        position: absolute;
+        width: 20px;
+        text-align: center;
+        font-size: 18px;
+        line-height: 1;
+        cursor: pointer;
+        transition: 0.1s linear;
+
+        &.selected {
+            color: #fff;
+        }
+
+        &.open {
+            transform: rotate(90deg);
+        }
+    }
+
     // Subfacet
     ul {
         list-style: none;
         margin-top: 1px;
         margin-left: -20px;
+
+        li a {
+            padding-left: 10px;
+        }
     }
 }
 
