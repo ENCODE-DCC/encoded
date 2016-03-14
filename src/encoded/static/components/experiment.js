@@ -406,7 +406,12 @@ var Experiment = module.exports.Experiment = React.createClass({
                                 <dl className="key-value">
                                     <div data-test="assay">
                                         <dt>Assay</dt>
-                                        <dd>{context.assay_term_name}</dd>
+                                        <dd>
+                                            {context.assay_term_name}
+                                            {context.assay_term_name !== context.assay_title ?
+                                                <span>{' (' + context.assay_title + ')'}</span>
+                                            : null}
+                                        </dd>
                                     </div>
 
                                     {context.target ?

@@ -383,9 +383,6 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
                 ageUnit = (ageUnits.length === 1 && ageUnits[0] && ageUnits[0] !== 'unknown') ? ' ' + ageUnits[0] : '';
             }
 
-            // If we have life stage or age, need to separate from scientific name with comma
-            var separator = (lifeStage || age) ? ', ' : '';
-
             // Get the first treatment if it's there
             var treatment = (result.replicates[0] && result.replicates[0].library && result.replicates[0].library.biosample &&
                     result.replicates[0].library.biosample.treatments[0]) ? SingleTreatment(result.replicates[0].library.biosample.treatments[0]) : '';
@@ -402,17 +399,25 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
                         </div>
                         <div className="accession">
                             <a href={result['@id']}>
-                                {result['assay_term_name']}<span>{result['biosample_term_name'] ? ' of ' + result['biosample_term_name'] : ''}</span>
-                                {name || lifeStage || age || ageUnit ?
-                                    <span>
-                                        {' ('}
-                                        {name ? <em>{name}</em> : ''}
-                                        {separator + lifeStage + age + ageUnit + ')'}
-                                    </span>
-                                : ''}
+                                {result['assay_term_name']}
+                                {result.assay_title && (result.assay_term_name !== result.assay_title) ?
+                                    <span>{' (' + result.assay_title + ')'}</span>
+                                : null}
+                                {result['biosample_term_name'] ? <span>{' of ' + result['biosample_term_name']}</span> : null}
                             </a>
                         </div>
                         <div className="data-row">
+                            {name ?
+                                <div><strong>Organism: </strong><i>{name}</i></div>
+                            : null}
+
+                            {lifeStage || age || ageUnit ?
+                                <div>
+                                    <strong>Summary: </strong>
+                                    {lifeStage + age + ageUnit}
+                                </div>
+                            : null}
+
                             {result.target && result.target.label ?
                                 <div><strong>Target: </strong>{result.target.label}</div>
                             : null}
