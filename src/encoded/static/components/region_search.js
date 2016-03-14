@@ -13,6 +13,7 @@ var FacetList = search.FacetList;
 var Facet = search.Facet;
 var TextFilter = search.TextFilter;
 var Listing = search.Listing;
+var BatchDownload = search.BatchDownload;
 var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
 var DropdownButton = button.DropdownButton;
@@ -108,7 +109,6 @@ var AdvSearch = React.createClass({
         var context = this.props.context;
         var id = url.parse(this.context.location_href, true);
         var region = id.query['region'] || '';
-
         return (
             <div className="adv-search-form">
                 <form id="panel1" ref="adv-search" role="form" autoComplete="off" aria-labeledby="tab1">
@@ -119,6 +119,7 @@ var AdvSearch = React.createClass({
                                 return <input type="hidden" name={key} value={this.state.terms[key]} />;
                             }, this)}
                             <input ref="annotation" defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange}
+                            
                                 placeholder="Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID" />
                             {(this.state.showAutoSuggest && this.state.searchTerm) ?
                                 <FetchedData loadingComplete={true}>
@@ -149,6 +150,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
         navigate: React.PropTypes.func
     },
     render: function() {
+        const batchHubLimit = 100;
         var context = this.props.context;
         var results = context['@graph'];
         var columns = context['columns'];
@@ -162,7 +164,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
         var filters = context['filters'];
         var facets = context['facets'];
         var total = context['total'];
-        var batch_hub_disabled = total > 500;
+        var batch_hub_disabled = total > batchHubLimit;
 
         // Get a sorted list of batch hubs keys with case-insensitive sort
         var batchHubKeys = [];
@@ -178,57 +180,72 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
           <div>
               <h2>Region search</h2>
               <AdvSearch {...this.props} />
-              {results.length ?
+                {context['notification'] === 'Success' ?
                   <div className="panel data-display main-panel">
                       <div className="row">
                           <div className="col-sm-5 col-md-4 col-lg-3">
                               <FacetList {...this.props} facets={facets} filters={filters}
                                   searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
                           </div>
-                          <div className="col-sm-7 col-md-8 col-lg-9 search-list">
-                              <h4>
-                                  Showing {results.length} of {total}
-                                  {total > results.length && searchBase.indexOf('limit=all') === -1 ?
-                                      <span className="pull-right">
-                                          <a rel="nofollow" className="btn btn-info btn-sm"
-                                               href={searchBase ? searchBase + '&limit=all' : '?limit=all'}
-                                               onClick={this.onFilter}>View All</a>
-                                      </span>
-                                  :
-                                      <span>
-                                          {results.length > 25 ?
-                                              <span className="pull-right">
-                                                  <a className="btn btn-info btn-sm"
-                                                     href={trimmedSearchBase ? trimmedSearchBase : "/region-search/"}
-                                                     onClick={this.onFilter}>View 25</a>
-                                              </span>
-                                          : null}
-                                      </span>
-                                  }
+                          <div className="col-sm-7 col-md-8 col-lg-9">
+                              <div>
+                                <h4>
+                                    Showing {results.length} of {total}
+                                </h4>
+                                <div className="results-table-control">  
+                                    {total > results.length && searchBase.indexOf('limit=all') === -1 ?
+                                            <a rel="nofollow" className="btn btn-info btn-sm"
+                                                 href={searchBase ? searchBase + '&limit=all' : '?limit=all'}
+                                                 onClick={this.onFilter}>View All</a>
+                                    :
+                                        <span>
+                                            {results.length > 25 ?
+                                                    <a className="btn btn-info btn-sm"
+                                                       href={trimmedSearchBase ? trimmedSearchBase : "/region-search/"}
+                                                       onClick={this.onFilter}>View 25</a>
+                                            : null}
+                                        </span>
+                                    }
 
-                                  {batchHubKeys ?
-                                    <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'}>
-                                        <DropdownMenu>
-                                            {batchHubKeys.map(assembly =>
-                                                <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context['batch_hub'][assembly]}>
-                                                    {assembly}
-                                                </a>
-                                            )}
-                                        </DropdownMenu>
-                                    </DropdownButton>
-                                  : null}
+                                    {context['download_elements'] ?
+                                        <DropdownButton title='Download Elements'>
+                                            <DropdownMenu>
+                                                {context['download_elements'].map(link =>
+                                                    <a key={link} data-bypass="true" target="_blank" private-browsing="true" href={link}>
+                                                        {link.split('.').pop()}
+                                                    </a>
+                                                )}
+                                            </DropdownMenu>
+                                        </DropdownButton>
+                                    : null}
 
-                              </h4>
-                              <hr />
-                              <ul className="nav result-table" id="result-table">
-                                  {results.map(function (result) {
-                                      return Listing({context:result, columns: columns, key: result['@id']});
-                                  })}
-                              </ul>
+                                    {batchHubKeys ?
+                                      <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'}>
+                                          <DropdownMenu>
+                                              {batchHubKeys.map(assembly =>
+                                                  <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context['batch_hub'][assembly]}>
+                                                      {assembly}
+                                                  </a>
+                                              )}
+                                          </DropdownMenu>
+                                      </DropdownButton>
+                                    : null}
+
+                                </div>  
+                              </div>
+                            
+                            <hr />
+                            <ul className="nav result-table" id="result-table">
+                                {results.map(function (result) {
+                                    return Listing({context:result, columns: columns, key: result['@id']});
+                                })}
+                            </ul>
                           </div>
                       </div>
                   </div>
-              :<h4>{notification}</h4>}
+                :
+                   <h4>{context['notification']}</h4>
+               }
           </div>
         );
     }
