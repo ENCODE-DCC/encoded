@@ -79,7 +79,8 @@ def audit_experiment_needs_pipeline(value, system):
         #  possible ERROR to throw
         return
 
-    pipelines_dict = {'WGBS': ['WGBS single-end pipeline', 'WGBS paired-end pipeline'],
+    pipelines_dict = {'WGBS': ['WGBS single-end pipeline', 'WGBS single-end pipeline - version 2',
+                               'WGBS paired-end pipeline'],
                       'RNA-seq-long-paired': ['RNA-seq of long RNAs (paired-end, stranded)'],
                       'RNA-seq-long-single': ['RNA-seq of long RNAs (single-end, unstranded)'],
                       'RNA-seq-short': ['Small RNA-seq single-end pipeline'],
@@ -89,7 +90,7 @@ def audit_experiment_needs_pipeline(value, system):
     if value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
         if scanFilesForPipeline(value['original_files'], pipelines_dict['WGBS']) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
-                     ' needs to be processed by pipeline {}.'.format(pipelines_dict['WGBS'])
+                     ' needs to be processed by WGBS pipeline.'
             raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
         else:
             return
@@ -126,7 +127,7 @@ def audit_experiment_needs_pipeline(value, system):
        file_size_range == '>200':
         if scanFilesForPipeline(value['original_files'], pipelines_dict['RAMPAGE']) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
-                     'needs to be processed by pipeline {}.'.format(pipelines_dict['RAMPAGE'])
+                     'needs to be processed by pipeline {}.'.format(pipelines_dict['RAMPAGE'][0])
             raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
         else:
             return
@@ -138,7 +139,7 @@ def audit_experiment_needs_pipeline(value, system):
                                 pipelines_dict['RNA-seq-long-single']) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by ' + \
-                     'pipeline {}.'.format(pipelines_dict['RNA-seq-long-single'])
+                     'pipeline {}.'.format(pipelines_dict['RNA-seq-long-single'][0])
             raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
         else:
             return
@@ -150,7 +151,7 @@ def audit_experiment_needs_pipeline(value, system):
                                 pipelines_dict['RNA-seq-long-paired']) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by ' + \
-                     'pipeline {}.'.format(pipelines_dict['RNA-seq-long-paired'])
+                     'pipeline {}.'.format(pipelines_dict['RNA-seq-long-paired'][0])
             raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
         else:
             return
@@ -162,7 +163,7 @@ def audit_experiment_needs_pipeline(value, system):
                                 pipelines_dict['RNA-seq-short']) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by ' + \
-                     'pipeline {}.'.format(pipelines_dict['RNA-seq-short'])
+                     'pipeline {}.'.format(pipelines_dict['RNA-seq-short'][0])
             raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
         else:
             return
