@@ -1113,7 +1113,7 @@ def audit_file_mad_qc_spearman_correlation(value, system):
                                        level='NOT_COMPLIANT')
             if mad_value > 0.2:
                 detail = 'ENCODE processed gene quantification file {} '.format(value['@id']) + \
-                         'has Mean-Average-Deviation (MAD) ' + \
+                         'has Median-Average-Deviation (MAD) ' + \
                          'of replicate log ratios from quantification ' + \
                          'value of {}.'.format(mad_value) + \
                          ' For gene quantification files from an {}'.format(experiment_replication_type) + \
@@ -1123,18 +1123,18 @@ def audit_file_mad_qc_spearman_correlation(value, system):
                 if experiment_replication_type == 'isogenic':
                     if mad_value < 0.5:
                         yield AuditFailure('borderline MAD value', detail,
-                                           level='WARNING')
+                                           level='DCC_ACTION')
                     else:
                         yield AuditFailure('insufficient MAD value', detail,
-                                           level='NOT_COMPLIANT')
+                                           level='DCC_ACTION')
                 elif experiment_replication_type == 'anisogenic' and mad_value > 0.5:
                     detail = 'ENCODE processed gene quantification file {} '.format(value['@id']) + \
-                             'has Mean-Average-Deviation (MAD) ' + \
+                             'has Median-Average-Deviation (MAD) ' + \
                              'of replicate log ratios from quantification ' + \
                              'value of {}.'.format(mad_value) + \
                              ' For gene quantification files from an {}'.format(experiment_replication_type) + \
                              ' assay in the {} '.format(pipeline['title']) + \
                              'pipeline, a value <0.5 is recommended.'
                     yield AuditFailure('borderline MAD value', detail,
-                                       level='WARNING')
+                                       level='DCC_ACTION')
         return
