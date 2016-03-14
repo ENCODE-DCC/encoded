@@ -79,12 +79,12 @@ def audit_experiment_needs_pipeline(value, system):
         #  possible ERROR to throw
         return
 
-    pipelines_dict = {'WGBS': 'WGBS single-end pipeline',
-                      'RNA-seq-long-paired': 'RNA-seq of long RNAs (paired-end, stranded)',
-                      'RNA-seq-long-single': 'RNA-seq of long RNAs (single-end, unstranded)',
-                      'RNA-seq-short': 'Small RNA-seq single-end pipeline',
-                      'RAMPAGE': 'RAMPAGE (paired-end, stranded)',
-                      'ChIP': 'Histone ChIP-seq'}
+    pipelines_dict = {'WGBS': ['WGBS single-end pipeline', 'WGBS paired-end pipeline'],
+                      'RNA-seq-long-paired': ['RNA-seq of long RNAs (paired-end, stranded)'],
+                      'RNA-seq-long-single': ['RNA-seq of long RNAs (single-end, unstranded)'],
+                      'RNA-seq-short': ['Small RNA-seq single-end pipeline'],
+                      'RAMPAGE': ['RAMPAGE (paired-end, stranded)'],
+                      'ChIP': ['Histone ChIP-seq']}
 
     if value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
         if scanFilesForPipeline(value['original_files'], pipelines_dict['WGBS']) is False:
@@ -184,7 +184,7 @@ def audit_experiment_needs_pipeline(value, system):
     return
 
 
-def scanFilesForPipeline(files_to_scan, pipeline_title):
+def scanFilesForPipeline(files_to_scan, pipeline_title_list):
     for f in files_to_scan:
         if 'analysis_step_version' not in f:
             continue
@@ -197,7 +197,7 @@ def scanFilesForPipeline(files_to_scan, pipeline_title):
                 else:
                     pipelines = f['analysis_step_version']['analysis_step']['pipelines']
                     for p in pipelines:
-                        if p['title'] == pipeline_title:
+                        if p['title'] in pipeline_title_list:
                             return True
     return False
 
