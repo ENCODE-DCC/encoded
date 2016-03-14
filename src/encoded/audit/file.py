@@ -131,7 +131,8 @@ def audit_file_read_length(value, system):
         return
 
     if 'dataset' in value:
-        if value['dataset']['assay_term_name'] == 'RNA Bind-n-Seq':
+        if value['dataset']['assay_term_name'] in ['RNA Bind-n-Seq',
+                                                   'DNase-seq']:
             return
 
     creation_date = value['date_created'][:10].split('-')
