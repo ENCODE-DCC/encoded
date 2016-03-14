@@ -893,6 +893,7 @@ def audit_experiment_biosample_term(value, system):
     if term_id is None:
         detail = '{} is missing biosample_term_id'.format(value['@id'])
         yield AuditFailure('missing biosample_term_id', detail, level='ERROR')
+        return
 
     elif 'replicates' not in value or len(value['replicates']) == 0:
         if term_id.startswith('NTR:'):
@@ -940,22 +941,28 @@ def audit_experiment_biosample_term(value, system):
         biosample = lib['biosample']
         bs_type = biosample.get('biosample_type')
         bs_name = biosample.get('biosample_term_name')
+        bs_id = biosample.get('biosample_term_id')
 
         if bs_type != term_type:
-            detail = '{} has mismatched biosample_type, {} - {}'.format(
-                lib['@id'],
-                term_type,
-                bs_type
-                )
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     'contains a library {} '.format(lib['@id']) + \
+                     'prepared from biosample {} '.format(bs_type) + \
+                     'while experiment`s biosample is {}.'.format(term_type)
             yield AuditFailure('mismatched biosample_type', detail, level='ERROR')
 
         if bs_name != term_name:
-            detail = '{} has mismatched biosample_term_name, {} - {}'.format(
-                lib['@id'],
-                term_name,
-                bs_name
-                )
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     'contains a library {} '.format(lib['@id']) + \
+                     'prepared from biosample {} '.format(bs_name) + \
+                     'while experiment`s biosample is {}.'.format(term_name)
             yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
+
+        if bs_id != term_id:
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     'contains a library {} '.format(lib['@id']) + \
+                     'prepared from biosample {} '.format(bs_id) + \
+                     'while experiment`s biosample is {}.'.format(term_id)
+            yield AuditFailure('mismatched biosample_term_id', detail, level='ERROR')
 
 
 @audit_checker(
