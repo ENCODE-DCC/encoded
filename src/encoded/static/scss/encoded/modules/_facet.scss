@@ -62,7 +62,7 @@
     margin-bottom: 1px;
     position: relative;
     @include font-size(0.9);
-    line-height: 1;
+    line-height: 0.85rem;
 
     a {
         display: block;
@@ -86,20 +86,20 @@
 
         &:hover {
             text-decoration: none;
-            color: #000;
-            background-color: #e0e0e0;
+            color: #fff;
+            background-color: rgba(65,131,196,0.5);
         }
     }
 
     // Disclosure triangle for subfacets
-    i {
+    .facet-disclosure-trigger {
         position: absolute;
         width: 16px;
         text-align: center;
         font-size: 18px;
         line-height: 1.2;
         cursor: pointer;
-        transition: 0.1s linear;
+        transition: transform 0.1s linear;
 
         &.selected {
             color: #fff;
@@ -119,6 +119,11 @@
         li a {
             padding-left: 10px;
         }
+    }
+
+    .facet-term-close {
+        display: inline-block;
+        margin-left: 3px;
     }
 }
 
@@ -291,8 +296,8 @@ span.bar {
     display: inline-block;
     right: 0;
     top: 0;
-    bottom:0;
-    height: 1.4em;
+    bottom: 0;
+    height: 1.35rem;
     z-index: -1;
 }
 

@@ -627,9 +627,9 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
 
         // Called by SubfacetRender when subfacets get rendered -- displayed or not (i.e. open or closed).
         // Useful for deciding whether to display the disclosure triangle or not.
-        subfacetsRendered: function(count) {
+        subfacetsRendered: function(count, selected) {
             if (count) {
-                this.setState({hasSubfacets: true});
+                this.setState({hasSubfacets: true, subfacetsOpen: selected});
             }
         },
 
@@ -660,7 +660,7 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
             }
 
             // Calculate subfacet disclosure triangle style
-            var subfacetTriggerClass = 'icon icon-caret-right' + (this.state.subfacetsOpen ? ' open' : '') + (selected ? ' selected' : '');
+            var subfacetTriggerClass = 'icon icon-caret-right facet-disclosure-trigger' + (this.state.subfacetsOpen ? ' open' : '') + (selected ? ' selected' : '');
 
             return (
                 <li key={term}>
@@ -668,7 +668,10 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
                     {field === 'lot_reviews.status' ? <span className={globals.statusClass(term, 'indicator pull-left facet-term-key icon icon-circle')}></span> : null}
                     {this.state.hasSubfacets ? <i className={subfacetTriggerClass} onClick={this.handleSubfacetTrigger}></i> : null}
                     <a className={selected ? "selected" : null} href={href} onClick={href ? this.props.onFilter : null}>
-                        <span className="pull-right">{count}</span>
+                        <span className="pull-right">
+                            {count}
+                            {selected ? <i className="icon icon-times-circle facet-term-close"></i> : null}
+                        </span>
                         <span className="facet-item">
                             {em ? <em>{title}</em> : <span>{title}</span>}
                         </span>
@@ -686,11 +689,13 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
             searchBase: React.PropTypes.string, // Current search query string
             term: React.PropTypes.string, // Top-level facet term whose subfacets we display here, if any
             field: React.PropTypes.string, // Field name for the top-level facet whose subfacets we displa here, if any
-            facetHierarchy: React.PropTypes.object // Object defining the facet hierarchy
+            facetHierarchy: React.PropTypes.object, // Object defining the facet hierarchy
+            subfacetsOpen: React.PropTypes.bool, // True if the subfacets are displayed (disclosed, open, etc.)
+            subfacetsRendered: React.PropTypes.func // Function to call when subfacets get detected and thus must be rendered
         },
 
         render: function() {
-            var {searchBase, term, field, facetHierarchy} = this.props;
+            var {searchBase, term, field, facetHierarchy, subfacetsOpen, subfacetsRendered} = this.props;
 
             // For any hierarchical parent field, make a searchBase that uses the given field=term to find applicable subfacet terms
             if (facetHierarchy[field]) {
@@ -713,7 +718,7 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
 
                 return (
                     <FetchedItems {...this.props} url={'/search/' + cleanSearchBase + field + '=' + encodeURIComponent(term).replace(/%20/g, '+')} noSpinner
-                        subfacetHierarchy={facetHierarchy[field]} Component={SubfacetRender} subfacetsOpen={this.props.subfacetsOpen} subfacetsRendered={this.props.subfacetsRendered} />
+                        subfacetHierarchy={facetHierarchy[field]} Component={SubfacetRender} subfacetsOpen={subfacetsOpen} subfacetsRendered={subfacetsRendered} />
                 );
             }
 
@@ -722,61 +727,75 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
         }
     });
 
+    // Render a subfacet. Called once search results arrive. The results arrive in the `data` prop.
     var SubfacetRender = React.createClass({
         propTypes: {
-            url: React.PropTypes.string // URL to add subfacet field=term to
+            data: React.PropTypes.object, // Data from GET request for search results
+            total: React.PropTypes.number, // Total number of search results
+            searchBase: React.PropTypes.string, // Current search query string
+            subfacetHierarchy: React.PropTypes.object, // Object defining the facet hierarchy for one subfacet
+            url: React.PropTypes.string, // URL to add subfacet field=term to
+            subfacetsOpen: React.PropTypes.bool, // True if the subfacets are displayed (disclosed, open, etc.)
+            subfacetsRendered: React.PropTypes.func // Function to call when subfacets get detected and thus must be rendered
         },
 
-        // Saves relevant facet terms recorded during render
-        relevantTerms: [],
+        relevantTerms: [], // Saves relevant facet terms recorded during render so we can tell parent components about subfacets
+        selected: false, // True if at least
 
         componentDidMount: function() {
-            // Tell Term component we have subfacet terms to render
+            // Tell Term component we have subfacet terms to render, and pass it the number of terms we can render
+            // (we might not actually render them if this.props.subfacetsOpen is false). We compare > 1 instead of > 0
+            // because we don't render single-term subfacets even if they exist.
             if (this.relevantTerms.length > 1) {
-                this.props.subfacetsRendered(this.relevantTerms.length);
+                this.props.subfacetsRendered(this.relevantTerms.length, this.selected);
             }
         },
 
         render: function() {
-            var {data, subfacetHierarchy, searchBase, url, total} = this.props;
-            console.log(this.props);
+            var {data, subfacetHierarchy, searchBase, url, subfacetsOpen, total} = this.props;
+
+            // We get results for many facets, but we only want to work with ones defined in the top level of the subfacet hierarchy
             var facet = _(data.facets).find(facet => facet.field in subfacetHierarchy);
             if (facet && facet.terms && facet.terms.length) {
+                // We now have a facet that could have subfacet terms. Find any subfacet terms with non-zero doc_counts -- we only render those.
+                // We also need to have more than one term in the subfacet, so we compare the number of terms > 1 instead of > 0.
                 this.relevantTerms = facet.terms.filter(term => term.doc_count > 0);
                 if (this.relevantTerms && this.relevantTerms.length > 1) {
-                    // Now render all the subfacet terms
-                    if (this.props.subfacetsOpen) {
-                        return (
-                            <ul>
-                                {this.relevantTerms.map(term => {
-                                    var barStyle = {
-                                        width: Math.ceil((term.doc_count / total) * 100) + "%"
-                                    };
-                                    var href, selected = termSelected(term.key, facet.field, this.props.filters);
-                                    if (selected) {
-                                        if (!this.props.canDeselect) {
-                                            href = null;
-                                        } else {
-                                            href = selected;
-                                        }
+                    return (
+                        <ul>
+                            {this.relevantTerms.map(term => {
+                                var barStyle = {
+                                    width: Math.ceil((term.doc_count / total) * 100) + "%"
+                                };
+                                var href, selected = termSelected(term.key, facet.field, this.props.filters);
+                                if (selected) {
+                                    this.selected = true;
+                                    if (!this.props.canDeselect) {
+                                        href = null;
                                     } else {
-                                        href = '/search/' + searchBase + facet.field + '=' + encodeURIComponent(term.key).replace(/%20/g, '+');
+                                        href = selected;
                                     }
+                                } else {
+                                    href = '/search/' + searchBase + facet.field + '=' + encodeURIComponent(term.key).replace(/%20/g, '+');
+                                }
 
+                                if (subfacetsOpen) {
                                     return (
                                         <li key={term.key}>
-                                            {selected ? '' : <span className="bar" style={barStyle}></span>}
-                                            <a className={selected ? "selected" : null} href={href} onClick={href ? this.props.onFilter : null}>
-                                                <span className="pull-right">{term.doc_count}</span>
+                                            {selected ? null : <span className="bar" style={barStyle}></span>}
+                                            <a className={'clearfix' + (selected ? ' selected' : '')} href={href} onClick={href ? this.props.onFilter : null}>
+                                                <span className="pull-right">
+                                                    {term.doc_count}
+                                                    {selected ? <i className="icon icon-times-circle facet-term-close"></i> : null}
+                                                </span>
                                                 <span className="facet-item">{term.key}</span>
                                             </a>
                                         </li>
                                     );
-                                })}
-                            </ul>
-                        );
-                    }
-                    return null;
+                                }
+                            })}
+                        </ul>
+                    );
                 }
             }
 
