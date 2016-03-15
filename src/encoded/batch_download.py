@@ -255,7 +255,7 @@ def batch_download(context, request):
         host_url=request.host_url,
         search_params=request.matchdict['search_params']
     )
-    files = metadata_link
+    files = [metadata_link]
     if 'files.file_type' in param_list:
         for exp in results['@graph']:
             for f in exp['files']:
