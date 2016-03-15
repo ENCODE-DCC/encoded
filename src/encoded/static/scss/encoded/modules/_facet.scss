@@ -66,30 +66,38 @@
 
     a {
         display: block;
-        padding: 3px 5px 3px 20px;
+        padding: 3px 5px 3px 18px;
         color: #000;
         border-radius: 5px;
+        border: 1px solid transparent;
 
-        &.selected,&:hover.selected {
+        &.selected {
             color: #fff;
             background: #4183c4;
             text-decoration: none;
             font-weight: normal;
+            border: 1px solid #4183c4;
+        }
+
+        &:hover.selected {
+            color: #666;
+            background-color: #e0e0e0;
         }
 
         &:hover {
             text-decoration: none;
-            color: #3e82d7;
+            color: #000;
+            background-color: #e0e0e0;
         }
     }
 
     // Disclosure triangle for subfacets
     i {
         position: absolute;
-        width: 20px;
+        width: 16px;
         text-align: center;
         font-size: 18px;
-        line-height: 1;
+        line-height: 1.2;
         cursor: pointer;
         transition: 0.1s linear;
 
