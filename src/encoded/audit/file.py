@@ -898,6 +898,8 @@ def check_chip_seq_standards(value, read_depth, target_name, is_control_file, co
                               'analysis_step_version.software_versions.software',
                               'dataset'])
 def audit_file_wgbs_methylation(value, system):
+
+    
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
@@ -940,9 +942,9 @@ def audit_file_wgbs_methylation(value, system):
                                  'lambda C methylated in CHH context was {}%. '.format(lambdaCHH) + \
                                  'The % methylated in all contexts should be < 1%.'
                         yield AuditFailure('high lambda C methylation ratio', detail,
-                                               level='WARNING')
+                                           level='WARNING')
             return
-                   
+
 
 @audit_checker('file', frame=['quality_metrics',
                               'analysis_step_version',
