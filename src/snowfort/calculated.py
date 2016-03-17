@@ -5,8 +5,6 @@ from pyramid.traversal import find_root
 from types import MethodType
 from .interfaces import CALCULATED_PROPERTIES
 
-import pprint
-
 
 def includeme(config):
     config.registry[CALCULATED_PROPERTIES] = CalculatedProperties()
@@ -182,11 +180,8 @@ def calculated_property(**settings):
 
 
 def calculate_properties(context, request, ns=None, category='object'):
-    pp = pprint.PrettyPrinter()
-    pp.pprint(context)
     calculated_properties = request.registry[CALCULATED_PROPERTIES]
     props = calculated_properties.props_for(context, category)
-    pp.pprint(props)
     defined = {name: prop for name, prop in props.items() if prop.define}
     if isinstance(context, type):
         context = None
