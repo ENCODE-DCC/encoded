@@ -79,17 +79,18 @@ def audit_experiment_needs_pipeline(value, system):
         #  possible ERROR to throw
         return
 
-    pipelines_dict = {'WGBS': 'WGBS single-end pipeline',
-                      'RNA-seq-long-paired': 'RNA-seq of long RNAs (paired-end, stranded)',
-                      'RNA-seq-long-single': 'RNA-seq of long RNAs (single-end, unstranded)',
-                      'RNA-seq-short': 'Small RNA-seq single-end pipeline',
-                      'RAMPAGE': 'RAMPAGE (paired-end, stranded)',
-                      'ChIP': 'Histone ChIP-seq'}
+    pipelines_dict = {'WGBS': ['WGBS single-end pipeline', 'WGBS single-end pipeline - version 2',
+                               'WGBS paired-end pipeline'],
+                      'RNA-seq-long-paired': ['RNA-seq of long RNAs (paired-end, stranded)'],
+                      'RNA-seq-long-single': ['RNA-seq of long RNAs (single-end, unstranded)'],
+                      'RNA-seq-short': ['Small RNA-seq single-end pipeline'],
+                      'RAMPAGE': ['RAMPAGE (paired-end, stranded)'],
+                      'ChIP': ['Histone ChIP-seq']}
 
     if value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
         if scanFilesForPipeline(value['original_files'], pipelines_dict['WGBS']) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
-                     ' needs to be processed by pipeline {}.'.format(pipelines_dict['WGBS'])
+                     ' needs to be processed by WGBS pipeline.'
             raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
         else:
             return
@@ -126,7 +127,7 @@ def audit_experiment_needs_pipeline(value, system):
        file_size_range == '>200':
         if scanFilesForPipeline(value['original_files'], pipelines_dict['RAMPAGE']) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
-                     'needs to be processed by pipeline {}.'.format(pipelines_dict['RAMPAGE'])
+                     'needs to be processed by pipeline {}.'.format(pipelines_dict['RAMPAGE'][0])
             raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
         else:
             return
@@ -138,7 +139,7 @@ def audit_experiment_needs_pipeline(value, system):
                                 pipelines_dict['RNA-seq-long-single']) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by ' + \
-                     'pipeline {}.'.format(pipelines_dict['RNA-seq-long-single'])
+                     'pipeline {}.'.format(pipelines_dict['RNA-seq-long-single'][0])
             raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
         else:
             return
@@ -150,7 +151,7 @@ def audit_experiment_needs_pipeline(value, system):
                                 pipelines_dict['RNA-seq-long-paired']) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by ' + \
-                     'pipeline {}.'.format(pipelines_dict['RNA-seq-long-paired'])
+                     'pipeline {}.'.format(pipelines_dict['RNA-seq-long-paired'][0])
             raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
         else:
             return
@@ -162,7 +163,7 @@ def audit_experiment_needs_pipeline(value, system):
                                 pipelines_dict['RNA-seq-short']) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by ' + \
-                     'pipeline {}.'.format(pipelines_dict['RNA-seq-short'])
+                     'pipeline {}.'.format(pipelines_dict['RNA-seq-short'][0])
             raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
         else:
             return
@@ -184,7 +185,7 @@ def audit_experiment_needs_pipeline(value, system):
     return
 
 
-def scanFilesForPipeline(files_to_scan, pipeline_title):
+def scanFilesForPipeline(files_to_scan, pipeline_title_list):
     for f in files_to_scan:
         if 'analysis_step_version' not in f:
             continue
@@ -197,7 +198,7 @@ def scanFilesForPipeline(files_to_scan, pipeline_title):
                 else:
                     pipelines = f['analysis_step_version']['analysis_step']['pipelines']
                     for p in pipelines:
-                        if p['title'] == pipeline_title:
+                        if p['title'] in pipeline_title_list:
                             return True
     return False
 
@@ -893,69 +894,76 @@ def audit_experiment_biosample_term(value, system):
     if term_id is None:
         detail = '{} is missing biosample_term_id'.format(value['@id'])
         yield AuditFailure('missing biosample_term_id', detail, level='ERROR')
+        return
 
-    elif 'replicates' not in value or len(value['replicates']) == 0:
-        if term_id.startswith('NTR:'):
-            detail = '{} has an NTR biosample {} - {}'.format(value['@id'], term_id, term_name)
-            yield AuditFailure('NTR biosample', detail, level='DCC_ACTION')
+    if term_id.startswith('NTR:'):
+        detail = '{} has an NTR biosample {} - {}'.format(value['@id'], term_id, term_name)
+        yield AuditFailure('NTR biosample', detail, level='DCC_ACTION')
+    else:
+        biosample_prefix = term_id.split(':')[0]
+        if 'biosample_type' in value and \
+           biosample_prefix not in biosampleType_ontologyPrefix[term_type]:
+            detail = 'Experiment {} has '.format(value['@id']) + \
+                     'a biosample of type {} '.format(term_type) + \
+                     'with biosample_term_id {} '.format(value['biosample_term_id']) + \
+                     'that is not one of ' + \
+                     '{}'.format(biosampleType_ontologyPrefix[term_type])
+            yield AuditFailure('experiment with biosample term-type mismatch', detail,
+                               level='DCC_ACTION')
+
+        elif term_id not in ontology:
+            detail = '{} has term_id {} which is not in ontology'.format(value['@id'], term_id)
+            yield AuditFailure('term_id not in ontology', term_id, level='DCC_ACTION')
         else:
-            biosample_prefix = term_id.split(':')[0]
-            if 'biosample_type' in value and \
-               biosample_prefix not in biosampleType_ontologyPrefix[term_type]:
-                detail = 'Experiment {} has '.format(value['@id']) + \
-                         'a biosample of type {} '.format(term_type) + \
-                         'with biosample_term_id {} '.format(value['biosample_term_id']) + \
-                         'that is not one of ' + \
-                         '{}'.format(biosampleType_ontologyPrefix[term_type])
-                yield AuditFailure('experiment with biosample term-type mismatch', detail,
-                                   level='DCC_ACTION')
+            ontology_name = ontology[term_id]['name']
+            if ontology_name != term_name and term_name not in ontology[term_id]['synonyms']:
+                detail = '{} has a biosample mismatch {} - {} but ontology says {}'.format(
+                    value['@id'],
+                    term_id,
+                    term_name,
+                    ontology_name
+                    )
+                yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
 
-            elif term_id not in ontology:
-                detail = '{} has term_id {} which is not in ontology'.format(value['@id'], term_id)
-                yield AuditFailure('term_id not in ontology', term_id, level='DCC_ACTION')
-            else:
-                ontology_name = ontology[term_id]['name']
-                if ontology_name != term_name and term_name not in ontology[term_id]['synonyms']:
-                    detail = '{} has a biosample mismatch {} - {} but ontology says {}'.format(
-                        value['@id'],
-                        term_id,
-                        term_name,
-                        ontology_name
-                        )
-                    yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
+    if 'replicates' in value:
+        for rep in value['replicates']:
+            if 'library' not in rep:
+                continue
 
-    for rep in value['replicates']:
-        if 'library' not in rep:
-            continue
+            lib = rep['library']
+            if 'biosample' not in lib:
+                detail = '{} is missing biosample, expecting one of type {}'.format(
+                    lib['@id'],
+                    term_name
+                    )
+                yield AuditFailure('missing biosample', detail, level='ERROR')
+                continue
 
-        lib = rep['library']
-        if 'biosample' not in lib:
-            detail = '{} is missing biosample, expecting one of type {}'.format(
-                lib['@id'],
-                term_name
-                )
-            yield AuditFailure('missing biosample', detail, level='ERROR')
-            continue
+            biosample = lib['biosample']
+            bs_type = biosample.get('biosample_type')
+            bs_name = biosample.get('biosample_term_name')
+            bs_id = biosample.get('biosample_term_id')
 
-        biosample = lib['biosample']
-        bs_type = biosample.get('biosample_type')
-        bs_name = biosample.get('biosample_term_name')
+            if bs_type != term_type:
+                detail = 'Experiment {} '.format(value['@id']) + \
+                         'contains a library {} '.format(lib['@id']) + \
+                         'prepared from biosample type \"{}\", '.format(bs_type) + \
+                         'while experiment\'s biosample type is \"{}\".'.format(term_type)
+                yield AuditFailure('mismatched biosample_type', detail, level='ERROR')
 
-        if bs_type != term_type:
-            detail = '{} has mismatched biosample_type, {} - {}'.format(
-                lib['@id'],
-                term_type,
-                bs_type
-                )
-            yield AuditFailure('mismatched biosample_type', detail, level='ERROR')
+            if bs_name != term_name:
+                detail = 'Experiment {} '.format(value['@id']) + \
+                         'contains a library {} '.format(lib['@id']) + \
+                         'prepared from biosample {}, '.format(bs_name) + \
+                         'while experiment\'s biosample is {}.'.format(term_name)
+                yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
 
-        if bs_name != term_name:
-            detail = '{} has mismatched biosample_term_name, {} - {}'.format(
-                lib['@id'],
-                term_name,
-                bs_name
-                )
-            yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
+            if bs_id != term_id:
+                detail = 'Experiment {} '.format(value['@id']) + \
+                         'contains a library {} '.format(lib['@id']) + \
+                         'prepared from biosample with an id \"{}\", '.format(bs_id) + \
+                         'while experiment\'s biosample id is \"{}\".'.format(term_id)
+                yield AuditFailure('mismatched biosample_term_id', detail, level='ERROR')
 
 
 @audit_checker(

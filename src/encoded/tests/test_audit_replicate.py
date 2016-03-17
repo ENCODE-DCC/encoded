@@ -54,12 +54,3 @@ def test_audit_status_replicate(testapp, rep1):
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'mismatched status' for error in errors_list)
-
-
-def test_audit_biosample_concordance(testapp, non_concordant_rep):
-    res = testapp.get(non_concordant_rep['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched biosample_term_id' for error in errors_list)
