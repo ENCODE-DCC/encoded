@@ -700,6 +700,10 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
     // Handle a potential subfacet for every term in every facet. In most cases, this function detects there are no subfacets to
     // render, and it returns null.
     var Subfacet = React.createClass({
+        contextTypes: {
+            session: React.PropTypes.object
+        },
+
         propTypes: {
             searchBase: React.PropTypes.string, // Current search query string
             term: React.PropTypes.string, // Top-level facet term whose subfacets we display here, if any
@@ -711,7 +715,7 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
 
         shouldComponentUpdate: function(nextProps) {
             console.log('SHOULD: %o:%o', this.props, nextProps);
-            return this.props.searchBase !== nextProps.searchBase;
+            return (!this.context.session) || (this.props.searchBase !== nextProps.searchBase);
         },
 
         render: function() {

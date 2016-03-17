@@ -144,7 +144,7 @@ var FetchedData = module.exports.FetchedData = React.createClass({
             });
         }
 
-        console.log('FETCHEDDATA: %o', params);
+        console.log('FETCHEDDATA: %o:%o', params, this.context);
 
         // If no <Param> components, nothing to render here
         if (!params.length) {
