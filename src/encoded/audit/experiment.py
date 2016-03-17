@@ -186,7 +186,6 @@ def audit_experiment_needs_pipeline(value, system):
 
 
 def scanFilesForPipeline(files_to_scan, pipeline_titles):
-
     for f in files_to_scan:
         if 'analysis_step_version' not in f or f['status'] in ['replaced', 'revoked', 'deleted']:
             continue
@@ -199,10 +198,8 @@ def scanFilesForPipeline(files_to_scan, pipeline_titles):
                 else:
                     pipelines = f['analysis_step_version']['analysis_step']['pipelines']
                     for p in pipelines:
-
                         if p['title'] in pipeline_titles:
                             return p['title']
-
     return False
 
 
