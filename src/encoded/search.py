@@ -538,7 +538,7 @@ def search(context, request, search_type=None):
     limit_specs = request.params.getall('limit')
     limits_only = urlencode([("limit", limit) for limit in limit_specs])
     types_only = urlencode([("type", typ) for typ in doc_types])
-    clear_qs = types_only + ('&' if types_only else '') + limits_only
+    clear_qs = types_only + ('&' if types_only and limits_only else '') + limits_only
     result['clear_filters'] = request.route_path('search', slash='/') + (('?' + clear_qs) if clear_qs else '')
 
     # Building query for filters

@@ -1006,12 +1006,16 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
             if (searchQuery && clearQuery) {
                 var searchTerms = queryString.parse(searchQuery);
                 var clearTerms = queryString.parse(clearQuery);
-                clearButton = _.isEqual(searchTerms, clearTerms) ? <span>&nbsp;</span> : <a href={this.props.context.clear_filters}>Clear Filters</a>;
+                clearButton = !_.isEqual(searchTerms, clearTerms);
             }
 
             return (
                 <div className={"box facets " + this.props.orientation}>
-                    {clearButton}
+                    {clearButton ?
+                        <div className="clear-filters-control">
+                            <a href={this.props.context.clear_filters}>Clear Filters <i className="icon icon-times-circle"></i></a>
+                        </div>
+                    : null}
                     {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
                     {facets.map(facet => {
                         if ((hideTypes && facet.field == 'type') || isSubfacet(facet.field, this.facetHierarchy)) {
