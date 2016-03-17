@@ -87,7 +87,7 @@ def audit_experiment_needs_pipeline(value, system):
                       'ChIP': 'Histone ChIP-seq'}
 
     if value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
-        if scanFilesForPipeline(value['original_files'], pipelines_dict['WGBS']) is False:
+        if scanFilesForPipeline(value['original_files'], [pipelines_dict['WGBS']]) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
                      ' needs to be processed by pipeline {}.'.format(pipelines_dict['WGBS'])
             raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
@@ -124,7 +124,7 @@ def audit_experiment_needs_pipeline(value, system):
     if value['assay_term_name'] == 'RAMPAGE' and \
        run_type == 'paired-ended' and \
        file_size_range == '>200':
-        if scanFilesForPipeline(value['original_files'], pipelines_dict['RAMPAGE']) is False:
+        if scanFilesForPipeline(value['original_files'], [pipelines_dict['RAMPAGE']]) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by pipeline {}.'.format(pipelines_dict['RAMPAGE'])
             raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
@@ -135,7 +135,7 @@ def audit_experiment_needs_pipeline(value, system):
        run_type == 'single-ended' and \
        file_size_range == '>200':
         if scanFilesForPipeline(value['original_files'],
-                                pipelines_dict['RNA-seq-long-single']) is False:
+                                [pipelines_dict['RNA-seq-long-single']]) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by ' + \
                      'pipeline {}.'.format(pipelines_dict['RNA-seq-long-single'])
@@ -147,7 +147,7 @@ def audit_experiment_needs_pipeline(value, system):
        run_type == 'paired-ended' and \
        file_size_range == '>200':
         if scanFilesForPipeline(value['original_files'],
-                                pipelines_dict['RNA-seq-long-paired']) is False:
+                                [pipelines_dict['RNA-seq-long-paired']]) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by ' + \
                      'pipeline {}.'.format(pipelines_dict['RNA-seq-long-paired'])
@@ -159,7 +159,7 @@ def audit_experiment_needs_pipeline(value, system):
        run_type == 'single-ended' and \
        file_size_range == '<200':
         if scanFilesForPipeline(value['original_files'],
-                                pipelines_dict['RNA-seq-short']) is False:
+                                [pipelines_dict['RNA-seq-short']]) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by ' + \
                      'pipeline {}.'.format(pipelines_dict['RNA-seq-short'])
@@ -174,7 +174,7 @@ def audit_experiment_needs_pipeline(value, system):
 
     if value['assay_term_name'] == 'ChIP-seq' and investigated_as_histones is True:
         if scanFilesForPipeline(value['original_files'],
-                                pipelines_dict['ChIP']) is False:
+                                [pipelines_dict['ChIP']]) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by ' + \
                      'pipeline {}.'.format(pipelines_dict['ChIP'])
@@ -184,9 +184,9 @@ def audit_experiment_needs_pipeline(value, system):
     return
 
 
-def scanFilesForPipeline(files_to_scan, pipeline_title):
+def scanFilesForPipeline(files_to_scan, pipeline_titles):
     for f in files_to_scan:
-        if 'analysis_step_version' not in f:
+        if 'analysis_step_version' not in f or f['status'] in ['replaced', 'revoked', 'deleted']:
             continue
         else:
             if 'analysis_step' not in f['analysis_step_version']:
@@ -197,9 +197,27 @@ def scanFilesForPipeline(files_to_scan, pipeline_title):
                 else:
                     pipelines = f['analysis_step_version']['analysis_step']['pipelines']
                     for p in pipelines:
-                        if p['title'] == pipeline_title:
-                            return True
+                        if p['title'] in pipeline_titles:
+                            return p['title']
     return False
+
+
+def scanFilesForFileFormat(files_to_scan, f_format):
+    files_to_return = []
+    for f in files_to_scan:
+        if 'file_format' in f and f['file_format'] == f_format and \
+           f['status'] not in ['replaced', 'revoked', 'deleted']:
+            files_to_return.append(f)
+    return files_to_return
+
+
+def scanFilesForOutputType(files_to_scan, o_type):
+    files_to_return = []
+    for f in files_to_scan:
+        if 'output_type' in f and f['output_type'] == o_type and \
+           f['status'] not in ['replaced', 'revoked', 'deleted']:
+            files_to_return.append(f)
+    return files_to_return
 
 
 def is_gtex_experiment(experiment_to_check):
@@ -1107,3 +1125,78 @@ def audit_library_RNA_size_range(value, system):
         if (lib['nucleic_acid_term_id'] in RNAs) and ('size_range' not in lib):
             detail = 'RNA library {} requires a value for size_range'.format(rep['library']['@id'])
             raise AuditFailure('missing size_range', detail, level='NOT_COMPLIANT')
+
+
+@audit_checker('Experiment', frame=['original_files', 'target',
+                                    'original_files.analysis_step_version',
+                                    'original_files.analysis_step_version.analysis_step',
+                                    'original_files.analysis_step_version.analysis_step.pipelines',
+                                    'replicates', 'replicates.library'],
+               condition=rfa('ENCODE3'))
+def audit_experiment_rna_seq_assembly_annotation(value, system):
+
+    if value['status'] not in ['released', 'release ready']:
+        return
+
+    if 'assay_term_name' not in value:
+        return
+
+    if value['assay_term_name'] not in ['RNA-seq',
+                                        'shRNA knockdown followed by RNA-seq',
+                                        'RAMPAGE']:
+        return
+
+    if 'original_files' not in value or len(value['original_files']) == 0:
+        return
+
+    pipelines_list = ['RNA-seq of long RNAs (paired-end, stranded)',
+                      'RNA-seq of long RNAs (single-end, unstranded)',
+                      'Small RNA-seq single-end pipeline',
+                      'RAMPAGE (paired-end, stranded)']
+
+    experiment_pipeline = scanFilesForPipeline(value['original_files'], pipelines_list)
+
+    if experiment_pipeline is False:
+        return
+    else:
+        alignment_files = scanFilesForFileFormat(value['original_files'], 'bam')
+        gene_quantifications = scanFilesForOutputType(value['original_files'],
+                                                      'gene quantifications')
+
+        assemblies = set()
+        for f in alignment_files:
+            if 'assembly' in f:
+                assemblies.add(f['assembly'])
+
+        annotations = set()
+        for f in gene_quantifications:
+            if 'genome_annotation' in f:
+                annotations.add(f['genome_annotation'])
+
+        if len(assemblies) == 0 and len(alignment_files) > 0:
+            detail = 'ENCODE {} '.format(value['assay_term_name']) + \
+                     'experiment {}, processed by {} '.format(value['@id'], experiment_pipeline) + \
+                     'pipeline, has no information on genome assemby in alignment files'
+            yield AuditFailure('missing assembly', detail, level='ERROR')
+        elif len(assemblies) > 0:
+            if 'mm10' not in assemblies and 'GRCh38' not in assemblies:
+                detail = 'Alignment files of ENCODE {} '.format(value['assay_term_name']) + \
+                         'experiment {}, processed by {} '.format(value['@id'], experiment_pipeline) + \
+                         'pipeline, were created using genome assembly that is ' + \
+                         'not mm10 nor GRCh38.'
+                yield AuditFailure('invalid assembly', detail, level='NOT_COMPLIANT')
+
+        if len(annotations) == 0 and len(gene_quantifications) > 0:
+            detail = 'ENCODE {} '.format(value['assay_term_name']) + \
+                     'experiment {}, processed by {} '.format(value['@id'], experiment_pipeline) + \
+                     'pipeline, has no information on genome annotations ' + \
+                     'in gene quantifications files'
+            yield AuditFailure('missing annotations', detail, level='ERROR')
+        elif len(annotations) > 0:
+            if 'M4' not in annotations and 'V24' not in annotations:
+                detail = 'Gene quantificatios files of ENCODE {} '.format(value['assay_term_name']) + \
+                         'experiment {}, processed by {} '.format(value['@id'], experiment_pipeline) + \
+                         'pipeline, were created using genome annotations file that is ' + \
+                         'not M4 nor GENCODE V24.'
+                yield AuditFailure('invalid annotations', detail, level='NOT_COMPLIANT')
+        return

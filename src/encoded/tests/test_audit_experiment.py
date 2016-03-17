@@ -988,3 +988,152 @@ def test_audit_experiment_mismatched_inter_length_sequencing_files(testapp,
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'mixed inter-replicate read lengths'
                for error in errors_list)
+
+
+def test_audit_experiment_rna_seq_wrong_assembly_annotation(testapp,  replicate, library,
+                                                            experiment, fastq_file,
+                                                            bam_file, tsv_file,
+                                                            analysis_step_run_bam,
+                                                            analysis_step_version_bam,
+                                                            analysis_step_bam,
+                                                            pipeline_bam):
+    testapp.patch_json(experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
+    testapp.patch_json(library['@id'], {'size_range': '>200'})
+    testapp.patch_json(replicate['@id'], {'library': library['@id']})
+    testapp.patch_json(fastq_file['@id'], {'run_type': 'single-ended'})
+    testapp.patch_json(bam_file['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                         'assembly': 'hg19'})
+    testapp.patch_json(pipeline_bam['@id'], {'title':
+                                             'RNA-seq of long RNAs (single-end, unstranded)'})
+    testapp.patch_json(experiment['@id'], {'assay_term_name': 'RNA-seq'})
+    res = testapp.get(experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'invalid assembly' for error in errors_list)
+
+
+def test_audit_experiment_rna_seq_valid_assembly_annotation(testapp,  replicate, library,
+                                                            experiment, fastq_file,
+                                                            bam_file, tsv_file,
+                                                            analysis_step_run_bam,
+                                                            analysis_step_version_bam,
+                                                            analysis_step_bam,
+                                                            pipeline_bam):
+    testapp.patch_json(experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
+    testapp.patch_json(library['@id'], {'size_range': '>200'})
+    testapp.patch_json(replicate['@id'], {'library': library['@id']})
+    testapp.patch_json(fastq_file['@id'], {'run_type': 'single-ended'})
+    testapp.patch_json(bam_file['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                         'assembly': 'GRCh38'})
+    testapp.patch_json(pipeline_bam['@id'], {'title':
+                                             'RNA-seq of long RNAs (single-end, unstranded)'})
+    testapp.patch_json(experiment['@id'], {'assay_term_name': 'RNA-seq'})
+    res = testapp.get(experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'invalid assembly' for error in errors_list)
+
+
+def test_audit_experiment_rna_seq_no_assembly_annotation(testapp,  replicate, library,
+                                                         experiment, fastq_file, bam_file, tsv_file,
+                                                         analysis_step_run_bam,
+                                                         analysis_step_version_bam, analysis_step_bam,
+                                                         pipeline_bam):
+    testapp.patch_json(experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
+    testapp.patch_json(library['@id'], {'size_range': '>200'})
+    testapp.patch_json(replicate['@id'], {'library': library['@id']})
+    testapp.patch_json(fastq_file['@id'], {'run_type': 'single-ended'})
+    testapp.patch_json(bam_file['@id'], {'step_run': analysis_step_run_bam['@id']})
+    testapp.patch_json(pipeline_bam['@id'], {'title':
+                                             'RNA-seq of long RNAs (single-end, unstranded)'})
+    testapp.patch_json(experiment['@id'], {'assay_term_name': 'RNA-seq'})
+    res = testapp.get(experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing assembly' for error in errors_list)
+
+
+def test_audit_experiment_rna_seq_assembly_wrong_annotation(testapp,  replicate, library,
+                                                            experiment, fastq_file,
+                                                            bam_file, tsv_file,
+                                                            analysis_step_run_bam,
+                                                            analysis_step_version_bam,
+                                                            analysis_step_bam,
+                                                            pipeline_bam):
+    testapp.patch_json(experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
+    testapp.patch_json(library['@id'], {'size_range': '>200'})
+    testapp.patch_json(replicate['@id'], {'library': library['@id']})
+    testapp.patch_json(fastq_file['@id'], {'run_type': 'single-ended'})
+    testapp.patch_json(bam_file['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                         'assembly': 'GRCh38'})
+    testapp.patch_json(tsv_file['@id'], {'genome_annotation': 'M2'})
+    testapp.patch_json(pipeline_bam['@id'], {'title':
+                                             'RNA-seq of long RNAs (single-end, unstranded)'})
+    testapp.patch_json(experiment['@id'], {'assay_term_name': 'RNA-seq'})
+    res = testapp.get(experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'invalid annotations' for error in errors_list)
+
+
+def test_audit_experiment_rna_seq_assembly_valid_annotation(testapp,  replicate, library,
+                                                            experiment, fastq_file,
+                                                            bam_file, tsv_file,
+                                                            analysis_step_run_bam,
+                                                            analysis_step_version_bam,
+                                                            analysis_step_bam,
+                                                            pipeline_bam):
+    testapp.patch_json(experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
+    testapp.patch_json(library['@id'], {'size_range': '>200'})
+    testapp.patch_json(replicate['@id'], {'library': library['@id']})
+    testapp.patch_json(fastq_file['@id'], {'run_type': 'single-ended'})
+    testapp.patch_json(bam_file['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                         'assembly': 'GRCh38'})
+    testapp.patch_json(tsv_file['@id'], {'genome_annotation': 'M4'})
+    testapp.patch_json(pipeline_bam['@id'], {'title':
+                                             'RNA-seq of long RNAs (single-end, unstranded)'})
+    testapp.patch_json(experiment['@id'], {'assay_term_name': 'RNA-seq'})
+    res = testapp.get(experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'invalid annotations' for error in errors_list)
+
+
+def test_audit_experiment_rna_seq_multiple_assembly_annotation(testapp,  replicate, library,
+                                                               experiment, fastq_file,
+                                                               bam_file, tsv_file,
+                                                               analysis_step_run_bam,
+                                                               analysis_step_version_bam,
+                                                               analysis_step_bam,
+                                                               pipeline_bam, file_bam):
+
+    testapp.patch_json(file_bam['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                         'dataset': experiment['@id'],
+                                         'replicate': replicate['@id'],
+                                         'assembly': 'hg19'})
+
+    testapp.patch_json(experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
+    testapp.patch_json(library['@id'], {'size_range': '>200'})
+    testapp.patch_json(replicate['@id'], {'library': library['@id']})
+    testapp.patch_json(fastq_file['@id'], {'run_type': 'single-ended'})
+    testapp.patch_json(bam_file['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                         'assembly': 'GRCh38'})
+    testapp.patch_json(pipeline_bam['@id'], {'title':
+                                             'RNA-seq of long RNAs (single-end, unstranded)'})
+    testapp.patch_json(experiment['@id'], {'assay_term_name': 'RNA-seq'})
+    res = testapp.get(experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'invalid assembly' for error in errors_list)
