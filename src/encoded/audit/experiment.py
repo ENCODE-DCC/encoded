@@ -88,7 +88,7 @@ def audit_experiment_needs_pipeline(value, system):
                       'ChIP': ['Histone ChIP-seq']}
 
     if value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
-        if scanFilesForPipeline(value['original_files'], [pipelines_dict['WGBS']]) is False:
+        if scanFilesForPipeline(value['original_files'], pipelines_dict['WGBS']) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
                      ' needs to be processed by WGBS pipeline.'
             raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
@@ -125,7 +125,7 @@ def audit_experiment_needs_pipeline(value, system):
     if value['assay_term_name'] == 'RAMPAGE' and \
        run_type == 'paired-ended' and \
        file_size_range == '>200':
-        if scanFilesForPipeline(value['original_files'], [pipelines_dict['RAMPAGE']]) is False:
+        if scanFilesForPipeline(value['original_files'], pipelines_dict['RAMPAGE']) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by pipeline {}.'.format(pipelines_dict['RAMPAGE'][0])
             raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
@@ -136,7 +136,7 @@ def audit_experiment_needs_pipeline(value, system):
        run_type == 'single-ended' and \
        file_size_range == '>200':
         if scanFilesForPipeline(value['original_files'],
-                                [pipelines_dict['RNA-seq-long-single']]) is False:
+                                pipelines_dict['RNA-seq-long-single']) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by ' + \
                      'pipeline {}.'.format(pipelines_dict['RNA-seq-long-single'][0])
@@ -148,7 +148,7 @@ def audit_experiment_needs_pipeline(value, system):
        run_type == 'paired-ended' and \
        file_size_range == '>200':
         if scanFilesForPipeline(value['original_files'],
-                                [pipelines_dict['RNA-seq-long-paired']]) is False:
+                                pipelines_dict['RNA-seq-long-paired']) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by ' + \
                      'pipeline {}.'.format(pipelines_dict['RNA-seq-long-paired'][0])
@@ -160,7 +160,7 @@ def audit_experiment_needs_pipeline(value, system):
        run_type == 'single-ended' and \
        file_size_range == '<200':
         if scanFilesForPipeline(value['original_files'],
-                                [pipelines_dict['RNA-seq-short']]) is False:
+                                pipelines_dict['RNA-seq-short']) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by ' + \
                      'pipeline {}.'.format(pipelines_dict['RNA-seq-short'][0])
@@ -175,7 +175,7 @@ def audit_experiment_needs_pipeline(value, system):
 
     if value['assay_term_name'] == 'ChIP-seq' and investigated_as_histones is True:
         if scanFilesForPipeline(value['original_files'],
-                                [pipelines_dict['ChIP']]) is False:
+                                pipelines_dict['ChIP']) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by ' + \
                      'pipeline {}.'.format(pipelines_dict['ChIP'])
@@ -1149,7 +1149,8 @@ def audit_experiment_rna_seq_assembly_annotation(value, system):
     if 'assay_term_name' not in value:
         return
 
-    if value['assay_term_name'] not in ['RNA-seq',
+    if value['assay_term_name'] not in ['whole-genome shotgun bisulfite sequencing',
+                                        'RNA-seq',
                                         'shRNA knockdown followed by RNA-seq',
                                         'RAMPAGE']:
         return
@@ -1160,7 +1161,11 @@ def audit_experiment_rna_seq_assembly_annotation(value, system):
     pipelines_list = ['RNA-seq of long RNAs (paired-end, stranded)',
                       'RNA-seq of long RNAs (single-end, unstranded)',
                       'Small RNA-seq single-end pipeline',
-                      'RAMPAGE (paired-end, stranded)']
+                      'RAMPAGE (paired-end, stranded)',
+                      'WGBS single-end pipeline',
+                      'WGBS single-end pipeline - version 2',
+                      'WGBS paired-end pipeline',
+                      'Histone ChIP-seq']
 
     experiment_pipeline = scanFilesForPipeline(value['original_files'], pipelines_list)
 
@@ -1194,17 +1199,21 @@ def audit_experiment_rna_seq_assembly_annotation(value, system):
                          'not mm10 nor GRCh38.'
                 yield AuditFailure('invalid assembly', detail, level='NOT_COMPLIANT')
 
-        if len(annotations) == 0 and len(gene_quantifications) > 0:
-            detail = 'ENCODE {} '.format(value['assay_term_name']) + \
-                     'experiment {}, processed by {} '.format(value['@id'], experiment_pipeline) + \
-                     'pipeline, has no information on genome annotations ' + \
-                     'in gene quantifications files'
-            yield AuditFailure('missing annotations', detail, level='ERROR')
-        elif len(annotations) > 0:
-            if 'M4' not in annotations and 'V24' not in annotations:
-                detail = 'Gene quantificatios files of ENCODE {} '.format(value['assay_term_name']) + \
+        if experiment_pipeline in ['RNA-seq of long RNAs (paired-end, stranded)',
+                      'RNA-seq of long RNAs (single-end, unstranded)',
+                      'Small RNA-seq single-end pipeline',
+                      'RAMPAGE (paired-end, stranded)']:
+            if len(annotations) == 0 and len(gene_quantifications) > 0:
+                detail = 'ENCODE {} '.format(value['assay_term_name']) + \
                          'experiment {}, processed by {} '.format(value['@id'], experiment_pipeline) + \
-                         'pipeline, were created using genome annotations file that is ' + \
-                         'not M4 nor GENCODE V24.'
-                yield AuditFailure('invalid annotations', detail, level='NOT_COMPLIANT')
+                         'pipeline, has no information on genome annotations ' + \
+                         'in gene quantifications files'
+                yield AuditFailure('missing annotations', detail, level='ERROR')
+            elif len(annotations) > 0:
+                if 'M4' not in annotations and 'V24' not in annotations:
+                    detail = 'Gene quantificatios files of ENCODE {} '.format(value['assay_term_name']) + \
+                             'experiment {}, processed by {} '.format(value['@id'], experiment_pipeline) + \
+                             'pipeline, were created using genome annotations file that is ' + \
+                             'not M4 nor GENCODE V24.'
+                    yield AuditFailure('invalid annotations', detail, level='NOT_COMPLIANT')
         return
