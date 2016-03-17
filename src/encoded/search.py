@@ -533,6 +533,11 @@ def search(context, request, search_type=None):
         msg = "Invalid type: {}".format(', '.join(bad_types))
         raise HTTPBadRequest(explanation=msg)
 
+    # Clear Filters path
+    # http://stackoverflow.com/questions/16491988/how-to-convert-a-list-of-strings-to-a-query-string#answer-16492046
+    types_only = urlencode([("type", typ) for typ in doc_types]);
+    result['clear_filters'] = request.route_path('search', slash='/') + (('?' + types_only) if types_only else '')
+
     # Building query for filters
     if not doc_types:
         if request.params.get('mode') == 'picker':

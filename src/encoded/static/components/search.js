@@ -996,8 +996,22 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
             if (this.props.orientation == 'horizontal') {
                 width = (100 / facets.length) + '%';
             }
+
+            // See if we need the Clear Filters link or not. If both clear_filters and the search @id have exactly the same terms,
+            // we don't need the Clear Filters link. clear_filters and @id can have their terms in a different order, so we have to
+            // get fancier than a string comparison.
+            var clearButton; // JSX for the clear button
+            var searchQuery = this.props.context['@id'] && url.parse(this.props.context['@id']).search;
+            var clearQuery = this.props.context.clear_filters && url.parse(this.props.context.clear_filters).search;
+            if (searchQuery && clearQuery) {
+                var searchTerms = queryString.parse(searchQuery);
+                var clearTerms = queryString.parse(clearQuery);
+                clearButton = _.isEqual(searchTerms, clearTerms) ? <span>&nbsp;</span> : <a href={this.props.context.clear_filters}>Clear Filters</a>;
+            }
+
             return (
                 <div className={"box facets " + this.props.orientation}>
+                    {clearButton}
                     {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
                     {facets.map(facet => {
                         if ((hideTypes && facet.field == 'type') || isSubfacet(facet.field, this.facetHierarchy)) {
