@@ -533,10 +533,13 @@ def search(context, request, search_type=None):
         msg = "Invalid type: {}".format(', '.join(bad_types))
         raise HTTPBadRequest(explanation=msg)
 
-    # Clear Filters path
+    # Clear Filters path -- make a path that clears all non-datatype and non-limit filters.
     # http://stackoverflow.com/questions/16491988/how-to-convert-a-list-of-strings-to-a-query-string#answer-16492046
-    types_only = urlencode([("type", typ) for typ in doc_types]);
-    result['clear_filters'] = request.route_path('search', slash='/') + (('?' + types_only) if types_only else '')
+    limit_specs = request.params.getall('limit')
+    limits_only = urlencode([("limit", limit) for limit in limit_specs])
+    types_only = urlencode([("type", typ) for typ in doc_types])
+    clear_qs = types_only + ('&' if types_only else '') + limits_only
+    result['clear_filters'] = request.route_path('search', slash='/') + (('?' + clear_qs) if clear_qs else '')
 
     # Building query for filters
     if not doc_types:
