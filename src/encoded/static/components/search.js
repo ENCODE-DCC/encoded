@@ -647,13 +647,8 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
             this.setState({subfacetsOpen: !this.state.subfacetsOpen});
         },
 
-        componentWillUnmount: function() {
-            console.log('UNMOUNT Term: %o', this);
-        },
-
         render: function () {
             var {filters, searchBase, facetHierarchy} = this.props;
-            console.log('TERM: %o', this.props);
             var term = this.props.term['key'];
             var count = this.props.term['doc_count'];
             var title = this.props.title || term;
@@ -714,13 +709,19 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
         },
 
         shouldComponentUpdate: function(nextProps) {
-            console.log('SHOULD: %o:%o', this.props, nextProps);
-            return (!this.context.session) || (this.props.searchBase !== nextProps.searchBase);
+            // Facets get rerendered mutliple times even if not needed. In most cases, that's fairly harmless, but with subfacets
+            // that do GET requests to get subfacet information, that's harmful. To get around this, we make sure we absolutely need
+            // to do the GET request. If we have session information, we compare the facet object properties and only do the GET
+            // requests (through FetchedItems) if we know we need to. That avoids having a needless GET request returns results to
+            // what could now be an unmounted facet term.
+            if (this.context.session) {
+                return !_.isEqual(this.props.facet, nextProps.facet) || (this.props.subfacetsOpen !== nextProps.subfacetsOpen);
+            }
+            return true;
         },
 
         render: function() {
             var {searchBase, term, field, facetHierarchy, subfacetsOpen, subfacetsRendered} = this.props;
-            console.log('SUBFACET: %s', searchBase);
 
             // For any hierarchical parent field, make a searchBase that uses the given field=term to find applicable subfacet terms
             if (facetHierarchy[field]) {
@@ -776,22 +777,18 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
             }
         },
 
-        componentWillUnmount: function() {
-            console.log('UNMOUNT SubfacetRender: %o', this);
-        },
-
         render: function() {
             var {data, subfacetHierarchy, searchBase, url, subfacetsOpen, total} = this.props;
 
             // We get results for many facets, but we only want to work with ones defined in the top level of the subfacet hierarchy
             var facet = _(data.facets).find(facet => facet.field in subfacetHierarchy);
             if (facet && facet.terms && facet.terms.length) {
-                var subfacetVisibility = subfacetsOpen ? {} : {};
+                var subfacetVisibility = subfacetsOpen ? {} : {display: 'none'};
 
                 // We now have a facet that could have subfacet terms. Find any subfacet terms with non-zero doc_counts -- we only render those.
                 // We also need to have more than one term in the subfacet, so we compare the number of terms > 1 instead of > 0.
                 this.relevantTerms = facet.terms.filter(term => term.doc_count > 0);
-                if (this.relevantTerms && this.relevantTerms.length > 0) {
+                if (this.relevantTerms && this.relevantTerms.length > 1) {
                     return (
                         <ul style={subfacetVisibility}>
                             {this.relevantTerms.map(term => {
@@ -890,7 +887,6 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
             var canDeselect = (!facet.restrictions || selectedTermCount >= 2);
             var moreSecClass = 'collapse' + ((moreTermSelected || this.state.facetOpen) ? ' in' : '');
             var seeMoreClass = 'btn btn-link' + ((moreTermSelected || this.state.facetOpen) ? '' : ' collapsed');
-            console.log('FACET %o', facet);
             return (
                 <div className="facet" hidden={terms.length === 0} style={{width: this.props.width}}>
                     <h5>{title}</h5>

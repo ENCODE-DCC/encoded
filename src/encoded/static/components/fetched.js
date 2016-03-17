@@ -92,7 +92,6 @@ var Param = module.exports.Param = React.createClass({
     receive: function (data) {
         var result = {};
         result[this.props.name] = data;
-        console.log('RX %o', result);
         if (this.props.etagName) {
             result[this.props.etagName] = this.state.fetchedRequest.etag;
         }
@@ -143,8 +142,6 @@ var FetchedData = module.exports.FetchedData = React.createClass({
                 }
             });
         }
-
-        console.log('FETCHEDDATA: %o:%o', params, this.context);
 
         // If no <Param> components, nothing to render here
         if (!params.length) {
