@@ -92,6 +92,7 @@ var Param = module.exports.Param = React.createClass({
     receive: function (data) {
         var result = {};
         result[this.props.name] = data;
+        console.log('RX %o', result);
         if (this.props.etagName) {
             result[this.props.etagName] = this.state.fetchedRequest.etag;
         }
@@ -135,13 +136,15 @@ var FetchedData = module.exports.FetchedData = React.createClass({
                     // Still communicating with server if handleFetch not yet called
                     if (this.state[child.props.name] === undefined) {
                         communicating = true;
-                    }                    
+                    }
                 } else {
                     // Some non-<Param> child; just push it unmodified onto `children` array
                     children.push(child);
                 }
             });
         }
+
+        console.log('FETCHEDDATA: %o', params);
 
         // If no <Param> components, nothing to render here
         if (!params.length) {
@@ -164,15 +167,18 @@ var FetchedData = module.exports.FetchedData = React.createClass({
             .filter(obj => obj && (obj['@type'] || []).indexOf('Error') > -1);
 
         // If we got an error, display the error string on the web page
-        if (!this.props.ignoreErrors && errors.length) {
-            return (
-                <div className="error done">
-                    {errors.map(error => {
-                        var ErrorView = globals.content_views.lookup(error);
-                        return <ErrorView {...this.props} context={error} />;
-                    })}
-                </div>
-            );
+        if (errors.length) {
+            if (!this.props.ignoreErrors) {
+                return (
+                    <div className="error done">
+                        {errors.map(error => {
+                            var ErrorView = globals.content_views.lookup(error);
+                            return <ErrorView {...this.props} context={error} />;
+                        })}
+                    </div>
+                );
+            }
+            return null;
         }
 
         // If we haven't gotten a response, continue showing the loading spinner

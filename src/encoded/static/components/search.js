@@ -617,6 +617,16 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
         return count;
     }
 
+
+    // Return true if the given `field` is a subfacet of any facet in the given `facetHierarchy`. Don't call this directly -- call the memoized
+    // function below it. It frequently gets called with the same `field` parameter, and the `facetHierarchy` parameter is always the same, so
+    // we memoize the function to cache the results from a function that uses nested loops.
+    function _isSubfacet(field, facetHierarchy) {
+        return _(Object.keys(facetHierarchy)).any(facetField => _(Object.keys(facetHierarchy[facetField])).any(subfacetField => subfacetField === field));
+    }
+    var isSubfacet = _.memoize(_isSubfacet);
+
+
     var Term = search.Term = React.createClass({
         getInitialState: function() {
             return {
@@ -637,8 +647,13 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
             this.setState({subfacetsOpen: !this.state.subfacetsOpen});
         },
 
+        componentWillUnmount: function() {
+            console.log('UNMOUNT Term: %o', this);
+        },
+
         render: function () {
             var {filters, searchBase, facetHierarchy} = this.props;
+            console.log('TERM: %o', this.props);
             var term = this.props.term['key'];
             var count = this.props.term['doc_count'];
             var title = this.props.title || term;
@@ -694,8 +709,14 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
             subfacetsRendered: React.PropTypes.func // Function to call when subfacets get detected and thus must be rendered
         },
 
+        shouldComponentUpdate: function(nextProps) {
+            console.log('SHOULD: %o:%o', this.props, nextProps);
+            return this.props.searchBase !== nextProps.searchBase;
+        },
+
         render: function() {
             var {searchBase, term, field, facetHierarchy, subfacetsOpen, subfacetsRendered} = this.props;
+            console.log('SUBFACET: %s', searchBase);
 
             // For any hierarchical parent field, make a searchBase that uses the given field=term to find applicable subfacet terms
             if (facetHierarchy[field]) {
@@ -708,7 +729,7 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
                 // So make a new query string without award.project, if it's in the given searchBase query string.
                 var cleanSearchTerms = {};
                 Object.keys(searchTerms).forEach(key => {
-                    if (key !== field) {
+                    if (key !== field && !isSubfacet(key, facetHierarchy)) {
                         cleanSearchTerms[key] = searchTerms[key];
                     }
                 });
@@ -717,7 +738,7 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
                 var cleanSearchBase = '?' + queryString.stringify(cleanSearchTerms) + '&';
 
                 return (
-                    <FetchedItems {...this.props} url={'/search/' + cleanSearchBase + field + '=' + encodeURIComponent(term).replace(/%20/g, '+')} noSpinner
+                    <FetchedItems {...this.props} url={'/search/' + cleanSearchBase + field + '=' + encodeURIComponent(term).replace(/%20/g, '+')} noSpinner skipEmptyResults
                         subfacetHierarchy={facetHierarchy[field]} Component={SubfacetRender} subfacetsOpen={subfacetsOpen} subfacetsRendered={subfacetsRendered} />
                 );
             }
@@ -751,18 +772,24 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
             }
         },
 
+        componentWillUnmount: function() {
+            console.log('UNMOUNT SubfacetRender: %o', this);
+        },
+
         render: function() {
             var {data, subfacetHierarchy, searchBase, url, subfacetsOpen, total} = this.props;
 
             // We get results for many facets, but we only want to work with ones defined in the top level of the subfacet hierarchy
             var facet = _(data.facets).find(facet => facet.field in subfacetHierarchy);
             if (facet && facet.terms && facet.terms.length) {
+                var subfacetVisibility = subfacetsOpen ? {} : {};
+
                 // We now have a facet that could have subfacet terms. Find any subfacet terms with non-zero doc_counts -- we only render those.
                 // We also need to have more than one term in the subfacet, so we compare the number of terms > 1 instead of > 0.
                 this.relevantTerms = facet.terms.filter(term => term.doc_count > 0);
-                if (this.relevantTerms && this.relevantTerms.length > 1) {
+                if (this.relevantTerms && this.relevantTerms.length > 0) {
                     return (
-                        <ul>
+                        <ul style={subfacetVisibility}>
                             {this.relevantTerms.map(term => {
                                 var barStyle = {
                                     width: Math.ceil((term.doc_count / total) * 100) + "%"
@@ -779,20 +806,18 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
                                     href = '/search/' + searchBase + facet.field + '=' + encodeURIComponent(term.key).replace(/%20/g, '+');
                                 }
 
-                                if (subfacetsOpen) {
-                                    return (
-                                        <li key={term.key}>
-                                            {selected ? null : <span className="bar" style={barStyle}></span>}
-                                            <a className={'clearfix' + (selected ? ' selected' : '')} href={href} onClick={href ? this.props.onFilter : null}>
-                                                <span className="pull-right">
-                                                    {term.doc_count}
-                                                    {selected ? <i className="icon icon-times-circle facet-term-close"></i> : null}
-                                                </span>
-                                                <span className="facet-item">{term.key}</span>
-                                            </a>
-                                        </li>
-                                    );
-                                }
+                                return (
+                                    <li key={term.key}>
+                                        {selected ? null : <span className="bar" style={barStyle}></span>}
+                                        <a className={'clearfix' + (selected ? ' selected' : '')} href={href} onClick={href ? this.props.onFilter : null}>
+                                            <span className="pull-right">
+                                                {term.doc_count}
+                                                {selected ? <i className="icon icon-times-circle facet-term-close"></i> : null}
+                                            </span>
+                                            <span className="facet-item">{term.key}</span>
+                                        </a>
+                                    </li>
+                                );
                             })}
                         </ul>
                     );
@@ -861,6 +886,7 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
             var canDeselect = (!facet.restrictions || selectedTermCount >= 2);
             var moreSecClass = 'collapse' + ((moreTermSelected || this.state.facetOpen) ? ' in' : '');
             var seeMoreClass = 'btn btn-link' + ((moreTermSelected || this.state.facetOpen) ? '' : ' collapsed');
+            console.log('FACET %o', facet);
             return (
                 <div className="facet" hidden={terms.length === 0} style={{width: this.props.width}}>
                     <h5>{title}</h5>
@@ -937,11 +963,6 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
             }
         }
     });
-
-    // Return true if the given `field` is a subfacet of any facet in the given `facetHierarchy`.
-    function isSubfacet(field, facetHierarchy) {
-        return _(Object.keys(facetHierarchy)).any(facetField => _(Object.keys(facetHierarchy[facetField])).any(subfacetField => subfacetField === field));
-    }
 
     var FacetList = search.FacetList = React.createClass({
         getDefaultProps: function() {
