@@ -345,6 +345,7 @@
 
                         "hotspots",
                         "long range chromatin interactions",
+                        "open chromatin regions",
                         "DHS peaks",
                         "peaks",
                         "replicated peaks",
@@ -661,6 +662,7 @@
 
         "hotspots": "annotation",
         "long range chromatin interactions": "annotation",
+        "open chromatin regions":"annotation",
         "DHS peaks": "annotation",
         "peaks": "annotation",
         "replicated peaks": "annotation",
