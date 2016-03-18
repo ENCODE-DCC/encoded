@@ -520,8 +520,10 @@ def get_bam_read_depth(bam_file, h3k9_flag):
             'processing_stage' in metric and\
             metric['processing_stage'] == 'unfiltered' and \
                 'mapped' in metric:
-
-            read_depth = int(metric['mapped'])
+            if "read1" in metric and "read2" in metric:
+                read_depth = int(metric['mapped']/2)
+            else:
+                read_depth = int(metric['mapped'])
             break
 
     if read_depth == 0:
