@@ -714,18 +714,23 @@ def audit_file_read_depth(value, system):
 
     special_assay_name = 'empty'
     target_name = 'empty'
+    target_investigated_as = 'empty'
 
     if 'dataset' in value:
         if value['dataset']['assay_term_name'] in special_assays_with_read_depth:
             special_assay_name = value['dataset']['assay_term_name']
         if 'target' in value['dataset'] and 'name' in value['dataset']['target']:
             target_name = value['dataset']['target']['name']
+            target_investigated_as =value['dataset']['target']['investigated_as']
+
 
     for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
         if pipeline['title'] not in pipelines_with_read_depth:
             return
         if pipeline['title'] == 'Histone ChIP-seq':
-            for failure in check_chip_seq_standards(value, read_depth, target_name, False, None):
+
+
+            for failure in check_chip_seq_standards(value, read_depth, target_name, False, None, target_investigated_as):
                 yield failure
 
             # DEAL WITH CHIP_SEQ BY CALLING THE FUNCTION (INCLUDIGN THE CONTROL BAMs)
@@ -742,7 +747,7 @@ def audit_file_read_depth(value, system):
                                                                 control_depth,
                                                                 control_target,
                                                                 True,
-                                                                target_name):
+                                                                target_name, 'empty'):
                             yield failure
             return
         else:
@@ -765,7 +770,7 @@ def audit_file_read_depth(value, system):
                     return
 
 
-def check_chip_seq_standards(value, read_depth, target_name, is_control_file, control_to_target):
+def check_chip_seq_standards(value, read_depth, target_name, is_control_file, control_to_target, target_investigated_as):
     marks = pipelines_with_read_depth['Histone ChIP-seq']
 
     if is_control_file is True:  # treat this file as control_bam -
@@ -853,12 +858,13 @@ def check_chip_seq_standards(value, read_depth, target_name, is_control_file, co
                      'with no target specified.'
             yield AuditFailure('ChIP-seq missing target', detail, level='ERROR')
             return
-        elif target_name in broad_peaks_targets:
+        elif 'broad histone mark' in target_investigated_as:  # target_name in broad_peaks_targets:
             if read_depth >= marks['narrow'] and read_depth < marks['broad']:
                 detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                              read_depth) + \
                          'usable fragments. Replicates for ChIP-seq ' + \
-                         'assays and target {} require '.format(target_name) + \
+                         'assays and target {} '.format(target_name) + \
+                         'investigated as broad histone mark, require ' + \
                          '{} usable fragments, according to '.format(marks['broad']) + \
                          'June 2015 standards.'
                 yield AuditFailure('low read depth', detail, level='NOT_COMPLIANT')
@@ -866,17 +872,19 @@ def check_chip_seq_standards(value, read_depth, target_name, is_control_file, co
                 detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                              read_depth) + \
                          'usable fragments. Replicates for ChIP-seq ' + \
-                         'assays and target {} require '.format(target_name) + \
+                         'assays and target {} '.format(target_name) + \
+                         'investigated as broad histone mark, require ' + \
                          '{} usable fragments, according to '.format(marks['broad']) + \
                          'June 2015 standards, and 20000000 usable fragments according to' + \
                          ' ENCODE2 standards.'
                 yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
-        else:
+        elif 'narrow histone mark' in target_investigated_as:  # narrow peaks, was mixture of narrow and TF
             if read_depth >= 10000000 and read_depth < marks['narrow']:
                 detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                              read_depth) + \
                          'usable fragments. Replicates for ChIP-seq ' + \
-                         'assays and target {} require '.format(target_name) + \
+                         'assays and target {} '.format(target_name) + \
+                         'investigated as narrow histone mark, require ' + \
                          '{} usable fragments, according to '.format(marks['narrow']) + \
                          'June 2015 standards.'
                 yield AuditFailure('low read depth', detail, level='WARNING')
@@ -884,7 +892,28 @@ def check_chip_seq_standards(value, read_depth, target_name, is_control_file, co
                 detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                              read_depth) + \
                          'usable fragments. Replicates for ChIP-seq ' + \
-                         'assays and target {} require '.format(target_name) + \
+                         'assays and target {} '.format(target_name) + \
+                         'investigated as narrow histone mark, require ' + \
+                         '{} usable fragments, according to '.format(marks['narrow']) + \
+                         'June 2015 standards, and 10000000 usable fragments according to' + \
+                         ' ENCODE2 standards.'
+                yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
+        elif 'transcription factor' in target_investigated_as:
+            if read_depth >= 10000000 and read_depth < marks['narrow']:
+                detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
+                                                                             read_depth) + \
+                         'usable fragments. Replicates for ChIP-seq ' + \
+                         'assays and target {} '.format(target_name) + \
+                         'investigated as transcription factor, require ' + \
+                         '{} usable fragments, according to '.format(marks['narrow']) + \
+                         'June 2015 standards.'
+                yield AuditFailure('low read depth', detail, level='WARNING')
+            elif read_depth < 10000000:
+                detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
+                                                                             read_depth) + \
+                         'usable fragments. Replicates for ChIP-seq ' + \
+                         'assays and target {} '.format(target_name) + \
+                         'investigated as transcription factor, require ' + \
                          '{} usable fragments, according to '.format(marks['narrow']) + \
                          'June 2015 standards, and 10000000 usable fragments according to' + \
                          ' ENCODE2 standards.'
