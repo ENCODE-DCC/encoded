@@ -786,14 +786,12 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
             // We get results for many facets, but we only want to work with ones defined in the top level of the subfacet hierarchy
             var facet = _(data.facets).find(facet => facet.field in subfacetHierarchy);
             if (facet && facet.terms && facet.terms.length) {
-                var subfacetVisibility = subfacetsOpen ? {} : {display: 'none'};
-
                 // We now have a facet that could have subfacet terms. Find any subfacet terms with non-zero doc_counts -- we only render those.
                 // We also need to have more than one term in the subfacet, so we compare the number of terms > 1 instead of > 0.
                 this.relevantTerms = facet.terms.filter(term => term.doc_count > 0);
-                if (this.relevantTerms && this.relevantTerms.length > 1) {
+                if (subfacetsOpen && this.relevantTerms && this.relevantTerms.length > 1) {
                     return (
-                        <ul style={subfacetVisibility}>
+                        <ul>
                             {this.relevantTerms.map(term => {
                                 var barStyle = {
                                     width: Math.ceil((term.doc_count / total) * 100) + "%"
