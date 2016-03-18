@@ -638,10 +638,11 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
         // Called by SubfacetRender when subfacets get rendered -- displayed or not (i.e. open or closed).
         // Useful for deciding whether to display the disclosure triangle or not.
         subfacetsRendered: function(count, selected) {
-            this.setState({hasSubfacets: count > 1, subfacetsOpen: selected});
+            this.setState({hasSubfacets: count > 1, subfacetsOpen: this.state.subfacetsOpen || selected});
         },
 
         handleSubfacetTrigger: function(e) {
+            // Handle a click in a subfacet disclosure triangle
             this.setState({subfacetsOpen: !this.state.subfacetsOpen});
         },
 
@@ -764,12 +765,18 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
         },
 
         relevantTerms: [], // Saves relevant facet terms recorded during render so we can tell parent components about subfacets
-        selected: false, // True if at least
+        selected: false, // True if the term is selected
 
         componentDidMount: function() {
             // Tell Term component we have subfacet terms to render, and pass it the number of terms we can render
             // (we might not actually render them if this.props.subfacetsOpen is false). We compare > 1 instead of > 0
             // because we don't render single-term subfacets even if they exist.
+            this.props.subfacetsRendered(this.relevantTerms.length, this.selected);
+        },
+
+        componentDidUpdate: function(prevProps, prevState) {
+            // Used in case other filters make this subfacet's terms disappear. If that happens, tell the Term component so that
+            // it doesn't render a disclosure triangle.
             this.props.subfacetsRendered(this.relevantTerms.length, this.selected);
         },
 
