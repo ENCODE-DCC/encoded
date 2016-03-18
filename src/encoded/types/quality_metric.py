@@ -1,10 +1,10 @@
-from snowfort import (
+from snovault import (
     abstract_collection,
     collection,
     calculated_property,
     load_schema,
 )
-from snowfort.attachment import ItemWithAttachment
+from snovault.attachment import ItemWithAttachment
 from .base import (
     Item,
 )

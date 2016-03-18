@@ -65,7 +65,7 @@ def mixinProperties(schema, resolver):
 
 def linkTo(validator, linkTo, instance, schema):
     # avoid circular import
-    from snowfort import Item, COLLECTIONS
+    from snovault import Item, COLLECTIONS
 
     if not validator.is_type(instance, "string"):
         return
@@ -130,7 +130,7 @@ def linkTo(validator, linkTo, instance, schema):
 
 def linkFrom(validator, linkFrom, instance, schema):
     # avoid circular import
-    from snowfort import Item, TYPES, COLLECTIONS
+    from snovault import Item, TYPES, COLLECTIONS
     request = get_current_request()
     collections = request.registry[COLLECTIONS]
 

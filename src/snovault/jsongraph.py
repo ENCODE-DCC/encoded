@@ -1,5 +1,5 @@
-from snowfort import Item, Root, CONNECTION
-from snowfort.elasticsearch.indexer import all_uuids
+from snovault import Item, Root, CONNECTION
+from snovault.elasticsearch.indexer import all_uuids
 from past.builtins import basestring
 from pyramid.view import view_config
 

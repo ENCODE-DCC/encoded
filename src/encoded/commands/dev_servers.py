@@ -66,7 +66,7 @@ def main():
     logging.getLogger('encoded').setLevel(logging.DEBUG)
 
     from encoded.tests import elasticsearch_fixture, postgresql_fixture
-    from snowfort.elasticsearch import create_mapping
+    from snovault.elasticsearch import create_mapping
     datadir = os.path.abspath(args.datadir)
     pgdata = os.path.join(datadir, 'pgdata')
     esdata = os.path.join(datadir, 'esdata')

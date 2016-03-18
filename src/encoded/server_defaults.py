@@ -9,7 +9,7 @@ from string import (
 import random
 import uuid
 
-from snowfort.schema_utils import server_default
+from snovault.schema_utils import server_default
 
 
 ACCESSION_FACTORY = __name__ + ':accession_factory'
