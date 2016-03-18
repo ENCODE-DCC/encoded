@@ -475,6 +475,25 @@ def test_audit_file_read_depth_inclusion_of_shRNA(testapp, file_exp, file6, file
     assert any(error['category'] == 'insufficient read depth' for error in errors_list)
 
 
+def test_audit_file_read_depth_inclusion_of_CRISPR(testapp, file_exp, file6, file4,
+                                                   bam_quality_metric, analysis_step_run_bam,
+                                                   analysis_step_version_bam, analysis_step_bam,
+                                                   pipeline_bam):
+    testapp.patch_json(pipeline_bam['@id'],
+                       {'title': 'RNA-seq of long RNAs (paired-end, stranded)'})
+    testapp.patch_json(file_exp['@id'], {'assay_term_name':
+                                         'CRISPR genome editing followed by RNA-seq'})
+    testapp.patch_json(file6['@id'], {'dataset': file_exp['@id']})
+    testapp.patch_json(file4['@id'], {'run_type': 'single-ended'})
+    testapp.patch_json(file6['@id'], {'derived_from': [file4['@id']]})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'insufficient read depth' for error in errors_list)
+
+
 def test_audit_file_read_depth_chip_seq_paired_end_no_target(testapp, file_exp, file6, file4,
                                                              chipseq_bam_quality_metric,
                                                              analysis_step_run_bam,
