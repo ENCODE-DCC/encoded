@@ -171,6 +171,9 @@ def set_sort_order(request, search_term, types, doc_types, query, result):
     if sort:
         query['sort'] = sort
         result['sort'] = result_sort
+        return True
+
+    return False
 
 
 def get_search_fields(request, doc_types):
@@ -614,7 +617,7 @@ def search(context, request, search_type=None):
         del query['query']['query_string']['fields']
 
     # Set sort order
-    set_sort_order(request, search_term, types, doc_types, query, result)
+    has_sort = set_sort_order(request, search_term, types, doc_types, query, result)
 
     # Setting filters
     used_filters = set_filters(request, query, result)
@@ -673,9 +676,9 @@ def search(context, request, search_type=None):
     # Scan large result sets.
     del query['aggs']
     if size is None:
-        hits = scan(es, query=query, index=es_index)
+        hits = scan(es, query=query, index=es_index, preserve_order=has_sort)
     else:
-        hits = scan(es, query=query, index=es_index, from_=from_, size=size)
+        hits = scan(es, query=query, index=es_index, from_=from_, size=size, preserve_order=has_sort)
     graph = format_results(request, hits)
 
     # Support for request.embed()
