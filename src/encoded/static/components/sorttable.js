@@ -61,18 +61,38 @@
 var React = require('react');
 var _ = require('underscore');
 var moment = require('moment');
+var panel = require('../libs/bootstrap/panel');
+
+var {Panel, PanelHeading} = panel;
 
 
 // Required sortable table wrapper component. Takes no parameters but puts the table in a Bootstrap panel
 // and makes it responsive. You can place multiple <SortTable />s as children of this component.
 var SortTablePanel = module.exports.SortTablePanel = React.createClass({
+    propTypes: {
+        // Note: `title` overrides `header`
+        title: React.PropTypes.oneOfType([ // Title to display in table panel header
+            React.PropTypes.string, // When title is a simple string
+            React.PropTypes.object // When title is JSX
+        ]),
+        header: React.PropTypes.object // React component to render inside header
+    },
+
     render: function() {
         return (
-            <div className="table-panel table-file">
-                <div className="table-responsive">
+            <Panel addClasses="table-panel table-file">
+                {this.props.title ?
+                    <PanelHeading key="heading">
+                        <h4>{this.props.title ? <span>{this.props.title}</span> : null}</h4>
+                    </PanelHeading>
+                : (this.props.header ?
+                    <PanelHeading key="heading" addClasses="clearfix">{this.props.header}</PanelHeading>
+                : null)}
+
+                <div className="table-responsive" key="table">
                     {this.props.children}
                 </div>
-            </div>
+            </Panel>
         );
     }
 });
@@ -160,6 +180,7 @@ var SortTable = module.exports.SortTable = React.createClass({
         var columnIds = Object.keys(columns);
         var hiddenColumns = {};
         var hiddenCount = 0;
+        var widthStyle = {};
 
         // See if any columns hidden by making an array keyed by column ID that's true for each hidden column.
         // Also keep a count of hidden columns so we can calculate colspan later.

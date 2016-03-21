@@ -1,6 +1,8 @@
 'use strict';
 var React = require('react/addons');
 var panel = require('../libs/bootstrap/panel');
+var button = require('../libs/bootstrap/button');
+var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var _ = require('underscore');
 var moment = require('moment');
 var globals = require('./globals');
@@ -31,6 +33,8 @@ var SortTablePanel = sortTable.SortTablePanel;
 var SortTable = sortTable.SortTable;
 var ProjectBadge = image.ProjectBadge;
 var {Panel, PanelBody, PanelHeading} = panel;
+var DropdownButton = button.DropdownButton;
+var DropdownMenu = dropdownMenu.DropdownMenu;
 
 var PanelLookup = function (props) {
     // XXX not all panels have the same markup
@@ -68,6 +72,11 @@ var annotationBiosampleSummary = module.exports.annotationBiosampleSummary = fun
 // Display Annotation page, a subtype of Dataset.
 var Annotation = React.createClass({
     mixins: [AuditMixin],
+
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -231,22 +240,8 @@ var Annotation = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {context.visualize_ucsc  && context.status == "released" ?
-                    <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
-                    </span>
-                : null }
-
-                {context.files.length ?
-                    <div>
-                        <h3>Files in annotation file set {context.accession}</h3>
-                        <FileTable context={context} items={context.files} originating />
-                    </div>
-                : null }
-
-                {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={UnreleasedFiles} />
-                : null}
+                {/* Display list of released and unreleased files */}
+                <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -260,6 +255,11 @@ globals.content_views.register(Annotation, 'Annotation');
 // Display Annotation page, a subtype of Dataset.
 var PublicationData = React.createClass({
     mixins: [AuditMixin],
+
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     render: function() {
         var context = this.props.context;
         var files = context.files;
@@ -382,22 +382,8 @@ var PublicationData = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {context.visualize_ucsc  && context.status == "released" ?
-                    <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
-                    </span>
-                : null }
-
-                {context.files.length ?
-                    <div>
-                        <h3>Files for publication file set {context.accession}</h3>
-                        <FileTable context={context} items={context.files} originating />
-                    </div>
-                : null }
-
-                {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={UnreleasedFiles} />
-                : null}
+                {/* Display list of released and unreleased files */}
+                <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -411,6 +397,11 @@ globals.content_views.register(PublicationData, 'PublicationData');
 // Display Annotation page, a subtype of Dataset.
 var Reference = React.createClass({
     mixins: [AuditMixin],
+
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -532,16 +523,8 @@ var Reference = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {context.files.length ?
-                    <div>
-                        <h3>Files in reference file set {context.accession}</h3>
-                        <FileTable context={context} items={context.files} originating />
-                    </div>
-                : null }
-
-                {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={UnreleasedFiles} />
-                : null}
+                {/* Display list of released and unreleased files */}
+                <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -555,6 +538,11 @@ globals.content_views.register(Reference, 'Reference');
 // Display Annotation page, a subtype of Dataset.
 var Project = React.createClass({
     mixins: [AuditMixin],
+
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -703,22 +691,8 @@ var Project = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {context.visualize_ucsc  && context.status == "released" ?
-                    <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
-                    </span>
-                : null }
-
-                {context.files.length ?
-                    <div>
-                        <h3>Files in project file set {context.accession}</h3>
-                        <FileTable context={context} items={context.files} originating />
-                    </div>
-                : null }
-
-                {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={UnreleasedFiles} />
-                : null}
+                {/* Display list of released and unreleased files */}
+                <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -732,6 +706,11 @@ globals.content_views.register(Project, 'Project');
 // Display Annotation page, a subtype of Dataset.
 var UcscBrowserComposite = React.createClass({
     mixins: [AuditMixin],
+
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     render: function() {
         var context = this.props.context;
         var files = context.files;
@@ -867,22 +846,8 @@ var UcscBrowserComposite = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {context.visualize_ucsc  && context.status == "released" ?
-                    <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
-                    </span>
-                : null }
-
-                {context.files.length ?
-                    <div>
-                        <h3>Files in UCSC browser composite file set {context.accession}</h3>
-                        <FileTable context={context} items={context.files} originating />
-                    </div>
-                : null }
-
-                {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={UnreleasedFiles} />
-                : null}
+                {/* Display list of released and unreleased files */}
+                <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -893,215 +858,27 @@ var UcscBrowserComposite = React.createClass({
 globals.content_views.register(UcscBrowserComposite, 'UcscBrowserComposite');
 
 
-var SeriesTable = React.createClass({
+var FilePanelHeader = module.exports.FilePanelHeader = React.createClass({
     render: function() {
-        var experiments = this.props.experiments;
+        var context = this.props.context;
 
         return (
-            <table className="table table-panel table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Accession</th>
-                        <th>Assay</th>
-                        <th>Target</th>
-                        <th>Description</th>
-                        <th>Lab</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {experiments.map(function (experiment) {
-                    // Ensure this can work with search result columns too
-                    return (
-                        <tr key={experiment['@id']}>
-                            <td><a href={experiment['@id']}>{experiment.accession}</a></td>
-                            <td>{experiment.assay_term_name}</td>
-                            <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
-                            <td>{experiment.description}</td>
-                            <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
-                        </tr>
-                    );
-                })}
-                </tbody>
-            </table>
-        );
-    }
-});
-
-var TreatmentSeriesTable = React.createClass({
-    render: function() {
-        var experiments = this.props.experiments;
-
-        return (
-            <table className="table table-panel table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Accession</th>
-                        <th>Possible controls</th>
-                        <th>Assay</th>
-                        <th>Target</th>
-                        <th>Treatment term name</th>
-                        <th>Treatment duration</th>
-                        <th>Treatment concentration</th>
-                        <th>Description</th>
-                        <th>Lab</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {experiments.map(function (experiment) {
-                    // Get an array of all treatments in all replicates
-                    var treatments = [];
-                    if (experiment.replicates && experiment.replicates.length) {
-                        experiment.replicates.forEach(function(replicate) {
-                            var biosampleTreatments = replicate.library && replicate.library.biosample && replicate.library.biosample.treatments && replicate.library.biosample.treatments;
-                            treatments = treatments.concat(biosampleTreatments);
-                        });
-                    }
-                    var treatmentTermNames = _.uniq(treatments.map(function(treatment) {
-                        return treatment.treatment_term_name;
-                    }));
-                    var treatmentDurations = _.chain(treatments.map(function(treatment) {
-                        return (treatment.duration && treatment.duration_units) ? treatment.duration + ' ' + treatment.duration_units : '';
-                    })).compact().uniq().value();
-                    var treatmentConcentrations = _.chain(treatments.map(function(treatment) {
-                        return (treatment.concentration && treatment.concentration_units) ? treatment.concentration + ' ' + treatment.concentration_units : '';
-                    })).compact().uniq().value();
-                    var possibleControls = experiment.possible_controls.map(function(control, i) {
-                        return <span>{i > 0 ? ', ' : ''}<a key={control.uuid} href={control['@id']}>{control.accession}</a></span>;
-                    });
-                    return (
-                        <tr key={experiment['@id']}>
-                            <td><a href={experiment['@id']}>{experiment.accession}</a></td>
-                            <td>{possibleControls}</td>
-                            <td>{experiment.assay_term_name}</td>
-                            <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
-                            <td>{treatmentTermNames[0]} {treatmentTermNames.length > 1 ? <abbr title={'Multiple term names: ' + treatmentTermNames.join(', ')}>*</abbr> : null}</td>
-                            <td>{treatmentDurations[0]} {treatmentDurations.length > 1 ? <abbr title={'Multiple durations: ' + treatmentDurations.join(', ')}>*</abbr> : null}</td>
-                            <td>{treatmentConcentrations[0]} {treatmentConcentrations.length > 1 ? <abbr title={'Multiple concentrations: ' + treatmentConcentrations.join(', ')}>*</abbr> : null}</td>
-                            <td>{experiment.description}</td>
-                            <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
-                        </tr>
-                    );
-                })}
-                </tbody>
-            </table>
-        );
-    }
-});
-
-var ReplicationTimingSeriesTable = React.createClass({
-    render: function() {
-        var experiments = this.props.experiments;
-
-        return (
-            <table className="table table-panel table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Accession</th>
-                        <th>Possible controls</th>
-                        <th>Assay</th>
-                        <th>Biosample phase</th>
-                        <th>Target</th>
-                        <th>Description</th>
-                        <th>Lab</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {experiments.map(function (experiment) {
-                    // Get an array of all treatments in all replicates
-                    var biosamples;
-                    if (experiment.replicates && experiment.replicates.length) {
-                        biosamples = experiment.replicates.map(function(replicate) {
-                            return replicate.library && replicate.library.biosample;
-                        });
-                    }
-                    var phases = _.chain(biosamples.map(function(biosample) {
-                        return biosample.phase;
-                    })).compact().uniq().value();
-                    var possibleControls = experiment.possible_controls.map(function(control, i) {
-                        return <span>{i > 0 ? ', ' : ''}<a key={control.uuid} href={control['@id']}>{control.accession}</a></span>;
-                    });
-                    return (
-                        <tr key={experiment['@id']}>
-                            <td><a href={experiment['@id']}>{experiment.accession}</a></td>
-                            <td>{possibleControls}</td>
-                            <td>{experiment.assay_term_name}</td>
-                            <td>{phases.join(', ')}</td>
-                            <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
-                            <td>{experiment.description}</td>
-                            <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
-                        </tr>
-                    );
-                })}
-                </tbody>
-            </table>
-        );
-    }
-});
-
-var OrganismDevelopmentSeriesTable = React.createClass({
-    render: function() {
-        var experiments = this.props.experiments;
-
-        return (
-            <table className="table table-panel table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Accession</th>
-                        <th>Possible controls</th>
-                        <th>Assay</th>
-                        <th>Relative age</th>
-                        <th>Life stage</th>
-                        <th>Target</th>
-                        <th>Description</th>
-                        <th>Lab</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {experiments.map(function (experiment) {
-                    // Get an array of all treatments in all replicates
-                    var biosamples, synchronizationBiosample, lifeStageBiosample, ages;
-                    if (experiment.replicates && experiment.replicates.length) {
-                        biosamples = experiment.replicates.map(function(replicate) {
-                            return replicate.library && replicate.library.biosample;
-                        });
-                    }
-                    if (biosamples && biosamples.length) {
-                        synchronizationBiosample = _(biosamples).find(function(biosample) {
-                            return biosample.synchronization;
-                        });
-                        lifeStageBiosample = _(biosamples).find(function(biosample) {
-                            return biosample.life_stage;
-                        });
-                        if (!synchronizationBiosample) {
-                            ages = _.chain(biosamples.map(function(biosample) {
-                                return biosample.age_display;
-                            })).compact().uniq().value();
-                        }
-                    }
-                    var possibleControls = experiment.possible_controls.map(function(control, i) {
-                        return <span>{i > 0 ? ', ' : ''}<a key={control.uuid} href={control['@id']}>{control.accession}</a></span>;
-                    });
-                    return (
-                        <tr key={experiment['@id']}>
-                            <td><a href={experiment['@id']}>{experiment.accession}</a></td>
-                            <td>{possibleControls}</td>
-                            <td>{experiment.assay_term_name}</td>
-                            <td>
-                                {synchronizationBiosample ?
-                                    <span>{synchronizationBiosample.synchronization + ' + ' + synchronizationBiosample.age_display}</span>
-                                :
-                                    <span>{ages.length ? <span>{ages.join(', ')}</span> : null}</span>
-                                }
-                            </td>
-                            <td>{lifeStageBiosample && lifeStageBiosample.life_stage}</td>
-                            <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
-                            <td>{experiment.description}</td>
-                            <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
-                        </tr>
-                    );
-                })}
-                </tbody>
-            </table>
+            <div>
+                {context.visualize_ucsc  && context.status == "released" ?
+                    <span className="pull-right">
+                        <DropdownButton title='Visualize Data'>
+                            <DropdownMenu>
+                                {Object.keys(context.visualize_ucsc).map(assembly =>
+                                    <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context.visualize_ucsc[assembly]}>
+                                        {assembly}
+                                    </a>
+                                )}
+                            </DropdownMenu>
+                        </DropdownButton>
+                    </span>
+                : null}
+                <h4>File summary</h4>
+            </div>
         );
     }
 });
@@ -1330,6 +1107,10 @@ var organismDevelopmentSeriesTableColumns = {
 var Series = module.exports.Series = React.createClass({
     mixins: [AuditMixin],
 
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     // Map series @id to title and table columns
     seriesComponents: {
         'MatchedSet': {title: 'matched set series', table: basicTableColumns},
@@ -1385,9 +1166,9 @@ var Series = module.exports.Series = React.createClass({
                 <span>
                     {speciesList.map((species, i) => {
                         return (
-                            <span>
+                            <span key={i}>
                                 {i > 0 ? <span> and </span> : null}
-                                <i key={i}>{species}</i>
+                                <i>{species}</i>
                             </span>
                         );
                     })}
@@ -1490,25 +1271,14 @@ var Series = module.exports.Series = React.createClass({
 
                 {context.related_datasets.length ?
                     <div>
-                        <h3>{'Experiments in ' + seriesTitle + ' ' + context.accession}</h3>
-                        <SortTablePanel>
+                        <SortTablePanel title={'Experiments in ' + seriesTitle + ' ' + context.accession}>
                             <SortTable list={context.related_datasets} columns={seriesComponent.table} />
                         </SortTablePanel>
                     </div>
                 : null }
 
-                {context.visualize_ucsc  && context.status == "released" ?
-                    <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
-                    </span>
-                : null }
-
-                {context.files && context.files.length ?
-                    <div>
-                        <h3>Original files in {seriesTitle} {context.accession}</h3>
-                        <FileTable items={context.files} />
-                    </div>
-                : null }
+                {/* Display list of released and unreleased files */}
+                <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -1531,15 +1301,16 @@ var unreleased_files_url = module.exports.unreleased_files_url = function (conte
     return '/search/?limit=all&frame=embedded&type=file&dataset=' + context['@id'] + file_states;
 };
 
-var UnreleasedFiles = module.exports.UnreleasedFiles = React.createClass({
+
+// Called once searches for unreleased files returns results in this.props.items. Displays both released and
+// unreleased files.
+var DatasetFiles = module.exports.DatasetFiles = React.createClass({
     render: function () {
-        var context = this.props.context;
-        return (
-            <div>
-                <h3>Unreleased files linked to {context.accession}</h3>
-                <FileTable {...this.props} />
-            </div>
-        );
+        if (this.props.items) {
+            return <FileTable {...this.props} items={this.props.items} />;
+        } else {
+            return null;
+        }
     }
 });
 
@@ -1605,8 +1376,7 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
 
         return (
             <div>
-                {this.props.title ? <h3>{this.props.title}</h3> : null}
-                <SortTablePanel>
+                <SortTablePanel title={this.props.title}>
                     <SortTable list={experiments} columns={this.tableColumns} footer={<ExperimentTableFooter items={experiments} total={this.props.total} url={this.props.url} />} />
                 </SortTablePanel>
             </div>
@@ -1626,76 +1396,146 @@ var FileTable = module.exports.FileTable = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // Optional parent object of file list
         items: React.PropTypes.array.isRequired, // Array of files to appear in the table
-        originating: React.PropTypes.bool // TRUE to display originating dataset column
+        originating: React.PropTypes.bool, // TRUE to display originating dataset column
+        session: React.PropTypes.object // Persona user session
+    },
+
+    getInitialState: function() {
+        return {
+            maxWidth: 'auto' // Width of widest table
+        }
+    },
+
+    cv: {
+        maxWidthRef: '', // ref key of table with this.state.maxWidth width
+        maxWidthNode: null // DOM node of table with this.state.maxWidth width 
     },
 
     // Configuration for raw file table
     rawTableColumns: {
         'accession': {
             title: 'Accession',
-            display: function(item) {
-                return (
-                    <span>
-                        {item.title}<br />
-                        <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
-                        {humanFileSize(item.file_size)}
-                    </span>
-                );
-            }
+            display: item =>
+                <span>
+                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                </span>
         },
         'file_type': {title: 'File type'},
         'biological_replicates': {
-            title: function(list, columns, meta) {
+            title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
+            getValue: item => item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''
+        },
+        'library': {
+            title: 'Library',
+            getValue: item => (item.replicate && item.replicate.library) ? item.replicate.library.accession : null
+        },
+        'run_type': {
+            title: 'Run type',
+            display: item => {
+                var runType;
+
+                if (item.run_type === 'single-ended') {
+                    runType = 'SE'
+                } else if (item.run_type === 'paired-ended') {
+                    runType = 'PE'
+                }
+
                 return (
-                    <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>
+                    <span>
+                        <span>{runType ? runType : null}</span>
+                        <span>{item.read_length ? <span>{runType ? <span> </span> : null}{item.read_length + item.read_length_units}</span> : null}</span>
+                    </span>
                 );
             },
-            getValue: function(item) {
-                return item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : '';
+            objSorter: (a, b) => {
+                // Sort by their combined string values
+                var aStr = (a.run_type ? a.run_type : '') + (a.read_length ? a.read_length : '');
+                var bStr = (b.run_type ? b.run_type : '') + (b.read_length ? b.read_length : '');
+                return (aStr < bStr) ? -1 : (bStr < aStr ? 1 : 0);
             }
         },
-        'technical_replicate_number': {
-            title: 'Technical replicate',
-            getValue: function(item) {
-                return item.replicate ? item.replicate.technical_replicate_number : null;
-            }
+        'paired_end': {
+            title: 'Read',
+            display: item => <span>{item.paired_end ? <span>R{item.paired_end}</span> : null}</span>
         },
-        'read_length': {
-            title: 'Read length',
-            display: function(item) {
-                return <span>{item.read_length ? <span>{item.read_length + ' ' + item.read_length_units}</span> : null}</span>;
-            }
-        },
-        'run_type': {title: 'Run type'},
-        'paired_end': {title: 'Paired end'},
-        'assembly': {title: 'Mapping assembly'},
         'title': {
             title: 'Lab',
-            getValue: function(item) {
-                return item.lab && item.lab.title ? item.lab.title : null;
-            }
+            getValue: item => item.lab && item.lab.title ? item.lab.title : null
         },
         'date_created': {
             title: 'Date added',
-            getValue: function(item) {
-                return moment.utc(item.date_created).format('YYYY-MM-DD');
-            },
-            objSorter: function(a, b) {
+            getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
+            objSorter: (a, b) => {
                 if (a.date_created && b.date_created) {
                     return Date.parse(a.date_created) - Date.parse(b.date_created);
                 }
                 return a.date_created ? -1 : (b.date_created ? 1 : 0);
             }
         },
-        'status': {
+        'file_size': {
+            title: 'File size',
+            display: item => <span>{humanFileSize(item.file_size)}</span>
+        },
+        'validation_status': {
             title: 'Validation status',
-            display: function(item) {
-                return <div className="characterization-meta-data"><StatusLabel status="pending" /></div>;
-            },
-            hide: function(list, columns, meta) {
-                return meta.encodevers !== '3';
-            },
+            display: item => <div className="characterization-meta-data"><StatusLabel status="pending" /></div>,
+            hide: (list, columns, meta) => meta.encodevers !== '3',
             sorter: false
+        },
+        'status': {
+            title: 'File status',
+            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
+            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
+        }
+    },
+
+    // Configuration for raw file table
+    rawArrayTableColumns: {
+        'accession': {
+            title: 'Accession',
+            display: item =>
+                <span>
+                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                </span>
+        },
+        'file_type': {title: 'File type'},
+        'biological_replicates': {
+            title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
+            getValue: item => item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''
+        },
+        'library': {
+            title: 'Library',
+            getValue: item => (item.replicate && item.replicate.library) ? item.replicate.library.accession : null
+        },
+        'assembly': {title: 'Mapping assembly'},
+        'title': {
+            title: 'Lab',
+            getValue: item => item.lab && item.lab.title ? item.lab.title : null
+        },
+        'date_created': {
+            title: 'Date added',
+            getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
+            objSorter: (a, b) => {
+                if (a.date_created && b.date_created) {
+                    return Date.parse(a.date_created) - Date.parse(b.date_created);
+                }
+                return a.date_created ? -1 : (b.date_created ? 1 : 0);
+            }
+        },
+        'file_size': {
+            title: 'File size',
+            display: item => <span>{humanFileSize(item.file_size)}</span>
+        },
+        'validation_status': {
+            title: 'Validation status',
+            display: item => <div className="characterization-meta-data"><StatusLabel status="pending" /></div>,
+            hide: (list, columns, meta) => meta.encodevers !== '3',
+            sorter: false
+        },
+        'status': {
+            title: 'File status',
+            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
+            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
         }
     },
 
@@ -1703,63 +1543,50 @@ var FileTable = module.exports.FileTable = React.createClass({
     procTableColumns: {
         'accession': {
             title: 'Accession',
-            display: function(item) {
-                return (
-                    <span>
-                        {item.title}<br />
-                        <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
-                        {humanFileSize(item.file_size)}
-                    </span>
-                );
-            }
+            display: item =>
+                <span>
+                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                </span>
         },
         'file_type': {title: 'File type'},
         'output_type': {title: 'Output type'},
         'biological_replicates': {
-            title: function(list, columns, meta) {
-                return (
-                    <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>
-                );
-            },
-            getValue: function(item) {
-                return item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : '';
-            }
-        },
-        'technical_replicate_number': {
-            title: 'Technical replicate',
-            getValue: function(item) {
-                return item.replicate ? item.replicate.technical_replicate_number : null;
-            }
+            title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
+            getValue: item => item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''
         },
         'assembly': {title: 'Mapping assembly'},
-        'genome_annotation': {title: 'Genome annotation'},
+        'genome_annotation': {
+            title: 'Genome annotation',
+            hide: (list, columns, meta) => _(list).all(item => !item.genome_annotation)
+        },
         'title': {
             title: 'Lab',
-            getValue: function(item) {
-                return item.lab && item.lab.title ? item.lab.title : null;
-            }
+            getValue: item => item.lab && item.lab.title ? item.lab.title : null
         },
         'date_created': {
             title: 'Date added',
-            getValue: function(item) {
-                return moment.utc(item.date_created).format('YYYY-MM-DD');
-            },
-            sorter: function(a, b) {
+            getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
+            sorter: (a, b) => {
                 if (a.date_created && b.date_created) {
                     return Date.parse(a.date_created) - Date.parse(b.date_created);
                 }
                 return a.date_created ? -1 : (b.date_created ? 1 : 0);
             }
         },
-        'status': {
+        'file_size': {
+            title: 'File size',
+            display: item => <span>{humanFileSize(item.file_size)}</span>
+        },
+        'validation_status': {
             title: 'Validation status',
-            display: function(item) {
-                return <div className="characterization-meta-data"><StatusLabel status="pending" /></div>;
-            },
-            hide: function(list, columns, meta) {
-                return meta.encodevers !== '3';
-            },
+            display: item => <div className="characterization-meta-data"><StatusLabel status="pending" /></div>,
+            hide: (list, columns, meta) => meta.encodevers !== '3',
             sorter: false
+        },
+        'status': {
+            title: 'File status',
+            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
+            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
         }
     },
 
@@ -1767,59 +1594,69 @@ var FileTable = module.exports.FileTable = React.createClass({
     refTableColumns: {
         'accession': {
             title: 'Accession',
-            display: function(item) {
-                return (
-                    <span>
-                        {item.title}<br />
-                        <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
-                        {humanFileSize(item.file_size)}
-                    </span>
-                );
-            }
+            display: item =>
+                <span>
+                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                </span>
         },
         'file_type': {title: 'File type'},
         'output_type': {title: 'Output type'},
         'assembly': {title: 'Mapping assembly'},
-        'genome_annotation': {title: 'Genome annotation'},
+        'genome_annotation': {
+            title: 'Genome annotation',
+            hide: (list, columns, meta) => _(list).all(item => !item.genome_annotation)
+        },
         'title': {
             title: 'Lab',
-            getValue: function(item) {
-                return item.lab && item.lab.title ? item.lab.title : null;
-            }
+            getValue: item => item.lab && item.lab.title ? item.lab.title : null
         },
         'date_created': {
             title: 'Date added',
-            getValue: function(item) {
-                return moment.utc(item.date_created).format('YYYY-MM-DD');
-            },
-            sorter: function(a, b) {
+            getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
+            sorter: (a, b) => {
                 if (a.date_created && b.date_created) {
                     return Date.parse(a.date_created) - Date.parse(b.date_created);
                 }
                 return a.date_created ? -1 : (b.date_created ? 1 : 0);
             }
+        },
+        'file_size': {
+            title: 'File size',
+            display: item => <span>{humanFileSize(item.file_size)}</span>
+        },
+        'status': {
+            title: 'File status',
+            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
+            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
         }
     },
 
     render: function() {
-        // Extract three kinds of file arrays
-        var files = _(this.props.items).groupBy(function(file) {
-            if (file.output_category === 'raw data') {
-                return 'raw';
-            } else if (file.output_category === 'reference') {
-                return 'ref';
-            } else {
-                return 'proc';
-            }
-        });
+        var {context, items, filePanelHeader, encodevers, anisogenic, session} = this.props;
+        var datasetFiles = context.files && context.files.concat((items && items.length) ? items : []);
+        if (datasetFiles.length) {
+            // Extract four kinds of file arrays
+            datasetFiles = _(datasetFiles).uniq(file => file['@id']);
+            var files = _(datasetFiles).groupBy(file => {
+                if (file.output_category === 'raw data') {
+                    return file.output_type === 'reads' ? 'raw' : 'rawArray';
+                } else if (file.output_category === 'reference') {
+                    return 'ref';
+                } else {
+                    return 'proc';
+                }
+            });
 
-        return (
-            <SortTablePanel>
-                <SortTable title="Raw data" list={files.raw} columns={this.rawTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
-                <SortTable title="Processed data" list={files.proc} columns={this.procTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
-                <SortTable title="Reference data" list={files.ref} columns={this.refTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
-            </SortTablePanel>
-        );
+            return (
+                <SortTablePanel header={filePanelHeader}>
+                    <SortTable title="Raw data files" list={files.raw} columns={this.rawTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
+                    <SortTable title="Raw data files" list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
+                    <SortTable title="Processed data files" list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
+                    <SortTable title="Reference data files" list={files.ref} columns={this.refTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} />
+                </SortTablePanel>
+            );
+        }
+        return null;
     }
 });
 

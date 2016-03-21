@@ -98,3 +98,19 @@ $form-bg: #f3f3f3;
         }
     }
 }
+
+.results-table-control {
+    .btn {
+        margin-right: 5px;
+    }
+
+    .dropdown-menu {
+        padding-top: 5px;
+        padding-bottom: 5px;
+
+        & > li > a {
+            padding: 2px 20px 2px 20px;
+            font-size: 0.95rem;
+        }
+    }
+}

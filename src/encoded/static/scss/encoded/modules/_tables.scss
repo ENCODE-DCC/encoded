@@ -32,11 +32,10 @@ thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td
 }
 
 .table-panel {
+    @extend .panel;
+    padding: 0;
+    margin: 0;
     border-collapse: separate;
-    background-color: #fff;
-    border: 1px solid #a0a0a0;
-    @include border-radius($border-radius-base);
-    @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
 
     tr:last-child td:first-child {
         @include border-bottom-left-radius($border-radius-base);
@@ -79,6 +78,8 @@ thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td
 .table-responsive {
     position: relative;
     overflow-x: auto;
+    background-image: inline-image("../img/checker.svg");
+    background-size: 16px 16px;
 }
 
 table thead tr th button {
@@ -171,7 +172,7 @@ form.table-filter {
 .table-section {
     @include font-size(1.3);
     font-weight: bold;
-    background-color: #d8d8d8;
+    background-color: #e8e8e8;
 
     th {
         height: auto !important;

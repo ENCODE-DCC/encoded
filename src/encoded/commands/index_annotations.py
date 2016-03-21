@@ -1,6 +1,5 @@
 from pyramid.paster import get_app
 from elasticsearch import RequestError
-from snowfort.elasticsearch import ELASTIC_SEARCH 
 import logging
 import json
 
@@ -20,7 +19,7 @@ def json_from_path(path, default=None):
 
 def run(app):
     registry = app.registry
-    es = app.registry[ELASTIC_SEARCH]
+    es = app.registry['snp_search']
     try:
         es.indices.create(index=index)
     except RequestError:

@@ -14,6 +14,7 @@
         { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
+        { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/notes" }
     ],
     "properties": {
@@ -29,20 +30,6 @@
             "comment": "Do not submit, value is assigned by the object.",
             "type": "string",
             "linkTo": "Organism"
-        },
-        "donor_documents": {
-            "title": "Donor documents",
-            "description": "Documents that are related to the donor.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Donor document",
-                "description": "A document that relates to the donor.",
-                "comment": "See document.json for available identifiers.",
-                "type": "string",
-                "linkTo": "Document"
-            }
         },
         "url": {
             "title": "URL",

@@ -77,3 +77,36 @@ def test_experiment_trackDb(testapp, workbook, expected):
 def test_series_trackDb(testapp, workbook, expected):
     res = testapp.get("/experiments/ENCSR300DEV/@@hub/trackDb.txt")
     assert expected in res.text
+
+@pytest.mark.parametrize('expected', [
+    "genome hg38",
+    "trackDb GRCh38/trackDb.txt",
+])
+def test_genome_txt(testapp, workbook, expected):
+    res = testapp.get("/batch_hub/type=Experiment&assembly=GRCh38/genomes.txt")
+    assert expected in res.text
+
+@pytest.mark.parametrize('expected', [
+    "GRCh38",
+    "hg19"
+])
+def test_assembly(testapp, workbook, expected):
+    res = testapp.get("/experiments/ENCSR000AEN/")
+    assert expected in res.json['assembly']
+
+
+@pytest.mark.parametrize('expected', [
+    "/experiments/ENCSR000AEN/@@hub/hub.txt",
+])
+def test_hub_field(testapp, workbook, expected):
+    res = testapp.get("/experiments/ENCSR000AEN/")
+    assert expected in res.json['hub']
+
+
+def test_visualize_ucsc(testapp, workbook):
+    expected = {
+        'GRCh38': 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt&db=hg38', 
+        'hg19': 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt&db=hg19'
+    }
+    res = testapp.get("/experiments/ENCSR000AEN/")
+    assert expected == res.json['visualize_ucsc']

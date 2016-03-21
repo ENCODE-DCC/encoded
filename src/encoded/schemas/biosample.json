@@ -642,6 +642,9 @@
         },
         "award.project": {
             "title": "Project"
+        },
+        "award.rfa": {
+            "title": "RFA"
         }
     },
     "columns": {
@@ -713,6 +716,9 @@
         },
         "constructs.length": {
             "title": "Constructs"
+        },
+        "summary": {
+            "title": "Summary"
         }
     },
     "boost_values": {

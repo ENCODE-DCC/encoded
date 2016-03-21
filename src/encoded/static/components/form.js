@@ -345,7 +345,7 @@ var jsonSchemaToFormSchema = function(attrs) {
 var jsonSchemaToDefaultValue = function(schema) {
     var defaultValue = {};
     _.each(schema.properties, function(property, name) {
-        if (property['default'] !== undefined) {
+        if (property.default !== undefined && !property.readonly) {
             defaultValue[name] = property['default'];
         }
     });

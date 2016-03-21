@@ -200,7 +200,7 @@ $characterization-figure-height: 64px;
     max-height: 360px;
 }
 
-.characterization-meta-data, .document-meta-data {
+.document-meta-data {
     margin: 0;
     padding: 10px;
 
@@ -208,6 +208,11 @@ $characterization-figure-height: 64px;
         display: inline-block;
         @include font-size(0.8);
     }
+}
+
+.characterization-meta-data {
+    @extend .document-meta-data;
+    padding: 0;
 }
 
 .characterization-status {

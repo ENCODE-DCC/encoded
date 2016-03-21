@@ -83,11 +83,13 @@ $brand-info: #4F689E;
 @import "encoded/mixins-custom";
 // SMACSS-based architecture (http://smacss.com/)
 @import "encoded/base";
-@import "encoded/layout"; 
+@import "encoded/layout";
+@import "encoded/bootstrap-lib";
 @import "encoded/modules/breadcrumbs",
         "encoded/modules/forms",
         "encoded/modules/key-value-display",
         "encoded/modules/lightbox",
+        "encoded/modules/matrix",
         "encoded/modules/lists",
         "encoded/modules/loading-spinner",
         "encoded/modules/modals",

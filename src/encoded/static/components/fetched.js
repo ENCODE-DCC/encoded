@@ -108,10 +108,12 @@ var FetchedData = module.exports.FetchedData = React.createClass({
     },
 
     getInitialState: function() {
+        // One state per <Param> child component, keyed by "name" with a value of search results from server
         return {};
     },
 
     handleFetch: function(result) {
+        // Set state to returned search result data to cause rerender of child components
         this.setState(result);
     },
 
@@ -119,25 +121,34 @@ var FetchedData = module.exports.FetchedData = React.createClass({
         var params = [];
         var communicating = false;
         var children = [];
+
+        // Collect <Param> and non-<Param> child components into appropriate arrays
         if (this.props.children) {
-            React.Children.forEach(this.props.children, function(child) {
+            React.Children.forEach(this.props.children, child => {
                 if (child.type === Param.type) {
+                    // <Param> child component; add to array of <Param> child components with this.props.key of its name and calling `handleFetch`
                     params.push(cloneWithProps(child, {
                         key: child.props.name,
                         handleFetch: this.handleFetch,
                     }));
+
+                    // Still communicating with server if handleFetch not yet called
                     if (this.state[child.props.name] === undefined) {
                         communicating = true;
                     }                    
                 } else {
+                    // Some non-<Param> child; just push it unmodified onto `children` array
                     children.push(child);
                 }
-            }, this);
+            });
         }
 
+        // If no <Param> components, nothing to render here
         if (!params.length) {
             return null;
         }
+
+        // If no login info yet, keep displaying the loading spinner
         if (!this.context.session) {
             return (
                 <div className="communicating">
@@ -146,10 +157,12 @@ var FetchedData = module.exports.FetchedData = React.createClass({
             );
         }
 
+        // Detect whether a <Param> component returned an "Error" @type object
         var errors = params.map(param => this.state[param.props.name])
             .filter(obj => obj && (obj['@type'] || []).indexOf('Error') > -1);
 
-        if (errors.length) {
+        // If we got an error, display the error string on the web page
+        if (!this.props.ignoreErrors && errors.length) {
             return (
                 <div className="error done">
                     {errors.map(error => {
@@ -160,6 +173,7 @@ var FetchedData = module.exports.FetchedData = React.createClass({
             );
         }
 
+        // If we haven't gotten a response, continue showing the loading spinner
         if (communicating) {
             return (
                 <div className="communicating">
@@ -169,6 +183,7 @@ var FetchedData = module.exports.FetchedData = React.createClass({
             );
         }
 
+        // Successfully got data. Display in the web page
         return (
             <div className="done">
                 {children.map((child, i) => cloneWithProps(child, _.extend({key: i}, this.props, this.state)))}
@@ -185,7 +200,6 @@ var Items = React.createClass({
         var Component = this.props.Component;
         var data = this.props.data;
         var items = data ? data['@graph'] : [];
-        if (!items.length) return null;
         return <Component {...this.props} items={items} total={data.total} />;
     }
 
@@ -196,7 +210,7 @@ var FetchedItems = module.exports.FetchedItems = React.createClass({
     
     render: function() {
         return (
-            <FetchedData>
+            <FetchedData ignoreErrors={this.props.ignoreErrors}>
                 <Param name="data" url={this.props.url} />
                 <Items {...this.props} />
             </FetchedData>

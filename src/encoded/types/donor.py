@@ -26,10 +26,10 @@ class Donor(Item):
         'characterizations.award',
         'characterizations.lab',
         'characterizations.submitted_by',
-        'donor_documents',
-        'donor_documents.award',
-        'donor_documents.lab',
-        'donor_documents.submitted_by'
+        'documents',
+        'documents.award',
+        'documents.lab',
+        'documents.submitted_by'
     ]
     name_key = 'accession'
     rev = {
@@ -76,7 +76,7 @@ class MouseDonor(Donor):
 class FlyDonor(Donor):
     item_type = 'fly_donor'
     schema = load_schema('encoded:schemas/fly_donor.json')
-    embedded = ['organism', 'constructs', 'constructs.target', 'characterizations']
+    embedded = Donor.embedded + ['organism', 'constructs', 'constructs.target', 'characterizations']
 
 
 @collection(
@@ -89,7 +89,7 @@ class FlyDonor(Donor):
 class WormDonor(Donor):
     item_type = 'worm_donor'
     schema = load_schema('encoded:schemas/worm_donor.json')
-    embedded = ['organism', 'constructs', 'constructs.target']
+    embedded = Donor.embedded + ['organism', 'constructs', 'constructs.target']
 
 
 @collection(

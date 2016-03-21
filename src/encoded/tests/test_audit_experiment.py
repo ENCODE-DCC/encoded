@@ -559,13 +559,34 @@ def test_audit_experiment_eligible_histone_antibody(testapp, base_experiment, ba
 
 
 def test_audit_experiment_biosample_type_missing(testapp, base_experiment):
-    testapp.patch_json(base_experiment['@id'], {'biosample_term_id': "EFO:0002067", 'biosample_term_name': 'K562'})
+    testapp.patch_json(base_experiment['@id'], {'biosample_term_id': "EFO:0002067",
+                                                'biosample_term_name': 'K562'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing biosample_type' for error in errors_list)
+
+
+def test_audit_experiment_biosample_match(testapp, base_experiment,
+                                          base_biosample, base_replicate,
+                                          base_library):
+    testapp.patch_json(base_biosample['@id'], {'biosample_term_id': "EFO:0003042",
+                                               'biosample_term_name': 'H1-hESC',
+                                               'biosample_type': 'stem cell'})
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    testapp.patch_json(base_experiment['@id'], {'biosample_term_id': "UBERON:0002116",
+                                                'biosample_term_name': 'ileum',
+                                                'biosample_type': 'tissue'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched biosample_term_id' for error in errors_list) and \
+        any(error['category'] == 'mismatched biosample_term_name' for error in errors_list) and \
+        any(error['category'] == 'mismatched biosample_type' for error in errors_list)
 
 
 def test_audit_experiment_documents(testapp, base_experiment, base_library, base_replicate):
@@ -866,7 +887,7 @@ def test_audit_experiment_replicate_with_no_files_warning(testapp,
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
-        if error_type == 'WARNING':
+        if error_type == 'ERROR':
             errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing file in replicate' for error in errors_list)
 

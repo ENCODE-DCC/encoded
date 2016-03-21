@@ -206,7 +206,7 @@ ntr_assays = {
         "name": "shRNA knockdown followed by RNA-seq",
         "objectives": [],
         "organs": [],
-        "preferred_name": "shRNA/RNA-seq",
+        "preferred_name": "shRNA RNA-seq",
         "slims": [],
         "synonyms": [],
         "systems": [],
@@ -219,7 +219,7 @@ ntr_assays = {
         "name": "siRNA knockdown followed by RNA-seq",
         "objectives": [],
         "organs": [],
-        "preferred_name": "siRNA/RNA-seq",
+        "preferred_name": "siRNA RNA-seq",
         "slims": [],
         "synonyms": [],
         "systems": [],
@@ -721,7 +721,6 @@ def main():
                         pass
     for term in terms:
         terms[term]['data'] = list(set(terms[term]['parents']) | set(terms[term]['part_of']) | set(terms[term]['achieves_planned_objective']))
-
         terms[term]['data_with_develops_from'] = list(set(terms[term]['data']) | set(terms[term]['develops_from']))
 
     for term in terms:
@@ -745,12 +744,12 @@ def main():
         terms[term]['types'] = getSlims(term, terms, 'type')
 
         del terms[term]['closure'], terms[term]['closure_with_develops_from']
-
+    
     for term in terms:
-        del terms[term]['parents'], terms[term]['part_of'], terms[term]['develops_from']
+        del terms[term]['parents'], terms[term]['develops_from']
         del terms[term]['has_part'], terms[term]['achieves_planned_objective']
         del terms[term]['id'], terms[term]['data'], terms[term]['data_with_develops_from']
-
+    
     terms.update(ntr_assays)
     with open('ontology.json', 'w') as outfile:
         json.dump(terms, outfile)

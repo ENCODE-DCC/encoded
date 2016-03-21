@@ -222,7 +222,7 @@ var Lot = module.exports.Lot = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                <RelatedItems title={'Experiments using antibody ' + context.accession}
+                <RelatedItems title={'Experiments using this antibody'}
                               url={'/search/?type=experiment&replicates.antibody.accession=' + context.accession}
                               Component={ExperimentTable} />
 

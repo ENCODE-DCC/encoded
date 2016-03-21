@@ -60,7 +60,7 @@ def get_mapping(assembly_name='hg19'):
                 'enabled': False
             },
             '_source': {
-                'enabled': False
+                'enabled': True
             },
             'properties': {
                 'uuid': {
@@ -188,7 +188,9 @@ def index_file(request):
     request.datastore = 'database'
     dry_run = request.json.get('dry_run', False)
     recovery = request.json.get('recovery', False)
+    record = request.json.get('record', False)
     es = request.registry[ELASTIC_SEARCH]
+    es_peaks = request.registry[SNP_SEARCH_ES]
 
     session = request.registry[DBSESSION]()
     connection = session.connection()
@@ -210,7 +212,7 @@ def index_file(request):
         last_xmin = request.json['last_xmin']
     else:
         try:
-            status = es.get(index=INDEX, doc_type='meta', id='indexing')
+            status = es_peaks.get(index='encoded_peaks', doc_type='meta', id='indexing')
         except NotFoundError:
             pass
         else:
@@ -274,9 +276,32 @@ def index_file(request):
         else:
             referencing = {hit['_id'] for hit in res['hits']['hits']}
             invalidated = referencing | updated
+            result.update(
+                max_xid=max_xid,
+                renamed=renamed,
+                updated=updated,
+                referencing=len(referencing),
+                invalidated=len(invalidated),
+                txn_count=txn_count,
+                first_txn_timestamp=first_txn.isoformat(),
+            )
+
     if not dry_run:
+        err = None
+        uuid_current = None
+        try:
+            for uuid in invalidated:
+                uuid_current = uuid
+                index_peaks(uuid, request)
+        except Exception as e:
+            log.error('Error indexing %s', uuid_current, exc_info=True)
+            err = repr(e)
+        result['errors'] = [err]
+        result['index'] = len(invalidated)
+        if record:
+            if not es_peaks.indices.exists('encoded_peaks'):
+                es_peaks.indices.create(index='encoded_peaks', body=index_settings())
+            es_peaks.index(index='encoded_peaks', doc_type='meta', body=result, id='indexing')
 
 
-        for uuid in invalidated:
-            index_peaks(uuid, request)
     return result
