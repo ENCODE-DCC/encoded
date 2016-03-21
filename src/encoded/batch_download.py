@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 from pyramid.response import Response
 from snowfort import TYPES
@@ -7,6 +8,7 @@ from urllib.parse import (
     parse_qs,
     urlencode,
 )
+from .search import iter_search_results
 from .search import list_visible_columns_for_schemas
 
 import csv
@@ -313,26 +315,36 @@ def lookup_column_value(value, path):
     return ','.join(str(n) for n in deduped_nodes)
 
 
+def format_row(columns):
+    return '\t'.join(columns) + '\r\n'
+
+
 @view_config(route_name='report_download', request_method='GET')
 def report_download(context, request):
-    params = parse_qs(request.query_string)
-    params['limit'] = ['all']
-
-    report_path = '/report/?{}'.format(urlencode(params, True))
-    results = request.embed(report_path, as_user=True)
-
     types = request.params.getall('type')
+    if len(types) != 1:
+        msg = 'Report view requires specifying a single type.'
+        raise HTTPBadRequest(explanation=msg)
+
+    # Make sure we get all results
+    request.GET['limit'] = 'all'
+
     schemas = [request.registry[TYPES][types[0]].schema]
     columns = list_visible_columns_for_schemas(request, schemas)
     header = [column.get('title') or field for field, column in columns.items()]
-    fout = io.StringIO()
-    writer = csv.writer(fout, delimiter='\t')
-    writer.writerow(header)
-    for item in results['@graph']:
-        row = [lookup_column_value(item, path) for path in columns]
-        writer.writerow(row)
-    return Response(
-        content_type='text/tsv',
-        body=fout.getvalue(),
-        content_disposition='attachment;filename="%s"' % 'report.tsv'
-    )
+
+    def generate_rows():
+        yield format_row(header)
+        for item in iter_search_results(context, request):
+            values = [lookup_column_value(item, path) for path in columns]
+            yield format_row(values)
+
+    # Stream response using chunked encoding.
+    request.response.content_type = 'text/tsv'
+    request.response.content_disposition = 'attachment;filename="%s"' % 'report.tsv'
+    app_iter = generate_rows()
+    if str is bytes:  # Python 2 vs 3 wsgi differences
+        request.response.app_iter = app_iter  # Python 2
+    else:
+        request.response.app_iter = (s.encode('utf-8') for s in app_iter)
+    return request.response

@@ -522,7 +522,7 @@ def iter_long_json(name, iterable, **other):
 
 
 @view_config(route_name='search', request_method='GET', permission='search')
-def search(context, request, search_type=None):
+def search(context, request, search_type=None, return_generator=False):
     """
     Search view connects to ElasticSearch and returns the results
     """
@@ -664,14 +664,18 @@ def search(context, request, search_type=None):
         request.response.status_code = 404
         result['notification'] = 'No results found'
         result['@graph'] = []
-        return result
+        return result if not return_generator else []
 
     result['notification'] = 'Success'
 
     # Format results for JSON-LD
     if not do_scan:
-        result['@graph'] = list(format_results(request, es_results['hits']['hits']))
-        return result
+        graph = format_results(request, es_results['hits']['hits'])
+        if return_generator:
+            return graph
+        else:
+            result['@graph'] = list(graph)
+            return result
 
     # Scan large result sets.
     del query['aggs']
@@ -681,10 +685,13 @@ def search(context, request, search_type=None):
         hits = scan(es, query=query, index=es_index, from_=from_, size=size, preserve_order=has_sort)
     graph = format_results(request, hits)
 
-    # Support for request.embed()
-    if request.__parent__ is not None:
-        result['@graph'] = list(graph)
-        return result
+    # Support for request.embed() and `return_generator`
+    if request.__parent__ is not None or return_generator:
+        if return_generator:
+            return graph
+        else:
+            result['@graph'] = list(graph)
+            return result
 
     # Stream response using chunked encoding.
     # XXX BeforeRender event listeners not called.
@@ -695,6 +702,10 @@ def search(context, request, search_type=None):
     else:
         request.response.app_iter = (s.encode('utf-8') for s in app_iter)
     return request.response
+
+
+def iter_search_results(context, request):
+    return search(context, request, return_generator=True)
 
 
 @view_config(context=AbstractCollection, permission='list', request_method='GET',
