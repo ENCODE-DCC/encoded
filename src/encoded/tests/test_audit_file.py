@@ -301,6 +301,17 @@ def test_audit_file_read_length_insufficient_excluding_dnase_seq(testapp, file1,
     assert all(error['category'] != 'insufficient read length' for error in errors_list)
 
 
+def test_audit_file_read_length_insufficient_excluding_atac_seq(testapp, file1, file_exp):
+    testapp.patch_json(file_exp['@id'], {'assay_term_name': 'ATAC-seq'})
+    testapp.patch_json(file1['@id'], {'read_length': 20})
+    res = testapp.get(file1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'insufficient read length' for error in errors_list)
+
+
 def test_audit_file_read_length_sufficient(testapp, file1):
     testapp.patch_json(file1['@id'], {'read_length': 100})
     res = testapp.get(file1['@id'] + '@@index-data')
