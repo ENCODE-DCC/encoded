@@ -1734,49 +1734,67 @@ var FileDetailView = function(node) {
 globals.graph_detail.register(FileDetailView, 'File');
 
 
+// For each type of quality metric type, make a list of attachment properties. If the quality_metric object has an attachment
+// property called `attachment`, it doesn't need to be added here -- this is only for attachment properties with arbitrary names.
 var qcAttachmentProperties = {
     'IDRQualityMetric': [
         'IDR_plot_true', 'IDR_plot_rep1_pr', 'IDR_plot_rep2_pr', 'IDR_plot_pool_pr', 'IDR_parameters_true', 'IDR_parameters_rep1_pr', 'IDR_parameters_rep2_pr', 'IDR_parameters_pool_pr'
+    ],
+    'ChipSeqFilterQualityMetric': [
+        'cross_correlation_plot'
     ]
 };
+
+// List of quality metric properties to not display
+var qcReservedProperties = ['uuid', 'assay_term_name', 'assay_term_id', 'attachment', 'submitted_by', 'level', 'status', 'date_created', 'step_run', 'schema_version'];
 
 // Display QC metrics of the selected QC sub-node in a file node.
 var QcDetailsView = function(metrics) {
     if (metrics) {
         var qcPanels = []; // Each QC metric panel to display
 
-        // QC metrics properties to NOT display.
-        var reserved = ['uuid', 'assay_term_name', 'assay_term_id', 'attachment', 'submitted_by', 'level', 'status', 'date_created', 'step_run', 'schema_version'];
-        var sortedKeys = Object.keys(metrics.ref).sort();
+        // Filter out QC metrics properties not to display based on the qcReservedProperties list, as well as those properties with keys
+        // beginning with '@'. Sort the list of property keys as well.
+        var sortedKeys = Object.keys(metrics.ref).filter(key => key[0] !== '@' && qcReservedProperties.indexOf(key) === -1).sort();
 
-        // Get the list of attachment properties for the given qc object @type.
+        // Get the list of attachment properties for the given qc object @type. and generate the JSX for their display panels.
+        // The list of keys for attachment properties to display comes from qcAttachmentProperties. Use the @type for the attachment
+        // property as a key to retrieve the list of properties appropriate for that QC type.
         var qcAttachmentPropertyList = qcAttachmentProperties[metrics.ref['@type'][0]];
         if (qcAttachmentPropertyList) {
             qcPanels = qcAttachmentPropertyList.map(attachmentPropertyKey => {
-                return <AttachmentPanel context={metrics.ref} attachment={metrics.ref[attachmentPropertyKey]} />;
+                // Generate the JSX for the panel.
+                return <AttachmentPanel context={metrics.ref} attachment={metrics.ref[attachmentPropertyKey]} title={attachmentPropertyKey} />;
             });
         }
 
         return (
-            <div>
-                <h4 className="quality-metrics-title">Quality metrics of {metrics.parent.accession}</h4>
-                <dl className="key-value-flex">
-                    {sortedKeys.map(function(key) {
-                        if ((typeof metrics.ref[key] === 'string' || typeof metrics.ref[key] === 'number') && key[0] !== '@' && reserved.indexOf(key) === -1) {
-                            return(
+            <div className="row">
+                <div className="col-md-4 col-sm-6 col-xs-12">
+                    <h4 className="quality-metrics-title">Quality metrics of {metrics.parent.accession}</h4>
+                    <dl className="key-value-flex">
+                        {sortedKeys.map(key => 
+                            (typeof metrics.ref[key] === 'string' || typeof metrics.ref[key] === 'number') ?
                                 <div key={key}>
                                     <dt>{key}</dt>
                                     <dd>{metrics.ref[key]}</dd>
                                 </div>
-                            );
-                        }
-                        return null;
-                    })}
-                </dl>
-                {metrics.ref.attachment ?
-                    <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} />
-                : null}
-                {qcPanels}
+                            : null
+                        )}
+                    </dl>
+                </div>
+
+                <div className="col-md-8 col-sm-12">
+                    <h4 className="quality-metrics-title">Quality metrics attachments</h4>
+                    <div className="row">
+                        {/* If the metrics object has an `attachment` property, display that first, then display the properties
+                            not named `attachment` but which have their own schema attribute, `attachment`, set to true */}
+                        {metrics.ref.attachment ?
+                            <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} />
+                        : null}
+                        {qcPanels}
+                    </div>
+                </div>
             </div>
         );
     } else {

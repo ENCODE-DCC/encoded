@@ -319,32 +319,32 @@ var AttachmentPanel = module.exports.AttachmentPanel = React.createClass({
     render: function() {
         var {context, attachment, title} = this.props;
 
-        // Make thd download link
+        // Make the download link
         var download, attachmentHref;
         if (attachment.href && attachment.download) {
             attachmentHref = url.resolve(context['@id'], attachment.href);
             download = (
-                <dd className="dl-link">
+                <div className="dl-link">
                     <i className="icon icon-download"></i>&nbsp;
                     <a data-bypass="true" href={attachmentHref} download={attachment.download}>
                         {attachment.download}
                     </a>
-                </dd>
+                </div>
             );
         } else {
             download = <em>Attachment not available to download</em>;
         }
 
         return (
-            <section className="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+            <section className="col-sm-12 col-md-6">
                 <Panel addClasses={globals.itemClass(context, 'view-detail quality-metric-header')}>
                     <figure>
                         <Attachment context={context} attachment={attachment} className="characterization" />
                     </figure>
                     <div className="document-intro document-meta-data">
                         {title ?
-                            <div data-test="caption">
-                                <strong>Attachment:</strong>
+                            <div data-test="attachments">
+                                <strong>Attachment: </strong>
                                 {title}
                             </div>
                         : null}
