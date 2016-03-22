@@ -1734,14 +1734,22 @@ var FileDetailView = function(node) {
 globals.graph_detail.register(FileDetailView, 'File');
 
 
-// For each type of quality metric type, make a list of attachment properties. If the quality_metric object has an attachment
+// For each type of quality metric, make a list of attachment properties. If the quality_metric object has an attachment
 // property called `attachment`, it doesn't need to be added here -- this is only for attachment properties with arbitrary names.
+// Each property in the list has an associated human-readable description for display on the page.
 var qcAttachmentProperties = {
     'IDRQualityMetric': [
-        'IDR_plot_true', 'IDR_plot_rep1_pr', 'IDR_plot_rep2_pr', 'IDR_plot_pool_pr', 'IDR_parameters_true', 'IDR_parameters_rep1_pr', 'IDR_parameters_rep2_pr', 'IDR_parameters_pool_pr'
+        {'IDR_plot_true': 'IDR dispersion plot for true replicates'},
+        {'IDR_plot_rep1_pr': 'IDR dispersion plot for replicate 1 pseudo-replicates'},
+        {'IDR_plot_rep2_pr': 'IDR dispersion plot for replicate 2 pseudo-replicates'},
+        {'IDR_plot_pool_pr': 'IDR dispersion plot for pool pseudo-replicates'},
+        {'IDR_parameters_true': 'IDR run parameters for true replicates'},
+        {'IDR_parameters_rep1_pr': 'IDR run parameters for replicate 1 pseudo-replicates'},
+        {'IDR_parameters_rep2_pr': 'IDR run parameters for replicate 2 pseudo-replicates'},
+        {'IDR_parameters_pool_pr': 'IDR run parameters for pool pseudo-replicates'}
     ],
     'ChipSeqFilterQualityMetric': [
-        'cross_correlation_plot'
+        {'cross_correlation_plot': 'Cross-correlation plot'}
     ]
 };
 
@@ -1762,9 +1770,12 @@ var QcDetailsView = function(metrics) {
         // property as a key to retrieve the list of properties appropriate for that QC type.
         var qcAttachmentPropertyList = qcAttachmentProperties[metrics.ref['@type'][0]];
         if (qcAttachmentPropertyList) {
-            qcPanels = qcAttachmentPropertyList.map(attachmentPropertyKey => {
-                // Generate the JSX for the panel.
-                return <AttachmentPanel context={metrics.ref} attachment={metrics.ref[attachmentPropertyKey]} title={attachmentPropertyKey} />;
+            qcPanels = qcAttachmentPropertyList.map(attachmentPropertyInfo => {
+                // Each object in the list has only one key (the metric attachment property name), so get it here.
+                var attachmentPropertyName = Object.keys(attachmentPropertyInfo)[0];
+
+                // Generate the JSX for the panel. Use the property name as the key to get the corresponding human-readable description for the title
+                return <AttachmentPanel context={metrics.ref} attachment={metrics.ref[attachmentPropertyName]} title={attachmentPropertyInfo[attachmentPropertyName]} />;
             });
         }
 

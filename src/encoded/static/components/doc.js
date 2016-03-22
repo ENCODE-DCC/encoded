@@ -327,7 +327,7 @@ var AttachmentPanel = module.exports.AttachmentPanel = React.createClass({
                 <div className="dl-link">
                     <i className="icon icon-download"></i>&nbsp;
                     <a data-bypass="true" href={attachmentHref} download={attachment.download}>
-                        {attachment.download}
+                        Download
                     </a>
                 </div>
             );
