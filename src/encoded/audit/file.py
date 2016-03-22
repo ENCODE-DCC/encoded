@@ -132,7 +132,8 @@ def audit_file_read_length(value, system):
 
     if 'dataset' in value:
         if value['dataset']['assay_term_name'] in ['RNA Bind-n-Seq',
-                                                   'DNase-seq']:
+                                                   'DNase-seq',
+                                                   'ATAC-seq']:
             return
 
     creation_date = value['date_created'][:10].split('-')
@@ -746,7 +747,7 @@ def audit_file_read_depth(value, system):
                             yield failure
             return
         else:
-            if special_assay_name != 'empty':  # either shRNA or single cell
+            if special_assay_name != 'empty':  # either shRNA or single cell or CRISPR
                 if read_depth < special_assays_with_read_depth[special_assay_name]:
                     detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                                  read_depth) + \

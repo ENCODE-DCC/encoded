@@ -31,5 +31,6 @@ pipelines_with_read_depth = {
 
 special_assays_with_read_depth = {
     'shRNA knockdown followed by RNA-seq': 10000000,
+    'CRISPR genome editing followed by RNA-seq': 10000000,
     'single cell isolation followed by RNA-seq': 5000000
     }
