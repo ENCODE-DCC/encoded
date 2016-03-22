@@ -123,6 +123,23 @@ $characterization-figure-height: 64px;
 }
 
 
+.type-QualityMetric.view-detail {
+    padding: 0;
+
+    figure {
+        margin: 14px;
+        padding: 10px;
+        text-align: center;
+    }
+
+    figcaption {
+        font-weight: bold;
+        text-align: center;
+        padding: 5px;
+    }
+}
+
+
 .document-title {
     padding: 5px;
     background-color: #fff;
@@ -557,6 +574,10 @@ $characterization-figure-height: 64px;
     @include type-panel($characterization-figure-width, $characterization-figure-height);
 }
 
+.type-QualityMetric {
+    @include type-panel($characterization-figure-width, $characterization-figure-height);
+}
+
 @mixin panel-header($figure-height) {
     height: auto;
     border-bottom: 1px solid #e8e8e8;
@@ -577,6 +598,11 @@ $characterization-figure-height: 64px;
     &.panel-body {
         padding: 0;
     }
+}
+
+.quality-metric-header {
+    height: auto;
+    overflow: hidden;
 }
 
 %panel-intro {

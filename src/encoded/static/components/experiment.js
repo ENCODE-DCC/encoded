@@ -36,7 +36,7 @@ var SingleTreatment = objectutils.SingleTreatment;
 var SoftwareVersionList = software.SoftwareVersionList;
 var {SortTablePanel, SortTable} = sortTable;
 var ProjectBadge = image.ProjectBadge;
-var DocumentsPanel = doc.DocumentsPanel;
+var {DocumentsPanel, AttachmentPanel} = doc;
 var {Panel, PanelBody, PanelHeading} = panel;
 var DropdownButton = button.DropdownButton;
 var DropdownMenu = dropdownMenu.DropdownMenu;
@@ -235,7 +235,7 @@ var Experiment = module.exports.Experiment = React.createClass({
             if (biosample.talens && biosample.talens.length) {
                 biosample.talens.forEach(talen => {
                     if (talen.documents && talen.documents.length) {
-                        Array.prototype.push.apply(biosampleTalenDocs, talen.documents)
+                        Array.prototype.push.apply(biosampleTalenDocs, talen.documents);
                     }
                 });
             }
@@ -919,7 +919,7 @@ var RelatedSeriesList = React.createClass({
             currInfoItem: '', // Accession of item whose detail info appears; empty string to display no detail info
             touchScreen: false, // True if we know we got a touch event; ignore clicks without touch indiciation
             clicked: false // True if info button was clicked (vs hovered)
-        }
+        };
     },
 
     // Handle the mouse entering/existing an info icon. Ignore if the info tooltip is open because the icon had
@@ -983,7 +983,7 @@ var RelatedSeriesItem = React.createClass({
     getInitialState: function() {
         return {
             touchOn: false // True if icon has been touched
-        }
+        };
     },
 
     // Touch screen
@@ -1553,8 +1553,8 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
             // Build the graph; place resulting graph in this.jsonGraph
             var filterOptions = {};
             if (this.state.selectedFilterValue && this.sortedFilterOptions[this.state.selectedFilterValue]) {
-                var selectedAssembly = this.sortedFilterOptions[this.state.selectedFilterValue].assembly;
-                var selectedAnnotation = this.sortedFilterOptions[this.state.selectedFilterValue].annotation;
+                selectedAssembly = this.sortedFilterOptions[this.state.selectedFilterValue].assembly;
+                selectedAnnotation = this.sortedFilterOptions[this.state.selectedFilterValue].annotation;
             }
             try {
                 this.jsonGraph = assembleGraph(context, session, this.state.infoNodeId, files, selectedAssembly, selectedAnnotation);
@@ -1734,13 +1734,29 @@ var FileDetailView = function(node) {
 globals.graph_detail.register(FileDetailView, 'File');
 
 
+var qcAttachmentProperties = {
+    'IDRQualityMetric': [
+        'IDR_plot_true', 'IDR_plot_rep1_pr', 'IDR_plot_rep2_pr', 'IDR_plot_pool_pr', 'IDR_parameters_true', 'IDR_parameters_rep1_pr', 'IDR_parameters_rep2_pr', 'IDR_parameters_pool_pr'
+    ]
+};
+
 // Display QC metrics of the selected QC sub-node in a file node.
 var QcDetailsView = function(metrics) {
-    // QC metrics properties to NOT display.
-    var reserved = ['uuid', 'assay_term_name', 'assay_term_id', 'attachment', 'submitted_by', 'level', 'status', 'date_created', 'step_run', 'schema_version'];
-    var sortedKeys = Object.keys(metrics.ref).sort();
-
     if (metrics) {
+        var qcPanels = []; // Each QC metric panel to display
+
+        // QC metrics properties to NOT display.
+        var reserved = ['uuid', 'assay_term_name', 'assay_term_id', 'attachment', 'submitted_by', 'level', 'status', 'date_created', 'step_run', 'schema_version'];
+        var sortedKeys = Object.keys(metrics.ref).sort();
+
+        // Get the list of attachment properties for the given qc object @type.
+        var qcAttachmentPropertyList = qcAttachmentProperties[metrics.ref['@type'][0]];
+        if (qcAttachmentPropertyList) {
+            qcAttachmentPropertyList.map(attachmentPropertyKey => {
+                return <AttachmentPanel context={metrics.ref} attachment={metrics.ref[attachmentPropertyKey]} />;
+            });
+        }
+
         return (
             <div>
                 <h4 className="quality-metrics-title">Quality metrics of {metrics.parent.accession}</h4>
@@ -1757,6 +1773,15 @@ var QcDetailsView = function(metrics) {
                         return null;
                     })}
                 </dl>
+                {metrics.ref.attachment ?
+                    <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} />
+                : null}
+                {Object.keys(metrics.ref).map(metricKey => {
+                    if (metrics.ref[metricKey].attachment) {
+                        return <AttachmentPanel context={metrics.ref} attachment={metrics.ref[metricKey]} />;
+                    }
+                    return null;
+                })}
             </div>
         );
     } else {
