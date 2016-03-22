@@ -716,14 +716,6 @@ def audit_file_read_depth(value, system):
             value['@id'])
         yield AuditFailure('missing run_type in derived_from files', detail, level='DCC_ACTION')
 
-    read_depth = get_bam_read_depth(value, False)
-
-    if read_depth is False:
-        detail = 'ENCODE Processed alignment file {} has no read depth information'.format(
-            value['@id'])
-        yield AuditFailure('missing read depth', detail, level='DCC_ACTION')
-        return
-
     special_assay_name = 'empty'
     target_name = 'empty'
     target_investigated_as = 'empty'
@@ -737,6 +729,15 @@ def audit_file_read_depth(value, system):
 
     if target_name in ['H3K9me3-human', 'H3K9me3-mouse']:
         read_depth = get_bam_read_depth(value, True)
+    else:
+        read_depth = get_bam_read_depth(value, False)
+
+
+    if read_depth is False:
+        detail = 'ENCODE Processed alignment file {} has no read depth information'.format(
+            value['@id'])
+        yield AuditFailure('missing read depth', detail, level='DCC_ACTION')
+        return
 
     for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
         if pipeline['title'] not in pipelines_with_read_depth:
@@ -907,7 +908,7 @@ def check_chip_seq_standards(value, read_depth, target_name, is_control_file, co
                              'investigated as broad histone mark require ' + \
                              '{} mapped reads, according to '.format(marks['broad']) + \
                              'June 2015 standards.'
-                    yield AuditFailure('low read depth', detail, level='NOT_COMPLIANT')
+                    yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
             else:
                 if read_depth >= marks['narrow'] and read_depth < marks['broad']:
                     detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
