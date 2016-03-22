@@ -116,7 +116,7 @@ var Attachment = module.exports.Attachment = React.createClass({
                         </div>
                     );
                 }
-            } else if (context.attachment.type == "application/pdf"){
+            } else if (attachment.type == "application/pdf"){
                 return (
                     <div className="attachment">
                         <a data-bypass="true" href={attachmentHref} className="file-pdf">Attachment PDF Icon</a>

@@ -1752,7 +1752,7 @@ var QcDetailsView = function(metrics) {
         // Get the list of attachment properties for the given qc object @type.
         var qcAttachmentPropertyList = qcAttachmentProperties[metrics.ref['@type'][0]];
         if (qcAttachmentPropertyList) {
-            qcAttachmentPropertyList.map(attachmentPropertyKey => {
+            qcPanels = qcAttachmentPropertyList.map(attachmentPropertyKey => {
                 return <AttachmentPanel context={metrics.ref} attachment={metrics.ref[attachmentPropertyKey]} />;
             });
         }
@@ -1776,12 +1776,7 @@ var QcDetailsView = function(metrics) {
                 {metrics.ref.attachment ?
                     <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} />
                 : null}
-                {Object.keys(metrics.ref).map(metricKey => {
-                    if (metrics.ref[metricKey].attachment) {
-                        return <AttachmentPanel context={metrics.ref} attachment={metrics.ref[metricKey]} />;
-                    }
-                    return null;
-                })}
+                {qcPanels}
             </div>
         );
     } else {
