@@ -873,14 +873,16 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
             var field = facet['field'];
             var total = facet['total'];
             var termID = title.replace(/\s+/g, '');
-            var terms = facet['terms'].filter(function (term) {
+            var terms = facet['terms'].filter(term => {
                 if (term.key) {
                     for(var filter in filters) {
                         if(filters[filter].term === term.key) {
                             return true;
                         }
                     }
-                    return term.doc_count > 0;
+
+                    // Only show terms with a non-zero count, or allow a zero count if they're from a hierachical facet
+                    return term.doc_count > 0 || facetHierarchy[field];
                 } else {
                     return false;
                 }
