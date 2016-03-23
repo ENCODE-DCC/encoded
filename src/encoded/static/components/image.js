@@ -109,7 +109,7 @@ var Attachment = module.exports.Attachment = React.createClass({
                 } else {
                     return (
                         <div className="attachment">
-                            <a data-bypass="true" href={attachmentHref} onClick={this.lightboxClick.bind(this, attachmentType)}>
+                            <a className="attachment-button" data-bypass="true" href={attachmentHref} onClick={this.lightboxClick.bind(this, attachmentType)}>
                                 <img className={imgClass} src={src} height={height} width={width} alt={alt} />
                             </a>
                             <Lightbox lightboxVisible={this.state.lightboxVisible} lightboxImg={attachmentHref} clearLightbox={this.clearLightbox} />
@@ -119,13 +119,13 @@ var Attachment = module.exports.Attachment = React.createClass({
             } else if (attachment.type == "application/pdf"){
                 return (
                     <div className="attachment">
-                        <a data-bypass="true" href={attachmentHref} className="file-pdf">Attachment PDF Icon</a>
+                        <a data-bypass="true" href={attachmentHref} className="attachment-button file-pdf">Attachment PDF Icon</a>
                     </div>
                 );
             } else {
                 return (
                     <div className="attachment">
-                        <a data-bypass="true" href={attachmentHref} className="file-generic">Attachment Icon</a>
+                        <a data-bypass="true" href={attachmentHref} className="attachment-button file-generic">Attachment Icon</a>
                     </div>
                 );
             }
