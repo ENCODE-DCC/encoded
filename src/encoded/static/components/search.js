@@ -638,7 +638,7 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
         // Called by SubfacetRender when subfacets get rendered -- displayed or not (i.e. open or closed).
         // Useful for deciding whether to display the disclosure triangle or not.
         subfacetsRendered: function(count, selected, update) {
-            this.setState({hasSubfacets: count > 1});
+            this.setState({hasSubfacets: count > 0});
             if (!update) {
                 this.setState({subfacetsOpen: selected});
             }
@@ -790,7 +790,7 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
                 // We now have a facet that could have subfacet terms. Find any subfacet terms with non-zero doc_counts -- we only render those.
                 // We also need to have more than one term in the subfacet, so we compare the number of terms > 1 instead of > 0.
                 this.relevantTerms = facet.terms.filter(term => term.doc_count > 0);
-                if (this.relevantTerms && this.relevantTerms.length > 1) {
+                if (this.relevantTerms && this.relevantTerms.length > 0) {
                     return (
                         <ul style={subfacetVisibility}>
                             {this.relevantTerms.map(term => {
