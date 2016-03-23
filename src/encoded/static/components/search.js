@@ -793,7 +793,7 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
                 // We now have a facet that could have subfacet terms. Find any subfacet terms with non-zero doc_counts -- we only render those.
                 // We also need to have more than one term in the subfacet, so we compare the number of terms > 1 instead of > 0.
                 this.relevantTerms = facet.terms.filter(term => term.doc_count > 0);
-                if (this.relevantTerms && this.relevantTerms.length > 0) {
+                if (this.relevantTerms.length > 0) {
                     return (
                         <ul style={subfacetVisibility}>
                             {this.relevantTerms.map(term => {
@@ -831,7 +831,8 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
             }
 
             // No subfacets
-            return null;
+            this.relevantTerms = [];
+            return <ul style={subfacetVisibility}></ul>;
         }
     });
 
