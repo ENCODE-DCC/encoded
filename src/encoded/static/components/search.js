@@ -716,7 +716,10 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
             // requests (through FetchedItems) if we know we need to. That avoids having a needless GET request returns results to
             // what could now be an unmounted facet term.
             if (this.context.session) {
-                return !_.isEqual(this.props.facet, nextProps.facet) || (this.props.subfacetsOpen !== nextProps.subfacetsOpen);
+                return !_.isEqual(this.props.facet, nextProps.facet) ||
+                       (this.props.subfacetsOpen !== nextProps.subfacetsOpen) ||
+                       (this.props.searchBase !== nextProps.searchBase) ||
+                       !_.isEqual(this.props.filters, nextProps.filters);
             }
             return true;
         },
