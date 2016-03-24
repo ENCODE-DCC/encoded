@@ -79,6 +79,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
             instance_type = 'r3.xlarge'
         else:
             instance_type = 'r3.large'
+        image_id = 'ami-152bc275'
 
     reservation = ec2.create_instances(
         ImageId=image_id,
