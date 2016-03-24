@@ -106,7 +106,6 @@
            "type": "string",
             "description": "The grade of the experiment",
             "comment":"",
-            "default": "unreviewed",
             "permission": "import_items",
             "title": "Validation status",
             "enum": [
@@ -116,7 +115,7 @@
                 "bronze",
                 "unreleasable",
                 "ungraded",
-                "ungradable",
+                "ungradable"
             ]
         },
         "internal_status": {
