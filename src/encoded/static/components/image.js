@@ -108,10 +108,12 @@ var Attachment = module.exports.Attachment = React.createClass({
                     return <img className={imgClass} src={src} height={height} width={width} alt={alt} />;
                 } else {
                     return (
-                        <div className="attachment">
-                            <a className="attachment-button" data-bypass="true" href={attachmentHref} onClick={this.lightboxClick.bind(this, attachmentType)}>
-                                <img className={imgClass} src={src} height={height} width={width} alt={alt} />
-                            </a>
+                        <div>
+                            <div className="attachment">
+                                <a className="attachment-button" data-bypass="true" href={attachmentHref} onClick={this.lightboxClick.bind(this, attachmentType)}>
+                                    <img className={imgClass} src={src} height={height} width={width} alt={alt} />
+                                </a>
+                            </div>
                             <Lightbox lightboxVisible={this.state.lightboxVisible} lightboxImg={attachmentHref} clearLightbox={this.clearLightbox} />
                         </div>
                     );
@@ -136,7 +138,6 @@ var Attachment = module.exports.Attachment = React.createClass({
                 </div>
             );
         }
-        return null;
     }
 });
 
