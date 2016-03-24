@@ -114,8 +114,6 @@ def get_peak_metadata_links(request):
 @view_config(route_name='peak_metadata', request_method='GET')
 def peak_metadata(context, request):
     param_list = parse_qs(request.matchdict['search_params'])
-    if param_list.get('referrer'):
-        del param_list['referrer']
     param_list['field'] = []
     header = ['assay_term_name', 'coordinates', 'target.label', 'biosample.accession', 'file.accession', 'experiment.accession']
     param_list['limit'] = ['all']
@@ -247,23 +245,17 @@ def metadata_tsv(context, request):
 
 @view_config(route_name='batch_download', request_method='GET')
 def batch_download(context, request):
-
     # adding extra params to get required columns
     param_list = parse_qs(request.matchdict['search_params'])
     param_list['field'] = ['files.href', 'files.file_type']
     param_list['limit'] = ['all']
-    files = []
-    search_path = request.referrer.split("?")[0].split(request.host_url)[-1]
-    if 'region-search' in search_path:
-        request.matchdict['search_params'] = request.matchdict['search_params'] + '&referrer={}'.format(search_path.replace('/', ''))
-        files.extend(get_peak_metadata_links(request))
-    path = '{}?{}'.format(search_path, urlencode(param_list, True))
+    path = '/search/?%s' % urlencode(param_list, True)
     results = request.embed(path, as_user=True)
     metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv'.format(
         host_url=request.host_url,
         search_params=request.matchdict['search_params']
     )
-    files.append(metadata_link)
+    files = [metadata_link]
     if 'files.file_type' in param_list:
         for exp in results['@graph']:
             for f in exp['files']:
