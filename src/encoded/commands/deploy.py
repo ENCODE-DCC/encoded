@@ -73,6 +73,10 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
         security_groups = ['elasticsearch-https']
         del bdm[0]['Ebs']
         bdm[0]['VirtualName'] = 'ephemeral0'
+        if profile_name == 'production':
+            instance_type = 'r3.xlarge'
+        else:
+            instance_type = 'r3.large'
         image_id = 'ami-152bc275'
 
     reservation = ec2.create_instances(
