@@ -75,14 +75,10 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
             'DeviceName': '/dev/sda1',
             'VirtualName': 'ephemeral0'
         }]
-        # bdm[0]['VirtualName'] = 'ephemeral0'
-        # bdm[0]['DeviceName'] = '/dev/sda'
-        print(bdm)
         if profile_name == 'production':
             instance_type = 'r3.xlarge'
         else:
             instance_type = 'r3.large'
-        image_id = 'ami-152bc275'
 
     reservation = ec2.create_instances(
         ImageId=image_id,
