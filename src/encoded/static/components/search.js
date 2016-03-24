@@ -16,7 +16,6 @@ var audit = require('./audit');
 var objectutils = require('./objectutils');
 
 var DbxrefList = dbxref.DbxrefList;
-var Dbxref = dbxref.Dbxref;
 var statusOrder = globals.statusOrder;
 var SingleTreatment = objectutils.SingleTreatment;
 var AuditIndicators = audit.AuditIndicators;
