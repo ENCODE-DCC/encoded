@@ -71,9 +71,12 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
     else:
         user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config-elasticsearch.yml']).decode('utf-8')
         security_groups = ['elasticsearch-https']
-        del bdm[0]['Ebs']
-        bdm[0]['VirtualName'] = 'ephemeral0'
-        bdm[0]['DeviceName'] = '/dev/sda'
+        bdm = {
+            'DeviceName': '/dev/sda1',
+            'VirtualName': 'ephemeral0'
+        }
+        # bdm[0]['VirtualName'] = 'ephemeral0'
+        # bdm[0]['DeviceName'] = '/dev/sda'
         print(bdm)
         if profile_name == 'production':
             instance_type = 'r3.xlarge'
