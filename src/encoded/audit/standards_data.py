@@ -1,19 +1,32 @@
 
 broad_peaks_targets = [
-    'H3K4me1-mouse',
-    'H3K36me3-mouse',
-    'H3K79me2-mouse',
-    'H3K27me3-mouse',
-    'H3K9me1-mouse',
-    'H3K9me3-mouse',
-    'H3K4me1-human',
     'H3K36me3-human',
+    'H3K36me3-mouse',
+
+    'H3K4me1-human',
+    'H3K4me1-mouse',
+
     'H3K79me2-human',
+    'H3K79me2-mouse',
+
     'H3K27me3-human',
+    'H3K27me3-mouse',
+
     'H3K9me1-human',
-    'H3K9me3-human',
+    'H3K9me1-mouse',
+
+    'H3K9me3-human',  # exception
+    'H3K9me3-mouse',  # exception
+
+    'H3K9me2-human',
+    'H3K9me2-mouse',
+
     'H3F3A-human',
+    'H3F3A-mouse',
+
     'H4K20me1-human',
+    'H4K20me1-mouse',
+
     'H3K79me3-human',
     'H3K79me3-mouse',
     ]
