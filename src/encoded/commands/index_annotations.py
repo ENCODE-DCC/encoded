@@ -16,6 +16,14 @@ def json_from_path(path, default=None):
         return default
     return json.load(open(path))
 
+def index_settings():
+    return {
+        'index': {
+            'number_of_shards': 1
+        }
+    }
+
+
 
 def run(app):
     registry = app.registry
@@ -24,7 +32,7 @@ def run(app):
         es.indices.create(index=index)
     except RequestError:
         es.indices.delete(index=index)
-        es.indices.create(index=index)
+        es.indices.create(index=index, body=index_settings())
 
     mapping = {
         'properties': {

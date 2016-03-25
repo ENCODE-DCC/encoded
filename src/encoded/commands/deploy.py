@@ -66,20 +66,14 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
             'WALE_S3_PREFIX': wale_s3_prefix,
             'COMMIT': commit,
             'ROLE': role,
+            'NAME': name,
         }
         security_groups = ['ssh-http-https']
+        iam_role = 'encoded-instance'
     else:
         user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config-elasticsearch.yml']).decode('utf-8')
         security_groups = ['elasticsearch-https']
-        bdm = [{
-            'DeviceName': '/dev/sda1',
-            'VirtualName': 'ephemeral0'
-        }]
-        if profile_name == 'production':
-            instance_type = 'r3.xlarge'
-        else:
-            instance_type = 'r3.large'
-        image_id = 'ami-152bc275'
+        iam_role = 'elasticsearch-instance'
 
     reservation = ec2.create_instances(
         ImageId=image_id,
@@ -91,7 +85,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
         BlockDeviceMappings=bdm,
         InstanceInitiatedShutdownBehavior='terminate',
         IamInstanceProfile={
-            "Name": 'encoded-instance',
+            "Name": iam_role,
         }
     )
 

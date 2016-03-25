@@ -127,6 +127,7 @@ runcmd:
 # Ideally this would build as a different user so encoded only has read
 # permissions
 - set -ex
+- /usr/share/elasticsearch/bin/ install cloud-aws
 - update-rc.d elasticsearch defaults
 - service elasticsearch start
 
@@ -167,6 +168,22 @@ write_files:
     index.search.slowlog.threshold.fetch.warn: 1s
     index.indexing.slowlog.threshold.index.warn: 25s
     network.host: 0.0.0.0
+    action.auto_create_index: false
+    index.mapper.dynamic: false
+
+    cluster.name: "%(ROLE)s"
+
+    discovery:
+        type: ec2
+
+    index :
+        refresh_interval: 5s
+
+    cloud.aws.region: us-west-2
+
+    discovery.ec2.groups: elasticsearch-https
+
+    discovery.zen.minimum_master_nodes: 2
 
 
 - path: /etc/ssh/users_ca.pub
