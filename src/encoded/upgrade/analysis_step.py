@@ -1,4 +1,4 @@
-from snowfort import upgrade_step
+from snovault import upgrade_step
 
 
 @upgrade_step('analysis_step', '1', '2')

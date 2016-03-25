@@ -1,4 +1,4 @@
-from snowfort import DBSESSION
+from snovault import DBSESSION
 from contextlib import contextmanager
 from multiprocessing import get_context
 from multiprocessing.pool import Pool

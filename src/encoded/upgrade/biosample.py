@@ -1,4 +1,4 @@
-from snowfort import upgrade_step
+from snovault import upgrade_step
 from .shared import ENCODE2_AWARDS, REFERENCES_UUID
 from past.builtins import long
 import re

@@ -2,19 +2,19 @@ import pytest
 
 
 def raising_checker(value, system):
-    from snowfort.auditor import AuditFailure
+    from snovault.auditor import AuditFailure
     if not value.get('checker1'):
         raise AuditFailure('testchecker', 'Missing checker1')
 
 
 def returning_checker(value, system):
-    from snowfort.auditor import AuditFailure
+    from snovault.auditor import AuditFailure
     if not value.get('checker1'):
         return AuditFailure('testchecker', 'Missing checker1')
 
 
 def yielding_checker(value, system):
-    from snowfort.auditor import AuditFailure
+    from snovault.auditor import AuditFailure
     if not value.get('checker1'):
         yield AuditFailure('testchecker', 'Missing checker1')
 
@@ -29,7 +29,7 @@ def has_condition1(value, system):
     yielding_checker,
 ])
 def auditor(request):
-    from snowfort.auditor import Auditor
+    from snovault.auditor import Auditor
     auditor = Auditor()
     auditor.add_audit_checker(request.param, 'test')
     return auditor
@@ -37,7 +37,7 @@ def auditor(request):
 
 @pytest.fixture
 def auditor_conditions():
-    from snowfort.auditor import Auditor
+    from snovault.auditor import Auditor
     auditor = Auditor()
     auditor.add_audit_checker(raising_checker, 'test', has_condition1)
     return auditor
@@ -82,11 +82,11 @@ def test_audit_conditions(auditor_conditions, dummy_request):
 
 
 def test_declarative_config(dummy_request):
-    from snowfort.interfaces import AUDITOR
+    from snovault.interfaces import AUDITOR
     from pyramid.config import Configurator
     config = Configurator()
-    config.include('snowfort.config')
-    config.include('snowfort.auditor')
+    config.include('snovault.config')
+    config.include('snovault.auditor')
     config.include('.testing_auditor')
     config.commit()
 

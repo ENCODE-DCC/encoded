@@ -10,11 +10,11 @@ pytestmark = [pytest.mark.indexing]
 
 
 @pytest.fixture(scope='session')
-def app_settings(server_host_port, elasticsearch_server, postgresql_server):
+def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
     from .conftest import _app_settings
     settings = _app_settings.copy()
     settings['create_tables'] = True
-    settings['persona.audiences'] = 'http://%s:%s' % server_host_port
+    settings['persona.audiences'] = 'http://%s:%s' % wsgi_server_host_port
     settings['elasticsearch.server'] = elasticsearch_server
     settings['sqlalchemy.url'] = postgresql_server
     settings['collection_datastore'] = 'elasticsearch'
@@ -32,10 +32,10 @@ def app(app_settings):
     yield app
 
     # Shutdown multiprocessing pool to close db conns.
-    from snowfort.elasticsearch import INDEXER
+    from snovault.elasticsearch import INDEXER
     app.registry[INDEXER].shutdown()
 
-    from snowfort import DBSESSION
+    from snovault import DBSESSION
     DBSession = app.registry[DBSESSION]
     # Dispose connections so postgres can tear down.
     DBSession.bind.pool.dispose()
@@ -43,13 +43,13 @@ def app(app_settings):
 
 @pytest.fixture(scope='session')
 def DBSession(app):
-    from snowfort import DBSESSION
+    from snovault import DBSESSION
     return app.registry[DBSESSION]
 
 
 @pytest.fixture(autouse=True)
 def teardown(app, dbapi_conn):
-    from snowfort.elasticsearch import create_mapping
+    from snovault.elasticsearch import create_mapping
     create_mapping.run(app)
     cursor = dbapi_conn.cursor()
     cursor.execute("""TRUNCATE resources, transactions CASCADE;""")
@@ -74,7 +74,7 @@ def dbapi_conn(DBSession):
 @pytest.yield_fixture
 def listening_conn(dbapi_conn):
     cursor = dbapi_conn.cursor()
-    cursor.execute("""LISTEN "snowfort.transaction";""")
+    cursor.execute("""LISTEN "snovault.transaction";""")
     yield dbapi_conn
     cursor.close()
 
@@ -123,5 +123,5 @@ def test_listening(testapp, listening_conn):
     listening_conn.poll()
     assert len(listening_conn.notifies) == 1
     notify = listening_conn.notifies.pop()
-    assert notify.channel == 'snowfort.transaction'
+    assert notify.channel == 'snovault.transaction'
     assert int(notify.payload) > 0
