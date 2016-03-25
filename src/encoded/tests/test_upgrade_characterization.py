@@ -248,7 +248,7 @@ def test_biosample_characterization_upgrade_references(root, upgrader, biosample
 
 
 def test_antibody_characterization_upgrade_inline(testapp, registry, antibody_characterization_1):
-    from snowfort import TYPES
+    from snovault import TYPES
     schema = registry[TYPES]['antibody_characterization'].schema
 
     res = testapp.post_json('/antibody-characterizations?validate=false&render=uuid', antibody_characterization_1)

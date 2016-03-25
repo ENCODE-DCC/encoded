@@ -10,7 +10,7 @@ import itertools
 import logging
 import transaction
 from copy import deepcopy
-from snowfort import (
+from snovault import (
     CONNECTION,
     STORAGE,
     UPGRADER,
@@ -136,7 +136,7 @@ def run(config_uri, app_name=None, username=None, types=(), batch_size=500, proc
     from multiprocessing.pool import Pool
 
     # Loading app will have configured from config file. Reconfigure here:
-    logging.getLogger('snowfort').setLevel(logging.DEBUG)
+    logging.getLogger('snovault').setLevel(logging.DEBUG)
 
     testapp = internal_app(config_uri, app_name, username)
     connection = testapp.app.registry[CONNECTION]

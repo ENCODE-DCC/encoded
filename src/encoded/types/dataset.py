@@ -1,4 +1,4 @@
-from snowfort import (
+from snovault import (
     abstract_collection,
     calculated_property,
     collection,

@@ -1,4 +1,4 @@
-from snowfort.interfaces import (
+from snovault.interfaces import (
     TYPES,
     UPGRADER,
 )
@@ -212,7 +212,7 @@ def upgrade_step(schema_name, source='', dest=None):
         def callback(scanner, factory_name, factory):
             scanner.config.add_upgrade_step(schema_name, step, source, dest)
 
-        venusian.attach(step, callback, category='snowfort.upgrader')
+        venusian.attach(step, callback, category='snovault.upgrader')
         return step
 
     return decorate
@@ -226,7 +226,7 @@ def upgrade_finalizer(schema_name):
         def callback(scanner, factory_name, factory):
             scanner.config.set_upgrade_finalizer(schema_name, finalizer)
 
-        venusian.attach(finalizer, callback, category='snowfort.upgrader')
+        venusian.attach(finalizer, callback, category='snovault.upgrader')
         return finalizer
 
     return decorate
@@ -236,7 +236,7 @@ def default_upgrade_finalizer(finalizer):
     def callback(scanner, factory_name, factory):
         scanner.config.set_default_upgrade_finalizer(finalizer)
 
-    venusian.attach(finalizer, callback, category='snowfort.upgrader')
+    venusian.attach(finalizer, callback, category='snovault.upgrader')
     return finalizer
 
 

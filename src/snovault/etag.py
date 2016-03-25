@@ -44,7 +44,7 @@ def if_match_tid(view_callable):
 
 def etag_app_version(view_callable):
     def wrapped(context, request):
-        etag = request.registry.settings['snowfort.app_version']
+        etag = request.registry.settings['snovault.app_version']
         if etag in request.if_none_match:
             raise HTTPNotModified()
         result = view_callable(context, request)
@@ -56,7 +56,7 @@ def etag_app_version(view_callable):
 
 def etag_app_version_effective_principals(view_callable):
     def wrapped(context, request):
-        app_version = request.registry.settings['snowfort.app_version']
+        app_version = request.registry.settings['snovault.app_version']
         etag = app_version + ' ' + ' '.join(sorted(request.effective_principals))
         if etag in request.if_none_match:
             raise HTTPNotModified()
