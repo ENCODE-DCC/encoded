@@ -112,6 +112,7 @@ bootcmd:
 package_upgrade: true
 
 packages:
+- build-essential
 - elasticsearch
 - libssl-dev
 - oracle-java8-installer
