@@ -171,7 +171,7 @@ write_files:
     action.auto_create_index: false
     index.mapper.dynamic: false
 
-    cluster.name: "%(ROLE)s"
+    cluster.name: "%(NAME)s"
 
     discovery:
         type: ec2
