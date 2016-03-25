@@ -580,7 +580,7 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
                             <a href={result['@id']}>{result.caption}</a>
                         </div>
                         <div className="data-row">
-                            <Attachment context={result} />
+                            <Attachment context={result} attachment={result.attachment} />
                         </div>
                     </div>
                     <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
