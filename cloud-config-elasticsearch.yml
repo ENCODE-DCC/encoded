@@ -4,7 +4,7 @@
 
 apt_sources:
 - source: "ppa:webupd8team/java"
-- source: "deb http://packages.elasticsearch.org/elasticsearch/2.2/debian stable main"
+- source: "deb http://packages.elastic.co/elasticsearch/2.2/debian stable main"
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v2.0.14 (GNU/Linux)
@@ -116,6 +116,7 @@ packages:
 - libssl-dev
 - oracle-java8-installer
 - oracle-java8-set-default
+- unattended-upgrades
 
 power_state:
   mode: reboot
