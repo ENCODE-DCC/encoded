@@ -100,7 +100,10 @@ bootcmd:
 - cloud-init-per once chmod-swapfile chmod 600 /swapfile
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
 - MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
-- if [ "$MEMGIGS" -gt 12 ]
+- if [ "$MEMGIGS" -gt 32 ]
+- then
+-    echo "ES_HEAP_SIZE=16g" > /etc/default/elasticsearch
+- elif [ "$MEMGIGS" -gt 12 ]
 - then
 -    echo "ES_HEAP_SIZE=8g" > /etc/default/elasticsearch
 - else

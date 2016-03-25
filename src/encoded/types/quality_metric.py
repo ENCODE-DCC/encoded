@@ -16,7 +16,7 @@ from .base import (
         'title': "Quality metrics",
         'description': 'Listing of all types of quality metric.',
     })
-class QualityMetric(ItemWithAttachment):
+class QualityMetric(ItemWithAttachment, Item):
     base_types = ['QualityMetric'] + Item.base_types
 
 

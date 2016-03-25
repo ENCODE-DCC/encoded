@@ -25,8 +25,10 @@ def includeme(config):
     if config.registry.settings.get('indexer_worker'):
         return
     processes = config.registry.settings.get('indexer.processes')
-    if processes is not None:
+    try:
         processes = int(processes)
+    except:
+        processes = None
     config.registry[INDEXER] = MPIndexer(config.registry, processes=processes)
 
 
