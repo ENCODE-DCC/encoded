@@ -341,7 +341,8 @@ module.exports.HistoryAndTriggers = {
 
     getInitialState: function () {
         return {
-            unsavedChanges: []
+            unsavedChanges: [],
+            promisePending: false;
         };
     },
 
@@ -401,6 +402,7 @@ module.exports.HistoryAndTriggers = {
     },
 
     handleClick: function(event) {
+        console.log('handleClick: %o', event);
         // https://github.com/facebook/react/issues/1691
         if (event.isDefaultPrevented()) return;
 
@@ -633,6 +635,7 @@ module.exports.HistoryAndTriggers = {
 
     receiveContextResponse: function (data) {
         // title currently ignored by browsers
+        console.log('receiveContextResponse: %o', data);
         try {
             window.history.replaceState(data, '', window.location.href);
         } catch (exc) {
