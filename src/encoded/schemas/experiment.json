@@ -202,6 +202,9 @@
         "assay_term_name": {
             "title": "Assay Type"
         },
+        "assay_title": {
+            "title": "Assay Nickname"
+        },
         "target.label": {
             "title": "Target"
         },

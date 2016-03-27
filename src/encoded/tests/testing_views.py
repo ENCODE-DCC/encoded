@@ -2,13 +2,13 @@ from pyramid.security import (
     Allow,
 )
 from pyramid.view import view_config
-from snowfort import (
+from snovault import (
     Item,
     calculated_property,
     collection,
 )
 from ..types.base import paths_filtered_by_status
-from snowfort.attachment import ItemWithAttachment
+from snovault.attachment import ItemWithAttachment
 
 
 def includeme(config):
