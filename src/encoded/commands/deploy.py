@@ -75,7 +75,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size=3,
         'WALE_S3_PREFIX': wale_s3_prefix,
         'COMMIT': commit,
         'ROLE': role,
-        'NAME': name,
+        'INSTANCE_NAME': name,
     }
 
 
