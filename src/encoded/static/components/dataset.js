@@ -124,13 +124,6 @@ var Annotation = React.createClass({
                             <div className="flexcol-sm-6">
                                 <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
                                 <dl className="key-value">
-                                    {context.assay_term_name && context.assay_term_name.length ?
-                                        <div data-test="assaytermname">
-                                            <dt>Assay(s)</dt>
-                                            <dd>{context.assay_term_name.join(', ')}</dd>
-                                        </div>
-                                    : null}
-
                                     <div data-test="accession">
                                         <dt>Accession</dt>
                                         <dd>{context.accession}</dd>

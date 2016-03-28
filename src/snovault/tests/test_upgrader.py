@@ -18,7 +18,7 @@ def finalizer(value, system, version):
 
 @pytest.fixture
 def schema_upgrader():
-    from snowfort.upgrader import SchemaUpgrader
+    from snovault.upgrader import SchemaUpgrader
     schema_upgrader = SchemaUpgrader('test', '3')
     schema_upgrader.add_upgrade_step(step1, dest='2')
     schema_upgrader.add_upgrade_step(step2, source='2', dest='3')
@@ -39,10 +39,10 @@ def test_finalizer(schema_upgrader):
 
 def test_declarative_config():
     from pyramid.config import Configurator
-    from snowfort.interfaces import UPGRADER
+    from snovault.interfaces import UPGRADER
     config = Configurator()
-    config.include('snowfort.config')
-    config.include('snowfort.upgrader')
+    config.include('snovault.config')
+    config.include('snovault.upgrader')
     config.include('.testing_upgrader')
     config.commit()
 

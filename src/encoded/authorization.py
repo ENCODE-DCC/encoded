@@ -1,4 +1,4 @@
-from snowfort import ROOT
+from snovault import ROOT
 
 
 def groupfinder(login, request):

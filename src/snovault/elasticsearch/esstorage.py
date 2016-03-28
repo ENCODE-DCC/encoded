@@ -1,5 +1,5 @@
 import elasticsearch.exceptions
-from snowfort.util import get_root_request
+from snovault.util import get_root_request
 from elasticsearch.helpers import scan
 from pyramid.threadlocal import get_current_request
 from zope.interface import alsoProvides
@@ -12,10 +12,10 @@ SEARCH_MAX = (2 ** 31) - 1
 
 
 def includeme(config):
-    from snowfort import STORAGE
+    from snovault import STORAGE
     registry = config.registry
     es = registry[ELASTIC_SEARCH]
-    es_index = registry.settings['snowfort.elasticsearch.index']
+    es_index = registry.settings['snovault.elasticsearch.index']
     wrapped_storage = registry[STORAGE]
     registry[STORAGE] = PickStorage(ElasticSearchStorage(es, es_index), wrapped_storage)
 

@@ -8,7 +8,7 @@ from pyramid.path import (
     DottedNameResolver,
     caller_package,
 )
-from snowfort import ROOT
+from snovault import ROOT
 
 CRYPT_CONTEXT = __name__ + ':crypt_context'
 
