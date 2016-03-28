@@ -156,6 +156,12 @@ def root(registry):
     return registry[ROOT]
 
 
+@fixture
+def collections(registry):
+    from snovault import COLLECTIONS
+    return registry[COLLECTIONS]
+
+
 @pytest.mark.fixture_cost(500)
 @pytest.yield_fixture(scope='session')
 def workbook(connection, app, app_settings):
