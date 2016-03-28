@@ -5,6 +5,7 @@ from snowfort import (
 from .conditions import rfa
 from .ontology_data import biosampleType_ontologyPrefix
 from .gtex_data import gtexDonorsList
+import datetime
 
 targetBasedAssayList = [
     'ChIP-seq',
@@ -52,6 +53,234 @@ non_seq_assays = [
     'Switchgear',
     '5C',
     ]
+
+
+@audit_checker('Experiment', frame=['original_files',
+                                    'replicates',
+                                    'replicates.library',
+                                    'replicates.library.biosample',
+                                    'replicates.library.biosample.organism'
+                                    'original_files.quality_metrics',
+                                    'original_files.derived_from'],
+               condition=rfa('ENCODE3'))
+def audit_experiement_rampage_encode3_standards(value, system):
+    '''
+    This is an attempt to pool into a dispatch function standard audits
+    allowing easier maintanance and lower duplication of code and some level
+    of separation between audits and standards - which are related but are
+    not the same.
+
+    - Experiments required to have at least 2 bio reps
+    >>> audit_experiment_replicated()
+
+    - Read depth for each replicate is 25M uniquely mapped reads
+    - Read length is at least 50 BP --> DONE
+    - Gene level quantification Spearman >0.9, 0.8 for isogenic, anisogenic
+    - Control of RAMPAGE is corrsponding RNA-seq experiment
+    ???
+    - Only paired end sequencing would allow pipeline processing --> DONE
+    - Sequencing platform Illumina GA, HiSeq --> DONE
+    
+    - Spike-ins indicated (barcodes - impossible to check)
+    >>> audit_experiment_spikein
+
+    - Mapping to GRCh38 or mm10
+    - Gene quantifications are using gencode V4 or M4
+    '''
+    if value['status'] not in ['released', 'release ready']:
+        return
+    if 'assay_term_name' not in value or value['assay_term_name'] != 'RAMPAGE':
+        return
+    if 'original_files' not in value or len(value['original_files']) == 0:
+        return
+    if 'replicates' not in value:
+        return
+
+    num_bio_reps = set()
+    for rep in value['replicates']:
+        num_bio_reps.add(rep['biological_replicate_number'])
+
+    if len(num_bio_reps) <= 1:
+        return
+
+    organism_name = get_organism_name(value['replicates'])  # human/mouse
+    alignment_files = []
+    gene_quantifications = []
+
+
+    fastq_files = scanFilesForFileFormat(value['original_files'], 'fastq')
+    alignment_files = scanFilesForFileFormat(value['original_files'], 'bam')
+    gene_quantifications = scanFilesForOutputType(value['original_files'],
+                                                      'gene quantifications')
+
+    '''
+    Apply on FASTQs:
+    1. paired endedness
+    2. 50BP length
+    3. platform - NOT solid OBI:0002024   or    OBI:0000696
+    '''
+    for f in fastq_files:
+        if 'run_type' in f and f['run_type'] != 'paired-ended':
+            detail = 'RAMPAGE experiment {} '.format(value['@id']) + \
+                     'contains a file {} '.format(f['@id']) + \
+                     'that is not paired-ended.'
+            yield AuditFailure('RAMPAGE - not paired-ended', detail, level='NOT_COMPLIANT')
+        for failure in check_file_read_length(f, 50):
+            yield failure
+        for failure in check_file_platform(f, ['OBI:0002024', 'OBI:0000696']):
+            yield failure
+
+    for f in alignment_files:
+        if (organism_name == 'human' and f['assembly'] == 'GRCh38') or \
+           (organism_name == 'mouse' and f['assembly'] == 'mm10'):
+            for failure in check_file_read_depth(f, 25000000, 'RAMPAGE'):
+                yield failure
+
+    mad_metrics = set()
+    for f in gene_quantifications:
+        if (organism_name == 'human' and f['assembly'] == 'GRCh38' and
+           f['genome_annotation'] == 'V24') or \
+            (organism_name == 'mouse' and f['assembly'] == 'mm10' and
+           f['genome_annotation'] == 'M4'):
+            if 'quality_metrics' in f and len(f['quality_metrics']) > 0:
+                for qm in f['quality_metrics']:
+                    mad_metrics.add(qm)
+
+    for failure in check_spearman(mad_metrics, value['replication_type'], 0.9, 0.8, 'RAMPAGE'):
+        yield failure
+    return
+
+
+def check_spearman(metrics, replication_type, isogenic_threshold, anisogenic_threshold, pipeline):
+    if replication_type in ['anisogenic',
+                            'anisogenic, sex-matched and age-matched',
+                            'anisogenic, age-matched',
+                            'anisogenic, sex-matched']:
+        threshold = anisogenic_threshold
+    elif replication_type == 'isogenic':
+        threshold = isogenic_threshold
+    border_value = threshold - 0.07
+    print_border = '%.2f' % border_value
+
+    for m in metrics:
+        if 'Spearman correlation' in m:
+            spearman_correlation = m['Spearman correlation']
+            if spearman_correlation < threshold:   
+                detail = 'ENCODE processed gene quantification file {} '.format(metrics['quality_metric_of']) + \
+                         'have Spearman correlation of {}.'.format(spearman_correlation) + \
+                         ' For gene quantification files from an {}'.format(replication_type) + \
+                         ' assay in the {} '.format(pipeline) + \
+                         'pipeline, >{} is recommended, but a value between '.format(threshold) + \
+                         '{} and one STD away ({}) is acceptable.'.format(threshold,
+                                                                          print_border)
+                if spearman_correlation > border_value:
+                    yield AuditFailure('RAMPAGE - low spearman correlation', detail,
+                                       level='NOT_COMPLIANT')
+                else:
+                    yield AuditFailure('RAMPAGE - insufficient spearman correlation', detail,
+                                       level='NOT_COMPLIANT')
+         
+
+
+def check_file_read_depth(file_to_check, threshold, pipeline):
+
+    if file_to_check['output_type'] == 'transcriptome alignments':
+        return
+    if file_to_check['lab'] != '/labs/encode-processing-pipeline/':
+        return
+
+    quality_metrics = file_to_check.get('quality_metrics')
+
+    if (quality_metrics is None) or (quality_metrics == []):
+        return
+
+    if pipeline == 'RAMPAGE':
+        read_depth_value_name = 'Uniquely mapped reads number'
+
+    read_depth = -1
+
+    for metric in quality_metrics:
+        if read_depth_value_name in metric:
+            read_depth = metric[read_depth_value_name]
+            break
+
+    if read_depth == -1:
+        return
+
+    if read_depth < threshold:
+        detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
+                                                                     read_depth) + \
+                 'uniquely mapped reads. Replicates for ' + \
+                 '{} assay '.format(pipeline['title']) + \
+                 'require {} uniquely mapped reads.'.format(threshold)
+        yield AuditFailure('RAMPAGE - insufficient read depth', detail, level='NOT_COMPLIANT')
+        return
+
+
+
+def check_file_platform(file_to_check, excluded_platforms):
+    if 'platform' not in file_to_check:
+        detail = 'Reads file {} missing platform'.format(file_to_check['@id'])
+        yield AuditFailure('RAMPAGE - missing platform', detail, level='NOT_COMPLIANT')
+    elif file_to_check['platform'] in excluded_platforms:
+        detail = 'Reads file {} has not compliant '.format(file_to_check['@id']) + \
+                 'platform (SOLiD) {}.'.format(file_to_check['platform'])
+        yield AuditFailure('RAMPAGE - not compliant platform', detail, level='NOT_COMPLIANT')
+
+
+def check_file_read_length(file_to_check, threshold_length):
+    if 'read_length' not in file_to_check:
+        detail = 'Reads file {} missing read_length'.format(file_to_check['@id'])
+        yield AuditFailure('RAMPAGE - missing read_length', detail, level='NOT_COMPLIANT')
+        return
+
+    creation_date = file_to_check['date_created'][:10].split('-')
+    year = int(creation_date[0])
+    month = int(creation_date[1])
+    day = int(creation_date[2])
+    created_date = str(year)+'-'+str(month)+'-'+str(day)
+    file_date_creation = datetime.date(year, month, day)
+    threshold_date = datetime.date(2015, 6, 30)
+
+    read_length = file_to_check['read_length']
+    if read_length < threshold_length:
+        detail = 'Fastq file {} '.format(file_to_check['@id']) + \
+                 'that was created on {} '.format(created_date) + \
+                 'has read length of {}bp.'.format(read_length) + \
+                 ' It is not compliant with ENCODE3 standards.' + \
+                 ' According to ENCODE3 standards files submitted after 2015-6-30 ' + \
+                 'should be at least {}bp long.'.format(threshold_length)
+        yield AuditFailure('RAMPAGE - insufficient read length', detail, level='NOT_COMPLIANT')
+    return
+
+
+def get_organism_name(reps):
+    for rep in reps:
+        if rep['status'] not in ['replaced', 'revoked', 'deleted'] and \
+           'library' in rep and \
+           rep['library']['status'] not in ['replaced', 'revoked', 'deleted'] and \
+           'biosample' in rep['library'] and \
+           rep['library']['biosample']['status'] not in ['replaced', 'revoked', 'deleted']:
+            return rep['library']['biosample']['name']
+    return False
+
+
+def scanFilesForFileFormat(files_to_scan, f_format):
+    files_to_return = []
+    for f in files_to_scan:
+        if 'file_format' in f and f['file_format'] == f_format and \
+           f['status'] not in ['replaced', 'revoked', 'deleted']:
+            files_to_return.append(f)
+    return files_to_return
+
+
+def scanFilesForOutputType(files_to_scan, o_type):
+    files_to_return = []
+    for f in files_to_scan:
+        if 'output_type' in f and f['output_type'] == o_type and \
+           f['status'] not in ['replaced', 'revoked', 'deleted']:
+            files_to_return.append(f)
+    return files_to_return
 
 
 @audit_checker('Experiment', frame=['original_files', 'target',
