@@ -61,6 +61,10 @@ class EncodedRoot(Root):
         ] + Root.__acl__
         return acl
 
+    # BBB
+    def get_by_uuid(self, uuid, default=None):
+        return self.connection.get_by_uuid(uuid, default)
+
     def get(self, name, default=None):
         resource = super(EncodedRoot, self).get(name, None)
         if resource is not None:
