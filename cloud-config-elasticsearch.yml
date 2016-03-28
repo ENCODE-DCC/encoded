@@ -76,7 +76,7 @@ runcmd:
 # permissions
 - set -ex
 - update-rc.d elasticsearch defaults
-- NAME=$(echo %(INSTANCE_NAME)s)
+- NAME=$(echo "%(INSTANCE_NAME)s")
 - echo "cluster.name: $NAME"
 - sudo /usr/share/elasticsearch/bin/plugin install cloud-aws
 - service elasticsearch start
