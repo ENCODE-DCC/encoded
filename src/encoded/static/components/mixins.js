@@ -33,8 +33,8 @@ var parseAndLogError = module.exports.parseAndLogError = function (cause, respon
     var promise = parseError(response);
     promise.then(data => {
         ga('send', 'exception', {
-        'exDescription': '' + cause + ':' + data.code + ':' + data.title,
-        'location': window.location.href
+            'exDescription': '' + cause + ':' + data.code + ':' + data.title,
+            'location': window.location.href
         });
     });
     return promise;
@@ -66,7 +66,7 @@ module.exports.RenderLess = {
             }
         }
         return false;
-    },
+    }
 };
 
 class Timeout {
@@ -100,7 +100,7 @@ module.exports.Persona = {
 
     componentDidMount: function () {
         // Login / logout actions must be deferred until persona is ready.
-        var session_cookie = this.extractSessionCookie()
+        var session_cookie = this.extractSessionCookie();
         var session = this.parseSessionCookie(session_cookie);
         if (session['auth.userid']) {
             this.fetchSessionProperties();
@@ -225,7 +225,7 @@ module.exports.Persona = {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({assertion: assertion}),
+            body: JSON.stringify({assertion: assertion})
         })
         .then(response => {
             if (!response.ok) throw response;
@@ -342,7 +342,7 @@ module.exports.HistoryAndTriggers = {
     getInitialState: function () {
         return {
             unsavedChanges: [],
-            promisePending: false;
+            promisePending: false
         };
     },
 
@@ -506,7 +506,12 @@ module.exports.HistoryAndTriggers = {
         var href = window.location.href;
         if (event.state) {
             // Abort inflight xhr before setProps
-            if (request) request.abort();
+            if (request && this.requestCurrent) {
+                request.abort();
+                console.log('POPSTATE ABORT');
+                this.requestAborted = true;
+                this.requestCurrent = false;
+            }
             this.setProps({
                 context: event.state,
                 href: href  // href should be consistent with context
@@ -568,8 +573,11 @@ module.exports.HistoryAndTriggers = {
 
         var request = this.props.contextRequest;
 
-        if (request) {
+        if (request && this.requestCurrent) {
             request.abort();
+            this.requestCurrent = false;
+            this.requestAborted = true;
+            console.log('NAVIGATE ABORT');
         }
 
         if (options.skipRequest) {
@@ -585,14 +593,21 @@ module.exports.HistoryAndTriggers = {
         request = this.fetch(href, {
             headers: {'Accept': 'application/json'}
         });
+        this.requestCurrent = true;
 
         var timeout = new Timeout(this.SLOW_REQUEST_TIME);
 
         Promise.race([request, timeout.promise]).then(v => {
-            if (v instanceof Timeout) this.setProps({'slow': true});
+            if (v instanceof Timeout) {
+                this.setProps({'slow': true});
+            } else {
+                this.requestCurrent = false;
+            }
         });
 
         var promise = request.then(response => {
+            this.requestCurrent = false;
+
             // navigate normally to URL of unexpected non-JSON response so back button works.
             if (!contentTypeIsJSON(response.headers.get('Content-Type'))) {
                 if (options.replace) {
@@ -635,18 +650,21 @@ module.exports.HistoryAndTriggers = {
 
     receiveContextResponse: function (data) {
         // title currently ignored by browsers
-        console.log('receiveContextResponse: %o', data);
+        console.log('receiveContextResponse: %o:Aborted %s:Current %s', data, this.requestAborted, this.requestCurrent);
         try {
             window.history.replaceState(data, '', window.location.href);
         } catch (exc) {
             // Might fail due to too large data
             window.history.replaceState(null, '', window.location.href);
         }
-        this.setProps({
-            context: data,
-            slow: false
-        });
-
+        var newProps = {slow: false};
+        if (!this.requestAborted) {
+            newProps.context = data;
+        } else {
+            this.requestAborted = false;
+        }
+        console.log('NEWPROPS: %o', newProps);
+        this.setProps(newProps);
     },
 
     componentDidUpdate: function () {
