@@ -1546,6 +1546,21 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         this.sortedFilterOptions = [];
     },
 
+    // Given a filterOptions array [{annotation: x, assembly: x}], pre-sort the annotations so that assembly sorting
+    // becomes the primary key, and the annotion becomes the secondary.
+    sortAnnotations: function(filterOptions) {
+        var sortedFilterOptions = _(filterOptions).sortBy(option => {
+            if (option.annotation) {
+                var annotationMatch = option.annotation.match(/^[A-Z]+(\d+).*$/);
+                if (annotationMatch) {
+                    return Number(annotationMatch[1]);
+                }
+            }
+            return null;
+        });
+        return sortedFilterOptions.reverse();
+    },
+
     render: function() {
         var selectedAssembly = '';
         var selectedAnnotation = '';
@@ -1572,7 +1587,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
             // Sort filtering menu to an order specified by this.assemblyPriority. Sort by annotation and then by assembly so that
             // annotation is the secondary key.
-            this.sortedFilterOptions = _(filterOptions).chain().sortBy('annotation').sortBy(item => _(this.assemblyPriority).indexOf(item.assembly)).value();
+            this.sortedFilterOptions = _(this.sortAnnotations(filterOptions)).sortBy(item => _(this.assemblyPriority).indexOf(item.assembly));
 
             // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
             if (goodGraph || this.state.selectedAssembly || this.state.selectedAnnotation) {
