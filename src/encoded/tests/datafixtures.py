@@ -292,7 +292,20 @@ def target_H3K27ac(testapp, organism):
         'label': 'H3K27ac',
         'organism': organism['@id'],
         'investigated_as': ['histone modification',
-                            'histone']
+                            'histone',
+                            'narrow histone mark']
+    }
+    return testapp.post_json('/target', item).json['@graph'][0]
+
+
+@pytest.fixture
+def target_H3K9me3(testapp, organism):
+    item = {
+        'label': 'H3K9me3',
+        'organism': organism['@id'],
+        'investigated_as': ['histone modification',
+                            'histone',
+                            'broad histone mark']
     }
     return testapp.post_json('/target', item).json['@graph'][0]
 

@@ -1,4 +1,4 @@
-from snowfort import (
+from snovault import (
     abstract_collection,
     calculated_property,
     collection,
@@ -8,7 +8,7 @@ from .base import (
     Item,
     SharedItem,
 )
-from snowfort.attachment import ItemWithAttachment
+from snovault.attachment import ItemWithAttachment
 
 
 @abstract_collection(

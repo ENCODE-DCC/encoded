@@ -6,8 +6,8 @@ Example.
 """
 
 from webtest import TestApp
-from snowfort import STORAGE
-from snowfort.elasticsearch import ELASTIC_SEARCH
+from snovault import STORAGE
+from snovault.elasticsearch import ELASTIC_SEARCH
 import atexit
 import datetime
 import elasticsearch.exceptions
@@ -75,7 +75,7 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, path='/index', control=
                     recovery, = cursor.fetchone()
                     if not recovery:
                         # http://initd.org/psycopg/docs/advanced.html#asynchronous-notifications
-                        cursor.execute("""LISTEN "snowfort.transaction";""")
+                        cursor.execute("""LISTEN "snovault.transaction";""")
                         cursor.execute("""LISTEN "encoded.transaction";""")  # BBB
                         log.debug("Listener connected")
                         listening = True

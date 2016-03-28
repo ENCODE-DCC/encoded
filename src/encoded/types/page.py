@@ -1,5 +1,5 @@
-from snowfort.schema_utils import VALIDATOR_REGISTRY
-from snowfort import (
+from snovault.schema_utils import VALIDATOR_REGISTRY
+from snovault import (
     COLLECTIONS,
     CONNECTION,
     Collection,
@@ -9,7 +9,7 @@ from snowfort import (
     collection,
     load_schema,
 )
-from snowfort.resource_views import item_view_page
+from snovault.resource_views import item_view_page
 from .base import (
     ALLOW_EVERYONE_VIEW,
     SharedItem,

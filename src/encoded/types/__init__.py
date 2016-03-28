@@ -1,5 +1,5 @@
-from snowfort.attachment import ItemWithAttachment
-from snowfort import (
+from snovault.attachment import ItemWithAttachment
+from snovault import (
     calculated_property,
     collection,
     load_schema,
