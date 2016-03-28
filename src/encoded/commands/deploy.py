@@ -10,7 +10,7 @@ def nameify(s):
     return re.subn(r'\-+', '-', name)[0]
 
 
-def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size,
+def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size=3,
         branch=None, name=None, role='demo', profile_name=None):
     if branch is None:
         branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode('utf-8').strip()
@@ -73,8 +73,8 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size,
         'WALE_S3_PREFIX': wale_s3_prefix,
         'COMMIT': commit,
         'ROLE': role,
-        'NAME': name,
     }
+
 
 
     reservation = ec2.create_instances(
@@ -138,7 +138,7 @@ def main():
         help="(defualts toc4.4xlarge for indexing) Switch to a smaller instance afterwards"
         "(m4.xlarge or c4.xlarge)")
     parser.add_argument('--profile-name', default=None, help="AWS creds profile")
-    parser.add_argument('--elasticsearch', default='no', help="Launch an Elasticsearch instance")
+    parser.add_argument('--elasticsearch', default=None, help="Launch an Elasticsearch instance")
     parser.add_argument('--cluster-size', default=3, help="Elasticsearch cluster size")
     args = parser.parse_args()
 
