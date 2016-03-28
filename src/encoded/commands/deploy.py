@@ -10,7 +10,7 @@ def nameify(s):
     return re.subn(r'\-+', '-', name)[0]
 
 
-def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size
+def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size,
         branch=None, name=None, role='demo', profile_name=None):
     if branch is None:
         branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode('utf-8').strip()
