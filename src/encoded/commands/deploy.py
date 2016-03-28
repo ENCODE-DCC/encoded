@@ -69,6 +69,8 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size=3,
         security_groups = ['elasticsearch-https']
         iam_role = 'elasticsearch-instance'
 
+    print(user_data)
+
     user_data = user_data % {
         'WALE_S3_PREFIX': wale_s3_prefix,
         'COMMIT': commit,
