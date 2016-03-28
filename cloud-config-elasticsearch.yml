@@ -76,7 +76,7 @@ runcmd:
 # permissions
 - set -ex
 - update-rc.d elasticsearch defaults
-- echo "cluster.name:%NAMEs" >> /etc/elasticsearch/elasticsearch.yml
+- echo "cluster.name:""%NAMEs" >> /etc/elasticsearch/elasticsearch.yml
 - sudo /usr/share/elasticsearch/bin/plugin install cloud-aws
 - service elasticsearch start
 
