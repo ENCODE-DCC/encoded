@@ -76,7 +76,7 @@ runcmd:
 # permissions
 - set -ex
 - update-rc.d elasticsearch defaults
-- sudo /usr/share/elasticsearch/bin/ install cloud-aws
+- sudo /usr/share/elasticsearch/bin/plugin install cloud-aws
 - service elasticsearch start
 
 
