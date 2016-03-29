@@ -76,6 +76,7 @@ runcmd:
 # permissions
 - set -ex
 - update-rc.d elasticsearch defaults
+- echo "cluster.name':'' %(NAME)s" >> /etc/elasticsearch/elasticsearch.yml
 - sudo /usr/share/elasticsearch/bin/plugin install cloud-aws
 - service elasticsearch start
 
@@ -118,9 +119,6 @@ write_files:
     discovery.ec2.groups: elasticsearch-https
 
     discovery.zen.minimum_master_nodes: 2
-
-- path: /etc/elasticsearch/elasticsearch.yml
-  content: cluster.name "%(INSTANCE_NAME)s"
 
 
 - path: /etc/ssh/users_ca.pub

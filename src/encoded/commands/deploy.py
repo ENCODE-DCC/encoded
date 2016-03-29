@@ -5,20 +5,68 @@ import subprocess
 import sys
 
 
+BDM = [
+    {
+        'DeviceName': '/dev/sda1',
+        'Ebs': {
+            'VolumeSize': 60,
+            'VolumeType': 'gp2',
+            'DeleteOnTermination': True
+        }
+    },
+    {
+        'DeviceName': '/dev/sdb',
+        'NoDevice': "",
+    },
+    {
+        'DeviceName': '/dev/sdc',
+        'NoDevice': "",
+    },
+]
+
+
 def nameify(s):
     name = ''.join(c if c.isalnum() else '-' for c in s.lower()).strip('-')
     return re.subn(r'\-+', '-', name)[0]
 
+def create_ec2_instances(client, image_id, count, instance_type, security_groups, user_data, bdm, iam_role):
+    reservations = client.create_instances(
+        ImageId=image_id,
+        MinCount=1,
+        MaxCount=1,
+        InstanceType=instance_type,
+        SecurityGroups=security_groups,
+        UserData=user_data,
+        BlockDeviceMappings=bdm,
+        InstanceInitiatedShutdownBehavior='terminate',
+        IamInstanceProfile={
+            "Name": iam_role,
+        }
+    )
+    return reservations
 
-def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size=3,
-        branch=None, name=None, role='demo', profile_name=None):
+def tag_ec2_instance(instance, name, branch, commit, username, elasticsearch):
+    tags=[
+        {'Key': 'Name', 'Value': name},
+        {'Key': 'branch', 'Value': branch},
+        {'Key': 'commit', 'Value': commit},
+        {'Key': 'started_by', 'Value': username},
+    ]
+    if elasticsearch == 'yes':
+        tags.append({'Key': 'elasticsearch', 'Value': elasticsearch})
+    instance.create_tags(Tags=tags)
+    return instance
+
+
+def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size,
+        branch=None, name=None, role='demo', profile_name=None, teardown_cluster=None):
     if branch is None:
         branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode('utf-8').strip()
 
     commit = subprocess.check_output(['git', 'rev-parse', '--short', branch]).decode('utf-8').strip()
-    if not subprocess.check_output(['git', 'branch', '-r', '--contains', commit]).strip():
-        print("Commit %r not in origin. Did you git push?" % commit)
-        sys.exit(1)
+    # if not subprocess.check_output(['git', 'branch', '-r', '--contains', commit]).strip():
+    #     print("Commit %r not in origin. Did you git push?" % commit)
+    #     sys.exit(1)
 
     username = getpass.getuser()
 
@@ -41,75 +89,38 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size=3,
         print('An instance already exists with name: %s' % name)
         sys.exit(1)
 
-    bdm = [
-        {
-            'DeviceName': '/dev/sda1',
-            'Ebs': {
-                'VolumeSize': 60,
-                'VolumeType': 'gp2',
-                'DeleteOnTermination': True
-            }
-        },
-        {
-            'DeviceName': '/dev/sdb',
-            'NoDevice': "",
-        },
-        {
-            'DeviceName': '/dev/sdc',
-            'NoDevice': "",
-        },
-    ]
 
     if not elasticsearch == 'yes':
         user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml']).decode('utf-8')
+        user_data = user_data % {
+            'WALE_S3_PREFIX': wale_s3_prefix,
+            'COMMIT': commit,
+            'ROLE': role,
+        }
         security_groups = ['ssh-http-https']
         iam_role = 'encoded-instance'
+        count = 1
     else:
         user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config-elasticsearch.yml']).decode('utf-8')
+        user_data = user_data % {
+            'NAME': "{}-{}".format(name,role)
+        }
         security_groups = ['elasticsearch-https']
         iam_role = 'elasticsearch-instance'
+        count = cluster_size
 
-    print(user_data)
+    instances = create_ec2_instances(ec2, image_id, count, instance_type, security_groups, user_data, BDM, iam_role)
 
-    user_data = user_data % {
-        'WALE_S3_PREFIX': wale_s3_prefix,
-        'COMMIT': commit,
-        'ROLE': role,
-        'INSTANCE_NAME': name,
-    }
+    for instance in instances:
+        if elasticsearch == 'yes' and cluster_size > 1:
+            print('Creating Elasticsearch cluster')
+        print('%s.%s.encodedcc.org' % (instance.id, domain))  # Instance:i-34edd56f
+        instance.wait_until_exists()
+        tag_ec2_instance(instance, name, branch, commit, username, elasticsearch)
+        print('ssh %s.%s.encodedcc.org' % (name, domain))
+        if domain == 'instance':
+            print('https://%s.demo.encodedcc.org' % name)
 
-
-
-    reservation = ec2.create_instances(
-        ImageId=image_id,
-        MinCount=1,
-        MaxCount=1,
-        InstanceType=instance_type,
-        SecurityGroups=security_groups,
-        UserData=user_data,
-        BlockDeviceMappings=bdm,
-        InstanceInitiatedShutdownBehavior='terminate',
-        IamInstanceProfile={
-            "Name": iam_role,
-        }
-    )
-
-    instance = reservation[0]  # Instance:i-34edd56f
-    print('%s.%s.encodedcc.org' % (instance.id, domain))
-    instance.wait_until_exists()
-    instance.create_tags(Tags=[
-        {'Key': 'Name', 'Value': name},
-        {'Key': 'branch', 'Value': branch},
-        {'Key': 'commit', 'Value': commit},
-        {'Key': 'started_by', 'Value': username},
-    ])
-    print('ssh %s.%s.encodedcc.org' % (name, domain))
-    if domain == 'instance':
-        print('https://%s.demo.encodedcc.org' % name)
-
-    print('pending...')
-    instance.wait_until_running()
-    print(instance.state['Name'])
 
 
 def main():
@@ -142,7 +153,8 @@ def main():
         "(m4.xlarge or c4.xlarge)")
     parser.add_argument('--profile-name', default=None, help="AWS creds profile")
     parser.add_argument('--elasticsearch', default=None, help="Launch an Elasticsearch instance")
-    parser.add_argument('--cluster-size', default=3, help="Elasticsearch cluster size")
+    parser.add_argument('--cluster-size', default=2, help="Elasticsearch cluster size")
+    parser.add_argument('--teardown-cluster', default=None, help="Takes down all the cluster launched from the branch")
     args = parser.parse_args()
 
     return run(**vars(args))
