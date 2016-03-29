@@ -105,8 +105,13 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size,
         user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config-elasticsearch.yml']).decode('utf-8')
         pdb.set_trace()
         user_data = user_data % {
-            'ROLE': "{}-{}".format(name,role),
-        }
+            'WALE_S3_PREFIX': wale_s3_prefix,
+            'COMMIT': commit,
+            'ROLE': role}
+
+        # user_data = user_data % {
+        #     'ROLE': 3.5#"{}-{}".format(name,role),
+        # }
         return
         security_groups = ['elasticsearch-https']
         iam_role = 'elasticsearch-instance'
