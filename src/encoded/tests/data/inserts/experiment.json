@@ -278,7 +278,7 @@
         "accession": "ENCSR002ACT",
         "assay_term_id": "OBI:0001332",
         "assay_term_name": "MethylArray",
-        "award": "ENCODE3",
+        "award": "ENCODE2",
         "biosample_term_id": "CL:1000350",
         "biosample_term_name": "basal cell of epithelium of terminal bronchiole",
         "biosample_type": "primary cell",
