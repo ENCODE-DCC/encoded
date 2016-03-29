@@ -174,10 +174,46 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         "title": "Assay title",
         "type": "string",
     })
-    def assay_title(self, registry, assay_term_id, assay_term_name):
+    def assay_title(self, request, registry, assay_term_id, assay_term_name,
+                    replicates=None, target=None):
         # This is the preferred name in generate_ontology.py if exists
         if assay_term_id in registry['ontology']:
-            preferred_name = registry['ontology'][assay_term_id].get('preferred_name', assay_term_name)
+            preferred_name = registry['ontology'][assay_term_id].get('preferred_name',
+                                                                     assay_term_name)
+            if preferred_name == 'RNA-seq' and replicates is not None:
+                for rep in replicates:
+                    replicateObject = request.embed(rep, '@@object')
+                    if replicateObject['status'] == 'deleted':
+                        continue
+                    if 'library' in replicateObject:
+                        libraryObject = request.embed(replicateObject['library'], '@@object')
+                        if 'size_range' in libraryObject and \
+                           libraryObject['size_range'] == '<200':
+                            preferred_name = 'small RNA-seq'
+                            break
+                        elif 'nucleic_acid_starting_quantity_units' in libraryObject and \
+                             libraryObject['nucleic_acid_starting_quantity_units'] == 'pg':
+                            preferred_name = 'low input RNA-seq'
+                            break
+                        elif 'depleted_in_term_name' in libraryObject and \
+                             'polyadenylated mRNA' in libraryObject['depleted_in_term_name']:
+                            preferred_name = 'polyA depleted RNA-seq'
+                            break
+                        elif 'nucleic_acid_term_name' in libraryObject and \
+                             libraryObject['nucleic_acid_term_name'] == 'polyadenylated mRNA':
+                            preferred_name = 'polyA mRNA RNA-seq'
+                            break
+
+            elif preferred_name == 'ChIP-seq' and target is not None:
+                targetObject = request.embed(target, '@@object')
+                if 'investigated_as' in targetObject and \
+                   'histone modification' in targetObject['investigated_as']:
+                    preferred_name = 'Histone ChIP-seq'
+                    break
+                elif 'investigated_as' in targetObject and \
+                     'transcription factor' in targetObject['investigated_as']:
+                    preferred_name = 'TF ChIP-seq'
+                    break
             return preferred_name or assay_term_name
         return assay_term_name
 
