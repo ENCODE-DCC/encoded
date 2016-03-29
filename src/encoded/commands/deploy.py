@@ -3,6 +3,7 @@ import getpass
 import re
 import subprocess
 import sys
+import pdb
 
 
 BDM = [
@@ -102,9 +103,11 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size,
         count = 1
     else:
         user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config-elasticsearch.yml']).decode('utf-8')
+        pdb.set_trace()
         user_data = user_data % {
-            'NAME': "{}-{}".format(name,role)
+            'ROLE': "{}-{}".format(name,role),
         }
+        return
         security_groups = ['elasticsearch-https']
         iam_role = 'elasticsearch-instance'
         count = cluster_size
