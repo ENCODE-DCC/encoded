@@ -59,7 +59,8 @@ non_seq_assays = [
                                     'replicates',
                                     'replicates.library',
                                     'replicates.library.biosample',
-                                    'replicates.library.biosample.organism'
+                                    'replicates.library.biosample.donor',
+                                    'replicates.library.biosample.donor.organism',
                                     'original_files.quality_metrics',
                                     'original_files.derived_from'],
                condition=rfa('ENCODE3'))
@@ -87,6 +88,8 @@ def audit_experiement_rampage_encode3_standards(value, system):
     - Mapping to GRCh38 or mm10
     - Gene quantifications are using gencode V4 or M4
     '''
+
+    
     if value['status'] not in ['released', 'release ready']:
         return
     if 'assay_term_name' not in value or value['assay_term_name'] != 'RAMPAGE':
@@ -96,6 +99,7 @@ def audit_experiement_rampage_encode3_standards(value, system):
     if 'replicates' not in value:
         return
 
+
     num_bio_reps = set()
     for rep in value['replicates']:
         num_bio_reps.add(rep['biological_replicate_number'])
@@ -104,6 +108,11 @@ def audit_experiement_rampage_encode3_standards(value, system):
         return
 
     organism_name = get_organism_name(value['replicates'])  # human/mouse
+
+    '''yield AuditFailure ('TEST ERROR', organism_name, level='NOT_COMPLIANT')
+    return
+    '''
+
     alignment_files = []
     gene_quantifications = []
 
@@ -261,7 +270,10 @@ def get_organism_name(reps):
            rep['library']['status'] not in ['replaced', 'revoked', 'deleted'] and \
            'biosample' in rep['library'] and \
            rep['library']['biosample']['status'] not in ['replaced', 'revoked', 'deleted']:
-            return rep['library']['biosample']['name']
+            if 'donor' in rep['library']['biosample']:
+                donor = rep['library']['biosample']['donor']
+                if 'organism' in donor:
+                    return donor['organism']['name']
     return False
 
 
