@@ -402,7 +402,6 @@ module.exports.HistoryAndTriggers = {
     },
 
     handleClick: function(event) {
-        console.log('handleClick: %o', event);
         // https://github.com/facebook/react/issues/1691
         if (event.isDefaultPrevented()) return;
 
@@ -507,8 +506,9 @@ module.exports.HistoryAndTriggers = {
         if (event.state) {
             // Abort inflight xhr before setProps
             if (request && this.requestCurrent) {
+                // Abort the current request, then remember we've aborted it so that we don't render
+                // the Network Request Error page.
                 request.abort();
-                console.log('POPSTATE ABORT');
                 this.requestAborted = true;
                 this.requestCurrent = false;
             }
@@ -574,10 +574,11 @@ module.exports.HistoryAndTriggers = {
         var request = this.props.contextRequest;
 
         if (request && this.requestCurrent) {
+            // Abort the current request, then remember we've aborted the request so that we
+            // don't render the Network Request Error page.
             request.abort();
-            this.requestCurrent = false;
             this.requestAborted = true;
-            console.log('NAVIGATE ABORT');
+            this.requestCurrent = false;
         }
 
         if (options.skipRequest) {
@@ -593,7 +594,7 @@ module.exports.HistoryAndTriggers = {
         request = this.fetch(href, {
             headers: {'Accept': 'application/json'}
         });
-        this.requestCurrent = true;
+        this.requestCurrent = true; // Remember we have an outstanding GET request
 
         var timeout = new Timeout(this.SLOW_REQUEST_TIME);
 
@@ -601,11 +602,13 @@ module.exports.HistoryAndTriggers = {
             if (v instanceof Timeout) {
                 this.setProps({'slow': true});
             } else {
+                // Request has returned data
                 this.requestCurrent = false;
             }
         });
 
         var promise = request.then(response => {
+            // Request has returned data
             this.requestCurrent = false;
 
             // navigate normally to URL of unexpected non-JSON response so back button works.
@@ -650,20 +653,26 @@ module.exports.HistoryAndTriggers = {
 
     receiveContextResponse: function (data) {
         // title currently ignored by browsers
-        console.log('receiveContextResponse: %o:Aborted %s:Current %s', data, this.requestAborted, this.requestCurrent);
         try {
             window.history.replaceState(data, '', window.location.href);
         } catch (exc) {
             // Might fail due to too large data
             window.history.replaceState(null, '', window.location.href);
         }
+
+        // Set up new properties for the page after a navigation click. First disable slow now that we've
+        // gotten a response. If the requestAborted flag is set, then a request was aborted and so we have
+        // the data for a Network Request Error. Don't render that, but clear the requestAboerted flag.
+        // Otherwise we have good page data to render.
         var newProps = {slow: false};
         if (!this.requestAborted) {
+            // Real page to render
             newProps.context = data;
         } else {
+            // data holds network error. Don't render that, but clear the requestAborted flag so we're ready
+            // for the next navigation click.
             this.requestAborted = false;
         }
-        console.log('NEWPROPS: %o', newProps);
         this.setProps(newProps);
     },
 
