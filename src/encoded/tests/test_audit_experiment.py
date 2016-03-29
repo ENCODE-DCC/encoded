@@ -351,6 +351,90 @@ def file_bam(testapp, lab, award, base_experiment, base_replicate):
     return testapp.post_json('/file', item).json['@graph'][0]
 
 
+@pytest.fixture
+def file_bam_1_1(testapp, encode_lab, award, base_experiment, file_fastq_3):
+    item = {
+        'dataset': base_experiment['@id'],
+        'derived_from': [file_fastq_3['@id']],
+        'file_format': 'bam',
+        'assembly': 'mm10',
+        'md5sum': 'd41d8cd98f03wsqa50b204et3f8427123e',
+        'output_type': 'alignments',
+        'lab': encode_lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_bam_2_1(testapp, encode_lab, award, base_experiment, file_fastq_4):
+    item = {
+        'dataset': base_experiment['@id'],
+        'derived_from': [file_fastq_4['@id']],
+        'file_format': 'bam',
+        'assembly': 'mm10',
+        'md5sum': 'd41d8cd98f00b204et300gtf8427123e',
+        'output_type': 'alignments',
+        'lab': encode_lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def bam_quality_metric_1_1(testapp, analysis_step_run_bam, file_bam_1_1):
+    item = {
+        'step_run': analysis_step_run_bam['@id'],
+        'quality_metric_of': [file_bam_1_1['@id']],
+        'Uniquely mapped reads number': 1000
+    }
+
+    return testapp.post_json('/star_quality_metric', item).json['@graph'][0]
+
+
+@pytest.fixture
+def bam_quality_metric_2_1(testapp, analysis_step_run_bam, file_bam_2_1):
+    item = {
+        'step_run': analysis_step_run_bam['@id'],
+        'quality_metric_of': [file_bam_2_1['@id']],
+        'Uniquely mapped reads number': 1000
+    }
+
+    return testapp.post_json('/star_quality_metric', item).json['@graph'][0]
+
+
+@pytest.fixture
+def mad_quality_metric_1_2(testapp, analysis_step_run_bam, file_tsv_1_2):
+    item = {
+        'step_run': analysis_step_run_bam['@id'],
+        'quality_metric_of': [file_tsv_1_2['@id']],
+        'Spearman correlation': 0.2,
+        'MAD of log ratios': 3.1
+    }
+
+    return testapp.post_json('/mad_quality_metric', item).json['@graph'][0]
+
+
+
+@pytest.fixture
+def file_tsv_1_2(base_experiment, award, encode_lab, testapp, analysis_step_run_bam):
+    item = {
+        'dataset': base_experiment['uuid'],
+        'file_format': 'tsv',
+        'file_size': 3654,
+        'assembly': 'mm10',
+        'genome_annotation': 'M4',
+        'md5sum': '100d8c998f00b2204e9800998ecf8428b',
+        'output_type': 'gene quantifications',
+        'award': award['uuid'],
+        'lab': encode_lab['uuid'],
+        'status': 'released',
+        'step_run': analysis_step_run_bam['uuid']
+    }
+    return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
 def test_ChIP_possible_control(testapp, base_experiment, ctrl_experiment, IgG_ctrl_rep):
     testapp.patch_json(base_experiment['@id'], {'possible_controls': [ctrl_experiment['@id']], 'assay_term_name': 'ChIP-seq', 'assay_term_id': 'OBI:0000716'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
@@ -1010,7 +1094,7 @@ def test_audit_experiment_mismatched_inter_length_sequencing_files(testapp,
     assert any(error['category'] == 'mixed inter-replicate read lengths'
                for error in errors_list)
 
-'''
+
 def test_audit_experiment_roadmap_standards(testapp,
                                             base_experiment,
                                             replicate_1_1,
@@ -1021,7 +1105,16 @@ def test_audit_experiment_roadmap_standards(testapp,
                                             biosample_2,
                                             mouse_donor_1,
                                             file_fastq_3,
-                                            file_fastq_4):
+                                            file_fastq_4,
+                                            file_bam_1_1,
+                                            file_bam_2_1,
+                                            file_tsv_1_2,
+                                            mad_quality_metric_1_2,
+                                            bam_quality_metric_1_1,
+                                            bam_quality_metric_2_1):
+    testapp.patch_json(file_fastq_3['@id'], {'read_length': 100})
+    testapp.patch_json(file_fastq_4['@id'], {'read_length': 100})
+
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
@@ -1042,7 +1135,6 @@ def test_audit_experiment_roadmap_standards(testapp,
     for error_type in errors:
         errors_list.extend(errors[error_type])
         #print (error_type)
-        for e in errors['NOT_COMPLIANT']:
-            print (e)
-    assert any(error['category'] == 'TEST_ERROR' for error in errors_list)
-'''
+        #for e in errors[error_type]:
+        #    print (e['category'])
+    assert any(error['category'] == 'RAMPAGE - insufficient read depth' for error in errors_list)

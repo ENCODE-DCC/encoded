@@ -137,14 +137,6 @@ def file4(file_exp2, award, lab, file_rep2, testapp):
     }
     return testapp.post_json('/file', item, status=201).json['@graph'][0]
 
-@pytest.fixture
-def encode_lab(testapp):
-    item = {
-        'name': 'encode-processing-pipeline',
-        'title': 'ENCODE Processing Pipeline',
-        'status': 'current'
-        }
-    return testapp.post_json('/lab', item, status=201).json['@graph'][0]
 
 @pytest.fixture
 def file6(file_exp2, award, encode_lab, testapp, analysis_step_run_bam):

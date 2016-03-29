@@ -677,3 +677,13 @@ def pipeline_bam(testapp, lab, award, analysis_step_bam ):
         'analysis_steps': [analysis_step_bam['@id']]
     }
     return testapp.post_json('/pipeline', item).json['@graph'][0]
+
+
+@pytest.fixture
+def encode_lab(testapp):
+    item = {
+        'name': 'encode-processing-pipeline',
+        'title': 'ENCODE Processing Pipeline',
+        'status': 'current'
+        }
+    return testapp.post_json('/lab', item, status=201).json['@graph'][0]

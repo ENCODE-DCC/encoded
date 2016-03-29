@@ -109,19 +109,23 @@ def audit_experiement_rampage_encode3_standards(value, system):
 
     organism_name = get_organism_name(value['replicates'])  # human/mouse
 
-    '''yield AuditFailure ('TEST ERROR', organism_name, level='NOT_COMPLIANT')
-    return
-    '''
-
-    alignment_files = []
-    gene_quantifications = []
-
-
     fastq_files = scanFilesForFileFormat(value['original_files'], 'fastq')
+    
+    #for f in fastq_files:
+    #    print ('FASTQS:' + '\t'+ f['accession'])
+    
     alignment_files = scanFilesForFileFormat(value['original_files'], 'bam')
+    
+    #for f in alignment_files:
+    #    print ('BAMS:' + '\t'+ f['accession'])
+    
     gene_quantifications = scanFilesForOutputType(value['original_files'],
-                                                      'gene quantifications')
+                                                  'gene quantifications')
 
+    #for f in gene_quantifications:
+    #    print ('TSVs:' + '\t'+ f['accession'])
+   
+    
     '''
     Apply on FASTQs:
     1. paired endedness
@@ -145,7 +149,7 @@ def audit_experiement_rampage_encode3_standards(value, system):
             for failure in check_file_read_depth(f, 25000000, 'RAMPAGE'):
                 yield failure
 
-    mad_metrics = set()
+    mad_metrics_dict = {}
     for f in gene_quantifications:
         if (organism_name == 'human' and f['assembly'] == 'GRCh38' and
            f['genome_annotation'] == 'V24') or \
@@ -153,8 +157,10 @@ def audit_experiement_rampage_encode3_standards(value, system):
            f['genome_annotation'] == 'M4'):
             if 'quality_metrics' in f and len(f['quality_metrics']) > 0:
                 for qm in f['quality_metrics']:
-                    mad_metrics.add(qm)
-
+                    mad_metrics_dict[qm['@id']] = qm
+    mad_metrics = []
+    for k in mad_metrics_dict:
+        mad_metrics.append(mad_metrics_dict[k])
     for failure in check_spearman(mad_metrics, value['replication_type'], 0.9, 0.8, 'RAMPAGE'):
         yield failure
     return
@@ -175,7 +181,7 @@ def check_spearman(metrics, replication_type, isogenic_threshold, anisogenic_thr
         if 'Spearman correlation' in m:
             spearman_correlation = m['Spearman correlation']
             if spearman_correlation < threshold:   
-                detail = 'ENCODE processed gene quantification file {} '.format(metrics['quality_metric_of']) + \
+                detail = 'ENCODE processed gene quantification file {} '.format(m['quality_metric_of']) + \
                          'have Spearman correlation of {}.'.format(spearman_correlation) + \
                          ' For gene quantification files from an {}'.format(replication_type) + \
                          ' assay in the {} '.format(pipeline) + \
@@ -200,6 +206,9 @@ def check_file_read_depth(file_to_check, threshold, pipeline):
 
     quality_metrics = file_to_check.get('quality_metrics')
 
+    #print ('INSIDE:')
+    #print (quality_metrics)
+    #print ('*******************')
     if (quality_metrics is None) or (quality_metrics == []):
         return
 
@@ -220,7 +229,7 @@ def check_file_read_depth(file_to_check, threshold, pipeline):
         detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                      read_depth) + \
                  'uniquely mapped reads. Replicates for ' + \
-                 '{} assay '.format(pipeline['title']) + \
+                 '{} assay '.format(pipeline) + \
                  'require {} uniquely mapped reads.'.format(threshold)
         yield AuditFailure('RAMPAGE - insufficient read depth', detail, level='NOT_COMPLIANT')
         return
