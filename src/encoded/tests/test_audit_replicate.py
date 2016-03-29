@@ -54,3 +54,44 @@ def test_audit_status_replicate(testapp, rep1):
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'mismatched status' for error in errors_list)
+
+
+def test_audit_replicate_library_with_documents(testapp, base_experiment, library_1,
+                                                replicate_1_1, document):
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(library_1['@id'], {'documents': [document['@id']]})
+    testapp.patch_json(library_1['@id'], {'fragmentation_method': 'chemical (DNaseI)'})
+
+    res = testapp.get(replicate_1_1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'missing documents' for error in errors_list)
+
+
+def test_audit_replicate_library_missing_documents(testapp, base_experiment, library_1,
+                                                   replicate_1_1):
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(library_1['@id'], {'fragmentation_method': 'see document'})
+    res = testapp.get(replicate_1_1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing documents' for error in errors_list)
+
+
+def test_audit_replicate_library_wtih_general_documents(testapp, base_experiment,
+                                                        library_1, replicate_1_1, document):
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(library_1['@id'], {'fragmentation_method': 'see document'})
+    testapp.patch_json(document['@id'], {'document_type': 'general protocol'})
+    testapp.patch_json(base_experiment['@id'], {'documents': [document['@id']]})
+
+    res = testapp.get(replicate_1_1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'missing documents' for error in errors_list)

@@ -31,3 +31,42 @@ def audit_status_replicate(value, system):
             exp_status
             )
         raise AuditFailure('mismatched status', detail, level='DCC_ACTION')
+
+
+@audit_checker('replicate', frame=['experiment',
+                                   'experiment.documents',
+                                   'library'])
+def audit_replicate_library_documents(value, system):
+    '''
+    If any of the library methods say <see document> then
+    there needs to be a document.
+    '''
+
+    if value['status'] in ['deleted']:
+        return
+    if 'library' not in value:
+        return
+    library = value['library']
+
+    list_of_methods = ['extraction_method',
+                       'fragmentation_method',
+                       'library_size_selection_method',
+                       'lysis_method',
+                       ]
+
+    general_document_flag = False
+    if 'experiment' in value and 'documents' in value['experiment']:
+        for d in value['experiment']['documents']:
+            if 'document_type' in d and \
+               d['document_type'] == 'general protocol':
+                general_document_flag = True
+
+    for method in list_of_methods:
+        if library.get(method) == "see document" and \
+           library['documents'] == [] and \
+           general_document_flag is not True:
+            detail = 'Library {} method specifies "see document" yet has no document'.format(
+                library['@id']
+                )
+            yield AuditFailure('missing documents', detail, level='NOT_COMPLIANT')
+            return
