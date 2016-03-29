@@ -108,12 +108,12 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size,
         }
         security_groups = ['elasticsearch-https']
         iam_role = 'elasticsearch-instance'
-        count = cluster_size
+        count = int(cluster_size)
 
     instances = create_ec2_instances(ec2, image_id, count, instance_type, security_groups, user_data, BDM, iam_role)
 
     for i, instance in enumerate(instances):
-        if elasticsearch == 'yes' and cluster_size > 1:
+        if elasticsearch == 'yes' and count > 1:
             print('Creating Elasticsearch cluster')
             tmp_name = "{}{}".format(name,i)
         else:
