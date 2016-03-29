@@ -88,7 +88,8 @@ def audit_experiement_rampage_encode3_standards(value, system):
     - Mapping to GRCh38 or mm10
     - Gene quantifications are using gencode V4 or M4
     '''
-
+    if 'replication_type' not in value:
+        return
     
     if value['status'] not in ['released', 'release ready']:
         return
