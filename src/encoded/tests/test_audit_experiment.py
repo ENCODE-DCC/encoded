@@ -1095,7 +1095,7 @@ def test_audit_experiment_mismatched_inter_length_sequencing_files(testapp,
                for error in errors_list)
 
 
-def test_audit_experiment_roadmap_standards(testapp,
+def test_audit_experiment_rampage_standards(testapp,
                                             base_experiment,
                                             replicate_1_1,
                                             replicate_2_1,

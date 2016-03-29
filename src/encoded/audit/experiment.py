@@ -74,11 +74,11 @@ def audit_experiement_rampage_encode3_standards(value, system):
     - Experiments required to have at least 2 bio reps
     >>> audit_experiment_replicated()
 
-    - Read depth for each replicate is 25M uniquely mapped reads
+    - Read depth for each replicate is 25M uniquely mapped reads --> DONE
     - Read length is at least 50 BP --> DONE
-    - Gene level quantification Spearman >0.9, 0.8 for isogenic, anisogenic
+    - Gene level quantification Spearman >0.9, 0.8 for isogenic, anisogenic --> DONE
     - Control of RAMPAGE is corrsponding RNA-seq experiment
-    ???
+    >>> taken care of in file control audit
     - Only paired end sequencing would allow pipeline processing --> DONE
     - Sequencing platform Illumina GA, HiSeq --> DONE
     
