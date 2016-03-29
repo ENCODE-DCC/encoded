@@ -209,11 +209,9 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
                 if 'investigated_as' in targetObject and \
                    'histone modification' in targetObject['investigated_as']:
                     preferred_name = 'Histone ChIP-seq'
-                    break
                 elif 'investigated_as' in targetObject and \
                      'transcription factor' in targetObject['investigated_as']:
                     preferred_name = 'TF ChIP-seq'
-                    break
             return preferred_name or assay_term_name
         return assay_term_name
 
