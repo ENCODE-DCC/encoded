@@ -37,9 +37,9 @@ var SoftwareVersionList = software.SoftwareVersionList;
 var {SortTablePanel, SortTable} = sortTable;
 var ProjectBadge = image.ProjectBadge;
 var {DocumentsPanel, AttachmentPanel} = doc;
-var {Panel, PanelBody, PanelHeading} = panel;
 var DropdownButton = button.DropdownButton;
 var DropdownMenu = dropdownMenu.DropdownMenu;
+var {Panel, PanelBody, PanelHeading, TabPanel, TabPanelPane} = panel;
 
 
 var anisogenicValues = [
@@ -47,6 +47,19 @@ var anisogenicValues = [
     'anisogenic, age-matched',
     'anisogenic, sex-matched',
     'anisogenic'
+];
+
+// Order that assemblies should appear in filtering menu
+var assemblyPriority = [
+    'GRCh38',
+    'hg19',
+    'mm10',
+    'mm9',
+    'ce11',
+    'ce10',
+    'dm6',
+    'dm3',
+    'J02459.1'
 ];
 
 
@@ -553,10 +566,8 @@ var Experiment = module.exports.Experiment = React.createClass({
                     <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
                 : null}
 
-                <FetchedData ignoreErrors>
-                    <Param name="data" url={dataset.unreleased_files_url(context)} />
-                    <ExperimentGraph context={context} session={this.context.session} />
-                </FetchedData>
+                {/* Display the file widget with the facet, graph, and tables */}
+                <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} />
 
                 {/* Display list of released and unreleased files */}
                 <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} session={this.context.session} ignoreErrors />
@@ -570,6 +581,127 @@ var Experiment = module.exports.Experiment = React.createClass({
 });
 
 globals.content_views.register(Experiment, 'Experiment');
+
+
+// Given an array of files, make an array of file assemblies and genome annotations to prepare for
+// rendering the filtering menu of assemblies and genome annotations. This collects them from all
+// files that don't have a "raw data" output_category and that have an assembly. The format of the
+// returned array is:
+//
+// [{assembly: 'assembly1', annotation: 'annotation1'}]
+//
+// The resulting array has no duplicate entries, nor empty ones. Entries with an assembly but no
+// annotation simply have an empty string for the annnotation. The array of assemblies and
+// annotations is then sorted with assembly as the primary key and annotation as the secondary.
+
+function collectAssembliesAnnotations(files) {
+    var filterOptions = [];
+
+    // Get the assembly and annotation of each file. Assembly is required to be included in the list
+    files.forEach(file => {
+        if (file.output_category !== 'raw data' && file.assembly) {
+            filterOptions.push({assembly: file.assembly, annotation: file.genome_annotation});
+        }
+    });
+
+    // Eliminate duplicate entries in filterOptions. Duplicates are detected by combining the
+    // assembly and annotation into a long string. Use the '!' separator so that highly unlikely
+    // anomalies don't pass undetected (e.g. hg19!V19 and hg1!9V19 -- again, highly unlikely).
+    filterOptions = filterOptions.length ? _(filterOptions).uniq(option => option.assembly + '!' + (option.annotation ? option.annotation : '')) : [];
+
+    // Now begin a two-stage sort, with the primary key being the assembly in a specific priority
+    // order specified by the assemblyPriority array, and the secondary key being the annotation
+    // in which we attempt to suss out the ordering from the way it looks, highest-numbered first.
+    // First, sort by annotation and reverse the sort at the end.
+    filterOptions = _(filterOptions).sortBy(option => {
+        if (option.annotation) {
+            // Extract any number from the annotation.
+            var annotationMatch = option.annotation.match(/^[A-Z]+(\d+).*$/);
+            if (annotationMatch) {
+                // Return the number to the sorting algoritm.
+                return Number(annotationMatch[1]);
+            }
+        }
+
+        // No annotation gets sorted to the top.
+        return null;
+    }).reverse();
+
+    // Now sort by assembly priority order as the primary sorting key. assemblyPriority is a global
+    // array at the top of the file.
+    return _(filterOptions).sortBy(option => _(assemblyPriority).indexOf(option.assembly));
+}
+
+
+// File display widget, showing a facet list, a table, and a graph (and maybe a BioDalliance).
+// This component only triggers the data retrieval, which is done with a search for files associated
+// with the given experiment (in this.props.context). An odd thing is we specify query-string parameters
+// to the experiment URL, but they apply to the file search -- not the experiment itself.
+
+var FileGallery = React.createClass({
+    propTypes: {
+        encodevers: React.PropTypes.string, // ENCODE version number
+        anisogenic: React.PropTypes.bool // True if anisogenic experiment
+    },
+
+    contextTypes: {
+        session: React.PropTypes.object, // Login information
+        location_href: React.PropTypes.string // URL of this experiment page, including query string stuff
+    },
+
+    nonSearchQueries: ['format'],
+
+    render: function() {
+        var {context, encodevers, anisogenic} = this.props;
+
+        return (
+            <FetchedData ignoreErrors>
+                <Param name="data" url={dataset.unreleased_files_url(context)} />
+                <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} />
+            </FetchedData>
+        );
+    }
+});
+
+
+// Function to render the file gallery, and it gets called after the file search results (for files associated with
+// the displayed experiment) return.
+var FileGalleryRenderer = React.createClass({
+    propTypes: {
+        encodevers: React.PropTypes.string, // ENCODE version number
+        anisogenic: React.PropTypes.bool // True if anisogenic experiment
+    },
+
+    contextTypes: {
+        session: React.PropTypes.object,
+        location_href: React.PropTypes.string
+    },
+
+    render: function() {
+        var {context, data} = this.props;
+        var items = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
+        var files = items.length ? context.files.concat(items) : context.files;
+        var filterOptions = files.length ? collectAssembliesAnnotations(files) : [];
+        console.log('FILTEROPTIONS: %o', filterOptions);
+
+        return (
+            <Panel>
+                <PanelBody>
+                    <TabPanel tabs={{graph: 'Graph', table: 'Table', browser: 'Browser'}}>
+                        <TabPanelPane key="graph">
+                            <ExperimentGraph context={context} data={data} filterOptions={filterOptions} session={this.context.session} />
+                        </TabPanelPane>
+                        <TabPanelPane key="table">
+                            <DatasetFiles {...this.props} items={this.props.data['@graph']} encodevers={this.props.encodevers} anisogenic={this.props.anisogenic} session={this.context.session} />
+                        </TabPanelPane>
+                        <TabPanelPane key="browser">
+                        </TabPanelPane>
+                    </TabPanel>
+                </PanelBody>
+            </Panel>
+        );
+    }
+});
 
 
 // Display the table of replicates
@@ -1103,7 +1235,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
     var allPipelines = {}; // List of all pipelines indexed by step @id
     var allMetricsInfo = []; // List of all QC metrics found attached to files
     var fileQcMetrics = {}; // List of all file QC metrics indexed by file ID
-    var filterOptions = []; // List of graph filters; annotations and assemblies
     var stepExists = false; // True if at least one file has an analysis_step
     var fileOutsideReplicate = false; // True if at least one file exists outside a replicate
     var abortGraph = false; // True if graph shouldn't be drawn
@@ -1237,12 +1368,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
         var file = allFiles[fileId];
 
         // File gets removed if doesn’t derive from other files AND no files derive from it.
-        var islandFile = file.removed = !(file.derived_from && file.derived_from.length) && !derivedFromFiles[fileId];
-
-        // Add to the filtering options to generate a <select>; don't include island files
-        if (!islandFile && file.output_category !== 'raw data' && file.assembly) {
-            filterOptions.push({assembly: file.assembly, annotation: file.genome_annotation});
-        }
+        file.removed = !(file.derived_from && file.derived_from.length) && !derivedFromFiles[fileId];
     });
 
     // Remove any replicates containing only removed files from the last step.
@@ -1368,7 +1494,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
     });
 
     // Go through each file (released or unreleased) to add it and associated steps to the graph
-    Object.keys(allFiles).forEach(function(fileId) {
+    Object.keys(allFiles).forEach(fileId => {
         var file = allFiles[fileId];
 
         // Only add files derived from others, or that others derive from,
@@ -1461,9 +1587,8 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
                 }
             }
         }
-    }, this);
+    });
 
-    jsonGraph.filterOptions = filterOptions.length ? _(filterOptions).uniq(option => option.assembly + '!' + (option.annotation ? option.annotation : '')) : [];
     return jsonGraph;
 };
 
@@ -1489,9 +1614,6 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         'dm3',
         'J02459.1'
     ],
-
-    // Holds filtering option objects ({assembly: x, annotation: y}) in sorted order
-    sortedFilterOptions: [],
 
     // Render metadata if a graph node is selected.
     // jsonGraph: JSON graph data.
@@ -1542,39 +1664,19 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         this.setFilter('0');
     },
 
-    componentWillUnmount: function() {
-        this.sortedFilterOptions = [];
-    },
-
-    // Given a filterOptions array [{annotation: x, assembly: x}], pre-sort the annotations so that assembly sorting
-    // becomes the primary key, and the annotion becomes the secondary.
-    sortAnnotations: function(filterOptions) {
-        var sortedFilterOptions = _(filterOptions).sortBy(option => {
-            if (option.annotation) {
-                var annotationMatch = option.annotation.match(/^[A-Z]+(\d+).*$/);
-                if (annotationMatch) {
-                    return Number(annotationMatch[1]);
-                }
-            }
-            return null;
-        });
-        return sortedFilterOptions.reverse();
-    },
-
     render: function() {
         var selectedAssembly = '';
         var selectedAnnotation = '';
-        var {context, session, data} = this.props;
+        var {context, session, data, filterOptions} = this.props;
         var items = data ? data['@graph'] : [];
         var files = context.files.concat(items);
 
         // Build node graph of the files and analysis steps with this experiment
         if (files && files.length) {
             // Build the graph; place resulting graph in this.jsonGraph
-            var filterOptions = {};
-            if (this.state.selectedFilterValue && this.sortedFilterOptions[this.state.selectedFilterValue]) {
-                selectedAssembly = this.sortedFilterOptions[this.state.selectedFilterValue].assembly;
-                selectedAnnotation = this.sortedFilterOptions[this.state.selectedFilterValue].annotation;
+            if (this.state.selectedFilterValue && filterOptions[this.state.selectedFilterValue]) {
+                selectedAssembly = filterOptions[this.state.selectedFilterValue].assembly;
+                selectedAnnotation = filterOptions[this.state.selectedFilterValue].annotation;
             }
             try {
                 this.jsonGraph = assembleGraph(context, session, this.state.infoNodeId, files, selectedAssembly, selectedAnnotation);
@@ -1583,11 +1685,6 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 console.warn(e.message + (e.file0 ? ' -- file0:' + e.file0 : '') + (e.file1 ? ' -- file1:' + e.file1: ''));
             }
             var goodGraph = this.jsonGraph && Object.keys(this.jsonGraph).length;
-            filterOptions = (goodGraph && this.jsonGraph.filterOptions) ? this.jsonGraph.filterOptions : [];
-
-            // Sort filtering menu to an order specified by this.assemblyPriority. Sort by annotation and then by assembly so that
-            // annotation is the secondary key.
-            this.sortedFilterOptions = _(this.sortAnnotations(filterOptions)).sortBy(item => _(this.assemblyPriority).indexOf(item.assembly));
 
             // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
             if (goodGraph || this.state.selectedAssembly || this.state.selectedAnnotation) {
@@ -1595,12 +1692,12 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 return (
                     <div>
                         <h3>Files generated by pipeline</h3>
-                        {filterOptions && Object.keys(filterOptions).length ?
+                        {filterOptions.length ?
                             <div className="form-inline">
                                 <select className="form-control" defaultValue="0" onChange={this.handleFilterChange}>
                                     <option value="default" key="title">All Assemblies and Annotations</option>
                                     <option disabled="disabled"></option>
-                                    {this.sortedFilterOptions.map((option, i) =>
+                                    {filterOptions.map((option, i) =>
                                         <option key={i} value={i}>{option.assembly + (option.annotation ? ' ' + option.annotation : '')}</option>
                                     )}
                                 </select>
