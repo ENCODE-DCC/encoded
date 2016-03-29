@@ -45,7 +45,7 @@ bootcmd:
 - cloud-init-per once fallocate-swapfile fallocate -l 4G /swapfile
 - cloud-init-per once chmod-swapfile chmod 600 /swapfile
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
-- MEMGIGS=$(awk '/MemTotal/{printf "%.0f", $2 / 1024**2}' /proc/meminfo)
+- MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
 - if [ "$MEMGIGS" -gt 12 ]
 - then
 -    echo "ES_HEAP_SIZE=8g" > /etc/default/elasticsearch
@@ -76,7 +76,7 @@ runcmd:
 # permissions
 - set -ex
 - update-rc.d elasticsearch defaults
-- echo "cluster.name':'' $NAME" >> /etc/elasticsearch/elasticsearch.yml
+- echo "cluster.name':'' %(NAME)s" >> /etc/elasticsearch/elasticsearch.yml
 - sudo /usr/share/elasticsearch/bin/plugin install cloud-aws
 - service elasticsearch start
 
