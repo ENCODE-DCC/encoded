@@ -119,6 +119,11 @@
                 "requires lab review",
                 "release ready"
             ]
+        },
+        "note": {
+            "title": "Note",
+            "description": "Additional information pertaining to the experiment to be displayed.",
+            "type": "string"
         }
     },
     "facets": {

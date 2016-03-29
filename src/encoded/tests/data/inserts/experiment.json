@@ -150,7 +150,8 @@
         "date_released": "2016-01-01",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "target": "TAF1-human",
-        "uuid": "8f8085dd-8e9c-4b75-a187-21dbafe46de1"
+        "uuid": "8f8085dd-8e9c-4b75-a187-21dbafe46de1",
+        "note": "The lab plant died and everyone was sad that week so it may have affected the results."
     },
     {
         "_test": "methy array",
@@ -268,7 +269,8 @@
         "status": "released",
         "date_released": "2016-01-01",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "32bd1f35-d011-4b8e-9601-2929d9688474"
+        "uuid": "32bd1f35-d011-4b8e-9601-2929d9688474",
+        "note": "Mercury was in retrograde and it may have affected the outcome of this experiment."
     },
     {
         "_test": "DNA-me pipeline test",
@@ -366,7 +368,8 @@
         "status": "released",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "4cead359-10e9-49a8-9d20-f05b2499b919"
+        "uuid": "4cead359-10e9-49a8-9d20-f05b2499b919",
+        "note": "There may have been additional \"treatment\" stemming from the tech's constant sneezing."
     },
     {
         "_test": "treatment time series 2",
