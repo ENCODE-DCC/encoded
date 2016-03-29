@@ -33,8 +33,8 @@ def nameify(s):
 def create_ec2_instances(client, image_id, count, instance_type, security_groups, user_data, bdm, iam_role):
     reservations = client.create_instances(
         ImageId=image_id,
-        MinCount=1,
-        MaxCount=1,
+        MinCount=count,
+        MaxCount=count,
         InstanceType=instance_type,
         SecurityGroups=security_groups,
         UserData=user_data,
@@ -112,15 +112,18 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size,
 
     instances = create_ec2_instances(ec2, image_id, count, instance_type, security_groups, user_data, BDM, iam_role)
 
-    for instance in instances:
+    for i, instance in enumerate(instances):
         if elasticsearch == 'yes' and cluster_size > 1:
             print('Creating Elasticsearch cluster')
+            tmp_name = "{}{}".format(name,i)
+        else:
+            tmp_name = name
         print('%s.%s.encodedcc.org' % (instance.id, domain))  # Instance:i-34edd56f
         instance.wait_until_exists()
-        tag_ec2_instance(instance, name, branch, commit, username, elasticsearch)
-        print('ssh %s.%s.encodedcc.org' % (name, domain))
+        tag_ec2_instance(instance, tmp_name, branch, commit, username, elasticsearch)
+        print('ssh %s.%s.encodedcc.org' % (tmp_name, domain))
         if domain == 'instance':
-            print('https://%s.demo.encodedcc.org' % name)
+            print('https://%s.demo.encodedcc.org' % tmp_name)
 
 
 
