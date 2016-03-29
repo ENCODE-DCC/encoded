@@ -1,4 +1,4 @@
-from snowfort import upgrade_step
+from snovault import upgrade_step
 
 
 @upgrade_step('platform', '', '2')

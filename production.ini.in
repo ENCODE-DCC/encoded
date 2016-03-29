@@ -55,7 +55,7 @@ propagate = 0
 [logger_encoded_listener]
 level = INFO
 handlers = console
-qualname = encoded.commands.es_index_listener
+qualname = snovault.elasticsearch.es_index_listener
 propagate = 0
 
 [logger_file_encoded_listener]

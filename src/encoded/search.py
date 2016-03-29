@@ -1,11 +1,11 @@
 import re
 from pyramid.view import view_config
-from snowfort import (
+from snovault import (
     AbstractCollection,
     TYPES,
 )
-from snowfort.elasticsearch import ELASTIC_SEARCH
-from snowfort.resource_views import collection_view_listing_db
+from snovault.elasticsearch import ELASTIC_SEARCH
+from snovault.resource_views import collection_view_listing_db
 from elasticsearch.helpers import scan
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import effective_principals
@@ -509,7 +509,7 @@ def search(context, request, search_type=None):
 
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
-    es_index = request.registry.settings['snowfort.elasticsearch.index']
+    es_index = request.registry.settings['snovault.elasticsearch.index']
     search_audit = request.has_permission('search_audit')
 
     from_, size = get_pagination(request)
@@ -754,7 +754,7 @@ def matrix(context, request):
 
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
-    es_index = request.registry.settings['snowfort.elasticsearch.index']
+    es_index = request.registry.settings['snovault.elasticsearch.index']
 
     search_term = prepare_search_term(request)
 

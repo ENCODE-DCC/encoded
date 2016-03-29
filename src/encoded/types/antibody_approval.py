@@ -1,8 +1,8 @@
-from snowfort import (
+from snovault import (
     collection,
     load_schema,
 )
-from snowfort.resource_views import (
+from snovault.resource_views import (
     item_view,
     item_view_page,
 )
