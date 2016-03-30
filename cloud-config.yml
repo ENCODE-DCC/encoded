@@ -161,8 +161,7 @@ runcmd:
 - set -ex
 - update-rc.d elasticsearch defaults
 - sudo bash /etc/elasticsearch/cluster.sh %(CLUSTER_NAME)s
-- sudo /usr/share/elasticsearch/bin/plugin install --batch cloud-aws
-- service elasticsearch start
+- sudo /usr/share/elasticsearch/bin/plugin install elasticsearch/elasticsearch-cloud-aws/2.7.1
 - chown postgres:postgres /etc/postgresql/9.3/main/*.conf
 - echo "include 'custom.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
 - if test "%(ROLE)s" = "demo"
@@ -275,7 +274,7 @@ write_files:
 
     cloud.aws.region: us-west-2
 
-    discovery.ec2.groups: elasticsearch-https
+    discovery.ec2.groups: elasticsearch-https, ssh-http-https
 
     # discovery.zen.minimum_master_nodes: 2
 

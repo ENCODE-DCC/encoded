@@ -77,7 +77,7 @@ runcmd:
 - set -ex
 - update-rc.d elasticsearch defaults
 - sudo bash /etc/elasticsearch/cluster.sh %(CLUSTER_NAME)s
-- sudo /usr/share/elasticsearch/bin/plugin install --batch cloud-aws
+- sudo /usr/share/elasticsearch/bin/plugin install elasticsearch/elasticsearch-cloud-aws/2.7.1
 - service elasticsearch start
 
 
