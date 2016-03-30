@@ -76,7 +76,7 @@ runcmd:
 # permissions
 - set -ex
 - update-rc.d elasticsearch defaults
-- echo "cluster.name': %(NAME)s'" >> /etc/elasticsearch/elasticsearch.yml
+- /etc/elasticsearch/cluster.sh %(NAME)s
 - sudo /usr/share/elasticsearch/bin/plugin install --batch cloud-aws
 - service elasticsearch start
 
@@ -120,6 +120,16 @@ write_files:
 
     discovery.zen.minimum_master_nodes: 2
 
+- path: /etc/elasticsearch/cluster.sh
+  content: |
+    #!/bin/bash
+    name=$1
+    
+    if [[ -n "$name" ]]; then
+        echo "cluster.name: $name" >> /etc/elasticsearch/elasticsearch.yml
+    else
+        echo "argument error"
+    fi
 
 - path: /etc/ssh/users_ca.pub
   content: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAv/ymOcnN4LhM4NACc3Or116XXJ6KytuOgB/+1qNkOFBqBosrn7cmJ35rsoNHRgYNrCsRE9ch74RKsN6H72FtSJgBhGh/9oUK7Os6Fqt3/ZZXxgxIx6ubs/MTgrxrAnujiBxUXMXQhLKMriNMpo8mt4nGYVtLk9PBjiyfncaS8H9ZKoNio9dhP8bmTuYvioAI35dqKdSlVLyzr/XkZxia8Ki+pQ0N6uuiEwMR3ToM+LSp8wpFOOAiu4PEAujRW7us/+1hlpKWfn0J7/V3826joHE+I967Vg/+ikcVhF77JjK1nib879VgCWfmn1HPQosIpk4yJfVgGvRVI7I2nfBPVw== encoded@demo-l.encodedcc.org
