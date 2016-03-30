@@ -583,137 +583,6 @@ var Experiment = module.exports.Experiment = React.createClass({
 globals.content_views.register(Experiment, 'Experiment');
 
 
-// Given an array of files, make an array of file assemblies and genome annotations to prepare for
-// rendering the filtering menu of assemblies and genome annotations. This collects them from all
-// files that don't have a "raw data" output_category and that have an assembly. The format of the
-// returned array is:
-//
-// [{assembly: 'assembly1', annotation: 'annotation1'}]
-//
-// The resulting array has no duplicate entries, nor empty ones. Entries with an assembly but no
-// annotation simply have an empty string for the annnotation. The array of assemblies and
-// annotations is then sorted with assembly as the primary key and annotation as the secondary.
-
-function collectAssembliesAnnotations(files) {
-    var filterOptions = [];
-
-    // Get the assembly and annotation of each file. Assembly is required to be included in the list
-    files.forEach(file => {
-        if (file.output_category !== 'raw data' && file.assembly) {
-            filterOptions.push({assembly: file.assembly, annotation: file.genome_annotation});
-        }
-    });
-
-    // Eliminate duplicate entries in filterOptions. Duplicates are detected by combining the
-    // assembly and annotation into a long string. Use the '!' separator so that highly unlikely
-    // anomalies don't pass undetected (e.g. hg19!V19 and hg1!9V19 -- again, highly unlikely).
-    filterOptions = filterOptions.length ? _(filterOptions).uniq(option => option.assembly + '!' + (option.annotation ? option.annotation : '')) : [];
-
-    // Now begin a two-stage sort, with the primary key being the assembly in a specific priority
-    // order specified by the assemblyPriority array, and the secondary key being the annotation
-    // in which we attempt to suss out the ordering from the way it looks, highest-numbered first.
-    // First, sort by annotation and reverse the sort at the end.
-    filterOptions = _(filterOptions).sortBy(option => {
-        if (option.annotation) {
-            // Extract any number from the annotation.
-            var annotationMatch = option.annotation.match(/^[A-Z]+(\d+).*$/);
-            if (annotationMatch) {
-                // Return the number to the sorting algoritm.
-                return Number(annotationMatch[1]);
-            }
-        }
-
-        // No annotation gets sorted to the top.
-        return null;
-    }).reverse();
-
-    // Now sort by assembly priority order as the primary sorting key. assemblyPriority is a global
-    // array at the top of the file.
-    return _(filterOptions).sortBy(option => _(assemblyPriority).indexOf(option.assembly));
-}
-
-
-// File display widget, showing a facet list, a table, and a graph (and maybe a BioDalliance).
-// This component only triggers the data retrieval, which is done with a search for files associated
-// with the given experiment (in this.props.context). An odd thing is we specify query-string parameters
-// to the experiment URL, but they apply to the file search -- not the experiment itself.
-
-var FileGallery = React.createClass({
-    propTypes: {
-        encodevers: React.PropTypes.string, // ENCODE version number
-        anisogenic: React.PropTypes.bool // True if anisogenic experiment
-    },
-
-    contextTypes: {
-        session: React.PropTypes.object, // Login information
-        location_href: React.PropTypes.string // URL of this experiment page, including query string stuff
-    },
-
-    nonSearchQueries: ['format'],
-
-    render: function() {
-        var {context, encodevers, anisogenic} = this.props;
-
-        return (
-            <FetchedData ignoreErrors>
-                <Param name="data" url={dataset.unreleased_files_url(context)} />
-                <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} />
-            </FetchedData>
-        );
-    }
-});
-
-
-// Function to render the file gallery, and it gets called after the file search results (for files associated with
-// the displayed experiment) return.
-var FileGalleryRenderer = React.createClass({
-    propTypes: {
-        encodevers: React.PropTypes.string, // ENCODE version number
-        anisogenic: React.PropTypes.bool // True if anisogenic experiment
-    },
-
-    contextTypes: {
-        session: React.PropTypes.object,
-        location_href: React.PropTypes.string
-    },
-
-    render: function() {
-        var {context, data} = this.props;
-        var items = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
-        var files = items.length ? context.files.concat(items) : context.files;
-        var filterOptions = files.length ? collectAssembliesAnnotations(files) : [];
-
-        return (
-            <Panel>
-                <PanelBody>
-                    <TabPanel tabs={{graph: 'Graph', table: 'Table', browser: 'Browser'}}>
-                        {filterOptions.length ?
-                            <div className="form-inline">
-                                <select className="form-control" defaultValue="0" onChange={this.handleFilterChange}>
-                                    <option value="default" key="title">All Assemblies and Annotations</option>
-                                    <option disabled="disabled"></option>
-                                    {filterOptions.map((option, i) =>
-                                        <option key={i} value={i}>{option.assembly + (option.annotation ? ' ' + option.annotation : '')}</option>
-                                    )}
-                                </select>
-                            </div>
-                        : null}
-                        <TabPanelPane key="graph">
-                            <ExperimentGraph context={context} data={data} filterOptions={filterOptions} session={this.context.session} />
-                        </TabPanelPane>
-                        <TabPanelPane key="table">
-                            <DatasetFiles {...this.props} items={this.props.data['@graph']} encodevers={this.props.encodevers} anisogenic={this.props.anisogenic} session={this.context.session} />
-                        </TabPanelPane>
-                        <TabPanelPane key="browser">
-                        </TabPanelPane>
-                    </TabPanel>
-                </PanelBody>
-            </Panel>
-        );
-    }
-});
-
-
 // Display the table of replicates
 var ReplicateTable = React.createClass({
     propTypes: {
@@ -1159,6 +1028,137 @@ var RelatedSeriesItem = React.createClass({
                     </div>
                 </div>
             </span>
+        );
+    }
+});
+
+
+// Given an array of files, make an array of file assemblies and genome annotations to prepare for
+// rendering the filtering menu of assemblies and genome annotations. This collects them from all
+// files that don't have a "raw data" output_category and that have an assembly. The format of the
+// returned array is:
+//
+// [{assembly: 'assembly1', annotation: 'annotation1'}]
+//
+// The resulting array has no duplicate entries, nor empty ones. Entries with an assembly but no
+// annotation simply have an empty string for the annnotation. The array of assemblies and
+// annotations is then sorted with assembly as the primary key and annotation as the secondary.
+
+function collectAssembliesAnnotations(files) {
+    var filterOptions = [];
+
+    // Get the assembly and annotation of each file. Assembly is required to be included in the list
+    files.forEach(file => {
+        if (file.output_category !== 'raw data' && file.assembly) {
+            filterOptions.push({assembly: file.assembly, annotation: file.genome_annotation});
+        }
+    });
+
+    // Eliminate duplicate entries in filterOptions. Duplicates are detected by combining the
+    // assembly and annotation into a long string. Use the '!' separator so that highly unlikely
+    // anomalies don't pass undetected (e.g. hg19!V19 and hg1!9V19 -- again, highly unlikely).
+    filterOptions = filterOptions.length ? _(filterOptions).uniq(option => option.assembly + '!' + (option.annotation ? option.annotation : '')) : [];
+
+    // Now begin a two-stage sort, with the primary key being the assembly in a specific priority
+    // order specified by the assemblyPriority array, and the secondary key being the annotation
+    // in which we attempt to suss out the ordering from the way it looks, highest-numbered first.
+    // First, sort by annotation and reverse the sort at the end.
+    filterOptions = _(filterOptions).sortBy(option => {
+        if (option.annotation) {
+            // Extract any number from the annotation.
+            var annotationMatch = option.annotation.match(/^[A-Z]+(\d+).*$/);
+            if (annotationMatch) {
+                // Return the number to the sorting algoritm.
+                return Number(annotationMatch[1]);
+            }
+        }
+
+        // No annotation gets sorted to the top.
+        return null;
+    }).reverse();
+
+    // Now sort by assembly priority order as the primary sorting key. assemblyPriority is a global
+    // array at the top of the file.
+    return _(filterOptions).sortBy(option => _(assemblyPriority).indexOf(option.assembly));
+}
+
+
+// File display widget, showing a facet list, a table, and a graph (and maybe a BioDalliance).
+// This component only triggers the data retrieval, which is done with a search for files associated
+// with the given experiment (in this.props.context). An odd thing is we specify query-string parameters
+// to the experiment URL, but they apply to the file search -- not the experiment itself.
+
+var FileGallery = React.createClass({
+    propTypes: {
+        encodevers: React.PropTypes.string, // ENCODE version number
+        anisogenic: React.PropTypes.bool // True if anisogenic experiment
+    },
+
+    contextTypes: {
+        session: React.PropTypes.object, // Login information
+        location_href: React.PropTypes.string // URL of this experiment page, including query string stuff
+    },
+
+    nonSearchQueries: ['format'],
+
+    render: function() {
+        var {context, encodevers, anisogenic} = this.props;
+
+        return (
+            <FetchedData ignoreErrors>
+                <Param name="data" url={dataset.unreleased_files_url(context)} />
+                <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} />
+            </FetchedData>
+        );
+    }
+});
+
+
+// Function to render the file gallery, and it gets called after the file search results (for files associated with
+// the displayed experiment) return.
+var FileGalleryRenderer = React.createClass({
+    propTypes: {
+        encodevers: React.PropTypes.string, // ENCODE version number
+        anisogenic: React.PropTypes.bool // True if anisogenic experiment
+    },
+
+    contextTypes: {
+        session: React.PropTypes.object,
+        location_href: React.PropTypes.string
+    },
+
+    render: function() {
+        var {context, data} = this.props;
+        var items = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
+        var files = items.length ? context.files.concat(items) : context.files;
+        var filterOptions = files.length ? collectAssembliesAnnotations(files) : [];
+
+        return (
+            <Panel>
+                <PanelBody>
+                    <TabPanel tabs={{graph: 'Graph', table: 'Table', browser: 'Browser'}}>
+                        {filterOptions.length ?
+                            <div className="form-inline">
+                                <select className="form-control" defaultValue="0" onChange={this.handleFilterChange}>
+                                    <option value="default" key="title">All Assemblies and Annotations</option>
+                                    <option disabled="disabled"></option>
+                                    {filterOptions.map((option, i) =>
+                                        <option key={i} value={i}>{option.assembly + (option.annotation ? ' ' + option.annotation : '')}</option>
+                                    )}
+                                </select>
+                            </div>
+                        : null}
+                        <TabPanelPane key="graph">
+                            <ExperimentGraph context={context} data={data} filterOptions={filterOptions} session={this.context.session} />
+                        </TabPanelPane>
+                        <TabPanelPane key="table">
+                            <DatasetFiles {...this.props} items={this.props.data['@graph']} encodevers={this.props.encodevers} anisogenic={this.props.anisogenic} session={this.context.session} />
+                        </TabPanelPane>
+                        <TabPanelPane key="browser">
+                        </TabPanelPane>
+                    </TabPanel>
+                </PanelBody>
+            </Panel>
         );
     }
 });
