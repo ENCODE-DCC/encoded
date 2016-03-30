@@ -1395,7 +1395,7 @@ var FileTable = module.exports.FileTable = React.createClass({
     getInitialState: function() {
         return {
             maxWidth: 'auto' // Width of widest table
-        }
+        };
     },
 
     cv: {
@@ -1427,9 +1427,9 @@ var FileTable = module.exports.FileTable = React.createClass({
                 var runType;
 
                 if (item.run_type === 'single-ended') {
-                    runType = 'SE'
+                    runType = 'SE';
                 } else if (item.run_type === 'paired-ended') {
-                    runType = 'PE'
+                    runType = 'PE';
                 }
 
                 return (
@@ -1624,11 +1624,20 @@ var FileTable = module.exports.FileTable = React.createClass({
     },
 
     render: function() {
-        var {context, items, filePanelHeader, encodevers, anisogenic, session} = this.props;
+        var {context, items, filePanelHeader, selectedAssembly, selectedAnnotation, encodevers, anisogenic, session} = this.props;
         var datasetFiles = context.files && context.files.concat((items && items.length) ? items : []);
         if (datasetFiles.length) {
             // Extract four kinds of file arrays
-            datasetFiles = _(datasetFiles).uniq(file => file['@id']);
+            datasetFiles = _(datasetFiles).uniq(file => file['@id']).filter(file => {
+                if (selectedAssembly) {
+                    if (selectedAnnotation) {
+                        return selectedAnnotation === file.genome_annotation && selectedAssembly === file.assembly;
+                    } else {
+                        return !file.genome_annotation && selectedAssembly === file.assembly;
+                    }
+                }
+                return true;
+            });
             var files = _(datasetFiles).groupBy(file => {
                 if (file.output_category === 'raw data') {
                     return file.output_type === 'reads' ? 'raw' : 'rawArray';

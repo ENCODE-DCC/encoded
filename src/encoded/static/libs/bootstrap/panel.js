@@ -89,6 +89,7 @@ var TabPanel = module.exports.TabPanel = React.createClass({
     render: function() {
         var children = [];
         var tabs = this.props.tabs;
+        var firstPaneIndex = -1; // React.Children.map index of first <TabPanelPane> component
 
         // We expect to find <TabPanelPane> child elements inside <TabPanel>. For any we find, get
         // the React `key` value and copy it to an `id` value that we add to each child component.
@@ -98,8 +99,10 @@ var TabPanel = module.exports.TabPanel = React.createClass({
         if (this.props.children) {
             children = React.Children.map(this.props.children, (child, i) => {
                 if (child.type === TabPanelPane.type) {
+                    firstPaneIndex = firstPaneIndex === -1 ? i : firstPaneIndex;
+
                     // Replace the existing child <TabPanelPane> component
-                    return cloneWithProps(child, {id: child.key, active: this.state.currentTab ? this.state.currentTab === child.key : i === 0});
+                    return cloneWithProps(child, {id: child.key, active: this.state.currentTab ? this.state.currentTab === child.key : firstPaneIndex === i});
                 }
                 return child;
             });
@@ -136,7 +139,7 @@ var TabPanelPane = module.exports.TabPanelPane = React.createClass({
     render: function() {
         return (
             <div role="tabpanel" className={'tab-pane' + (this.props.active ? ' active' : '')} id={this.props.id}>
-                {this.props.children}
+                {this.props.active ? <div>{this.props.children}</div> : null}
             </div>
         );
     }

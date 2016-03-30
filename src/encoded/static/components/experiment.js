@@ -569,9 +569,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} />
 
-                {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} session={this.context.session} ignoreErrors />
-
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} ignoreErrors />
 
                 <DocumentsPanel documentSpecs={[{documents: combinedDocuments}]} />
@@ -1127,16 +1124,48 @@ var FileGalleryRenderer = React.createClass({
         location_href: React.PropTypes.string
     },
 
+    getInitialState: function() {
+        return {
+            selectedFilterValue: '' // <select> value of selected filter
+        };
+    },
+
+    // Set the graph filter based on the given <option> value
+    setFilter: function(value) {
+        if (value === 'default') {
+            value = '';
+        }
+        this.setState({selectedFilterValue: value});
+    },
+
+    // React to a filter menu selection. The synthetic event given in `e`
+    handleFilterChange: function(e) {
+        this.setFilter(e.target.value);
+    },
+
+    // Set the default filter after the graph has been analayzed once.
+    componentDidMount: function() {
+        this.setFilter('0');
+    },
+
     render: function() {
         var {context, data} = this.props;
+        var selectedAssembly = '';
+        var selectedAnnotation = '';
         var items = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
         var files = items.length ? context.files.concat(items) : context.files;
         var filterOptions = files.length ? collectAssembliesAnnotations(files) : [];
 
+        // Build the graph; place resulting graph in this.jsonGraph
+        if (this.state.selectedFilterValue && filterOptions[this.state.selectedFilterValue]) {
+            selectedAssembly = filterOptions[this.state.selectedFilterValue].assembly;
+            selectedAnnotation = filterOptions[this.state.selectedFilterValue].annotation;
+        }
+
         return (
             <Panel>
                 <PanelBody>
-                    <TabPanel tabs={{graph: 'Graph', table: 'Table', browser: 'Browser'}}>
+                    <TabPanel tabs={{graph: 'Graph', table: 'Table'}}>
                         {filterOptions.length ?
                             <div className="form-inline">
                                 <select className="form-control" defaultValue="0" onChange={this.handleFilterChange}>
@@ -1149,12 +1178,10 @@ var FileGalleryRenderer = React.createClass({
                             </div>
                         : null}
                         <TabPanelPane key="graph">
-                            <ExperimentGraph context={context} data={data} filterOptions={filterOptions} session={this.context.session} />
+                            <ExperimentGraph context={context} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} />
                         </TabPanelPane>
                         <TabPanelPane key="table">
-                            <DatasetFiles {...this.props} items={this.props.data['@graph']} encodevers={this.props.encodevers} anisogenic={this.props.anisogenic} session={this.context.session} />
-                        </TabPanelPane>
-                        <TabPanelPane key="browser">
+                            <DatasetFiles {...this.props} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} encodevers={this.props.encodevers} anisogenic={this.props.anisogenic} session={this.context.session} />
                         </TabPanelPane>
                     </TabPanel>
                 </PanelBody>
@@ -1607,8 +1634,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
     getInitialState: function() {
         return {
-            infoNodeId: '', // @id of node whose info panel is open
-            selectedFilterValue: '' // <select> value of selected filter
+            infoNodeId: '' // @id of node whose info panel is open
         };
     },
 
@@ -1656,38 +1682,12 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         this.setState({infoNodeId: this.state.infoNodeId !== nodeId ? nodeId : ''});
     },
 
-    // Set the graph filter based on the given <option> value
-    setFilter: function(value) {
-        if (value === 'default') {
-            value = '';
-        }
-        this.setState({selectedFilterValue: value});
-    },
-
-    // React to a filter menu selection. The synthetic event given in `e`
-    handleFilterChange: function(e) {
-        this.setFilter(e.target.value);
-    },
-
-    // Set the default filter after the graph has been analayzed once.
-    componentDidMount: function() {
-        this.setFilter('0');
-    },
-
     render: function() {
-        var selectedAssembly = '';
-        var selectedAnnotation = '';
-        var {context, session, data, filterOptions} = this.props;
-        var items = data ? data['@graph'] : [];
+        var {context, session, items, selectedAssembly, selectedAnnotation} = this.props;
         var files = context.files.concat(items);
 
         // Build node graph of the files and analysis steps with this experiment
         if (files && files.length) {
-            // Build the graph; place resulting graph in this.jsonGraph
-            if (this.state.selectedFilterValue && filterOptions[this.state.selectedFilterValue]) {
-                selectedAssembly = filterOptions[this.state.selectedFilterValue].assembly;
-                selectedAnnotation = filterOptions[this.state.selectedFilterValue].annotation;
-            }
             try {
                 this.jsonGraph = assembleGraph(context, session, this.state.infoNodeId, files, selectedAssembly, selectedAnnotation);
             } catch(e) {
@@ -1697,7 +1697,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
             var goodGraph = this.jsonGraph && Object.keys(this.jsonGraph).length;
 
             // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
-            if (goodGraph || this.state.selectedAssembly || this.state.selectedAnnotation) {
+            if (goodGraph || selectedAssembly || selectedAnnotation) {
                 var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
                 return (
                     <div>
