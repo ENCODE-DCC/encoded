@@ -4,7 +4,7 @@
 
 apt_sources:
 - source: "ppa:webupd8team/java"
-- source: "deb http://packages.elastic.co/elasticsearch/2.x/debian stable main"
+- source: "deb http://packages.elasticsearch.org/elasticsearch/1.7/debian stable main"
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v2.0.14 (GNU/Linux)
@@ -118,7 +118,7 @@ write_files:
 
     cloud.aws.region: us-west-2
 
-    discovery.ec2.groups: elasticsearch-https
+    discovery.ec2.groups: elasticsearch-https, ssh-http-https
 
     # discovery.zen.minimum_master_nodes: 2
 
