@@ -107,7 +107,6 @@ write_files:
     action.auto_create_index: false
     index.mapper.dynamic: false
 
-
     discovery:
         type: ec2
 
