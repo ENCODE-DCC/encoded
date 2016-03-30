@@ -76,7 +76,7 @@ runcmd:
 # permissions
 - set -ex
 - update-rc.d elasticsearch defaults
-- sudo bash /etc/elasticsearch/cluster.sh %(NAME)s
+- sudo bash /etc/elasticsearch/cluster.sh %(CLUSTER_NAME)s
 - sudo /usr/share/elasticsearch/bin/plugin install --batch cloud-aws
 - service elasticsearch start
 
@@ -107,6 +107,9 @@ write_files:
     action.auto_create_index: false
     index.mapper.dynamic: false
 
+    node.master: false
+    node.data: true
+
     discovery:
         type: ec2
 
@@ -117,7 +120,7 @@ write_files:
 
     discovery.ec2.groups: elasticsearch-https
 
-    discovery.zen.minimum_master_nodes: 2
+    # discovery.zen.minimum_master_nodes: 2
 
 - path: /etc/elasticsearch/cluster.sh
   content: |

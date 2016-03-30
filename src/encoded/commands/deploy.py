@@ -59,8 +59,14 @@ def tag_ec2_instance(instance, name, branch, commit, username, elasticsearch):
     return instance
 
 
-def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size,
+def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size, cluster_name,
         branch=None, name=None, role='demo', profile_name=None, teardown_cluster=None):
+
+    if not cluster_name:
+        print("Cluster must have a name")
+        sys.exit(1)
+
+    
     if branch is None:
         branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode('utf-8').strip()
 
@@ -102,9 +108,13 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size,
         iam_role = 'encoded-instance'
         count = 1
     else:
+        if not cluster_name:
+            print("Cluster must have a name")
+            sys.exit(1)
+
         user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config-elasticsearch.yml']).decode('utf-8')
         user_data = user_data % {
-            'NAME': '{}-{}'.format(name, role),
+            'CLUSTER_NAME': cluster_name,
         }
         security_groups = ['elasticsearch-https']
         iam_role = 'elasticsearch-instance'
@@ -159,6 +169,7 @@ def main():
     parser.add_argument('--elasticsearch', default=None, help="Launch an Elasticsearch instance")
     parser.add_argument('--cluster-size', default=2, help="Elasticsearch cluster size")
     parser.add_argument('--teardown-cluster', default=None, help="Takes down all the cluster launched from the branch")
+    parser.add_argument('--cluster-name', default=None, help="Name of the cluster")
     args = parser.parse_args()
 
     return run(**vars(args))
