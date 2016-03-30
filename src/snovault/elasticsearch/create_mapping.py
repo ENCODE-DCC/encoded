@@ -223,7 +223,7 @@ def es_mapping(mapping):
     return {
         '_all': {
             'enabled': True,
-            'index_analyzer': 'encoded_index_analyzer',
+            'analyzer': 'encoded_index_analyzer',
             'search_analyzer': 'encoded_search_analyzer'
         },
         'dynamic_templates': [
@@ -410,7 +410,7 @@ def type_mapping(types, item_type, embed=True):
         for prop in props:
             new_mapping = new_mapping[prop]['properties']
         new_mapping[last]['boost'] = boost
-        new_mapping[last]['index_analyzer'] = 'encoded_index_analyzer'
+        new_mapping[last]['analyzer'] = 'encoded_index_analyzer'
         new_mapping[last]['search_analyzer'] = 'encoded_search_analyzer'
         new_mapping[last]['include_in_all'] = True
 

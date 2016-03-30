@@ -29,7 +29,7 @@ def run(app):
     registry = app.registry
     es = app.registry['snp_search']
     try:
-        es.indices.create(index=index)
+        es.indices.create(index=index, body=index_settings())
     except RequestError:
         es.indices.delete(index=index)
         es.indices.create(index=index, body=index_settings())

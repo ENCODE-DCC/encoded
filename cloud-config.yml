@@ -161,8 +161,8 @@ runcmd:
 - set -ex
 - update-rc.d elasticsearch defaults
 - sudo bash /etc/elasticsearch/cluster.sh %(CLUSTER_NAME)s
-- service elasticsearch start
 - sudo /usr/share/elasticsearch/bin/plugin install --batch cloud-aws
+- service elasticsearch start
 - chown postgres:postgres /etc/postgresql/9.3/main/*.conf
 - echo "include 'custom.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
 - if test "%(ROLE)s" = "demo"
