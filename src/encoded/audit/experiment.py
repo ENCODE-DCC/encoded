@@ -81,16 +81,13 @@ def audit_experiement_rampage_encode3_standards(value, system):
     >>> taken care of in file control audit
     - Only paired end sequencing would allow pipeline processing --> DONE
     - Sequencing platform Illumina GA, HiSeq --> DONE
-    
     - Spike-ins indicated (barcodes - impossible to check)
     >>> audit_experiment_spikein
-
     - Mapping to GRCh38 or mm10
     - Gene quantifications are using gencode V4 or M4
     '''
     if 'replication_type' not in value:
         return
-    
     if value['status'] not in ['released', 'release ready']:
         return
     if 'assay_term_name' not in value or value['assay_term_name'] != 'RAMPAGE':
@@ -99,7 +96,6 @@ def audit_experiement_rampage_encode3_standards(value, system):
         return
     if 'replicates' not in value:
         return
-
 
     num_bio_reps = set()
     for rep in value['replicates']:
@@ -111,28 +107,9 @@ def audit_experiement_rampage_encode3_standards(value, system):
     organism_name = get_organism_name(value['replicates'])  # human/mouse
 
     fastq_files = scanFilesForFileFormat(value['original_files'], 'fastq')
-    
-    #for f in fastq_files:
-    #    print ('FASTQS:' + '\t'+ f['accession'])
-    
     alignment_files = scanFilesForFileFormat(value['original_files'], 'bam')
-    
-    #for f in alignment_files:
-    #    print ('BAMS:' + '\t'+ f['accession'])
-    
     gene_quantifications = scanFilesForOutputType(value['original_files'],
                                                   'gene quantifications')
-
-    #for f in gene_quantifications:
-    #    print ('TSVs:' + '\t'+ f['accession'])
-   
-    
-    '''
-    Apply on FASTQs:
-    1. paired endedness
-    2. 50BP length
-    3. platform - NOT solid OBI:0002024   or    OBI:0000696
-    '''
     for f in fastq_files:
         if 'run_type' in f and f['run_type'] != 'paired-ended':
             detail = 'RAMPAGE experiment {} '.format(value['@id']) + \
@@ -181,7 +158,7 @@ def check_spearman(metrics, replication_type, isogenic_threshold, anisogenic_thr
     for m in metrics:
         if 'Spearman correlation' in m:
             spearman_correlation = m['Spearman correlation']
-            if spearman_correlation < threshold:   
+            if spearman_correlation < threshold:
                 detail = 'ENCODE processed gene quantification file {} '.format(m['quality_metric_of']) + \
                          'have Spearman correlation of {}.'.format(spearman_correlation) + \
                          ' For gene quantification files from an {}'.format(replication_type) + \
@@ -191,11 +168,10 @@ def check_spearman(metrics, replication_type, isogenic_threshold, anisogenic_thr
                                                                           print_border)
                 if spearman_correlation > border_value:
                     yield AuditFailure('RAMPAGE - low spearman correlation', detail,
-                                       level='NOT_COMPLIANT')
+                                       level='WARNING')
                 else:
                     yield AuditFailure('RAMPAGE - insufficient spearman correlation', detail,
                                        level='NOT_COMPLIANT')
-         
 
 
 def check_file_read_depth(file_to_check, threshold, pipeline):
@@ -207,12 +183,8 @@ def check_file_read_depth(file_to_check, threshold, pipeline):
 
     quality_metrics = file_to_check.get('quality_metrics')
 
-    #print ('INSIDE:')
-    #print (quality_metrics)
-    #print ('*******************')
     if (quality_metrics is None) or (quality_metrics == []):
         return
-
     if pipeline == 'RAMPAGE':
         read_depth_value_name = 'Uniquely mapped reads number'
 
@@ -234,7 +206,6 @@ def check_file_read_depth(file_to_check, threshold, pipeline):
                  'require {} uniquely mapped reads.'.format(threshold)
         yield AuditFailure('RAMPAGE - insufficient read depth', detail, level='NOT_COMPLIANT')
         return
-
 
 
 def check_file_platform(file_to_check, excluded_platforms):
@@ -269,7 +240,10 @@ def check_file_read_length(file_to_check, threshold_length):
                  ' It is not compliant with ENCODE3 standards.' + \
                  ' According to ENCODE3 standards files submitted after 2015-6-30 ' + \
                  'should be at least {}bp long.'.format(threshold_length)
-        yield AuditFailure('RAMPAGE - insufficient read length', detail, level='NOT_COMPLIANT')
+        if file_date_creation < threshold_date:
+            yield AuditFailure('RAMPAGE - insufficient read length', detail, level='WARNING')
+        else:
+            yield AuditFailure('RAMPAGE - insufficient read length', detail, level='NOT_COMPLIANT')
     return
 
 
