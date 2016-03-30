@@ -160,8 +160,8 @@ runcmd:
 # permissions
 - set -ex
 - update-rc.d elasticsearch defaults
-- service elasticsearch start
 - sudo bash /etc/elasticsearch/cluster.sh %(CLUSTER_NAME)s
+- service elasticsearch start
 - sudo /usr/share/elasticsearch/bin/plugin install --batch cloud-aws
 - chown postgres:postgres /etc/postgresql/9.3/main/*.conf
 - echo "include 'custom.conf'" >> /etc/postgresql/9.3/main/postgresql.conf

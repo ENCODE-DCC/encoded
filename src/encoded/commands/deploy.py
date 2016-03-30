@@ -103,6 +103,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size, cl
             'WALE_S3_PREFIX': wale_s3_prefix,
             'COMMIT': commit,
             'ROLE': role,
+            'CLUSTER_NAME': cluster_name,
         }
         security_groups = ['ssh-http-https']
         iam_role = 'encoded-instance'
