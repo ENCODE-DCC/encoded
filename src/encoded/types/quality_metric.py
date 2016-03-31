@@ -1,10 +1,10 @@
-from snowfort import (
+from snovault import (
     abstract_collection,
     collection,
     calculated_property,
     load_schema,
 )
-from snowfort.attachment import ItemWithAttachment
+from snovault.attachment import ItemWithAttachment
 from .base import (
     Item,
 )
@@ -16,7 +16,7 @@ from .base import (
         'title': "Quality metrics",
         'description': 'Listing of all types of quality metric.',
     })
-class QualityMetric(ItemWithAttachment):
+class QualityMetric(ItemWithAttachment, Item):
     base_types = ['QualityMetric'] + Item.base_types
 
 

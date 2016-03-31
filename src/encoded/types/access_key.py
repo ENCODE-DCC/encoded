@@ -17,15 +17,15 @@ from ..authentication import (
     generate_user,
     CRYPT_CONTEXT,
 )
-from snowfort import (
+from snovault import (
     collection,
     load_schema,
 )
-from snowfort.crud_views import (
+from snovault.crud_views import (
     collection_add,
     item_edit,
 )
-from snowfort.validators import (
+from snovault.validators import (
     validate_item_content_post,
 )
 

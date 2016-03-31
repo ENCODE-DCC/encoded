@@ -15,7 +15,6 @@ var statuslabel = require('./statuslabel');
 var doc = require('./doc');
 
 var Breadcrumbs = navbar.Breadcrumbs;
-var Attachment = image.Attachment;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;

@@ -1,11 +1,11 @@
-from snowfort import (
+from snovault import (
     collection,
     load_schema,
 )
 from .base import (
     Item,
 )
-from snowfort.attachment import ItemWithAttachment
+from snovault.attachment import ItemWithAttachment
 
 
 @collection(

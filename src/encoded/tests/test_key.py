@@ -57,7 +57,7 @@ def test_keys_conflict(testapp):
 
 @pytest.mark.slow
 def test_keys_templated(workbook, session):
-    from snowfort.storage import Key
+    from snovault.storage import Key
     keys = [(key.name, key.value) for key in session.query(Key).all()]
     assert keys
     for name, value in keys:

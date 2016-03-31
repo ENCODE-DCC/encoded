@@ -1,5 +1,5 @@
 from datetime import datetime
-from jsonschema import NO_DEFAULT
+from jsonschema_serialize_fork import NO_DEFAULT
 from pyramid.security import effective_principals
 from pyramid.threadlocal import get_current_request
 from string import (
@@ -9,7 +9,7 @@ from string import (
 import random
 import uuid
 
-from snowfort.schema_utils import server_default
+from snovault.schema_utils import server_default
 
 
 ACCESSION_FACTORY = __name__ + ':accession_factory'
@@ -37,7 +37,7 @@ def userid(instance, subschema):
 
 @server_default
 def now(instance, subschema):
-    # jsonschema date-time format requires a timezone
+    # from jsonschema_serialize_fork date-time format requires a timezone
     return datetime.utcnow().isoformat() + '+00:00'
 
 

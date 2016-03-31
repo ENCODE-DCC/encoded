@@ -6,6 +6,7 @@ blob_bucket = ${blob_bucket}
 blob_store_profile_name = encoded-files-upload
 accession_factory = ${accession_factory}
 snp_search.server = ${region_search_instance}
+indexer.processes = ${indexer_processes}
 
 [composite:indexer]
 use = config:base.ini#indexer
@@ -54,7 +55,7 @@ propagate = 0
 [logger_encoded_listener]
 level = INFO
 handlers = console
-qualname = encoded.commands.es_index_listener
+qualname = snovault.elasticsearch.es_index_listener
 propagate = 0
 
 [logger_file_encoded_listener]

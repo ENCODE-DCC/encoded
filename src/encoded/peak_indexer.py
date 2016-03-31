@@ -8,12 +8,12 @@ from pyramid.view import view_config
 from elasticsearch.exceptions import (
     NotFoundError
 )
-from snowfort import DBSESSION
-from snowfort.storage import (
+from snovault import DBSESSION
+from snovault.storage import (
     TransactionRecord,
 )
-from snowfort.elasticsearch.indexer import all_uuids
-from snowfort.elasticsearch.interfaces import (
+from snovault.elasticsearch.indexer import all_uuids
+from snovault.elasticsearch.interfaces import (
     ELASTIC_SEARCH,
     SNP_SEARCH_ES,
 )
@@ -184,7 +184,7 @@ def index_peaks(uuid, request):
 
 @view_config(route_name='index_file', request_method='POST', permission="index")
 def index_file(request):
-    INDEX = request.registry.settings['snowfort.elasticsearch.index']
+    INDEX = request.registry.settings['snovault.elasticsearch.index']
     request.datastore = 'database'
     dry_run = request.json.get('dry_run', False)
     recovery = request.json.get('recovery', False)

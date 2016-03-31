@@ -1,12 +1,12 @@
-from snowfort import (
+from snovault import (
     AuditFailure,
     audit_checker,
 )
-from snowfort import (
+from snovault import (
     UPGRADER,
 )
-from snowfort.schema_utils import validate
-from snowfort.util import simple_path_ids
+from snovault.schema_utils import validate
+from snovault.util import simple_path_ids
 
 
 @audit_checker('Item', frame='object')

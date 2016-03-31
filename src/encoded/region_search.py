@@ -1,6 +1,6 @@
 from pyramid.view import view_config
-from snowfort import TYPES
-from snowfort.elasticsearch.interfaces import ELASTIC_SEARCH
+from snovault import TYPES
+from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
 from pyramid.security import effective_principals
 from .search import (
     format_results,
