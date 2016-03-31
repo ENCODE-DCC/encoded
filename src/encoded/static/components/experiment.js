@@ -1154,6 +1154,9 @@ var FileGalleryRenderer = React.createClass({
         var selectedAnnotation = '';
         var items = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
         var files = items.length ? context.files.concat(items) : context.files;
+        if (files.length === 0) {
+            return null;
+        }
         var filterOptions = files.length ? collectAssembliesAnnotations(files) : [];
 
         // Build the graph; place resulting graph in this.jsonGraph
@@ -1711,7 +1714,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                     </div>
                 );
             } else {
-                return <p className="browser-error">Graph could not be displayed, usually because a non-released required file.</p>;
+                return <p className="browser-error">Graph not applicable to this experiment’s files.</p>;
             }
         }
         return null;
