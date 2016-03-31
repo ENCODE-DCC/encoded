@@ -62,36 +62,209 @@ non_seq_assays = [
                                     'replicates.library.biosample.donor',
                                     'replicates.library.biosample.donor.organism',
                                     'original_files.quality_metrics',
-                                    'original_files.derived_from'],
+                                    'original_files.derived_from',
+                                    'original_files.analysis_step_version',
+                                    'original_files.analysis_step_version.analysis_step',
+                                    'original_files.analysis_step_version.analysis_step.pipelines'],
+               condition=rfa('ENCODE3'))
+def audit_experiement_long_rna_encode3_standards(value, system):
+    '''
+
+    OTHER AUDITS:
+    Experiments should have two or more replicates.
+
+    POOLED FUNCTION:
+    > Alignment files are mapped to either the GRCh38 or mm10 sequences.
+    > Gene and transcript quantification files are annotated to either GENCODE V24 or M4.
+    The read length should be a minimum of 50 base pairs.
+    Sequencing may be paired- or single-ended, as long as sequencing type is specified and paired sequences are indicated.
+    All Illumina platforms are supported for use in the uniform pipeline; colorspace (SOLiD) are not supported.
+    Each replicate should have 30 million uniquely mapped reads.
+        > single cell 5M
+        > shRNA 10M
+    
+    ERCC spike-ins should be used in library preparation with the concentrations indicated in the metadata.
+
+
+    DEPENDS ON REPLICATION:
+    > Alignment files are mapped to either the GRCh38 or mm10 sequences.
+    > Gene and transcript quantification files are annotated to either GENCODE V24 or M4.
+
+    The gene level quantification should have a Spearman correlation of >0.9 between isogenic replicates and >0.8 between anisogenic replicates.
+    
+    The gene level quantification should have a Replicate log-ratio standard deviation value of <0.2. This value, derived from the Median Absolute Deviation, 
+    will vary with an expectation that it falls within the standard deviation for its biosample type. 
+    ''' 
+
+
+
+    '''
+
+    XXXX Single-cell Isolation followed by RNA-seq Specific Standards
+
+    Experiments are in sets of 10 to 20 individual experiments, which are not considered biologically replicated.
+    Each assay requires only 5 million uniquely mapped reads.
+    Each experiment should have a corresponding cell-equivalent control experiment.
+
+    XXX shRNA Knockdown Followed by RNA-seq and CRISPR Genome Editing Followed by RNA-seq Specific Standards 
+
+    Each replicate should have 10 million uniquely mapped reads.
+    The target of the knockdown must be defined.
+    Each experiment should have a corresponding control experiment.
+    '''
+
+    '''
+    TODO
+    - ERCC spike-ins
+    - MAD
+    '''
+
+@audit_checker('Experiment', frame=['original_files',
+                                    'replicates',
+                                    'replicates.library',
+                                    'replicates.library.biosample',
+                                    'replicates.library.biosample.donor',
+                                    'replicates.library.biosample.donor.organism',
+                                    'original_files.quality_metrics',
+                                    'original_files.derived_from',
+                                    'original_files.analysis_step_version',
+                                    'original_files.analysis_step_version.analysis_step',
+                                    'original_files.analysis_step_version.analysis_step.pipelines'],
+               condition=rfa('ENCODE3'))
+def audit_experiement_small_rna_encode3_standards(value, system):
+    '''
+    OTHER AUDITS:
+    Experiments should have two or more replicates.
+    
+    POOLED FUNCTION:
+    > Alignment files are mapped to either the GRCh38 or mm10 sequences.
+    > Gene and transcript quantification files are annotated to either GENCODE V24 or M4.
+    Each replicate should have 30 million uniquely mapped reads.
+    The sequencing platform used must be Illumina GA or HiSeq.
+    The read length should be a minimum of 50 base pairs.
+    Sequencing should be single-ended.
+
+    DEPENDS ON REPLICATION:
+    > Alignment files are mapped to either the GRCh38 or mm10 sequences.
+    > Gene and transcript quantification files are annotated to either GENCODE V24 or M4.
+    The gene level quantification should have a Spearman correlation of >0.9 between isogenic replicates and >0.8 between anisogenic replicates.
+
+    '''
+
+    if value['status'] not in ['released', 'release ready']:
+        return
+    if 'assay_term_name' not in value or value['assay_term_name'] != 'RNA-seq':
+        return
+    if 'original_files' not in value or len(value['original_files']) == 0:
+        return
+    if 'replicates' not in value:
+        return
+
+
+    num_bio_reps = set()
+    for rep in value['replicates']:
+        num_bio_reps.add(rep['biological_replicate_number'])
+
+    if len(num_bio_reps) <= 1:
+        return
+
+    organism_name = get_organism_name(value['replicates'])  # human/mouse
+    if organism_name == 'human':
+        desired_assembly = 'GRCh38'
+        desired_annotation = 'V24'
+    else:
+        if organism_name == 'mouse':
+            desired_assembly = 'mm10'
+            desired_annotation = 'M4'
+        else:
+            return
+
+
+    fastq_files = scanFilesForFileFormat(value['original_files'], 'fastq')
+    alignment_files = scanFilesForFileFormat(value['original_files'], 'bam')
+
+    if scanFilesForPipelineTitle(alignment_files,
+                                 ['GRCh38', 'mm10'],
+                                 'Small RNA-seq single-end pipeline') is False:
+        return
+
+    gene_quantifications = scanFilesForOutputType(value['original_files'],
+                                                  'gene quantifications')
+
+    for f in fastq_files:
+        if 'run_type' in f and f['run_type'] != 'single-ended':
+            detail = 'Small RNA-seq experiment {} '.format(value['@id']) + \
+                     'contains a file {} '.format(f['@id']) + \
+                     'that is not single-ended.'
+            yield AuditFailure('small RNA - not single-ended', detail, level='WARNING')
+        for failure in check_file_read_length(f, 50, 'small RNA'):
+            yield failure
+        for failure in check_file_platform(f, ['OBI:0002024', 'OBI:0000696'], 'small RNA'):
+            yield failure
+
+    for f in alignment_files:
+        if 'assembly' in f and f['assembly'] == desired_assembly:
+            for failure in check_file_read_depth(f, 30000000, 'small RNA'):
+                yield failure
+
+    if 'replication_type' not in value:
+        return
+
+    mad_metrics_dict = {}
+    for f in gene_quantifications:
+        if 'assembly' in f and f['assembly'] == desired_assembly and \
+           'genome_annotation' in f and f['genome_annotation'] == desired_annotation:
+            if 'quality_metrics' in f and len(f['quality_metrics']) > 0:
+                for qm in f['quality_metrics']:
+                    mad_metrics_dict[qm['@id']] = qm
+    mad_metrics = []
+    for k in mad_metrics_dict:
+        mad_metrics.append(mad_metrics_dict[k])
+    for failure in check_spearman(mad_metrics, value['replication_type'],
+                                  0.9, 0.8, 'Small RNA-seq single-end pipeline', 'small RNA'):
+        yield failure
+    return
+
+
+@audit_checker('Experiment', frame=['original_files',
+                                    'replicates',
+                                    'replicates.library',
+                                    'replicates.library.biosample',
+                                    'replicates.library.biosample.donor',
+                                    'replicates.library.biosample.donor.organism',
+                                    'original_files.quality_metrics',
+                                    'original_files.derived_from',
+                                    'original_files.analysis_step_version',
+                                    'original_files.analysis_step_version.analysis_step',
+                                    'original_files.analysis_step_version.analysis_step.pipelines'],
                condition=rfa('ENCODE3'))
 def audit_experiement_rampage_encode3_standards(value, system):
     '''
-    This is an attempt to pool into a dispatch function standard audits
-    allowing easier maintanance and lower duplication of code and some level
-    of separation between audits and standards - which are related but are
-    not the same.
+    OTHER AUDITS:
+    Experiments should have at least two replicates.
+    Each RAMPAGE experiment must have a corresponding RNA-seq experiment as a control.
+    Barcodes and spike-ins should be indicated.
 
-    - Experiments required to have at least 2 bio reps
-    >>> audit_experiment_replicated()
+    POOLED FUNCTION:
+    > Alignment files are mapped to either the GRCh38 or mm10 sequences.
+    > Gene and transcript quantification files are annotated to either GENCODE V24 or M4.
+    Each replicate should have 25 million uniquely mapped reads.
+    Sequencing must be paired-ended
+    The read length must be a minimum on 50 base pairs. 
+    The sequencing platform used should be Illumina GA or HiSeq.
 
-    - Read depth for each replicate is 25M uniquely mapped reads --> DONE
-    - Read length is at least 50 BP --> DONE
-    - Gene level quantification Spearman >0.9, 0.8 for isogenic, anisogenic --> DONE
-    - Control of RAMPAGE is corrsponding RNA-seq experiment
-    >>> taken care of in file control audit
-    - Only paired end sequencing would allow pipeline processing --> DONE
-    - Sequencing platform Illumina GA, HiSeq --> DONE
-    - Spike-ins indicated (barcodes - impossible to check)
-    >>> audit_experiment_spikein
-    - Mapping to GRCh38 or mm10
-    - Gene quantifications are using gencode V4 or M4
+    DEPENDS ON REPLICATION:
+    > Alignment files are mapped to either the GRCh38 or mm10 sequences.
+    > Gene and transcript quantification files are annotated to either GENCODE V24 or M4.
+
+    The gene level quantification should have a Spearman correlation of >0.9 between isogenic replicates and >0.8 between anisogenic replicates.
     '''
-    if 'replication_type' not in value:
-        return
+
     if value['status'] not in ['released', 'release ready']:
         return
     if 'assay_term_name' not in value or value['assay_term_name'] != 'RAMPAGE':
         return
+
     if 'original_files' not in value or len(value['original_files']) == 0:
         return
     if 'replicates' not in value:
@@ -105,9 +278,24 @@ def audit_experiement_rampage_encode3_standards(value, system):
         return
 
     organism_name = get_organism_name(value['replicates'])  # human/mouse
+    if organism_name == 'human':
+        desired_assembly = 'GRCh38'
+        desired_annotation = 'V24'
+    else:
+        if organism_name == 'mouse':
+            desired_assembly = 'mm10'
+            desired_annotation = 'M4'
+        else:
+            return
 
     fastq_files = scanFilesForFileFormat(value['original_files'], 'fastq')
     alignment_files = scanFilesForFileFormat(value['original_files'], 'bam')
+
+    if scanFilesForPipelineTitle(alignment_files,
+                                 ['GRCh38', 'mm10'],
+                                 'RAMPAGE (paired-end, stranded)') is False:
+        return
+
     gene_quantifications = scanFilesForOutputType(value['original_files'],
                                                   'gene quantifications')
     for f in fastq_files:
@@ -115,36 +303,38 @@ def audit_experiement_rampage_encode3_standards(value, system):
             detail = 'RAMPAGE experiment {} '.format(value['@id']) + \
                      'contains a file {} '.format(f['@id']) + \
                      'that is not paired-ended.'
-            yield AuditFailure('RAMPAGE - not paired-ended', detail, level='NOT_COMPLIANT')
-        for failure in check_file_read_length(f, 50):
+            yield AuditFailure('RAMPAGE - not paired-ended', detail, level='WARNING')
+        for failure in check_file_read_length(f, 50, 'RAMPAGE'):
             yield failure
-        for failure in check_file_platform(f, ['OBI:0002024', 'OBI:0000696']):
+        for failure in check_file_platform(f, ['OBI:0002024', 'OBI:0000696'], 'RAMPAGE'):
             yield failure
 
     for f in alignment_files:
-        if (organism_name == 'human' and f['assembly'] == 'GRCh38') or \
-           (organism_name == 'mouse' and f['assembly'] == 'mm10'):
+        if 'assembly' in f and f['assembly'] == desired_assembly:
             for failure in check_file_read_depth(f, 25000000, 'RAMPAGE'):
                 yield failure
 
+    if 'replication_type' not in value:
+        return
+
     mad_metrics_dict = {}
     for f in gene_quantifications:
-        if (organism_name == 'human' and f['assembly'] == 'GRCh38' and
-           f['genome_annotation'] == 'V24') or \
-            (organism_name == 'mouse' and f['assembly'] == 'mm10' and
-           f['genome_annotation'] == 'M4'):
+        if 'assembly' in f and f['assembly'] == desired_assembly and \
+           'genome_annotation' in f and f['genome_annotation'] == desired_annotation:
             if 'quality_metrics' in f and len(f['quality_metrics']) > 0:
                 for qm in f['quality_metrics']:
                     mad_metrics_dict[qm['@id']] = qm
     mad_metrics = []
     for k in mad_metrics_dict:
         mad_metrics.append(mad_metrics_dict[k])
-    for failure in check_spearman(mad_metrics, value['replication_type'], 0.9, 0.8, 'RAMPAGE'):
+    for failure in check_spearman(mad_metrics, value['replication_type'],
+                                  0.9, 0.8, 'RAMPAGE (paired-end, stranded)', 'RAMPAGE'):
         yield failure
     return
 
 
-def check_spearman(metrics, replication_type, isogenic_threshold, anisogenic_threshold, pipeline):
+def check_spearman(metrics, replication_type, isogenic_threshold, anisogenic_threshold, pipeline, assay_name):
+
     if replication_type in ['anisogenic',
                             'anisogenic, sex-matched and age-matched',
                             'anisogenic, age-matched',
@@ -152,6 +342,8 @@ def check_spearman(metrics, replication_type, isogenic_threshold, anisogenic_thr
         threshold = anisogenic_threshold
     elif replication_type == 'isogenic':
         threshold = isogenic_threshold
+    else:
+        return
     border_value = threshold - 0.07
     print_border = '%.2f' % border_value
 
@@ -167,14 +359,14 @@ def check_spearman(metrics, replication_type, isogenic_threshold, anisogenic_thr
                          '{} and one STD away ({}) is acceptable.'.format(threshold,
                                                                           print_border)
                 if spearman_correlation > border_value:
-                    yield AuditFailure('RAMPAGE - low spearman correlation', detail,
+                    yield AuditFailure(assay_name + ' - low spearman correlation', detail,
                                        level='WARNING')
                 else:
-                    yield AuditFailure('RAMPAGE - insufficient spearman correlation', detail,
+                    yield AuditFailure(assay_name + ' - insufficient spearman correlation', detail,
                                        level='NOT_COMPLIANT')
 
 
-def check_file_read_depth(file_to_check, threshold, pipeline):
+def check_file_read_depth(file_to_check, threshold, assay_name):
 
     if file_to_check['output_type'] == 'transcriptome alignments':
         return
@@ -185,8 +377,9 @@ def check_file_read_depth(file_to_check, threshold, pipeline):
 
     if (quality_metrics is None) or (quality_metrics == []):
         return
-    if pipeline == 'RAMPAGE':
+    if assay_name in  ['RAMPAGE','small RNA']:
         read_depth_value_name = 'Uniquely mapped reads number'
+
 
     read_depth = -1
 
@@ -202,26 +395,26 @@ def check_file_read_depth(file_to_check, threshold, pipeline):
         detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                      read_depth) + \
                  'uniquely mapped reads. Replicates for ' + \
-                 '{} assay '.format(pipeline) + \
+                 '{} assay '.format(assay_name) + \
                  'require {} uniquely mapped reads.'.format(threshold)
-        yield AuditFailure('RAMPAGE - insufficient read depth', detail, level='NOT_COMPLIANT')
+        yield AuditFailure(assay_name + ' - insufficient read depth', detail, level='NOT_COMPLIANT')
         return
 
 
-def check_file_platform(file_to_check, excluded_platforms):
+def check_file_platform(file_to_check, excluded_platforms, assay_name):
     if 'platform' not in file_to_check:
         detail = 'Reads file {} missing platform'.format(file_to_check['@id'])
-        yield AuditFailure('RAMPAGE - missing platform', detail, level='NOT_COMPLIANT')
+        yield AuditFailure(assay_name + ' - missing platform', detail, level='WARNING')
     elif file_to_check['platform'] in excluded_platforms:
         detail = 'Reads file {} has not compliant '.format(file_to_check['@id']) + \
                  'platform (SOLiD) {}.'.format(file_to_check['platform'])
-        yield AuditFailure('RAMPAGE - not compliant platform', detail, level='NOT_COMPLIANT')
+        yield AuditFailure(assay_name + ' - not compliant platform', detail, level='WARNING')
 
 
-def check_file_read_length(file_to_check, threshold_length):
+def check_file_read_length(file_to_check, threshold_length, assay_name):
     if 'read_length' not in file_to_check:
         detail = 'Reads file {} missing read_length'.format(file_to_check['@id'])
-        yield AuditFailure('RAMPAGE - missing read_length', detail, level='NOT_COMPLIANT')
+        yield AuditFailure(assay_name + ' - missing read_length', detail, level='NOT_COMPLIANT')
         return
 
     creation_date = file_to_check['date_created'][:10].split('-')
@@ -277,6 +470,22 @@ def scanFilesForOutputType(files_to_scan, o_type):
            f['status'] not in ['replaced', 'revoked', 'deleted']:
             files_to_return.append(f)
     return files_to_return
+
+
+def scanFilesForPipelineTitle(files_to_scan, assemblies, pipeline_title):
+    for f in files_to_scan:
+        if 'file_format' in f and f['file_format'] == 'bam' and \
+           f['status'] not in ['replaced', 'revoked', 'deleted'] and \
+           'assembly' in f and f['assembly'] in assemblies and \
+           f['lab'] == '/labs/encode-processing-pipeline/' and \
+           'analysis_step_version' in f and \
+           'analysis_step' in f['analysis_step_version'] and \
+           'pipelines' in f['analysis_step_version']['analysis_step']:
+            pipelines = f['analysis_step_version']['analysis_step']['pipelines']
+            for p in pipelines:
+                if p['title'] == pipeline_title:
+                    return True
+    return False
 
 
 @audit_checker('Experiment', frame=['original_files', 'target',
