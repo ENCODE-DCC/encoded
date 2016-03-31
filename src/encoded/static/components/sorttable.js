@@ -75,12 +75,15 @@ var SortTablePanel = module.exports.SortTablePanel = React.createClass({
             React.PropTypes.string, // When title is a simple string
             React.PropTypes.object // When title is JSX
         ]),
-        header: React.PropTypes.object // React component to render inside header
+        header: React.PropTypes.object, // React component to render inside header
+        noDefaultClasses: React.PropTypes.bool // T to skip default <Panel> classes
     },
 
     render: function() {
+        var {title, header, noDefaultClasses} = this.props;
+
         return (
-            <Panel addClasses="table-panel table-file">
+            <Panel addClasses={'table-file' + (noDefaultClasses ? '' : ' table-panel')} noDefaultClasses>
                 {this.props.title ?
                     <PanelHeading key="heading">
                         <h4>{this.props.title ? <span>{this.props.title}</span> : null}</h4>
@@ -93,6 +96,36 @@ var SortTablePanel = module.exports.SortTablePanel = React.createClass({
                     {this.props.children}
                 </div>
             </Panel>
+        );
+    }
+});
+
+
+var SortTableComponent = module.exports.SortTableComponent = React.createClass({
+    propTypes: {
+        // Note: `title` overrides `header`
+        title: React.PropTypes.oneOfType([ // Title to display in table panel header
+            React.PropTypes.string, // When title is a simple string
+            React.PropTypes.object // When title is JSX
+        ]),
+        header: React.PropTypes.object // React component to render inside header
+    },
+
+    render: function() {
+        return (
+            <div className="tableFiles">
+                {this.props.title ?
+                    <PanelHeading key="heading">
+                        <h4>{this.props.title ? <span>{this.props.title}</span> : null}</h4>
+                    </PanelHeading>
+                : (this.props.header ?
+                    <PanelHeading key="heading" addClasses="clearfix">{this.props.header}</PanelHeading>
+                : null)}
+
+                <div className="table-responsive" key="table">
+                    {this.props.children}
+                </div>
+            </div>
         );
     }
 });

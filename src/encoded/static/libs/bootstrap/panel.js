@@ -5,12 +5,15 @@ var cloneWithProps = require('react/lib/cloneWithProps');
 
 var Panel = module.exports.Panel = React.createClass({
     propTypes: {
-        addClasses: React.PropTypes.string // Classes to add to outer panel div
+        addClasses: React.PropTypes.string, // Classes to add to outer panel div
+        noDefaultClasses: React.PropTypes.bool // T to not include default panel classes
     },
 
     render: function() {
+        var {addClasses, noDefaultClasses} = this.props;
+
         return (
-            <div className={'panel panel-default' + (this.props.addClasses ? ' ' + this.props.addClasses : '')}>
+            <div className={(noDefaultClasses ? '' : 'panel panel-default') + (this.props.addClasses ? ' ' + this.props.addClasses : '')}>
                 {this.props.children}
             </div>
         );
@@ -72,7 +75,9 @@ var PanelHeading = module.exports.PanelHeading = React.createClass({
 
 var TabPanel = module.exports.TabPanel = React.createClass({
     propTypes: {
-        tabs: React.PropTypes.object.isRequired // Object with tab=>pane specifications
+        tabs: React.PropTypes.object.isRequired, // Object with tab=>pane specifications
+        moreComponents: React.PropTypes.object, // Other components to render in the tab bar
+        moreComponentsClasses: React.PropTypes.string // Classes to add to moreComponents wrapper <div>
     },
 
     getInitialState: function() {
@@ -88,7 +93,7 @@ var TabPanel = module.exports.TabPanel = React.createClass({
 
     render: function() {
         var children = [];
-        var tabs = this.props.tabs;
+        var {tabs, moreComponents, moreComponentsClasses} = this.props;
         var firstPaneIndex = -1; // React.Children.map index of first <TabPanelPane> component
 
         // We expect to find <TabPanelPane> child elements inside <TabPanel>. For any we find, get
@@ -120,6 +125,7 @@ var TabPanel = module.exports.TabPanel = React.createClass({
                             </li>
                         );
                     })}
+                    {moreComponents ? <div className={moreComponentsClasses}>{moreComponents}</div> : null}
                 </ul>
                 <div className="tab-content">
                     {children}

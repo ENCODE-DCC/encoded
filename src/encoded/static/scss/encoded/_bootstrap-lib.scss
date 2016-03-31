@@ -1,0 +1,30 @@
+.nav-tabs {
+    border-bottom: 1px solid #a0a0a0;
+
+    > li {
+        margin-bottom: 0;
+
+        > a {
+            color: #000;
+            border: none;
+            background-color: transparent;
+
+            &:hover {
+                background-color: transparent;
+                color: #428bca;
+            }
+        }
+
+        &.active {
+            > a, > a:hover, > a:focus {
+                background-color: transparent;
+                border: none;
+                color: #a0a0a0;
+            }
+        }
+    }
+}
+
+
+
+//        >a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus

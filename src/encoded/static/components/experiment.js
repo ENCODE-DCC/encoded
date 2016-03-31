@@ -1162,29 +1162,29 @@ var FileGalleryRenderer = React.createClass({
             selectedAnnotation = filterOptions[this.state.selectedFilterValue].annotation;
         }
 
+        // Rendering the filtering menu
+        var filterMenu = filterOptions.length ?
+            <div className="form-inline">
+                <select className="form-control" defaultValue="0" onChange={this.handleFilterChange}>
+                    <option value="default" key="title">All Assemblies and Annotations</option>
+                    <option disabled="disabled"></option>
+                    {filterOptions.map((option, i) =>
+                        <option key={i} value={i}>{option.assembly + (option.annotation ? ' ' + option.annotation : '')}</option>
+                    )}
+                </select>
+            </div>
+        : null;
+
         return (
             <Panel>
-                <PanelBody>
-                    <TabPanel tabs={{graph: 'Graph', table: 'Table'}}>
-                        {filterOptions.length ?
-                            <div className="form-inline">
-                                <select className="form-control" defaultValue="0" onChange={this.handleFilterChange}>
-                                    <option value="default" key="title">All Assemblies and Annotations</option>
-                                    <option disabled="disabled"></option>
-                                    {filterOptions.map((option, i) =>
-                                        <option key={i} value={i}>{option.assembly + (option.annotation ? ' ' + option.annotation : '')}</option>
-                                    )}
-                                </select>
-                            </div>
-                        : null}
-                        <TabPanelPane key="graph">
-                            <ExperimentGraph context={context} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} />
-                        </TabPanelPane>
-                        <TabPanelPane key="table">
-                            <DatasetFiles {...this.props} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} encodevers={this.props.encodevers} anisogenic={this.props.anisogenic} session={this.context.session} />
-                        </TabPanelPane>
-                    </TabPanel>
-                </PanelBody>
+                <TabPanel tabs={{graph: 'Graph', table: 'Table'}} moreComponents={filterMenu} moreComponentsClasses="pull-right">
+                    <TabPanelPane key="graph">
+                        <ExperimentGraph context={context} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} />
+                    </TabPanelPane>
+                    <TabPanelPane key="table">
+                        <DatasetFiles {...this.props} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} encodevers={this.props.encodevers} anisogenic={this.props.anisogenic} session={this.context.session} />
+                    </TabPanelPane>
+                </TabPanel>
             </Panel>
         );
     }
@@ -1702,17 +1702,13 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 return (
                     <div>
                         {goodGraph ?
-                            <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick}>
+                            <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses>
                                 <div id="graph-node-info">
                                     {meta ? <PanelBody>{meta}</PanelBody> : null}
                                 </div>
                             </Graph>
                         :
-                            <Panel>
-                                <PanelBody>
-                                    <p className="browser-error">Currently selected assembly and genomic annotation hides the graph</p>
-                                </PanelBody>
-                            </Panel>
+                            <p className="browser-error">Currently selected assembly and genomic annotation hides the graph</p>
                         }
                     </div>
                 );
