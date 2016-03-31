@@ -10,6 +10,8 @@ $document-figure-width: 64px;
 $document-figure-height: 64px;
 $characterization-figure-width: 64px;
 $characterization-figure-height: 64px;
+$qualitymetric-figure-width: 96px;
+$qualitymetric-figure-height: 96px;
 
 
 
@@ -119,6 +121,23 @@ $characterization-figure-height: 64px;
         h3 {
             margin-bottom: 0;
         }
+    }
+}
+
+
+.type-QualityMetric.view-detail {
+    padding: 0;
+
+    figure {
+        margin: 14px;
+        padding: 10px;
+        text-align: center;
+    }
+
+    figcaption {
+        font-weight: bold;
+        text-align: center;
+        padding: 5px;
     }
 }
 
@@ -454,6 +473,8 @@ $characterization-figure-height: 64px;
 
 
 @mixin type-panel($figure-width, $figure-height) {
+    $attachment-button-margin: 3px;
+
     margin-top: 0;
 
     &.view-detail {
@@ -461,35 +482,45 @@ $characterization-figure-height: 64px;
 
         figure {
             position: relative;
-            display: table;
+            display: block;
             float: none;
             width: 100%;
             height: $figure-height;
+            padding: 3px;
             margin: 0;
             padding: 0;
             border-left: 1px solid #e8e8e8;
-            background-color: #f0f0f0;
-            @include background-image(linear-gradient(left top, #f0f0f0 0%,#e0e0e0 50%,#f8f8f8 100%));
-            background-image: -ms-linear-gradient(left top, #f0f0f0 0%,#e0e0e0 50%,#f8f8f8 100%);
+            background-color: #fff;
 
-            @media screen and (min-width: $screen-sm-min) {
-                width: $figure-width;
-                float: right;
-                margin: 0 0 0 5px;
-            }
+            .attachment, div.file-missing {
+                position: absolute;
+                display: table;
+                top: 0;
+                left: 0;
+                width: $figure-height;
+                height: $figure-height;
+                padding: 3px;
 
-            .attachment > a, div.file-missing {
-                display: block;
-                width: $figure-width;
-                height: auto;
-                margin: 0 auto;
-                text-align: center;
-                vertical-align: middle;
+                .attachment-button {
+                    position: relative;
+                    display: table-cell;
+                    height: $figure-height - (2 * $attachment-button-margin);
+                    width: $figure-height - (2 * $attachment-button-margin);
+                    text-align: center;
+                    vertical-align: middle;
+                    border-radius: 5px;
+                    border: 1px solid #a0a0a0;
+                    background-color: #f0f0f0;
+
+                    &:hover {
+                        background-color: #e0e0e0;
+                    }
+                }
 
                 &.file-pdf,
                 &.file-generic,
                 &.file-missing {
-                    height: $figure-height;
+                    height: $figure-width - (2 * $attachment-button-margin);
                 }
 
                 img {
@@ -500,6 +531,13 @@ $characterization-figure-height: 64px;
                     width: auto;
                 }
             }
+
+            @media screen and (min-width: $screen-sm-min) {
+                width: $figure-width;
+                float: right;
+                margin: 0 0 0 5px;
+            }
+
         }
 
         h3 {
@@ -557,6 +595,10 @@ $characterization-figure-height: 64px;
     @include type-panel($characterization-figure-width, $characterization-figure-height);
 }
 
+.type-QualityMetric {
+    @include type-panel($qualitymetric-figure-width, $qualitymetric-figure-width);
+}
+
 @mixin panel-header($figure-height) {
     height: auto;
     border-bottom: 1px solid #e8e8e8;
@@ -577,6 +619,11 @@ $characterization-figure-height: 64px;
     &.panel-body {
         padding: 0;
     }
+}
+
+.quality-metric-header {
+    height: auto;
+    overflow: hidden;
 }
 
 %panel-intro {

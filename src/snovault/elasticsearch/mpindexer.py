@@ -1,4 +1,4 @@
-from snowfort import DBSESSION
+from snovault import DBSESSION
 from contextlib import contextmanager
 from multiprocessing import get_context
 from multiprocessing.pool import Pool
@@ -25,8 +25,10 @@ def includeme(config):
     if config.registry.settings.get('indexer_worker'):
         return
     processes = config.registry.settings.get('indexer.processes')
-    if processes is not None:
+    try:
         processes = int(processes)
+    except:
+        processes = None
     config.registry[INDEXER] = MPIndexer(config.registry, processes=processes)
 
 

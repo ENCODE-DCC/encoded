@@ -1,8 +1,8 @@
-from snowfort import (
+from snovault import (
     Item,
     collection,
 )
-from snowfort.upgrader import (
+from snovault.upgrader import (
     upgrade_step,
     upgrade_finalizer,
 )
