@@ -1164,20 +1164,18 @@ var FileGalleryRenderer = React.createClass({
 
         // Rendering the filtering menu
         var filterMenu = filterOptions.length ?
-            <div className="form-inline">
-                <select className="form-control" defaultValue="0" onChange={this.handleFilterChange}>
-                    <option value="default" key="title">All Assemblies and Annotations</option>
-                    <option disabled="disabled"></option>
-                    {filterOptions.map((option, i) =>
-                        <option key={i} value={i}>{option.assembly + (option.annotation ? ' ' + option.annotation : '')}</option>
-                    )}
-                </select>
-            </div>
+            <select className="form-control" defaultValue="0" onChange={this.handleFilterChange}>
+                <option value="default" key="title">All Assemblies and Annotations</option>
+                <option disabled="disabled"></option>
+                {filterOptions.map((option, i) =>
+                    <option key={i} value={i}>{option.assembly + (option.annotation ? ' ' + option.annotation : '')}</option>
+                )}
+            </select>
         : null;
 
         return (
             <Panel>
-                <TabPanel tabs={{graph: 'Graph', table: 'Table'}} moreComponents={filterMenu} moreComponentsClasses="pull-right">
+                <TabPanel tabs={{graph: 'Graph', table: 'Table'}} addClasses="file-gallery-tabs" moreComponents={filterMenu} moreComponentsClasses="file-gallery-filter">
                     <TabPanelPane key="graph">
                         <ExperimentGraph context={context} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} />
                     </TabPanelPane>
@@ -1712,6 +1710,8 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                         }
                     </div>
                 );
+            } else {
+                return <p className="browser-error">Graph could not be displayed, usually because a non-released required file.</p>;
             }
         }
         return null;

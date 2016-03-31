@@ -83,7 +83,7 @@ var SortTablePanel = module.exports.SortTablePanel = React.createClass({
         var {title, header, noDefaultClasses} = this.props;
 
         return (
-            <Panel addClasses={'table-file' + (noDefaultClasses ? '' : ' table-panel')} noDefaultClasses>
+            <Panel addClasses={'table-file' + (noDefaultClasses ? '' : ' table-panel')} noDefaultClasses={noDefaultClasses}>
                 {this.props.title ?
                     <PanelHeading key="heading">
                         <h4>{this.props.title ? <span>{this.props.title}</span> : null}</h4>

@@ -76,6 +76,7 @@ var PanelHeading = module.exports.PanelHeading = React.createClass({
 var TabPanel = module.exports.TabPanel = React.createClass({
     propTypes: {
         tabs: React.PropTypes.object.isRequired, // Object with tab=>pane specifications
+        addClasses: React.PropTypes.string, // Classes to add to navigation <ul>
         moreComponents: React.PropTypes.object, // Other components to render in the tab bar
         moreComponentsClasses: React.PropTypes.string // Classes to add to moreComponents wrapper <div>
     },
@@ -93,7 +94,7 @@ var TabPanel = module.exports.TabPanel = React.createClass({
 
     render: function() {
         var children = [];
-        var {tabs, moreComponents, moreComponentsClasses} = this.props;
+        var {tabs, addClasses, moreComponents, moreComponentsClasses} = this.props;
         var firstPaneIndex = -1; // React.Children.map index of first <TabPanelPane> component
 
         // We expect to find <TabPanelPane> child elements inside <TabPanel>. For any we find, get
@@ -115,7 +116,7 @@ var TabPanel = module.exports.TabPanel = React.createClass({
 
         return (
             <div>
-                <ul className="nav nav-tabs" role="tablist">
+                <ul className={'nav nav-tabs' + (addClasses ? (' ' + addClasses) : '')} role="tablist">
                     {Object.keys(tabs).map((tab, i) => {
                         var currentTab = (i === 0 && this.state.currentTab === '') ? tab : this.state.currentTab;
 

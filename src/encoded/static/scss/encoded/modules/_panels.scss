@@ -159,3 +159,16 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 .panel-body-doc {
     padding-bottom: 0 !important;
 }
+
+.file-gallery-tabs {
+    display: flex;
+    align-items: center;
+    
+    .no-flexbox & {
+        display: block;
+    }
+}
+
+.file-gallery-filter {
+    margin: 0 5px 0 auto;
+}
