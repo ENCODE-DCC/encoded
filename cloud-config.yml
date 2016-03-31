@@ -162,6 +162,7 @@ runcmd:
 - update-rc.d elasticsearch defaults
 - sudo bash /etc/elasticsearch/cluster.sh %(CLUSTER_NAME)s
 - sudo /usr/share/elasticsearch/bin/plugin install elasticsearch/elasticsearch-cloud-aws/2.7.1
+- service elasticsearch start
 - chown postgres:postgres /etc/postgresql/9.3/main/*.conf
 - echo "include 'custom.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
 - if test "%(ROLE)s" = "demo"
