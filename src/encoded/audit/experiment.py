@@ -168,7 +168,8 @@ def audit_experiement_long_rna_encode3_standards(value, system):
                                             'CRISPR genome editing followed by RNA-seq']:
             for failure in check_experiment_ERCC_spikeins(value, pipeline_title, 'long RNA'):
                 yield failure
-
+            for failure in check_target(value, pipeline_title, 'long RNA'):
+                yield failure
 
     gene_quantifications = scanFilesForOutputType(value['original_files'],
                                                   'gene quantifications')
@@ -505,6 +506,15 @@ def check_experiment_ERCC_spikeins(experiment, pipeline, assay_name):
                          'requires ERCC spike-in to be used in it`s preparation.'
                 yield AuditFailure(assay_name + ' - missing ERCC spike-in',
                                    detail, level='NOT_COMPLIANT')
+
+
+def check_target(experiment, pipeline, assay_name):
+    if 'target' not in experiment:
+        detail = 'Experiment {} '.format(experiment['@id']) + \
+                 'that was processed by {} pipeline '.format(pipeline) + \
+                 'requires target specification.'
+        yield AuditFailure(assay_name + ' - missing target',
+                           detail, level='NOT_COMPLIANT')
 
 
 def check_spearman(metrics, replication_type, isogenic_threshold,
