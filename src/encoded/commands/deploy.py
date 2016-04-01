@@ -10,7 +10,7 @@ BDM = [
     {
         'DeviceName': '/dev/sda1',
         'Ebs': {
-            'VolumeSize': 60,
+            'VolumeSize': 30,
             'VolumeType': 'gp2',
             'DeleteOnTermination': True
         }
