@@ -17,6 +17,7 @@ targetBasedAssayList = [
     'iCLIP',
     'eCLIP',
     'shRNA knockdown followed by RNA-seq',
+    'CRISPR genome editing followed by RNA-seq',
     ]
 
 controlRequiredAssayList = [
@@ -26,7 +27,8 @@ controlRequiredAssayList = [
     'RAMPAGE',
     'CAGE',
     'single cell isolation followed by RNA-seq',
-    'shRNA knockdown followed by RNA-seq'
+    'shRNA knockdown followed by RNA-seq',
+    'CRISPR genome editing followed by RNA-seq',
     ]
 
 seq_assays = [
@@ -120,6 +122,103 @@ def audit_experiement_long_rna_encode3_standards(value, system):
     - MAD
     '''
 
+    if value['status'] not in ['released', 'release ready']:
+        return
+    if 'assay_term_name' not in value or \
+       value['assay_term_name'] not in ['RNA-seq',
+                                        'shRNA knockdown followed by RNA-seq',
+                                        'CRISPR genome editing followed by RNA-seq',
+                                        'single cell isolation followed by RNA-seq']:
+        return
+    if 'original_files' not in value or len(value['original_files']) == 0:
+        return
+    if 'replicates' not in value:
+        return
+
+
+    num_bio_reps = set()
+    for rep in value['replicates']:
+        num_bio_reps.add(rep['biological_replicate_number'])
+
+    if len(num_bio_reps) <= 1:
+        return
+
+    organism_name = get_organism_name(value['replicates'])  # human/mouse
+    if organism_name == 'human':
+        desired_assembly = 'GRCh38'
+        desired_annotation = 'V24'
+    else:
+        if organism_name == 'mouse':
+            desired_assembly = 'mm10'
+            desired_annotation = 'M4'
+        else:
+            return
+
+    fastq_files = scanFilesForFileFormat(value['original_files'], 'fastq')
+    alignment_files = scanFilesForFileFormat(value['original_files'], 'bam')
+
+    pipeline_title = scanFilesForPipelineTitle(alignment_files,
+                                               ['GRCh38', 'mm10'],
+                                               ['RNA-seq of long RNAs (paired-end, stranded)',
+                                                'RNA-seq of long RNAs (single-end, unstranded)'])
+    if pipeline_title is False:
+        return
+    else:
+        if value['assay_term_name'] not in ['shRNA knockdown followed by RNA-seq',
+                                            'CRISPR genome editing followed by RNA-seq']:
+            for failure in check_experiment_ERCC_spikeins(value, pipeline_title, 'long RNA'):
+                yield failure
+
+
+    gene_quantifications = scanFilesForOutputType(value['original_files'],
+                                                  'gene quantifications')
+
+    for f in fastq_files:
+        if 'run_type' not in f:
+            detail = 'Long RNA-seq experiment {} '.format(value['@id']) + \
+                     'contains a file {} '.format(f['@id']) + \
+                     'without sequencing run type specified.'
+            yield AuditFailure('long RNA - run type not specified', detail, level='WARNING')
+        for failure in check_file_read_length(f, 50, 'long RNA'):
+            yield failure
+        for failure in check_file_platform(f, ['OBI:0002024', 'OBI:0000696'], 'long RNA'):
+            yield failure
+
+    for f in alignment_files:
+        if 'assembly' in f and f['assembly'] == desired_assembly:
+            if value['assay_term_name'] in ['shRNA knockdown followed by RNA-seq',
+                                            'CRISPR genome editing followed by RNA-seq']:
+                for failure in check_file_read_depth(f, 10000000, 'long RNA'):
+                    yield failure
+            elif value['assay_term_name'] in ['single cell isolation followed by RNA-seq']:
+                for failure in check_file_read_depth(f, 5000000, 'long RNA'):
+                    yield failure
+            else:
+                for failure in check_file_read_depth(f, 30000000, 'long RNA'):
+                    yield failure
+
+    if 'replication_type' not in value:
+        return
+
+    mad_metrics_dict = {}
+    for f in gene_quantifications:
+        if 'assembly' in f and f['assembly'] == desired_assembly and \
+           'genome_annotation' in f and f['genome_annotation'] == desired_annotation:
+            if 'quality_metrics' in f and len(f['quality_metrics']) > 0:
+                for qm in f['quality_metrics']:
+                    mad_metrics_dict[qm['@id']] = qm
+    mad_metrics = []
+    for k in mad_metrics_dict:
+        mad_metrics.append(mad_metrics_dict[k])
+    for failure in check_spearman(mad_metrics, value['replication_type'],
+                                  0.9, 0.8, pipeline_title, 'long RNA'):
+        yield failure
+    for failure in check_mad(mad_metrics, value['replication_type'], 0.2, pipeline_title, 'long RNA'):
+        yield failure
+
+    return
+
+
 @audit_checker('Experiment', frame=['original_files',
                                     'replicates',
                                     'replicates.library',
@@ -187,7 +286,7 @@ def audit_experiement_small_rna_encode3_standards(value, system):
 
     if scanFilesForPipelineTitle(alignment_files,
                                  ['GRCh38', 'mm10'],
-                                 'Small RNA-seq single-end pipeline') is False:
+                                 ['Small RNA-seq single-end pipeline']) is False:
         return
 
     gene_quantifications = scanFilesForOutputType(value['original_files'],
@@ -296,7 +395,7 @@ def audit_experiement_rampage_encode3_standards(value, system):
 
     if scanFilesForPipelineTitle(alignment_files,
                                  ['GRCh38', 'mm10'],
-                                 'RAMPAGE (paired-end, stranded)') is False:
+                                 ['RAMPAGE (paired-end, stranded)']) is False:
         return
 
     gene_quantifications = scanFilesForOutputType(value['original_files'],
@@ -379,7 +478,7 @@ def check_mad(metrics, replication_type, mad_threshold, pipeline, assay_name):
                                        level='DCC_ACTION')
 
 
-def audit_experiment_ERCC_spikeins(experiment, pipeline, assay_name):
+def check_experiment_ERCC_spikeins(experiment, pipeline, assay_name):
     '''
     The assumption in this functon is that the regular audit will catch anything without spikeins.
     This audit is checking specifically for presence of ERCC spike-in in long-RNA pipeline experiments
@@ -453,7 +552,9 @@ def check_file_read_depth(file_to_check, threshold, assay_name):
 
     if (quality_metrics is None) or (quality_metrics == []):
         return
-    if assay_name in  ['RAMPAGE','small RNA']:
+    if assay_name in ['RAMPAGE',
+                      'small RNA',
+                      'long RNA']:
         read_depth_value_name = 'Uniquely mapped reads number'
 
 
@@ -548,7 +649,7 @@ def scanFilesForOutputType(files_to_scan, o_type):
     return files_to_return
 
 
-def scanFilesForPipelineTitle(files_to_scan, assemblies, pipeline_title):
+def scanFilesForPipelineTitle(files_to_scan, assemblies, pipeline_titles):
     for f in files_to_scan:
         if 'file_format' in f and f['file_format'] == 'bam' and \
            f['status'] not in ['replaced', 'revoked', 'deleted'] and \
@@ -559,8 +660,8 @@ def scanFilesForPipelineTitle(files_to_scan, assemblies, pipeline_title):
            'pipelines' in f['analysis_step_version']['analysis_step']:
             pipelines = f['analysis_step_version']['analysis_step']['pipelines']
             for p in pipelines:
-                if p['title'] == pipeline_title:
-                    return True
+                if p['title'] in pipeline_titles:
+                    return p['title']
     return False
 
 
