@@ -1167,13 +1167,26 @@ var FileGalleryRenderer = React.createClass({
 
         // Rendering the filtering menu
         var filterMenu = filterOptions.length ?
-            <select className="form-control" defaultValue="0" onChange={this.handleFilterChange}>
-                <option value="default" key="title">All Assemblies and Annotations</option>
-                <option disabled="disabled"></option>
-                {filterOptions.map((option, i) =>
-                    <option key={i} value={i}>{option.assembly + (option.annotation ? ' ' + option.annotation : '')}</option>
-                )}
-            </select>
+            <div>
+                {context.visualize_ucsc  && context.status == "released" ?
+                    <DropdownButton title='Visualize Data'>
+                        <DropdownMenu>
+                            {Object.keys(context.visualize_ucsc).map(assembly =>
+                                <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context.visualize_ucsc[assembly]}>
+                                    {assembly}
+                                </a>
+                            )}
+                        </DropdownMenu>
+                    </DropdownButton>
+                : null}
+                <select className="form-control" defaultValue="0" onChange={this.handleFilterChange}>
+                    <option value="default" key="title">All Assemblies and Annotations</option>
+                    <option disabled="disabled"></option>
+                    {filterOptions.map((option, i) =>
+                        <option key={i} value={i}>{option.assembly + (option.annotation ? ' ' + option.annotation : '')}</option>
+                    )}
+                </select>
+            </div>
         : null;
 
         return (
