@@ -1203,11 +1203,71 @@ def test_audit_experiment_small_rna_standards(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-        print (error_type)
-        for e in errors[error_type]:
-            print (e['category'])
-            if (e['category'].startswith('small RNA')):
-                print (e)
+        #print (error_type)
+        #for e in errors[error_type]:
+        #    print (e['category'])
+        #    if (e['category'].startswith('small RNA')):
+        #        print (e)
     assert any(error['category'] == 'small RNA - insufficient read depth' for error in errors_list)
 
 
+def test_audit_experiment_long_rna_standards(testapp,
+                                             base_experiment,
+                                             replicate_1_1,
+                                             replicate_2_1,
+                                             library_1,
+                                             library_2,
+                                             biosample_1,
+                                             biosample_2,
+                                             mouse_donor_1,
+                                             file_fastq_3,
+                                             file_fastq_4,
+                                             file_bam_1_1,
+                                             file_bam_2_1,
+                                             file_tsv_1_2,
+                                             mad_quality_metric_1_2,
+                                             bam_quality_metric_1_1,
+                                             bam_quality_metric_2_1,
+                                             analysis_step_run_bam,
+                                             analysis_step_version_bam,
+                                             analysis_step_bam,
+                                             pipeline_bam):
+    testapp.patch_json(file_fastq_3['@id'], {'read_length': 20})
+    testapp.patch_json(file_fastq_4['@id'], {'read_length': 100})
+
+    testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'assembly': 'mm10'})
+    testapp.patch_json(file_bam_2_1['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'assembly': 'mm10'})
+
+    testapp.patch_json(pipeline_bam['@id'], {'title':
+                                             'RNA-seq of long RNAs (paired-end, stranded)'})
+
+    testapp.patch_json(bam_quality_metric_1_1['@id'], {'Uniquely mapped reads number': 29000000})
+    testapp.patch_json(bam_quality_metric_2_1['@id'], {'Uniquely mapped reads number': 38000000})
+
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
+    testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
+    testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
+    testapp.patch_json(biosample_2['@id'], {'model_organism_sex': 'mixed'})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released',
+                                                'date_released': '2016-01-01',
+                                                'assay_term_id': 'OBI:0001864',
+                                                'assay_term_name': 'RNA-seq'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+        #print (error_type)
+        #for e in errors[error_type]:
+        #    print (e['category'])
+        #    if (e['category'].startswith('small RNA')):
+        #        print (e)
+    assert any(error['category'] == 'long RNA - insufficient read depth' for error in errors_list)

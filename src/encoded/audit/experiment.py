@@ -57,6 +57,7 @@ non_seq_assays = [
     ]
 
 
+
 @audit_checker('Experiment', frame=['original_files',
                                     'replicates',
                                     'replicates.library',
@@ -70,62 +71,14 @@ non_seq_assays = [
                                     'original_files.analysis_step_version.analysis_step',
                                     'original_files.analysis_step_version.analysis_step.pipelines'],
                condition=rfa('ENCODE3'))
-def audit_experiement_long_rna_encode3_standards(value, system):
+def audit_experiment_standards_dispatcher(value, system):
     '''
-
-    OTHER AUDITS:
-    Experiments should have two or more replicates.
-
-    POOLED FUNCTION:
-    > Alignment files are mapped to either the GRCh38 or mm10 sequences.
-    > Gene and transcript quantification files are annotated to either GENCODE V24 or M4.
-    The read length should be a minimum of 50 base pairs.
-    Sequencing may be paired- or single-ended, as long as sequencing type is specified and paired sequences are indicated.
-    All Illumina platforms are supported for use in the uniform pipeline; colorspace (SOLiD) are not supported.
-    Each replicate should have 30 million uniquely mapped reads.
-        > single cell 5M
-        > shRNA 10M
-    
-    ERCC spike-ins should be used in library preparation with the concentrations indicated in the metadata.
-
-
-    DEPENDS ON REPLICATION:
-    > Alignment files are mapped to either the GRCh38 or mm10 sequences.
-    > Gene and transcript quantification files are annotated to either GENCODE V24 or M4.
-
-    The gene level quantification should have a Spearman correlation of >0.9 between isogenic replicates and >0.8 between anisogenic replicates.
-    
-    The gene level quantification should have a Replicate log-ratio standard deviation value of <0.2. This value, derived from the Median Absolute Deviation, 
-    will vary with an expectation that it falls within the standard deviation for its biosample type. 
-    ''' 
-
-
-
+    Dispatcher function that will redirect to other functions that woudl deal with specific assay types standards
     '''
-
-    XXXX Single-cell Isolation followed by RNA-seq Specific Standards
-
-    Experiments are in sets of 10 to 20 individual experiments, which are not considered biologically replicated.
-    Each assay requires only 5 million uniquely mapped reads.
-    Each experiment should have a corresponding cell-equivalent control experiment.
-
-    XXX shRNA Knockdown Followed by RNA-seq and CRISPR Genome Editing Followed by RNA-seq Specific Standards 
-
-    Each replicate should have 10 million uniquely mapped reads.
-    The target of the knockdown must be defined.
-    Each experiment should have a corresponding control experiment.
-    '''
-
-    '''
-    TODO
-    - ERCC spike-ins
-    - MAD
-    '''
-
     if value['status'] not in ['released', 'release ready']:
         return
     if 'assay_term_name' not in value or \
-       value['assay_term_name'] not in ['RNA-seq',
+       value['assay_term_name'] not in ['RAMPAGE', 'RNA-seq',
                                         'shRNA knockdown followed by RNA-seq',
                                         'CRISPR genome editing followed by RNA-seq',
                                         'single cell isolation followed by RNA-seq']:
@@ -154,29 +107,72 @@ def audit_experiement_long_rna_encode3_standards(value, system):
         else:
             return
 
-    fastq_files = scanFilesForFileFormat(value['original_files'], 'fastq')
     alignment_files = scanFilesForFileFormat(value['original_files'], 'bam')
 
     pipeline_title = scanFilesForPipelineTitle(alignment_files,
                                                ['GRCh38', 'mm10'],
                                                ['RNA-seq of long RNAs (paired-end, stranded)',
-                                                'RNA-seq of long RNAs (single-end, unstranded)'])
+                                                'RNA-seq of long RNAs (single-end, unstranded)',
+                                                'Small RNA-seq single-end pipeline',
+                                                'RAMPAGE (paired-end, stranded)'])
+    # I can dd a cross check between pipeline name and assay - but I am not sure it is necessary
+    # WE HAVE TO ADD (1) HISTONE AND (2) WGBS
     if pipeline_title is False:
         return
-    else:
-        if value['assay_term_name'] not in ['shRNA knockdown followed by RNA-seq',
-                                            'CRISPR genome editing followed by RNA-seq']:
-            for failure in check_experiment_ERCC_spikeins(value, pipeline_title, 'long RNA'):
-                yield failure
-            for failure in check_target(value, pipeline_title, 'long RNA'):
-                yield failure
 
+    fastq_files = scanFilesForFileFormat(value['original_files'], 'fastq')
     gene_quantifications = scanFilesForOutputType(value['original_files'],
                                                   'gene quantifications')
 
+    if pipeline_title in ['RAMPAGE (paired-end, stranded)']:
+        for failure in check_experiement_rampage_encode3_standards(value,
+                                                                   fastq_files,
+                                                                   alignment_files,
+                                                                   pipeline_title,
+                                                                   gene_quantifications,
+                                                                   desired_assembly,
+                                                                   desired_annotation):
+            yield failure
+
+    elif pipeline_title in ['Small RNA-seq single-end pipeline']:
+        for failure in check_experiement_small_rna_encode3_standards(value,
+                                                                     fastq_files,
+                                                                     alignment_files,
+                                                                     pipeline_title,
+                                                                     gene_quantifications,
+                                                                     desired_assembly,
+                                                                     desired_annotation):
+            yield failure
+
+    elif pipeline_title in ['RNA-seq of long RNAs (paired-end, stranded)',
+                            'RNA-seq of long RNAs (single-end, unstranded)']:
+        for failure in check_experiement_long_rna_encode3_standards(value,
+                                                                    fastq_files,
+                                                                    alignment_files,
+                                                                    pipeline_title,
+                                                                    gene_quantifications,
+                                                                    desired_assembly,
+                                                                    desired_annotation):
+            yield failure
+
+def check_experiement_long_rna_encode3_standards(experiment,
+                                                 fastq_files,
+                                                 alignment_files,
+                                                 pipeline_title,
+                                                 gene_quantifications,
+                                                 desired_assembly,
+                                                 desired_annotation):
+
+    if experiment['assay_term_name'] not in ['shRNA knockdown followed by RNA-seq',
+                                             'CRISPR genome editing followed by RNA-seq']:
+        for failure in check_experiment_ERCC_spikeins(experiment, pipeline_title, 'long RNA'):
+            yield failure
+        for failure in check_target(experiment, pipeline_title, 'long RNA'):
+            yield failure
+
     for f in fastq_files:
         if 'run_type' not in f:
-            detail = 'Long RNA-seq experiment {} '.format(value['@id']) + \
+            detail = 'Long RNA-seq experiment {} '.format(experiment['@id']) + \
                      'contains a file {} '.format(f['@id']) + \
                      'without sequencing run type specified.'
             yield AuditFailure('long RNA - run type not specified', detail, level='WARNING')
@@ -187,18 +183,18 @@ def audit_experiement_long_rna_encode3_standards(value, system):
 
     for f in alignment_files:
         if 'assembly' in f and f['assembly'] == desired_assembly:
-            if value['assay_term_name'] in ['shRNA knockdown followed by RNA-seq',
-                                            'CRISPR genome editing followed by RNA-seq']:
+            if experiment['assay_term_name'] in ['shRNA knockdown followed by RNA-seq',
+                                                 'CRISPR genome editing followed by RNA-seq']:
                 for failure in check_file_read_depth(f, 10000000, 'long RNA'):
                     yield failure
-            elif value['assay_term_name'] in ['single cell isolation followed by RNA-seq']:
+            elif experiment['assay_term_name'] in ['single cell isolation followed by RNA-seq']:
                 for failure in check_file_read_depth(f, 5000000, 'long RNA'):
                     yield failure
             else:
                 for failure in check_file_read_depth(f, 30000000, 'long RNA'):
                     yield failure
 
-    if 'replication_type' not in value:
+    if 'replication_type' not in experiment:
         return
 
     mad_metrics_dict = {}
@@ -211,91 +207,26 @@ def audit_experiement_long_rna_encode3_standards(value, system):
     mad_metrics = []
     for k in mad_metrics_dict:
         mad_metrics.append(mad_metrics_dict[k])
-    for failure in check_spearman(mad_metrics, value['replication_type'],
+    for failure in check_spearman(mad_metrics, experiment['replication_type'],
                                   0.9, 0.8, pipeline_title, 'long RNA'):
         yield failure
-    for failure in check_mad(mad_metrics, value['replication_type'], 0.2, pipeline_title, 'long RNA'):
+    for failure in check_mad(mad_metrics, experiment['replication_type'],
+                             0.2, pipeline_title, 'long RNA'):
         yield failure
 
     return
 
 
-@audit_checker('Experiment', frame=['original_files',
-                                    'replicates',
-                                    'replicates.library',
-                                    'replicates.library.spikeins_used',
-                                    'replicates.library.biosample',
-                                    'replicates.library.biosample.donor',
-                                    'replicates.library.biosample.donor.organism',
-                                    'original_files.quality_metrics',
-                                    'original_files.derived_from',
-                                    'original_files.analysis_step_version',
-                                    'original_files.analysis_step_version.analysis_step',
-                                    'original_files.analysis_step_version.analysis_step.pipelines'],
-               condition=rfa('ENCODE3'))
-def audit_experiement_small_rna_encode3_standards(value, system):
-    '''
-    OTHER AUDITS:
-    Experiments should have two or more replicates.
-    
-    POOLED FUNCTION:
-    > Alignment files are mapped to either the GRCh38 or mm10 sequences.
-    > Gene and transcript quantification files are annotated to either GENCODE V24 or M4.
-    Each replicate should have 30 million uniquely mapped reads.
-    The sequencing platform used must be Illumina GA or HiSeq.
-    The read length should be a minimum of 50 base pairs.
-    Sequencing should be single-ended.
-
-    DEPENDS ON REPLICATION:
-    > Alignment files are mapped to either the GRCh38 or mm10 sequences.
-    > Gene and transcript quantification files are annotated to either GENCODE V24 or M4.
-    The gene level quantification should have a Spearman correlation of >0.9 between isogenic replicates and >0.8 between anisogenic replicates.
-
-    '''
-
-    if value['status'] not in ['released', 'release ready']:
-        return
-    if 'assay_term_name' not in value or value['assay_term_name'] != 'RNA-seq':
-        return
-    if 'original_files' not in value or len(value['original_files']) == 0:
-        return
-    if 'replicates' not in value:
-        return
-
-
-    num_bio_reps = set()
-    for rep in value['replicates']:
-        num_bio_reps.add(rep['biological_replicate_number'])
-
-    if len(num_bio_reps) <= 1:
-        return
-
-    organism_name = get_organism_name(value['replicates'])  # human/mouse
-    if organism_name == 'human':
-        desired_assembly = 'GRCh38'
-        desired_annotation = 'V24'
-    else:
-        if organism_name == 'mouse':
-            desired_assembly = 'mm10'
-            desired_annotation = 'M4'
-        else:
-            return
-
-
-    fastq_files = scanFilesForFileFormat(value['original_files'], 'fastq')
-    alignment_files = scanFilesForFileFormat(value['original_files'], 'bam')
-
-    if scanFilesForPipelineTitle(alignment_files,
-                                 ['GRCh38', 'mm10'],
-                                 ['Small RNA-seq single-end pipeline']) is False:
-        return
-
-    gene_quantifications = scanFilesForOutputType(value['original_files'],
-                                                  'gene quantifications')
-
+def check_experiement_small_rna_encode3_standards(experiment,
+                                                  fastq_files,
+                                                  alignment_files,
+                                                  pipeline_title,
+                                                  gene_quantifications,
+                                                  desired_assembly,
+                                                  desired_annotation):
     for f in fastq_files:
         if 'run_type' in f and f['run_type'] != 'single-ended':
-            detail = 'Small RNA-seq experiment {} '.format(value['@id']) + \
+            detail = 'Small RNA-seq experiment {} '.format(experiment['@id']) + \
                      'contains a file {} '.format(f['@id']) + \
                      'that is not single-ended.'
             yield AuditFailure('small RNA - not single-ended', detail, level='WARNING')
@@ -309,7 +240,7 @@ def audit_experiement_small_rna_encode3_standards(value, system):
             for failure in check_file_read_depth(f, 30000000, 'small RNA'):
                 yield failure
 
-    if 'replication_type' not in value:
+    if 'replication_type' not in experiment:
         return
 
     mad_metrics_dict = {}
@@ -322,88 +253,23 @@ def audit_experiement_small_rna_encode3_standards(value, system):
     mad_metrics = []
     for k in mad_metrics_dict:
         mad_metrics.append(mad_metrics_dict[k])
-    for failure in check_spearman(mad_metrics, value['replication_type'],
+    for failure in check_spearman(mad_metrics, experiment['replication_type'],
                                   0.9, 0.8, 'Small RNA-seq single-end pipeline', 'small RNA'):
         yield failure
     return
 
 
-@audit_checker('Experiment', frame=['original_files',
-                                    'replicates',
-                                    'replicates.library',
-                                    'replicates.library.spikeins_used',
-                                    'replicates.library.biosample',
-                                    'replicates.library.biosample.donor',
-                                    'replicates.library.biosample.donor.organism',
-                                    'original_files.quality_metrics',
-                                    'original_files.derived_from',
-                                    'original_files.analysis_step_version',
-                                    'original_files.analysis_step_version.analysis_step',
-                                    'original_files.analysis_step_version.analysis_step.pipelines'],
-               condition=rfa('ENCODE3'))
-def audit_experiement_rampage_encode3_standards(value, system):
-    '''
-    OTHER AUDITS:
-    Experiments should have at least two replicates.
-    Each RAMPAGE experiment must have a corresponding RNA-seq experiment as a control.
-    Barcodes and spike-ins should be indicated.
+def check_experiement_rampage_encode3_standards(experiment,
+                                                fastq_files,
+                                                alignment_files,
+                                                pipeline_title,
+                                                gene_quantifications,
+                                                desired_assembly,
+                                                desired_annotation):
 
-    POOLED FUNCTION:
-    > Alignment files are mapped to either the GRCh38 or mm10 sequences.
-    > Gene and transcript quantification files are annotated to either GENCODE V24 or M4.
-    Each replicate should have 25 million uniquely mapped reads.
-    Sequencing must be paired-ended
-    The read length must be a minimum on 50 base pairs. 
-    The sequencing platform used should be Illumina GA or HiSeq.
-
-    DEPENDS ON REPLICATION:
-    > Alignment files are mapped to either the GRCh38 or mm10 sequences.
-    > Gene and transcript quantification files are annotated to either GENCODE V24 or M4.
-
-    The gene level quantification should have a Spearman correlation of >0.9 between isogenic replicates and >0.8 between anisogenic replicates.
-    '''
-
-    if value['status'] not in ['released', 'release ready']:
-        return
-    if 'assay_term_name' not in value or value['assay_term_name'] != 'RAMPAGE':
-        return
-
-    if 'original_files' not in value or len(value['original_files']) == 0:
-        return
-    if 'replicates' not in value:
-        return
-
-    num_bio_reps = set()
-    for rep in value['replicates']:
-        num_bio_reps.add(rep['biological_replicate_number'])
-
-    if len(num_bio_reps) <= 1:
-        return
-
-    organism_name = get_organism_name(value['replicates'])  # human/mouse
-    if organism_name == 'human':
-        desired_assembly = 'GRCh38'
-        desired_annotation = 'V24'
-    else:
-        if organism_name == 'mouse':
-            desired_assembly = 'mm10'
-            desired_annotation = 'M4'
-        else:
-            return
-
-    fastq_files = scanFilesForFileFormat(value['original_files'], 'fastq')
-    alignment_files = scanFilesForFileFormat(value['original_files'], 'bam')
-
-    if scanFilesForPipelineTitle(alignment_files,
-                                 ['GRCh38', 'mm10'],
-                                 ['RAMPAGE (paired-end, stranded)']) is False:
-        return
-
-    gene_quantifications = scanFilesForOutputType(value['original_files'],
-                                                  'gene quantifications')
     for f in fastq_files:
         if 'run_type' in f and f['run_type'] != 'paired-ended':
-            detail = 'RAMPAGE experiment {} '.format(value['@id']) + \
+            detail = 'RAMPAGE experiment {} '.format(experiment['@id']) + \
                      'contains a file {} '.format(f['@id']) + \
                      'that is not paired-ended.'
             yield AuditFailure('RAMPAGE - not paired-ended', detail, level='WARNING')
@@ -417,7 +283,7 @@ def audit_experiement_rampage_encode3_standards(value, system):
             for failure in check_file_read_depth(f, 25000000, 'RAMPAGE'):
                 yield failure
 
-    if 'replication_type' not in value:
+    if 'replication_type' not in experiment:
         return
 
     mad_metrics_dict = {}
@@ -430,7 +296,7 @@ def audit_experiement_rampage_encode3_standards(value, system):
     mad_metrics = []
     for k in mad_metrics_dict:
         mad_metrics.append(mad_metrics_dict[k])
-    for failure in check_spearman(mad_metrics, value['replication_type'],
+    for failure in check_spearman(mad_metrics, experiment['replication_type'],
                                   0.9, 0.8, 'RAMPAGE (paired-end, stranded)', 'RAMPAGE'):
         yield failure
     return
