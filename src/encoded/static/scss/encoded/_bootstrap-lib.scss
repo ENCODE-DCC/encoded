@@ -12,19 +12,25 @@
             &:hover {
                 background-color: transparent;
                 color: #428bca;
+                border-radius: 0;
+
+                svg path {
+                    fill: #428bca;
+                }
             }
         }
 
         &.active {
             > a, > a:hover, > a:focus {
-                background-color: transparent;
+                background-color: #c0c0c0;
                 border: none;
-                color: #a0a0a0;
+                color: #606060;
+                border-radius: 0;
+
+                svg path {
+                    fill: #606060;
+                }
             }
         }
     }
 }
-
-
-
-//        >a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus

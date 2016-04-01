@@ -1176,9 +1176,23 @@ var FileGalleryRenderer = React.createClass({
             </select>
         : null;
 
+        var graphTab = (
+            <div className="file-gallery-tab">
+                <svg id="Graph_Tab" data-name="Graph Tab" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17"><title>graph-tab-icon</title><path class="file-gallery-graphic" d="M26,5.5H18a3,3,0,0,0-1.19.25l-3-1.6A3,3,0,0,0,14,3a3,3,0,0,0-3-3H3A3,3,0,0,0,3,6h8a3,3,0,0,0,1.35-.34L15.3,7.22a2.88,2.88,0,0,0,0,2.56l-2.95,1.56A3,3,0,0,0,11,11H3a3,3,0,0,0,0,6h8a3,3,0,0,0,3-3,3,3,0,0,0-.23-1.15l3-1.6A3,3,0,0,0,18,11.5h8A3,3,0,0,0,26,5.5Z"/></svg>
+                <span>Graph</span>
+            </div>
+        );
+
+        var tableTab = (
+            <div className="file-gallery-tab">
+                <svg id="Table_Tab" data-name="Table Tab" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17"><title>table-tab-icon</title><path class="file-gallery-graphic" d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z"/></svg>
+                <span>Table</span>
+            </div>
+        );
+
         return (
             <Panel>
-                <TabPanel tabs={{graph: 'Graph', table: 'Table'}} addClasses="file-gallery-tabs" moreComponents={filterMenu} moreComponentsClasses="file-gallery-filter">
+                <TabPanel tabs={{graph: graphTab, table: tableTab}} addClasses="file-gallery-tabs" moreComponents={filterMenu} moreComponentsClasses="file-gallery-filter">
                     <TabPanelPane key="graph">
                         <ExperimentGraph context={context} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} />
                     </TabPanelPane>

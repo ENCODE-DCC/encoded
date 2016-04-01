@@ -137,7 +137,9 @@ var TabPanel = module.exports.TabPanel = React.createClass({
 
                         return (
                             <li key={tab} role="presentation" aria-controls={tab} className={currentTab === tab ? 'active' : ''}>
-                                <a href={'#' + tab} ref={tab} onClick={this.handleClick.bind(this, tab)} data-trigger="tab" aria-controls={tab} role="tab" data-toggle="tab">{tabs[tab]}</a>
+                                <a href={'#' + tab} ref={tab} onClick={this.handleClick.bind(this, tab)} data-trigger="tab" aria-controls={tab} role="tab" data-toggle="tab">
+                                    {tabs[tab]}
+                                </a>
                             </li>
                         );
                     })}

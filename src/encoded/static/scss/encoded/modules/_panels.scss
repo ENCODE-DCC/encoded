@@ -163,6 +163,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 .file-gallery-tabs {
     display: flex;
     align-items: center;
+    background-color: #d8d8d8;
     
     .no-flexbox & {
         display: block;
@@ -171,4 +172,22 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
 .file-gallery-filter {
     margin: 0 5px 0 auto;
+}
+
+.file-gallery-tab {
+    line-height: 17px;
+
+    > svg {
+        vertical-align: middle;
+    }
+
+    > span {
+        display: none;
+        margin-left: 5px;
+        vertical-align: middle;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: inline;
+        }
+    }
 }
