@@ -58,6 +58,7 @@ non_seq_assays = [
 @audit_checker('Experiment', frame=['original_files',
                                     'replicates',
                                     'replicates.library',
+                                    'replicates.library.spikeins_used',
                                     'replicates.library.biosample',
                                     'replicates.library.biosample.donor',
                                     'replicates.library.biosample.donor.organism',
@@ -122,6 +123,7 @@ def audit_experiement_long_rna_encode3_standards(value, system):
 @audit_checker('Experiment', frame=['original_files',
                                     'replicates',
                                     'replicates.library',
+                                    'replicates.library.spikeins_used',
                                     'replicates.library.biosample',
                                     'replicates.library.biosample.donor',
                                     'replicates.library.biosample.donor.organism',
@@ -229,6 +231,7 @@ def audit_experiement_small_rna_encode3_standards(value, system):
 @audit_checker('Experiment', frame=['original_files',
                                     'replicates',
                                     'replicates.library',
+                                    'replicates.library.spikeins_used',
                                     'replicates.library.biosample',
                                     'replicates.library.biosample.donor',
                                     'replicates.library.biosample.donor.organism',
@@ -376,6 +379,35 @@ def check_mad(metrics, replication_type, mad_threshold, pipeline, assay_name):
                                        level='DCC_ACTION')
 
 
+def audit_experiment_ERCC_spikeins(experiment, pipeline, assay_name):
+    '''
+    The assumption in this functon is that the regular audit will catch anything without spikeins.
+    This audit is checking specifically for presence of ERCC spike-in in long-RNA pipeline experiments
+    '''
+    for rep in experiment['replicates']:
+
+        lib = rep.get('library')
+        if lib is None:
+            continue
+
+        size_range = lib.get('size_range')
+        if size_range != '>200':
+            continue
+
+        spikes = lib.get('spikeins_used')
+        if (spikes is not None) and (len(spikes) > 0):
+            accs = set()
+            for s in spikes:
+                accs.ad(s['accession'])
+            if 'ENCSR156CIL' not in accs:
+                detail = 'Library {} '.format(lib['@id']) + \
+                         'in experiment {} '.format(experiment['@id']) + \
+                         'that was processed by {} pipeline '.format(pipeline) + \
+                         'requires ERCC spike-in to be used in it`s preparation.'
+                yield AuditFailure(assay_name + ' - missing ERCC spike-in',
+                                   detail, level='NOT_COMPLIANT')
+
+
 def check_spearman(metrics, replication_type, isogenic_threshold,
                    anisogenic_threshold, pipeline, assay_name):
 
@@ -478,9 +510,9 @@ def check_file_read_length(file_to_check, threshold_length, assay_name):
                  ' According to ENCODE3 standards files submitted after 2015-6-30 ' + \
                  'should be at least {}bp long.'.format(threshold_length)
         if file_date_creation < threshold_date:
-            yield AuditFailure('RAMPAGE - insufficient read length', detail, level='WARNING')
+            yield AuditFailure(assay_name + ' - insufficient read length', detail, level='WARNING')
         else:
-            yield AuditFailure('RAMPAGE - insufficient read length', detail, level='NOT_COMPLIANT')
+            yield AuditFailure(assay_name + ' - insufficient read length', detail, level='NOT_COMPLIANT')
     return
 
 
