@@ -543,6 +543,13 @@ var Experiment = module.exports.Experiment = React.createClass({
                                             <dd><RelatedSeriesList seriesList={seriesList} /></dd>
                                         </div>
                                     : null}
+
+                                    {context.note ?
+                                        <div data-test="note">
+                                            <dt>Lab comments</dt>
+                                            <dd>{context.note}</dd>
+                                        </div>
+                                    : null}
                                 </dl>
                             </div>
                         </div>
