@@ -51,6 +51,21 @@ var PanelHeading = module.exports.PanelHeading = React.createClass({
 });
 
 
+var PanelFooter = module.exports.PanelFooter = React.createClass({
+    propTypes: {
+        addClasses: React.PropTypes.string // Classes to add to outer panel div
+    },
+
+    render: function() {
+        return (
+            <div className={'panel-footer' + (this.props.addClasses ? ' ' + this.props.addClasses : '')}>
+                {this.props.children}
+            </div>
+        );
+    }
+});
+
+
 // <TabPanel> components have tabs that select between panes, and so the main child components of
 // <TabPanel> must be <TabPanelPane> components. The children of <TabPanelPane> components are the
 // content you want to have rendered within a tab's pane. <TabPanel> takes a required `tabs`

@@ -39,7 +39,7 @@ var ProjectBadge = image.ProjectBadge;
 var {DocumentsPanel, AttachmentPanel} = doc;
 var DropdownButton = button.DropdownButton;
 var DropdownMenu = dropdownMenu.DropdownMenu;
-var {Panel, PanelBody, PanelHeading, TabPanel, TabPanelPane} = panel;
+var {Panel, PanelBody, PanelHeading, PanelFooter, TabPanel, TabPanelPane} = panel;
 
 
 var anisogenicValues = [
@@ -1167,26 +1167,13 @@ var FileGalleryRenderer = React.createClass({
 
         // Rendering the filtering menu
         var filterMenu = filterOptions.length ?
-            <div>
-                {context.visualize_ucsc  && context.status == "released" ?
-                    <DropdownButton title='Visualize Data'>
-                        <DropdownMenu>
-                            {Object.keys(context.visualize_ucsc).map(assembly =>
-                                <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context.visualize_ucsc[assembly]}>
-                                    {assembly}
-                                </a>
-                            )}
-                        </DropdownMenu>
-                    </DropdownButton>
-                : null}
-                <select className="form-control" defaultValue="0" onChange={this.handleFilterChange}>
-                    <option value="default" key="title">All Assemblies and Annotations</option>
-                    <option disabled="disabled"></option>
-                    {filterOptions.map((option, i) =>
-                        <option key={i} value={i}>{option.assembly + (option.annotation ? ' ' + option.annotation : '')}</option>
-                    )}
-                </select>
-            </div>
+            <select className="form-control" defaultValue="0" onChange={this.handleFilterChange}>
+                <option value="default" key="title">All Assemblies and Annotations</option>
+                <option disabled="disabled"></option>
+                {filterOptions.map((option, i) =>
+                    <option key={i} value={i}>{option.assembly + (option.annotation ? ' ' + option.annotation : '')}</option>
+                )}
+            </select>
         : null;
 
         return (
@@ -1199,6 +1186,19 @@ var FileGalleryRenderer = React.createClass({
                         <DatasetFiles {...this.props} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} encodevers={this.props.encodevers} anisogenic={this.props.anisogenic} session={this.context.session} />
                     </TabPanelPane>
                 </TabPanel>
+                <PanelFooter>
+                    {context.visualize_ucsc  && context.status == "released" ?
+                        <DropdownButton title='Visualize Data'>
+                            <DropdownMenu>
+                                {Object.keys(context.visualize_ucsc).map(assembly =>
+                                    <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context.visualize_ucsc[assembly]}>
+                                        {assembly}
+                                    </a>
+                                )}
+                            </DropdownMenu>
+                        </DropdownButton>
+                    : null}
+                </PanelFooter>
             </Panel>
         );
     }
