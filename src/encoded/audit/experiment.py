@@ -155,6 +155,8 @@ def audit_experiment_standards_dispatcher(value, system):
                                                                     desired_annotation):
             yield failure
 
+
+#def check_experiment_
 def check_experiement_long_rna_encode3_standards(experiment,
                                                  fastq_files,
                                                  alignment_files,
@@ -185,13 +187,13 @@ def check_experiement_long_rna_encode3_standards(experiment,
         if 'assembly' in f and f['assembly'] == desired_assembly:
             if experiment['assay_term_name'] in ['shRNA knockdown followed by RNA-seq',
                                                  'CRISPR genome editing followed by RNA-seq']:
-                for failure in check_file_read_depth(f, 10000000, 'long RNA'):
+                for failure in check_file_read_depth(f, 10000000, experiment['assay_term_name'], pipeline_title, 'long RNA'):
                     yield failure
             elif experiment['assay_term_name'] in ['single cell isolation followed by RNA-seq']:
-                for failure in check_file_read_depth(f, 5000000, 'long RNA'):
+                for failure in check_file_read_depth(f, 5000000, experiment['assay_term_name'], pipeline_title, 'long RNA'):
                     yield failure
             else:
-                for failure in check_file_read_depth(f, 30000000, 'long RNA'):
+                for failure in check_file_read_depth(f, 30000000, experiment['assay_term_name'], pipeline_title, 'long RNA'):
                     yield failure
 
     if 'replication_type' not in experiment:
@@ -237,7 +239,7 @@ def check_experiement_small_rna_encode3_standards(experiment,
 
     for f in alignment_files:
         if 'assembly' in f and f['assembly'] == desired_assembly:
-            for failure in check_file_read_depth(f, 30000000, 'small RNA'):
+            for failure in check_file_read_depth(f, 30000000, experiment['assay_term_name'], pipeline_title, 'small RNA'):
                 yield failure
 
     if 'replication_type' not in experiment:
@@ -280,7 +282,7 @@ def check_experiement_rampage_encode3_standards(experiment,
 
     for f in alignment_files:
         if 'assembly' in f and f['assembly'] == desired_assembly:
-            for failure in check_file_read_depth(f, 25000000, 'RAMPAGE'):
+            for failure in check_file_read_depth(f, 25000000, experiment['assay_term_name'], pipeline_title, 'RAMPAGE'):
                 yield failure
 
     if 'replication_type' not in experiment:
@@ -417,7 +419,7 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
                                        level='NOT_COMPLIANT')
 
 
-def check_file_read_depth(file_to_check, threshold, assay_name):
+def check_file_read_depth(file_to_check, threshold, assay_term_name, pipeline_title, assay_name):
 
     if file_to_check['output_type'] == 'transcriptome alignments':
         return
@@ -448,7 +450,8 @@ def check_file_read_depth(file_to_check, threshold, assay_name):
         detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                      read_depth) + \
                  'uniquely mapped reads. Replicates for ' + \
-                 '{} assay '.format(assay_name) + \
+                 '{} assay '.format(assay_term_name) + \
+                 'processed by {} pipeline '.format(pipeline_title) + \
                  'require {} uniquely mapped reads.'.format(threshold)
         yield AuditFailure(assay_name + ' - insufficient read depth', detail, level='NOT_COMPLIANT')
         return
