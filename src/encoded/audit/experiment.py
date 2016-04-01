@@ -333,7 +333,51 @@ def audit_experiement_rampage_encode3_standards(value, system):
     return
 
 
-def check_spearman(metrics, replication_type, isogenic_threshold, anisogenic_threshold, pipeline, assay_name):
+def check_mad(metrics, replication_type, mad_threshold, pipeline, assay_name):
+    if replication_type in ['anisogenic',
+                            'anisogenic, sex-matched and age-matched',
+                            'anisogenic, age-matched',
+                            'anisogenic, sex-matched']:
+        experiment_replication_type = 'anisogenic'
+    elif replication_type == 'isogenic':
+        experiment_replication_type = 'isogenic'
+    else:
+        return
+
+    mad_value = None
+    for m in metrics:
+        if 'MAD of log ratios' in m:
+            mad_value = m['MAD of log ratios']
+            if mad_value > 0.2:
+                detail = 'ENCODE processed gene quantification files {} '.format(m['quality_metric_of']) + \
+                         'has Median-Average-Deviation (MAD) ' + \
+                         'of replicate log ratios from quantification ' + \
+                         'value of {}.'.format(mad_value) + \
+                         ' For gene quantification files from an {}'.format(experiment_replication_type) + \
+                         ' assay in the {} '.format(pipeline) + \
+                         'pipeline, a value <0.2 is recommended, but a value between ' + \
+                         '0.2 and 0.5 is acceptable.'
+                if experiment_replication_type == 'isogenic':
+                    if mad_value < 0.5:
+                        yield AuditFailure(assay_name + ' - borderline MAD value', detail,
+                                           level='DCC_ACTION')
+                    else:
+                        yield AuditFailure(assay_name + ' - insufficient MAD value', detail,
+                                           level='DCC_ACTION')
+                elif experiment_replication_type == 'anisogenic' and mad_value > 0.5:
+                    detail = 'ENCODE processed gene quantification files {} '.format(m['quality_metric_of']) + \
+                             'has Median-Average-Deviation (MAD) ' + \
+                             'of replicate log ratios from quantification ' + \
+                             'value of {}.'.format(mad_value) + \
+                             ' For gene quantification files from an {}'.format(experiment_replication_type) + \
+                             ' assay in the {} '.format(pipeline) + \
+                             'pipeline, a value <0.5 is recommended.'
+                    yield AuditFailure(assay_name + ' - borderline MAD value', detail,
+                                       level='DCC_ACTION')
+
+
+def check_spearman(metrics, replication_type, isogenic_threshold,
+                   anisogenic_threshold, pipeline, assay_name):
 
     if replication_type in ['anisogenic',
                             'anisogenic, sex-matched and age-matched',
@@ -351,7 +395,7 @@ def check_spearman(metrics, replication_type, isogenic_threshold, anisogenic_thr
         if 'Spearman correlation' in m:
             spearman_correlation = m['Spearman correlation']
             if spearman_correlation < threshold:
-                detail = 'ENCODE processed gene quantification file {} '.format(m['quality_metric_of']) + \
+                detail = 'ENCODE processed gene quantification files {} '.format(m['quality_metric_of']) + \
                          'have Spearman correlation of {}.'.format(spearman_correlation) + \
                          ' For gene quantification files from an {}'.format(replication_type) + \
                          ' assay in the {} '.format(pipeline) + \
