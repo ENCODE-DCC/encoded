@@ -78,11 +78,12 @@ def audit_experiment_standards_dispatcher(value, system):
     if value['status'] not in ['released', 'release ready']:
         return
     if 'assay_term_name' not in value or \
-       value['assay_term_name'] not in ['RAMPAGE', 'RNA-seq',
+       value['assay_term_name'] not in ['RAMPAGE', 'RNA-seq', 'ChIP-seq',
                                         'shRNA knockdown followed by RNA-seq',
                                         'CRISPR genome editing followed by RNA-seq',
                                         'single cell isolation followed by RNA-seq']:
         return
+    # WE HAVE TO ADD (1) WGBS
     if 'original_files' not in value or len(value['original_files']) == 0:
         return
     if 'replicates' not in value:
@@ -114,9 +115,10 @@ def audit_experiment_standards_dispatcher(value, system):
                                                ['RNA-seq of long RNAs (paired-end, stranded)',
                                                 'RNA-seq of long RNAs (single-end, unstranded)',
                                                 'Small RNA-seq single-end pipeline',
-                                                'RAMPAGE (paired-end, stranded)'])
+                                                'RAMPAGE (paired-end, stranded)',
+                                                'Histone ChIP-seq'])
     # I can dd a cross check between pipeline name and assay - but I am not sure it is necessary
-    # WE HAVE TO ADD (1) HISTONE AND (2) WGBS
+    # WE HAVE TO ADD (1) WGBS
     if pipeline_title is False:
         return
 
@@ -154,9 +156,49 @@ def audit_experiment_standards_dispatcher(value, system):
                                                                     desired_assembly,
                                                                     desired_annotation):
             yield failure
+    elif pipeline_title in ['Histone ChIP-seq']:
+        for failure in check_experiment_chip_seq_encode3_standards(value,
+                                                                   fastq_files,
+                                                                   alignment_files,
+                                                                   pipeline_title):
+            yield failure
+
+def check_experiment_chip_seq_encode3_standards(experiment,
+                                                fastq_files,
+                                                alignment_files,
+                                                pipeline_title):
+    '''
+    Library complexity is measured using the Non-Redundant Fraction (NRF) and PCR Bottlenecking Coefficients 1 and 2, or PBC1 and PBC2. Preferred values are as follows: NRF>0.9, PBC1>0.9, and PBC2>10.
+   
+    >>Histone-specific Standards
+
+    For narrow-peak histone experiments, each replicate should have 20 million usable fragments.
+    For broad-peak histone experiments, each replicate should have 45 million usable fragments.
+    H3K9me3 is an exception as it should have 45 million total mapped reads per replicate.
+
+    Pipeline files are mapped to either the GRCh38 or mm10 sequences. (NOT REALLY)
+
+    >>>Transcription Factor-specific Standards
+
+    Each replicate should have 20 million usable fragments. 
+    Replicate concordance is measured by calculating IDR values 
+    (Irreproducible Discovery Rate). The experiment passes if both rescue and self consistency ratios are less than 2.
+
+   '''                                              
+    for f in fastq_files:
+        if 'run_type' not in f:
+            detail = 'Experiment {} '.format(experiment['@id']) + \
+                     'contains a file {} '.format(f['@id']) + \
+                     'without sequencing run type specified.'
+            yield AuditFailure('ChIP-seq - run type not specified', detail, level='WARNING')
+        for failure in check_file_read_length(f, 50, 'ChIP-seq'):
+            yield failure
+    
+    target = get_target(experiment)
+    for f in alignment_files:
+        print ("CHECKING THE FILE")
 
 
-#def check_experiment_
 def check_experiement_long_rna_encode3_standards(experiment,
                                                  fastq_files,
                                                  alignment_files,
@@ -385,6 +427,12 @@ def check_target(experiment, pipeline, assay_name):
                            detail, level='NOT_COMPLIANT')
 
 
+def get_target(experiment):
+    if 'target' in experiment:
+        return experiment['target']
+    return False
+
+
 def check_spearman(metrics, replication_type, isogenic_threshold,
                    anisogenic_threshold, pipeline, assay_name):
 
@@ -418,8 +466,11 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
                     yield AuditFailure(assay_name + ' - insufficient spearman correlation', detail,
                                        level='NOT_COMPLIANT')
 
+# >> I am afraid we have to mimic chip-seq in file treatment - changing the function 
+# into get_file_read_depth
+# and writing the error audit fnction elsewhere - allowing complex report to be generated in chip-seq case
 
-def check_file_read_depth(file_to_check, threshold, assay_term_name, pipeline_title, assay_name):
+def check_file_read_depth(file_to_check, threshold, assay_term_name, pipeline_title, assay_name, target):
 
     if file_to_check['output_type'] == 'transcriptome alignments':
         return
@@ -434,6 +485,13 @@ def check_file_read_depth(file_to_check, threshold, assay_term_name, pipeline_ti
                       'small RNA',
                       'long RNA']:
         read_depth_value_name = 'Uniquely mapped reads number'
+    
+
+    elif assay_name in ['ChIP-seq'] and target is not None and \
+        'name' in target and target['name'] in ['H3K9me3-human', 'H3K9me3-mouse']:
+
+    elif assay_name in ['ChIP-seq']:
+
 
 
     read_depth = -1
