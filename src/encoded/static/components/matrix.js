@@ -26,7 +26,7 @@ var COLORS = [
     '#ffffcc',
     '#e5d8bd',
     '#fddaec',
-    '#f2f2f2',
+    '#f2f2f2'
 ];
 
 
@@ -41,7 +41,7 @@ var Matrix = module.exports.Matrix = React.createClass({
     // This sets inline CSS to set the height of the wrapper <div> to make room for the dropdown.
     updateElement: function(dropdownEl) {
         var wrapperEl = this.refs.hubscontrols.getDOMNode();
-        var dropdownHeight = dropdownEl.clientHeight
+        var dropdownHeight = dropdownEl.clientHeight;
         if (dropdownHeight === 0) {
             // The dropdown menu has closed
             wrapperEl.style.height = 'auto';
@@ -113,7 +113,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                 <FacetList facets={y_facets} filters={context.filters}
                                            searchBase={matrix_search} onFilter={this.onFilter} />
                             </div>
-                            <div className="col-sm-7 col-md-8 col-lg-9 sm-no-padding" style={{paddingLeft: 0, overflow: 'auto'}}>
+                            <div className="col-sm-7 col-md-8 col-lg-9 sm-no-padding" style={{paddingLeft: 0}}>
                                 <table className="matrix">
                                     <tbody>
                                         {matrix.doc_count ?
@@ -209,10 +209,10 @@ var Matrix = module.exports.Matrix = React.createClass({
                                     : null}
                                     {' '}
                                     {batchHubKeys ?
-                                        <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'}>
-                                            <DropdownMenu updateElement={this.updateElement}>
+                                        <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'} label="batchhub" wrapperClasses="hubs-controls-button">
+                                            <DropdownMenu>
                                                 {batchHubKeys.map(assembly =>
-                                                    <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context['batch_hub'][assembly]}>
+                                                    <a key={assembly} data-bypass="true" target="_blank" href={context['batch_hub'][assembly]}>
                                                         {assembly}
                                                     </a>
                                                 )}

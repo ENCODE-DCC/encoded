@@ -16,7 +16,7 @@ var portal = {
             {id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample'},
             {id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot'},
             {id: 'annotations', title: 'Annotations', url: '/data/annotations/'},
-            {id: 'datarelease', title: 'Release policy', url: '/about/data-use-policy/'},
+            {id: 'datarelease', title: 'Release policy', url: '/about/data-use-policy/'}
 //            {id: 'region-search', title: 'Search by region', url: '/region-search/'}
         ]},
         {id: 'methods', title: 'Methods', children: [
@@ -67,7 +67,7 @@ var App = React.createClass({
     triggers: {
         login: 'triggerLogin',
         profile: 'triggerProfile',
-        logout: 'triggerLogout',
+        logout: 'triggerLogout'
     },
 
     getInitialState: function() {

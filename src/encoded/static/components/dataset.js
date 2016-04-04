@@ -858,10 +858,10 @@ var FilePanelHeader = module.exports.FilePanelHeader = React.createClass({
             <div>
                 {context.visualize_ucsc  && context.status == "released" ?
                     <span className="pull-right">
-                        <DropdownButton title='Visualize Data'>
+                        <DropdownButton title='Visualize Data' label="filepaneheader">
                             <DropdownMenu>
                                 {Object.keys(context.visualize_ucsc).map(assembly =>
-                                    <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context.visualize_ucsc[assembly]}>
+                                    <a key={assembly} data-bypass="true" target="_blank" href={context.visualize_ucsc[assembly]}>
                                         {assembly}
                                     </a>
                                 )}
@@ -1395,7 +1395,7 @@ var FileTable = module.exports.FileTable = React.createClass({
     getInitialState: function() {
         return {
             maxWidth: 'auto' // Width of widest table
-        }
+        };
     },
 
     cv: {
@@ -1427,9 +1427,9 @@ var FileTable = module.exports.FileTable = React.createClass({
                 var runType;
 
                 if (item.run_type === 'single-ended') {
-                    runType = 'SE'
+                    runType = 'SE';
                 } else if (item.run_type === 'paired-ended') {
-                    runType = 'PE'
+                    runType = 'PE';
                 }
 
                 return (
