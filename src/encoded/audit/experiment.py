@@ -1338,7 +1338,13 @@ def audit_experiment_control(value, system):
             raise AuditFailure('mismatched control', detail, level='ERROR')
 
 
-@audit_checker('experiment', frame=['target', 'possible_controls', 'replicates', 'replicates.antibody', 'possible_controls.replicates', 'possible_controls.replicates.antibody', 'possible_controls.target'], condition=rfa('ENCODE3'))
+@audit_checker('experiment', frame=['target',
+                                    'possible_controls',
+                                    'replicates', 'replicates.antibody',
+                                    'possible_controls.replicates',
+                                    'possible_controls.replicates.antibody',
+                                    'possible_controls.target'],
+               condition=rfa('ENCODE3', 'Roadmap'))
 def audit_experiment_ChIP_control(value, system):
 
     if value['status'] in ['deleted', 'proposed', 'preliminary', 'replaced', 'revoked']:
