@@ -126,10 +126,11 @@ def audit_experiment_standards_dispatcher(value, system):
         return
 
     fastq_files = scanFilesForFileFormat(value['original_files'], 'fastq')
-    gene_quantifications = scanFilesForOutputType(value['original_files'],
-                                                  'gene quantifications')
+   
 
     if pipeline_title in ['RAMPAGE (paired-end, stranded)']:
+        gene_quantifications = scanFilesForOutputType(value['original_files'],
+                                                      'gene quantifications')
         for failure in check_experiement_rampage_encode3_standards(value,
                                                                    fastq_files,
                                                                    alignment_files,
@@ -140,6 +141,8 @@ def audit_experiment_standards_dispatcher(value, system):
             yield failure
 
     elif pipeline_title in ['Small RNA-seq single-end pipeline']:
+        gene_quantifications = scanFilesForOutputType(value['original_files'],
+                                                      'gene quantifications')
         for failure in check_experiement_small_rna_encode3_standards(value,
                                                                      fastq_files,
                                                                      alignment_files,
@@ -151,6 +154,8 @@ def audit_experiment_standards_dispatcher(value, system):
 
     elif pipeline_title in ['RNA-seq of long RNAs (paired-end, stranded)',
                             'RNA-seq of long RNAs (single-end, unstranded)']:
+        gene_quantifications = scanFilesForOutputType(value['original_files'],
+                                                      'gene quantifications')
         for failure in check_experiement_long_rna_encode3_standards(value,
                                                                     fastq_files,
                                                                     alignment_files,
@@ -160,20 +165,21 @@ def audit_experiment_standards_dispatcher(value, system):
                                                                     desired_annotation):
             yield failure
     elif pipeline_title in ['Histone ChIP-seq']:
+        optimal_idr_peaks = scanFilesForOutputType(value['original_files'],
+                                                   'optimal idr thresholded peaks')
         for failure in check_experiment_chip_seq_encode3_standards(value,
                                                                    fastq_files,
                                                                    alignment_files,
+                                                                   optimal_idr_peaks,
                                                                    pipeline_title):
             yield failure
 
 def check_experiment_chip_seq_encode3_standards(experiment,
                                                 fastq_files,
                                                 alignment_files,
+                                                idr_peaks_files,
                                                 pipeline_title):
     '''
-    Library complexity is measured using the Non-Redundant Fraction (NRF) and PCR Bottlenecking Coefficients 1 and 2, or PBC1 and PBC2. Preferred values are as follows: NRF>0.9, PBC1>0.9, and PBC2>10.
-   
-   
     Replicate concordance is measured by calculating IDR values 
     (Irreproducible Discovery Rate). The experiment passes if both rescue and self consistency ratios are less than 2.
 
@@ -191,14 +197,23 @@ def check_experiment_chip_seq_encode3_standards(experiment,
         target = get_target(experiment)
         read_depth = get_file_read_depth_from_alignment(f, target, 'ChIP-seq')
 
-        #print ("REAd DEPTH " + f['accession'])
-        #print (target)
-        #print ('depth = ' + str(read_depth))
-        #print ("REAd DEPTH")
-
         for failure in check_file_chip_seq_read_depth(f, target, read_depth, 'ChIP-seq'):
             yield failure
         for failure in check_file_chip_seq_library_complexity(f, 'ChIP-seq'):
+            yield failure
+
+        if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
+            return
+
+        idr_metrics_dict = {}
+        for f in idr_peaks_files:
+            if 'quality_metrics' in f and len(f['quality_metrics']) > 0:
+                for qm in f['quality_metrics']:
+                    idr_metrics_dict[qm['@id']] = qm
+        idr_metrics = []
+        for k in idr_metrics_dict:
+            idr_metrics.append(idr_metrics_dict[k])
+        for failure in check_idr(idr_metrics, 2, 2, pipeline_title, 'ChIP-seq'):
             yield failure
 
 
@@ -370,6 +385,21 @@ def check_experiement_rampage_encode3_standards(experiment,
                                   0.9, 0.8, 'RAMPAGE (paired-end, stranded)', 'RAMPAGE'):
         yield failure
     return
+
+
+def check_idr(metrics, rescue, self_consistency, pipeline, assay_name):
+    for m in metrics:
+        if 'rescue_ratio' in m and 'self_consistency_ratio' in m:
+            rescue_r = m['rescue_ratio']
+            self_r = m['self_consistency_ratio']
+            if rescue_r >= rescue or self_r >= self_consistency:
+                detail = 'Replicate concordance is measured by calculating IDR values (Irreproducible Discovery Rate).' + \
+                         'ENCODE processed IDR thresholded peaks files {} '.format(m['quality_metric_of']) + \
+                         'have rescue ratio of {}, and '.format(rescue_r) + \
+                         'self consistency ratio of {}. '.format(self_r) + \
+                         'Both ratios should be < 2, according to June 2015 standards.'
+                yield AuditFailure(assay_name + ' - insufficient IDR values', detail,
+                                   level='NOT_COMPLIANT')
 
 
 def check_mad(metrics, replication_type, mad_threshold, pipeline, assay_name):
