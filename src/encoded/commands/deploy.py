@@ -12,6 +12,7 @@ def nameify(s):
 
 def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
         branch=None, name=None, role='demo', profile_name=None):
+
     if branch is None:
         branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode('utf-8').strip()
 
@@ -27,7 +28,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
         if elasticsearch == 'yes':
             name = 'elasticsearch-' + name
 
-    session = boto3.Session(region_name='us-west-2', profile_name=profile_name)
+    session = boto3.Session(region_name='us-east-1', profile_name=profile_name)
     ec2 = session.resource('ec2')
 
     domain = 'production' if profile_name == 'production' else 'instance'
@@ -81,9 +82,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
         UserData=user_data,
         BlockDeviceMappings=bdm,
         InstanceInitiatedShutdownBehavior='terminate',
-        IamInstanceProfile={
-            "Name": 'encoded-instance',
-        }
+        IamInstanceProfile={"Name": "scott"}
     )
 
     instance = reservation[0]  # Instance:i-34edd56f
@@ -118,7 +117,8 @@ def main():
     )
     parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
     parser.add_argument('-n', '--name', type=hostname, help="Instance name")
-    parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')
+    parser.add_argument('--wale-s3-prefix',
+                        default='s3://encoded-4dn/production')
     parser.add_argument(
         '--candidate', action='store_const', default='demo', const='candidate', dest='role',
         help="Deploy candidate instance")
@@ -126,7 +126,7 @@ def main():
         '--test', action='store_const', default='demo', const='test', dest='role',
         help="Deploy to production AWS")
     parser.add_argument(
-        '--image-id', default='ami-1c1eff2f',
+        '--image-id', default='ami-fce3c696',
         help="ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-20151015")
     parser.add_argument(
         '--instance-type', default='c4.4xlarge',
