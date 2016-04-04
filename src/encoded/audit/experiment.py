@@ -469,6 +469,57 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
 # >> I am afraid we have to mimic chip-seq in file treatment - changing the function 
 # into get_file_read_depth
 # and writing the error audit fnction elsewhere - allowing complex report to be generated in chip-seq case
+def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
+
+    if alignment_file['output_type'] == 'transcriptome alignments':
+        return False
+
+    if alignment_file['lab'] != '/labs/encode-processing-pipeline/':
+        return False
+
+    quality_metrics = alignment_file.get('quality_metrics')
+
+    if (quality_metrics is None) or (quality_metrics == []):
+        return False
+
+    if assay_name in ['RAMPAGE',
+                      'small RNA',
+                      'long RNA']:
+        read_depth_value_name = 'Uniquely mapped reads number'
+        read_depth = -1
+
+        for metric in quality_metrics:
+            if 'Uniquely mapped reads number' in metric:
+                return metric['Uniquely mapped reads number']
+
+    elif assay_name in ['ChIP-seq']:
+        derived_from_files = alignment_file.get('derived_from')
+        if (derived_from_files is None) or (derived_from_files == []):
+            return False
+        if target is not None and \
+           'name' in target and target['name'] in ['H3K9me3-human', 'H3K9me3-mouse']:
+            # exception (mapped)
+            for metric in quality_metrics:
+                if 'processing_stage' in metric and \
+                    metric['processing_stage'] == 'unfiltered' and \
+                        'mapped' in metric:
+                    if "read1" in metric and "read2" in metric:
+                        return int(metric['mapped']/2)
+                    else:
+                        return int(metric['mapped'])
+        else:
+            # not exception (useful fragments)
+            for metric in quality_metrics:
+                if ('total' in metric) and \
+                   (('processing_stage' in metric and metric['processing_stage'] == 'filtered') or
+                   ('processing_stage' not in metric)):
+                    if "read1" in metric and "read2" in metric:
+                        return int(metric['total']/2)
+                    else:
+                        return int(metric['total'])
+
+    return False
+
 
 def check_file_read_depth(file_to_check, threshold, assay_term_name, pipeline_title, assay_name, target):
 
