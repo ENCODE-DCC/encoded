@@ -119,14 +119,15 @@ def audit_experiment_standards_dispatcher(value, system):
                                                 'RNA-seq of long RNAs (single-end, unstranded)',
                                                 'Small RNA-seq single-end pipeline',
                                                 'RAMPAGE (paired-end, stranded)',
-                                                'Histone ChIP-seq'])
+                                                'Histone ChIP-seq',
+                                                'WGBS single-end pipeline - version 2',
+                                                'WGBS single-end pipeline',
+                                                'WGBS paired-end pipeline'])
     # I can dd a cross check between pipeline name and assay - but I am not sure it is necessary
-    # WE HAVE TO ADD (1) WGBS
     if pipeline_title is False:
         return
 
     fastq_files = scanFilesForFileFormat(value['original_files'], 'fastq')
-   
 
     if pipeline_title in ['RAMPAGE (paired-end, stranded)']:
         gene_quantifications = scanFilesForOutputType(value['original_files'],
@@ -174,16 +175,58 @@ def audit_experiment_standards_dispatcher(value, system):
                                                                    pipeline_title):
             yield failure
 
+    elif pipeline_title in ['WGBS single-end pipeline - version 2',
+                            'WGBS single-end pipeline',
+                            'WGBS paired-end pipeline']:
+        cpg_quantifications = scanFilesForOutputType(value['original_files'],
+                                                     'methylation state at CpG')
+        for failure in check_experiment_wgbs_encode3_standards(value,
+                                                               fastq_files,
+                                                               cpg_quantifications,
+                                                               desired_assembly,
+                                                               desired_annotation):
+            yield failure
+
+def check_experiment_wgbs_encode3_standards(experiment,
+                                            fastq_files,
+                                            cpg_quantifications,
+                                            desired_assembly,
+                                            desired_annotation):
+    '''
+    Experiments should have two or more biological replicates.
+
+    For mouse data, each biological replicate must have two or more technical replicates. 
+    For human data, replicates must undergo paired end sequencing. 
+    Each replicate should have 30X coverage, where 1X coverage = read length * number of uniquely mapped reads / 3e+09. In other words, the average read depth accross the genome should be 30 reads per base. 
+    
+    The C to T conversion rate should be ≥99%
+    
+    The read length should be a minimum of 100 base pairs for mouse data and 130-150 base pairs for human data. 
+    
+    The CpG quantification should have a Pearson correlation of ≥0.8 for sites with ≥10X coverage.
+    Sequencing may be paired- or single-ended, as long as sequencing type is specified and paired sequences are indicated.
+    The sequencing platform used, barcodes, abd library size range specifications should be indicated.
+    
+    Alignment files are mapped to either the GRCh38 or mm10 sequences.
+    
+    The experiment must pass routine metadata audits in order to be released.
+
+
+    '''
+    # get the alignment files metrices, and then using the one with lambda C methylation ratios generate audit like the one in files
+    #  or probably same metric is acesible from bed file (like "methylation state at CpG") these files have 3 metrics:
+    # "/bismark-quality-metrics/fdef7b07-6619-40aa-8b03-1c3ab8c9a1b9/", - Pearson)
+    # "/cpg-correlation-quality-metrics/1133c2d5-b52f-4cc3-aca7-a1a7d5395c28/", - lambda results
+    # "/samtools-flagstats-quality-metrics/781ea3c4-caf6-4b77-a780-7e95d36c2666/" - mapped results (read depth)
+
+    return
+
+
 def check_experiment_chip_seq_encode3_standards(experiment,
                                                 fastq_files,
                                                 alignment_files,
                                                 idr_peaks_files,
                                                 pipeline_title):
-    '''
-    Replicate concordance is measured by calculating IDR values 
-    (Irreproducible Discovery Rate). The experiment passes if both rescue and self consistency ratios are less than 2.
-
-   '''                                              
     for f in fastq_files:
         if 'run_type' not in f:
             detail = 'Experiment {} '.format(experiment['@id']) + \
