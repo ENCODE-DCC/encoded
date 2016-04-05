@@ -258,6 +258,38 @@
         "uuid": "509cf1b1-4113-4a1e-a49f-d62ebf3367cf"
     },
     {
+        "_test": "patch users",
+        "accession": "ENCSR001ACT",
+        "assay_term_id": "OBI:0001332",
+        "assay_term_name": "MethylArray",
+        "award": "ENCODE2",
+        "biosample_term_id": "CL:1000350",
+        "biosample_term_name": "basal cell of epithelium of terminal bronchiole",
+        "biosample_type": "primary cell",
+        "description": "UW  SAEC",
+        "lab": "richard-myers",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "4ae10d69-f6fa-4757-b243-821dd8a9bf25"
+    },
+    {
+        "_test": "patch users",
+        "accession": "ENCSR002ACT",
+        "assay_term_id": "OBI:0001332",
+        "assay_term_name": "MethylArray",
+        "award": "ENCODE2",
+        "biosample_term_id": "CL:1000350",
+        "biosample_term_name": "basal cell of epithelium of terminal bronchiole",
+        "biosample_type": "primary cell",
+        "description": "UW  SAEC",
+        "lab": "richard-myers",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "a099b9ac-50c0-4c96-a3eb-9fa032388ebf"
+    },
+    {
         "_test": "Bind and Seq",
         "accession": "ENCSR666EMD",
         "assay_term_id": "NTR:0001132",

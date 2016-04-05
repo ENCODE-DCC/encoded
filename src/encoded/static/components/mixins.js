@@ -33,8 +33,8 @@ var parseAndLogError = module.exports.parseAndLogError = function (cause, respon
     var promise = parseError(response);
     promise.then(data => {
         ga('send', 'exception', {
-        'exDescription': '' + cause + ':' + data.code + ':' + data.title,
-        'location': window.location.href
+            'exDescription': '' + cause + ':' + data.code + ':' + data.title,
+            'location': window.location.href
         });
     });
     return promise;
@@ -66,7 +66,7 @@ module.exports.RenderLess = {
             }
         }
         return false;
-    },
+    }
 };
 
 class Timeout {
@@ -100,7 +100,7 @@ module.exports.Persona = {
 
     componentDidMount: function () {
         // Login / logout actions must be deferred until persona is ready.
-        var session_cookie = this.extractSessionCookie()
+        var session_cookie = this.extractSessionCookie();
         var session = this.parseSessionCookie(session_cookie);
         if (session['auth.userid']) {
             this.fetchSessionProperties();
@@ -225,7 +225,7 @@ module.exports.Persona = {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({assertion: assertion}),
+            body: JSON.stringify({assertion: assertion})
         })
         .then(response => {
             if (!response.ok) throw response;
@@ -341,7 +341,8 @@ module.exports.HistoryAndTriggers = {
 
     getInitialState: function () {
         return {
-            unsavedChanges: []
+            unsavedChanges: [],
+            promisePending: false
         };
     },
 
@@ -504,7 +505,13 @@ module.exports.HistoryAndTriggers = {
         var href = window.location.href;
         if (event.state) {
             // Abort inflight xhr before setProps
-            if (request) request.abort();
+            if (request && this.requestCurrent) {
+                // Abort the current request, then remember we've aborted it so that we don't render
+                // the Network Request Error page.
+                request.abort();
+                this.requestAborted = true;
+                this.requestCurrent = false;
+            }
             this.setProps({
                 context: event.state,
                 href: href  // href should be consistent with context
@@ -566,8 +573,12 @@ module.exports.HistoryAndTriggers = {
 
         var request = this.props.contextRequest;
 
-        if (request) {
+        if (request && this.requestCurrent) {
+            // Abort the current request, then remember we've aborted the request so that we
+            // don't render the Network Request Error page.
             request.abort();
+            this.requestAborted = true;
+            this.requestCurrent = false;
         }
 
         if (options.skipRequest) {
@@ -583,14 +594,23 @@ module.exports.HistoryAndTriggers = {
         request = this.fetch(href, {
             headers: {'Accept': 'application/json'}
         });
+        this.requestCurrent = true; // Remember we have an outstanding GET request
 
         var timeout = new Timeout(this.SLOW_REQUEST_TIME);
 
         Promise.race([request, timeout.promise]).then(v => {
-            if (v instanceof Timeout) this.setProps({'slow': true});
+            if (v instanceof Timeout) {
+                this.setProps({'slow': true});
+            } else {
+                // Request has returned data
+                this.requestCurrent = false;
+            }
         });
 
         var promise = request.then(response => {
+            // Request has returned data
+            this.requestCurrent = false;
+
             // navigate normally to URL of unexpected non-JSON response so back button works.
             if (!contentTypeIsJSON(response.headers.get('Content-Type'))) {
                 if (options.replace) {
@@ -639,11 +659,21 @@ module.exports.HistoryAndTriggers = {
             // Might fail due to too large data
             window.history.replaceState(null, '', window.location.href);
         }
-        this.setProps({
-            context: data,
-            slow: false
-        });
 
+        // Set up new properties for the page after a navigation click. First disable slow now that we've
+        // gotten a response. If the requestAborted flag is set, then a request was aborted and so we have
+        // the data for a Network Request Error. Don't render that, but clear the requestAboerted flag.
+        // Otherwise we have good page data to render.
+        var newProps = {slow: false};
+        if (!this.requestAborted) {
+            // Real page to render
+            newProps.context = data;
+        } else {
+            // data holds network error. Don't render that, but clear the requestAborted flag so we're ready
+            // for the next navigation click.
+            this.requestAborted = false;
+        }
+        this.setProps(newProps);
     },
 
     componentDidUpdate: function () {
