@@ -33,6 +33,15 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
     session = boto3.Session(region_name='us-east-1', profile_name=profile_name)
     ec2 = session.resource('ec2')
 
+    try:
+        # Create/Attach keypair to ec2 instance
+        keypair = ec2.meta.client.create_key_pair(KeyName='4DN_dcic_keypair')
+        with open(keypair["KeyName"]+".pem", "w+") as f:
+            f.write(keypair["KeyMaterial"])
+
+    except ClientError as e:
+            pass
+
     domain = 'production' if profile_name == 'production' else 'instance'
 
     if any(ec2.instances.filter(
@@ -79,6 +88,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
         ImageId=image_id,
         MinCount=1,
         MaxCount=1,
+        KeyName='4DN_dcic_keypair',
         InstanceType=instance_type,
         SecurityGroups=security_groups,
         UserData=user_data,
