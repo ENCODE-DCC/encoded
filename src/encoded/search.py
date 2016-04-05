@@ -12,6 +12,10 @@ from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
 
+import logging
+
+log = logging.getLogger(__name__)
+
 _ASSEMBLY_MAPPER = {
     'GRCh38-minimal': 'hg38',
     'GRCh38': 'hg38',
