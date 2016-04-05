@@ -2,7 +2,7 @@
 var React = require('react');
 var url = require('url');
 var {Navbar, Nav, NavItem} = require('../libs/bootstrap/navbar');
-var DropdownMenu = require('../libs/bootstrap/dropdown-menu');
+var {DropdownMenu} = require('../libs/bootstrap/dropdown-menu');
 var productionHost = require('./globals').productionHost;
 var _ = require('underscore');
 
@@ -42,9 +42,7 @@ var Navigation = module.exports = React.createClass({
             <div id="navbar" className="navbar navbar-fixed-top navbar-inverse">
                 <div className="container">
                     <Navbar brand={portal.portal_title} brandlink="/" label="main">
-                        <Nav>
-                            {GlobalSections(this.context.listActionsFor, this.context.location_href)}
-                        </Nav>
+                        {GlobalSections(this.context.listActionsFor)}
                     </Navbar>
                 </div>
                 {this.state.testWarning ?
@@ -63,26 +61,25 @@ var Navigation = module.exports = React.createClass({
 });
 
 
-var GlobalSections = function(listActionsFor, location_href) {
-    var section = url.parse(location_href).pathname.split('/', 2)[1] || '';
-
+var GlobalSections = function(listActionsFor, dropdownClick, openDropdown) {
     // Render top-level main menu
     var actions = listActionsFor('global_sections').map(action => {
-        var subactions;
-        if (action.children) {
-            // Has dropdown menu; render it into subactions var
-            subactions = action.children.map(function (action) {
-                return (
-                    <a href={action.url || ''} key={action.id}>
-                        {action.title}
-                    </a>
-                );
-            });
-        }
         return (
-            <NavItem>
-                <a href={action.url || ''}>{action.title}</a>
-            </NavItem>
+            <li className={(action.children ? ('dropdown' + (openDropdown === action.id ? ' open' : '')) : '')}>
+                {/* Render the dropdown menu title */}
+                <a href={action.url || ''} onClick={dropdownClick ? dropdownClick.bind(null, action.id) : null}>
+                    {action.title}
+                </a>
+                {action.children ?
+                    <DropdownMenu label={action.id}>
+                        {action.children.map(action =>
+                            <a href={action.url || ''} key={action.id}>
+                                {action.title}
+                            </a>
+                        )}
+                    </DropdownMenu>
+                : null}
+            </li>
         );
     });
     return actions;

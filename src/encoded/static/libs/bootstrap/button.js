@@ -1,9 +1,7 @@
 'use strict';
 var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
-var dropdownmenu = require('./dropdown-menu');
-
-var DropdownMenu = dropdownmenu.DropdownMenu;
+var {DropdownMenu} = require('./dropdown-menu');
 
 
 // Render a dropdown menu. All components within the dropdown get wrapped in <li> tags, so the 'a' elements in:
