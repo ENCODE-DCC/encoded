@@ -21,7 +21,8 @@
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/biosample_classification" },
-        { "$ref": "mixins.json#/assay" }
+        { "$ref": "mixins.json#/assay" },
+        { "$ref": "mixins.json#/submitter_comment" }
     ],
     "dependencies": {
         "status": {
@@ -119,11 +120,6 @@
                 "requires lab review",
                 "release ready"
             ]
-        },
-        "note": {
-            "title": "Note",
-            "description": "Additional information pertaining to the experiment to be displayed.",
-            "type": "string"
         }
     },
     "facets": {
