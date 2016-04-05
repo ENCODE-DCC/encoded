@@ -206,9 +206,9 @@ def wgbs_quality_metric(testapp, analysis_step_run_bam, file6):
     item = {
         'step_run': analysis_step_run_bam['@id'],
         'quality_metric_of': [file6['@id']],
-        'lambda C methylated in CHG context': '1.2%',
-        'lambda C methylated in CHH context': '0.5%',
-        'lambda C methylated in CpG context': '0.7%'}
+        'lambda C methylated in CHG context': '1.1%',
+        'lambda C methylated in CHH context': '1.5%',
+        'lambda C methylated in CpG context': '0.9%'}
     return testapp.post_json('/bismark_quality_metric', item).json['@graph'][0]
 
 
