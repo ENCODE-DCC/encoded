@@ -7,12 +7,14 @@ var url = require('url');
 var _ = require('underscore');
 var button = require('../libs/bootstrap/button');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
+var navbar = require('../libs/bootstrap/navbar');
 
 var BatchDownload = search.BatchDownload;
 var FacetList = search.FacetList;
 var TextFilter = search.TextFilter;
 var DropdownButton = button.DropdownButton;
 var DropdownMenu = dropdownMenu.DropdownMenu;
+var NavItem = navbar.NavItem;
 
 
 var HIGHLIGHT_COLOR = color('#4e7294');
@@ -212,9 +214,11 @@ var Matrix = module.exports.Matrix = React.createClass({
                                         <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'} label="batchhub" wrapperClasses="hubs-controls-button">
                                             <DropdownMenu>
                                                 {batchHubKeys.map(assembly =>
-                                                    <a key={assembly} data-bypass="true" target="_blank" href={context['batch_hub'][assembly]}>
-                                                        {assembly}
-                                                    </a>
+                                                    <NavItem key={assembly}>
+                                                        <a data-bypass="true" target="_blank" href={context['batch_hub'][assembly]}>
+                                                            {assembly}
+                                                        </a>
+                                                    </NavItem>
                                                 )}
                                             </DropdownMenu>
                                         </DropdownButton>

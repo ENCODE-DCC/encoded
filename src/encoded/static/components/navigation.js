@@ -1,16 +1,16 @@
 'use strict';
 var React = require('react');
 var url = require('url');
+var {Navbar, Nav, NavItem} = require('../libs/bootstrap/navbar');
+var DropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var productionHost = require('./globals').productionHost;
 var _ = require('underscore');
-var Navbar = require('../react-bootstrap/Navbar');
-var Nav = require('../react-bootstrap/Nav');
-var NavItem = require('../react-bootstrap/NavItem');
 
 
-var NavBar = React.createClass({
+var Navigation = module.exports = React.createClass({
     contextTypes: {
         location_href: React.PropTypes.string,
+        listActionsFor: React.PropTypes.func,
         portal: React.PropTypes.object
     },
 
@@ -41,11 +41,10 @@ var NavBar = React.createClass({
         return (
             <div id="navbar" className="navbar navbar-fixed-top navbar-inverse">
                 <div className="container">
-                    <Navbar brand={portal.portal_title} brandlink="/" noClasses={true} data-target="main-nav">
-                        <GlobalSections />
-                        <UserActions />
-                        <ContextActions />
-                        <Search />
+                    <Navbar brand={portal.portal_title} brandlink="/" label="main">
+                        <Nav>
+                            {GlobalSections(this.context.listActionsFor, this.context.location_href)}
+                        </Nav>
                     </Navbar>
                 </div>
                 {this.state.testWarning ?
@@ -64,42 +63,30 @@ var NavBar = React.createClass({
 });
 
 
-var GlobalSections = React.createClass({
-    contextTypes: {
-        listActionsFor: React.PropTypes.func,
-        location_href: React.PropTypes.string
-    },
+var GlobalSections = function(listActionsFor, location_href) {
+    var section = url.parse(location_href).pathname.split('/', 2)[1] || '';
 
-    render: function() {
-        var section = url.parse(this.context.location_href).pathname.split('/', 2)[1] || '';
-
-        // Render top-level main menu
-        var actions = this.context.listActionsFor('global_sections').map(function (action) {
-            var subactions;
-            if (action.children) {
-                // Has dropdown menu; render it into subactions var
-                subactions = action.children.map(function (action) {
-                    return (
-                        <NavItem href={action.url || ''} key={action.id}>
-                            {action.title}
-                        </NavItem>
-                    );
-                });
-            }
-            return (
-                <NavItem dropdown={action.hasOwnProperty('children')} key={action.id} href={action.url || ''}>
-                    {action.title}
-                    {action.children ?
-                        <Nav navbar={true} dropdown={true}>
-                            {subactions}
-                        </Nav>
-                    : null}
-                </NavItem>
-            );
-        });
-        return <Nav navbar={true} bsStyle="navbar-nav" activeKey={1}>{actions}</Nav>;
-    }
-});
+    // Render top-level main menu
+    var actions = listActionsFor('global_sections').map(action => {
+        var subactions;
+        if (action.children) {
+            // Has dropdown menu; render it into subactions var
+            subactions = action.children.map(function (action) {
+                return (
+                    <a href={action.url || ''} key={action.id}>
+                        {action.title}
+                    </a>
+                );
+            });
+        }
+        return (
+            <NavItem>
+                <a href={action.url || ''}>{action.title}</a>
+            </NavItem>
+        );
+    });
+    return actions;
+};
 
 var ContextActions = React.createClass({
     contextTypes: {
@@ -109,9 +96,9 @@ var ContextActions = React.createClass({
     render: function() {
         var actions = this.context.listActionsFor('context').map(function(action) {
             return (
-                <NavItem href={action.href} key={action.name}>
+                <a href={action.href} key={action.name}>
                     <i className="icon icon-pencil"></i> {action.title}
-                </NavItem>
+                </a>
             );
         });
         if (actions.length === 0) {
@@ -127,7 +114,7 @@ var ContextActions = React.createClass({
                 </NavItem>
             );
         }
-        return <Nav bsStyle="navbar-nav" navbar={true} right={true} id="edit-actions">{actions}</Nav>;
+        return <Nav right={true} id="edit-actions">{actions}</Nav>;
     }
 });
 
@@ -164,27 +151,25 @@ var UserActions = React.createClass({
         }
         var actions = this.context.listActionsFor('user').map(function (action) {
             return (
-                <NavItem href={action.href || ''} key={action.id} data-bypass={action.bypass} data-trigger={action.trigger}>
+                <a href={action.href || ''} key={action.id} data-bypass={action.bypass} data-trigger={action.trigger}>
                     {action.title}
-                </NavItem>
+                </a>
             );
         });
         var user = session_properties.user;
         var fullname = (user && user.title) || 'unknown';
         return (
-            <Nav bsStyle="navbar-nav" navbar={true} right={true} id="user-actions">
-                <NavItem dropdown={true}>
+            <Nav right={true}>
+                <div>
                     {fullname}
-                    <Nav navbar={true} dropdown={true}>
+                    <Nav>
                         {actions}
                     </Nav>
-                </NavItem>
+                </div>
             </Nav>
         );
     }
 });
-
-module.exports = NavBar;
 
 
 // Display breadcrumbs with contents given in 'crumbs' object.

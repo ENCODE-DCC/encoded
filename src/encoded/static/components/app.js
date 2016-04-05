@@ -3,7 +3,7 @@ var React = require('react');
 var jsonScriptEscape = require('../libs/jsonScriptEscape');
 var globals = require('./globals');
 var mixins = require('./mixins');
-var NavBar = require('./navbar');
+var Navigation = require('./navigation');
 var Footer = require('./footer');
 var fs = require('fs');
 var url = require('url');
@@ -257,7 +257,7 @@ var App = React.createClass({
                         <div className="loading-spinner"></div>
 
                             <div id="layout" onClick={this.handleLayoutClick} onKeyPress={this.handleKey}>
-                                <NavBar />
+                                <Navigation />
                                 <div id="content" className="container" key={key}>
                                     {content}
                                 </div>

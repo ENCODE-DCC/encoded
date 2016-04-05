@@ -5,7 +5,7 @@ var button = require('../libs/bootstrap/button');
 var _ = require('underscore');
 var moment = require('moment');
 var graph = require('./graph');
-var navbar = require('./navbar');
+var navigation = require('./navigation');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
@@ -20,7 +20,7 @@ var sortTable = require('./sorttable');
 var objectutils = require('./objectutils');
 var doc = require('./doc');
 
-var Breadcrumbs = navbar.Breadcrumbs;
+var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var {DatasetFiles, FilePanelHeader, ExperimentTable} = dataset;
 var FetchedItems = fetched.FetchedItems;
