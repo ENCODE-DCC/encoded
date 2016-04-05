@@ -65,11 +65,7 @@ var GlobalSections = function(listActionsFor, dropdownClick, openDropdown) {
     // Render top-level main menu
     var actions = listActionsFor('global_sections').map(action => {
         return (
-            <li className={(action.children ? ('dropdown' + (openDropdown === action.id ? ' open' : '')) : '')}>
-                {/* Render the dropdown menu title */}
-                <a href={action.url || ''} onClick={dropdownClick ? dropdownClick.bind(null, action.id) : null}>
-                    {action.title}
-                </a>
+            <NavItem dropdownId={action.id} dropdownTitle={action.title}>
                 {action.children ?
                     <DropdownMenu label={action.id}>
                         {action.children.map(action =>
@@ -79,7 +75,7 @@ var GlobalSections = function(listActionsFor, dropdownClick, openDropdown) {
                         )}
                     </DropdownMenu>
                 : null}
-            </li>
+            </NavItem>
         );
     });
     return actions;

@@ -21,14 +21,29 @@ var Navbar = module.exports.Navbar = React.createClass({
         };  
     },
     
+    componentDidMount: function() {
+        // Add a click handler to the DOM document -- the entire page
+        document.addEventListener('click', this.documentClickHandler);
+    },
+
+    componentWillUnmount: function() {
+        // Remove the DOM document click handler now that the DropdownButton is going away.
+        document.removeEventListener('click', this.documentClickHandler);
+    },
+
+    documentClickHandler: function() {
+        // A click outside the DropdownButton closes the dropdown
+        this.setState({openDropdown: ''});
+    },
+
     collapseClick: function(e) {
         // Click on the Navbar mobile "collapse" button
         this.setState({expanded: !this.state.expanded});
     },
-    
-    dropdownClick: function(dropdownId) {
-        console.log(dropdownId);
-        // DropdownMenu with id of `dropdownId` clicked
+
+    dropdownClick: function(dropdownId, e) {
+        // After clicking the dropdown trigger button, don't allow the event to bubble to the rest of the DOM.
+        e.nativeEvent.stopImmediatePropagation();
         this.setState({openDropdown: dropdownId === this.state.dropdownId ? '' : dropdownId});
     },
 
@@ -36,12 +51,15 @@ var Navbar = module.exports.Navbar = React.createClass({
         var {brand, brandlink, label, navClasses} = this.props;
 
         // Add the `openDropdown` property to any <DropdownMenu> child components
-        var children = React.Children.map(this.props.children, child =>
-            cloneWithProps(child, {
-                openDropdown: this.state.openDropdown,
-                dropdownClick: this.dropdownClick
-            })
-        );
+        var children = React.Children.map(this.props.children, child => {
+            if (child.type === NavItem.type) {
+                return cloneWithProps(child, {
+                    openDropdown: this.state.openDropdown,
+                    dropdownClick: this.dropdownClick
+                });
+            }
+            return child;
+        });
 
         return (
             <nav className={'navbar ' + (navClasses ? navClasses : 'navbar-default')}>
@@ -59,7 +77,7 @@ var Navbar = module.exports.Navbar = React.createClass({
                 
                 <div className="collapse navbar-collapse" id={label}>
                     <ul className="nav navbar-nav">
-                        {this.props.children}
+                        {children}
                     </ul>
                 </div>
             </nav>
@@ -69,11 +87,24 @@ var Navbar = module.exports.Navbar = React.createClass({
 
 
 var NavItem = module.exports.NavItem = React.createClass({
+    propTypes: {
+        dropdownId: React.PropTypes.string, // If this item has a dropdown, this ID helps manage it; must be unique
+        dropdownTitle: React.PropTypes.string, // If this item has a dropdown, this is the title
+        openDropdown: React.PropTypes.string, // dropdownId of currently open dropdown; '' if all closed. Passed by parent Navbar
+        dropdownClick: React.PropTypes.func // Function to call when dropdown title clicked. Passed by parent Navbar
+    },
+
     render: function() {
-        var {openDropdown, dropdownClick} = this.props;
+        var {dropdownId, dropdownTitle, openDropdown, dropdownClick} = this.props;
+        var dropdownOpen = dropdownId && (openDropdown === dropdownId);
 
         return (
-            <li className={dropdownClick ? ('dropdown' + ()) : ''}>
+            <li className={dropdownId ? ('dropdown' + (dropdownOpen ? ' open' : '')) : ''}>
+                {dropdownTitle ?
+                    <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded={dropdownOpen} onClick={dropdownClick.bind(null, dropdownId)}>
+                        {dropdownTitle}
+                    </a>
+                : null}
                 {this.props.children}
             </li>
         );
