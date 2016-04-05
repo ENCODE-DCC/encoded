@@ -69,6 +69,8 @@ non_seq_assays = [
                                     'replicates.library.biosample.donor',
                                     'replicates.library.biosample.donor.organism',
                                     'original_files.quality_metrics',
+                                    'original_files.quality_metrics.quality_metric_of',
+                                    'original_files.quality_metrics.quality_metric_of.replicate',
                                     'original_files.derived_from',
                                     'original_files.analysis_step_version',
                                     'original_files.analysis_step_version.analysis_step',
@@ -84,9 +86,9 @@ def audit_experiment_standards_dispatcher(value, system):
        value['assay_term_name'] not in ['RAMPAGE', 'RNA-seq', 'ChIP-seq',
                                         'shRNA knockdown followed by RNA-seq',
                                         'CRISPR genome editing followed by RNA-seq',
-                                        'single cell isolation followed by RNA-seq']:
+                                        'single cell isolation followed by RNA-seq',
+                                        'whole-genome shotgun bisulfite sequencing']:
         return
-    # WE HAVE TO ADD (1) WGBS
     if 'original_files' not in value or len(value['original_files']) == 0:
         return
     if 'replicates' not in value:
@@ -113,6 +115,7 @@ def audit_experiment_standards_dispatcher(value, system):
 
     alignment_files = scanFilesForFileFormat(value['original_files'], 'bam')
 
+
     pipeline_title = scanFilesForPipelineTitle(alignment_files,
                                                ['GRCh38', 'mm10'],
                                                ['RNA-seq of long RNAs (paired-end, stranded)',
@@ -126,6 +129,20 @@ def audit_experiment_standards_dispatcher(value, system):
     # I can dd a cross check between pipeline name and assay - but I am not sure it is necessary
     if pipeline_title is False:
         return
+
+    if pipeline_title in ['RNA-seq of long RNAs (paired-end, stranded)',
+                          'RNA-seq of long RNAs (single-end, unstranded)',
+                          'Small RNA-seq single-end pipeline',
+                          'RAMPAGE (paired-end, stranded)']:
+        star_metrics = get_metrics(alignment_files,
+                                   'StarQualityMetric',
+                                   desired_assembly)
+        if len(star_metrics) < 1:
+            detail = 'ENCODE experiment {} '.format(value['@id']) + \
+                     'of {} assay'.format(value['assay_term_name']) + \
+                     ', processed by {} pipeline '.format(pipeline_title) + \
+                     ' has no read depth containig quality metric associated with it.'
+            yield AuditFailure('RNA-pipeline - missing read depth', detail, level='DCC_ACTION')
 
     fastq_files = scanFilesForFileFormat(value['original_files'], 'fastq')
 
@@ -181,46 +198,87 @@ def audit_experiment_standards_dispatcher(value, system):
         cpg_quantifications = scanFilesForOutputType(value['original_files'],
                                                      'methylation state at CpG')
         for failure in check_experiment_wgbs_encode3_standards(value,
+                                                               organism_name,
                                                                fastq_files,
                                                                cpg_quantifications,
                                                                desired_assembly,
-                                                               desired_annotation):
+                                                               pipeline_title):
             yield failure
 
+
 def check_experiment_wgbs_encode3_standards(experiment,
+                                            organism_name,
                                             fastq_files,
                                             cpg_quantifications,
                                             desired_assembly,
-                                            desired_annotation):
-    '''
-    Experiments should have two or more biological replicates.
+                                            pipeline_title):
+    if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
+            return
 
-    For mouse data, each biological replicate must have two or more technical replicates. 
-    For human data, replicates must undergo paired end sequencing. 
-    Each replicate should have 30X coverage, where 1X coverage = read length * number of uniquely mapped reads / 3e+09. In other words, the average read depth accross the genome should be 30 reads per base. 
-    
-    The C to T conversion rate should be ≥99%
-    
-    The read length should be a minimum of 100 base pairs for mouse data and 130-150 base pairs for human data. 
-    
-    The CpG quantification should have a Pearson correlation of ≥0.8 for sites with ≥10X coverage.
-    Sequencing may be paired- or single-ended, as long as sequencing type is specified and paired sequences are indicated.
-    The sequencing platform used, barcodes, abd library size range specifications should be indicated.
-    
-    Alignment files are mapped to either the GRCh38 or mm10 sequences.
-    
-    The experiment must pass routine metadata audits in order to be released.
+    bismark_metrics = get_metrics(cpg_quantifications, 'BismarkQualityMetric', desired_assembly)
+    cpg_metrics = get_metrics(cpg_quantifications, 'CpgCorrelationQualityMetric', desired_assembly)
+    samtools_metrics = get_metrics(cpg_quantifications,
+                                   'SamtoolsFlagstatsQualityMetric',
+                                   desired_assembly)
 
+    read_lengths = get_read_lengths_wgbs(fastq_files)
 
-    '''
-    # get the alignment files metrices, and then using the one with lambda C methylation ratios generate audit like the one in files
-    #  or probably same metric is acesible from bed file (like "methylation state at CpG") these files have 3 metrics:
-    # "/bismark-quality-metrics/fdef7b07-6619-40aa-8b03-1c3ab8c9a1b9/", - Pearson)
-    # "/cpg-correlation-quality-metrics/1133c2d5-b52f-4cc3-aca7-a1a7d5395c28/", - lambda results
-    # "/samtools-flagstats-quality-metrics/781ea3c4-caf6-4b77-a780-7e95d36c2666/" - mapped results (read depth)
+    for l in read_lengths:
+        if organism_name == 'mouse' and l < 100:
+            detail = 'Experiment {} '.format(experiment['@id']) + \
+                     'processed by  {} '.format(pipeline_title) + \
+                     'pipeline, has FASTQ files with read ' + \
+                     'length of {}bp, while '.format(l) + \
+                     'the recommended read length for mouse data is > 100bp.'
+            yield AuditFailure('WGBS - insufficient read length', detail, level='NOT_COMPLIANT')
+            break
+        if organism_name == 'human' and l < 130:
+            detail = 'Experiment {} '.format(experiment['@id']) + \
+                     'processed by  {} '.format(pipeline_title) + \
+                     'pipeline, has FASTQ files with read ' + \
+                     'length of {}bp, while '.format(l) + \
+                     'the recommended read length for human data is > 130bp.'
+            yield AuditFailure('WGBS - insufficient read length', detail, level='NOT_COMPLIANT')
+            break
+
+    for failure in check_wgbs_coverage(samtools_metrics,
+                                       pipeline_title,
+                                       min(read_lengths),
+                                       organism_name,
+                                       'WGBS'):
+        yield failure
+
+    for failure in check_wgbs_pearson(cpg_metrics, 0.8, pipeline_title, 'WGBS'):
+        yield failure
+
+    for failure in check_wgbs_lambda(bismark_metrics, 1, pipeline_title, 'WGBS'):
+        yield failure
 
     return
 
+
+def get_read_lengths_wgbs(fastq_files):
+    list_of_lengths = []
+    for f in fastq_files:
+        if 'read_length' in f:
+            list_of_lengths.append(f['read_length'])
+    return list_of_lengths
+
+def get_metrics(files_list, metric_type, desired_assembly=None, desired_annotation=None):
+    metrics_dict = {}
+    for f in files_list:
+        if (desired_assembly is None or ('assembly' in f and
+                                         f['assembly'] == desired_assembly)) and \
+            (desired_annotation is None or ('genome_annotation' in f and
+                                            f['genome_annotation'] == desired_annotation)):
+            if 'quality_metrics' in f and len(f['quality_metrics']) > 0:
+                for qm in f['quality_metrics']:
+                    if metric_type in qm['@type']:
+                        metrics_dict[qm['@id']] = qm
+    metrics = []
+    for k in metrics_dict:
+        metrics.append(metrics_dict[k])
+    return metrics
 
 def check_experiment_chip_seq_encode3_standards(experiment,
                                                 fastq_files,
@@ -245,19 +303,23 @@ def check_experiment_chip_seq_encode3_standards(experiment,
         for failure in check_file_chip_seq_library_complexity(f, 'ChIP-seq'):
             yield failure
 
-        if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
+    if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
             return
 
-        idr_metrics_dict = {}
-        for f in idr_peaks_files:
-            if 'quality_metrics' in f and len(f['quality_metrics']) > 0:
-                for qm in f['quality_metrics']:
-                    idr_metrics_dict[qm['@id']] = qm
-        idr_metrics = []
-        for k in idr_metrics_dict:
-            idr_metrics.append(idr_metrics_dict[k])
-        for failure in check_idr(idr_metrics, 2, 2, pipeline_title, 'ChIP-seq'):
-            yield failure
+    idr_metrics = get_metrics(idr_peaks_files, 'IDRQualityMetric')
+    '''
+    idr_metrics_dict = {}
+    for f in idr_peaks_files:
+        if 'quality_metrics' in f and len(f['quality_metrics']) > 0:
+            for qm in f['quality_metrics']:
+                idr_metrics_dict[qm['@id']] = qm
+    idr_metrics = []
+    for k in idr_metrics_dict:
+        idr_metrics.append(idr_metrics_dict[k])
+
+    '''
+    for failure in check_idr(idr_metrics, 2, 2, pipeline_title, 'ChIP-seq'):
+        yield failure
 
 
 def check_experiement_long_rna_encode3_standards(experiment,
@@ -313,6 +375,11 @@ def check_experiement_long_rna_encode3_standards(experiment,
     if 'replication_type' not in experiment:
         return
 
+    mad_metrics = get_metrics(gene_quantifications,
+                              'MadQualityMetric',
+                              desired_assembly,
+                              desired_annotation)
+    '''
     mad_metrics_dict = {}
     for f in gene_quantifications:
         if 'assembly' in f and f['assembly'] == desired_assembly and \
@@ -323,6 +390,7 @@ def check_experiement_long_rna_encode3_standards(experiment,
     mad_metrics = []
     for k in mad_metrics_dict:
         mad_metrics.append(mad_metrics_dict[k])
+    '''
     for failure in check_spearman(mad_metrics, experiment['replication_type'],
                                   0.9, 0.8, pipeline_title, 'long RNA'):
         yield failure
@@ -365,6 +433,11 @@ def check_experiement_small_rna_encode3_standards(experiment,
     if 'replication_type' not in experiment:
         return
 
+    mad_metrics = get_metrics(gene_quantifications,
+                              'MadQualityMetric',
+                              desired_assembly,
+                              desired_annotation)
+    '''
     mad_metrics_dict = {}
     for f in gene_quantifications:
         if 'assembly' in f and f['assembly'] == desired_assembly and \
@@ -375,6 +448,8 @@ def check_experiement_small_rna_encode3_standards(experiment,
     mad_metrics = []
     for k in mad_metrics_dict:
         mad_metrics.append(mad_metrics_dict[k])
+    '''
+
     for failure in check_spearman(mad_metrics, experiment['replication_type'],
                                   0.9, 0.8, 'Small RNA-seq single-end pipeline', 'small RNA'):
         yield failure
@@ -414,6 +489,11 @@ def check_experiement_rampage_encode3_standards(experiment,
     if 'replication_type' not in experiment:
         return
 
+    mad_metrics = get_metrics(gene_quantifications,
+                              'MadQualityMetric',
+                              desired_assembly,
+                              desired_annotation)
+    '''
     mad_metrics_dict = {}
     for f in gene_quantifications:
         if 'assembly' in f and f['assembly'] == desired_assembly and \
@@ -424,6 +504,8 @@ def check_experiement_rampage_encode3_standards(experiment,
     mad_metrics = []
     for k in mad_metrics_dict:
         mad_metrics.append(mad_metrics_dict[k])
+    '''
+
     for failure in check_spearman(mad_metrics, experiment['replication_type'],
                                   0.9, 0.8, 'RAMPAGE (paired-end, stranded)', 'RAMPAGE'):
         yield failure
@@ -704,6 +786,47 @@ def check_file_chip_seq_library_complexity(alignment_file, assay_name):
                                        level='WARNING')
 
 
+def check_wgbs_coverage(samtools_metrics,
+                        pipeline_title,
+                        read_length,
+                        organism,
+                        assay_name):
+    for m in samtools_metrics:
+        if 'mapped' in m:
+            bio_rep_num = False
+            for f in m['quality_metric_of']:
+                if 'replicate' in f and \
+                   'biological_replicate_number' in f['replicate']:
+                    bio_rep_num = f['replicate']['biological_replicate_number']
+                    break
+            mapped_reads = m['mapped']
+            if organism == 'mouse':
+                coverage = float(mapped_reads * read_length)/2800000000.0
+            elif organism == 'human':
+                coverage = float(mapped_reads * read_length)/3300000000.0
+
+            if coverage < 30:
+                if bio_rep_num is not False:
+                    detail = 'Biological replicate {} '.format(bio_rep_num) + \
+                             'of experiment processed by {} '.format(pipeline_title) + \
+                             'has a coverage of {}, '.format(int(coverage)) + \
+                             'while coverage > 30 is required.'
+                    yield AuditFailure(assay_name + ' - insufficient coverage',
+                                       detail,
+                                       level='NOT_COMPLIANT')
+                else:
+                    detail = 'UNKNOWN replicate insufficient coverage'
+                    yield AuditFailure(assay_name + ' - insufficient coverage',
+                                       detail,
+                                       level='DCC_ACTION')
+    return
+
+def check_wgbs_pearson(cpg_metrics, threshold,  pipeline_title, assay_name):
+    return
+
+def check_wgbs_lambda(bismark_metrics, threshold, pipeline_title, assay_name):
+    return
+
 def check_file_chip_seq_read_depth(file_to_check,
                                    target,
                                    read_depth,
@@ -837,9 +960,9 @@ def check_file_chip_seq_read_depth(file_to_check,
 def check_file_read_depth(file_to_check, read_depth, threshold, assay_term_name,
                           pipeline_title, assay_name):
     if read_depth is False:
-        detail = 'ENCODE Processed alignment file {} has no read depth information'.format(
-            file_to_check['@id'])
-        yield AuditFailure(assay_name + ' - missing read depth', detail, level='DCC_ACTION')
+        #detail = 'ENCODE Processed alignment file {} has no read depth information'.format(
+        #    file_to_check['@id'])
+        #yield AuditFailure(assay_name + ' - missing read depth', detail, level='DCC_ACTION')
         return
     if read_depth is not False and read_depth < threshold:
         detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
