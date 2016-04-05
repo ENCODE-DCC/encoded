@@ -1,6 +1,6 @@
 import re
 import rfc3987
-from jsonschema import FormatChecker
+from jsonschema_serialize_fork import FormatChecker
 from pyramid.threadlocal import get_current_request
 from .server_defaults import (
     ACCESSION_FACTORY,

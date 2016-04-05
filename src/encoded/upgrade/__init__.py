@@ -1,9 +1,9 @@
 from pyramid.interfaces import PHASE2_CONFIG
-from snowfort import (
+from snovault import (
     TYPES,
     UPGRADER,
 )
-from snowfort.upgrader import default_upgrade_finalizer
+from snovault.upgrader import default_upgrade_finalizer
 
 LATE = 10
 

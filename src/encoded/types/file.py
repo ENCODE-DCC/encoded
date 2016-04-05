@@ -1,4 +1,4 @@
-from snowfort import (
+from snovault import (
     AfterModified,
     BeforeModified,
     CONNECTION,
@@ -6,7 +6,7 @@ from snowfort import (
     collection,
     load_schema,
 )
-from snowfort.schema_utils import schema_validator
+from snovault.schema_utils import schema_validator
 from .base import (
     Item,
     paths_filtered_by_status,

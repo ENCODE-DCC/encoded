@@ -1,5 +1,5 @@
 from past.builtins import basestring
-from snowfort import upgrade_step
+from snovault import upgrade_step
 from .shared import ENCODE2_AWARDS, REFERENCES_UUID
 from pyramid.traversal import find_root
 import re
