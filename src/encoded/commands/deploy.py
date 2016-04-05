@@ -94,7 +94,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
         UserData=user_data,
         BlockDeviceMappings=bdm,
         InstanceInitiatedShutdownBehavior='terminate',
-        IamInstanceProfile={"Name": "scott"}
+        IamInstanceProfile={"Name": "Developer"}
     )
 
     instance = reservation[0]  # Instance:i-34edd56f
