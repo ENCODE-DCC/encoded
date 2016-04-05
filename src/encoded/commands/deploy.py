@@ -1,4 +1,3 @@
-import boto3
 import getpass
 import re
 import subprocess
