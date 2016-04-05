@@ -588,6 +588,8 @@ def search(context, request, search_type=None):
     # If searching for more than one type, don't specify which fields to search
     elif len(doc_types) != 1:
         del query['query']['query_string']['fields']
+        query['query']['query_string']['fields'] = ['_all', '*.uuid', '*.md5sum']
+
 
     # Set sort order
     set_sort_order(request, search_term, types, doc_types, query, result)
