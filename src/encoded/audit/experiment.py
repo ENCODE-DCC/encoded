@@ -822,7 +822,16 @@ def check_wgbs_coverage(samtools_metrics,
     return
 
 def check_wgbs_pearson(cpg_metrics, threshold,  pipeline_title, assay_name):
-    return
+    for m in cpg_metrics:
+        if 'Pearson Correlation Coefficient' in m:
+            if m['Pearson Correlation Coefficient'] < threshold:
+                detail = 'ENCODE experiment processed by {} '.format(pipeline_title) + \
+                         'has CpG quantification Pearson Correlation Coefficient of ' + \
+                         '{}, '.format(m['Pearson Correlation Coefficient']) + \
+                         'while a value >={} is required.'.format(threshold)
+                yield AuditFailure(assay_name + ' - insufficient pearson',
+                                   detail,
+                                   level='NOT_COMPLIANT')
 
 def check_wgbs_lambda(bismark_metrics, threshold, pipeline_title, assay_name):
     return
