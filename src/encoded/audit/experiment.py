@@ -821,20 +821,37 @@ def check_wgbs_coverage(samtools_metrics,
                                        level='DCC_ACTION')
     return
 
+
 def check_wgbs_pearson(cpg_metrics, threshold,  pipeline_title, assay_name):
     for m in cpg_metrics:
         if 'Pearson Correlation Coefficient' in m:
             if m['Pearson Correlation Coefficient'] < threshold:
                 detail = 'ENCODE experiment processed by {} '.format(pipeline_title) + \
-                         'has CpG quantification Pearson Correlation Coefficient of ' + \
+                         'pipeline has CpG quantification Pearson Correlation Coefficient of ' + \
                          '{}, '.format(m['Pearson Correlation Coefficient']) + \
                          'while a value >={} is required.'.format(threshold)
                 yield AuditFailure(assay_name + ' - insufficient pearson',
                                    detail,
                                    level='NOT_COMPLIANT')
 
+
 def check_wgbs_lambda(bismark_metrics, threshold, pipeline_title, assay_name):
-    return
+    for metric in bismark_metrics:
+        lambdaCpG = float(metric['lambda C methylated in CpG context'][:-1])
+        lambdaCHG = float(metric['lambda C methylated in CHG context'][:-1])
+        lambdaCHH = float(metric['lambda C methylated in CHH context'][:-1])
+
+        if (lambdaCpG > 1 and lambdaCHG > 1 and lambdaCHH > 1) or \
+           (((lambdaCpG*0.25) + (lambdaCHG*0.25) + (lambdaCHH*0.5)) > 1):
+            detail = 'ENCODE experiment processed by {} '.format(pipeline_title) + \
+                     'pipeline has the following %C methylated in different contexts. ' + \
+                     'lambda C methylated in CpG context was {}%, '.format(lambdaCpG) + \
+                     'lambda C methylated in CHG context was {}%, '.format(lambdaCHG) + \
+                     'lambda C methylated in CHH context was {}%. '.format(lambdaCHH) + \
+                     'The %C methylated in all contexts should be < 1%.'
+            yield AuditFailure(assay_name + ' - high lambda C methylation ratio', detail,
+                               level='WARNING')
+
 
 def check_file_chip_seq_read_depth(file_to_check,
                                    target,
