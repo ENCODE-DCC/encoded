@@ -4,6 +4,9 @@ import re
 import subprocess
 import sys
 
+import boto3
+from botocore.exceptions import ClientError
+
 
 def nameify(s):
     name = ''.join(c if c.isalnum() else '-' for c in s.lower()).strip('-')
