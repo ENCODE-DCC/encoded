@@ -41,7 +41,7 @@ var Navigation = module.exports = React.createClass({
         return (
             <div id="navbar" className="navbar navbar-fixed-top navbar-inverse">
                 <div className="container">
-                    <Navbar brand={portal.portal_title} brandlink="/" label="main">
+                    <Navbar brand={portal.portal_title} brandlink="/" label="main" navClasses="navbar-main">
                         {GlobalSections(this.context.listActionsFor)}
                     </Navbar>
                 </div>

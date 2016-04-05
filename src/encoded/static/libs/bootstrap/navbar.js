@@ -43,8 +43,9 @@ var Navbar = module.exports.Navbar = React.createClass({
 
     dropdownClick: function(dropdownId, e) {
         // After clicking the dropdown trigger button, don't allow the event to bubble to the rest of the DOM.
+        console.log("Click: %s:%s", dropdownId, this.state.dropdownId);
         e.nativeEvent.stopImmediatePropagation();
-        this.setState({openDropdown: dropdownId === this.state.dropdownId ? '' : dropdownId});
+        this.setState({openDropdown: dropdownId === this.state.openDropdown ? '' : dropdownId});
     },
 
     render: function() {
@@ -102,7 +103,7 @@ var NavItem = module.exports.NavItem = React.createClass({
             <li className={dropdownId ? ('dropdown' + (dropdownOpen ? ' open' : '')) : ''}>
                 {dropdownTitle ?
                     <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded={dropdownOpen} onClick={dropdownClick.bind(null, dropdownId)}>
-                        {dropdownTitle}
+                        {dropdownTitle}&nbsp;<span className="caret"></span>
                     </a>
                 : null}
                 {this.props.children}
