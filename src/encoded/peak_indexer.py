@@ -41,6 +41,8 @@ _SPECIES = {
     'Homo sapiens': ['hg19']
 }
 
+_ASSEMBLIES = ['hg19', 'mm10', 'mm9']
+
 
 def includeme(config):
     config.add_route('index_file', '/index_file')
@@ -117,7 +119,7 @@ def index_peaks(uuid, request):
         return
 
     # Index human data for now       
-    if 'assembly' not in context or 'hg19' not in context['assembly']:
+    if 'assembly' not in context or context['assembly'] not in _ASSEMBLIES:
         return
 
     assay_term_name = get_assay_term_name(context['dataset'], request)
