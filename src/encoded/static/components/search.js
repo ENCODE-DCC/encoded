@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
+var queryString = require('query-string');
 var Modal = require('react-bootstrap/lib/Modal');
 var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var button = require('../libs/bootstrap/button');
@@ -794,7 +795,7 @@ var FacetList = search.FacetList = React.createClass({
     },
 
     render: function() {
-        var term = this.props.term;
+        var {context, term} = this.props;
 
         // Get all facets, and "normal" facets, meaning non-audit facets
         var facets = this.props.facets;
@@ -812,8 +813,26 @@ var FacetList = search.FacetList = React.createClass({
         if (this.props.orientation == 'horizontal') {
             width = (100 / facets.length) + '%';
         }
+
+        // See if we need the Clear Filters link or not. If both clear_filters and the search @id have exactly the same terms,
+        // we don't need the Clear Filters link. clear_filters and @id can have their terms in a different order, so we have to
+        // get fancier than a string comparison.
+        var clearButton; // JSX for the clear button
+        var searchQuery = context && context['@id'] && url.parse(context['@id']).search;
+        var clearQuery = context && context.clear_filters && url.parse(context.clear_filters).search;
+        if (searchQuery && clearQuery) {
+            var searchTerms = queryString.parse(searchQuery);
+            var clearTerms = queryString.parse(clearQuery);
+            clearButton = !_.isEqual(searchTerms, clearTerms);
+        }
+
         return (
             <div className={"box facets " + this.props.orientation}>
+                {clearButton ?
+                    <div className="clear-filters-control">
+                        <a href={this.props.context.clear_filters}>Clear Filters <i className="icon icon-times-circle"></i></a>
+                    </div>
+                : null}
                 {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
                 {facets.map(function (facet) {
                     if (hideTypes && facet.field == 'type') {
