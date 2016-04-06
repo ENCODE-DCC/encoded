@@ -12,7 +12,6 @@ var Navigation = module.exports = React.createClass({
 
     contextTypes: {
         location_href: React.PropTypes.string,
-        listActionsFor: React.PropTypes.func,
         portal: React.PropTypes.object
     },
 
@@ -44,7 +43,10 @@ var Navigation = module.exports = React.createClass({
             <div id="navbar" className="navbar navbar-fixed-top navbar-inverse">
                 <div className="container">
                     <Navbar brand={portal.portal_title} brandlink="/" label="main" navClasses="navbar-main">
-                        {GlobalSections(this.context.listActionsFor)}
+                        <GlobalSections />
+                        <UserActions />
+                        <ContextActions />
+                        <Search />
                     </Navbar>
                 </div>
                 {this.state.testWarning ?
@@ -64,24 +66,30 @@ var Navigation = module.exports = React.createClass({
 
 
 // Main navigation menus
-var GlobalSections = function(listActionsFor) {
-    var actions = listActionsFor('global_sections').map(action => {
-        return (
-            <NavItem dropdownId={action.id} dropdownTitle={action.title}>
-                {action.children ?
-                    <DropdownMenu label={action.id}>
-                        {action.children.map(action =>
-                            <a href={action.url || ''} key={action.id}>
-                                {action.title}
-                            </a>
-                        )}
-                    </DropdownMenu>
-                : null}
-            </NavItem>
-        );
-    });
-    return <Nav>{actions}</Nav>;
-};
+var GlobalSections = React.createClass({
+    contextTypes: {
+        listActionsFor: React.PropTypes.func
+    },
+
+    render: function() {
+        var actions = this.context.listActionsFor('global_sections').map(action => {
+            return (
+                <NavItem key={action.id} dropdownId={action.id} dropdownTitle={action.title}>
+                    {action.children ?
+                        <DropdownMenu label={action.id}>
+                            {action.children.map(action =>
+                                <a href={action.url || ''} key={action.id}>
+                                    {action.title}
+                                </a>
+                            )}
+                        </DropdownMenu>
+                    : null}
+                </NavItem>
+            );
+        });
+        return <Nav>{actions}</Nav>;
+    }
+});
 
 
 // Context actions: mainly for editing the current object
@@ -99,20 +107,26 @@ var ContextActions = React.createClass({
             );
         });
 
+        // No action menu
         if (actions.length === 0) {
             return null;
         }
 
+        // Action menu with editing dropdown menu
         if (actions.length > 1) {
-            actions = (
-                <NavItem dropdownId="context" title={<i className="icon icon-gear"></i>}>
-                    <Nav navbar={true} dropdown={true}>
-                        {actions}
-                    </Nav>
-                </NavItem>
+            return (
+                <Nav right>
+                    <NavItem dropdownId="context" dropdownTitle={<i className="icon icon-gear"></i>}>
+                        <DropdownMenu label="context">
+                            {actions}
+                        </DropdownMenu>
+                    </NavItem>
+                </Nav>
             );
         }
-        return <Nav right={true} id="edit-actions">{actions}</Nav>;
+
+        // Action menu without a dropdown menu
+        return <Nav right><NavItem>{actions}</NavItem></Nav>;
     }
 });
 
@@ -145,6 +159,7 @@ var UserActions = React.createClass({
     render: function() {
         var session_properties = this.context.session_properties;
         if (!session_properties['auth.userid']) {
+            // Logged out, so no user menu at all
             return null;
         }
         var actions = this.context.listActionsFor('user').map(function (action) {
@@ -157,13 +172,12 @@ var UserActions = React.createClass({
         var user = session_properties.user;
         var fullname = (user && user.title) || 'unknown';
         return (
-            <Nav right={true}>
-                <div>
-                    {fullname}
-                    <Nav>
+            <Nav right>
+                <NavItem dropdownId="useractions" dropdownTitle={fullname}>
+                    <DropdownMenu label="useractions">
                         {actions}
-                    </Nav>
-                </div>
+                    </DropdownMenu>
+                </NavItem>
             </Nav>
         );
     }
