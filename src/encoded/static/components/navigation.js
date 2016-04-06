@@ -1,13 +1,15 @@
 'use strict';
 var React = require('react');
 var url = require('url');
-var {Navbar, Nav, NavItem} = require('../libs/bootstrap/navbar');
+var {Navbars, Navbar, Nav, NavItem} = require('../libs/bootstrap/navbar');
 var {DropdownMenu} = require('../libs/bootstrap/dropdown-menu');
 var productionHost = require('./globals').productionHost;
 var _ = require('underscore');
 
 
 var Navigation = module.exports = React.createClass({
+    mixins: [Navbars],
+
     contextTypes: {
         location_href: React.PropTypes.string,
         listActionsFor: React.PropTypes.func,
@@ -104,7 +106,7 @@ var ContextActions = React.createClass({
         if (actions.length > 1) {
             actions = (
                 <NavItem dropdownId="context" title={<i className="icon icon-gear"></i>}>
-f                    <Nav navbar={true} dropdown={true}>
+                    <Nav navbar={true} dropdown={true}>
                         {actions}
                     </Nav>
                 </NavItem>
