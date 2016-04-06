@@ -51,9 +51,9 @@ var Navbar = module.exports.Navbar = React.createClass({
     render: function() {
         var {brand, brandlink, label, navClasses} = this.props;
 
-        // Add the `openDropdown` property to any <DropdownMenu> child components
+        // Add the `openDropdown` and `dropdownClick` properties to any <Nav> child components
         var children = React.Children.map(this.props.children, child => {
-            if (child.type === NavItem.type) {
+            if (child.type === Nav.type) {
                 return cloneWithProps(child, {
                     openDropdown: this.state.openDropdown,
                     dropdownClick: this.dropdownClick
@@ -77,11 +77,35 @@ var Navbar = module.exports.Navbar = React.createClass({
                 </div>
                 
                 <div className="collapse navbar-collapse" id={label}>
-                    <ul className="nav navbar-nav">
-                        {children}
-                    </ul>
+                    {children}
                 </div>
             </nav>
+        );
+    }
+});
+
+
+var Nav = module.exports.Nav = React.createClass({
+    propTypes: {
+        right: React.PropTypes.bool // True if right-justified navigation area
+    },
+
+    render: function() {
+        // Add the `openDropdown` and `dropdownClick` properties to any <Nav> child components
+        var children = React.Children.map(this.props.children, child => {
+            if (child.type === NavItem.type) {
+                return cloneWithProps(child, {
+                    openDropdown: this.props.openDropdown,
+                    dropdownClick: this.props.dropdownClick
+                });
+            }
+            return child;
+        });
+
+        return (
+            <ul className={'nav navbar-nav' + (this.props.right ? ' navbar-right' : '')}>
+                {children}
+            </ul>
         );
     }
 });
@@ -90,9 +114,10 @@ var Navbar = module.exports.Navbar = React.createClass({
 var NavItem = module.exports.NavItem = React.createClass({
     propTypes: {
         dropdownId: React.PropTypes.string, // If this item has a dropdown, this ID helps manage it; must be unique
-        dropdownTitle: React.PropTypes.string, // If this item has a dropdown, this is the title
-        openDropdown: React.PropTypes.string, // dropdownId of currently open dropdown; '' if all closed. Passed by parent Navbar
-        dropdownClick: React.PropTypes.func // Function to call when dropdown title clicked. Passed by parent Navbar
+        dropdownTitle: React.PropTypes.oneOfType([ // If this item has a dropdown, this is the title
+            React.PropTypes.string,
+            React.PropTypes.object
+        ])
     },
 
     render: function() {
@@ -102,7 +127,7 @@ var NavItem = module.exports.NavItem = React.createClass({
         return (
             <li className={dropdownId ? ('dropdown' + (dropdownOpen ? ' open' : '')) : ''}>
                 {dropdownTitle ?
-                    <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded={dropdownOpen} onClick={dropdownClick.bind(null, dropdownId)}>
+                    <a href="#" data-trigger className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded={dropdownOpen} onClick={dropdownClick.bind(null, dropdownId)}>
                         {dropdownTitle}&nbsp;<span className="caret"></span>
                     </a>
                 : null}

@@ -61,8 +61,8 @@ var Navigation = module.exports = React.createClass({
 });
 
 
-var GlobalSections = function(listActionsFor, dropdownClick, openDropdown) {
-    // Render top-level main menu
+// Main navigation menus
+var GlobalSections = function(listActionsFor) {
     var actions = listActionsFor('global_sections').map(action => {
         return (
             <NavItem dropdownId={action.id} dropdownTitle={action.title}>
@@ -78,9 +78,11 @@ var GlobalSections = function(listActionsFor, dropdownClick, openDropdown) {
             </NavItem>
         );
     });
-    return actions;
+    return <Nav>{actions}</Nav>;
 };
 
+
+// Context actions: mainly for editing the current object
 var ContextActions = React.createClass({
     contextTypes: {
         listActionsFor: React.PropTypes.func
@@ -94,14 +96,15 @@ var ContextActions = React.createClass({
                 </a>
             );
         });
+
         if (actions.length === 0) {
             return null;
         }
+
         if (actions.length > 1) {
             actions = (
-                <NavItem dropdown={true}>
-                    <i className="icon icon-gear"></i>
-                    <Nav navbar={true} dropdown={true}>
+                <NavItem dropdownId="context" title={<i className="icon icon-gear"></i>}>
+f                    <Nav navbar={true} dropdown={true}>
                         {actions}
                     </Nav>
                 </NavItem>
