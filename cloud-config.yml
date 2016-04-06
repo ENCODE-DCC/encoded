@@ -103,9 +103,13 @@ bootcmd:
 - if [ "$MEMGIGS" -gt 32 ]
 - then
 -    echo "ES_HEAP_SIZE=16g" > /etc/default/elasticsearch
+-    sysctl "vm.swappiness=1"
+-    swapon /swapfile
 - elif [ "$MEMGIGS" -gt 12 ]
 - then
 -    echo "ES_HEAP_SIZE=8g" > /etc/default/elasticsearch
+-    sysctl "vm.swappiness=1"
+-    swapon /swapfile
 - else
 -    echo "ES_HEAP_SIZE=4g" > /etc/default/elasticsearch
 -    sysctl "vm.swappiness=1"
@@ -258,6 +262,7 @@ write_files:
     index.search.slowlog.threshold.query.warn: 8s
     index.search.slowlog.threshold.fetch.warn: 1s
     index.indexing.slowlog.threshold.index.warn: 25s
+    bootstrap.mlockall: true
 
 - path: /etc/postgresql/9.3/main/custom.conf
   content: |
