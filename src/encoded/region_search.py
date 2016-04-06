@@ -347,6 +347,6 @@ def suggest(context, request):
         result['@id'] = '/suggest/?' + urlencode({'q': text})
         result['@graph'] = []
         for item in results['suggester'][0]['options']:
-            if not any(x in item['text'] for x in ['(C. elegans)','(mus musculus)','(D. melanogaster)']):
+            if not any(x in item['text'] for x in ['(C. elegans)', '(D. melanogaster)']):
                 result['@graph'].append(item)
         return result
