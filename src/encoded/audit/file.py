@@ -722,17 +722,18 @@ def audit_file_read_depth(value, system):
     target_investigated_as = 'empty'
 
     if 'dataset' in value:
+        if value['dataset']['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
+            return
         if value['dataset']['assay_term_name'] in special_assays_with_read_depth:
             special_assay_name = value['dataset']['assay_term_name']
         if 'target' in value['dataset'] and 'name' in value['dataset']['target']:
             target_name = value['dataset']['target']['name']
-            target_investigated_as =value['dataset']['target']['investigated_as']
+            target_investigated_as = value['dataset']['target']['investigated_as']
 
     if target_name in ['H3K9me3-human', 'H3K9me3-mouse']:
         read_depth = get_bam_read_depth(value, True)
     else:
         read_depth = get_bam_read_depth(value, False)
-
 
     if read_depth is False:
         detail = 'ENCODE Processed alignment file {} has no read depth information'.format(
@@ -745,8 +746,9 @@ def audit_file_read_depth(value, system):
             return
         if pipeline['title'] == 'Histone ChIP-seq':
 
-
-            for failure in check_chip_seq_standards(value, read_depth, target_name, False, None, target_investigated_as):
+            for failure in check_chip_seq_standards(value, read_depth,
+                                                    target_name, False, None,
+                                                    target_investigated_as):
                 yield failure
 
             # DEAL WITH CHIP_SEQ BY CALLING THE FUNCTION (INCLUDIGN THE CONTROL BAMs)
