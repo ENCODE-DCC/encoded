@@ -342,6 +342,7 @@
                         "methylation state at CHH",
                         "enrichment",
                         "replication timing profile",
+                        "variant calls",
 
                         "hotspots",
                         "long range chromatin interactions",
@@ -366,6 +367,7 @@
                         "snRNA reference",
                         "rRNA reference",
                         "TSS reference",
+                        "variant reference",
                         "genome index",
                         "female genome reference",
                         "female genome index",
@@ -690,6 +692,7 @@
         "predicted transcription start sites": "annotation",
         "transcription start sites": "annotation",
         "candidate regulatory elements": "annotation",
+        "variant calls": "annotation",
 
         "genome index": "reference",
         "tRNA reference": "reference",
@@ -697,6 +700,7 @@
         "snRNA reference": "reference",
         "rRNA reference": "reference",
         "TSS reference": "reference",
+        "variant reference": "reference",
         "genome reference": "reference",
         "female genome reference": "reference",
         "female genome index": "reference",
