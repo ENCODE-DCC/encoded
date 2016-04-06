@@ -99,7 +99,7 @@ def audit_experiment_standards_dispatcher(value, system):
     for rep in value['replicates']:
         num_bio_reps.add(rep['biological_replicate_number'])
 
-    if len(num_bio_reps) <= 1:
+    if len(num_bio_reps) < 1:
         return
 
     organism_name = get_organism_name(value['replicates'])  # human/mouse
@@ -127,7 +127,7 @@ def audit_experiment_standards_dispatcher(value, system):
                                                             'WGBS paired-end pipeline'])
     # I can dd a cross check between pipeline name and assay - but I am not sure it is necessary
     if pipeline_title is False:
-        pipeline_title = scanFilesForPipelineTitle_yes_chipseq(alignment_files, 'Histone ChIP-seq')
+        pipeline_title = scanFilesForPipelineTitle_yes_chipseq(alignment_files, ['Histone ChIP-seq'])
         if pipeline_title is False:
             return
 
@@ -183,7 +183,7 @@ def audit_experiment_standards_dispatcher(value, system):
                                                                     desired_assembly,
                                                                     desired_annotation):
             yield failure
-    elif pipeline_title in ['Histone ChIP-seq']:
+    elif pipeline_title in ['Histone ChIP-seq', 'Transcription factor ChIP-seq']:
         optimal_idr_peaks = scanFilesForOutputType(value['original_files'],
                                                    'optimal idr thresholded peaks')
         for failure in check_experiment_chip_seq_encode3_standards(value,
@@ -519,8 +519,11 @@ def check_idr(metrics, rescue, self_consistency, pipeline, assay_name):
             rescue_r = m['rescue_ratio']
             self_r = m['self_consistency_ratio']
             if rescue_r >= rescue or self_r >= self_consistency:
+                file_names = []
+                for f in m['quality_metric_of']:
+                    file_names.append(f['@id'])
                 detail = 'Replicate concordance is measured by calculating IDR values (Irreproducible Discovery Rate).' + \
-                         'ENCODE processed IDR thresholded peaks files {} '.format(m['quality_metric_of']) + \
+                         'ENCODE processed IDR thresholded peaks files {} '.format(file_names) + \
                          'have rescue ratio of {}, and '.format(rescue_r) + \
                          'self consistency ratio of {}. '.format(self_r) + \
                          'Both ratios should be < 2, according to June 2015 standards.'
@@ -544,7 +547,10 @@ def check_mad(metrics, replication_type, mad_threshold, pipeline, assay_name):
         if 'MAD of log ratios' in m:
             mad_value = m['MAD of log ratios']
             if mad_value > 0.2:
-                detail = 'ENCODE processed gene quantification files {} '.format(m['quality_metric_of']) + \
+                file_names = []
+                for f in m['quality_metric_of']:
+                    file_names.append(f['@id'])
+                detail = 'ENCODE processed gene quantification files {} '.format(file_names) + \
                          'has Median-Average-Deviation (MAD) ' + \
                          'of replicate log ratios from quantification ' + \
                          'value of {}.'.format(mad_value) + \
@@ -560,7 +566,7 @@ def check_mad(metrics, replication_type, mad_threshold, pipeline, assay_name):
                         yield AuditFailure(assay_name + ' - insufficient MAD value', detail,
                                            level='DCC_ACTION')
                 elif experiment_replication_type == 'anisogenic' and mad_value > 0.5:
-                    detail = 'ENCODE processed gene quantification files {} '.format(m['quality_metric_of']) + \
+                    detail = 'ENCODE processed gene quantification files {} '.format(file_names) + \
                              'has Median-Average-Deviation (MAD) ' + \
                              'of replicate log ratios from quantification ' + \
                              'value of {}.'.format(mad_value) + \
@@ -634,7 +640,10 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
         if 'Spearman correlation' in m:
             spearman_correlation = m['Spearman correlation']
             if spearman_correlation < threshold:
-                detail = 'ENCODE processed gene quantification files {} '.format(m['quality_metric_of']) + \
+                file_names = []
+                for f in m['quality_metric_of']:
+                    file_names.append(f['@id'])
+                detail = 'ENCODE processed gene quantification files {} '.format(file_names) + \
                          'have Spearman correlation of {}.'.format(spearman_correlation) + \
                          ' For gene quantification files from an {}'.format(replication_type) + \
                          ' assay in the {} '.format(pipeline) + \
