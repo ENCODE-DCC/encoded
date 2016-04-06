@@ -38,7 +38,7 @@ _INDEXED_DATA = {
 
 # Species and references being indexed
 _SPECIES = {
-    'Homo sapiens': ['hg19']
+    'Homo sapiens': ['hg19'] 
 }
 
 
