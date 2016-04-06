@@ -116,19 +116,20 @@ def audit_experiment_standards_dispatcher(value, system):
     alignment_files = scanFilesForFileFormat(value['original_files'], 'bam')
 
 
-    pipeline_title = scanFilesForPipelineTitle(alignment_files,
-                                               ['GRCh38', 'mm10'],
-                                               ['RNA-seq of long RNAs (paired-end, stranded)',
-                                                'RNA-seq of long RNAs (single-end, unstranded)',
-                                                'Small RNA-seq single-end pipeline',
-                                                'RAMPAGE (paired-end, stranded)',
-                                                'Histone ChIP-seq',
-                                                'WGBS single-end pipeline - version 2',
-                                                'WGBS single-end pipeline',
-                                                'WGBS paired-end pipeline'])
+    pipeline_title = scanFilesForPipelineTitle_not_chipseq(alignment_files,
+                                                           ['GRCh38', 'mm10'],
+                                                           ['RNA-seq of long RNAs (paired-end, stranded)',
+                                                            'RNA-seq of long RNAs (single-end, unstranded)',
+                                                            'Small RNA-seq single-end pipeline',
+                                                            'RAMPAGE (paired-end, stranded)',
+                                                            'WGBS single-end pipeline - version 2',
+                                                            'WGBS single-end pipeline',
+                                                            'WGBS paired-end pipeline'])
     # I can dd a cross check between pipeline name and assay - but I am not sure it is necessary
     if pipeline_title is False:
-        return
+        pipeline_title = scanFilesForPipelineTitle_yes_chipseq(alignment_files, 'Histone ChIP-seq')
+        if pipeline_title is False:
+            return
 
     if pipeline_title in ['RNA-seq of long RNAs (paired-end, stranded)',
                           'RNA-seq of long RNAs (single-end, unstranded)',
@@ -1072,7 +1073,22 @@ def scanFilesForOutputType(files_to_scan, o_type):
     return files_to_return
 
 
-def scanFilesForPipelineTitle(files_to_scan, assemblies, pipeline_titles):
+def scanFilesForPipelineTitle_yes_chipseq(alignment_files, pipeline_titles):
+    for f in alignment_files:
+        if 'file_format' in f and f['file_format'] == 'bam' and \
+           f['status'] not in ['replaced', 'revoked', 'deleted'] and \
+           f['lab'] == '/labs/encode-processing-pipeline/' and \
+           'analysis_step_version' in f and \
+           'analysis_step' in f['analysis_step_version'] and \
+           'pipelines' in f['analysis_step_version']['analysis_step']:
+            pipelines = f['analysis_step_version']['analysis_step']['pipelines']
+            for p in pipelines:
+                if p['title'] in pipeline_titles:
+                    return p['title']
+    return False
+
+
+def scanFilesForPipelineTitle_not_chipseq(files_to_scan, assemblies, pipeline_titles):
     for f in files_to_scan:
         if 'file_format' in f and f['file_format'] == 'bam' and \
            f['status'] not in ['replaced', 'revoked', 'deleted'] and \
