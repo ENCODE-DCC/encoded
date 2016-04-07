@@ -2,6 +2,7 @@ from collections import OrderedDict
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 from pyramid.response import Response
+from snovault import TYPES
 from snovault.util import simple_path_ids
 from urllib.parse import (
     parse_qs,
