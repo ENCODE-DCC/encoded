@@ -6,6 +6,7 @@ var Modal = require('react-bootstrap/lib/Modal');
 var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var button = require('../libs/bootstrap/button');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
+var SvgIcon = require('../libs/svg-icons');
 var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
@@ -952,6 +953,12 @@ var ResultTable = search.ResultTable = React.createClass({
             });
         }
 
+        // Map view icons to svg icons
+        var view2svg = {
+            'table': 'table',
+            'th': 'matrix'
+        };
+
         return (
             <div>
                 <div className="row">
@@ -962,14 +969,14 @@ var ResultTable = search.ResultTable = React.createClass({
                     <div className="col-sm-7 col-md-8 col-lg-9">
                         {context['notification'] === 'Success' ?
                             <div>
-                                <h4>
-                                    Showing {results.length} of {total} {label}
-                                </h4>
+                                <h4>Showing {results.length} of {total} {label}</h4>
 
                                 <div className="results-table-control">
                                     {context.views ?
                                         <div className="btn-attached">
-                                            {context.views.map((view, i) => <span key={i}> <a href={view.href} title={view.title}><i className={'icon icon-' + view.icon}></i></a></span>)}
+                                            {context.views.map((view, i) =>
+                                                <a key={i} className="btn btn-info btn-sm btn-svgicon" href={view.href} title={view.title}>{SvgIcon(view2svg[view.icon])}</a>
+                                            )}
                                         </div>
                                     : null}
 
