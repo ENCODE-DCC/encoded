@@ -1021,7 +1021,8 @@ def check_file_read_length(file_to_check, threshold_length, assay_name):
         if file_date_creation < threshold_date:
             yield AuditFailure(assay_name + ' - insufficient read length', detail, level='WARNING')
         else:
-            yield AuditFailure(assay_name + ' - insufficient read length', detail, level='NOT_COMPLIANT')
+            yield AuditFailure(assay_name + ' - insufficient read length', detail,
+                               level='NOT_COMPLIANT')
     return
 
 
@@ -1032,10 +1033,8 @@ def get_organism_name(reps):
            rep['library']['status'] not in ['replaced', 'revoked', 'deleted'] and \
            'biosample' in rep['library'] and \
            rep['library']['biosample']['status'] not in ['replaced', 'revoked', 'deleted']:
-            if 'donor' in rep['library']['biosample']:
-                donor = rep['library']['biosample']['donor']
-                if 'organism' in donor:
-                    return donor['organism']['name']
+            if 'organism' in rep['library']['biosample']:
+                return rep['library']['biosample']['organism']['name']
     return False
 
 
