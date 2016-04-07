@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from pyramid.compat import native_
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 from pyramid.response import Response
@@ -304,7 +305,7 @@ def lookup_column_value(value, path):
         nodes = [node['@id'] for node in nodes]
     seen = set()
     deduped_nodes = [n for n in nodes if not (n in seen or seen.add(n))]
-    return ','.join(str(n) for n in deduped_nodes)
+    return ','.join(native_(n, 'utf-8') for n in deduped_nodes)
 
 
 def format_row(columns):
@@ -323,7 +324,9 @@ def report_download(context, request):
 
     schemas = [request.registry[TYPES][types[0]].schema]
     columns = list_visible_columns_for_schemas(request, schemas)
-    header = [str(column.get('title') or field) for field, column in columns.items()]
+    header = [
+        native_(column.get('title') or field, 'utf-8')
+        for field, column in columns.items()]
 
     def generate_rows():
         yield format_row(header)
