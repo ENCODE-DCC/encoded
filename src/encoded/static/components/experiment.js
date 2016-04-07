@@ -544,10 +544,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                                         </div>
                                     : null}
 
-                                    {context.note ?
-                                        <div data-test="note">
-                                            <dt>Lab comments</dt>
-                                            <dd>{context.note}</dd>
+                                    {context.submitter_comment ?
+                                        <div data-test="submittercomment">
+                                            <dt>Submitter comment</dt>
+                                            <dd>{context.submitter_comment}</dd>
                                         </div>
                                     : null}
                                 </dl>
