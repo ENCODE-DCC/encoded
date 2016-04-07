@@ -323,7 +323,7 @@ def report_download(context, request):
 
     schemas = [request.registry[TYPES][types[0]].schema]
     columns = list_visible_columns_for_schemas(request, schemas)
-    header = [column.get('title') or field for field, column in columns.items()]
+    header = [str(column.get('title') or field) for field, column in columns.items()]
 
     def generate_rows():
         yield format_row(header)
