@@ -193,7 +193,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                     }
                     return null;
                 }
-            }
+            };
         }
 
         // Build the text of the Treatment, synchronization, and mutatedGene string arrays; collect biosample docs
