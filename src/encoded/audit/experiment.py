@@ -113,23 +113,69 @@ def audit_experiment_standards_dispatcher(value, system):
         else:
             return
 
-    alignment_files = scanFilesForFileFormat(value['original_files'], 'bam')
+    alignment_files = scan_files_for_file_format_output_type(value['original_files'], 'bam', 'alignments')
+    fastq_files = scan_files_for_file_format_output_type(value['original_files'], 'fastq', 'reads')
 
+    if value['assay_term_name'] in ['RAMPAGE', 'RNA-seq',
+                                    'shRNA knockdown followed by RNA-seq',
+                                    'CRISPR genome editing followed by RNA-seq',
+                                    'single cell isolation followed by RNA-seq']:
+
+        gene_quantifications = scanFilesForOutputType(value['original_files'],
+                                                      'gene quantifications')
+
+        for failure in check_experiemnt_rna_seq_encode3_standards(value,
+                                                                  fastq_files,
+                                                                  alignment_files,
+                                                                  gene_quantifications,
+                                                                  desired_assembly,
+                                                                  desired_annotation):
+            yield failure
+
+    if value['assay_term_name'] == 'ChIP-seq':
+        optimal_idr_peaks = scanFilesForOutputType(value['original_files'],
+                                                   'optimal idr thresholded peaks')
+        for failure in check_experiment_chip_seq_encode3_standards(value,
+                                                                   fastq_files,
+                                                                   alignment_files,
+                                                                   optimal_idr_peaks):
+                yield failure
+
+    if value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
+        '''elif pipeline_title in ['WGBS single-end pipeline - version 2',
+                            'WGBS single-end pipeline',
+                            'WGBS paired-end pipeline']:'''
+        cpg_quantifications = scanFilesForOutputType(value['original_files'],
+                                                     'methylation state at CpG')
+        for failure in check_experiment_wgbs_encode3_standards(value,
+                                                               alignment_files,
+                                                               organism_name,
+                                                               fastq_files,
+                                                               cpg_quantifications,
+                                                               desired_assembly):
+            yield failure
+
+
+def check_experiemnt_rna_seq_encode3_standards(value,
+                                               fastq_files,
+                                               alignment_files,
+                                               gene_quantifications,
+                                               desired_assembly,
+                                               desired_annotation):
+    for f in fastq_files:
+        for failure in check_file_read_length(f, 50, 'RNA-seq pipelines'):
+            yield failure
+        for failure in check_file_platform(f, ['OBI:0002024', 'OBI:0000696'], 'RNA-seq pipelines'):
+            yield failure
 
     pipeline_title = scanFilesForPipelineTitle_not_chipseq(alignment_files,
                                                            ['GRCh38', 'mm10'],
                                                            ['RNA-seq of long RNAs (paired-end, stranded)',
                                                             'RNA-seq of long RNAs (single-end, unstranded)',
                                                             'Small RNA-seq single-end pipeline',
-                                                            'RAMPAGE (paired-end, stranded)',
-                                                            'WGBS single-end pipeline - version 2',
-                                                            'WGBS single-end pipeline',
-                                                            'WGBS paired-end pipeline'])
-    # I can dd a cross check between pipeline name and assay - but I am not sure it is necessary
+                                                            'RAMPAGE (paired-end, stranded)'])
     if pipeline_title is False:
-        pipeline_title = scanFilesForPipelineTitle_yes_chipseq(alignment_files, ['Histone ChIP-seq'])
-        if pipeline_title is False:
-            return
+        return
 
     if pipeline_title in ['RNA-seq of long RNAs (paired-end, stranded)',
                           'RNA-seq of long RNAs (single-end, unstranded)',
@@ -145,11 +191,7 @@ def audit_experiment_standards_dispatcher(value, system):
                      ' has no read depth containig quality metric associated with it.'
             yield AuditFailure('RNA-pipeline - missing read depth', detail, level='DCC_ACTION')
 
-    fastq_files = scanFilesForFileFormat(value['original_files'], 'fastq')
-
     if pipeline_title in ['RAMPAGE (paired-end, stranded)']:
-        gene_quantifications = scanFilesForOutputType(value['original_files'],
-                                                      'gene quantifications')
         for failure in check_experiement_rampage_encode3_standards(value,
                                                                    fastq_files,
                                                                    alignment_files,
@@ -158,10 +200,7 @@ def audit_experiment_standards_dispatcher(value, system):
                                                                    desired_assembly,
                                                                    desired_annotation):
             yield failure
-
     elif pipeline_title in ['Small RNA-seq single-end pipeline']:
-        gene_quantifications = scanFilesForOutputType(value['original_files'],
-                                                      'gene quantifications')
         for failure in check_experiement_small_rna_encode3_standards(value,
                                                                      fastq_files,
                                                                      alignment_files,
@@ -173,8 +212,6 @@ def audit_experiment_standards_dispatcher(value, system):
 
     elif pipeline_title in ['RNA-seq of long RNAs (paired-end, stranded)',
                             'RNA-seq of long RNAs (single-end, unstranded)']:
-        gene_quantifications = scanFilesForOutputType(value['original_files'],
-                                                      'gene quantifications')
         for failure in check_experiement_long_rna_encode3_standards(value,
                                                                     fastq_files,
                                                                     alignment_files,
@@ -183,44 +220,17 @@ def audit_experiment_standards_dispatcher(value, system):
                                                                     desired_assembly,
                                                                     desired_annotation):
             yield failure
-    elif pipeline_title in ['Histone ChIP-seq', 'Transcription factor ChIP-seq']:
-        optimal_idr_peaks = scanFilesForOutputType(value['original_files'],
-                                                   'optimal idr thresholded peaks')
-        for failure in check_experiment_chip_seq_encode3_standards(value,
-                                                                   fastq_files,
-                                                                   alignment_files,
-                                                                   optimal_idr_peaks,
-                                                                   pipeline_title):
-            yield failure
 
-    elif pipeline_title in ['WGBS single-end pipeline - version 2',
-                            'WGBS single-end pipeline',
-                            'WGBS paired-end pipeline']:
-        cpg_quantifications = scanFilesForOutputType(value['original_files'],
-                                                     'methylation state at CpG')
-        for failure in check_experiment_wgbs_encode3_standards(value,
-                                                               organism_name,
-                                                               fastq_files,
-                                                               cpg_quantifications,
-                                                               desired_assembly,
-                                                               pipeline_title):
-            yield failure
+    return
 
 
 def check_experiment_wgbs_encode3_standards(experiment,
+                                            alignment_files,
                                             organism_name,
                                             fastq_files,
                                             cpg_quantifications,
                                             desired_assembly,
                                             pipeline_title):
-    if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
-            return
-
-    bismark_metrics = get_metrics(cpg_quantifications, 'BismarkQualityMetric', desired_assembly)
-    cpg_metrics = get_metrics(cpg_quantifications, 'CpgCorrelationQualityMetric', desired_assembly)
-    samtools_metrics = get_metrics(cpg_quantifications,
-                                   'SamtoolsFlagstatsQualityMetric',
-                                   desired_assembly)
 
     read_lengths = get_read_lengths_wgbs(fastq_files)
 
@@ -241,6 +251,24 @@ def check_experiment_wgbs_encode3_standards(experiment,
                      'the recommended read length for human data is > 130bp.'
             yield AuditFailure('WGBS - insufficient read length', detail, level='NOT_COMPLIANT')
             break
+
+    pipeline_title = scanFilesForPipelineTitle_not_chipseq(alignment_files,
+                                                           ['GRCh38', 'mm10'],
+                                                           ['WGBS single-end pipeline - version 2',
+                                                            'WGBS single-end pipeline',
+                                                            'WGBS paired-end pipeline'])
+
+    if pipeline_title is False:
+        return
+
+    if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
+            return
+
+    bismark_metrics = get_metrics(cpg_quantifications, 'BismarkQualityMetric', desired_assembly)
+    cpg_metrics = get_metrics(cpg_quantifications, 'CpgCorrelationQualityMetric', desired_assembly)
+    samtools_metrics = get_metrics(cpg_quantifications,
+                                   'SamtoolsFlagstatsQualityMetric',
+                                   desired_assembly)
 
     for failure in check_wgbs_coverage(samtools_metrics,
                                        pipeline_title,
@@ -265,6 +293,7 @@ def get_read_lengths_wgbs(fastq_files):
             list_of_lengths.append(f['read_length'])
     return list_of_lengths
 
+
 def get_metrics(files_list, metric_type, desired_assembly=None, desired_annotation=None):
     metrics_dict = {}
     for f in files_list:
@@ -281,11 +310,11 @@ def get_metrics(files_list, metric_type, desired_assembly=None, desired_annotati
         metrics.append(metrics_dict[k])
     return metrics
 
+
 def check_experiment_chip_seq_encode3_standards(experiment,
                                                 fastq_files,
                                                 alignment_files,
-                                                idr_peaks_files,
-                                                pipeline_title):
+                                                idr_peaks_files):
     for f in fastq_files:
         if 'run_type' not in f:
             detail = 'Experiment {} '.format(experiment['@id']) + \
@@ -294,6 +323,10 @@ def check_experiment_chip_seq_encode3_standards(experiment,
             yield AuditFailure('ChIP-seq - run type not specified', detail, level='WARNING')
         for failure in check_file_read_length(f, 50, 'ChIP-seq'):
             yield failure
+
+    pipeline_title = scanFilesForPipelineTitle_yes_chipseq(alignment_files, ['Histone ChIP-seq'])
+    if pipeline_title is False:
+        return
 
     for f in alignment_files:
         target = get_target(experiment)
@@ -305,20 +338,10 @@ def check_experiment_chip_seq_encode3_standards(experiment,
             yield failure
 
     if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
-            return
+        return
 
     idr_metrics = get_metrics(idr_peaks_files, 'IDRQualityMetric')
-    '''
-    idr_metrics_dict = {}
-    for f in idr_peaks_files:
-        if 'quality_metrics' in f and len(f['quality_metrics']) > 0:
-            for qm in f['quality_metrics']:
-                idr_metrics_dict[qm['@id']] = qm
-    idr_metrics = []
-    for k in idr_metrics_dict:
-        idr_metrics.append(idr_metrics_dict[k])
 
-    '''
     for failure in check_idr(idr_metrics, 2, 2, pipeline_title, 'ChIP-seq'):
         yield failure
 
@@ -344,10 +367,6 @@ def check_experiement_long_rna_encode3_standards(experiment,
                      'contains a file {} '.format(f['@id']) + \
                      'without sequencing run type specified.'
             yield AuditFailure('long RNA - run type not specified', detail, level='WARNING')
-        for failure in check_file_read_length(f, 50, 'long RNA'):
-            yield failure
-        for failure in check_file_platform(f, ['OBI:0002024', 'OBI:0000696'], 'long RNA'):
-            yield failure
 
     for f in alignment_files:
         if 'assembly' in f and f['assembly'] == desired_assembly:
@@ -380,18 +399,7 @@ def check_experiement_long_rna_encode3_standards(experiment,
                               'MadQualityMetric',
                               desired_assembly,
                               desired_annotation)
-    '''
-    mad_metrics_dict = {}
-    for f in gene_quantifications:
-        if 'assembly' in f and f['assembly'] == desired_assembly and \
-           'genome_annotation' in f and f['genome_annotation'] == desired_annotation:
-            if 'quality_metrics' in f and len(f['quality_metrics']) > 0:
-                for qm in f['quality_metrics']:
-                    mad_metrics_dict[qm['@id']] = qm
-    mad_metrics = []
-    for k in mad_metrics_dict:
-        mad_metrics.append(mad_metrics_dict[k])
-    '''
+
     for failure in check_spearman(mad_metrics, experiment['replication_type'],
                                   0.9, 0.8, pipeline_title, 'long RNA'):
         yield failure
@@ -415,10 +423,6 @@ def check_experiement_small_rna_encode3_standards(experiment,
                      'contains a file {} '.format(f['@id']) + \
                      'that is not single-ended.'
             yield AuditFailure('small RNA - not single-ended', detail, level='WARNING')
-        for failure in check_file_read_length(f, 50, 'small RNA'):
-            yield failure
-        for failure in check_file_platform(f, ['OBI:0002024', 'OBI:0000696'], 'small RNA'):
-            yield failure
 
     for f in alignment_files:
         if 'assembly' in f and f['assembly'] == desired_assembly:
@@ -438,18 +442,6 @@ def check_experiement_small_rna_encode3_standards(experiment,
                               'MadQualityMetric',
                               desired_assembly,
                               desired_annotation)
-    '''
-    mad_metrics_dict = {}
-    for f in gene_quantifications:
-        if 'assembly' in f and f['assembly'] == desired_assembly and \
-           'genome_annotation' in f and f['genome_annotation'] == desired_annotation:
-            if 'quality_metrics' in f and len(f['quality_metrics']) > 0:
-                for qm in f['quality_metrics']:
-                    mad_metrics_dict[qm['@id']] = qm
-    mad_metrics = []
-    for k in mad_metrics_dict:
-        mad_metrics.append(mad_metrics_dict[k])
-    '''
 
     for failure in check_spearman(mad_metrics, experiment['replication_type'],
                                   0.9, 0.8, 'Small RNA-seq single-end pipeline', 'small RNA'):
@@ -471,10 +463,6 @@ def check_experiement_rampage_encode3_standards(experiment,
                      'contains a file {} '.format(f['@id']) + \
                      'that is not paired-ended.'
             yield AuditFailure('RAMPAGE - not paired-ended', detail, level='WARNING')
-        for failure in check_file_read_length(f, 50, 'RAMPAGE'):
-            yield failure
-        for failure in check_file_platform(f, ['OBI:0002024', 'OBI:0000696'], 'RAMPAGE'):
-            yield failure
 
     for f in alignment_files:
         if 'assembly' in f and f['assembly'] == desired_assembly:
@@ -494,19 +482,7 @@ def check_experiement_rampage_encode3_standards(experiment,
                               'MadQualityMetric',
                               desired_assembly,
                               desired_annotation)
-    '''
-    mad_metrics_dict = {}
-    for f in gene_quantifications:
-        if 'assembly' in f and f['assembly'] == desired_assembly and \
-           'genome_annotation' in f and f['genome_annotation'] == desired_annotation:
-            if 'quality_metrics' in f and len(f['quality_metrics']) > 0:
-                for qm in f['quality_metrics']:
-                    mad_metrics_dict[qm['@id']] = qm
-    mad_metrics = []
-    for k in mad_metrics_dict:
-        mad_metrics.append(mad_metrics_dict[k])
-    '''
-
+   
     for failure in check_spearman(mad_metrics, experiment['replication_type'],
                                   0.9, 0.8, 'RAMPAGE (paired-end, stranded)', 'RAMPAGE'):
         yield failure
@@ -1064,10 +1040,11 @@ def get_organism_name(reps):
     return False
 
 
-def scanFilesForFileFormat(files_to_scan, f_format):
+def scan_files_for_file_format_output_type(files_to_scan, f_format, f_output_type):
     files_to_return = []
     for f in files_to_scan:
         if 'file_format' in f and f['file_format'] == f_format and \
+           'output_type' in f and f['output_type'] == f_output_type and \
            f['status'] not in ['replaced', 'revoked', 'deleted']:
             files_to_return.append(f)
     return files_to_return

@@ -1169,6 +1169,13 @@ def test_audit_experiment_rampage_standards(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
+        '''print (error_type)
+        for e in errors[error_type]:
+            print (e['category'])
+            if (e['category'].startswith('RAMPAGE')):
+                print (e)
+        '''
+
     assert any(error['category'] == 'RAMPAGE - insufficient read depth' for error in errors_list)
 
 
@@ -1350,9 +1357,10 @@ def test_audit_experiment_chip_seq_standards(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-        #print (error_type)
-        #for e in errors[error_type]:
-        #    print (e['category'])
-        #    if (e['category'].startswith('ChIP-seq')):
-        #        print (e)
+        '''print (error_type)
+        for e in errors[error_type]:
+            print (e['category'])
+            if (e['category'].startswith('ChIP-seq')):
+                print (e)
+        '''
     assert any(error['category'] == 'ChIP-seq - insufficient read depth' for error in errors_list)
