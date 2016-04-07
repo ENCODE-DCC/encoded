@@ -208,7 +208,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                         <BatchDownload context={context} />
                                     : null}
                                     {' '}
-                                    {batchHubKeys ?
+                                    {batchHubKeys.length ?
                                         <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'}>
                                             <DropdownMenu updateElement={this.updateElement}>
                                                 {batchHubKeys.map(assembly =>
