@@ -968,6 +968,12 @@ var ResultTable = search.ResultTable = React.createClass({
                                 </h4>
 
                                 <div className="results-table-control">
+                                    {context.views ?
+                                        <div className="btn-attached">
+                                            {context.views.map((view, i) => <span key={i}> <a href={view.href} title={view.title}><i className={'icon icon-' + view.icon}></i></a></span>)}
+                                        </div>
+                                    : null}
+
                                     {total > results.length && searchBase.indexOf('limit=all') === -1 ?
                                         <a rel="nofollow" className="btn btn-info btn-sm"
                                                 href={searchBase ? searchBase + '&limit=all' : '?limit=all'}

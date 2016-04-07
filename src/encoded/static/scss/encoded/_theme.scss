@@ -7,3 +7,8 @@
     font-weight: normal;
     @include box-shadow(none);
 }
+
+// Contains buttons horizontally attached to each other -- indicates peer options
+.btn-attached {
+    display: inline-block;
+}
