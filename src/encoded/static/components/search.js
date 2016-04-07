@@ -964,7 +964,6 @@ var ResultTable = search.ResultTable = React.createClass({
                             <div>
                                 <h4>
                                     Showing {results.length} of {total} {label}
-                                    {context.views && context.views.map((view, i) => <span key={i}> <a href={view.href} title={view.title}><i className={'icon icon-' + view.icon}></i></a></span>)}
                                 </h4>
 
                                 <div className="results-table-control">
