@@ -41,8 +41,6 @@ _SPECIES = {
     'Homo sapiens': ['hg19']
 }
 
-_ASSEMBLIES = ['hg19', 'mm10', 'mm9']
-
 
 def includeme(config):
     config.add_route('index_file', '/index_file')
@@ -119,7 +117,7 @@ def index_peaks(uuid, request):
         return
 
     # Index human data for now       
-    if 'assembly' not in context or context['assembly'] not in _ASSEMBLIES:
+    if 'assembly' not in context or 'hg19' not in context['assembly']:
         return
 
     assay_term_name = get_assay_term_name(context['dataset'], request)
@@ -304,6 +302,5 @@ def index_file(request):
             if not es_peaks.indices.exists('encoded_peaks'):
                 es_peaks.indices.create(index='encoded_peaks', body=index_settings())
             es_peaks.index(index='encoded_peaks', doc_type='meta', body=result, id='indexing')
-
 
     return result
