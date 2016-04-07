@@ -229,15 +229,14 @@ def check_experiment_wgbs_encode3_standards(experiment,
                                             organism_name,
                                             fastq_files,
                                             cpg_quantifications,
-                                            desired_assembly,
-                                            pipeline_title):
+                                            desired_assembly):
 
     read_lengths = get_read_lengths_wgbs(fastq_files)
 
     for l in read_lengths:
         if organism_name == 'mouse' and l < 100:
             detail = 'Experiment {} '.format(experiment['@id']) + \
-                     'processed by  {} '.format(pipeline_title) + \
+                     'processed by  WGBS ' + \
                      'pipeline, has FASTQ files with read ' + \
                      'length of {}bp, while '.format(l) + \
                      'the recommended read length for mouse data is > 100bp.'
@@ -245,7 +244,7 @@ def check_experiment_wgbs_encode3_standards(experiment,
             break
         if organism_name == 'human' and l < 130:
             detail = 'Experiment {} '.format(experiment['@id']) + \
-                     'processed by  {} '.format(pipeline_title) + \
+                     'processed by  WGBS ' + \
                      'pipeline, has FASTQ files with read ' + \
                      'length of {}bp, while '.format(l) + \
                      'the recommended read length for human data is > 130bp.'
