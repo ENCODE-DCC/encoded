@@ -101,30 +101,26 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
 
         if (this.context.auditDetailOpen) {
             // Sort the audit levels by their level number, using the first element of each warning category
-            var sortedAuditLevelNames = _(Object.keys(auditLevels)).sortBy(function(level) {
-                return -auditLevels[level][0].level;
-            });
+            var sortedAuditLevelNames = _(Object.keys(auditLevels)).sortBy(level => -auditLevels[level][0].level);
 
             return (
                 <div className="audit-details" id={this.props.id.replace(/\W/g, '')} aria-hidden={!this.context.auditDetailOpen}>
-                    {sortedAuditLevelNames.map(function(auditLevelName) {
+                    {sortedAuditLevelNames.map(auditLevelName => {
                         var audits = auditLevels[auditLevelName];
                         var level = auditLevelName.toLowerCase();
                         var iconClass = 'icon audit-icon-' + level;
                         var alertClass = 'audit-detail-' + level;
                         var levelClass = 'audit-level-' + level;
 
-                        return audits.map(function(audit, i) {
-                            return (
-                                <div className={alertClass} key={i} role="alert">
-                                    <i className={iconClass}></i>
-                                    <strong className={levelClass}>{auditLevelName.split('_').join(' ')}</strong>
-                                    &nbsp;&mdash;&nbsp;
-                                    <strong>{audit.category}</strong>: <DetailEmbeddedLink detail={audit.detail} except={context['@id']} forcedEditLink={this.props.forcedEditLink} />
-                                </div>
-                            );
-                        }, this);
-                    }, this)}
+                        return audits.map((audit, i) =>
+                            <div className={alertClass} key={i} role="alert">
+                                <i className={iconClass}></i>
+                                <strong className={levelClass}>{auditLevelName.split('_').join(' ')}</strong>
+                                &nbsp;&mdash;&nbsp;
+                                <strong>{audit.category}</strong>: <DetailEmbeddedLink detail={audit.detail} except={context['@id']} forcedEditLink={this.props.forcedEditLink} />
+                            </div>
+                        );
+                    })}
                 </div>
             );
         }
@@ -147,7 +143,7 @@ var DetailEmbeddedLink = React.createClass({
         if (matches) {
             // Build React object of text followed by path for all paths in detail string
             var lastStart = 0;
-            var result = matches.map(function(match, i) {
+            var result = matches.map((match, i) => {
                 var linkStart = detail.indexOf(match, lastStart);
                 var preText = detail.slice(lastStart, linkStart);
                 lastStart = linkStart + match.length;
@@ -157,7 +153,7 @@ var DetailEmbeddedLink = React.createClass({
                 } else {
                     return <span key={i}>{preText}{linkText}</span>;
                 }
-            }, this);
+            });
 
             // Pick up any trailing text after the last path, if any
             var postText = detail.slice(lastStart);
