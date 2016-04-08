@@ -19,6 +19,7 @@
         "Sequence Duplication Levels": "FAIL",
         "Overrepresented sequences": "WARN",
         "Adapter Content": "FAIL",
+        "quality_metric_of": [ "46e82a90-49e5-4c33-afab-9ec90d65faf3", "e6addc7e-0320-4e11-8351-69e9b9cc08dc" ],
         "Kmer Content": "FAIL"
     }
 ]

@@ -20,6 +20,7 @@
         "lambda C methylated in CpG context": "0.30%",
         "lambda C methylated in CHG context": "0.40%",
         "lambda C methylated in CHH context": "0.40%",
+        "quality_metric_of": [ "46e82a90-49e5-4c33-afab-9ec90d65faf3" ],
         "assay_term_name": "whole-genome shotgun bisulfite sequencing"
     }
 ]
