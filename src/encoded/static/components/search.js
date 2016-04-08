@@ -824,6 +824,7 @@ var FacetList = search.FacetList = React.createClass({
         if (searchQuery && clearQuery) {
             var searchTerms = queryString.parse(searchQuery);
             var clearTerms = queryString.parse(clearQuery);
+            console.log('%o:%o', searchTerms, clearTerms);
             clearButton = !_.isEqual(searchTerms, clearTerms);
         }
 
