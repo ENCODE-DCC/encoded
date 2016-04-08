@@ -12,9 +12,6 @@ from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
 
-import logging
-
-log = logging.getLogger(__name__)
 
 _ASSEMBLY_MAPPER = {
     'GRCh38-minimal': 'hg38',
@@ -590,7 +587,8 @@ def search(context, request, search_type=None):
     # If searching for more than one type, don't specify which fields to search
     elif len(doc_types) != 1:
         del query['query']['query_string']['fields']
-        query['query']['query_string']['fields'] = ['_all', '*.uuid', '*.md5sum']
+        if len(query['query']['query_string']['query']) > 30:
+            query['query']['query_string']['fields'] = ['_all', '*.uuid', '*.md5sum']
 
 
     # Set sort order
