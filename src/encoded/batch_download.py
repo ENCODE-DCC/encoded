@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from pyramid.compat import native_
+from pyramid.compat import bytes_
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 from pyramid.response import Response
@@ -305,11 +305,12 @@ def lookup_column_value(value, path):
         nodes = [node['@id'] for node in nodes]
     seen = set()
     deduped_nodes = [n for n in nodes if not (n in seen or seen.add(n))]
-    return ','.join(native_(n, 'utf-8') for n in deduped_nodes)
+    return u','.join(u'{}'.format(n) for n in deduped_nodes)
 
 
 def format_row(columns):
-    return '\t'.join(columns) + '\r\n'
+    """Format a list of text columns as a tab-separated byte string."""
+    return b'\t'.join([bytes_(c, 'utf-8') for c in columns]) + b'\r\n'
 
 
 @view_config(route_name='report_download', request_method='GET')
@@ -324,9 +325,7 @@ def report_download(context, request):
 
     schemas = [request.registry[TYPES][types[0]].schema]
     columns = list_visible_columns_for_schemas(request, schemas)
-    header = [
-        native_(column.get('title') or field, 'utf-8')
-        for field, column in columns.items()]
+    header = [column.get('title') or field for field, column in columns.items()]
 
     def generate_rows():
         yield format_row(header)
@@ -337,9 +336,5 @@ def report_download(context, request):
     # Stream response using chunked encoding.
     request.response.content_type = 'text/tsv'
     request.response.content_disposition = 'attachment;filename="%s"' % 'report.tsv'
-    app_iter = generate_rows()
-    if str is bytes:  # Python 2 vs 3 wsgi differences
-        request.response.app_iter = app_iter  # Python 2
-    else:
-        request.response.app_iter = (s.encode('utf-8') for s in app_iter)
+    request.response.app_iter = generate_rows()
     return request.response
