@@ -535,9 +535,17 @@ def search(context, request, search_type=None):
         msg = "Invalid type: {}".format(', '.join(bad_types))
         raise HTTPBadRequest(explanation=msg)
 
+    import pprint;
     # Clear Filters path -- make a path that clears all non-datatype filters.
     # http://stackoverflow.com/questions/16491988/how-to-convert-a-list-of-strings-to-a-query-string#answer-16492046
-    clear_qs = urlencode([("type", typ) for typ in doc_types])
+    searchterm_specs = request.params.getall('searchTerm')
+    searchterm_only = urlencode([("searchTerm", searchterm) for searchterm in searchterm_specs])
+    if searchterm_only:
+        # Search term in query string; clearing keeps that
+        clear_qs = searchterm_only
+    else:
+        # Possibly type(s) in query string
+        clear_qs = urlencode([("type", typ) for typ in doc_types])
     result['clear_filters'] = request.route_path('search', slash='/') + (('?' + clear_qs) if clear_qs else '')
 
     # Building query for filters

@@ -815,24 +815,30 @@ var FacetList = search.FacetList = React.createClass({
             width = (100 / facets.length) + '%';
         }
 
-        // See if we need the Clear Filters link or not. If both clear_filters and the search @id have exactly the same terms,
-        // we don't need the Clear Filters link. clear_filters and @id can have their terms in a different order, so we have to
-        // get fancier than a string comparison.
+        // See if we need the Clear Filters link or not. context.clear_filters 
         var clearButton; // JSX for the clear button
         var searchQuery = context && context['@id'] && url.parse(context['@id']).search;
-        var clearQuery = context && context.clear_filters && url.parse(context.clear_filters).search;
-        if (searchQuery && clearQuery) {
-            var searchTerms = queryString.parse(searchQuery);
-            var clearTerms = queryString.parse(clearQuery);
-            console.log('%o:%o', searchTerms, clearTerms);
-            clearButton = !_.isEqual(searchTerms, clearTerms);
+        if (searchQuery) {
+            // Convert search query string to a query object for easy parsing
+            var terms = queryString.parse(searchQuery);
+
+            // See if there are terms in the query string aside from `searchTerm`. We have a Clear
+            // Filters button if we do
+            var nonPersistentTerms = _(Object.keys(terms)).any(term => term !== 'searchTerm');
+            clearButton = nonPersistentTerms && terms['searchTerm'];
+
+            // If no Clear Filters button yet, do the same check with `type` in the query string
+            if (!clearButton) {
+                nonPersistentTerms = _(Object.keys(terms)).any(term => term !== 'type');
+                clearButton = nonPersistentTerms && terms['type'];
+            }
         }
 
         return (
             <div className={"box facets " + this.props.orientation}>
                 {clearButton ?
                     <div className="clear-filters-control">
-                        <a href={this.props.context.clear_filters}>Clear Filters <i className="icon icon-times-circle"></i></a>
+                        <a href={context.clear_filters}>Clear Filters <i className="icon icon-times-circle"></i></a>
                     </div>
                 : null}
                 {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
