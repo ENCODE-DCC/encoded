@@ -481,7 +481,7 @@ def analysis_step_run(testapp, analysis_step_version):
 def quality_metric(testapp, analysis_step_run, bam_file):
     item = {
         'step_run': analysis_step_run['@id'],
-        'quality_metric_of': bam_file['@id']
+        'quality_metric_of': [bam_file['@id']]
     }
     return testapp.post_json('/fastqc_quality_metric', item).json['@graph'][0]
 
