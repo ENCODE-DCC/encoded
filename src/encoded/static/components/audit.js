@@ -112,19 +112,45 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
                         var alertClass = 'audit-detail-' + level;
                         var levelClass = 'audit-level-' + level;
 
-                        return audits.map((audit, i) =>
-                            <div className={alertClass} key={i} role="alert">
-                                <i className={iconClass}></i>
-                                <strong className={levelClass}>{auditLevelName.split('_').join(' ')}</strong>
-                                &nbsp;&mdash;&nbsp;
-                                <strong>{audit.category}</strong>: <DetailEmbeddedLink detail={audit.detail} except={context['@id']} forcedEditLink={this.props.forcedEditLink} />
-                            </div>
-                        );
+                        var groupedAudits = _(audits).groupBy('name');
+                        console.log('AUDITS: %o', groupedAudits);
+
+                        return Object.keys(groupedAudits).map((groupName, i) => <AuditGroup group={groupedAudits[groupName]} auditLevelName={auditLevelName} context={context} key={i} />);
                     })}
                 </div>
             );
         }
         return null;
+    }
+});
+
+
+var AuditGroup = module.exports.AuditGroup = React.createClass({
+    propTypes: {
+        group: React.PropTypes.array, // Array of audits in one name/category
+        auditLevelName: React.PropTypes.string, // Audit level
+        context: React.PropTypes.obj // Audit records
+    },
+
+    render: function() {
+        var {group, auditLevelName, context} = this.props.group;
+        var alertClass = 'audit-detail-' + level;
+        var iconClass = 'icon audit-icon-' + level;
+        var levelClass = 'audit-level-' + level;
+        var level = auditLevelName.toLowerCase();
+
+        return (
+            <div>
+                {group.map((audit, i) =>
+                    <div className={alertClass} key={i} role="alert">
+                        <i className={iconClass}></i>
+                        <strong className={levelClass}>{auditLevelName.split('_').join(' ')}</strong>
+                        &nbsp;&mdash;&nbsp;
+                        <strong>{audit.category}</strong>: <DetailEmbeddedLink detail={audit.detail} except={context['@id']} forcedEditLink={this.props.forcedEditLink} />
+                    </div>
+                )}
+            </div>
+        );
     }
 });
 
