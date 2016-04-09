@@ -2,6 +2,7 @@ from snovault import (
     CONNECTION,
     upgrade_step,
 )
+from pyramid.traversal import find_root
 
 
 @upgrade_step('bismark_quality_metric', '1', '2')
@@ -22,33 +23,18 @@ def bismark_quality_metric_2_3(value, system):
     if 'quality_metric_of' in value:
         value['quality_metric_of'] = list(set(value['quality_metric_of']))
 
+
 @upgrade_step('bismark_quality_metric', '3', '4')
 def bismark_quality_metric_3_4(value, system):
     # http://redmine.encodedcc.org/issues/3897
     # get from the file the lab and award for the attribution!!!
-    context = system['context']
-    root = find_root(context)
-    publications = root['quality_metric_of']
+    conn = system['registry'][CONNECTION]
+    f = conn.get_by_unique_key('accession',
+                               value['quality_metric_of'][0].split('/')[2])
+    value['award'] = f.properties['award']
+    value['lab'] = f.properties['lab']
 
-
-    value['award'] = new_award
-    value['lab'] = new_lab
-
-    context = system['context']
-    root = find_root(context)
-    publications = root['publications']
-    if 'references' in value:
-        new_references = []
-        for ref in value['references']:
-            if re.match('doi', ref):
-                new_references.append(REFERENCES_UUID[ref])
-            else:
-                item = publications[ref]
-                new_references.append(str(item.uuid))
-        value['references'] = new_references
-
-
-
+    
 
     '''
     bigwigcorrelate_quality_metric.json V 3
