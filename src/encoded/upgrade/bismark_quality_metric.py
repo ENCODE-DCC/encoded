@@ -2,7 +2,6 @@ from snovault import (
     CONNECTION,
     upgrade_step,
 )
-from pyramid.traversal import find_root
 
 
 @upgrade_step('bismark_quality_metric', '1', '2')

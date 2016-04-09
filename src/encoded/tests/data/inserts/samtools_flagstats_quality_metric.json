@@ -29,6 +29,8 @@
         "total": 32136404,
         "total_qc_failed": 0,
         "with_itself": 24953058,
+        "lab": "/labs/robert-waterston/",
+        "award": "/awards/U41HG007355/",
         "with_itself_qc_failed": 0
 
     },
@@ -42,6 +44,8 @@
         "attachment": "generic_from_star_final_out.txt",
         "duplicates": 0,
         "duplicates_qc_failed": 0,
+        "lab": "/labs/robert-waterston/",
+        "award": "/awards/U41HG007355/",
         "mapped": 3421023,
         "mapped_pct": "68.31%",
         "mapped_qc_failed": 0,
