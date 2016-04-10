@@ -28,13 +28,11 @@ def bismark_quality_metric_3_4(value, system):
     # http://redmine.encodedcc.org/issues/3897
     # get from the file the lab and award for the attribution!!!
     conn = system['registry'][CONNECTION]
+    value['lambda C methylated in CHH context'] = str(value['quality_metric_of'])
     f = conn.get_by_unique_key('accession',
                                value['quality_metric_of'][0].split('/')[2])
     value['award'] = f.properties['award']
     value['lab'] = f.properties['lab']
-
-    
-
     '''
     bigwigcorrelate_quality_metric.json V 3
 
