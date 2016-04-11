@@ -33,7 +33,7 @@ def bismark_quality_metric_2(pipeline, analysis_step_run, bigbed):
         'status': "finished",
         'pipeline': pipeline['uuid'],
         'step_run': analysis_step_run['uuid'],
-        'schema_version': '1',
+        'schema_version': '3',
         'quality_metric_of': [bigbed['@id']]
     }
 
@@ -53,4 +53,4 @@ def test_bismark_quality_metric_upgrade_2(registry, bismark_quality_metric_2, bi
     value = upgrader.upgrade('bismark_quality_metric',
                              bismark_quality_metric_2, registry=registry,
                              current_version='3', target_version='4')
-    assert value['lab'] == lab['uuid'] and value['award'] == award['uuid']
+    assert value['lab'] == lab['@id'] and value['award'] == award['@id']
