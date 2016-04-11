@@ -144,5 +144,6 @@
             "type": "number",
             "description": "samtools --stats: total length"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/samtools_stats_quality_metric.md"
 }

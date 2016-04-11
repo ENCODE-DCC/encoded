@@ -116,5 +116,6 @@
             "description": "STAR Uniquely mapped reads number",
             "type": "number"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/star_quality_metric.md"
 }
