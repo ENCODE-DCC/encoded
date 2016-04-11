@@ -43,7 +43,7 @@ META_MAPPING = {
     ],
 }
 
-NON_SUBSTRING_FIELDS = ['uuid', '@id', 'submitted_by', 'md5sum', 'references']
+NON_SUBSTRING_FIELDS = ['uuid', '@id', 'submitted_by', 'md5sum', 'references', 'submitted_file_name']
 
 
 def sorted_pairs_hook(pairs):
