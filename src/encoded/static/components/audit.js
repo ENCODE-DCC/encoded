@@ -103,6 +103,7 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
             // Sort the audit levels by their level number, using the first element of each warning category
             var sortedAuditLevelNames = _(Object.keys(auditLevels)).sortBy(level => -auditLevels[level][0].level);
 
+            // First loop by audit level, then by audit group
             return (
                 <div className="audit-details" id={this.props.id.replace(/\W/g, '')} aria-hidden={!this.context.auditDetailOpen}>
                     {sortedAuditLevelNames.map(auditLevelName => {
@@ -112,10 +113,11 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
                         var alertClass = 'audit-detail-' + level;
                         var levelClass = 'audit-level-' + level;
 
+                        // Group audits within a level by their category ('name' corresponds to
+                        // 'category' in a more machine-like form)
                         var groupedAudits = _(audits).groupBy('name');
-                        console.log('AUDITS: %o', groupedAudits);
 
-                        return Object.keys(groupedAudits).map((groupName, i) => <AuditGroup group={groupedAudits[groupName]} auditLevelName={auditLevelName} context={context} key={i} />);
+                        return Object.keys(groupedAudits).map((groupName, i) => <AuditGroup group={groupedAudits[groupName]} groupName={groupName} auditLevelName={auditLevelName} context={context} key={i} />);
                     })}
                 </div>
             );
@@ -128,25 +130,27 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
 var AuditGroup = module.exports.AuditGroup = React.createClass({
     propTypes: {
         group: React.PropTypes.array, // Array of audits in one name/category
+        groupName: React.PropTypes.string, // Name of the group
         auditLevelName: React.PropTypes.string, // Audit level
-        context: React.PropTypes.obj // Audit records
+        context: React.PropTypes.object // Audit records
     },
 
     render: function() {
-        var {group, auditLevelName, context} = this.props.group;
-        var alertClass = 'audit-detail-' + level;
-        var iconClass = 'icon audit-icon-' + level;
-        var levelClass = 'audit-level-' + level;
+        var {group, groupName, auditLevelName, context} = this.props;
+        var alertClass = 'audit-detail-' + auditLevelName;
+        var iconClass = 'icon audit-icon-' + auditLevelName;
+        var levelClass = 'audit-level-' + auditLevelName;
         var level = auditLevelName.toLowerCase();
+        console.log('GROUP: %o', group);
 
         return (
             <div>
+                <i className={iconClass}></i>
+                <strong className={levelClass}>{auditLevelName.split('_').join(' ')}</strong>
+                <strong>{group[0].category}</strong>
                 {group.map((audit, i) =>
                     <div className={alertClass} key={i} role="alert">
-                        <i className={iconClass}></i>
-                        <strong className={levelClass}>{auditLevelName.split('_').join(' ')}</strong>
-                        &nbsp;&mdash;&nbsp;
-                        <strong>{audit.category}</strong>: <DetailEmbeddedLink detail={audit.detail} except={context['@id']} forcedEditLink={this.props.forcedEditLink} />
+                        <DetailEmbeddedLink detail={audit.detail} except={context['@id']} forcedEditLink={this.props.forcedEditLink} />
                     </div>
                 )}
             </div>
