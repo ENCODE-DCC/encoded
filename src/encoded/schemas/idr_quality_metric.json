@@ -369,5 +369,6 @@
                 }
             }
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/idr_quality_metric.md"
 }
