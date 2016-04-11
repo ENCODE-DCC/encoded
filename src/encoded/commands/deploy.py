@@ -45,7 +45,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
         {
             'DeviceName': '/dev/sda1',
             'Ebs': {
-                'VolumeSize': 60,
+                'VolumeSize': 120,
                 'VolumeType': 'gp2',
                 'DeleteOnTermination': True
             }

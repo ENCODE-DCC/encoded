@@ -17,7 +17,8 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/documents" },
-        { "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/submitter_comment" }
     ],
     "properties": {
         "schema_version": {
