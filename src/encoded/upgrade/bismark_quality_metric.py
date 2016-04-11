@@ -28,7 +28,6 @@ def bismark_quality_metric_3_4(value, system):
     # http://redmine.encodedcc.org/issues/3897
     # get from the file the lab and award for the attribution!!!
     conn = system['registry'][CONNECTION]
-    #f = conn.get_by_unique_key('accession', value['quality_metric_of'][0].split('/')[2])
     f = conn.get_by_uuid(value['quality_metric_of'][0])
     award_uuid = str(f.properties['award'])
     lab_uuid = str(f.properties['lab'])
@@ -36,31 +35,3 @@ def bismark_quality_metric_3_4(value, system):
     lab = conn.get_by_uuid(lab_uuid)
     value['award'] = '/awards/'+str(award.properties['name'])+'/'
     value['lab'] = '/labs/'+str(lab.properties['name'])+'/'
-
-
-    '''
-    bigwigcorrelate_quality_metric.json V 3
-
-    chipseq_filter_quality_metric.json V 3
-    cpg_correlation_quality_metric.json V 2
-    dnase_peak_quality_metric.json V 3
-    edwbamstats_quality_metric.json V 3
-    edwcomparepeaks_quality_metric.json V 3
-    encode2_chipseq_quality_metric.json V 3
-    fastqc_quality_metric.json V 3
-    generic_quality_metric.json V 3
-
-    hotspot_quality_metric.json V 3
-    idr_quality_metric.json V 2
-    idr_summary_quality_metric.json V 3
-    
-    mad_quality_metric.json V 2 
-    pbc_quality_metric.json V 3
-    phantompeaktools_spp_quality_metric.json V 3
-
-    quality_metric.json ****
-
-    samtools_flagstats_quality_metric.json V 3
-    samtools_stats_quality_metric.json V 3
-    star_quality_metric.json V 3
-    '''

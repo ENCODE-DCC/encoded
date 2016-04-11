@@ -60,5 +60,6 @@
             "type": "string",
             "description": "Bismark mapping efficiency for WGBS vs. reference genome"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/bismark_quality_metric.md"
 }
