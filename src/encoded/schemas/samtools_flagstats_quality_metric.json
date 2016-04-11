@@ -120,5 +120,6 @@
             "type": "number",
             "description": "flagstats: with itself and mate mapped - qc failed"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/samtools_flagstats_quality_metric.md"
 }
