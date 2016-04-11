@@ -241,7 +241,6 @@ var App = React.createClass({
                     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                     <Title>{title}</Title>
                     {base ? <base href={base}/> : null}
-                    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic,300,300italic,700,700italic' rel='stylesheet' type='text/css' />
                     <link rel="canonical" href={canonical} />
                     <script async src='//www.google-analytics.com/analytics.js'></script>
                     <script data-prop-name="inline" dangerouslySetInnerHTML={{__html: this.props.inline}}></script>

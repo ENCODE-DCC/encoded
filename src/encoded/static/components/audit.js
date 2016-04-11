@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 var _ = require('underscore');
+var {Panel} = require('../libs/bootstrap/panel');
 
 var editTargetMap = {
     'experiments': 'Experiment',
@@ -89,7 +90,6 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
 });
 
 
-
 var AuditDetail = module.exports.AuditDetail = React.createClass({
     contextTypes: {
         auditDetailOpen: React.PropTypes.bool
@@ -105,7 +105,7 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
 
             // First loop by audit level, then by audit group
             return (
-                <div className="audit-details" id={this.props.id.replace(/\W/g, '')} aria-hidden={!this.context.auditDetailOpen}>
+                <Panel addClasses="audit-details" id={this.props.id.replace(/\W/g, '')} aria-hidden={!this.context.auditDetailOpen}>
                     {sortedAuditLevelNames.map(auditLevelName => {
                         var audits = auditLevels[auditLevelName];
                         var level = auditLevelName.toLowerCase();
@@ -117,9 +117,9 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
                         // 'category' in a more machine-like form)
                         var groupedAudits = _(audits).groupBy('name');
 
-                        return Object.keys(groupedAudits).map((groupName, i) => <AuditGroup group={groupedAudits[groupName]} groupName={groupName} auditLevelName={auditLevelName} context={context} key={i} />);
+                        return Object.keys(groupedAudits).map((groupName, i) => <AuditGroup group={groupedAudits[groupName]} groupName={groupName} auditLevelName={auditLevelName} context={context} forcedEditLink={this.props.forcedEditLink} key={i} />);
                     })}
-                </div>
+                </Panel>
             );
         }
         return null;
@@ -129,27 +129,48 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
 
 var AuditGroup = module.exports.AuditGroup = React.createClass({
     propTypes: {
-        group: React.PropTypes.array, // Array of audits in one name/category
-        groupName: React.PropTypes.string, // Name of the group
-        auditLevelName: React.PropTypes.string, // Audit level
-        context: React.PropTypes.object // Audit records
+        group: React.PropTypes.array.isRequired, // Array of audits in one name/category
+        groupName: React.PropTypes.string.isRequired, // Name of the group
+        auditLevelName: React.PropTypes.string.isRequired, // Audit level
+        context: React.PropTypes.object.isRequired // Audit records
+    },
+
+    getInitialState: function() {
+        return {detailOpen: false};
+    },
+
+    detailSwitch: function() {
+        // Click on the detail disclosure triangle
+        this.setState({detailOpen: !this.state.detailOpen});
     },
 
     render: function() {
-        var {group, groupName, auditLevelName, context} = this.props;
-        var alertClass = 'audit-detail-' + auditLevelName;
+        var {group, groupName, context} = this.props;
+        var auditLevelName = this.props.auditLevelName.toLowerCase();
+        var detailOpen = this.state.detailOpen;
+        var alertClass = 'audit-detail-' + auditLevelName.toLowerCase();
+        var alertItemClass = 'panel-collapse collapse audit-item-' + auditLevelName + (detailOpen ? ' in' : '');
         var iconClass = 'icon audit-icon-' + auditLevelName;
         var levelClass = 'audit-level-' + auditLevelName;
         var level = auditLevelName.toLowerCase();
-        console.log('GROUP: %o', group);
+        var categoryName = group[0].category.uppercaseFirstChar();
 
         return (
-            <div>
-                <i className={iconClass}></i>
-                <strong className={levelClass}>{auditLevelName.split('_').join(' ')}</strong>
-                <strong>{group[0].category}</strong>
+            <div className={alertClass}>
+                <div className={'icon audit-detail-trigger-' + auditLevelName}>
+                    <a href="#" className={'audit-detail-trigger-icon' + (detailOpen ? '' : ' collapsed')} data-trigger data-toggle="collapse" onClick={this.detailSwitch}>
+                        <span className="sr-only">More</span>
+                    </a>
+                </div>
+                <div className="audit-detail-info">
+                    <div className="pull-right">
+                        <i className={iconClass}></i>
+                        <strong className={levelClass}>{auditLevelName.split('_').join(' ').toUpperCase()}</strong>
+                    </div>
+                    <div className="audit-detail-category-name">{categoryName}</div>
+                </div>
                 {group.map((audit, i) =>
-                    <div className={alertClass} key={i} role="alert">
+                    <div className={alertItemClass} key={i} role="alert">
                         <DetailEmbeddedLink detail={audit.detail} except={context['@id']} forcedEditLink={this.props.forcedEditLink} />
                     </div>
                 )}

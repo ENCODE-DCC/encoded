@@ -689,7 +689,7 @@ $dl-bar-height: 30px;
 
 // Icon within .detail-switch to show the current state of the switch
 .detail-trigger {
-    @extend .icon-caret-left;
+    @extend .icon-caret-down;
     display: block;
     height: $dl-bar-height;
     line-height: $dl-bar-height;
@@ -698,8 +698,8 @@ $dl-bar-height: 30px;
     text-align: center;
     transition: 0.1s linear;
 
-    &.open {
-        transform: rotate(-90deg);
+    &.collapsed {
+        transform: rotate(90deg);
     }
 }
 
