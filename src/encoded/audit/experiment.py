@@ -59,8 +59,8 @@ non_seq_assays = [
     ]
 
 
-
 @audit_checker('Experiment', frame=['original_files',
+                                    'award',
                                     'target',
                                     'replicates',
                                     'replicates.library',
@@ -74,15 +74,16 @@ non_seq_assays = [
                                     'original_files.analysis_step_version',
                                     'original_files.analysis_step_version.analysis_step',
                                     'original_files.analysis_step_version.analysis_step.pipelines'],
-               condition=rfa('ENCODE3'))
+               condition=rfa('ENCODE3', 'ENCODE2', 'ENCODE2-Mouse'))
 def audit_experiment_standards_dispatcher(value, system):
     '''
-    Dispatcher function that will redirect to other functions that woudl deal with specific assay types standards
+    Dispatcher function that will redirect to other functions that would
+    deal with specific assay types standards
     '''
     if value['status'] not in ['released', 'release ready']:
         return
     if 'assay_term_name' not in value or \
-       value['assay_term_name'] not in ['RAMPAGE', 'RNA-seq', 'ChIP-seq',
+       value['assay_term_name'] not in ['CAGE', 'RAMPAGE', 'RNA-seq', 'ChIP-seq',
                                         'shRNA knockdown followed by RNA-seq',
                                         'CRISPR genome editing followed by RNA-seq',
                                         'single cell isolation followed by RNA-seq',
@@ -92,7 +93,6 @@ def audit_experiment_standards_dispatcher(value, system):
         return
     if 'replicates' not in value:
         return
-
 
     num_bio_reps = set()
     for rep in value['replicates']:
@@ -112,24 +112,34 @@ def audit_experiment_standards_dispatcher(value, system):
         else:
             return
 
-    alignment_files = scan_files_for_file_format_output_type(value['original_files'], 'bam', 'alignments')
-    fastq_files = scan_files_for_file_format_output_type(value['original_files'], 'fastq', 'reads')
+    alignment_files = scan_files_for_file_format_output_type(value['original_files'],
+                                                             'bam', 'alignments')
+    fastq_files = scan_files_for_file_format_output_type(value['original_files'],
+                                                         'fastq', 'reads')
 
-    if value['assay_term_name'] in ['RAMPAGE', 'RNA-seq',
+    if value['assay_term_name'] in ['CAGE', 'RAMPAGE', 'RNA-seq',
                                     'shRNA knockdown followed by RNA-seq',
                                     'CRISPR genome editing followed by RNA-seq',
                                     'single cell isolation followed by RNA-seq']:
 
         gene_quantifications = scanFilesForOutputType(value['original_files'],
                                                       'gene quantifications')
-
-        for failure in check_experiemnt_rna_seq_encode3_standards(value,
-                                                                  fastq_files,
-                                                                  alignment_files,
-                                                                  gene_quantifications,
-                                                                  desired_assembly,
-                                                                  desired_annotation):
-            yield failure
+        if value['award']['rfa'] in ['ENCODE3']:
+            for failure in check_experiemnt_rna_seq_encode3_standards(value,
+                                                                      fastq_files,
+                                                                      alignment_files,
+                                                                      gene_quantifications,
+                                                                      desired_assembly,
+                                                                      desired_annotation):
+                yield failure
+        elif value['award']['rfa'] in ['ENCODE2', 'ENCODE2-Mouse']:
+            for failure in check_experiemnt_rna_seq_encode2_standards(value,
+                                                                      fastq_files,
+                                                                      alignment_files,
+                                                                      gene_quantifications,
+                                                                      desired_assembly,
+                                                                      desired_annotation):
+                yield failure
 
     if value['assay_term_name'] == 'ChIP-seq':
         optimal_idr_peaks = scanFilesForOutputType(value['original_files'],
@@ -141,9 +151,6 @@ def audit_experiment_standards_dispatcher(value, system):
                 yield failure
 
     if value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
-        '''elif pipeline_title in ['WGBS single-end pipeline - version 2',
-                            'WGBS single-end pipeline',
-                            'WGBS paired-end pipeline']:'''
         cpg_quantifications = scanFilesForOutputType(value['original_files'],
                                                      'methylation state at CpG')
         for failure in check_experiment_wgbs_encode3_standards(value,
@@ -153,6 +160,61 @@ def audit_experiment_standards_dispatcher(value, system):
                                                                cpg_quantifications,
                                                                desired_assembly):
             yield failure
+
+
+def check_experiemnt_rna_seq_encode2_standards(value,
+                                               fastq_files,
+                                               alignment_files,
+                                               gene_quantifications,
+                                               desired_assembly,
+                                               desired_annotation):
+    pipeline_title = scanFilesForPipelineTitle_not_chipseq(alignment_files,
+                                                           ['GRCh38', 'mm10'],
+                                                           ['RNA-seq of long RNAs (paired-end, stranded)',
+                                                            'RNA-seq of long RNAs (single-end, unstranded)',
+                                                            'Small RNA-seq single-end pipeline'])
+    if pipeline_title is False:
+        return
+
+    if pipeline_title in ['RNA-seq of long RNAs (paired-end, stranded)',
+                          'RNA-seq of long RNAs (single-end, unstranded)']:
+        for failure in check_experiement_long_rna_encode2_standards(value,
+                                                                    fastq_files,
+                                                                    alignment_files,
+                                                                    pipeline_title,
+                                                                    gene_quantifications,
+                                                                    desired_assembly,
+                                                                    desired_annotation):
+            yield failure
+
+
+def check_experiement_long_rna_encode2_standards(experiment,
+                                                 fastq_files,
+                                                 alignment_files,
+                                                 pipeline_title,
+                                                 gene_quantifications,
+                                                 desired_assembly,
+                                                 desired_annotation):
+
+    for f in fastq_files:
+        if 'run_type' not in f:
+            detail = 'Long RNA-seq experiment {} '.format(experiment['@id']) + \
+                     'contains a file {} '.format(f['@id']) + \
+                     'without sequencing run type specified.'
+            yield AuditFailure('ENCODE2 long RNA - run type not specified', detail, level='WARNING')
+
+    for f in alignment_files:
+        if 'assembly' in f and f['assembly'] == desired_assembly:
+
+            read_depth = get_file_read_depth_from_alignment(f,
+                                                            get_target(experiment),
+                                                            'long RNA')
+
+            if experiment['assay_term_name'] in ['RNA-seq']:
+                for failure in check_file_read_depth(f, read_depth, 20000000,
+                                                     experiment['assay_term_name'],
+                                                     pipeline_title, 'ENCODE2 long RNA'):
+                    yield failure
 
 
 def check_experiemnt_rna_seq_encode3_standards(value,
@@ -230,25 +292,10 @@ def check_experiment_wgbs_encode3_standards(experiment,
                                             cpg_quantifications,
                                             desired_assembly):
 
-    read_lengths = get_read_lengths_wgbs(fastq_files)
+    for failure in check_wgbs_read_lengths(fastq_files, organism_name, 130, 100, 'WGBS'):
+        yield failure
 
-    for l in read_lengths:
-        if organism_name == 'mouse' and l < 100:
-            detail = 'Experiment {} '.format(experiment['@id']) + \
-                     'processed by  WGBS ' + \
-                     'pipeline, has FASTQ files with read ' + \
-                     'length of {}bp, while '.format(l) + \
-                     'the recommended read length for mouse data is > 100bp.'
-            yield AuditFailure('WGBS - insufficient read length', detail, level='NOT_COMPLIANT')
-            break
-        if organism_name == 'human' and l < 130:
-            detail = 'Experiment {} '.format(experiment['@id']) + \
-                     'processed by  WGBS ' + \
-                     'pipeline, has FASTQ files with read ' + \
-                     'length of {}bp, while '.format(l) + \
-                     'the recommended read length for human data is > 130bp.'
-            yield AuditFailure('WGBS - insufficient read length', detail, level='NOT_COMPLIANT')
-            break
+    read_lengths = get_read_lengths_wgbs(fastq_files)
 
     pipeline_title = scanFilesForPipelineTitle_not_chipseq(alignment_files,
                                                            ['GRCh38', 'mm10'],
@@ -290,6 +337,30 @@ def get_read_lengths_wgbs(fastq_files):
         if 'read_length' in f:
             list_of_lengths.append(f['read_length'])
     return list_of_lengths
+
+
+def check_wgbs_read_lengths(fastq_files,
+                            organism_name,
+                            human_threshold,
+                            mouse_threshold,
+                            assay_name):
+    for f in fastq_files:
+        if 'read_length' in f:
+            l = f['read_length']
+            if organism_name == 'mouse' and l < 100:
+                detail = 'Fastq file {} '.format(f['@id']) + \
+                         'has read length of {}bp, while '.format(l) + \
+                         'the recommended read length for {} '.format(organism_name) + \
+                         'data is > 100bp.'
+                yield AuditFailure(assay_name + ' - insufficient read length',
+                                   detail, level='NOT_COMPLIANT')
+            elif organism_name == 'human' and l < 130:
+                detail = 'Fastq file {} '.format(f['@id']) + \
+                         'has read length of {}bp, while '.format(l) + \
+                         'the recommended read length for {} '.format(organism_name) + \
+                         'data is > 130bp.'
+                yield AuditFailure(assay_name + ' - insufficient read length',
+                                   detail, level='NOT_COMPLIANT')
 
 
 def get_metrics(files_list, metric_type, desired_assembly=None, desired_annotation=None):
