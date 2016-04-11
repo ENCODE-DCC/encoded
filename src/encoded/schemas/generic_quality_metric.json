@@ -71,5 +71,6 @@
                 }
             }
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/generic_quality_metric.md"
 }
