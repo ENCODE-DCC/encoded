@@ -27,23 +27,15 @@ def bismark_quality_metric_2_3(value, system):
 def bismark_quality_metric_3_4(value, system):
     # http://redmine.encodedcc.org/issues/3897
     # get from the file the lab and award for the attribution!!!
-    if len(value['quality_metric_of']) < 1:
-        value['award'] = '/awards/R01HG004456/'
-        value['lab'] = '/labs/chris-burge/'
-    else:
-        conn = system['registry'][CONNECTION]
-        f = conn.get_by_unique_key('accession',
-                                   value['quality_metric_of'][0].split('/')[2])
-        if f is None:
-            value['award'] = '/awards/U01HG007910/'
-            value['lab'] = '/labs/chris-burge/'
-        else:
-            award_uuid = str(f.properties['award'])
-            lab_uuid = str(f.properties['lab'])
-            award = conn.get_by_uuid(award_uuid)
-            lab = conn.get_by_uuid(lab_uuid)
-            value['award'] = '/awards/'+str(award.properties['name'])+'/'
-            value['lab'] = '/labs/'+str(lab.properties['name'])+'/'
+    conn = system['registry'][CONNECTION]
+    #f = conn.get_by_unique_key('accession', value['quality_metric_of'][0].split('/')[2])
+    f = conn.get_by_uuid(value['quality_metric_of'][0])
+    award_uuid = str(f.properties['award'])
+    lab_uuid = str(f.properties['lab'])
+    award = conn.get_by_uuid(award_uuid)
+    lab = conn.get_by_uuid(lab_uuid)
+    value['award'] = '/awards/'+str(award.properties['name'])+'/'
+    value['lab'] = '/labs/'+str(lab.properties['name'])+'/'
 
 
     '''

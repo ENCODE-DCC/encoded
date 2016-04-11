@@ -34,7 +34,7 @@ def bismark_quality_metric_2(pipeline, analysis_step_run, bigbed):
         'pipeline': pipeline['uuid'],
         'step_run': analysis_step_run['uuid'],
         'schema_version': '3',
-        'quality_metric_of': [bigbed['@id']]
+        'quality_metric_of': [bigbed['uuid']]
     }
 
 
