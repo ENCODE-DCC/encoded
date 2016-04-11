@@ -20,7 +20,8 @@
         { "$ref": "mixins.json#/lot_id" },
         { "$ref": "mixins.json#/source" },
         { "$ref": "mixins.json#/references" },
-        { "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/submitter_comment" }
     ],
     "dependencies": {
         "transfection_method": ["transfection_type"],

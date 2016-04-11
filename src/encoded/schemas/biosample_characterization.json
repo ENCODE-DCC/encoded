@@ -35,9 +35,12 @@
             "type": "string",
             "enum": [
                 "immunoblot",
+                "immunoprecipitation",
+                "immunoprecipitation followed by mass spectrometry",
                 "immunofluorescence",
                 "FACs analysis",
-                "PCR"
+                "PCR",
+                "Sanger sequencing"
             ]
         }
     }
