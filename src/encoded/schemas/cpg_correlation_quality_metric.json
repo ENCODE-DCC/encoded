@@ -34,5 +34,6 @@
             "maximum": 1,
             "description": "Pearson's correlation of CpG pairs with at least 10 reads each"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/cpg_correlation_quality_metric.md"
 }
