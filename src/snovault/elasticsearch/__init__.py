@@ -29,7 +29,6 @@ def includeme(config):
         serializer=PyramidJSONSerializer(json_renderer),
         connection_class=TimedUrllib3HttpConnection,
         retry_on_timeout=True,
-        maxsize=36
     )
 
     config.include('.cached_views')

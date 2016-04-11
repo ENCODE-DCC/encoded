@@ -68,8 +68,6 @@ def index(request):
         try:
             status = es.get(index=INDEX, doc_type='meta', id='indexing')
         except NotFoundError:
-            interval_settings = {"index": {"refresh_interval": "30s"}}
-            es.indices.put_settings(index='encoded',body=interval_settings)
             pass
         else:
             last_xmin = status['_source']['xmin']
@@ -154,13 +152,9 @@ def index(request):
 
         result['errors'] = indexer.update_objects(request, invalidated, xmin, snapshot_id)
         result['indexed'] = len(invalidated)
-        
         if record:
             es.index(index=INDEX, doc_type='meta', body=result, id='indexing')
-            if es.indices.get_settings(index=INDEX)['encoded']['settings']['index'].get('refresh_interval','') != '1s':
-                interval_settings = {"index": {"refresh_interval": "1s"}}
-                es.indices.put_settings(index=INDEX, body=interval_settings)
-        
+
         es.indices.refresh(index=INDEX)
 
         if flush:
