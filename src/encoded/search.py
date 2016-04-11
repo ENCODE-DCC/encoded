@@ -24,6 +24,8 @@ _ASSEMBLY_MAPPER = {
     'WBcel235': 'WBcel235'
 }
 
+CHAR_COUNT = 32
+
 
 def includeme(config):
     config.add_route('search', '/search{slash:/?}')
@@ -587,7 +589,7 @@ def search(context, request, search_type=None):
     # If searching for more than one type, don't specify which fields to search
     elif len(doc_types) != 1:
         del query['query']['query_string']['fields']
-        if len(query['query']['query_string']['query']) > 30:
+        if len(query['query']['query_string']['query']) >= CHAR_COUNT:
             query['query']['query_string']['fields'] = ['_all', '*.uuid', '*.md5sum']
 
 
