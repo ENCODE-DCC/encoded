@@ -27,7 +27,6 @@
         "output_type": {
             "title": "Data type"
         },
-
         "file_format": {
             "title": "File format"
         },
@@ -598,17 +597,54 @@
         "accession": {
             "title": "Accession"
         },
+        "assembly": {
+            "title": "Mapping assembly"
+        },
         "dataset": {
             "title": "Dataset"
+        },
+        "biological_replicates": {
+            "title": "Biological replicates"
         },
         "file_format": {
             "title": "File Format"
         },
+        "file_type": {
+            "title": "File type"
+        },
+        "file_size": {
+            "title": "File size"
+        },
+        "href": {
+            "title": "Download URL"
+        },
+        "genome_annotation": {
+            "title": "Genome annotation"
+        },
+        "replicate.library.accession": {
+            "title": "Library"
+        },
+        "paired_end": {
+            "title": "Paired End Identifier"
+        },
+        "run_type": {
+            "title": "Run type for sequencing files"
+        },
         "md5sum": {
             "title": "MD5 Sum"
         },
+        "output_category": {
+            "title": "Data category"
+        },
         "output_type": {
-            "title": "Output Type"
+            "title": "Data type"
+        },
+        "date_created":
+        {
+            "title": "Date added"
+        },
+        "status": {
+            "title": "File status"
         }
     },
     "output_type_output_category": {
