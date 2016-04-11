@@ -98,5 +98,6 @@
             "type": "number",
             "description": "IDR: Percent reported peaks"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/idr_summary_quality_metric.md"
 }
