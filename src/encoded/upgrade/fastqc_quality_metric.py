@@ -4,8 +4,8 @@ from snovault import (
 )
 
 
-@upgrade_step('cpg_correlation_quality_metric', '1', '2')
-def cpg_correlation_quality_metric_1_2(value, system):
+@upgrade_step('fastqc_quality_metric', '2', '3')
+def fastqc_quality_metric_2_3(value, system):
     # http://redmine.encodedcc.org/issues/3897
     # get from the file the lab and award for the attribution!!!
     conn = system['registry'][CONNECTION]
