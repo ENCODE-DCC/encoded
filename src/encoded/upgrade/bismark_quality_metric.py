@@ -27,10 +27,12 @@ def bismark_quality_metric_2_3(value, system):
 def bismark_quality_metric_3_4(value, system):
     # http://redmine.encodedcc.org/issues/3897
     # get from the file the lab and award for the attribution!!!
-    conn = system['registry'][CONNECTION]
-    if len(value['quality_metric_of']) < 1:
-        value['award'] = '/awards/R01HG004456/'
-        value['lab'] = '/labs/chris-burge/'
+    
+    #conn = system['registry'][CONNECTION]
+    #if len(value['quality_metric_of']) < 1:
+    value['award'] = '/awards/R01HG004456/'
+    value['lab'] = '/labs/chris-burge/'
+    '''
     else:
         f = conn.get_by_unique_key('accession',
                                    value['quality_metric_of'][0].split('/')[2])
@@ -41,6 +43,7 @@ def bismark_quality_metric_3_4(value, system):
         value['award'] = '/awards/'+str(award.properties['name'])+'/'
         value['lab'] = '/labs/'+str(lab.properties['name'])+'/'
 
+    '''
     '''
     bigwigcorrelate_quality_metric.json V 3
 
