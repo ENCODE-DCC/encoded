@@ -551,7 +551,7 @@ def check_experiement_rampage_encode3_standards(experiment,
                               'MadQualityMetric',
                               desired_assembly,
                               desired_annotation)
-   
+
     for failure in check_spearman(mad_metrics, experiment['replication_type'],
                                   0.9, 0.8, 'RAMPAGE (paired-end, stranded)', 'RAMPAGE'):
         yield failure
