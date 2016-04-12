@@ -19,10 +19,8 @@ pytest_plugins = [
 def autouse_external_tx(external_tx):
     pass
 
-
-_app_settings = {
-    'collection_datastore': 'database',
-    'item_datastore': 'database',
+'''
+    Additional settings for encoded app
     'multiauth.policies': 'persona session remoteuser accesskey',
     'multiauth.groupfinder': 'encoded.authorization.groupfinder',
     'multiauth.policy.persona.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
@@ -38,6 +36,27 @@ _app_settings = {
     'multiauth.policy.accesskey.namespace': 'accesskey',
     'multiauth.policy.accesskey.base': 'encoded.authentication.BasicAuthAuthenticationPolicy',
     'multiauth.policy.accesskey.check': 'encoded.authentication.basic_auth_check',
+    'ontology_path': pkg_resources.resource_filename('encoded', '../../ontology.json'),
+'''
+
+_app_settings = {
+    'collection_datastore': 'database',
+    'item_datastore': 'database',
+    'multiauth.policies': 'persona session remoteuser accesskey',
+    'multiauth.groupfinder': 'encoded.authorization.groupfinder',
+    'multiauth.policy.persona.use': 'snovault.authentication.NamespacedAuthenticationPolicy',
+    'multiauth.policy.persona.base': 'encoded.persona.PersonaAuthenticationPolicy',
+    'multiauth.policy.persona.namespace': 'persona',
+    'multiauth.policy.session.use': 'snovault.authentication.NamespacedAuthenticationPolicy',
+    'multiauth.policy.session.base': 'pyramid.authentication.SessionAuthenticationPolicy',
+    'multiauth.policy.session.namespace': 'mailto',
+    'multiauth.policy.remoteuser.use': 'snovault.authentication.NamespacedAuthenticationPolicy',
+    'multiauth.policy.remoteuser.namespace': 'remoteuser',
+    'multiauth.policy.remoteuser.base': 'pyramid.authentication.RemoteUserAuthenticationPolicy',
+    'multiauth.policy.accesskey.use': 'snovault.authentication.NamespacedAuthenticationPolicy',
+    'multiauth.policy.accesskey.namespace': 'accesskey',
+    'multiauth.policy.accesskey.base': 'snovault.authentication.BasicAuthAuthenticationPolicy',
+    'multiauth.policy.accesskey.check': 'snovault.authentication.basic_auth_check',
     'persona.audiences': 'http://localhost:6543',
     'persona.verifier': 'browserid.LocalVerifier',
     'persona.siteName': 'ENCODE DCC Submission',

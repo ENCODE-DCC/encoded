@@ -14,7 +14,7 @@ CRYPT_CONTEXT = __name__ + ':crypt_context'
 
 
 def includeme(config):
-    config.include('.edw_hash')
+    config.include('.snowflake_hash')
     setting_prefix = 'passlib.'
     passlib_settings = {
         k[len(setting_prefix):]: v
@@ -22,7 +22,7 @@ def includeme(config):
         if k.startswith(setting_prefix)
     }
     if not passlib_settings:
-        passlib_settings = {'schemes': 'edw_hash, unix_disabled'}
+        passlib_settings = {'schemes': 'snowflake_hash, unix_disabled'}
     crypt_context = CryptContext(**passlib_settings)
     config.registry[CRYPT_CONTEXT] = crypt_context
 
