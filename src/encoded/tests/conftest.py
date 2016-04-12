@@ -56,12 +56,6 @@ def app_settings(request, wsgi_server_host_port, connection, DBSession):
     return settings
 
 
-def pytest_configure():
-    import logging
-    logging.basicConfig()
-    logging.getLogger('selenium').setLevel(logging.DEBUG)
-
-
 @pytest.yield_fixture
 def config():
     from pyramid.testing import setUp, tearDown
