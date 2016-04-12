@@ -48,7 +48,7 @@ _app_settings = {
 
 
 @fixture(scope='session')
-def app_settings(request, wsgi_server_host_port, connection, DBSession):
+def app_settings(request, wsgi_server_host_port, conn, DBSession):
     from snovault import DBSESSION
     settings = _app_settings.copy()
     settings['persona.audiences'] = 'http://%s:%s' % wsgi_server_host_port
@@ -122,8 +122,8 @@ def collections(registry):
 
 @pytest.mark.fixture_cost(500)
 @pytest.yield_fixture(scope='session')
-def workbook(connection, app, app_settings):
-    tx = connection.begin_nested()
+def workbook(conn, app, app_settings):
+    tx = conn.begin_nested()
     try:
         from webtest import TestApp
         environ = {
