@@ -64,8 +64,14 @@ class Root(Resource):
 
     def __init__(self, registry):
         self.registry = registry
-        self.collections = registry[COLLECTIONS]
-        self.connection = registry[CONNECTION]
+
+    @reify
+    def connection(self):
+        return self.registry[CONNECTION]
+
+    @reify
+    def collections(self):
+        return self.registry[COLLECTIONS]
 
     def __getitem__(self, name):
         try:
