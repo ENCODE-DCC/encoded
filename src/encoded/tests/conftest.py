@@ -67,7 +67,7 @@ def config():
 def threadlocals(request, dummy_request, registry):
     from pyramid.threadlocal import manager
     manager.push({'request': dummy_request, 'registry': registry})
-    yield dummy_request
+    yield manager.get()
     manager.pop()
 
 
