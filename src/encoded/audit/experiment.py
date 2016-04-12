@@ -74,13 +74,14 @@ non_seq_assays = [
                                     'original_files.analysis_step_version',
                                     'original_files.analysis_step_version.analysis_step',
                                     'original_files.analysis_step_version.analysis_step.pipelines'],
-               condition=rfa('ENCODE3', 'ENCODE2', 'ENCODE2-Mouse'))
+               condition=rfa('ENCODE3', 'ENCODE'))
 def audit_experiment_standards_dispatcher(value, system):
     '''
     Dispatcher function that will redirect to other functions that would
     deal with specific assay types standards
     '''
-    if value['status'] not in ['released', 'release ready']:
+    #if value['status'] not in ['released', 'release ready']:
+    if value['status'] in ['revoked', 'deleted', 'replaced']:
         return
     if 'assay_term_name' not in value or \
        value['assay_term_name'] not in ['CAGE', 'RAMPAGE', 'RNA-seq', 'ChIP-seq',
@@ -124,15 +125,15 @@ def audit_experiment_standards_dispatcher(value, system):
 
         gene_quantifications = scanFilesForOutputType(value['original_files'],
                                                       'gene quantifications')
-        if value['award']['rfa'] in ['ENCODE3']:
-            for failure in check_experiemnt_rna_seq_encode3_standards(value,
-                                                                      fastq_files,
-                                                                      alignment_files,
-                                                                      gene_quantifications,
-                                                                      desired_assembly,
-                                                                      desired_annotation):
-                yield failure
-        elif value['award']['rfa'] in ['ENCODE2', 'ENCODE2-Mouse']:
+        #if value['award']['rfa'] in ['ENCODE3']:
+        for failure in check_experiemnt_rna_seq_encode3_standards(value,
+                                                                  fastq_files,
+                                                                  alignment_files,
+                                                                  gene_quantifications,
+                                                                  desired_assembly,
+                                                                  desired_annotation):
+            yield failure
+        '''elif value['award']['rfa'] in ['ENCODE2', 'ENCODE2-Mouse']:
             for failure in check_experiemnt_rna_seq_encode2_standards(value,
                                                                       fastq_files,
                                                                       alignment_files,
@@ -140,6 +141,7 @@ def audit_experiment_standards_dispatcher(value, system):
                                                                       desired_assembly,
                                                                       desired_annotation):
                 yield failure
+        '''
 
     if value['assay_term_name'] == 'ChIP-seq':
         optimal_idr_peaks = scanFilesForOutputType(value['original_files'],
