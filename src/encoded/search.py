@@ -12,6 +12,7 @@ from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
 
+
 _ASSEMBLY_MAPPER = {
     'GRCh38-minimal': 'hg38',
     'GRCh38': 'hg38',
@@ -22,6 +23,8 @@ _ASSEMBLY_MAPPER = {
     'BDGP5': 'dm3',
     'WBcel235': 'WBcel235'
 }
+
+CHAR_COUNT = 32
 
 
 def includeme(config):
@@ -109,6 +112,8 @@ def prepare_search_term(request):
     if search_term == '*':
         return search_term
 
+    # avoid interpreting slashes as regular expressions
+    search_term = search_term.replace('/', r'\/')
     # elasticsearch uses : as field delimiter, but we use it as namespace designator
     # if you need to search fields you have to use @type:field
     # if you need to search fields where the field contains ":", you will have to escape it
@@ -615,6 +620,9 @@ def search(context, request, search_type=None, return_generator=False):
     # If searching for more than one type, don't specify which fields to search
     elif len(doc_types) != 1:
         del query['query']['query_string']['fields']
+        if len(query['query']['query_string']['query']) >= CHAR_COUNT:
+            query['query']['query_string']['fields'] = ['_all', '*.uuid', '*.md5sum']
+
 
     # Set sort order
     has_sort = set_sort_order(request, search_term, types, doc_types, query, result)
