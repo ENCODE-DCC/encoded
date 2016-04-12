@@ -7,7 +7,7 @@ from snovault import (
     calculated_property,
     collection,
 )
-from ..types.base import paths_filtered_by_status
+from encoded.types.base import paths_filtered_by_status
 from snovault.attachment import ItemWithAttachment
 
 
