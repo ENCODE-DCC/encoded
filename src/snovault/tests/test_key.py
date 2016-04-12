@@ -1,5 +1,9 @@
 import pytest
 
+pytest_plugins = [
+    'snovault.tests.serverfixtures',
+]
+
 items = [
     {'name': 'one', 'accession': 'TEST1'},
     {'name': 'two', 'accession': 'TEST2'},
@@ -9,6 +13,34 @@ bad_items = [
     {'name': 'one', 'accession': 'BAD1'},
     {'name': 'bad', 'accession': 'TEST1'},
 ]
+
+
+@pytest.fixture(autouse=True)
+def autouse_external_tx(external_tx):
+    pass
+
+
+@pytest.fixture
+def testapp(app):
+    '''TestApp with JSON accept header.
+    '''
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'TEST',
+    }
+    return TestApp(app, environ)
+
+
+@pytest.fixture(scope='session')
+def app(DBSession):
+    from pyramid.config import Configurator
+    from snovault import DBSESSION
+    config = Configurator()
+    config.registry[DBSESSION] = DBSession
+    config.include('snovault')
+    config.include('.testing_key')
+    return config.make_wsgi_app()
 
 
 @pytest.fixture
@@ -53,13 +85,3 @@ def test_keys_conflict(testapp):
     assert(conflict.status_code == 409)
     conflicted = testapp.get(url).json['@graph']
     assert(len(posted) == len(conflicted))
-
-
-@pytest.mark.slow
-def test_keys_templated(workbook, session):
-    from snovault.storage import Key
-    keys = [(key.name, key.value) for key in session.query(Key).all()]
-    assert keys
-    for name, value in keys:
-        assert '{' not in name
-        assert '{' not in value
