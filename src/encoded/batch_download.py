@@ -1,11 +1,16 @@
 from collections import OrderedDict
+from pyramid.compat import bytes_
+from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 from pyramid.response import Response
+from snovault import TYPES
 from snovault.util import simple_path_ids
 from urllib.parse import (
     parse_qs,
     urlencode,
 )
+from .search import iter_search_results
+from .search import list_visible_columns_for_schemas
 
 import csv
 import io
@@ -21,6 +26,7 @@ def includeme(config):
     config.add_route('batch_download', '/batch_download/{search_params}')
     config.add_route('metadata', '/metadata/{search_params}/{tsv}')
     config.add_route('peak_metadata', '/peak_metadata/{search_params}/{tsv}')
+    config.add_route('report_download', '/report.tsv')
     config.scan(__name__)
 
 
@@ -276,3 +282,59 @@ def batch_download(context, request):
         body='\n'.join(files),
         content_disposition='attachment; filename="%s"' % 'files.txt'
     )
+
+
+def lookup_column_value(value, path):
+    nodes = [value]
+    names = path.split('.')
+    for name in names:
+        nextnodes = []
+        for node in nodes:
+            if name not in node:
+                continue
+            value = node[name]
+            if isinstance(value, list):
+                nextnodes.extend(value)
+            else:
+                nextnodes.append(value)
+        nodes = nextnodes
+        if not nodes:
+            return ''
+    # if we ended with an embedded object, show the @id
+    if nodes and hasattr(nodes[0], '__contains__') and '@id' in nodes[0]:
+        nodes = [node['@id'] for node in nodes]
+    seen = set()
+    deduped_nodes = [n for n in nodes if not (n in seen or seen.add(n))]
+    return u','.join(u'{}'.format(n) for n in deduped_nodes)
+
+
+def format_row(columns):
+    """Format a list of text columns as a tab-separated byte string."""
+    return b'\t'.join([bytes_(c, 'utf-8') for c in columns]) + b'\r\n'
+
+
+@view_config(route_name='report_download', request_method='GET')
+def report_download(context, request):
+    types = request.params.getall('type')
+    if len(types) != 1:
+        msg = 'Report view requires specifying a single type.'
+        raise HTTPBadRequest(explanation=msg)
+
+    # Make sure we get all results
+    request.GET['limit'] = 'all'
+
+    schemas = [request.registry[TYPES][types[0]].schema]
+    columns = list_visible_columns_for_schemas(request, schemas)
+    header = [column.get('title') or field for field, column in columns.items()]
+
+    def generate_rows():
+        yield format_row(header)
+        for item in iter_search_results(context, request):
+            values = [lookup_column_value(item, path) for path in columns]
+            yield format_row(values)
+
+    # Stream response using chunked encoding.
+    request.response.content_type = 'text/tsv'
+    request.response.content_disposition = 'attachment;filename="%s"' % 'report.tsv'
+    request.response.app_iter = generate_rows()
+    return request.response
