@@ -147,7 +147,8 @@ var Graph = module.exports.Graph = React.createClass({
     getInitialState: function() {
         return {
             dlDisabled: false, // Download button disabled because of IE
-            verticalGraph: false // True for vertically oriented graph, false for horizontal
+            verticalGraph: false, // True for vertically oriented graph, false for horizontal
+            zoomLevel: 50 // Graph zoom level
         };
     },
 
@@ -245,6 +246,7 @@ var Graph = module.exports.Graph = React.createClass({
 
                 // Add SVG element to the graph component, and assign it classes, sizes, and a group
                 var svg = d3.select(el).insert('svg', '#graph-node-info')
+                    .attr('id', 'pipline-graph')
                     .attr('preserveAspectRatio', 'xMidYMid')
                     .attr('version', '1.1');
                 var svgGroup = svg.append("g");
@@ -254,6 +256,7 @@ var Graph = module.exports.Graph = React.createClass({
 
                 // Bind node/subnode click handlers to parent component handlers
                 this.bindClickHandlers(d3, el);
+                this.originalViewBox = document.getElementById('pipline-graph').getAttribute('viewBox').split(' ');
             }.bind(this));
         } else {
             // Output text indicating that graphs aren't supported.
@@ -356,6 +359,18 @@ var Graph = module.exports.Graph = React.createClass({
         }.bind(this);
     },
 
+    rangeChange: function(e) {
+        // Called when the user clicks/drags the zoom slider
+        var value = e.target.value;
+        this.setState({zoomLevel: value});
+
+        var coords = this.originalViewBox.slice();
+        var newValue = parseInt(coords[2]) + (value - 50) * 4;
+        coords[2] = newValue;
+        console.log('COORDS: %s:%s', coords.join(' '), newValue);
+        document.getElementById('pipline-graph').setAttribute('viewBox', coords.join(' '));
+    },
+
     render: function() {
         var orientBtnClass = (this.state.verticalGraph ? 'btn-orient-horizontal' : 'btn-orient-vertical');
         var orientBtnAlt = 'Orient graph ' + (this.state.verticalGraph ? 'horizontally' : 'vertically');
@@ -366,6 +381,7 @@ var Graph = module.exports.Graph = React.createClass({
                 <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler}></div>
                 <div className="graph-dl clearfix">
                     <button className="btn btn-info btn-sm btn-orient-wrapper" title={orientBtnAlt} onClick={this.handleOrientationClick}><span className={orientBtnClass}><span className="sr-only">{orientBtnAlt}</span></span></button>
+                    <input type="range" min="0" max="100" value={this.state.zoomLevel} onChange={this.rangeChange} />
                     <button ref="dlButton" className="btn btn-info btn-sm pull-right" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
                 </div>
                 {this.props.children}

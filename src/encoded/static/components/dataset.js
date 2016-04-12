@@ -1255,6 +1255,13 @@ var Series = module.exports.Series = React.createClass({
                                             <dd>{references}</dd>
                                         </div>
                                     : null}
+
+                                    {context.submitter_comment ?
+                                        <div data-test="submittercomment">
+                                            <dt>Submitter comment</dt>
+                                            <dd>{context.submitter_comment}</dd>
+                                        </div>
+                                    : null}
                                 </dl>
                             </div>
                         </div>

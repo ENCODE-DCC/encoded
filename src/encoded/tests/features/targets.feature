@@ -13,13 +13,3 @@ Feature: Targets
     Scenario: Detail page
         When I visit "/targets/ADNP-human/"
         Then I should see an element with the css selector ".view-item.type-Target"
-
-        When I click the link to "http://www.uniprot.org/uniprot/Q9H2P0"
-        And I wait for the content to load
-        Then the browser's URL should contain "www.uniprot.org"
-        Then I should see "Q9H2P0"
-        And I should see "ADNP_HUMAN"
-
-        When I go back
-        Then the browser's URL should contain "/targets/"
-        And I should see an element with the css selector ".view-item.type-Target"
