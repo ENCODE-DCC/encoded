@@ -427,6 +427,7 @@ def check_experiement_long_rna_encode3_standards(experiment,
                                              'CRISPR genome editing followed by RNA-seq']:
         for failure in check_experiment_ERCC_spikeins(experiment, pipeline_title, 'long RNA'):
             yield failure
+    else:
         for failure in check_target(experiment, pipeline_title, 'long RNA'):
             yield failure
 
