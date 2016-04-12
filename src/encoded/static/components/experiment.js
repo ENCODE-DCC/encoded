@@ -1781,7 +1781,7 @@ var qcAttachmentProperties = {
 };
 
 // List of quality metric properties to not display
-var qcReservedProperties = ['uuid', 'assay_term_name', 'assay_term_id', 'attachment', 'submitted_by', 'level', 'status', 'date_created', 'step_run', 'schema_version'];
+var qcReservedProperties = ['uuid', 'assay_term_name', 'assay_term_id', 'attachment', 'award', 'lab', 'submitted_by', 'level', 'status', 'date_created', 'step_run', 'schema_version'];
 
 // Display QC metrics of the selected QC sub-node in a file node.
 var QcDetailsView = function(metrics) {
