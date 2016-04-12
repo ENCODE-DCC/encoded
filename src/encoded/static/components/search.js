@@ -897,7 +897,6 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
             var results = context['@graph'];
             var total = context['total'];
             var batch_hub_disabled = total > batchHubLimit;
-            var columns = context['columns'];
             var filters = context['filters'];
             var label = 'results';
             var searchBase = this.props.searchBase;
@@ -987,7 +986,7 @@ var DropdownMenu = dropdownMenu.DropdownMenu;
                             <ul className="nav result-table" id="result-table">
                                 {results.length ?
                                     results.map(function (result) {
-                                        return Listing({context:result, columns: columns, key: result['@id']});
+                                        return Listing({context:result, key: result['@id']});
                                     })
                                 : null}
                             </ul>
