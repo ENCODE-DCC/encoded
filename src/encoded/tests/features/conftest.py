@@ -19,13 +19,13 @@ def external_tx():
 
 @pytest.fixture(scope='session')
 def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
-    from .. import test_indexing
+    from snovault.tests import test_indexing
     return test_indexing.app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
 
 
 @pytest.yield_fixture(scope='session')
 def app(app_settings):
-    from .. import test_indexing
+    from snovault.tests import test_indexing
     from snovault.elasticsearch import create_mapping
     for app in test_indexing.app(app_settings):
         create_mapping.run(app)
