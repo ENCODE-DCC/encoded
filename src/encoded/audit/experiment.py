@@ -226,7 +226,7 @@ def check_experiemnt_rna_seq_encode3_standards(value,
                                                desired_assembly,
                                                desired_annotation):
     for f in fastq_files:
-        for failure in check_file_read_length(f, 50, 'RNA-seq pipelines'):
+        for failure in check_file_read_length_rna(f, 50, 'RNA-seq pipelines'):
             yield failure
         for failure in check_file_platform(f, ['OBI:0002024', 'OBI:0000696'], 'RNA-seq pipelines'):
             yield failure
@@ -392,7 +392,7 @@ def check_experiment_chip_seq_encode3_standards(experiment,
                      'contains a file {} '.format(f['@id']) + \
                      'without sequencing run type specified.'
             yield AuditFailure('ChIP-seq - run type not specified', detail, level='WARNING')
-        for failure in check_file_read_length(f, 50, 'ChIP-seq'):
+        for failure in check_file_read_length_chip(f, 50, 'ChIP-seq'):
             yield failure
 
     pipeline_title = scanFilesForPipelineTitle_yes_chipseq(alignment_files, ['Histone ChIP-seq'])
@@ -645,7 +645,9 @@ def check_experiment_ERCC_spikeins(experiment, pipeline, assay_name):
             accs = set()
             for s in spikes:
                 accs.add(s['accession'])
-            if 'ENCSR156CIL' not in accs:
+            if ('ENCSR156CIL' not in accs) and \
+               ('ENCSR884LPM' not in accs) and \
+               ('ENCSR422PLF' not in accs):
                 detail = 'Library {} '.format(lib['@id']) + \
                          'in experiment {} '.format(experiment['@id']) + \
                          'that was processed by {} pipeline '.format(pipeline) + \
@@ -942,7 +944,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                      'in experiments studying broad histone marks, which ' + \
                      'require {} usable fragments, according to '.format(marks['broad']) + \
                      'June 2015 standards.'
-            yield AuditFailure(assay_name + ' - insufficient read depth', detail, level='WARNING')
+            yield AuditFailure(assay_name + ' - low read depth', detail, level='WARNING')
         if read_depth >= 10000000 and read_depth < marks['narrow']:
             detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                          read_depth) + \
@@ -1069,7 +1071,7 @@ def check_file_platform(file_to_check, excluded_platforms, assay_name):
         yield AuditFailure(assay_name + ' - not compliant platform', detail, level='WARNING')
 
 
-def check_file_read_length(file_to_check, threshold_length, assay_name):
+def check_file_read_length_chip(file_to_check, threshold_length, assay_name):
     if 'read_length' not in file_to_check:
         detail = 'Reads file {} missing read_length'.format(file_to_check['@id'])
         yield AuditFailure(assay_name + ' - missing read_length', detail, level='NOT_COMPLIANT')
@@ -1098,6 +1100,23 @@ def check_file_read_length(file_to_check, threshold_length, assay_name):
                                level='NOT_COMPLIANT')
     return
 
+
+def check_file_read_length_rna(file_to_check, threshold_length, assay_name):
+    if 'read_length' not in file_to_check:
+        detail = 'Reads file {} missing read_length'.format(file_to_check['@id'])
+        yield AuditFailure(assay_name + ' - missing read_length', detail, level='NOT_COMPLIANT')
+        return
+
+    read_length = file_to_check['read_length']
+    if read_length < threshold_length:
+        detail = 'Fastq file {} '.format(file_to_check['@id']) + \
+                 'has read length of {}bp.'.format(read_length) + \
+                 ' It is not compliant with ENCODE3 standards.' + \
+                 ' According to ENCODE3 standards sequencing reads ' + \
+                 'should be at least {}bp long.'.format(threshold_length)
+        yield AuditFailure(assay_name + ' - insufficient read length', detail,
+                           level='NOT_COMPLIANT')
+    return
 
 def get_organism_name(reps):
     for rep in reps:

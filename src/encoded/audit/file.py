@@ -685,14 +685,11 @@ def audit_file_read_depth(value, system):
                           'WGBS single-end pipeline - version 2',
                           'WGBS single-end pipeline',
                           'WGBS paired-end pipeline']
-    if (quality_metrics is None) or (quality_metrics == []):
-        '''
-        Excluding ChIP-seq - Raw mapping with no filtration BAMs
-        '''
-        for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
+    for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
             if pipeline['title'] in excluded_pipelines:
                 return
 
+    if ('quality_metrics' not in value) or (quality_metrics is None) or (quality_metrics == []):
         detail = 'ENCODE Processed alignment file {} has no quality_metrics'.format(
             value['@id'])
         yield AuditFailure('missing quality metrics', detail, level='DCC_ACTION')
