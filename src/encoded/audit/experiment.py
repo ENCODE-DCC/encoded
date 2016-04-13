@@ -917,6 +917,12 @@ def check_file_chip_seq_read_depth(file_to_check,
                                    target,
                                    read_depth,
                                    assay_name):
+    # added individual file pipeline validation due to the fact that one experiment may
+    # have been mapped using 'Raw mapping' and also 'Histone ChIP-seq' - and there is no need to
+    # check read depth on Raw files, while it is required for Histone
+    pipeline_title = scanFilesForPipelineTitle_yes_chipseq([file_to_check], ['Histone ChIP-seq'])
+    if pipeline_title is False:
+        return
 
     marks = pipelines_with_read_depth['Histone ChIP-seq']
 
