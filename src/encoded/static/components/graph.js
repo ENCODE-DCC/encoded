@@ -9,9 +9,11 @@ var {Panel, PanelBody, PanelHeading} = panel;
 
 
 // Zoom slider constants
-const minZoom = 0;
-const maxZoom = 100;
-const midZoom = (maxZoom - minZoom) / 2;
+const minZoom = 0; // Minimum zoom slider level
+const maxZoom = 100; // Maximum zoom slider level
+const midZoom = (maxZoom - minZoom) / 2; // Default zoom slider level
+const graphWidthMargin = 40; // Margin on horizontal edges of graph SVG
+const graphHeightMargin = 40; // Margin on vertical edges of graph SVG
 
 
 // The JsonGraph object helps build JSON graph objects. Create a new object
@@ -228,12 +230,16 @@ var Graph = module.exports.Graph = React.createClass({
         if (firstRender) {
             var graphWidth = Math.ceil(g.graph().width);
             var graphHeight = Math.ceil(g.graph().height);
-            viewBox = [0, 0, graphWidth, graphHeight];
+            var orgX = -graphWidthMargin;
+            var orgY = -graphHeightMargin;
+            var viewBoxWidth = graphWidth + (graphWidthMargin * 2);
+            var viewBoxHeight = graphHeight + (graphHeightMargin * 2);
+            viewBox = [orgX, orgY, viewBoxWidth, viewBoxHeight];
 
             // Remember the view box for zooming calculations
-            this.cv.originalViewBox = {width: graphWidth, height: graphHeight};
+            this.cv.originalViewBox = {width: viewBoxWidth, height: viewBoxHeight};
         } else {
-            viewBox = [0, 0, this.cv.originalViewBox.width, this.cv.originalViewBox.height];
+            viewBox = [orgX, orgY, this.cv.originalViewBox.width, this.cv.originalViewBox.height];
         }
 
         var {width, height} = this.calcZoom(this.cv.originalViewBox.width, this.cv.originalViewBox.height);
@@ -309,7 +315,7 @@ var Graph = module.exports.Graph = React.createClass({
         if (this.cv.dagreLoaded && !this.cv.zoomMouseDown) {
             var d3 = require('d3');
             var el = this.refs.graphdisplay.getDOMNode(); // Change in React 0.14
-            this.drawGraph(el);
+            this.drawGraph(el, this.props.forceRedraw);
             this.bindClickHandlers(d3, el);
         }
     },

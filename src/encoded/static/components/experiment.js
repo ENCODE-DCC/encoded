@@ -1201,7 +1201,7 @@ var FileGalleryRenderer = React.createClass({
             <Panel>
                 <TabPanel tabs={{graph: graphTab, table: tableTab}} addClasses="file-gallery-tabs" moreComponents={filterMenu} moreComponentsClasses="file-gallery-filter">
                     <TabPanelPane key="graph">
-                        <ExperimentGraph context={context} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} />
+                        <ExperimentGraph context={context} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
                     </TabPanelPane>
                     <TabPanelPane key="table">
                         <DatasetFiles {...this.props} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} encodevers={this.props.encodevers} anisogenic={this.props.anisogenic} session={this.context.session} />
@@ -1737,7 +1737,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 return (
                     <div>
                         {goodGraph ?
-                            <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses>
+                            <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw>
                                 <div id="graph-node-info">
                                     {meta ? <PanelBody>{meta}</PanelBody> : null}
                                 </div>
