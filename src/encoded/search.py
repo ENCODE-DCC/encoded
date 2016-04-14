@@ -511,7 +511,6 @@ def search(context, request, search_type=None):
         'columns': OrderedDict(),
         'filters': [],
     }
-
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
     es_index = request.registry.settings['snovault.elasticsearch.index']
@@ -606,7 +605,7 @@ def search(context, request, search_type=None):
     if len(doc_types) == 1 and 'facets' in types[doc_types[0]].schema:
         facets.extend(types[doc_types[0]].schema['facets'].items())
 
-    if search_audit:
+    if search_audit and 'group.submitter' in principals:
         for audit_facet in audit_facets:
             facets.append(audit_facet)
 
