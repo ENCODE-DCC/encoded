@@ -31,20 +31,20 @@ var columnChoices = function(schema, selected) {
             }
         });
     }
+    // add embedded columns
+    _.each(schemaColumns, (column, path) => {
+        columns[path] = {
+            title: column.title,
+            visible: true
+        };
+    });
     // add all properties (with a few exceptions)
     _.each(schema.properties, (property, name) => {
         if (name == '@id' || name == '@type' || name == 'uuid') return;
-        columns[name] = {
-            title: property.title,
-            visible: schemaColumns.hasOwnProperty(name)
-        };
-    });
-    // add embedded columns
-    _.each(schemaColumns, (column, path) => {
-        if (!columns.hasOwnProperty(path)) {
-            columns[path] = {
-                title: column.title,
-                visible: true
+        if (!columns.hasOwnProperty(name)) {
+            columns[name] = {
+                title: property.title,
+                visible: false
             };
         }
     });
@@ -223,15 +223,15 @@ var ColumnSelector = React.createClass({
 
     render: function() {
         return (
-            <div>
-                <a className={'btn btn-info btn-sm' + (this.state.open ? ' active' : '')} href="#" onClick={this.toggle} title="Choose columns"><i className="icon icon-columns"></i></a>
+            <span>
+                <a className={'btn btn-info btn-sm' + (this.state.open ? ' active' : '')} href="#" onClick={this.toggle} title="Choose columns"><i className="icon icon-columns"></i> Columns</a>
                 {this.state.open && <div style={{position: 'absolute', right: 0, backgroundColor: '#fff', padding: '.5em', border: 'solid 1px #ccc', borderRadius: 3, zIndex: 1}}>
                     <h4>Columns</h4>
                     {_.mapObject(this.props.columns, (column, path) => <div onClick={this.toggleColumn.bind(this, path)} style={{cursor: 'pointer'}}>
                         <input type="checkbox" checked={column.visible} /> {column.title}
                     </div>)}
                 </div>}
-            </div>
+            </span>
         );
     },
 
@@ -302,6 +302,8 @@ var Report = React.createClass({
                         <div className="col-sm-7 col-md-8 col-lg-9">
                             <span className="pull-right">
                                 <ColumnSelector columns={columns} toggleColumn={this.toggleColumn} />
+                                {' '}<a className="btn btn-info btn-sm"
+                                   href={context.download_tsv} data-bypass>Download TSV</a>
                             </span>
                             <h4>
                                 Showing results {this.state.from + 1} to {Math.min(context.total, this.state.to)} of {context.total}
