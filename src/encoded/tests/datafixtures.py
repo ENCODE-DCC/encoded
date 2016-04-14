@@ -11,6 +11,15 @@ def lab(testapp):
 
 
 @pytest.fixture
+def remc_lab(testapp):
+    item = {
+        'name': 'remc-lab',
+        'title': 'REMC lab',
+    }
+    return testapp.post_json('/lab', item).json['@graph'][0]
+
+
+@pytest.fixture
 def admin(testapp):
     item = {
         'first_name': 'Test',
@@ -79,11 +88,12 @@ def viewing_group_member(testapp, award):
 
 
 @pytest.fixture
-def remc_member(testapp):
+def remc_member(testapp, remc_lab):
     item = {
         'first_name': 'REMC',
         'last_name': 'Member',
         'email': 'remc_member@example.org',
+        'submits_for': [remc_lab['@id']],
         'viewing_groups': ['REMC'],
     }
     # User @@object view has keys omitted.

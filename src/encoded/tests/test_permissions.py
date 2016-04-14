@@ -280,3 +280,14 @@ def test_submitter_post_qc_metric(submitter_testapp, step_run, file, lab, award)
         'award': award['@id']
     }
     submitter_testapp.post_json('/generic-quality-metrics', item, status=201)
+
+
+def test_wronggroup_post_qc_metric(remc_member_testapp, step_run, file, remc_lab, award):
+    item = {
+        'name': 'test-quality-metric',
+        'quality_metric_of': [file['@id']],
+        'step_run': step_run['@id'],
+        'lab': remc_lab['@id'],
+        'award': award['@id']
+    }
+    remc_member_testapp.post_json('/generic-quality-metrics', item, status=201)
