@@ -189,3 +189,31 @@ g.pipeline-node-qc-metric {
     padding-bottom: 5px;
     border-bottom: 1px solid #e0e0e0;
 }
+
+.zoom-control {
+    display: none;
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: inline-block;
+        vertical-align: middle;
+
+        .icon {
+            vertical-align: middle;
+            margin: 0 10px;
+            color: #808080;
+        }
+    }
+}
+
+.zoom-slider {
+    display: table-cell !important;
+    width: 100px !important;
+    vertical-align: middle;
+}
+
+.zoom-decoration {
+    display: inline-block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    vertical-align: middle;
+}

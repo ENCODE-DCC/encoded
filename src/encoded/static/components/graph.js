@@ -285,7 +285,6 @@ var Graph = module.exports.Graph = React.createClass({
                 // Fix the height of the div that wraps the svg so that changing the svg's scale
                 // doesn't affect the height of the graph box -- the svg just resizes inside this
                 // <div>.
-                el.style.width = el.clientWidth + 'px';
                 el.style.height = el.clientHeight + 'px';
 
                 // Bind node/subnode click handlers to parent component handlers
@@ -447,7 +446,11 @@ var Graph = module.exports.Graph = React.createClass({
                 <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler}></div>
                 <div className="graph-dl clearfix">
                     <button className="btn btn-info btn-sm btn-orient-wrapper" title={orientBtnAlt} onClick={this.handleOrientationClick}><span className={orientBtnClass}><span className="sr-only">{orientBtnAlt}</span></span></button>
-                    <input type="range" min={minZoom} max={maxZoom} value={this.state.zoomLevel} onChange={this.rangeChange} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} />
+                    <div className="zoom-control">
+                        <i className="icon icon-minus"></i>
+                        <input type="range" className="zoom-slider" min={minZoom} max={maxZoom} value={this.state.zoomLevel} onChange={this.rangeChange} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} />
+                        <i className="icon icon-plus"></i>
+                    </div>
                     <button ref="dlButton" className="btn btn-info btn-sm pull-right" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
                 </div>
                 {this.props.children}
