@@ -176,6 +176,9 @@ def set_sort_order(request, search_term, types, doc_types, query, result):
     if sort:
         query['sort'] = sort
         result['sort'] = result_sort
+        return True
+
+    return False
 
 
 def get_search_fields(request, doc_types):
@@ -193,9 +196,45 @@ def get_search_fields(request, doc_types):
     return fields, highlights
 
 
-def load_columns(request, doc_types, result):
+def list_visible_columns_for_schemas(request, schemas):
     """
-    Returns fields that are requested by user or default fields
+    Returns mapping of default columns for a set of schemas.
+    """
+    columns = OrderedDict({'@id': {'title': 'ID'}})
+    for schema in schemas:
+        if 'columns' in schema:
+            columns.update(schema['columns'])
+        else:
+            # default columns if not explicitly specified
+            columns.update(OrderedDict(
+                (name, schema['properties'][name].get('title', name))
+                for name in [
+                    '@id', 'title', 'description', 'name', 'accession',
+                    'aliases'
+                ] if name in schema['properties']
+            ))
+
+    fields_requested = request.params.getall('field')
+    if fields_requested:
+        limited_columns = OrderedDict()
+        for field in fields_requested:
+            if field in columns:
+                limited_columns[field] = columns[field]
+            else:
+                for schema in schemas:
+                    if field in schema['properties']:
+                        limited_columns[field] = {
+                            'title': schema['properties'][field]['title']
+                        }
+                        break
+        columns = limited_columns
+
+    return columns
+
+
+def list_result_fields(request, doc_types):
+    """
+    Returns set of fields that are requested by user or default fields
     """
     frame = request.params.get('frame')
     fields_requested = request.params.getall('field')
@@ -210,18 +249,9 @@ def load_columns(request, doc_types, result):
         if request.has_permission('search_audit'):
             fields.add('audit.*')
         types = request.registry[TYPES]
-        for doc_type in doc_types:
-            type_info = types[doc_type]
-            if 'columns' not in type_info.schema:
-                columns = OrderedDict(
-                    (name, type_info.schema['properties'][name].get('title', name))
-                    for name in ['@id', 'title', 'description', 'name', 'accession', 'aliases']
-                    if name in type_info.schema['properties']
-                )
-            else:
-                columns = type_info.schema['columns']
-            fields.update('embedded.' + column for column in columns)
-            result['columns'].update(columns)
+        schemas = [types[doc_type].schema for doc_type in doc_types]
+        columns = list_visible_columns_for_schemas(request, schemas)
+        fields.update('embedded.' + column for column in columns)
     return fields
 
 
@@ -497,7 +527,7 @@ def iter_long_json(name, iterable, **other):
 
 
 @view_config(route_name='search', request_method='GET', permission='search')
-def search(context, request, search_type=None):
+def search(context, request, search_type=None, return_generator=False):
     """
     Search view connects to ElasticSearch and returns the results
     """
@@ -508,7 +538,6 @@ def search(context, request, search_type=None):
         '@id': '/search/' + search_base,
         '@type': ['Search'],
         'title': 'Search',
-        'columns': OrderedDict(),
         'filters': [],
     }
     principals = effective_principals(request)
@@ -574,12 +603,14 @@ def search(context, request, search_type=None):
     # Builds filtered query which supports multiple facet selection
     query = get_filtered_query(search_term,
                                search_fields,
-                               sorted(load_columns(request, doc_types, result)),
+                               sorted(list_result_fields(request, doc_types)),
                                principals,
                                doc_types)
 
-    if not result['columns']:
-        del result['columns']
+    schemas = [types[doc_type].schema for doc_type in doc_types]
+    columns = list_visible_columns_for_schemas(request, schemas)
+    if columns:
+        result['columns'] = columns
 
     # If no text search, use match_all query instead of query_string
     if search_term == '*':
@@ -593,7 +624,7 @@ def search(context, request, search_type=None):
 
 
     # Set sort order
-    set_sort_order(request, search_term, types, doc_types, query, result)
+    has_sort = set_sort_order(request, search_term, types, doc_types, query, result)
 
     # Setting filters
     used_filters = set_filters(request, query, result)
@@ -640,27 +671,34 @@ def search(context, request, search_type=None):
         request.response.status_code = 404
         result['notification'] = 'No results found'
         result['@graph'] = []
-        return result
+        return result if not return_generator else []
 
     result['notification'] = 'Success'
 
     # Format results for JSON-LD
     if not do_scan:
-        result['@graph'] = list(format_results(request, es_results['hits']['hits']))
-        return result
+        graph = format_results(request, es_results['hits']['hits'])
+        if return_generator:
+            return graph
+        else:
+            result['@graph'] = list(graph)
+            return result
 
     # Scan large result sets.
     del query['aggs']
     if size is None:
-        hits = scan(es, query=query, index=es_index)
+        hits = scan(es, query=query, index=es_index, preserve_order=has_sort)
     else:
-        hits = scan(es, query=query, index=es_index, from_=from_, size=size)
+        hits = scan(es, query=query, index=es_index, from_=from_, size=size, preserve_order=has_sort)
     graph = format_results(request, hits)
 
-    # Support for request.embed()
-    if request.__parent__ is not None:
-        result['@graph'] = list(graph)
-        return result
+    # Support for request.embed() and `return_generator`
+    if request.__parent__ is not None or return_generator:
+        if return_generator:
+            return graph
+        else:
+            result['@graph'] = list(graph)
+            return result
 
     # Stream response using chunked encoding.
     # XXX BeforeRender event listeners not called.
@@ -671,6 +709,10 @@ def search(context, request, search_type=None):
     else:
         request.response.app_iter = (s.encode('utf-8') for s in app_iter)
     return request.response
+
+
+def iter_search_results(context, request):
+    return search(context, request, return_generator=True)
 
 
 @view_config(context=AbstractCollection, permission='list', request_method='GET',
@@ -691,8 +733,10 @@ def report(context, request):
         raise HTTPBadRequest(explanation=msg)
 
     # Ignore large limits, which make `search` return a Response
+    # -- UNLESS we're being embedded by the download_report view
     from_, size = get_pagination(request)
-    if 'limit' in request.GET and (size is None or size > 1000):
+    if ('limit' in request.GET and request.__parent__ is None
+            and (size is None or size > 1000)):
         del request.GET['limit']
     # Reuse search view
     res = search(context, request)
@@ -705,6 +749,7 @@ def report(context, request):
     }
     search_base = normalize_query(request)
     res['@id'] = '/report/' + search_base
+    res['download_tsv'] = request.route_path('report_download') + search_base
     res['title'] = 'Report'
     res['@type'] = ['Report']
     return res
