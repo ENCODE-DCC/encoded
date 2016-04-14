@@ -478,9 +478,11 @@ def analysis_step_run(testapp, analysis_step_version):
 
 
 @pytest.fixture
-def quality_metric(testapp, analysis_step_run):
+def quality_metric(testapp, analysis_step_run, award, lab):
     item = {
         'step_run': analysis_step_run['@id'],
+        'award': award['@id'],
+        'lab': lab['@id']
     }
     return testapp.post_json('/fastqc_quality_metric', item).json['@graph'][0]
 
