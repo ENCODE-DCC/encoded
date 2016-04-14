@@ -156,6 +156,7 @@ def audit_experiment_standards_dispatcher(value, system):
     if value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
         cpg_quantifications = scanFilesForOutputType(value['original_files'],
                                                      'methylation state at CpG')
+
         for failure in check_experiment_wgbs_encode3_standards(value,
                                                                alignment_files,
                                                                organism_name,
@@ -294,6 +295,8 @@ def check_experiment_wgbs_encode3_standards(experiment,
                                             fastq_files,
                                             cpg_quantifications,
                                             desired_assembly):
+    if fastq_files == []:
+        return
 
     for failure in check_wgbs_read_lengths(fastq_files, organism_name, 130, 100, 'WGBS'):
         yield failure
@@ -310,13 +313,15 @@ def check_experiment_wgbs_encode3_standards(experiment,
         return
 
     if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
-            return
+        return
 
     bismark_metrics = get_metrics(cpg_quantifications, 'BismarkQualityMetric', desired_assembly)
     cpg_metrics = get_metrics(cpg_quantifications, 'CpgCorrelationQualityMetric', desired_assembly)
     samtools_metrics = get_metrics(cpg_quantifications,
                                    'SamtoolsFlagstatsQualityMetric',
                                    desired_assembly)
+
+    print ('REPLICATION' + str(samtools_metrics))
 
     for failure in check_wgbs_coverage(samtools_metrics,
                                        pipeline_title,
