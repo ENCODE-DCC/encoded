@@ -69,10 +69,10 @@ describe('Experiment Page', function() {
             expect(desc.textContent).toEqual('2011-10-29');
         });
 
-        it('has two experiment status elements in header', function() {
+        it('has one experiment status element in header', function() {
             var statusList = TestUtils.findRenderedDOMComponentWithClass(experiment, 'status-list').getDOMNode();
             expect(statusList.hasChildNodes()).toBeTruthy();
-            expect(statusList.childNodes.length).toEqual(2);
+            expect(statusList.childNodes.length).toEqual(1);
         });
     });
 
