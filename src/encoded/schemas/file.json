@@ -513,6 +513,7 @@
             "enum": [
                 "mm9",
                 "mm10",
+                "mm10-minimal",
                 "hg19",
                 "GRCh38",
                 "GRCh38-minimal",
