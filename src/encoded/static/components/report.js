@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+var SvgIcon = require('../libs/svg-icons');
 var fetched = require('./fetched');
 var search = require('./search');
 var url = require('url');
@@ -292,6 +293,12 @@ var Report = React.createClass({
         var schema = this.props.schemas[type];
         var columns = columnChoices(schema, parsed_url.query.field);
 
+        // Map view icons to svg icons
+        var view2svg = {
+            'list-alt': 'search',
+            'th': 'table'
+        };
+
         return (
             <div>
                 <div className="panel data-display main-panel">
@@ -300,15 +307,16 @@ var Report = React.createClass({
                             <FacetList facets={context.facets} filters={context.filters} searchBase={searchBase} />
                         </div>
                         <div className="col-sm-7 col-md-8 col-lg-9">
-                            <span className="pull-right">
-                                <ColumnSelector columns={columns} toggleColumn={this.toggleColumn} />
-                                {' '}<a className="btn btn-info btn-sm"
-                                   href={context.download_tsv} data-bypass>Download TSV</a>
-                            </span>
                             <h4>
                                 Showing results {this.state.from + 1} to {Math.min(context.total, this.state.to)} of {context.total}
-                                {context.views && context.views.map(view => <span> <a href={view.href} title={view.title}><i className={'icon icon-' + view.icon}></i></a></span>)}
                             </h4>
+                            <div className="results-table-control">
+                                <div className="btn-attached">
+                                    {context.views && context.views.map(view => <a href={view.href} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{SvgIcon(view2svg[view.icon])}</a>)}
+                                </div>
+                                <ColumnSelector columns={columns} toggleColumn={this.toggleColumn} />
+                                <a className="btn btn-info btn-sm" href={context.download_tsv} data-bypass>Download TSV</a>
+                            </div>
                             <Table context={context} more={this.state.more}
                                    columns={columns} setSort={this.setSort} />
                             {this.state.to < context.total &&
