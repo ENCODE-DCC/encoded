@@ -67,7 +67,7 @@ var visibleColumns = function(columns) {
         if (column.visible) {
             visible_columns.push({
                 path: path,
-                title: column.title,
+                title: column.title
             });
         }
     });
@@ -133,7 +133,7 @@ var RowView = function (props) {
 
 var Table = module.exports.Table = React.createClass({
     contextTypes: {
-        location_href: React.PropTypes.string,
+        location_href: React.PropTypes.string
     },
 
     extractData: function (items) {
@@ -165,7 +165,7 @@ var Table = module.exports.Table = React.createClass({
             var sortColumn = Object.keys(this.props.context.sort)[0];
             return {
                 column: sortColumn,
-                reversed: this.props.context.sort[sortColumn].order == 'desc',
+                reversed: this.props.context.sort[sortColumn].order == 'desc'
             };
         } else {
             return {};
@@ -210,7 +210,7 @@ var Table = module.exports.Table = React.createClass({
         const sort = this.getSort();
         const column = sort.column == path && !sort.reversed ? '-' + path : path;
         this.props.setSort(column);
-    },
+    }
 
 });
 
@@ -218,21 +218,21 @@ var Table = module.exports.Table = React.createClass({
 var ColumnSelector = React.createClass({
     getInitialState: function() {
         return {
-            open: false,
+            open: false
         };
     },
 
     render: function() {
         return (
-            <span>
+            <div style={{display: 'inline-block', position: 'relative'}}>
                 <a className={'btn btn-info btn-sm' + (this.state.open ? ' active' : '')} href="#" onClick={this.toggle} title="Choose columns"><i className="icon icon-columns"></i> Columns</a>
-                {this.state.open && <div style={{position: 'absolute', right: 0, backgroundColor: '#fff', padding: '.5em', border: 'solid 1px #ccc', borderRadius: 3, zIndex: 1}}>
+                {this.state.open && <div style={{position: 'absolute', top: '30px', width: '230px', backgroundColor: '#fff', padding: '.5em', border: 'solid 1px #ccc', borderRadius: 3, zIndex: 1}}>
                     <h4>Columns</h4>
                     {_.mapObject(this.props.columns, (column, path) => <div onClick={this.toggleColumn.bind(this, path)} style={{cursor: 'pointer'}}>
                         <input type="checkbox" checked={column.visible} /> {column.title}
                     </div>)}
                 </div>}
-            </span>
+            </div>
         );
     },
 
@@ -243,7 +243,7 @@ var ColumnSelector = React.createClass({
 
     toggleColumn: function(path) {
         this.props.toggleColumn(path);
-    },
+    }
 });
 
 
@@ -251,7 +251,7 @@ var Report = React.createClass({
     contextTypes: {
         location_href: React.PropTypes.string,
         navigate: React.PropTypes.func,
-        fetch: React.PropTypes.func,
+        fetch: React.PropTypes.func
     },
 
     getInitialState: function() {
@@ -263,7 +263,7 @@ var Report = React.createClass({
             size,
             to: from + size,
             loading: false,
-            more: [],
+            more: []
         };
     },
 
@@ -276,7 +276,7 @@ var Report = React.createClass({
             this.setState({
                 from: from,
                 to: from + size,
-                more: [],
+                more: []
             });
         }
     },
@@ -377,20 +377,20 @@ var Report = React.createClass({
             this.setState({
                 more: this.state.more.concat(data['@graph']),
                 loading: false,
-                request: null,
+                request: null
             });
         });
 
         this.setState({
             request: request,
             to: this.state.to + this.state.size,
-            loading: true,
+            loading: true
         });
     },
 
     componentWillUnmount: function () {
         if (this.state.request) this.state.request.abort();
-    },
+    }
 });
 
 
