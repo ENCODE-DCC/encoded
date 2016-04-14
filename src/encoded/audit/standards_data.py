@@ -35,7 +35,7 @@ pipelines_with_read_depth = {
     'Small RNA-seq single-end pipeline': 30000000,
     'RNA-seq of long RNAs (paired-end, stranded)': 30000000,
     'RNA-seq of long RNAs (single-end, unstranded)': 30000000,
-    'RAMPAGE (paired-end, stranded)': 25000000,
+    'RAMPAGE (paired-end, stranded)': 20000000,
     'Histone ChIP-seq': {
         'narrow': 20000000,
         'broad': 45000000

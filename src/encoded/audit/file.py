@@ -776,13 +776,31 @@ def audit_file_read_depth(value, system):
                     yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
                     return
             else:
-                if (read_depth < pipelines_with_read_depth[pipeline['title']]):
-                    detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'], read_depth) + \
-                             'uniquely mapped reads. Replicates for this ' + \
-                             'assay {} '.format(pipeline['title']) + \
-                             'require {}'.format(pipelines_with_read_depth[pipeline['title']])
-                    yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
-                    return
+                if pipeline['title'] == 'RAMPAGE (paired-end, stranded)':
+                    if read_depth >= 10000000 and read_depth < 20000000:
+                        detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'], read_depth) + \
+                                 'uniquely mapped reads. Replicates for this ' + \
+                                 'assay {} '.format(pipeline['title']) + \
+                                 'require {}'.format(pipelines_with_read_depth[pipeline['title']])
+                        yield AuditFailure('low read depth', detail, level='WARNING')
+                        return
+                    elif read_depth < 10000000:
+                        detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'], read_depth) + \
+                                 'uniquely mapped reads. Replicates for this ' + \
+                                 'assay {} '.format(pipeline['title']) + \
+                                 'require {}'.format(pipelines_with_read_depth[pipeline['title']])
+                        yield AuditFailure('insufficient read depth', detail,
+                                           level='NOT_COMPLIANT')
+                        return
+                else:
+
+                    if (read_depth < pipelines_with_read_depth[pipeline['title']]):
+                        detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'], read_depth) + \
+                                 'uniquely mapped reads. Replicates for this ' + \
+                                 'assay {} '.format(pipeline['title']) + \
+                                 'require {}'.format(pipelines_with_read_depth[pipeline['title']])
+                        yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
+                        return
 
 
 def check_chip_seq_standards(value, read_depth, target_name, is_control_file, control_to_target, target_investigated_as):
@@ -870,7 +888,7 @@ def check_chip_seq_standards(value, read_depth, target_name, is_control_file, co
                          'in experiments studying broad histone marks, which ' + \
                          'require {} usable fragments, according to '.format(marks['broad']) + \
                          'June 2015 standards.'
-                yield AuditFailure('insufficient read depth', detail, level='WARNING')
+                yield AuditFailure('low read depth', detail, level='WARNING')
             if read_depth >= 10000000 and read_depth < marks['narrow']:
                 detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                              read_depth) + \

@@ -85,7 +85,7 @@ def audit_experiment_standards_dispatcher(value, system):
     if value['status'] in ['revoked', 'deleted', 'replaced']:
         return
     if 'assay_term_name' not in value or \
-       value['assay_term_name'] not in ['CAGE', 'RAMPAGE', 'RNA-seq', 'ChIP-seq',
+       value['assay_term_name'] not in ['RAMPAGE', 'RNA-seq', 'ChIP-seq',
                                         'shRNA knockdown followed by RNA-seq',
                                         'CRISPR genome editing followed by RNA-seq',
                                         'single cell isolation followed by RNA-seq',
@@ -119,7 +119,7 @@ def audit_experiment_standards_dispatcher(value, system):
     fastq_files = scan_files_for_file_format_output_type(value['original_files'],
                                                          'fastq', 'reads')
 
-    if value['assay_term_name'] in ['CAGE', 'RAMPAGE', 'RNA-seq',
+    if value['assay_term_name'] in ['RAMPAGE', 'RNA-seq',
                                     'shRNA knockdown followed by RNA-seq',
                                     'CRISPR genome editing followed by RNA-seq',
                                     'single cell isolation followed by RNA-seq']:
