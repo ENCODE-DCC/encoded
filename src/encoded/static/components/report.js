@@ -296,7 +296,7 @@ var Report = React.createClass({
         // Map view icons to svg icons
         var view2svg = {
             'list-alt': 'search',
-            'th': 'table'
+            'th': 'matrix'
         };
 
         return (
