@@ -14,16 +14,6 @@ def includeme(config):
     registry = config.registry
     registry[COLLECTIONS] = CollectionsTool()
     config.set_root_factory(root_factory)
-    # Set a default root if none has been configured.
-    config.action(
-        ('default_root',), set_default_root,
-        args=(config.registry, ), order=PHASE2_CONFIG)
-
-
-def set_default_root(registry):
-    from .resources import Root
-    if ROOT not in registry:
-        registry[ROOT] = Root(registry)
 
 
 def root_factory(request):
