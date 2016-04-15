@@ -2,7 +2,6 @@ import pytest
 
 pytest_plugins = [
     'snovault.tests.serverfixtures',
-    'snovault.tests.testappfixtures',
 ]
 
 items = [
@@ -19,6 +18,18 @@ bad_items = [
 @pytest.fixture(autouse=True)
 def autouse_external_tx(external_tx):
     pass
+
+
+@pytest.fixture
+def testapp(app):
+    '''TestApp with JSON accept header.
+    '''
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'TEST',
+    }
+    return TestApp(app, environ)
 
 
 @pytest.fixture(scope='session')
