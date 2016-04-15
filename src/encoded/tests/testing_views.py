@@ -73,6 +73,31 @@ class TestingDownload(ItemWithAttachment):
     }
 
 
+@collection(
+    'testing-keys',
+    properties={
+        'title': 'Test keys',
+        'description': 'Testing. Testing. 1, 2, 3.',
+    },
+    unique_key='testing_accession',
+)
+class TestingKey(Item):
+    item_type = 'testing_key'
+    schema = {
+        'type': 'object',
+        'properties': {
+            'name': {
+                'type': 'string',
+                'uniqueKey': True,
+            },
+            'accession': {
+                'type': 'string',
+                'uniqueKey': 'testing_accession',
+            },
+        }
+    }
+
+
 @collection('testing-link-sources')
 class TestingLinkSource(Item):
     item_type = 'testing_link_source'
