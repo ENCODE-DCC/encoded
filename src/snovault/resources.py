@@ -67,6 +67,9 @@ class Root(Resource):
         self.collections = registry[COLLECTIONS]
         self.connection = registry[CONNECTION]
 
+        # BBB
+        self.get_by_uuid = self.connection.get_by_uuid
+
     def __getitem__(self, name):
         try:
             resource = self.get(name)
