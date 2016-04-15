@@ -9,7 +9,6 @@ from pytest import fixture
 pytest_plugins = [
     'encoded.tests.datafixtures',
     'snovault.tests.serverfixtures',
-    'snovault.tests.toolfixtures',
 ]
 
 
@@ -90,6 +89,35 @@ def app(app_settings):
     '''
     from encoded import main
     return main({}, **app_settings)
+
+
+@fixture
+def registry(app):
+    return app.registry
+
+
+@fixture
+def elasticsearch(registry):
+    from snovault.elasticsearch import ELASTIC_SEARCH
+    return registry[ELASTIC_SEARCH]
+
+
+@fixture
+def upgrader(registry):
+    from snovault import UPGRADER
+    return registry[UPGRADER]
+
+
+@fixture
+def root(registry):
+    from snovault import ROOT
+    return registry[ROOT]
+
+
+@fixture
+def collections(registry):
+    from snovault import COLLECTIONS
+    return registry[COLLECTIONS]
 
 
 @pytest.mark.fixture_cost(500)
