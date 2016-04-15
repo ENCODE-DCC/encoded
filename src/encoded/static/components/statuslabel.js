@@ -12,7 +12,7 @@ var StatusLabel = module.exports.StatusLabel = React.createClass({
                 <ul className="status-list">
                     <li className={globals.statusClass(status, 'label')}>
                         {title ? <span className="status-list-title">{title + ': '}</span> : null}
-                        {status}
+                        {this.props.buttonLabel ? this.props.buttonLabel : status}
                     </li>
                 </ul>
             );
