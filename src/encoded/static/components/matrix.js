@@ -148,7 +148,9 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                     {matrix.doc_count && context.views ? context.views.map(view => <a href={view.href} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{SvgIcon(view2svg[view.icon])}</a>) : ''}
                                                 </div>
                                                 {context.filters.length ?
-                                                    <a href={context.matrix.clear_matrix} className="btn btn-info btn-sm"><i className="icon icon-times-circle-o"></i> Clear all filters</a>
+                                                    <div className="clear-filters-control-matrix">
+                                                        <a href={context.matrix.clear_matrix}>Clear Filters <i className="icon icon-times-circle"></i></a>
+                                                    </div>
                                                 : ''}
                                             </th>
                                             {x_buckets.map(function(xb, i) {

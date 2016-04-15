@@ -45,6 +45,12 @@
     font-size: 0.9rem;
 }
 
+.clear-filters-control-matrix {
+    @extend .clear-filters-control;
+    text-align: center;
+    margin-top: 5px;
+}
+
 .facets h5 {
     margin: 2px 0;
 }
