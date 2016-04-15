@@ -2,8 +2,8 @@ import pytest
 
 
 @pytest.yield_fixture(scope='session')
-def minitestdata(app, conn):
-    tx = conn.begin_nested()
+def minitestdata(app, connection):
+    tx = connection.begin_nested()
 
     from webtest import TestApp
     environ = {
@@ -24,8 +24,8 @@ def minitestdata(app, conn):
 
 
 @pytest.yield_fixture(scope='session')
-def minitestdata2(app, conn):
-    tx = conn.begin_nested()
+def minitestdata2(app, connection):
+    tx = connection.begin_nested()
 
     from webtest import TestApp
     environ = {

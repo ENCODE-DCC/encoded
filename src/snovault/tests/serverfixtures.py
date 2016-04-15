@@ -82,7 +82,7 @@ def elasticsearch_server(request, elasticsearch_host_port):
 # requests can be rolled back at the end of the test.
 
 @pytest.yield_fixture(scope='session')
-def conn(engine_url):
+def connection(engine_url):
     from encoded import configure_engine
     from snovault.storage import Base
 
@@ -91,24 +91,24 @@ def conn(engine_url):
     }
 
     engine = configure_engine(engine_settings)
-    conn = engine.connect()
-    tx = conn.begin()
+    connection = engine.connect()
+    tx = connection.begin()
     try:
-        Base.metadata.create_all(bind=conn)
-        yield conn
+        Base.metadata.create_all(bind=connection)
+        yield connection
     finally:
         tx.rollback()
-        conn.close()
+        connection.close()
         engine.dispose()
 
 
 @pytest.fixture(scope='session')
-def _DBSession(conn):
+def _DBSession(connection):
     import snovault.storage
     import zope.sqlalchemy
     from sqlalchemy import orm
     # ``server`` thread must be in same scope
-    DBSession = orm.scoped_session(orm.sessionmaker(bind=conn), scopefunc=lambda: 0)
+    DBSession = orm.scoped_session(orm.sessionmaker(bind=connection), scopefunc=lambda: 0)
     zope.sqlalchemy.register(DBSession)
     snovault.storage.register(DBSession)
     return DBSession
@@ -120,15 +120,15 @@ def DBSession(_DBSession, zsa_savepoints, check_constraints):
 
 
 @pytest.yield_fixture
-def external_tx(request, conn):
+def external_tx(request, connection):
     # print('BEGIN external_tx')
-    tx = conn.begin_nested()
+    tx = connection.begin_nested()
     yield tx
     tx.rollback()
     # # The database should be empty unless a data fixture was loaded
     # from snovault.storage import Base
     # for table in Base.metadata.sorted_tables:
-    #     assert conn.execute(table.count()).scalar() == 0
+    #     assert connection.execute(table.count()).scalar() == 0
 
 
 @pytest.fixture
@@ -140,7 +140,7 @@ def transaction(request, external_tx, zsa_savepoints, check_constraints):
 
 
 @pytest.yield_fixture(scope='session')
-def zsa_savepoints(conn):
+def zsa_savepoints(connection):
     """ Place a savepoint at the start of the zope transaction
 
     This means failed requests rollback to the db state when they began rather
@@ -151,8 +151,8 @@ def zsa_savepoints(conn):
 
     @implementer(ISynchronizer)
     class Savepoints(object):
-        def __init__(self, conn):
-            self.conn = conn
+        def __init__(self, connection):
+            self.connection = connection
             self.sp = None
             self.state = None
 
@@ -174,14 +174,14 @@ def zsa_savepoints(conn):
 
         def newTransaction(self, transaction):
             self.state = 'new'
-            self.sp = self.conn.begin_nested()
+            self.sp = self.connection.begin_nested()
             self.state = 'begun'
             transaction.addBeforeCommitHook(self._registerCommit)
 
         def _registerCommit(self):
             self.state = 'commit'
 
-    zsa_savepoints = Savepoints(conn)
+    zsa_savepoints = Savepoints(connection)
 
     import transaction
     transaction.manager.registerSynch(zsa_savepoints)
@@ -200,7 +200,7 @@ def session(transaction, DBSession):
 
 
 @pytest.yield_fixture(scope='session')
-def check_constraints(conn, _DBSession):
+def check_constraints(connection, _DBSession):
     '''Check deffered constraints on zope transaction commit.
 
     Deferred foreign key constraints are only checked at the outer transaction
@@ -212,8 +212,8 @@ def check_constraints(conn, _DBSession):
 
     @implementer(ISynchronizer)
     class CheckConstraints(object):
-        def __init__(self, conn):
-            self.conn = conn
+        def __init__(self, connection):
+            self.connection = connection
             self.state = None
 
         def beforeCompletion(self, transaction):
@@ -229,19 +229,19 @@ def check_constraints(conn, _DBSession):
                 self.state = 'checking'
                 session = _DBSession()
                 session.flush()
-                sp = self.conn.begin_nested()
+                sp = self.connection.begin_nested()
                 try:
-                    self.conn.execute('SET CONSTRAINTS ALL IMMEDIATE')
+                    self.connection.execute('SET CONSTRAINTS ALL IMMEDIATE')
                 except:
                     sp.rollback()
                     raise
                 else:
-                    self.conn.execute('SET CONSTRAINTS ALL DEFERRED')
+                    self.connection.execute('SET CONSTRAINTS ALL DEFERRED')
                 finally:
                     sp.commit()
                     self.state = None
 
-    check_constraints = CheckConstraints(conn)
+    check_constraints = CheckConstraints(connection)
 
     import transaction
     transaction.manager.registerSynch(check_constraints)
@@ -252,7 +252,7 @@ def check_constraints(conn, _DBSession):
 
 
 @pytest.yield_fixture
-def execute_counter(conn, zsa_savepoints, check_constraints):
+def execute_counter(connection, zsa_savepoints, check_constraints):
     """ Count calls to execute
     """
     from contextlib import contextmanager
@@ -261,7 +261,7 @@ def execute_counter(conn, zsa_savepoints, check_constraints):
     class Counter(object):
         def __init__(self):
             self.reset()
-            self.conn = conn
+            self.conn = connection
 
         def reset(self):
             self.count = 0
@@ -275,7 +275,7 @@ def execute_counter(conn, zsa_savepoints, check_constraints):
 
     counter = Counter()
 
-    @event.listens_for(conn, 'after_cursor_execute')
+    @event.listens_for(connection, 'after_cursor_execute')
     def after_cursor_execute(conn, cursor, statement, parameters, context, executemany):
         # Ignore the testing savepoints
         if zsa_savepoints.state != 'begun' or check_constraints.state == 'checking':
@@ -284,11 +284,11 @@ def execute_counter(conn, zsa_savepoints, check_constraints):
 
     yield counter
 
-    event.remove(conn, 'after_cursor_execute', after_cursor_execute)
+    event.remove(connection, 'after_cursor_execute', after_cursor_execute)
 
 
 @pytest.yield_fixture
-def no_deps(conn, DBSession):
+def no_deps(connection, DBSession):
     from sqlalchemy import event
 
     session = DBSession()
@@ -297,7 +297,7 @@ def no_deps(conn, DBSession):
     def check_dependencies(session, flush_context):
         assert not flush_context.cycles
 
-    @event.listens_for(conn, "before_execute", retval=True)
+    @event.listens_for(connection, "before_execute", retval=True)
     def before_execute(conn, clauseelement, multiparams, params):
         return clauseelement, multiparams, params
 
