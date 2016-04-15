@@ -196,7 +196,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                     }
                     return null;
                 }
-            }
+            };
         }
 
         // Build the text of the Treatment, synchronization, and mutatedGene string arrays; collect biosample docs
@@ -321,9 +321,6 @@ var Experiment = module.exports.Experiment = React.createClass({
     
         // Make list of statuses
         var statuses = [{status: context.status, title: "Status"}];
-        if (encodevers === "3" && context.status === "released") {
-            statuses.push({status: "pending", title: "Validation"});
-        }
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
