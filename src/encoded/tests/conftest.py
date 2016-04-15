@@ -77,6 +77,28 @@ def threadlocals(request, dummy_request, registry):
     manager.pop()
 
 
+from pyramid.testing import DummyRequest
+
+
+class MyDummyRequest(DummyRequest):
+    def remove_conditional_headers(self):
+        pass
+
+    def _get_registry(self):
+        from pyramid.threadlocal import get_current_registry
+        if self._registry is None:
+            return get_current_registry()
+        return self._registry
+
+    def _set_registry(self, registry):
+        self.__dict__['registry'] = registry
+
+    def _del_registry(self):
+        self._registry = None
+
+    registry = property(_get_registry, _set_registry, _del_registry)
+
+
 @fixture
 def dummy_request(root, registry, app):
     from pyramid.request import apply_request_extensions
