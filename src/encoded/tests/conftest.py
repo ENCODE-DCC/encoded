@@ -134,13 +134,3 @@ def submitter_testapp(app):
         'REMOTE_USER': 'TEST_SUBMITTER',
     }
     return TestApp(app, environ)
-
-
-@pytest.fixture
-def indexer_testapp(app):
-    from webtest import TestApp
-    environ = {
-        'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': 'INDEXER',
-    }
-    return TestApp(app, environ)
