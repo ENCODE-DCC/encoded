@@ -22,11 +22,6 @@ sources = [
 ]
 
 
-@pytest.fixture(autouse=True)
-def autouse_external_tx(external_tx):
-    pass
-
-
 @pytest.fixture
 def content(testapp):
     url = '/testing-link-targets/'

@@ -252,7 +252,7 @@ def main(global_config, **local_config):
         record['ip_prefix'] for record in aws_ip_ranges['prefixes'] if record['service'] == 'AMAZON')
 
     if asbool(settings.get('testing', False)):
-        config.include('snovault.tests.testing_views')
+        config.include('.tests.testing_views')
 
     # Load upgrades last so that all views (including testing views) are
     # registered.

@@ -21,11 +21,6 @@ sources = [
 ]
 
 
-@pytest.fixture(autouse=True)
-def autouse_external_tx(external_tx):
-    pass
-
-
 @pytest.fixture
 def content(testapp):
     url = '/testing-link-targets/'
@@ -68,3 +63,13 @@ def test_updated_target(content, testapp):
     url = '/testing-link-targets/' + targets[0]['uuid']
     res = testapp.patch_json(url, {})
     assert set(res.headers['X-Updated'].split(',')) == {targets[0]['uuid']}
+
+
+def test_embedded_uuids_experiment(experiment, replicate, library, biosample, organism, dummy_request, threadlocals):
+    dummy_request.embed(experiment['@id'], '@@embedded')
+    embedded_uuids = dummy_request._embedded_uuids
+    assert experiment['uuid'] in embedded_uuids
+    assert replicate['uuid'] in embedded_uuids
+    assert library['uuid'] in embedded_uuids
+    assert biosample['uuid'] in embedded_uuids
+    assert organism['uuid'] in embedded_uuids
