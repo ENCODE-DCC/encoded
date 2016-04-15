@@ -38,16 +38,15 @@ def internal_app(configfile, app_name=None, username=None):
 
 
 def run(testapp, collections=None, exclude=None, dry_run=False):
-    from snovault import COLLECTIONS
-    colls = testapp.app.registry[COLLECTIONS]
+    root = testapp.app.root_factory(testapp.app)
     if not collections:
-        collections = colls.by_item_type.keys()
+        collections = root.by_item_type.keys()
     if exclude is None:
         exclude = ()
     for collection_name in collections:
         if collection_name in exclude:
             continue
-        collection = colls[collection_name]
+        collection = root[collection_name]
         if collection.type_info.schema is None or \
                 'date_created' not in collection.type_info.schema.get('properties', ()):
             logger.info('Skipped %s', collection_name)

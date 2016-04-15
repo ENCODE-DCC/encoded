@@ -133,8 +133,10 @@ def test_access_key_view_hides_secret_access_key_hash(testapp, access_key, frame
     assert 'secret_access_key_hash' not in res.json
 
 
-def test_access_key_uses_edw_hash(collections, access_key):
+def test_access_key_uses_edw_hash(app, access_key):
     from encoded.edw_hash import EDWHash
-    obj = collections.by_item_type['access_key'][access_key['access_key_id']]
+    from snovault import ROOT
+    root = app.registry[ROOT]
+    obj = root.by_item_type['access_key'][access_key['access_key_id']]
     pwhash = obj.properties['secret_access_key_hash']
     assert EDWHash.encrypt(access_key['secret_access_key']) == pwhash

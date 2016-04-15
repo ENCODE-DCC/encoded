@@ -49,7 +49,7 @@ def jsongraph(context, request):
     cache = {
         'uuid': {},
     }
-    for uuid in all_uuids(request.registry):
+    for uuid in all_uuids(context):
         item = conn[uuid]
         properties = item.__json__(request)
         cache['uuid'][uuid] = item_jsongraph(item, properties)

@@ -69,6 +69,7 @@ class Root(Resource):
 
         # BBB
         self.get_by_uuid = self.connection.get_by_uuid
+        self.by_item_type = self.collections.by_item_type
 
     def __getitem__(self, name):
         try:

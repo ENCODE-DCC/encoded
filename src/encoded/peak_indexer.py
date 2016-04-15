@@ -226,7 +226,7 @@ def index_file(request):
 
     if last_xmin is None:
         result['types'] = types = request.json.get('types', None)
-        invalidated = list(all_uuids(request.registry, types))
+        invalidated = list(all_uuids(request.root, types))
     else:
         txns = session.query(TransactionRecord).filter(
             TransactionRecord.xid >= last_xmin,
@@ -272,7 +272,7 @@ def index_file(request):
             '_source': False,
         })
         if res['hits']['total'] > SEARCH_MAX:
-            invalidated = list(all_uuids(request.registry))
+            invalidated = list(all_uuids(request.root))
         else:
             referencing = {hit['_id'] for hit in res['hits']['hits']}
             invalidated = referencing | updated
