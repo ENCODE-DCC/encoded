@@ -6,12 +6,6 @@ pytest_plugins = [
 ]
 
 
-def pytest_configure():
-    import logging
-    logging.basicConfig()
-    logging.getLogger('selenium').setLevel(logging.DEBUG)
-
-
 @pytest.fixture
 def external_tx():
     pass
