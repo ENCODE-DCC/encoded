@@ -7,7 +7,7 @@ from snovault import (
     calculated_property,
     collection,
 )
-from ..types.base import paths_filtered_by_status
+from encoded.types.base import paths_filtered_by_status
 from snovault.attachment import ItemWithAttachment
 
 
@@ -69,31 +69,6 @@ class TestingDownload(ItemWithAttachment):
                     }
                 }
             }
-        }
-    }
-
-
-@collection(
-    'testing-keys',
-    properties={
-        'title': 'Test keys',
-        'description': 'Testing. Testing. 1, 2, 3.',
-    },
-    unique_key='testing_accession',
-)
-class TestingKey(Item):
-    item_type = 'testing_key'
-    schema = {
-        'type': 'object',
-        'properties': {
-            'name': {
-                'type': 'string',
-                'uniqueKey': True,
-            },
-            'accession': {
-                'type': 'string',
-                'uniqueKey': 'testing_accession',
-            },
         }
     }
 

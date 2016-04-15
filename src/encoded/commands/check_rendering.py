@@ -39,13 +39,13 @@ def check_path(testapp, path):
 
 
 def run(testapp, collections=None):
-    app = testapp.app
-    root = app.root_factory(app)
+    from snovault import COLLECTIONS
+    colls = testapp.app.registry[COLLECTIONS]
     if not collections:
-        collections = root.by_item_type.keys()
+        collections = colls.by_item_type.keys()
         check_path(testapp, '/')
     for collection_name in collections:
-        collection = root[collection_name]
+        collection = colls[collection_name]
         collection_path = resource_path(collection, '')
         check_path(testapp, collection_path)
         failed = 0
