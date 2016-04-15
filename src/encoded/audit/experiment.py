@@ -126,7 +126,6 @@ def audit_experiment_standards_dispatcher(value, system):
 
         gene_quantifications = scanFilesForOutputType(value['original_files'],
                                                       'gene quantifications')
-        #if value['award']['rfa'] in ['ENCODE3']:
         for failure in check_experiemnt_rna_seq_encode3_standards(value,
                                                                   fastq_files,
                                                                   alignment_files,
@@ -134,15 +133,6 @@ def audit_experiment_standards_dispatcher(value, system):
                                                                   desired_assembly,
                                                                   desired_annotation):
             yield failure
-        '''elif value['award']['rfa'] in ['ENCODE2', 'ENCODE2-Mouse']:
-            for failure in check_experiemnt_rna_seq_encode2_standards(value,
-                                                                      fastq_files,
-                                                                      alignment_files,
-                                                                      gene_quantifications,
-                                                                      desired_assembly,
-                                                                      desired_annotation):
-                yield failure
-        '''
 
     if value['assay_term_name'] == 'ChIP-seq':
         optimal_idr_peaks = scanFilesForOutputType(value['original_files'],
@@ -166,61 +156,6 @@ def audit_experiment_standards_dispatcher(value, system):
             yield failure
 
 
-def check_experiemnt_rna_seq_encode2_standards(value,
-                                               fastq_files,
-                                               alignment_files,
-                                               gene_quantifications,
-                                               desired_assembly,
-                                               desired_annotation):
-    pipeline_title = scanFilesForPipelineTitle_not_chipseq(alignment_files,
-                                                           ['GRCh38', 'mm10'],
-                                                           ['RNA-seq of long RNAs (paired-end, stranded)',
-                                                            'RNA-seq of long RNAs (single-end, unstranded)',
-                                                            'Small RNA-seq single-end pipeline'])
-    if pipeline_title is False:
-        return
-
-    if pipeline_title in ['RNA-seq of long RNAs (paired-end, stranded)',
-                          'RNA-seq of long RNAs (single-end, unstranded)']:
-        for failure in check_experiement_long_rna_encode2_standards(value,
-                                                                    fastq_files,
-                                                                    alignment_files,
-                                                                    pipeline_title,
-                                                                    gene_quantifications,
-                                                                    desired_assembly,
-                                                                    desired_annotation):
-            yield failure
-
-
-def check_experiement_long_rna_encode2_standards(experiment,
-                                                 fastq_files,
-                                                 alignment_files,
-                                                 pipeline_title,
-                                                 gene_quantifications,
-                                                 desired_assembly,
-                                                 desired_annotation):
-
-    for f in fastq_files:
-        if 'run_type' not in f:
-            detail = 'Long RNA-seq experiment {} '.format(experiment['@id']) + \
-                     'contains a file {} '.format(f['@id']) + \
-                     'without sequencing run type specified.'
-            yield AuditFailure('ENCODE2 long RNA - run type not specified', detail, level='WARNING')
-
-    for f in alignment_files:
-        if 'assembly' in f and f['assembly'] == desired_assembly:
-
-            read_depth = get_file_read_depth_from_alignment(f,
-                                                            get_target(experiment),
-                                                            'long RNA')
-
-            if experiment['assay_term_name'] in ['RNA-seq']:
-                for failure in check_file_read_depth(f, read_depth, 20000000, 0,
-                                                     experiment['assay_term_name'],
-                                                     pipeline_title, 'ENCODE2 long RNA'):
-                    yield failure
-
-
 def check_experiemnt_rna_seq_encode3_standards(value,
                                                fastq_files,
                                                alignment_files,
@@ -228,9 +163,9 @@ def check_experiemnt_rna_seq_encode3_standards(value,
                                                desired_assembly,
                                                desired_annotation):
     for f in fastq_files:
-        for failure in check_file_read_length_rna(f, 50, 'RNA-seq pipelines'):
+        for failure in check_file_read_length_rna(f, 50):
             yield failure
-        for failure in check_file_platform(f, ['OBI:0002024', 'OBI:0000696'], 'RNA-seq pipelines'):
+        for failure in check_file_platform(f, ['OBI:0002024', 'OBI:0000696']):
             yield failure
 
     pipeline_title = scanFilesForPipelineTitle_not_chipseq(alignment_files,
@@ -298,7 +233,7 @@ def check_experiment_wgbs_encode3_standards(experiment,
     if fastq_files == []:
         return
 
-    for failure in check_wgbs_read_lengths(fastq_files, organism_name, 130, 100, 'WGBS'):
+    for failure in check_wgbs_read_lengths(fastq_files, organism_name, 130, 100):
         yield failure
 
     read_lengths = get_read_lengths_wgbs(fastq_files)
@@ -321,19 +256,16 @@ def check_experiment_wgbs_encode3_standards(experiment,
                                    'SamtoolsFlagstatsQualityMetric',
                                    desired_assembly)
 
-    print ('REPLICATION' + str(samtools_metrics))
-
     for failure in check_wgbs_coverage(samtools_metrics,
                                        pipeline_title,
                                        min(read_lengths),
-                                       organism_name,
-                                       'WGBS'):
+                                       organism_name):
         yield failure
 
-    for failure in check_wgbs_pearson(cpg_metrics, 0.8, pipeline_title, 'WGBS'):
+    for failure in check_wgbs_pearson(cpg_metrics, 0.8, pipeline_title):
         yield failure
 
-    for failure in check_wgbs_lambda(bismark_metrics, 1, pipeline_title, 'WGBS'):
+    for failure in check_wgbs_lambda(bismark_metrics, 1, pipeline_title):
         yield failure
 
     return
@@ -350,8 +282,7 @@ def get_read_lengths_wgbs(fastq_files):
 def check_wgbs_read_lengths(fastq_files,
                             organism_name,
                             human_threshold,
-                            mouse_threshold,
-                            assay_name):
+                            mouse_threshold):
     for f in fastq_files:
         if 'read_length' in f:
             l = f['read_length']
@@ -360,14 +291,14 @@ def check_wgbs_read_lengths(fastq_files,
                          'has read length of {}bp, while '.format(l) + \
                          'the recommended read length for {} '.format(organism_name) + \
                          'data is > 100bp.'
-                yield AuditFailure(assay_name + ' - insufficient read length',
+                yield AuditFailure('insufficient read length',
                                    detail, level='NOT_COMPLIANT')
             elif organism_name == 'human' and l < 130:
                 detail = 'Fastq file {} '.format(f['@id']) + \
                          'has read length of {}bp, while '.format(l) + \
                          'the recommended read length for {} '.format(organism_name) + \
                          'data is > 130bp.'
-                yield AuditFailure(assay_name + ' - insufficient read length',
+                yield AuditFailure('insufficient read length',
                                    detail, level='NOT_COMPLIANT')
 
 
@@ -398,7 +329,7 @@ def check_experiment_chip_seq_encode3_standards(experiment,
                      'contains a file {} '.format(f['@id']) + \
                      'without sequencing run type specified.'
             yield AuditFailure('ChIP-seq - run type not specified', detail, level='WARNING')
-        for failure in check_file_read_length_chip(f, 50, 'ChIP-seq'):
+        for failure in check_file_read_length_chip(f, 50):
             yield failure
 
     pipeline_title = scanFilesForPipelineTitle_yes_chipseq(alignment_files, ['Histone ChIP-seq'])
@@ -407,11 +338,18 @@ def check_experiment_chip_seq_encode3_standards(experiment,
 
     for f in alignment_files:
         target = get_target(experiment)
+        if target is False:
+            detail = 'ENCODE Processed alignment file {} '.format(f['@id']) + \
+                     'belongs to ChIP-seq experiment {} '.format(experiment['@id']) + \
+                     'with no target specified.'
+            yield AuditFailure('ChIP-seq missing target', detail, level='ERROR')
+            return
+
         read_depth = get_file_read_depth_from_alignment(f, target, 'ChIP-seq')
 
-        for failure in check_file_chip_seq_read_depth(f, target, read_depth, 'ChIP-seq'):
+        for failure in check_file_chip_seq_read_depth(f, target, read_depth):
             yield failure
-        for failure in check_file_chip_seq_library_complexity(f, 'ChIP-seq'):
+        for failure in check_file_chip_seq_library_complexity(f):
             yield failure
 
     if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
@@ -419,7 +357,7 @@ def check_experiment_chip_seq_encode3_standards(experiment,
 
     idr_metrics = get_metrics(idr_peaks_files, 'IDRQualityMetric')
 
-    for failure in check_idr(idr_metrics, 2, 2, pipeline_title, 'ChIP-seq'):
+    for failure in check_idr(idr_metrics, 2, 2, pipeline_title):
         yield failure
 
 
@@ -433,10 +371,10 @@ def check_experiement_long_rna_encode3_standards(experiment,
 
     if experiment['assay_term_name'] not in ['shRNA knockdown followed by RNA-seq',
                                              'CRISPR genome editing followed by RNA-seq']:
-        for failure in check_experiment_ERCC_spikeins(experiment, pipeline_title, 'long RNA'):
+        for failure in check_experiment_ERCC_spikeins(experiment, pipeline_title):
             yield failure
     else:
-        for failure in check_target(experiment, pipeline_title, 'long RNA'):
+        for failure in check_target(experiment, pipeline_title):
             yield failure
 
     for f in fastq_files:
@@ -457,17 +395,17 @@ def check_experiement_long_rna_encode3_standards(experiment,
                                                  'CRISPR genome editing followed by RNA-seq']:
                 for failure in check_file_read_depth(f, read_depth, 10000000, 0,
                                                      experiment['assay_term_name'],
-                                                     pipeline_title, 'long RNA'):
+                                                     pipeline_title):
                     yield failure
             elif experiment['assay_term_name'] in ['single cell isolation followed by RNA-seq']:
                 for failure in check_file_read_depth(f, read_depth, 5000000, 0,
                                                      experiment['assay_term_name'],
-                                                     pipeline_title, 'long RNA'):
+                                                     pipeline_title):
                     yield failure
             else:
                 for failure in check_file_read_depth(f, read_depth, 30000000, 0,
                                                      experiment['assay_term_name'],
-                                                     pipeline_title, 'long RNA'):
+                                                     pipeline_title):
                     yield failure
 
     if 'replication_type' not in experiment:
@@ -479,10 +417,10 @@ def check_experiement_long_rna_encode3_standards(experiment,
                               desired_annotation)
 
     for failure in check_spearman(mad_metrics, experiment['replication_type'],
-                                  0.9, 0.8, pipeline_title, 'long RNA'):
+                                  0.9, 0.8, pipeline_title):
         yield failure
     for failure in check_mad(mad_metrics, experiment['replication_type'],
-                             0.2, pipeline_title, 'long RNA'):
+                             0.2, pipeline_title):
         yield failure
 
     return
@@ -510,7 +448,7 @@ def check_experiement_small_rna_encode3_standards(experiment,
 
             for failure in check_file_read_depth(f, read_depth, 30000000, 0,
                                                  experiment['assay_term_name'],
-                                                 pipeline_title, 'small RNA'):
+                                                 pipeline_title):
                 yield failure
 
     if 'replication_type' not in experiment:
@@ -522,7 +460,7 @@ def check_experiement_small_rna_encode3_standards(experiment,
                               desired_annotation)
 
     for failure in check_spearman(mad_metrics, experiment['replication_type'],
-                                  0.9, 0.8, 'Small RNA-seq single-end pipeline', 'small RNA'):
+                                  0.9, 0.8, 'Small RNA-seq single-end pipeline'):
         yield failure
     return
 
@@ -550,7 +488,7 @@ def check_experiement_rampage_encode3_standards(experiment,
                                                             'RAMPAGE')
             for failure in check_file_read_depth(f, read_depth, 20000000, 10000000,
                                                  experiment['assay_term_name'],
-                                                 pipeline_title, 'RAMPAGE'):
+                                                 pipeline_title):
                 yield failure
 
     if 'replication_type' not in experiment:
@@ -562,12 +500,12 @@ def check_experiement_rampage_encode3_standards(experiment,
                               desired_annotation)
 
     for failure in check_spearman(mad_metrics, experiment['replication_type'],
-                                  0.9, 0.8, 'RAMPAGE (paired-end, stranded)', 'RAMPAGE'):
+                                  0.9, 0.8, 'RAMPAGE (paired-end, stranded)'):
         yield failure
     return
 
 
-def check_idr(metrics, rescue, self_consistency, pipeline, assay_name):
+def check_idr(metrics, rescue, self_consistency, pipeline):
     for m in metrics:
         if 'rescue_ratio' in m and 'self_consistency_ratio' in m:
             rescue_r = m['rescue_ratio']
@@ -581,11 +519,11 @@ def check_idr(metrics, rescue, self_consistency, pipeline, assay_name):
                          'have rescue ratio of {}, and '.format(rescue_r) + \
                          'self consistency ratio of {}. '.format(self_r) + \
                          'Both ratios should be < 2, according to June 2015 standards.'
-                yield AuditFailure(assay_name + ' - insufficient IDR values', detail,
+                yield AuditFailure('insufficient IDR values', detail,
                                    level='NOT_COMPLIANT')
 
 
-def check_mad(metrics, replication_type, mad_threshold, pipeline, assay_name):
+def check_mad(metrics, replication_type, mad_threshold, pipeline):
     if replication_type in ['anisogenic',
                             'anisogenic, sex-matched and age-matched',
                             'anisogenic, age-matched',
@@ -614,10 +552,10 @@ def check_mad(metrics, replication_type, mad_threshold, pipeline, assay_name):
                          '0.2 and 0.5 is acceptable.'
                 if experiment_replication_type == 'isogenic':
                     if mad_value < 0.5:
-                        yield AuditFailure(assay_name + ' - borderline MAD value', detail,
+                        yield AuditFailure('borderline MAD value', detail,
                                            level='DCC_ACTION')
                     else:
-                        yield AuditFailure(assay_name + ' - insufficient MAD value', detail,
+                        yield AuditFailure('insufficient MAD value', detail,
                                            level='DCC_ACTION')
                 elif experiment_replication_type == 'anisogenic' and mad_value > 0.5:
                     detail = 'ENCODE processed gene quantification files {} '.format(file_names) + \
@@ -627,11 +565,11 @@ def check_mad(metrics, replication_type, mad_threshold, pipeline, assay_name):
                              ' For gene quantification files from an {}'.format(experiment_replication_type) + \
                              ' assay in the {} '.format(pipeline) + \
                              'pipeline, a value <0.5 is recommended.'
-                    yield AuditFailure(assay_name + ' - borderline MAD value', detail,
+                    yield AuditFailure('borderline MAD value', detail,
                                        level='DCC_ACTION')
 
 
-def check_experiment_ERCC_spikeins(experiment, pipeline, assay_name):
+def check_experiment_ERCC_spikeins(experiment, pipeline):
     '''
     The assumption in this functon is that the regular audit will catch anything without spikeins.
     This audit is checking specifically for presence of ERCC spike-in in long-RNA pipeline experiments
@@ -660,16 +598,16 @@ def check_experiment_ERCC_spikeins(experiment, pipeline, assay_name):
                      'in experiment {} '.format(experiment['@id']) + \
                      'that was processed by {} pipeline '.format(pipeline) + \
                      'requires ERCC spike-in to be used in it`s preparation.'
-            yield AuditFailure(assay_name + ' - missing ERCC spike-in',
+            yield AuditFailure('missing ERCC spike-in',
                                detail, level='NOT_COMPLIANT')
 
 
-def check_target(experiment, pipeline, assay_name):
+def check_target(experiment, pipeline):
     if 'target' not in experiment:
         detail = 'Experiment {} '.format(experiment['@id']) + \
                  'that was processed by {} pipeline '.format(pipeline) + \
                  'requires target specification.'
-        yield AuditFailure(assay_name + ' - missing target',
+        yield AuditFailure('missing target',
                            detail, level='NOT_COMPLIANT')
 
 
@@ -680,7 +618,7 @@ def get_target(experiment):
 
 
 def check_spearman(metrics, replication_type, isogenic_threshold,
-                   anisogenic_threshold, pipeline, assay_name):
+                   anisogenic_threshold, pipeline):
 
     if replication_type in ['anisogenic',
                             'anisogenic, sex-matched and age-matched',
@@ -709,10 +647,10 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
                          '{} and one STD away ({}) is acceptable.'.format(threshold,
                                                                           print_border)
                 if spearman_correlation > border_value:
-                    yield AuditFailure(assay_name + ' - low spearman correlation', detail,
+                    yield AuditFailure('low spearman correlation', detail,
                                        level='WARNING')
                 else:
-                    yield AuditFailure(assay_name + ' - insufficient spearman correlation', detail,
+                    yield AuditFailure('insufficient spearman correlation', detail,
                                        level='NOT_COMPLIANT')
 
 
@@ -767,7 +705,7 @@ def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
     return False
 
 
-def check_file_chip_seq_library_complexity(alignment_file, assay_name):
+def check_file_chip_seq_library_complexity(alignment_file):
     '''
     An alignment file from the ENCODE ChIP-seq processing pipeline
     should have minimal library complexity in accordance with the criteria
@@ -808,7 +746,7 @@ def check_file_chip_seq_library_complexity(alignment_file, assay_name):
                 detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
                          'was generated from a library with NRF value of {}'.format(NRF_value) + \
                          '. '+nrf_end_of_detail
-                yield AuditFailure(assay_name + ' - insufficient library complexity', detail,
+                yield AuditFailure('insufficient library complexity', detail,
                                    level='NOT_COMPLIANT')
 
             else:
@@ -816,7 +754,7 @@ def check_file_chip_seq_library_complexity(alignment_file, assay_name):
                     detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
                              'was generated from a library with NRF value of {}'.format(NRF_value) + \
                              '. '+nrf_end_of_detail
-                    yield AuditFailure(assay_name + ' - low library complexity', detail,
+                    yield AuditFailure('low library complexity', detail,
                                        level='WARNING')
         if 'PBC1' in metric:
             PBC1_value = float(metric['PBC1'])
@@ -824,14 +762,14 @@ def check_file_chip_seq_library_complexity(alignment_file, assay_name):
                 detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
                          'was generated from a library with PBC1 value of {}'.format(PBC1_value) + \
                          '. '+pbc1_end_of_detail
-                yield AuditFailure(assay_name + ' - insufficient library complexity', detail,
+                yield AuditFailure('insufficient library complexity', detail,
                                    level='NOT_COMPLIANT')
             else:
                 if PBC1_value <= 0.9:
                     detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
                              'was generated from a library with PBC1 value of {}'.format(PBC1_value) + \
                              '. '+pbc1_end_of_detail
-                    yield AuditFailure(assay_name + ' - low library complexity', detail,
+                    yield AuditFailure('low library complexity', detail,
                                        level='WARNING')
         if 'PBC2' in metric:
             PBC2_raw_value = metric['PBC2']
@@ -843,22 +781,21 @@ def check_file_chip_seq_library_complexity(alignment_file, assay_name):
                 detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
                          'was generated from a library with PBC2 value of {}'.format(PBC2_value) + \
                          '. '+pbc2_end_of_detail
-                yield AuditFailure(assay_name + ' - insufficient library complexity', detail,
+                yield AuditFailure('insufficient library complexity', detail,
                                    level='NOT_COMPLIANT')
             else:
                 if PBC2_value <= 10:
                     detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
                              'was generated from a library with PBC2 value of {}'.format(PBC2_value) + \
                              '. '+pbc2_end_of_detail
-                    yield AuditFailure(assay_name + ' - low library complexity', detail,
+                    yield AuditFailure('low library complexity', detail,
                                        level='WARNING')
 
 
 def check_wgbs_coverage(samtools_metrics,
                         pipeline_title,
                         read_length,
-                        organism,
-                        assay_name):
+                        organism):
     for m in samtools_metrics:
         if 'mapped' in m:
             bio_rep_num = False
@@ -879,18 +816,18 @@ def check_wgbs_coverage(samtools_metrics,
                              'of experiment processed by {} '.format(pipeline_title) + \
                              'has a coverage of {}, '.format(int(coverage)) + \
                              'while coverage > 30 is required.'
-                    yield AuditFailure(assay_name + ' - insufficient coverage',
+                    yield AuditFailure('insufficient coverage',
                                        detail,
                                        level='NOT_COMPLIANT')
                 else:
                     detail = 'UNKNOWN replicate insufficient coverage'
-                    yield AuditFailure(assay_name + ' - insufficient coverage',
+                    yield AuditFailure('insufficient coverage',
                                        detail,
                                        level='DCC_ACTION')
     return
 
 
-def check_wgbs_pearson(cpg_metrics, threshold,  pipeline_title, assay_name):
+def check_wgbs_pearson(cpg_metrics, threshold,  pipeline_title):
     for m in cpg_metrics:
         if 'Pearson Correlation Coefficient' in m:
             if m['Pearson Correlation Coefficient'] < threshold:
@@ -898,12 +835,12 @@ def check_wgbs_pearson(cpg_metrics, threshold,  pipeline_title, assay_name):
                          'pipeline has CpG quantification Pearson Correlation Coefficient of ' + \
                          '{}, '.format(m['Pearson Correlation Coefficient']) + \
                          'while a value >={} is required.'.format(threshold)
-                yield AuditFailure(assay_name + ' - insufficient pearson',
+                yield AuditFailure('insufficient pearson',
                                    detail,
                                    level='NOT_COMPLIANT')
 
 
-def check_wgbs_lambda(bismark_metrics, threshold, pipeline_title, assay_name):
+def check_wgbs_lambda(bismark_metrics, threshold, pipeline_title):
     for metric in bismark_metrics:
         lambdaCpG = float(metric['lambda C methylated in CpG context'][:-1])
         lambdaCHG = float(metric['lambda C methylated in CHG context'][:-1])
@@ -917,14 +854,13 @@ def check_wgbs_lambda(bismark_metrics, threshold, pipeline_title, assay_name):
                      'lambda C methylated in CHG context was {}%, '.format(lambdaCHG) + \
                      'lambda C methylated in CHH context was {}%. '.format(lambdaCHH) + \
                      'The %C methylated in all contexts should be < 1%.'
-            yield AuditFailure(assay_name + ' - high lambda C methylation ratio', detail,
+            yield AuditFailure('high lambda C methylation ratio', detail,
                                level='WARNING')
 
 
 def check_file_chip_seq_read_depth(file_to_check,
                                    target,
-                                   read_depth,
-                                   assay_name):
+                                   read_depth):
     # added individual file pipeline validation due to the fact that one experiment may
     # have been mapped using 'Raw mapping' and also 'Histone ChIP-seq' - and there is no need to
     # check read depth on Raw files, while it is required for Histone
@@ -937,7 +873,7 @@ def check_file_chip_seq_read_depth(file_to_check,
     if read_depth is False:
         detail = 'ENCODE Processed alignment file {} has no read depth information'.format(
             file_to_check['@id'])
-        yield AuditFailure(assay_name + ' - missing read depth', detail, level='DCC_ACTION')
+        yield AuditFailure('missing read depth', detail, level='DCC_ACTION')
         return
 
     if target is not False and 'name' in target:
@@ -958,7 +894,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                      'in experiments studying broad histone marks, which ' + \
                      'require {} usable fragments, according to '.format(marks['broad']) + \
                      'June 2015 standards.'
-            yield AuditFailure(assay_name + ' - low read depth', detail, level='WARNING')
+            yield AuditFailure('low read depth', detail, level='WARNING')
         if read_depth >= 10000000 and read_depth < marks['narrow']:
             detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                          read_depth) + \
@@ -967,7 +903,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                      'transcription factors, which ' + \
                      'require {} usable fragments, according to '.format(marks['narrow']) + \
                      'June 2015 standards.'
-            yield AuditFailure(assay_name + ' - low read depth', detail, level='WARNING')
+            yield AuditFailure('low read depth', detail, level='WARNING')
         if read_depth < 10000000:
             detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                          read_depth) + \
@@ -977,7 +913,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                      'require {} usable fragments, according to '.format(marks['narrow']) + \
                      'June 2015 standards, and 10000000 usable fragments according to' + \
                      ' ENCODE2 standards.'
-            yield AuditFailure(assay_name + ' - insufficient read depth',
+            yield AuditFailure('insufficient read depth',
                                detail, level='NOT_COMPLIANT')
         return
     elif 'broad histone mark' in target_investigated_as:  # target_name in broad_peaks_targets:
@@ -990,7 +926,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                          'investigated as broad histone mark require ' + \
                          '{} mapped reads, according to '.format(marks['broad']) + \
                          'June 2015 standards.'
-                yield AuditFailure(assay_name + ' - insufficient read depth',
+                yield AuditFailure('insufficient read depth',
                                    detail, level='NOT_COMPLIANT')
         else:
             if read_depth >= marks['narrow'] and read_depth < marks['broad']:
@@ -1001,7 +937,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                          'investigated as broad histone mark require ' + \
                          '{} usable fragments, according to '.format(marks['broad']) + \
                          'June 2015 standards.'
-                yield AuditFailure(assay_name + ' - low read depth', detail, level='NOT_COMPLIANT')
+                yield AuditFailure('low read depth', detail, level='NOT_COMPLIANT')
             elif read_depth < marks['narrow']:
                 detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                              read_depth) + \
@@ -1011,7 +947,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                          '{} usable fragments, according to '.format(marks['broad']) + \
                          'June 2015 standards, and 20000000 usable fragments according to' + \
                          ' ENCODE2 standards.'
-                yield AuditFailure(assay_name + ' - insufficient read depth',
+                yield AuditFailure('insufficient read depth',
                                    detail, level='NOT_COMPLIANT')
     elif 'narrow histone mark' in target_investigated_as:
         if read_depth >= 10000000 and read_depth < marks['narrow']:
@@ -1022,7 +958,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                      'investigated as narrow histone mark require ' + \
                      '{} usable fragments, according to '.format(marks['narrow']) + \
                      'June 2015 standards.'
-            yield AuditFailure(assay_name + ' - low read depth', detail, level='WARNING')
+            yield AuditFailure('low read depth', detail, level='WARNING')
         elif read_depth < 10000000:
             detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                          read_depth) + \
@@ -1032,7 +968,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                      '{} usable fragments, according to '.format(marks['narrow']) + \
                      'June 2015 standards, and 10000000 usable fragments according to' + \
                      ' ENCODE2 standards.'
-            yield AuditFailure(assay_name + ' - insufficient read depth',
+            yield AuditFailure('insufficient read depth',
                                detail, level='NOT_COMPLIANT')
     elif 'transcription factor' in target_investigated_as:
         if read_depth >= 10000000 and read_depth < marks['narrow']:
@@ -1043,7 +979,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                      'investigated as transcription factor require ' + \
                      '{} usable fragments, according to '.format(marks['narrow']) + \
                      'June 2015 standards.'
-            yield AuditFailure(assay_name + ' - low read depth', detail, level='WARNING')
+            yield AuditFailure('low read depth', detail, level='WARNING')
         elif read_depth < 10000000:
             detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                          read_depth) + \
@@ -1053,13 +989,13 @@ def check_file_chip_seq_read_depth(file_to_check,
                      '{} usable fragments, according to '.format(marks['narrow']) + \
                      'June 2015 standards, and 10000000 usable fragments according to' + \
                      ' ENCODE2 standards.'
-            yield AuditFailure(assay_name + ' - insufficient read depth',
+            yield AuditFailure('insufficient read depth',
                                detail, level='NOT_COMPLIANT')
 
 
 def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_threshold,
                           assay_term_name,
-                          pipeline_title, assay_name):
+                          pipeline_title):
     if read_depth is False:
         return
 
@@ -1071,7 +1007,7 @@ def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_thre
                      '{} assay '.format(assay_term_name) + \
                      'processed by {} pipeline '.format(pipeline_title) + \
                      'require {} uniquely mapped reads.'.format(upper_threshold)
-            yield AuditFailure(assay_name + ' - low read depth', detail, level='WARNING')
+            yield AuditFailure('low read depth', detail, level='WARNING')
             return
         elif read_depth < lower_threshold:
             detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
@@ -1080,7 +1016,7 @@ def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_thre
                      '{} assay '.format(assay_term_name) + \
                      'processed by {} pipeline '.format(pipeline_title) + \
                      'require {} uniquely mapped reads.'.format(upper_threshold)
-            yield AuditFailure(assay_name + ' - insufficient read depth', detail,
+            yield AuditFailure('insufficient read depth', detail,
                                level='NOT_COMPLIANT')
             return
 
@@ -1091,24 +1027,24 @@ def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_thre
                  '{} assay '.format(assay_term_name) + \
                  'processed by {} pipeline '.format(pipeline_title) + \
                  'require {} uniquely mapped reads.'.format(upper_threshold)
-        yield AuditFailure(assay_name + ' - insufficient read depth', detail, level='NOT_COMPLIANT')
+        yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
         return
 
 
-def check_file_platform(file_to_check, excluded_platforms, assay_name):
+def check_file_platform(file_to_check, excluded_platforms):
     if 'platform' not in file_to_check:
         detail = 'Reads file {} missing platform'.format(file_to_check['@id'])
-        yield AuditFailure(assay_name + ' - missing platform', detail, level='WARNING')
+        yield AuditFailure('missing platform', detail, level='WARNING')
     elif file_to_check['platform'] in excluded_platforms:
         detail = 'Reads file {} has not compliant '.format(file_to_check['@id']) + \
                  'platform (SOLiD) {}.'.format(file_to_check['platform'])
-        yield AuditFailure(assay_name + ' - not compliant platform', detail, level='WARNING')
+        yield AuditFailure('not compliant platform', detail, level='WARNING')
 
 
-def check_file_read_length_chip(file_to_check, threshold_length, assay_name):
+def check_file_read_length_chip(file_to_check, threshold_length):
     if 'read_length' not in file_to_check:
         detail = 'Reads file {} missing read_length'.format(file_to_check['@id'])
-        yield AuditFailure(assay_name + ' - missing read_length', detail, level='NOT_COMPLIANT')
+        yield AuditFailure('missing read_length', detail, level='NOT_COMPLIANT')
         return
 
     creation_date = file_to_check['date_created'][:10].split('-')
@@ -1128,17 +1064,17 @@ def check_file_read_length_chip(file_to_check, threshold_length, assay_name):
                  ' According to ENCODE3 standards files submitted after 2015-6-30 ' + \
                  'should be at least {}bp long.'.format(threshold_length)
         if file_date_creation < threshold_date:
-            yield AuditFailure(assay_name + ' - insufficient read length', detail, level='WARNING')
+            yield AuditFailure('insufficient read length', detail, level='WARNING')
         else:
-            yield AuditFailure(assay_name + ' - insufficient read length', detail,
+            yield AuditFailure('insufficient read length', detail,
                                level='NOT_COMPLIANT')
     return
 
 
-def check_file_read_length_rna(file_to_check, threshold_length, assay_name):
+def check_file_read_length_rna(file_to_check, threshold_length):
     if 'read_length' not in file_to_check:
         detail = 'Reads file {} missing read_length'.format(file_to_check['@id'])
-        yield AuditFailure(assay_name + ' - missing read_length', detail, level='NOT_COMPLIANT')
+        yield AuditFailure('missing read_length', detail, level='NOT_COMPLIANT')
         return
 
     read_length = file_to_check['read_length']
@@ -1148,7 +1084,7 @@ def check_file_read_length_rna(file_to_check, threshold_length, assay_name):
                  ' It is not compliant with ENCODE3 standards.' + \
                  ' According to ENCODE3 standards sequencing reads ' + \
                  'should be at least {}bp long.'.format(threshold_length)
-        yield AuditFailure(assay_name + ' - insufficient read length', detail,
+        yield AuditFailure('insufficient read length', detail,
                            level='NOT_COMPLIANT')
     return
 
