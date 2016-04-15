@@ -312,7 +312,15 @@ var Report = React.createClass({
                             </h4>
                             <div className="results-table-control">
                                 <div className="btn-attached">
-                                    {context.views && context.views.map(view => <a href={view.href} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{SvgIcon(view2svg[view.icon])}</a>)}
+                                    {context.views && context.views.map(view => {
+                                        // Strip any `field` properties out of the view's href as
+                                        // they don't apply to search or matrix
+                                        var parsedUrl = url.parse(view.href, true);
+                                        delete parsedUrl.query.field;
+                                        delete parsedUrl.search;
+                                        var href = url.format(parsedUrl);
+                                        return <a href={href} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{SvgIcon(view2svg[view.icon])}</a>;
+                                    })}
                                 </div>
                                 <ColumnSelector columns={columns} toggleColumn={this.toggleColumn} />
                                 <a className="btn btn-info btn-sm" href={context.download_tsv} data-bypass>Download TSV</a>
