@@ -111,6 +111,16 @@ def award(testapp):
     }
     return testapp.post_json('/award', item).json['@graph'][0]
 
+@pytest.fixture
+def remc_award(testapp):
+    item = {
+        'name': 'remc-award',
+        'rfa': 'GGR',
+        'project': 'GGR',
+        'viewing_group': 'REMC',
+    }
+    return testapp.post_json('/award', item).json['@graph'][0]
+
 
 @pytest.fixture
 def encode2_award(testapp):
