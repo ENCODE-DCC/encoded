@@ -12,7 +12,7 @@ from .base import (
     DELETED,
     ONLY_ADMIN_VIEW,
 )
-from snovault.authentication import (
+from ..authentication import (
     generate_password,
     generate_user,
     CRYPT_CONTEXT,

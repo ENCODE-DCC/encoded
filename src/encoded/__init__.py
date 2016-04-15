@@ -221,7 +221,7 @@ def main(global_config, **local_config):
 
     # Render an HTML page to browsers and a JSON document for API clients
     config.include('.renderers')
-    config.include('snovault.authentication')
+    config.include('.authentication')
     config.include('.server_defaults')
     config.include('.types')
     config.include('.root')
