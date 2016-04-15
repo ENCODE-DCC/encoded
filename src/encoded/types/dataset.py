@@ -304,6 +304,29 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms)
     schema = load_schema('encoded:schemas/annotation.json')
     embedded = FileSet.embedded + ['software_used', 'software_used.software', 'organism', 'targets', 'files.dataset']
 
+    matrix = {
+        'y': {
+            'facets': [
+                'organism.scientific_name',
+                'biosample_type',
+                'organ_slims',
+                'award.project',
+                'assembly',
+            ],
+            'group_by': ['biosample_type', 'biosample_term_name'],
+            'label': 'Biosample',
+        },
+        'x': {
+            'facets': [
+                'annotation_type',
+                'month_released',
+                'targets.label',
+                'files.file_type',
+            ],
+            'group_by': 'annotation_type',
+            'label': 'Type',
+        },
+    }
 
 @collection(
     name='publication-data',

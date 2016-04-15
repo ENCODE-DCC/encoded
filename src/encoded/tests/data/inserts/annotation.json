@@ -66,6 +66,7 @@
         "annotation_type": "encyclopedia",
         "description": "ENCODE Annotations v1",
         "encyclopedia_version": "1",
+        "targets": ["/targets/H3K4me3-human"],
         "lab": "j-michael-cherry",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
