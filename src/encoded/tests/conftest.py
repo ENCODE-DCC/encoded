@@ -59,7 +59,21 @@ def app_settings(request, wsgi_server_host_port, connection, DBSession):
 def pytest_configure():
     import logging
     logging.basicConfig()
+    logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
     logging.getLogger('selenium').setLevel(logging.DEBUG)
+
+    class Shorten(logging.Filter):
+        max_len = 500
+
+        def filter(self, record):
+            if record.msg == '%r':
+                record.msg = record.msg % record.args
+                record.args = ()
+            if len(record.msg) > self.max_len:
+                record.msg = record.msg[:self.max_len] + '...'
+            return True
+
+    logging.getLogger('sqlalchemy.engine.base.Engine').addFilter(Shorten())
 
 
 @pytest.yield_fixture
