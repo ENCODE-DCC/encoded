@@ -70,23 +70,22 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
 
             return (
                 <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.context.auditDetailOpen} aria-controls={this.props.id} onClick={this.context.auditStateToggle}>
-                    {sortedAuditLevels.map(function(level, i) {
-                        // Calculate the CSS class for the icon
-                        var groupedAudits;
-                        var levelName = level.toLowerCase();
-                        var btnClass = 'btn-audit btn-audit-' + levelName + ' audit-level-' + levelName;
-                        var iconClass = 'icon audit-activeicon-' + levelName;
+                    {sortedAuditLevels.map(level => {
+                        if (loggedIn || level !== 'DCC_ACTION') {
+                            // Calculate the CSS class for the icon
+                            var levelName = level.toLowerCase();
+                            var btnClass = 'btn-audit btn-audit-' + levelName + ' audit-level-' + levelName;
+                            var iconClass = 'icon audit-activeicon-' + levelName;
+                            var groupedAudits = _(audits[level]).groupBy('name');
 
-                        if (!loggedIn) {
-                            groupedAudits = _(audits[level]).groupBy('name');
+                            return (
+                                <span className={btnClass} key={level}>
+                                    <i className={iconClass}><span className="sr-only">{'Audit'} {levelName}</span></i>
+                                    {Object.keys(groupedAudits).length}
+                                </span>
+                            );
                         }
-
-                        return (
-                            <span className={btnClass} key={i}>
-                                <i className={iconClass}><span className="sr-only">{'Audit'} {levelName}</span></i>
-                                {loggedIn ? audits[level].length : Object.keys(groupedAudits).length}
-                            </span>
-                        );
+                        return null;
                     })}
                 </button>
             );
@@ -99,7 +98,8 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
 
 var AuditDetail = module.exports.AuditDetail = React.createClass({
     contextTypes: {
-        auditDetailOpen: React.PropTypes.bool
+        auditDetailOpen: React.PropTypes.bool,
+        session: React.PropTypes.object
     },
 
     render: function() {
@@ -109,22 +109,26 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
         if (this.context.auditDetailOpen) {
             // Sort the audit levels by their level number, using the first element of each warning category
             var sortedAuditLevelNames = _(Object.keys(auditLevels)).sortBy(level => -auditLevels[level][0].level);
+            var loggedIn = this.context.session && this.context.session['auth.userid'];
 
             // First loop by audit level, then by audit group
             return (
                 <Panel addClasses="audit-details" id={this.props.id.replace(/\W/g, '')} aria-hidden={!this.context.auditDetailOpen}>
                     {sortedAuditLevelNames.map(auditLevelName => {
-                        var audits = auditLevels[auditLevelName];
-                        var level = auditLevelName.toLowerCase();
-                        var iconClass = 'icon audit-icon-' + level;
-                        var alertClass = 'audit-detail-' + level;
-                        var levelClass = 'audit-level-' + level;
+                        if (loggedIn || auditLevelName !== 'DCC_ACTION') {
+                            var audits = auditLevels[auditLevelName];
+                            var level = auditLevelName.toLowerCase();
+                            var iconClass = 'icon audit-icon-' + level;
+                            var alertClass = 'audit-detail-' + level;
+                            var levelClass = 'audit-level-' + level;
 
-                        // Group audits within a level by their category ('name' corresponds to
-                        // 'category' in a more machine-like form)
-                        var groupedAudits = _(audits).groupBy('name');
+                            // Group audits within a level by their category ('name' corresponds to
+                            // 'category' in a more machine-like form)
+                            var groupedAudits = _(audits).groupBy('name');
 
-                        return Object.keys(groupedAudits).map((groupName, i) => <AuditGroup group={groupedAudits[groupName]} groupName={groupName} auditLevelName={auditLevelName} context={context} forcedEditLink={this.props.forcedEditLink} key={i} />);
+                            return Object.keys(groupedAudits).map(groupName => <AuditGroup group={groupedAudits[groupName]} groupName={groupName} auditLevelName={auditLevelName} context={context} forcedEditLink={this.props.forcedEditLink} key={groupName} />);
+                        }
+                        return null;
                     })}
                 </Panel>
             );
@@ -179,12 +183,12 @@ var AuditGroup = module.exports.AuditGroup = React.createClass({
                 <div className="audit-detail-info">
                     <div className="pull-right">
                         <i className={iconClass}></i>
-                        <strong className={levelClass}>{auditLevelName.split('_').join(' ').toUpperCase()}</strong>
                     </div>
                     <div className="audit-detail-category-name">{categoryName}</div>
                 </div>
                 {loggedIn ?
-                    <div>
+                    <div className="audit-details-section">
+                        <div className="audit-details-decoration"></div>
                         {group.map((audit, i) =>
                             <div className={alertItemClass} key={i} role="alert">
                                 <DetailEmbeddedLink detail={audit.detail} except={context['@id']} forcedEditLink={this.props.forcedEditLink} />

@@ -195,15 +195,25 @@ $audit-types:
     }
 
     .audit-item-#{$audit-type} {
-        padding: 5px 10px 5px $audit-group-height;
+        padding: 5px 10px 5px 50px;
         background-color: darken(fg-to-bg-color($color), 10%);
         border-top: 1px solid #a0a0a0;
         font-weight: bold;
     }
 }
 
+.audit-details-section {
+    position: relative;
+}
 
-.audit-details {
+.audit-details-decoration {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    box-shadow: 0px 2px 8px rgba(0,0,0,0.3) inset;
 }
 
 .audit-category {
