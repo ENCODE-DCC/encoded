@@ -92,6 +92,7 @@ var Navbar = module.exports.Navbar = React.createClass({
     
     collapseClick: function(e) {
         // Click on the Navbar mobile "collapse" button
+        console.log('collapse: %s', this.state.expanded);
         this.setState({expanded: !this.state.expanded});
     },
 
@@ -112,7 +113,7 @@ var Navbar = module.exports.Navbar = React.createClass({
                     : null}
                 </div>
                 
-                <div className="collapse navbar-collapse" id={label}>
+                <div className={'collapse navbar-collapse' + (this.state.expanded ? ' in' : '')} id={label}>
                     {this.props.children}
                 </div>
             </nav>

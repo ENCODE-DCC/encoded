@@ -11,6 +11,10 @@ var url = require('url');
 var portal = {
     portal_title: 'ENCODE',
     global_sections: [
+        {id: 'matrix', title: 'Matrix', children: [
+            {id: 'assays', title: 'Assays', url: '/matrix/?type=Experiment'},
+            {id: 'annotations', title: 'Annotations', url: '/matrix/?type=Annotation'}
+        ]},
         {id: 'data', title: 'Data', children: [
             {id: 'assays', title: 'Assays', url: '/search/?type=Experiment'},
             {id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample'},
