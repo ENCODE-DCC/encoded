@@ -214,6 +214,7 @@ $audit-types:
     bottom: 0;
     left: 0;
     box-shadow: 0px 2px 8px rgba(0,0,0,0.3) inset;
+    pointer-events: none;
 }
 
 .audit-category {
