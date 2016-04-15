@@ -636,8 +636,11 @@ def search(context, request, search_type=None, return_generator=False):
     if len(doc_types) == 1 and 'facets' in types[doc_types[0]].schema:
         facets.extend(types[doc_types[0]].schema['facets'].items())
 
-    if search_audit and 'group.submitter' in principals:
-        for audit_facet in audit_facets:
+    import pprint;
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(request.has_permission('search_audit'))
+    for audit_facet in audit_facets:
+        if request.has_permission('search_audit') or 'DCC_ACTION' not in audit_facet[0]:
             facets.append(audit_facet)
 
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
