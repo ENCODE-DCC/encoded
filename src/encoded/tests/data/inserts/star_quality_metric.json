@@ -29,6 +29,8 @@
         "Number of splices: GT/AG": 2889113,
         "Number of splices: Non-canonical": 1608,
         "Number of splices: Total": 2913283,
+        "lab": "/labs/robert-waterston/",
+        "award": "/awards/U41HG007355/",
         "Uniquely mapped reads %": "80.84%",
         "Uniquely mapped reads number": 36968241
     }

@@ -4,7 +4,7 @@
     "id": "/profiles/analysis_step.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["software_versions"],
+    "required": ["software_versions", "analysis_step"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid", "aliases"],
     "mixinProperties": [
