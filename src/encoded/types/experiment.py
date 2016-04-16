@@ -203,15 +203,6 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
                              libraryObject['nucleic_acid_term_name'] == 'polyadenylated mRNA':
                             preferred_name = 'polyA mRNA RNA-seq'
                             break
-
-            elif preferred_name == 'ChIP-seq' and target is not None:
-                targetObject = request.embed(target, '@@object')
-                if 'investigated_as' in targetObject and \
-                   'histone modification' in targetObject['investigated_as']:
-                    preferred_name = 'Histone ChIP-seq'
-                elif 'investigated_as' in targetObject and \
-                     'transcription factor' in targetObject['investigated_as']:
-                    preferred_name = 'TF ChIP-seq'
             return preferred_name or assay_term_name
         return assay_term_name
 
