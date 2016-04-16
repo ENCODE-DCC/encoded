@@ -1157,7 +1157,7 @@ var FileGalleryRenderer = React.createClass({
         var selectedAssembly = '';
         var selectedAnnotation = '';
         var items = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
-        var files = items.length ? context.files.concat(items) : context.files;
+        var files = items.length ? items.length : [];
         if (files.length === 0) {
             return null;
         }
@@ -1716,7 +1716,8 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
     render: function() {
         var {context, session, items, selectedAssembly, selectedAnnotation} = this.props;
-        var files = context.files.concat(items);
+        console.log('ITEMS: %o', items);
+        var files = items;
 
         // Build node graph of the files and analysis steps with this experiment
         if (files && files.length) {
