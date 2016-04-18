@@ -619,6 +619,9 @@
         "href": {
             "title": "Download URL"
         },
+        "derived_from": {
+            "title": "Derived from"
+        },
         "genome_annotation": {
             "title": "Genome annotation"
         },
@@ -640,9 +643,17 @@
         "output_type": {
             "title": "Data type"
         },
-        "date_created":
-        {
+        "quality_metrics": {
+            "title": "QC Metric"
+        },
+        "step_run": {
+            "title": "Analysis step run"
+        },
+        "date_created": {
             "title": "Date added"
+        },
+        "analysis_step_version": {
+            "title": "Analysis Step Version"
         },
         "status": {
             "title": "File status"

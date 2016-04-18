@@ -57,7 +57,8 @@ $audit-types:
     (error, warning, #cc0700),
     (warning, exclamation-circle, #e0e000),
     (not_compliant, file-text, #ff8000),
-    (dcc_action, ambulance, #a0a0a0);
+    (dcc_action, ambulance, #a0a0a0),
+    (ok, check, #4C994C);
 
 // Function for an inverse curve; used for saturation and lightness of backgrounds
 @function inverse-curve($value) {
@@ -151,6 +152,15 @@ $audit-types:
         @extend .icon-#{$suffix}; // FontAwesome icon
         @extend %audit-icon;
         color: $color;
+    }
+
+    .audit-icon-#{$audit-type}-badged {
+        @extend .icon-#{$suffix}; // FontAwesome icon
+        @extend %audit-icon;
+        color: #fff;
+        font-size: 0.7rem;
+        line-height: 1;
+        padding: 0 5px;
     }
 
     // Clickable audit icons
