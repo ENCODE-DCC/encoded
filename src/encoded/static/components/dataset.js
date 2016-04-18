@@ -1402,7 +1402,8 @@ var fileAuditStatus = function(file) {
         highestAuditStatus = 'default';
         highestAuditLevel = 'OK';
     }
-    return <StatusLabel status={'audit-' + highestAuditStatus} buttonLabel={highestAuditLevel.toLowerCase().split('_').join(' ')} />;
+    var iconClass = 'icon audit-icon-' + highestAuditLevel.toLowerCase() + '-badged';
+    return <StatusLabel status={'audit-' + highestAuditStatus} buttonLabel={<i className={iconClass}></i>} />;
 };
 
 
