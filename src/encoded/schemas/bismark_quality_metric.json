@@ -3,7 +3,7 @@
     "id": "/profiles/bismark_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step_run"],
+    "required": ["step_run", "award", "lab"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
@@ -12,12 +12,13 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/submitted"},
         { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/assay" },
         { "$ref": "mixins.json#/aliases"}
    ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "Sequences analysed in total": {
             "type": "number",
@@ -59,5 +60,6 @@
             "type": "string",
             "description": "Bismark mapping efficiency for WGBS vs. reference genome"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/bismark_quality_metric.md"
 }

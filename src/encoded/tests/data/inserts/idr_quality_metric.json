@@ -2,6 +2,8 @@
     {
         "status": "in progress",
         "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
+        "lab": "/labs/robert-waterston/",
+        "award": "/awards/U41HG007355/",
         "uuid": "851ae37b-4414-4f51-babe-b2fd378d080c",
         "assay_term_name": "ChIP-seq",
         "assay_term_id": "OBI:0000716",

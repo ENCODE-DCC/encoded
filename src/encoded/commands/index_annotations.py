@@ -3,6 +3,9 @@ from elasticsearch import RequestError
 import logging
 import json
 
+from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
+
+
 EPILOG = __doc__
 
 log = logging.getLogger(__name__)
@@ -16,15 +19,22 @@ def json_from_path(path, default=None):
         return default
     return json.load(open(path))
 
+def index_settings():
+    return {
+        'index': {
+            'number_of_shards': 1
+        }
+    }
+
 
 def run(app):
     registry = app.registry
-    es = app.registry['snp_search']
+    es = app.registry[ELASTIC_SEARCH]
     try:
-        es.indices.create(index=index)
+        es.indices.create(index=index, body=index_settings())
     except RequestError:
         es.indices.delete(index=index)
-        es.indices.create(index=index)
+        es.indices.create(index=index, body=index_settings())
 
     mapping = {
         'properties': {

@@ -171,32 +171,38 @@ def file7(file_exp2, award, encode_lab, testapp, analysis_step_run_bam):
 
 
 @pytest.fixture
-def bam_quality_metric(testapp, analysis_step_run_bam, file6):
+def bam_quality_metric(testapp, analysis_step_run_bam, file6, award, lab):
     item = {
         'step_run': analysis_step_run_bam['@id'],
         'quality_metric_of': [file6['@id']],
-        'Uniquely mapped reads number': 1000
+        'Uniquely mapped reads number': 1000,
+        'award': award['@id'],
+        'lab': lab['@id']
     }
 
     return testapp.post_json('/star_quality_metric', item).json['@graph'][0]
 
 
 @pytest.fixture
-def mad_quality_metric(testapp, analysis_step_run_bam, file7):
+def mad_quality_metric(testapp, analysis_step_run_bam, file7, award, lab):
     item = {
         'step_run': analysis_step_run_bam['@id'],
         'quality_metric_of': [file7['@id']],
         'Spearman correlation': 0.2,
-        'MAD of log ratios': 3.1
+        'MAD of log ratios': 3.1,
+        'award': award['@id'],
+        'lab': lab['@id']
     }
 
     return testapp.post_json('/mad_quality_metric', item).json['@graph'][0]
 
 
 @pytest.fixture
-def wgbs_quality_metric(testapp, analysis_step_run_bam, file6):
+def wgbs_quality_metric(testapp, analysis_step_run_bam, file6, award, lab):
     item = {
         'step_run': analysis_step_run_bam['@id'],
+        'award': award['@id'],
+        'lab': lab['@id'],
         'quality_metric_of': [file6['@id']],
         'lambda C methylated in CHG context': '1.1%',
         'lambda C methylated in CHH context': '1.5%',
@@ -205,9 +211,11 @@ def wgbs_quality_metric(testapp, analysis_step_run_bam, file6):
 
 
 @pytest.fixture
-def chipseq_bam_quality_metric(testapp, analysis_step_run_bam, file6):
+def chipseq_bam_quality_metric(testapp, analysis_step_run_bam, file6, lab, award):
     item = {
         'step_run': analysis_step_run_bam['@id'],
+        'award': award['@id'],
+        'lab': lab['@id'],
         'quality_metric_of': [file6['@id']],
         'total': 20000000
     }
@@ -216,9 +224,11 @@ def chipseq_bam_quality_metric(testapp, analysis_step_run_bam, file6):
 
 
 @pytest.fixture
-def chipseq_bam_quality_metric_2(testapp, analysis_step_run_bam, file7):
+def chipseq_bam_quality_metric_2(testapp, analysis_step_run_bam, file7, lab, award):
     item = {
         'step_run': analysis_step_run_bam['@id'],
+        'award': award['@id'],
+        'lab': lab['@id'],
         'quality_metric_of': [file7['@id']],
         'total': 20000000
     }
@@ -227,9 +237,11 @@ def chipseq_bam_quality_metric_2(testapp, analysis_step_run_bam, file7):
 
 
 @pytest.fixture
-def chipseq_filter_quality_metric(testapp, analysis_step_run_bam, file6):
+def chipseq_filter_quality_metric(testapp, analysis_step_run_bam, file6, lab, award):
     item = {
         'step_run': analysis_step_run_bam['@id'],
+        'award': award['@id'],
+        'lab': lab['@id'],
         'quality_metric_of':[file6['@id']],
         'NRF': 0.1,
         'PBC1': 0.3,

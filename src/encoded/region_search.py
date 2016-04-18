@@ -238,7 +238,7 @@ def region_search(context, request):
             reference = regular_name
     annotation = request.params.get('annotation', '*')
     if annotation != '*':
-        chromosome, start, end = get_annotation_coordinates(snp_es, annotation, reference)
+        chromosome, start, end = get_annotation_coordinates(es, annotation, reference)
     elif region != '*':
         region = region.lower()
         if region.startswith('rs'):
@@ -329,7 +329,7 @@ def suggest(context, request):
         text = request.params.get('q', '')
     else:
         return []
-    es = request.registry['snp_search']
+    es = request.registry[ELASTIC_SEARCH]
     query = {
         "suggester": {
             "text": text,

@@ -11,6 +11,15 @@ def lab(testapp):
 
 
 @pytest.fixture
+def remc_lab(testapp):
+    item = {
+        'name': 'remc-lab',
+        'title': 'REMC lab',
+    }
+    return testapp.post_json('/lab', item).json['@graph'][0]
+
+
+@pytest.fixture
 def admin(testapp):
     item = {
         'first_name': 'Test',
@@ -79,11 +88,12 @@ def viewing_group_member(testapp, award):
 
 
 @pytest.fixture
-def remc_member(testapp):
+def remc_member(testapp, remc_lab):
     item = {
         'first_name': 'REMC',
         'last_name': 'Member',
         'email': 'remc_member@example.org',
+        'submits_for': [remc_lab['@id']],
         'viewing_groups': ['REMC'],
     }
     # User @@object view has keys omitted.
@@ -98,6 +108,16 @@ def award(testapp):
         'rfa': 'ENCODE3',
         'project': 'ENCODE',
         'viewing_group': 'ENCODE',
+    }
+    return testapp.post_json('/award', item).json['@graph'][0]
+
+@pytest.fixture
+def remc_award(testapp):
+    item = {
+        'name': 'remc-award',
+        'rfa': 'GGR',
+        'project': 'GGR',
+        'viewing_group': 'REMC',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
 
@@ -478,9 +498,11 @@ def analysis_step_run(testapp, analysis_step_version):
 
 
 @pytest.fixture
-def quality_metric(testapp, analysis_step_run):
+def quality_metric(testapp, analysis_step_run, award, lab):
     item = {
         'step_run': analysis_step_run['@id'],
+        'award': award['@id'],
+        'lab': lab['@id']
     }
     return testapp.post_json('/fastqc_quality_metric', item).json['@graph'][0]
 
