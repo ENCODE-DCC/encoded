@@ -18,6 +18,9 @@
             "Tim Reddy, Duke",
             "Greg Cooper, HAIB"
         ],
+        "viewing_groups": [
+            "ENCODE"
+        ],
         "timezone": "US/Pacific",
         "uuid": "9f161054-aa2c-40b7-8239-04eb7f08b15d"
     },
@@ -1007,7 +1010,6 @@
         "uuid": "7e763d5a-634b-4181-a812-4361183359e9"
     },
     {
-        "timezone": "US/Central",
         "uuid": "e7bb4fa6-ef92-41b7-871a-5f64db3848fe",
         "email": "david@glicksoftware.com",
         "first_name": "David",
