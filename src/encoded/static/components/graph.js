@@ -227,6 +227,7 @@ var Graph = module.exports.Graph = React.createClass({
         // Dagre-D3 has a width and height for the graph.
         // Set the viewbox's and viewport's width and height to that plus a little extra.
         // Round the graph dimensions up to avoid problems detecting the end of scrolling.
+        console.log('FIRST %s:%s', firstRender, this.state.zoomLevel);
         if (firstRender) {
             var graphWidth = Math.ceil(g.graph().width);
             var graphHeight = Math.ceil(g.graph().height);
@@ -244,15 +245,17 @@ var Graph = module.exports.Graph = React.createClass({
                 svgHeight = viewBoxHeight;
             }
             viewBox = [orgX, orgY, viewBoxWidth, viewBoxHeight];
+            this.cv.originalViewBox.width = svgWidth;
+            this.cv.originalViewBox.height = svgHeight;
 
             // Remember the view box for zooming calculations
             this.cv.originalViewBox = {width: svgWidth, height: svgHeight};
         } else {
             viewBox = [orgX, orgY, this.cv.originalViewBox.width, this.cv.originalViewBox.height];
-            var {width, height} = this.calcZoom(this.cv.originalViewBox.width, this.cv.originalViewBox.height);
-            svgWidth = width; svgHeight = height;
         }
 
+        var {width, height} = this.calcZoom(this.cv.originalViewBox.width, this.cv.originalViewBox.height);
+        svgWidth = width; svgHeight = height;
         svg.attr("width", svgWidth).attr("height", svgHeight).attr("viewBox", viewBox.join(' '));
     },
 
