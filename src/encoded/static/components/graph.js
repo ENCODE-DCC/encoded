@@ -227,7 +227,6 @@ var Graph = module.exports.Graph = React.createClass({
         // Dagre-D3 has a width and height for the graph.
         // Set the viewbox's and viewport's width and height to that plus a little extra.
         // Round the graph dimensions up to avoid problems detecting the end of scrolling.
-        console.log('FIRST %s:%s', firstRender, this.state.zoomLevel);
         if (firstRender) {
             var graphWidth = Math.ceil(g.graph().width);
             var graphHeight = Math.ceil(g.graph().height);
