@@ -12,6 +12,8 @@
         "mapped by 1 read": 11250850,
         "mapped by 2 reads": 1186045,
         "proportion of 1 read locations": 0.881151,
+        "lab": "/labs/robert-waterston/",
+        "award": "/awards/U41HG007355/",
         "ratio: 1 read over 2 read locations": 9.486023,
         "reads": 15000000
     }

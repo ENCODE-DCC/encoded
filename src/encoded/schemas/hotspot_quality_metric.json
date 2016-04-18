@@ -3,7 +3,7 @@
     "id": "/profiles/hotspot_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step_run","quality_metric_of"],
+    "required": ["step_run","quality_metric_of", "award", "lab"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
@@ -12,12 +12,13 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/submitted"},
         { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status"},
         { "$ref": "mixins.json#/assay" }
    ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "SPOT": {
             "type": "number",
