@@ -3,7 +3,7 @@
     "id": "/profiles/fastqc_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step_run"],
+    "required": ["step_run", "award", "lab"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
@@ -12,11 +12,12 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/submitted"},
         { "$ref": "mixins.json#/standard_status"},
-        { "$ref": "mixins.json#/assay" }
+        { "$ref": "mixins.json#/assay" },
+        { "$ref": "mixins.json#/attribution" }
    ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "attachment": {
             "title": "QC metric document metadata",
@@ -175,5 +176,6 @@
             ],
             "description": "FastQC metric"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/fastqc_quality_metric.md"
 }
