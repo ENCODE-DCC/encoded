@@ -2,6 +2,7 @@
 
 The fixtures in this module setup a full system with postgresql and
 elasticsearch running as subprocesses.
+Does not include data dependent tests
 """
 
 import pytest
@@ -9,9 +10,14 @@ import pytest
 pytestmark = [pytest.mark.indexing]
 
 
+@pytest.fixture(autouse=True)
+def autouse_external_tx(external_tx):
+    pass
+
+
 @pytest.fixture(scope='session')
 def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
-    from .conftest import _app_settings
+    from .testappfixtures import _app_settings
     settings = _app_settings.copy()
     settings['create_tables'] = True
     settings['persona.audiences'] = 'http://%s:%s' % wsgi_server_host_port
@@ -56,11 +62,6 @@ def teardown(app, dbapi_conn):
     cursor.close()
 
 
-@pytest.fixture
-def external_tx():
-    pass
-
-
 @pytest.yield_fixture
 def dbapi_conn(DBSession):
     connection = DBSession.bind.pool.unique_connection()
@@ -77,26 +78,6 @@ def listening_conn(dbapi_conn):
     cursor.execute("""LISTEN "snovault.transaction";""")
     yield dbapi_conn
     cursor.close()
-
-
-@pytest.mark.slow
-def test_indexing_workbook(testapp, indexer_testapp):
-    # First post a single item so that subsequent indexing is incremental
-    testapp.post_json('/testing-post-put-patch/', {'required': ''})
-    res = indexer_testapp.post_json('/index', {'record': True})
-    assert res.json['indexed'] == 1
-
-    from ..loadxl import load_all
-    from pkg_resources import resource_filename
-    inserts = resource_filename('encoded', 'tests/data/inserts/')
-    docsdir = [resource_filename('encoded', 'tests/data/documents/')]
-    load_all(testapp, inserts, docsdir)
-    res = indexer_testapp.post_json('/index', {'record': True})
-    assert res.json['updated']
-    assert res.json['indexed']
-
-    res = testapp.get('/search/?type=Biosample')
-    assert res.json['total'] > 5
 
 
 def test_indexing_simple(testapp, indexer_testapp):
@@ -125,6 +106,3 @@ def test_listening(testapp, listening_conn):
     notify = listening_conn.notifies.pop()
     assert notify.channel == 'snovault.transaction'
     assert int(notify.payload) > 0
-
-
-
