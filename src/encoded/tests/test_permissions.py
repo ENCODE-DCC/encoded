@@ -1,15 +1,6 @@
 import pytest
 
 
-def remote_user_testapp(app, remote_user):
-    from webtest import TestApp
-    environ = {
-        'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': str(remote_user),
-    }
-    return TestApp(app, environ)
-
-
 @pytest.fixture
 def disabled_user(testapp, lab, award):
     item = {
@@ -89,11 +80,6 @@ def viewing_group_member_testapp(viewing_group_member, app, external_tx, zsa_sav
 @pytest.fixture
 def remc_member_testapp(remc_member, app, external_tx, zsa_savepoints):
     return remote_user_testapp(app, remc_member['uuid'])
-
-
-@pytest.fixture
-def indexer_testapp(app, external_tx, zsa_savepoints):
-    return remote_user_testapp(app, 'INDEXER')
 
 
 def test_wrangler_post_non_lab_collection(wrangler_testapp):
