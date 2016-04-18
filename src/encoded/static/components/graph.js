@@ -436,6 +436,10 @@ var Graph = module.exports.Graph = React.createClass({
         this.cv.zoomMouseDown = false;
     },
 
+    called: function() {
+        console.log('CALLED');
+    },
+
     render: function() {
         var orientBtnClass = (this.state.verticalGraph ? 'btn-orient-horizontal' : 'btn-orient-vertical');
         var orientBtnAlt = 'Orient graph ' + (this.state.verticalGraph ? 'horizontally' : 'vertically');

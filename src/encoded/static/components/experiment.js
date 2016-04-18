@@ -1152,12 +1152,38 @@ var FileGalleryRenderer = React.createClass({
         this.setFilter('0');
     },
 
+    rangeChange: function(e) {
+        // Called when the user clicks/drags the zoom slider
+        var value = e.target.value;
+
+        // Calculate the new graph width and height for the new zoom value
+        var {width, height} = this.calcZoom(this.cv.originalViewBox.width, this.cv.originalViewBox.height, value);
+
+        // Get the SVG in the DOM and update its width and height
+        var svgEl = document.getElementById('pipeline-graph');
+        svgEl.setAttribute('width', width);
+        svgEl.setAttribute('height', height);
+
+        // Remember zoom level as a state -- causes rerender remember!
+        this.setState({zoomLevel: value});
+    },
+
+    rangeMouseDown: function(e) {
+        // Mouse clicked in zoom slider
+        this.cv.zoomMouseDown = true;
+    },
+
+    rangeMouseUp: function(e) {
+        // Mouse released from zoom slider
+        this.cv.zoomMouseDown = false;
+    },
+
     render: function() {
         var {context, data} = this.props;
         var selectedAssembly = '';
         var selectedAnnotation = '';
         var items = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
-        var files = items.length ? items.length : [];
+        var files = items.length ? items : [];
         if (files.length === 0) {
             return null;
         }
@@ -1711,12 +1737,12 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
     // Handle a click in a graph node
     handleNodeClick: function(nodeId) {
+        this.refs.experimentgraph.called();
         this.setState({infoNodeId: this.state.infoNodeId !== nodeId ? nodeId : ''});
     },
 
     render: function() {
         var {context, session, items, selectedAssembly, selectedAnnotation} = this.props;
-        console.log('ITEMS: %o', items);
         var files = items;
 
         // Build node graph of the files and analysis steps with this experiment
@@ -1735,7 +1761,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 return (
                     <div>
                         {goodGraph ?
-                            <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw>
+                            <Graph ref="experimentgraph" graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw>
                                 <div id="graph-node-info">
                                     {meta ? <PanelBody>{meta}</PanelBody> : null}
                                 </div>
