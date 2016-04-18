@@ -188,7 +188,7 @@ def audit_file_controlled_by(value, system):
                 bio_rep_numbers.add(control_file['replicate']['biological_replicate_number'])
             if 'run_type' in control_file:
                 if control_file['run_type'] == 'paired-ended':
-                    pe_files.add(control_file)
+                    pe_files.append(control_file)
     for pe_file in pe_files:
         if 'paired_with' not in pe_file:
             detail = 'Fastq file {} '.format(value['@id']) + \
