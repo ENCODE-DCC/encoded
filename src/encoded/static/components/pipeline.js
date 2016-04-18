@@ -244,7 +244,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                 {this.jsonGraph ?
                     <div>
                         <h3>Pipeline schematic</h3>
-                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick}>
+                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} forceRedraw>
                             <div className="graph-node-info">
                                 {selectedStep ?
                                     <PanelBody>

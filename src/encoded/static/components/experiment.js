@@ -1734,7 +1734,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 return (
                     <div>
                         {goodGraph ?
-                            <Graph ref="experimentgraph" graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw>
+                            <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw>
                                 <div id="graph-node-info">
                                     {meta ? <PanelBody>{meta}</PanelBody> : null}
                                 </div>
