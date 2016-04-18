@@ -1579,6 +1579,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
             var fileContributed = allContributing[fileId];
 
             // Add QC metrics info from the file to the list to generate the nodes later
+            console.log('metricsInfo: %o:%o', file, fileQcMetrics[fileId]);
             if (fileQcMetrics[fileId] && fileQcMetrics[fileId].length && file.step_run) {
                 metricsInfo = fileQcMetrics[fileId].map(function(metric) {
                     var qcId = genQcId(metric, file);
@@ -1599,6 +1600,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
                 fileCssClass = 'pipeline-node-file' + (fileContributed ? ' contributing' : '') + (infoNodeId === fileNodeId ? ' active' : '');
                 fileRef = file;
             }
+            console.log('addNode: %s:%o', fileNodeId, metricsInfo);
             jsonGraph.addNode(fileNodeId, fileNodeLabel, {
                 cssClass: fileCssClass,
                 type: 'File',

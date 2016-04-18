@@ -643,8 +643,13 @@
         "output_type": {
             "title": "Data type"
         },
-        "date_created":
-        {
+        "quality_metrics": {
+            "title": "QC Metric"
+        },
+        "step_run": {
+            "title": "Analysis step run"
+        },
+        "date_created": {
             "title": "Date added"
         },
         "analysis_step_version": {
