@@ -90,11 +90,11 @@ def update_children(context, request, propname_children):
                 continue
             if not request.has_permission('edit', child):
                 msg = u'edit forbidden to %s' % request.resource_path(child)
-                raise ValidationFailure('body', [propname, i], msg)
+                raise ValidationFailure('body', [propname], msg)
             try:
                 delete_item(child, request)
             except ValidationFailure as e:
-                e.location = [propname, i] + e.location
+                e.location = [propname] + e.location
                 raise
 
 
