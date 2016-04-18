@@ -206,7 +206,7 @@ var Graph = module.exports.Graph = React.createClass({
     // Draw the graph on initial draw as well as on state changes.
     // An <svg> element to draw into must already exist in the HTML element in the el parm.
     drawGraph: function(el, firstRender) {
-        var viewBox;
+        var viewBox, svgWidth, svgHeight;
         var d3 = require('d3');
         var dagreD3 = require('dagre-d3');
         var svg = this.savedSvg = d3.select(el).select('svg');
@@ -234,16 +234,26 @@ var Graph = module.exports.Graph = React.createClass({
             var orgY = -graphHeightMargin;
             var viewBoxWidth = graphWidth + (graphWidthMargin * 2);
             var viewBoxHeight = graphHeight + (graphHeightMargin * 2);
+            var containerWidth = el.clientWidth;
+            if (containerWidth < viewBoxWidth) {
+                var sizeRatio = viewBoxWidth / viewBoxHeight;
+                svgWidth = containerWidth;
+                svgHeight = svgWidth / sizeRatio;
+            } else {
+                svgWidth = viewBoxWidth;
+                svgHeight = viewBoxHeight;
+            }
             viewBox = [orgX, orgY, viewBoxWidth, viewBoxHeight];
 
             // Remember the view box for zooming calculations
-            this.cv.originalViewBox = {width: viewBoxWidth, height: viewBoxHeight};
+            this.cv.originalViewBox = {width: svgWidth, height: svgHeight};
         } else {
             viewBox = [orgX, orgY, this.cv.originalViewBox.width, this.cv.originalViewBox.height];
+            var {width, height} = this.calcZoom(this.cv.originalViewBox.width, this.cv.originalViewBox.height);
+            svgWidth = width; svgHeight = height;
         }
 
-        var {width, height} = this.calcZoom(this.cv.originalViewBox.width, this.cv.originalViewBox.height);
-        svg.attr("width", width).attr("height", height).attr("viewBox", viewBox.join(' '));
+        svg.attr("width", svgWidth).attr("height", svgHeight).attr("viewBox", viewBox.join(' '));
     },
 
     bindClickHandlers: function(d3, el) {
@@ -281,11 +291,6 @@ var Graph = module.exports.Graph = React.createClass({
 
                 // Draw the graph into the panel; indicate first render
                 this.drawGraph(el, true);
-
-                // Fix the height of the div that wraps the svg so that changing the svg's scale
-                // doesn't affect the height of the graph box -- the svg just resizes inside this
-                // <div>.
-                el.style.height = el.clientHeight + 'px';
 
                 // Bind node/subnode click handlers to parent component handlers
                 this.bindClickHandlers(d3, el);
@@ -436,10 +441,6 @@ var Graph = module.exports.Graph = React.createClass({
         this.cv.zoomMouseDown = false;
     },
 
-    called: function() {
-        console.log('CALLED');
-    },
-
     render: function() {
         var orientBtnClass = (this.state.verticalGraph ? 'btn-orient-horizontal' : 'btn-orient-vertical');
         var orientBtnAlt = 'Orient graph ' + (this.state.verticalGraph ? 'horizontally' : 'vertically');
@@ -447,14 +448,19 @@ var Graph = module.exports.Graph = React.createClass({
 
         return (
             <Panel noDefaultClasses={noDefaultClasses}>
-                <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler}></div>
+                <div className="zoom-control-area">
+                    <table className="zoom-control">
+                        <tr>
+                            <td><i className="icon icon-minus"></i></td>
+                            <td><input type="range" className="zoom-slider" min={minZoom} max={maxZoom} value={this.state.zoomLevel} onChange={this.rangeChange} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} /></td>
+                            <td><i className="icon icon-plus"></i></td>
+                        </tr>
+                    </table>
+                </div>
+                <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler}>
+                </div>
                 <div className="graph-dl clearfix">
                     <button className="btn btn-info btn-sm btn-orient-wrapper" title={orientBtnAlt} onClick={this.handleOrientationClick}><span className={orientBtnClass}><span className="sr-only">{orientBtnAlt}</span></span></button>
-                    <div className="zoom-control">
-                        <i className="icon icon-minus"></i>
-                        <input type="range" className="zoom-slider" min={minZoom} max={maxZoom} value={this.state.zoomLevel} onChange={this.rangeChange} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} />
-                        <i className="icon icon-plus"></i>
-                    </div>
                     <button ref="dlButton" className="btn btn-info btn-sm pull-right" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
                 </div>
                 {this.props.children}

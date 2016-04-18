@@ -13,7 +13,7 @@ var Panel = module.exports.Panel = React.createClass({
         var {addClasses, noDefaultClasses} = this.props;
 
         return (
-            <div className={(noDefaultClasses ? '' : 'panel panel-default') + (this.props.addClasses ? ' ' + this.props.addClasses : '')}>
+            <div className={(noDefaultClasses ? '' : 'panel panel-default') + (addClasses ? ' ' + addClasses : '')}>
                 {this.props.children}
             </div>
         );

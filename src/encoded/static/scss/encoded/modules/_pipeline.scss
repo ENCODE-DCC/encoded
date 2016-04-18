@@ -86,7 +86,6 @@ g.edgePath {
 }
 
 .graph-display {
-    position: relative;
     overflow: scroll;
     background-color: #f8f8f8;
 
@@ -190,25 +189,34 @@ g.pipeline-node-qc-metric {
     border-bottom: 1px solid #e0e0e0;
 }
 
+.zoom-control-area {
+    background-color: #fff;
+    border-bottom: 1px solid #a0a0a0;
+}
+
 .zoom-control {
-    display: none;
+    width: 100%;
+    vertical-align: middle;
+    text-align: left;
 
     @media screen and (min-width: $screen-sm-min) {
-        display: inline-block;
-        vertical-align: middle;
+        width: 200px !important;
+        margin: 0 auto;
+    }
 
-        .icon {
-            vertical-align: middle;
-            margin: 0 10px;
-            color: #808080;
-        }
+    .icon {
+        width: 10%;
+        vertical-align: middle;
+        color: #808080;
+    }
+
+    td {
+        padding: 5px 10px !important;
     }
 }
 
 .zoom-slider {
-    display: table-cell !important;
-    width: 100px !important;
-    vertical-align: middle;
+    width: 90%;
 }
 
 .zoom-decoration {
