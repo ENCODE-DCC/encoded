@@ -171,46 +171,6 @@ def file7(file_exp2, award, encode_lab, testapp, analysis_step_run_bam):
 
 
 @pytest.fixture
-def bam_quality_metric(testapp, analysis_step_run_bam, file6, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file6['@id']],
-        'Uniquely mapped reads number': 1000,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-
-    return testapp.post_json('/star_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def mad_quality_metric(testapp, analysis_step_run_bam, file7, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file7['@id']],
-        'Spearman correlation': 0.2,
-        'MAD of log ratios': 3.1,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-
-    return testapp.post_json('/mad_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def wgbs_quality_metric(testapp, analysis_step_run_bam, file6, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'quality_metric_of': [file6['@id']],
-        'lambda C methylated in CHG context': '1.1%',
-        'lambda C methylated in CHH context': '1.5%',
-        'lambda C methylated in CpG context': '0.9%'}
-    return testapp.post_json('/bismark_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
 def chipseq_bam_quality_metric(testapp, analysis_step_run_bam, file6, lab, award):
     item = {
         'step_run': analysis_step_run_bam['@id'],
@@ -234,21 +194,6 @@ def chipseq_bam_quality_metric_2(testapp, analysis_step_run_bam, file7, lab, awa
     }
 
     return testapp.post_json('/samtools_flagstats_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def chipseq_filter_quality_metric(testapp, analysis_step_run_bam, file6, lab, award):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'quality_metric_of':[file6['@id']],
-        'NRF': 0.1,
-        'PBC1': 0.3,
-        'PBC2': 11
-    }
-
-    return testapp.post_json('/chipseq-filter-quality-metrics', item).json['@graph'][0]
 
 
 @pytest.fixture
@@ -349,7 +294,9 @@ def test_audit_file_replicate_match(testapp, file1, file_rep2):
 
 
 def test_audit_file_paired_ended_run_type1(testapp, file2, file_rep2):
-    testapp.patch_json(file2['@id'] + '?validate=false', {'run_type': 'paired-ended', 'output_type': 'reads', 'file_size': 23498234})
+    testapp.patch_json(file2['@id'] + '?validate=false', {'run_type': 'paired-ended',
+                                                          'output_type': 'reads',
+                                                          'file_size': 23498234})
     res = testapp.get(file2['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -359,7 +306,10 @@ def test_audit_file_paired_ended_run_type1(testapp, file2, file_rep2):
 
 
 def test_audit_file_paired_ended_run_type2(testapp, file2, file_rep2):
-    testapp.patch_json(file2['@id'] + '?validate=false', {'run_type': 'paired-ended', 'output_type': 'reads', 'file_size': 23498234, 'paired_end': 1})
+    testapp.patch_json(file2['@id'] + '?validate=false', {'run_type': 'paired-ended',
+                                                          'output_type': 'reads',
+                                                          'file_size': 23498234,
+                                                          'paired_end': 1})
     res = testapp.get(file2['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -368,7 +318,9 @@ def test_audit_file_paired_ended_run_type2(testapp, file2, file_rep2):
     assert any(error['category'] == 'missing mate pair' for error in errors_list)
 
 
-def test_audit_file_missing_quality_metrics(testapp, file6, analysis_step_run_bam, analysis_step_version_bam, analysis_step_bam, pipeline_bam, software):
+def test_audit_file_missing_quality_metrics(testapp, file6,
+                                            analysis_step_run_bam, analysis_step_version_bam,
+                                            analysis_step_bam, pipeline_bam, software):
     res = testapp.get(file6['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -405,27 +357,26 @@ def test_audit_file_missing_quality_metrics_WGBS_exclusion(testapp, file6,
     assert all(error['category'] != 'missing quality metrics' for error in errors_list)
 
 
-def test_audit_file_insufficient_control_read_depth_chip_seq_paired_end(testapp,
-                                                                        file_exp,
-                                                                        file_exp2,
-                                                                        file6,
-                                                                        file2,
-                                                                        file7,
-                                                                        file4,
-                                                                        chipseq_bam_quality_metric,
-                                                                        chipseq_bam_quality_metric_2,
-                                                                        analysis_step_run_bam,
-                                                                        analysis_step_version_bam,
-                                                                        analysis_step_bam,
-                                                                        target_H3K27ac,
-                                                                        target_control,
-                                                                        pipeline_bam):
+def test_audit_file_insufficient_control_read_depth_chip_seq_paired_end(
+    testapp,
+    file_exp,
+    file_exp2,
+    file6,
+    file2,
+    file7,
+    file4,
+    chipseq_bam_quality_metric,
+    chipseq_bam_quality_metric_2,
+    analysis_step_run_bam,
+    analysis_step_version_bam,
+    analysis_step_bam,
+    target_H3K27ac,
+    target_control,
+        pipeline_bam):
     testapp.patch_json(file_exp['@id'], {'target': target_H3K27ac['@id']})
     testapp.patch_json(file_exp2['@id'], {'target': target_control['@id']})
-
     testapp.patch_json(chipseq_bam_quality_metric['@id'], {'total': 100000000})
     testapp.patch_json(chipseq_bam_quality_metric_2['@id'], {'total': 1000})
-
     testapp.patch_json(file2['@id'], {'dataset': file_exp2['@id']})
     testapp.patch_json(file7['@id'], {'dataset': file_exp2['@id'],
                                       'file_format': 'bam',
