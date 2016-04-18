@@ -164,7 +164,9 @@ var Graph = module.exports.Graph = React.createClass({
     cv: {
         originalViewBox: {width: 0, height: 0}, // Width and height of graph SVG view box
         zoomMouseDown: false, // Mouse currently controlling zoom slider
-        dagreLoaded: false // Dagre JS library has been loaded
+        dagreLoaded: false, // Dagre JS library has been loaded
+        zoomFactorPlus: 1, // Amount to multiply zoom range value by when magnifying
+        zoomFactorMinus: 1 // Amount to multiply zoom range value by when reducing
     },
 
     // Take a JsonGraph object and convert it to an SVG graph with the Dagre-D3 library.
@@ -249,6 +251,8 @@ var Graph = module.exports.Graph = React.createClass({
 
             // Remember the view box for zooming calculations
             this.cv.originalViewBox = {width: svgWidth, height: svgHeight};
+            this.cv.zoomFactorPlus = viewBoxWidth / 50;
+            this.cv.zoomFactorMinus = viewBoxWidth / 100;
         } else {
             viewBox = [orgX, orgY, this.cv.originalViewBox.width, this.cv.originalViewBox.height];
         }
@@ -410,7 +414,8 @@ var Graph = module.exports.Graph = React.createClass({
 
         // Calculate the new width and height dimensions based on the zoom slider value, and update coords
         // which will be the new viewBox values.
-        var sizeFactor = (zoomLevel - midZoom) * 8;
+        var normalizedZoomValue = zoomLevel - midZoom;
+        var sizeFactor = (normalizedZoomValue >= 0) ? normalizedZoomValue * this.cv.zoomFactorPlus : normalizedZoomValue * this.cv.zoomFactorMinus;
         sizex += sizeFactor;
         sizey += sizeFactor / sizeRatio;
 
