@@ -1674,7 +1674,7 @@ var FileTable = module.exports.FileTable = React.createClass({
             });
 
             return (
-                <SortTablePanel header={filePanelHeader} noDefaultClasses>
+                <SortTablePanel header={filePanelHeader} noDefaultClasses={this.props.noDefaultClasses}>
                     <SortTable title="Raw data files" list={files.raw} columns={this.rawTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
                     <SortTable title="Raw data files" list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
                     <SortTable title="Processed data files" list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />

@@ -1201,7 +1201,7 @@ var FileGalleryRenderer = React.createClass({
                         <ExperimentGraph context={context} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
                     </TabPanelPane>
                     <TabPanelPane key="table">
-                        <DatasetFiles {...this.props} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} encodevers={this.props.encodevers} anisogenic={this.props.anisogenic} session={this.context.session} />
+                        <DatasetFiles {...this.props} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} encodevers={this.props.encodevers} anisogenic={this.props.anisogenic} session={this.context.session} noDefaultClasses />
                     </TabPanelPane>
                 </TabPanel>
                 <PanelFooter>
