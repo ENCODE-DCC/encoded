@@ -2,6 +2,16 @@ import pytest
 
 
 @pytest.fixture
+def remote_user_testapp(app, remote_user):
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': str(remote_user),
+    }
+    return TestApp(app, environ)
+
+
+@pytest.fixture
 def disabled_user(testapp, lab, award):
     item = {
         'first_name': 'ENCODE',
