@@ -540,7 +540,6 @@ def search(context, request, search_type=None, return_generator=False):
         'title': 'Search',
         'filters': [],
     }
-
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
     es_index = request.registry.settings['snovault.elasticsearch.index']
@@ -566,6 +565,18 @@ def search(context, request, search_type=None, return_generator=False):
         bad_types = [t for t in doc_types if t not in types]
         msg = "Invalid type: {}".format(', '.join(bad_types))
         raise HTTPBadRequest(explanation=msg)
+
+    # Clear Filters path -- make a path that clears all non-datatype filters.
+    # http://stackoverflow.com/questions/16491988/how-to-convert-a-list-of-strings-to-a-query-string#answer-16492046
+    searchterm_specs = request.params.getall('searchTerm')
+    searchterm_only = urlencode([("searchTerm", searchterm) for searchterm in searchterm_specs])
+    if searchterm_only:
+        # Search term in query string; clearing keeps that
+        clear_qs = searchterm_only
+    else:
+        # Possibly type(s) in query string
+        clear_qs = urlencode([("type", typ) for typ in doc_types])
+    result['clear_filters'] = request.route_path('search', slash='/') + (('?' + clear_qs) if clear_qs else '')
 
     # Building query for filters
     if not doc_types:
@@ -637,8 +648,9 @@ def search(context, request, search_type=None, return_generator=False):
     if len(doc_types) == 1 and 'facets' in types[doc_types[0]].schema:
         facets.extend(types[doc_types[0]].schema['facets'].items())
 
-    if search_audit:
-        for audit_facet in audit_facets:
+    # Display all audits if logged in, or all but DCC_ACTION if logged out
+    for audit_facet in audit_facets:
+        if search_audit and 'group.submitter' in principals or 'DCC_ACTION' not in audit_facet[0]:
             facets.append(audit_facet)
 
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
@@ -769,6 +781,7 @@ def matrix(context, request):
         'filters': [],
         'notification': '',
     }
+    search_audit = request.has_permission('search_audit')
 
     doc_types = request.params.getall('type')
     if len(doc_types) != 1:
@@ -833,9 +846,12 @@ def matrix(context, request):
     # Adding facets to the query
     facets = [(field, facet) for field, facet in schema['facets'].items() if
               field in matrix['x']['facets'] or field in matrix['y']['facets']]
-    if request.has_permission('search_audit'):
-        for audit_facet in audit_facets:
+
+    # Display all audits if logged in, or all but DCC_ACTION if logged out
+    for audit_facet in audit_facets:
+        if search_audit and 'group.submitter' in principals or 'DCC_ACTION' not in audit_facet[0]:
             facets.append(audit_facet)
+
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
     # Group results in 2 dimensions

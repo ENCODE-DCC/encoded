@@ -1,12 +1,12 @@
 'use strict';
 var React = require('react');
 var globals = require('./globals');
-var navbar = require('./navbar');
+var navigation = require('./navigation');
 var dbxref = require('./dbxref');
 var search = require('./search');
 var audit = require('./audit');
 
-var Breadcrumbs = navbar.Breadcrumbs;
+var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;

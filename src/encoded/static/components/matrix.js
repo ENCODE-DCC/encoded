@@ -1,18 +1,21 @@
 'use strict';
 var React = require('react');
 var color = require('color');
+var SvgIcon = require('../libs/svg-icons');
 var globals = require('./globals');
 var search = require('./search');
 var url = require('url');
 var _ = require('underscore');
 var button = require('../libs/bootstrap/button');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
+var navbar = require('../libs/bootstrap/navbar');
 
 var BatchDownload = search.BatchDownload;
 var FacetList = search.FacetList;
 var TextFilter = search.TextFilter;
 var DropdownButton = button.DropdownButton;
 var DropdownMenu = dropdownMenu.DropdownMenu;
+var NavItem = navbar.NavItem;
 
 
 var HIGHLIGHT_COLOR = color('#4e7294');
@@ -26,7 +29,7 @@ var COLORS = [
     '#ffffcc',
     '#e5d8bd',
     '#fddaec',
-    '#f2f2f2',
+    '#f2f2f2'
 ];
 
 
@@ -41,7 +44,7 @@ var Matrix = module.exports.Matrix = React.createClass({
     // This sets inline CSS to set the height of the wrapper <div> to make room for the dropdown.
     updateElement: function(dropdownEl) {
         var wrapperEl = this.refs.hubscontrols.getDOMNode();
-        var dropdownHeight = dropdownEl.clientHeight
+        var dropdownHeight = dropdownEl.clientHeight;
         if (dropdownHeight === 0) {
             // The dropdown menu has closed
             wrapperEl.style.height = 'auto';
@@ -86,6 +89,12 @@ var Matrix = module.exports.Matrix = React.createClass({
                 });
             }
 
+            // Map view icons to svg icons
+            var view2svg = {
+                'list-alt': 'search',
+                'table': 'table'
+            };
+
             return (
                 <div>
                     <div className="panel data-display main-panel">
@@ -113,7 +122,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                 <FacetList facets={y_facets} filters={context.filters}
                                            searchBase={matrix_search} onFilter={this.onFilter} />
                             </div>
-                            <div className="col-sm-7 col-md-8 col-lg-9 sm-no-padding" style={{paddingLeft: 0, overflow: 'auto'}}>
+                            <div className="col-sm-7 col-md-8 col-lg-9 sm-no-padding" style={{paddingLeft: 0}}>
                                 <table className="matrix">
                                     <tbody>
                                         {matrix.doc_count ?
@@ -134,10 +143,14 @@ var Matrix = module.exports.Matrix = React.createClass({
                                             <th style={{border: "solid 1px #ddd", textAlign: "center", width: 200}}>
                                                 <h3>
                                                   {matrix.doc_count} results 
-                                                  {matrix.doc_count && context.views ? context.views.map(view => <span> <a href={view.href} title={view.title}><i className={'icon icon-' + view.icon}></i></a></span>) : ''}
                                                 </h3>
+                                                <div className="btn-attached">
+                                                    {matrix.doc_count && context.views ? context.views.map(view => <a href={view.href} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{SvgIcon(view2svg[view.icon])}</a>) : ''}
+                                                </div>
                                                 {context.filters.length ?
-                                                    <a href={context.matrix.clear_matrix} className="btn btn-info btn-sm"><i className="icon icon-times-circle-o"></i> Clear all filters</a>
+                                                    <div className="clear-filters-control-matrix">
+                                                        <a href={context.matrix.clear_matrix}>Clear Filters <i className="icon icon-times-circle"></i></a>
+                                                    </div>
                                                 : ''}
                                             </th>
                                             {x_buckets.map(function(xb, i) {
@@ -208,13 +221,15 @@ var Matrix = module.exports.Matrix = React.createClass({
                                         <BatchDownload context={context} />
                                     : null}
                                     {' '}
-                                    {batchHubKeys.length ?
-                                        <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'}>
-                                            <DropdownMenu updateElement={this.updateElement}>
+                                    {batchHubKeys ?
+                                        <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'} label="batchhub" wrapperClasses="hubs-controls-button">
+                                            <DropdownMenu>
                                                 {batchHubKeys.map(assembly =>
-                                                    <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context['batch_hub'][assembly]}>
-                                                        {assembly}
-                                                    </a>
+                                                    <NavItem key={assembly}>
+                                                        <a data-bypass="true" target="_blank" href={context['batch_hub'][assembly]}>
+                                                            {assembly}
+                                                        </a>
+                                                    </NavItem>
                                                 )}
                                             </DropdownMenu>
                                         </DropdownButton>

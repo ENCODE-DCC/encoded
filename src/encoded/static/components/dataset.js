@@ -6,7 +6,7 @@ var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var _ = require('underscore');
 var moment = require('moment');
 var globals = require('./globals');
-var navbar = require('./navbar');
+var navigation = require('./navigation');
 var dbxref = require('./dbxref');
 var fetched = require('./fetched');
 var audit = require('./audit');
@@ -18,7 +18,7 @@ var sortTable = require('./sorttable');
 var image = require('./image');
 var doc = require('./doc');
 
-var Breadcrumbs = navbar.Breadcrumbs;
+var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var FetchedItems = fetched.FetchedItems;
 var StatusLabel = statuslabel.StatusLabel;
@@ -858,10 +858,10 @@ var FilePanelHeader = module.exports.FilePanelHeader = React.createClass({
             <div>
                 {context.visualize_ucsc  && context.status == "released" ?
                     <span className="pull-right">
-                        <DropdownButton title='Visualize Data'>
+                        <DropdownButton title='Visualize Data' label="filepaneheader">
                             <DropdownMenu>
                                 {Object.keys(context.visualize_ucsc).map(assembly =>
-                                    <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context.visualize_ucsc[assembly]}>
+                                    <a key={assembly} data-bypass="true" target="_blank" href={context.visualize_ucsc[assembly]}>
                                         {assembly}
                                     </a>
                                 )}

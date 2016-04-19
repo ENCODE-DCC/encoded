@@ -1,9 +1,7 @@
 'use strict';
 var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
-var dropdownmenu = require('./dropdown-menu');
-
-var DropdownMenu = dropdownmenu.DropdownMenu;
+var {DropdownMenu} = require('./dropdown-menu');
 
 
 // Render a dropdown menu. All components within the dropdown get wrapped in <li> tags, so the 'a' elements in:
@@ -23,13 +21,15 @@ var DropdownMenu = dropdownmenu.DropdownMenu;
 var DropdownButton = module.exports.DropdownButton = React.createClass({
     propTypes: {
         title: React.PropTypes.string.isRequired, // Title of the trigger button
-        disabled: React.PropTypes.bool // True to disable button
+        label: React.PropTypes.string.isRequired, // id (unique in doc) for this button
+        disabled: React.PropTypes.bool, // True to disable button
+        wrapperClasses: React.PropTypes.string // Classes to add to wrapper div
     },
 
     getInitialState: function() {
         return {
             open: false // True if dropdown is open
-        }
+        };
     },
 
     componentDidMount: function() {
@@ -54,21 +54,24 @@ var DropdownButton = module.exports.DropdownButton = React.createClass({
     },
 
     render: function() {
-        // Add the `status` property with the current `open` state to force child DropdownMenu components (likely only one) to rerender.
-        // That way we can calculate and return its height.
+        var {title, label, disabled, wrapperClasses} = this.props;
+
+        // Add the `label` property to any <DropdownMenu> child components
         var children = React.Children.map(this.props.children, child => {
             if (child.type === DropdownMenu.type) {
                 return cloneWithProps(child, {
-                    status: this.state.open
+                    label: this.props.label
                 });
             }
             return child;
         });
 
         return (
-            <div ref="dropdownbutton" className={'btn-group' + (this.state.open ? ' open' : '')}>
-                <button disabled={this.props.disabled} className="btn btn-info btn-sm dropdown-toggle" onClick={this.triggerClickHandler}>
-                    {this.props.title}&nbsp;<span className="caret"></span>
+            <div className={'dropdown' + (this.state.open ? ' open' : '') + (wrapperClasses ? ' ' + wrapperClasses : '')}>
+                <button disabled={disabled} className="btn btn-info btn-sm dropdown-toggle" type="button"
+                        id={label} data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded={this.state.open} onClick={this.triggerClickHandler}>
+                    {title}&nbsp;<span className="caret"></span>
                 </button>
                 {children}
             </div>
