@@ -280,7 +280,7 @@ def test_audit_file_mismatched_controlled_by(testapp, file1):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched controlled_by' for error in errors_list)
+    assert any(error['category'] == 'mismatched controls' for error in errors_list)
 
 
 def test_audit_file_replicate_match(testapp, file1, file_rep2):
