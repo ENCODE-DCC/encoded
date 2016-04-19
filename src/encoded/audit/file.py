@@ -160,7 +160,7 @@ def audit_file_controlled_by(value, system):
             value['@id'],
             value['dataset']['assay_term_name']
             )
-        yield AuditFailure('missing controlled_by', detail, level='ERROR')
+        yield AuditFailure('missing controlled_by', detail, level='NOT_COMPLIANT')
         return
 
     possible_controls = value['dataset'].get('possible_controls')

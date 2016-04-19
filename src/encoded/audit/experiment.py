@@ -1468,7 +1468,7 @@ def audit_experiment_consistent_sequencing_runs(value, system):
                condition=rfa("ENCODE3", "modERN", "ENCODE2", "GGR",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicate_with_no_files(value, system):
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
+    if value['status'] in ['deleted', 'replaced', 'revoked', 'proposed', 'preliminary']:
         return
     if 'replicates' not in value:
         return
