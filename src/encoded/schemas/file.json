@@ -646,6 +646,9 @@
         "quality_metrics": {
             "title": "QC Metric"
         },
+        "lab": {
+            "title": "Lab"
+        },
         "step_run": {
             "title": "Analysis step run"
         },
