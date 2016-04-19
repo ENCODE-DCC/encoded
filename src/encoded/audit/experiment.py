@@ -650,7 +650,7 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
                     yield AuditFailure('low spearman correlation', detail,
                                        level='WARNING')
                 else:
-                    yield AuditFailure('insufficient replicate concordance', detail,
+                    yield AuditFailure('insufficient spearman correlation', detail,
                                        level='NOT_COMPLIANT')
 
 
