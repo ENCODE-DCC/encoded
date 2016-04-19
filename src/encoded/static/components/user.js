@@ -6,13 +6,13 @@ var React = require('react');
 var globals = require('./globals');
 var _ = require('underscore');
 var parseAndLogError = require('./mixins').parseAndLogError;
-var navbar = require('./navbar');
+var navigation = require('./navigation');
 var Modal = require('react-bootstrap/lib/Modal');
 var ItemStore = require('./lib/store').ItemStore;
 var Form = require('./form').Form;
 var ObjectPicker = require('./inputs').ObjectPicker;
 
-var Breadcrumbs = navbar.Breadcrumbs;
+var Breadcrumbs = navigation.Breadcrumbs;
 
 
 class AccessKeyStore extends ItemStore {

@@ -99,6 +99,12 @@ module.exports.unbindEvent = function (el, eventName, eventHandler) {
     }
 };
 
+// Make the first character of the given string uppercase. Can be less fiddly than CSS text-transform.
+// http://stackoverflow.com/questions/1026069/capitalize-the-first-letter-of-string-in-javascript#answer-1026087
+String.prototype.uppercaseFirstChar = function(string) {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+};
+
 // Order that antibody statuses should be displayed
 module.exports.statusOrder = [
     'eligible for new data',
@@ -108,7 +114,6 @@ module.exports.statusOrder = [
     'not pursued',
     'not reviewed'
 ];
-
 
 module.exports.productionHost = {'www.encodeproject.org':1, 'encodeproject.org':1, 'www.encodedcc.org':1};
 

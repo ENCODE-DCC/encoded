@@ -4,7 +4,7 @@ var panel = require('../libs/bootstrap/panel');
 var url = require('url');
 var _ = require('underscore');
 var graph = require('./graph');
-var navbar = require('./navbar');
+var navigation = require('./navigation');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var search = require('./search');
@@ -14,7 +14,7 @@ var Citation = require('./publication').Citation;
 var audit = require('./audit');
 var doc = require('./doc');
 
-var Breadcrumbs = navbar.Breadcrumbs;
+var Breadcrumbs = navigation.Breadcrumbs;
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
 var SoftwareVersionList = software.SoftwareVersionList;
