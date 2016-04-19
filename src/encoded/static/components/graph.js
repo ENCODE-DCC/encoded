@@ -234,30 +234,38 @@ var Graph = module.exports.Graph = React.createClass({
             var graphHeight = Math.ceil(g.graph().height);
             var orgX = -graphWidthMargin;
             var orgY = -graphHeightMargin;
+
+            // Get the width of the graph panel
+            var containerWidth = el.clientWidth;
+
+            // Get the "natural" (unscaled) dimensions of the SVG
             var viewBoxWidth = graphWidth + (graphWidthMargin * 2);
             var viewBoxHeight = graphHeight + (graphHeightMargin * 2);
-            var containerWidth = el.clientWidth;
             if (containerWidth < viewBoxWidth) {
+                // The SVG is wider than the panel; calculate a scaled-down size for it.
                 var sizeRatio = viewBoxWidth / viewBoxHeight;
                 svgWidth = containerWidth;
                 svgHeight = svgWidth / sizeRatio;
             } else {
+                // The SVG is narrower than the panel; don't scale it
                 svgWidth = viewBoxWidth;
                 svgHeight = viewBoxHeight;
             }
+
+            // The SVG's viewBox is always the unscaled coordinates and immutable
             viewBox = [orgX, orgY, viewBoxWidth, viewBoxHeight];
-            this.cv.originalViewBox.width = svgWidth;
-            this.cv.originalViewBox.height = svgHeight;
 
             // Remember the view box for zooming calculations
-            this.cv.originalViewBox = {width: svgWidth, height: svgHeight};
+            this.cv.originalViewBox = {width: viewBoxWidth, height: viewBoxHeight};
+            //this.cv.originalViewBox = {width: svgWidth, height: svgHeight};
             this.cv.zoomFactorPlus = viewBoxWidth / 50;
-            this.cv.zoomFactorMinus = viewBoxWidth / 100;
+            this.cv.zoomFactorMinus = viewBoxWidth / 70;
         } else {
             viewBox = [orgX, orgY, this.cv.originalViewBox.width, this.cv.originalViewBox.height];
         }
 
-        var {width, height} = this.calcZoom(this.cv.originalViewBox.width, this.cv.originalViewBox.height);
+        // Calulate the SVG `width` and `height` attributes based on the current zoom level
+        var {width, height} = this.calcZoom(svgWidth, svgHeight);
         svgWidth = width; svgHeight = height;
         svg.attr("width", svgWidth).attr("height", svgHeight).attr("viewBox", viewBox.join(' '));
     },
