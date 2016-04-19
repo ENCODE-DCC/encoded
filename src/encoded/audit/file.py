@@ -181,7 +181,7 @@ def audit_file_controlled_by(value, system):
                     value['@id'],
                     ff['@id'],
                     control_bs)
-                yield AuditFailure('mismatched controlled_by', detail, level='ERROR')
+                yield AuditFailure('mismatched controls', detail, level='ERROR')
                 return
 
             if ff['file_format'] != value['file_format']:
@@ -191,7 +191,7 @@ def audit_file_controlled_by(value, system):
                     ff['@id'],
                     ff['file_format']
                     )
-                yield AuditFailure('mismatched controlled_by', detail, level='ERROR')
+                yield AuditFailure('mismatched controls', detail, level='ERROR')
                 return
 
             if (possible_controls is None) or (ff['dataset']['@id'] not in possible_controls):
@@ -200,7 +200,7 @@ def audit_file_controlled_by(value, system):
                     ff['@id'],
                     ff['dataset']['@id']
                     )
-                yield AuditFailure('mismatched controlled_by', detail, level='ERROR')
+                yield AuditFailure('mismatched controls', detail, level='ERROR')
                 return
 
             if (run_type is None) or (control_run is None):
@@ -217,7 +217,7 @@ def audit_file_controlled_by(value, system):
                     control_run
                     )
                 yield AuditFailure('mismatched controlled_by run_type',
-                                   detail, level='NOT_COMPLIANT')
+                                   detail, level='WARNING')
 
             if read_length != control_length:
                 detail = 'File {} is {} but its control file {} is {}'.format(
@@ -226,8 +226,8 @@ def audit_file_controlled_by(value, system):
                     ff['@id'],
                     ff['read_length']
                     )
-                yield AuditFailure('mismatched controlled_by read length',
-                                   detail, level='NOT_COMPLIANT')
+                yield AuditFailure('mismatched control read length',
+                                   detail, level='WARNING')
                 return
 
 
