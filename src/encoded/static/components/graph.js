@@ -226,43 +226,38 @@ var Graph = module.exports.Graph = React.createClass({
         // Run the renderer. This is what draws the final graph.
         render(svg.select('g'), g);
 
-        // Dagre-D3 has a width and height for the graph.
-        // Set the viewbox's and viewport's width and height to that plus a little extra.
-        // Round the graph dimensions up to avoid problems detecting the end of scrolling.
-        if (firstRender) {
-            var graphWidth = Math.ceil(g.graph().width);
-            var graphHeight = Math.ceil(g.graph().height);
-            var orgX = -graphWidthMargin;
-            var orgY = -graphHeightMargin;
+        // Get the natural (unscaled) width and height of the graph
+        var graphWidth = Math.ceil(g.graph().width);
+        var graphHeight = Math.ceil(g.graph().height);
 
-            // Get the width of the graph panel
-            var containerWidth = el.clientWidth;
+        // Get the width of the graph panel
+        var containerWidth = el.clientWidth;
 
-            // Get the "natural" (unscaled) dimensions of the SVG
-            var viewBoxWidth = graphWidth + (graphWidthMargin * 2);
-            var viewBoxHeight = graphHeight + (graphHeightMargin * 2);
-            if (containerWidth < viewBoxWidth) {
-                // The SVG is wider than the panel; calculate a scaled-down size for it.
-                var sizeRatio = viewBoxWidth / viewBoxHeight;
-                svgWidth = containerWidth;
-                svgHeight = svgWidth / sizeRatio;
-            } else {
-                // The SVG is narrower than the panel; don't scale it
-                svgWidth = viewBoxWidth;
-                svgHeight = viewBoxHeight;
-            }
+        // Get the unscalecd width and height of the graph including margins, and make a viewBox
+        // for the graph so it'll render with the margins. The SVG's viewBox is always the
+        // unscaled coordinates and immutable
+        var viewBoxWidth = graphWidth + (graphWidthMargin * 2);
+        var viewBoxHeight = graphHeight + (graphHeightMargin * 2);
+        viewBox = [-graphWidthMargin, -graphHeightMargin, viewBoxWidth, viewBoxHeight];
 
-            // The SVG's viewBox is always the unscaled coordinates and immutable
-            viewBox = [orgX, orgY, viewBoxWidth, viewBoxHeight];
-
-            // Remember the view box for zooming calculations
-            this.cv.originalViewBox = {width: viewBoxWidth, height: viewBoxHeight};
-            //this.cv.originalViewBox = {width: svgWidth, height: svgHeight};
-            this.cv.zoomFactorPlus = viewBoxWidth / 50;
-            this.cv.zoomFactorMinus = viewBoxWidth / 70;
+        // Now we need a width and height to handle zooming the graph, including automatically
+        // zooming the graph out on initial render if it's wider than the graph panel.
+        if (containerWidth < viewBoxWidth) {
+            // The SVG is wider than the panel; calculate a scaled-down size for it.
+            var sizeRatio = viewBoxWidth / viewBoxHeight;
+            svgWidth = containerWidth;
+            svgHeight = svgWidth / sizeRatio;
         } else {
-            viewBox = [orgX, orgY, this.cv.originalViewBox.width, this.cv.originalViewBox.height];
+            // The SVG is narrower than the panel; don't scale it
+            svgWidth = viewBoxWidth;
+            svgHeight = viewBoxHeight;
         }
+
+        // Remember the view box for zooming calculations
+        this.cv.originalViewBox = {width: viewBoxWidth, height: viewBoxHeight};
+
+        this.cv.zoomFactorPlus = viewBoxWidth / 50;
+        this.cv.zoomFactorMinus = viewBoxWidth / 70;
 
         // Calulate the SVG `width` and `height` attributes based on the current zoom level
         var {width, height} = this.calcZoom(svgWidth, svgHeight);
