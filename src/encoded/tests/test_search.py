@@ -16,6 +16,20 @@ def test_search_view(workbook, testapp):
     assert '@graph' in res
 
 
+def test_report_view(workbook, testapp):
+    res = testapp.get('/report/?type=Experiment').json
+    assert res['@type'] == ['Report']
+    assert res['@id'] == '/report/?type=Experiment'
+    assert res['@context'] == '/terms/'
+    assert res['notification'] == 'Success'
+    assert res['title'] == 'Report'
+    assert res['total'] > 0
+    assert 'facets' in res
+    assert 'filters' in res
+    assert 'columns' in res
+    assert '@graph' in res
+
+
 def test_matrix_view(workbook, testapp):
     res = testapp.get('/matrix/?type=Experiment').json
     assert res['@type'] == ['Matrix']

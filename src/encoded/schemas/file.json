@@ -27,7 +27,6 @@
         "output_type": {
             "title": "Data type"
         },
-
         "file_format": {
             "title": "File format"
         },
@@ -342,6 +341,7 @@
                         "methylation state at CHH",
                         "enrichment",
                         "replication timing profile",
+                        "variant calls",
 
                         "hotspots",
                         "long range chromatin interactions",
@@ -366,6 +366,7 @@
                         "snRNA reference",
                         "rRNA reference",
                         "TSS reference",
+                        "variant reference",
                         "genome index",
                         "female genome reference",
                         "female genome index",
@@ -511,6 +512,7 @@
             "enum": [
                 "mm9",
                 "mm10",
+                "mm10-minimal",
                 "hg19",
                 "GRCh38",
                 "GRCh38-minimal",
@@ -596,17 +598,65 @@
         "accession": {
             "title": "Accession"
         },
+        "assembly": {
+            "title": "Mapping assembly"
+        },
         "dataset": {
             "title": "Dataset"
+        },
+        "biological_replicates": {
+            "title": "Biological replicates"
         },
         "file_format": {
             "title": "File Format"
         },
+        "file_type": {
+            "title": "File type"
+        },
+        "file_size": {
+            "title": "File size"
+        },
+        "href": {
+            "title": "Download URL"
+        },
+        "derived_from": {
+            "title": "Derived from"
+        },
+        "genome_annotation": {
+            "title": "Genome annotation"
+        },
+        "replicate.library.accession": {
+            "title": "Library"
+        },
+        "paired_end": {
+            "title": "Paired End Identifier"
+        },
+        "run_type": {
+            "title": "Run type for sequencing files"
+        },
         "md5sum": {
             "title": "MD5 Sum"
         },
+        "output_category": {
+            "title": "Data category"
+        },
         "output_type": {
-            "title": "Output Type"
+            "title": "Data type"
+        },
+        "quality_metrics": {
+            "title": "QC Metric"
+        },
+        "step_run": {
+            "title": "Analysis step run"
+        },
+        "date_created": {
+            "title": "Date added"
+        },
+        "analysis_step_version": {
+            "title": "Analysis Step Version"
+        },
+        "status": {
+            "title": "File status"
         }
     },
     "output_type_output_category": {
@@ -690,6 +740,7 @@
         "predicted transcription start sites": "annotation",
         "transcription start sites": "annotation",
         "candidate regulatory elements": "annotation",
+        "variant calls": "annotation",
 
         "genome index": "reference",
         "tRNA reference": "reference",
@@ -697,6 +748,7 @@
         "snRNA reference": "reference",
         "rRNA reference": "reference",
         "TSS reference": "reference",
+        "variant reference": "reference",
         "genome reference": "reference",
         "female genome reference": "reference",
         "female genome index": "reference",

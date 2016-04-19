@@ -11,13 +11,17 @@ var url = require('url');
 var portal = {
     portal_title: 'ENCODE',
     global_sections: [
+        {id: 'matrix', title: 'Matrix', children: [
+            {id: 'assays', title: 'Assays', url: '/matrix/?type=Experiment'},
+            {id: 'annotations', title: 'Annotations', url: '/matrix/?type=Annotation'}
+        ]},
         {id: 'data', title: 'Data', children: [
             {id: 'assays', title: 'Assays', url: '/search/?type=Experiment'},
             {id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample'},
             {id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot'},
             {id: 'annotations', title: 'Annotations', url: '/data/annotations/'},
             {id: 'datarelease', title: 'Release policy', url: '/about/data-use-policy/'},
-//            {id: 'region-search', title: 'Search by region', url: '/region-search/'}
+            {id: 'region-search', title: 'Search by region', url: '/region-search/'}
         ]},
         {id: 'methods', title: 'Methods', children: [
             {id: 'datastandards', title: 'Data standards', url: '/data-standards/'},

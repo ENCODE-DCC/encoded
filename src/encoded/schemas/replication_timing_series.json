@@ -19,7 +19,8 @@
         { "$ref": "mixins.json#/documents" },
         { "$ref": "dataset.json#/properties" },
         { "$ref": "dataset.json#/properties" },
-        { "$ref": "series.json#/properties" }
+        { "$ref": "series.json#/properties" },
+        { "$ref": "mixins.json#/submitter_comment" }
     ],
     "dependencies": {
         "status": {

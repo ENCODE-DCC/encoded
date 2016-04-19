@@ -3,7 +3,7 @@
     "id": "/profiles/generic_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step_run", "name"],
+    "required": ["step_run", "name", "award", "lab"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
@@ -12,11 +12,12 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/submitted"},
         { "$ref": "mixins.json#/aliases"},
+        { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status"}
    ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "name": {
             "description": "The name of the quality metric",
@@ -70,5 +71,6 @@
                 }
             }
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/generic_quality_metric.md"
 }

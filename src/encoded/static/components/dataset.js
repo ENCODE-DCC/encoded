@@ -1255,6 +1255,13 @@ var Series = module.exports.Series = React.createClass({
                                             <dd>{references}</dd>
                                         </div>
                                     : null}
+
+                                    {context.submitter_comment ?
+                                        <div data-test="submittercomment">
+                                            <dt>Submitter comment</dt>
+                                            <dd>{context.submitter_comment}</dd>
+                                        </div>
+                                    : null}
                                 </dl>
                             </div>
                         </div>
@@ -1288,9 +1295,10 @@ var unreleased_files_url = module.exports.unreleased_files_url = function (conte
         "uploaded",
         "upload failed",
         "format check failed",
-        "in progress"
+        "in progress",
+        "released"
     ].map(encodeURIComponent).join('&status=');
-    return '/search/?limit=all&frame=embedded&type=file&dataset=' + context['@id'] + file_states;
+    return '/search/?limit=all&type=file&dataset=' + context['@id'] + file_states;
 };
 
 
@@ -1384,6 +1392,21 @@ function humanFileSize(size) {
 }
 
 
+var fileAuditStatus = function(file) {
+    var highestAuditStatus;
+    if (file.audit) {
+        var sortedAuditLevels = _(Object.keys(file.audit)).sortBy(level => -file.audit[level][0].level);
+        var highestAuditLevel = sortedAuditLevels[0];
+        highestAuditStatus = highestAuditLevel.toLowerCase();
+    } else {
+        highestAuditStatus = 'default';
+        highestAuditLevel = 'OK';
+    }
+    var iconClass = 'icon audit-icon-' + highestAuditLevel.toLowerCase() + '-badged';
+    return <StatusLabel status={'audit-' + highestAuditStatus} buttonLabel={<i className={iconClass}></i>} />;
+};
+
+
 var FileTable = module.exports.FileTable = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // Optional parent object of file list
@@ -1395,7 +1418,7 @@ var FileTable = module.exports.FileTable = React.createClass({
     getInitialState: function() {
         return {
             maxWidth: 'auto' // Width of widest table
-        }
+        };
     },
 
     cv: {
@@ -1427,9 +1450,9 @@ var FileTable = module.exports.FileTable = React.createClass({
                 var runType;
 
                 if (item.run_type === 'single-ended') {
-                    runType = 'SE'
+                    runType = 'SE';
                 } else if (item.run_type === 'paired-ended') {
-                    runType = 'PE'
+                    runType = 'PE';
                 }
 
                 return (
@@ -1468,11 +1491,10 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: 'File size',
             display: item => <span>{humanFileSize(item.file_size)}</span>
         },
-        'validation_status': {
-            title: 'Validation status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status="pending" /></div>,
-            hide: (list, columns, meta) => meta.encodevers !== '3',
-            sorter: false
+        'audit': {
+            title: 'Audit status',
+            display: item => <div className="characterization-meta-data">{fileAuditStatus(item)}</div>,
+            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
         },
         'status': {
             title: 'File status',
@@ -1518,11 +1540,10 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: 'File size',
             display: item => <span>{humanFileSize(item.file_size)}</span>
         },
-        'validation_status': {
-            title: 'Validation status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status="pending" /></div>,
-            hide: (list, columns, meta) => meta.encodevers !== '3',
-            sorter: false
+        'audit': {
+            title: 'Audit status',
+            display: item => <div className="characterization-meta-data">{fileAuditStatus(item)}</div>,
+            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
         },
         'status': {
             title: 'File status',
@@ -1535,10 +1556,11 @@ var FileTable = module.exports.FileTable = React.createClass({
     procTableColumns: {
         'accession': {
             title: 'Accession',
-            display: item =>
-                <span>
+            display: item => {
+                return <span>
                     {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
-                </span>
+                </span>;
+            }
         },
         'file_type': {title: 'File type'},
         'output_type': {title: 'Output type'},
@@ -1569,11 +1591,10 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: 'File size',
             display: item => <span>{humanFileSize(item.file_size)}</span>
         },
-        'validation_status': {
-            title: 'Validation status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status="pending" /></div>,
-            hide: (list, columns, meta) => meta.encodevers !== '3',
-            sorter: false
+        'audit': {
+            title: 'Audit status',
+            display: item => <div className="characterization-meta-data">{fileAuditStatus(item)}</div>,
+            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
         },
         'status': {
             title: 'File status',
@@ -1616,6 +1637,11 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: 'File size',
             display: item => <span>{humanFileSize(item.file_size)}</span>
         },
+        'audit': {
+            title: 'Audit status',
+            display: item => <div className="characterization-meta-data">{fileAuditStatus(item)}</div>,
+            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
+        },
         'status': {
             title: 'File status',
             display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
@@ -1625,7 +1651,7 @@ var FileTable = module.exports.FileTable = React.createClass({
 
     render: function() {
         var {context, items, filePanelHeader, encodevers, anisogenic, session} = this.props;
-        var datasetFiles = context.files && context.files.concat((items && items.length) ? items : []);
+        var datasetFiles = (items && items.length) ? items : [];
         if (datasetFiles.length) {
             // Extract four kinds of file arrays
             datasetFiles = _(datasetFiles).uniq(file => file['@id']);
