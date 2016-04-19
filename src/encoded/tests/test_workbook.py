@@ -11,7 +11,7 @@ pytest.plugins = [
 
 
 @pytest.mark.slow
-def test_indexing_workbook(testapp, indexer_testapp):
+def test_indexing_workbook(testapp, indexer_testapp, external_tx):
     # First post a single item so that subsequent indexing is incremental
     testapp.post_json('/testing-post-put-patch/', {'required': ''})
     res = indexer_testapp.post_json('/index', {'record': True})
