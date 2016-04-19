@@ -1651,7 +1651,6 @@ var FileTable = module.exports.FileTable = React.createClass({
 
     render: function() {
         var {context, items, filePanelHeader, encodevers, anisogenic, noAudits, session} = this.props;
-        console.log(this.props);
         var datasetFiles = (items && items.length) ? items : [];
         if (datasetFiles.length) {
             // Extract four kinds of file arrays
