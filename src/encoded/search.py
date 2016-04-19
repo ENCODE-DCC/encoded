@@ -540,7 +540,6 @@ def search(context, request, search_type=None, return_generator=False):
         'title': 'Search',
         'filters': [],
     }
-
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
     es_index = request.registry.settings['snovault.elasticsearch.index']
@@ -649,8 +648,9 @@ def search(context, request, search_type=None, return_generator=False):
     if len(doc_types) == 1 and 'facets' in types[doc_types[0]].schema:
         facets.extend(types[doc_types[0]].schema['facets'].items())
 
-    if search_audit:
-        for audit_facet in audit_facets:
+    # Display all audits if logged in, or all but DCC_ACTION if logged out
+    for audit_facet in audit_facets:
+        if search_audit and 'group.submitter' in principals or 'DCC_ACTION' not in audit_facet[0]:
             facets.append(audit_facet)
 
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
@@ -781,6 +781,7 @@ def matrix(context, request):
         'filters': [],
         'notification': '',
     }
+    search_audit = request.has_permission('search_audit')
 
     doc_types = request.params.getall('type')
     if len(doc_types) != 1:
@@ -845,9 +846,12 @@ def matrix(context, request):
     # Adding facets to the query
     facets = [(field, facet) for field, facet in schema['facets'].items() if
               field in matrix['x']['facets'] or field in matrix['y']['facets']]
-    if request.has_permission('search_audit'):
-        for audit_facet in audit_facets:
+
+    # Display all audits if logged in, or all but DCC_ACTION if logged out
+    for audit_facet in audit_facets:
+        if search_audit and 'group.submitter' in principals or 'DCC_ACTION' not in audit_facet[0]:
             facets.append(audit_facet)
+
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
     # Group results in 2 dimensions
