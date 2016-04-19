@@ -1,6 +1,11 @@
 import pytest
 
 
+@pytest.fixture(autouse=True)
+def autouse_external_tx(external_tx):
+    pass
+
+
 @pytest.fixture
 def lab(testapp):
     item = {
@@ -111,6 +116,7 @@ def award(testapp):
     }
     return testapp.post_json('/award', item).json['@graph'][0]
 
+
 @pytest.fixture
 def remc_award(testapp):
     item = {
@@ -205,6 +211,7 @@ def experiment(testapp, lab, award):
     }
     return testapp.post_json('/experiment', item).json['@graph'][0]
 
+
 @pytest.fixture
 def base_experiment(testapp, lab, award):
     item = {
@@ -213,6 +220,7 @@ def base_experiment(testapp, lab, award):
         'status': 'in progress'
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
 
 @pytest.fixture
 def replicate(testapp, experiment, library):
@@ -527,6 +535,27 @@ def biosample_characterization(testapp, award, lab, biosample, attachment):
     }
     return testapp.post_json('/biosample_characterization', item).json['@graph'][0]
 
+
+@pytest.fixture
+def human_donor(testapp, lab, award, organism):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'organism': organism['uuid'],
+    }
+    return testapp.post_json('/human_donor', item).json['@graph'][0]
+
+
+@pytest.fixture
+def human_donor2(testapp, lab, award, organism):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'organism': organism['uuid'],
+    }
+    return testapp.post_json('/human_donor', item).json['@graph'][0]
+
+
 @pytest.fixture
 def mouse_donor(testapp, award, lab, mouse):
     item = {
@@ -535,6 +564,7 @@ def mouse_donor(testapp, award, lab, mouse):
         'organism': mouse['@id'],
     }
     return testapp.post_json('/mouse_donor', item).json['@graph'][0]
+
 
 @pytest.fixture
 def mouse_donor_1(testapp, award, lab, mouse):
@@ -545,6 +575,7 @@ def mouse_donor_1(testapp, award, lab, mouse):
     }
     return testapp.post_json('/mouse_donor', item).json['@graph'][0]
 
+
 @pytest.fixture
 def mouse_donor_2(testapp, award, lab, mouse):
     item = {
@@ -552,7 +583,8 @@ def mouse_donor_2(testapp, award, lab, mouse):
         'lab': lab['@id'],
         'organism': mouse['@id'],
     }
-    return testapp.post_json('/mouse_donor', item).json['@graph'][0]    
+    return testapp.post_json('/mouse_donor', item).json['@graph'][0]
+
 
 @pytest.fixture
 def replicate_1_1(testapp, base_experiment):
@@ -563,6 +595,7 @@ def replicate_1_1(testapp, base_experiment):
     }
     return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
 
+
 @pytest.fixture
 def replicate_1_2(testapp, base_experiment):
     item = {
@@ -572,6 +605,7 @@ def replicate_1_2(testapp, base_experiment):
     }
     return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
 
+
 @pytest.fixture
 def replicate_2_1(testapp, base_experiment):
     item = {
@@ -580,6 +614,7 @@ def replicate_2_1(testapp, base_experiment):
         'experiment': base_experiment['@id'],
     }
     return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
+
 
 @pytest.fixture
 def base_biosample(testapp, lab, award, source, organism):
@@ -593,6 +628,7 @@ def base_biosample(testapp, lab, award, source, organism):
     }
     return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
 
+
 @pytest.fixture
 def biosample_1(testapp, lab, award, source, organism):
     item = {
@@ -605,9 +641,10 @@ def biosample_1(testapp, lab, award, source, organism):
     }
     return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
 
+
 @pytest.fixture
 def biosample_2(testapp, lab, award, source, organism):
-    item = {        
+    item = {
         'award': award['uuid'],
         'biosample_term_id': 'UBERON:349829',
         'biosample_type': 'tissue',
@@ -616,6 +653,7 @@ def biosample_2(testapp, lab, award, source, organism):
         'source': source['uuid']
     }
     return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
+
 
 @pytest.fixture
 def library_1(testapp, lab, award, base_biosample):
@@ -627,6 +665,8 @@ def library_1(testapp, lab, award, base_biosample):
         'biosample': base_biosample['uuid']
     }
     return testapp.post_json('/library', item, status=201).json['@graph'][0]
+
+
 @pytest.fixture
 def library_2(testapp, lab, award, base_biosample):
     item = {
@@ -641,16 +681,17 @@ def library_2(testapp, lab, award, base_biosample):
 
 @pytest.fixture
 def donor_1(testapp, lab, award, organism):
-    item = {        
+    item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
         'organism': organism['uuid']
     }
     return testapp.post_json('/human-donors', item, status=201).json['@graph'][0]
 
+
 @pytest.fixture
 def donor_2(testapp, lab, award, organism):
-    item = {        
+    item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
         'organism': organism['uuid']
@@ -691,7 +732,7 @@ def analysis_step_run_bam(testapp, analysis_step_version_bam):
 
 
 @pytest.fixture
-def pipeline_bam(testapp, lab, award, analysis_step_bam ):
+def pipeline_bam(testapp, lab, award, analysis_step_bam):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],

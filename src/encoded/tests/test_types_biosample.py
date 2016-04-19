@@ -1,26 +1,6 @@
 import pytest
 
 
-@pytest.fixture
-def human_donor(testapp, award, lab, human):
-    item = {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'organism': human['@id'],
-    }
-    return testapp.post_json('/human_donor', item).json['@graph'][0]
-
-
-@pytest.fixture
-def mouse_donor(testapp, award, lab, mouse):
-    item = {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'organism': mouse['@id'],
-    }
-    return testapp.post_json('/mouse_donor', item).json['@graph'][0]
-
-
 def test_undefined_sex_model_organism(testapp, biosample, mouse):
     testapp.patch_json(biosample['@id'], {'organism': mouse['@id']})
     res = testapp.get(biosample['@id'] + '@@index-data')

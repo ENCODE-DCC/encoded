@@ -354,7 +354,6 @@ def test_index_data_workbook(workbook, testapp, indexer_testapp, item_type):
     for item in res.json['@graph']:
         indexer_testapp.get(item['@id'] + '@@index-data')
 
-
 @pytest.mark.parametrize('item_type', TYPE_LENGTH)
 def test_profiles(testapp, item_type):
     from jsonschema_serialize_fork import Draft4Validator
