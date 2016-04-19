@@ -419,7 +419,7 @@ def audit_file_paired_ended_run_type(value, system):
         if 'paired_end' not in value:
             detail = 'File {} has a paired-ended run_type '.format(value['@id']) + \
                      'but is missing its paired_end value'
-            raise AuditFailure('missing paired_end', detail, level='ERROR')
+            raise AuditFailure('missing paired_end', detail, level='DCC_ACTION')
 
         if (value['paired_end'] == 1) and 'paired_with' not in value:
             detail = 'File {} has a paired-ended '.format(value['@id']) + \

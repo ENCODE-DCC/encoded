@@ -1642,7 +1642,7 @@ def audit_experiment_isogeneity(value, system):
         detail = 'In experiment {} the biosamples have varying ages {}'.format(
             value['@id'],
             biosample_age_list)
-        yield AuditFailure('mismatched age', detail, level='ERROR')
+        yield AuditFailure('mismatched age', detail, level='NOT_COMPLIANT')
 
     if len(set(biosample_sex_list)) > 1:
         detail = 'In experiment {} the biosamples have varying sexes {}'.format(
