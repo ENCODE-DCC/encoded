@@ -649,6 +649,9 @@
         "step_run": {
             "title": "Analysis step run"
         },
+        "lab": {
+            "title": "Lab"
+        },
         "date_created": {
             "title": "Date added"
         },
