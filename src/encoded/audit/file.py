@@ -91,8 +91,7 @@ def audit_file_replicate_match(value, system):
         raise AuditFailure('mismatched replicate', detail, level='ERROR')
 
 
-@audit_checker('file', frame='object',
-               condition=rfa('ENCODE3', 'modERN', 'ENCODE2', 'ENCODE2-Mouse'))
+@audit_checker('file', frame=['award'])
 def audit_file_platform(value, system):
     '''
     A raw data file should have a platform specified.
@@ -104,10 +103,13 @@ def audit_file_platform(value, system):
 
     if value['file_format'] not in raw_data_formats:
         return
-
+    error_level = 'DCC_ACTION'
+    if 'award' in value and 'rfa' in value['award'] and \
+       value['award']['rfa'] == 'ENCODE3':
+        error_level = 'ERROR'
     if 'platform' not in value:
         detail = 'Raw data file {} missing platform information'.format(value['@id'])
-        raise AuditFailure('missing platform', detail, level='NOT_COMPLIANT')
+        raise AuditFailure('missing platform', detail, level=error_level)
 
 
 @audit_checker('file', frame=['dataset'],
