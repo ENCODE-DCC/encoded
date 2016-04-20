@@ -1,7 +1,6 @@
 'use strict';
 var React = require('react');
 var color = require('color');
-var SvgIcon = require('../libs/svg-icons');
 var globals = require('./globals');
 var search = require('./search');
 var url = require('url');
@@ -89,12 +88,6 @@ var Matrix = module.exports.Matrix = React.createClass({
                 });
             }
 
-            // Map view icons to svg icons
-            var view2svg = {
-                'list-alt': 'search',
-                'table': 'table'
-            };
-
             return (
                 <div>
                     <div className="panel data-display main-panel">
@@ -143,14 +136,10 @@ var Matrix = module.exports.Matrix = React.createClass({
                                             <th style={{border: "solid 1px #ddd", textAlign: "center", width: 200}}>
                                                 <h3>
                                                   {matrix.doc_count} results 
+                                                  {matrix.doc_count && context.views ? context.views.map(view => <span> <a href={view.href} title={view.title}><i className={'icon icon-' + view.icon}></i></a></span>) : ''}
                                                 </h3>
-                                                <div className="btn-attached">
-                                                    {matrix.doc_count && context.views ? context.views.map(view => <a href={view.href} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{SvgIcon(view2svg[view.icon])}</a>) : ''}
-                                                </div>
                                                 {context.filters.length ?
-                                                    <div className="clear-filters-control-matrix">
-                                                        <a href={context.matrix.clear_matrix}>Clear Filters <i className="icon icon-times-circle"></i></a>
-                                                    </div>
+                                                    <a href={context.matrix.clear_matrix} className="btn btn-info btn-sm"><i className="icon icon-times-circle-o"></i> Clear all filters</a>
                                                 : ''}
                                             </th>
                                             {x_buckets.map(function(xb, i) {
@@ -225,11 +214,9 @@ var Matrix = module.exports.Matrix = React.createClass({
                                         <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'} label="batchhub" wrapperClasses="hubs-controls-button">
                                             <DropdownMenu>
                                                 {batchHubKeys.map(assembly =>
-                                                    <NavItem key={assembly}>
-                                                        <a data-bypass="true" target="_blank" href={context['batch_hub'][assembly]}>
-                                                            {assembly}
-                                                        </a>
-                                                    </NavItem>
+                                                    <a key={assembly} data-bypass="true" target="_blank" href={context['batch_hub'][assembly]}>
+                                                        {assembly}
+                                                    </a>
                                                 )}
                                             </DropdownMenu>
                                         </DropdownButton>
