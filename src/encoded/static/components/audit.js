@@ -186,10 +186,15 @@ var AuditGroup = module.exports.AuditGroup = React.createClass({
                     </div>
                 : null}
                 <div className="audit-detail-info">
-                    <div className="pull-right">
-                        <i className={iconClass}></i>
-                    </div>
-                    <div className="audit-detail-category-name">{categoryName}</div>
+                    <i className={iconClass}></i>
+                    <span>
+                        {loggedIn ?
+                            <strong className={levelClass}>{auditLevelName.split('_').join(' ').toUpperCase()}&nbsp;&mdash;</strong>
+                        :
+                            <span>&nbsp;&nbsp;&nbsp;</span>
+                        }
+                    </span>
+                    <strong>&nbsp;{categoryName}</strong>
                 </div>
                 {loggedIn ?
                     <div className="audit-details-section">
