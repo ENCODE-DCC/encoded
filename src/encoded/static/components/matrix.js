@@ -225,11 +225,9 @@ var Matrix = module.exports.Matrix = React.createClass({
                                         <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'} label="batchhub" wrapperClasses="hubs-controls-button">
                                             <DropdownMenu>
                                                 {batchHubKeys.map(assembly =>
-                                                    <NavItem key={assembly}>
-                                                        <a data-bypass="true" target="_blank" href={context['batch_hub'][assembly]}>
-                                                            {assembly}
-                                                        </a>
-                                                    </NavItem>
+                                                    <a key={assembly} data-bypass="true" target="_blank" href={context['batch_hub'][assembly]}>
+                                                        {assembly}
+                                                    </a>
                                                 )}
                                             </DropdownMenu>
                                         </DropdownButton>
