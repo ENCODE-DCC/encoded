@@ -1723,13 +1723,7 @@ def test_audit_experiment_chip_seq_library_complexity_standards(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-        '''print (error_type)
-        for e in errors[error_type]:
-            print (e['category'])
-            if (e['category'].startswith('ChIP-seq')):
-                print (e)
-        '''
-    assert any(error['category'] == 'insufficient library complexity' for error in errors_list)
+    assert any(error['category'] == 'severe bottlenecking' for error in errors_list)
 
 
 def test_audit_experiment_wgbs_standards(testapp,
