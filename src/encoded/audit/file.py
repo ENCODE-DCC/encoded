@@ -229,7 +229,7 @@ def audit_file_controlled_by(value, system):
                     value['@id'],
                     ff['@id'],
                     control_bs)
-                yield AuditFailure('mismatched controls', detail, level='ERROR')
+                yield AuditFailure('mismatched control', detail, level='ERROR')
                 return
 
             if ff['file_format'] != value['file_format']:
@@ -239,7 +239,7 @@ def audit_file_controlled_by(value, system):
                     ff['@id'],
                     ff['file_format']
                     )
-                yield AuditFailure('mismatched controls', detail, level='ERROR')
+                yield AuditFailure('mismatched control', detail, level='ERROR')
                 return
 
             if (possible_controls is None) or (ff['dataset']['@id'] not in possible_controls):
@@ -248,7 +248,7 @@ def audit_file_controlled_by(value, system):
                     ff['@id'],
                     ff['dataset']['@id']
                     )
-                yield AuditFailure('mismatched controls', detail, level='ERROR')
+                yield AuditFailure('mismatched control', detail, level='ERROR')
                 return
 
             if (run_type is None) or (control_run is None):
