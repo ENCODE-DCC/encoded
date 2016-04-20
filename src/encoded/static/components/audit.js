@@ -68,27 +68,32 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
 
             var indicatorClass = "audit-indicators btn btn-default" + (this.context.auditDetailOpen ? ' active' : '') + (this.props.search ? ' audit-search' : '');
 
-            return (
-                <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.context.auditDetailOpen} aria-controls={this.props.id} onClick={this.context.auditStateToggle}>
-                    {sortedAuditLevels.map(level => {
-                        if (loggedIn || level !== 'DCC_ACTION') {
-                            // Calculate the CSS class for the icon
-                            var levelName = level.toLowerCase();
-                            var btnClass = 'btn-audit btn-audit-' + levelName + ' audit-level-' + levelName;
-                            var iconClass = 'icon audit-activeicon-' + levelName;
-                            var groupedAudits = _(audits[level]).groupBy('name');
+            if (loggedIn || !(sortedAuditLevels.length === 1 && sortedAuditLevels[0] === 'DCC_ACTION')) {
+                return (
+                    <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.context.auditDetailOpen} aria-controls={this.props.id} onClick={this.context.auditStateToggle}>
+                        {sortedAuditLevels.map(level => {
+                            if (loggedIn || level !== 'DCC_ACTION') {
+                                // Calculate the CSS class for the icon
+                                var levelName = level.toLowerCase();
+                                var btnClass = 'btn-audit btn-audit-' + levelName + ' audit-level-' + levelName;
+                                var iconClass = 'icon audit-activeicon-' + levelName;
+                                var groupedAudits = _(audits[level]).groupBy('category');
 
-                            return (
-                                <span className={btnClass} key={level}>
-                                    <i className={iconClass}><span className="sr-only">{'Audit'} {levelName}</span></i>
-                                    {Object.keys(groupedAudits).length}
-                                </span>
-                            );
-                        }
-                        return null;
-                    })}
-                </button>
-            );
+                                return (
+                                    <span className={btnClass} key={level}>
+                                        <i className={iconClass}><span className="sr-only">{'Audit'} {levelName}</span></i>
+                                        {Object.keys(groupedAudits).length}
+                                    </span>
+                                );
+                            }
+                            return null;
+                        })}
+                    </button>
+                );
+            }
+
+            // Logged out and the only audit level is DCC action, so don't show a button
+            return null;
         } else {
             return null;
         }
@@ -124,7 +129,7 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
 
                             // Group audits within a level by their category ('name' corresponds to
                             // 'category' in a more machine-like form)
-                            var groupedAudits = _(audits).groupBy('name');
+                            var groupedAudits = _(audits).groupBy('category');
 
                             return Object.keys(groupedAudits).map(groupName => <AuditGroup group={groupedAudits[groupName]} groupName={groupName} auditLevelName={auditLevelName} context={context} forcedEditLink={this.props.forcedEditLink} key={groupName} />);
                         }
