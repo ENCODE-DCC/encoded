@@ -1499,7 +1499,7 @@ def audit_experiment_replicate_with_no_files(value, system):
 
     for key in rep_dictionary.keys():
         if len(rep_dictionary[key]) == 0:
-            detail = 'Experiment {} replicate '.format(value['@id']) + \
+            detail = 'Replicate ' + \
                      '{} does not have files associated with'.format(key)
             yield AuditFailure('missing file in replicate', detail, level='ERROR')
         else:
@@ -1507,7 +1507,7 @@ def audit_experiment_replicate_with_no_files(value, system):
                 if 'fasta' not in rep_dictionary[key] and \
                    'csfasta' not in rep_dictionary[key] and \
                    'fastq' not in rep_dictionary[key]:
-                    detail = 'Sequencing experiment {} replicate '.format(value['@id']) + \
+                    detail = 'Replicate ' + \
                              '{} does not have sequence files associated with it.'.format(key)
                     yield AuditFailure('missing sequence file in replicate',
                                        detail, level=audit_level)
