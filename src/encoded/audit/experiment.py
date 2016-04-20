@@ -519,7 +519,7 @@ def check_idr(metrics, rescue, self_consistency, pipeline):
                          'have rescue ratio of {}, and '.format(rescue_r) + \
                          'self consistency ratio of {}. '.format(self_r) + \
                          'Both ratios should be < 2, according to June 2015 standards.'
-                yield AuditFailure('insufficient IDR values', detail,
+                yield AuditFailure('insufficient replicate concordance', detail,
                                    level='NOT_COMPLIANT')
 
 
@@ -552,11 +552,11 @@ def check_mad(metrics, replication_type, mad_threshold, pipeline):
                          '0.2 and 0.5 is acceptable.'
                 if experiment_replication_type == 'isogenic':
                     if mad_value < 0.5:
-                        yield AuditFailure('borderline MAD value', detail,
-                                           level='DCC_ACTION')
+                        yield AuditFailure('low replicate concordance', detail,
+                                           level='WARNING')
                     else:
-                        yield AuditFailure('insufficient MAD value', detail,
-                                           level='DCC_ACTION')
+                        yield AuditFailure('insufficient replicate concordance', detail,
+                                           level='NOT_COMPLIANT')
                 elif experiment_replication_type == 'anisogenic' and mad_value > 0.5:
                     detail = 'ENCODE processed gene quantification files {} '.format(file_names) + \
                              'has Median-Average-Deviation (MAD) ' + \
@@ -565,8 +565,8 @@ def check_mad(metrics, replication_type, mad_threshold, pipeline):
                              ' For gene quantification files from an {}'.format(experiment_replication_type) + \
                              ' assay in the {} '.format(pipeline) + \
                              'pipeline, a value <0.5 is recommended.'
-                    yield AuditFailure('borderline MAD value', detail,
-                                       level='DCC_ACTION')
+                    yield AuditFailure('low replicate concordance', detail,
+                                       level='WARNING')
 
 
 def check_experiment_ERCC_spikeins(experiment, pipeline):
@@ -647,10 +647,10 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
                          '{} and one STD away ({}) is acceptable.'.format(threshold,
                                                                           print_border)
                 if spearman_correlation > border_value:
-                    yield AuditFailure('low spearman correlation', detail,
+                    yield AuditFailure('low replicate concordance', detail,
                                        level='WARNING')
                 else:
-                    yield AuditFailure('insufficient spearman correlation', detail,
+                    yield AuditFailure('insufficient replicate concordance', detail,
                                        level='NOT_COMPLIANT')
 
 
@@ -835,7 +835,7 @@ def check_wgbs_pearson(cpg_metrics, threshold,  pipeline_title):
                          'pipeline has CpG quantification Pearson Correlation Coefficient of ' + \
                          '{}, '.format(m['Pearson Correlation Coefficient']) + \
                          'while a value >={} is required.'.format(threshold)
-                yield AuditFailure('insufficient pearson',
+                yield AuditFailure('insufficient replicate concordance',
                                    detail,
                                    level='NOT_COMPLIANT')
 
@@ -1648,7 +1648,7 @@ def audit_experiment_isogeneity(value, system):
         detail = 'In experiment {} the biosamples have varying sexes {}'.format(
             value['@id'],
             repr(biosample_sex_list))
-        yield AuditFailure('mismatched sex', detail, level='ERROR')
+        yield AuditFailure('mismatched sex', detail, level='NOT_COMPLIANT')
     return
 
 
