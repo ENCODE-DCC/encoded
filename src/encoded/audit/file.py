@@ -131,10 +131,25 @@ def audit_file_read_length(value, system):
         return
 
 
+def check_presence(file_to_check, files_list):
+    for f in files_list:
+        if f['accession'] == file_to_check['accession']:
+            return True
+    return False
+
+
 @audit_checker('file',
-               frame=['dataset', 'dataset.target', 'controlled_by',
-                      'controlled_by.dataset'],
-               condition=rfa('ENCODE2', 'ENCODE2-Mouse', 'ENCODE3', 'modERN'))
+               frame=['dataset',
+                      'dataset.target',
+                      'controlled_by',
+                      'controlled_by.replicate',
+                      'controlled_by.dataset',
+                      'controlled_by.paired_with'],
+               condition=rfa('ENCODE2',
+                             'ENCODE2-Mouse',
+                             'ENCODE',
+                             'ENCODE3',
+                             'modERN'))
 def audit_file_controlled_by(value, system):
     '''
     A fastq in a ChIP-seq experiment should have a controlled_by
@@ -146,7 +161,9 @@ def audit_file_controlled_by(value, system):
     if value['dataset'].get('assay_term_name') not in ['ChIP-seq',
                                                        'RAMPAGE',
                                                        'CAGE',
-                                                       'shRNA knockdown followed by RNA-seq']:
+                                                       'shRNA knockdown followed by RNA-seq',
+                                                       'CRISPR genome editing followed by RNA-seq']:
+
         return
 
     if 'target' in value['dataset'] and \
@@ -163,6 +180,38 @@ def audit_file_controlled_by(value, system):
             )
         yield AuditFailure('missing controlled_by', detail, level='NOT_COMPLIANT')
         return
+
+    bio_rep_numbers = set()
+    pe_files = []
+    if (value['file_format'] in ['fastq']) and len(value['controlled_by']) > 0:
+        for control_file in value['controlled_by']:
+            if 'replicate' in control_file:
+                bio_rep_numbers.add(control_file['replicate']['biological_replicate_number'])
+            if 'run_type' in control_file:
+                if control_file['run_type'] == 'paired-ended':
+                    pe_files.append(control_file)
+    for pe_file in pe_files:
+        if 'paired_with' not in pe_file:
+            detail = 'Fastq file {} '.format(value['@id']) + \
+                     'from experiment {} '.format(value['dataset']['@id']) + \
+                     'contains in controlled_by list PE fastq file ' + \
+                     '{} with missing paired_with property.'.format(pe_file['@id'])
+            yield AuditFailure('missing paired_with in controlled_by', detail, level='ERROR')
+        elif check_presence(pe_file['paired_with'], pe_files) is False:
+            detail = 'Fastq file {} '.format(value['@id']) + \
+                     'from experiment {} '.format(value['dataset']['@id']) + \
+                     'contains in controlled_by list PE fastq file ' + \
+                     '{} which is paired to a file {} '.format(pe_file['@id'],
+                                                               pe_file['paired_with']['@id']) + \
+                     'that is not included in the controlled_by list'
+            yield AuditFailure('missing paired_with in controlled_by', detail, level='ERROR')
+
+    if len(bio_rep_numbers) > 1:
+        detail = 'Fastq file {} '.format(value['@id']) + \
+                 'from experiment {} '.format(value['dataset']['@id']) + \
+                 'contains in controlled_by list fastq files ' + \
+                 'from diferent biological replicates {}.'.format(list(bio_rep_numbers))
+        yield AuditFailure('inconsistent controlled_by replicates', detail, level='ERROR')
 
     possible_controls = value['dataset'].get('possible_controls')
     biosample = value['dataset'].get('biosample_term_id')
@@ -228,7 +277,6 @@ def audit_file_controlled_by(value, system):
                 yield AuditFailure('mismatched control read length',
                                    detail, level='WARNING')
                 return
-
 
 @audit_checker('file', frame='object', condition=rfa('modERN', 'GGR'))
 def audit_file_flowcells(value, system):
