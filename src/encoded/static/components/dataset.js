@@ -233,7 +233,7 @@ var Annotation = React.createClass({
                 </Panel>
 
                 {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -375,7 +375,7 @@ var PublicationData = React.createClass({
                 </Panel>
 
                 {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -516,7 +516,7 @@ var Reference = React.createClass({
                 </Panel>
 
                 {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -684,7 +684,7 @@ var Project = React.createClass({
                 </Panel>
 
                 {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -839,7 +839,7 @@ var UcscBrowserComposite = React.createClass({
                 </Panel>
 
                 {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -1494,7 +1494,7 @@ var FileTable = module.exports.FileTable = React.createClass({
         'audit': {
             title: 'Audit status',
             display: item => <div className="characterization-meta-data">{fileAuditStatus(item)}</div>,
-            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
+            hide: (list, columns, meta) => meta.noAudits || !(meta.session && meta.session['auth.userid'])
         },
         'status': {
             title: 'File status',
@@ -1543,7 +1543,7 @@ var FileTable = module.exports.FileTable = React.createClass({
         'audit': {
             title: 'Audit status',
             display: item => <div className="characterization-meta-data">{fileAuditStatus(item)}</div>,
-            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
+            hide: (list, columns, meta) => meta.noAudits || !(meta.session && meta.session['auth.userid'])
         },
         'status': {
             title: 'File status',
@@ -1594,7 +1594,7 @@ var FileTable = module.exports.FileTable = React.createClass({
         'audit': {
             title: 'Audit status',
             display: item => <div className="characterization-meta-data">{fileAuditStatus(item)}</div>,
-            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
+            hide: (list, columns, meta) => meta.noAudits || !(meta.session && meta.session['auth.userid'])
         },
         'status': {
             title: 'File status',
@@ -1640,7 +1640,7 @@ var FileTable = module.exports.FileTable = React.createClass({
         'audit': {
             title: 'Audit status',
             display: item => <div className="characterization-meta-data">{fileAuditStatus(item)}</div>,
-            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
+            hide: (list, columns, meta) => meta.noAudits || !(meta.session && meta.session['auth.userid'])
         },
         'status': {
             title: 'File status',
@@ -1650,7 +1650,7 @@ var FileTable = module.exports.FileTable = React.createClass({
     },
 
     render: function() {
-        var {context, items, filePanelHeader, encodevers, anisogenic, session} = this.props;
+        var {context, items, filePanelHeader, encodevers, anisogenic, noAudits, session} = this.props;
         var datasetFiles = (items && items.length) ? items : [];
         if (datasetFiles.length) {
             // Extract four kinds of file arrays
@@ -1667,10 +1667,10 @@ var FileTable = module.exports.FileTable = React.createClass({
 
             return (
                 <SortTablePanel header={filePanelHeader}>
-                    <SortTable title="Raw data files" list={files.raw} columns={this.rawTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
-                    <SortTable title="Raw data files" list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
-                    <SortTable title="Processed data files" list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
-                    <SortTable title="Reference data files" list={files.ref} columns={this.refTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} />
+                    <SortTable title="Raw data files" list={files.raw} columns={this.rawTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
+                    <SortTable title="Raw data files" list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
+                    <SortTable title="Processed data files" list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
+                    <SortTable title="Reference data files" list={files.ref} columns={this.refTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} />
                 </SortTablePanel>
             );
         }
