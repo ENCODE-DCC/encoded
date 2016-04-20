@@ -216,7 +216,7 @@ def audit_file_controlled_by(value, system):
                     ff['@id'],
                     control_run
                     )
-                yield AuditFailure('mismatched controlled_by run_type',
+                yield AuditFailure('mismatched control run_type',
                                    detail, level='WARNING')
 
             if read_length != control_length:
