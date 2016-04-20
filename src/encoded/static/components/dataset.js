@@ -233,7 +233,7 @@ var Annotation = React.createClass({
                 </Panel>
 
                 {/* Display list of released and unreleased files */}
-                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} noAudits />
+                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -375,7 +375,7 @@ var PublicationData = React.createClass({
                 </Panel>
 
                 {/* Display list of released and unreleased files */}
-                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} noAudits />
+                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -516,7 +516,7 @@ var Reference = React.createClass({
                 </Panel>
 
                 {/* Display list of released and unreleased files */}
-                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} noAudits />
+                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -684,7 +684,7 @@ var Project = React.createClass({
                 </Panel>
 
                 {/* Display list of released and unreleased files */}
-                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} noAudits />
+                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -839,7 +839,7 @@ var UcscBrowserComposite = React.createClass({
                 </Panel>
 
                 {/* Display list of released and unreleased files */}
-                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} noAudits />
+                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
