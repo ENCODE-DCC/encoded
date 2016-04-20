@@ -2044,7 +2044,7 @@ def audit_experiment_biosample_term(value, system):
                     term_name,
                     ontology_name
                     )
-                yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
+                yield AuditFailure('mismatched ontology term', detail, level='ERROR')
 
     if 'replicates' in value:
         for rep in value['replicates']:
@@ -2070,21 +2070,21 @@ def audit_experiment_biosample_term(value, system):
                          'contains a library {} '.format(lib['@id']) + \
                          'prepared from biosample type \"{}\", '.format(bs_type) + \
                          'while experiment\'s biosample type is \"{}\".'.format(term_type)
-                yield AuditFailure('mismatched biosample_type', detail, level='ERROR')
+                yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
 
             if bs_name != term_name:
                 detail = 'Experiment {} '.format(value['@id']) + \
                          'contains a library {} '.format(lib['@id']) + \
                          'prepared from biosample {}, '.format(bs_name) + \
                          'while experiment\'s biosample is {}.'.format(term_name)
-                yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
+                yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
 
             if bs_id != term_id:
                 detail = 'Experiment {} '.format(value['@id']) + \
                          'contains a library {} '.format(lib['@id']) + \
                          'prepared from biosample with an id \"{}\", '.format(bs_id) + \
                          'while experiment\'s biosample id is \"{}\".'.format(term_id)
-                yield AuditFailure('mismatched biosample_term_id', detail, level='ERROR')
+                yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
 
 
 @audit_checker(

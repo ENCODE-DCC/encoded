@@ -756,9 +756,7 @@ def test_audit_experiment_biosample_match(testapp, base_experiment,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched biosample_term_id' for error in errors_list) and \
-        any(error['category'] == 'mismatched biosample_term_name' for error in errors_list) and \
-        any(error['category'] == 'mismatched biosample_type' for error in errors_list)
+    assert any(error['category'] == 'inconsistent library biosample' for error in errors_list)
 
 
 def test_audit_experiment_documents(testapp, base_experiment, base_library, base_replicate):
