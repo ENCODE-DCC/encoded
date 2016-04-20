@@ -369,11 +369,11 @@ def check_experiement_long_rna_encode3_standards(experiment,
                                                  desired_assembly,
                                                  desired_annotation):
 
-    if experiment['assay_term_name'] not in ['shRNA knockdown followed by RNA-seq',
-                                             'CRISPR genome editing followed by RNA-seq']:
-        for failure in check_experiment_ERCC_spikeins(experiment, pipeline_title):
-            yield failure
-    else:
+    for failure in check_experiment_ERCC_spikeins(experiment, pipeline_title):
+        yield failure
+
+    if experiment['assay_term_name'] in ['shRNA knockdown followed by RNA-seq',
+                                         'CRISPR genome editing followed by RNA-seq']:
         for failure in check_target(experiment, pipeline_title):
             yield failure
 
