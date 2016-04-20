@@ -1808,7 +1808,9 @@ def audit_experiment_target(value, system):
         return
 
     # Some assays don't need antibodies
-    if value['assay_term_name'] in ['RNA Bind-n-Seq', 'shRNA knockdown followed by RNA-seq']:
+    if value['assay_term_name'] in ['RNA Bind-n-Seq',
+                                    'shRNA knockdown followed by RNA-seq',
+                                    'CRISPR genome editing followed by RNA-seq']:
         return
 
     # Check that target of experiment matches target of antibody
