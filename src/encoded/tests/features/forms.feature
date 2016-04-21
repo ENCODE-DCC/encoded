@@ -4,6 +4,7 @@ Feature: Edit forms
     Scenario: Save a change to an antibody
         When I visit "/antibodies/ENCAB728YTO/"
         And I wait for the content to load
+        And I click the link with text that contains "Toggle"
         And I click the element with the css selector ".icon-gear"
         And I click the link to "/antibodies/ENCAB728YTO/#!edit"
         And I wait for an element with the css selector "form.rf-Form" to load
