@@ -115,6 +115,10 @@ def sanitize_coordinates(term):
         return (chromosome, start, end)
     return ('', '', '')
 
+def sanitize_rsid(rsid):
+    return 'rs' + ''.join([a for a in filter(str.isdigit, rsid)])
+
+
 
 def get_annotation_coordinates(es, id, assembly):
     ''' Gets annotation coordinates from annotation index in ES '''
@@ -246,7 +250,8 @@ def region_search(context, request):
     elif region != '*':
         region = region.lower()
         if region.startswith('rs'):
-            chromosome, start, end = get_rsid_coordinates(region)
+            sanitized_region = sanitize_rsid(region)
+            chromosome, start, end = get_rsid_coordinates(sanitized_region)
             region_inside_peak_status = True
         elif region.startswith('ens'):
             chromosome, start, end = get_ensemblid_coordinates(region)

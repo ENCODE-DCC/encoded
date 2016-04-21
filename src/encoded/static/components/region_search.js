@@ -82,7 +82,8 @@ var AdvSearch = React.createClass({
 
         var newTerms = {};
         var inputNode = this.refs.annotation.getDOMNode();
-        inputNode.value = this.newSearchTerm = term;
+        // inputNode.value = this.newSearchTerm = term;
+        inputNode.value = term + context.coordinates;
         newTerms[name] = id;
         this.setState({terms: newTerms});
         this.setState({showAutoSuggest: false});
