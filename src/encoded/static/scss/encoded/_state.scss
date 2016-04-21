@@ -2,7 +2,7 @@
 #content {
     padding-top: 0;
     
-    @media (min-width: $screen-md-min) {
+    @media (min-width: $screen-lg-min) {
         padding-top: 75px;
     }
 }

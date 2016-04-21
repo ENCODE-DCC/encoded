@@ -102,12 +102,12 @@ var Navbar = module.exports.Navbar = React.createClass({
         return (
             <nav className={'navbar ' + (navClasses ? navClasses : 'navbar-default')}>
                 <div className="navbar-header">
-                    <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target={label} aria-expanded={this.state.expanded} onClick={this.collapseClick}>
+                    <a href="#" data-trigger className="navbar-toggle collapsed" data-toggle="collapse" data-target={label} aria-expanded={this.state.expanded} onClick={this.collapseClick}>
                         <span className="sr-only">Toggle navigation</span>
                         <span className="icon-bar"></span>
                         <span className="icon-bar"></span>
                         <span className="icon-bar"></span>
-                    </button>
+                    </a>
                     {brand ?
                         <a className="navbar-brand" href={brandlink}>{brand}</a>
                     : null}

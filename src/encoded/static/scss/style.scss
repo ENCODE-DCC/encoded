@@ -1,11 +1,12 @@
 // Override Bootstrap default variables:
 
 $screen-md:                                 960px;
+$screen-lg:                                 1160px;
 $border-radius-base:                        3px;
 $border-radius-large:                       4px;
 $border-radius-small:                       2px;
 $input-border-radius:                       3px;
-$grid-float-breakpoint:                     $screen-md;
+$grid-float-breakpoint:                     $screen-lg;
 $navbar-height:                             40px;
 $navbar-inverse-link-active-bg:             #4E7294;//darken($navbar-inverse-bg, 10%)
 $navbar-inverse-toggle-hover-bg:            #19334b;

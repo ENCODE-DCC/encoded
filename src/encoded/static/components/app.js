@@ -12,11 +12,14 @@ var portal = {
     portal_title: 'ENCODE',
     global_sections: [
         {id: 'data', title: 'Data', children: [
-            {id: 'assaymatrix', title: 'Assay matrix', url: '/matrix/?type=Experiment'},
-            {id: 'assaysearch', title: 'Assay search', url: '/search/?type=Experiment'},
-            {id: 'annotationmatrix', title: 'Annotation matrix', url: '/matrix/?type=Annotation'},
-            {id: 'annotationsearch', title: 'Annotation search', url: '/search/?type=Annotation'},
+            {id: 'assaymatrix', title: 'Matrix', url: '/matrix/?type=Experiment'},
+            {id: 'assaysearch', title: 'Search', url: '/search/?type=Experiment'},
             {id: 'region-search', title: 'Search by region', url: '/region-search/'}
+        ]},
+        {id: 'encyclopedia', title: 'Encyclopedia', children: [
+            {id: 'aboutannotations', title: 'About', url: '/data/annotations/'},
+            {id: 'annotationmatrix', title: 'Matrix', url: '/matrix/?type=Annotation'},
+            {id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation'}
         ]},
         {id: 'materials', title: 'Materials', children: [
             {id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot'},
@@ -34,7 +37,8 @@ var portal = {
             {id: 'news', title: 'News', url: '/news'},
             {id: 'publications', title: 'Publications', url: '/publications/'},
             {id: 'datause', title: 'Release policy', url: '/about/data-use-policy/'},
-            {id: 'dataaccess', title: 'Data access', url: '/about/data-access/'}
+            {id: 'dataaccess', title: 'Data access', url: '/about/data-access/'},
+            {id: 'acknowledgements', title: 'Acknowledgements', url: '/acknowledgements/'}
         ]},
         {id: 'help', title: 'Help', children: [
             {id: 'gettingstarted', title: 'Getting started', url: '/help/getting-started/'},
