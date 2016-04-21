@@ -115,4 +115,3 @@ def submitter_testapp(app):
         'REMOTE_USER': 'TEST_SUBMITTER',
     }
     return TestApp(app, environ)
-

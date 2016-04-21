@@ -3,7 +3,11 @@ import pytest
 pytestmark = [pytest.mark.indexing]
 # Use workbook fixture from BDD tests (including elasticsearch)
 from .features.conftest import app_settings, app, workbook
+#from snovault.tests.test_indexing import app, dbapi_conn
 
+pytest.plugins = [
+    'snovault.tests.indexfixtures',
+]
 
 pytest.plugins = [
     'snovault.tests.indexfixtures',
