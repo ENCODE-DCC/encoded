@@ -20,7 +20,7 @@ $audit-group-height: 40px;
 
     &.audit-search {
         @include font-size(0.85);
-        height: 26px;
+        height: 28px;
     }
 }
 
@@ -246,4 +246,12 @@ $audit-types:
     margin-left: 10px;
     vertical-align: middle;
     font-size:1.2rem;
+
+    .icon {
+        color: #a0a0a0;
+
+        &:hover {
+            color: #428bca;
+        }
+    }
 }

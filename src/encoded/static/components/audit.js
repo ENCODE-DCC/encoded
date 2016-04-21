@@ -197,7 +197,7 @@ var AuditGroup = module.exports.AuditGroup = React.createClass({
                     <strong>&nbsp;{categoryName}</strong>
                     {!loggedIn ?
                         <div className="btn-info-audit">
-                            <a href="/data-standards/" target="_blank"><i className="icon icon-question-circle"></i></a>
+                            <a href={'/data-standards/#' + categoryName.toLowerCase().split(' ').join('_')} target="_blank"><i className="icon icon-question-circle"></i></a>
                         </div>
                     : null}
                 </div>
