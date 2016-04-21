@@ -965,8 +965,7 @@ def test_audit_experiment_replicate_with_file(testapp, file_fastq,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert all(((error['category'] != 'missing file in replicate') and
-               (error['category'] != 'missing sequence file in replicate')) for error in errors_list)
+    assert all((error['category'] != 'missing raw data in replicate') for error in errors_list)
 
 
 def test_audit_experiment_needs_pipeline_and_has_one(testapp,  replicate, library,
@@ -1044,22 +1043,23 @@ def test_audit_experiment_replicate_with_no_files(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing file in replicate' for error in errors_list)
+    assert any(error['category'] == 'missing raw data in replicate' for error in errors_list)
 
 
-def test_audit_experiment_replicate_with_no_files_warning(testapp,
+def test_audit_experiment_replicate_with_no_files_warning(testapp, file_bed_methyl,
                                                           base_experiment,
                                                           base_replicate,
                                                           base_library):
+    testapp.patch_json(file_bed_methyl['@id'], {'replicate': base_replicate['@id']})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
     testapp.patch_json(base_experiment['@id'], {'status': 'in progress'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
-        if error_type == 'ERROR':
+        if error_type == 'WARNING':
             errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing file in replicate' for error in errors_list)
+    assert any(error['category'] == 'missing raw data in replicate' for error in errors_list)
 
 
 def test_audit_experiment_missing_biosample_term_id(testapp, base_experiment):
@@ -1116,7 +1116,7 @@ def test_audit_experiment_replicate_with_no_fastq_files(testapp, file_bam,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing sequence file in replicate' for error in errors_list)
+    assert any(error['category'] == 'missing raw data in replicate' for error in errors_list)
 
 
 def test_audit_experiment_mismatched_length_sequencing_files(testapp, file_bam, file_fastq,

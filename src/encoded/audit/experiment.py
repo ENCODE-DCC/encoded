@@ -1485,7 +1485,7 @@ def audit_experiment_consistent_sequencing_runs(value, system):
                condition=rfa("ENCODE3", "modERN", "ENCODE2", "GGR",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicate_with_no_files(value, system):
-    if value['status'] in ['deleted', 'replaced', 'revoked', 'proposed', 'preliminary']:
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
     if 'replicates' not in value:
         return
@@ -1508,7 +1508,7 @@ def audit_experiment_replicate_with_no_files(value, system):
         if 'replicate' in file_object:
             file_replicate = file_object['replicate']
             if file_replicate['@id'] in rep_dictionary:
-                rep_dictionary[file_replicate['@id']].append(file_object['file_format'])
+                rep_dictionary[file_replicate['@id']].append(file_object['output_category'])
 
     audit_level = 'ERROR'
     if value['status'] in ['proposed', 'preliminary', 'in progress', 'started', 'submitted']:
@@ -1517,16 +1517,14 @@ def audit_experiment_replicate_with_no_files(value, system):
     for key in rep_dictionary.keys():
         if len(rep_dictionary[key]) == 0:
             detail = 'Replicate ' + \
-                     '{} does not have files associated with'.format(key)
-            yield AuditFailure('missing file in replicate', detail, level='ERROR')
+                     '{} does not have files associated with it.'.format(key)
+            yield AuditFailure('missing raw data in replicate', detail, level='ERROR')
         else:
             if seq_assay_flag is True:
-                if 'fasta' not in rep_dictionary[key] and \
-                   'csfasta' not in rep_dictionary[key] and \
-                   'fastq' not in rep_dictionary[key]:
+                if 'raw_data' not in rep_dictionary[key]:
                     detail = 'Replicate ' + \
-                             '{} does not have sequence files associated with it.'.format(key)
-                    yield AuditFailure('missing sequence file in replicate',
+                             '{} does not have raw data files associated with it.'.format(key)
+                    yield AuditFailure('missing raw data in replicate',
                                        detail, level=audit_level)
     return
 
