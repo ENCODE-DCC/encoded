@@ -204,7 +204,7 @@ def audit_file_controlled_by(value, system):
                      '{} which is paired to a file {} '.format(pe_file['@id'],
                                                                pe_file['paired_with']['@id']) + \
                      'that is not included in the controlled_by list'
-            yield AuditFailure('missing paired_with in controlled_by', detail, level='ERROR')
+            yield AuditFailure('missing paired_with in controlled_by', detail, level='DCC_ACTION')
 
     if len(bio_rep_numbers) > 1:
         detail = 'Fastq file {} '.format(value['@id']) + \
