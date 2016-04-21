@@ -369,11 +369,11 @@ def check_experiement_long_rna_encode3_standards(experiment,
                                                  desired_assembly,
                                                  desired_annotation):
 
-    if experiment['assay_term_name'] not in ['shRNA knockdown followed by RNA-seq',
-                                             'CRISPR genome editing followed by RNA-seq']:
-        for failure in check_experiment_ERCC_spikeins(experiment, pipeline_title):
-            yield failure
-    else:
+    for failure in check_experiment_ERCC_spikeins(experiment, pipeline_title):
+        yield failure
+
+    if experiment['assay_term_name'] in ['shRNA knockdown followed by RNA-seq',
+                                         'CRISPR genome editing followed by RNA-seq']:
         for failure in check_target(experiment, pipeline_title):
             yield failure
 
@@ -519,7 +519,7 @@ def check_idr(metrics, rescue, self_consistency, pipeline):
                          'have rescue ratio of {}, and '.format(rescue_r) + \
                          'self consistency ratio of {}. '.format(self_r) + \
                          'Both ratios should be < 2, according to June 2015 standards.'
-                yield AuditFailure('insufficient IDR values', detail,
+                yield AuditFailure('insufficient replicate concordance', detail,
                                    level='NOT_COMPLIANT')
 
 
@@ -552,11 +552,11 @@ def check_mad(metrics, replication_type, mad_threshold, pipeline):
                          '0.2 and 0.5 is acceptable.'
                 if experiment_replication_type == 'isogenic':
                     if mad_value < 0.5:
-                        yield AuditFailure('borderline MAD value', detail,
-                                           level='DCC_ACTION')
+                        yield AuditFailure('low replicate concordance', detail,
+                                           level='WARNING')
                     else:
-                        yield AuditFailure('insufficient MAD value', detail,
-                                           level='DCC_ACTION')
+                        yield AuditFailure('insufficient replicate concordance', detail,
+                                           level='NOT_COMPLIANT')
                 elif experiment_replication_type == 'anisogenic' and mad_value > 0.5:
                     detail = 'ENCODE processed gene quantification files {} '.format(file_names) + \
                              'has Median-Average-Deviation (MAD) ' + \
@@ -565,8 +565,8 @@ def check_mad(metrics, replication_type, mad_threshold, pipeline):
                              ' For gene quantification files from an {}'.format(experiment_replication_type) + \
                              ' assay in the {} '.format(pipeline) + \
                              'pipeline, a value <0.5 is recommended.'
-                    yield AuditFailure('borderline MAD value', detail,
-                                       level='DCC_ACTION')
+                    yield AuditFailure('low replicate concordance', detail,
+                                       level='WARNING')
 
 
 def check_experiment_ERCC_spikeins(experiment, pipeline):
@@ -647,10 +647,10 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
                          '{} and one STD away ({}) is acceptable.'.format(threshold,
                                                                           print_border)
                 if spearman_correlation > border_value:
-                    yield AuditFailure('low spearman correlation', detail,
+                    yield AuditFailure('low replicate concordance', detail,
                                        level='WARNING')
                 else:
-                    yield AuditFailure('insufficient spearman correlation', detail,
+                    yield AuditFailure('insufficient replicate concordance', detail,
                                        level='NOT_COMPLIANT')
 
 
@@ -720,8 +720,8 @@ def check_file_chip_seq_library_complexity(alignment_file):
         return
 
     nrf_end_of_detail = "Non redundant fraction (NRF, Number of reads after " + \
-                        "removing duplicates / Total number of reads). 0.0-0.7 is very " + \
-                        "poor complexity, 0.7-0.8 is poor complexity, 0.8-0.9 moderate " + \
+                        "removing duplicates / Total number of reads). 0.0-0.5 is very " + \
+                        "poor complexity, 0.5-0.8 is poor complexity, 0.8-0.9 moderate " + \
                         "complexity, and >0.9 high complexity. NRF >0.9 is recommended, " + \
                         "but >0.8 is acceptable"
     pbc1_end_of_detail = "PCR Bottlenecking coefficient 1 (PBC1, Number of genomic " + \
@@ -742,34 +742,45 @@ def check_file_chip_seq_library_complexity(alignment_file):
 
         if 'NRF' in metric:
             NRF_value = float(metric['NRF'])
-            if NRF_value < 0.8:
+            if NRF_value < 0.5:
                 detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
                          'was generated from a library with NRF value of {}'.format(NRF_value) + \
                          '. '+nrf_end_of_detail
                 yield AuditFailure('insufficient library complexity', detail,
                                    level='NOT_COMPLIANT')
 
-            else:
-                if NRF_value <= 0.9:
+            elif NRF_value >= 0.5 and NRF_value < 0.8:
+                detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
+                         'was generated from a library with NRF value of {}'.format(NRF_value) + \
+                         '. '+nrf_end_of_detail
+                yield AuditFailure('poor library complexity', detail,
+                                   level='NOT_COMPLIANT')
+
+            elif NRF_value >= 0.8 and NRF_value < 0.9:
                     detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
                              'was generated from a library with NRF value of {}'.format(NRF_value) + \
                              '. '+nrf_end_of_detail
-                    yield AuditFailure('low library complexity', detail,
+                    yield AuditFailure('moderate library complexity', detail,
                                        level='WARNING')
         if 'PBC1' in metric:
             PBC1_value = float(metric['PBC1'])
-            if PBC1_value < 0.8:
+            if PBC1_value < 0.5:
                 detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
                          'was generated from a library with PBC1 value of {}'.format(PBC1_value) + \
                          '. '+pbc1_end_of_detail
-                yield AuditFailure('insufficient library complexity', detail,
+                yield AuditFailure('severe bottlenecking', detail,
                                    level='NOT_COMPLIANT')
-            else:
-                if PBC1_value <= 0.9:
+            elif PBC1_value >= 0.5 and PBC1_value < 0.8:
+                detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
+                         'was generated from a library with PBC1 value of {}'.format(PBC1_value) + \
+                         '. '+pbc1_end_of_detail
+                yield AuditFailure('moderate bottlenecking', detail,
+                                   level='NOT_COMPLIANT')
+            elif PBC1_value >= 0.8 and PBC1_value < 0.9:
                     detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
                              'was generated from a library with PBC1 value of {}'.format(PBC1_value) + \
                              '. '+pbc1_end_of_detail
-                    yield AuditFailure('low library complexity', detail,
+                    yield AuditFailure('mild bottlenecking', detail,
                                        level='WARNING')
         if 'PBC2' in metric:
             PBC2_raw_value = metric['PBC2']
@@ -777,18 +788,24 @@ def check_file_chip_seq_library_complexity(alignment_file):
                 PBC2_value = float('inf')
             else:
                 PBC2_value = float(metric['PBC2'])
-            if PBC2_value < 3:
+            if PBC2_value < 1:
                 detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
                          'was generated from a library with PBC2 value of {}'.format(PBC2_value) + \
                          '. '+pbc2_end_of_detail
-                yield AuditFailure('insufficient library complexity', detail,
+                yield AuditFailure('severe bottlenecking', detail,
+                                   level='NOT_COMPLIANT')
+            if PBC2_value >= 1 and PBC2_value < 3:
+                detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
+                         'was generated from a library with PBC2 value of {}'.format(PBC2_value) + \
+                         '. '+pbc2_end_of_detail
+                yield AuditFailure('moderate bottlenecking', detail,
                                    level='NOT_COMPLIANT')
             else:
-                if PBC2_value <= 10:
+                if PBC2_value >= 3 and PBC2_value < 10:
                     detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
                              'was generated from a library with PBC2 value of {}'.format(PBC2_value) + \
                              '. '+pbc2_end_of_detail
-                    yield AuditFailure('low library complexity', detail,
+                    yield AuditFailure('mild bottlenecking', detail,
                                        level='WARNING')
 
 
@@ -835,7 +852,7 @@ def check_wgbs_pearson(cpg_metrics, threshold,  pipeline_title):
                          'pipeline has CpG quantification Pearson Correlation Coefficient of ' + \
                          '{}, '.format(m['Pearson Correlation Coefficient']) + \
                          'while a value >={} is required.'.format(threshold)
-                yield AuditFailure('insufficient pearson',
+                yield AuditFailure('insufficient replicate concordance',
                                    detail,
                                    level='NOT_COMPLIANT')
 
@@ -1468,7 +1485,7 @@ def audit_experiment_consistent_sequencing_runs(value, system):
                condition=rfa("ENCODE3", "modERN", "ENCODE2", "GGR",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicate_with_no_files(value, system):
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
+    if value['status'] in ['deleted', 'replaced', 'revoked', 'proposed', 'preliminary']:
         return
     if 'replicates' not in value:
         return
@@ -1499,7 +1516,7 @@ def audit_experiment_replicate_with_no_files(value, system):
 
     for key in rep_dictionary.keys():
         if len(rep_dictionary[key]) == 0:
-            detail = 'Experiment {} replicate '.format(value['@id']) + \
+            detail = 'Replicate ' + \
                      '{} does not have files associated with'.format(key)
             yield AuditFailure('missing file in replicate', detail, level='ERROR')
         else:
@@ -1507,7 +1524,7 @@ def audit_experiment_replicate_with_no_files(value, system):
                 if 'fasta' not in rep_dictionary[key] and \
                    'csfasta' not in rep_dictionary[key] and \
                    'fastq' not in rep_dictionary[key]:
-                    detail = 'Sequencing experiment {} replicate '.format(value['@id']) + \
+                    detail = 'Replicate ' + \
                              '{} does not have sequence files associated with it.'.format(key)
                     yield AuditFailure('missing sequence file in replicate',
                                        detail, level=audit_level)
@@ -1642,13 +1659,13 @@ def audit_experiment_isogeneity(value, system):
         detail = 'In experiment {} the biosamples have varying ages {}'.format(
             value['@id'],
             biosample_age_list)
-        yield AuditFailure('mismatched age', detail, level='ERROR')
+        yield AuditFailure('mismatched age', detail, level='NOT_COMPLIANT')
 
     if len(set(biosample_sex_list)) > 1:
         detail = 'In experiment {} the biosamples have varying sexes {}'.format(
             value['@id'],
             repr(biosample_sex_list))
-        yield AuditFailure('mismatched sex', detail, level='ERROR')
+        yield AuditFailure('mismatched sex', detail, level='NOT_COMPLIANT')
     return
 
 
@@ -1808,7 +1825,9 @@ def audit_experiment_target(value, system):
         return
 
     # Some assays don't need antibodies
-    if value['assay_term_name'] in ['RNA Bind-n-Seq', 'shRNA knockdown followed by RNA-seq']:
+    if value['assay_term_name'] in ['RNA Bind-n-Seq',
+                                    'shRNA knockdown followed by RNA-seq',
+                                    'CRISPR genome editing followed by RNA-seq']:
         return
 
     # Check that target of experiment matches target of antibody
@@ -2025,7 +2044,7 @@ def audit_experiment_biosample_term(value, system):
                     term_name,
                     ontology_name
                     )
-                yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
+                yield AuditFailure('mismatched ontology term', detail, level='ERROR')
 
     if 'replicates' in value:
         for rep in value['replicates']:
@@ -2051,21 +2070,21 @@ def audit_experiment_biosample_term(value, system):
                          'contains a library {} '.format(lib['@id']) + \
                          'prepared from biosample type \"{}\", '.format(bs_type) + \
                          'while experiment\'s biosample type is \"{}\".'.format(term_type)
-                yield AuditFailure('mismatched biosample_type', detail, level='ERROR')
+                yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
 
             if bs_name != term_name:
                 detail = 'Experiment {} '.format(value['@id']) + \
                          'contains a library {} '.format(lib['@id']) + \
                          'prepared from biosample {}, '.format(bs_name) + \
                          'while experiment\'s biosample is {}.'.format(term_name)
-                yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
+                yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
 
             if bs_id != term_id:
                 detail = 'Experiment {} '.format(value['@id']) + \
                          'contains a library {} '.format(lib['@id']) + \
                          'prepared from biosample with an id \"{}\", '.format(bs_id) + \
                          'while experiment\'s biosample id is \"{}\".'.format(term_id)
-                yield AuditFailure('mismatched biosample_term_id', detail, level='ERROR')
+                yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
 
 
 @audit_checker(

@@ -756,9 +756,7 @@ def test_audit_experiment_biosample_match(testapp, base_experiment,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched biosample_term_id' for error in errors_list) and \
-        any(error['category'] == 'mismatched biosample_term_name' for error in errors_list) and \
-        any(error['category'] == 'mismatched biosample_type' for error in errors_list)
+    assert any(error['category'] == 'inconsistent library biosample' for error in errors_list)
 
 
 def test_audit_experiment_documents(testapp, base_experiment, base_library, base_replicate):
@@ -1054,7 +1052,7 @@ def test_audit_experiment_replicate_with_no_files_warning(testapp,
                                                           base_replicate,
                                                           base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
-    testapp.patch_json(base_experiment['@id'], {'status': 'proposed'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'in progress'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -1355,8 +1353,7 @@ def test_audit_experiment_MAD_long_rna_standards(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'insufficient MAD value' for error in errors_list) and \
-        any(error['category'] == 'insufficient spearman correlation' for error in errors_list)
+    assert any(error['category'] == 'insufficient replicate concordance' for error in errors_list)
 
 
 def test_audit_experiment_long_rna_standards_crispr(testapp,
@@ -1724,13 +1721,7 @@ def test_audit_experiment_chip_seq_library_complexity_standards(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-        '''print (error_type)
-        for e in errors[error_type]:
-            print (e['category'])
-            if (e['category'].startswith('ChIP-seq')):
-                print (e)
-        '''
-    assert any(error['category'] == 'insufficient library complexity' for error in errors_list)
+    assert any(error['category'] == 'severe bottlenecking' for error in errors_list)
 
 
 def test_audit_experiment_wgbs_standards(testapp,

@@ -205,4 +205,4 @@ def audit_antibody_characterization_method_allowed(value, system):
             value['secondary_characterization_method'],
             value['@id']
             )
-        raise AuditFailure('unapproved char method', detail, level='NOT_COMPLIANT')
+        raise AuditFailure('antibody characterized by unapproved method', detail, level='NOT_COMPLIANT')
