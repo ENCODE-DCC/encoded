@@ -11,8 +11,10 @@ pytest.plugins = [
 
 
 @pytest.mark.slow
-def test_indexing_workbook(testapp, indexer_testapp, external_tx):
+def test_indexing_workbook(testapp, indexer_testapp):
     # First post a single item so that subsequent indexing is incremental
+    res = indexer_testapp.post_json('/index', {'record': True})
+    assert res.json.get('indexed', None) is None
     testapp.post_json('/testing-post-put-patch/', {'required': ''})
     res = indexer_testapp.post_json('/index', {'record': True})
     assert res.json['indexed'] == 1

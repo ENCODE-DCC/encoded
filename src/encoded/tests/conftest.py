@@ -9,6 +9,9 @@ from pytest import fixture
 pytest_plugins = [
     'encoded.tests.datafixtures',
     'snovault.tests.serverfixtures',
+    'snovault.tests.testappfixtures',
+    'snovault.tests.toolfixtures',
+    'snovault.tests.pyramidfixtures',
 ]
 
 
@@ -22,19 +25,19 @@ _app_settings = {
     'item_datastore': 'database',
     'multiauth.policies': 'persona session remoteuser accesskey',
     'multiauth.groupfinder': 'encoded.authorization.groupfinder',
-    'multiauth.policy.persona.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
+    'multiauth.policy.persona.use': 'snovault.authentication.NamespacedAuthenticationPolicy',
     'multiauth.policy.persona.base': 'encoded.persona.PersonaAuthenticationPolicy',
     'multiauth.policy.persona.namespace': 'persona',
-    'multiauth.policy.session.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
+    'multiauth.policy.session.use': 'snovault.authentication.NamespacedAuthenticationPolicy',
     'multiauth.policy.session.base': 'pyramid.authentication.SessionAuthenticationPolicy',
     'multiauth.policy.session.namespace': 'mailto',
-    'multiauth.policy.remoteuser.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
+    'multiauth.policy.remoteuser.use': 'snovault.authentication.NamespacedAuthenticationPolicy',
     'multiauth.policy.remoteuser.namespace': 'remoteuser',
     'multiauth.policy.remoteuser.base': 'pyramid.authentication.RemoteUserAuthenticationPolicy',
-    'multiauth.policy.accesskey.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
+    'multiauth.policy.accesskey.use': 'snovault.authentication.NamespacedAuthenticationPolicy',
     'multiauth.policy.accesskey.namespace': 'accesskey',
-    'multiauth.policy.accesskey.base': 'encoded.authentication.BasicAuthAuthenticationPolicy',
-    'multiauth.policy.accesskey.check': 'encoded.authentication.basic_auth_check',
+    'multiauth.policy.accesskey.base': 'snovault.authentication.BasicAuthAuthenticationPolicy',
+    'multiauth.policy.accesskey.check': 'snovault.authentication.basic_auth_check',
     'persona.audiences': 'http://localhost:6543',
     'persona.verifier': 'browserid.LocalVerifier',
     'persona.siteName': 'ENCODE DCC Submission',
@@ -56,104 +59,12 @@ def app_settings(request, wsgi_server_host_port, connection, DBSession):
     return settings
 
 
-def pytest_configure():
-    import logging
-    logging.basicConfig()
-    logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
-    logging.getLogger('selenium').setLevel(logging.DEBUG)
-
-    class Shorten(logging.Filter):
-        max_len = 500
-
-        def filter(self, record):
-            if record.msg == '%r':
-                record.msg = record.msg % record.args
-                record.args = ()
-            if len(record.msg) > self.max_len:
-                record.msg = record.msg[:self.max_len] + '...'
-            return True
-
-    logging.getLogger('sqlalchemy.engine.base.Engine').addFilter(Shorten())
-
-
-@pytest.yield_fixture
-def config():
-    from pyramid.testing import setUp, tearDown
-    yield setUp()
-    tearDown()
-
-
-@pytest.yield_fixture
-def threadlocals(request, dummy_request, registry):
-    from pyramid.threadlocal import manager
-    manager.push({'request': dummy_request, 'registry': registry})
-    yield dummy_request
-    manager.pop()
-
-
-from pyramid.testing import DummyRequest
-
-
-class MyDummyRequest(DummyRequest):
-    def remove_conditional_headers(self):
-        pass
-
-    def _get_registry(self):
-        from pyramid.threadlocal import get_current_registry
-        if self._registry is None:
-            return get_current_registry()
-        return self._registry
-
-    def _set_registry(self, registry):
-        self.__dict__['registry'] = registry
-
-    def _del_registry(self):
-        self._registry = None
-
-    registry = property(_get_registry, _set_registry, _del_registry)
-
-
-@fixture
-def dummy_request(root, registry, app):
-    from pyramid.request import apply_request_extensions
-    request = app.request_factory.blank('/dummy')
-    request.root = root
-    request.registry = registry
-    request._stats = {}
-    request.invoke_subrequest = app.invoke_subrequest
-    apply_request_extensions(request)
-    return request
-
-
 @fixture(scope='session')
 def app(app_settings):
     '''WSGI application level functional testing.
     '''
     from encoded import main
     return main({}, **app_settings)
-
-
-@fixture
-def registry(app):
-    return app.registry
-
-
-@fixture
-def elasticsearch(registry):
-    from snovault.elasticsearch import ELASTIC_SEARCH
-    return registry[ELASTIC_SEARCH]
-
-
-@fixture
-def upgrader(registry):
-    from snovault import UPGRADER
-    return registry[UPGRADER]
-
-
-@fixture
-def root(registry):
-    from snovault import ROOT
-    return registry[ROOT]
 
 
 @pytest.mark.fixture_cost(500)
@@ -195,41 +106,6 @@ def htmltestapp(app):
 
 
 @fixture
-def testapp(app):
-    '''TestApp with JSON accept header.
-    '''
-    from webtest import TestApp
-    environ = {
-        'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': 'TEST',
-    }
-    return TestApp(app, environ)
-
-
-@fixture
-def anontestapp(app):
-    '''TestApp with JSON accept header.
-    '''
-    from webtest import TestApp
-    environ = {
-        'HTTP_ACCEPT': 'application/json',
-    }
-    return TestApp(app, environ)
-
-
-@fixture
-def authenticated_testapp(app):
-    '''TestApp with JSON accept header for non-admin user.
-    '''
-    from webtest import TestApp
-    environ = {
-        'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': 'TEST_AUTHENTICATED',
-    }
-    return TestApp(app, environ)
-
-
-@fixture
 def submitter_testapp(app):
     '''TestApp with JSON accept header for non-admin user.
     '''
@@ -240,22 +116,3 @@ def submitter_testapp(app):
     }
     return TestApp(app, environ)
 
-
-@pytest.fixture
-def indexer_testapp(app):
-    from webtest import TestApp
-    environ = {
-        'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': 'INDEXER',
-    }
-    return TestApp(app, environ)
-
-
-@pytest.fixture
-def embed_testapp(app):
-    from webtest import TestApp
-    environ = {
-        'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': 'EMBED',
-    }
-    return TestApp(app, environ)
