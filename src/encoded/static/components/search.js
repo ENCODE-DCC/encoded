@@ -403,20 +403,20 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
-                            {result['assay_term_name']}
-                            {result.assay_title && (result.assay_term_name !== result.assay_title) ?
-                                <span>{' (' + result.assay_title + ')'}</span>
-                            : null}
+                            {result.assay_title ?
+                                <span>{result.assay_title}</span>
+                            :
+                                <span>{result.assay_term_name}</span>
+                            }
                             {result['biosample_term_name'] ? <span>{' of ' + result['biosample_term_name']}</span> : null}
-                            {name || lifeStage || age || ageUnit ?
-                                <span>
-                                    {' ['}
-                                    {name ? <em>{name}</em> : ''}
-                                    {separator + lifeStage + age + ageUnit + ']'}
-                                </span>
-                            : ''}
                         </a>
                     </div>
+                    {name || lifeStage || age || ageUnit ?
+                        <div className="highlight-row">
+                            {name ? <em>{name}</em> : null}
+                            {separator + lifeStage + age + ageUnit}
+                        </div>
+                    : null}
                     <div className="data-row">
                         {result.target && result.target.label ?
                             <div><strong>Target: </strong>{result.target.label}</div>
