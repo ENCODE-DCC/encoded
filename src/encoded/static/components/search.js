@@ -842,7 +842,10 @@ var FacetList = search.FacetList = React.createClass({
                     </div>
                 : null}
                 {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
-                {facets.map(function (facet) {
+                {facets.map(function (facet, i) {
+                    if (i > 3) {
+                        return null;
+                    }
                     if (hideTypes && facet.field == 'type') {
                         return <span key={facet.field} />;
                     } else {
