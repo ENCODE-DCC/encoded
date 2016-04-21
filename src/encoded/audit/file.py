@@ -181,7 +181,6 @@ def audit_file_controlled_by(value, system):
         yield AuditFailure('missing controlled_by', detail, level='NOT_COMPLIANT')
         return
 
-
     bio_rep_numbers = set()
     pe_files = []
     if (value['file_format'] in ['fastq']) and len(value['controlled_by']) > 0:
@@ -472,12 +471,12 @@ def audit_file_paired_ended_run_type(value, system):
         if 'paired_end' not in value:
             detail = 'File {} has a paired-ended run_type '.format(value['@id']) + \
                      'but is missing its paired_end value'
-            raise AuditFailure('missing paired_end', detail, level='DCC_ACTION')
+            raise AuditFailure('missing paired_end', detail, level='ERROR')
 
         if (value['paired_end'] == 1) and 'paired_with' not in value:
             detail = 'File {} has a paired-ended '.format(value['@id']) + \
                      'run_type but is missing a paired_end=2 mate'
-            raise AuditFailure('missing mate pair', detail, level='DCC_ACTION')
+            raise AuditFailure('missing mate pair', detail, level='ERROR')
 
 
 def get_bam_read_depth(bam_file, h3k9_flag):
