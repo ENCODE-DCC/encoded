@@ -1515,13 +1515,14 @@ def audit_experiment_replicate_with_no_files(value, system):
         audit_level = 'WARNING'
 
     for key in rep_dictionary.keys():
+
         if len(rep_dictionary[key]) == 0:
             detail = 'Replicate ' + \
                      '{} does not have files associated with it.'.format(key)
             yield AuditFailure('missing raw data in replicate', detail, level='ERROR')
         else:
             if seq_assay_flag is True:
-                if 'raw_data' not in rep_dictionary[key]:
+                if 'raw data' not in rep_dictionary[key]:
                     detail = 'Replicate ' + \
                              '{} does not have raw data files associated with it.'.format(key)
                     yield AuditFailure('missing raw data in replicate',

@@ -958,6 +958,7 @@ def test_audit_experiment_replicate_with_file(testapp, file_fastq,
                                               base_experiment,
                                               base_replicate,
                                               base_library):
+    testapp.patch_json(file_fastq['@id'],{'replicate': base_replicate['@id']})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
     testapp.patch_json(base_experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
