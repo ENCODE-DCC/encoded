@@ -498,6 +498,24 @@ def file_tsv_1_2(base_experiment, award, encode_lab, testapp, analysis_step_run_
     return testapp.post_json('/file', item, status=201).json['@graph'][0]
 
 
+@pytest.fixture
+def file_tsv_1_1(base_experiment, award, encode_lab, testapp, analysis_step_run_bam):
+    item = {
+        'dataset': base_experiment['uuid'],
+        'file_format': 'tsv',
+        'file_size': 36524,
+        'assembly': 'mm10',
+        'genome_annotation': 'M4',
+        'md5sum': '100d8c998f040b2204e9800998ecf8428b',
+        'output_type': 'gene quantifications',
+        'award': award['uuid'],
+        'lab': encode_lab['uuid'],
+        'status': 'released',
+        'step_run': analysis_step_run_bam['uuid']
+    }
+    return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+
 def test_ChIP_possible_control(testapp, base_experiment, ctrl_experiment, IgG_ctrl_rep):
     testapp.patch_json(base_experiment['@id'], {'possible_controls': [ctrl_experiment['@id']],
                                                 'assay_term_name': 'ChIP-seq',
@@ -1430,6 +1448,7 @@ def test_audit_experiment_long_rna_standards(testapp,
                                              file_fastq_4,
                                              file_bam_1_1,
                                              file_bam_2_1,
+                                             file_tsv_1_1,
                                              file_tsv_1_2,
                                              mad_quality_metric_1_2,
                                              bam_quality_metric_1_1,
@@ -1451,7 +1470,9 @@ def test_audit_experiment_long_rna_standards(testapp,
 
     testapp.patch_json(bam_quality_metric_1_1['@id'], {'Uniquely mapped reads number': 29000000})
     testapp.patch_json(bam_quality_metric_2_1['@id'], {'Uniquely mapped reads number': 38000000})
-
+    testapp.patch_json(mad_quality_metric_1_2['@id'], {'quality_metric_of': [
+                                                       file_tsv_1_1['@id'],
+                                                       file_tsv_1_2['@id']]})
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
