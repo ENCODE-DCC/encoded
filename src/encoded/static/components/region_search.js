@@ -120,11 +120,8 @@ var AdvSearch = React.createClass({
                     <div className="row">
                         <div className="form-group col-md-8">
                             <input type="hidden" name="genome" value="hg19" />
-                            {Object.keys(this.state.terms).map(function(key) {
-                                return <input type="hidden" name={key} value={this.state.terms[key]} />;
-                            }, this)}
+                            <input type="hidden" name="annotation" value={this.state.terms['annotation']} />
                             <input ref="annotation" defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange}
-                            
                                 placeholder="Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID" />
                             {(this.state.showAutoSuggest && this.state.searchTerm) ?
                                 <FetchedData loadingComplete={true}>
