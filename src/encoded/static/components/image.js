@@ -197,7 +197,7 @@ var ProjectBadge = module.exports.ProjectBadge = React.createClass({
             imageClass: 'badge-ggr',
             alt: 'Genomics of Gene Regulation Project'
         },
-        'ENCODE2-mouse': {
+        'ENCODE2-Mouse': {
             imageClass: 'badge-mouseencode',
             alt: 'ENCODE Mouse Project'
         }
@@ -205,9 +205,9 @@ var ProjectBadge = module.exports.ProjectBadge = React.createClass({
 
     render: function() {
         var award = this.props.award;
-        var project = award.project;
+        var project = award.rfa;
         var projectMeta = this.projectMap[project];
-        var imageClass = projectMeta.imageClass + (this.props.addClasses ? (' ' + this.props.addClasses) : '');
+        var imageClass = projectMeta ? projectMeta.imageClass + (this.props.addClasses ? (' ' + this.props.addClasses) : '') : '';
 
         if (projectMeta) {
             return <div className={imageClass}><span className="sr-only">{projectMeta.alt}</span></div>;

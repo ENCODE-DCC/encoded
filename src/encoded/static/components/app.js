@@ -3,7 +3,7 @@ var React = require('react');
 var jsonScriptEscape = require('../libs/jsonScriptEscape');
 var globals = require('./globals');
 var mixins = require('./mixins');
-var NavBar = require('./navbar');
+var Navigation = require('./navigation');
 var Footer = require('./footer');
 var fs = require('fs');
 var url = require('url');
@@ -11,6 +11,10 @@ var url = require('url');
 var portal = {
     portal_title: 'ENCODE',
     global_sections: [
+        {id: 'matrix', title: 'Matrix', children: [
+            {id: 'assays', title: 'Assays', url: '/matrix/?type=Experiment'},
+            {id: 'annotations', title: 'Annotations', url: '/matrix/?type=Annotation'}
+        ]},
         {id: 'data', title: 'Data', children: [
             {id: 'assays', title: 'Assays', url: '/search/?type=Experiment'},
             {id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample'},
@@ -67,7 +71,7 @@ var App = React.createClass({
     triggers: {
         login: 'triggerLogin',
         profile: 'triggerProfile',
-        logout: 'triggerLogout',
+        logout: 'triggerLogout'
     },
 
     getInitialState: function() {
@@ -257,7 +261,7 @@ var App = React.createClass({
                         <div className="loading-spinner"></div>
 
                             <div id="layout" onClick={this.handleLayoutClick} onKeyPress={this.handleKey}>
-                                <NavBar />
+                                <Navigation />
                                 <div id="content" className="container" key={key}>
                                     {content}
                                 </div>

@@ -5,7 +5,7 @@ var url = require('url');
 var _ = require('underscore');
 var panel = require('../libs/bootstrap/panel');
 var globals = require('./globals');
-var navbar = require('./navbar');
+var navigation = require('./navigation');
 var dataset = require('./dataset');
 var dbxref = require('./dbxref');
 var image = require('./image');
@@ -14,7 +14,7 @@ var audit = require('./audit');
 var statuslabel = require('./statuslabel');
 var doc = require('./doc');
 
-var Breadcrumbs = navbar.Breadcrumbs;
+var Breadcrumbs = navigation.Breadcrumbs;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;

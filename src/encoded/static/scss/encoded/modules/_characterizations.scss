@@ -413,6 +413,27 @@ $qualitymetric-figure-height: 96px;
     .#{$item}.status-pass        { background-color: $brand-success; }
     .#{$item}.status-pass[href]   { background-color: darken($brand-success, 10%); }
 
+    // Audit Statuses
+    // "no audit" (green)
+    .#{$item}.status-audit-default        { background-color: $brand-success; }
+    .#{$item}.status-audit-default[href]   { background-color: darken($brand-success, 10%); }
+
+    // DCC_ACTION, other (gray)
+    .#{$item}.status-audit-dcc_action        { background-color: #999; }
+    .#{$item}.status-audit-dcc_action[href]   { background-color: darken(#999, 10%); }
+
+    // NOT_COMPLIANT (blue)
+    .#{$item}.status-audit-not_compliant        { background-color: $brand-info; }
+    .#{$item}.status-audit-not_compliant[href]   { background-color: darken($brand-info, 10%); }
+
+    // WARNING (orange)
+    .#{$item}.status-audit-warning        { background-color: $brand-warning; }
+    .#{$item}.status-audit-warning[href]   { background-color: darken($brand-warning, 10%); }
+
+    // ERROR (red)
+    .#{$item}.status-audit-error        { background-color: $brand-danger; }
+    .#{$item}.status-audit-error[href]   { background-color: darken($brand-danger, 10%); }
+
     /* (gray) is the default if no class given */
 }
 
@@ -689,7 +710,7 @@ $dl-bar-height: 30px;
 
 // Icon within .detail-switch to show the current state of the switch
 .detail-trigger {
-    @extend .icon-caret-left;
+    @extend .icon-caret-down;
     display: block;
     height: $dl-bar-height;
     line-height: $dl-bar-height;
@@ -698,8 +719,8 @@ $dl-bar-height: 30px;
     text-align: center;
     transition: 0.1s linear;
 
-    &.open {
-        transform: rotate(-90deg);
+    &.collapsed {
+        transform: rotate(90deg);
     }
 }
 

@@ -2,11 +2,10 @@
 var React = require('react');
 var panel = require('../libs/bootstrap/panel');
 var button = require('../libs/bootstrap/button');
-var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var _ = require('underscore');
 var moment = require('moment');
 var graph = require('./graph');
-var navbar = require('./navbar');
+var navigation = require('./navigation');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
@@ -21,7 +20,7 @@ var sortTable = require('./sorttable');
 var objectutils = require('./objectutils');
 var doc = require('./doc');
 
-var Breadcrumbs = navbar.Breadcrumbs;
+var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var {DatasetFiles, FilePanelHeader, ExperimentTable} = dataset;
 var FetchedItems = fetched.FetchedItems;
@@ -38,8 +37,6 @@ var {SortTablePanel, SortTable} = sortTable;
 var ProjectBadge = image.ProjectBadge;
 var {DocumentsPanel, AttachmentPanel} = doc;
 var {Panel, PanelBody, PanelHeading} = panel;
-var DropdownButton = button.DropdownButton;
-var DropdownMenu = dropdownMenu.DropdownMenu;
 
 
 var anisogenicValues = [
@@ -196,7 +193,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                     }
                     return null;
                 }
-            }
+            };
         }
 
         // Build the text of the Treatment, synchronization, and mutatedGene string arrays; collect biosample docs
@@ -321,9 +318,6 @@ var Experiment = module.exports.Experiment = React.createClass({
     
         // Make list of statuses
         var statuses = [{status: context.status, title: "Status"}];
-        if (encodevers === "3" && context.status === "released") {
-            statuses.push({status: "pending", title: "Validation"});
-        }
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
@@ -1677,8 +1671,6 @@ var FileDetailView = function(node) {
                     <div data-test="bioreplicate">
                         <dt>Biological replicate(s)</dt>
                         <dd>{'[' + selectedFile.replicate.biological_replicate_number + ']'}</dd>
-                        <dt>Technical Replicate</dt>
-                        <dd>{selectedFile.replicate.technical_replicate_number}</dd>
                     </div>
                 : selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
                     <div data-test="bioreplicate">
@@ -1781,7 +1773,7 @@ var qcAttachmentProperties = {
 };
 
 // List of quality metric properties to not display
-var qcReservedProperties = ['uuid', 'assay_term_name', 'assay_term_id', 'attachment', 'submitted_by', 'level', 'status', 'date_created', 'step_run', 'schema_version'];
+var qcReservedProperties = ['uuid', 'assay_term_name', 'assay_term_id', 'attachment', 'award', 'lab', 'submitted_by', 'level', 'status', 'date_created', 'step_run', 'schema_version'];
 
 // Display QC metrics of the selected QC sub-node in a file node.
 var QcDetailsView = function(metrics) {
