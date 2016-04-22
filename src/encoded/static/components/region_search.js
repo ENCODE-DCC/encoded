@@ -94,7 +94,6 @@ var AdvSearch = React.createClass({
     componentDidMount: function() {
         // Use timer to limit to one request per second
         this.timer = setInterval(this.tick, 1000);
-        this.coordinates = this.props.context.coordinates
     },
 
     componentWillUnmount: function() {
@@ -105,7 +104,7 @@ var AdvSearch = React.createClass({
         if (this.newSearchTerm !== this.state.searchTerm) {
             this.setState({searchTerm: this.newSearchTerm});
         }
-        if (this.coordinates !== this.props.context.coordinates) {
+        if (this.coordinates !== this.props.context.coordinates && this.props.context.coordinates !== null) {
             this.coordinates = this.props.context.coordinates
             var inputNode = this.refs.annotation.getDOMNode();
             inputNode.value = inputNode.value.concat(' ', this.coordinates)
