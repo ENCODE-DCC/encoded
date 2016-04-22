@@ -812,7 +812,7 @@ def check_chip_seq_standards(value, read_depth, target_name, is_control_file, co
                          'investigated as broad histone mark requires ' + \
                          '{} usable fragments, according to '.format(marks['broad']) + \
                          'June 2015 standards.'
-                yield AuditFailure('control low read depth', detail, level='NOT_COMPLIANT')
+                yield AuditFailure('control low read depth', detail, level='WARNING')
             elif read_depth < marks['narrow']:
                 detail = 'Control ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                                      read_depth) + \

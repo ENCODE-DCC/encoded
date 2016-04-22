@@ -329,7 +329,7 @@ def check_experiment_chip_seq_encode3_standards(experiment,
                      'contains a file {} '.format(f['@id']) + \
                      'without sequencing run type specified.'
             yield AuditFailure('ChIP-seq - run type not specified', detail, level='WARNING')
-        for failure in check_file_read_length_chip(f, 50):
+        for failure in check_file_read_length_chip(f, 50, 36):
             yield failure
 
     pipeline_title = scanFilesForPipelineTitle_yes_chipseq(alignment_files, ['Histone ChIP-seq'])
@@ -1058,7 +1058,7 @@ def check_file_platform(file_to_check, excluded_platforms):
         yield AuditFailure('not compliant platform', detail, level='WARNING')
 
 
-def check_file_read_length_chip(file_to_check, threshold_length):
+def check_file_read_length_chip(file_to_check, upper_threshold_length, lower_threshold_length):
     if 'read_length' not in file_to_check:
         detail = 'Reads file {} missing read_length'.format(file_to_check['@id'])
         yield AuditFailure('missing read_length', detail, level='NOT_COMPLIANT')
@@ -1073,17 +1073,20 @@ def check_file_read_length_chip(file_to_check, threshold_length):
     threshold_date = datetime.date(2015, 6, 30)
 
     read_length = file_to_check['read_length']
-    if read_length < threshold_length:
-        detail = 'Fastq file {} '.format(file_to_check['@id']) + \
-                 'that was created on {} '.format(created_date) + \
-                 'has read length of {}bp.'.format(read_length) + \
-                 ' It is not compliant with ENCODE3 standards.' + \
-                 ' According to ENCODE3 standards files submitted after 2015-6-30 ' + \
-                 'should be at least {}bp long.'.format(threshold_length)
+    detail = 'Fastq file {} '.format(file_to_check['@id']) + \
+             'that was created on {} '.format(created_date) + \
+             'has read length of {}bp. '.format(read_length) + \
+             'It is not compliant with ENCODE3 standards. ' + \
+             'According to ENCODE3 standards files submitted after 2015-6-30 ' + \
+             'should be at least {}bp long.'.format(upper_threshold_length)
+    if read_length < lower_threshold_length:
+        yield AuditFailure('insufficient read length', detail, level='NOT_COMPLIANT')
+
+    elif read_length >= lower_threshold_length and read_length < upper_threshold_length:
         if file_date_creation < threshold_date:
-            yield AuditFailure('insufficient read length', detail, level='WARNING')
+            yield AuditFailure('low read length', detail, level='WARNING')
         else:
-            yield AuditFailure('insufficient read length', detail,
+            yield AuditFailure('low read length', detail,
                                level='NOT_COMPLIANT')
     return
 
