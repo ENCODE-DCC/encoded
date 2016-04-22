@@ -8,16 +8,16 @@ from passlib.utils import handlers as uh
 
 
 def includeme(config):
-    register_crypt_handler(EDWHash)
+    register_crypt_handler(SNOWHash)
 
 
-class EDWHash(uh.StaticHandler):
-    """ EDW's password hashing scheme
+class SNOWHash(uh.StaticHandler):
+    """ a special snowflake of a  password hashing scheme
 
     Cryptographic strength of the hashing function is less of a concern for
     randomly generated passwords.
     """
-    name = 'edw_hash'
+    name = 'snowflake_hash'
     checksum_chars = uh.PADDED_BASE64_CHARS
     checksum_size = 64
 

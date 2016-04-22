@@ -6,7 +6,7 @@ class TestNamespacedAuthenticationPolicy(unittest.TestCase):
     """ This is a modified version of TestRemoteUserAuthenticationPolicy
     """
     def _getTargetClass(self):
-        from encoded.authentication import NamespacedAuthenticationPolicy
+        from snovault.authentication import NamespacedAuthenticationPolicy
         return NamespacedAuthenticationPolicy
 
     def _makeOne(self, namespace='user',
