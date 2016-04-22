@@ -6,7 +6,10 @@ from elasticsearch.exceptions import (
 )
 from pyramid.view import view_config
 from sqlalchemy.exc import StatementError
-from snovault import DBSESSION
+from snovault import (
+    COLLECTIONS,
+    DBSESSION,
+)
 from snovault.storage import (
     TransactionRecord,
 )
@@ -68,8 +71,6 @@ def index(request):
         try:
             status = es.get(index=INDEX, doc_type='meta', id='indexing')
         except NotFoundError:
-            interval_settings = {"index": {"refresh_interval": "30s"}}
-            es.indices.put_settings(index='encoded',body=interval_settings)
             pass
         else:
             last_xmin = status['_source']['xmin']
@@ -82,7 +83,7 @@ def index(request):
     flush = False
     if last_xmin is None:
         result['types'] = types = request.json.get('types', None)
-        invalidated = list(all_uuids(request.root, types))
+        invalidated = list(all_uuids(request.registry, types))
         flush = True
     else:
         txns = session.query(TransactionRecord).filter(
@@ -129,7 +130,7 @@ def index(request):
             '_source': False,
         })
         if res['hits']['total'] > SEARCH_MAX:
-            invalidated = list(all_uuids(request.root))
+            invalidated = list(all_uuids(request.registry))
             flush = True
         else:
             referencing = {hit['_id'] for hit in res['hits']['hits']}
@@ -154,13 +155,9 @@ def index(request):
 
         result['errors'] = indexer.update_objects(request, invalidated, xmin, snapshot_id)
         result['indexed'] = len(invalidated)
-        
         if record:
             es.index(index=INDEX, doc_type='meta', body=result, id='indexing')
-            if es.indices.get_settings(index=INDEX)['encoded']['settings']['index'].get('refresh_interval','') != '1s':
-                interval_settings = {"index": {"refresh_interval": "1s"}}
-                es.indices.put_settings(index=INDEX, body=interval_settings)
-        
+
         es.indices.refresh(index=INDEX)
 
         if flush:
@@ -175,21 +172,22 @@ def index(request):
     return result
 
 
-def all_uuids(root, types=None):
+def all_uuids(registry, types=None):
     # First index user and access_key so people can log in
+    collections = registry[COLLECTIONS]
     initial = ['user', 'access_key']
     for collection_name in initial:
-        collection = root.by_item_type[collection_name]
+        collection = collections.by_item_type[collection_name]
         if types is not None and collection_name not in types:
             continue
         for uuid in collection:
             yield str(uuid)
-    for collection_name in sorted(root.by_item_type):
+    for collection_name in sorted(collections.by_item_type):
         if collection_name in initial:
             continue
         if types is not None and collection_name not in types:
             continue
-        collection = root.by_item_type[collection_name]
+        collection = collections.by_item_type[collection_name]
         for uuid in collection:
             yield str(uuid)
 

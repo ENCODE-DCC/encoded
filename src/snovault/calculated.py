@@ -3,7 +3,10 @@ import venusian
 from pyramid.decorator import reify
 from pyramid.traversal import find_root
 from types import MethodType
-from .interfaces import CALCULATED_PROPERTIES
+from .interfaces import (
+    CALCULATED_PROPERTIES,
+    CONNECTION,
+)
 
 
 def includeme(config):
@@ -35,6 +38,7 @@ class ItemNamespace(object):
     def __getattr__(self, name):
         context = self.context
         request = self.request
+        conn = self.registry[CONNECTION]
         if name in self._defined:
             value = self._defined[name](self)
             setattr(self, name, value)
@@ -44,17 +48,17 @@ class ItemNamespace(object):
             if name in context.type_info.schema_links:
                 if isinstance(value, list):
                     value = [
-                        request.resource_path(self.root.get_by_uuid(v))
+                        request.resource_path(conn.get_by_uuid(v))
                         for v in value
                     ]
                 else:
-                    value = request.resource_path(self.root.get_by_uuid(value))
+                    value = request.resource_path(conn.get_by_uuid(value))
             setattr(self, name, value)
             return value
         if name in context.rev:
             value = context.get_rev_links(name)
             value = [
-                request.resource_path(self.root.get_by_uuid(v))
+                request.resource_path(conn.get_by_uuid(v))
                 for v in value
             ]
             setattr(self, name, value)
