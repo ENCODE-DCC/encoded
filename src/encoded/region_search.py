@@ -245,7 +245,7 @@ def region_search(context, request):
         if ucsc_name == assembly:
             reference = regular_name
     annotation = request.params.get('annotation', '*')
-    if annotation != '*' and region == '*':
+    if annotation != '*':
         chromosome, start, end = get_annotation_coordinates(es, annotation, reference)
     elif region != '*':
         region = region.lower()
