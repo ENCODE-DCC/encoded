@@ -1589,10 +1589,6 @@ def audit_experiment_replicated(value, system):
                      'replicate and is released. Check for proper annotation ' + \
                      'of this state in the metadata'
             raise AuditFailure('unreplicated experiment', detail, level='NOT_COMPLIANT')
-        else:
-            detail = 'Experiment {} has only one biological '.format(value['@id']) + \
-                     'replicate, more than one is typically expected before release'
-            raise AuditFailure('unreplicated experiment', detail, level='WARNING')
 
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'])
