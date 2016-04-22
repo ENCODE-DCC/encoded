@@ -32,6 +32,7 @@ var Footer = React.createClass({
                         <div className="row">
                             <div className="col-sm-5 col-sm-push-7">
                                 <ul className="footer-links">
+                                    <li><a href="/acknowledgements/">Acknowledgements</a></li>
                                     <li><a href="mailto:encode-help@lists.stanford.edu">Contact</a></li>
                                     <li><a href="http://www.stanford.edu/site/terms.html">Terms of Use</a></li>
                                     <li id="user-actions-footer">{userActionRender}</li>
