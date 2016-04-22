@@ -221,7 +221,7 @@ def main(global_config, **local_config):
 
     # Render an HTML page to browsers and a JSON document for API clients
     config.include('.renderers')
-    config.include('.authentication')
+    config.include('snovault.authentication')
     config.include('.server_defaults')
     config.include('.types')
     config.include('.root')
@@ -252,7 +252,7 @@ def main(global_config, **local_config):
         record['ip_prefix'] for record in aws_ip_ranges['prefixes'] if record['service'] == 'AMAZON')
 
     if asbool(settings.get('testing', False)):
-        config.include('.tests.testing_views')
+        config.include('snovault.tests.testing_views')
 
     # Load upgrades last so that all views (including testing views) are
     # registered.
