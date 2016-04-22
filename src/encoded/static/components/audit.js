@@ -176,6 +176,11 @@ var AuditGroup = module.exports.AuditGroup = React.createClass({
         var categoryName = group[0].category.uppercaseFirstChar();
         var loggedIn = this.context.session && this.context.session['auth.userid'];
 
+        // Collapse duplicate errors within a group by grouping by detail. This makes an object
+        // where audit.detail form the keys used in the given group. Under each key is an array of
+        // audit objects. More than one 
+        var detailGroups = _(group).groupBy('detail');
+
         return (
             <div className={alertClass}>
                 {loggedIn ?
@@ -204,9 +209,9 @@ var AuditGroup = module.exports.AuditGroup = React.createClass({
                 {loggedIn ?
                     <div className="audit-details-section">
                         <div className="audit-details-decoration"></div>
-                        {group.map((audit, i) =>
+                        {Object.keys(detailGroups).map((auditDetail, i) =>
                             <div className={alertItemClass} key={i} role="alert">
-                                <DetailEmbeddedLink detail={audit.detail} except={context['@id']} forcedEditLink={this.props.forcedEditLink} />
+                                <DetailEmbeddedLink detail={auditDetail} except={context['@id']} forcedEditLink={this.props.forcedEditLink} />
                             </div>
                         )}
                     </div>
