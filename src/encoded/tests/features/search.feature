@@ -56,7 +56,7 @@ Feature: Search
         And I wait for the content to load
         Then I should see at least 3 elements with the css selector "ul.nav.result-table > li"
 
-        When I click the link to "?type=Experiment&assay_title=ChIP-seq&assay_title=DNAme+array"
+        When I click the link to "?type=Experiment&assay_title=ChIP-seq&assay_title=RNA-seq"
         And I wait for the content to load
         Then I should see at least 5 elements with the css selector "ul.nav.result-table > li"
 
