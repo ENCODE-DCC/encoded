@@ -2,7 +2,6 @@ Feature: User Profile
 
     Scenario Outline: View profile
         When I visit "/"
-        And I click the link with text that contains "Toggle"
         And I click the link with text that contains "J. Michael Cherry"
         And I click the link with text that contains "Profile"
         Then I should see "J. Michael Cherry, Stanford"
