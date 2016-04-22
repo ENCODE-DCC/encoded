@@ -58,6 +58,7 @@ var AdvSearch = React.createClass({
             disclosed: false,
             showAutoSuggest: false,
             searchTerm: '',
+            coordinates: '',
             terms: {}
         };
     },
@@ -82,7 +83,7 @@ var AdvSearch = React.createClass({
 
         var newTerms = {};
         var inputNode = this.refs.annotation.getDOMNode();
-        inputNode.value = this.newSearchTerm = term;
+        inputNode.value = term;
         newTerms[name] = id;
         this.setState({terms: newTerms});
         this.setState({showAutoSuggest: false});
@@ -93,6 +94,7 @@ var AdvSearch = React.createClass({
     componentDidMount: function() {
         // Use timer to limit to one request per second
         this.timer = setInterval(this.tick, 1000);
+        this.coordinates = this.props.context.coordinates
     },
 
     componentWillUnmount: function() {
@@ -102,6 +104,10 @@ var AdvSearch = React.createClass({
     tick: function() {
         if (this.newSearchTerm !== this.state.searchTerm) {
             this.setState({searchTerm: this.newSearchTerm});
+        }
+        if (this.coordinates !== this.props.context.coordinates) {
+            var inputNode = this.refs.annotation.getDOMNode();
+            inputNode.value = inputNode.value.concat(' ', this.props.context.coordinates)
         }
     },
 
