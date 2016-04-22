@@ -23,6 +23,11 @@ def has_condition1(value, system):
     return value.get('condition1')
 
 
+@pytest.fixture(autouse=True)
+def autouse_external_tx(external_tx):
+    pass
+
+
 @pytest.fixture(params=[
     raising_checker,
     returning_checker,
