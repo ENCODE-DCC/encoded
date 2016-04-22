@@ -1882,7 +1882,7 @@ def audit_experiment_control(value, system):
     Of course, controls do not require controls.
     '''
 
-    if value['status'] in ['deleted', 'proposed']:
+    if value['status'] in ['deleted', 'proposed', 'replaced']:
         return
 
     # Currently controls are only be required for ChIP-seq
