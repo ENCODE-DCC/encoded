@@ -43,6 +43,7 @@ META_MAPPING = {
     ],
 }
 
+PATH_FIELDS = ['submitted_file_name']
 NON_SUBSTRING_FIELDS = ['uuid', '@id', 'submitted_by', 'md5sum', 'references', 'submitted_file_name']
 
 
@@ -129,7 +130,10 @@ def schema_mapping(name, schema):
             # these fields are unintentially partially matching some small search
             # keywords because fields are analyzed by nGram analyzer
         if name in NON_SUBSTRING_FIELDS:
-            sub_mapping['index'] = 'not_analyzed'
+            if name in PATH_FIELDS:
+                sub_mapping['index_analyzer'] = 'encoded_path_analyzer'
+            else:
+                sub_mapping['index'] = 'not_analyzed'
             sub_mapping['include_in_all'] = False
         return sub_mapping
 
@@ -205,6 +209,17 @@ def index_settings():
                             'lowercase',
                             'asciifolding'
                         ]
+                    },
+                    'encoded_path_analyzer': {
+                        'type': 'custom',
+                        'tokenizer': 'encoded_path_tokenizer',
+                        'filter': ['lowercase']
+                    }
+                },
+                'tokenizer': {
+                    'encoded_path_tokenizer': {
+                        'type': 'path_hierarchy',
+                        'reverse': True
                     }
                 }
             }
@@ -427,7 +442,10 @@ def type_mapping(types, item_type, embed=True):
         new_mapping[last]['boost'] = boost
         if last in NON_SUBSTRING_FIELDS:
             new_mapping[last]['include_in_all'] = False
-            new_mapping[last]['index'] = 'not_analyzed'
+            if last in PATH_FIELDS:
+                new_mapping[last]['index_analyzer'] = 'encoded_path_analyzer'
+            else:
+                new_mapping[last]['index'] = 'not_analyzed'
         else:
             new_mapping[last]['index_analyzer'] = 'encoded_index_analyzer'
             new_mapping[last]['search_analyzer'] = 'encoded_search_analyzer'
