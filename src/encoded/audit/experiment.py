@@ -1404,7 +1404,7 @@ def audit_experiment_consistent_sequencing_runs(value, system):
     replicate_read_lengths = {}
 
     for file_object in value['original_files']:
-        if file_object['status'] in ['deleted', 'replaced', 'revoked']:
+        if file_object['status'] in ['deleted', 'replaced', 'revoked', 'archived']:
             continue
         if file_object['file_format'] == 'fastq':
             if 'replicate' in file_object:
