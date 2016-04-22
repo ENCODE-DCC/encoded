@@ -1358,7 +1358,7 @@ def audit_experiment_gtex_biosample(value, system):
         detail = 'GTEx experiment {} '.format(value['@id']) + \
                  'contains {} '.format(len(biosample_set)) + \
                  'biosamples, while according to HRWG decision it should have only 1'
-        yield AuditFailure('invalid modelling of GTEx experiment ', detail, level='NOT_COMPLIANT')
+        yield AuditFailure('invalid modelling of GTEx experiment ', detail, level='DCC_ACTION')
 
     return
 
