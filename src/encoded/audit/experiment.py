@@ -312,7 +312,8 @@ def get_metrics(files_list, metric_type, desired_assembly=None, desired_annotati
             if 'quality_metrics' in f and len(f['quality_metrics']) > 0:
                 for qm in f['quality_metrics']:
                     if metric_type in qm['@type']:
-                        metrics_dict[qm['@id']] = qm
+                        if qm['uuid'] not in metrics_dict:
+                            metrics_dict[qm['uuid']] = qm
     metrics = []
     for k in metrics_dict:
         metrics.append(metrics_dict[k])
