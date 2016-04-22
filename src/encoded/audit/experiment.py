@@ -1126,7 +1126,7 @@ def scan_files_for_file_format_output_type(files_to_scan, f_format, f_output_typ
     for f in files_to_scan:
         if 'file_format' in f and f['file_format'] == f_format and \
            'output_type' in f and f['output_type'] == f_output_type and \
-           f['status'] not in ['replaced', 'revoked', 'deleted']:
+           f['status'] not in ['replaced', 'revoked', 'deleted', 'archived']:
             files_to_return.append(f)
     return files_to_return
 
