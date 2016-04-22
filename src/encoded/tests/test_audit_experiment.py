@@ -880,7 +880,7 @@ def test_audit_experiment_with_RNA_library_no_size_range(testapp, base_experimen
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing size_range' for error in errors_list)
+    assert any(error['category'] == 'missing RNA library fragment size' for error in errors_list)
 
 
 def test_audit_experiment_with_RNA_library_with_size_range(testapp, base_experiment, base_replicate,
@@ -893,7 +893,7 @@ def test_audit_experiment_with_RNA_library_with_size_range(testapp, base_experim
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'missing size_range' for error in errors_list)
+    assert all(error['category'] != 'missing RNA library fragment size' for error in errors_list)
 
 
 def test_audit_experiment_with_RNA_library_array_size_range(testapp, base_experiment,
@@ -909,7 +909,7 @@ def test_audit_experiment_with_RNA_library_array_size_range(testapp, base_experi
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'missing size_range' for error in errors_list)
+    assert all(error['category'] != 'missing RNA library fragment size' for error in errors_list)
 
 
 def test_audit_experiment_needs_pipeline(testapp,  replicate, library, experiment, fastq_file):
