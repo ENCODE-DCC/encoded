@@ -16,9 +16,9 @@ var Footer = React.createClass({
         var userActionRender;
 
         if (!(session && session['auth.userid'])) {
-            userActionRender = <a href="#" data-trigger="login" disabled={disabled}>Submitter sign-in</a>;
+            userActionRender = <a href="#" className="btn btn-info btn-sm" data-trigger="login" disabled={disabled}>Submitter sign-in</a>;
         } else {
-            userActionRender = <a href="#" data-trigger="logout">Submitter sign out</a>;
+            userActionRender = <a href="#" className="btn btn-info btn-sm" data-trigger="logout">Submitter sign out</a>;
         }
         return (
             <footer id="page-footer">
@@ -30,17 +30,17 @@ var Footer = React.createClass({
                 <div className="page-footer">
                     <div className="container">
                         <div className="row">
-                            <div className="col-sm-5 col-sm-push-7">
+                            <div className="col-sm-6 col-sm-push-6">
                                 <ul className="footer-links">
                                     <li><a href="/acknowledgements/">Acknowledgements</a></li>
                                     <li><a href="mailto:encode-help@lists.stanford.edu">Contact</a></li>
                                     <li><a href="http://www.stanford.edu/site/terms.html">Terms of Use</a></li>
-                                    <li id="user-actions-footer">{userActionRender}</li>
                                 </ul>
+                                <div id="user-actions-footer">{userActionRender}</div>
                                 <p className="copy-notice">&copy;{new Date().getFullYear()} Stanford University.</p>
                             </div>
 
-                            <div className="col-sm-7 col-sm-pull-5">
+                            <div className="col-sm-6 col-sm-pull-6">
                                 <ul className="footer-logos">
                                     <li><a href="/"><img src="/static/img/encode-logo-small-2x.png" alt="ENCODE" id="encode-logo" height="45px" width="78px" /></a></li>
                                     <li><a href="http://www.ucsc.edu"><img src="/static/img/ucsc-logo-white-alt-2x.png" alt="UC Santa Cruz" id="ucsc-logo" width="107px" height="42px" /></a>
