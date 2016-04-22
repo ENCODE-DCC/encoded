@@ -574,8 +574,8 @@ def check_experiment_ERCC_spikeins(experiment, pipeline):
     The assumption in this functon is that the regular audit will catch anything without spikeins.
     This audit is checking specifically for presence of ERCC spike-in in long-RNA pipeline experiments
     '''
-    for rep in experiment['replicates']:
 
+    for rep in experiment['replicates']:
         lib = rep.get('library')
         if lib is None:
             continue
@@ -586,6 +586,7 @@ def check_experiment_ERCC_spikeins(experiment, pipeline):
 
         ercc_flag = False
         spikes = lib.get('spikeins_used')
+
         if (spikes is not None) and (len(spikes) > 0):
             for s in spikes:
                 if 'files' in s:
@@ -598,7 +599,7 @@ def check_experiment_ERCC_spikeins(experiment, pipeline):
                      'in experiment {} '.format(experiment['@id']) + \
                      'that was processed by {} pipeline '.format(pipeline) + \
                      'requires ERCC spike-in to be used in it`s preparation.'
-            yield AuditFailure('missing ERCC spike-in',
+            yield AuditFailure('missing spikeins',
                                detail, level='NOT_COMPLIANT')
 
 
@@ -1981,7 +1982,7 @@ def audit_experiment_spikeins(value, system):
         spikes = lib.get('spikeins_used')
         if (spikes is None) or (spikes == []):
             detail = 'Library {} is in an RNA-seq experiment and has size_range >200. It requires a value for spikeins_used'.format(lib['@id'])
-            yield AuditFailure('missing spikeins_used', detail, level='NOT_COMPLIANT')
+            yield AuditFailure('missing spikeins', detail, level='NOT_COMPLIANT')
             # Informattional if ENCODE2 and release error if ENCODE3
 
 

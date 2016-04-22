@@ -661,7 +661,7 @@ def test_audit_experiment_spikeins(testapp, base_experiment, base_replicate, bas
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing spikeins_used' for error in errors_list)
+    assert any(error['category'] == 'missing spikeins' for error in errors_list)
 
 
 def test_audit_experiment_not_tag_antibody(testapp, base_experiment, base_replicate, organism, antibody_lot):
@@ -1398,8 +1398,10 @@ def test_audit_experiment_long_rna_standards_crispr(testapp,
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
     testapp.patch_json(biosample_2['@id'], {'model_organism_sex': 'mixed'})
-    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
-    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id'],
+                                          'size_range': '>200'})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id'],
+                                          'size_range': '>200'})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
     testapp.patch_json(base_experiment['@id'], {'status': 'released',
@@ -1411,7 +1413,8 @@ def test_audit_experiment_long_rna_standards_crispr(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'insufficient read depth' for error in errors_list)
+    assert any(error['category'] == 'insufficient read depth' for error in errors_list) and \
+        any(error['category'] == 'missing spikeins' for error in errors_list)
 
 
 def test_audit_experiment_long_rna_standards(testapp,
