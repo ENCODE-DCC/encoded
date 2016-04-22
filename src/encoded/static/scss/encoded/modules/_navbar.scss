@@ -41,7 +41,7 @@
 .navbar-fixed-top {
     position: static;
 
-    @media (min-width: $screen-lg-min) {
+    @media (min-width: $screen-md-min) {
         position: fixed;
     }
 }
