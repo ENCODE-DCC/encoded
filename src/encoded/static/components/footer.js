@@ -32,11 +32,11 @@ var Footer = React.createClass({
                         <div className="row">
                             <div className="col-sm-6 col-sm-push-6">
                                 <ul className="footer-links">
-                                    <li><a href="/acknowledgements/">Acknowledgements</a></li>
                                     <li><a href="mailto:encode-help@lists.stanford.edu">Contact</a></li>
+                                    <li><a href="http://www.stanford.edu/site/terms.html">Terms of Use</a></li>
                                     <li id="user-actions-footer">{userActionRender}</li>
                                 </ul>
-                                <p className="copy-notice"><a href="http://www.stanford.edu/site/terms.html">&copy;{new Date().getFullYear()} Stanford University.</a></p>
+                                <p className="copy-notice">&copy;{new Date().getFullYear()} Stanford University.</p>
                             </div>
 
                             <div className="col-sm-6 col-sm-pull-6">

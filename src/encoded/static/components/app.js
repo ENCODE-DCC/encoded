@@ -39,6 +39,7 @@ var portal = {
             {id: 'projectoverview', title: 'Project overview', url: '/about/contributors/'},
             {id: 'tutorials', title: 'Tutorials', url: '/tutorials/'},
             {id: 'news', title: 'News', url: '/news'},
+            {id: 'acknowledgements', title: 'Acknowledgements', url: '/acknowledgements/'},
             {id: 'contact', title: 'Contact', url: '/help/contacts/'}
         ]}
     ]
