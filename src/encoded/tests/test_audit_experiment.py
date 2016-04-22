@@ -1178,7 +1178,7 @@ def test_audit_experiment_mismatched_inter_length_sequencing_files(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mixed inter-replicate read lengths'
+    assert any(error['category'] == 'mixed read lengths'
                for error in errors_list)
 
 
