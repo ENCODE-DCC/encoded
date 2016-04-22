@@ -106,8 +106,9 @@ var AdvSearch = React.createClass({
             this.setState({searchTerm: this.newSearchTerm});
         }
         if (this.coordinates !== this.props.context.coordinates) {
+            this.coordinates = this.props.context.coordinates
             var inputNode = this.refs.annotation.getDOMNode();
-            inputNode.value = inputNode.value.concat(' ', this.props.context.coordinates)
+            inputNode.value = inputNode.value.concat(' ', this.coordinates)
         }
     },
 
