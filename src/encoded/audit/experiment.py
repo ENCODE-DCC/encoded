@@ -1434,7 +1434,7 @@ def audit_experiment_consistent_sequencing_runs(value, system):
             detail = 'Biological replicate {} '.format(key) + \
                      'in experiment {} '.format(value['@id']) + \
                      'has mixed endedness {}.'.format(replicate_pairing_statuses[key])
-            yield AuditFailure('mixed intra-replicate endedness',
+            yield AuditFailure('mixed run types',
                                detail, level='WARNING')
 
     keys = list(replicate_read_lengths.keys())
@@ -1479,7 +1479,7 @@ def audit_experiment_consistent_sequencing_runs(value, system):
                              'has endedness {} '.format(i_pairs) + \
                              ' that differ from replicate {},'.format(keys[index_j]) + \
                              ' which has {}.'.format(j_pairs)
-                    yield AuditFailure('mixed inter-replicate endedness',
+                    yield AuditFailure('mixed run types',
                                        detail, level='WARNING')
 
     return
