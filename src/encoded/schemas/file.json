@@ -313,6 +313,7 @@
                         "reporter code counts",
                         
                         "alignments",
+                        "raw alignments",
                         "transcriptome alignments",
 
                         "minus strand signal of all reads",
@@ -634,6 +635,12 @@
         "run_type": {
             "title": "Run type for sequencing files"
         },
+        "read_length": {
+            "title": "Read length"
+        },
+        "read_length_units": {
+            "title": "Read length units"
+        },
         "md5sum": {
             "title": "MD5 Sum"
         },
@@ -645,6 +652,9 @@
         },
         "quality_metrics": {
             "title": "QC Metric"
+        },
+        "lab": {
+            "title": "Lab"
         },
         "step_run": {
             "title": "Analysis step run"
@@ -672,6 +682,7 @@
         "reporter code counts": "raw data",
 
         "alignments": "alignment",
+        "raw alignments": "alignment",
         "transcriptome alignments": "alignment",
         "spike-in alignments": "alignment",
 

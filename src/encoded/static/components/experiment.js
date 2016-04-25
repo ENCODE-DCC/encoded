@@ -1795,8 +1795,6 @@ var FileDetailView = function(node) {
                     <div data-test="bioreplicate">
                         <dt>Biological replicate(s)</dt>
                         <dd>{'[' + selectedFile.replicate.biological_replicate_number + ']'}</dd>
-                        <dt>Technical Replicate</dt>
-                        <dd>{selectedFile.replicate.technical_replicate_number}</dd>
                     </div>
                 : selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
                     <div data-test="bioreplicate">

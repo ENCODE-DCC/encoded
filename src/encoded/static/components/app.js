@@ -11,38 +11,35 @@ var url = require('url');
 var portal = {
     portal_title: 'ENCODE',
     global_sections: [
-        {id: 'matrix', title: 'Matrix', children: [
-            {id: 'assays', title: 'Assays', url: '/matrix/?type=Experiment'},
-            {id: 'annotations', title: 'Annotations', url: '/matrix/?type=Annotation'}
-        ]},
         {id: 'data', title: 'Data', children: [
-            {id: 'assays', title: 'Assays', url: '/search/?type=Experiment'},
-            {id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample'},
-            {id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot'},
-            {id: 'annotations', title: 'Annotations', url: '/data/annotations/'},
-            {id: 'datarelease', title: 'Release policy', url: '/about/data-use-policy/'},
-            {id: 'region-search', title: 'Search by region', url: '/region-search/'}
+            {id: 'assaymatrix', title: 'Matrix', url: '/matrix/?type=Experiment'},
+            {id: 'assaysearch', title: 'Search', url: '/search/?type=Experiment'},
+            {id: 'region-search', title: 'Search by region', url: '/region-search/'},
+            {id: 'publications', title: 'Publications', url: '/publications/'}
         ]},
-        {id: 'methods', title: 'Methods', children: [
-            {id: 'datastandards', title: 'Data standards', url: '/data-standards/'},
+        {id: 'encyclopedia', title: 'Encyclopedia', children: [
+            {id: 'aboutannotations', title: 'About', url: '/data/annotations/'},
+            {id: 'annotationmatrix', title: 'Matrix', url: '/matrix/?type=Annotation'},
+            {id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation'}
+        ]},
+        {id: 'materialsmethods', title: 'Materials & Methods', children: [
+            {id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot'},
+            {id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample'},
+            {id: 'datastandards', title: 'Standards and guidelines', url: '/data-standards/'},
+            {id: 'ontologies', title: 'Ontologies', url: '/help/getting-started/#Ontologies'},
+            {id: 'fileformats', title: 'File formats', url: '/help/file-formats/'},
             {id: 'softwaretools', title: 'Software tools', url: '/software/'},
             {id: 'pipelines', title: 'Pipelines', url: '/pipelines/'},
-            {id: 'experimentguides', title: 'Experiment guidelines', url: '/about/experiment-guidelines/'}
-        ]},
-        {id: 'about', title: 'About', children: [
-            {id: 'projectoverview', title: 'Project overview', url: '/about/contributors/'},
-            {id: 'news', title: 'News', url: '/news'},
-            {id: 'publications', title: 'Publications', url: '/publications/'},
             {id: 'datause', title: 'Release policy', url: '/about/data-use-policy/'},
-            {id: 'dataaccess', title: 'Data access', url: '/about/data-access/'},
-            {id: 'acknowledgements', title: 'Acknowledgements', url: '/acknowledgements/'}
+            {id: 'dataaccess', title: 'Data access', url: '/about/data-access/'}
         ]},
         {id: 'help', title: 'Help', children: [
             {id: 'gettingstarted', title: 'Getting started', url: '/help/getting-started/'},
             {id: 'restapi', title: 'REST API', url: '/help/rest-api/'},
-            {id: 'fileformats', title: 'File formats', url: '/help/file-formats/'},
-            {id: 'ontologies', title: 'Ontologies', url: '/help/getting-started/#Ontologies'},
+            {id: 'projectoverview', title: 'Project overview', url: '/about/contributors/'},
             {id: 'tutorials', title: 'Tutorials', url: '/tutorials/'},
+            {id: 'news', title: 'News', url: '/news'},
+            {id: 'acknowledgements', title: 'Acknowledgements', url: '/acknowledgements/'},
             {id: 'contact', title: 'Contact', url: '/help/contacts/'}
         ]}
     ]
