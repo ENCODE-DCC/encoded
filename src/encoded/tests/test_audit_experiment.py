@@ -498,6 +498,24 @@ def file_tsv_1_2(base_experiment, award, encode_lab, testapp, analysis_step_run_
     return testapp.post_json('/file', item, status=201).json['@graph'][0]
 
 
+@pytest.fixture
+def file_tsv_1_1(base_experiment, award, encode_lab, testapp, analysis_step_run_bam):
+    item = {
+        'dataset': base_experiment['uuid'],
+        'file_format': 'tsv',
+        'file_size': 36524,
+        'assembly': 'mm10',
+        'genome_annotation': 'M4',
+        'md5sum': '100d8c998f040b2204e9800998ecf8428b',
+        'output_type': 'gene quantifications',
+        'award': award['uuid'],
+        'lab': encode_lab['uuid'],
+        'status': 'released',
+        'step_run': analysis_step_run_bam['uuid']
+    }
+    return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+
 def test_ChIP_possible_control(testapp, base_experiment, ctrl_experiment, IgG_ctrl_rep):
     testapp.patch_json(base_experiment['@id'], {'possible_controls': [ctrl_experiment['@id']],
                                                 'assay_term_name': 'ChIP-seq',
@@ -661,7 +679,7 @@ def test_audit_experiment_spikeins(testapp, base_experiment, base_replicate, bas
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing spikeins_used' for error in errors_list)
+    assert any(error['category'] == 'missing spikeins' for error in errors_list)
 
 
 def test_audit_experiment_not_tag_antibody(testapp, base_experiment, base_replicate, organism, antibody_lot):
@@ -756,9 +774,7 @@ def test_audit_experiment_biosample_match(testapp, base_experiment,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched biosample_term_id' for error in errors_list) and \
-        any(error['category'] == 'mismatched biosample_term_name' for error in errors_list) and \
-        any(error['category'] == 'mismatched biosample_type' for error in errors_list)
+    assert any(error['category'] == 'inconsistent library biosample' for error in errors_list)
 
 
 def test_audit_experiment_documents(testapp, base_experiment, base_library, base_replicate):
@@ -882,7 +898,7 @@ def test_audit_experiment_with_RNA_library_no_size_range(testapp, base_experimen
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing size_range' for error in errors_list)
+    assert any(error['category'] == 'missing RNA fragment size' for error in errors_list)
 
 
 def test_audit_experiment_with_RNA_library_with_size_range(testapp, base_experiment, base_replicate,
@@ -895,7 +911,7 @@ def test_audit_experiment_with_RNA_library_with_size_range(testapp, base_experim
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'missing size_range' for error in errors_list)
+    assert all(error['category'] != 'missing RNA fragment size' for error in errors_list)
 
 
 def test_audit_experiment_with_RNA_library_array_size_range(testapp, base_experiment,
@@ -911,7 +927,7 @@ def test_audit_experiment_with_RNA_library_array_size_range(testapp, base_experi
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'missing size_range' for error in errors_list)
+    assert all(error['category'] != 'missing RNA fragment size' for error in errors_list)
 
 
 def test_audit_experiment_needs_pipeline(testapp,  replicate, library, experiment, fastq_file):
@@ -960,6 +976,7 @@ def test_audit_experiment_replicate_with_file(testapp, file_fastq,
                                               base_experiment,
                                               base_replicate,
                                               base_library):
+    testapp.patch_json(file_fastq['@id'],{'replicate': base_replicate['@id']})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
     testapp.patch_json(base_experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
@@ -967,8 +984,7 @@ def test_audit_experiment_replicate_with_file(testapp, file_fastq,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert all(((error['category'] != 'missing file in replicate') and
-               (error['category'] != 'missing sequence file in replicate')) for error in errors_list)
+    assert all((error['category'] != 'missing raw data in replicate') for error in errors_list)
 
 
 def test_audit_experiment_needs_pipeline_and_has_one(testapp,  replicate, library,
@@ -1046,22 +1062,23 @@ def test_audit_experiment_replicate_with_no_files(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing file in replicate' for error in errors_list)
+    assert any(error['category'] == 'missing raw data in replicate' for error in errors_list)
 
 
-def test_audit_experiment_replicate_with_no_files_warning(testapp,
+def test_audit_experiment_replicate_with_no_files_warning(testapp, file_bed_methyl,
                                                           base_experiment,
                                                           base_replicate,
                                                           base_library):
+    testapp.patch_json(file_bed_methyl['@id'], {'replicate': base_replicate['@id']})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
-    testapp.patch_json(base_experiment['@id'], {'status': 'proposed'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'in progress'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
-        if error_type == 'ERROR':
+        if error_type == 'WARNING':
             errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing file in replicate' for error in errors_list)
+    assert any(error['category'] == 'missing raw data in replicate' for error in errors_list)
 
 
 def test_audit_experiment_missing_biosample_term_id(testapp, base_experiment):
@@ -1118,7 +1135,7 @@ def test_audit_experiment_replicate_with_no_fastq_files(testapp, file_bam,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing sequence file in replicate' for error in errors_list)
+    assert any(error['category'] == 'missing raw data in replicate' for error in errors_list)
 
 
 def test_audit_experiment_mismatched_length_sequencing_files(testapp, file_bam, file_fastq,
@@ -1131,7 +1148,7 @@ def test_audit_experiment_mismatched_length_sequencing_files(testapp, file_bam, 
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mixed intra-replicate endedness'
+    assert any(error['category'] == 'mixed run types'
                for error in errors_list)
 
 
@@ -1154,7 +1171,7 @@ def test_audit_experiment_mismatched_inter_paired_sequencing_files(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mixed inter-replicate endedness'
+    assert any(error['category'] == 'mixed run types'
                for error in errors_list)
 
 
@@ -1179,7 +1196,7 @@ def test_audit_experiment_mismatched_inter_length_sequencing_files(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mixed inter-replicate read lengths'
+    assert any(error['category'] == 'mixed read lengths'
                for error in errors_list)
 
 
@@ -1355,8 +1372,7 @@ def test_audit_experiment_MAD_long_rna_standards(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'insufficient MAD value' for error in errors_list) and \
-        any(error['category'] == 'insufficient spearman correlation' for error in errors_list)
+    assert any(error['category'] == 'insufficient replicate concordance' for error in errors_list)
 
 
 def test_audit_experiment_long_rna_standards_crispr(testapp,
@@ -1400,8 +1416,10 @@ def test_audit_experiment_long_rna_standards_crispr(testapp,
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
     testapp.patch_json(biosample_2['@id'], {'model_organism_sex': 'mixed'})
-    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
-    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id'],
+                                          'size_range': '>200'})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id'],
+                                          'size_range': '>200'})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
     testapp.patch_json(base_experiment['@id'], {'status': 'released',
@@ -1413,7 +1431,8 @@ def test_audit_experiment_long_rna_standards_crispr(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'insufficient read depth' for error in errors_list)
+    assert any(error['category'] == 'insufficient read depth' for error in errors_list) and \
+        any(error['category'] == 'missing spikeins' for error in errors_list)
 
 
 def test_audit_experiment_long_rna_standards(testapp,
@@ -1429,6 +1448,7 @@ def test_audit_experiment_long_rna_standards(testapp,
                                              file_fastq_4,
                                              file_bam_1_1,
                                              file_bam_2_1,
+                                             file_tsv_1_1,
                                              file_tsv_1_2,
                                              mad_quality_metric_1_2,
                                              bam_quality_metric_1_1,
@@ -1450,7 +1470,9 @@ def test_audit_experiment_long_rna_standards(testapp,
 
     testapp.patch_json(bam_quality_metric_1_1['@id'], {'Uniquely mapped reads number': 29000000})
     testapp.patch_json(bam_quality_metric_2_1['@id'], {'Uniquely mapped reads number': 38000000})
-
+    testapp.patch_json(mad_quality_metric_1_2['@id'], {'quality_metric_of': [
+                                                       file_tsv_1_1['@id'],
+                                                       file_tsv_1_2['@id']]})
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
@@ -1724,13 +1746,7 @@ def test_audit_experiment_chip_seq_library_complexity_standards(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-        '''print (error_type)
-        for e in errors[error_type]:
-            print (e['category'])
-            if (e['category'].startswith('ChIP-seq')):
-                print (e)
-        '''
-    assert any(error['category'] == 'insufficient library complexity' for error in errors_list)
+    assert any(error['category'] == 'severe bottlenecking' for error in errors_list)
 
 
 def test_audit_experiment_wgbs_standards(testapp,

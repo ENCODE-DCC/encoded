@@ -384,6 +384,9 @@ var Experiment = module.exports.Experiment = React.createClass({
             ageUnit = (ageUnits.length === 1 && ageUnits[0] && ageUnits[0] !== 'unknown') ? ' ' + ageUnits[0] : '';
         }
 
+        // If we have life stage or age, need to separate from scientific name with comma
+        var separator = (lifeStage || age) ? ', ' : '';
+
         // Get the first treatment if it's there
         var treatment = (result.replicates[0] && result.replicates[0].library && result.replicates[0].library.biosample &&
                 result.replicates[0].library.biosample.treatments[0]) ? SingleTreatment(result.replicates[0].library.biosample.treatments[0]) : '';
@@ -400,25 +403,21 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
-                            {result['assay_term_name']}
-                            {result.assay_title && (result.assay_term_name !== result.assay_title) ?
-                                <span>{' (' + result.assay_title + ')'}</span>
-                            : null}
+                            {result.assay_title ?
+                                <span>{result.assay_title}</span>
+                            :
+                                <span>{result.assay_term_name}</span>
+                            }
                             {result['biosample_term_name'] ? <span>{' of ' + result['biosample_term_name']}</span> : null}
                         </a>
                     </div>
+                    {name || lifeStage || age || ageUnit ?
+                        <div className="highlight-row">
+                            {name ? <em>{name}</em> : null}
+                            {separator + lifeStage + age + ageUnit}
+                        </div>
+                    : null}
                     <div className="data-row">
-                        {name ?
-                            <div><strong>Organism: </strong><i>{name}</i></div>
-                        : null}
-
-                        {lifeStage || age || ageUnit ?
-                            <div>
-                                <strong>Summary: </strong>
-                                {lifeStage + age + ageUnit}
-                            </div>
-                        : null}
-
                         {result.target && result.target.label ?
                             <div><strong>Target: </strong>{result.target.label}</div>
                         : null}
@@ -842,7 +841,7 @@ var FacetList = search.FacetList = React.createClass({
                     </div>
                 : null}
                 {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
-                {facets.map(function (facet) {
+                {facets.map(function (facet, i) {
                     if (hideTypes && facet.field == 'type') {
                         return <span key={facet.field} />;
                     } else {
