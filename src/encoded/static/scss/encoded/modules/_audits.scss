@@ -20,18 +20,19 @@ $audit-group-height: 40px;
 
     &.audit-search {
         @include font-size(0.85);
-        height: 24px;
+        height: 28px;
     }
 }
 
 // Audit icon for display only
 %audit-icon {
     display: inline-block;
-    line-height: 28px;
+    line-height: 32px;
     @include font-size(1.3);
     text-align: center;
     border: none;
     background-color: transparent;
+    vertical-align: middle;
 
     &:first-child {
         margin-left: 0;
@@ -81,9 +82,11 @@ $audit-types:
 .btn-audit {
     display: inline-block;
     margin: 0 10px;
+    height: 26px;
 
     .audit-search & {
         margin: 0 6px;
+        height: 24px;
     }
 }
 
@@ -169,6 +172,8 @@ $audit-types:
         @extend %audit-active-icon;
         color: $color;
         @include font-size(1.2);
+        height: 26px;
+        line-height: 28px;
     }
 
     // Button for each class of audit error
@@ -234,4 +239,19 @@ $audit-types:
 
 .audit-link {
     display: block;
+}
+
+.btn-info-audit {
+    display: inline-block;
+    margin-left: 10px;
+    vertical-align: middle;
+    font-size:1.2rem;
+
+    .icon {
+        color: #a0a0a0;
+
+        &:hover {
+            color: #428bca;
+        }
+    }
 }
