@@ -969,5 +969,24 @@
         "accession": "ENCBS003REP",
         "phase": "S4",
         "uuid": "e8402526-b042-4b9e-89d7-0d3471e19765"
+    },
+    {
+        "_test": "cellosaurus",
+        "accession": "ENCBS535BWO",
+        "aliases": ["michael-snyder:B-272"],
+        "award": "/awards/U54HG006996/",
+        "dbxrefs": ["Cellosaurus:CVCL_0395"],
+        "biosample_term_id": "EFO:0002071",
+        "biosample_term_name": "LNCAP",
+        "biosample_type": "immortalized cell line",
+        "culture_harvest_date": "2012-04-26",
+        "donor": "/human-donors/ENCDO000HUM",
+        "lab": "/labs/michael-snyder",
+        "organism": "/organisms/human/",
+        "product_id": "CRL-1740",
+        "source": "/sources/atcc",
+        "status": "in progress",
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6",
+        "uuid": "db677ae5-d3a2-449d-8f93-0c07e1eaa0f1"
     }
 ]
