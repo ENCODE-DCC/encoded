@@ -102,12 +102,12 @@ var Navbar = module.exports.Navbar = React.createClass({
         return (
             <nav className={'navbar ' + (navClasses ? navClasses : 'navbar-default')}>
                 <div className="navbar-header">
-                    <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target={label} aria-expanded={this.state.expanded} onClick={this.collapseClick}>
+                    <a href="#" data-trigger className="navbar-toggle collapsed" data-toggle="collapse" data-target={label} aria-expanded={this.state.expanded} onClick={this.collapseClick}>
                         <span className="sr-only">Toggle navigation</span>
                         <span className="icon-bar"></span>
                         <span className="icon-bar"></span>
                         <span className="icon-bar"></span>
-                    </button>
+                    </a>
                     {brand ?
                         <a className="navbar-brand" href={brandlink}>{brand}</a>
                     : null}
@@ -161,7 +161,7 @@ var NavItem = module.exports.NavItem = React.createClass({
             <li className={dropdownId ? ('dropdown' + (dropdownOpen ? ' open' : '')) : ''}>
                 {dropdownTitle ?
                     <a href="#" data-trigger className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded={dropdownOpen} onClick={this.context.dropdownClick.bind(null, dropdownId)}>
-                        {dropdownTitle}&nbsp;<span className="caret"></span>
+                        {dropdownTitle}
                     </a>
                 : null}
                 {this.props.children}
