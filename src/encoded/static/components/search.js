@@ -790,12 +790,18 @@ var TextFilter = search.TextFilter = React.createClass({
 });
 
 var FacetList = search.FacetList = React.createClass({
+    contextTypes: {
+        session: React.PropTypes.object,
+        hidePublicAudits: React.PropTypes.bool
+    },
+
     getDefaultProps: function() {
         return {orientation: 'vertical'};
     },
 
     render: function() {
         var {context, term} = this.props;
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
 
         // Get all facets, and "normal" facets, meaning non-audit facets
         var facets = this.props.facets;
@@ -841,14 +847,14 @@ var FacetList = search.FacetList = React.createClass({
                     </div>
                 : null}
                 {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
-                {facets.map(function (facet, i) {
-                    if (hideTypes && facet.field == 'type') {
+                {facets.map(facet => {
+                    if ((hideTypes && facet.field == 'type') || (!loggedIn && this.context.hidePublicAudits && facet.field.substring(0, 6) === 'audit.')) {
                         return <span key={facet.field} />;
                     } else {
                         return <Facet {...this.props} key={facet.field} facet={facet} filters={filters}
                                         width={width} />;
                     }
-                }.bind(this))}
+                })}
             </div>
         );
     }
