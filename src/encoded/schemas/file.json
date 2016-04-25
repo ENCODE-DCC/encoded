@@ -313,7 +313,7 @@
                         "reporter code counts",
                         
                         "alignments",
-                        "raw alignments",
+                        "unfiltered alignments",
                         "transcriptome alignments",
 
                         "minus strand signal of all reads",
@@ -679,7 +679,7 @@
         "reporter code counts": "raw data",
 
         "alignments": "alignment",
-        "raw alignments": "alignment",
+        "unfiltered alignments": "alignment",
         "transcriptome alignments": "alignment",
         "spike-in alignments": "alignment",
 
