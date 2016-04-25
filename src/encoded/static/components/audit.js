@@ -52,7 +52,8 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
     contextTypes: {
         auditDetailOpen: React.PropTypes.bool,
         auditStateToggle: React.PropTypes.func,
-        session: React.PropTypes.object
+        session: React.PropTypes.object,
+        hidePublicAudits: React.PropTypes.bool
     },
 
     render: function() {
@@ -60,7 +61,7 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
         var audits = this.props.audits;
         var loggedIn = this.context.session && this.context.session['auth.userid'];
 
-        if (audits && Object.keys(audits).length) {
+        if ((!this.context.hidePublicAudits || loggedIn) && audits && Object.keys(audits).length) {
             // Sort the audit levels by their level number, using the first element of each warning category
             var sortedAuditLevels = _(Object.keys(audits)).sortBy(function(level) {
                 return -audits[level][0].level;
