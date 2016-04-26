@@ -321,7 +321,7 @@ def patch_file(session, url, job):
 
 
 def run(out, err, url, username, password, encValData, mirror, search_query,
-        processes=0, include_unexpired_upload=False, dry_run=False, json_out=False):
+        processes=None, include_unexpired_upload=False, dry_run=False, json_out=False):
     import functools
     import multiprocessing
     import requests
@@ -337,8 +337,13 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
     dr = ""
     if dry_run:
         dr = "-- Dry Run"
+    try:
+        nprocesses = multiprocessing.cpu_count()
+    except multiprocessing.NotImplmentedError:
+        nprocesses = 1
+
     out.write("STARTING Checkfiles (%s): with %d processes %s at %s\n" %
-             (search_query, processes, dr, datetime.datetime.now()))
+             (search_query, nprocesses, dr, datetime.datetime.now()))
     if processes == 0:
         # Easier debugging without multiprocessing.
         imap = map
