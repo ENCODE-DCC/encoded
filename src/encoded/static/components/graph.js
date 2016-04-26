@@ -208,7 +208,7 @@ var Graph = module.exports.Graph = React.createClass({
     // Draw the graph on initial draw as well as on state changes.
     // An <svg> element to draw into must already exist in the HTML element in the el parm.
     drawGraph: function(el, firstRender) {
-        var viewBox, svgWidth, svgHeight;
+        var viewBox, zoomLevel;
         var d3 = require('d3');
         var dagreD3 = require('dagre-d3');
         var svg = this.savedSvg = d3.select(el).select('svg');
@@ -230,39 +230,37 @@ var Graph = module.exports.Graph = React.createClass({
         var graphWidth = Math.ceil(g.graph().width);
         var graphHeight = Math.ceil(g.graph().height);
 
-        // Get the width of the graph panel
-        var containerWidth = el.clientWidth;
-
-        // Get the unscalecd width and height of the graph including margins, and make a viewBox
+        // Get the unscaled width and height of the graph including margins, and make a viewBox
         // for the graph so it'll render with the margins. The SVG's viewBox is always the
         // unscaled coordinates and immutable
         var viewBoxWidth = graphWidth + (graphWidthMargin * 2);
         var viewBoxHeight = graphHeight + (graphHeightMargin * 2);
         viewBox = [-graphWidthMargin, -graphHeightMargin, viewBoxWidth, viewBoxHeight];
 
-        // Now we need a width and height to handle zooming the graph, including automatically
-        // zooming the graph out on initial render if it's wider than the graph panel.
-        if (containerWidth < viewBoxWidth) {
-            // The SVG is wider than the panel; calculate a scaled-down size for it.
-            var sizeRatio = viewBoxWidth / viewBoxHeight;
-            svgWidth = containerWidth;
-            svgHeight = svgWidth / sizeRatio;
+        // Calculate minimum and maximum pixel width, and zoom factor which is the amount each
+        // slider value gets multiplied by to get a new graph width.
+        var minZoomWidth = viewBoxWidth / 4;
+        var maxZoomWidth = viewBoxWidth * 4;
+        this.cv.zoomFactor = (maxZoomWidth - minZoomWidth) / 100;
+        this.cv.minZoomWidth = minZoomWidth;
+        this.cv.sizeRatio = viewBoxWidth / viewBoxHeight;
+
+        // Get the width of the graph panel
+        if (firstRender) {
+            var containerWidth = el.clientWidth;
+            var containerHeight = containerWidth / this.cv.sizeRatio;
+            zoomLevel = (containerWidth - this.cv.minZoomWidth) / this.cv.zoomFactor;
+            svg.attr("width", containerWidth).attr("height", containerHeight).attr("viewBox", viewBox.join(' '));
         } else {
-            // The SVG is narrower than the panel; don't scale it
-            svgWidth = viewBoxWidth;
-            svgHeight = viewBoxHeight;
+            zoomLevel = this.state.zoomLevel;
+
+            // Calculate the new graph width and height for the new zoom value
+            var svgWidth = zoomLevel * this.cv.zoomFactor + this.cv.minZoomWidth;
+            var svgHeight = svgWidth / this.cv.sizeRatio;
+            svg.attr("width", svgWidth).attr("height", svgHeight);
         }
 
-        // Remember the view box for zooming calculations
-        this.cv.originalViewBox = {width: viewBoxWidth, height: viewBoxHeight};
-
-        this.cv.zoomFactorPlus = viewBoxWidth / 50;
-        this.cv.zoomFactorMinus = viewBoxWidth / 70;
-
-        // Calulate the SVG `width` and `height` attributes based on the current zoom level
-        var {width, height} = this.calcZoom(svgWidth, svgHeight);
-        svgWidth = width; svgHeight = height;
-        svg.attr("width", svgWidth).attr("height", svgHeight).attr("viewBox", viewBox.join(' '));
+        return zoomLevel;
     },
 
     bindClickHandlers: function(d3, el) {
@@ -299,7 +297,8 @@ var Graph = module.exports.Graph = React.createClass({
                 var svgGroup = svg.append("g");
 
                 // Draw the graph into the panel; indicate first render
-                this.drawGraph(el, true);
+                var zoomLevel = this.drawGraph(el, true);
+                this.setState({zoomLevel: zoomLevel});
 
                 // Bind node/subnode click handlers to parent component handlers
                 this.bindClickHandlers(d3, el);
@@ -328,7 +327,7 @@ var Graph = module.exports.Graph = React.createClass({
         if (this.cv.dagreLoaded && !this.cv.zoomMouseDown) {
             var d3 = require('d3');
             var el = this.refs.graphdisplay.getDOMNode(); // Change in React 0.14
-            this.drawGraph(el, this.props.forceRedraw);
+            this.drawGraph(el, false);
             this.bindClickHandlers(d3, el);
         }
     },
@@ -426,11 +425,12 @@ var Graph = module.exports.Graph = React.createClass({
     },
 
     rangeChange: function(e) {
-        // Called when the user clicks/drags the zoom slider
+        // Called when the user clicks/drags the zoom slider; value comes from the slider 0-100
         var value = e.target.value;
 
         // Calculate the new graph width and height for the new zoom value
-        var {width, height} = this.calcZoom(this.cv.originalViewBox.width, this.cv.originalViewBox.height, value);
+        var width = value * this.cv.zoomFactor + this.cv.minZoomWidth;
+        var height = width / this.cv.sizeRatio;
 
         // Get the SVG in the DOM and update its width and height
         var svgEl = document.getElementById('pipeline-graph');
