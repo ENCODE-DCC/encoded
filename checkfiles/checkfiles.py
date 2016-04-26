@@ -321,7 +321,7 @@ def patch_file(session, url, job):
 
 
 def run(out, err, url, username, password, encValData, mirror, search_query,
-        processes=None, include_unexpired_upload=False, dry_run=False):
+        processes=0, include_unexpired_upload=False, dry_run=False):
     import functools
     import multiprocessing
     import requests
@@ -385,7 +385,7 @@ def main():
     parser.add_argument(
         '--dry-run', action='store_true', help="Don't update status, just check")
     parser.add_argument(
-        '--verbose', '-v', action='store_true', help="Verbose output")
+        '--json', action='store_true', help="Output JSON format")
     parser.add_argument(
         '--search-query', default='status=uploading',
         help="override the file search query, e.g. 'accession=ENCFF000ABC'")
