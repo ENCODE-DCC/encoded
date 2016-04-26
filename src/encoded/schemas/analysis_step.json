@@ -79,6 +79,7 @@
                     "idat green channel",
                     "idat red channel",
                     "reads",
+                    "raw data",
                     "intensity values",
                     "reporter code counts",
                     "alignments",

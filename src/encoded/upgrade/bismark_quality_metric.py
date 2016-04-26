@@ -21,3 +21,17 @@ def bismark_quality_metric_2_3(value, system):
 
     if 'quality_metric_of' in value:
         value['quality_metric_of'] = list(set(value['quality_metric_of']))
+
+
+@upgrade_step('bismark_quality_metric', '3', '4')
+def bismark_quality_metric_3_4(value, system):
+    # http://redmine.encodedcc.org/issues/3897
+    # get from the file the lab and award for the attribution!!!
+    conn = system['registry'][CONNECTION]
+    f = conn.get_by_uuid(value['quality_metric_of'][0])
+    award_uuid = str(f.properties['award'])
+    lab_uuid = str(f.properties['lab'])
+    award = conn.get_by_uuid(award_uuid)
+    lab = conn.get_by_uuid(lab_uuid)
+    value['award'] = '/awards/'+str(award.properties['name'])+'/'
+    value['lab'] = '/labs/'+str(lab.properties['name'])+'/'

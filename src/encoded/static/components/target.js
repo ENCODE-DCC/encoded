@@ -2,12 +2,12 @@
 var React = require('react');
 var _ = require('underscore');
 var globals = require('./globals');
-var navbar = require('./navbar');
+var navigation = require('./navigation');
 var dataset = require('./dataset');
 var dbxref = require('./dbxref');
 var item = require('./item');
 
-var Breadcrumbs = navbar.Breadcrumbs;
+var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var ExperimentTable = dataset.ExperimentTable;

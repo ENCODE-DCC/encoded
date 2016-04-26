@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+var SvgIcon = require('../libs/svg-icons');
 var fetched = require('./fetched');
 var search = require('./search');
 var url = require('url');
@@ -31,20 +32,20 @@ var columnChoices = function(schema, selected) {
             }
         });
     }
+    // add embedded columns
+    _.each(schemaColumns, (column, path) => {
+        columns[path] = {
+            title: column.title,
+            visible: true
+        };
+    });
     // add all properties (with a few exceptions)
     _.each(schema.properties, (property, name) => {
         if (name == '@id' || name == '@type' || name == 'uuid') return;
-        columns[name] = {
-            title: property.title,
-            visible: schemaColumns.hasOwnProperty(name)
-        };
-    });
-    // add embedded columns
-    _.each(schemaColumns, (column, path) => {
-        if (!columns.hasOwnProperty(path)) {
-            columns[path] = {
-                title: column.title,
-                visible: true
+        if (!columns.hasOwnProperty(name)) {
+            columns[name] = {
+                title: property.title,
+                visible: false
             };
         }
     });
@@ -66,7 +67,7 @@ var visibleColumns = function(columns) {
         if (column.visible) {
             visible_columns.push({
                 path: path,
-                title: column.title,
+                title: column.title
             });
         }
     });
@@ -132,7 +133,7 @@ var RowView = function (props) {
 
 var Table = module.exports.Table = React.createClass({
     contextTypes: {
-        location_href: React.PropTypes.string,
+        location_href: React.PropTypes.string
     },
 
     extractData: function (items) {
@@ -164,7 +165,7 @@ var Table = module.exports.Table = React.createClass({
             var sortColumn = Object.keys(this.props.context.sort)[0];
             return {
                 column: sortColumn,
-                reversed: this.props.context.sort[sortColumn].order == 'desc',
+                reversed: this.props.context.sort[sortColumn].order == 'desc'
             };
         } else {
             return {};
@@ -209,7 +210,7 @@ var Table = module.exports.Table = React.createClass({
         const sort = this.getSort();
         const column = sort.column == path && !sort.reversed ? '-' + path : path;
         this.props.setSort(column);
-    },
+    }
 
 });
 
@@ -217,15 +218,15 @@ var Table = module.exports.Table = React.createClass({
 var ColumnSelector = React.createClass({
     getInitialState: function() {
         return {
-            open: false,
+            open: false
         };
     },
 
     render: function() {
         return (
-            <div>
-                <a className={'btn btn-info btn-sm' + (this.state.open ? ' active' : '')} href="#" onClick={this.toggle} title="Choose columns"><i className="icon icon-columns"></i></a>
-                {this.state.open && <div style={{position: 'absolute', right: 0, backgroundColor: '#fff', padding: '.5em', border: 'solid 1px #ccc', borderRadius: 3, zIndex: 1}}>
+            <div style={{display: 'inline-block', position: 'relative'}}>
+                <a className={'btn btn-info btn-sm' + (this.state.open ? ' active' : '')} href="#" onClick={this.toggle} title="Choose columns"><i className="icon icon-columns"></i> Columns</a>
+                {this.state.open && <div style={{position: 'absolute', top: '30px', width: '230px', backgroundColor: '#fff', padding: '.5em', border: 'solid 1px #ccc', borderRadius: 3, zIndex: 1}}>
                     <h4>Columns</h4>
                     {_.mapObject(this.props.columns, (column, path) => <div onClick={this.toggleColumn.bind(this, path)} style={{cursor: 'pointer'}}>
                         <input type="checkbox" checked={column.visible} /> {column.title}
@@ -242,7 +243,7 @@ var ColumnSelector = React.createClass({
 
     toggleColumn: function(path) {
         this.props.toggleColumn(path);
-    },
+    }
 });
 
 
@@ -250,7 +251,7 @@ var Report = React.createClass({
     contextTypes: {
         location_href: React.PropTypes.string,
         navigate: React.PropTypes.func,
-        fetch: React.PropTypes.func,
+        fetch: React.PropTypes.func
     },
 
     getInitialState: function() {
@@ -262,7 +263,7 @@ var Report = React.createClass({
             size,
             to: from + size,
             loading: false,
-            more: [],
+            more: []
         };
     },
 
@@ -275,7 +276,7 @@ var Report = React.createClass({
             this.setState({
                 from: from,
                 to: from + size,
-                more: [],
+                more: []
             });
         }
     },
@@ -292,6 +293,12 @@ var Report = React.createClass({
         var schema = this.props.schemas[type];
         var columns = columnChoices(schema, parsed_url.query.field);
 
+        // Map view icons to svg icons
+        var view2svg = {
+            'list-alt': 'search',
+            'th': 'matrix'
+        };
+
         return (
             <div>
                 <div className="panel data-display main-panel">
@@ -300,13 +307,24 @@ var Report = React.createClass({
                             <FacetList facets={context.facets} filters={context.filters} searchBase={searchBase} />
                         </div>
                         <div className="col-sm-7 col-md-8 col-lg-9">
-                            <span className="pull-right">
-                                <ColumnSelector columns={columns} toggleColumn={this.toggleColumn} />
-                            </span>
                             <h4>
                                 Showing results {this.state.from + 1} to {Math.min(context.total, this.state.to)} of {context.total}
-                                {context.views && context.views.map(view => <span> <a href={view.href} title={view.title}><i className={'icon icon-' + view.icon}></i></a></span>)}
                             </h4>
+                            <div className="results-table-control">
+                                <div className="btn-attached">
+                                    {context.views && context.views.map(view => {
+                                        // Strip any `field` properties out of the view's href as
+                                        // they don't apply to search or matrix
+                                        var parsedUrl = url.parse(view.href, true);
+                                        delete parsedUrl.query.field;
+                                        delete parsedUrl.search;
+                                        var href = url.format(parsedUrl);
+                                        return <a href={href} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{SvgIcon(view2svg[view.icon])}</a>;
+                                    })}
+                                </div>
+                                <ColumnSelector columns={columns} toggleColumn={this.toggleColumn} />
+                                <a className="btn btn-info btn-sm" href={context.download_tsv} data-bypass>Download TSV</a>
+                            </div>
                             <Table context={context} more={this.state.more}
                                    columns={columns} setSort={this.setSort} />
                             {this.state.to < context.total &&
@@ -367,20 +385,20 @@ var Report = React.createClass({
             this.setState({
                 more: this.state.more.concat(data['@graph']),
                 loading: false,
-                request: null,
+                request: null
             });
         });
 
         this.setState({
             request: request,
             to: this.state.to + this.state.size,
-            loading: true,
+            loading: true
         });
     },
 
     componentWillUnmount: function () {
         if (this.state.request) this.state.request.abort();
-    },
+    }
 });
 
 

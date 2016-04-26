@@ -135,7 +135,7 @@ def test_audit_antibody_mismatched_in_review(testapp, base_antibody_characteriza
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched term_name' for error in errors_list)
+    assert any(error['category'] == 'mismatched ontology term' for error in errors_list)
 
 
 def test_audit_antibody_biosample_invalid_term_in_review(testapp, base_antibody_characterization):
@@ -265,7 +265,7 @@ def test_audit_unapproved_antibody_characterization_method1(testapp, base_antibo
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'unapproved char method' for error in errors_list)
+    assert any(error['category'] == 'antibody characterized by unapproved method' for error in errors_list)
 
 
 def test_audit_unapproved_antibody_characterization_method2(testapp, base_antibody_characterization, ENCODE3_award, target, lab, antibody_lot):
@@ -285,4 +285,4 @@ def test_audit_unapproved_antibody_characterization_method2(testapp, base_antibo
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'unapproved char method' for error in errors_list)
+    assert any(error['category'] == 'antibody characterized by unapproved method' for error in errors_list)
