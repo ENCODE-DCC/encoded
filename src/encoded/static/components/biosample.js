@@ -4,7 +4,7 @@ var panel = require('../libs/bootstrap/panel');
 var _ = require('underscore');
 var url = require('url');
 var globals = require('./globals');
-var navbar = require('./navbar');
+var navigation = require('./navigation');
 var dataset = require('./dataset');
 var dbxref = require('./dbxref');
 var statuslabel = require('./statuslabel');
@@ -16,7 +16,7 @@ var objectutils = require('./objectutils');
 var sortTable = require('./sorttable');
 var doc = require('./doc');
 
-var Breadcrumbs = navbar.Breadcrumbs;
+var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var StatusLabel = statuslabel.StatusLabel;
 var AuditIndicators = audit.AuditIndicators;

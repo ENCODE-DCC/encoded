@@ -113,4 +113,14 @@ $form-bg: #f3f3f3;
             font-size: 0.95rem;
         }
     }
+
+    // Contains buttons horizontally attached to each other -- indicates peer options
+    .btn-attached {
+        display: inline-block;
+        margin-right: 5px;
+    }
+}
+
+.results-table-button {
+    display: inline-block;
 }

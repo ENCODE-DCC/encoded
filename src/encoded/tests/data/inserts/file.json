@@ -1813,5 +1813,21 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "file_size": 1726244936,
         "uuid": "244436f5-aa0f-46a0-a97c-1ff6983b1740"
+    },
+    {
+        "_test": "vcf file",
+        "submitted_file_name": "Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz",
+        "file_format": "vcf",
+        "status": "in progress",
+        "output_type": "reference variants",
+        "dataset": "/experiments/ENCSR000EYX/",
+        "accession": "ENCFF001VCF",
+        "award": "/awards/U54HG006996/",
+        "md5sum": "84c331bb51aad4r3ye43ba5d1396f6ded8ae832",
+        "assembly": "hg19",
+        "lab": "/labs/michael-snyder/",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "file_size": 8373638,
+        "uuid": "ba0c3914-82dd-48fb-b7f5-5a8298878b49"
     }
 ]

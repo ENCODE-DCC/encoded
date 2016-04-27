@@ -1,6 +1,6 @@
 from pyramid.view import view_config
-from snowfort import TYPES
-from snowfort.elasticsearch.interfaces import ELASTIC_SEARCH
+from snovault import TYPES
+from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
 from pyramid.security import effective_principals
 from .search import (
     format_results,
@@ -238,7 +238,7 @@ def region_search(context, request):
             reference = regular_name
     annotation = request.params.get('annotation', '*')
     if annotation != '*':
-        chromosome, start, end = get_annotation_coordinates(snp_es, annotation, reference)
+        chromosome, start, end = get_annotation_coordinates(es, annotation, reference)
     elif region != '*':
         region = region.lower()
         if region.startswith('rs'):
@@ -329,7 +329,7 @@ def suggest(context, request):
         text = request.params.get('q', '')
     else:
         return []
-    es = request.registry['snp_search']
+    es = request.registry[ELASTIC_SEARCH]
     query = {
         "suggester": {
             "text": text,

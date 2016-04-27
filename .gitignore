@@ -27,6 +27,8 @@
 +.project
 +.pydevproject
 *.log
+.python-version
 ~$*
 .~*#
 
+.python-version

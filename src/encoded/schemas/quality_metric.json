@@ -3,13 +3,14 @@
     "id": "/profiles/quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step_run"],
+    "required": ["step_run", "award", "lab"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status"},
         { "$ref": "mixins.json#/assay" }
    ],

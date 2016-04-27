@@ -185,7 +185,11 @@
             "title": "Target(s) of assay",
             "type": "array"
         },
-        "biosample_type": {
+         "targets.label": {
+            "title": "Target(s) of assay",
+            "type": "array"
+        },
+       "biosample_type": {
             "title": "Biosample type",
             "type": "string"
         },

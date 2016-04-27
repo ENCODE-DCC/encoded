@@ -1,5 +1,5 @@
 from pyramid.decorator import reify
-from snowfort import (
+from snovault import (
     Root,
     calculated_property,
     root,
@@ -53,8 +53,7 @@ class EncodedRoot(Root):
     @reify
     def __acl__(self):
         acl = acl_from_settings(self.registry.settings) + [
-            (Allow, Everyone, ['list', 'search']),
-            (Allow, 'group.submitter', ['search_audit', 'audit']),
+            (Allow, Everyone, ['list', 'search', 'search_audit', 'audit']),
             (Allow, 'group.admin', ALL_PERMISSIONS),
             # Avoid schema validation errors during audit
             (Allow, 'remoteuser.EMBED', 'import_items'),
@@ -83,4 +82,4 @@ class EncodedRoot(Root):
         "type": "string",
     })
     def app_version(self, registry):
-        return registry.settings['snowfort.app_version']
+        return registry.settings['snovault.app_version']

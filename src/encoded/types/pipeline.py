@@ -1,4 +1,4 @@
-from snowfort import (
+from snovault import (
     collection,
     calculated_property,
     load_schema,

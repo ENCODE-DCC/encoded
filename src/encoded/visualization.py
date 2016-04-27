@@ -1,6 +1,6 @@
 from pyramid.response import Response
 from pyramid.view import view_config
-from snowfort import Item
+from snovault import Item
 from collections import OrderedDict
 import cgi
 from urllib.parse import (
