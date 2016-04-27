@@ -168,6 +168,17 @@ def mouse(testapp):
 
 
 @pytest.fixture
+def fly(testapp):
+    item = {
+        'uuid': 'ab546d43-8e2a-4567-8db7-a217e6d6eea0',
+        'name': 'dmelanogaster',
+        'scientific_name': 'Drosophila melanogaster',
+        'taxon_id': '7227',
+    }
+    return testapp.post_json('/organism', item).json['@graph'][0]
+
+
+@pytest.fixture
 def organism(human):
     return human
 
@@ -402,6 +413,19 @@ def construct(testapp, lab, award, target, source):
 
 
 @pytest.fixture
+def construct_1(testapp, lab, award, target, source):
+    item = {
+        'target': target['@id'],
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'source': source['@id'],
+        'construct_type': 'fusion protein',
+        'tags': [{'name': 'FLAG', 'location': 'C-terminal'}],
+    }
+    return testapp.post_json('/construct', item).json['@graph'][0]
+
+
+@pytest.fixture
 def ucsc_browser_composite(testapp, lab, award):
     item = {
         'award': award['@id'],
@@ -527,6 +551,17 @@ def biosample_characterization(testapp, award, lab, biosample, attachment):
     }
     return testapp.post_json('/biosample_characterization', item).json['@graph'][0]
 
+
+@pytest.fixture
+def fly_donor(testapp, award, lab, fly):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'organism': fly['@id'],
+    }
+    return testapp.post_json('/fly_donor', item).json['@graph'][0]
+
+
 @pytest.fixture
 def mouse_donor(testapp, award, lab, mouse):
     item = {
@@ -535,6 +570,7 @@ def mouse_donor(testapp, award, lab, mouse):
         'organism': mouse['@id'],
     }
     return testapp.post_json('/mouse_donor', item).json['@graph'][0]
+
 
 @pytest.fixture
 def mouse_donor_1(testapp, award, lab, mouse):
