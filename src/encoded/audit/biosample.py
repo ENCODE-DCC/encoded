@@ -195,7 +195,7 @@ def audit_biosample_term(value, system):
         detail = 'Biosample {} has '.format(value['@id']) + \
                  'a mismatch between biosample_term_id {} '.format(term_id) + \
                  'and biosample_term_name {}'.format(term_name)
-        yield AuditFailure('mismatched biosample_term', detail, level='ERROR')
+        yield AuditFailure('mismatched ontology term', detail, level='ERROR')
         return
 
 @audit_checker('biosample', frame='object')

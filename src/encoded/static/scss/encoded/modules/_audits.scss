@@ -1,3 +1,6 @@
+$audit-group-height: 40px;
+
+
 .audit-indicators {
     margin-top: 5px;
     vertical-align: top;
@@ -17,18 +20,19 @@
 
     &.audit-search {
         @include font-size(0.85);
-        height: 24px;
+        height: 28px;
     }
 }
 
 // Audit icon for display only
 %audit-icon {
     display: inline-block;
-    line-height: 28px;
+    line-height: 32px;
     @include font-size(1.3);
     text-align: center;
     border: none;
     background-color: transparent;
+    vertical-align: middle;
 
     &:first-child {
         margin-left: 0;
@@ -78,10 +82,69 @@ $audit-types:
 .btn-audit {
     display: inline-block;
     margin: 0 10px;
+    height: 26px;
 
     .audit-search & {
         margin: 0 6px;
+        height: 24px;
     }
+}
+
+
+%audit-detail-trigger {
+    display: inline-block;
+    height: $audit-group-height;
+    width: $audit-group-height;
+    float: left;
+    margin-right: 10px;
+    border-right: 1px solid #a0a0a0;
+
+    &:hover, &:focus {
+        text-decoration: none;
+        color: #000;
+    }
+
+    &.collapsed {
+        transform: rotate(-90deg);
+    }
+}
+
+.audit-detail-trigger-icon {
+    display: block;
+    @extend .icon-caret-down;
+    height: $audit-group-height;
+    width: $audit-group-height;
+    line-height: $audit-group-height;
+    font-size: 1.6rem;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    color: #000;
+    transition: transform 0.1s linear;
+    transform: rotate(0deg);
+
+    &:hover, &:focus {
+        text-decoration: none;
+        color: #000;
+    }
+
+    &.collapsed {
+        transform: rotate(-90deg);
+        text-decoration: none;
+    }
+}
+
+
+.audit-detail-category-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #606060;
+}
+
+
+.audit-detail-info {
+    padding: 5px 10px;
+    line-height: $audit-group-height - 10;
 }
 
 
@@ -109,6 +172,8 @@ $audit-types:
         @extend %audit-active-icon;
         color: $color;
         @include font-size(1.2);
+        height: 26px;
+        line-height: 28px;
     }
 
     // Button for each class of audit error
@@ -122,7 +187,6 @@ $audit-types:
 
     // Audit detail
     .audit-detail-#{$audit-type} {
-        padding: 5px 10px;
         border-top: 1px solid #a0a0a0;
         background-color: fg-to-bg-color($color);
 
@@ -131,25 +195,63 @@ $audit-types:
         }
     }
 
+    .audit-detail-trigger-#{$audit-type} {
+        @extend %audit-detail-trigger;
+
+        &:hover {
+            background-color: darken(fg-to-bg-color($color), 10%);
+        }
+    }
+
     // Audit level name text
     .audit-level-#{$audit-type} {
         margin-left: 5px !important;
         color: audit-level-color($color);
     }
+
+    .audit-item-#{$audit-type} {
+        padding: 5px 10px 5px 50px;
+        background-color: darken(fg-to-bg-color($color), 10%);
+        border-top: 1px solid #a0a0a0;
+        font-weight: bold;
+    }
 }
 
-// Area that displays audit detail
-.audit-details {
-    margin: 10px 0;
-    overflow: hidden;
-    @include border-radius(4px);
-    border: 1px solid #a0a0a0;
+.audit-details-section {
+    position: relative;
+}
 
-    strong {
-        display: inline-block;
-    }
+.audit-details-decoration {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    box-shadow: 0px 2px 8px rgba(0,0,0,0.3) inset;
+    pointer-events: none;
+}
+
+.audit-category {
+    @extend .sentence-case;
+    display: inline;
 }
 
 .audit-link {
     display: block;
+}
+
+.btn-info-audit {
+    display: inline-block;
+    margin-left: 10px;
+    vertical-align: middle;
+    font-size:1.2rem;
+
+    .icon {
+        color: #a0a0a0;
+
+        &:hover {
+            color: #428bca;
+        }
+    }
 }
