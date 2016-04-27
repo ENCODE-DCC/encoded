@@ -5,6 +5,8 @@
 if (process.env.NODE_ENV === undefined) {
     require("babel-core/register")({
       only: ['react-forms', 'src/encoded/static'],
+      presets: ['es2015', 'react'],
+      plugins: ['transform-object-rest-spread'],
     });
 } else {
     require('source-map-support').install();

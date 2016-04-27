@@ -3,7 +3,7 @@ const React = require('react');
 const offset = require('../libs/offset');
 const cloneWithProps = require('react/lib/cloneWithProps');
 
-export default React.createClass({
+module.exports = React.createClass({
     render() {
         return React.Children.only(this.props.children);
     },

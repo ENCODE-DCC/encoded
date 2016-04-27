@@ -43,7 +43,7 @@ var loaders = [
 		loader: 'babel',
 		query: {
 			presets: ['es2015', 'react'],
-			plugins: ["transform-object-rest-spread"],
+			plugins: ['transform-object-rest-spread'],
 		}
 	},
 	{
@@ -87,8 +87,15 @@ module.exports = [
 		node: {
 			__dirname: true,
 		},
-		// avoid bundling babel, which is not used at runtime
-		externals: ['babel-core/register'],
+		externals: [
+			'brace',
+			'brace/mode/json',
+			'brace/theme/solarized_light',
+			'd3',
+			'dagre-d3',
+			// avoid bundling babel transpiler, which is not used at runtime
+			'babel-core/register',
+		],
 		output: {
 			path: PATHS.build,
 			filename: '[name].js',
