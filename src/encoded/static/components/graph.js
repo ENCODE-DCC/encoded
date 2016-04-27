@@ -220,7 +220,6 @@ var Graph = module.exports.Graph = React.createClass({
             .setGraph({rankdir: this.state.verticalGraph ? 'TB' : 'LR'})
             .setDefaultEdgeLabel(function() { return {}; });
         var render = new dagreD3.render();
-        render(this.cv.savedSvg.select('g'), g);
 
         // Convert from given node architecture to the dagre nodes and edges
         this.convertGraph(this.props.graph, g);
@@ -348,9 +347,16 @@ var Graph = module.exports.Graph = React.createClass({
     // State change; redraw the graph
     componentDidUpdate: function() {
         if (this.cv.dagreLoaded && !this.cv.zoomMouseDown) {
+            var d3 = require('d3');
             var el = this.refs.graphdisplay.getDOMNode(); // Change in React 0.14
             var {viewBoxWidth, viewBoxHeight} = this.drawGraph(el);
-            if (viewBoxWidth !== this.cv.viewBoxWidth || viewBoxHeight !== this.cv.viewBoxHeight) {
+
+            // Bind node/subnode click handlers to parent component handlers
+            this.bindClickHandlers(d3, el);
+
+            // If the viewbox has changed since the last time, need to recalculate the zooming
+            // parameters.
+            if (Math.abs(viewBoxWidth - this.cv.viewBoxWidth) > 10 || Math.abs(viewBoxHeight - this.cv.viewBoxHeight) > 10) {
                 this.cv.viewBoxWidth = viewBoxWidth;
                 this.cv.viewBoxHeight = viewBoxHeight;
 
