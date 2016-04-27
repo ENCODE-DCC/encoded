@@ -355,9 +355,25 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
     for job in imap(functools.partial(check_file, config), jobs):
         if not dry_run:
             patch_file(session, url, job)
-        out.write(json.dumps(job) + '\n')
-        if job['errors']:
-            err.write(json.dumps(job) + '\n')
+
+        tab_report = '\t'.join([
+            job['item'].get('accession', 'UNKNOWN'),
+            job['item'].get('lab', 'UNKNOWN'),
+            job.get('errors', 'No Errors'),
+            job['item'].get('aliases', []),
+            job.get('upload_url', ''),
+            job.get('upload_expiration', ''),
+            ])
+
+        if json_out:
+            out.write(json.dumps(job) + '\n')
+            if job['errors']:
+                err.write(json.dumps(job) + '\n')
+        else:
+            out.write(tab_report + '\n')
+            if job['errors']:
+                err.write(tab_report + '\n')
+
     out.write("FINISHED Checkfiles at %s\n" % datetime.datetime.now())
 
 
@@ -389,6 +405,8 @@ def main():
         help="include files whose upload credentials have not yet expired (may be replaced!)")
     parser.add_argument(
         '--dry-run', action='store_true', help="Don't update status, just check")
+    parser.add_argument(
+        '--json-out', action='store_true', help="Output results as JSON (legacy)")
     parser.add_argument(
         '--search-query', default='status=uploading',
         help="override the file search query, e.g. 'accession=ENCFF000ABC'")
