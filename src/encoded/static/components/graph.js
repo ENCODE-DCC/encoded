@@ -220,6 +220,7 @@ var Graph = module.exports.Graph = React.createClass({
             .setGraph({rankdir: this.state.verticalGraph ? 'TB' : 'LR'})
             .setDefaultEdgeLabel(function() { return {}; });
         var render = new dagreD3.render();
+        render(this.cv.savedSvg.select('g'), g);
 
         // Convert from given node architecture to the dagre nodes and edges
         this.convertGraph(this.props.graph, g);
@@ -357,13 +358,13 @@ var Graph = module.exports.Graph = React.createClass({
             // If the viewbox has changed since the last time, need to recalculate the zooming
             // parameters.
             if (Math.abs(viewBoxWidth - this.cv.viewBoxWidth) > 10 || Math.abs(viewBoxHeight - this.cv.viewBoxHeight) > 10) {
-                this.cv.viewBoxWidth = viewBoxWidth;
-                this.cv.viewBoxHeight = viewBoxHeight;
-
                 // Based on the size of the graph and view box, 
                 var initialZoomLevel = this.setInitialZoomLevel(el, this.cv.savedSvg);
                 this.setState({zoomLevel: initialZoomLevel});
             }
+
+            this.cv.viewBoxWidth = viewBoxWidth;
+            this.cv.viewBoxHeight = viewBoxHeight;
         }
     },
 
@@ -407,7 +408,12 @@ var Graph = module.exports.Graph = React.createClass({
         }
 
         // Going to be manipulating the SVG node, so make a clone to make GC’s job harder
-        var svgNode = this.savedSvg.node().cloneNode(true);
+        var svgNode = this.cv.savedSvg.node().cloneNode(true);
+
+        // Reset the SVG's size to its natural size
+        var viewBox = this.cv.savedSvg.attr('viewBox').split(' ');
+        svgNode.setAttribute("width", viewBox[2]);
+        svgNode.setAttribute("height", viewBox[3]);
 
         // Attach graph CSS to SVG node clone
         attachStyles(svgNode);
@@ -465,6 +471,13 @@ var Graph = module.exports.Graph = React.createClass({
         this.cv.zoomMouseDown = false;
     },
 
+    rangeDoubleClick: function(e) {
+        // Handle a double click in the zoom slider
+        var el = this.refs.graphdisplay.getDOMNode();
+        var zoomLevel = this.setInitialZoomLevel(el, this.cv.savedSvg);
+        this.setState({zoomLevel: zoomLevel});
+    },
+
     render: function() {
         var orientBtnClass = (this.state.verticalGraph ? 'btn-orient-horizontal' : 'btn-orient-vertical');
         var orientBtnAlt = 'Orient graph ' + (this.state.verticalGraph ? 'horizontally' : 'vertically');
@@ -476,7 +489,7 @@ var Graph = module.exports.Graph = React.createClass({
                     <table className="zoom-control">
                         <tr>
                             <td><i className="icon icon-minus"></i></td>
-                            <td><input type="range" className="zoom-slider" min={minZoom} max={maxZoom} value={this.state.zoomLevel} onChange={this.rangeChange} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} /></td>
+                            <td><input type="range" className="zoom-slider" min={minZoom} max={maxZoom} value={this.state.zoomLevel} onChange={this.rangeChange} onDoubleClick={this.rangeDoubleClick} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} /></td>
                             <td><i className="icon icon-plus"></i></td>
                         </tr>
                     </table>
