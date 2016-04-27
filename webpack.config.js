@@ -19,6 +19,19 @@ if (env === 'production') {
 	chunkFilename = '[name].[chunkhash].js';
 }
 
+var preLoaders = [
+	// Strip @jsx pragma in react-forms, which makes babel abort
+	{
+		test: /\.js$/,
+		include: path.resolve(__dirname, 'node_modules/react-forms'),
+		loader: 'string-replace',
+		query: {
+			search: '@jsx',
+			replace: 'jsx',
+		}
+	}
+];
+
 var loaders = [
 	// add babel to load .js files as ES6 and transpile JSX
 	{
@@ -28,6 +41,10 @@ var loaders = [
 			path.resolve(__dirname, 'node_modules/react-forms'),
 		],
 		loader: 'babel',
+		query: {
+			presets: ['es2015', 'react'],
+			plugins: ["transform-object-rest-spread"],
+		}
 	},
 	{
 		test: /\.json$/,
@@ -53,6 +70,7 @@ module.exports = [
 			chunkFilename: chunkFilename,
 		},
 		module: {
+			preLoaders: preLoaders,
 			loaders: loaders,
 		},
 		devtool: 'source-map',
@@ -78,6 +96,7 @@ module.exports = [
 			chunkFilename: chunkFilename,
 		},
 		module: {
+			preLoaders: preLoaders,
 			loaders: loaders,
 		},
 		devtool: 'source-map',
