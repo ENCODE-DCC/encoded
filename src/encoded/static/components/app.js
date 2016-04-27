@@ -5,7 +5,6 @@ var globals = require('./globals');
 var mixins = require('./mixins');
 var Navigation = require('./navigation');
 var Footer = require('./footer');
-var fs = require('fs');
 var url = require('url');
 
 var portal = {

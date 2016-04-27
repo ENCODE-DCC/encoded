@@ -1,8 +1,5 @@
 'use strict';
 
-// Minimal inline IE8 html5 compatibility
-require('shivie8');
-
 // Read and clear stats cookie
 var cookie = require('cookie-monster')(document);
 window.stats_cookie = cookie.get('X-Stats') || '';
