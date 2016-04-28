@@ -1818,39 +1818,40 @@ var QcDetailsView = function(metrics) {
         }
 
         return (
-            <div className="row">
-                <div className="col-md-4 col-sm-6 col-xs-12">
-                    <div className="quality-metrics-header">
+            <div>
+                <div className="quality-metrics-header">
+                    <div className="quality-metrics-info">
                         <h4>Quality metric of {metrics.parent.accession}</h4>
                         {filesOfMetric.length ? <h5>Shared with {filesOfMetric.join(', ')}</h5> : null}
                     </div>
-                    <dl className="key-value-flex">
-                        <div>
-                            <dt>Type</dt>
-                            <dd>{metrics.ref['@type'][0]}</dd>
-                        </div>
-                        {sortedKeys.map(key => 
-                            (typeof metrics.ref[key] === 'string' || typeof metrics.ref[key] === 'number') ?
-                                <div key={key}>
-                                    <dt>{key}</dt>
-                                    <dd>{metrics.ref[key]}</dd>
-                                </div>
-                            : null
-                        )}
-                    </dl>
-                </div>
-
-                <div className="col-md-8 col-sm-12">
-                    <div className="quality-metrics-header">
-                        <h4 className="quality-metrics-title">Quality metrics attachments</h4>
+                    <div className="quality-metrics-type">
+                        {metrics.ref['@type'][0].replace('QualityMetric', '')} quality metric
                     </div>
-                    <div className="row">
-                        {/* If the metrics object has an `attachment` property, display that first, then display the properties
-                            not named `attachment` but which have their own schema attribute, `attachment`, set to true */}
-                        {metrics.ref.attachment ?
-                            <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} />
-                        : null}
-                        {qcPanels}
+                </div>
+                <div className="row">
+                    <div className="col-md-4 col-sm-6 col-xs-12">
+                        <dl className="key-value-flex">
+                            {sortedKeys.map(key => 
+                                (typeof metrics.ref[key] === 'string' || typeof metrics.ref[key] === 'number') ?
+                                    <div key={key}>
+                                        <dt>{key}</dt>
+                                        <dd>{metrics.ref[key]}</dd>
+                                    </div>
+                                : null
+                            )}
+                        </dl>
+                    </div>
+
+                    <div className="col-md-8 col-sm-12 quality-metrics-attachments">
+                        <h5>Quality metric attachments</h5>
+                        <div className="row">
+                            {/* If the metrics object has an `attachment` property, display that first, then display the properties
+                                not named `attachment` but which have their own schema attribute, `attachment`, set to true */}
+                            {metrics.ref.attachment ?
+                                <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} />
+                            : null}
+                            {qcPanels}
+                        </div>
                     </div>
                 </div>
             </div>
