@@ -1819,7 +1819,7 @@
         "submitted_file_name": "Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz",
         "file_format": "vcf",
         "status": "in progress",
-        "output_type": "variant reference",
+        "output_type": "reference variants",
         "dataset": "/experiments/ENCSR000EYX/",
         "accession": "ENCFF001VCF",
         "award": "/awards/U54HG006996/",

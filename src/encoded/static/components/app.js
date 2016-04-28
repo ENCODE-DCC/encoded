@@ -85,7 +85,8 @@ var App = React.createClass({
         currentResource: React.PropTypes.func,
         location_href: React.PropTypes.string,
         onDropdownChange: React.PropTypes.func,
-        portal: React.PropTypes.object
+        portal: React.PropTypes.object,
+        hidePublicAudits: React.PropTypes.bool
     },
 
     // Retrieve current React context
@@ -96,7 +97,8 @@ var App = React.createClass({
             currentResource: this.currentResource,
             location_href: this.props.href,
             onDropdownChange: this.handleDropdownChange, // Function to process dropdown state change
-            portal: portal
+            portal: portal,
+            hidePublicAudits: true // True if audits should be hidden on the UI while logged out
         };
     },
 
