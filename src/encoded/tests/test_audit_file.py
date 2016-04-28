@@ -511,3 +511,28 @@ def test_audit_file_biological_replicate_number_mismatch(testapp,
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent biological replicate number'
                for error in errors_list)
+
+
+def test_audit_file_assembly(testapp, file6, file7):
+    testapp.patch_json(file6['@id'], {'assembly': 'GRCh38'})
+    testapp.patch_json(file7['@id'], {'derived_from': [file6['@id']],
+                                      'assembly': 'hg19'})
+    res = testapp.get(file7['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched assembly'
+               for error in errors_list)
+
+
+def test_audit_file_missing_assembly(testapp, file6, file7):
+    testapp.patch_json(file6['@id'], {'assembly': 'GRCh38'})
+    testapp.patch_json(file7['@id'], {'derived_from': [file6['@id']]})
+    res = testapp.get(file7['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing assembly'
+               for error in errors_list)
