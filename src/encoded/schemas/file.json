@@ -346,6 +346,9 @@
 
                         "hotspots",
                         "long range chromatin interactions",
+                        "chromatin interactions",
+                        "topologically associated domains",
+                        "genome compartments",
                         "open chromatin regions",
                         "DHS peaks",
                         "peaks",
@@ -723,6 +726,9 @@
 
         "hotspots": "annotation",
         "long range chromatin interactions": "annotation",
+        "chromatin interactions": "annotation",
+        "topologically associated domains": "annotation",
+        "genome compartments": "annotation",
         "open chromatin regions":"annotation",
         "DHS peaks": "annotation",
         "peaks": "annotation",
