@@ -356,11 +356,12 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
         if not dry_run:
             patch_file(session, url, job)
 
+        import pdb;pdb.set_trace()
         tab_report = '\t'.join([
             job['item'].get('accession', 'UNKNOWN'),
             job['item'].get('lab', 'UNKNOWN'),
-            job.get('errors', 'No Errors'),
-            job['item'].get('aliases', []),
+            str(job.get('errors', {})),
+            str(job['item'].get('aliases', [])),
             job.get('upload_url', ''),
             job.get('upload_expiration', ''),
             ])
