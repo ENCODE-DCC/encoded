@@ -61,37 +61,6 @@ def test_audit_biosample_constructs_whole_organism(testapp, base_biosample,
     assert any(error['category'] == 'mismatched constructs' for error in errors_list)
 
 
-def test_audit_biosample_constructs_tissue_invalid(testapp, base_biosample,
-                                                   fly_donor, fly, construct, construct_1):
-    testapp.patch_json(fly_donor['@id'], {'constructs': [construct['@id']]})
-    testapp.patch_json(base_biosample['@id'], {'donor': fly_donor['@id'],
-                                               'organism': fly['@id'],
-                                               'constructs': [construct_1['@id']]})
-
-    res = testapp.get(base_biosample['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched constructs' for error in errors_list)
-
-
-def test_audit_biosample_constructs_tissue_valid(testapp, base_biosample,
-                                                 fly_donor, fly, construct, construct_1):
-    testapp.patch_json(fly_donor['@id'], {'constructs': [construct['@id']]})
-    testapp.patch_json(base_biosample['@id'], {'donor': fly_donor['@id'],
-                                               'organism': fly['@id'],
-                                               'constructs': [construct['@id'],
-                                                              construct_1['@id']]})
-
-    res = testapp.get(base_biosample['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] != 'mismatched constructs' for error in errors_list)
-
-
 def test_audit_biosample_term_ntr(testapp, base_biosample):
     testapp.patch_json(base_biosample['@id'], {'biosample_term_id': 'NTR:0000022', 'biosample_term_name': 'myocyte', 'biosample_type': 'in vitro differentiated cells'})
     res = testapp.get(base_biosample['@id'] + '@@index-data')

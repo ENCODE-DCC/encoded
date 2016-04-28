@@ -51,53 +51,37 @@ model_organism_terms = ['model_organism_mating_status',
 
 @audit_checker('biosample', frame=['constructs', 'model_organism_donor_constructs'])
 def audit_biosample_constructs(value, system):
-    if 'model_organism_donor_constructs' not in value:
-        return
-    model_constructs_ids = set()
-    for model_construct in value['model_organism_donor_constructs']:
-        model_constructs_ids.add(model_construct['@id'])
-    if 'constructs' not in value:
-        if len(model_constructs_ids) > 0:
-            detail = 'Biosample {} '.format(value['@id']) + \
-                     'contains mismatched constructs [] and ' + \
-                     'model_organism_donor_constructs {}.'.format(
-                     model_constructs_ids)
-            yield AuditFailure('mismatched constructs', detail,
-                               level='DCC_ACTION')
-            return
-    constructs_ids = set()
-    for construct in value['constructs']:
-        constructs_ids.add(construct['@id'])
-
     if value['biosample_type'] == 'whole organisms':
+        model_constructs_present = True
+        model_constructs_ids = set()
+        constructs_ids = set()
+        if 'model_organism_donor_constructs' in value:
+            for model_construct in value['model_organism_donor_constructs']:
+                model_constructs_ids.add(model_construct['@id'])
+        else:
+            model_constructs_present = False
+        if 'constructs' in value:
+            for construct in value['constructs']:
+                constructs_ids.add(construct['@id'])
+
+        detail = 'Biosample {} '.format(value['@id']) + \
+                 'contains mismatched constructs {} and '.format(constructs_ids) + \
+                 'model_organism_donor_constructs {}.'.format(
+                 model_constructs_ids)
+
         if len(model_constructs_ids) != len(constructs_ids):
-            detail = 'Biosample {} '.format(value['@id']) + \
-                     'contains mismatched constructs {} and '.format(constructs_ids) + \
-                     'model_organism_donor_constructs {}.'.format(
-                     model_constructs_ids)
+            if model_constructs_present is False:
+                detail = 'Biosample {} '.format(value['@id']) + \
+                         'contains constructs {} and '.format(constructs_ids) + \
+                         'does not contain any model_organism_donor_constructs.'
             yield AuditFailure('mismatched constructs', detail,
                                level='DCC_ACTION')
             return
         for c in constructs_ids:
             if c not in model_constructs_ids:
-                detail = 'Biosample {} '.format(value['@id']) + \
-                         'contains mismatched constructs {} and '.format(constructs_ids) + \
-                         'model_organism_donor_constructs {}.'.format(
-                         model_constructs_ids)
                 yield AuditFailure('mismatched constructs', detail,
                                    level='DCC_ACTION')
                 return
-    else:  # 'constructs may be longer than model_organism_donor_constructs list'
-        for m_c in model_constructs_ids:
-            if m_c not in constructs_ids:
-                detail = 'Biosample {} '.format(value['@id']) + \
-                         'contains constructs in model_organism_donor_constructs {} '.format(
-                         model_constructs_ids) + \
-                    'that are not present in constructs {}.'.format(constructs_ids)
-                yield AuditFailure('mismatched constructs', detail,
-                                   level='DCC_ACTION')
-                return
-
 
 
 @audit_checker('biosample', frame=['organism'])

@@ -413,19 +413,6 @@ def construct(testapp, lab, award, target, source):
 
 
 @pytest.fixture
-def construct_1(testapp, lab, award, target, source):
-    item = {
-        'target': target['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'source': source['@id'],
-        'construct_type': 'fusion protein',
-        'tags': [{'name': 'FLAG', 'location': 'C-terminal'}],
-    }
-    return testapp.post_json('/construct', item).json['@graph'][0]
-
-
-@pytest.fixture
 def ucsc_browser_composite(testapp, lab, award):
     item = {
         'award': award['@id'],
