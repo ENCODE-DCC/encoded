@@ -276,7 +276,7 @@ var Graph = module.exports.Graph = React.createClass({
         // slider value gets multiplied by to get a new graph width. Save all these in component
         // variables.
         var minZoomWidth = viewBoxWidth / 4;
-        var maxZoomWidth = viewBoxWidth * 4;
+        var maxZoomWidth = viewBoxWidth * 2;
         this.cv.zoomFactor = (maxZoomWidth - minZoomWidth) / 100;
         this.cv.minZoomWidth = minZoomWidth;
         this.cv.aspectRatio = viewBoxWidth / viewBoxHeight;
@@ -469,6 +469,8 @@ var Graph = module.exports.Graph = React.createClass({
     rangeMouseUp: function(e) {
         // Mouse released from zoom slider
         this.cv.zoomMouseDown = false;
+        this.rangeChange(e); // Fix for IE11 as onChange doesn't get called; at least call this after dragging
+        // For IE11 fix, see https://github.com/facebook/react/issues/554#issuecomment-188288228
     },
 
     rangeDoubleClick: function(e) {
@@ -488,9 +490,9 @@ var Graph = module.exports.Graph = React.createClass({
                 <div className="zoom-control-area">
                     <table className="zoom-control">
                         <tr>
-                            <td><i className="icon icon-minus"></i></td>
-                            <td><input type="range" className="zoom-slider" min={minZoom} max={maxZoom} value={this.state.zoomLevel} onChange={this.rangeChange} onDoubleClick={this.rangeDoubleClick} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} /></td>
-                            <td><i className="icon icon-plus"></i></td>
+                            <td className="zoom-indicator"><i className="icon icon-minus"></i></td>
+                            <td className="zomm-controller"><input type="range" className="zoom-slider" min={minZoom} max={maxZoom} value={this.state.zoomLevel} onChange={this.rangeChange} onDoubleClick={this.rangeDoubleClick} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} /></td>
+                            <td className="zoom-indicator"><i className="icon icon-plus"></i></td>
                         </tr>
                     </table>
                 </div>

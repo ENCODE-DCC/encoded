@@ -1206,7 +1206,7 @@ var FileGalleryRenderer = React.createClass({
                 </TabPanel>
                 <PanelFooter>
                     {context.visualize_ucsc  && context.status == "released" ?
-                        <DropdownButton title='Visualize Data'>
+                        <DropdownButton title='Visualize Data' label="visualize-data">
                             <DropdownMenu>
                                 {Object.keys(context.visualize_ucsc).map(assembly =>
                                     <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context.visualize_ucsc[assembly]}>

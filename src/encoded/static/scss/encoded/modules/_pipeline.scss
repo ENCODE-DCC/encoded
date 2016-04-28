@@ -205,18 +205,22 @@ g.pipeline-node-qc-metric {
     }
 
     .icon {
-        width: 10%;
         vertical-align: middle;
         color: #808080;
     }
 
     td {
-        padding: 5px 10px !important;
+        padding: 5px 0 !important;
     }
 }
 
 .zoom-slider {
     width: 90%;
+}
+
+.zoom-indicator {
+    width: 15%;
+    text-align: center;
 }
 
 .zoom-decoration {
