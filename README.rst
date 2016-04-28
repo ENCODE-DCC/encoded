@@ -99,6 +99,25 @@ Or if you need to supply command line arguments::
     $ ./node_modules/.bin/jest
 
 
+Building Javascript
+===================
+
+Our Javascript is written using ES6 and JSX, so needs to be compiled
+using babel and webpack.
+
+To build production-ready bundles, do::
+
+    $ npm run build
+
+(This is also done as part of running buildout.)
+
+To build development bundles and continue updating them as you edit source files, run::
+
+    $ npm run dev
+
+The development bundles are not minified, to speed up building.
+
+
 Notes on SASS/Compass
 =====================
 
