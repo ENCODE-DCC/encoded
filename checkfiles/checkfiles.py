@@ -364,8 +364,8 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
         tab_report = '\t'.join([
             job['item'].get('accession', 'UNKNOWN'),
             job['item'].get('lab', 'UNKNOWN'),
-            str(job.get('errors', {})),
-            str(job['item'].get('aliases', [])),
+            str(job.get('errors', {'errors': None})),
+            str(job['item'].get('aliases', ['n/a'])),
             job.get('upload_url', ''),
             job.get('upload_expiration', ''),
             ])
