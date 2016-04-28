@@ -41,10 +41,6 @@ var loaders = [
 			path.resolve(__dirname, 'node_modules/react-forms'),
 		],
 		loader: 'babel',
-		query: {
-			presets: ['es2015', 'react'],
-			plugins: ['transform-object-rest-spread'],
-		}
 	},
 	{
 		test: /\.json$/,

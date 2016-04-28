@@ -1,5 +1,6 @@
 'use strict';
-require('jest-runtime').mock('scriptjs');
+jest.mock('scriptjs');
+var jsdom = require('jsdom').jsdom;
 
 if (window.DOMParser === undefined) {
     // jsdom
@@ -12,9 +13,7 @@ if (window.DOMParser === undefined) {
         } else if (type.indexOf('html') >= 0) {
             parsingMode = 'html';
         }
-        var doc = new document.constructor({parsingMode: parsingMode});
-        doc.write(markup);
-        doc.close();
+        var doc = jsdom(markup, {parsingMode: parsingMode});
         return doc;
     };
 }
