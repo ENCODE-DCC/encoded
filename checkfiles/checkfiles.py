@@ -352,11 +352,15 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
         imap = pool.imap_unordered
 
     jobs = fetch_files(session, url, search_query, out, include_unexpired_upload)
+    if not json_out:
+        headers = '\t'.join(['Accession', 'Lab', 'Errors', 'Aliases', 'Upload URL',
+                             'Upload Expiration'])
+        out.write(headers + '\n')
+        err.write(headers + '\n')
     for job in imap(functools.partial(check_file, config), jobs):
         if not dry_run:
             patch_file(session, url, job)
 
-        import pdb;pdb.set_trace()
         tab_report = '\t'.join([
             job['item'].get('accession', 'UNKNOWN'),
             job['item'].get('lab', 'UNKNOWN'),
