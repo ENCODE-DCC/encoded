@@ -1825,7 +1825,7 @@ var QcDetailsView = function(metrics) {
                         {filesOfMetric.length ? <h5>Shared with {filesOfMetric.join(', ')}</h5> : null}
                     </div>
                     <div className="quality-metrics-type">
-                        {metrics.ref['@type'][0].replace('QualityMetric', '')} quality metric
+                        {metrics.ref['@type'][0].replace('QualityMetric', '').toLowerCase()} quality metric
                     </div>
                 </div>
                 <div className="row">
