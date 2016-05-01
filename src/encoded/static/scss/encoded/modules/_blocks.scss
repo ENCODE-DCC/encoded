@@ -158,6 +158,33 @@
             }
         }
     }
+
+    &.homepage-summary-block {
+        background: #fff;
+        padding: 20px;
+        position: relative;
+        z-index: 0;
+        .homepage-summary-row {
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+        }
+        .homepage-summary-count {
+            clear: both;
+            text-align: center;
+            padding: 1em 0;
+            svg {
+                fill: #fff;
+                margin-right: 1em;
+            }
+        }
+        .facet {
+            width: 50%;
+            float: left;
+            padding: 0 30px;
+            border-bottom: none;
+        }
+    }
 }
 
 

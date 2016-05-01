@@ -8,7 +8,8 @@
             "rows": [
                 {
                     "cols": [
-                        {"blocks": ["#block1"]}
+                        {"blocks": ["#block1"], "className": "col-md-4"},
+                        {"blocks": ["#summary"], "className": "col-md-8"}
                     ]
                 },
                 {
@@ -24,6 +25,10 @@
                     "@id": "#block1",
                     "@type": "richtextblock",
                     "body": "<div class=\"project-info site-title\">\n    <h1>ENCODE: The Encyclopedia of DNA Elements</h1>\n</div>\n<div id=\"info-box\" class=\"project-info text-panel\">\n  <p>The ENCODE project dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>\n</div>"
+                },
+                {
+                    "@id": "#summary",
+                    "@type": "homepage-summary-block"
                 },
                 {
                     "@id": "#block2",
