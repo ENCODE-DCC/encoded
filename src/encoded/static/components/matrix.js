@@ -132,7 +132,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                     <th colSpan={colCount + 1}
                                                         style={{padding: "5px", borderBottom: "solid 1px #ddd", textAlign: "center"}}>{matrix.x.label.toUpperCase()}</th>
                                                 </tr>
-                                            : ''}
+                                            : null}
                                             <tr style={{borderBottom: "solid 1px #ddd"}}>
                                                 {matrix.doc_count ?
                                                     <th rowSpan={rowCount + 1}
@@ -140,7 +140,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                         style={{width: 25, borderRight: "solid 1px #ddd", borderBottom: "solid 2px transparent", padding: "5px"}}>
                                                         <div style={{width: 15}}><span>{matrix.y.label.toUpperCase()}</span></div>
                                                     </th>
-                                                : ''}
+                                                : null}
                                                 <th style={{border: "solid 1px #ddd", textAlign: "center", width: 200}}>
                                                     <h3>
                                                       {matrix.doc_count} results 
@@ -152,7 +152,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                         <div className="clear-filters-control-matrix">
                                                             <a href={context.matrix.clear_matrix}>Clear Filters <i className="icon icon-times-circle"></i></a>
                                                         </div>
-                                                    : ''}
+                                                    : null}
                                                 </th>
                                                 {x_buckets.map(function(xb, i) {
                                                     if (i < x_limit) {
