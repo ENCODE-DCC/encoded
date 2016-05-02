@@ -77,11 +77,12 @@ def audit_biosample_constructs(value, system):
             yield AuditFailure('mismatched constructs', detail,
                                level='DCC_ACTION')
             return
-        for c in constructs_ids:
-            if c not in model_constructs_ids:
-                yield AuditFailure('mismatched constructs', detail,
-                                   level='DCC_ACTION')
-                return
+        if len(constructs_ids) > 0:
+            for c in constructs_ids:
+                if c not in model_constructs_ids:
+                    yield AuditFailure('mismatched constructs', detail,
+                                       level='DCC_ACTION')
+                    return
 
 
 @audit_checker('biosample', frame=['organism'])
