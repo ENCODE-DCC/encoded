@@ -167,8 +167,7 @@ var Graph = module.exports.Graph = React.createClass({
         aspectRatio: 0, // Aspect ratio of graph -- width:height
         zoomMouseDown: false, // Mouse currently controlling zoom slider
         dagreLoaded: false, // Dagre JS library has been loaded
-        zoomFactorPlus: 1, // Amount to multiply zoom range value by when magnifying
-        zoomFactorMinus: 1 // Amount to multiply zoom range value by when reducing
+        zoomFactor: 0 // Amount zoom slider value changes should change width of graph
     },
 
     // Take a JsonGraph object and convert it to an SVG graph with the Dagre-D3 library.
@@ -214,19 +213,23 @@ var Graph = module.exports.Graph = React.createClass({
         var viewBox, zoomLevel;
         var d3 = require('d3');
         var dagreD3 = require('dagre-d3');
+        d3.selectAll('svg#pipeline-graph > *').remove(); // http://stackoverflow.com/questions/22452112/nvd3-clear-svg-before-loading-new-chart#answer-22453174
+        var svg = d3.select(el).select('svg');
+
+        // Clear `width` and `height` attributes if they exist
+        svg.attr('width', null).attr('height', null);
 
         // Create a new empty graph
         var g = new dagreD3.graphlib.Graph({multigraph: true, compound: true})
             .setGraph({rankdir: this.state.verticalGraph ? 'TB' : 'LR'})
             .setDefaultEdgeLabel(function() { return {}; });
         var render = new dagreD3.render();
-        render(this.cv.savedSvg.select('g'), g);
 
         // Convert from given node architecture to the dagre nodes and edges
         this.convertGraph(this.props.graph, g);
 
         // Run the renderer. This is what draws the final graph.
-        render(this.cv.savedSvg.select('g'), g);
+        render(svg, g);
 
         // Get the natural (unscaled) width and height of the graph
         var graphWidth = Math.ceil(g.graph().width);
@@ -241,6 +244,13 @@ var Graph = module.exports.Graph = React.createClass({
 
         // Set the viewBox of the SVG based on its unscaled extents
         this.cv.savedSvg.attr("viewBox", viewBox.join(' '));
+
+        // Now set the `width` and `height` attributes based on the current zoom level
+        if (this.state.zoomLevel && this.cv.zoomFactor) {
+            var width = this.state.zoomLevel * this.cv.zoomFactor + this.cv.minZoomWidth;
+            var height = width / this.cv.aspectRatio;
+            svg.attr('width', width).attr('height', height);
+        }
 
         // Return the SVG so callers can do more with this after drawing the unscaled graph
         return {viewBoxWidth: viewBoxWidth, viewBoxHeight: viewBoxHeight};
