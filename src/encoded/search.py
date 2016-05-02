@@ -631,8 +631,7 @@ def search(context, request, search_type=None, return_generator=False):
     # If searching for more than one type, don't specify which fields to search
     elif len(doc_types) != 1:
         del query['query']['query_string']['fields']
-        if len(query['query']['query_string']['query']) >= CHAR_COUNT:
-            query['query']['query_string']['fields'] = ['_all', '*.uuid', '*.md5sum']
+        query['query']['query_string']['fields'] = ['_all', '*.uuid', '*.md5sum', '*.submitted_file_name']
 
 
     # Set sort order
