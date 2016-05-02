@@ -74,9 +74,9 @@ def audit_biosample_constructs(value, system):
                 detail = 'Biosample {} '.format(value['@id']) + \
                          'contains constructs {} and '.format(constructs_ids) + \
                          'does not contain any model_organism_donor_constructs.'
-            yield AuditFailure('mismatched constructs', detail,
-                               level='DCC_ACTION')
-            return
+                yield AuditFailure('mismatched constructs', detail,
+                                   level='DCC_ACTION')
+                return
         if len(constructs_ids) > 0:
             for c in constructs_ids:
                 if c not in model_constructs_ids:
