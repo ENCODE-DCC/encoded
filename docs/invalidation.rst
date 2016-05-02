@@ -18,6 +18,18 @@ The indexer process listens for notifications of new transactions. With the unio
 Where an object's url depends on other objects – ``Page`` whose url includes its ancestors in its path, or ``Target`` whose url includes a property from its referenced organism – we must ensure that linked_uuid dependencies to those other objects are recorded in addition the object itself when linked. (See ``Page.__resource_url__`` and ``Target.__resource_url__``.)
 
 
+Total Reindexing
+---------------
+
+Cases can arise where a total reindexing needs to be triggered.   
+>curl -XDELETE 'localhost:9200/encoded/meta/indexing’  will specifically force it.
+
+localhost:9200/encoded/meta/indexing stores the document that keeps track of incremental indexing. The indexer script checks for that document when deciding between full index and indexing only the recently invalidated documents. It has the benefit of keeping the old-yet-to-be-indexed data online, especially if it’s a production instance. 
+
+Alternatively, >curl -XDELETE 'http://localhost:9200/encoded/' will delete the entire index along with the mapping information for schema objects. Although it does trigger indexing, missing mapping information makes the documets unsearcheable. Mapping in elasticsearch describes how each field of each object should be tokenized/analyzed/indexed for searching.
+
+
+
 Back references
 ---------------
 
