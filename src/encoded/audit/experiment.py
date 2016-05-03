@@ -68,6 +68,9 @@ def audit_experiment_out_of_date_analysis(value, system):
     transcriptome_alignments = scan_files_for_file_format_output_type(value['original_files'],
                                                                       'bam',
                                                                       'transcriptome alignments')
+    if len(alignment_files) == 0 and len(transcriptome_alignments) == 0:
+        return  # probably needs pipeline, since there are no processed files
+
     alignment_derived_from = get_derived_from_files_set(alignment_files)
     transcriptome_alignment_derived_from = get_derived_from_files_set(transcriptome_alignments)
 
