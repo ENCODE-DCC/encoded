@@ -1490,7 +1490,7 @@ def audit_experiment_consistent_sequencing_runs(value, system):
                condition=rfa("ENCODE3", "modERN", "ENCODE2", "GGR",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicate_with_no_files(value, system):
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
+    if value['status'] in ['deleted', 'replaced', 'revoked', 'proposed', 'preliminary']:
         return
     if 'replicates' not in value:
         return
@@ -1516,7 +1516,7 @@ def audit_experiment_replicate_with_no_files(value, system):
                 rep_dictionary[file_replicate['@id']].append(file_object['output_category'])
 
     audit_level = 'ERROR'
-    if value['status'] in ['proposed', 'preliminary', 'in progress', 'started', 'submitted']:
+    if value['status'] in ['in progress', 'started', 'submitted']:
         audit_level = 'WARNING'
 
     for key in rep_dictionary.keys():
@@ -1524,7 +1524,7 @@ def audit_experiment_replicate_with_no_files(value, system):
         if len(rep_dictionary[key]) == 0:
             detail = 'Replicate ' + \
                      '{} does not have files associated with it.'.format(key)
-            yield AuditFailure('missing raw data in replicate', detail, level='ERROR')
+            yield AuditFailure('missing raw data in replicate', detail, level=audit_level)
         else:
             if seq_assay_flag is True:
                 if 'raw data' not in rep_dictionary[key]:
