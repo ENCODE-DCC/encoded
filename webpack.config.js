@@ -52,13 +52,7 @@ module.exports = [
 	// for browser
 	{
 		context: PATHS.static,
-		entry: {
-			inline: './inline',
-			bundle: [
-				'./libs/compat.js', // The shims should execute first
-				'./browser.js',
-			],
-		},
+		entry: {inline: './inline'},
 		output: {
 			path: PATHS.build,
 			publicPath: '/static/build/',
