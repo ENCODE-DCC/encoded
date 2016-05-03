@@ -237,12 +237,12 @@ def audit_file_controlled_by(value, system):
                 yield AuditFailure('missing paired_with in controlled_by', detail,
                                    level='DCC_ACTION')
 
-            if len(bio_rep_numbers) > 1:
-                detail = 'Fastq file {} '.format(value['@id']) + \
-                         'from experiment {} '.format(value['dataset']['@id']) + \
-                         'contains in controlled_by list fastq files ' + \
-                         'from diferent biological replicates {}.'.format(list(bio_rep_numbers))
-                yield AuditFailure('inconsistent controlled_by replicates', detail, level='ERROR')
+        if len(bio_rep_numbers) > 1:
+            detail = 'Fastq file {} '.format(value['@id']) + \
+                     'from experiment {} '.format(value['dataset']['@id']) + \
+                     'contains in controlled_by list fastq files ' + \
+                     'from diferent biological replicates {}.'.format(list(bio_rep_numbers))
+            yield AuditFailure('inconsistent controlled_by replicates', detail, level='ERROR')
 
     possible_controls = value['dataset'].get('possible_controls')
     biosample = value['dataset'].get('biosample_term_id')

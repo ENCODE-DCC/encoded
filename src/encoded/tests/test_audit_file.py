@@ -285,7 +285,9 @@ def test_audit_file_mismatched_controlled_by(testapp, file1):
 
 def test_audit_file_inconsistent_controlled_by(testapp, file1,
                                                file2, file3,
-                                               file_rep1_2):
+                                               file_rep1_2,
+                                               file_rep2):
+    testapp.patch_json(file1['@id'], {'replicate': file_rep2['@id']})
     testapp.patch_json(file3['@id'], {'replicate': file_rep1_2['@id']})
     testapp.patch_json(file1['@id'], {'controlled_by': [file2['@id'], file3['@id']]})
 
@@ -305,7 +307,7 @@ def test_audit_file_missing_paired_controlled_by(testapp, file1,
                                       'paired_with': file2['@id'],
                                       'run_type': 'paired-ended',
                                       'paired_end': '2'})
-    testapp.patch_json(file2['@id'], {'replicate': file_rep2['@id'],                                     
+    testapp.patch_json(file2['@id'], {'replicate': file_rep2['@id'],
                                       'run_type': 'paired-ended',
                                       'paired_end': '1'})
     testapp.patch_json(file1['@id'], {'controlled_by': [file2['@id']]})
