@@ -208,7 +208,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                                     }
 
                                     {context['download_elements'] ?
-                                        <DropdownButton title='Download Elements' label="downloadelements">
+                                        <DropdownButton title='Download Elements' label="downloadelements" wrapperClasses="results-table-button">
                                             <DropdownMenu>
                                                 {context['download_elements'].map(link =>
                                                     <a key={link} data-bypass="true" target="_blank" private-browsing="true" href={link}>
@@ -220,7 +220,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                                     : null}
 
                                     {batchHubKeys ?
-                                      <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'} label="batchhubs">
+                                      <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'} label="batchhubs" wrapperClasses="results-table-button">
                                           <DropdownMenu>
                                               {batchHubKeys.map(assembly =>
                                                   <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context['batch_hub'][assembly]}>
