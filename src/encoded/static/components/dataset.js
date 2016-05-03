@@ -352,7 +352,7 @@ var PublicationData = React.createClass({
                                             <dd>{context.lab.title}</dd>
                                         </div>
                                     : null}
-                                    
+
                                     <div data-test="externalresources">
                                         <dt>External resources</dt>
                                         <dd>
@@ -1651,19 +1651,26 @@ var FileTable = module.exports.FileTable = React.createClass({
 
     render: function() {
         var {context, items, filePanelHeader, encodevers, selectedAssembly, selectedAnnotation, anisogenic, noAudits, session} = this.props;
-        var datasetFiles = (items && items.length) ? items : [];
+        var datasetFiles = _((items && items.length) ? items : []).uniq(file => file['@id']);
         if (datasetFiles.length) {
-            // Extract four kinds of file arrays
-            datasetFiles = _(datasetFiles).uniq(file => file['@id']).filter(file => {
-                if (selectedAssembly) {
-                    if (selectedAnnotation) {
-                        return selectedAnnotation === file.genome_annotation && selectedAssembly === file.assembly;
-                    } else {
-                        return !file.genome_annotation && selectedAssembly === file.assembly;
+            var unfilteredCount = datasetFiles.length;
+
+            // Filter all the files according to the given filters, and remove duplicates
+            datasetFiles = _(datasetFiles).filter(file => {
+                if (file.output_category !== 'raw data') {
+                    if (selectedAssembly) {
+                        if (selectedAnnotation) {
+                            return selectedAnnotation === file.genome_annotation && selectedAssembly === file.assembly;
+                        } else {
+                            return !file.genome_annotation && selectedAssembly === file.assembly;
+                        }
                     }
                 }
                 return true;
             });
+            var filteredCount = datasetFiles.length;
+
+            // Extract four kinds of file arrays
             var files = _(datasetFiles).groupBy(file => {
                 if (file.output_category === 'raw data') {
                     return file.output_type === 'reads' ? 'raw' : 'rawArray';
@@ -1675,12 +1682,15 @@ var FileTable = module.exports.FileTable = React.createClass({
             });
 
             return (
-                <SortTablePanel header={filePanelHeader} noDefaultClasses={this.props.noDefaultClasses}>
-                    <SortTable title="Raw data files" list={files.raw} columns={this.rawTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
-                    <SortTable title="Raw data files" list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
-                    <SortTable title="Processed data files" list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
-                    <SortTable title="Reference data files" list={files.ref} columns={this.refTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} />
-                </SortTablePanel>
+                <div>
+                    <div className="file-gallery-counts">Displaying {filteredCount} of {unfilteredCount} files</div>
+                    <SortTablePanel header={filePanelHeader} noDefaultClasses={this.props.noDefaultClasses}>
+                        <SortTable title="Raw data files" list={files.raw} columns={this.rawTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
+                        <SortTable title="Raw data files" list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
+                        <SortTable title="Processed data files" list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
+                        <SortTable title="Reference data files" list={files.ref} columns={this.refTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} />
+                    </SortTablePanel>
+                </div>
             );
         }
         return null;
