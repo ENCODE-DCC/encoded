@@ -51,6 +51,7 @@ model_organism_terms = ['model_organism_mating_status',
 
 @audit_checker('biosample', frame=['constructs', 'model_organism_donor_constructs'])
 def audit_biosample_constructs(value, system):
+
     if value['biosample_type'] == 'whole organisms':
         model_constructs_present = True
         model_constructs_ids = set()
@@ -77,6 +78,7 @@ def audit_biosample_constructs(value, system):
                 yield AuditFailure('mismatched constructs', detail,
                                    level='DCC_ACTION')
                 return
+
         if len(constructs_ids) > 0:
             for c in constructs_ids:
                 if c not in model_constructs_ids:

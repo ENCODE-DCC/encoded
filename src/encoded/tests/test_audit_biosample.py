@@ -49,6 +49,20 @@ def base_chipmunk(testapp):
 
 def test_audit_biosample_constructs_whole_organism(testapp, base_biosample,
                                                    fly_donor, fly, construct):
+    testapp.patch_json(base_biosample['@id'], {'biosample_type': 'whole organisms',
+                                               'donor': fly_donor['@id'],
+                                               'organism': fly['@id'],
+                                               'constructs': [construct['@id']]})
+    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched constructs' for error in errors_list)
+
+
+def test_audit_biosample_constructs_whole_organism_compliant(testapp, base_biosample,
+                                                             fly_donor, fly, construct):
     testapp.patch_json(fly_donor['@id'], {'constructs': [construct['@id']]})
     testapp.patch_json(base_biosample['@id'], {'biosample_type': 'whole organisms',
                                                'donor': fly_donor['@id'],
@@ -58,7 +72,7 @@ def test_audit_biosample_constructs_whole_organism(testapp, base_biosample,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched constructs' for error in errors_list)
+    assert all(error['category'] != 'mismatched constructs' for error in errors_list)
 
 
 def test_audit_biosample_term_ntr(testapp, base_biosample):
