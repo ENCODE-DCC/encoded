@@ -298,7 +298,9 @@ def audit_file_controlled_by(value, system):
                 yield AuditFailure('mismatched control run_type',
                                    detail, level='WARNING')
 
-            if read_length != control_length:
+            if read_length != control_length and \
+               value['dataset'].get('assay_term_name') not in \
+                    ['shRNA knockdown followed by RNA-seq']:
                 detail = 'File {} is {} but its control file {} is {}'.format(
                     value['@id'],
                     value['read_length'],
