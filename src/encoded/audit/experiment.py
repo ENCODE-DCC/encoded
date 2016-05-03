@@ -70,8 +70,8 @@ def audit_experiment_out_of_date_analysis(value, system):
                                                                       'transcriptome alignments')
     alignment_derived_from = get_derived_from_files_set(alignment_files)
     transcriptome_alignment_derived_from = get_derived_from_files_set(transcriptome_alignments)
-    derived_from_set = alignment_derived_from | transcriptome_alignment_derived_from
 
+    derived_from_set = alignment_derived_from | transcriptome_alignment_derived_from
     fastq_files = scan_files_for_file_format_output_type(value['original_files'],
                                                          'fastq', 'reads')
 
@@ -107,7 +107,9 @@ def get_derived_from_files_set(list_of_files):
     derived_from_set = set()
     for f in list_of_files:
         if 'derived_from' in f:
-            for d in f['derived_from']:
+            d_fastqs = scan_files_for_file_format_output_type(f['derived_from'],
+                                                              'fastq', 'reads')
+            for d in d_fastqs:
                 derived_from_set.add(d['accession'])
     return derived_from_set
 
