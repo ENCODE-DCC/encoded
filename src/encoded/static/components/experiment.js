@@ -1196,12 +1196,12 @@ var FileGalleryRenderer = React.createClass({
 
         return (
             <Panel>
-                <TabPanel tabs={{graph: graphTab, table: tableTab}} addClasses="file-gallery-tabs" moreComponents={filterMenu} moreComponentsClasses="file-gallery-filter">
-                    <TabPanelPane key="graph">
-                        <ExperimentGraph context={context} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
-                    </TabPanelPane>
+                <TabPanel tabs={{table: tableTab, graph: graphTab}} addClasses="file-gallery-tabs" moreComponents={filterMenu} moreComponentsClasses="file-gallery-filter">
                     <TabPanelPane key="table">
                         <DatasetFiles {...this.props} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} encodevers={this.props.encodevers} anisogenic={this.props.anisogenic} session={this.context.session} noDefaultClasses />
+                    </TabPanelPane>
+                    <TabPanelPane key="graph">
+                        <ExperimentGraph context={context} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
                     </TabPanelPane>
                 </TabPanel>
                 <PanelFooter>
