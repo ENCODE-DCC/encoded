@@ -71,6 +71,17 @@ def audit_experiment_out_of_date_analysis(value, system):
     if len(alignment_files) == 0 and len(transcriptome_alignments) == 0:
         return  # probably needs pipeline, since there are no processed files
 
+    uniform_pipeline_flag = False
+    for bam_file in alignment_files:
+        if bam_file['lab'] == '/labs/encode-processing-pipeline/':
+            uniform_pipeline_flag = True
+            break
+    for bam_file in transcriptome_alignments:
+        if bam_file['lab'] == '/labs/encode-processing-pipeline/':
+            uniform_pipeline_flag = True
+            break
+    if uniform_pipeline_flag is False:
+        return
     alignment_derived_from = get_derived_from_files_set(alignment_files)
     transcriptome_alignment_derived_from = get_derived_from_files_set(transcriptome_alignments)
 
