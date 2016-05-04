@@ -1817,6 +1817,12 @@ var QcDetailsView = function(metrics) {
             });
         }
 
+        // Convert the QC metric object @id to a displayable string
+        var qcName = metrics.ref['@id'].match(/^\/([a-z0-9-]*)\/.*$/i);
+        if (qcName && qcName[1]) {
+            qcName = qcName[1].replace(/-/g, ' ');
+        }
+
         return (
             <div>
                 <div className="quality-metrics-header">
@@ -1824,9 +1830,11 @@ var QcDetailsView = function(metrics) {
                         <h4>Quality metric of {metrics.parent.accession}</h4>
                         {filesOfMetric.length ? <h5>Shared with {filesOfMetric.join(', ')}</h5> : null}
                     </div>
-                    <div className="quality-metrics-type">
-                        {metrics.ref['@type'][0].replace('QualityMetric', '').toLowerCase()} quality metric
-                    </div>
+                    {qcName ?
+                        <div className="quality-metrics-type">
+                            {qcName}
+                        </div>
+                    : null}
                 </div>
                 <div className="row">
                     <div className="col-md-4 col-sm-6 col-xs-12">
