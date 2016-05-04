@@ -27,6 +27,34 @@ paired_end_assays = [
     ]
 
 
+@audit_checker('file', frame=['derived_from'])
+def audit_file_assembly(value, system):
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+    if value['output_category'] in ['raw data', 'reference']:
+        return
+    if 'assembly' not in value:
+        detail = 'Processed file {} '.format(value['@id']) + \
+                 'does not have assembly specified.'
+        yield AuditFailure('missing assembly',
+                           detail, level='DCC_ACTION')
+        return
+    if 'derived_from' not in value:
+        return
+    for f in value['derived_from']:
+        if 'assembly' in f:
+            if f['assembly'] != value['assembly']:
+                detail = 'Processed file {} '.format(value['@id']) + \
+                         'assembly {} '.format(value['assembly']) + \
+                         'does not match assembly {} of the file {} '.format(
+                         f['assembly'],
+                         f['@id']) + \
+                    'it was derived from.'
+                yield AuditFailure('mismatched assembly',
+                                   detail, level='DCC_ACTION')
+                return
+
+
 @audit_checker('file', frame=['replicate', 'replicate.experiment',
                               'derived_from', 'derived_from.replicate',
                               'derived_from.replicate.experiment'])

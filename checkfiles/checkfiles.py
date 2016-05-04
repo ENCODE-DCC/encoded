@@ -248,10 +248,11 @@ def check_file(config, job):
     return job
 
 
-def fetch_files(session, url, search_query, include_unexpired_upload=False):
+def fetch_files(session, url, search_query, out, include_unexpired_upload=False):
     r = session.get(
         urljoin(url, '/search/?field=@id&limit=all&type=File&' + search_query))
     r.raise_for_status()
+    out.write("PROCESSING: %d files in query: %s\n" % (len(r.json()['@graph']), search_query))
     for result in r.json()['@graph']:
         job = {
             '@id': result['@id'],
@@ -320,7 +321,7 @@ def patch_file(session, url, job):
 
 
 def run(out, err, url, username, password, encValData, mirror, search_query,
-        processes=None, include_unexpired_upload=False, dry_run=False):
+        processes=None, include_unexpired_upload=False, dry_run=False, json_out=False):
     import functools
     import multiprocessing
     import requests
@@ -333,6 +334,16 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
         'mirror': mirror,
     }
 
+    dr = ""
+    if dry_run:
+        dr = "-- Dry Run"
+    try:
+        nprocesses = multiprocessing.cpu_count()
+    except multiprocessing.NotImplmentedError:
+        nprocesses = 1
+
+    out.write("STARTING Checkfiles (%s): with %d processes %s at %s\n" %
+             (search_query, nprocesses, dr, datetime.datetime.now()))
     if processes == 0:
         # Easier debugging without multiprocessing.
         imap = map
@@ -340,13 +351,35 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
         pool = multiprocessing.Pool(processes=processes)
         imap = pool.imap_unordered
 
-    jobs = fetch_files(session, url, search_query, include_unexpired_upload)
+    jobs = fetch_files(session, url, search_query, out, include_unexpired_upload)
+    if not json_out:
+        headers = '\t'.join(['Accession', 'Lab', 'Errors', 'Aliases', 'Upload URL',
+                             'Upload Expiration'])
+        out.write(headers + '\n')
+        err.write(headers + '\n')
     for job in imap(functools.partial(check_file, config), jobs):
         if not dry_run:
             patch_file(session, url, job)
-        out.write(json.dumps(job) + '\n')
-        if job['errors']:
-            err.write(json.dumps(job) + '\n')
+
+        tab_report = '\t'.join([
+            job['item'].get('accession', 'UNKNOWN'),
+            job['item'].get('lab', 'UNKNOWN'),
+            str(job.get('errors', {'errors': None})),
+            str(job['item'].get('aliases', ['n/a'])),
+            job.get('upload_url', ''),
+            job.get('upload_expiration', ''),
+            ])
+
+        if json_out:
+            out.write(json.dumps(job) + '\n')
+            if job['errors']:
+                err.write(json.dumps(job) + '\n')
+        else:
+            out.write(tab_report + '\n')
+            if job['errors']:
+                err.write(tab_report + '\n')
+
+    out.write("FINISHED Checkfiles at %s\n" % datetime.datetime.now())
 
 
 def main():
@@ -377,6 +410,8 @@ def main():
         help="include files whose upload credentials have not yet expired (may be replaced!)")
     parser.add_argument(
         '--dry-run', action='store_true', help="Don't update status, just check")
+    parser.add_argument(
+        '--json-out', action='store_true', help="Output results as JSON (legacy)")
     parser.add_argument(
         '--search-query', default='status=uploading',
         help="override the file search query, e.g. 'accession=ENCFF000ABC'")
