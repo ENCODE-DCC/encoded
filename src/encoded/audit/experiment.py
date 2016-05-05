@@ -404,7 +404,7 @@ def check_experiement_long_rna_encode3_standards(experiment,
                                                      pipeline_title):
                     yield failure
             else:
-                for failure in check_file_read_depth(f, read_depth, 30000000, 0,
+                for failure in check_file_read_depth(f, read_depth, 30000000, 20000000,
                                                      experiment['assay_term_name'],
                                                      pipeline_title):
                     yield failure
@@ -448,7 +448,7 @@ def check_experiement_small_rna_encode3_standards(experiment,
                                                             get_target(experiment),
                                                             'small RNA')
 
-            for failure in check_file_read_depth(f, read_depth, 30000000, 0,
+            for failure in check_file_read_depth(f, read_depth, 30000000, 20000000,
                                                  experiment['assay_term_name'],
                                                  pipeline_title):
                 yield failure
@@ -1019,7 +1019,8 @@ def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_thre
     if read_depth is False:
         return
 
-    if read_depth is not False and assay_term_name == 'RAMPAGE':
+    if read_depth is not False and assay_term_name in ['RAMPAGE',
+                                                       'RNA-seq']:
         if read_depth >= lower_threshold and read_depth < upper_threshold:
             detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                          read_depth) + \
