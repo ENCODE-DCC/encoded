@@ -153,6 +153,9 @@ def audit_file_read_length(value, system):
     if value['output_type'] != 'reads':
         return
 
+    if value['file_format'] == 'csqual':
+        return
+
     if 'read_length' not in value:
         detail = 'Reads file {} missing read_length'.format(value['@id'])
         yield AuditFailure('missing read_length', detail, level='DCC_ACTION')
