@@ -1,4 +1,4 @@
-from snowfort import (
+from snovault import (
     AuditFailure,
     audit_checker,
 )
@@ -35,30 +35,6 @@ def audit_library_nucleic_acid(value, system):
             value['nucleic_acid_term_id'],
             expected)
         raise AuditFailure('mismatched nucleic_acid_term', detail, level='ERROR')
-
-
-@audit_checker('library', frame='object')
-def audit_library_documents(value, system):
-    '''
-    If any of the library methods say <see document> then
-    there needs to be a document.
-    '''
-
-    if value['status'] in ['deleted']:
-        return
-
-    list_of_methods = ['extraction_method',
-                       'fragmentation_method',
-                       'library_size_selection_method',
-                       'lysis_method',
-                       ]
-
-    for method in list_of_methods:
-        if value.get(method) == "see document" and value['documents'] == []:
-            detail = 'Library {} method specifies "see document" yet has no document'.format(
-                value['@id']
-                )
-            raise AuditFailure('missing documents', detail, level='NOT_COMPLIANT')
 
 
 @audit_checker('library', frame='object')

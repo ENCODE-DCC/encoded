@@ -1,12 +1,12 @@
-from snowfort import (
+from snovault import (
     AuditFailure,
     audit_checker,
 )
-from snowfort import (
+from snovault import (
     UPGRADER,
 )
-from snowfort.schema_utils import validate
-from snowfort.util import simple_path_ids
+from snovault.schema_utils import validate
+from snovault.util import simple_path_ids
 
 
 @audit_checker('Item', frame='object')
@@ -112,7 +112,7 @@ def audit_item_status(value, system):
         if linked_level == 0:
             detail = '{} {} has {} subobject {}'.format(
                 value['status'], value['@id'], linked_value['status'], linked_value['@id'])
-            yield AuditFailure('mismatched status', detail, level='ERROR')
+            yield AuditFailure('mismatched status', detail, level='DCC_ACTION')
         elif linked_level < level:
             detail = '{} {} has {} subobject {}'.format(
                 value['status'], value['@id'], linked_value['status'], linked_value['@id'])

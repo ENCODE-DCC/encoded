@@ -187,6 +187,12 @@
         },
         "characterizations.lab.title": {
             "title": "Lab"
+        },
+        "award.project": {
+            "title": "Project"
+        },
+        "award.rfa": {
+            "title": "RFA"
         }
     },
     "columns": {

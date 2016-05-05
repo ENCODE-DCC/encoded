@@ -13,10 +13,14 @@ requires = [
     'WSGIProxy2',
     'WebTest',
     'boto',
+    'botocore',
+    'jmespath',
+    'boto3',
     'elasticsearch',
+    'lucenequery',
     'future',
     'humanfriendly',
-    'jsonschema',
+    'jsonschema_serialize_fork',
     'loremipsum',
     'netaddr',
     'passlib',
@@ -49,6 +53,7 @@ tests_require = [
     'pytest-bdd',
     'pytest-mock',
     'pytest-splinter',
+    'pytest_exact_fixtures',
 ]
 
 setup(
@@ -71,25 +76,22 @@ setup(
     },
     entry_points='''
         [console_scripts]
-        batchupgrade = snowfort.batchupgrade:main
-        create-mapping = snowfort.elasticsearch.create_mapping:main
+        batchupgrade = snovault.batchupgrade:main
+        create-mapping = snovault.elasticsearch.create_mapping:main
+        dev-servers = snovault.dev_servers:main
+        es-index-listener = snovault.elasticsearch.es_index_listener:main
 
         add-date-created = encoded.commands.add_date_created:main
-        check-files = encoded.commands.check_files:main
         check-rendering = encoded.commands.check_rendering:main
         deploy = encoded.commands.deploy:main
-        dev-servers = encoded.commands.dev_servers:main
         extract_test_data = encoded.commands.extract_test_data:main
         es-index-data = encoded.commands.es_index_data:main
-        es-index-listener = encoded.commands.es_index_listener:main
-        es-file-index-listener = encoded.commands.es_file_index_listener:main
         generate-ontology = encoded.commands.generate_ontology:main
         import-data = encoded.commands.import_data:main
         jsonld-rdf = encoded.commands.jsonld_rdf:main
         migrate-files-aws = encoded.commands.migrate_files_aws:main
         profile = encoded.commands.profile:main
         spreadsheet-to-json = encoded.commands.spreadsheet_to_json:main
-        update-file-status = encoded.commands.update_file_status:main
         generate-annotations = encoded.commands.generate_annotations:main
         index-annotations = encoded.commands.index_annotations:main
         migrate-attachments-aws = encoded.commands.migrate_attachments_aws:main
@@ -99,7 +101,7 @@ setup(
         main = encoded:main
 
         [paste.composite_factory]
-        indexer = encoded.commands.es_index_listener:composite
+        indexer = snovault.elasticsearch.es_index_listener:composite
 
         [paste.filter_app_factory]
         memlimit = encoded.memlimit:filter_app

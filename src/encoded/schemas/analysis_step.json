@@ -58,6 +58,7 @@
                      "signal generation",
                      "quantification",
                      "transcript identification",
+                     "open chromatin region identification",
                      "transcriptome assembly",
                      "variant annotation",
                      "read trimming",
@@ -78,9 +79,11 @@
                     "idat green channel",
                     "idat red channel",
                     "reads",
+                    "raw data",
                     "intensity values",
                     "reporter code counts",
                     "alignments",
+                    "unfiltered alignments",
                     "transcriptome alignments",
                     "minus strand signal of all reads",
                     "plus strand signal of all reads",
@@ -124,6 +127,8 @@
                     "male genome index",
                     "spike-in sequence",
                     "reference genes",
+                    "reference variants",
+                    "variant calls",
                     "blacklisted regions",
                     "predicted transcription start sites",
                     "optimal idr thresholded peaks",
@@ -131,7 +136,10 @@
                     "signal p-value",
                     "fold change over control",
                     "replicated peaks",
-                    "bed"
+                    "bed",
+                    "open chromatin regions",
+                    "filtered peaks",
+                    "filtered regions"
                 ]
             }
         },
@@ -150,6 +158,7 @@
                     "reads",
                     "intensity values",
                     "reporter code counts",
+                    "unfiltered alignments",
                     "alignments",
                     "transcriptome alignments",
                     "minus strand signal of all reads",
@@ -177,6 +186,7 @@
                     "replication timing profile",
                     "hotspots",
                     "long range chromatin interactions",
+                    "open chromatin regions",
                     "peaks",
                     "RNA-binding protein associated mRNAs",           
                     "splice junctions",
@@ -194,6 +204,8 @@
                     "male genome index",
                     "spike-in sequence",
                     "reference genes",
+                    "reference variants",
+                    "variant calls",
                     "blacklisted regions",
                     "predicted transcription start sites",
                     "optimal idr thresholded peaks",
@@ -201,7 +213,9 @@
                     "signal p-value",
                     "fold change over control",
                     "replicated peaks",
-                    "bigBed"
+                    "bigBed",
+                    "filtered peaks",
+                    "filtered regions"
                 ]
             }
         },

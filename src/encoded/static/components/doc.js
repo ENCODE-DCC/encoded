@@ -194,7 +194,7 @@ var DocumentPreview = module.exports.DocumentPreview = React.createClass({
     render: function() {
         return (
             <figure>
-                <Attachment context={this.props.doc} className="characterization" />
+                <Attachment context={this.props.doc} attachment={this.props.doc.attachment} className="characterization" />
             </figure>
         );
     }
@@ -306,3 +306,52 @@ globals.document_views.file.register(DocumentFile, 'Document');
 
 // Register document detail rendering components
 globals.document_views.detail.register(DocumentDetail, 'Document');
+
+
+// Display a panel for attachments that aren't a part of an associated document
+var AttachmentPanel = module.exports.AttachmentPanel = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object.isRequired, // Object that owns the attachment; needed for attachment path
+        attachment: React.PropTypes.object.isRequired, // Attachment being rendered
+        title: React.PropTypes.string // Title to display in the caption area
+    },
+
+    render: function() {
+        var {context, attachment, title} = this.props;
+
+        // Make the download link
+        var download, attachmentHref;
+        if (attachment.href && attachment.download) {
+            attachmentHref = url.resolve(context['@id'], attachment.href);
+            download = (
+                <div className="dl-link">
+                    <i className="icon icon-download"></i>&nbsp;
+                    <a data-bypass="true" href={attachmentHref} download={attachment.download}>
+                        Download
+                    </a>
+                </div>
+            );
+        } else {
+            download = <em>Attachment not available to download</em>;
+        }
+
+        return (
+            <section className="col-sm-12 col-md-6">
+                <Panel addClasses={globals.itemClass(context, 'view-detail quality-metric-header')}>
+                    <figure>
+                        <Attachment context={context} attachment={attachment} className="characterization" />
+                    </figure>
+                    <div className="document-intro document-meta-data">
+                        {title ?
+                            <div data-test="attachments">
+                                <strong>Attachment: </strong>
+                                {title}
+                            </div>
+                        : null}
+                        {download}
+                    </div>
+                </Panel>
+            </section>
+        );
+    }
+});

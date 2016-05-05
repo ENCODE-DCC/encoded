@@ -203,8 +203,7 @@ var FetchedFieldset = React.createClass({
             <div className="collapsible">
                 <span className="collapsible-trigger" onClick={this.toggleCollapsed}>{this.state.collapsed ? '▶ ' : '▼ '}</span>
                 {isFailure && <ReactForms.Message>{externalValidation.error}</ReactForms.Message>}
-                <div style={{display: this.state.collapsed ? 'block' : 'none'}}>{preview}</div>
-                <div style={{display: this.state.collapsed ? 'none' : 'block'}}>{fieldset}</div>
+                {this.state.collapsed ? preview : fieldset}
             </div>
         );
     },
@@ -345,7 +344,7 @@ var jsonSchemaToFormSchema = function(attrs) {
 var jsonSchemaToDefaultValue = function(schema) {
     var defaultValue = {};
     _.each(schema.properties, function(property, name) {
-        if (property['default'] !== undefined) {
+        if (property.default !== undefined && !property.readonly) {
             defaultValue[name] = property['default'];
         }
     });

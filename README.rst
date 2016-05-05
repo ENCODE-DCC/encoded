@@ -15,9 +15,10 @@ Step 1: Verify that homebrew is working properly::
 
 Step 2: Install or update dependencies::
 
-    $ brew install libevent libmagic libxml2 libxslt elasticsearch openssl postgresql graphviz nginx python3
+    $ brew install libevent libmagic libxml2 libxslt openssl postgresql graphviz nginx python3
     $ brew install freetype libjpeg libtiff littlecms webp  # Required by Pillow
-    $ brew install node
+    $ brew tap homebrew/versions
+    $ brew install elasticsearch17 node4-lts
 
 If you need to update dependencies::
 
@@ -31,9 +32,19 @@ Step 3: Run buildout::
     $ python3 bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.1
     $ bin/buildout
 
-    NOTE:  If you have issues with postgres or the python interface to it (psycogpg2) you probably need to install postgresql 
+    NOTE:  
+    If you have issues with postgres or the python interface to it (psycogpg2) you probably need to install postgresql 
     via homebrew (as above)
+    If you have issues with Pillow you may need to install new xcode command line tools:
+    - First update Xcode from AppStore (reboot)
+    $ xcode-select install 
+    
 
+
+If you wish to completely rebuild the application, or have updated dependencies:
+    $ make clean
+
+    Then goto Step 3.
 
 Step 4: Start the application locally
 
@@ -86,6 +97,25 @@ Run the Javascript tests with::
 Or if you need to supply command line arguments::
 
     $ ./node_modules/.bin/jest
+
+
+Building Javascript
+===================
+
+Our Javascript is written using ES6 and JSX, so needs to be compiled
+using babel and webpack.
+
+To build production-ready bundles, do::
+
+    $ npm run build
+
+(This is also done as part of running buildout.)
+
+To build development bundles and continue updating them as you edit source files, run::
+
+    $ npm run dev
+
+The development bundles are not minified, to speed up building.
 
 
 Notes on SASS/Compass

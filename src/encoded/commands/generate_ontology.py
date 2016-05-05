@@ -129,7 +129,7 @@ slim_shims = {
         'OBI:0001859': 'DNA accessibility',  # 'OBI:0000870', / OBI:0000424  / FAIRE-seq
         'OBI:0002042': '3D chromatin structure',  # 'OBI:0000870' (Hi-C)
         'OBI:0001848': '3D chromatin structure',  # ChIA-PET / OBI:000870
-        'OBI:0001923': 'Proteomics',  # OBI:0000615': 'MS/MS'
+        'OBI:0001923': 'Proteomics',  # OBI:0000615': 'MS-MS'
         'OBI:0001849': 'Genotyping',  # OBI:0000435 (DNA-PET)
         'OBI:0002044': 'RNA binding',  # OBI:0001854 (RNA-Bind-N-Seq)
     }
@@ -143,11 +143,11 @@ preferred_name = {
     "OBI:0001335": "microRNA counts",
     "OBI:0001463": "RNA microarray",
     "OBI:0001863": "WGBS",
-    "OBI:0001923": "MS/MS",
+    "OBI:0001923": "MS-MS",
     "OBI:0001271": "RNA-seq",
     "OBI:0000716": "ChIP-seq",
     "OBI:0001853": "DNase-seq",
-    "OBI:0001920": "Repli-Seq",
+    "OBI:0001920": "Repli-seq",
     "OBI:0001864": "RAMPAGE",
     "OBI:0001393": "genotyping array",
     "OBI:0002042": "Hi-C",
@@ -206,7 +206,7 @@ ntr_assays = {
         "name": "shRNA knockdown followed by RNA-seq",
         "objectives": [],
         "organs": [],
-        "preferred_name": "shRNA/RNA-seq",
+        "preferred_name": "shRNA RNA-seq",
         "slims": [],
         "synonyms": [],
         "systems": [],
@@ -219,7 +219,7 @@ ntr_assays = {
         "name": "siRNA knockdown followed by RNA-seq",
         "objectives": [],
         "organs": [],
-        "preferred_name": "siRNA/RNA-seq",
+        "preferred_name": "siRNA RNA-seq",
         "slims": [],
         "synonyms": [],
         "systems": [],
@@ -298,6 +298,19 @@ ntr_assays = {
         "objectives": [],
         "organs": [],
         "preferred_name": "WGS",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0003814": {
+        "assay": ['Transcription'],
+        "category": [],
+        "developmental": [],
+        "name": "CRISPR genome editing followed by RNA-seq",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "CRISPR RNA-seq",
         "slims": [],
         "synonyms": [],
         "systems": [],
@@ -721,7 +734,6 @@ def main():
                         pass
     for term in terms:
         terms[term]['data'] = list(set(terms[term]['parents']) | set(terms[term]['part_of']) | set(terms[term]['achieves_planned_objective']))
-
         terms[term]['data_with_develops_from'] = list(set(terms[term]['data']) | set(terms[term]['develops_from']))
 
     for term in terms:
@@ -745,12 +757,12 @@ def main():
         terms[term]['types'] = getSlims(term, terms, 'type')
 
         del terms[term]['closure'], terms[term]['closure_with_develops_from']
-
+    
     for term in terms:
-        del terms[term]['parents'], terms[term]['part_of'], terms[term]['develops_from']
+        del terms[term]['parents'], terms[term]['develops_from']
         del terms[term]['has_part'], terms[term]['achieves_planned_objective']
         del terms[term]['id'], terms[term]['data'], terms[term]['data_with_develops_from']
-
+    
     terms.update(ntr_assays)
     with open('ontology.json', 'w') as outfile:
         json.dump(terms, outfile)

@@ -1,4 +1,4 @@
-from snowfort import (
+from snovault import (
     abstract_collection,
     calculated_property,
     collection,
@@ -25,6 +25,7 @@ from .shared_calculated_properties import (
 
 from itertools import chain
 import datetime
+from ..search import _ASSEMBLY_MAPPER
 
 
 def item_is_revoked(request, path):
@@ -181,14 +182,17 @@ class Dataset(Item):
         "title": "Visualize at UCSC",
         "type": "string",
     })
-    def visualize_ucsc(self, request, hub):
+    def visualize_ucsc(self, request, hub, assembly):
         hub_url = urljoin(request.resource_url(request.root), hub)
-        return (
-            'http://genome.ucsc.edu/cgi-bin/hgHubConnect'
-            '?hgHub_do_redirect=on'
-            '&hgHubConnect.remakeTrackHub=on'
-            '&hgHub_do_firstDb=1&hubUrl='
-        ) + quote_plus(hub_url, ':/@')
+        viz = {}
+        for assembly_hub in assembly:
+            ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly_hub, assembly_hub)
+            ucsc_url = (
+                'http://genome.ucsc.edu/cgi-bin/hgTracks'
+                '?hubClear='
+            ) + quote_plus(hub_url, ':/@') + '&db=' + ucsc_assembly
+            viz[assembly_hub] = ucsc_url
+        return viz
 
     @calculated_property(condition='date_released', schema={
         "title": "Month released",
@@ -300,6 +304,29 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms)
     schema = load_schema('encoded:schemas/annotation.json')
     embedded = FileSet.embedded + ['software_used', 'software_used.software', 'organism', 'targets', 'files.dataset']
 
+    matrix = {
+        'y': {
+            'facets': [
+                'organism.scientific_name',
+                'biosample_type',
+                'organ_slims',
+                'award.project',
+                'assembly',
+            ],
+            'group_by': ['biosample_type', 'biosample_term_name'],
+            'label': 'Biosample',
+        },
+        'x': {
+            'facets': [
+                'annotation_type',
+                'month_released',
+                'targets.label',
+                'files.file_type',
+            ],
+            'group_by': 'annotation_type',
+            'label': 'Type',
+        },
+    }
 
 @collection(
     name='publication-data',

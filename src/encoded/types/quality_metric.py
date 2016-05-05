@@ -1,10 +1,10 @@
-from snowfort import (
+from snovault import (
     abstract_collection,
     collection,
     calculated_property,
     load_schema,
 )
-from snowfort.attachment import ItemWithAttachment
+from snovault.attachment import ItemWithAttachment
 from .base import (
     Item,
 )
@@ -16,7 +16,7 @@ from .base import (
         'title': "Quality metrics",
         'description': 'Listing of all types of quality metric.',
     })
-class QualityMetric(ItemWithAttachment):
+class QualityMetric(ItemWithAttachment, Item):
     base_types = ['QualityMetric'] + Item.base_types
 
 
@@ -207,6 +207,7 @@ class SamtoolsStatsQualityMetric(QualityMetric):
     item_type = 'samtools_stats_quality_metric'
     schema = load_schema('encoded:schemas/samtools_stats_quality_metric.json')
 
+
 @collection(
     name='idr-quality-metrics',
     properties={
@@ -217,3 +218,13 @@ class IDRQualityMetric(QualityMetric):
     item_type = 'idr_quality_metric'
     schema = load_schema('encoded:schemas/idr_quality_metric.json')
 
+
+@collection(
+    name='generic-quality-metrics',
+    properties={
+        'title': "Generic Quality Metric",
+        'description': "Generic quality metric",
+    })
+class GenericQualityMetric(QualityMetric):
+    item_type = 'generic_quality_metric'
+    schema = load_schema('encoded:schemas/generic_quality_metric.json')

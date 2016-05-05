@@ -1,6 +1,8 @@
 [
     {
         "status": "released",
+        "lab": "/labs/robert-waterston/",
+        "award": "/awards/U41HG007355/",
         "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
         "uuid": "d0bc520f-1421-4993-9451-89f274afaa71",
         "assay_term_name": "RNA-seq",

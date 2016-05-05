@@ -2,12 +2,12 @@
 var React = require('react');
 var _ = require('underscore');
 var globals = require('./globals');
-var navbar = require('./navbar');
+var navigation = require('./navigation');
 var dataset = require('./dataset');
 var dbxref = require('./dbxref');
 var item = require('./item');
 
-var Breadcrumbs = navbar.Breadcrumbs;
+var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var ExperimentTable = dataset.ExperimentTable;
@@ -22,10 +22,11 @@ var Target = module.exports.Target = React.createClass({
         if (context.organism.name == "human") {
             geneLink = globals.dbxref_prefix_map.HGNC + context.gene_name;
         } else if (context.organism.name == "mouse") {
-            var uniProtValue = JSON.stringify(context.dbxref);
-            sep = uniProtValue.indexOf(":") + 1;
-            var uniProtID = uniProtValue.substring(sep, uniProtValue.length - 2);
-            geneLink = globals.dbxref_prefix_map.UniProtKB + uniProtID;
+            var mgiRef = _(context.dbxref).find(ref => ref.substr(0,4) === 'MGI:');
+            if (mgiRef) {
+                var base = globals.dbxref_prefix_map['MGI'];
+                geneLink = base + mgiRef;
+            }
         } else if (context.organism.name == 'dmelanogaster' || context.organism.name == 'celegans') {
             var organismPrefix = context.organism.name == 'dmelanogaster' ? 'FBgn': 'WBGene';
             var baseUrl = context.organism.name == 'dmelanogaster' ? globals.dbxref_prefix_map.FlyBase : globals.dbxref_prefix_map.WormBase;

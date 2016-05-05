@@ -185,7 +185,11 @@
             "title": "Target(s) of assay",
             "type": "array"
         },
-        "biosample_type": {
+         "targets.label": {
+            "title": "Target(s) of assay",
+            "type": "array"
+        },
+       "biosample_type": {
             "title": "Biosample type",
             "type": "string"
         },
@@ -205,6 +209,10 @@
             "title": "Software used",
             "type": "array"
         },
+        "encyclopedia_version": {
+            "title": "Encyclopedia version",
+            "type": "string"
+        },
         "lab.title": {
             "title": "Lab",
             "type": "string"
@@ -212,6 +220,9 @@
         "award.project": {
             "title": "Project",
             "type": "string"
+        },
+        "award.rfa": {
+            "title": "RFA"
         }
     },
     "columns": {

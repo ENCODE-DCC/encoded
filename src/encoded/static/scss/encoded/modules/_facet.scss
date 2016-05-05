@@ -5,17 +5,50 @@
     overflow: hidden;
 }
 
-.facets.horizontal {
-    display: table;
-    width: 100%;
-    .facet {
-        display: table-cell;
-        padding: 0 10px;
+@media screen and (max-width: $screen-sm-min) {
+    .sm-no-padding {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
     }
-    .facet[hidden] {
-        display: table-cell !important;
-        visibility: hidden;
+    .facets.horizontal .facet {
+        width: auto !important;
     }
+}
+@media screen and (min-width: $screen-sm-min) {
+    .facets.horizontal {
+        .facet {
+            width: 50% !important;
+            padding: 0 10px;
+            float: left;
+        }
+    }
+}
+@media screen and (min-width: $screen-lg-min) {
+    .facets.horizontal {
+        display: table;
+        width: 100%;
+        .facet {
+            width: initial !important;
+            display: table-cell;
+            float: none;
+        }
+        .facet[hidden] {
+            display: table-cell !important;
+            visibility: hidden;
+        }
+    }
+}
+
+.clear-filters-control {
+    margin-bottom: 5px;
+    text-align: right;
+    font-size: 0.9rem;
+}
+
+.clear-filters-control-matrix {
+    @extend .clear-filters-control;
+    text-align: center;
+    margin-top: 5px;
 }
 
 .facets h5 {
@@ -161,6 +194,11 @@
 
 div.meta-status {
     text-align: right;
+}
+
+.highlight-row {
+    font-size: 1.1rem;
+    font-weight: bold;
 }
 
 .data-row {

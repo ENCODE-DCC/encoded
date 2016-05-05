@@ -5,7 +5,7 @@ Migrate dataset type
 import logging
 import transaction
 from pyramid.paster import get_app
-from snowfort.interfaces import (
+from snovault.interfaces import (
     STORAGE,
 )
 

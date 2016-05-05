@@ -48,9 +48,16 @@ var Lightbox = module.exports.Lightbox = React.createClass({
 
 
 var Attachment = module.exports.Attachment = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object.isRequired, // Object within which the attachment is to be displayed
+        attachment: React.PropTypes.object, // Attachment object to display
+        className: React.PropTypes.string, // CSS class name to add to image element; '-img' added to it
+        show_link: React.PropTypes.bool // False to just display image preview without link or lightbox
+    },
+
     // Handle a click on the lightbox trigger (thumbnail)
     lightboxClick: function(attachmentType, e) {
-        if(attachmentType === 'image') {
+        if (attachmentType === 'image') {
             e.preventDefault();
             e.stopPropagation();
             this.setState({lightboxVisible: true});
@@ -67,7 +74,7 @@ var Attachment = module.exports.Attachment = React.createClass({
 
     // If lightbox visible, ESC key closes it
     handleEscKey: function(e) {
-        if(this.state.lightboxVisible && e.keyCode == 27) {
+        if (this.state.lightboxVisible && e.keyCode == 27) {
             this.clearLightbox();
         }
     },
@@ -83,42 +90,44 @@ var Attachment = module.exports.Attachment = React.createClass({
     },
 
     render: function() {
-        var context = this.props.context;
+        var {context, attachment, className, show_link} = this.props;
         var attachmentHref;
         var src, alt;
         var height = "100";
         var width = "100";
-        if (context.attachment && context.attachment.href && context.attachment.type) {
-            attachmentHref = url.resolve(context['@id'], context.attachment.href);
-            var attachmentType = context.attachment.type.split('/', 1)[0];
-            if (attachmentType == 'image' && context.attachment.type != 'image/tiff') {
-                var imgClass = this.props.className ? this.props.className + '-img' : '';
+        if (attachment && attachment.href && attachment.type) {
+            attachmentHref = url.resolve(context['@id'], attachment.href);
+            var attachmentType = attachment.type.split('/', 1)[0];
+            if (attachmentType == 'image' && attachment.type != 'image/tiff') {
+                var imgClass = className ? className + '-img' : '';
                 src = attachmentHref;
-                height = context.attachment.height || 100;
-                width = context.attachment.width || 100;
+                height = attachment.height || 100;
+                width = attachment.width || 100;
                 alt = "Attachment Image";
-                if (this.props.show_link === false) {
+                if (show_link === false) {
                     return <img className={imgClass} src={src} height={height} width={width} alt={alt} />;
                 } else {
                     return (
-                        <div className="attachment">
-                            <a data-bypass="true" href={attachmentHref} onClick={this.lightboxClick.bind(this, attachmentType)}>
-                                <img className={imgClass} src={src} height={height} width={width} alt={alt} />
-                            </a>
+                        <div>
+                            <div className="attachment">
+                                <a className="attachment-button" data-bypass="true" href={attachmentHref} onClick={this.lightboxClick.bind(this, attachmentType)}>
+                                    <img className={imgClass} src={src} height={height} width={width} alt={alt} />
+                                </a>
+                            </div>
                             <Lightbox lightboxVisible={this.state.lightboxVisible} lightboxImg={attachmentHref} clearLightbox={this.clearLightbox} />
                         </div>
                     );
                 }
-            } else if (context.attachment.type == "application/pdf"){
+            } else if (attachment.type == "application/pdf"){
                 return (
                     <div className="attachment">
-                        <a data-bypass="true" href={attachmentHref} className="file-pdf">Attachment PDF Icon</a>
+                        <a data-bypass="true" href={attachmentHref} className="attachment-button file-pdf">Attachment PDF Icon</a>
                     </div>
                 );
             } else {
                 return (
                     <div className="attachment">
-                        <a data-bypass="true" href={attachmentHref} className="file-generic">Attachment Icon</a>
+                        <a data-bypass="true" href={attachmentHref} className="attachment-button file-generic">Attachment Icon</a>
                     </div>
                 );
             }
@@ -137,7 +146,7 @@ var Image = React.createClass({
     render: function() {
         return (
             <figure>
-                <Attachment context={this.props.context} show_link={false} />
+                <Attachment context={this.props.context} attachment={this.props.context.attachment} show_link={false} />
                 <figcaption>{this.props.context.caption}</figcaption>
             </figure>
         );
@@ -188,7 +197,7 @@ var ProjectBadge = module.exports.ProjectBadge = React.createClass({
             imageClass: 'badge-ggr',
             alt: 'Genomics of Gene Regulation Project'
         },
-        'ENCODE2-mouse': {
+        'ENCODE2-Mouse': {
             imageClass: 'badge-mouseencode',
             alt: 'ENCODE Mouse Project'
         }
@@ -196,9 +205,9 @@ var ProjectBadge = module.exports.ProjectBadge = React.createClass({
 
     render: function() {
         var award = this.props.award;
-        var project = award.project;
+        var project = award.rfa;
         var projectMeta = this.projectMap[project];
-        var imageClass = projectMeta.imageClass + (this.props.addClasses ? (' ' + this.props.addClasses) : '');
+        var imageClass = projectMeta ? projectMeta.imageClass + (this.props.addClasses ? (' ' + this.props.addClasses) : '') : '';
 
         if (projectMeta) {
             return <div className={imageClass}><span className="sr-only">{projectMeta.alt}</span></div>;

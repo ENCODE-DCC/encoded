@@ -1,4 +1,4 @@
-from snowfort import (
+from snovault import (
     AuditFailure,
     audit_checker,
 )
@@ -46,7 +46,7 @@ def audit_antibody_characterization_review(value, system):
                                                                             term_name,
                                                                             ontology_term_name)
 
-                yield AuditFailure('mismatched term_name', detail, level='ERROR')
+                yield AuditFailure('mismatched ontology term', detail, level='ERROR')
                 return
             biosample_prefix = term_id.split(':')[0]
             if biosample_prefix not in biosampleType_ontologyPrefix[review['biosample_type']]:
@@ -170,7 +170,7 @@ def audit_antibody_characterization_status(value, system):
                 value['@id'],
                 value['status']
                 )
-            raise AuditFailure('mismatched lane status', detail, level='WARNING')
+            raise AuditFailure('mismatched lane status', detail, level='DCC_ACTION')
             continue
 
         if lane['lane_status'] == 'compliant':
@@ -205,4 +205,4 @@ def audit_antibody_characterization_method_allowed(value, system):
             value['secondary_characterization_method'],
             value['@id']
             )
-        raise AuditFailure('unapproved char method', detail, level='NOT_COMPLIANT')
+        raise AuditFailure('antibody characterized by unapproved method', detail, level='NOT_COMPLIANT')

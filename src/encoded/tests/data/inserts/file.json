@@ -400,7 +400,7 @@
         }],
         "lab":"j-michael-cherry",
         "md5sum": "5dd317654eb81f577a0f78745a3c8e66",
-        "output_type": "reads",
+        "output_type": "rejected reads",
         "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
         "replicate": "401d9e79-8a0a-42ed-ad1b-1d274fd0b8cb",
         "status": "in progress",
@@ -424,7 +424,7 @@
         }],
         "lab":"j-michael-cherry",
         "md5sum": "4c646fa9b822b7f52f9c2c5a9da0f5e3",
-        "output_type": "reads",
+        "output_type": "rejected reads",
         "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
         "replicate": "401d9e79-8a0a-42ed-ad1b-1d274fd0b8cb",
         "status": "in progress",
@@ -1813,5 +1813,21 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "file_size": 1726244936,
         "uuid": "244436f5-aa0f-46a0-a97c-1ff6983b1740"
+    },
+    {
+        "_test": "vcf file",
+        "submitted_file_name": "Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz",
+        "file_format": "vcf",
+        "status": "in progress",
+        "output_type": "reference variants",
+        "dataset": "/experiments/ENCSR000EYX/",
+        "accession": "ENCFF001VCF",
+        "award": "/awards/U54HG006996/",
+        "md5sum": "84c331bb51aad4r3ye43ba5d1396f6ded8ae832",
+        "assembly": "hg19",
+        "lab": "/labs/michael-snyder/",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "file_size": 8373638,
+        "uuid": "ba0c3914-82dd-48fb-b7f5-5a8298878b49"
     }
 ]

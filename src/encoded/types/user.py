@@ -11,15 +11,15 @@ from pyramid.security import (
 from .base import (
     Item,
 )
-from snowfort import (
+from snovault import (
     CONNECTION,
     calculated_property,
     collection,
     load_schema,
 )
-from snowfort.calculated import calculate_properties
-from snowfort.resource_views import item_view_object
-from snowfort.util import expand_path
+from snovault.calculated import calculate_properties
+from snovault.resource_views import item_view_object
+from snovault.util import expand_path
 
 
 ONLY_ADMIN_VIEW_DETAILS = [

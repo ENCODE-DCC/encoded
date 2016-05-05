@@ -3,7 +3,7 @@ var React = require('react');
 var jsonScriptEscape = require('../libs/jsonScriptEscape');
 var globals = require('./globals');
 var mixins = require('./mixins');
-var NavBar = require('./navbar');
+var Navigation = require('./navigation');
 var Footer = require('./footer');
 var fs = require('fs');
 var url = require('url');
@@ -12,33 +12,34 @@ var portal = {
     portal_title: 'ENCODE',
     global_sections: [
         {id: 'data', title: 'Data', children: [
-            {id: 'assays', title: 'Assays', url: '/search/?type=Experiment'},
-            {id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample'},
-            {id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot'},
-            {id: 'annotations', title: 'Annotations', url: '/data/annotations/'},
-            {id: 'datarelease', title: 'Release policy', url: '/about/data-use-policy/'},
-//            {id: 'region-search', title: 'Search by region', url: '/region-search/'}
+            {id: 'assaymatrix', title: 'Matrix', url: '/matrix/?type=Experiment'},
+            {id: 'assaysearch', title: 'Search', url: '/search/?type=Experiment'},
+            {id: 'region-search', title: 'Search by region', url: '/region-search/'},
+            {id: 'publications', title: 'Publications', url: '/publications/'}
         ]},
-        {id: 'methods', title: 'Methods', children: [
-            {id: 'datastandards', title: 'Data standards', url: '/data-standards/'},
+        {id: 'encyclopedia', title: 'Encyclopedia', children: [
+            {id: 'aboutannotations', title: 'About', url: '/data/annotations/'},
+            {id: 'annotationmatrix', title: 'Matrix', url: '/matrix/?type=Annotation'},
+            {id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation'}
+        ]},
+        {id: 'materialsmethods', title: 'Materials & Methods', children: [
+            {id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot'},
+            {id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample'},
+            {id: 'datastandards', title: 'Standards and guidelines', url: '/data-standards/'},
+            {id: 'ontologies', title: 'Ontologies', url: '/help/getting-started/#Ontologies'},
+            {id: 'fileformats', title: 'File formats', url: '/help/file-formats/'},
             {id: 'softwaretools', title: 'Software tools', url: '/software/'},
             {id: 'pipelines', title: 'Pipelines', url: '/pipelines/'},
-            {id: 'experimentguides', title: 'Experiment guidelines', url: '/about/experiment-guidelines/'}
-        ]},
-        {id: 'about', title: 'About', children: [
-            {id: 'projectoverview', title: 'Project overview', url: '/about/contributors/'},
-            {id: 'news', title: 'News', url: '/news'},
-            {id: 'publications', title: 'Publications', url: '/publications/'},
             {id: 'datause', title: 'Release policy', url: '/about/data-use-policy/'},
-            {id: 'dataaccess', title: 'Data access', url: '/about/data-access/'},
-            {id: 'acknowledgements', title: 'Acknowledgements', url: '/acknowledgements/'}
+            {id: 'dataaccess', title: 'Data access', url: '/about/data-access/'}
         ]},
         {id: 'help', title: 'Help', children: [
             {id: 'gettingstarted', title: 'Getting started', url: '/help/getting-started/'},
             {id: 'restapi', title: 'REST API', url: '/help/rest-api/'},
-            {id: 'fileformats', title: 'File formats', url: '/help/file-formats/'},
-            {id: 'ontologies', title: 'Ontologies', url: '/help/getting-started/#Ontologies'},
+            {id: 'projectoverview', title: 'Project overview', url: '/about/contributors/'},
             {id: 'tutorials', title: 'Tutorials', url: '/tutorials/'},
+            {id: 'news', title: 'News', url: '/news'},
+            {id: 'acknowledgements', title: 'Acknowledgements', url: '/acknowledgements/'},
             {id: 'contact', title: 'Contact', url: '/help/contacts/'}
         ]}
     ]
@@ -67,7 +68,7 @@ var App = React.createClass({
     triggers: {
         login: 'triggerLogin',
         profile: 'triggerProfile',
-        logout: 'triggerLogout',
+        logout: 'triggerLogout'
     },
 
     getInitialState: function() {
@@ -84,7 +85,8 @@ var App = React.createClass({
         currentResource: React.PropTypes.func,
         location_href: React.PropTypes.string,
         onDropdownChange: React.PropTypes.func,
-        portal: React.PropTypes.object
+        portal: React.PropTypes.object,
+        hidePublicAudits: React.PropTypes.bool
     },
 
     // Retrieve current React context
@@ -95,7 +97,8 @@ var App = React.createClass({
             currentResource: this.currentResource,
             location_href: this.props.href,
             onDropdownChange: this.handleDropdownChange, // Function to process dropdown state change
-            portal: portal
+            portal: portal,
+            hidePublicAudits: true // True if audits should be hidden on the UI while logged out
         };
     },
 
@@ -257,7 +260,7 @@ var App = React.createClass({
                         <div className="loading-spinner"></div>
 
                             <div id="layout" onClick={this.handleLayoutClick} onKeyPress={this.handleKey}>
-                                <NavBar />
+                                <Navigation />
                                 <div id="content" className="container" key={key}>
                                     {content}
                                 </div>

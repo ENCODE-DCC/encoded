@@ -1,10 +1,11 @@
 'use strict';
 var React = require('react');
 var panel = require('../libs/bootstrap/panel');
+var button = require('../libs/bootstrap/button');
 var _ = require('underscore');
 var moment = require('moment');
 var graph = require('./graph');
-var navbar = require('./navbar');
+var navigation = require('./navigation');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
@@ -19,10 +20,9 @@ var sortTable = require('./sorttable');
 var objectutils = require('./objectutils');
 var doc = require('./doc');
 
-var Breadcrumbs = navbar.Breadcrumbs;
+var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
-var FileTable = dataset.FileTable;
-var UnreleasedFiles = dataset.UnreleasedFiles;
+var {DatasetFiles, FilePanelHeader, ExperimentTable} = dataset;
 var FetchedItems = fetched.FetchedItems;
 var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
@@ -31,12 +31,11 @@ var {AuditMixin, AuditIndicators, AuditDetail} = audit;
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
 var PubReferenceList = reference.PubReferenceList;
-var ExperimentTable = dataset.ExperimentTable;
 var SingleTreatment = objectutils.SingleTreatment;
 var SoftwareVersionList = software.SoftwareVersionList;
 var {SortTablePanel, SortTable} = sortTable;
 var ProjectBadge = image.ProjectBadge;
-var DocumentsPanel = doc.DocumentsPanel;
+var {DocumentsPanel, AttachmentPanel} = doc;
 var {Panel, PanelBody, PanelHeading} = panel;
 
 
@@ -194,7 +193,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                     }
                     return null;
                 }
-            }
+            };
         }
 
         // Build the text of the Treatment, synchronization, and mutatedGene string arrays; collect biosample docs
@@ -233,7 +232,7 @@ var Experiment = module.exports.Experiment = React.createClass({
             if (biosample.talens && biosample.talens.length) {
                 biosample.talens.forEach(talen => {
                     if (talen.documents && talen.documents.length) {
-                        Array.prototype.push.apply(biosampleTalenDocs, talen.documents)
+                        Array.prototype.push.apply(biosampleTalenDocs, talen.documents);
                     }
                 });
             }
@@ -257,8 +256,8 @@ var Experiment = module.exports.Experiment = React.createClass({
             }
 
             // Collect donor documents
-            if (biosample.donor && biosample.donor.donor_documents && biosample.donor.donor_documents.length) {
-                Array.prototype.push.apply(biosampleDonorDocs, biosample.donor.donor_documents);
+            if (biosample.donor && biosample.donor.documents && biosample.donor.documents.length) {
+                Array.prototype.push.apply(biosampleDonorDocs, biosample.donor.documents);
             }
 
             // Collect donor characterizations
@@ -315,19 +314,10 @@ var Experiment = module.exports.Experiment = React.createClass({
         });
 
         // Determine this experiment's ENCODE version
-        var encodevers = "";
-        if (context.award.rfa) {
-            encodevers = globals.encodeVersionMap[context.award.rfa.substring(0,7)];
-            if (typeof encodevers === "undefined") {
-                encodevers = "";
-            }
-        }
+        var encodevers = globals.encodeVersion(context);
 
         // Make list of statuses
         var statuses = [{status: context.status, title: "Status"}];
-        if (encodevers === "3" && context.status === "released") {
-            statuses.push({status: "pending", title: "Validation"});
-        }
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
@@ -410,7 +400,12 @@ var Experiment = module.exports.Experiment = React.createClass({
                                 <dl className="key-value">
                                     <div data-test="assay">
                                         <dt>Assay</dt>
-                                        <dd>{context.assay_term_name}</dd>
+                                        <dd>
+                                            {context.assay_term_name}
+                                            {context.assay_term_name !== context.assay_title ?
+                                                <span>{' (' + context.assay_title + ')'}</span>
+                                            : null}
+                                        </dd>
                                     </div>
 
                                     {context.target ?
@@ -542,6 +537,13 @@ var Experiment = module.exports.Experiment = React.createClass({
                                             <dd><RelatedSeriesList seriesList={seriesList} /></dd>
                                         </div>
                                     : null}
+
+                                    {context.submitter_comment ?
+                                        <div data-test="submittercomment">
+                                            <dt>Submitter comment</dt>
+                                            <dd>{context.submitter_comment}</dd>
+                                        </div>
+                                    : null}
                                 </dl>
                             </div>
                         </div>
@@ -552,29 +554,15 @@ var Experiment = module.exports.Experiment = React.createClass({
                     <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
                 : null}
 
-                {context.visualize_ucsc  && context.status == "released" ?
-                    <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
-                    </span>
-                : null }
-
-                <FetchedData>
+                <FetchedData ignoreErrors>
                     <Param name="data" url={dataset.unreleased_files_url(context)} />
                     <ExperimentGraph context={context} session={this.context.session} />
                 </FetchedData>
 
-                {context.files.length ?
-                    <div>
-                        <h3>Files linked to {context.accession}</h3>
-                        <FileTable items={context.files} encodevers={encodevers} anisogenic={anisogenic} />
-                    </div>
-                : null }
+                {/* Display list of released and unreleased files */}
+                <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} session={this.context.session} ignoreErrors />
 
-                {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} anisogenic={anisogenic} />
-                : null}
-
-                <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} />
+                <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} ignoreErrors />
 
                 <DocumentsPanel documentSpecs={[{documents: combinedDocuments}]} />
             </div>
@@ -691,8 +679,8 @@ var ReplicateTable = React.createClass({
         }
 
         return (
-            <SortTablePanel>
-                <SortTable title={tableTitle} list={condensedReplicates} columns={this.replicateColumns} />
+            <SortTablePanel title={tableTitle}>
+                <SortTable list={condensedReplicates} columns={this.replicateColumns} />
             </SortTablePanel>
         );
     }
@@ -703,13 +691,16 @@ var ControllingExperiments = React.createClass({
     render: function () {
         var context = this.props.context;
 
-        return (
-            <div>
-                <ExperimentTable {...this.props}
-                    items={this.props.items} limit={5} url={this.props.url}
-                    title={'Experiments with ' + context.accession + ' as a control:'} />
-            </div>
-        );
+        if (this.props.items && this.props.items.length) {
+            return (
+                <div>
+                    <ExperimentTable {...this.props}
+                        items={this.props.items} limit={5} url={this.props.url}
+                        title={'Experiments with ' + context.accession + ' as a control:'} />
+                </div>
+            );
+        }
+        return null;
     }
 });
 
@@ -934,7 +925,7 @@ var RelatedSeriesList = React.createClass({
             currInfoItem: '', // Accession of item whose detail info appears; empty string to display no detail info
             touchScreen: false, // True if we know we got a touch event; ignore clicks without touch indiciation
             clicked: false // True if info button was clicked (vs hovered)
-        }
+        };
     },
 
     // Handle the mouse entering/existing an info icon. Ignore if the info tooltip is open because the icon had
@@ -954,12 +945,10 @@ var RelatedSeriesList = React.createClass({
         if (touch && !currTouchScreen) {
             currTouchScreen = true;
             this.setState({touchScreen: true});
-            console.log('SET TOUCHSCREEN TRUE');
         }
 
         // Now handle the click. Ignore if we know we have a touch screen, but this wasn't a touch event
         if (!currTouchScreen || touch) {
-            console.log('STAT: %s:%o', currTouchScreen, touch);
             if (this.state.currInfoItem === series.accession && this.state.clicked) {
                 this.setState({currInfoItem: '', clicked: false});
             } else {
@@ -1000,7 +989,7 @@ var RelatedSeriesItem = React.createClass({
     getInitialState: function() {
         return {
             touchOn: false // True if icon has been touched
-        }
+        };
     },
 
     // Touch screen
@@ -1115,7 +1104,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
     var allPipelines = {}; // List of all pipelines indexed by step @id
     var allMetricsInfo = []; // List of all QC metrics found attached to files
     var fileQcMetrics = {}; // List of all file QC metrics indexed by file ID
-    var filterOptions = {}; // List of graph filters; annotations and assemblies
+    var filterOptions = []; // List of graph filters; annotations and assemblies
     var stepExists = false; // True if at least one file has an analysis_step
     var fileOutsideReplicate = false; // True if at least one file exists outside a replicate
     var abortGraph = false; // True if graph shouldn't be drawn
@@ -1253,11 +1242,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
 
         // Add to the filtering options to generate a <select>; don't include island files
         if (!islandFile && file.output_category !== 'raw data' && file.assembly) {
-            if (file.genome_annotation) {
-                filterOptions[file.assembly + '-' + file.genome_annotation] = file.assembly + ' ' + file.genome_annotation;
-            } else {
-                filterOptions[file.assembly] = file.assembly;
-            }
+            filterOptions.push({assembly: file.assembly, annotation: file.genome_annotation});
         }
     });
 
@@ -1479,7 +1464,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
         }
     }, this);
 
-    jsonGraph.filterOptions = filterOptions;
+    jsonGraph.filterOptions = filterOptions.length ? _(filterOptions).uniq(option => option.assembly + '!' + (option.annotation ? option.annotation : '')) : [];
     return jsonGraph;
 };
 
@@ -1489,10 +1474,25 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
     getInitialState: function() {
         return {
             infoNodeId: '', // @id of node whose info panel is open
-            selectedAssembly: '', // Value of selected mapping assembly filter
-            selectedAnnotation: '' // Value of selected genome annotation filter
+            selectedFilterValue: '' // <select> value of selected filter
         };
     },
+
+    // Order that assemblies should appear in filtering menu
+    assemblyPriority: [
+        'GRCh38',
+        'hg19',
+        'mm10',
+        'mm9',
+        'ce11',
+        'ce10',
+        'dm6',
+        'dm3',
+        'J02459.1'
+    ],
+
+    // Holds filtering option objects ({assembly: x, annotation: y}) in sorted order
+    sortedFilterOptions: [],
 
     // Render metadata if a graph node is selected.
     // jsonGraph: JSON graph data.
@@ -1525,17 +1525,46 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         this.setState({infoNodeId: this.state.infoNodeId !== nodeId ? nodeId : ''});
     },
 
-    handleFilterChange: function(e) {
-        var value = e.target.value;
-        if (value !== 'default') {
-            var filters = value.split('-');
-            this.setState({selectedAssembly: filters[0], selectedAnnotation: filters[1]});
-        } else {
-            this.setState({selectedAssembly: '', selectedAnnotation: ''});
+    // Set the graph filter based on the given <option> value
+    setFilter: function(value) {
+        if (value === 'default') {
+            value = '';
         }
+        this.setState({selectedFilterValue: value});
+    },
+
+    // React to a filter menu selection. The synthetic event given in `e`
+    handleFilterChange: function(e) {
+        this.setFilter(e.target.value);
+    },
+
+    // Set the default filter after the graph has been analayzed once.
+    componentDidMount: function() {
+        this.setFilter('0');
+    },
+
+    componentWillUnmount: function() {
+        this.sortedFilterOptions = [];
+    },
+
+    // Given a filterOptions array [{annotation: x, assembly: x}], pre-sort the annotations so that assembly sorting
+    // becomes the primary key, and the annotion becomes the secondary.
+    sortAnnotations: function(filterOptions) {
+        var sortedFilterOptions = _(filterOptions).sortBy(option => {
+            if (option.annotation) {
+                var annotationMatch = option.annotation.match(/^[A-Z]+(\d+).*$/);
+                if (annotationMatch) {
+                    return Number(annotationMatch[1]);
+                }
+            }
+            return null;
+        });
+        return sortedFilterOptions.reverse();
     },
 
     render: function() {
+        var selectedAssembly = '';
+        var selectedAnnotation = '';
         var {context, session, data} = this.props;
         var items = data ? data['@graph'] : [];
         var files = context.files.concat(items);
@@ -1544,14 +1573,22 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         if (files && files.length) {
             // Build the graph; place resulting graph in this.jsonGraph
             var filterOptions = {};
+            if (this.state.selectedFilterValue && this.sortedFilterOptions[this.state.selectedFilterValue]) {
+                selectedAssembly = this.sortedFilterOptions[this.state.selectedFilterValue].assembly;
+                selectedAnnotation = this.sortedFilterOptions[this.state.selectedFilterValue].annotation;
+            }
             try {
-                this.jsonGraph = assembleGraph(context, session, this.state.infoNodeId, files, this.state.selectedAssembly, this.state.selectedAnnotation);
+                this.jsonGraph = assembleGraph(context, session, this.state.infoNodeId, files, selectedAssembly, selectedAnnotation);
             } catch(e) {
                 this.jsonGraph = null;
                 console.warn(e.message + (e.file0 ? ' -- file0:' + e.file0 : '') + (e.file1 ? ' -- file1:' + e.file1: ''));
             }
             var goodGraph = this.jsonGraph && Object.keys(this.jsonGraph).length;
-            filterOptions = goodGraph && this.jsonGraph.filterOptions;
+            filterOptions = (goodGraph && this.jsonGraph.filterOptions) ? this.jsonGraph.filterOptions : [];
+
+            // Sort filtering menu to an order specified by this.assemblyPriority. Sort by annotation and then by assembly so that
+            // annotation is the secondary key.
+            this.sortedFilterOptions = _(this.sortAnnotations(filterOptions)).sortBy(item => _(this.assemblyPriority).indexOf(item.assembly));
 
             // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
             if (goodGraph || this.state.selectedAssembly || this.state.selectedAnnotation) {
@@ -1561,14 +1598,12 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                         <h3>Files generated by pipeline</h3>
                         {filterOptions && Object.keys(filterOptions).length ?
                             <div className="form-inline">
-                                <select className="form-control" defaultValue="default" onChange={this.handleFilterChange}>
+                                <select className="form-control" defaultValue="0" onChange={this.handleFilterChange}>
                                     <option value="default" key="title">All Assemblies and Annotations</option>
                                     <option disabled="disabled"></option>
-                                    {Object.keys(filterOptions).map(function(option) {
-                                        return (
-                                            <option key={option} value={option}>{filterOptions[option]}</option>
-                                        );
-                                    })}
+                                    {this.sortedFilterOptions.map((option, i) =>
+                                        <option key={i} value={i}>{option.assembly + (option.annotation ? ' ' + option.annotation : '')}</option>
+                                    )}
                                 </select>
                             </div>
                         : null}
@@ -1636,8 +1671,6 @@ var FileDetailView = function(node) {
                     <div data-test="bioreplicate">
                         <dt>Biological replicate(s)</dt>
                         <dd>{'[' + selectedFile.replicate.biological_replicate_number + ']'}</dd>
-                        <dt>Technical Replicate</dt>
-                        <dd>{selectedFile.replicate.technical_replicate_number}</dd>
                     </div>
                 : selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
                     <div data-test="bioreplicate">
@@ -1720,29 +1753,115 @@ var FileDetailView = function(node) {
 globals.graph_detail.register(FileDetailView, 'File');
 
 
+// For each type of quality metric, make a list of attachment properties. If the quality_metric object has an attachment
+// property called `attachment`, it doesn't need to be added here -- this is only for attachment properties with arbitrary names.
+// Each property in the list has an associated human-readable description for display on the page.
+var qcAttachmentProperties = {
+    'IDRQualityMetric': [
+        {'IDR_plot_true': 'IDR dispersion plot for true replicates'},
+        {'IDR_plot_rep1_pr': 'IDR dispersion plot for replicate 1 pseudo-replicates'},
+        {'IDR_plot_rep2_pr': 'IDR dispersion plot for replicate 2 pseudo-replicates'},
+        {'IDR_plot_pool_pr': 'IDR dispersion plot for pool pseudo-replicates'},
+        {'IDR_parameters_true': 'IDR run parameters for true replicates'},
+        {'IDR_parameters_rep1_pr': 'IDR run parameters for replicate 1 pseudo-replicates'},
+        {'IDR_parameters_rep2_pr': 'IDR run parameters for replicate 2 pseudo-replicates'},
+        {'IDR_parameters_pool_pr': 'IDR run parameters for pool pseudo-replicates'}
+    ],
+    'ChipSeqFilterQualityMetric': [
+        {'cross_correlation_plot': 'Cross-correlation plot'}
+    ]
+};
+
+// List of quality metric properties to not display
+var qcReservedProperties = ['uuid', 'assay_term_name', 'assay_term_id', 'attachment', 'award', 'lab', 'submitted_by', 'level', 'status', 'date_created', 'step_run', 'schema_version'];
+
 // Display QC metrics of the selected QC sub-node in a file node.
 var QcDetailsView = function(metrics) {
-    // QC metrics properties to NOT display.
-    var reserved = ['uuid', 'assay_term_name', 'assay_term_id', 'attachment', 'submitted_by', 'level', 'status', 'date_created', 'step_run', 'schema_version'];
-    var sortedKeys = Object.keys(metrics.ref).sort();
-
     if (metrics) {
+        var qcPanels = []; // Each QC metric panel to display
+        var id2accessionRE = /\/\w+\/(\w+)\//;
+        var filesOfMetric = []; // Array of accessions of files that share this metric
+
+        // Make an array of the accessions of files that share this quality metrics object.
+        // quality_metric_of is an array of @ids because they're not embedded, and we're trying
+        // to avoid embedding where not absolutely needed. So use a regex to extract the files'
+        // accessions from the @ids. After generating the array, filter out empty entries.
+        if (metrics.ref.quality_metric_of && metrics.ref.quality_metric_of.length) {
+            filesOfMetric = metrics.ref.quality_metric_of.map(metricId => {
+                // Extract the file's accession from the @id
+                var match = id2accessionRE.exec(metricId);
+
+                // Return matches that *don't* match the file whose QC node we've clicked
+                if (match && (match[1] !== metrics.parent.accession)) {
+                    return match[1];
+                }
+                return '';
+            }).filter(acc => !!acc);
+        }
+
+        // Filter out QC metrics properties not to display based on the qcReservedProperties list, as well as those properties with keys
+        // beginning with '@'. Sort the list of property keys as well.
+        var sortedKeys = Object.keys(metrics.ref).filter(key => key[0] !== '@' && qcReservedProperties.indexOf(key) === -1).sort();
+
+        // Get the list of attachment properties for the given qc object @type. and generate the JSX for their display panels.
+        // The list of keys for attachment properties to display comes from qcAttachmentProperties. Use the @type for the attachment
+        // property as a key to retrieve the list of properties appropriate for that QC type.
+        var qcAttachmentPropertyList = qcAttachmentProperties[metrics.ref['@type'][0]];
+        if (qcAttachmentPropertyList) {
+            qcPanels = qcAttachmentPropertyList.map(attachmentPropertyInfo => {
+                // Each object in the list has only one key (the metric attachment property name), so get it here.
+                var attachmentPropertyName = Object.keys(attachmentPropertyInfo)[0];
+
+                // Generate the JSX for the panel. Use the property name as the key to get the corresponding human-readable description for the title
+                return <AttachmentPanel context={metrics.ref} attachment={metrics.ref[attachmentPropertyName]} title={attachmentPropertyInfo[attachmentPropertyName]} />;
+            });
+        }
+
+        // Convert the QC metric object @id to a displayable string
+        var qcName = metrics.ref['@id'].match(/^\/([a-z0-9-]*)\/.*$/i);
+        if (qcName && qcName[1]) {
+            qcName = qcName[1].replace(/-/g, ' ');
+        }
+
         return (
             <div>
-                <h4 className="quality-metrics-title">Quality metrics of {metrics.parent.accession}</h4>
-                <dl className="key-value-flex">
-                    {sortedKeys.map(function(key) {
-                        if ((typeof metrics.ref[key] === 'string' || typeof metrics.ref[key] === 'number') && key[0] !== '@' && reserved.indexOf(key) === -1) {
-                            return(
-                                <div key={key}>
-                                    <dt>{key}</dt>
-                                    <dd>{metrics.ref[key]}</dd>
-                                </div>
-                            );
-                        }
-                        return null;
-                    })}
-                </dl>
+                <div className="quality-metrics-header">
+                    <div className="quality-metrics-info">
+                        <h4>Quality metric of {metrics.parent.accession}</h4>
+                        {filesOfMetric.length ? <h5>Shared with {filesOfMetric.join(', ')}</h5> : null}
+                    </div>
+                    {qcName ?
+                        <div className="quality-metrics-type">
+                            {qcName}
+                        </div>
+                    : null}
+                </div>
+                <div className="row">
+                    <div className="col-md-4 col-sm-6 col-xs-12">
+                        <dl className="key-value-flex">
+                            {sortedKeys.map(key => 
+                                (typeof metrics.ref[key] === 'string' || typeof metrics.ref[key] === 'number') ?
+                                    <div key={key}>
+                                        <dt>{key}</dt>
+                                        <dd>{metrics.ref[key]}</dd>
+                                    </div>
+                                : null
+                            )}
+                        </dl>
+                    </div>
+
+                    <div className="col-md-8 col-sm-12 quality-metrics-attachments">
+                        <h5>Quality metric attachments</h5>
+                        <div className="row">
+                            {/* If the metrics object has an `attachment` property, display that first, then display the properties
+                                not named `attachment` but which have their own schema attribute, `attachment`, set to true */}
+                            {metrics.ref.attachment ?
+                                <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} />
+                            : null}
+                            {qcPanels}
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     } else {
