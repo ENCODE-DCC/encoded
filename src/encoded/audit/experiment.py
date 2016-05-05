@@ -949,7 +949,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                 yield AuditFailure('insufficient read depth',
                                    detail, level='NOT_COMPLIANT')
         else:
-            if read_depth >= marks['narrow'] and read_depth < marks['broad']:
+            if read_depth >= 40000000 and read_depth < marks['broad']:
                 detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                              read_depth) + \
                          'usable fragments. Replicates for ChIP-seq ' + \
@@ -957,16 +957,15 @@ def check_file_chip_seq_read_depth(file_to_check,
                          'investigated as broad histone mark require ' + \
                          '{} usable fragments, according to '.format(marks['broad']) + \
                          'June 2015 standards.'
-                yield AuditFailure('low read depth', detail, level='NOT_COMPLIANT')
-            elif read_depth < marks['narrow']:
+                yield AuditFailure('low read depth', detail, level='WARNING')
+            elif read_depth < 40000000:
                 detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                              read_depth) + \
                          'usable fragments. Replicates for ChIP-seq ' + \
                          'assays and target {} '.format(target_name) + \
                          'investigated as broad histone mark require ' + \
                          '{} usable fragments, according to '.format(marks['broad']) + \
-                         'June 2015 standards, and 20000000 usable fragments according to' + \
-                         ' ENCODE2 standards.'
+                         'June 2015 standards.'
                 yield AuditFailure('insufficient read depth',
                                    detail, level='NOT_COMPLIANT')
     elif 'narrow histone mark' in target_investigated_as:
