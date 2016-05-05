@@ -217,7 +217,7 @@ var Graph = module.exports.Graph = React.createClass({
         var svg = d3.select(el).select('svg');
 
         // Clear `width` and `height` attributes if they exist
-        svg.attr('width', null).attr('height', null);
+        svg.attr('width', null).attr('height', null).attr('viewBox', null);
 
         // Create a new empty graph
         var g = new dagreD3.graphlib.Graph({multigraph: true, compound: true})
