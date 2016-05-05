@@ -191,10 +191,6 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
                            libraryObject['size_range'] == '<200':
                             preferred_name = 'small RNA-seq'
                             break
-                        elif 'nucleic_acid_starting_quantity_units' in libraryObject and \
-                             libraryObject['nucleic_acid_starting_quantity_units'] == 'pg':
-                            preferred_name = 'low input RNA-seq'
-                            break
                         elif 'depleted_in_term_name' in libraryObject and \
                              'polyadenylated mRNA' in libraryObject['depleted_in_term_name']:
                             preferred_name = 'polyA depleted RNA-seq'
