@@ -142,6 +142,7 @@ module.exports.dbxref_prefix_map = {
     "GeneID": "http://www.ncbi.nlm.nih.gov/gene/",
     "GEO": "http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=",
     "GEOSAMN": "http://www.ncbi.nlm.nih.gov/biosample/",
+    "IHEC": "http://www.ebi.ac.uk/vg/epirr/view/",
     "Caltech": "http://jumpgate.caltech.edu/library/",
     "Cellosaurus": "http://web.expasy.org/cellosaurus/",
     "FlyBase": "http://flybase.org/cgi-bin/quicksearch_solr.cgi?caller=quicksearch&tab=basic_tab&data_class=FBgn&species=Dmel&search_type=all&context=",
