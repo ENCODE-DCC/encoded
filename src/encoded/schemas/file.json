@@ -165,6 +165,7 @@
                     "enum": [
                         "bed3",
                         "bed3+",
+                        "bed5",
                         "bed6",
                         "bed6+",
                         "bed9",
