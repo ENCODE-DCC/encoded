@@ -85,7 +85,7 @@ var EditForm = module.exports.EditForm = React.createClass({
             'brace',
             'brace/mode/json',
             'brace/theme/solarized_light'
-        ], function(require) {
+        ], (require) => {
             var ace = require('brace');
             require('brace/mode/json');
             require('brace/theme/solarized_light');
@@ -157,6 +157,5 @@ var EditForm = module.exports.EditForm = React.createClass({
         if (!erred) this.context.navigate('');
     }
 });
-
 
 globals.content_views.register(ItemEdit, 'Item', 'edit-json');
