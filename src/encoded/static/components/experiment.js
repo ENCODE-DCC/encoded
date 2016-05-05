@@ -315,7 +315,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
         // Determine this experiment's ENCODE version
         var encodevers = globals.encodeVersion(context);
-    
+
         // Make list of statuses
         var statuses = [{status: context.status, title: "Status"}];
 
