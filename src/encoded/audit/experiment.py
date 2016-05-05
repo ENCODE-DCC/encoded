@@ -773,18 +773,12 @@ def check_file_chip_seq_library_complexity(alignment_file):
                          '. '+pbc1_end_of_detail
                 yield AuditFailure('severe bottlenecking', detail,
                                    level='NOT_COMPLIANT')
-            elif PBC1_value >= 0.5 and PBC1_value < 0.8:
+            elif PBC1_value >= 0.5 and PBC1_value < 0.9:
                 detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
                          'was generated from a library with PBC1 value of {}'.format(PBC1_value) + \
                          '. '+pbc1_end_of_detail
-                yield AuditFailure('moderate bottlenecking', detail,
-                                   level='NOT_COMPLIANT')
-            elif PBC1_value >= 0.8 and PBC1_value < 0.9:
-                    detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
-                             'was generated from a library with PBC1 value of {}'.format(PBC1_value) + \
-                             '. '+pbc1_end_of_detail
-                    yield AuditFailure('mild bottlenecking', detail,
-                                       level='WARNING')
+                yield AuditFailure('mild to moderate bottlenecking', detail,
+                                   level='WARNING')
         if 'PBC2' in metric:
             PBC2_raw_value = metric['PBC2']
             if PBC2_raw_value == 'Infinity':
@@ -797,19 +791,12 @@ def check_file_chip_seq_library_complexity(alignment_file):
                          '. '+pbc2_end_of_detail
                 yield AuditFailure('severe bottlenecking', detail,
                                    level='NOT_COMPLIANT')
-            if PBC2_value >= 1 and PBC2_value < 3:
+            elif PBC2_value >= 1 and PBC2_value < 10:
                 detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
                          'was generated from a library with PBC2 value of {}'.format(PBC2_value) + \
                          '. '+pbc2_end_of_detail
-                yield AuditFailure('moderate bottlenecking', detail,
-                                   level='NOT_COMPLIANT')
-            else:
-                if PBC2_value >= 3 and PBC2_value < 10:
-                    detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
-                             'was generated from a library with PBC2 value of {}'.format(PBC2_value) + \
-                             '. '+pbc2_end_of_detail
-                    yield AuditFailure('mild bottlenecking', detail,
-                                       level='WARNING')
+                yield AuditFailure('mild to moderate bottlenecking', detail,
+                                   level='WARNING')
 
 
 def check_wgbs_coverage(samtools_metrics,
