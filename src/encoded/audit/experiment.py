@@ -1528,7 +1528,7 @@ def audit_experiment_replicate_with_no_files(value, system):
                 rep_dictionary[file_replicate['@id']].append(file_object['output_category'])
 
     audit_level = 'ERROR'
-    if value['status'] in ['in progress', 'started', 'submitted']:
+    if value['status'] in ['in progress', 'started']:
         audit_level = 'WARNING'
 
     for key in rep_dictionary.keys():
