@@ -66,6 +66,8 @@ def check_format(encValData, job, path):
         # standard bed formats
         ('bed', 'bed3'): ['-type=bed3', chromInfo],
         ('bigBed', 'bed3'): ['-type=bigBed3', chromInfo],
+        ('bed', 'bed5'): ['-type=bed5', chromInfo],
+        ('bigBed', 'bed5'): ['-type=bigBed5', chromInfo],
         ('bed', 'bed6'): ['-type=bed6', chromInfo],
         ('bigBed', 'bed6'): ['-type=bigBed6', chromInfo],
         ('bed', 'bed9'): ['-type=bed9', chromInfo],
