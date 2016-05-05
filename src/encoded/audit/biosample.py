@@ -261,15 +261,11 @@ def audit_biosample_donor(value, system):
     '''
     A biosample should have a donor.
     The organism of donor and biosample should match.
-    Pooled_from biosamples do not need donors??
     '''
     if value['status'] in ['deleted']:
         return
 
-    if ('donor' not in value) and (value['pooled_from']):
-        return
-
-    if ('donor' not in value) and (not value['pooled_from']):
+    if ('donor' not in value):
         detail = 'Biosample {} requires a donor'.format(value['@id'])
         raise AuditFailure('missing donor', detail, level='ERROR')
         return
