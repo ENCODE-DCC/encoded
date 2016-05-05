@@ -18,6 +18,7 @@ import requests
 from urllib.parse import urlencode
 
 import logging
+import re
 
 
 log = logging.getLogger(__name__)
@@ -196,6 +197,11 @@ def get_ensemblid_coordinates(id):
             return('', '', '')
         return assembly_mapper(location, 'human', 'GRCh38', 'GRCh37')
 
+def format_position(position, resolution):
+    chromosome, start, end = re.split(':|-', position)
+    start = int(start) - resolution
+    end = int(end) + resolution
+    return '{}:{}-{}'.format(chromosome, start, end)
 
 @view_config(route_name='region-search', request_method='GET', permission='search')
 def region_search(context, request):
@@ -311,7 +317,8 @@ def region_search(context, request):
         result['download_elements'] = get_peak_metadata_links(request)
         if result['total'] > 0:
             result['notification'] = 'Success'
-            result.update(search_result_actions(request, ['Experiment'], es_results, position=result['coordinates']))
+            position_for_browser = format_position(result['coordinates'], 200)
+            result.update(search_result_actions(request, ['Experiment'], es_results, position=position_for_browser))
 
     return result
 
