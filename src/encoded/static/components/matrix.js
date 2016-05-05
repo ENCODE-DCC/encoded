@@ -156,7 +156,8 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                 </th>
                                                 {x_buckets.map(function(xb, i) {
                                                     if (i < x_limit) {
-                                                        return <th key={i} className="rotate30" style={{width: 10}}><div><span title={xb.key}>{xb.key}</span></div></th>;
+                                                        var href = search_base + '&' + x_grouping + '=' + encodeURIComponent(xb.key);
+                                                        return <th key={i} className="rotate30" style={{width: 10}}><div><a title={xb.key} href={href}>{xb.key}</a></div></th>;
                                                     } else if (i == x_limit) {
                                                         var parsed = url.parse(matrix_base, true);
                                                         parsed.query['x.limit'] = null;
@@ -184,8 +185,9 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                 var y_limit = matrix.y.limit || group_buckets.length;
                                                 rows.push.apply(rows, group_buckets.map(function(yb, j) {
                                                     if (j < y_limit) {
+                                                        var href = search_base + '&' + secondary_y_grouping + '=' + encodeURIComponent(yb.key);
                                                         return <tr key={yb.key}>
-                                                            <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}>{yb.key}</th>
+                                                            <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}><a href={href}>{yb.key}</a></th>
                                                             {x_buckets.map(function(xb, i) {
                                                                 if (i < x_limit) {
                                                                     var value = yb[x_grouping][i];
