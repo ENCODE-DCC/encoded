@@ -417,9 +417,10 @@ def check_experiement_long_rna_encode3_standards(experiment,
                               desired_assembly,
                               desired_annotation)
 
-    for failure in check_spearman(mad_metrics, experiment['replication_type'],
-                                  0.9, 0.8, pipeline_title):
-        yield failure
+    if experiment['assay_term_name'] != 'single cell isolation followed by RNA-seq':
+        for failure in check_spearman(mad_metrics, experiment['replication_type'],
+                                      0.9, 0.8, pipeline_title):
+            yield failure
     #for failure in check_mad(mad_metrics, experiment['replication_type'],
     #                         0.2, pipeline_title):
     #    yield failure
