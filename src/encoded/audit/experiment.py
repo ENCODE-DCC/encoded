@@ -1338,8 +1338,8 @@ def is_gtex_experiment(experiment_to_check):
                                     'replicates.library.biosample.donor'])
 def audit_experiment_gtex_biosample(value, system):
     '''
-    Experiments for GTEx should not have more than one biosample (originating in GTEx donor)
-    associated with
+    GTEx experiments should include biosample(s) from the same tissue and same donor
+    The number of biosamples could be > 1.
     '''
     if value['status'] in ['deleted', 'replaced']:
         return
@@ -1350,17 +1350,27 @@ def audit_experiment_gtex_biosample(value, system):
     if is_gtex_experiment(value) is False:
         return
 
-    biosample_set = set()
+    donors_set = set()
+    tissues_set = set()
 
     for rep in value['replicates']:
         if ('library' in rep) and ('biosample' in rep['library']):
             biosampleObject = rep['library']['biosample']
-            biosample_set.add(biosampleObject['accession'])
+            if ('donor' in biosampleObject):
+                donors_set.add(biosampleObject['donor']['accession'])
+                tissues_set.add(biosampleObject['biosample_term_name'])
 
-    if len(biosample_set) > 1:
+    if len(donors_set) > 1:
         detail = 'GTEx experiment {} '.format(value['@id']) + \
-                 'contains {} '.format(len(biosample_set)) + \
-                 'biosamples, while according to HRWG decision it should have only 1'
+                 'contains {} '.format(len(donors_set)) + \
+                 'donors, while according to HRWG decision it should have a single donor.'
+        yield AuditFailure('invalid modelling of GTEx experiment ', detail, level='DCC_ACTION')
+
+    if len(tissues_set) > 1:
+        detail = 'GTEx experiment {} '.format(value['@id']) + \
+                 'was performed using  {} '.format(len(tissues_set)) + \
+                 'tissue types, while according to HRWG decision it should have ' + \
+                 'been perfomed using a single tissue type.'
         yield AuditFailure('invalid modelling of GTEx experiment ', detail, level='DCC_ACTION')
 
     return
