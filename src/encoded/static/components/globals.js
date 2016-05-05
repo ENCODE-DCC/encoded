@@ -147,6 +147,7 @@ module.exports.dbxref_prefix_map = {
     "FlyBase": "http://flybase.org/cgi-bin/quicksearch_solr.cgi?caller=quicksearch&tab=basic_tab&data_class=FBgn&species=Dmel&search_type=all&context=",
     "WormBase": "http://www.wormbase.org/species/c_elegans/gene/",
     "MGI": "http://www.informatics.jax.org/marker/",
+    "MGI.D": "http://www.informatics.jax.org/external/festing/mouse/docs/",
     "RefSeq": "http://www.ncbi.nlm.nih.gov/gene/?term=",
     // UCSC links need assembly (&db=) and accession (&hgt_mdbVal1=) added to url
     "UCSC-ENCODE-mm9": "http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=mm9&hgt_mdbVal1=",
