@@ -1372,7 +1372,7 @@ def test_audit_experiment_MAD_long_rna_standards(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'insufficient replicate concordance' for error in errors_list)
+    assert any(error['category'] == 'low replicate concordance' for error in errors_list)
 
 
 def test_audit_experiment_long_rna_standards_crispr(testapp,
