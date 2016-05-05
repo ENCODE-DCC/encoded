@@ -19,6 +19,8 @@
         "Top 3 cross-correlation values": [ 0.360810666311838 ],
         "Top 3 estimates for fragment length": [ 60 ],
         "Window half size": 230,
+        "lab": "/labs/robert-waterston/",
+        "award": "/awards/U41HG007355/",
         "exclusion(max)": -1,
         "exclusion(min)": -500,
         "strandshift(max)": 1500,

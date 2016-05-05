@@ -20,7 +20,8 @@
         { "$ref": "mixins.json#/lot_id" },
         { "$ref": "mixins.json#/source" },
         { "$ref": "mixins.json#/references" },
-        { "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/submitter_comment" }
     ],
     "dependencies": {
         "transfection_method": ["transfection_type"],
@@ -207,7 +208,7 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^((UCSC-ENCODE-cv:[\\S\\s\\d\\-\\(\\)\\+]+)|(GTEx:[a-zA-Z0-9\\-_]+)|(GEO:SAMN\\d+))$"
+                "pattern": "^((UCSC-ENCODE-cv:[\\S\\s\\d\\-\\(\\)\\+]+)|(GTEx:[a-zA-Z0-9\\-_]+)|(GEO:SAMN\\d+)|(Cellosaurus:CVCL_\\w{4}))$"
             }
         },
         "protocol_documents": {

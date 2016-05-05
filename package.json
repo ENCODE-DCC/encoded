@@ -45,6 +45,7 @@
     "google-analytics": "file:node_shims/google-analytics",
     "immutable": "^3.7.5",
     "marked": "^0.3.3",
+    "query-string": "^4.1.0",
     "react": "^0.12.2",
     "react-bootstrap": "^0.15.1",
     "react-forms": "git+https://github.com/lrowe/react-forms.git#3953a633b1f77640dffb5e3f1d5bbe78a98c3dfe",

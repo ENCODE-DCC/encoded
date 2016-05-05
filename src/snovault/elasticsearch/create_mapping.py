@@ -19,6 +19,11 @@ import collections
 import json
 import logging
 
+
+
+log = logging.getLogger(__name__)
+
+
 EPILOG = __doc__
 
 log = logging.getLogger(__name__)
@@ -37,6 +42,9 @@ META_MAPPING = {
         },
     ],
 }
+
+PATH_FIELDS = ['submitted_file_name']
+NON_SUBSTRING_FIELDS = ['uuid', '@id', 'submitted_by', 'md5sum', 'references', 'submitted_file_name']
 
 
 def sorted_pairs_hook(pairs):
@@ -88,7 +96,7 @@ def schema_mapping(name, schema):
             }
         }
 
-    if type_ ==  'boolean':
+    if type_ == 'boolean':
         return {
             'type': 'string',
             'store': True,
@@ -102,23 +110,32 @@ def schema_mapping(name, schema):
 
     if type_ == 'string':
 
+        sub_mapping = {
+            'type': 'string',
+            'store': True
+        }
+
         if schema.get('elasticsearch_mapping_index_type'):
              if schema.get('elasticsearch_mapping_index_type')['default'] == 'analyzed':
-                return {
-                    'type': 'string',
-                    'store': True,
-                }
+                return sub_mapping
         else:
-            return {
-                'type': 'string',
-                'store': True,
-                'fields': {
-                    'raw': {
-                        'type': 'string',
-                        'index': 'not_analyzed'
-                    }
-                }
-            }
+            sub_mapping.update({
+                            'fields': {
+                                'raw': {
+                                    'type': 'string',
+                                    'index': 'not_analyzed'
+                                }
+                            }
+                        })
+            # these fields are unintentially partially matching some small search
+            # keywords because fields are analyzed by nGram analyzer
+        if name in NON_SUBSTRING_FIELDS:
+            if name in PATH_FIELDS:
+                sub_mapping['index_analyzer'] = 'encoded_path_analyzer'
+            else:
+                sub_mapping['index'] = 'not_analyzed'
+            sub_mapping['include_in_all'] = False
+        return sub_mapping
 
     if type_ == 'number':
         return {
@@ -192,6 +209,17 @@ def index_settings():
                             'lowercase',
                             'asciifolding'
                         ]
+                    },
+                    'encoded_path_analyzer': {
+                        'type': 'custom',
+                        'tokenizer': 'encoded_path_tokenizer',
+                        'filter': ['lowercase']
+                    }
+                },
+                'tokenizer': {
+                    'encoded_path_tokenizer': {
+                        'type': 'path_hierarchy',
+                        'reverse': True
                     }
                 }
             }
@@ -258,11 +286,13 @@ def es_mapping(mapping):
         'properties': {
             'uuid': {
                 'type': 'string',
-                'index': 'not_analyzed'
+                'index': 'not_analyzed',
+                'include_in_all': False,
             },
             'tid': {
                 'type': 'string',
-                'index': 'not_analyzed'
+                'index': 'not_analyzed',
+                'include_in_all': False,
             },
             'item_type': {
                 'type': 'string',
@@ -410,13 +440,21 @@ def type_mapping(types, item_type, embed=True):
         for prop in props:
             new_mapping = new_mapping[prop]['properties']
         new_mapping[last]['boost'] = boost
-        new_mapping[last]['index_analyzer'] = 'encoded_index_analyzer'
-        new_mapping[last]['search_analyzer'] = 'encoded_search_analyzer'
-        new_mapping[last]['include_in_all'] = True
+        if last in NON_SUBSTRING_FIELDS:
+            new_mapping[last]['include_in_all'] = False
+            if last in PATH_FIELDS:
+                new_mapping[last]['index_analyzer'] = 'encoded_path_analyzer'
+            else:
+                new_mapping[last]['index'] = 'not_analyzed'
+        else:
+            new_mapping[last]['index_analyzer'] = 'encoded_index_analyzer'
+            new_mapping[last]['search_analyzer'] = 'encoded_search_analyzer'
+            new_mapping[last]['include_in_all'] = True
 
     # Automatic boost for uuid
     if 'uuid' in mapping['properties']:
-        mapping['properties']['uuid']['index'] = 'not_analyzed'
+        mapping['properties']['uuid']['index'] = 'not_analyzed' 
+        mapping['properties']['uuid']['include_in_all'] = False
     return mapping
 
 

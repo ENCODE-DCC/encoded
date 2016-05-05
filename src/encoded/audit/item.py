@@ -112,7 +112,7 @@ def audit_item_status(value, system):
         if linked_level == 0:
             detail = '{} {} has {} subobject {}'.format(
                 value['status'], value['@id'], linked_value['status'], linked_value['@id'])
-            yield AuditFailure('mismatched status', detail, level='ERROR')
+            yield AuditFailure('mismatched status', detail, level='DCC_ACTION')
         elif linked_level < level:
             detail = '{} {} has {} subobject {}'.format(
                 value['status'], value['@id'], linked_value['status'], linked_value['@id'])

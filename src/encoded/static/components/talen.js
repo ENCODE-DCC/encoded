@@ -4,11 +4,11 @@ var panel = require('../libs/bootstrap/panel');
 var globals = require('./globals');
 var search = require('./search');
 var statuslabel = require('./statuslabel');
-var navbar = require('./navbar');
+var navigation = require('./navigation');
 var doc = require('./doc');
 
 var StatusLabel = statuslabel.StatusLabel;
-var Breadcrumbs = navbar.Breadcrumbs;
+var Breadcrumbs = navigation.Breadcrumbs;
 var {Panel, PanelBody, PanelHeading} = panel;
 var {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile} = doc;
 

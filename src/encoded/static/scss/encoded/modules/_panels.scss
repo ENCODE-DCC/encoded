@@ -159,3 +159,14 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 .panel-body-doc {
     padding-bottom: 0 !important;
 }
+
+.subpanel {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top: 1px solid #eee;
+
+    &:first-child {
+        padding-top: 0;
+        border-top: none;
+    }
+}
