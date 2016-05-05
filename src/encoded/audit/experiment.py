@@ -632,8 +632,6 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
         threshold = isogenic_threshold
     else:
         return
-    border_value = threshold - 0.07
-    print_border = '%.2f' % border_value
 
     for m in metrics:
         if 'Spearman correlation' in m:
@@ -646,15 +644,9 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
                          'have Spearman correlation of {}.'.format(spearman_correlation) + \
                          ' For gene quantification files from an {}'.format(replication_type) + \
                          ' assay in the {} '.format(pipeline) + \
-                         'pipeline, >{} is recommended, but a value between '.format(threshold) + \
-                         '{} and one STD away ({}) is acceptable.'.format(threshold,
-                                                                          print_border)
-                if spearman_correlation > border_value:
-                    yield AuditFailure('low replicate concordance', detail,
-                                       level='WARNING')
-                else:
-                    yield AuditFailure('insufficient replicate concordance', detail,
-                                       level='NOT_COMPLIANT')
+                         'pipeline, >{} is recommended.'.format(threshold)
+                yield AuditFailure('low replicate concordance', detail,
+                                   level='WARNING')
 
 
 def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
