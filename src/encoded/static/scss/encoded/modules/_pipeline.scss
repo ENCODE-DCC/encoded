@@ -184,9 +184,51 @@ g.pipeline-node-qc-metric {
     }
 }
 
-.quality-metrics-title {
-    padding-bottom: 5px;
+.quality-metrics-header {
+    margin-bottom: 10px;
     border-bottom: 1px solid #e0e0e0;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: table;
+        width: 100%;
+    }
+}
+
+.quality-metrics-info {
+    @media screen and (min-width: $screen-md-min) {
+        display: table-cell;
+        width: 60%;
+    }
+
+    h4 {
+        margin-bottom: 5px;
+    }
+
+    h5 {
+        margin-top: 0;
+        font-size: 1rem;
+        font-weight: normal;
+        color: #808080;
+    }
+}
+
+.quality-metrics-type {
+    color: #a0a0a0;
+    font-size: 0.9rem;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: table-cell;
+        width: 40%;
+        padding-bottom: 10px;
+        text-align: right;
+        vertical-align: bottom;
+    }
+}
+
+.quality-metrics-attachments {
+    h5 {
+        margin-top: 0;
+    }
 }
 
 .zoom-control-area {

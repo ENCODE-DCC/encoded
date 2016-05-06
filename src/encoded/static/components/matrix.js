@@ -73,6 +73,9 @@ var Matrix = module.exports.Matrix = React.createClass({
             var x_limit = matrix.x.limit || x_buckets.length;
             var y_groups = matrix.y[primary_y_grouping].buckets;
             var y_limit = matrix.y.limit;
+            var y_group_facet = _.findWhere(context.facets, {field: primary_y_grouping});
+            var y_group_options = y_group_facet.terms.map(term => term.key);
+            y_group_options.sort();
             var search_base = context.matrix.search_base;
             var batch_hub_disabled = matrix.doc_count > batchHubLimit;
 
@@ -156,7 +159,8 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                 </th>
                                                 {x_buckets.map(function(xb, i) {
                                                     if (i < x_limit) {
-                                                        return <th key={i} className="rotate30" style={{width: 10}}><div><span title={xb.key}>{xb.key}</span></div></th>;
+                                                        var href = search_base + '&' + x_grouping + '=' + encodeURIComponent(xb.key);
+                                                        return <th key={i} className="rotate30" style={{width: 10}}><div><a title={xb.key} href={href}>{xb.key}</a></div></th>;
                                                     } else if (i == x_limit) {
                                                         var parsed = url.parse(matrix_base, true);
                                                         parsed.query['x.limit'] = null;
@@ -168,8 +172,9 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                     }
                                                 })}
                                             </tr>
-                                            {y_groups.map(function(group, k) {
-                                                var seriesColor = color(COLORS[k % COLORS.length]);
+                                            {y_groups.map(function(group) {
+                                                var seriesIndex = y_group_options.indexOf(group.key);
+                                                var seriesColor = color(COLORS[seriesIndex % COLORS.length]);
                                                 var parsed = url.parse(matrix_base, true);
                                                 parsed.query[primary_y_grouping] = group.key;
                                                 parsed.query['y.limit'] = null;
@@ -184,8 +189,9 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                 var y_limit = matrix.y.limit || group_buckets.length;
                                                 rows.push.apply(rows, group_buckets.map(function(yb, j) {
                                                     if (j < y_limit) {
+                                                        var href = search_base + '&' + secondary_y_grouping + '=' + encodeURIComponent(yb.key);
                                                         return <tr key={yb.key}>
-                                                            <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}>{yb.key}</th>
+                                                            <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}><a href={href}>{yb.key}</a></th>
                                                             {x_buckets.map(function(xb, i) {
                                                                 if (i < x_limit) {
                                                                     var value = yb[x_grouping][i];
