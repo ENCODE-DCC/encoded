@@ -119,8 +119,12 @@ var AdvSearch = React.createClass({
                 <form id="panel1" ref="adv-search" role="form" autoComplete="off" aria-labeledby="tab1">
                     <div className="row">
                         <div className="form-group col-md-8">
-                            <input type="hidden" name="genome" value="hg19" />
+                            
                             <input type="hidden" name="annotation" value={this.state.terms['annotation']} />
+                            <select name="genome" onChange={this.handleAssemblySelect}>
+                                <option>hg19</option>
+                                <option>mm10</option>
+                            </select>
                             <input ref="annotation" defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange}
                                 placeholder="Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID" />
                             {(this.state.showAutoSuggest && this.state.searchTerm) ?
