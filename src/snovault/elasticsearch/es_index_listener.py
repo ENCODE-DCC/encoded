@@ -269,7 +269,9 @@ def composite(loader, global_conf, **settings):
         status = '200 OK'
         response_headers = [('Content-type', 'application/json')]
         start_response(status, response_headers)
-        return [json.dumps(status_holder['status'])]
+        truncated_status_holder = status_holder['status'].deepcopy()
+        truncated_status_holder = truncated_status_holder['errors'][:5]
+        return [json.dumps(truncated_status_holder)]
 
     return status_app
 
