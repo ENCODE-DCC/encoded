@@ -54,10 +54,12 @@ def includeme(config):
     config.scan(__name__)
 
 
-def get_peak_query(start, end, with_inner_hits=False):
+def get_peak_query(start, end, with_inner_hits=False, within_peaks=False):
     """
     return peak query
     """
+    if within_peaks:
+        start, end = end, start
     query = {
         'query': {
             'filtered': {
@@ -112,6 +114,10 @@ def sanitize_coordinates(term):
     if start.isdigit() and end.isdigit():
         return (chromosome, start, end)
     return ('', '', '')
+
+def sanitize_rsid(rsid):
+    return 'rs' + ''.join([a for a in filter(str.isdigit, rsid)])
+
 
 
 def get_annotation_coordinates(es, id, assembly):
@@ -217,6 +223,8 @@ def region_search(context, request):
     es = request.registry[ELASTIC_SEARCH]
     snp_es = request.registry['snp_search']
     region = request.params.get('region', '*')
+    region_inside_peak_status = False
+
     
 
     # handling limit
@@ -242,7 +250,9 @@ def region_search(context, request):
     elif region != '*':
         region = region.lower()
         if region.startswith('rs'):
-            chromosome, start, end = get_rsid_coordinates(region)
+            sanitized_region = sanitize_rsid(region)
+            chromosome, start, end = get_rsid_coordinates(sanitized_region)
+            region_inside_peak_status = True
         elif region.startswith('ens'):
             chromosome, start, end = get_ensemblid_coordinates(region)
         elif region.startswith('chr'):
@@ -268,9 +278,9 @@ def region_search(context, request):
         # including inner hits is very slow
         # figure out how to distinguish browser requests from .embed method requests
         if 'peak_metadata' in request.query_string:
-            peak_query = get_peak_query(start, end, with_inner_hits=True)
+            peak_query = get_peak_query(start, end, with_inner_hits=True, within_peaks=region_inside_peak_status)
         else:
-            peak_query = get_peak_query(start, end)
+            peak_query = get_peak_query(start, end, within_peaks=region_inside_peak_status)
 
         peak_results = snp_es.search(body=peak_query,
                                      index=chromosome.lower(),
