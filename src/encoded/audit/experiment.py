@@ -114,7 +114,7 @@ def audit_experiment_out_of_date_analysis(value, system):
 
     if len(lost_fastqs) > 0:
         detail = 'Experiment {} '.format(value['@id']) + \
-                 'processed files contain in derived_from list FASTQ files {} '.format(orfan_fastqs) + \
+                 'processed files contain in derived_from list FASTQ files {} '.format(lost_fastqs) + \
                  ' that are no longer eligible for analysis.'
         yield AuditFailure('out of date analysis', detail, level='DCC_ACTION')
 
