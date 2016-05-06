@@ -1315,7 +1315,7 @@ def test_audit_experiment_small_rna_standards(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'insufficient read depth' for error in errors_list)
+    assert any(error['category'] == 'low read depth' for error in errors_list)
 
 
 def test_audit_experiment_MAD_long_rna_standards(testapp,
@@ -1372,7 +1372,7 @@ def test_audit_experiment_MAD_long_rna_standards(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'insufficient replicate concordance' for error in errors_list)
+    assert any(error['category'] == 'low replicate concordance' for error in errors_list)
 
 
 def test_audit_experiment_long_rna_standards_crispr(testapp,
@@ -1468,7 +1468,7 @@ def test_audit_experiment_long_rna_standards(testapp,
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'RNA-seq of long RNAs (paired-end, stranded)'})
 
-    testapp.patch_json(bam_quality_metric_1_1['@id'], {'Uniquely mapped reads number': 29000000})
+    testapp.patch_json(bam_quality_metric_1_1['@id'], {'Uniquely mapped reads number': 1000000})
     testapp.patch_json(bam_quality_metric_2_1['@id'], {'Uniquely mapped reads number': 38000000})
     testapp.patch_json(mad_quality_metric_1_2['@id'], {'quality_metric_of': [
                                                        file_tsv_1_1['@id'],

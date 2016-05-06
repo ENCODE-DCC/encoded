@@ -473,7 +473,7 @@ def check_experiement_long_rna_encode3_standards(experiment,
                                                      pipeline_title):
                     yield failure
             else:
-                for failure in check_file_read_depth(f, read_depth, 30000000, 0,
+                for failure in check_file_read_depth(f, read_depth, 30000000, 20000000,
                                                      experiment['assay_term_name'],
                                                      pipeline_title):
                     yield failure
@@ -486,9 +486,10 @@ def check_experiement_long_rna_encode3_standards(experiment,
                               desired_assembly,
                               desired_annotation)
 
-    for failure in check_spearman(mad_metrics, experiment['replication_type'],
-                                  0.9, 0.8, pipeline_title):
-        yield failure
+    if experiment['assay_term_name'] != 'single cell isolation followed by RNA-seq':
+        for failure in check_spearman(mad_metrics, experiment['replication_type'],
+                                      0.9, 0.8, pipeline_title):
+            yield failure
     #for failure in check_mad(mad_metrics, experiment['replication_type'],
     #                         0.2, pipeline_title):
     #    yield failure
@@ -516,7 +517,7 @@ def check_experiement_small_rna_encode3_standards(experiment,
                                                             get_target(experiment),
                                                             'small RNA')
 
-            for failure in check_file_read_depth(f, read_depth, 30000000, 0,
+            for failure in check_file_read_depth(f, read_depth, 30000000, 20000000,
                                                  experiment['assay_term_name'],
                                                  pipeline_title):
                 yield failure
@@ -700,8 +701,6 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
         threshold = isogenic_threshold
     else:
         return
-    border_value = threshold - 0.07
-    print_border = '%.2f' % border_value
 
     for m in metrics:
         if 'Spearman correlation' in m:
@@ -714,15 +713,9 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
                          'have Spearman correlation of {}.'.format(spearman_correlation) + \
                          ' For gene quantification files from an {}'.format(replication_type) + \
                          ' assay in the {} '.format(pipeline) + \
-                         'pipeline, >{} is recommended, but a value between '.format(threshold) + \
-                         '{} and one STD away ({}) is acceptable.'.format(threshold,
-                                                                          print_border)
-                if spearman_correlation > border_value:
-                    yield AuditFailure('low replicate concordance', detail,
-                                       level='WARNING')
-                else:
-                    yield AuditFailure('insufficient replicate concordance', detail,
-                                       level='NOT_COMPLIANT')
+                         'pipeline, >{} is recommended.'.format(threshold)
+                yield AuditFailure('low replicate concordance', detail,
+                                   level='WARNING')
 
 
 def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
@@ -841,18 +834,12 @@ def check_file_chip_seq_library_complexity(alignment_file):
                          '. '+pbc1_end_of_detail
                 yield AuditFailure('severe bottlenecking', detail,
                                    level='NOT_COMPLIANT')
-            elif PBC1_value >= 0.5 and PBC1_value < 0.8:
+            elif PBC1_value >= 0.5 and PBC1_value < 0.9:
                 detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
                          'was generated from a library with PBC1 value of {}'.format(PBC1_value) + \
                          '. '+pbc1_end_of_detail
-                yield AuditFailure('moderate bottlenecking', detail,
-                                   level='NOT_COMPLIANT')
-            elif PBC1_value >= 0.8 and PBC1_value < 0.9:
-                    detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
-                             'was generated from a library with PBC1 value of {}'.format(PBC1_value) + \
-                             '. '+pbc1_end_of_detail
-                    yield AuditFailure('mild bottlenecking', detail,
-                                       level='WARNING')
+                yield AuditFailure('mild to moderate bottlenecking', detail,
+                                   level='WARNING')
         if 'PBC2' in metric:
             PBC2_raw_value = metric['PBC2']
             if PBC2_raw_value == 'Infinity':
@@ -865,19 +852,12 @@ def check_file_chip_seq_library_complexity(alignment_file):
                          '. '+pbc2_end_of_detail
                 yield AuditFailure('severe bottlenecking', detail,
                                    level='NOT_COMPLIANT')
-            if PBC2_value >= 1 and PBC2_value < 3:
+            elif PBC2_value >= 1 and PBC2_value < 10:
                 detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
                          'was generated from a library with PBC2 value of {}'.format(PBC2_value) + \
                          '. '+pbc2_end_of_detail
-                yield AuditFailure('moderate bottlenecking', detail,
-                                   level='NOT_COMPLIANT')
-            else:
-                if PBC2_value >= 3 and PBC2_value < 10:
-                    detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
-                             'was generated from a library with PBC2 value of {}'.format(PBC2_value) + \
-                             '. '+pbc2_end_of_detail
-                    yield AuditFailure('mild bottlenecking', detail,
-                                       level='WARNING')
+                yield AuditFailure('mild to moderate bottlenecking', detail,
+                                   level='WARNING')
 
 
 def check_wgbs_coverage(samtools_metrics,
@@ -1017,7 +997,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                 yield AuditFailure('insufficient read depth',
                                    detail, level='NOT_COMPLIANT')
         else:
-            if read_depth >= marks['narrow'] and read_depth < marks['broad']:
+            if read_depth >= 40000000 and read_depth < marks['broad']:
                 detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                              read_depth) + \
                          'usable fragments. Replicates for ChIP-seq ' + \
@@ -1025,16 +1005,15 @@ def check_file_chip_seq_read_depth(file_to_check,
                          'investigated as broad histone mark require ' + \
                          '{} usable fragments, according to '.format(marks['broad']) + \
                          'June 2015 standards.'
-                yield AuditFailure('low read depth', detail, level='NOT_COMPLIANT')
-            elif read_depth < marks['narrow']:
+                yield AuditFailure('low read depth', detail, level='WARNING')
+            elif read_depth < 40000000:
                 detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                              read_depth) + \
                          'usable fragments. Replicates for ChIP-seq ' + \
                          'assays and target {} '.format(target_name) + \
                          'investigated as broad histone mark require ' + \
                          '{} usable fragments, according to '.format(marks['broad']) + \
-                         'June 2015 standards, and 20000000 usable fragments according to' + \
-                         ' ENCODE2 standards.'
+                         'June 2015 standards.'
                 yield AuditFailure('insufficient read depth',
                                    detail, level='NOT_COMPLIANT')
     elif 'narrow histone mark' in target_investigated_as:
@@ -1087,7 +1066,8 @@ def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_thre
     if read_depth is False:
         return
 
-    if read_depth is not False and assay_term_name == 'RAMPAGE':
+    if read_depth is not False and assay_term_name in ['RAMPAGE',
+                                                       'RNA-seq']:
         if read_depth >= lower_threshold and read_depth < upper_threshold:
             detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                          read_depth) + \
@@ -1405,8 +1385,8 @@ def is_gtex_experiment(experiment_to_check):
                                     'replicates.library.biosample.donor'])
 def audit_experiment_gtex_biosample(value, system):
     '''
-    Experiments for GTEx should not have more than one biosample (originating in GTEx donor)
-    associated with
+    GTEx experiments should include biosample(s) from the same tissue and same donor
+    The number of biosamples could be > 1.
     '''
     if value['status'] in ['deleted', 'replaced']:
         return
@@ -1417,17 +1397,27 @@ def audit_experiment_gtex_biosample(value, system):
     if is_gtex_experiment(value) is False:
         return
 
-    biosample_set = set()
+    donors_set = set()
+    tissues_set = set()
 
     for rep in value['replicates']:
         if ('library' in rep) and ('biosample' in rep['library']):
             biosampleObject = rep['library']['biosample']
-            biosample_set.add(biosampleObject['accession'])
+            if ('donor' in biosampleObject):
+                donors_set.add(biosampleObject['donor']['accession'])
+                tissues_set.add(biosampleObject['biosample_term_name'])
 
-    if len(biosample_set) > 1:
+    if len(donors_set) > 1:
         detail = 'GTEx experiment {} '.format(value['@id']) + \
-                 'contains {} '.format(len(biosample_set)) + \
-                 'biosamples, while according to HRWG decision it should have only 1'
+                 'contains {} '.format(len(donors_set)) + \
+                 'donors, while according to HRWG decision it should have a single donor.'
+        yield AuditFailure('invalid modelling of GTEx experiment ', detail, level='DCC_ACTION')
+
+    if len(tissues_set) > 1:
+        detail = 'GTEx experiment {} '.format(value['@id']) + \
+                 'was performed using  {} '.format(len(tissues_set)) + \
+                 'tissue types, while according to HRWG decision it should have ' + \
+                 'been perfomed using a single tissue type.'
         yield AuditFailure('invalid modelling of GTEx experiment ', detail, level='DCC_ACTION')
 
     return
@@ -1559,7 +1549,7 @@ def audit_experiment_consistent_sequencing_runs(value, system):
                condition=rfa("ENCODE3", "modERN", "ENCODE2", "GGR",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicate_with_no_files(value, system):
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
+    if value['status'] in ['deleted', 'replaced', 'revoked', 'proposed', 'preliminary']:
         return
     if 'replicates' not in value:
         return
@@ -1585,7 +1575,7 @@ def audit_experiment_replicate_with_no_files(value, system):
                 rep_dictionary[file_replicate['@id']].append(file_object['output_category'])
 
     audit_level = 'ERROR'
-    if value['status'] in ['proposed', 'preliminary', 'in progress', 'started', 'submitted']:
+    if value['status'] in ['in progress', 'started']:
         audit_level = 'WARNING'
 
     for key in rep_dictionary.keys():
@@ -1593,7 +1583,7 @@ def audit_experiment_replicate_with_no_files(value, system):
         if len(rep_dictionary[key]) == 0:
             detail = 'Replicate ' + \
                      '{} does not have files associated with it.'.format(key)
-            yield AuditFailure('missing raw data in replicate', detail, level='ERROR')
+            yield AuditFailure('missing raw data in replicate', detail, level=audit_level)
         else:
             if seq_assay_flag is True:
                 if 'raw data' not in rep_dictionary[key]:
