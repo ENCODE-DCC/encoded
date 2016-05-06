@@ -1749,14 +1749,14 @@ def test_audit_experiment_chip_seq_library_complexity_standards(testapp,
     assert any(error['category'] == 'severe bottlenecking' for error in errors_list)
 
 
-def test_audit_experiment_out_of_date_analysis(testapp,
-                                               base_experiment,
-                                               replicate_1_1,
-                                               replicate_2_1,
-                                               file_fastq_3,
-                                               file_fastq_4,
-                                               file_bam_1_1,
-                                               file_bam_2_1):
+def test_audit_experiment_out_of_date_analysis_added_fastq(testapp,
+                                                           base_experiment,
+                                                           replicate_1_1,
+                                                           replicate_2_1,
+                                                           file_fastq_3,
+                                                           file_fastq_4,
+                                                           file_bam_1_1,
+                                                           file_bam_2_1):
     testapp.patch_json(file_bam_1_1['@id'], {'derived_from': [file_fastq_3['@id']]})
     testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_3['@id']]})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
@@ -1764,6 +1764,27 @@ def test_audit_experiment_out_of_date_analysis(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'out of date analysis' for error in errors_list)
+
+
+def test_audit_experiment_out_of_date_analysis_removed_fastq(testapp,
+                                                             base_experiment,
+                                                             replicate_1_1,
+                                                             replicate_2_1,
+                                                             file_fastq_3,
+                                                             file_fastq_4,
+                                                             file_bam_1_1,
+                                                             file_bam_2_1):
+    testapp.patch_json(file_bam_1_1['@id'], {'derived_from': [file_fastq_3['@id']]})
+    testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']]})
+    testapp.patch_json(file_fastq_3['@id'], {'status': 'deleted'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    for e in errors['WARNING']:
+        print (e)
     assert any(error['category'] == 'out of date analysis' for error in errors_list)
 
 
