@@ -73,6 +73,9 @@ var Matrix = module.exports.Matrix = React.createClass({
             var x_limit = matrix.x.limit || x_buckets.length;
             var y_groups = matrix.y[primary_y_grouping].buckets;
             var y_limit = matrix.y.limit;
+            var y_group_facet = _.findWhere(context.facets, {field: primary_y_grouping});
+            var y_group_options = y_group_facet.terms.map(term => term.key);
+            y_group_options.sort();
             var search_base = context.matrix.search_base;
             var batch_hub_disabled = matrix.doc_count > batchHubLimit;
 
@@ -168,8 +171,9 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                     }
                                                 })}
                                             </tr>
-                                            {y_groups.map(function(group, k) {
-                                                var seriesColor = color(COLORS[k % COLORS.length]);
+                                            {y_groups.map(function(group) {
+                                                var seriesIndex = y_group_options.indexOf(group.key);
+                                                var seriesColor = color(COLORS[seriesIndex % COLORS.length]);
                                                 var parsed = url.parse(matrix_base, true);
                                                 parsed.query[primary_y_grouping] = group.key;
                                                 parsed.query['y.limit'] = null;
