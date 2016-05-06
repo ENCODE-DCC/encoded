@@ -60,6 +60,75 @@ non_seq_assays = [
 
 
 @audit_checker('Experiment', frame=['original_files',
+                                    'original_files.replicate',
+                                    'original_files.derived_from'])
+def audit_experiment_out_of_date_analysis(value, system):
+    alignment_files = scan_files_for_file_format_output_type(value['original_files'],
+                                                             'bam', 'alignments')
+    transcriptome_alignments = scan_files_for_file_format_output_type(value['original_files'],
+                                                                      'bam',
+                                                                      'transcriptome alignments')
+    if len(alignment_files) == 0 and len(transcriptome_alignments) == 0:
+        return  # probably needs pipeline, since there are no processed files
+
+    uniform_pipeline_flag = False
+    for bam_file in alignment_files:
+        if bam_file['lab'] == '/labs/encode-processing-pipeline/':
+            uniform_pipeline_flag = True
+            break
+    for bam_file in transcriptome_alignments:
+        if bam_file['lab'] == '/labs/encode-processing-pipeline/':
+            uniform_pipeline_flag = True
+            break
+    if uniform_pipeline_flag is False:
+        return
+    alignment_derived_from = get_derived_from_files_set(alignment_files)
+    transcriptome_alignment_derived_from = get_derived_from_files_set(transcriptome_alignments)
+
+    derived_from_set = alignment_derived_from | transcriptome_alignment_derived_from
+    fastq_files = scan_files_for_file_format_output_type(value['original_files'],
+                                                         'fastq', 'reads')
+
+    fastq_accs = get_file_accessions(fastq_files)
+
+    orfan_fastqs = set()
+    for f_accession in fastq_accs:
+        if f_accession not in derived_from_set:
+            orfan_fastqs.add(f_accession)
+
+    if len(orfan_fastqs) > 0:
+        orfan_bio_reps = set()
+
+        for fastq_f in fastq_files:
+            if fastq_f['accession'] in orfan_fastqs:
+                if 'replicate' in fastq_f:
+                    orfan_bio_reps.add(fastq_f['replicate']['biological_replicate_number'])
+        detail = 'Experiment {} '.format(value['@id']) + \
+                 'biological replicates {} '.format(orfan_bio_reps) + \
+                 'contain FASTQ files {} '.format(orfan_fastqs) + \
+                 ' that have not been processed.'
+        yield AuditFailure('out of date analysis', detail, level='DCC_ACTION')
+
+
+def get_file_accessions(list_of_files):
+    accessions_set = set()
+    for f in list_of_files:
+        accessions_set.add(f['accession'])
+    return accessions_set
+
+
+def get_derived_from_files_set(list_of_files):
+    derived_from_set = set()
+    for f in list_of_files:
+        if 'derived_from' in f:
+            d_fastqs = scan_files_for_file_format_output_type(f['derived_from'],
+                                                              'fastq', 'reads')
+            for d in d_fastqs:
+                derived_from_set.add(d['accession'])
+    return derived_from_set
+
+
+@audit_checker('Experiment', frame=['original_files',
                                     'award',
                                     'target',
                                     'replicates',
