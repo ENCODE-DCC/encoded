@@ -239,7 +239,7 @@ def composite(loader, global_conf, **settings):
         status = status_holder['status'].copy()
         status.update(**kw)
         if error is not None:
-            status['errors'] = [error] + status['errors'][:9]
+            status['errors'] = [error] + status['errors'][:4]
         if result is not None:
             status['results'] = [result] + status['results'][:9]
         status_holder['status'] = status
@@ -269,9 +269,7 @@ def composite(loader, global_conf, **settings):
         status = '200 OK'
         response_headers = [('Content-type', 'application/json')]
         start_response(status, response_headers)
-        truncated_status_holder = status_holder['status'].deepcopy()
-        truncated_status_holder = truncated_status_holder['errors'][:5]
-        return [json.dumps(truncated_status_holder)]
+        return [json.dumps(status_holder['status'])]
 
     return status_app
 
