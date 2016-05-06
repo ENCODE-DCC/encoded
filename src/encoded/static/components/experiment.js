@@ -1196,14 +1196,12 @@ var FileGalleryRenderer = React.createClass({
 
         return (
             <Panel>
-                <TabPanel tabs={{table: tableTab, graph: graphTab}} addClasses="file-gallery-tabs" moreComponents={filterMenu} moreComponentsClasses="file-gallery-filter">
-                    <TabPanelPane key="table">
-                        <DatasetFiles {...this.props} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} encodevers={this.props.encodevers} anisogenic={this.props.anisogenic} session={this.context.session} noDefaultClasses />
-                    </TabPanelPane>
-                    <TabPanelPane key="graph">
-                        <ExperimentGraph context={context} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
-                    </TabPanelPane>
-                </TabPanel>
+                <PanelHeading addClasses="file-gallery-heading">
+                    <h4>Files</h4>
+                    <div className="file-gallery-filter">{filterMenu}</div>
+                </PanelHeading>
+                <DatasetFiles {...this.props} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} encodevers={this.props.encodevers} anisogenic={this.props.anisogenic} session={this.context.session} noDefaultClasses />
+                <ExperimentGraph context={context} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
                 <PanelFooter>
                     {context.visualize_ucsc  && context.status == "released" ?
                         <DropdownButton title='Visualize Data' label="visualize-data">
@@ -1733,6 +1731,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
                 return (
                     <div>
+                        <div className="file-gallery-graph-header"><h4>Graph</h4></div>
                         {goodGraph ?
                             <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw>
                                 <div id="graph-node-info">

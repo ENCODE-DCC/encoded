@@ -49,8 +49,8 @@
 }
 
 .panel-blue {
-background-color: #4284d8;
-border: 1px solid #3276ca;
+    background-color: #4284d8;
+    border: 1px solid #3276ca;
     @include border-radius($border-radius-base);
     @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
     margin: 10px 0 20px;
@@ -160,18 +160,19 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     padding-bottom: 0 !important;
 }
 
-.file-gallery-tabs {
-    display: flex;
-    align-items: center;
-    background-color: #d8d8d8;
-    
-    .no-flexbox & {
-        display: block;
-    }
+.file-gallery-heading {
+    position: relative
 }
 
 .file-gallery-filter {
-    margin: 0 5px 0 auto;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    bottom: 5px;
+
+    select {
+        height: 100%;
+    }
 }
 
 .file-gallery-tab {
@@ -198,7 +199,20 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     font-size: 0.9rem;
     color: #606060;
     background-color: #d8d8d8;
+    border-top: 1px solid #a0a0a0;
     border-bottom: 1px solid #a0a0a0;
+}
+
+.file-gallery-graph-header {
+    padding: 10px;
+    background-color: #e8e8e8;
+    border-top: 1px solid #a0a0a0;
+    border-bottom: 1px solid #a0a0a0;
+
+    h4 {
+        margin: 0;
+        padding: 0;
+    }
 }
 
 .subpanel {
