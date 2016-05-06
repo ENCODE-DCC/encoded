@@ -311,7 +311,7 @@ def audit_file_controlled_by(value, system):
             control_platform_id = control_platform.get('term_id')
             if control_platform_id != platform_id:
                 detail = 'File {} is on {} but its control file {} is on {}'.format(
-                    value['id'],
+                    value['@id'],
                     platform_id,
                     ff['@id'],
                     control_platform_id
