@@ -401,6 +401,7 @@ def check_experiment_chip_seq_encode3_standards(experiment,
                                                 fastq_files,
                                                 alignment_files,
                                                 idr_peaks_files):
+
     for f in fastq_files:
         if 'run_type' not in f:
             detail = 'Experiment {} '.format(experiment['@id']) + \
@@ -424,11 +425,10 @@ def check_experiment_chip_seq_encode3_standards(experiment,
             return
 
         read_depth = get_file_read_depth_from_alignment(f, target, 'ChIP-seq')
-        if f['output_type'] != 'unfiltered alignments':
-            for failure in check_file_chip_seq_read_depth(f, target, read_depth):
-                yield failure
-            for failure in check_file_chip_seq_library_complexity(f):
-                yield failure
+        for failure in check_file_chip_seq_read_depth(f, target, read_depth):
+            yield failure
+        for failure in check_file_chip_seq_library_complexity(f):
+            yield failure
 
     if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
         return
@@ -1167,6 +1167,7 @@ def check_file_read_length_rna(file_to_check, threshold_length):
         yield AuditFailure('insufficient read length', detail,
                            level='NOT_COMPLIANT')
     return
+
 
 def get_organism_name(reps):
     for rep in reps:
