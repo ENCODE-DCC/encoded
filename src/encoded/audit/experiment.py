@@ -728,7 +728,8 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
 
 def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
 
-    if alignment_file['output_type'] == 'transcriptome alignments':
+    if alignment_file['output_type'] in ['transcriptome alignments',
+                                         'unfiltered alignments']:
         return False
 
     if alignment_file['lab'] != '/labs/encode-processing-pipeline/':
