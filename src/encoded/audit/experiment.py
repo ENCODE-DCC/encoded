@@ -424,11 +424,11 @@ def check_experiment_chip_seq_encode3_standards(experiment,
             return
 
         read_depth = get_file_read_depth_from_alignment(f, target, 'ChIP-seq')
-
-        for failure in check_file_chip_seq_read_depth(f, target, read_depth):
-            yield failure
-        for failure in check_file_chip_seq_library_complexity(f):
-            yield failure
+        if f['output_type'] != 'unfiltered alignments':
+            for failure in check_file_chip_seq_read_depth(f, target, read_depth):
+                yield failure
+            for failure in check_file_chip_seq_library_complexity(f):
+                yield failure
 
     if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
         return
