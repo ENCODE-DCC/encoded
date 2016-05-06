@@ -516,6 +516,24 @@ def file_tsv_1_1(base_experiment, award, encode_lab, testapp, analysis_step_run_
     return testapp.post_json('/file', item, status=201).json['@graph'][0]
 
 
+def test_audit_experiment_mixed_libraries(testapp,
+                                          base_experiment,
+                                          replicate_1_1,
+                                          replicate_2_1,
+                                          library_1,
+                                          library_2):
+    testapp.patch_json(library_1['@id'], {'nucleic_acid_term_name': 'DNA'})
+    testapp.patch_json(library_2['@id'], {'nucleic_acid_term_name': 'RNA'})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mixed libraries' for error in errors_list)
+
+
 def test_ChIP_possible_control(testapp, base_experiment, ctrl_experiment, IgG_ctrl_rep):
     testapp.patch_json(base_experiment['@id'], {'possible_controls': [ctrl_experiment['@id']],
                                                 'assay_term_name': 'ChIP-seq',
