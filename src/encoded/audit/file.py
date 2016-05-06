@@ -188,10 +188,12 @@ def check_presence(file_to_check, files_list):
 @audit_checker('file',
                frame=['dataset',
                       'dataset.target',
+                      'platform',
                       'controlled_by',
                       'controlled_by.replicate',
                       'controlled_by.dataset',
-                      'controlled_by.paired_with'],
+                      'controlled_by.paired_with',
+                      'controlled_by.platform'],
                condition=rfa('ENCODE2',
                              'ENCODE2-Mouse',
                              'ENCODE',
@@ -213,6 +215,9 @@ def audit_file_controlled_by(value, system):
 
         return
 
+    if value['file_format'] not in ['fastq']:
+        return
+
     if 'target' in value['dataset'] and \
        'control' in value['dataset']['target'].get('investigated_as', []):
         return
@@ -220,7 +225,7 @@ def audit_file_controlled_by(value, system):
     if 'controlled_by' not in value:
         value['controlled_by'] = []
 
-    if (value['controlled_by'] == []) and (value['file_format'] in ['fastq']):
+    if value['controlled_by'] == []:
         detail = 'Fastq file {} from {} requires controlled_by'.format(
             value['@id'],
             value['dataset']['assay_term_name']
@@ -232,7 +237,7 @@ def audit_file_controlled_by(value, system):
                                                    'RAMPAGE']:
         bio_rep_numbers = set()
         pe_files = []
-        if (value['file_format'] in ['fastq']) and len(value['controlled_by']) > 0:
+        if len(value['controlled_by']) > 0:
             for control_file in value['controlled_by']:
                 if 'replicate' in control_file:
                     bio_rep_numbers.add(control_file['replicate']['biological_replicate_number'])
@@ -267,12 +272,14 @@ def audit_file_controlled_by(value, system):
     biosample = value['dataset'].get('biosample_term_id')
     run_type = value.get('run_type', None)
     read_length = value.get('read_length', None)
+    platform_id = value['platform'].get('term_id')
 
     if value['controlled_by']:
         for ff in value['controlled_by']:
             control_bs = ff['dataset'].get('biosample_term_id')
             control_run = ff.get('run_type', None)
             control_length = ff.get('read_length', None)
+            control_platform = ff.get('platform', None)
 
             if control_bs != biosample:
                 detail = 'File {} has a controlled_by file {} with conflicting biosample {}'.format(
@@ -300,6 +307,17 @@ def audit_file_controlled_by(value, system):
                     )
                 yield AuditFailure('mismatched control', detail, level='ERROR')
                 return
+
+            control_platform_id = control_platform.get('term_id')
+            if control_platform_id != platform_id:
+                detail = 'File {} is on {} but its control file {} is on {}'.format(
+                    value['id'],
+                    platform_id,
+                    ff['@id'],
+                    control_platform_id
+                )
+                yield AuditFailure('mismatched control platform',
+                                   detail, level='WARNING')
 
             if (run_type is None) or (control_run is None):
                 continue
@@ -330,6 +348,7 @@ def audit_file_controlled_by(value, system):
                 yield AuditFailure('mismatched control read length',
                                    detail, level='WARNING')
                 return
+
 
 @audit_checker('file', frame='object', condition=rfa('modERN', 'GGR'))
 def audit_file_flowcells(value, system):
