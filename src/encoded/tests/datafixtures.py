@@ -557,6 +557,26 @@ def biosample_characterization(testapp, award, lab, biosample, attachment):
 
 
 @pytest.fixture
+def human_donor(testapp, lab, award, organism):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'organism': organism['uuid'],
+    }
+    return testapp.post_json('/human_donor', item).json['@graph'][0]
+
+
+@pytest.fixture
+def human_donor2(testapp, lab, award, organism):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'organism': organism['uuid'],
+    }
+    return testapp.post_json('/human_donor', item).json['@graph'][0]
+
+
+@pytest.fixture
 def fly_donor(testapp, award, lab, fly):
     item = {
         'award': award['@id'],
