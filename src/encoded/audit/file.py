@@ -27,6 +27,26 @@ paired_end_assays = [
     ]
 
 
+@audit_checker('File', frame=['object'],
+               condition=rfa('ENCODE3',
+                             'modENCODE',
+                             'modERN',
+                             'GGR'))
+def audit_file_processed_empty_derived_from(value, system):
+    if value['output_category'] in ['raw data',
+                                    'reference']:
+        return
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+            return
+    if 'derived_from' not in value or \
+       'derived_from' in value and len(value['derived_from']) == 0:
+            detail = 'The processed file {} '.format(value['@id']) + \
+                     'has no derived_from information supplied.'
+            yield AuditFailure('missing derived_from',
+                               detail, level='DCC_ACTION')
+            return
+
+
 @audit_checker('File', frame=['derived_from'])
 def audit_file_derived_from_revoked(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
