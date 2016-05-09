@@ -121,7 +121,7 @@ var AdvSearch = React.createClass({
                         <div className="form-group col-md-8">
                             
                             <input type="hidden" name="annotation" value={this.state.terms['annotation']} />
-                            <select name="species" onChange={this.handleAssemblySelect}>
+                            <select name="genome" onChange={this.handleAssemblySelect}>
                                 <option>hg19</option>
                                 <option>mm10</option>
                             </select>

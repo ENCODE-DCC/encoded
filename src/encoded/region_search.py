@@ -336,7 +336,6 @@ def region_search(context, request):
 @view_config(route_name='suggest', request_method='GET', permission='search')
 def suggest(context, request):
     text = ''
-    requested_genome = ''
     result = {
         '@id': '/suggest/?' + urlencode({'q': text}),
         '@type': ['suggest'],
@@ -345,7 +344,6 @@ def suggest(context, request):
     }
     if 'q' in request.params:
         text = request.params.get('q', '')
-        requested_genome = request.params.get('genome', '')
     else:
         return []
     es = request.registry[ELASTIC_SEARCH]
@@ -354,7 +352,7 @@ def suggest(context, request):
             "text": text,
             "completion": {
                 "field": "name_suggest",
-                "size": 100
+                "size": 10
             }
         }
     }
@@ -366,7 +364,6 @@ def suggest(context, request):
         result['@id'] = '/suggest/?' + urlencode({'q': text})
         result['@graph'] = []
         for item in results['suggester'][0]['options']:
-            if requested_genome == item['payload']['genome']:
-                while len(result['@graph']) <= 10:
-                    result['@graph'].append(item)
+            if not any(x in item['text'] for x in ['(C. elegans)', '(D. melanogaster)']):
+                result['@graph'].append(item)
         return result
