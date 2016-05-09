@@ -548,7 +548,6 @@ def biosample_characterization(testapp, award, lab, biosample, attachment):
 
 
 @pytest.fixture
-<<<<<<< HEAD
 def human_donor(testapp, lab, award, organism):
     item = {
         'award': award['uuid'],
