@@ -88,6 +88,11 @@
                     "DNase-seq",
                     "RNA-seq",
                     "data QC",
+                    "RAMPAGE",
+                    "iClip-seq",
+                    "FAIRE-seq",
+                    "RIP-seq", 
+                    "CAGE",
                     "integrative analysis",
                     "variant analysis",
                     "community resource"
