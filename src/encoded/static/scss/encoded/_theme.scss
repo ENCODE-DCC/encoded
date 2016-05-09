@@ -41,6 +41,11 @@
             }
         }
     }
+
+    &[disabled] {
+        background-color: #fff;
+        color: lighten(#428bca,20%) !important;
+    }
 }
 
 .btn-svgicon {
