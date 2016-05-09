@@ -346,6 +346,7 @@ def suggest(context, request):
     if 'q' in request.params:
         text = request.params.get('q', '')
         requested_genome = request.params.get('genome', '')
+        # print(requested_genome)
     else:
         return []
     es = request.registry[ELASTIC_SEARCH]
