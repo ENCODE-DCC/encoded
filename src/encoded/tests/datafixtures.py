@@ -357,6 +357,15 @@ AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
 
 
 @pytest.fixture
+def treatment(testapp, organism):
+    item = {
+        'treatment_term_name': 'ethanol',
+        'treatment_type': 'chemical'
+       
+    }
+    return testapp.post_json('/treatment', item).json['@graph'][0]
+
+@pytest.fixture
 def attachment():
     return {'download': 'red-dot.png', 'href': RED_DOT}
 
