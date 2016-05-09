@@ -285,7 +285,9 @@ def test_audit_file_mismatched_controlled_by(testapp, file1):
 
 def test_audit_file_inconsistent_controlled_by(testapp, file1,
                                                file2, file3,
-                                               file_rep1_2):
+                                               file_rep1_2,
+                                               file_rep2):
+    testapp.patch_json(file1['@id'], {'replicate': file_rep2['@id']})
     testapp.patch_json(file3['@id'], {'replicate': file_rep1_2['@id']})
     testapp.patch_json(file1['@id'], {'controlled_by': [file2['@id'], file3['@id']]})
 
@@ -305,7 +307,7 @@ def test_audit_file_missing_paired_controlled_by(testapp, file1,
                                       'paired_with': file2['@id'],
                                       'run_type': 'paired-ended',
                                       'paired_end': '2'})
-    testapp.patch_json(file2['@id'], {'replicate': file_rep2['@id'],                                     
+    testapp.patch_json(file2['@id'], {'replicate': file_rep2['@id'],
                                       'run_type': 'paired-ended',
                                       'paired_end': '1'})
     testapp.patch_json(file1['@id'], {'controlled_by': [file2['@id']]})
@@ -545,4 +547,17 @@ def test_audit_file_missing_assembly(testapp, file6, file7):
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing assembly'
+               for error in errors_list)
+
+
+def test_audit_file_derived_from_revoked(testapp, file6, file7):
+    testapp.patch_json(file6['@id'], {'status': 'revoked'})
+    testapp.patch_json(file7['@id'], {'derived_from': [file6['@id']],
+                                      'status': 'released'})
+    res = testapp.get(file7['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched file status'
                for error in errors_list)

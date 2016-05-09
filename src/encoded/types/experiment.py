@@ -191,10 +191,6 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
                            libraryObject['size_range'] == '<200':
                             preferred_name = 'small RNA-seq'
                             break
-                        elif 'nucleic_acid_starting_quantity_units' in libraryObject and \
-                             libraryObject['nucleic_acid_starting_quantity_units'] == 'pg':
-                            preferred_name = 'low input RNA-seq'
-                            break
                         elif 'depleted_in_term_name' in libraryObject and \
                              'polyadenylated mRNA' in libraryObject['depleted_in_term_name']:
                             preferred_name = 'polyA depleted RNA-seq'
@@ -258,7 +254,7 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         "description": "Calculated field that indicates the replication model",
         "type": "string"
     })
-    def replication_type(self, request, replicates=None):
+    def replication_type(self, request, replicates=None, assay_term_name=None):
         # Compare the biosamples to see if for humans they are the same donor and for
         # model organisms if they are sex-matched and age-matched
         biosample_dict = {}
@@ -283,6 +279,10 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
                     biosample_species = biosampleObject.get('organism')
                     biosample_type = biosampleObject.get('biosample_type')
                 else:
+                    # special treatment for "RNA Bind-n-Seq" they will be called unreplicated
+                    # untill we change our mind
+                    if assay_term_name == 'RNA Bind-n-Seq':
+                        return 'unreplicated'
                     # If I have a library without a biosample,
                     # I cannot make a call about replicate structure
                     return None

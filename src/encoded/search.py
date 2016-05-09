@@ -207,7 +207,9 @@ def list_visible_columns_for_schemas(request, schemas):
         else:
             # default columns if not explicitly specified
             columns.update(OrderedDict(
-                (name, schema['properties'][name].get('title', name))
+                (name, {
+                    'title': schema['properties'][name].get('title', name)
+                })
                 for name in [
                     '@id', 'title', 'description', 'name', 'accession',
                     'aliases'
