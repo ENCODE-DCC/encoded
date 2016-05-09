@@ -1,11 +1,10 @@
 'use strict';
 var React = require('react');
-var panel = require('../libs/bootstrap/panel');
+var {Panel, PanelBody, PanelHeading} = require('../libs/bootstrap/panel');
 var _ = require('underscore');
 var globals = require('./globals');
 var BrowserFeat = require('./browserfeat').BrowserFeat;
-
-var {Panel, PanelBody, PanelHeading} = panel;
+var SvgIcon = require('../libs/svg-icons');
 
 
 // Zoom slider constants
@@ -491,8 +490,8 @@ var Graph = module.exports.Graph = React.createClass({
     },
 
     render: function() {
-        var orientBtnClass = (this.state.verticalGraph ? 'btn-orient-horizontal' : 'btn-orient-vertical');
         var orientBtnAlt = 'Orient graph ' + (this.state.verticalGraph ? 'horizontally' : 'vertically');
+        var currOrientKey = this.state.verticalGraph ? 'orientH' : 'orientV';
         var noDefaultClasses = this.props.noDefaultClasses;
 
         return (
@@ -509,8 +508,8 @@ var Graph = module.exports.Graph = React.createClass({
                 <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler}>
                 </div>
                 <div className="graph-dl clearfix">
-                    <button className="btn btn-info btn-sm btn-orient-wrapper" title={orientBtnAlt} onClick={this.handleOrientationClick}><span className={orientBtnClass}><span className="sr-only">{orientBtnAlt}</span></span></button>
-                    <button ref="dlButton" className="btn btn-info btn-sm pull-right" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
+                    <button className="btn btn-info btn-sm btn-orient" title={orientBtnAlt} onClick={this.handleOrientationClick}>{SvgIcon(currOrientKey)}<span className="sr-only">{orientBtnAlt}</span></button>
+                    <button ref="dlButton" className="btn btn-info btn-sm" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
                 </div>
                 {this.props.children}
             </Panel>

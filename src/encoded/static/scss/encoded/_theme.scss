@@ -1,17 +1,57 @@
 .btn {
     font-weight: bold;
-    @include box-shadow(0 1px 1px rgba(0,0,0,.05), inset 0 -1px 0 rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.3));
+    border-radius: 5px;
 }
 
 .btn-link {
     font-weight: normal;
-    @include box-shadow(none);
+}
+
+.btn-info {
+    color: #428bca;
+    background-color: #fff;
+    border: 1px solid #428bca;
+
+    .svg-icon {
+        path, rect, polygon {
+            fill: #428bca;
+        }
+    }
+
+    &:active, &:focus {
+        color: darken(#428bca,20%) !important;
+        background-color: #fff !important;
+        border: 1px solid #428bca;
+    }
+
+    &.active, &:active.active, .dropdown.open & {
+        color: darken(#428bca,20%) !important;
+        background-color: lighten(#428bca,30%) !important;
+        border: 1px solid #428bca !important;
+    }
+
+    &:hover {
+        color: darken(#428bca,20%);
+        background-color: lighten(#428bca,30%);
+        border: 1px solid #428bca;
+
+        .svg-icon {
+            path {
+                fill: darken(#428bca,20%);
+            }
+        }
+    }
 }
 
 .btn-svgicon {
     line-height: 0.9;
     margin-right: 0 !important;
     border-radius: 0;
+    border-right-width: 0;
+
+    &:hover {
+        border-right-width: 0;
+    }
 
     .svg-icon {
         fill: #fff;
@@ -23,7 +63,20 @@
     }
 
     &:last-child {
+        border-right-width: 1px;
         border-top-right-radius: $border-radius-small;
         border-bottom-right-radius: $border-radius-small;
+    }
+}
+
+select {
+    border: 1px solid #428bca !important;
+    color: #428bca !important;
+    font-weight: bold;
+
+    &:hover {
+        color: darken(#428bca,20%);
+        background-color: lighten(#428bca,30%);
+        border: 1px solid #428bca !important;
     }
 }

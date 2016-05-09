@@ -33,6 +33,8 @@ thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td
 
 .table-panel {
     @extend .panel;
+    margin-top: 0;
+    margin-bottom: 0;
     padding: 0;
     border-collapse: separate;
 
@@ -169,7 +171,7 @@ form.table-filter {
 .table-section {
     @include font-size(1.3);
     font-weight: bold;
-    background-color: #e8e8e8;
+    background-color: #d8e0e8;
 
     th {
         height: auto !important;

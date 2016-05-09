@@ -164,14 +164,30 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     position: relative
 }
 
-.file-gallery-filter {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    bottom: 5px;
+.file-gallery-controls {
+    margin-top: 5px;
+
+    @media screen and (min-width: $screen-sm-min) {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        bottom: 5px;
+        margin-top: 0;
+    }
+}
+
+.file-gallery-control {
+    display: inline-block;
+    vertical-align: bottom;
+    margin-right: 5px;
+
+    @media screen and (min-width: $screen-sm-min) {
+        margin-right: 0;
+        margin-left: 5px;
+    }
 
     select {
-        height: 100%;
+        height: 30px;
     }
 }
 
@@ -205,9 +221,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
 .file-gallery-graph-header {
     padding: 10px;
-    background-color: #e8e8e8;
-    border-top: 1px solid #a0a0a0;
-    border-bottom: 1px solid #a0a0a0;
+    background-color: #d8e0e8;
 
     h4 {
         margin: 0;
