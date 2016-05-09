@@ -713,7 +713,7 @@ def audit_file_read_depth(value, system):
     if value['file_format'] != 'bam':
         return
 
-    if value['output_type'] == 'transcriptome alignments':
+    if value['output_type'] in ['transcriptome alignments', 'unfiltered alignments']:
         return
 
     if value['lab'] != '/labs/encode-processing-pipeline/':

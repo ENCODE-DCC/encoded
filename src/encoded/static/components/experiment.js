@@ -22,7 +22,7 @@ var doc = require('./doc');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
-var {DatasetFiles, FilePanelHeader, ExperimentTable} = dataset;
+var {DatasetFiles, FilePanelHeader, ExperimentTable, FileTable} = dataset;
 var FetchedItems = fetched.FetchedItems;
 var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
@@ -559,8 +559,14 @@ var Experiment = module.exports.Experiment = React.createClass({
                     <ExperimentGraph context={context} session={this.context.session} />
                 </FetchedData>
 
-                {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} session={this.context.session} ignoreErrors />
+                {/* If logged in and dataset is released, need to combine search of files that reference
+                    this dataset to get released and unreleased ones. If not logged in, then just get
+                    files from dataset.files */}
+                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
+                    <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                :
+                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
+                }
 
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} ignoreErrors />
 
