@@ -136,7 +136,10 @@
                     "signal p-value",
                     "fold change over control",
                     "replicated peaks",
-                    "bed"
+                    "bed",
+                    "open chromatin regions",
+                    "filtered peaks",
+                    "filtered regions"
                 ]
             }
         },
@@ -210,7 +213,9 @@
                     "signal p-value",
                     "fold change over control",
                     "replicated peaks",
-                    "bigBed"
+                    "bigBed",
+                    "filtered peaks",
+                    "filtered regions"
                 ]
             }
         },
