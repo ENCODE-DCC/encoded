@@ -23,7 +23,7 @@ def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
 
 @pytest.yield_fixture(scope='session')
 def app(app_settings):
-    from encoded import main
+    from snovault import main
     app = main({}, **app_settings)
 
     yield app

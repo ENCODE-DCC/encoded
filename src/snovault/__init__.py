@@ -70,8 +70,8 @@ def main(global_config, **local_config):
     settings = global_config
     settings.update(local_config)
 
-    settings['snovault.jsonld.namespaces'] = json_asset('snovault:schemas/namespaces.json')
     # TODO - these need to be set for dummy app
+    # settings['snovault.jsonld.namespaces'] = json_asset('snovault:schemas/namespaces.json')
     # settings['snovault.jsonld.terms_namespace'] = 'https://www.encodeproject.org/terms/'
     settings['snovault.jsonld.terms_prefix'] = 'snovault'
     settings['snovault.elasticsearch.index'] = 'snovault'
@@ -118,13 +118,5 @@ def main(global_config, **local_config):
     config.include('.audit')
 
     app = config.make_wsgi_app()
-
-    workbook_filename = settings.get('load_workbook', '')
-    load_test_only = asbool(settings.get('load_test_only', False))
-    docsdir = settings.get('load_docsdir', None)
-    if docsdir is not None:
-        docsdir = [path.strip() for path in docsdir.strip().split('\n')]
-    if workbook_filename:
-        load_workbook(app, workbook_filename, docsdir, test=load_test_only)
 
     return app

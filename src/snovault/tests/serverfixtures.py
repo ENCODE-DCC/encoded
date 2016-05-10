@@ -83,7 +83,7 @@ def elasticsearch_server(request, elasticsearch_host_port):
 
 @pytest.yield_fixture(scope='session')
 def conn(engine_url):
-    from encoded import configure_engine
+    from snovault.app import configure_engine
     from snovault.storage import Base
 
     engine_settings = {
