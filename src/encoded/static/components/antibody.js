@@ -391,7 +391,7 @@ var CharacterizationFile = React.createClass({
                 <div className="characterization-badge"><StatusLabel status={doc.status} /></div>
                 {detailSwitch ?
                     <div className={'detail-switch' + (detailOpen ? ' open' : '')}>
-                        <i className={'icon detail-trigger' + (detailOpen ? ' open' : '')} onClick={detailSwitch}>
+                        <i className={'icon detail-trigger' + (detailOpen ? '' : ' collapsed')} onClick={detailSwitch}>
                             <span className="sr-only">More</span>
                         </i>
                     </div>
