@@ -12,7 +12,7 @@ from snovault.app import (
     app_version,
     session,
     configure_dbsession,
-    static_resources,
+    # static_resources,
     changelogs,
     json_from_path,
     )
@@ -25,6 +25,30 @@ from pyramid.settings import (
     asbool,
 )
 from snovault.json_renderer import json_renderer
+
+STATIC_MAX_AGE = 0
+
+
+def static_resources(config):
+    from pkg_resources import resource_filename
+    import mimetypes
+    mimetypes.init()
+    mimetypes.init([resource_filename('encoded', 'static/mime.types')])
+    config.add_static_view('static', 'static', cache_max_age=STATIC_MAX_AGE)
+    config.add_static_view('profiles', 'schemas', cache_max_age=STATIC_MAX_AGE)
+
+    favicon_path = '/static/img/favicon.ico'
+    if config.route_prefix:
+        favicon_path = '/%s%s' % (config.route_prefix, favicon_path)
+    config.add_route('favicon.ico', 'favicon.ico')
+
+    def favicon(request):
+        subreq = request.copy()
+        subreq.path_info = favicon_path
+        response = request.invoke_subrequest(subreq)
+        return response
+
+    config.add_view(favicon, route_name='favicon.ico')
 
 
 def load_workbook(app, workbook_filename, docsdir, test=False):
@@ -112,13 +136,5 @@ def main(global_config, **local_config):
     config.include('.audit')
 
     app = config.make_wsgi_app()
-
-    workbook_filename = settings.get('load_workbook', '')
-    load_test_only = asbool(settings.get('load_test_only', False))
-    docsdir = settings.get('load_docsdir', None)
-    if docsdir is not None:
-        docsdir = [path.strip() for path in docsdir.strip().split('\n')]
-    if workbook_filename:
-        load_workbook(app, workbook_filename, docsdir, test=load_test_only)
 
     return app
