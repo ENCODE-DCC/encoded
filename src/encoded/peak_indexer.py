@@ -118,7 +118,6 @@ def index_peaks(uuid, request):
     if 'status' not in context or context['status'] != 'released':
         return
 
-    # Index human data for now       
     if 'assembly' not in context or context['assembly'] not in _ASSEMBLIES:
         return
 
