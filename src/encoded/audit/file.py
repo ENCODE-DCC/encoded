@@ -312,9 +312,9 @@ def audit_file_controlled_by(value, system):
             if control_platform_id != platform_id:
                 detail = 'File {} is on {} but its control file {} is on {}'.format(
                     value['@id'],
-                    platform_id,
+                    value['platform'].get('term_name'),
                     ff['@id'],
-                    control_platform_id
+                    control_platform.get('term_name')
                 )
                 yield AuditFailure('mismatched control platform',
                                    detail, level='WARNING')
