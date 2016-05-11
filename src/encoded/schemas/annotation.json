@@ -56,6 +56,10 @@
             "type": "string",
             "enum": [
                 "binding sites",
+                "blacklist",
+                "chromatin state",
+                "enhancer-like regions",
+                "promoter-like regions",
                 "candidate enhancers",
                 "candidate promoters",
                 "enhancer prediction",
@@ -65,6 +69,7 @@
                 "validated enhancers",
                 "overlap",
                 "segmentation",
+                "other",
                 "encyclopedia"
             ]
         },
