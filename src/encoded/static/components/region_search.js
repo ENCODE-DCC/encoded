@@ -59,6 +59,7 @@ var AdvSearch = React.createClass({
             showAutoSuggest: false,
             searchTerm: '',
             coordinates: '',
+            genome: 'hg19',
             terms: {}
         };
     },
@@ -90,6 +91,10 @@ var AdvSearch = React.createClass({
         // Now let the timer update the terms state when it gets around to it.
     },
 
+    handleAssemblySelect: function(event) {
+        this.setState({genome: event.target.value});
+    },
+
     componentDidMount: function() {
         // Use timer to limit to one request per second
         this.timer = setInterval(this.tick, 1000);
@@ -119,17 +124,18 @@ var AdvSearch = React.createClass({
                 <form id="panel1" ref="adv-search" role="form" autoComplete="off" aria-labeledby="tab1">
                     <div className="row">
                         <div className="form-group col-md-8">
-                            
                             <input type="hidden" name="annotation" value={this.state.terms['annotation']} />
                             <select name="genome" onChange={this.handleAssemblySelect}>
-                                <option>hg19</option>
-                                <option>mm10</option>
+                                <option value="hg19">hg19</option>
+                                <option value="GRCh38">GRCh38</option>
+                                <option value="mm9">mm9</option>
+                                <option value="mm10">mm10</option>
                             </select>
                             <input ref="annotation" defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange}
                                 placeholder="Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID" />
                             {(this.state.showAutoSuggest && this.state.searchTerm) ?
                                 <FetchedData loadingComplete={true}>
-                                    <Param name="auto" url={'/suggest/?q=' + this.state.searchTerm} />
+                                    <Param name="auto" url={'/suggest/?genome=' + this.state.genome + '&q=' + this.state.searchTerm } />
                                     <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} />
                                 </FetchedData>
                             : null}
