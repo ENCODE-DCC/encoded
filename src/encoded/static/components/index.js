@@ -35,6 +35,7 @@ require('./inputs');
 require('./blocks');
 require('./user');
 require('./schema');
+require('./browser');
 require('./region_search');
 
 

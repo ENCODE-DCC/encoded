@@ -19,6 +19,7 @@ var software = require('./software');
 var sortTable = require('./sorttable');
 var objectutils = require('./objectutils');
 var doc = require('./doc');
+var GenomeBrowser = require('./browser').GenomeBrowser;
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -547,12 +548,18 @@ var Experiment = module.exports.Experiment = React.createClass({
                                 </dl>
                             </div>
                         </div>
+                        {context.visualize_ucsc && context.status == "released" ?
+                            <div className="panel data-display">
+                                <GenomeBrowser files={context.files} assembly={context.assembly} />
+                            </div>
+                        : null}
                     </PanelBody>
                 </Panel>
 
                 {Object.keys(condensedReplicates).length ?
                     <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
                 : null}
+
 
                 <FetchedData ignoreErrors>
                     <Param name="data" url={dataset.unreleased_files_url(context)} />
