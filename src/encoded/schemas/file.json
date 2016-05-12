@@ -344,6 +344,8 @@
                         "enrichment",
                         "replication timing profile",
                         "variant calls",
+                        "filtered SNPs",
+                        "filtered indels",
 
                         "hotspots",
                         "long range chromatin interactions",
