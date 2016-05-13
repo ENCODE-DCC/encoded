@@ -36,12 +36,8 @@ _INDEXED_DATA = {
     }
 }
 
-# Species and references being indexed
-_SPECIES = {
-    'Homo sapiens': ['hg19']
-}
 
-_ASSEMBLIES = ['hg19', 'mm10', 'mm9']
+_ASSEMBLIES = ['hg19', 'mm10', 'mm9', 'GRCh38']
 
 
 def includeme(config):

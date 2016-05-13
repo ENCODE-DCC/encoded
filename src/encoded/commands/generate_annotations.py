@@ -1,6 +1,6 @@
-import logging
 import requests
 import json
+import re
 
 EPILOG = __doc__
 
@@ -45,6 +45,7 @@ def human_annotations(es):
     Generates JSON from TSV files
     """
     species = ' (homo sapiens)'
+    species_for_payload = re.split('[(|)]', species)[1]
     response = requests.get(_HGNC_FILE)
     header = []
     annotations = []
@@ -74,7 +75,7 @@ def human_annotations(es):
                       r['HGNC ID'],
                       r['Entrez Gene ID'] + ' (Gene ID)'],
             'payload': {'id': r['HGNC ID'],
-                        'species': species}
+                        'species': species_for_payload}
         }
         doc['id'] = r['HGNC ID']
 
@@ -144,10 +145,11 @@ def mouse_annotations(mouse_file):
 
         doc = {'annotations': []}
         species = ' (mus musculus)'
+        species_for_payload = re.split('[(|)]', species)[1]
         doc['name_suggest'] = {
             'input': [],
             'payload': {'id': r['Ensembl Gene ID'],
-                        'species': species}
+                        'species': species_for_payload}
         }
         doc['id'] = r['Ensembl Gene ID']
 
@@ -198,6 +200,7 @@ def other_annotations(file, species, assembly):
     annotations = []
     response = requests.get(file)
     header = []
+    species_for_payload = re.split('[(|)]', species)[1]
     for row in response.content.decode('utf-8').split('\n'):
         # skipping header row
         if len(header) == 0:
@@ -214,7 +217,7 @@ def other_annotations(file, species, assembly):
         doc['name_suggest'] = {
             'input': [r['Associated Gene Name'] + species],
             'payload': {'id': r['Ensembl Gene ID'],
-                        'species': species}
+                        'species': species_for_payload}
         }
         doc['id'] = r['Ensembl Gene ID']
         annotation['assembly_name'] = assembly
