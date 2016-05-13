@@ -23,7 +23,7 @@ var doc = require('./doc');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
-var {DatasetFiles, FilePanelHeader, ExperimentTable} = dataset;
+var {DatasetFiles, FilePanelHeader, ExperimentTable, FileTable} = dataset;
 var FetchedItems = fetched.FetchedItems;
 var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
@@ -39,7 +39,7 @@ var ProjectBadge = image.ProjectBadge;
 var {DocumentsPanel, AttachmentPanel} = doc;
 var DropdownButton = button.DropdownButton;
 var DropdownMenu = dropdownMenu.DropdownMenu;
-var {Panel, PanelBody, PanelHeading, PanelFooter, TabPanel, TabPanelPane} = panel;
+var {Panel, PanelBody, PanelHeading} = panel;
 
 
 var anisogenicValues = [
@@ -48,6 +48,7 @@ var anisogenicValues = [
     'anisogenic, sex-matched',
     'anisogenic'
 ];
+
 
 // Order that assemblies should appear in filtering menu
 var assemblyPriority = [
@@ -1162,6 +1163,7 @@ var FileGalleryRenderer = React.createClass({
             return null;
         }
         var filterOptions = files.length ? collectAssembliesAnnotations(files) : [];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
 
         // Build the graph; place resulting graph in this.jsonGraph
         if (this.state.selectedFilterValue && filterOptions[this.state.selectedFilterValue]) {
@@ -1201,7 +1203,16 @@ var FileGalleryRenderer = React.createClass({
                         <div className="file-gallery-control">{filterMenu}</div>
                     </div>
                 </PanelHeading>
-                <DatasetFiles {...this.props} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} encodevers={this.props.encodevers} anisogenic={this.props.anisogenic} session={this.context.session} noDefaultClasses />
+
+                {/* If logged in and dataset is released, need to combine search of files that reference
+                    this dataset to get released and unreleased ones. If not logged in, then just get
+                    files from dataset.files */}
+                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
+                    <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={DatasetFiles} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors noDefaultClasses />
+                :
+                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} noAudits noDefaultClasses />
+                }
+
                 <ExperimentGraph context={context} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
             </Panel>
         );
@@ -1290,6 +1301,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
     var allPipelines = {}; // List of all pipelines indexed by step @id
     var allMetricsInfo = []; // List of all QC metrics found attached to files
     var fileQcMetrics = {}; // List of all file QC metrics indexed by file ID
+    var filterOptions = []; // List of graph filters; annotations and assemblies
     var stepExists = false; // True if at least one file has an analysis_step
     var fileOutsideReplicate = false; // True if at least one file exists outside a replicate
     var abortGraph = false; // True if graph shouldn't be drawn
@@ -1423,7 +1435,12 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
         var file = allFiles[fileId];
 
         // File gets removed if doesn’t derive from other files AND no files derive from it.
-        file.removed = !(file.derived_from && file.derived_from.length) && !derivedFromFiles[fileId];
+        var islandFile = file.removed = !(file.derived_from && file.derived_from.length) && !derivedFromFiles[fileId];
+
+        // Add to the filtering options to generate a <select>; don't include island files
+        if (!islandFile && file.output_category !== 'raw data' && file.assembly) {
+            filterOptions.push({assembly: file.assembly, annotation: file.genome_annotation});
+        }
     });
 
     // Remove any replicates containing only removed files from the last step.
@@ -1549,7 +1566,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
     });
 
     // Go through each file (released or unreleased) to add it and associated steps to the graph
-    Object.keys(allFiles).forEach(fileId => {
+    Object.keys(allFiles).forEach(function(fileId) {
         var file = allFiles[fileId];
 
         // Only add files derived from others, or that others derive from,
@@ -1642,12 +1659,13 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
                 }
             }
         }
-    });
+    }, this);
 
+    jsonGraph.filterOptions = filterOptions.length ? _(filterOptions).uniq(option => option.assembly + '!' + (option.annotation ? option.annotation : '')) : [];
     return jsonGraph;
 };
 
-// analysis steps.
+
 var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
     getInitialState: function() {
