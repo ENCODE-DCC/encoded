@@ -55,6 +55,20 @@
                 "proposed"
             ]
         },
+        "parent_strains": {
+            "title": "ParentStrains",
+            "description": "Donor IDs of parent strains, if known.",
+            "type":  "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "ParentStrain",
+                "description": "A donor ID of a parent strain, if known.",
+                "comment": "For mouse biosamples, see mouse_donor.json for available identifiers.",
+                "type": "string",
+                "linkTo": "MouseDonor"
+            }
+        },
         "dbxrefs": {
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
