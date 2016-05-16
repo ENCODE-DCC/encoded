@@ -130,23 +130,25 @@ var AdvSearch = React.createClass({
                         <input type="hidden" name="annotation" value={this.state.terms['annotation']} />
                         <div className="form-group">
                             <label>Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID</label>
-                            <input ref="annotation" defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange} />
-                            {(this.state.showAutoSuggest && this.state.searchTerm) ?
-                                <FetchedData loadingComplete={true}>
-                                    <Param name="auto" url={'/suggest/?q=' + this.state.searchTerm} />
-                                    <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} />
-                                </FetchedData>
-                            : null}
+                            <div className="input-group">
+                                <input ref="annotation" defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange} />
+                                {(this.state.showAutoSuggest && this.state.searchTerm) ?
+                                    <FetchedData loadingComplete={true}>
+                                        <Param name="auto" url={'/suggest/?q=' + this.state.searchTerm} />
+                                        <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} />
+                                    </FetchedData>
+                                : null}
+                                <div className="input-group-addon input-group-select-addon">
+                                    <select defaultValue="0" onChange={this.handleFilterChange}>
+                                        {regionGenomes.map((genomeId, i) => {
+                                            var key = Object.keys(genomeId)[0];
+                                            return <option key={i} value={key}>{genomeId[key]}</option>;
+                                        })}
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                        <div className="form-inline pull-right">
-                            <select defaultValue="0" onChange={this.handleFilterChange}>
-                                {regionGenomes.map((genomeId, i) => {
-                                    var key = Object.keys(genomeId)[0];
-                                    return <option key={i} value={key}>{genomeId[key]}</option>;
-                                })}
-                            </select>
-                            <input type="submit" value="Search" className="btn btn-sm btn-info adv-search-submit" />
-                        </div>
+                        <input type="submit" value="Search" className="btn btn-sm btn-info pull-right" />
                     </form>
                 </PanelBody>
             </Panel>

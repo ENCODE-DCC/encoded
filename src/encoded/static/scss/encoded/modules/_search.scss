@@ -33,6 +33,8 @@ $form-bg: #f3f3f3;
 }
 
 .adv-search-form {
+    margin-bottom: 0 !important;
+
     .form-inline.pull-right {
         input, select {
             margin-left: 5px;
@@ -66,6 +68,14 @@ $form-bg: #f3f3f3;
         &:hover {
             background-color: #e0e0e0;
         }
+    }
+}
+
+.input-group-select-addon {
+    padding: 0;
+
+    select {
+        height: 100%;
     }
 }
 
