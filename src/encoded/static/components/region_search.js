@@ -146,6 +146,9 @@ var AdvSearch = React.createClass({
                                         })}
                                     </select>
                                 </div>
+                                {context.notification ?
+                                    <p className="input-region-error">{context.notification}</p>
+                                : null}
                             </div>
                         </div>
                         <input type="submit" value="Search" className="btn btn-sm btn-info pull-right" />
@@ -261,9 +264,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                                 </div>
                             </div>
                         </div>
-                    :
-                        <h4>{context['notification']}</h4>
-                    }
+                    : null}
             </div>
         );
     }

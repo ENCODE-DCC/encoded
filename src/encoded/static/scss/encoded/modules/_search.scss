@@ -50,6 +50,15 @@ $form-bg: #f3f3f3;
     position: relative;
 }
 
+.input-region-error {
+    position: absolute;
+    top: 36px;
+    left: 0;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #808080;
+}
+
 .adv-search-autocomplete {
     position: absolute;
     z-index: 10;
