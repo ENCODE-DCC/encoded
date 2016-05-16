@@ -2023,7 +2023,9 @@ def audit_experiment_ChIP_control(value, system):
             raise AuditFailure('missing input control', detail, level='NOT_COMPLIANT')
 
 
-@audit_checker('experiment', frame=['replicates', 'replicates.library'])
+@audit_checker('experiment', frame=['replicates', 'replicates.library'],
+               condition=rfa("ENCODE3", "modERN", "GGR",
+                             "ENCODE", "ENCODE2-Mouse", "Roadmap"))
 def audit_experiment_spikeins(value, system):
     '''
     All ENCODE 3 long (>200) RNA-seq experiments should specify their spikeins.
