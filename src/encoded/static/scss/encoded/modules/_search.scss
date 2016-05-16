@@ -46,18 +46,22 @@ $form-bg: #f3f3f3;
     }
 }
 
+.input-group-region-input {
+    position: relative;
+}
+
 .adv-search-autocomplete {
     position: absolute;
     z-index: 10;
-    right: 10px;
-    left: 10px;
+    top: 33px;
+    left: 0;
     padding: 0;
     max-height: 300px;
     overflow-y: scroll;
-    background-color: #fff;
-    border: 1px solid #c0c0c0;
+    color: #fff;
+    background-color: $nav-color-bg;
+    border: 1px solid #ccc;
     list-style: none;
-    @include box-shadow(0 2px 4px 0 rgba(0,0,0,.5));
 
     li {
         margin: 0;
@@ -66,6 +70,7 @@ $form-bg: #f3f3f3;
         cursor: pointer;
 
         &:hover {
+            color: #404040;
             background-color: #e0e0e0;
         }
     }

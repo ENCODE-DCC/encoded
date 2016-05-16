@@ -130,7 +130,7 @@ var AdvSearch = React.createClass({
                         <input type="hidden" name="annotation" value={this.state.terms['annotation']} />
                         <div className="form-group">
                             <label>Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID</label>
-                            <div className="input-group">
+                            <div className="input-group input-group-region-input">
                                 <input ref="annotation" defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange} />
                                 {(this.state.showAutoSuggest && this.state.searchTerm) ?
                                     <FetchedData loadingComplete={true}>
