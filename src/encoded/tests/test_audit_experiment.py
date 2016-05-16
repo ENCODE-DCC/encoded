@@ -787,6 +787,18 @@ def test_audit_experiment_documents(testapp, base_experiment, base_library, base
     assert any(error['category'] == 'missing documents' for error in errors_list)
 
 
+def test_audit_experiment_documents_excluded(testapp, base_experiment,
+                                             base_library, award, base_replicate):
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    testapp.patch_json(award['@id'], {'rfa': 'modENCODE'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] != 'missing documents' for error in errors_list)
+
+
 def test_audit_experiment_model_organism_mismatched_sex(testapp,
                                                         base_experiment,
                                                         replicate_1_1,
