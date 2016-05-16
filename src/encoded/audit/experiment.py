@@ -1796,7 +1796,9 @@ def audit_experiment_replicates_biosample(value, system):
                                        detail, level='ERROR')
 
 
-@audit_checker('experiment', frame=['replicates', 'replicates.library'])
+@audit_checker('experiment', frame=['replicates', 'replicates.library'],
+               condition=rfa("ENCODE3", "modERN", "GGR",
+                             "ENCODE", "ENCODE2-Mouse", "Roadmap"))
 def audit_experiment_documents(value, system):
     '''
     Experiments should have documents.  Protocol documents or some sort of document.
