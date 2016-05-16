@@ -652,9 +652,9 @@ def check_mad(metrics, replication_type, mad_threshold, pipeline):
 def check_experiment_ERCC_spikeins(experiment, pipeline):
     '''
     The assumption in this functon is that the regular audit will catch anything without spikeins.
-    This audit is checking specifically for presence of ERCC spike-in in long-RNA pipeline experiments
+    This audit is checking specifically for presence of ERCC spike-in in long-RNA pipeline
+    experiments
     '''
-
     for rep in experiment['replicates']:
         lib = rep.get('library')
         if lib is None:
@@ -671,7 +671,10 @@ def check_experiment_ERCC_spikeins(experiment, pipeline):
             for s in spikes:
                 if 'files' in s:
                     for f in s['files']:
-                        if 'ENCFF001RTP' == f['accession']:
+                        if (('ENCFF001RTP' == f['accession']) or
+                           ('ENCFF483UYH' == f['accession'] and
+                           experiment['assay_term_name'] ==
+                           'single cell isolation followed by RNA-seq')):
                             ercc_flag = True
 
         if ercc_flag is False:
