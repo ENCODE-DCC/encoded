@@ -1,15 +1,17 @@
 /* Variables */
-$mainThemeColor: 			#e8ecef; /* i.e. the background color ..for now */
+$mainThemeColor: 			   #e8ecef; /* i.e. the background color ..for now */
 
-$appVersionHeight:          30px;
-$footerHeight: 				80px + $appVersionHeight;
-$footerTopBorderHeight:		0px;
-$footerBackground:          rgba(10,37,61,0.3) !default;
-$footerBackgroundHighlight: #294b6a !default;
+$nav-color-bg:                 #0a253d; // Navigation background color
+
+$appVersionHeight:             30px;
+$footerHeight: 				   80px + $appVersionHeight;
+$footerTopBorderHeight:		   0px;
+$footerBackground:             rgba(10,37,61,0.3) !default;
+$footerBackgroundHighlight:    #294b6a !default;
 
 $tableHeadFootBackgroundColor: #f5f5f5;
 
-$mobile-font-factor: 1.2;
+$mobile-font-factor:           1.2; // Amount text increases size on mobile
 
 
 // Pass value with CSS units and get just the value back
