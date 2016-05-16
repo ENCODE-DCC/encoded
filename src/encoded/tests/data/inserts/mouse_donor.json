@@ -45,5 +45,14 @@
         "organism": "mouse",
         "strain_background": "unknown",
         "uuid": "f08acb61-5af6-4b7d-a7c8-f08be52d8012"
+    },
+    {
+        "accession": "ENCDO002MUS",
+        "award": "U41HG006992",
+        "lab": "j-michael-cherry",
+        "parent_strains": ["/mouse-donors/ENCDO000MUS/"],
+        "organism": "mouse",
+        "strain_background": "unknown",
+        "uuid": "f08acb61-5af6-4b7d-a7c8-f08be52d8012"
     }
 ]

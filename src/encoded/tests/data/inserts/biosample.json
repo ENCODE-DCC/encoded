@@ -369,6 +369,37 @@
         "url": "http://www.atcc.org/Products/All/HTB-22.aspx",
         "uuid": "57437af2-9aef-4b38-a238-4afa3361df6b"
     },
+       {
+        "_test": "post treatment time",
+        "accession": "ENCBS107TRT",
+        "award": "ENCODE2",
+        "biosample_term_id": "EFO:0001203",
+        "biosample_term_name": "MCF-7",
+        "biosample_type": "immortalized cell line",
+        "constructs": [
+            "b31106bc-8535-4448-903e-854af460b21d"
+        ],
+        "description": "mammary gland, adenocarcinoma. (PMID: 4357757), newly promoted to tier 2: not in 2011 analysis",
+        "dbxrefs": [
+            "UCSC-ENCODE-cv:MCF-7"
+        ],
+        "lab": "peggy-farnham",
+        "organism": "human",
+        "product_id": "HTB-22",
+        "protocol_documents": [
+            "ENCODE:MCF-7_Farnham_growth_protocol"
+        ],
+        "source": "atcc",
+        "submitted_by": "taciti.vehicula@vitae.vivamus",
+        "transfection_type": "stable",
+        "treatments": [
+            "2e33a097-412c-4646-87f9-858dfaaa7c06"
+        ],
+        "post_treatment_time": "5",
+        "post_treatment_time_units": "day",
+        "url": "http://www.atcc.org/Products/All/HTB-22.aspx",
+        "uuid": "57437af2-9aef-4b38-a238-4afa3361df6b"
+    },
     {
         "accession": "ENCBS124ENC",
         "award": "ENCODE2-Mouse",
