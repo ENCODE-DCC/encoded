@@ -23,8 +23,10 @@ var {Panel, PanelBody, PanelHeading} = panel;
 
 
 var regionGenomes = [
-    {'hg19': 'hg19'},
-    {'GRCh38': 'GRCh38'}
+    {value: 'GRCh37', display: 'hg19'},
+    {value: 'GRCh38', display: 'GRCh38'},
+    {value: 'GRCm37', display: 'mm9'},
+    {value: 'GRCm38', display: 'mm10'}
 ];
 
 
@@ -67,6 +69,7 @@ var AdvSearch = React.createClass({
             showAutoSuggest: false,
             searchTerm: '',
             coordinates: '',
+            genome: regionGenomes[0].value,
             terms: {}
         };
     },
@@ -98,6 +101,12 @@ var AdvSearch = React.createClass({
         // Now let the timer update the terms state when it gets around to it.
     },
 
+    handleAssemblySelect: function(event) {
+        // Handle click in assembly-selection <select>
+        console.log(event.target.value);
+        this.setState({genome: event.target.value});
+    },
+
     componentDidMount: function() {
         // Use timer to limit to one request per second
         this.timer = setInterval(this.tick, 1000);
@@ -122,11 +131,11 @@ var AdvSearch = React.createClass({
         var context = this.props.context;
         var id = url.parse(this.context.location_href, true);
         var region = id.query['region'] || '';
+        console.log('RENDER: ' + this.state.genome);
         return (
             <Panel>
                 <PanelBody>
                     <form id="panel1" className="adv-search-form" ref="adv-search" role="form" autoComplete="off" aria-labeledby="tab1">
-                        <input type="hidden" name="genome" value="hg19" />
                         <input type="hidden" name="annotation" value={this.state.terms['annotation']} />
                         <div className="form-group">
                             <label>Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID</label>
@@ -134,16 +143,15 @@ var AdvSearch = React.createClass({
                                 <input ref="annotation" defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange} />
                                 {(this.state.showAutoSuggest && this.state.searchTerm) ?
                                     <FetchedData loadingComplete={true}>
-                                        <Param name="auto" url={'/suggest/?q=' + this.state.searchTerm} />
+                                        <Param name="auto" url={'/suggest/?genome=' + this.state.genome + '&q=' + this.state.searchTerm } />
                                         <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} />
                                     </FetchedData>
                                 : null}
                                 <div className="input-group-addon input-group-select-addon">
-                                    <select defaultValue="0" onChange={this.handleFilterChange}>
-                                        {regionGenomes.map((genomeId, i) => {
-                                            var key = Object.keys(genomeId)[0];
-                                            return <option key={i} value={key}>{genomeId[key]}</option>;
-                                        })}
+                                    <select value={this.state.genome} name="genome" onChange={this.handleAssemblySelect}>
+                                        {regionGenomes.map(genomeId => 
+                                            <option key={genomeId.value} value={genomeId.value}>{genomeId.display}</option>
+                                        )}
                                     </select>
                                 </div>
                                 {context.notification ?
