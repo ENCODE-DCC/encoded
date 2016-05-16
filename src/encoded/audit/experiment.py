@@ -329,16 +329,17 @@ def check_experiment_wgbs_encode3_standards(experiment,
 
     bismark_metrics = get_metrics(cpg_quantifications, 'BismarkQualityMetric', desired_assembly)
     cpg_metrics = get_metrics(cpg_quantifications, 'CpgCorrelationQualityMetric', desired_assembly)
+    '''
     samtools_metrics = get_metrics(cpg_quantifications,
                                    'SamtoolsFlagstatsQualityMetric',
                                    desired_assembly)
-
+    
     for failure in check_wgbs_coverage(samtools_metrics,
                                        pipeline_title,
                                        min(read_lengths),
                                        organism_name):
         yield failure
-
+    '''
     for failure in check_wgbs_pearson(cpg_metrics, 0.8, pipeline_title):
         yield failure
 
