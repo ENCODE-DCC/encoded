@@ -176,13 +176,6 @@ $audit-types:
         line-height: 28px;
     }
 
-    .audit-activeiconfacet-#{$audit-type} {
-        @extend .audit-activeicon-#{$audit-type}; // FontAwesome icon
-        height: auto;
-        line-height: 1;
-        margin-right: 10px;
-    }
-
     // Button for each class of audit error
     .btn-audit-#{$audit-type} {
         color: $color;
