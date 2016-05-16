@@ -381,6 +381,6 @@ def suggest(context, request):
         result['@graph'] = []
         for item in results['suggester'][0]['options']:
             if _GENOME_TO_SPECIES[requested_genome].replace('_', ' ') == item['payload']['species']:
-                while len(result['@graph']) <= 10:
-                    result['@graph'].append(item)
+                result['@graph'].append(item)
+        result['@graph'] = result['@graph'][:10]
         return result

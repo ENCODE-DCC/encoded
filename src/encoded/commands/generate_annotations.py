@@ -12,6 +12,7 @@ _ENSEMBL_URL = 'http://rest.ensembl.org/'
 _GENEINFO_URL = 'http://mygene.info/v2/gene/'
 
 
+
 def get_annotation():
     return {
         'assembly_name': '',
