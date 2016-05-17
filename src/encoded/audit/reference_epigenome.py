@@ -8,7 +8,8 @@ from snovault import (
                                             'related_datasets.replicates',
                                             'related_datasets.replicates.library',
                                             'related_datasets.replicates.library.biosample',
-                                            'related_datasets.replicates.library.biosample.donor'])
+                                            'related_datasets.replicates.library.biosample.donor',
+                                            'related_datasets.replicates.library.biosample.treatments'])
 def audit_reference_epigenome_donor_biosample(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
@@ -16,6 +17,7 @@ def audit_reference_epigenome_donor_biosample(value, system):
     if 'related_datasets' not in value:
         return
 
+    treatments_set = set()
     biosample_name_set = set()
     donor_set = set()
     for assay in value['related_datasets']:
@@ -29,6 +31,23 @@ def audit_reference_epigenome_donor_biosample(value, system):
                             biosample_name_set.add(biosample_object['biosample_term_name'])
                         if 'donor' in biosample_object:
                             donor_set.add(biosample_object['donor']['accession'])
+                        if 'treatments' in biosample_object:
+                            if len(biosample_object['treatments']) == 0:
+                                treatments_set.add('untreated')
+                            else:
+                                treatments_to_add = []
+                                for t in biosample_object['treatments']:
+                                    treatments_to_add.append('treated with ' +
+                                                             t['treatment_term_name'])
+                                treatments_set.add(', '.join(sorted(treatments_to_add)))
+                        else:
+                            treatments_set.add('untreated')
+    if len(treatments_set) > 1:
+        detail = 'Reference Epigenome {} '.format(value['@id']) + \
+                 ' has biosample associated with different tretments {}.'.format(treatments_set)
+        yield AuditFailure('multiple biosample treatments in reference epigenome',
+                           detail, level='WARNING')
+
     if len(biosample_name_set) > 1:
         detail = 'Reference Epigenome {} '.format(value['@id']) + \
                  ' has multiple biosample term names {}.'.format(biosample_name_set)

@@ -22,7 +22,7 @@ var doc = require('./doc');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
-var {DatasetFiles, FilePanelHeader, ExperimentTable} = dataset;
+var {DatasetFiles, FilePanelHeader, ExperimentTable, FileTable} = dataset;
 var FetchedItems = fetched.FetchedItems;
 var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
@@ -315,7 +315,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
         // Determine this experiment's ENCODE version
         var encodevers = globals.encodeVersion(context);
-    
+
         // Make list of statuses
         var statuses = [{status: context.status, title: "Status"}];
 
@@ -559,8 +559,14 @@ var Experiment = module.exports.Experiment = React.createClass({
                     <ExperimentGraph context={context} session={this.context.session} />
                 </FetchedData>
 
-                {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={encodevers} anisogenic={anisogenic} session={this.context.session} ignoreErrors />
+                {/* If logged in and dataset is released, need to combine search of files that reference
+                    this dataset to get released and unreleased ones. If not logged in, then just get
+                    files from dataset.files */}
+                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
+                    <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                :
+                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
+                }
 
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} ignoreErrors />
 
@@ -1779,6 +1785,25 @@ var qcReservedProperties = ['uuid', 'assay_term_name', 'assay_term_id', 'attachm
 var QcDetailsView = function(metrics) {
     if (metrics) {
         var qcPanels = []; // Each QC metric panel to display
+        var id2accessionRE = /\/\w+\/(\w+)\//;
+        var filesOfMetric = []; // Array of accessions of files that share this metric
+
+        // Make an array of the accessions of files that share this quality metrics object.
+        // quality_metric_of is an array of @ids because they're not embedded, and we're trying
+        // to avoid embedding where not absolutely needed. So use a regex to extract the files'
+        // accessions from the @ids. After generating the array, filter out empty entries.
+        if (metrics.ref.quality_metric_of && metrics.ref.quality_metric_of.length) {
+            filesOfMetric = metrics.ref.quality_metric_of.map(metricId => {
+                // Extract the file's accession from the @id
+                var match = id2accessionRE.exec(metricId);
+
+                // Return matches that *don't* match the file whose QC node we've clicked
+                if (match && (match[1] !== metrics.parent.accession)) {
+                    return match[1];
+                }
+                return '';
+            }).filter(acc => !!acc);
+        }
 
         // Filter out QC metrics properties not to display based on the qcReservedProperties list, as well as those properties with keys
         // beginning with '@'. Sort the list of property keys as well.
@@ -1798,31 +1823,49 @@ var QcDetailsView = function(metrics) {
             });
         }
 
-        return (
-            <div className="row">
-                <div className="col-md-4 col-sm-6 col-xs-12">
-                    <h4 className="quality-metrics-title">Quality metrics of {metrics.parent.accession}</h4>
-                    <dl className="key-value-flex">
-                        {sortedKeys.map(key => 
-                            (typeof metrics.ref[key] === 'string' || typeof metrics.ref[key] === 'number') ?
-                                <div key={key}>
-                                    <dt>{key}</dt>
-                                    <dd>{metrics.ref[key]}</dd>
-                                </div>
-                            : null
-                        )}
-                    </dl>
-                </div>
+        // Convert the QC metric object @id to a displayable string
+        var qcName = metrics.ref['@id'].match(/^\/([a-z0-9-]*)\/.*$/i);
+        if (qcName && qcName[1]) {
+            qcName = qcName[1].replace(/-/g, ' ');
+        }
 
-                <div className="col-md-8 col-sm-12">
-                    <h4 className="quality-metrics-title">Quality metrics attachments</h4>
-                    <div className="row">
-                        {/* If the metrics object has an `attachment` property, display that first, then display the properties
-                            not named `attachment` but which have their own schema attribute, `attachment`, set to true */}
-                        {metrics.ref.attachment ?
-                            <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} />
-                        : null}
-                        {qcPanels}
+        return (
+            <div>
+                <div className="quality-metrics-header">
+                    <div className="quality-metrics-info">
+                        <h4>Quality metric of {metrics.parent.accession}</h4>
+                        {filesOfMetric.length ? <h5>Shared with {filesOfMetric.join(', ')}</h5> : null}
+                    </div>
+                    {qcName ?
+                        <div className="quality-metrics-type">
+                            {qcName}
+                        </div>
+                    : null}
+                </div>
+                <div className="row">
+                    <div className="col-md-4 col-sm-6 col-xs-12">
+                        <dl className="key-value-flex">
+                            {sortedKeys.map(key => 
+                                (typeof metrics.ref[key] === 'string' || typeof metrics.ref[key] === 'number') ?
+                                    <div key={key}>
+                                        <dt>{key}</dt>
+                                        <dd>{metrics.ref[key]}</dd>
+                                    </div>
+                                : null
+                            )}
+                        </dl>
+                    </div>
+
+                    <div className="col-md-8 col-sm-12 quality-metrics-attachments">
+                        <h5>Quality metric attachments</h5>
+                        <div className="row">
+                            {/* If the metrics object has an `attachment` property, display that first, then display the properties
+                                not named `attachment` but which have their own schema attribute, `attachment`, set to true */}
+                            {metrics.ref.attachment ?
+                                <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} />
+                            : null}
+                            {qcPanels}
+                        </div>
                     </div>
                 </div>
             </div>

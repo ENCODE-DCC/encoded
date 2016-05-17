@@ -23,15 +23,16 @@ var Dbxref = module.exports.Dbxref = function (props) {
     if (!base) {
         return <span>{value}</span>;
     }
-    if (prefix == "HGNC") {
+    if (prefix === "HGNC") {
         local = props.target_gene;
     // deal with UCSC links
-    }
-    if (prefix === "UCSC-ENCODE-cv") {
+    } else if (prefix === "UCSC-ENCODE-cv") {
         local = '"' + local + '"';
-    }
-    if (prefix === "MGI") {
+    } else if (prefix === "MGI") {
         local = value;
+    } else if (prefix === 'MGI.D') {
+        var id = value.substr(sep + 1);
+        local = id + '.shtml';
     }
 
     return <a href={base + local}>{value}</a>;

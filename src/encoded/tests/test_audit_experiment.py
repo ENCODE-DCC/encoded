@@ -516,6 +516,18 @@ def file_tsv_1_1(base_experiment, award, encode_lab, testapp, analysis_step_run_
     return testapp.post_json('/file', item, status=201).json['@graph'][0]
 
 
+def test_audit_experiment_released_with_unreleased_files(testapp, base_experiment, file_fastq):
+    testapp.patch_json(base_experiment['@id'], {'status': 'released',
+                                                'date_released': '2016-01-01'})
+    testapp.patch_json(file_fastq['@id'], {'status': 'in progress'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched file status' for error in errors_list)
+
+
 def test_ChIP_possible_control(testapp, base_experiment, ctrl_experiment, IgG_ctrl_rep):
     testapp.patch_json(base_experiment['@id'], {'possible_controls': [ctrl_experiment['@id']],
                                                 'assay_term_name': 'ChIP-seq',
@@ -1315,7 +1327,7 @@ def test_audit_experiment_small_rna_standards(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'insufficient read depth' for error in errors_list)
+    assert any(error['category'] == 'low read depth' for error in errors_list)
 
 
 def test_audit_experiment_MAD_long_rna_standards(testapp,
@@ -1372,7 +1384,7 @@ def test_audit_experiment_MAD_long_rna_standards(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'insufficient replicate concordance' for error in errors_list)
+    assert any(error['category'] == 'low replicate concordance' for error in errors_list)
 
 
 def test_audit_experiment_long_rna_standards_crispr(testapp,
@@ -1468,7 +1480,7 @@ def test_audit_experiment_long_rna_standards(testapp,
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'RNA-seq of long RNAs (paired-end, stranded)'})
 
-    testapp.patch_json(bam_quality_metric_1_1['@id'], {'Uniquely mapped reads number': 29000000})
+    testapp.patch_json(bam_quality_metric_1_1['@id'], {'Uniquely mapped reads number': 1000000})
     testapp.patch_json(bam_quality_metric_2_1['@id'], {'Uniquely mapped reads number': 38000000})
     testapp.patch_json(mad_quality_metric_1_2['@id'], {'quality_metric_of': [
                                                        file_tsv_1_1['@id'],
@@ -1747,6 +1759,119 @@ def test_audit_experiment_chip_seq_library_complexity_standards(testapp,
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'severe bottlenecking' for error in errors_list)
+
+
+def test_audit_experiment_chip_seq_unfiltered_missing_read_depth(testapp,
+                                                                 base_experiment,
+                                                                 replicate_1_1,
+                                                                 replicate_2_1,
+                                                                 library_1,
+                                                                 library_2,
+                                                                 biosample_1,
+                                                                 biosample_2,
+                                                                 mouse_donor_1,
+                                                                 file_fastq_3,
+                                                                 file_fastq_4,
+                                                                 file_bam_1_1,
+                                                                 file_bam_2_1,
+                                                                 file_tsv_1_2,
+                                                                 mad_quality_metric_1_2,
+                                                                 chip_seq_quality_metric,
+                                                                 chipseq_filter_quality_metric,
+                                                                 analysis_step_run_bam,
+                                                                 analysis_step_version_bam,
+                                                                 analysis_step_bam,
+                                                                 pipeline_bam,
+                                                                 target_H3K9me3):
+    testapp.patch_json(file_fastq_3['@id'], {'read_length': 20})
+    testapp.patch_json(file_fastq_4['@id'], {'read_length': 100})
+
+    testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'assembly': 'mm10',
+                                             'output_type': 'unfiltered alignments',
+                                             'derived_from': [file_fastq_3['@id']]})
+    testapp.patch_json(file_bam_2_1['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'assembly': 'mm10',
+                                             'output_type': 'unfiltered alignments',
+                                             'derived_from': [file_fastq_4['@id']]})
+    testapp.patch_json(pipeline_bam['@id'], {'title':
+                                             'Histone ChIP-seq'})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
+    testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
+    testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
+    testapp.patch_json(biosample_2['@id'], {'model_organism_sex': 'mixed'})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(base_experiment['@id'], {'target': target_H3K9me3['@id'],
+                                                'status': 'released',
+                                                'date_released': '2016-01-01',
+                                                'assay_term_id': 'OBI:0001864',
+                                                'assay_term_name': 'ChIP-seq'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'missing read depth' for error in errors_list)
+
+
+def test_audit_experiment_out_of_date_analysis_added_fastq(testapp,
+                                                           base_experiment,
+                                                           replicate_1_1,
+                                                           replicate_2_1,
+                                                           file_fastq_3,
+                                                           file_fastq_4,
+                                                           file_bam_1_1,
+                                                           file_bam_2_1):
+    testapp.patch_json(file_bam_1_1['@id'], {'derived_from': [file_fastq_3['@id']]})
+    testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_3['@id']]})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'out of date analysis' for error in errors_list)
+
+
+def test_audit_experiment_out_of_date_analysis_removed_fastq(testapp,
+                                                             base_experiment,
+                                                             replicate_1_1,
+                                                             replicate_2_1,
+                                                             file_fastq_3,
+                                                             file_fastq_4,
+                                                             file_bam_1_1,
+                                                             file_bam_2_1):
+    testapp.patch_json(file_bam_1_1['@id'], {'derived_from': [file_fastq_3['@id']]})
+    testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']]})
+    testapp.patch_json(file_fastq_3['@id'], {'status': 'deleted'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'out of date analysis' for error in errors_list)
+
+
+def test_audit_experiment_no_out_of_date_analysis(testapp,
+                                                  base_experiment,
+                                                  replicate_1_1,
+                                                  replicate_2_1,
+                                                  file_fastq_3,
+                                                  file_fastq_4,
+                                                  file_bam_1_1,
+                                                  file_bam_2_1):
+    testapp.patch_json(file_bam_1_1['@id'], {'derived_from': [file_fastq_3['@id']]})
+    testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']]})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'out of date analysis' for error in errors_list)
 
 
 def test_audit_experiment_wgbs_standards(testapp,

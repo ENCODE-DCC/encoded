@@ -73,6 +73,9 @@ var Matrix = module.exports.Matrix = React.createClass({
             var x_limit = matrix.x.limit || x_buckets.length;
             var y_groups = matrix.y[primary_y_grouping].buckets;
             var y_limit = matrix.y.limit;
+            var y_group_facet = _.findWhere(context.facets, {field: primary_y_grouping});
+            var y_group_options = y_group_facet.terms.map(term => term.key);
+            y_group_options.sort();
             var search_base = context.matrix.search_base;
             var batch_hub_disabled = matrix.doc_count > batchHubLimit;
 
@@ -132,7 +135,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                     <th colSpan={colCount + 1}
                                                         style={{padding: "5px", borderBottom: "solid 1px #ddd", textAlign: "center"}}>{matrix.x.label.toUpperCase()}</th>
                                                 </tr>
-                                            : ''}
+                                            : null}
                                             <tr style={{borderBottom: "solid 1px #ddd"}}>
                                                 {matrix.doc_count ?
                                                     <th rowSpan={rowCount + 1}
@@ -140,42 +143,44 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                         style={{width: 25, borderRight: "solid 1px #ddd", borderBottom: "solid 2px transparent", padding: "5px"}}>
                                                         <div style={{width: 15}}><span>{matrix.y.label.toUpperCase()}</span></div>
                                                     </th>
-                                                : ''}
+                                                : null}
                                                 <th style={{border: "solid 1px #ddd", textAlign: "center", width: 200}}>
                                                     <h3>
                                                       {matrix.doc_count} results 
                                                     </h3>
                                                     <div className="btn-attached">
-                                                        {matrix.doc_count && context.views ? context.views.map(view => <a href={view.href} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{SvgIcon(view2svg[view.icon])}</a>) : ''}
+                                                        {matrix.doc_count && context.views ? context.views.map(view => <a href={view.href} key={view.icon} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{SvgIcon(view2svg[view.icon])}</a>) : ''}
                                                     </div>
                                                     {context.filters.length ?
                                                         <div className="clear-filters-control-matrix">
                                                             <a href={context.matrix.clear_matrix}>Clear Filters <i className="icon icon-times-circle"></i></a>
                                                         </div>
-                                                    : ''}
+                                                    : null}
                                                 </th>
                                                 {x_buckets.map(function(xb, i) {
                                                     if (i < x_limit) {
-                                                        return <th className="rotate30" style={{width: 10}}><div><span title={xb.key}>{xb.key}</span></div></th>;
+                                                        var href = search_base + '&' + x_grouping + '=' + encodeURIComponent(xb.key);
+                                                        return <th key={i} className="rotate30" style={{width: 10}}><div><a title={xb.key} href={href}>{xb.key}</a></div></th>;
                                                     } else if (i == x_limit) {
                                                         var parsed = url.parse(matrix_base, true);
                                                         parsed.query['x.limit'] = null;
                                                         delete parsed.search; // this makes format compose the search string out of the query object
                                                         var unlimited_href = url.format(parsed);
-                                                        return <th className="rotate30" style={{width: 10}}><div><span><a href={unlimited_href}>...and {x_buckets.length - x_limit} more</a></span></div></th>;
+                                                        return <th key={i} className="rotate30" style={{width: 10}}><div><span><a href={unlimited_href}>...and {x_buckets.length - x_limit} more</a></span></div></th>;
                                                     } else {
                                                         return null;
                                                     }
                                                 })}
                                             </tr>
-                                            {y_groups.map(function(group, k) {
-                                                var seriesColor = color(COLORS[k % COLORS.length]);
+                                            {y_groups.map(function(group) {
+                                                var seriesIndex = y_group_options.indexOf(group.key);
+                                                var seriesColor = color(COLORS[seriesIndex % COLORS.length]);
                                                 var parsed = url.parse(matrix_base, true);
                                                 parsed.query[primary_y_grouping] = group.key;
                                                 parsed.query['y.limit'] = null;
                                                 delete parsed.search; // this makes format compose the search string out of the query object
                                                 var group_href = url.format(parsed);
-                                                var rows = [<tr>
+                                                var rows = [<tr key={group.key}>
                                                     <th colSpan={colCount + 1} style={{textAlign: 'left', backgroundColor: seriesColor.hexString()}}>
                                                         <a href={group_href} style={{color: '#000'}}>{group.key}</a>
                                                     </th>
@@ -184,8 +189,9 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                 var y_limit = matrix.y.limit || group_buckets.length;
                                                 rows.push.apply(rows, group_buckets.map(function(yb, j) {
                                                     if (j < y_limit) {
-                                                        return <tr>
-                                                            <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}>{yb.key}</th>
+                                                        var href = search_base + '&' + secondary_y_grouping + '=' + encodeURIComponent(yb.key);
+                                                        return <tr key={yb.key}>
+                                                            <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}><a href={href}>{yb.key}</a></th>
                                                             {x_buckets.map(function(xb, i) {
                                                                 if (i < x_limit) {
                                                                     var value = yb[x_grouping][i];
@@ -195,7 +201,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                                     var href = search_base + '&' + secondary_y_grouping + '=' + encodeURIComponent(yb.key)
                                                                                            + '&' + x_grouping + '=' + encodeURIComponent(xb.key);
                                                                     var title = yb.key + ' / ' + xb.key + ': ' + value;
-                                                                    return <td style={{backgroundColor: color.hexString()}}>
+                                                                    return <td key={xb.key} style={{backgroundColor: color.hexString()}}>
                                                                         {value ? <a href={href} style={{color: '#000'}} title={title}>{value}</a> : ''}
                                                                     </td>;
                                                                 } else {
@@ -205,9 +211,9 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                             {x_buckets.length > x_limit && <td></td>}
                                                         </tr>;
                                                     } else if (j == y_limit) {
-                                                        return <tr>
+                                                        return <tr key={j}>
                                                             <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}><a href={group_href}>...and {group_buckets.length - y_limit} more</a></th>
-                                                            {_.range(colCount - 1).map(n => <td></td>)}
+                                                            {_.range(colCount - 1).map(n => <td key={n}></td>)}
                                                         </tr>;
                                                     } else {
                                                         return null;

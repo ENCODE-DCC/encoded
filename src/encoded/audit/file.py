@@ -27,6 +27,70 @@ paired_end_assays = [
     ]
 
 
+@audit_checker('File', frame=['object'],
+               condition=rfa('ENCODE3',
+                             'modENCODE',
+                             'modERN',
+                             'GGR'))
+def audit_file_processed_empty_derived_from(value, system):
+    if value['output_category'] in ['raw data',
+                                    'reference']:
+        return
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+            return
+    if 'derived_from' not in value or \
+       'derived_from' in value and len(value['derived_from']) == 0:
+            detail = 'The processed file {} '.format(value['@id']) + \
+                     'has no derived_from information supplied.'
+            yield AuditFailure('missing derived_from',
+                               detail, level='DCC_ACTION')
+            return
+
+
+@audit_checker('File', frame=['derived_from'])
+def audit_file_derived_from_revoked(value, system):
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+            return
+    if 'derived_from' in value and len(value['derived_from']) > 0:
+        for f in value['derived_from']:
+            if f['status'] == 'revoked':
+                detail = 'The file {} '.format(value['@id']) + \
+                         'with a status {} '.format(value['status']) + \
+                         'was derived from file {} '.format(f['@id']) + \
+                         'that has a status \'revoked\'.'
+                yield AuditFailure('mismatched file status',
+                                   detail, level='DCC_ACTION')
+                return
+
+
+@audit_checker('file', frame=['derived_from'])
+def audit_file_assembly(value, system):
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+    if value['output_category'] in ['raw data', 'reference']:
+        return
+    if 'assembly' not in value:
+        detail = 'Processed file {} '.format(value['@id']) + \
+                 'does not have assembly specified.'
+        yield AuditFailure('missing assembly',
+                           detail, level='DCC_ACTION')
+        return
+    if 'derived_from' not in value:
+        return
+    for f in value['derived_from']:
+        if 'assembly' in f:
+            if f['assembly'] != value['assembly']:
+                detail = 'Processed file {} '.format(value['@id']) + \
+                         'assembly {} '.format(value['assembly']) + \
+                         'does not match assembly {} of the file {} '.format(
+                         f['assembly'],
+                         f['@id']) + \
+                    'it was derived from.'
+                yield AuditFailure('mismatched assembly',
+                                   detail, level='DCC_ACTION')
+                return
+
+
 @audit_checker('file', frame=['replicate', 'replicate.experiment',
                               'derived_from', 'derived_from.replicate',
                               'derived_from.replicate.experiment'])
@@ -125,6 +189,9 @@ def audit_file_read_length(value, system):
     if value['output_type'] != 'reads':
         return
 
+    if value['file_format'] == 'csqual':
+        return
+
     if 'read_length' not in value:
         detail = 'Reads file {} missing read_length'.format(value['@id'])
         yield AuditFailure('missing read_length', detail, level='DCC_ACTION')
@@ -181,34 +248,34 @@ def audit_file_controlled_by(value, system):
         yield AuditFailure('missing controlled_by', detail, level='NOT_COMPLIANT')
         return
 
-    bio_rep_numbers = set()
-    pe_files = []
-    if (value['file_format'] in ['fastq']) and len(value['controlled_by']) > 0:
-        for control_file in value['controlled_by']:
-            if 'replicate' in control_file:
-                bio_rep_numbers.add(control_file['replicate']['biological_replicate_number'])
-            if 'run_type' in control_file:
-                if control_file['run_type'] == 'paired-ended':
-                    pe_files.append(control_file)
-    for pe_file in pe_files:
-        if 'paired_with' not in pe_file:
-            detail = 'Fastq file {} '.format(value['@id']) + \
-                     'from experiment {} '.format(value['dataset']['@id']) + \
-                     'contains in controlled_by list PE fastq file ' + \
-                     '{} with missing paired_with property.'.format(pe_file['@id'])
-            yield AuditFailure('missing paired_with in controlled_by', detail, level='ERROR')
-        elif check_presence(pe_file['paired_with'], pe_files) is False:
-            detail = 'Fastq file {} '.format(value['@id']) + \
-                     'from experiment {} '.format(value['dataset']['@id']) + \
-                     'contains in controlled_by list PE fastq file ' + \
-                     '{} which is paired to a file {} '.format(pe_file['@id'],
-                                                               pe_file['paired_with']['@id']) + \
-                     'that is not included in the controlled_by list'
-            yield AuditFailure('missing paired_with in controlled_by', detail,
-                               level='DCC_ACTION')
+    if value['dataset'].get('assay_term_name') in ['ChIP-seq',
+                                                   'RAMPAGE']:
+        bio_rep_numbers = set()
+        pe_files = []
+        if (value['file_format'] in ['fastq']) and len(value['controlled_by']) > 0:
+            for control_file in value['controlled_by']:
+                if 'replicate' in control_file:
+                    bio_rep_numbers.add(control_file['replicate']['biological_replicate_number'])
+                if 'run_type' in control_file:
+                    if control_file['run_type'] == 'paired-ended':
+                        pe_files.append(control_file)
+        for pe_file in pe_files:
+            if 'paired_with' not in pe_file:
+                detail = 'Fastq file {} '.format(value['@id']) + \
+                         'from experiment {} '.format(value['dataset']['@id']) + \
+                         'contains in controlled_by list PE fastq file ' + \
+                         '{} with missing paired_with property.'.format(pe_file['@id'])
+                yield AuditFailure('missing paired_with in controlled_by', detail, level='ERROR')
+            elif check_presence(pe_file['paired_with'], pe_files) is False:
+                detail = 'Fastq file {} '.format(value['@id']) + \
+                         'from experiment {} '.format(value['dataset']['@id']) + \
+                         'contains in controlled_by list PE fastq file ' + \
+                         '{} which is paired to a file {} '.format(pe_file['@id'],
+                                                                   pe_file['paired_with']['@id']) + \
+                         'that is not included in the controlled_by list'
+                yield AuditFailure('missing paired_with in controlled_by', detail,
+                                   level='DCC_ACTION')
 
-    if value['dataset'].get('assay_term_name') not in ['shRNA knockdown followed by RNA-seq',
-                                                       'CRISPR genome editing followed by RNA-seq']:
         if len(bio_rep_numbers) > 1:
             detail = 'Fastq file {} '.format(value['@id']) + \
                      'from experiment {} '.format(value['dataset']['@id']) + \
@@ -270,7 +337,10 @@ def audit_file_controlled_by(value, system):
                 yield AuditFailure('mismatched control run_type',
                                    detail, level='WARNING')
 
-            if read_length != control_length:
+            if read_length != control_length and \
+               value['dataset'].get('assay_term_name') not in \
+                    ['shRNA knockdown followed by RNA-seq',
+                     'CRISPR genome editing followed by RNA-seq']:
                 detail = 'File {} is {} but its control file {} is {}'.format(
                     value['@id'],
                     value['read_length'],
@@ -663,7 +733,7 @@ def audit_file_read_depth(value, system):
     if value['file_format'] != 'bam':
         return
 
-    if value['output_type'] == 'transcriptome alignments':
+    if value['output_type'] in ['transcriptome alignments', 'unfiltered alignments']:
         return
 
     if value['lab'] != '/labs/encode-processing-pipeline/':

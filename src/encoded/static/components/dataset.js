@@ -80,6 +80,7 @@ var Annotation = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var statuses = [{status: context.status, title: "Status"}];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
 
         // Build up array of documents attached to this dataset
         var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -232,8 +233,14 @@ var Annotation = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {/* Display list of released and unreleased files */}
-                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
+                {/* If logged in and dataset is released, need to combine search of files that reference
+                    this dataset to get released and unreleased ones. If not logged in, then just get
+                    files from dataset.files */}
+                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
+                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                :
+                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
+                }
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -257,6 +264,7 @@ var PublicationData = React.createClass({
         var files = context.files;
         var itemClass = globals.itemClass(context, 'view-item');
         var statuses = [{status: context.status, title: "Status"}];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
 
         // Build up array of documents attached to this dataset
         var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -374,8 +382,14 @@ var PublicationData = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {/* Display list of released and unreleased files */}
-                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
+                {/* If logged in and dataset is released, need to combine search of files that reference
+                    this dataset to get released and unreleased ones. If not logged in, then just get
+                    files from dataset.files */}
+                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
+                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                :
+                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
+                }
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -398,6 +412,7 @@ var Reference = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var statuses = [{status: context.status, title: "Status"}];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
 
         // Build up array of documents attached to this dataset
         var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -515,8 +530,14 @@ var Reference = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {/* Display list of released and unreleased files */}
-                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
+                {/* If logged in and dataset is released, need to combine search of files that reference
+                    this dataset to get released and unreleased ones. If not logged in, then just get
+                    files from dataset.files */}
+                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
+                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                :
+                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
+                }
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -539,6 +560,7 @@ var Project = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var statuses = [{status: context.status, title: "Status"}];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
 
         // Build up array of documents attached to this dataset
         var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -683,8 +705,14 @@ var Project = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {/* Display list of released and unreleased files */}
-                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
+                {/* If logged in and dataset is released, need to combine search of files that reference
+                    this dataset to get released and unreleased ones. If not logged in, then just get
+                    files from dataset.files */}
+                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
+                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                :
+                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
+                }
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -708,6 +736,7 @@ var UcscBrowserComposite = React.createClass({
         var files = context.files;
         var itemClass = globals.itemClass(context, 'view-item');
         var statuses = [{status: context.status, title: "Status"}];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
 
         // Build up array of documents attached to this dataset
         var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -838,8 +867,14 @@ var UcscBrowserComposite = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {/* Display list of released and unreleased files */}
-                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
+                {/* If logged in and dataset is released, need to combine search of files that reference
+                    this dataset to get released and unreleased ones. If not logged in, then just get
+                    files from dataset.files */}
+                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
+                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                :
+                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
+                }
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -1306,8 +1341,12 @@ var unreleased_files_url = module.exports.unreleased_files_url = function (conte
 // unreleased files.
 var DatasetFiles = module.exports.DatasetFiles = React.createClass({
     render: function () {
-        if (this.props.items) {
-            return <FileTable {...this.props} items={this.props.items} />;
+        var context = this.props.context;
+        var items = this.props.items;
+
+        var files = _.uniq(((context.files && context.files.length) ? context.files : []).concat((items && items.length) ? items : []));
+        if (files.length) {
+            return <FileTable {...this.props} items={files} />;
         } else {
             return null;
         }
