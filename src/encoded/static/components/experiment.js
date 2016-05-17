@@ -1204,8 +1204,6 @@ var FileGalleryRenderer = React.createClass({
                     </div>
                 </PanelHeading>
 
-                <ExperimentGraph context={context} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
-
                 {/* If logged in and dataset is released, need to combine search of files that reference
                     this dataset to get released and unreleased ones. If not logged in, then just get
                     files from dataset.files */}
@@ -1215,6 +1213,7 @@ var FileGalleryRenderer = React.createClass({
                     <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} showFileCount noDefaultClasses />
                 }
 
+                <ExperimentGraph context={context} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
             </Panel>
         );
     }
@@ -1737,8 +1736,8 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
             if (goodGraph || selectedAssembly || selectedAnnotation) {
                 var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
                 return (
-                    <Panel noDefaultClasses>
-                        <PanelHeading addClasses="file-gallery-graph-header" collapsable><h4>Pipeline</h4></PanelHeading>
+                    <div>
+                        <div className="file-gallery-graph-header"><h4>Pipeline</h4></div>
                         {goodGraph ?
                             <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw>
                                 <div id="graph-node-info">
@@ -1748,11 +1747,11 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                         :
                             <p className="browser-error">Currently selected assembly and genomic annotation hides the graph</p>
                         }
-                    </Panel>
+                    </div>
                 );
+            } else {
+                return <p className="browser-error">Graph not applicable to this experiment’s files.</p>;
             }
-
-            return null;
         }
         return null;
     }

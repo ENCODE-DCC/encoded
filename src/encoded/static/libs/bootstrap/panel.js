@@ -3,31 +3,6 @@ var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
 
 
-var PanelCollapseMixin = module.exports.PanelAccordion = {
-    childContextTypes: {
-        panelCollapsed: React.PropTypes.bool, // Audit details open
-        panelCollapseToggle: React.PropTypes.func // Function to set current audit detail type
-    },
-
-    // Retrieve current React context
-    getChildContext: function() {
-        return {
-            auditDetailOpen: this.state.auditDetailOpen,
-            auditStateToggle: this.auditStateToggle
-        };
-    },
-
-    getInitialState: function() {
-        return {collapsed: false}; // T if collapsable panel body is collapsed
-    },
-
-    handleCollapse: function() {
-        // Handle a click on the collapse button, if any
-        this.setState({collapsed: !this.state.collapsed});
-    }
-};
-
-
 var Panel = module.exports.Panel = React.createClass({
     propTypes: {
         addClasses: React.PropTypes.string, // Classes to add to outer panel div
@@ -63,16 +38,13 @@ var PanelBody = module.exports.PanelBody = React.createClass({
 
 var PanelHeading = module.exports.PanelHeading = React.createClass({
     propTypes: {
-        addClasses: React.PropTypes.string, // Classes to add to outer panel div
-        collapsable: React.PropTypes.bool // T if panel body is collapsable
+        addClasses: React.PropTypes.string // Classes to add to outer panel div
     },
 
     render: function() {
         return (
             <div className={'panel-heading' + (this.props.addClasses ? ' ' + this.props.addClasses : '')}>
-                {this.props.collapsable ?
-                    <button className={'detail-trigger' + (this.state.collapsed ? ' collapsed' : '')} onClick={this.props.handleCollapse} aria-expanded={this.state.collapsed ? 'false' : 'true'}><span className="sr-only">Collapse</span></button>
-                : null}
+                {this.props.children}
             </div>
         );
     }
