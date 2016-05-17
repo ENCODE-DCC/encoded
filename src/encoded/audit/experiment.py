@@ -61,6 +61,146 @@ non_seq_assays = [
 
 @audit_checker('Experiment', frame=['original_files',
                                     'original_files.replicate',
+                                    'original_files.derived_from',
+                                    'original_files.analysis_step_version',
+                                    'original_files.analysis_step_version.analysis_step',
+                                    'original_files.analysis_step_version.analysis_step.pipelines'])
+def audit_experiment_missing_processed_files(value, system):
+    alignment_files = scan_files_for_file_format_output_type(value['original_files'],
+                                                             'bam', 'alignments')
+    # if there are no bam files - we don't know what pipeline, exit
+    if len(alignment_files) == 0:
+        return
+    # find out the pipeline
+    pipelines = getPipelines(alignment_files)
+    if len(pipelines) == 0:  # no pipelines detected
+        return
+
+    replicate_dictionary = {('alignments', 'bam'): [],
+                            ('signal of unique reads', 'bigWig'): [],
+                            ('read depth normalized signal', 'bigWig'): [],
+                            ('control normalized signal', 'bigWig'): [],
+                            ('narrowPeak', 'bed'): [],
+                            ('narrowPeak', 'bigBed'): []}
+    pooled_dictionary = {('signal of unique reads', 'bigWig'): [],
+                         ('read depth normalized signal', 'bigWig'): [],
+                         ('control normalized signal', 'bigWig'): [],
+                         ('narrowPeak', 'bed'): [],
+                         ('narrowPeak', 'bigBed'): [],
+                         ('optimal idr thresholded narrowPeak', 'bed'): [],
+                         ('optimal idr thresholded narrowPeak', 'bigBed'): []}
+    #  "output_type" + "file_format"
+    reps = {}
+    if 'Transcription factor ChIP-seq pipeline (modERN)' in pipelines:
+        signal_of_unique_reads = scan_files_for_file_format_output_type(value['original_files'],
+                                                                        'bigWig',
+                                                                        'signal of unique reads')
+        read_depth_normalized_signal = scan_files_for_file_format_output_type(value['original_files'],
+                                                                              'bigWig',
+                                                                              'read depth normalized signal')
+        control_normalized_signal = scan_files_for_file_format_output_type(value['original_files'],
+                                                                           'bigWig',
+                                                                           'control normalized signal')
+        narrowPeak_bed = scan_files_for_file_format_output_type(value['original_files'],
+                                                                'bed',
+                                                                'narrowPeak')
+        narrowPeak_bigBed = scan_files_for_file_format_output_type(value['original_files'],
+                                                                   'bigBed',
+                                                                   'narrowPeak')
+        idr_narrowPeak_bed = scan_files_for_file_format_output_type(value['original_files'],
+                                                                'bed',
+                                                                'optimal idr thresholded narrowPeak')
+        idr_narrowPeak_bigBed = scan_files_for_file_format_output_type(value['original_files'],
+                                                                   'bigBed',
+                                                                   'optimal idr thresholded narrowPeak')
+        detail = 'modERN file(s) missing in pipeline'
+
+        for alignment_file in alignment_files:
+            if len(file['biological_replicates']) == 1:
+                bio_rep_number = alignment_file['biological_replicates'][0]
+                reps[bio_rep_number] = replicate_dictionary.copy()
+                reps[bio_rep_number][('alignments', 'bam')] = alignment_file['accession']
+        for file in signal_of_unique_reads:
+            if len(file['biological_replicates']) == 1:
+                bio_rep_number = file['biological_replicates'][0]
+                if bio_rep_number not in reps:
+                    yield AuditFailure('missing files in pipeline', detail, level='DCC_ACTION')
+                else:
+                    reps[bio_rep_number][('signal of unique reads', 'bigWig')] = file['accession']
+            elif len(file['biological_replicates']) > 1:
+                reps['pooled'] = pooled_dictionary.copy()
+                reps['pooled'][('signal of unique reads', 'bigWig')] = file['accession']
+                
+        for file in read_depth_normalized_signal:
+            if len(file['biological_replicates']) == 1:
+                bio_rep_number = file['biological_replicates'][0]
+                if bio_rep_number not in reps:
+                    yield AuditFailure('missing files in pipeline', detail, level='DCC_ACTION')
+                else:
+                    reps[bio_rep_number][('read depth normalized signal', 'bigWig')] = file['accession']
+            elif len(file['biological_replicates']) > 1:
+                pooled_dictionary[('read depth normalized signal', 'bigWig')] = file['accession']
+        for file in control_normalized_signal:
+            if len(file['biological_replicates']) == 1:
+                bio_rep_number = file['biological_replicates'][0]
+                if bio_rep_number not in reps:
+                    yield AuditFailure('missing files in pipeline', detail, level='DCC_ACTION')
+                else:
+                    reps[bio_rep_number][('control normalized signal', 'bigWig')] = file['accession']
+            elif len(file['biological_replicates']) > 1:
+                pooled_dictionary[('control normalized signal', 'bigWig')] = file['accession']
+        for file in narrowPeak_bed:
+            if len(file['biological_replicates']) == 1:
+                bio_rep_number = file['biological_replicates'][0]
+                if bio_rep_number not in reps:
+                    yield AuditFailure('missing files in pipeline', detail, level='DCC_ACTION')
+                else:
+                    reps[bio_rep_number][('narrowPeak', 'bed')] = file['accession']
+            elif len(file['biological_replicates']) > 1:
+                pooled_dictionary[('narrowPeak', 'bed')] = file['accession']
+        for file in narrowPeak_bigBed:
+            if len(file['biological_replicates']) == 1:
+                bio_rep_number = file['biological_replicates'][0]
+                if bio_rep_number not in reps:
+                    yield AuditFailure('missing files in pipeline', detail, level='DCC_ACTION')
+                else:
+                    reps[bio_rep_number][('narrowPeak', 'bigBed')] = file['accession']
+            elif len(file['biological_replicates']) > 1:
+                pooled_dictionary[('narrowPeak', 'bigBed')] = file['accession']
+        
+        for file in idr_narrowPeak_bed:
+            if len(file['biological_replicates']) > 1:
+                pooled_dictionary[('optimal idr thresholded narrowPeak', 'bed')] = file['accession']
+        for file in idr_narrowPeak_bigBed:
+            if len(file['biological_replicates']) > 1:
+                pooled_dictionary[('optimal idr thresholded narrowPeak', 'bigBed')] = file['accession']
+
+        for key in reps.keys():
+            for (output_type, file_format) in reps[key]:
+                if len(reps[key][(output_type, file_format)]) == 0:
+                    yield AuditFailure('missing files in pipeline', output_type + ' ' + file_format + ' in replicate ' + str(key), level='DCC_ACTION')
+        for (output_type, file_format) in pooled_dictionary.keys:
+            if len(pooled_dictionary[(output_type, file_format)]) == 0:
+                yield AuditFailure('missing files in pipeline', output_type + ' ' + file_format + ' in inter-replicate ', level='DCC_ACTION')
+        return
+    '''
+    if 'Histone ChIP-seq' or 'Transcription factor ChIP-seq' in the set() do
+    if () do
+    
+
+
+    transcriptome_alignments = scan_files_for_file_format_output_type(value['original_files'],
+                                                                      'bam',
+                                                                      'transcriptome alignments')
+    unfiltered_alignments = scan_files_for_file_format_output_type(value['original_files'],
+                                                                   'bam',
+                                                                   'unfiltered alignments') 
+    return
+    '''
+
+
+@audit_checker('Experiment', frame=['original_files',
+                                    'original_files.replicate',
                                     'original_files.derived_from'])
 def audit_experiment_out_of_date_analysis(value, system):
     alignment_files = scan_files_for_file_format_output_type(value['original_files'],
@@ -1229,6 +1369,17 @@ def scanFilesForPipelineTitle_not_chipseq(files_to_scan, assemblies, pipeline_ti
                 if p['title'] in pipeline_titles:
                     return p['title']
     return False
+
+
+def getPipelines(alignment_files):
+    pipelines = set()
+    for alignment_file in alignment_files:
+        if 'analysis_step_version' in alignment_file and \
+           'analysis_step' in alignment_file['analysis_step_version'] and \
+           'pipelines' in alignment_file['analysis_step_version']['analysis_step']:
+            for p in alignment_file['analysis_step_version']['analysis_step']['pipelines']:
+                pipelines.add(p['title'])
+    return pipelines
 
 
 @audit_checker('Experiment', frame=['original_files', 'target',
