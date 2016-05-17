@@ -1,5 +1,5 @@
 biosampleType_ontologyPrefix = {
-    'tissue': ['UBERON', 'EFO'],
+    'tissue': ['UBERON'],
     'whole organisms': ['UBERON'],
     'primary cell': ['CL'],
     'stem cell': ['EFO', 'CL'],

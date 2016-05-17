@@ -516,6 +516,18 @@ def file_tsv_1_1(base_experiment, award, encode_lab, testapp, analysis_step_run_
     return testapp.post_json('/file', item, status=201).json['@graph'][0]
 
 
+def test_audit_experiment_released_with_unreleased_files(testapp, base_experiment, file_fastq):
+    testapp.patch_json(base_experiment['@id'], {'status': 'released',
+                                                'date_released': '2016-01-01'})
+    testapp.patch_json(file_fastq['@id'], {'status': 'in progress'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched file status' for error in errors_list)
+
+
 def test_ChIP_possible_control(testapp, base_experiment, ctrl_experiment, IgG_ctrl_rep):
     testapp.patch_json(base_experiment['@id'], {'possible_controls': [ctrl_experiment['@id']],
                                                 'assay_term_name': 'ChIP-seq',
