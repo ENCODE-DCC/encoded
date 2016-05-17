@@ -3,6 +3,7 @@ var React = require('react/addons');
 var panel = require('../libs/bootstrap/panel');
 var button = require('../libs/bootstrap/button');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
+var SvgIcon = require('../libs/svg-icons');
 var _ = require('underscore');
 var moment = require('moment');
 var globals = require('./globals');
@@ -1443,6 +1444,24 @@ var fileAuditStatus = function(file) {
 };
 
 
+var CollapsingTitle = React.createClass({
+    propTypes: {
+        title: React.PropTypes.string.isRequired, // Title to display in the title bar
+        collapsed: React.PropTypes.bool.isRequired, // T if the panel this is over has been collapsed
+        handleCollapse: React.PropTypes.func.isRequired // Function to call to handle click in collapse button
+    },
+
+    render: function() {
+        return (
+            <div className="collapsing-title">
+                <h4>{this.props.title}</h4>
+                <button onClick={this.props.handleCollapse} className="collapsing-title-control"></button>
+            </div>
+        );
+    }
+});
+
+
 var FileTable = module.exports.FileTable = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // Optional parent object of file list
@@ -1721,10 +1740,10 @@ var FileTable = module.exports.FileTable = React.createClass({
                 <div>
                     {showFileCount ? <div className="file-gallery-counts">Displaying {filteredCount} of {unfilteredCount} files</div> : null}
                     <SortTablePanel header={filePanelHeader} noDefaultClasses={this.props.noDefaultClasses}>
-                        <SortTable title="Raw data files" list={files.raw} columns={this.rawTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
-                        <SortTable title="Raw data files" list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
-                        <SortTable title="Processed data files" list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
-                        <SortTable title="Reference data files" list={files.ref} columns={this.refTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} />
+                        <SortTable title={<CollapsingTitle title="Raw data files" />} list={files.raw} columns={this.rawTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
+                        <SortTable title={<CollapsingTitle title="Raw data files" />} list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
+                        <SortTable title={<CollapsingTitle title="Processed data files" />} list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
+                        <SortTable title={<CollapsingTitle title="Reference data files" />} list={files.ref} columns={this.refTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} />
                     </SortTablePanel>
                 </div>
             );
