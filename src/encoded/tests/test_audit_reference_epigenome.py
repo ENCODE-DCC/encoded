@@ -326,3 +326,28 @@ def test_reference_epigenome_multiple_biosample_term_names(testapp, reference_ep
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'multiple biosample term names in reference epigenome' for
                error in errors_list)
+
+
+def test_reference_epigenome_multiple_biosample_treatments(testapp, reference_epigenome_1,
+                                                           reference_experiment_RNA_seq,
+                                                           reference_experiment_RRBS,
+                                                           replicate_RNA_seq,
+                                                           replicate_RRBS,
+                                                           treatment,
+                                                           library_1,
+                                                           library_2,
+                                                           biosample_1,
+                                                           biosample_2):
+    testapp.patch_json(biosample_1['@id'], {'treatments': [treatment['@id']]})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(reference_epigenome_1['@id'], {'related_datasets':
+                                                      [reference_experiment_RNA_seq['@id'],
+                                                       reference_experiment_RRBS['@id']]})
+    res = testapp.get(reference_epigenome_1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'multiple biosample treatments in reference epigenome' for
+               error in errors_list)

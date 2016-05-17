@@ -60,6 +60,24 @@ non_seq_assays = [
 
 
 @audit_checker('Experiment', frame=['original_files',
+                                    'original_files'])
+def audit_experiment_released_with_unreleased_files(value, system):
+    if value['status'] != 'released':
+        return
+    if 'original_files' not in value:
+        return
+    for f in value['original_files']:
+        if f['status'] not in ['released', 'deleted',
+                               'revoked', 'replaced',
+                               'archived']:
+            detail = 'Released experiment {} '.format(value['@id']) + \
+                     'contains file  {} '.format(f['@id']) + \
+                     'that has not been released.'
+            yield AuditFailure('mismatched file status', detail, level='DCC_ACTION')
+    return
+
+
+@audit_checker('Experiment', frame=['original_files',
                                     'original_files.replicate',
                                     'original_files.derived_from'])
 def audit_experiment_out_of_date_analysis(value, system):
@@ -88,13 +106,16 @@ def audit_experiment_out_of_date_analysis(value, system):
     derived_from_set = alignment_derived_from | transcriptome_alignment_derived_from
     fastq_files = scan_files_for_file_format_output_type(value['original_files'],
                                                          'fastq', 'reads')
-
     fastq_accs = get_file_accessions(fastq_files)
 
     orfan_fastqs = set()
     for f_accession in fastq_accs:
         if f_accession not in derived_from_set:
             orfan_fastqs.add(f_accession)
+    lost_fastqs = set()
+    for f_accession in derived_from_set:
+        if f_accession not in fastq_accs:
+            lost_fastqs.add(f_accession)
 
     if len(orfan_fastqs) > 0:
         orfan_bio_reps = set()
@@ -109,6 +130,12 @@ def audit_experiment_out_of_date_analysis(value, system):
                  ' that have not been processed.'
         yield AuditFailure('out of date analysis', detail, level='DCC_ACTION')
 
+    if len(lost_fastqs) > 0:
+        detail = 'Experiment {} '.format(value['@id']) + \
+                 'processed files contain in derived_from list FASTQ files {} '.format(lost_fastqs) + \
+                 ' that are no longer eligible for analysis.'
+        yield AuditFailure('out of date analysis', detail, level='DCC_ACTION')
+
 
 def get_file_accessions(list_of_files):
     accessions_set = set()
@@ -121,10 +148,9 @@ def get_derived_from_files_set(list_of_files):
     derived_from_set = set()
     for f in list_of_files:
         if 'derived_from' in f:
-            d_fastqs = scan_files_for_file_format_output_type(f['derived_from'],
-                                                              'fastq', 'reads')
-            for d in d_fastqs:
-                derived_from_set.add(d['accession'])
+            for d_f in f['derived_from']:
+                if 'file_format' in d_f and d_f['file_format'] == 'fastq':
+                    derived_from_set.add(d_f['accession'])
     return derived_from_set
 
 
@@ -393,6 +419,7 @@ def check_experiment_chip_seq_encode3_standards(experiment,
                                                 fastq_files,
                                                 alignment_files,
                                                 idr_peaks_files):
+
     for f in fastq_files:
         if 'run_type' not in f:
             detail = 'Experiment {} '.format(experiment['@id']) + \
@@ -416,7 +443,6 @@ def check_experiment_chip_seq_encode3_standards(experiment,
             return
 
         read_depth = get_file_read_depth_from_alignment(f, target, 'ChIP-seq')
-
         for failure in check_file_chip_seq_read_depth(f, target, read_depth):
             yield failure
         for failure in check_file_chip_seq_library_complexity(f):
@@ -720,7 +746,8 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
 
 def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
 
-    if alignment_file['output_type'] == 'transcriptome alignments':
+    if alignment_file['output_type'] in ['transcriptome alignments',
+                                         'unfiltered alignments']:
         return False
 
     if alignment_file['lab'] != '/labs/encode-processing-pipeline/':
@@ -1158,6 +1185,7 @@ def check_file_read_length_rna(file_to_check, threshold_length):
         yield AuditFailure('insufficient read length', detail,
                            level='NOT_COMPLIANT')
     return
+
 
 def get_organism_name(reps):
     for rep in reps:
