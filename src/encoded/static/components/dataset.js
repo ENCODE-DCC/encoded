@@ -3,7 +3,7 @@ var React = require('react/addons');
 var panel = require('../libs/bootstrap/panel');
 var button = require('../libs/bootstrap/button');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
-var SvgIcon = require('../libs/svg-icons');
+var {SvgIcon, CollapseIcon} = require('../libs/svg-icons');
 var _ = require('underscore');
 var moment = require('moment');
 var globals = require('./globals');
@@ -1456,11 +1456,7 @@ var CollapsingTitle = React.createClass({
         return (
             <div className="collapsing-title">
                 <h4>{title}</h4>
-                <svg className={'collapsing-title-control' + (collapsed ? ' collapsed' : '')} data-name="Collapse Icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" onClick={handleCollapse}>
-                    <title>Open and close panel</title>
-                    <circle className="bg" cx="240" cy="240" r="240" />
-                    <polyline className="arrow" points="119.26 275.53 240 158.47 360.74 275.53" />
-                </svg>
+                {CollapseIcon(collapsed, handleCollapse)}
             </div>
         );
     }

@@ -2,7 +2,7 @@
 var React = require('react');
 
 var icons = {
-	disclosure: <svg id="Disclosure" data-name="Disclosure" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" className="svg-icon svg-icon-disclosure"><title>Disclosure Arrow</title><circle class="cls-1" cx="240" cy="240" r="240"/><polyline class="cls-2" points="401.79 175.66 240 304.34 78.21 175.66"/></svg>,
+    disclosure: <svg id="Disclosure" data-name="Disclosure" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" className="svg-icon svg-icon-disclosure"><title>Disclosure Arrow</title><circle class="cls-1" cx="240" cy="240" r="240"/><polyline class="cls-2" points="401.79 175.66 240 304.34 78.21 175.66"/></svg>,
     table: <svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon</title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z"/></svg>,
     matrix: <svg id="Matrix" data-name="Matrix" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-matrix"><title>matrix-icon</title><rect x="22" y="14" width="3" height="3"/><rect x="22" y="10" width="3" height="3"/><rect x="22" y="6" width="3" height="3"/><rect x="18" y="14" width="3" height="3"/><rect x="18" y="10" width="3" height="3"/><rect x="18" y="6" width="3" height="3"/><rect x="14" y="14" width="3" height="3"/><rect x="14" y="10" width="3" height="3"/><rect x="14" y="6" width="3" height="3"/><rect x="10" y="14" width="3" height="3"/><rect x="10" y="10" width="3" height="3"/><rect x="10" y="6" width="3" height="3"/><polygon points="25 5 22 5 25.98 0 28.98 0 25 5"/><polygon points="21 5 18 5 21.98 0 24.98 0 21 5"/><polygon points="17 5 14 5 17.98 0 20.98 0 17 5"/><polygon points="13 5 10 5 13.98 0 16.98 0 13 5"/><rect y="14" width="9" height="3"/><rect y="10" width="9" height="3"/><rect y="6" width="9" height="3"/></svg>,
     search: <svg id="Search" data-name="Search" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-search"><title>search-icon</title><rect x="26" y="14" width="3" height="3"/><rect x="10" y="14" width="15.03" height="3"/><rect x="26" y="9.33" width="3" height="3"/><rect x="10" y="9.33" width="15.03" height="3"/><rect x="26" y="4.67" width="3" height="3"/><rect x="10" y="4.67" width="15.03" height="3"/><rect x="26" width="3" height="3"/><rect x="10" width="15.03" height="3"/><path d="M0,0V17H9V0H0ZM7.9,15.55H1.1v-2H7.9v2Zm0-4H1.1v-2H7.9v2Zm0-4H1.1v-2H7.9v2Zm0-4H1.1v-2H7.9v2Z"/></svg>,
@@ -11,8 +11,22 @@ var icons = {
 };
 
 
-var SvgIcon = function(icon) {
+var SvgIcon = module.exports.SvgIcon = function(icon) {
     return icons[icon];
 };
 
-module.exports = SvgIcon;
+
+// Render the icon used to collapse a panel from the title bar.
+//   collapsed: T if the icon should be rendered for the collapsed steate
+//   handlecollapse: function to call when the icon is clicked
+var CollapseIcon = module.exports.CollapseIcon = function(collapsed, handleCollapse) {
+    return (
+        <svg className={'collapsing-title-control' + (collapsed ? ' collapsed' : '')} data-name="Collapse Icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480">
+            <title>Open and close panel</title>
+            <a href="#" onClick={handleCollapse} data-trigger>
+                <circle className="bg" cx="240" cy="240" r="240" />
+                <polyline className="arrow" points="119.26 298.53 240 181.47 360.74 298.53" />
+            </a>
+        </svg>
+    );
+};

@@ -4,7 +4,7 @@ var {Panel, PanelBody, PanelHeading} = require('../libs/bootstrap/panel');
 var _ = require('underscore');
 var globals = require('./globals');
 var BrowserFeat = require('./browserfeat').BrowserFeat;
-var SvgIcon = require('../libs/svg-icons');
+var SvgIcon = require('../libs/svg-icons').SvgIcon;
 
 
 // Zoom slider constants

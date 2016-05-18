@@ -2,6 +2,7 @@
 var React = require('react');
 var panel = require('../libs/bootstrap/panel');
 var button = require('../libs/bootstrap/button');
+var {SvgIcon, CollapseIcon} = require('../libs/svg-icons');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var _ = require('underscore');
 var moment = require('moment');
@@ -1670,7 +1671,8 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
     getInitialState: function() {
         return {
-            infoNodeId: '' // @id of node whose info panel is open
+            infoNodeId: '', // @id of node whose info panel is open
+            collapsed: false // T if graphing panel is collapsed
         };
     },
 
@@ -1718,6 +1720,11 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         this.setState({infoNodeId: this.state.infoNodeId !== nodeId ? nodeId : ''});
     },
 
+    handleCollapse: function() {
+        // Handle click on panel collapse icon
+        this.setState({collapsed: !this.state.collapsed});
+    },
+
     render: function() {
         var {context, session, items, selectedAssembly, selectedAnnotation} = this.props;
         var files = items;
@@ -1737,16 +1744,26 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
                 return (
                     <div>
-                        <div className="file-gallery-graph-header"><h4>Pipeline</h4></div>
-                        {goodGraph ?
-                            <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw>
-                                <div id="graph-node-info">
-                                    {meta ? <PanelBody>{meta}</PanelBody> : null}
-                                </div>
-                            </Graph>
-                        :
-                            <p className="browser-error">Currently selected assembly and genomic annotation hides the graph</p>
-                        }
+                        <div className="file-gallery-graph-header">
+                            <div className="collapsing-title">
+                                <h4>Pipeline</h4>
+                                {CollapseIcon(this.state.collapsed, this.handleCollapse)}
+                            </div>
+                        </div>
+                        {!this.state.collapsed ?
+                            <div>
+                                {goodGraph ?
+                                    <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw>
+                                        <div id="graph-node-info">
+                                            {meta ? <PanelBody>{meta}</PanelBody> : null}
+                                        </div>
+                                    </Graph>
+                                :
+                                    <p className="browser-error">Currently selected assembly and genomic annotation hides the graph</p>
+                                }
+                            </div>
+                        : null}
+                        <div className="file-gallery-graph-footer"></div>
                     </div>
                 );
             } else {
