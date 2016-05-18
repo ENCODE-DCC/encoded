@@ -101,7 +101,7 @@ def audit_experiment_missing_processed_files(value, system):
         target = value.get('target')
         if target is None:
             return
-        if target.get('investigated_as') == 'control':
+        if 'control' in target.get('investigated_as'):
             replicate_structures = create_pipeline_structures(value['original_files'])
 
             for (bio_rep_num, assembly) in replicate_structures.keys():
@@ -111,12 +111,12 @@ def audit_experiment_missing_processed_files(value, system):
                             detail = 'In biological replicate {}, '.format(bio_rep_num[0]) + \
                                      'genomic assembly {}, '.format(assembly) + \
                                      'the following file {} is missing.'.format(missing_tuple)
-                            yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
+                            yield AuditFailure('missing pipeline files', detail, level='WARNING')
                         else:
                             detail = 'Files derived from biological replicates {}, '.format(bio_rep_num) + \
                                      'genomic assembly {}, '.format(assembly) + \
                                      'are missing the following file {}.'.format(missing_tuple)
-                            yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
+                            yield AuditFailure('missing pipeline files', detail, level='WARNING')
 
 
 def create_pipeline_structures(files_to_scan):
@@ -125,11 +125,12 @@ def create_pipeline_structures(files_to_scan):
     for f in files_to_scan:
         if f['status'] not in ['replaced', 'revoked', 'deleted', 'archived'] and \
            f['output_category'] not in ['raw data', 'reference']:
-            bio_rep_num = f.get('biological_replicates')
+            bio_rep_num = str(f.get('biological_replicates'))
             assembly = f.get('assembly')
+            # print ('PRINTING FROM INSIDE '+ bio_rep_num + ' ' + assembly)
             if (bio_rep_num, assembly) not in replicates_set:
                 replicates_set.add((bio_rep_num, assembly))
-                structures_to_return[(bio_rep_num, assembly)] = modERN_TF_control
+                structures_to_return[(bio_rep_num, assembly)] = modERN_TF_control()
                 structures_to_return[(bio_rep_num, assembly)].update_fields(f)
             else:
                 structures_to_return[(bio_rep_num, assembly)].update_fields(f)
