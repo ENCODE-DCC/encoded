@@ -231,17 +231,42 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
 .collapsing-title {
     position: relative;
+
+    h4 {
+        margin: 0;
+    }
 }
 
+// Control for collapsing panel title bars
 .collapsing-title-control {
     position: absolute;
+    top: 0;
     right: 0;
     height: 20px;
     width: 20px;
-    background-image: inline-image('../img/disclosure-arrow.svg');
-    background-size: contain;
-    background-position: right;
-    background-repeat: no-repeat;
+    pointer-events: all;
+    cursor: pointer;
+
+    &.collapsed {
+        transform: scaleY(-1);
+    }
+
+    a:focus {
+        fill: blue;
+        fill-opacity: 0.5;
+        outline: none;
+    }
+
+    .bg {
+        fill: white;
+    }
+
+    .arrow {
+        fill: none;
+        stroke: #000;
+        stroke-miterlimit: 10;
+        stroke-width: 60px;
+    }
 }
 
 .subpanel {

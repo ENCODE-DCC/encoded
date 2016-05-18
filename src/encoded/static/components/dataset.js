@@ -1447,15 +1447,20 @@ var fileAuditStatus = function(file) {
 var CollapsingTitle = React.createClass({
     propTypes: {
         title: React.PropTypes.string.isRequired, // Title to display in the title bar
-        collapsed: React.PropTypes.bool.isRequired, // T if the panel this is over has been collapsed
-        handleCollapse: React.PropTypes.func.isRequired // Function to call to handle click in collapse button
+        handleCollapse: React.PropTypes.func.isRequired, // Function to call to handle click in collapse button
+        collapsed: React.PropTypes.bool // T if the panel this is over has been collapsed
     },
 
     render: function() {
+        var {title, handleCollapse, collapsed} = this.props;
         return (
             <div className="collapsing-title">
-                <h4>{this.props.title}</h4>
-                <button onClick={this.props.handleCollapse} className="collapsing-title-control"></button>
+                <h4>{title}</h4>
+                <svg className={'collapsing-title-control' + (collapsed ? ' collapsed' : '')} data-name="Collapse Icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" onClick={handleCollapse}>
+                    <title>Open and close panel</title>
+                    <circle className="bg" cx="240" cy="240" r="240" />
+                    <polyline className="arrow" points="119.26 275.53 240 158.47 360.74 275.53" />
+                </svg>
             </div>
         );
     }
@@ -1472,7 +1477,13 @@ var FileTable = module.exports.FileTable = React.createClass({
 
     getInitialState: function() {
         return {
-            maxWidth: 'auto' // Width of widest table
+            maxWidth: 'auto', // Width of widest table
+            collapsed: { // Keeps track of which tables are collapsed
+                'raw': false,
+                'rawArray': false,
+                'proc': false,
+                'ref': false
+            }
         };
     },
 
@@ -1649,7 +1660,7 @@ var FileTable = module.exports.FileTable = React.createClass({
         'audit': {
             title: 'Audit status',
             display: item => <div>{fileAuditStatus(item)}</div>,
-            hide: (list, columns, meta) => { console.log(meta); return meta.noAudits || !(meta.session && meta.session['auth.userid']); }
+            hide: (list, columns, meta) => { return meta.noAudits || !(meta.session && meta.session['auth.userid']); }
         },
         'status': {
             title: 'File status',
@@ -1695,13 +1706,20 @@ var FileTable = module.exports.FileTable = React.createClass({
         'audit': {
             title: 'Audit status',
             display: item => <div>{fileAuditStatus(item)}</div>,
-            hide: (list, columns, meta) => {console.log(meta); return (meta.noAudits || !(meta.session && meta.session['auth.userid'])); }
+            hide: (list, columns, meta) => { return (meta.noAudits || !(meta.session && meta.session['auth.userid'])); }
         },
         'status': {
             title: 'File status',
             display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
             hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
         }
+    },
+
+    handleCollapse: function(table) {
+        // Handle a click on a collapse button by toggling the corresponding tableCollapse state var
+        var collapsed = _.clone(this.state.collapsed);
+        collapsed[table] = !collapsed[table];
+        this.setState({collapsed: collapsed});
     },
 
     render: function() {
@@ -1740,10 +1758,14 @@ var FileTable = module.exports.FileTable = React.createClass({
                 <div>
                     {showFileCount ? <div className="file-gallery-counts">Displaying {filteredCount} of {unfilteredCount} files</div> : null}
                     <SortTablePanel header={filePanelHeader} noDefaultClasses={this.props.noDefaultClasses}>
-                        <SortTable title={<CollapsingTitle title="Raw data files" />} list={files.raw} columns={this.rawTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
-                        <SortTable title={<CollapsingTitle title="Raw data files" />} list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
-                        <SortTable title={<CollapsingTitle title="Processed data files" />} list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
-                        <SortTable title={<CollapsingTitle title="Reference data files" />} list={files.ref} columns={this.refTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} />
+                        <SortTable title={<CollapsingTitle title="Raw data files" collapsed={this.state.collapsed.raw} handleCollapse={this.handleCollapse.bind(null, 'raw')} />} collapsed={this.state.collapsed.raw}
+                            list={files.raw} columns={this.rawTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
+                        <SortTable title={<CollapsingTitle title="Raw data files" collapsed={this.state.collapsed.rawArray} handleCollapse={this.handleCollapse.bind(null, 'rawArray')} />} collapsed={this.state.collapsed.rawArray}
+                            list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
+                        <SortTable title={<CollapsingTitle title="Processed data files" collapsed={this.state.collapsed.proc} handleCollapse={this.handleCollapse.bind(null, 'proc')} />} collapsed={this.state.collapsed.proc}
+                            list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
+                        <SortTable title={<CollapsingTitle title="Reference data files" collapsed={this.state.collapsed.ref} handleCollapse={this.handleCollapse.bind(null, 'ref')} />} collapsed={this.state.collapsed.ref}
+                            list={files.ref} columns={this.refTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} />
                     </SortTablePanel>
                 </div>
             );
