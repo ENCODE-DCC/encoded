@@ -1918,8 +1918,6 @@ def test_audit_experiment_missing_files(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    for e in errors['WARNING']:
-        print (e)
     assert any(error['category'] == 'missing pipeline files' for error in errors_list)
 
 
