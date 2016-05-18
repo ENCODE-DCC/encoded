@@ -370,8 +370,8 @@
                         "candidate regulatory elements",
                         
                         "genome reference",
-                        "transcriptome reference"
-                        "transcriptome index"
+                        "transcriptome reference",
+                        "transcriptome index",
                         "tRNA reference",
                         "miRNA reference",
                         "snRNA reference",
