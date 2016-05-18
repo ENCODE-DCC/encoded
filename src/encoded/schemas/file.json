@@ -344,6 +344,8 @@
                         "enrichment",
                         "replication timing profile",
                         "variant calls",
+                        "filtered SNPs",
+                        "filtered indels",
 
                         "hotspots",
                         "long range chromatin interactions",
@@ -763,6 +765,8 @@
         "transcription start sites": "annotation",
         "candidate regulatory elements": "annotation",
         "variant calls": "annotation",
+        "filtered SNPs": "annotation",
+        "filtered indels": "annotation",
 
         "genome index": "reference",
         "tRNA reference": "reference",

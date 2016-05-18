@@ -595,3 +595,13 @@ def test_audit_file_derived_from_revoked(testapp, file6, file7):
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'mismatched file status'
                for error in errors_list)
+
+
+def test_audit_file_derived_from_empty(testapp, file7):
+    res = testapp.get(file7['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing derived_from'
+               for error in errors_list)
