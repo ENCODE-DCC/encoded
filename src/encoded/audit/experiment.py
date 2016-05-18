@@ -105,27 +105,32 @@ def audit_experiment_missing_processed_files(value, system):
         if target is None:
             return
         if 'control' in target.get('investigated_as'):
-            replicate_structures = create_pipeline_structures(value['original_files'], 'modERN_control')
+            replicate_structures = create_pipeline_structures(value['original_files'],
+                                                              'modERN_control')
+        else:
+            replicate_structures = create_pipeline_structures(value['original_files'],
+                                                              'modERN')
 
-            for (bio_rep_num, assembly) in replicate_structures.keys():
-                if replicate_structures[(bio_rep_num, assembly)].is_complete() is False:
-                    for missing_tuple in replicate_structures[(bio_rep_num, assembly)].get_missing_fields_tuples():
-                        if len(bio_rep_num[1:-1]) == 1:
-                            detail = 'In biological replicate {}, '.format(bio_rep_num[1:-1]) + \
-                                     'genomic assembly {}, '.format(assembly) + \
-                                     'the following file {} is missing.'.format(missing_tuple)
-                            yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
-                        else:
-                            detail = 'Files derived from biological replicates {}, '.format(bio_rep_num) + \
-                                     'genomic assembly {}, '.format(assembly) + \
-                                     'are missing the following file {}.'.format(missing_tuple)
-                            yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
+        for (bio_rep_num, assembly) in replicate_structures.keys():
+            if replicate_structures[(bio_rep_num, assembly)].is_complete() is False:
+                for missing_tuple in replicate_structures[(bio_rep_num, assembly)].get_missing_fields_tuples():
+                    if len(bio_rep_num[1:-1]) == 1:
+                        detail = 'In biological replicate {}, '.format(bio_rep_num[1:-1]) + \
+                                 'genomic assembly {}, '.format(assembly) + \
+                                 'the following file {} is missing.'.format(missing_tuple)
+                        yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
+                    else:
+                        detail = 'Files derived from biological replicates {}, '.format(bio_rep_num) + \
+                                 'genomic assembly {}, '.format(assembly) + \
+                                 'are missing the following file {}.'.format(missing_tuple)
+                        yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
+
 
 
 def create_pipeline_structures(files_to_scan, structure_type):
     structures_mapping = {
         'modERN_control': modERN_TF_control,
-        'modERN_control': modERN_TF
+        'modERN': modERN_TF
     }
     structures_to_return = {}
     replicates_set = set()
@@ -137,7 +142,10 @@ def create_pipeline_structures(files_to_scan, structure_type):
             # print ('PRINTING FROM INSIDE '+ bio_rep_num + ' ' + assembly)
             if (bio_rep_num, assembly) not in replicates_set:
                 replicates_set.add((bio_rep_num, assembly))
-                structures_to_return[(bio_rep_num, assembly)] = structures_mapping[structure_type]()
+                if structure_type == 'modERN':
+                    structures_to_return[(bio_rep_num, assembly)] = structures_mapping[structure_type](bio_rep_num)
+                else:
+                    structures_to_return[(bio_rep_num, assembly)] = structures_mapping[structure_type]()
                 structures_to_return[(bio_rep_num, assembly)].update_fields(f)
             else:
                 structures_to_return[(bio_rep_num, assembly)].update_fields(f)

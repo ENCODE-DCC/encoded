@@ -1874,28 +1874,29 @@ def test_audit_experiment_no_out_of_date_analysis(testapp,
     assert all(error['category'] != 'out of date analysis' for error in errors_list)
 
 
-def test_audit_experiment_missing_files(testapp,
-                                        base_experiment,
-                                        replicate_1_1,
-                                        library_1,
-                                        biosample_1,
-                                        file_fastq_3,
-                                        file_fastq_4,
-                                        file_bam_1_1,
-                                        file_bam_2_1,
-                                        file_tsv_1_2,
-                                        analysis_step_run_bam,
-                                        analysis_step_version_bam,
-                                        analysis_step_bam,
-                                        pipeline_bam,
-                                        target_control):
-    testapp.patch_json(pipeline_bam['@id'], {'title':'Transcription factor ChIP-seq pipeline (modERN)'})
+def test_audit_experiment_modERN_control_missing_files(testapp,
+                                                       base_experiment,
+                                                       replicate_1_1,
+                                                       library_1,
+                                                       biosample_1,
+                                                       file_fastq_3,
+                                                       file_fastq_4,
+                                                       file_bam_1_1,
+                                                       file_bam_2_1,
+                                                       file_tsv_1_2,
+                                                       analysis_step_run_bam,
+                                                       analysis_step_version_bam,
+                                                       analysis_step_bam,
+                                                       pipeline_bam,
+                                                       target_control):
+    testapp.patch_json(pipeline_bam['@id'], {'title':
+                                             'Transcription factor ChIP-seq pipeline (modERN)'})
     testapp.patch_json(base_experiment['@id'], {'target': target_control['@id'],
                                                 'status': 'released',
                                                 'date_released': '2016-01-01',
                                                 'assay_term_id': 'OBI:0001864',
                                                 'assay_term_name': 'ChIP-seq'})
-   
+
     testapp.patch_json(file_fastq_4['@id'], {'replicate': replicate_1_1['@id']})
     testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
                                              'assembly': 'mm10',
@@ -1920,6 +1921,59 @@ def test_audit_experiment_missing_files(testapp,
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing pipeline files' for error in errors_list)
 
+
+def test_audit_experiment_modERN_experiment_missing_files(testapp,
+                                                          base_experiment,
+                                                          replicate_1_1,
+                                                          library_1,
+                                                          biosample_1,
+                                                         
+                                                          file_fastq_3,
+                                                          file_fastq_4,
+                                                         
+                                                         
+                                                          file_bam_1_1,
+                                                          file_bam_2_1,
+                                                          file_tsv_1_2,
+                                                          analysis_step_run_bam,
+                                                          analysis_step_version_bam,
+                                                          analysis_step_bam,
+                                                          pipeline_bam,
+                                                          target_H3K9me3):
+
+    testapp.patch_json(pipeline_bam['@id'], {'title':
+                                             'Transcription factor ChIP-seq pipeline (modERN)'})
+    testapp.patch_json(base_experiment['@id'], {'target': target_H3K9me3['@id'],
+                                                'status': 'released',
+                                                'date_released': '2016-01-01',
+                                                'assay_term_id': 'OBI:0001864',
+                                                'assay_term_name': 'ChIP-seq'})
+
+    testapp.patch_json(file_fastq_4['@id'], {'replicate': replicate_1_1['@id']})
+    testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'assembly': 'mm10',
+                                             'output_type': 'alignments',
+                                             'file_format': 'bam',
+                                             'derived_from': [file_fastq_3['@id']]})
+    testapp.patch_json(file_bam_2_1['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'assembly': 'mm10',
+                                             'output_type': 'signal of unique reads',
+                                             'file_format': 'bigWig',
+                                             'derived_from': [file_fastq_4['@id']]})
+    testapp.patch_json(file_tsv_1_2['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'assembly': 'mm10',
+                                             'output_type': 'read-depth normalized signal',
+                                             'file_format': 'bigWig',
+                                             'derived_from': [file_fastq_4['@id']]})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    '''for e in errors_list:
+        if e['category'] == 'missing pipeline files':
+            print (e['detail'])'''
+    assert any(error['category'] == 'missing pipeline files' for error in errors_list)
 
 def test_audit_experiment_wgbs_standards(testapp,
                                          base_experiment,
