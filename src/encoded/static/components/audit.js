@@ -2,6 +2,7 @@
 var React = require('react');
 var _ = require('underscore');
 var {Panel} = require('../libs/bootstrap/panel');
+var {SvgIcon, CollapseIcon} = require('../libs/svg-icons');
 
 var editTargetMap = {
     'experiments': 'Experiment',
@@ -192,9 +193,9 @@ var AuditGroup = module.exports.AuditGroup = React.createClass({
             <div className={alertClass}>
                 {loggedIn ?
                     <div className={'icon audit-detail-trigger-' + auditLevelName}>
-                        <a href="#" className={'audit-detail-trigger-icon' + (detailOpen ? '' : ' collapsed')} data-trigger data-toggle="collapse" onClick={this.detailSwitch}>
-                            <span className="sr-only">More</span>
-                        </a>
+                        <div className="collapsing-title">
+                            {CollapseIcon(!detailOpen, this.detailSwitch)}
+                        </div>
                     </div>
                 : null}
                 <div className="audit-detail-info">

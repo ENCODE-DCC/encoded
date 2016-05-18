@@ -97,43 +97,9 @@ $audit-types:
     width: $audit-group-height;
     float: left;
     margin-right: 10px;
+    padding: 10px;
     border-right: 1px solid #a0a0a0;
-
-    &:hover, &:focus {
-        text-decoration: none;
-        color: #000;
-    }
-
-    &.collapsed {
-        transform: rotate(-90deg);
-    }
 }
-
-.audit-detail-trigger-icon {
-    display: block;
-    @extend .icon-caret-down;
-    height: $audit-group-height;
-    width: $audit-group-height;
-    line-height: $audit-group-height;
-    font-size: 1.6rem;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    color: #000;
-    transition: transform 0.1s linear;
-    transform: rotate(0deg);
-
-    &:hover, &:focus {
-        text-decoration: none;
-        color: #000;
-    }
-
-    &.collapsed {
-        transform: rotate(-90deg);
-        text-decoration: none;
-    }
-}
-
 
 .audit-detail-category-name {
     font-weight: bold;
@@ -197,10 +163,6 @@ $audit-types:
 
     .audit-detail-trigger-#{$audit-type} {
         @extend %audit-detail-trigger;
-
-        &:hover {
-            background-color: darken(fg-to-bg-color($color), 10%);
-        }
     }
 
     // Audit level name text
