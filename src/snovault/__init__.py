@@ -5,6 +5,12 @@ if sys.version_info.major == 2:
     import functools
     from backports.functools_lru_cache import lru_cache
     functools.lru_cache = lru_cache
+import netaddr
+from pyramid.config import Configurator
+from pyramid.settings import (
+    asbool,
+)
+
 
 from .auditor import (  # noqa
     AuditFailure,
@@ -27,7 +33,6 @@ from .resources import (  # noqa
 from .schema_utils import load_schema  # noqa
 from .upgrader import upgrade_step  # noqa
 from .app import (
-    json_asset,
     app_version,
     session,
     configure_dbsession,
@@ -88,34 +93,35 @@ def main(global_config, **local_config):
     config.include(session)
 
     config.include(configure_dbsession)
+    config.include('snovault')
     config.commit()  # commit so search can override listing
 
     # Render an HTML page to browsers and a JSON document for API clients
-    config.include('.renderers')
+    config.include('encoded.renderers')
     config.include('.authentication')
-    config.include('.server_defaults')
-    config.include('.types')
-    config.include('.root')
+    #config.include('encoded.server_defaults')
+    config.include('encoded.root')
 
     if 'elasticsearch.server' in config.registry.settings:
         config.include('snovault.elasticsearch')
-        config.include('.search')
+        config.include('encoded.search')
 
     config.include(static_resources)
     config.include(changelogs)
 
-    # TODO This is optional AWS only.
+    # TODO This is optional AWS only - possibly move to a plug-in
     aws_ip_ranges = json_from_path(settings.get('aws_ip_ranges_path'), {'prefixes': []})
     config.registry['aws_ipset'] = netaddr.IPSet(
         record['ip_prefix'] for record in aws_ip_ranges['prefixes'] if record['service'] == 'AMAZON')
 
     if asbool(settings.get('testing', False)):
-        config.include('tests.testing_views')
+        config.include('.tests.testing_views')
 
     # Load upgrades last so that all views (including testing views) are
     # registered.
-    config.include('.upgrade')
-    config.include('.audit')
+    # TODO we would need a generic upgrade audit PACKAGE (__init__)
+    # config.include('.audit)
+    # config.include('.upgrade')
 
     app = config.make_wsgi_app()
 
