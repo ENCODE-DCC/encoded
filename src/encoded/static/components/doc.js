@@ -225,9 +225,9 @@ var DocumentFile = module.exports.DocumentFile = React.createClass({
                     </a>
                     {detailSwitch ?
                         <div className="detail-switch">
-                            <div className="collapsing-title">
-                                {CollapseIcon(!this.props.detailOpen, this.props.detailSwitch)}
-                            </div>
+                            <a href="#" data-trigger onClick={detailSwitch} className="collapsing-doc">
+                                {CollapseIcon(!this.props.detailOpen)}
+                            </a>
                         </div>
                     : null}
                 </div>

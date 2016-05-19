@@ -191,22 +191,11 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     }
 }
 
-.file-gallery-tab {
-    line-height: 17px;
-
-    > svg {
-        vertical-align: middle;
-    }
-
-    > span {
-        display: none;
-        margin-left: 5px;
-        vertical-align: middle;
-
-        @media screen and (min-width: $screen-sm-min) {
-            display: inline;
-        }
-    }
+// File gallery title bars that collapse
+.collapsing-title-icon {
+    position: relative;
+    top: 3px;
+    margin-right: 10px;
 }
 
 .file-gallery-counts {
@@ -220,7 +209,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 }
 
 .file-gallery-graph-header {
-    padding: 10px;
+    padding: 0;
     background-color: #d8e0e8;
 
     h4 {
@@ -235,26 +224,32 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     border-top: 1px solid #ddd;
 }
 
+// Collapsing title bar
 .collapsing-title {
     position: relative;
+    display: block;
+    padding: 10px;
 
     h4 {
         margin: 0;
+    }
+
+    &:hover {
+        background-color: darken(#d8e0e8, 10%);
+        text-decoration: none;
+    }
+
+    &:focus, &:active {
+        text-decoration: none;
     }
 }
 
 // Control for collapsing panel title bars
 .collapsing-title-control {
-    position: absolute;
-    top: 0;
-    right: 0;
+    display: inline-block;
     height: 20px;
     width: 20px;
     pointer-events: all;
-
-    &.collapsed {
-        transform: scaleY(-1);
-    }
 
     a {
         cursor: pointer;
@@ -262,6 +257,8 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
     .bg {
         fill: white;
+        stroke-width: 6px;
+        stroke: #000;
     }
 
     .arrow {
@@ -269,16 +266,6 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
         stroke: #000;
         stroke-miterlimit: 10;
         stroke-width: 60px;
-    }
-
-    a:hover {
-        .bg {
-            fill: #606060;
-        }
-
-        .arrow {
-            stroke: #fff;
-        }
     }
 }
 

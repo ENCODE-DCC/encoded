@@ -1745,10 +1745,12 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 return (
                     <div>
                         <div className="file-gallery-graph-header">
-                            <div className="collapsing-title">
-                                <h4>Association graph</h4>
-                                {CollapseIcon(this.state.collapsed, this.handleCollapse)}
-                            </div>
+                            <a href="#" data-trigger onClick={this.handleCollapse} className="collapsing-title">
+                                <h4>
+                                    {CollapseIcon(this.state.collapsed, 'collapsing-title-icon')}
+                                    Association graph
+                                </h4>
+                            </a>
                         </div>
                         {!this.state.collapsed ?
                             <div>

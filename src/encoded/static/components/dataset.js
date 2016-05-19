@@ -1454,10 +1454,12 @@ var CollapsingTitle = React.createClass({
     render: function() {
         var {title, handleCollapse, collapsed} = this.props;
         return (
-            <div className="collapsing-title">
-                <h4>{title}</h4>
-                {CollapseIcon(collapsed, handleCollapse)}
-            </div>
+            <a href="#" data-trigger onClick={handleCollapse} className="collapsing-title">
+                <h4>
+                    {CollapseIcon(collapsed, 'collapsing-title-icon')}
+                    {title}
+                </h4>
+            </a>
         );
     }
 });

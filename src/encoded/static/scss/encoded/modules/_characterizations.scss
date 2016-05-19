@@ -695,7 +695,6 @@ $dl-bar-height: 30px;
     right: 0;
     width: $dl-bar-height;
     height: $dl-bar-height;
-    padding: 5px;
     background-color: #e8e8e8;
     border-left: 1px solid #e0e0e0;
 }
@@ -716,6 +715,16 @@ $dl-bar-height: 30px;
     }
 }
 
+.collapsing-doc {
+    position: relative;
+    display: block;
+    padding: 5px;
+
+    &:hover {
+        background-color: darken(#d8e0e8, 10%);
+        text-decoration: none;
+    }
+}
 
 .key-value-trigger {
     display: block;
