@@ -218,3 +218,13 @@ form.table-filter {
         }
     }
 }
+
+.file-table-footer {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: auto 40%;
+
+    &.hiding {
+        background-image: inline-image('../img/hiding-dots.svg');
+    }
+}

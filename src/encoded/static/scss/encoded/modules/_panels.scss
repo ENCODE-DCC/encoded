@@ -222,6 +222,13 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     padding: 8px;
     background-color: #f5f5f5;
     border-top: 1px solid #ddd;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: auto 40%;
+
+    &.hiding {
+        background-image: inline-image('../img/hiding-dots.svg');
+    }
 }
 
 // Collapsing title bar

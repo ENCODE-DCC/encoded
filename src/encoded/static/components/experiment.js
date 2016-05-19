@@ -1765,7 +1765,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                 }
                             </div>
                         : null}
-                        <div className="file-gallery-graph-footer"></div>
+                        <div className={'file-gallery-graph-footer' + (this.state.collapsed ? ' hiding' : '')}></div>
                     </div>
                 );
             } else {

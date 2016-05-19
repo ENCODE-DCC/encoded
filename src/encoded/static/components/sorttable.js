@@ -292,7 +292,7 @@ var SortTable = module.exports.SortTable = React.createClass({
 
                     <tfoot>
                         <tr>
-                            <td colSpan={colCount}>
+                            <td className={'file-table-footer' + (this.props.collapsed ? ' hiding' : '')} colSpan={colCount}>
                                 {this.props.footer}
                             </td>
                         </tr>
