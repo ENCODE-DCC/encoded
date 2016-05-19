@@ -76,7 +76,7 @@ class modERN_TF(object):
         self.rep.update_fields(processed_file)
 
     def is_analyzed_more_than_once(self):
-        return self.is_analyzed_more_than_once()
+        return self.rep.is_analyzed_more_than_once()
 
 
 class modERN_TF_replicate(object):
