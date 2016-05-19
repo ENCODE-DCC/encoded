@@ -52,3 +52,10 @@ def test_schemas_etag(testapp):
     etag = testapp.get('/profiles/', status=200).etag
     assert etag
     testapp.get('/profiles/', headers={'If-None-Match': etag}, status=304)
+
+
+def test_etag_if_match_tid(testapp, organism):
+    res = testapp.get(organism['@id'] + '?frame=edit', status=200)
+    etag = res.etag
+    testapp.patch_json(organism['@id'], {}, headers={'If-Match': etag}, status=200)
+    testapp.patch_json(organism['@id'], {}, headers={'If-Match': etag}, status=412)
