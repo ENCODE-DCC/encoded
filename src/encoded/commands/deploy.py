@@ -9,7 +9,7 @@ BDM = [
     {
         'DeviceName': '/dev/sda1',
         'Ebs': {
-            'VolumeSize': 60,
+            'VolumeSize': 120,
             'VolumeType': 'gp2',
             'DeleteOnTermination': True
         }
@@ -95,33 +95,22 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size, cl
         print('An instance already exists with name: %s' % name)
         sys.exit(1)
 
-    bdm = [
-        {
-            'DeviceName': '/dev/sda1',
-            'Ebs': {
-                'VolumeSize': 120,
-                'VolumeType': 'gp2',
-                'DeleteOnTermination': True
-            }
-        },
-        {
-            'DeviceName': '/dev/sdb',
-            'NoDevice': "",
-        },
-        {
-            'DeviceName': '/dev/sdc',
-            'NoDevice': "",
-        },
-    ]
 
     if not elasticsearch == 'yes':
-        user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml']).decode('utf-8')
+        if cluster_name:
+            config_file = ':cloud-config-cluster.yml'
+        else:
+            config_file = ':cloud-config.yml'
+        user_data = subprocess.check_output(['git', 'show', commit + config_file]).decode('utf-8')
         user_data = user_data % {
             'WALE_S3_PREFIX': wale_s3_prefix,
             'COMMIT': commit,
             'ROLE': role,
-            'CLUSTER_NAME': cluster_name,
         }
+        if cluster_name:
+            user_data = user_data % {
+                'CLUSTER_NAME': cluster_name,
+            }
         security_groups = ['ssh-http-https']
         iam_role = 'encoded-instance'
         count = 1

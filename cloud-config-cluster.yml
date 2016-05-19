@@ -160,6 +160,8 @@ runcmd:
 # permissions
 - set -ex
 - update-rc.d elasticsearch defaults
+- sudo bash /etc/elasticsearch/cluster.sh %(CLUSTER_NAME)s
+- sudo /usr/share/elasticsearch/bin/plugin install elasticsearch/elasticsearch-cloud-aws/2.7.1
 - service elasticsearch start
 - chown postgres:postgres /etc/postgresql/9.3/main/*.conf
 - echo "include 'custom.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
@@ -258,6 +260,33 @@ write_files:
     index.search.slowlog.threshold.query.warn: 8s
     index.search.slowlog.threshold.fetch.warn: 1s
     index.indexing.slowlog.threshold.index.warn: 25s
+    network.host: 0.0.0.0
+    action.auto_create_index: false
+    index.mapper.dynamic: false
+
+    node.master: true
+    node.data: false
+
+    discovery:
+        type: ec2
+
+    cloud.aws.region: us-west-2
+
+    discovery.ec2.groups: elasticsearch-https, ssh-http-https
+
+    # discovery.zen.minimum_master_nodes: 2
+
+- path: /etc/elasticsearch/cluster.sh
+  content: |
+    #!/bin/bash
+    name=$1
+    
+    if [[ -n "$name" ]]; then
+        echo "cluster.name: $name" >> /etc/elasticsearch/elasticsearch.yml
+    else
+        echo "argument error"
+    fi
+
 
 - path: /etc/postgresql/9.3/main/custom.conf
   content: |
