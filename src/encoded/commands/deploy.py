@@ -3,7 +3,6 @@ import getpass
 import re
 import subprocess
 import sys
-import pdb
 
 
 BDM = [
