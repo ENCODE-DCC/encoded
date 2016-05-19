@@ -238,32 +238,32 @@
         }
     },
     "product_id": {
-            "product_id": {
-                "title": "Product ID",
-                "description": "The product identifier provided by the originating lab or vendor.",
-                "type": "string"
-            }
+        "product_id": {
+            "title": "Product ID",
+            "description": "The product identifier provided by the originating lab or vendor.",
+            "type": "string"
+        }
     },
     "lot_id": {
-            "lot_id":{
-	   "title": "Lot ID",
-	   "description": "The lot identifier provided by the originating lab or vendor.",
-	   "type": "string"
-            }
+        "lot_id":{
+    	    "title": "Lot ID",
+    	    "description": "The lot identifier provided by the originating lab or vendor.",
+    	    "type": "string"
+        }
     },
     "source": {
-            "source": {
-	   "title": "Source",
-	   "description": "The originating lab or vendor.",
-	   "comment": "See source.json for available identifiers.",
-	   "type": "string",
-	   "linkTo": "Source"
-            }
+        "source": {
+            "title": "Source",
+    	    "description": "The originating lab or vendor.",
+    	    "comment": "See source.json for available identifiers.",
+    	    "type": "string",
+	        "linkTo": "Source"
+        }
     },
     "notes": {
         "notes": {
             "title": "Notes",
-            "description": "Additional information.",
+            "description": "DCC internal notes.",
             "type": "string",
             "permission": "import_items",
             "elasticsearch_mapping_index_type": {
@@ -277,6 +277,21 @@
                     "no"
                 ]
             }
+        }
+    },
+    "submitter_comment": {
+        "submitter_comment": {
+            "title": "Submitter comment",
+            "description": "Additional information specified by the submitter to be displayed as a comment on the portal.",
+            "type": "string"
+        }
+    },
+    "reviewer_comment": {
+        "reviewer_comment": {
+            "title": "Reviewer comment",
+            "description": "Comments from the reviewer to justify the assigned review status of a characterization.",
+            "type": "string",
+            "permission": "import_items"
         }
     },
     "strains": {

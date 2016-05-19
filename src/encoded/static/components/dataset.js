@@ -6,7 +6,7 @@ var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var _ = require('underscore');
 var moment = require('moment');
 var globals = require('./globals');
-var navbar = require('./navbar');
+var navigation = require('./navigation');
 var dbxref = require('./dbxref');
 var fetched = require('./fetched');
 var audit = require('./audit');
@@ -18,7 +18,7 @@ var sortTable = require('./sorttable');
 var image = require('./image');
 var doc = require('./doc');
 
-var Breadcrumbs = navbar.Breadcrumbs;
+var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var FetchedItems = fetched.FetchedItems;
 var StatusLabel = statuslabel.StatusLabel;
@@ -80,6 +80,7 @@ var Annotation = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var statuses = [{status: context.status, title: "Status"}];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
 
         // Build up array of documents attached to this dataset
         var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -232,8 +233,14 @@ var Annotation = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                {/* If logged in and dataset is released, need to combine search of files that reference
+                    this dataset to get released and unreleased ones. If not logged in, then just get
+                    files from dataset.files */}
+                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
+                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                :
+                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
+                }
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -257,6 +264,7 @@ var PublicationData = React.createClass({
         var files = context.files;
         var itemClass = globals.itemClass(context, 'view-item');
         var statuses = [{status: context.status, title: "Status"}];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
 
         // Build up array of documents attached to this dataset
         var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -374,8 +382,14 @@ var PublicationData = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                {/* If logged in and dataset is released, need to combine search of files that reference
+                    this dataset to get released and unreleased ones. If not logged in, then just get
+                    files from dataset.files */}
+                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
+                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                :
+                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
+                }
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -398,6 +412,7 @@ var Reference = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var statuses = [{status: context.status, title: "Status"}];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
 
         // Build up array of documents attached to this dataset
         var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -515,8 +530,14 @@ var Reference = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                {/* If logged in and dataset is released, need to combine search of files that reference
+                    this dataset to get released and unreleased ones. If not logged in, then just get
+                    files from dataset.files */}
+                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
+                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                :
+                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
+                }
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -539,6 +560,7 @@ var Project = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var statuses = [{status: context.status, title: "Status"}];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
 
         // Build up array of documents attached to this dataset
         var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -683,8 +705,14 @@ var Project = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                {/* If logged in and dataset is released, need to combine search of files that reference
+                    this dataset to get released and unreleased ones. If not logged in, then just get
+                    files from dataset.files */}
+                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
+                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                :
+                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
+                }
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -708,6 +736,7 @@ var UcscBrowserComposite = React.createClass({
         var files = context.files;
         var itemClass = globals.itemClass(context, 'view-item');
         var statuses = [{status: context.status, title: "Status"}];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
 
         // Build up array of documents attached to this dataset
         var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -838,8 +867,14 @@ var UcscBrowserComposite = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                {/* If logged in and dataset is released, need to combine search of files that reference
+                    this dataset to get released and unreleased ones. If not logged in, then just get
+                    files from dataset.files */}
+                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
+                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                :
+                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
+                }
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -858,10 +893,10 @@ var FilePanelHeader = module.exports.FilePanelHeader = React.createClass({
             <div>
                 {context.visualize_ucsc  && context.status == "released" ?
                     <span className="pull-right">
-                        <DropdownButton title='Visualize Data'>
+                        <DropdownButton title='Visualize Data' label="filepaneheader">
                             <DropdownMenu>
                                 {Object.keys(context.visualize_ucsc).map(assembly =>
-                                    <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context.visualize_ucsc[assembly]}>
+                                    <a key={assembly} data-bypass="true" target="_blank" href={context.visualize_ucsc[assembly]}>
                                         {assembly}
                                     </a>
                                 )}
@@ -1255,6 +1290,13 @@ var Series = module.exports.Series = React.createClass({
                                             <dd>{references}</dd>
                                         </div>
                                     : null}
+
+                                    {context.submitter_comment ?
+                                        <div data-test="submittercomment">
+                                            <dt>Submitter comment</dt>
+                                            <dd>{context.submitter_comment}</dd>
+                                        </div>
+                                    : null}
                                 </dl>
                             </div>
                         </div>
@@ -1288,9 +1330,10 @@ var unreleased_files_url = module.exports.unreleased_files_url = function (conte
         "uploaded",
         "upload failed",
         "format check failed",
-        "in progress"
+        "in progress",
+        "released"
     ].map(encodeURIComponent).join('&status=');
-    return '/search/?limit=all&frame=embedded&type=file&dataset=' + context['@id'] + file_states;
+    return '/search/?limit=all&type=file&dataset=' + context['@id'] + file_states;
 };
 
 
@@ -1298,8 +1341,12 @@ var unreleased_files_url = module.exports.unreleased_files_url = function (conte
 // unreleased files.
 var DatasetFiles = module.exports.DatasetFiles = React.createClass({
     render: function () {
-        if (this.props.items) {
-            return <FileTable {...this.props} items={this.props.items} />;
+        var context = this.props.context;
+        var items = this.props.items;
+
+        var files = _.uniq(((context.files && context.files.length) ? context.files : []).concat((items && items.length) ? items : []));
+        if (files.length) {
+            return <FileTable {...this.props} items={files} />;
         } else {
             return null;
         }
@@ -1384,6 +1431,21 @@ function humanFileSize(size) {
 }
 
 
+var fileAuditStatus = function(file) {
+    var highestAuditStatus;
+    if (file.audit) {
+        var sortedAuditLevels = _(Object.keys(file.audit)).sortBy(level => -file.audit[level][0].level);
+        var highestAuditLevel = sortedAuditLevels[0];
+        highestAuditStatus = highestAuditLevel.toLowerCase();
+    } else {
+        highestAuditStatus = 'default';
+        highestAuditLevel = 'OK';
+    }
+    var iconClass = 'icon audit-icon-' + highestAuditLevel.toLowerCase() + '-badged';
+    return <StatusLabel status={'audit-' + highestAuditStatus} buttonLabel={<i className={iconClass}></i>} />;
+};
+
+
 var FileTable = module.exports.FileTable = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // Optional parent object of file list
@@ -1395,7 +1457,7 @@ var FileTable = module.exports.FileTable = React.createClass({
     getInitialState: function() {
         return {
             maxWidth: 'auto' // Width of widest table
-        }
+        };
     },
 
     cv: {
@@ -1427,9 +1489,9 @@ var FileTable = module.exports.FileTable = React.createClass({
                 var runType;
 
                 if (item.run_type === 'single-ended') {
-                    runType = 'SE'
+                    runType = 'SE';
                 } else if (item.run_type === 'paired-ended') {
-                    runType = 'PE'
+                    runType = 'PE';
                 }
 
                 return (
@@ -1468,11 +1530,10 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: 'File size',
             display: item => <span>{humanFileSize(item.file_size)}</span>
         },
-        'validation_status': {
-            title: 'Validation status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status="pending" /></div>,
-            hide: (list, columns, meta) => meta.encodevers !== '3',
-            sorter: false
+        'audit': {
+            title: 'Audit status',
+            display: item => <div className="characterization-meta-data">{fileAuditStatus(item)}</div>,
+            hide: (list, columns, meta) => meta.noAudits || !(meta.session && meta.session['auth.userid'])
         },
         'status': {
             title: 'File status',
@@ -1518,11 +1579,10 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: 'File size',
             display: item => <span>{humanFileSize(item.file_size)}</span>
         },
-        'validation_status': {
-            title: 'Validation status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status="pending" /></div>,
-            hide: (list, columns, meta) => meta.encodevers !== '3',
-            sorter: false
+        'audit': {
+            title: 'Audit status',
+            display: item => <div className="characterization-meta-data">{fileAuditStatus(item)}</div>,
+            hide: (list, columns, meta) => meta.noAudits || !(meta.session && meta.session['auth.userid'])
         },
         'status': {
             title: 'File status',
@@ -1535,10 +1595,11 @@ var FileTable = module.exports.FileTable = React.createClass({
     procTableColumns: {
         'accession': {
             title: 'Accession',
-            display: item =>
-                <span>
+            display: item => {
+                return <span>
                     {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
-                </span>
+                </span>;
+            }
         },
         'file_type': {title: 'File type'},
         'output_type': {title: 'Output type'},
@@ -1569,11 +1630,10 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: 'File size',
             display: item => <span>{humanFileSize(item.file_size)}</span>
         },
-        'validation_status': {
-            title: 'Validation status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status="pending" /></div>,
-            hide: (list, columns, meta) => meta.encodevers !== '3',
-            sorter: false
+        'audit': {
+            title: 'Audit status',
+            display: item => <div className="characterization-meta-data">{fileAuditStatus(item)}</div>,
+            hide: (list, columns, meta) => meta.noAudits || !(meta.session && meta.session['auth.userid'])
         },
         'status': {
             title: 'File status',
@@ -1616,6 +1676,11 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: 'File size',
             display: item => <span>{humanFileSize(item.file_size)}</span>
         },
+        'audit': {
+            title: 'Audit status',
+            display: item => <div className="characterization-meta-data">{fileAuditStatus(item)}</div>,
+            hide: (list, columns, meta) => meta.noAudits || !(meta.session && meta.session['auth.userid'])
+        },
         'status': {
             title: 'File status',
             display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
@@ -1624,8 +1689,8 @@ var FileTable = module.exports.FileTable = React.createClass({
     },
 
     render: function() {
-        var {context, items, filePanelHeader, encodevers, anisogenic, session} = this.props;
-        var datasetFiles = context.files && context.files.concat((items && items.length) ? items : []);
+        var {context, items, filePanelHeader, encodevers, anisogenic, noAudits, session} = this.props;
+        var datasetFiles = (items && items.length) ? items : [];
         if (datasetFiles.length) {
             // Extract four kinds of file arrays
             datasetFiles = _(datasetFiles).uniq(file => file['@id']);
@@ -1641,10 +1706,10 @@ var FileTable = module.exports.FileTable = React.createClass({
 
             return (
                 <SortTablePanel header={filePanelHeader}>
-                    <SortTable title="Raw data files" list={files.raw} columns={this.rawTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
-                    <SortTable title="Raw data files" list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
-                    <SortTable title="Processed data files" list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
-                    <SortTable title="Reference data files" list={files.ref} columns={this.refTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} />
+                    <SortTable title="Raw data files" list={files.raw} columns={this.rawTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
+                    <SortTable title="Raw data files" list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
+                    <SortTable title="Processed data files" list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
+                    <SortTable title="Reference data files" list={files.ref} columns={this.refTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} />
                 </SortTablePanel>
             );
         }

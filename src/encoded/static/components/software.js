@@ -1,7 +1,7 @@
 'use strict';
 var React = require('react');
 var globals = require('./globals');
-var navbar = require('./navbar');
+var navigation = require('./navigation');
 var search = require('./search');
 var fetched = require('./fetched');
 var reference = require('./reference');
@@ -10,7 +10,7 @@ var audit = require('./audit');
 var _ = require('underscore');
 var url = require('url');
 
-var Breadcrumbs = navbar.Breadcrumbs;
+var Breadcrumbs = navigation.Breadcrumbs;
 var FetchedItems = fetched.FetchedItems;
 var PubReferenceList = reference.PubReferenceList;
 var AuditIndicators = audit.AuditIndicators;

@@ -96,6 +96,24 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size, cl
         print('An instance already exists with name: %s' % name)
         sys.exit(1)
 
+    bdm = [
+        {
+            'DeviceName': '/dev/sda1',
+            'Ebs': {
+                'VolumeSize': 120,
+                'VolumeType': 'gp2',
+                'DeleteOnTermination': True
+            }
+        },
+        {
+            'DeviceName': '/dev/sdb',
+            'NoDevice': "",
+        },
+        {
+            'DeviceName': '/dev/sdc',
+            'NoDevice': "",
+        },
+    ]
 
     if not elasticsearch == 'yes':
         user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml']).decode('utf-8')

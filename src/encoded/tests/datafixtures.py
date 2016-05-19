@@ -11,6 +11,15 @@ def lab(testapp):
 
 
 @pytest.fixture
+def remc_lab(testapp):
+    item = {
+        'name': 'remc-lab',
+        'title': 'REMC lab',
+    }
+    return testapp.post_json('/lab', item).json['@graph'][0]
+
+
+@pytest.fixture
 def admin(testapp):
     item = {
         'first_name': 'Test',
@@ -79,11 +88,12 @@ def viewing_group_member(testapp, award):
 
 
 @pytest.fixture
-def remc_member(testapp):
+def remc_member(testapp, remc_lab):
     item = {
         'first_name': 'REMC',
         'last_name': 'Member',
         'email': 'remc_member@example.org',
+        'submits_for': [remc_lab['@id']],
         'viewing_groups': ['REMC'],
     }
     # User @@object view has keys omitted.
@@ -98,6 +108,16 @@ def award(testapp):
         'rfa': 'ENCODE3',
         'project': 'ENCODE',
         'viewing_group': 'ENCODE',
+    }
+    return testapp.post_json('/award', item).json['@graph'][0]
+
+@pytest.fixture
+def remc_award(testapp):
+    item = {
+        'name': 'remc-award',
+        'rfa': 'GGR',
+        'project': 'GGR',
+        'viewing_group': 'REMC',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
 
@@ -143,6 +163,17 @@ def mouse(testapp):
         'name': 'mouse',
         'scientific_name': 'Mus musculus',
         'taxon_id': '10090',
+    }
+    return testapp.post_json('/organism', item).json['@graph'][0]
+
+
+@pytest.fixture
+def fly(testapp):
+    item = {
+        'uuid': 'ab546d43-8e2a-4567-8db7-a217e6d6eea0',
+        'name': 'dmelanogaster',
+        'scientific_name': 'Drosophila melanogaster',
+        'taxon_id': '7227',
     }
     return testapp.post_json('/organism', item).json['@graph'][0]
 
@@ -326,6 +357,15 @@ AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
 
 
 @pytest.fixture
+def treatment(testapp, organism):
+    item = {
+        'treatment_term_name': 'ethanol',
+        'treatment_type': 'chemical'
+       
+    }
+    return testapp.post_json('/treatment', item).json['@graph'][0]
+
+@pytest.fixture
 def attachment():
     return {'download': 'red-dot.png', 'href': RED_DOT}
 
@@ -478,9 +518,11 @@ def analysis_step_run(testapp, analysis_step_version):
 
 
 @pytest.fixture
-def quality_metric(testapp, analysis_step_run):
+def quality_metric(testapp, analysis_step_run, award, lab):
     item = {
         'step_run': analysis_step_run['@id'],
+        'award': award['@id'],
+        'lab': lab['@id']
     }
     return testapp.post_json('/fastqc_quality_metric', item).json['@graph'][0]
 
@@ -505,6 +547,17 @@ def biosample_characterization(testapp, award, lab, biosample, attachment):
     }
     return testapp.post_json('/biosample_characterization', item).json['@graph'][0]
 
+
+@pytest.fixture
+def fly_donor(testapp, award, lab, fly):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'organism': fly['@id'],
+    }
+    return testapp.post_json('/fly_donor', item).json['@graph'][0]
+
+
 @pytest.fixture
 def mouse_donor(testapp, award, lab, mouse):
     item = {
@@ -513,6 +566,7 @@ def mouse_donor(testapp, award, lab, mouse):
         'organism': mouse['@id'],
     }
     return testapp.post_json('/mouse_donor', item).json['@graph'][0]
+
 
 @pytest.fixture
 def mouse_donor_1(testapp, award, lab, mouse):
@@ -677,3 +731,13 @@ def pipeline_bam(testapp, lab, award, analysis_step_bam ):
         'analysis_steps': [analysis_step_bam['@id']]
     }
     return testapp.post_json('/pipeline', item).json['@graph'][0]
+
+
+@pytest.fixture
+def encode_lab(testapp):
+    item = {
+        'name': 'encode-processing-pipeline',
+        'title': 'ENCODE Processing Pipeline',
+        'status': 'current'
+        }
+    return testapp.post_json('/lab', item, status=201).json['@graph'][0]

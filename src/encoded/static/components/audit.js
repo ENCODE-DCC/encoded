@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 var _ = require('underscore');
+var {Panel} = require('../libs/bootstrap/panel');
 
 var editTargetMap = {
     'experiments': 'Experiment',
@@ -50,14 +51,17 @@ var AuditMixin = module.exports.AuditMixin = {
 var AuditIndicators = module.exports.AuditIndicators = React.createClass({
     contextTypes: {
         auditDetailOpen: React.PropTypes.bool,
-        auditStateToggle: React.PropTypes.func
+        auditStateToggle: React.PropTypes.func,
+        session: React.PropTypes.object,
+        hidePublicAudits: React.PropTypes.bool
     },
 
     render: function() {
         var auditCounts = {};
         var audits = this.props.audits;
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
 
-        if (audits && Object.keys(audits).length) {
+        if ((!this.context.hidePublicAudits || loggedIn) && audits && Object.keys(audits).length) {
             // Sort the audit levels by their level number, using the first element of each warning category
             var sortedAuditLevels = _(Object.keys(audits)).sortBy(function(level) {
                 return -audits[level][0].level;
@@ -65,23 +69,32 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
 
             var indicatorClass = "audit-indicators btn btn-default" + (this.context.auditDetailOpen ? ' active' : '') + (this.props.search ? ' audit-search' : '');
 
-            return (
-                <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.context.auditDetailOpen} aria-controls={this.props.id} onClick={this.context.auditStateToggle}>
-                    {sortedAuditLevels.map(function(level, i) {
-                        // Calculate the CSS class for the icon
-                        var levelName = level.toLowerCase();
-                        var btnClass = 'btn-audit btn-audit-' + levelName + ' audit-level-' + levelName;
-                        var iconClass = 'icon audit-activeicon-' + levelName;
+            if (loggedIn || !(sortedAuditLevels.length === 1 && sortedAuditLevels[0] === 'DCC_ACTION')) {
+                return (
+                    <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.context.auditDetailOpen} aria-controls={this.props.id} onClick={this.context.auditStateToggle}>
+                        {sortedAuditLevels.map(level => {
+                            if (loggedIn || level !== 'DCC_ACTION') {
+                                // Calculate the CSS class for the icon
+                                var levelName = level.toLowerCase();
+                                var btnClass = 'btn-audit btn-audit-' + levelName + ' audit-level-' + levelName;
+                                var iconClass = 'icon audit-activeicon-' + levelName;
+                                var groupedAudits = _(audits[level]).groupBy('category');
 
-                        return (
-                            <span className={btnClass} key={i}>
-                                <i className={iconClass}><span className="sr-only">{'Audit'} {levelName}</span></i>
-                                {audits[level].length}
-                            </span>
-                        );
-                    })}
-                </button>
-            );
+                                return (
+                                    <span className={btnClass} key={level}>
+                                        <i className={iconClass}><span className="sr-only">{'Audit'} {levelName}</span></i>
+                                        {Object.keys(groupedAudits).length}
+                                    </span>
+                                );
+                            }
+                            return null;
+                        })}
+                    </button>
+                );
+            }
+
+            // Logged out and the only audit level is DCC action, so don't show a button
+            return null;
         } else {
             return null;
         }
@@ -89,10 +102,10 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
 });
 
 
-
 var AuditDetail = module.exports.AuditDetail = React.createClass({
     contextTypes: {
-        auditDetailOpen: React.PropTypes.bool
+        auditDetailOpen: React.PropTypes.bool,
+        session: React.PropTypes.object
     },
 
     render: function() {
@@ -101,34 +114,106 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
 
         if (this.context.auditDetailOpen) {
             // Sort the audit levels by their level number, using the first element of each warning category
-            var sortedAuditLevelNames = _(Object.keys(auditLevels)).sortBy(function(level) {
-                return -auditLevels[level][0].level;
-            });
+            var sortedAuditLevelNames = _(Object.keys(auditLevels)).sortBy(level => -auditLevels[level][0].level);
+            var loggedIn = this.context.session && this.context.session['auth.userid'];
 
+            // First loop by audit level, then by audit group
             return (
-                <div className="audit-details" id={this.props.id.replace(/\W/g, '')} aria-hidden={!this.context.auditDetailOpen}>
-                    {sortedAuditLevelNames.map(function(auditLevelName) {
-                        var audits = auditLevels[auditLevelName];
-                        var level = auditLevelName.toLowerCase();
-                        var iconClass = 'icon audit-icon-' + level;
-                        var alertClass = 'audit-detail-' + level;
-                        var levelClass = 'audit-level-' + level;
+                <Panel addClasses="audit-details" id={this.props.id.replace(/\W/g, '')} aria-hidden={!this.context.auditDetailOpen}>
+                    {sortedAuditLevelNames.map(auditLevelName => {
+                        if (loggedIn || auditLevelName !== 'DCC_ACTION') {
+                            var audits = auditLevels[auditLevelName];
+                            var level = auditLevelName.toLowerCase();
+                            var iconClass = 'icon audit-icon-' + level;
+                            var alertClass = 'audit-detail-' + level;
+                            var levelClass = 'audit-level-' + level;
 
-                        return audits.map(function(audit, i) {
-                            return (
-                                <div className={alertClass} key={i} role="alert">
-                                    <i className={iconClass}></i>
-                                    <strong className={levelClass}>{auditLevelName.split('_').join(' ')}</strong>
-                                    &nbsp;&mdash;&nbsp;
-                                    <strong>{audit.category}</strong>: <DetailEmbeddedLink detail={audit.detail} except={context['@id']} forcedEditLink={this.props.forcedEditLink} />
-                                </div>
-                            );
-                        }, this);
-                    }, this)}
-                </div>
+                            // Group audits within a level by their category ('name' corresponds to
+                            // 'category' in a more machine-like form)
+                            var groupedAudits = _(audits).groupBy('category');
+
+                            return Object.keys(groupedAudits).map(groupName => <AuditGroup group={groupedAudits[groupName]} groupName={groupName} auditLevelName={auditLevelName} context={context} forcedEditLink={this.props.forcedEditLink} key={groupName} />);
+                        }
+                        return null;
+                    })}
+                </Panel>
             );
         }
         return null;
+    }
+});
+
+
+var AuditGroup = module.exports.AuditGroup = React.createClass({
+    propTypes: {
+        group: React.PropTypes.array.isRequired, // Array of audits in one name/category
+        groupName: React.PropTypes.string.isRequired, // Name of the group
+        auditLevelName: React.PropTypes.string.isRequired, // Audit level
+        context: React.PropTypes.object.isRequired // Audit records
+    },
+
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
+    getInitialState: function() {
+        return {detailOpen: false};
+    },
+
+    detailSwitch: function() {
+        // Click on the detail disclosure triangle
+        this.setState({detailOpen: !this.state.detailOpen});
+    },
+
+    render: function() {
+        var {group, groupName, context} = this.props;
+        var auditLevelName = this.props.auditLevelName.toLowerCase();
+        var detailOpen = this.state.detailOpen;
+        var alertClass = 'audit-detail-' + auditLevelName.toLowerCase();
+        var alertItemClass = 'panel-collapse collapse audit-item-' + auditLevelName + (detailOpen ? ' in' : '');
+        var iconClass = 'icon audit-icon-' + auditLevelName;
+        var levelClass = 'audit-level-' + auditLevelName;
+        var level = auditLevelName.toLowerCase();
+        var categoryName = group[0].category.uppercaseFirstChar();
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
+
+        return (
+            <div className={alertClass}>
+                {loggedIn ?
+                    <div className={'icon audit-detail-trigger-' + auditLevelName}>
+                        <a href="#" className={'audit-detail-trigger-icon' + (detailOpen ? '' : ' collapsed')} data-trigger data-toggle="collapse" onClick={this.detailSwitch}>
+                            <span className="sr-only">More</span>
+                        </a>
+                    </div>
+                : null}
+                <div className="audit-detail-info">
+                    <i className={iconClass}></i>
+                    <span>
+                        {loggedIn ?
+                            <strong className={levelClass}>{auditLevelName.split('_').join(' ').toUpperCase()}&nbsp;&mdash;</strong>
+                        :
+                            <span>&nbsp;&nbsp;&nbsp;</span>
+                        }
+                    </span>
+                    <strong>&nbsp;{categoryName}</strong>
+                    {!loggedIn ?
+                        <div className="btn-info-audit">
+                            <a href={'/data-standards/#' + categoryName.toLowerCase().split(' ').join('_')} title={'View description of ' + categoryName + ' in a new tab'} target="_blank"><i className="icon icon-question-circle"></i></a>
+                        </div>
+                    : null}
+                </div>
+                {loggedIn ?
+                    <div className="audit-details-section">
+                        <div className="audit-details-decoration"></div>
+                        {group.map((audit, i) =>
+                            <div className={alertItemClass} key={i} role="alert">
+                                <DetailEmbeddedLink detail={audit.detail} except={context['@id']} forcedEditLink={this.props.forcedEditLink} />
+                            </div>
+                        )}
+                    </div>
+                : null}
+            </div>
+        );
     }
 });
 
@@ -143,11 +228,11 @@ var DetailEmbeddedLink = React.createClass({
         var detail = this.props.detail;
 
         // Get an array of all paths in the detail string, if any.
-        var matches = detail.match(/(?!^|\s+)(\/.+?\/)(?=$|\s+)/g);
+        var matches = detail.match(/(\/.+?\/)(?=$|\s+)/g);
         if (matches) {
             // Build React object of text followed by path for all paths in detail string
             var lastStart = 0;
-            var result = matches.map(function(match, i) {
+            var result = matches.map((match, i) => {
                 var linkStart = detail.indexOf(match, lastStart);
                 var preText = detail.slice(lastStart, linkStart);
                 lastStart = linkStart + match.length;
@@ -157,7 +242,7 @@ var DetailEmbeddedLink = React.createClass({
                 } else {
                     return <span key={i}>{preText}{linkText}</span>;
                 }
-            }, this);
+            });
 
             // Pick up any trailing text after the last path, if any
             var postText = detail.slice(lastStart);

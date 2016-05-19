@@ -61,6 +61,10 @@ def main():
     parser.add_argument('--datadir', default='/tmp/snovault', help="path to datadir")
     args = parser.parse_args()
 
+    logging.basicConfig()
+    # Loading app will have configured from config file. Reconfigure here:
+    logging.getLogger('encoded').setLevel(logging.DEBUG)
+
     from snovault.tests import elasticsearch_fixture, postgresql_fixture
     from snovault.elasticsearch import create_mapping
     datadir = os.path.abspath(args.datadir)

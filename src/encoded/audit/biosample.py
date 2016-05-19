@@ -49,6 +49,43 @@ model_organism_terms = ['model_organism_mating_status',
                         'model_organism_donor_constructs']
 
 
+@audit_checker('biosample', frame=['constructs', 'model_organism_donor_constructs'])
+def audit_biosample_constructs(value, system):
+
+    if value['biosample_type'] == 'whole organisms':
+        model_constructs_present = True
+        model_constructs_ids = set()
+        constructs_ids = set()
+        if 'model_organism_donor_constructs' in value:
+            for model_construct in value['model_organism_donor_constructs']:
+                model_constructs_ids.add(model_construct['@id'])
+        else:
+            model_constructs_present = False
+        if 'constructs' in value:
+            for construct in value['constructs']:
+                constructs_ids.add(construct['@id'])
+
+        detail = 'Biosample {} '.format(value['@id']) + \
+                 'contains mismatched constructs {} and '.format(constructs_ids) + \
+                 'model_organism_donor_constructs {}.'.format(
+                 model_constructs_ids)
+
+        if len(model_constructs_ids) != len(constructs_ids):
+            if model_constructs_present is False:
+                detail = 'Biosample {} '.format(value['@id']) + \
+                         'contains constructs {} and '.format(constructs_ids) + \
+                         'does not contain any model_organism_donor_constructs.'
+                yield AuditFailure('mismatched constructs', detail,
+                                   level='DCC_ACTION')
+                return
+
+        if len(constructs_ids) > 0:
+            for c in constructs_ids:
+                if c not in model_constructs_ids:
+                    yield AuditFailure('mismatched constructs', detail,
+                                       level='DCC_ACTION')
+                    return
+
 
 @audit_checker('biosample', frame=['organism'])
 def audit_biosample_human_no_model_organism_properties(value, system):
@@ -195,7 +232,7 @@ def audit_biosample_term(value, system):
         detail = 'Biosample {} has '.format(value['@id']) + \
                  'a mismatch between biosample_term_id {} '.format(term_id) + \
                  'and biosample_term_name {}'.format(term_name)
-        yield AuditFailure('mismatched biosample_term', detail, level='ERROR')
+        yield AuditFailure('mismatched ontology term', detail, level='ERROR')
         return
 
 @audit_checker('biosample', frame='object')
@@ -224,15 +261,11 @@ def audit_biosample_donor(value, system):
     '''
     A biosample should have a donor.
     The organism of donor and biosample should match.
-    Pooled_from biosamples do not need donors??
     '''
     if value['status'] in ['deleted']:
         return
 
-    if ('donor' not in value) and (value['pooled_from']):
-        return
-
-    if ('donor' not in value) and (not value['pooled_from']):
+    if ('donor' not in value):
         detail = 'Biosample {} requires a donor'.format(value['@id'])
         raise AuditFailure('missing donor', detail, level='ERROR')
         return

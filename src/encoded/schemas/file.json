@@ -27,7 +27,6 @@
         "output_type": {
             "title": "Data type"
         },
-
         "file_format": {
             "title": "File format"
         },
@@ -166,6 +165,7 @@
                     "enum": [
                         "bed3",
                         "bed3+",
+                        "bed5",
                         "bed6",
                         "bed6+",
                         "bed9",
@@ -314,6 +314,7 @@
                         "reporter code counts",
                         
                         "alignments",
+                        "unfiltered alignments",
                         "transcriptome alignments",
 
                         "minus strand signal of all reads",
@@ -342,10 +343,18 @@
                         "methylation state at CHH",
                         "enrichment",
                         "replication timing profile",
+                        "variant calls",
+                        "filtered SNPs",
+                        "filtered indels",
 
                         "hotspots",
                         "long range chromatin interactions",
+                        "chromatin interactions",
+                        "topologically associated domains",
+                        "genome compartments",
                         "open chromatin regions",
+                        "filtered peaks",
+                        "filtered regions",
                         "DHS peaks",
                         "peaks",
                         "replicated peaks",
@@ -366,6 +375,7 @@
                         "snRNA reference",
                         "rRNA reference",
                         "TSS reference",
+                        "reference variants",
                         "genome index",
                         "female genome reference",
                         "female genome index",
@@ -511,6 +521,7 @@
             "enum": [
                 "mm9",
                 "mm10",
+                "mm10-minimal",
                 "hg19",
                 "GRCh38",
                 "GRCh38-minimal",
@@ -596,17 +607,74 @@
         "accession": {
             "title": "Accession"
         },
+        "assembly": {
+            "title": "Mapping assembly"
+        },
         "dataset": {
             "title": "Dataset"
+        },
+        "biological_replicates": {
+            "title": "Biological replicates"
         },
         "file_format": {
             "title": "File Format"
         },
+        "file_type": {
+            "title": "File type"
+        },
+        "file_size": {
+            "title": "File size"
+        },
+        "href": {
+            "title": "Download URL"
+        },
+        "derived_from": {
+            "title": "Derived from"
+        },
+        "genome_annotation": {
+            "title": "Genome annotation"
+        },
+        "replicate.library.accession": {
+            "title": "Library"
+        },
+        "paired_end": {
+            "title": "Paired End Identifier"
+        },
+        "run_type": {
+            "title": "Run type for sequencing files"
+        },
+        "read_length": {
+            "title": "Read length"
+        },
+        "read_length_units": {
+            "title": "Read length units"
+        },
         "md5sum": {
             "title": "MD5 Sum"
         },
+        "output_category": {
+            "title": "Data category"
+        },
         "output_type": {
-            "title": "Output Type"
+            "title": "Data type"
+        },
+        "quality_metrics": {
+            "title": "QC Metric"
+        },
+        "lab": {
+            "title": "Lab"
+        },
+        "step_run": {
+            "title": "Analysis step run"
+        },
+        "date_created": {
+            "title": "Date added"
+        },
+        "analysis_step_version": {
+            "title": "Analysis Step Version"
+        },
+        "status": {
+            "title": "File status"
         }
     },
     "output_type_output_category": {
@@ -619,6 +687,7 @@
         "reporter code counts": "raw data",
 
         "alignments": "alignment",
+        "unfiltered alignments": "alignment",
         "transcriptome alignments": "alignment",
         "spike-in alignments": "alignment",
 
@@ -662,7 +731,12 @@
 
         "hotspots": "annotation",
         "long range chromatin interactions": "annotation",
+        "chromatin interactions": "annotation",
+        "topologically associated domains": "annotation",
+        "genome compartments": "annotation",
         "open chromatin regions":"annotation",
+        "filtered peaks":"annotation",
+        "filtered regions":"annotation",
         "DHS peaks": "annotation",
         "peaks": "annotation",
         "replicated peaks": "annotation",
@@ -690,6 +764,9 @@
         "predicted transcription start sites": "annotation",
         "transcription start sites": "annotation",
         "candidate regulatory elements": "annotation",
+        "variant calls": "annotation",
+        "filtered SNPs": "annotation",
+        "filtered indels": "annotation",
 
         "genome index": "reference",
         "tRNA reference": "reference",
@@ -697,6 +774,7 @@
         "snRNA reference": "reference",
         "rRNA reference": "reference",
         "TSS reference": "reference",
+        "reference variants": "reference",
         "genome reference": "reference",
         "female genome reference": "reference",
         "female genome index": "reference",

@@ -174,10 +174,31 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         "title": "Assay title",
         "type": "string",
     })
-    def assay_title(self, registry, assay_term_id, assay_term_name):
+    def assay_title(self, request, registry, assay_term_id, assay_term_name,
+                    replicates=None, target=None):
         # This is the preferred name in generate_ontology.py if exists
         if assay_term_id in registry['ontology']:
-            preferred_name = registry['ontology'][assay_term_id].get('preferred_name', assay_term_name)
+            preferred_name = registry['ontology'][assay_term_id].get('preferred_name',
+                                                                     assay_term_name)
+            if preferred_name == 'RNA-seq' and replicates is not None:
+                for rep in replicates:
+                    replicateObject = request.embed(rep, '@@object')
+                    if replicateObject['status'] == 'deleted':
+                        continue
+                    if 'library' in replicateObject:
+                        libraryObject = request.embed(replicateObject['library'], '@@object')
+                        if 'size_range' in libraryObject and \
+                           libraryObject['size_range'] == '<200':
+                            preferred_name = 'small RNA-seq'
+                            break
+                        elif 'depleted_in_term_name' in libraryObject and \
+                             'polyadenylated mRNA' in libraryObject['depleted_in_term_name']:
+                            preferred_name = 'polyA depleted RNA-seq'
+                            break
+                        elif 'nucleic_acid_term_name' in libraryObject and \
+                             libraryObject['nucleic_acid_term_name'] == 'polyadenylated mRNA':
+                            preferred_name = 'polyA mRNA RNA-seq'
+                            break
             return preferred_name or assay_term_name
         return assay_term_name
 
@@ -233,7 +254,7 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         "description": "Calculated field that indicates the replication model",
         "type": "string"
     })
-    def replication_type(self, request, replicates=None):
+    def replication_type(self, request, replicates=None, assay_term_name=None):
         # Compare the biosamples to see if for humans they are the same donor and for
         # model organisms if they are sex-matched and age-matched
         biosample_dict = {}
@@ -258,6 +279,10 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
                     biosample_species = biosampleObject.get('organism')
                     biosample_type = biosampleObject.get('biosample_type')
                 else:
+                    # special treatment for "RNA Bind-n-Seq" they will be called unreplicated
+                    # untill we change our mind
+                    if assay_term_name == 'RNA Bind-n-Seq':
+                        return 'unreplicated'
                     # If I have a library without a biosample,
                     # I cannot make a call about replicate structure
                     return None

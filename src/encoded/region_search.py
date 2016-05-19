@@ -18,6 +18,7 @@ import requests
 from urllib.parse import urlencode
 
 import logging
+import re
 
 
 log = logging.getLogger(__name__)
@@ -54,10 +55,12 @@ def includeme(config):
     config.scan(__name__)
 
 
-def get_peak_query(start, end, with_inner_hits=False):
+def get_peak_query(start, end, with_inner_hits=False, within_peaks=False):
     """
     return peak query
     """
+    if within_peaks:
+        start, end = end, start
     query = {
         'query': {
             'filtered': {
@@ -112,6 +115,10 @@ def sanitize_coordinates(term):
     if start.isdigit() and end.isdigit():
         return (chromosome, start, end)
     return ('', '', '')
+
+def sanitize_rsid(rsid):
+    return 'rs' + ''.join([a for a in filter(str.isdigit, rsid)])
+
 
 
 def get_annotation_coordinates(es, id, assembly):
@@ -196,6 +203,11 @@ def get_ensemblid_coordinates(id):
             return('', '', '')
         return assembly_mapper(location, 'human', 'GRCh38', 'GRCh37')
 
+def format_position(position, resolution):
+    chromosome, start, end = re.split(':|-', position)
+    start = int(start) - resolution
+    end = int(end) + resolution
+    return '{}:{}-{}'.format(chromosome, start, end)
 
 @view_config(route_name='region-search', request_method='GET', permission='search')
 def region_search(context, request):
@@ -217,6 +229,8 @@ def region_search(context, request):
     es = request.registry[ELASTIC_SEARCH]
     snp_es = request.registry['snp_search']
     region = request.params.get('region', '*')
+    region_inside_peak_status = False
+
     
 
     # handling limit
@@ -238,11 +252,13 @@ def region_search(context, request):
             reference = regular_name
     annotation = request.params.get('annotation', '*')
     if annotation != '*':
-        chromosome, start, end = get_annotation_coordinates(snp_es, annotation, reference)
+        chromosome, start, end = get_annotation_coordinates(es, annotation, reference)
     elif region != '*':
         region = region.lower()
         if region.startswith('rs'):
-            chromosome, start, end = get_rsid_coordinates(region)
+            sanitized_region = sanitize_rsid(region)
+            chromosome, start, end = get_rsid_coordinates(sanitized_region)
+            region_inside_peak_status = True
         elif region.startswith('ens'):
             chromosome, start, end = get_ensemblid_coordinates(region)
         elif region.startswith('chr'):
@@ -268,9 +284,9 @@ def region_search(context, request):
         # including inner hits is very slow
         # figure out how to distinguish browser requests from .embed method requests
         if 'peak_metadata' in request.query_string:
-            peak_query = get_peak_query(start, end, with_inner_hits=True)
+            peak_query = get_peak_query(start, end, with_inner_hits=True, within_peaks=region_inside_peak_status)
         else:
-            peak_query = get_peak_query(start, end)
+            peak_query = get_peak_query(start, end, within_peaks=region_inside_peak_status)
 
         peak_results = snp_es.search(body=peak_query,
                                      index=chromosome.lower(),
@@ -311,7 +327,8 @@ def region_search(context, request):
         result['download_elements'] = get_peak_metadata_links(request)
         if result['total'] > 0:
             result['notification'] = 'Success'
-            result.update(search_result_actions(request, ['Experiment'], es_results, position=result['coordinates']))
+            position_for_browser = format_position(result['coordinates'], 200)
+            result.update(search_result_actions(request, ['Experiment'], es_results, position=position_for_browser))
 
     return result
 
@@ -329,7 +346,7 @@ def suggest(context, request):
         text = request.params.get('q', '')
     else:
         return []
-    es = request.registry['snp_search']
+    es = request.registry[ELASTIC_SEARCH]
     query = {
         "suggester": {
             "text": text,

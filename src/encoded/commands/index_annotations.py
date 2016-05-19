@@ -3,6 +3,9 @@ from elasticsearch import RequestError
 import logging
 import json
 
+from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
+
+
 EPILOG = __doc__
 
 log = logging.getLogger(__name__)
@@ -24,10 +27,9 @@ def index_settings():
     }
 
 
-
 def run(app):
     registry = app.registry
-    es = app.registry['snp_search']
+    es = app.registry[ELASTIC_SEARCH]
     try:
         es.indices.create(index=index, body=index_settings())
     except RequestError:
@@ -58,7 +60,7 @@ def run(app):
     # bulk index of annotations
     annotations = json_from_path(registry.settings.get('annotations_path'), {})
     try:
-        es.bulk(index=index, body=annotations, refresh=True)
+        es.bulk(index=index, body=annotations, refresh=True, request_timeout=30)
     except:
         print("Unable index the annotations")
 

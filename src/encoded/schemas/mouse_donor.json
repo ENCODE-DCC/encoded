@@ -67,7 +67,7 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^(GEO:SAMN\\d+)$"
+                "pattern": "^((GEO:SAMN\\d+)|(MGI.D:[A-Z0-9]+))$"
             }
         }
     }

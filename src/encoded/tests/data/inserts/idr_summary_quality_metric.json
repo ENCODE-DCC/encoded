@@ -9,6 +9,8 @@
         "attachment": "generic_from_mad_plot.png",
         "Final parameter values (mu, sigma, rho, and mix)": [ 1.32, 1.02, 0.94, 0.91 ],
         "IDR cutoff": 0.05,
+        "lab": "/labs/robert-waterston/",
+        "award": "/awards/U41HG007355/",
         "Initial parameter values (mu, sigma, rho, and mix)": [ 0.1, 1, 0.2, 0.5 ],
         "Number of peaks passing IDR cutoff": 8479,
         "Number of reported peaks": 9722,

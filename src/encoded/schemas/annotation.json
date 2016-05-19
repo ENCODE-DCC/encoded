@@ -56,6 +56,10 @@
             "type": "string",
             "enum": [
                 "binding sites",
+                "blacklist",
+                "chromatin state",
+                "enhancer-like regions",
+                "promoter-like regions",
                 "candidate enhancers",
                 "candidate promoters",
                 "enhancer prediction",
@@ -65,6 +69,7 @@
                 "validated enhancers",
                 "overlap",
                 "segmentation",
+                "other",
                 "encyclopedia"
             ]
         },
@@ -185,7 +190,11 @@
             "title": "Target(s) of assay",
             "type": "array"
         },
-        "biosample_type": {
+         "targets.label": {
+            "title": "Target(s) of assay",
+            "type": "array"
+        },
+       "biosample_type": {
             "title": "Biosample type",
             "type": "string"
         },

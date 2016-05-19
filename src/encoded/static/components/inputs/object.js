@@ -47,7 +47,7 @@ var ItemPreview = module.exports.ItemPreview = React.createClass({
         var Listing = globals.listing_views.lookup(context);
         return (
             <ul className="nav result-table" onClick={openLinksInNewWindow}>
-                <Listing context={context} columns={undefined} key={context['@id']} />
+                <Listing context={context} key={context['@id']} />
             </ul>
         );
     }

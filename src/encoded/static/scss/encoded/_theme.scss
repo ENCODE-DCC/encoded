@@ -7,3 +7,23 @@
     font-weight: normal;
     @include box-shadow(none);
 }
+
+.btn-svgicon {
+    line-height: 0.9;
+    margin-right: 0 !important;
+    border-radius: 0;
+
+    .svg-icon {
+        fill: #fff;
+    }
+
+    &:first-child {
+        border-top-left-radius: $border-radius-small;
+        border-bottom-left-radius: $border-radius-small;
+    }
+
+    &:last-child {
+        border-top-right-radius: $border-radius-small;
+        border-bottom-right-radius: $border-radius-small;
+    }
+}

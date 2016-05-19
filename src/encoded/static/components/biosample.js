@@ -4,7 +4,7 @@ var panel = require('../libs/bootstrap/panel');
 var _ = require('underscore');
 var url = require('url');
 var globals = require('./globals');
-var navbar = require('./navbar');
+var navigation = require('./navigation');
 var dataset = require('./dataset');
 var dbxref = require('./dbxref');
 var statuslabel = require('./statuslabel');
@@ -16,7 +16,7 @@ var objectutils = require('./objectutils');
 var sortTable = require('./sorttable');
 var doc = require('./doc');
 
-var Breadcrumbs = navbar.Breadcrumbs;
+var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var StatusLabel = statuslabel.StatusLabel;
 var AuditIndicators = audit.AuditIndicators;
@@ -216,6 +216,10 @@ var Biosample = module.exports.Biosample = React.createClass({
                 return PanelLookup({context: talen});
             });
         }
+
+        // Collect up biosample and model organism donor constructs
+        var constructs = ((context.constructs && context.constructs.length) ? context.constructs : [])
+            .concat((context.model_organism_donor_constructs && context.model_organism_donor_constructs.length) ? context.model_organism_donor_constructs : []);
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
@@ -504,11 +508,17 @@ var Biosample = module.exports.Biosample = React.createClass({
                             </section>
                         : null}
 
-                        {context.constructs.length ?
+                        {constructs.length ?
                             <section>
                                 <hr />
                                 <h4>Construct details</h4>
-                                {context.constructs.map(PanelLookup)}
+                                <div>
+                                    {constructs.map(construct =>
+                                        <div key={construct.uuid} className="subpanel">
+                                            {PanelLookup(construct)}
+                                        </div>
+                                    )}
+                                </div>
                             </section>
                         : null}
 
