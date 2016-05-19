@@ -129,7 +129,8 @@ def audit_experiment_missing_processed_files(value, system):
                 present_assemblies.append(assembly)
 
             if replicate_structures[(bio_rep_num, assembly)].is_complete() is False:
-                for missing_tuple in replicate_structures[(bio_rep_num, assembly)].get_missing_fields_tuples():
+                for missing_tuple in \
+                        replicate_structures[(bio_rep_num, assembly)].get_missing_fields_tuples():
                     if len(bio_rep_num[1:-1]) == 1:
                         detail = 'In biological replicate {}, '.format(bio_rep_num[1:-1]) + \
                                  'genomic assembly {}, '.format(assembly) + \
@@ -140,6 +141,13 @@ def audit_experiment_missing_processed_files(value, system):
                                  'genomic assembly {}, '.format(assembly) + \
                                  'are missing the following file {}.'.format(missing_tuple)
                         yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
+            if replicate_structures[(bio_rep_num, assembly)].is_analyzed_more_than_once() is True:
+                detail = 'Transcription factor ChIP-seq experiment {}, '.format(value['@id']) + \
+                         'contains biological replicate {}, '.format(bio_rep_num) + \
+                         'with multiple processed files associated with the same fastq ' + \
+                         'files associated with {} assembly.'.format(assembly)
+                yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
+
         if pooled_quantity < (len(assemblies)) and 'control' not in target.get('investigated_as'):
             detail = 'Transcription factor ChIP-seq experiment {}, '.format(value['@id']) + \
                      'does not contain all of the inter-replicate comparison anlaysis files. ' + \
@@ -149,13 +157,10 @@ def audit_experiment_missing_processed_files(value, system):
             yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
         for (rep_num, assembly) in replicates_dict:
             if replicates_dict[(rep_num, assembly)] == 0:
-                detail = 'In biological replicate {}, '.format(rep_num) + \
-                         'genomic assembly {}, '.format(assembly) + \
-                         'processed files were not found.'
+                detail = 'Transcription factor ChIP-seq experiment {}, '.format(value['@id']) + \
+                         'contains biological replicate {}, '.format(rep_num) + \
+                         'without any processed files associated with {} assembly.'.format(assembly)
                 yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
-############
-<>>>>>>>>>>>>>>>>FIX USAGE OF ASSEMBLY INSIDE LOOPS
-############
 
     elif 'Histone ChIP-seq' in pipelines or 'Transcription factor ChIP-seq' in pipelines:
         # check if control

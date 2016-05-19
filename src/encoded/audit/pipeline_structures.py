@@ -7,6 +7,7 @@ class modERN_TF_control(object):
         self.normalized_signal = normalized_signal
         self.assembly = assembly
         self.replicates = replicates
+        self.multiple_mappings_flag = False
         self.tuples_dict = {
             ('bam', 'alignments'): self.set_alignments,
             ('bigWig', 'signal of unique reads'): self.set_unique_signal,
@@ -14,12 +15,18 @@ class modERN_TF_control(object):
         }
 
     def set_alignments(self, alignments):
+        if self.alignments is not None:
+            self.multiple_mappings_flag = True
         self.alignments = alignments
 
     def set_unique_signal(self, unique_signal):
+        if self.unique_signal is not None:
+            self.multiple_mappings_flag = True
         self.unique_signal = unique_signal
 
     def set_normalized_signal(self, normalized_signal):
+        if self.normalized_signal is not None:
+            self.multiple_mappings_flag = True
         self.normalized_signal = normalized_signal
 
     def is_complete(self):
@@ -30,6 +37,9 @@ class modERN_TF_control(object):
            (self.assembly is None):
             return False
         return True
+
+    def is_analyzed_more_than_once(self):
+        return self.multiple_mappings_flag
 
     def get_missing_fields_tuples(self):
         missing = []
@@ -52,7 +62,7 @@ class modERN_TF_control(object):
 class modERN_TF(object):
     def __init__(self, replicates):
         if len(replicates[1:-1]) == 1:
-            self.rep = modERN_TF_relicate()
+            self.rep = modERN_TF_replicate()
         else:
             self.rep = modERN_TF_pooled()
 
@@ -65,8 +75,11 @@ class modERN_TF(object):
     def update_fields(self, processed_file):
         self.rep.update_fields(processed_file)
 
+    def is_analyzed_more_than_once(self):
+        return self.is_analyzed_more_than_once()
 
-class modERN_TF_relicate(object):
+
+class modERN_TF_replicate(object):
 
     def __init__(self, alignments=None, unique_signal=None,
                  read_depth_normalized_signal=None,
@@ -81,6 +94,7 @@ class modERN_TF_relicate(object):
         self.narrowPeak_bigBed = narrowPeak_bigBed
         self.assembly = assembly
         self.replicates = replicates
+        self.multiple_mappings_flag = False
         self.tuples_dict = {
             ('bam', 'alignments'): self.set_alignments,
             ('bigWig', 'signal of unique reads'): self.set_unique_signal,
@@ -91,21 +105,33 @@ class modERN_TF_relicate(object):
         }
 
     def set_alignments(self, alignments):
+        if self.alignments is not None:
+            self.multiple_mappings_flag = True
         self.alignments = alignments
 
     def set_unique_signal(self, unique_signal):
+        if self.unique_signal is not None:
+            self.multiple_mappings_flag = True
         self.unique_signal = unique_signal
 
     def set_read_depth_normalized_signal(self, normalized_signal):
+        if self.read_depth_normalized_signal is not None:
+            self.multiple_mappings_flag = True
         self.read_depth_normalized_signal = normalized_signal
 
     def set_control_normalized_signal(self, control_signal):
+        if self.control_normalized_signal is not None:
+            self.multiple_mappings_flag = True
         self.control_normalized_signal = control_signal
 
     def set_narrowPeak_bed(self, bed):
+        if self.narrowPeak_bed is not None:
+            self.multiple_mappings_flag = True
         self.narrowPeak_bed = bed
 
     def set_narrowPeak_bigBed(self, bigBed):
+        if self.narrowPeak_bigBed is not None:
+            self.multiple_mappings_flag = True
         self.narrowPeak_bigBed = bigBed
 
     def is_complete(self):
@@ -119,6 +145,9 @@ class modERN_TF_relicate(object):
            (self.narrowPeak_bigBed is None):
             return False
         return True
+
+    def is_analyzed_more_than_once(self):
+        return self.multiple_mappings_flag
 
     def get_missing_fields_tuples(self):
         missing = []
@@ -165,6 +194,7 @@ class modERN_TF_pooled(object):
         self.idr_narrowPeak_bigBed = idr_narrowPeak_bigBed
         self.assembly = assembly
         self.replicates = replicates
+        self.multiple_mappings_flag = False
         self.tuples_dict = {
             ('bigWig', 'signal of unique reads'): self.set_unique_signal,
             ('bigWig', 'read-depth normalized signal'): self.set_read_depth_normalized_signal,
@@ -176,24 +206,38 @@ class modERN_TF_pooled(object):
         }
 
     def set_unique_signal(self, unique_signal):
+        if self.unique_signal is not None:
+            self.multiple_mappings_flag = True
         self.unique_signal = unique_signal
 
     def set_read_depth_normalized_signal(self, normalized_signal):
+        if self.read_depth_normalized_signal is not None:
+            self.multiple_mappings_flag = True
         self.read_depth_normalized_signal = normalized_signal
 
     def set_control_normalized_signal(self, control_signal):
+        if self.control_normalized_signal is not None:
+            self.multiple_mappings_flag = True
         self.control_normalized_signal = control_signal
 
     def set_narrowPeak_bed(self, bed):
+        if self.narrowPeak_bed is not None:
+            self.multiple_mappings_flag = True
         self.narrowPeak_bed = bed
 
     def set_narrowPeak_bigBed(self, bigBed):
+        if self.narrowPeak_bigBed is not None:
+            self.multiple_mappings_flag = True
         self.narrowPeak_bigBed = bigBed
 
     def set_idr_narrowPeak_bed(self, idr_bed):
+        if self.idr_narrowPeak_bed is not None:
+            self.multiple_mappings_flag = True
         self.idr_narrowPeak_bed = idr_bed
 
     def set_idr_narrowPeak_bigBed(self, idr_bigBed):
+        if self.idr_narrowPeak_bigBed is not None:
+            self.multiple_mappings_flag = True
         self.idr_narrowPeak_bigBed = idr_bigBed
 
     def is_complete(self):
@@ -208,6 +252,9 @@ class modERN_TF_pooled(object):
            (self.idr_narrowPeak_bigBed is None):
             return False
         return True
+
+    def is_analyzed_more_than_once(self):
+        return self.multiple_mappings_flag
 
     def get_missing_fields_tuples(self):
         missing = []
