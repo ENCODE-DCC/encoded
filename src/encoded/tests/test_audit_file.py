@@ -78,13 +78,14 @@ def file1_2(file_exp, award, lab, file_rep1_2, testapp):
 
 
 @pytest.fixture
-def file2(file_exp2, award, lab, file_rep2, testapp):
+def file2(file_exp2, award, lab, file_rep2, platform1, testapp):
     item = {
         'dataset': file_exp2['uuid'],
         'replicate': file_rep2['uuid'],
         'file_format': 'fastq',
         'md5sum': '100d8c998f00b204e9800998ecf8427e',
         'output_type': 'raw data',
+        'platform': platform1['uuid'],
         'award': award['uuid'],
         'lab': lab['uuid'],
         'status': 'released'
@@ -93,13 +94,14 @@ def file2(file_exp2, award, lab, file_rep2, testapp):
 
 
 @pytest.fixture
-def file1(file_exp, award, lab, file_rep, file2, testapp):
+def file1(file_exp, award, lab, file_rep, file2, platform1, testapp):
     item = {
         'dataset': file_exp['uuid'],
         'replicate': file_rep['uuid'],
         'file_format': 'fastq',
         'md5sum': '100d8cd98f00b204e9800998ecf8427e',
         'output_type': 'reads',
+        'platform': platform1['uuid'],
         'award': award['uuid'],
         'lab': lab['uuid'],
         'status': 'released',
@@ -168,6 +170,24 @@ def file7(file_exp2, award, encode_lab, testapp, analysis_step_run_bam):
         'step_run': analysis_step_run_bam['uuid']
     }
     return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def platform1(testapp):
+    item = {
+        'term_id': 'OBI:0002001',
+        'term_name': 'HiSeq2000'
+    }
+    return testapp.post_json('/platform', item).json['@graph'][0]
+
+
+@pytest.fixture
+def platform2(testapp):
+    item = {
+        'term_id': 'OBI:0002049',
+        'term_name': 'HiSeq4000'
+    }
+    return testapp.post_json('/platform', item).json['@graph'][0]
 
 
 @pytest.fixture
@@ -319,6 +339,20 @@ def test_audit_file_missing_paired_controlled_by(testapp, file1,
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing paired_with in controlled_by' for
                                     error in errors_list)
+
+
+def test_audit_file_mismatched_platform_controlled_by(testapp, file1, file2, file_exp,
+                                                      file_exp2, platform2):
+    testapp.patch_json(file_exp['@id'], {'possible_controls': [file_exp2['@id']],
+                                         'biosample_term_id': 'NTR:000013'})
+    testapp.patch_json(file2['@id'], {'platform': platform2['@id']})
+    res = testapp.get(file1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched control platform' for error in errors_list)
+
 
 def test_audit_file_replicate_match(testapp, file1, file_rep2):
     testapp.patch_json(file1['@id'], {'replicate': file_rep2['uuid']})
@@ -570,4 +604,17 @@ def test_audit_file_derived_from_empty(testapp, file7):
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing derived_from'
+               for error in errors_list)
+
+
+def test_audit_file_bam_derived_from_different_experiment(testapp, file6, file4, file_exp):
+    testapp.patch_json(file4['@id'], {'dataset': file_exp['@id']})
+    testapp.patch_json(file6['@id'], {'derived_from': [file4['@id']],
+                                      'status': 'released'})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched derived_from'
                for error in errors_list)
