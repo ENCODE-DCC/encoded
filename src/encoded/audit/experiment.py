@@ -87,7 +87,8 @@ def audit_experiment_released_with_unreleased_files(value, system):
                                     'original_files.analysis_step_version',
                                     'original_files.analysis_step_version.analysis_step',
                                     'original_files.analysis_step_version.analysis_step.pipelines',
-                                    'target'])
+                                    'target',
+                                    'replicates'])
 def audit_experiment_missing_processed_files(value, system):
     alignment_files = scan_files_for_file_format_output_type(value['original_files'],
                                                              'bam', 'alignments')
@@ -98,6 +99,15 @@ def audit_experiment_missing_processed_files(value, system):
     pipelines = getPipelines(alignment_files)
     if len(pipelines) == 0:  # no pipelines detected
         return
+
+    bio_reps = get_bio_replicates(value)
+    assemblies = get_assemblies(value['original_files'])
+    present_assemblies = []
+    replicates_dict = {}
+    for bio_rep in bio_reps:
+        for assembly in assemblies:
+            replicates_dict[(bio_rep, assembly)] = 0
+    pooled_quantity = 0
 
     if 'Transcription factor ChIP-seq pipeline (modERN)' in pipelines:
         # check if control
@@ -112,6 +122,12 @@ def audit_experiment_missing_processed_files(value, system):
                                                               'modERN')
 
         for (bio_rep_num, assembly) in replicate_structures.keys():
+            if len(bio_rep_num[1:-1]) == 1:
+                replicates_dict[(bio_rep_num[1:-1], assembly)] = 1
+            else:
+                pooled_quantity += 1
+                present_assemblies.append(assembly)
+
             if replicate_structures[(bio_rep_num, assembly)].is_complete() is False:
                 for missing_tuple in replicate_structures[(bio_rep_num, assembly)].get_missing_fields_tuples():
                     if len(bio_rep_num[1:-1]) == 1:
@@ -124,6 +140,23 @@ def audit_experiment_missing_processed_files(value, system):
                                  'genomic assembly {}, '.format(assembly) + \
                                  'are missing the following file {}.'.format(missing_tuple)
                         yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
+        if pooled_quantity < (len(assemblies)) and 'control' not in target.get('investigated_as'):
+            detail = 'Transcription factor ChIP-seq experiment {}, '.format(value['@id']) + \
+                     'does not contain all of the inter-replicate comparison anlaysis files. ' + \
+                     'Analysis was performed using {} assemblies, '.format(assemblies) + \
+                     'while inter-replicate comparison anlaysis was performed only using ' + \
+                     '{} assemblies.'.format(present_assemblies)
+            yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
+        for (rep_num, assembly) in replicates_dict:
+            if replicates_dict[(rep_num, assembly)] == 0:
+                detail = 'In biological replicate {}, '.format(rep_num) + \
+                         'genomic assembly {}, '.format(assembly) + \
+                         'processed files were not found.'
+                yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
+############
+<>>>>>>>>>>>>>>>>FIX USAGE OF ASSEMBLY INSIDE LOOPS
+############
+
     elif 'Histone ChIP-seq' in pipelines or 'Transcription factor ChIP-seq' in pipelines:
         # check if control
         target = value.get('target')
@@ -166,18 +199,38 @@ def create_pipeline_structures(files_to_scan, structure_type):
            f['output_category'] not in ['raw data', 'reference']:
             bio_rep_num = str(f.get('biological_replicates'))
             assembly = f.get('assembly')
-            # print ('PRINTING FROM INSIDE '+ bio_rep_num + ' ' + assembly)
+
             if (bio_rep_num, assembly) not in replicates_set:
                 replicates_set.add((bio_rep_num, assembly))
                 if structure_type == 'modERN':
-                    structures_to_return[(bio_rep_num, assembly)] = structures_mapping[structure_type](bio_rep_num)
+                    structures_to_return[(bio_rep_num, assembly)] = \
+                        structures_mapping[structure_type](bio_rep_num)
                 else:
-                    structures_to_return[(bio_rep_num, assembly)] = structures_mapping[structure_type]()
+                    structures_to_return[(bio_rep_num, assembly)] = \
+                        structures_mapping[structure_type]()
+
                 structures_to_return[(bio_rep_num, assembly)].update_fields(f)
             else:
                 structures_to_return[(bio_rep_num, assembly)].update_fields(f)
     return structures_to_return
 
+
+def get_bio_replicates(experiment):
+    bio_reps = set()
+    for rep in experiment['replicates']:
+        if rep['status'] not in ['deleted']:
+            bio_reps.add(str(rep['biological_replicate_number']))
+    return bio_reps
+
+
+def get_assemblies(list_of_files):
+    assemblies = set()
+    for f in list_of_files:
+        if f['status'] not in ['replaced', 'revoked', 'deleted', 'archived'] and \
+           f['output_category'] not in ['raw data', 'reference'] and \
+           f.get('assembly') is not None:
+                assemblies.add(f['assembly'])
+    return assemblies
 
 @audit_checker('Experiment', frame=['original_files',
                                     'original_files.replicate',
