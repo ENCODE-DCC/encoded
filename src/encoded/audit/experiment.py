@@ -124,6 +124,33 @@ def audit_experiment_missing_processed_files(value, system):
                                  'genomic assembly {}, '.format(assembly) + \
                                  'are missing the following file {}.'.format(missing_tuple)
                         yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
+    elif 'Histone ChIP-seq' in pipelines or 'Transcription factor ChIP-seq' in pipelines:
+        # check if control
+        target = value.get('target')
+        if target is None:
+            return
+        if 'control' in target.get('investigated_as'):
+            # create control structure
+            print ('hello')
+        elif 'transcription factor' in target.get('investigated_as'):
+            # create TF experiment structure
+            print ('hello')
+        elif 'histone' in target.get('investigated_as'):
+            # create histone experiment structure
+            print ('hello')
+    elif 'RAMPAGE (paired-end, stranded)' in pipelines:
+        # create structure for RAMPAGE
+        '''
+         a. bam alignments
+         b. 4 bigwigs (plus all reads signal and unique reads, and same for minus)
+         c. transcription start sites (gff -gff3)
+         d. transcription start sites (bed tss
+         e. transcription start sites (bigBed tss
+         f. gene quantifications (tsv)
+         g. (IDR) transcription start sites (bed IDR peaks)
+         h. (IDR) transcription start sites (bigBed IDR peaks)
+        '''
+        print ('hello')
 
 
 
