@@ -384,7 +384,7 @@ def lot_reviews(characterizations, targets, request):
                 lane_review['biosample_term_name'],
                 lane_review['biosample_term_id'],
                 lane_review['organism'],
-                target['@id'],
+                primary['target'],
             )
             if key not in char_reviews:
                 char_reviews[key] = new_review
