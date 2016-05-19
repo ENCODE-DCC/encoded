@@ -138,7 +138,10 @@ class modERN_TF_relicate(object):
 
     def update_fields(self, processed_file):
         f_format = processed_file.get('file_format')
-        f_output = processed_file.get('output_type')
+        if processed_file.get('output_type') in ['peaks']:
+            f_output = processed_file.get('file_format_type')
+        else:
+            f_output = processed_file.get('output_type')
         self.tuples_dict[(f_format, f_output)](processed_file.get('accession'))
         self.replicates = processed_file.get('biological_replicates')
         self.assembly = processed_file.get('assembly')
@@ -226,7 +229,10 @@ class modERN_TF_pooled(object):
 
     def update_fields(self, processed_file):
         f_format = processed_file.get('file_format')
-        f_output = processed_file.get('output_type')
+        if processed_file.get('output_type') in ['peaks']:
+            f_output = processed_file.get('file_format_type')
+        else:
+            f_output = processed_file.get('output_type')
         self.tuples_dict[(f_format, f_output)](processed_file.get('accession'))
         self.replicates = processed_file.get('biological_replicates')
         self.assembly = processed_file.get('assembly')
