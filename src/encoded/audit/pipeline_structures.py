@@ -1,3 +1,54 @@
+class encode_chip_control(object):
+
+    def __init__(self, alignments=None, unfiltered=None,
+                 assembly=None, replicates=None):
+        self.alignments = alignments
+        self.unfiltered = unfiltered
+        self.assembly = assembly
+        self.replicates = replicates
+        self.multiple_mappings_flag = False
+        self.tuples_dict = {
+            ('bam', 'alignments'): self.set_alignments,
+            ('bam', 'unfiltered alignments'): self.unfiltered
+        }
+
+    def set_alignments(self, alignments):
+        if self.alignments is not None:
+            self.multiple_mappings_flag = True
+        self.alignments = alignments
+
+    def set_unique_signal(self, unfiltered):
+        if self.unfiltered is not None:
+            self.multiple_mappings_flag = True
+        self.unique_signal = unfiltered
+
+    def is_complete(self):
+        if (self.alignments is None) or \
+           (self.unfiltered is None) or \
+           (self.replicates is None) or \
+           (self.assembly is None):
+            return False
+        return True
+
+    def is_analyzed_more_than_once(self):
+        return self.multiple_mappings_flag
+
+    def get_missing_fields_tuples(self):
+        missing = []
+        if self.alignments is None:
+            missing.append(('bam', 'alignments'))
+        if self.unfiltered is None:
+            missing.append(('bam', 'unfiltered alignments'))
+        return missing
+
+    def update_fields(self, processed_file):
+        f_format = processed_file.get('file_format')
+        f_output = processed_file.get('output_type')
+        self.tuples_dict[(f_format, f_output)](processed_file.get('accession'))
+        self.replicates = processed_file.get('biological_replicates')
+        self.assembly = processed_file.get('assembly')
+
+
 class modERN_TF_control(object):
 
     def __init__(self, alignments=None, unique_signal=None,

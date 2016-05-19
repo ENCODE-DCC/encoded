@@ -191,7 +191,6 @@ def audit_experiment_missing_processed_files(value, system):
         print ('hello')
 
 
-
 def create_pipeline_structures(files_to_scan, structure_type):
     structures_mapping = {
         'modERN_control': modERN_TF_control,
@@ -236,6 +235,7 @@ def get_assemblies(list_of_files):
            f.get('assembly') is not None:
                 assemblies.add(f['assembly'])
     return assemblies
+
 
 @audit_checker('Experiment', frame=['original_files',
                                     'original_files.replicate',
