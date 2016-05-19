@@ -171,8 +171,8 @@ class modERN_TF_pooled(object):
             ('bigWig', 'control normalized signal'): self.set_control_normalized_signal,
             ('bed', 'narrowPeak'): self.set_narrowPeak_bed,
             ('bigBed', 'narrowPeak'): self.set_narrowPeak_bigBed,
-            ('bed', 'optimal idr thresholded narrowPeak'): self.set_idr_narrowPeak_bed,
-            ('bigBed', 'optimal idr thresholded narrowPeak'): self.set_idr_narrowPeak_bigBed
+            ('bed', 'optimal idr thresholded peaks'): self.set_idr_narrowPeak_bed,
+            ('bigBed', 'optimal idr thresholded peaks'): self.set_idr_narrowPeak_bigBed
         }
 
     def set_unique_signal(self, unique_signal):
@@ -222,9 +222,9 @@ class modERN_TF_pooled(object):
         if self.narrowPeak_bigBed is None:
             missing.append(('bigBed', 'narrowPeak'))
         if self.idr_narrowPeak_bed is None:
-            missing.append(('bed', 'optimal idr thresholded narrowPeak'))
+            missing.append(('bed', 'optimal idr thresholded peaks'))
         if self.idr_narrowPeak_bigBed is None:
-            missing.append(('bigBed', 'optimal idr thresholded narrowPeak'))
+            missing.append(('bigBed', 'optimal idr thresholded peaks'))
         return missing
 
     def update_fields(self, processed_file):
