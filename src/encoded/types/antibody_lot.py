@@ -331,6 +331,7 @@ def lot_reviews(characterizations, targets, request):
                 if not histone_mod_target:
                     if compliant_secondary or exempted_secondary:
                         new_review['status'] = 'eligible for new data (via exemption)'
+                        new_review['detail'] = 'Fully characterized.'
                     if not secondary_chars or (not_reviewed_secondary == len(secondary_chars)):
                         new_review['detail'] = 'Awaiting submission of secondary characterization(s).'
                     if in_progress_secondary == len(secondary_chars):
@@ -343,6 +344,7 @@ def lot_reviews(characterizations, targets, request):
                         new_review['targets'] = [target_organisms[lane_organism]]
                         if compliant_secondary or exempted_secondary:
                             new_review['status'] = 'eligible for new data (via exemption)'
+                            new_review['detail'] = 'Fully characterized.'
                     else:
                         new_review['detail'] = 'Characterized organism not in antibody target list.'
 
@@ -350,8 +352,10 @@ def lot_reviews(characterizations, targets, request):
                 if not histone_mod_target:
                     if compliant_secondary:
                         new_review['status'] = 'eligible for new data'
+                        new_review['detail'] = 'Fully characterized.'
                     elif exempted_secondary:
                         new_review['status'] = 'eligible for new data (via exemption)'
+                        new_review['detail'] = 'Fully characterized.'
                     else:
                         new_review['detail'] = 'Awaiting a compliant secondary characterization.'
                         pass
@@ -365,8 +369,10 @@ def lot_reviews(characterizations, targets, request):
                         new_review['targets'] = [target_organisms[lane_organism]]
                         if compliant_secondary:
                             new_review['status'] = 'eligible for new data'
+                            new_review['detail'] = 'Fully characterized.'
                         elif exempted_secondary:
                             new_review['status'] = 'eligible for new data (via exemption)'
+                            new_review['detail'] = 'Fully characterized.'
                         else:
                             new_review['detail'] = 'Awaiting a compliant secondary characterization.'
                             pass
