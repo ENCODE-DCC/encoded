@@ -98,13 +98,13 @@ def main(global_config, **local_config):
 
     # Render an HTML page to browsers and a JSON document for API clients
     config.include('encoded.renderers')
+    # these two should be application specific
     config.include('.authentication')
-    #config.include('encoded.server_defaults')
     config.include('encoded.root')
 
     if 'elasticsearch.server' in config.registry.settings:
         config.include('snovault.elasticsearch')
-        config.include('encoded.search')
+        # config.include('encoded.search')
 
     config.include(static_resources)
     config.include(changelogs)
