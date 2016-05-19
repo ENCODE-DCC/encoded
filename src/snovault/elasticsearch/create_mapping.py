@@ -131,7 +131,7 @@ def schema_mapping(name, schema):
             # keywords because fields are analyzed by nGram analyzer
         if name in NON_SUBSTRING_FIELDS:
             if name in PATH_FIELDS:
-                sub_mapping['index_analyzer'] = 'encoded_path_analyzer'
+                sub_mapping['index_analyzer'] = 'snovault_path_analyzer'
             else:
                 sub_mapping['index'] = 'not_analyzed'
             sub_mapping['include_in_all'] = False
@@ -190,7 +190,7 @@ def index_settings():
                             'lowercase',
                         ]
                     },
-                    'encoded_index_analyzer': {
+                    'snovault_index_analyzer': {
                         'type': 'custom',
                         'tokenizer': 'whitespace',
                         'char_filter': 'html_strip',
@@ -201,7 +201,7 @@ def index_settings():
                             'substring'
                         ]
                     },
-                    'encoded_search_analyzer': {
+                    'snovault_search_analyzer': {
                         'type': 'custom',
                         'tokenizer': 'whitespace',
                         'filter': [
@@ -210,14 +210,14 @@ def index_settings():
                             'asciifolding'
                         ]
                     },
-                    'encoded_path_analyzer': {
+                    'snovault_path_analyzer': {
                         'type': 'custom',
-                        'tokenizer': 'encoded_path_tokenizer',
+                        'tokenizer': 'snovault_path_tokenizer',
                         'filter': ['lowercase']
                     }
                 },
                 'tokenizer': {
-                    'encoded_path_tokenizer': {
+                    'snovault_path_tokenizer': {
                         'type': 'path_hierarchy',
                         'reverse': True
                     }
@@ -251,8 +251,8 @@ def es_mapping(mapping):
     return {
         '_all': {
             'enabled': True,
-            'index_analyzer': 'encoded_index_analyzer',
-            'search_analyzer': 'encoded_search_analyzer'
+            'index_analyzer': 'snovault_index_analyzer',
+            'search_analyzer': 'snovault_search_analyzer'
         },
         'dynamic_templates': [
             {
@@ -443,12 +443,12 @@ def type_mapping(types, item_type, embed=True):
         if last in NON_SUBSTRING_FIELDS:
             new_mapping[last]['include_in_all'] = False
             if last in PATH_FIELDS:
-                new_mapping[last]['index_analyzer'] = 'encoded_path_analyzer'
+                new_mapping[last]['index_analyzer'] = 'snovault_path_analyzer'
             else:
                 new_mapping[last]['index'] = 'not_analyzed'
         else:
-            new_mapping[last]['index_analyzer'] = 'encoded_index_analyzer'
-            new_mapping[last]['search_analyzer'] = 'encoded_search_analyzer'
+            new_mapping[last]['index_analyzer'] = 'snovault_index_analyzer'
+            new_mapping[last]['search_analyzer'] = 'snovault_search_analyzer'
             new_mapping[last]['include_in_all'] = True
 
     # Automatic boost for uuid

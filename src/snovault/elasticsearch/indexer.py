@@ -72,7 +72,7 @@ def index(request):
             status = es.get(index=INDEX, doc_type='meta', id='indexing')
         except NotFoundError:
             interval_settings = {"index": {"refresh_interval": "30s"}}
-            es.indices.put_settings(index='encoded', body=interval_settings)
+            es.indices.put_settings(index='snovault', body=interval_settings)
             pass
         else:
             last_xmin = status['_source']['xmin']
@@ -160,7 +160,7 @@ def index(request):
 
         if record:
             es.index(index=INDEX, doc_type='meta', body=result, id='indexing')
-            if es.indices.get_settings(index=INDEX)['encoded']['settings']['index'].get('refresh_interval', '') != '1s':
+            if es.indices.get_settings(index=INDEX)['snovault']['settings']['index'].get('refresh_interval', '') != '1s':
                 interval_settings = {"index": {"refresh_interval": "1s"}}
                 es.indices.put_settings(index=INDEX, body=interval_settings)
 
@@ -183,7 +183,8 @@ def all_uuids(registry, types=None):
     collections = registry[COLLECTIONS]
     initial = ['user', 'access_key']
     for collection_name in initial:
-        collection = collections.by_item_type[collection_name]
+        collection = collections.by_item_type.get(collection_name, [])
+        # for snovault test application, there are no users or keys
         if types is not None and collection_name not in types:
             continue
         for uuid in collection:
