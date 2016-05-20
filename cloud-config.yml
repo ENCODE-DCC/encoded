@@ -212,7 +212,7 @@ runcmd:
 - then
 -   sudo -i -u encoded bin/batchupgrade production.ini --app-name app
 - fi
-- sudo echo "00 7 * * * * sudo /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-push /var/lib/postgresql/9.3/main" >> wal-eCron
+- sudo -i -u postgres echo "00 7 * * * * sudo /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-push /var/lib/postgresql/9.3/main" >> wal-eCron
 - sudo crontab wal-eCron
 - sudo rm wal-eCron
 # - sleep 10
