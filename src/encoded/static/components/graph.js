@@ -210,8 +210,8 @@ var Graph = module.exports.Graph = React.createClass({
     // SVG to its natural height
     drawGraph: function(el) {
         var viewBox, zoomLevel;
-        var d3 = require('d3');
-        var dagreD3 = require('dagre-d3');
+        var d3 = this.d3;
+        var dagreD3 = this.dagreD3;
         d3.selectAll('svg#pipeline-graph > *').remove(); // http://stackoverflow.com/questions/22452112/nvd3-clear-svg-before-loading-new-chart#answer-22453174
         var svg = d3.select(el).select('svg');
 
@@ -308,14 +308,13 @@ var Graph = module.exports.Graph = React.createClass({
         if (BrowserFeat.getBrowserCaps('svg')) {
             // Delay loading dagre for Jest testing compatibility;
             // Both D3 and Jest have their own conflicting JSDOM instances
-            $script('dagre', () => {
-                var d3 = require('d3');
-                var dagreD3 = require('dagre-d3');
+            require.ensure(['dagre-d3', 'd3'], require => {
+                this.d3 = require('d3');
+                this.dagreD3 = require('dagre-d3');
                 var el = this.refs.graphdisplay.getDOMNode();
-                this.cv.dagreLoaded = true;
 
                 // Add SVG element to the graph component, and assign it classes, sizes, and a group
-                var svg = d3.select(el).insert('svg', '#graph-node-info')
+                var svg = this.d3.select(el).insert('svg', '#graph-node-info')
                     .attr('id', 'pipeline-graph')
                     .attr('preserveAspectRatio', 'none')
                     .attr('version', '1.1');
@@ -333,7 +332,7 @@ var Graph = module.exports.Graph = React.createClass({
                 this.setState({zoomLevel: initialZoomLevel});
 
                 // Bind node/subnode click handlers to parent component handlers
-                this.bindClickHandlers(d3, el);
+                this.bindClickHandlers(this.d3, el);
             });
         } else {
             // Output text indicating that graphs aren't supported.
@@ -356,13 +355,12 @@ var Graph = module.exports.Graph = React.createClass({
 
     // State change; redraw the graph
     componentDidUpdate: function() {
-        if (this.cv.dagreLoaded && !this.cv.zoomMouseDown) {
-            var d3 = require('d3');
+        if (this.dagreD3 && !this.cv.zoomMouseDown) {
             var el = this.refs.graphdisplay.getDOMNode(); // Change in React 0.14
             var {viewBoxWidth, viewBoxHeight} = this.drawGraph(el);
 
             // Bind node/subnode click handlers to parent component handlers
-            this.bindClickHandlers(d3, el);
+            this.bindClickHandlers(this.d3, el);
 
             // If the viewbox has changed since the last time, need to recalculate the zooming
             // parameters.
