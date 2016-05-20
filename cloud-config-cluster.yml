@@ -102,12 +102,12 @@ bootcmd:
 - MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
 - if [ "$MEMGIGS" -gt 32 ]
 - then
--    echo "ES_HEAP_SIZE=16g" > /etc/default/elasticsearch
+-    echo "ES_HEAP_SIZE=8g" > /etc/default/elasticsearch
 - elif [ "$MEMGIGS" -gt 12 ]
 - then
--    echo "ES_HEAP_SIZE=8g" > /etc/default/elasticsearch
-- else
 -    echo "ES_HEAP_SIZE=4g" > /etc/default/elasticsearch
+- else
+-    echo "ES_HEAP_SIZE=2g" > /etc/default/elasticsearch
 -    sysctl "vm.swappiness=1"
 -    swapon /swapfile
 - fi
