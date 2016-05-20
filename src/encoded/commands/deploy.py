@@ -97,15 +97,14 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size, cl
         else:
             config_file = ':cloud-config.yml'
         user_data = subprocess.check_output(['git', 'show', commit + config_file]).decode('utf-8')
-        user_data = user_data % {
+        data_insert = {
             'WALE_S3_PREFIX': wale_s3_prefix,
             'COMMIT': commit,
             'ROLE': role,
         }
         if cluster_name:
-            user_data = user_data % {
-                'CLUSTER_NAME': cluster_name,
-            }
+            data_insert['CLUSTER_NAME'] = cluster_name
+        user_data = user_data % data_insert
         security_groups = ['ssh-http-https']
         iam_role = 'encoded-instance'
         count = 1
