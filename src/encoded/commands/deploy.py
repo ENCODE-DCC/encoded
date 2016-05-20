@@ -60,19 +60,14 @@ def tag_ec2_instance(instance, name, branch, commit, username, elasticsearch):
 
 def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size, cluster_name,
         branch=None, name=None, role='demo', profile_name=None, teardown_cluster=None):
-
-    if not cluster_name:
-        print("Cluster must have a name")
-        sys.exit(1)
-
     
     if branch is None:
         branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode('utf-8').strip()
 
     commit = subprocess.check_output(['git', 'rev-parse', '--short', branch]).decode('utf-8').strip()
-    # if not subprocess.check_output(['git', 'branch', '-r', '--contains', commit]).strip():
-    #     print("Commit %r not in origin. Did you git push?" % commit)
-    #     sys.exit(1)
+    if not subprocess.check_output(['git', 'branch', '-r', '--contains', commit]).strip():
+        print("Commit %r not in origin. Did you git push?" % commit)
+        sys.exit(1)
 
     username = getpass.getuser()
 
