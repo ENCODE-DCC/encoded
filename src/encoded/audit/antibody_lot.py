@@ -12,6 +12,9 @@ def audit_antibody_missing_characterizations(value, system):
     Check to see what characterizations are lacking for each antibody,
     for the cell lines we know about.
     '''
+    if value['target'].get('investigated_as') in ['control']:
+        return
+
     if not value['characterizations']:
         detail = '{} '.format(value['@id']) + \
             'does not have any supporting characterizations submitted.'
@@ -45,7 +48,7 @@ def audit_antibody_missing_characterizations(value, system):
         yield AuditFailure('no secondary characterizations', detail,
                            level='NOT_COMPLIANT')
 
-    if len(primary_chars) != num_compliant_primary:
+    if primary_chars and (num_compliant_primary < 1):
         detail = '{} '.format(value['@id']) + \
             'needs compliant primary in one or more cell types.'
         yield AuditFailure('need compliant primaries', detail,
