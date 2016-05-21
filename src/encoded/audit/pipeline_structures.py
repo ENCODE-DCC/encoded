@@ -1,3 +1,41 @@
+class encode_tf_experiment(object):
+    def __init__(self, alignments=None, assembly=None, replicates=None):
+        self.alignments = alignments
+        self.assembly = assembly
+        self.replicates = replicates
+        self.multiple_mappings_flag = False
+        self.tuples_dict = {
+            ('bam', 'alignments'): self.set_alignments
+        }
+
+        def set_alignments(self, alignments):
+            if self.alignments is not None:
+                self.multiple_mappings_flag = True
+            self.alignments = alignments
+
+        def is_complete(self):
+            if (self.alignments is None) or \
+               (self.replicates is None) or \
+               (self.assembly is None):
+                return False
+            return True
+
+        def is_analyzed_more_than_once(self):
+            return self.multiple_mappings_flag
+
+        def get_missing_fields_tuples(self):
+            missing = []
+            if self.alignments is None:
+                missing.append(('bam', 'alignments'))
+            return missing
+
+        def update_fields(self, processed_file):
+            f_format = processed_file.get('file_format')
+            f_output = processed_file.get('output_type')
+            self.tuples_dict[(f_format, f_output)](processed_file.get('accession'))
+            self.replicates = processed_file.get('biological_replicates')
+            self.assembly = processed_file.get('assembly')
+
 class encode_chip_control(object):
 
     def __init__(self, alignments=None, unfiltered=None,

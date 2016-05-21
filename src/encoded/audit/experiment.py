@@ -93,6 +93,13 @@ def audit_experiment_released_with_unreleased_files(value, system):
 def audit_experiment_missing_processed_files(value, system):
     alignment_files = scan_files_for_file_format_output_type(value['original_files'],
                                                              'bam', 'alignments')
+    alignment_files.extend(scan_files_for_file_format_output_type(value['original_files'],
+                                                                  'bam',
+                                                                  'unfiltered alignments'))
+    alignment_files.extend(scan_files_for_file_format_output_type(value['original_files'],
+                                                                  'bam',
+                                                                  'transcrptome alignments'))
+
     # if there are no bam files - we don't know what pipeline, exit
     if len(alignment_files) == 0:
         return
@@ -163,7 +170,9 @@ def audit_experiment_missing_processed_files(value, system):
                          'without any processed files associated with {} assembly.'.format(assembly)
                 yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
 
-    elif 'Histone ChIP-seq' in pipelines or 'Transcription factor ChIP-seq' in pipelines:
+    elif 'Histone ChIP-seq' in pipelines or \
+         'Transcription factor ChIP-seq' or \
+         'Raw mapping with no filtration' in pipelines:
         # check if control
         target = value.get('target')
         if target is None:
@@ -198,6 +207,7 @@ def audit_experiment_missing_processed_files(value, system):
                              'with multiple processed files associated with the same fastq ' + \
                              'files for {} assembly.'.format(assembly)
                     yield AuditFailure('mismatched pipeline files', detail, level='DCC_ACTION')
+
                 for (rep_num, assembly) in replicates_dict:
                     if replicates_dict[(rep_num, assembly)] == 0:
                         detail = 'ChIP-seq control experiment {} '.format(value['@id']) + \
