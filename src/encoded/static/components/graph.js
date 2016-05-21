@@ -190,8 +190,8 @@ var Graph = module.exports.Graph = React.createClass({
     // Draw the graph on initial draw as well as on state changes.
     // An <svg> element to draw into must already exist in the HTML element in the el parm.
     drawGraph: function(el) {
-        var d3 = require('d3');
-        var dagreD3 = require('dagre-d3');
+        var d3 = this.d3;
+        var dagreD3 = this.dagreD3;
         var svg = this.savedSvg = d3.select(el).select('svg');
 
         // Create a new empty graph
@@ -237,14 +237,14 @@ var Graph = module.exports.Graph = React.createClass({
         if (BrowserFeat.getBrowserCaps('svg')) {
             // Delay loading dagre for Jest testing compatibility;
             // Both D3 and Jest have their own conflicting JSDOM instances
-            $script('dagre', function() {
-                var d3 = require('d3');
-                var dagreD3 = require('dagre-d3');
+            require.ensure(['dagre-d3', 'd3'], function(require) {
+                this.d3 = require('d3');
+                this.dagreD3 = require('dagre-d3');
                 var el = this.refs.graphdisplay.getDOMNode();
                 this.dagreLoaded = true;
 
                 // Add SVG element to the graph component, and assign it classes, sizes, and a group
-                var svg = d3.select(el).insert('svg', '#graph-node-info')
+                var svg = this.d3.select(el).insert('svg', '#graph-node-info')
                     .attr('preserveAspectRatio', 'xMidYMid')
                     .attr('version', '1.1');
                 var svgGroup = svg.append("g");
@@ -254,7 +254,7 @@ var Graph = module.exports.Graph = React.createClass({
 
                 // Bind node/subnode click handlers to parent component handlers
                 this.bindClickHandlers(d3, el);
-            }.bind(this));
+            }.bind(this), 'dagre');
         } else {
             // Output text indicating that graphs aren't supported.
             var el = this.refs.graphdisplay.getDOMNode();
@@ -276,11 +276,10 @@ var Graph = module.exports.Graph = React.createClass({
 
     // State change; redraw the graph
     componentDidUpdate: function() {
-        if (this.dagreLoaded) {
-            var d3 = require('d3');
+        if (this.dagreD3) {
             var el = this.refs.graphdisplay.getDOMNode();
             this.drawGraph(el);
-            this.bindClickHandlers(d3, el);
+            this.bindClickHandlers(this.d3, el);
         }
     },
 
