@@ -450,11 +450,6 @@ def check_experiment_chip_seq_encode3_standards(experiment,
                                                 idr_peaks_files):
 
     for f in fastq_files:
-        if 'run_type' not in f:
-            detail = 'Experiment {} '.format(experiment['@id']) + \
-                     'contains a file {} '.format(f['@id']) + \
-                     'without sequencing run type specified.'
-            yield AuditFailure('ChIP-seq - run type not specified', detail, level='WARNING')
         for failure in check_file_read_length_chip(f, 50, 36):
             yield failure
 
