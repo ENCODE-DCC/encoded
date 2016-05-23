@@ -788,8 +788,11 @@ def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
                       'small RNA',
                       'long RNA']:
         for metric in quality_metrics:
-            if 'Uniquely mapped reads number' in metric:
-                return metric['Uniquely mapped reads number']
+            if 'Uniquely mapped reads number' in metric and \
+               'Number of reads mapped to multiple loci' in metric:
+                unique = metric['Uniquely mapped reads number']
+                multi = metric['Number of reads mapped to multiple loci']
+                return (unique + multi)
 
     elif assay_name in ['ChIP-seq']:
 

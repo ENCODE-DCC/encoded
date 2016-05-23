@@ -1270,7 +1270,10 @@ def test_audit_experiment_rampage_standards(testapp,
                                              'assembly': 'mm10'})
     testapp.patch_json(file_bam_2_1['@id'], {'step_run': analysis_step_run_bam['@id'],
                                              'assembly': 'mm10'})
-
+    testapp.patch_json(bam_quality_metric_1_1['@id'],
+                       {'Number of reads mapped to multiple loci': 100})
+    testapp.patch_json(bam_quality_metric_2_1['@id'],
+                       {'Number of reads mapped to multiple loci': 100})
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'RAMPAGE (paired-end, stranded)'})
 
@@ -1337,7 +1340,10 @@ def test_audit_experiment_small_rna_standards(testapp,
 
     testapp.patch_json(bam_quality_metric_1_1['@id'], {'Uniquely mapped reads number': 26000000})
     testapp.patch_json(bam_quality_metric_2_1['@id'], {'Uniquely mapped reads number': 26000000})
-
+    testapp.patch_json(bam_quality_metric_1_1['@id'],
+                       {'Number of reads mapped to multiple loci': 1000000})
+    testapp.patch_json(bam_quality_metric_2_1['@id'],
+                       {'Number of reads mapped to multiple loci': 1000000})
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
@@ -1394,7 +1400,10 @@ def test_audit_experiment_MAD_long_rna_standards(testapp,
 
     testapp.patch_json(bam_quality_metric_1_1['@id'], {'Uniquely mapped reads number': 29000000})
     testapp.patch_json(bam_quality_metric_2_1['@id'], {'Uniquely mapped reads number': 38000000})
-
+    testapp.patch_json(bam_quality_metric_1_1['@id'],
+                       {'Number of reads mapped to multiple loci': 1})
+    testapp.patch_json(bam_quality_metric_2_1['@id'],
+                       {'Number of reads mapped to multiple loci': 1})
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
@@ -1451,7 +1460,10 @@ def test_audit_experiment_long_rna_standards_crispr(testapp,
 
     testapp.patch_json(bam_quality_metric_1_1['@id'], {'Uniquely mapped reads number': 5000000})
     testapp.patch_json(bam_quality_metric_2_1['@id'], {'Uniquely mapped reads number': 10000000})
-
+    testapp.patch_json(bam_quality_metric_1_1['@id'],
+                       {'Number of reads mapped to multiple loci': 10})
+    testapp.patch_json(bam_quality_metric_2_1['@id'],
+                       {'Number of reads mapped to multiple loci': 100})
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
@@ -1512,6 +1524,10 @@ def test_audit_experiment_long_rna_standards(testapp,
 
     testapp.patch_json(bam_quality_metric_1_1['@id'], {'Uniquely mapped reads number': 1000000})
     testapp.patch_json(bam_quality_metric_2_1['@id'], {'Uniquely mapped reads number': 38000000})
+    testapp.patch_json(bam_quality_metric_1_1['@id'],
+                       {'Number of reads mapped to multiple loci': 10})
+    testapp.patch_json(bam_quality_metric_2_1['@id'],
+                       {'Number of reads mapped to multiple loci': 30})
     testapp.patch_json(mad_quality_metric_1_2['@id'], {'quality_metric_of': [
                                                        file_tsv_1_1['@id'],
                                                        file_tsv_1_2['@id']]})
