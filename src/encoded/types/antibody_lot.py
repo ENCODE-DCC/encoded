@@ -410,7 +410,7 @@ def lot_reviews(characterizations, targets, request):
                 'not eligible for new data': 0
             }
 
-            rank = status_ranking[lane_review['lane_status']]
+            rank = status_ranking[new_review['status']]
             if rank > status_ranking[char_reviews[key]['status']]:
                 # Check to see if existing status should be overridden
                 char_reviews[key] = new_review
