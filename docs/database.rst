@@ -25,6 +25,6 @@ After building out the software, it will create an executable called json_rdf
 
 The n3 file can be imported into a SPARQL using, for example, Virtuoso ( http://semanticweb.org/wiki/Virtuoso.html_ ) or YasGUI http://yasgui.org/_
 
- The query may take upwards of 20 minutes.
+The query may take upwards of 20 minutes.
 
- There are other output options documented in src/commands/json_rdf.py  (XML, Turtle, trix others), you can also curl the URL above directly and write a json file (set accept-headers or use &format=json), and pass the file to bin/jsonld-rdf
+There are other output options documented in src/commands/json_rdf.py  (XML, Turtle, trix others), you can also curl the URL above directly and write a json file (set accept-headers or use &format=json), and pass the file to bin/jsonld-rdf
