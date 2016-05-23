@@ -12,6 +12,12 @@ from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
 
+from pprint import pprint as pp
+import pdb
+import logging
+
+log = logging.getLogger(__name__)
+
 
 _ASSEMBLY_MAPPER = {
     'GRCh38-minimal': 'hg38',
@@ -394,6 +400,7 @@ def format_results(request, hits):
     """
     Loads results to pass onto UI
     """
+    arr = []
     fields_requested = request.params.getall('field')
     if fields_requested:
         frame = 'embedded'
@@ -402,6 +409,7 @@ def format_results(request, hits):
 
     if frame in ['embedded', 'object']:
         for hit in hits:
+            log.warn(pp(hit))
             yield hit['_source'][frame]
         return
 
@@ -414,6 +422,11 @@ def format_results(request, hits):
             item['highlight'] = {}
             for key in hit['highlight']:
                 item['highlight'][key[9:]] = list(set(hit['highlight'][key]))
+        if item not in arr:
+            arr.append(item)
+        else:
+            log.warn("this item exists: {}".format(item['@id']))
+
         yield item
 
 
