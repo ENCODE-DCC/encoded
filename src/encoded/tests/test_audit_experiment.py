@@ -1725,7 +1725,7 @@ def test_audit_experiment_chip_seq_no_target_standards(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'ChIP-seq missing target' for error in errors_list)
+    assert any(error['category'] == 'missing target' for error in errors_list)
 
 
 def test_audit_experiment_chip_seq_library_complexity_standards(testapp,

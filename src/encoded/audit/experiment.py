@@ -555,7 +555,7 @@ def check_experiement_small_rna_encode3_standards(experiment,
             detail = 'Small RNA-seq experiment {} '.format(experiment['@id']) + \
                      'contains a file {} '.format(f['@id']) + \
                      'that is not single-ended.'
-            yield AuditFailure('small RNA - not single-ended', detail, level='WARNING')
+            yield AuditFailure('unexpected run-type', detail, level='WARNING')
 
     for f in alignment_files:
         if 'assembly' in f and f['assembly'] == desired_assembly:
@@ -595,7 +595,7 @@ def check_experiement_rampage_encode3_standards(experiment,
             detail = 'RAMPAGE experiment {} '.format(experiment['@id']) + \
                      'contains a file {} '.format(f['@id']) + \
                      'that is not paired-ended.'
-            yield AuditFailure('RAMPAGE - not paired-ended', detail, level='WARNING')
+            yield AuditFailure('unexpected run-type', detail, level='WARNING')
 
     for f in alignment_files:
         if 'assembly' in f and f['assembly'] == desired_assembly:
