@@ -640,10 +640,10 @@ def check_idr(metrics, rescue, self_consistency, pipeline):
                 file_names = []
                 for f in m['quality_metric_of']:
                     file_names.append(f['@id'])
-                detail = 'Replicate concordance is measured by calculating IDR values (Irreproducible Discovery Rate).' + \
+                detail = 'Replicate concordance is measured by calculating IDR values (Irreproducible Discovery Rate). ' + \
                          'ENCODE processed IDR thresholded peaks files {} '.format(file_names) + \
-                         'have rescue ratio of {}, and '.format(rescue_r) + \
-                         'self consistency ratio of {}. '.format(self_r) + \
+                         'have rescue ratio of {0:.2f}, and '.format(rescue_r) + \
+                         'self consistency ratio of {0:.2f}. '.format(self_r) + \
                          'Both ratios should be < 2, according to June 2015 standards.'
                 yield AuditFailure('insufficient replicate concordance', detail,
                                    level='NOT_COMPLIANT')
