@@ -636,7 +636,7 @@ def check_idr(metrics, rescue, self_consistency, pipeline):
         if 'rescue_ratio' in m and 'self_consistency_ratio' in m:
             rescue_r = m['rescue_ratio']
             self_r = m['self_consistency_ratio']
-            if rescue_r >= rescue or self_r >= self_consistency:
+            if rescue_r > rescue and self_r > self_consistency:
                 file_names = []
                 for f in m['quality_metric_of']:
                     file_names.append(f['@id'])
@@ -647,6 +647,18 @@ def check_idr(metrics, rescue, self_consistency, pipeline):
                          'Both ratios should be < 2, according to June 2015 standards.'
                 yield AuditFailure('insufficient replicate concordance', detail,
                                    level='NOT_COMPLIANT')
+            elif (rescue_r <= rescue or self_r > self_consistency) or \
+                 (rescue_r > rescue or self_r <= self_consistency):
+                    file_names = []
+                    for f in m['quality_metric_of']:
+                        file_names.append(f['@id'])
+                    detail = 'Replicate concordance is measured by calculating IDR values (Irreproducible Discovery Rate). ' + \
+                             'ENCODE processed IDR thresholded peaks files {} '.format(file_names) + \
+                             'have rescue ratio of {0:.2f}, and '.format(rescue_r) + \
+                             'self consistency ratio of {0:.2f}. '.format(self_r) + \
+                             'Both ratios should be < 2, according to June 2015 standards.'
+                    yield AuditFailure('borderline replicate concordance', detail,
+                                       level='WARNING')
 
 
 def check_mad(metrics, replication_type, mad_threshold, pipeline):
