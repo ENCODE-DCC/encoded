@@ -104,7 +104,7 @@ describe('Experiment Page', function() {
             var dlBar = doc.getElementsByClassName('dl-bar');
             expect(dlBar.length).toEqual(1);
             var anchors = dlBar[0].getElementsByTagName('a');
-            expect(anchors.length).toEqual(1);
+            expect(anchors.length).toEqual(2);
             expect(url.parse(anchors[0].getAttribute('href')).pathname).toEqual('/documents/df9dd0ec-c1cf-4391-a745-a933ab1af7a7/@@download/attachment/Myers_Lab_ChIP-seq_Protocol_v042211.pdf');
         });
 

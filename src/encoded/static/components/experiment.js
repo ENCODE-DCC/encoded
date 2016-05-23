@@ -2,6 +2,8 @@
 var React = require('react');
 var panel = require('../libs/bootstrap/panel');
 var button = require('../libs/bootstrap/button');
+var {SvgIcon, CollapseIcon} = require('../libs/svg-icons');
+var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var _ = require('underscore');
 var moment = require('moment');
 var graph = require('./graph');
@@ -36,6 +38,8 @@ var SoftwareVersionList = software.SoftwareVersionList;
 var {SortTablePanel, SortTable} = sortTable;
 var ProjectBadge = image.ProjectBadge;
 var {DocumentsPanel, AttachmentPanel} = doc;
+var DropdownButton = button.DropdownButton;
+var DropdownMenu = dropdownMenu.DropdownMenu;
 var {Panel, PanelBody, PanelHeading} = panel;
 
 
@@ -44,6 +48,20 @@ var anisogenicValues = [
     'anisogenic, age-matched',
     'anisogenic, sex-matched',
     'anisogenic'
+];
+
+
+// Order that assemblies should appear in filtering menu
+var assemblyPriority = [
+    'GRCh38',
+    'hg19',
+    'mm10',
+    'mm9',
+    'ce11',
+    'ce10',
+    'dm6',
+    'dm3',
+    'J02459.1'
 ];
 
 
@@ -554,19 +572,8 @@ var Experiment = module.exports.Experiment = React.createClass({
                     <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
                 : null}
 
-                <FetchedData ignoreErrors>
-                    <Param name="data" url={dataset.unreleased_files_url(context)} />
-                    <ExperimentGraph context={context} session={this.context.session} />
-                </FetchedData>
-
-                {/* If logged in and dataset is released, need to combine search of files that reference
-                    this dataset to get released and unreleased ones. If not logged in, then just get
-                    files from dataset.files */}
-                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
-                    <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
-                :
-                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
-                }
+                {/* Display the file widget with the facet, graph, and tables */}
+                <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} />
 
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} ignoreErrors />
 
@@ -1029,6 +1036,191 @@ var RelatedSeriesItem = React.createClass({
 });
 
 
+// Given an array of files, make an array of file assemblies and genome annotations to prepare for
+// rendering the filtering menu of assemblies and genome annotations. This collects them from all
+// files that don't have a "raw data" output_category and that have an assembly. The format of the
+// returned array is:
+//
+// [{assembly: 'assembly1', annotation: 'annotation1'}]
+//
+// The resulting array has no duplicate entries, nor empty ones. Entries with an assembly but no
+// annotation simply have an empty string for the annnotation. The array of assemblies and
+// annotations is then sorted with assembly as the primary key and annotation as the secondary.
+
+function collectAssembliesAnnotations(files) {
+    var filterOptions = [];
+
+    // Get the assembly and annotation of each file. Assembly is required to be included in the list
+    files.forEach(file => {
+        if (file.output_category !== 'raw data' && file.assembly) {
+            filterOptions.push({assembly: file.assembly, annotation: file.genome_annotation});
+        }
+    });
+
+    // Eliminate duplicate entries in filterOptions. Duplicates are detected by combining the
+    // assembly and annotation into a long string. Use the '!' separator so that highly unlikely
+    // anomalies don't pass undetected (e.g. hg19!V19 and hg1!9V19 -- again, highly unlikely).
+    filterOptions = filterOptions.length ? _(filterOptions).uniq(option => option.assembly + '!' + (option.annotation ? option.annotation : '')) : [];
+
+    // Now begin a two-stage sort, with the primary key being the assembly in a specific priority
+    // order specified by the assemblyPriority array, and the secondary key being the annotation
+    // in which we attempt to suss out the ordering from the way it looks, highest-numbered first.
+    // First, sort by annotation and reverse the sort at the end.
+    filterOptions = _(filterOptions).sortBy(option => {
+        if (option.annotation) {
+            // Extract any number from the annotation.
+            var annotationMatch = option.annotation.match(/^[A-Z]+(\d+).*$/);
+            if (annotationMatch) {
+                // Return the number to the sorting algoritm.
+                return Number(annotationMatch[1]);
+            }
+        }
+
+        // No annotation gets sorted to the top.
+        return null;
+    }).reverse();
+
+    // Now sort by assembly priority order as the primary sorting key. assemblyPriority is a global
+    // array at the top of the file.
+    return _(filterOptions).sortBy(option => _(assemblyPriority).indexOf(option.assembly));
+}
+
+
+// File display widget, showing a facet list, a table, and a graph (and maybe a BioDalliance).
+// This component only triggers the data retrieval, which is done with a search for files associated
+// with the given experiment (in this.props.context). An odd thing is we specify query-string parameters
+// to the experiment URL, but they apply to the file search -- not the experiment itself.
+
+var FileGallery = React.createClass({
+    propTypes: {
+        encodevers: React.PropTypes.string, // ENCODE version number
+        anisogenic: React.PropTypes.bool // True if anisogenic experiment
+    },
+
+    contextTypes: {
+        session: React.PropTypes.object, // Login information
+        location_href: React.PropTypes.string // URL of this experiment page, including query string stuff
+    },
+
+    nonSearchQueries: ['format'],
+
+    render: function() {
+        var {context, encodevers, anisogenic} = this.props;
+
+        return (
+            <FetchedData ignoreErrors>
+                <Param name="data" url={dataset.unreleased_files_url(context)} />
+                <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} />
+            </FetchedData>
+        );
+    }
+});
+
+
+// Function to render the file gallery, and it gets called after the file search results (for files associated with
+// the displayed experiment) return.
+var FileGalleryRenderer = React.createClass({
+    propTypes: {
+        encodevers: React.PropTypes.string, // ENCODE version number
+        anisogenic: React.PropTypes.bool // True if anisogenic experiment
+    },
+
+    contextTypes: {
+        session: React.PropTypes.object,
+        location_href: React.PropTypes.string
+    },
+
+    getInitialState: function() {
+        return {
+            selectedFilterValue: '' // <select> value of selected filter
+        };
+    },
+
+    // Set the graph filter based on the given <option> value
+    setFilter: function(value) {
+        if (value === 'default') {
+            value = '';
+        }
+        this.setState({selectedFilterValue: value});
+    },
+
+    // React to a filter menu selection. The synthetic event given in `e`
+    handleFilterChange: function(e) {
+        this.setFilter(e.target.value);
+    },
+
+    // Set the default filter after the graph has been analayzed once.
+    componentDidMount: function() {
+        this.setFilter('0');
+    },
+
+    render: function() {
+        var {context, data} = this.props;
+        var selectedAssembly = '';
+        var selectedAnnotation = '';
+        var items = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
+        var files = items.length ? items : [];
+        if (files.length === 0) {
+            return null;
+        }
+        var filterOptions = files.length ? collectAssembliesAnnotations(files) : [];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
+
+        // Build the graph; place resulting graph in this.jsonGraph
+        if (this.state.selectedFilterValue && filterOptions[this.state.selectedFilterValue]) {
+            selectedAssembly = filterOptions[this.state.selectedFilterValue].assembly;
+            selectedAnnotation = filterOptions[this.state.selectedFilterValue].annotation;
+        }
+
+        // Rendering the filtering menu
+        var filterMenu = filterOptions.length ?
+            <select className="form-control" defaultValue="0" onChange={this.handleFilterChange}>
+                <option value="default" key="title">All Assemblies and Annotations</option>
+                <option disabled="disabled"></option>
+                {filterOptions.map((option, i) =>
+                    <option key={i} value={i}>{option.assembly + (option.annotation ? ' ' + option.annotation : '')}</option>
+                )}
+            </select>
+        : null;
+
+        return (
+            <Panel>
+                <PanelHeading addClasses="file-gallery-heading">
+                    <h4>Files</h4>
+                    <div className="file-gallery-controls">
+                        {context.visualize_ucsc  && context.status == "released" ?
+                            <div className="file-gallery-control">
+                                <DropdownButton title='Visualize Data' label="visualize-data">
+                                    <DropdownMenu>
+                                        {Object.keys(context.visualize_ucsc).map(assembly =>
+                                            <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context.visualize_ucsc[assembly]}>
+                                                {assembly}
+                                            </a>
+                                        )}
+                                    </DropdownMenu>
+                                </DropdownButton>
+                            </div>
+                        : null}
+                        <div className="file-gallery-control">{filterMenu}</div>
+                    </div>
+                </PanelHeading>
+
+                <ExperimentGraph context={context} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
+
+                {/* If logged in and dataset is released, need to combine search of files that reference
+                    this dataset to get released and unreleased ones. If not logged in, then just get
+                    files from dataset.files */}
+                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
+                    <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={DatasetFiles} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} encodevers={globals.encodeVersion(context)} session={this.context.session} showFileCount ignoreErrors noDefaultClasses />
+                :
+                    <FileTable {...this.props} items={context.files} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} encodevers={globals.encodeVersion(context)} session={this.context.session} showFileCount noDefaultClasses />
+                }
+            </Panel>
+        );
+    }
+});
+
+
 // Handle graphing throws
 function graphException(message, file0, file1) {
 /*jshint validthis: true */
@@ -1474,13 +1666,13 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
     return jsonGraph;
 };
 
-// analysis steps.
+
 var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
     getInitialState: function() {
         return {
             infoNodeId: '', // @id of node whose info panel is open
-            selectedFilterValue: '' // <select> value of selected filter
+            collapsed: false // T if graphing panel is collapsed
         };
     },
 
@@ -1496,9 +1688,6 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         'dm3',
         'J02459.1'
     ],
-
-    // Holds filtering option objects ({assembly: x, annotation: y}) in sorted order
-    sortedFilterOptions: [],
 
     // Render metadata if a graph node is selected.
     // jsonGraph: JSON graph data.
@@ -1531,58 +1720,17 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         this.setState({infoNodeId: this.state.infoNodeId !== nodeId ? nodeId : ''});
     },
 
-    // Set the graph filter based on the given <option> value
-    setFilter: function(value) {
-        if (value === 'default') {
-            value = '';
-        }
-        this.setState({selectedFilterValue: value});
-    },
-
-    // React to a filter menu selection. The synthetic event given in `e`
-    handleFilterChange: function(e) {
-        this.setFilter(e.target.value);
-    },
-
-    // Set the default filter after the graph has been analayzed once.
-    componentDidMount: function() {
-        this.setFilter('0');
-    },
-
-    componentWillUnmount: function() {
-        this.sortedFilterOptions = [];
-    },
-
-    // Given a filterOptions array [{annotation: x, assembly: x}], pre-sort the annotations so that assembly sorting
-    // becomes the primary key, and the annotion becomes the secondary.
-    sortAnnotations: function(filterOptions) {
-        var sortedFilterOptions = _(filterOptions).sortBy(option => {
-            if (option.annotation) {
-                var annotationMatch = option.annotation.match(/^[A-Z]+(\d+).*$/);
-                if (annotationMatch) {
-                    return Number(annotationMatch[1]);
-                }
-            }
-            return null;
-        });
-        return sortedFilterOptions.reverse();
+    handleCollapse: function() {
+        // Handle click on panel collapse icon
+        this.setState({collapsed: !this.state.collapsed});
     },
 
     render: function() {
-        var selectedAssembly = '';
-        var selectedAnnotation = '';
-        var {context, session, data} = this.props;
-        var items = data ? data['@graph'] : [];
-        var files = context.files.concat(items);
+        var {context, session, items, selectedAssembly, selectedAnnotation} = this.props;
+        var files = items;
 
         // Build node graph of the files and analysis steps with this experiment
         if (files && files.length) {
-            // Build the graph; place resulting graph in this.jsonGraph
-            var filterOptions = {};
-            if (this.state.selectedFilterValue && this.sortedFilterOptions[this.state.selectedFilterValue]) {
-                selectedAssembly = this.sortedFilterOptions[this.state.selectedFilterValue].assembly;
-                selectedAnnotation = this.sortedFilterOptions[this.state.selectedFilterValue].annotation;
-            }
             try {
                 this.jsonGraph = assembleGraph(context, session, this.state.infoNodeId, files, selectedAssembly, selectedAnnotation);
             } catch(e) {
@@ -1590,44 +1738,38 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 console.warn(e.message + (e.file0 ? ' -- file0:' + e.file0 : '') + (e.file1 ? ' -- file1:' + e.file1: ''));
             }
             var goodGraph = this.jsonGraph && Object.keys(this.jsonGraph).length;
-            filterOptions = (goodGraph && this.jsonGraph.filterOptions) ? this.jsonGraph.filterOptions : [];
-
-            // Sort filtering menu to an order specified by this.assemblyPriority. Sort by annotation and then by assembly so that
-            // annotation is the secondary key.
-            this.sortedFilterOptions = _(this.sortAnnotations(filterOptions)).sortBy(item => _(this.assemblyPriority).indexOf(item.assembly));
 
             // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
-            if (goodGraph || this.state.selectedAssembly || this.state.selectedAnnotation) {
+            if (goodGraph || selectedAssembly || selectedAnnotation) {
                 var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
                 return (
                     <div>
-                        <h3>Files generated by pipeline</h3>
-                        {filterOptions && Object.keys(filterOptions).length ?
-                            <div className="form-inline">
-                                <select className="form-control" defaultValue="0" onChange={this.handleFilterChange}>
-                                    <option value="default" key="title">All Assemblies and Annotations</option>
-                                    <option disabled="disabled"></option>
-                                    {this.sortedFilterOptions.map((option, i) =>
-                                        <option key={i} value={i}>{option.assembly + (option.annotation ? ' ' + option.annotation : '')}</option>
-                                    )}
-                                </select>
+                        <div className="file-gallery-graph-header">
+                            <a href="#" data-trigger onClick={this.handleCollapse} className="collapsing-title">
+                                <h4>
+                                    {CollapseIcon(this.state.collapsed, 'collapsing-title-icon')}
+                                    Association graph
+                                </h4>
+                            </a>
+                        </div>
+                        {!this.state.collapsed ?
+                            <div>
+                                {goodGraph ?
+                                    <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw>
+                                        <div id="graph-node-info">
+                                            {meta ? <PanelBody>{meta}</PanelBody> : null}
+                                        </div>
+                                    </Graph>
+                                :
+                                    <p className="browser-error">Currently selected assembly and genomic annotation hides the graph</p>
+                                }
                             </div>
                         : null}
-                        {goodGraph ?
-                            <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick}>
-                                <div id="graph-node-info">
-                                    {meta ? <PanelBody>{meta}</PanelBody> : null}
-                                </div>
-                            </Graph>
-                        :
-                            <Panel>
-                                <PanelBody>
-                                    <p className="browser-error">Currently selected assembly and genomic annotation hides the graph</p>
-                                </PanelBody>
-                            </Panel>
-                        }
+                        <div className={'file-gallery-graph-footer' + (this.state.collapsed ? ' hiding' : '')}></div>
                     </div>
                 );
+            } else {
+                return <p className="browser-error">Graph not applicable to this experiment’s files.</p>;
             }
         }
         return null;

@@ -1,11 +1,18 @@
 'use strict';
 var React = require('react');
-var panel = require('../libs/bootstrap/panel');
+var {Panel, PanelBody, PanelHeading} = require('../libs/bootstrap/panel');
 var _ = require('underscore');
 var globals = require('./globals');
 var BrowserFeat = require('./browserfeat').BrowserFeat;
+var SvgIcon = require('../libs/svg-icons').SvgIcon;
 
-var {Panel, PanelBody, PanelHeading} = panel;
+
+// Zoom slider constants
+const minZoom = 0; // Minimum zoom slider level
+const maxZoom = 100; // Maximum zoom slider level
+const midZoom = (maxZoom - minZoom) / 2; // Default zoom slider level
+const graphWidthMargin = 40; // Margin on horizontal edges of graph SVG
+const graphHeightMargin = 40; // Margin on vertical edges of graph SVG
 
 
 // The JsonGraph object helps build JSON graph objects. Create a new object
@@ -147,8 +154,19 @@ var Graph = module.exports.Graph = React.createClass({
     getInitialState: function() {
         return {
             dlDisabled: false, // Download button disabled because of IE
-            verticalGraph: false // True for vertically oriented graph, false for horizontal
+            verticalGraph: false, // True for vertically oriented graph, false for horizontal
+            zoomLevel: null // Graph zoom level; null to indicate not set
         };
+    },
+
+    // Component state variables we don't want to cause a rerender
+    cv: {
+        viewBoxWidth: 0, // Width of the SVG's viewBox
+        viewBoxHeight: 0, // Height of the SVG's viewBox
+        aspectRatio: 0, // Aspect ratio of graph -- width:height
+        zoomMouseDown: false, // Mouse currently controlling zoom slider
+        dagreLoaded: false, // Dagre JS library has been loaded
+        zoomFactor: 0 // Amount zoom slider value changes should change width of graph
     },
 
     // Take a JsonGraph object and convert it to an SVG graph with the Dagre-D3 library.
@@ -187,49 +205,102 @@ var Graph = module.exports.Graph = React.createClass({
         });
     },
 
-    // Draw the graph on initial draw as well as on state changes.
-    // An <svg> element to draw into must already exist in the HTML element in the el parm.
+    // Draw the graph on initial draw as well as on state changes. An <svg> element to draw into
+    // must already exist in the HTML element in the el parm. This also sets the viewBox of the
+    // SVG to its natural height
     drawGraph: function(el) {
+        var viewBox, zoomLevel;
         var d3 = this.d3;
         var dagreD3 = this.dagreD3;
-        var svg = this.savedSvg = d3.select(el).select('svg');
+        d3.selectAll('svg#pipeline-graph > *').remove(); // http://stackoverflow.com/questions/22452112/nvd3-clear-svg-before-loading-new-chart#answer-22453174
+        var svg = d3.select(el).select('svg');
+
+        // Clear `width` and `height` attributes if they exist
+        svg.attr('width', null).attr('height', null).attr('viewBox', null);
 
         // Create a new empty graph
         var g = new dagreD3.graphlib.Graph({multigraph: true, compound: true})
             .setGraph({rankdir: this.state.verticalGraph ? 'TB' : 'LR'})
             .setDefaultEdgeLabel(function() { return {}; });
         var render = new dagreD3.render();
-        render(svg.select('g'), g);
 
         // Convert from given node architecture to the dagre nodes and edges
         this.convertGraph(this.props.graph, g);
 
         // Run the renderer. This is what draws the final graph.
-        render(svg.select('g'), g);
+        render(svg, g);
 
-        // Dagre-D3 has a width and height for the graph.
-        // Set the viewbox's and viewport's width and height to that plus a little extra.
-        // Round the graph dimensions up to avoid problems detecting the end of scrolling.
-        var width = Math.ceil(g.graph().width);
-        var height = Math.ceil(g.graph().height);
-        svg.attr("width", width + 40).attr("height", height + 60)
-            .attr("viewBox", "-20 -40 " + (width + 40) + " " + (height + 60));
+        // Get the natural (unscaled) width and height of the graph
+        var graphWidth = Math.ceil(g.graph().width);
+        var graphHeight = Math.ceil(g.graph().height);
+
+        // Get the unscaled width and height of the graph including margins, and make a viewBox
+        // for the graph so it'll render with the margins. The SVG's viewBox is always the
+        // unscaled coordinates and immutable
+        var viewBoxWidth = graphWidth + (graphWidthMargin * 2);
+        var viewBoxHeight = graphHeight + (graphHeightMargin * 2);
+        viewBox = [-graphWidthMargin, -graphHeightMargin, viewBoxWidth, viewBoxHeight];
+
+        // Set the viewBox of the SVG based on its unscaled extents
+        this.cv.savedSvg.attr("viewBox", viewBox.join(' '));
+
+        // Now set the `width` and `height` attributes based on the current zoom level
+        if (this.state.zoomLevel && this.cv.zoomFactor) {
+            var width = this.state.zoomLevel * this.cv.zoomFactor + this.cv.minZoomWidth;
+            var height = width / this.cv.aspectRatio;
+            svg.attr('width', width).attr('height', height);
+        }
+
+        // Return the SVG so callers can do more with this after drawing the unscaled graph
+        return {viewBoxWidth: viewBoxWidth, viewBoxHeight: viewBoxHeight};
     },
 
     bindClickHandlers: function(d3, el) {
         // Add click event listeners to each node rendering. Node's ID is its ENCODE object ID
         var svg = d3.select(el);
-        var reactThis = this;
         var nodes = svg.selectAll("g.node");
         var subnodes = svg.selectAll("g.subnode circle");
 
-        nodes.on('click', function(nodeId) {
-            reactThis.props.nodeClickHandler(nodeId);
+        nodes.on('click', nodeId => {
+            this.props.nodeClickHandler(nodeId);
         });
-        subnodes.on('click', function(subnode) {
+        subnodes.on('click', subnode => {
             d3.event.stopPropagation();
-            reactThis.props.nodeClickHandler(subnode.id);
+            this.props.nodeClickHandler(subnode.id);
         });
+    },
+
+    // For the given container element and its svg, calculate an initial zoom level that fits the
+    // graph into the container element. Returns the zoom level appropriate for the initial zoom.
+    // Also sets component variables for later zoom calculations, and sets the "width" and "height"
+    // of the SVG to scale it to fit the container element.
+    setInitialZoomLevel: function(el, svg) {
+        var svgWidth;
+        var svgHeight;
+        var viewBox = svg.attr('viewBox').split(' ');
+        var viewBoxWidth = viewBox[2];
+        var viewBoxHeight = viewBox[3];
+
+        // Calculate minimum and maximum pixel width, and zoom factor which is the amount each
+        // slider value gets multiplied by to get a new graph width. Save all these in component
+        // variables.
+        var minZoomWidth = viewBoxWidth / 4;
+        var maxZoomWidth = viewBoxWidth * 2;
+        this.cv.zoomFactor = (maxZoomWidth - minZoomWidth) / 100;
+        this.cv.minZoomWidth = minZoomWidth;
+        this.cv.aspectRatio = viewBoxWidth / viewBoxHeight;
+
+        // Get the width of the graph panel
+        if (el.clientWidth >= viewBoxWidth) {
+            svgWidth = viewBoxWidth;
+            svgHeight = viewBoxHeight;
+        } else {
+            svgWidth = el.clientWidth;
+            svgHeight = svgWidth / this.cv.aspectRatio;
+        }
+        var zoomLevel = (svgWidth - this.cv.minZoomWidth) / this.cv.zoomFactor;
+        svg.attr('width', svgWidth).attr('height', svgHeight);
+        return zoomLevel;
     },
 
     componentDidMount: function () {
@@ -237,24 +308,32 @@ var Graph = module.exports.Graph = React.createClass({
         if (BrowserFeat.getBrowserCaps('svg')) {
             // Delay loading dagre for Jest testing compatibility;
             // Both D3 and Jest have their own conflicting JSDOM instances
-            require.ensure(['dagre-d3', 'd3'], function(require) {
+            require.ensure(['dagre-d3', 'd3'], require => {
                 this.d3 = require('d3');
                 this.dagreD3 = require('dagre-d3');
                 var el = this.refs.graphdisplay.getDOMNode();
-                this.dagreLoaded = true;
 
                 // Add SVG element to the graph component, and assign it classes, sizes, and a group
                 var svg = this.d3.select(el).insert('svg', '#graph-node-info')
-                    .attr('preserveAspectRatio', 'xMidYMid')
+                    .attr('id', 'pipeline-graph')
+                    .attr('preserveAspectRatio', 'none')
                     .attr('version', '1.1');
                 var svgGroup = svg.append("g");
+                this.cv.savedSvg = svg;
 
-                // Draw the graph into the panel
-                this.drawGraph(el);
+                // Draw the graph into the panel; get the graph's view box and save it for
+                // comparisons later
+                var {viewBoxWidth, viewBoxHeight} = this.drawGraph(el);
+                this.cv.viewBoxWidth = viewBoxWidth;
+                this.cv.viewBoxHeight = viewBoxHeight;
+
+                // Based on the size of the graph and view box, 
+                var initialZoomLevel = this.setInitialZoomLevel(el, svg);
+                this.setState({zoomLevel: initialZoomLevel});
 
                 // Bind node/subnode click handlers to parent component handlers
-                this.bindClickHandlers(d3, el);
-            }.bind(this), 'dagre');
+                this.bindClickHandlers(this.d3, el);
+            });
         } else {
             // Output text indicating that graphs aren't supported.
             var el = this.refs.graphdisplay.getDOMNode();
@@ -276,10 +355,23 @@ var Graph = module.exports.Graph = React.createClass({
 
     // State change; redraw the graph
     componentDidUpdate: function() {
-        if (this.dagreD3) {
-            var el = this.refs.graphdisplay.getDOMNode();
-            this.drawGraph(el);
+        if (this.dagreD3 && !this.cv.zoomMouseDown) {
+            var el = this.refs.graphdisplay.getDOMNode(); // Change in React 0.14
+            var {viewBoxWidth, viewBoxHeight} = this.drawGraph(el);
+
+            // Bind node/subnode click handlers to parent component handlers
             this.bindClickHandlers(this.d3, el);
+
+            // If the viewbox has changed since the last time, need to recalculate the zooming
+            // parameters.
+            if (Math.abs(viewBoxWidth - this.cv.viewBoxWidth) > 10 || Math.abs(viewBoxHeight - this.cv.viewBoxHeight) > 10) {
+                // Based on the size of the graph and view box, 
+                var initialZoomLevel = this.setInitialZoomLevel(el, this.cv.savedSvg);
+                this.setState({zoomLevel: initialZoomLevel});
+            }
+
+            this.cv.viewBoxWidth = viewBoxWidth;
+            this.cv.viewBoxHeight = viewBoxHeight;
         }
     },
 
@@ -288,7 +380,6 @@ var Graph = module.exports.Graph = React.createClass({
     },
 
     handleDlClick: function() {
-
         // Collect CSS styles that apply to the graph and insert them into the given SVG element
         function attachStyles(el) {
             var stylesText = '';
@@ -324,7 +415,12 @@ var Graph = module.exports.Graph = React.createClass({
         }
 
         // Going to be manipulating the SVG node, so make a clone to make GC’s job harder
-        var svgNode = this.savedSvg.node().cloneNode(true);
+        var svgNode = this.cv.savedSvg.node().cloneNode(true);
+
+        // Reset the SVG's size to its natural size
+        var viewBox = this.cv.savedSvg.attr('viewBox').split(' ');
+        svgNode.setAttribute("width", viewBox[2]);
+        svgNode.setAttribute("height", viewBox[3]);
 
         // Attach graph CSS to SVG node clone
         attachStyles(svgNode);
@@ -355,15 +451,63 @@ var Graph = module.exports.Graph = React.createClass({
         }.bind(this);
     },
 
+    rangeChange: function(e) {
+        // Called when the user clicks/drags the zoom slider; value comes from the slider 0-100
+        var value = e.target.value;
+
+        // Calculate the new graph width and height for the new zoom value
+        var width = value * this.cv.zoomFactor + this.cv.minZoomWidth;
+        var height = width / this.cv.aspectRatio;
+
+        // Get the SVG in the DOM and update its width and height
+        var svgEl = document.getElementById('pipeline-graph');
+        svgEl.setAttribute('width', width);
+        svgEl.setAttribute('height', height);
+
+        // Remember zoom level as a state -- causes rerender remember!
+        this.setState({zoomLevel: value});
+    },
+
+    rangeMouseDown: function(e) {
+        // Mouse clicked in zoom slider
+        this.cv.zoomMouseDown = true;
+    },
+
+    rangeMouseUp: function(e) {
+        // Mouse released from zoom slider
+        this.cv.zoomMouseDown = false;
+        this.rangeChange(e); // Fix for IE11 as onChange doesn't get called; at least call this after dragging
+        // For IE11 fix, see https://github.com/facebook/react/issues/554#issuecomment-188288228
+    },
+
+    rangeDoubleClick: function(e) {
+        // Handle a double click in the zoom slider
+        var el = this.refs.graphdisplay.getDOMNode();
+        var zoomLevel = this.setInitialZoomLevel(el, this.cv.savedSvg);
+        this.setState({zoomLevel: zoomLevel});
+    },
+
     render: function() {
-        var orientBtnClass = (this.state.verticalGraph ? 'btn-orient-horizontal' : 'btn-orient-vertical');
         var orientBtnAlt = 'Orient graph ' + (this.state.verticalGraph ? 'horizontally' : 'vertically');
+        var currOrientKey = this.state.verticalGraph ? 'orientH' : 'orientV';
+        var noDefaultClasses = this.props.noDefaultClasses;
+
         return (
-            <Panel>
-                <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler}></div>
+            <Panel noDefaultClasses={noDefaultClasses}>
+                <div className="zoom-control-area">
+                    <table className="zoom-control">
+                        <tr>
+                            <td className="zoom-indicator"><i className="icon icon-minus"></i></td>
+                            <td className="zomm-controller"><input type="range" className="zoom-slider" min={minZoom} max={maxZoom} value={this.state.zoomLevel} onChange={this.rangeChange} onDoubleClick={this.rangeDoubleClick} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} /></td>
+                            <td className="zoom-indicator"><i className="icon icon-plus"></i></td>
+                        </tr>
+                    </table>
+                </div>
+                <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler}>
+                </div>
                 <div className="graph-dl clearfix">
-                    <button className="btn btn-info btn-sm btn-orient-wrapper" title={orientBtnAlt} onClick={this.handleOrientationClick}><span className={orientBtnClass}><span className="sr-only">{orientBtnAlt}</span></span></button>
-                    <button ref="dlButton" className="btn btn-info btn-sm pull-right" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
+                    <button className="btn btn-info btn-sm btn-orient" title={orientBtnAlt} onClick={this.handleOrientationClick}>{SvgIcon(currOrientKey)}<span className="sr-only">{orientBtnAlt}</span></button>
+                    <button ref="dlButton" className="btn btn-info btn-sm" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
                 </div>
                 {this.props.children}
             </Panel>
