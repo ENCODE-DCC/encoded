@@ -1021,7 +1021,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                      'in experiments studying broad histone marks, which ' + \
                      'require {} usable fragments, according to '.format(marks['broad']) + \
                      'June 2015 standards.'
-            yield AuditFailure('low read depth', detail, level='WARNING')
+            yield AuditFailure('low read depth', detail, level='DCC_ACTION')
         if read_depth >= 10000000 and read_depth < marks['narrow']:
             detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                          read_depth) + \
