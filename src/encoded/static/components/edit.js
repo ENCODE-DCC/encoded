@@ -77,26 +77,31 @@ var EditForm = module.exports.EditForm = React.createClass({
     },
 
     componentDidMount: function () {
-        var $script = require('scriptjs');
-        $script('brace', this.setupEditor);
+        this.setupEditor();
     },
 
     setupEditor: function () {
-        var ace = require('brace');
-        require('brace/mode/json');
-        require('brace/theme/solarized_light');
-        var value = JSON.stringify(sorted_json(this.props.data), null, 4);
-        var editor = ace.edit(this.refs.editor.getDOMNode());
-        var session = editor.getSession();
-        session.setMode('ace/mode/json');
-        editor.setValue(value);
-        editor.setOptions({
-            maxLines: 1000,
-            minLines: 24
-        });
-        editor.clearSelection();
-        this.setState({editor: editor});
-        session.on("changeAnnotation", this.hasErrors);
+        require.ensure([
+            'brace',
+            'brace/mode/json',
+            'brace/theme/solarized_light'
+        ], (require) => {
+            var ace = require('brace');
+            require('brace/mode/json');
+            require('brace/theme/solarized_light');
+            var value = JSON.stringify(sorted_json(this.props.data), null, 4);
+            var editor = ace.edit(this.refs.editor.getDOMNode());
+            var session = editor.getSession();
+            session.setMode('ace/mode/json');
+            editor.setValue(value);
+            editor.setOptions({
+                maxLines: 1000,
+                minLines: 24
+            });
+            editor.clearSelection();
+            this.setState({editor: editor});
+            session.on("changeAnnotation", this.hasErrors);
+        }, 'brace');
     },
 
     hasErrors: function () {
@@ -152,6 +157,5 @@ var EditForm = module.exports.EditForm = React.createClass({
         if (!erred) this.context.navigate('');
     }
 });
-
 
 globals.content_views.register(ItemEdit, 'Item', 'edit-json');
