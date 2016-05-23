@@ -193,9 +193,9 @@ var AuditGroup = module.exports.AuditGroup = React.createClass({
             <div className={alertClass}>
                 {loggedIn ?
                     <div className={'icon audit-detail-trigger-' + auditLevelName}>
-                        <div className="collapsing-title">
-                            {CollapseIcon(!detailOpen, this.detailSwitch)}
-                        </div>
+                        <a href="#" data-trigger onClick={this.detailSwitch} className="collapsing-title">
+                            {CollapseIcon(!detailOpen)}
+                        </a>
                     </div>
                 : null}
                 <div className="audit-detail-info">
