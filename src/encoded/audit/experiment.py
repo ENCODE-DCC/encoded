@@ -647,8 +647,8 @@ def check_idr(metrics, rescue, self_consistency, pipeline):
                          'Both ratios should be < 2, according to June 2015 standards.'
                 yield AuditFailure('insufficient replicate concordance', detail,
                                    level='NOT_COMPLIANT')
-            elif (rescue_r <= rescue or self_r > self_consistency) or \
-                 (rescue_r > rescue or self_r <= self_consistency):
+            elif (rescue_r <= rescue and self_r > self_consistency) or \
+                 (rescue_r > rescue and self_r <= self_consistency):
                     file_names = []
                     for f in m['quality_metric_of']:
                         file_names.append(f['@id'])
