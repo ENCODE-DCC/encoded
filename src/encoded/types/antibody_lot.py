@@ -272,9 +272,11 @@ def lot_reviews(characterizations, targets, request):
             exempted_secondary = True
             break
         elif secondary['status'] == 'pending dcc review':
-            pending_secondary = True
+            if not (compliant_secondary or exempted_secondary):
+                pending_secondary = True
         elif secondary['status'] == 'not compliant':
-            not_compliant_secondary = True
+            if not (compliant_secondary or exempted_secondary):
+                not_compliant_secondary = True
         elif secondary['status'] == 'in progress':
             in_progress_secondary += 1
         elif secondary['status'] == 'not reviwed':
