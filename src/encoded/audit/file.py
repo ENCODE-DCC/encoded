@@ -246,7 +246,7 @@ def audit_file_controlled_by(value, system):
     A fastq in a ChIP-seq experiment should have a controlled_by
     '''
 
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
+    if value['status'] in ['deleted', 'replaced', 'revoked', 'archived']:
         return
 
     if value['dataset'].get('assay_term_name') not in ['ChIP-seq',
