@@ -19,6 +19,7 @@ var {SortTablePanel, SortTable} = require('./sorttable');
 var image = require('./image');
 var doc = require('./doc');
 var {FileTable, DatasetFiles} = require('./filegallery');
+var {FileGallery} = require('./filegallery');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -85,6 +86,9 @@ var Annotation = React.createClass({
 
         // Make a biosample summary string
         var biosampleSummary = annotationBiosampleSummary(context);
+
+        // Determine this experiment's ENCODE version
+        var encodevers = globals.encodeVersion(context);
 
         // Set up the breadcrumbs
         var datasetType = context['@type'][1];
@@ -231,14 +235,8 @@ var Annotation = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {/* If logged in and dataset is released, need to combine search of files that reference
-                    this dataset to get released and unreleased ones. If not logged in, then just get
-                    files from dataset.files */}
-                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
-                    <FetchedItems {...this.props} url={globals.unreleased_files_url(context)} Component={DatasetFiles} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
-                :
-                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} />
-                }
+                {/* Display the file widget with the facet, graph, and tables */}
+                <FileGallery context={context} encodevers={encodevers} />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>

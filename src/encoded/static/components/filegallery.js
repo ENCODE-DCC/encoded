@@ -370,8 +370,6 @@ var FileGallery = module.exports.FileGallery = React.createClass({
         location_href: React.PropTypes.string // URL of this experiment page, including query string stuff
     },
 
-    nonSearchQueries: ['format'],
-
     render: function() {
         var {context, encodevers, anisogenic} = this.props;
 
@@ -427,10 +425,13 @@ var FileGalleryRenderer = React.createClass({
         var selectedAssembly = '';
         var selectedAnnotation = '';
         var items = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
-        var files = items.length ? items : [];
+
+        // Combined object's files and search results files for display
+        var files = _.uniq(((context.files && context.files.length) ? context.files : []).concat((items && items.length) ? items : []));
         if (files.length === 0) {
             return null;
         }
+
         var filterOptions = files.length ? collectAssembliesAnnotations(files) : [];
         var loggedIn = this.context.session && this.context.session['auth.userid'];
 
@@ -473,7 +474,7 @@ var FileGalleryRenderer = React.createClass({
                     </div>
                 </PanelHeading>
 
-                <FileGraph context={context} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
+                <FileGraph context={context} items={files} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
 
                 {/* If logged in and dataset is released, need to combine search of files that reference
                     this dataset to get released and unreleased ones. If not logged in, then just get
