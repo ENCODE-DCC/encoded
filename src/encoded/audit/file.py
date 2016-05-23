@@ -586,11 +586,6 @@ def audit_file_paired_ended_run_type(value, system):
                      'but is missing its paired_end value'
             raise AuditFailure('missing paired_end', detail, level='ERROR')
 
-        if (value['paired_end'] == 1) and 'paired_with' not in value:
-            detail = 'File {} has a paired-ended '.format(value['@id']) + \
-                     'run_type but is missing a paired_end=2 mate'
-            raise AuditFailure('missing mate pair', detail, level='ERROR')
-
 
 def get_bam_read_depth(bam_file, h3k9_flag):
     if bam_file['status'] in ['deleted', 'replaced', 'revoked']:

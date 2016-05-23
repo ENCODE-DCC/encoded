@@ -386,7 +386,7 @@ def test_audit_file_paired_ended_run_type2(testapp, file2, file_rep2):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing mate pair' for error in errors_list)
+    assert any(error['category'] == 'missing paired_with' for error in errors_list)
 
 
 def test_audit_file_missing_quality_metrics(testapp, file6,
