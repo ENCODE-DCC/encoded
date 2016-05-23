@@ -119,6 +119,7 @@ class File(Item):
         'analysis_step_version.software_versions',
         'analysis_step_version.software_versions.software',
         'quality_metrics.step_run.analysis_step_version.analysis_step',
+        'step_run',
     ]
     audit_inherit = [
         'replicate',

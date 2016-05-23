@@ -1,8 +1,9 @@
 'use strict';
-var React = require('react/addons');
+var React = require('react');
 var _ = require('underscore');
 var url = require('url');
 var panel = require('../libs/bootstrap/panel');
+var {SvgIcon, CollapseIcon} = require('../libs/svg-icons');
 var globals = require('./globals');
 var image = require('./image');
 
@@ -223,10 +224,10 @@ var DocumentFile = module.exports.DocumentFile = React.createClass({
                         {doc.attachment.download}
                     </a>
                     {detailSwitch ?
-                        <div className={'detail-switch' + (detailOpen ? ' open' : '')}>
-                            <i className={'icon detail-trigger' + (detailOpen ? '' : ' collapsed')} onClick={detailSwitch}>
-                                <span className="sr-only">More</span>
-                            </i>
+                        <div className="detail-switch">
+                            <a href="#" data-trigger onClick={detailSwitch} className="collapsing-doc">
+                                {CollapseIcon(!this.props.detailOpen)}
+                            </a>
                         </div>
                     : null}
                 </div>
