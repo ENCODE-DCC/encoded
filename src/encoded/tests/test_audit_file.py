@@ -452,11 +452,13 @@ def test_audit_file_insufficient_control_read_depth_chip_seq_paired_end(
     testapp.patch_json(file7['@id'], {'dataset': file_exp2['@id'],
                                       'file_format': 'bam',
                                       'output_type': 'alignments',
+                                      'assembly': 'hg19',
                                       'derived_from': [file2['@id']]})
 
     testapp.patch_json(file4['@id'], {'dataset': file_exp['@id'],
                                       'controlled_by': [file2['@id']]})
     testapp.patch_json(file6['@id'], {'dataset': file_exp['@id'],
+                                      'assembly': 'hg19',
                                       'derived_from': [file4['@id']]})
     testapp.patch_json(file4['@id'], {'run_type': 'paired-ended'})
     testapp.patch_json(file2['@id'], {'run_type': 'paired-ended'})
