@@ -473,7 +473,7 @@ var FileGalleryRenderer = React.createClass({
                     </div>
                 </PanelHeading>
 
-                <ExperimentGraph context={context} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
+                <FileGraph context={context} items={items} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
 
                 {/* If logged in and dataset is released, need to combine search of files that reference
                     this dataset to get released and unreleased ones. If not logged in, then just get
@@ -956,7 +956,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
 };
 
 
-var ExperimentGraph = React.createClass({
+var FileGraph = React.createClass({
 
     getInitialState: function() {
         return {
@@ -1237,7 +1237,7 @@ var QcDetailsView = function(metrics) {
                 var attachmentPropertyName = Object.keys(attachmentPropertyInfo)[0];
 
                 // Generate the JSX for the panel. Use the property name as the key to get the corresponding human-readable description for the title
-                return <AttachmentPanel context={metrics.ref} attachment={metrics.ref[attachmentPropertyName]} title={attachmentPropertyInfo[attachmentPropertyName]} />;
+                return <AttachmentPanel key={attachmentPropertyName} context={metrics.ref} attachment={metrics.ref[attachmentPropertyName]} title={attachmentPropertyInfo[attachmentPropertyName]} />;
             });
         }
 
