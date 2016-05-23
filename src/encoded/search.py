@@ -12,11 +12,6 @@ from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
 
-from pprint import pprint as pp
-import pdb
-import logging
-
-log = logging.getLogger(__name__)
 
 
 _ASSEMBLY_MAPPER = {
@@ -400,7 +395,6 @@ def format_results(request, hits):
     """
     Loads results to pass onto UI
     """
-    arr = []
     fields_requested = request.params.getall('field')
     if fields_requested:
         frame = 'embedded'
@@ -409,7 +403,6 @@ def format_results(request, hits):
 
     if frame in ['embedded', 'object']:
         for hit in hits:
-            log.warn(pp(hit))
             yield hit['_source'][frame]
         return
 
@@ -422,11 +415,6 @@ def format_results(request, hits):
             item['highlight'] = {}
             for key in hit['highlight']:
                 item['highlight'][key[9:]] = list(set(hit['highlight'][key]))
-        if item not in arr:
-            arr.append(item)
-        else:
-            log.warn("this item exists: {}".format(item['@id']))
-
         yield item
 
 
@@ -714,9 +702,11 @@ def search(context, request, search_type=None, return_generator=False):
     # Scan large result sets.
     del query['aggs']
     if size is None:
-        hits = scan(es, query=query, index=es_index, preserve_order=has_sort)
+        # preserve_order=True has unexpected results in clustered environment 
+        # https://github.com/elastic/elasticsearch-py/blob/master/elasticsearch/helpers/__init__.py#L257
+        hits = scan(es, query=query, index=es_index, preserve_order=False) 
     else:
-        hits = scan(es, query=query, index=es_index, from_=from_, size=size, preserve_order=has_sort)
+        hits = scan(es, query=query, index=es_index, from_=from_, size=size, preserve_order=False)
     graph = format_results(request, hits)
 
     # Support for request.embed() and `return_generator`
