@@ -465,10 +465,6 @@ def check_experiment_chip_seq_encode3_standards(experiment,
     for f in alignment_files:
         target = get_target(experiment)
         if target is False:
-            detail = 'ENCODE Processed alignment file {} '.format(f['@id']) + \
-                     'belongs to ChIP-seq experiment {} '.format(experiment['@id']) + \
-                     'with no target specified.'
-            yield AuditFailure('ChIP-seq missing target', detail, level='ERROR')
             return
 
         read_depth = get_file_read_depth_from_alignment(f, target, 'ChIP-seq')
@@ -496,11 +492,6 @@ def check_experiement_long_rna_encode3_standards(experiment,
 
     for failure in check_experiment_ERCC_spikeins(experiment, pipeline_title):
         yield failure
-
-    if experiment['assay_term_name'] in ['shRNA knockdown followed by RNA-seq',
-                                         'CRISPR genome editing followed by RNA-seq']:
-        for failure in check_target(experiment, pipeline_title):
-            yield failure
 
     for f in fastq_files:
         if 'run_type' not in f:
@@ -742,15 +733,6 @@ def check_experiment_ERCC_spikeins(experiment, pipeline):
                      'requires ERCC spike-in to be used in it`s preparation.'
             yield AuditFailure('missing spikeins',
                                detail, level='NOT_COMPLIANT')
-
-
-def check_target(experiment, pipeline):
-    if 'target' not in experiment:
-        detail = 'Experiment {} '.format(experiment['@id']) + \
-                 'that was processed by {} pipeline '.format(pipeline) + \
-                 'requires target specification.'
-        yield AuditFailure('missing target',
-                           detail, level='NOT_COMPLIANT')
 
 
 def get_target(experiment):
@@ -1927,9 +1909,15 @@ def audit_experiment_target(value, system):
         return
 
     if 'target' not in value:
-        detail = '{} experiments require a target'.format(value['assay_term_name'])
-        yield AuditFailure('missing target', detail, level='ERROR')
-        return
+        if value['assay_term_name'] in ['shRNA knockdown followed by RNA-seq',
+                                        'CRISPR genome editing followed by RNA-seq']:
+            detail = '{} experiments require a target'.format(value['assay_term_name'])
+            yield AuditFailure('missing target', detail, level='NOT_COMPLIANT')
+            return
+        else:
+            detail = '{} experiments require a target'.format(value['assay_term_name'])
+            yield AuditFailure('missing target', detail, level='ERROR')
+            return
 
     target = value['target']
     if 'control' in target['investigated_as']:
