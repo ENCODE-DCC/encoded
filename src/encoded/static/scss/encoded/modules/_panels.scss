@@ -49,8 +49,8 @@
 }
 
 .panel-blue {
-background-color: #4284d8;
-border: 1px solid #3276ca;
+    background-color: #4284d8;
+    border: 1px solid #3276ca;
     @include border-radius($border-radius-base);
     @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
     margin: 10px 0 20px;
@@ -158,6 +158,122 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
 .panel-body-doc {
     padding-bottom: 0 !important;
+}
+
+.file-gallery-heading {
+    position: relative
+}
+
+.file-gallery-controls {
+    margin-top: 5px;
+
+    @media screen and (min-width: $screen-sm-min) {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        bottom: 5px;
+        margin-top: 0;
+    }
+}
+
+.file-gallery-control {
+    display: inline-block;
+    vertical-align: bottom;
+    margin-right: 5px;
+
+    @media screen and (min-width: $screen-sm-min) {
+        margin-right: 0;
+        margin-left: 5px;
+    }
+
+    select {
+        height: 30px;
+    }
+}
+
+// File gallery title bars that collapse
+.collapsing-title-icon {
+    position: relative;
+    top: 3px;
+    margin-right: 10px;
+}
+
+.file-gallery-counts {
+    padding: 2px 10px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #606060;
+    background-color: #d8d8d8;
+    border-top: 1px solid #a0a0a0;
+    border-bottom: 1px solid #a0a0a0;
+}
+
+.file-gallery-graph-header {
+    padding: 0;
+    background-color: #d8e0e8;
+
+    h4 {
+        margin: 0;
+        padding: 0;
+    }
+}
+
+.file-gallery-graph-footer {
+    padding: 8px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: auto 40%;
+
+    &.hiding {
+        background-image: inline-image('../img/hiding-dots.svg');
+    }
+}
+
+// Collapsing title bar
+.collapsing-title {
+    position: relative;
+    display: block;
+    padding: 10px;
+
+    h4 {
+        margin: 0;
+    }
+
+    &:hover {
+        background-color: darken(#d8e0e8, 10%);
+        text-decoration: none;
+    }
+
+    &:focus, &:active {
+        text-decoration: none;
+    }
+}
+
+// Control for collapsing panel title bars
+.collapsing-title-control {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    pointer-events: all;
+
+    a {
+        cursor: pointer;
+    }
+
+    .bg {
+        fill: white;
+        stroke-width: 6px;
+        stroke: #000;
+    }
+
+    .arrow {
+        fill: none;
+        stroke: #000;
+        stroke-miterlimit: 10;
+        stroke-width: 60px;
+    }
 }
 
 .subpanel {
