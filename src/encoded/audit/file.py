@@ -314,7 +314,7 @@ def audit_file_controlled_by(value, system):
     biosample = value['dataset'].get('biosample_term_id')
     run_type = value.get('run_type', None)
     read_length = value.get('read_length', None)
-    platform_id = value['platform'].get('term_id')
+    platform = value.get('platform', None)
 
     if value['controlled_by']:
         for ff in value['controlled_by']:
@@ -350,16 +350,18 @@ def audit_file_controlled_by(value, system):
                 yield AuditFailure('mismatched control', detail, level='ERROR')
                 return
 
-            control_platform_id = control_platform.get('term_id')
-            if control_platform_id != platform_id:
-                detail = 'File {} is on {} but its control file {} is on {}'.format(
-                    value['@id'],
-                    value['platform'].get('term_name'),
-                    ff['@id'],
-                    control_platform.get('term_name')
-                )
-                yield AuditFailure('mismatched control platform',
-                                   detail, level='WARNING')
+            if control_platform is not None and platform is not None:
+                platform_id = platform.get('term_id')
+                control_platform_id = control_platform.get('term_id')
+                if control_platform_id != platform_id:
+                    detail = 'File {} is on {} but its control file {} is on {}'.format(
+                        value['@id'],
+                        value['platform'].get('term_name'),
+                        ff['@id'],
+                        control_platform.get('term_name')
+                    )
+                    yield AuditFailure('mismatched control platform',
+                                       detail, level='WARNING')
 
             if (run_type is None) or (control_run is None):
                 continue
