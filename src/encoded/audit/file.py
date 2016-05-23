@@ -429,7 +429,7 @@ def audit_run_type(value, system):
         detail = 'File {} has file_format {}. It requires a value for run_type'.format(
             value['@id'],
             value['file_format'])
-        raise AuditFailure('missing run_type', detail, level='NOT_COMPLIANT')
+        raise AuditFailure('missing run_type', detail, level='WARNING')
 
 
 @audit_checker('file', frame=['paired_with'],)
@@ -695,7 +695,8 @@ def get_control_bam(experiment_bam, pipeline_name):
         for control_file in control_files:
             if control_file['status'] in ['deleted', 'replaced', 'revoked']:
                 continue
-            if control_file['file_format'] == 'bam':
+            if control_file['file_format'] == 'bam' and \
+               control_file['output_type'] == 'alignments':
                 #  we have BAM file, now we have to make sure it was created by pipeline
                 #  with similar pipeline_name
 
