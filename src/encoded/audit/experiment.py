@@ -855,10 +855,10 @@ def check_file_chip_seq_library_complexity(alignment_file):
         return
 
     nrf_end_of_detail = "Non redundant fraction (NRF, Number of reads after " + \
-                        "removing duplicates / Total number of reads). 0.0-0.5 is very " + \
-                        "poor complexity, 0.5-0.8 is poor complexity, 0.8-0.9 moderate " + \
-                        "complexity, and >0.9 high complexity. NRF >0.9 is recommended, " + \
-                        "but >0.8 is acceptable"
+                        "removing duplicates / Total number of reads). 0.0-0.5 is " + \
+                        "poor complexity, 0.5-0.8 is moderate complexity, " + \
+                        "and >0.8 high complexity. NRF >0.8 is recommended, " + \
+                        "but >0.5 is acceptable"
     pbc1_end_of_detail = "PCR Bottlenecking coefficient 1 (PBC1, Number of genomic " + \
                          "locations where exactly one read maps uniquely/Number of " + \
                          "distinct genomic locations to which some read maps uniquely). " + \
@@ -881,22 +881,14 @@ def check_file_chip_seq_library_complexity(alignment_file):
                 detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
                          'was generated from a library with NRF value of {}'.format(NRF_value) + \
                          '. '+nrf_end_of_detail
-                yield AuditFailure('insufficient library complexity', detail,
+                yield AuditFailure('poor library complexity', detail,
                                    level='NOT_COMPLIANT')
-
             elif NRF_value >= 0.5 and NRF_value < 0.8:
                 detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
                          'was generated from a library with NRF value of {}'.format(NRF_value) + \
                          '. '+nrf_end_of_detail
-                yield AuditFailure('poor library complexity', detail,
-                                   level='NOT_COMPLIANT')
-
-            elif NRF_value >= 0.8 and NRF_value < 0.9:
-                    detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
-                             'was generated from a library with NRF value of {}'.format(NRF_value) + \
-                             '. '+nrf_end_of_detail
-                    yield AuditFailure('moderate library complexity', detail,
-                                       level='WARNING')
+                yield AuditFailure('moderate library complexity', detail,
+                                   level='WARNING')
         if 'PBC1' in metric:
             PBC1_value = float(metric['PBC1'])
             if PBC1_value < 0.5:
@@ -1186,30 +1178,16 @@ def check_file_read_length_chip(file_to_check, upper_threshold_length, lower_thr
         yield AuditFailure('missing read_length', detail, level='NOT_COMPLIANT')
         return
 
-    creation_date = file_to_check['date_created'][:10].split('-')
-    year = int(creation_date[0])
-    month = int(creation_date[1])
-    day = int(creation_date[2])
-    created_date = str(year)+'-'+str(month)+'-'+str(day)
-    file_date_creation = datetime.date(year, month, day)
-    threshold_date = datetime.date(2015, 6, 30)
-
     read_length = file_to_check['read_length']
     detail = 'Fastq file {} '.format(file_to_check['@id']) + \
-             'that was created on {} '.format(created_date) + \
              'has read length of {}bp. '.format(read_length) + \
              'It is not compliant with ENCODE3 standards. ' + \
-             'According to ENCODE3 standards files submitted after 2015-6-30 ' + \
+             'According to ENCODE3 standards fastq files ' + \
              'should be at least {}bp long.'.format(upper_threshold_length)
     if read_length < lower_threshold_length:
         yield AuditFailure('insufficient read length', detail, level='NOT_COMPLIANT')
-
     elif read_length >= lower_threshold_length and read_length < upper_threshold_length:
-        if file_date_creation < threshold_date:
-            yield AuditFailure('low read length', detail, level='WARNING')
-        else:
-            yield AuditFailure('low read length', detail,
-                               level='NOT_COMPLIANT')
+        yield AuditFailure('low read length', detail, level='WARNING')
     return
 
 
