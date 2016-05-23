@@ -696,7 +696,9 @@ def get_control_bam(experiment_bam, pipeline_name):
             if control_file['status'] in ['deleted', 'replaced', 'revoked']:
                 continue
             if control_file['file_format'] == 'bam' and \
-               control_file['output_type'] == 'alignments':
+               control_file['output_type'] == 'alignments' and \
+               'assembly' in control_file and 'assembly' in experiment_bam and \
+               control_file['assembly'] == experiment_bam['assembly']:
                 #  we have BAM file, now we have to make sure it was created by pipeline
                 #  with similar pipeline_name
 
