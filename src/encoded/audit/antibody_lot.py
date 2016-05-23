@@ -5,14 +5,17 @@ from snovault import (
 from .conditions import rfa
 
 
-@audit_checker('antibody_lot', frame=['characterizations'],
-               condition=rfa('ENCODE3', 'modERN'))
+@audit_checker('antibody_lot', frame=[
+    'targets',
+    'characterizations',
+    'characterizations.target'],
+    condition=rfa('ENCODE3', 'modERN'))
 def audit_antibody_missing_characterizations(value, system):
     '''
     Check to see what characterizations are lacking for each antibody,
     for the cell lines we know about.
     '''
-    if value['target'].get('investigated_as') in ['control']:
+    if value['targets'][0].get('investigated_as') in ['control']:
         return
 
     if not value['characterizations']:
