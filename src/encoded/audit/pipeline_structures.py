@@ -70,6 +70,60 @@ class encode_chip_control(basic_experiment):
         self.file_types[('bam', 'unfiltered alignments')] = None
 
 
+class encode_chip_experiment_replicate(basic_experiment):
+    def __init__(self):
+        basic_experiment.__init__(self)
+        self.file_types[('bam', 'unfiltered alignments')] = None
+        self.file_types[('bed', 'peaks')] = None
+        self.file_types[('bigBed', 'peaks')] = None
+        self.file_types[('bigWig', 'fold change over control')] = None
+        self.file_types[('bigWig', 'signal p-value')] = None
+
+
+class encode_chip_histone_experiment_pooled(basic_experiment):
+    def __init__(self):
+        basic_experiment.__init__(self)
+        self.file_types[('bed', 'replicated peaks')] = None
+        self.file_types[('bigBed', 'replicated peaks')] = None
+        self.file_types[('bed', 'peaks')] = None
+        self.file_types[('bigBed', 'peaks')] = None
+        self.file_types[('bigWig', 'fold change over control')] = None
+        self.file_types[('bigWig', 'signal p-value')] = None
+
+
+class encode_chip_tf_experiment_pooled(basic_experiment):
+    def __init__(self):
+        basic_experiment.__init__(self)
+        self.file_types[('bed', 'peaks')] = None
+        self.file_types[('bigBed', 'peaks')] = None
+        self.file_types[('bigWig', 'fold change over control')] = None
+        self.file_types[('bigWig', 'signal p-value')] = None
+        self.file_types[('bed', 'conservative idr thresholded peaks')] = None
+        self.file_types[('bigBed', 'conservative idr thresholded peaks')] = None
+        self.file_types[('bed', 'optimal idr thresholded peaks')] = None
+        self.file_types[('bigBed', 'optimal idr thresholded peaks')] = None
+
+
+class encode_rampage_experiment_replicate(basic_experiment):
+    def __init__(self):
+        basic_experiment.__init__(self)
+        self.file_types[('tsv', 'gene quantifications')] = None
+        self.file_types[('bed', 'transcription start sites')] = None
+        self.file_types[('gff', 'transcription start sites')] = None
+        self.file_types[('bigBed', 'transcription start sites')] = None
+        self.file_types[('bigWig', 'minus strand signal of all reads')] = None
+        self.file_types[('bigWig', 'plus strand signal of all reads')] = None
+        self.file_types[('bigWig', 'plus strand signal of unique reads')] = None
+        self.file_types[('bigWig', 'minus strand signal of unique reads')] = None
+
+
+class encode_rampage_experiment_pooled(basic_experiment):
+    def __init__(self):
+        basic_experiment.__init__(self)
+        self.file_types[('bed', 'transcription start sites')] = None
+        self.file_types[('bigBed', 'transcription start sites')] = None
+
+
 class modERN_TF_control(basic_experiment):
 
     def __init__(self):
