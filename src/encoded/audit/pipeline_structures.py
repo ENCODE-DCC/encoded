@@ -1,151 +1,126 @@
-class encode_tf_experiment(object):
-    def __init__(self, alignments=None, assembly=None, replicates=None):
-        self.alignments = alignments
-        self.assembly = assembly
-        self.replicates = replicates
-        self.multiple_mappings_flag = False
-        self.tuples_dict = {
-            ('bam', 'alignments'): self.set_alignments
+class basic_experiment(object):
+
+    def __init__(self):
+        self.file_types = {
+            ('bam', 'alignments'): None
         }
 
-        def set_alignments(self, alignments):
-            if self.alignments is not None:
-                self.multiple_mappings_flag = True
-            self.alignments = alignments
+        self.assembly = None
+        self.replicates = None
+        self.multiple_mappings_flag = False
+        self.unexpected_file_flag = False
+        self.unexpected_files_set = set()
 
-        def is_complete(self):
-            if (self.alignments is None) or \
-               (self.replicates is None) or \
-               (self.assembly is None):
+    def set_file(self, key, file_acession):
+        if self.file_types[key] is not None:
+            self.multiple_mappings_flag = True
+        self.file_types[key] = file_acession
+
+    def is_complete(self):
+        for entry in self.file_types:
+            if self.file_types[entry] is None:
                 return False
-            return True
+        return True
 
-        def is_analyzed_more_than_once(self):
-            return self.multiple_mappings_flag
+    def is_analyzed_more_than_once(self):
+        return self.multiple_mappings_flag
 
-        def get_missing_fields_tuples(self):
-            missing = []
-            if self.alignments is None:
-                missing.append(('bam', 'alignments'))
-            return missing
+    def get_missing_fields_tuples(self):
+        missing = []
+        for entry in self.file_types:
+            if self.file_types[entry] is None:
+                missing.append(entry)
+        return missing
 
-        def update_fields(self, processed_file):
-            f_format = processed_file.get('file_format')
-            f_output = processed_file.get('output_type')
-            self.tuples_dict[(f_format, f_output)](processed_file.get('accession'))
+    def has_unexpected_files(self):
+        return self.unexpected_file_flag
+
+    def get_unexpected_files(self):
+        return self.unexpected_files_set
+
+    def update_fields(self, processed_file):
+        f_format = processed_file.get('file_format')
+        f_output = processed_file.get('output_type')
+        if (f_format, f_output) not in self.file_types:
+            self.unexpected_file_flag = True
+            to_add = (f_format, f_output, processed_file['accession'])
+            self.unexpected_files_set.add(to_add)
+        else:
+            self.file_types[(f_format, f_output)] = processed_file.get('accession')
             self.replicates = processed_file.get('biological_replicates')
             self.assembly = processed_file.get('assembly')
 
-class encode_chip_control(object):
 
-    def __init__(self, alignments=None, unfiltered=None,
-                 assembly=None, replicates=None):
-        self.alignments = alignments
-        self.unfiltered = unfiltered
-        self.assembly = assembly
-        self.replicates = replicates
-        self.multiple_mappings_flag = False
-        self.tuples_dict = {
-            ('bam', 'alignments'): self.set_alignments,
-            ('bam', 'unfiltered alignments'): self.unfiltered
-        }
+class encode_chip_control(basic_experiment):
 
-    def set_alignments(self, alignments):
-        if self.alignments is not None:
-            self.multiple_mappings_flag = True
-        self.alignments = alignments
+    def __init__(self):
+        basic_experiment.__init__(self)
+        self.file_types[('bam', 'unfiltered alignments')] = None
 
-    def set_unique_signal(self, unfiltered):
-        if self.unfiltered is not None:
-            self.multiple_mappings_flag = True
-        self.unique_signal = unfiltered
 
-    def is_complete(self):
-        if (self.alignments is None) or \
-           (self.unfiltered is None) or \
-           (self.replicates is None) or \
-           (self.assembly is None):
-            return False
-        return True
+class modERN_TF_control(basic_experiment):
 
-    def is_analyzed_more_than_once(self):
-        return self.multiple_mappings_flag
+    def __init__(self):
+        basic_experiment.__init__(self)
+        self.file_types[('bigWig', 'signal of unique reads')] = None
+        self.file_types[('bigWig', 'read-depth normalized signal')] = None
 
-    def get_missing_fields_tuples(self):
-        missing = []
-        if self.alignments is None:
-            missing.append(('bam', 'alignments'))
-        if self.unfiltered is None:
-            missing.append(('bam', 'unfiltered alignments'))
-        return missing
+
+class modERN_TF_replicate(basic_experiment):
+
+    def __init__(self):
+        basic_experiment.__init__(self)
+        self.file_types[('bigWig', 'signal of unique reads')] = None
+        self.file_types[('bigWig', 'read-depth normalized signal')] = None
+        self.file_types[('bigWig', 'control normalized signal')] = None
+        self.file_types[('bed', 'narrowPeak')] = None
+        self.file_types[('bigBed', 'narrowPeak')] = None
 
     def update_fields(self, processed_file):
         f_format = processed_file.get('file_format')
-        f_output = processed_file.get('output_type')
-        self.tuples_dict[(f_format, f_output)](processed_file.get('accession'))
-        self.replicates = processed_file.get('biological_replicates')
-        self.assembly = processed_file.get('assembly')
+
+        if processed_file.get('output_type') in ['peaks']:
+            f_output = processed_file.get('file_format_type')
+        else:
+            f_output = processed_file.get('output_type')
+
+        if (f_format, f_output) not in self.file_types:
+            self.unexpected_file_flag = True
+            to_add = (f_format, f_output, processed_file['accession'])
+            self.unexpected_files_set.add(to_add)
+        else:
+            self.file_types[(f_format, f_output)] = processed_file.get('accession')
+            self.replicates = processed_file.get('biological_replicates')
+            self.assembly = processed_file.get('assembly')
 
 
-class modERN_TF_control(object):
+class modERN_TF_pooled(basic_experiment):
 
-    def __init__(self, alignments=None, unique_signal=None,
-                 normalized_signal=None, assembly=None, replicates=None):
-        self.alignments = alignments
-        self.unique_signal = unique_signal
-        self.normalized_signal = normalized_signal
-        self.assembly = assembly
-        self.replicates = replicates
-        self.multiple_mappings_flag = False
-        self.tuples_dict = {
-            ('bam', 'alignments'): self.set_alignments,
-            ('bigWig', 'signal of unique reads'): self.set_unique_signal,
-            ('bigWig', 'read-depth normalized signal'): self.set_normalized_signal
-        }
-
-    def set_alignments(self, alignments):
-        if self.alignments is not None:
-            self.multiple_mappings_flag = True
-        self.alignments = alignments
-
-    def set_unique_signal(self, unique_signal):
-        if self.unique_signal is not None:
-            self.multiple_mappings_flag = True
-        self.unique_signal = unique_signal
-
-    def set_normalized_signal(self, normalized_signal):
-        if self.normalized_signal is not None:
-            self.multiple_mappings_flag = True
-        self.normalized_signal = normalized_signal
-
-    def is_complete(self):
-        if (self.alignments is None) or \
-           (self.unique_signal is None) or \
-           (self.normalized_signal is None) or \
-           (self.replicates is None) or \
-           (self.assembly is None):
-            return False
-        return True
-
-    def is_analyzed_more_than_once(self):
-        return self.multiple_mappings_flag
-
-    def get_missing_fields_tuples(self):
-        missing = []
-        if self.alignments is None:
-            missing.append(('bam', 'alignments'))
-        if self.unique_signal is None:
-            missing.append(('bigWig', 'signal of unique reads'))
-        if self.normalized_signal is None:
-            missing.append(('bigWig', 'read-depth normalized signal'))
-        return missing
+    def __init__(self):
+        basic_experiment.__init__(self)
+        del self.file_types[('bam', 'alignments')]
+        self.file_types[('bigWig', 'signal of unique reads')] = None
+        self.file_types[('bigWig', 'read-depth normalized signal')] = None
+        self.file_types[('bigWig', 'control normalized signal')] = None
+        self.file_types[('bed', 'narrowPeak')] = None
+        self.file_types[('bigBed', 'narrowPeak')] = None
+        self.file_types[('bed', 'optimal idr thresholded peaks')] = None
+        self.file_types[('bigBed', 'optimal idr thresholded peaks')] = None
 
     def update_fields(self, processed_file):
         f_format = processed_file.get('file_format')
-        f_output = processed_file.get('output_type')
-        self.tuples_dict[(f_format, f_output)](processed_file.get('accession'))
-        self.replicates = processed_file.get('biological_replicates')
-        self.assembly = processed_file.get('assembly')
+        if processed_file.get('output_type') in ['peaks']:
+            f_output = processed_file.get('file_format_type')
+        else:
+            f_output = processed_file.get('output_type')
+        if (f_format, f_output) not in self.file_types:
+            self.unexpected_file_flag = True
+            to_add = (f_format, f_output, processed_file['accession'])
+            self.unexpected_files_set.add(to_add)
+        else:
+            self.file_types[(f_format, f_output)] = processed_file.get('accession')
+            self.replicates = processed_file.get('biological_replicates')
+            self.assembly = processed_file.get('assembly')
 
 
 class modERN_TF(object):
@@ -158,6 +133,12 @@ class modERN_TF(object):
     def is_complete(self):
         return self.rep.is_complete()
 
+    def has_unexpected_files(self):
+        return self.rep.unexpected_file_flag
+
+    def get_unexpected_files(self):
+        return self.rep.unexpected_files_set
+
     def get_missing_fields_tuples(self):
         return self.rep.get_missing_fields_tuples()
 
@@ -166,209 +147,3 @@ class modERN_TF(object):
 
     def is_analyzed_more_than_once(self):
         return self.rep.is_analyzed_more_than_once()
-
-
-class modERN_TF_replicate(object):
-
-    def __init__(self, alignments=None, unique_signal=None,
-                 read_depth_normalized_signal=None,
-                 control_normalized_signal=None,
-                 narrowPeak_bed=None, narrowPeak_bigBed=None,
-                 assembly=None, replicates=None):
-        self.alignments = alignments
-        self.unique_signal = unique_signal
-        self.read_depth_normalized_signal = read_depth_normalized_signal
-        self.control_normalized_signal = control_normalized_signal
-        self.narrowPeak_bed = narrowPeak_bed
-        self.narrowPeak_bigBed = narrowPeak_bigBed
-        self.assembly = assembly
-        self.replicates = replicates
-        self.multiple_mappings_flag = False
-        self.tuples_dict = {
-            ('bam', 'alignments'): self.set_alignments,
-            ('bigWig', 'signal of unique reads'): self.set_unique_signal,
-            ('bigWig', 'read-depth normalized signal'): self.set_read_depth_normalized_signal,
-            ('bigWig', 'control normalized signal'): self.set_control_normalized_signal,
-            ('bed', 'narrowPeak'): self.set_narrowPeak_bed,
-            ('bigBed', 'narrowPeak'): self.set_narrowPeak_bigBed
-        }
-
-    def set_alignments(self, alignments):
-        if self.alignments is not None:
-            self.multiple_mappings_flag = True
-        self.alignments = alignments
-
-    def set_unique_signal(self, unique_signal):
-        if self.unique_signal is not None:
-            self.multiple_mappings_flag = True
-        self.unique_signal = unique_signal
-
-    def set_read_depth_normalized_signal(self, normalized_signal):
-        if self.read_depth_normalized_signal is not None:
-            self.multiple_mappings_flag = True
-        self.read_depth_normalized_signal = normalized_signal
-
-    def set_control_normalized_signal(self, control_signal):
-        if self.control_normalized_signal is not None:
-            self.multiple_mappings_flag = True
-        self.control_normalized_signal = control_signal
-
-    def set_narrowPeak_bed(self, bed):
-        if self.narrowPeak_bed is not None:
-            self.multiple_mappings_flag = True
-        self.narrowPeak_bed = bed
-
-    def set_narrowPeak_bigBed(self, bigBed):
-        if self.narrowPeak_bigBed is not None:
-            self.multiple_mappings_flag = True
-        self.narrowPeak_bigBed = bigBed
-
-    def is_complete(self):
-        if (self.alignments is None) or \
-           (self.unique_signal is None) or \
-           (self.read_depth_normalized_signal is None) or \
-           (self.replicates is None) or \
-           (self.assembly is None) or \
-           (self.control_normalized_signal is None) or \
-           (self.narrowPeak_bed is None) or \
-           (self.narrowPeak_bigBed is None):
-            return False
-        return True
-
-    def is_analyzed_more_than_once(self):
-        return self.multiple_mappings_flag
-
-    def get_missing_fields_tuples(self):
-        missing = []
-        if self.alignments is None:
-            missing.append(('bam', 'alignments'))
-        if self.unique_signal is None:
-            missing.append(('bigWig', 'signal of unique reads'))
-        if self.read_depth_normalized_signal is None:
-            missing.append(('bigWig', 'read-depth normalized signal'))
-        if self.control_normalized_signal is None:
-            missing.append(('bigWig', 'control normalized signal'))
-        if self.narrowPeak_bed is None:
-            missing.append(('bed', 'narrowPeak'))
-        if self.narrowPeak_bigBed is None:
-            missing.append(('bigBed', 'narrowPeak'))
-        return missing
-
-    def update_fields(self, processed_file):
-        f_format = processed_file.get('file_format')
-        if processed_file.get('output_type') in ['peaks']:
-            f_output = processed_file.get('file_format_type')
-        else:
-            f_output = processed_file.get('output_type')
-        self.tuples_dict[(f_format, f_output)](processed_file.get('accession'))
-        self.replicates = processed_file.get('biological_replicates')
-        self.assembly = processed_file.get('assembly')
-
-
-class modERN_TF_pooled(object):
-
-    def __init__(self, unique_signal=None,
-                 read_depth_normalized_signal=None,
-                 control_normalized_signal=None,
-                 narrowPeak_bed=None, narrowPeak_bigBed=None,
-                 idr_narrowPeak_bed=None, idr_narrowPeak_bigBed=None,
-                 assembly=None, replicates=None):
-
-        self.unique_signal = unique_signal
-        self.read_depth_normalized_signal = read_depth_normalized_signal
-        self.control_normalized_signal = control_normalized_signal
-        self.narrowPeak_bed = narrowPeak_bed
-        self.narrowPeak_bigBed = narrowPeak_bigBed
-        self.idr_narrowPeak_bed = idr_narrowPeak_bed
-        self.idr_narrowPeak_bigBed = idr_narrowPeak_bigBed
-        self.assembly = assembly
-        self.replicates = replicates
-        self.multiple_mappings_flag = False
-        self.tuples_dict = {
-            ('bigWig', 'signal of unique reads'): self.set_unique_signal,
-            ('bigWig', 'read-depth normalized signal'): self.set_read_depth_normalized_signal,
-            ('bigWig', 'control normalized signal'): self.set_control_normalized_signal,
-            ('bed', 'narrowPeak'): self.set_narrowPeak_bed,
-            ('bigBed', 'narrowPeak'): self.set_narrowPeak_bigBed,
-            ('bed', 'optimal idr thresholded peaks'): self.set_idr_narrowPeak_bed,
-            ('bigBed', 'optimal idr thresholded peaks'): self.set_idr_narrowPeak_bigBed
-        }
-
-    def set_unique_signal(self, unique_signal):
-        if self.unique_signal is not None:
-            self.multiple_mappings_flag = True
-        self.unique_signal = unique_signal
-
-    def set_read_depth_normalized_signal(self, normalized_signal):
-        if self.read_depth_normalized_signal is not None:
-            self.multiple_mappings_flag = True
-        self.read_depth_normalized_signal = normalized_signal
-
-    def set_control_normalized_signal(self, control_signal):
-        if self.control_normalized_signal is not None:
-            self.multiple_mappings_flag = True
-        self.control_normalized_signal = control_signal
-
-    def set_narrowPeak_bed(self, bed):
-        if self.narrowPeak_bed is not None:
-            self.multiple_mappings_flag = True
-        self.narrowPeak_bed = bed
-
-    def set_narrowPeak_bigBed(self, bigBed):
-        if self.narrowPeak_bigBed is not None:
-            self.multiple_mappings_flag = True
-        self.narrowPeak_bigBed = bigBed
-
-    def set_idr_narrowPeak_bed(self, idr_bed):
-        if self.idr_narrowPeak_bed is not None:
-            self.multiple_mappings_flag = True
-        self.idr_narrowPeak_bed = idr_bed
-
-    def set_idr_narrowPeak_bigBed(self, idr_bigBed):
-        if self.idr_narrowPeak_bigBed is not None:
-            self.multiple_mappings_flag = True
-        self.idr_narrowPeak_bigBed = idr_bigBed
-
-    def is_complete(self):
-        if (self.unique_signal is None) or \
-           (self.read_depth_normalized_signal is None) or \
-           (self.replicates is None) or \
-           (self.assembly is None) or \
-           (self.control_normalized_signal is None) or \
-           (self.narrowPeak_bed is None) or \
-           (self.narrowPeak_bigBed is None) or \
-           (self.idr_narrowPeak_bed is None) or \
-           (self.idr_narrowPeak_bigBed is None):
-            return False
-        return True
-
-    def is_analyzed_more_than_once(self):
-        return self.multiple_mappings_flag
-
-    def get_missing_fields_tuples(self):
-        missing = []
-        if self.unique_signal is None:
-            missing.append(('bigWig', 'signal of unique reads'))
-        if self.read_depth_normalized_signal is None:
-            missing.append(('bigWig', 'read-depth normalized signal'))
-        if self.control_normalized_signal is None:
-            missing.append(('bigWig', 'control normalized signal'))
-        if self.narrowPeak_bed is None:
-            missing.append(('bed', 'narrowPeak'))
-        if self.narrowPeak_bigBed is None:
-            missing.append(('bigBed', 'narrowPeak'))
-        if self.idr_narrowPeak_bed is None:
-            missing.append(('bed', 'optimal idr thresholded peaks'))
-        if self.idr_narrowPeak_bigBed is None:
-            missing.append(('bigBed', 'optimal idr thresholded peaks'))
-        return missing
-
-    def update_fields(self, processed_file):
-        f_format = processed_file.get('file_format')
-        if processed_file.get('output_type') in ['peaks']:
-            f_output = processed_file.get('file_format_type')
-        else:
-            f_output = processed_file.get('output_type')
-        self.tuples_dict[(f_format, f_output)](processed_file.get('accession'))
-        self.replicates = processed_file.get('biological_replicates')
-        self.assembly = processed_file.get('assembly')

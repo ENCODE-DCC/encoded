@@ -163,6 +163,13 @@ def audit_experiment_missing_processed_files(value, system):
             else:
                 pooled_quantity += 1
                 present_assemblies.append(assembly)
+            if replicate_structures[(bio_rep_num, assembly)].has_unexpected_files() is True:
+                for unexpected_file in \
+                        replicate_structures[(bio_rep_num, assembly)].get_unexpected_files():
+                    detail = 'In biological replicate {}, '.format(bio_rep_num[1:-1]) + \
+                             'genomic assembly {}, '.format(assembly) + \
+                             'the following file {} was unexpected.'.format(unexpected_file)
+                    yield AuditFailure('unexpected pipeline files', detail, level='DCC_ACTION')
 
             if replicate_structures[(bio_rep_num, assembly)].is_complete() is False:
                 for missing_tuple in \
@@ -218,6 +225,14 @@ def audit_experiment_missing_processed_files(value, system):
                              'belong to different biological replicates {}. '.format(bio_rep_num)
                     yield AuditFailure('mismatched pipeline files', detail, level='DCC_ACTION')
 
+                if replicate_structures[(bio_rep_num, assembly)].has_unexpected_files() is True:
+                    for unexpected_file in \
+                            replicate_structures[(bio_rep_num, assembly)].get_unexpected_files():
+                        detail = 'In biological replicate {}, '.format(bio_rep_num[1:-1]) + \
+                                 'genomic assembly {}, '.format(assembly) + \
+                                 'the following file {} was unexpected.'.format(unexpected_file)
+                        yield AuditFailure('unexpected pipeline files', detail, level='DCC_ACTION')
+
                 if replicate_structures[(bio_rep_num, assembly)].is_complete() is False:
                     for missing_tuple in \
                             replicate_structures[(bio_rep_num,
@@ -243,16 +258,18 @@ def audit_experiment_missing_processed_files(value, system):
                                  'without any processed ' + \
                                  'files associated with {} assembly.'.format(assembly)
                         yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
-
+    '''                
         elif 'transcription factor' in target.get('investigated_as'):
             # create TF experiment structure
             print ('hello')
         elif 'histone' in target.get('investigated_as'):
             # create histone experiment structure
             print ('hello')
+        
+            
     elif 'RAMPAGE (paired-end, stranded)' in pipelines:
         # create structure for RAMPAGE
-        '''
+        
          a. bam alignments
          b. 4 bigwigs (plus all reads signal and unique reads, and same for minus)
          c. transcription start sites (gff -gff3)
@@ -261,9 +278,9 @@ def audit_experiment_missing_processed_files(value, system):
          f. gene quantifications (tsv)
          g. (IDR) transcription start sites (bed IDR peaks)
          h. (IDR) transcription start sites (bigBed IDR peaks)
-        '''
+        
         print ('hello')
-
+    '''
 
 def create_pipeline_structures(files_to_scan, structure_type):
     structures_mapping = {
