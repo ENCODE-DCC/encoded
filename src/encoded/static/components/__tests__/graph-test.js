@@ -287,18 +287,18 @@ describe('Experiment Graph', function() {
         it('Has the correct number of nodes and edges', function() {
             var subNodes = 0;
 
-            expect(graph.nodes.length).toEqual(2);
+            expect(graph.nodes.length).toEqual(1);
             graph.nodes.forEach(function(node) {
                 subNodes += node.nodes.length;
             });
-            expect(subNodes).toEqual(6);
-            expect(graph.edges.length).toEqual(4);
+            expect(subNodes).toEqual(3);
+            expect(graph.edges.length).toEqual(2);
         });
 
         it('has the right nodes', function() {
             expect(containsNodes(graph, ["rep:1", "file:/files/ENCFF000VUQ/", "file:/files/ENCFF003COS/",
                 "step:/files/ENCFF000VUQ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
-            expect(containsNodes(graph, ["rep:2"])).toBeTruthy();
+            expect(containsNodes(graph, ["rep:2"])).toBeFalsy();
         });
 
         it('has the right relationships between edges and nodes', function() {
