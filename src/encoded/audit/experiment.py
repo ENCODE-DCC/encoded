@@ -417,11 +417,11 @@ def check_wgbs_read_lengths(fastq_files,
                          'data is > 100bp.'
                 yield AuditFailure('insufficient read length',
                                    detail, level='NOT_COMPLIANT')
-            elif organism_name == 'human' and l < 120:
+            elif organism_name == 'human' and l < 100:
                 detail = 'Fastq file {} '.format(f['@id']) + \
                          'has read length of {}bp, while '.format(l) + \
                          'the recommended read length for {} '.format(organism_name) + \
-                         'data is > 120bp.'
+                         'data is > 100bp.'
                 yield AuditFailure('insufficient read length',
                                    detail, level='NOT_COMPLIANT')
 
@@ -1907,15 +1907,9 @@ def audit_experiment_target(value, system):
         return
 
     if 'target' not in value:
-        if value['assay_term_name'] in ['shRNA knockdown followed by RNA-seq',
-                                        'CRISPR genome editing followed by RNA-seq']:
-            detail = '{} experiments require a target'.format(value['assay_term_name'])
-            yield AuditFailure('missing target', detail, level='NOT_COMPLIANT')
-            return
-        else:
-            detail = '{} experiments require a target'.format(value['assay_term_name'])
-            yield AuditFailure('missing target', detail, level='ERROR')
-            return
+        detail = '{} experiments require a target'.format(value['assay_term_name'])
+        yield AuditFailure('missing target', detail, level='ERROR')
+        return
 
     target = value['target']
     if 'control' in target['investigated_as']:

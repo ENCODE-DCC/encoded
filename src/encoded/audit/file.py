@@ -851,7 +851,7 @@ def audit_file_read_depth(value, system):
     if paring_status_detected is False:
         detail = 'ENCODE Processed alignment file {} has no run_type in derived_from files'.format(
             value['@id'])
-        yield AuditFailure('missing run_type in derived_from files', detail, level='DCC_ACTION')
+        yield AuditFailure('missing run_type', detail, level='WARNING')
 
     special_assay_name = 'empty'
     target_name = 'empty'
