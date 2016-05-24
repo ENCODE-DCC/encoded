@@ -83,6 +83,7 @@ class encode_chip_experiment_replicate(basic_experiment):
 class encode_chip_histone_experiment_pooled(basic_experiment):
     def __init__(self):
         basic_experiment.__init__(self)
+        del self.file_types[('bam', 'alignments')]
         self.file_types[('bed', 'replicated peaks')] = None
         self.file_types[('bigBed', 'replicated peaks')] = None
         self.file_types[('bed', 'peaks')] = None
@@ -94,6 +95,7 @@ class encode_chip_histone_experiment_pooled(basic_experiment):
 class encode_chip_tf_experiment_pooled(basic_experiment):
     def __init__(self):
         basic_experiment.__init__(self)
+        del self.file_types[('bam', 'alignments')]
         self.file_types[('bed', 'peaks')] = None
         self.file_types[('bigBed', 'peaks')] = None
         self.file_types[('bigWig', 'fold change over control')] = None
@@ -120,6 +122,7 @@ class encode_rampage_experiment_replicate(basic_experiment):
 class encode_rampage_experiment_pooled(basic_experiment):
     def __init__(self):
         basic_experiment.__init__(self)
+        del self.file_types[('bam', 'alignments')]
         self.file_types[('bed', 'transcription start sites')] = None
         self.file_types[('bigBed', 'transcription start sites')] = None
 
