@@ -81,7 +81,7 @@ def test_set_facets():
     doc_types = ['Experiment']
     aggs = set_facets(facets, used_filters, principals, doc_types)
 
-    assert aggs == {
+    assert {
         'type': {
             'aggs': {
                 'type': {
@@ -109,7 +109,6 @@ def test_set_facets():
                 'audit-foo': {
                     'terms': {
                         'field': 'audit.foo',
-                        'exclude': [],
                         'min_doc_count': 0,
                         'size': 100,
                     },
@@ -130,7 +129,6 @@ def test_set_facets():
                 'facet1': {
                     'terms': {
                         'field': 'embedded.facet1.raw',
-                        'exclude': [],
                         'min_doc_count': 0,
                         'size': 100,
                     },
@@ -146,7 +144,7 @@ def test_set_facets():
                 },
             },
         }
-    }
+    } == aggs
 
 
 def test_set_facets_negated_filter():
@@ -162,13 +160,12 @@ def test_set_facets_negated_filter():
     doc_types = ['Experiment']
     aggs = set_facets(facets, used_filters, principals, doc_types)
 
-    assert aggs == {
+    assert {
         'facet1': {
             'aggs': {
                 'facet1': {
                     'terms': {
                         'field': 'embedded.facet1.raw',
-                        'exclude': [],
                         'min_doc_count': 0,
                         'size': 100,
                     },
@@ -184,4 +181,51 @@ def test_set_facets_negated_filter():
                 },
             },
         }
-    }
+    } == aggs
+
+
+def test_set_facets_nested():
+    from encoded.search import set_facets
+    facets = [
+        ('award.project', {
+            'title': 'Project',
+            'facets': {
+                'award.rfa': {'title': 'RFA'},
+            }
+        })
+    ]
+    used_filters = {}
+    principals = ['group.admin']
+    doc_types = ['Experiment']
+    aggs = set_facets(facets, used_filters, principals, doc_types)
+
+    assert {
+        'award-project': {
+            'aggs': {
+                'award-project': {
+                    'terms': {
+                        'field': 'embedded.award.project.raw',
+                        'min_doc_count': 0,
+                        'size': 100,
+                    },
+                    'aggs': {
+                        'award-rfa': {
+                            'terms': {
+                                'field': 'embedded.award.rfa.raw',
+                                'min_doc_count': 0,
+                                'size': 100,
+                            }
+                        }
+                    }
+                },
+            },
+            'filter': {
+                'bool': {
+                    'must': [
+                        {'terms': {'principals_allowed.view': ['group.admin']}},
+                        {'terms': {'embedded.@type.raw': ['Experiment']}},
+                    ],
+                },
+            },
+        }
+    } == aggs

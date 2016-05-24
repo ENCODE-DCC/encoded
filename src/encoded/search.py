@@ -340,45 +340,63 @@ def set_filters(request, query, result):
     return used_filters
 
 
+def build_aggregation(facet_name, facet_options):
+    """Specify an elasticsearch aggregation from schema facet configuration.
+    """
+    exclude = []
+    if facet_name == 'type':
+        field = 'embedded.@type.raw'
+        exclude = ['Item']
+    elif facet_name.startswith('audit'):
+        field = facet_name
+    else:
+        field = 'embedded.' + facet_name + '.raw'
+    agg_name = facet_name.replace('.', '-')
+    agg = {
+        'terms': {
+            'field': field,
+            'min_doc_count': 0,
+            'size': 100,
+        },
+    }
+    if exclude:
+        agg['terms']['exclude'] = exclude
+    if 'facets' in facet_options:
+        subaggs = agg['aggs'] = {}
+        for subfacet_name, subfacet_options in facet_options['facets'].items():
+            subagg_name, subagg = build_aggregation(
+                subfacet_name, subfacet_options)
+            subaggs[subagg_name] = subagg
+    return agg_name, agg
+
+
 def set_facets(facets, used_filters, principals, doc_types):
     """
     Sets facets in the query using filters
     """
     aggs = {}
-    for field, _ in facets:
-        exclude = []
-        if field == 'type':
-            query_field = 'embedded.@type.raw'
-            exclude = ['Item']
-        elif field.startswith('audit'):
-            query_field = field
-        else:
-            query_field = 'embedded.' + field + '.raw'
-        agg_name = field.replace('.', '-')
-
+    for facet_name, facet_options in facets:
+        # Filter facet results to only include
+        # objects of the specified type(s) that the user can see
         terms = [
             {'terms': {'principals_allowed.view': principals}},
             {'terms': {'embedded.@type.raw': doc_types}},
         ]
-        # Adding facets based on filters
+        # Also apply any filters NOT from the same field as the facet
         for q_field, q_terms in used_filters.items():
-            if q_field != field and q_field.startswith('audit'):
+            if q_field != facet_name and q_field.startswith('audit'):
                 terms.append({'terms': {q_field: q_terms}})
-            elif q_field != field and not q_field.endswith('!'):
-                terms.append({'terms': {'embedded.' + q_field + '.raw': q_terms}})
-            elif q_field != field and q_field.endswith('!'):
-                terms.append({'not': {'terms': {'embedded.' + q_field[:-1] + '.raw': q_terms}}})
+            elif q_field != facet_name and not q_field.endswith('!'):
+                terms.append({
+                    'terms': {'embedded.' + q_field + '.raw': q_terms}})
+            elif q_field != facet_name and q_field.endswith('!'):
+                terms.append({'not': {
+                    'terms': {'embedded.' + q_field[:-1] + '.raw': q_terms}}})
 
+        agg_name, agg = build_aggregation(facet_name, facet_options)
         aggs[agg_name] = {
             'aggs': {
-                agg_name: {
-                    'terms': {
-                        'field': query_field,
-                        'exclude': exclude,
-                        'min_doc_count': 0,
-                        'size': 100
-                    }
-                }
+                agg_name: agg,
             },
             'filter': {
                 'bool': {
@@ -386,7 +404,6 @@ def set_facets(facets, used_filters, principals, doc_types):
                 },
             },
         }
-
     return aggs
 
 
