@@ -693,7 +693,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
     // Now find contributing files by subtracting original_files from the list of derived_from files. Note: derivedFromFiles is
     // an object keyed by each file's @id. allContributingArray is an array of file objects.
     var allContributingArray = _(derivedFromFiles).filter((derivedFromFile, derivedFromId) => {
-        return !_(context.original_files).any(originalFileId => originalFileId === derivedFromId);
+        return _(context.contributing_files).any(contributingFile => contributingFile['@id'] === derivedFromId);
     });
 
     // Process the contributing files array
