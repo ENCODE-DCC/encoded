@@ -10,6 +10,8 @@ class basic_experiment(object):
         self.multiple_mappings_flag = False
         self.unexpected_file_flag = False
         self.unexpected_files_set = set()
+        self.orphan_files = []
+        self.orphan_files_flag = False
 
     def set_file(self, key, file_acession):
         if self.file_types[key] is not None:
@@ -38,17 +40,27 @@ class basic_experiment(object):
     def get_unexpected_files(self):
         return self.unexpected_files_set
 
+    def has_orphan_files(self):
+        return self.orphan_files_flag
+
+    def get_orphan_files(self):
+        return self.orphan_files
+
     def update_fields(self, processed_file):
-        f_format = processed_file.get('file_format')
-        f_output = processed_file.get('output_type')
-        if (f_format, f_output) not in self.file_types:
-            self.unexpected_file_flag = True
-            to_add = (f_format, f_output, processed_file['accession'])
-            self.unexpected_files_set.add(to_add)
+        if len(processed_file.get('biological_replicates')) == 0:
+            self.orphan_files.append(processed_file.get('accession'))
+            self.orphan_files_flag = True
         else:
-            self.file_types[(f_format, f_output)] = processed_file.get('accession')
-            self.replicates = processed_file.get('biological_replicates')
-            self.assembly = processed_file.get('assembly')
+            f_format = processed_file.get('file_format')
+            f_output = processed_file.get('output_type')
+            if (f_format, f_output) not in self.file_types:
+                self.unexpected_file_flag = True
+                to_add = (f_format, f_output, processed_file['accession'])
+                self.unexpected_files_set.add(to_add)
+            else:
+                self.file_types[(f_format, f_output)] = processed_file.get('accession')
+                self.replicates = processed_file.get('biological_replicates')
+                self.assembly = processed_file.get('assembly')
 
 
 class encode_chip_control(basic_experiment):
@@ -77,21 +89,25 @@ class modERN_TF_replicate(basic_experiment):
         self.file_types[('bigBed', 'narrowPeak')] = None
 
     def update_fields(self, processed_file):
-        f_format = processed_file.get('file_format')
-
-        if processed_file.get('output_type') in ['peaks']:
-            f_output = processed_file.get('file_format_type')
+        if len(processed_file.get('biological_replicates')) == 0:
+            self.orphan_files.append(processed_file.get('accession'))
+            self.orphan_files_flag = True
         else:
-            f_output = processed_file.get('output_type')
+            f_format = processed_file.get('file_format')
 
-        if (f_format, f_output) not in self.file_types:
-            self.unexpected_file_flag = True
-            to_add = (f_format, f_output, processed_file['accession'])
-            self.unexpected_files_set.add(to_add)
-        else:
-            self.file_types[(f_format, f_output)] = processed_file.get('accession')
-            self.replicates = processed_file.get('biological_replicates')
-            self.assembly = processed_file.get('assembly')
+            if processed_file.get('output_type') in ['peaks']:
+                f_output = processed_file.get('file_format_type')
+            else:
+                f_output = processed_file.get('output_type')
+
+            if (f_format, f_output) not in self.file_types:
+                self.unexpected_file_flag = True
+                to_add = (f_format, f_output, processed_file['accession'])
+                self.unexpected_files_set.add(to_add)
+            else:
+                self.file_types[(f_format, f_output)] = processed_file.get('accession')
+                self.replicates = processed_file.get('biological_replicates')
+                self.assembly = processed_file.get('assembly')
 
 
 class modERN_TF_pooled(basic_experiment):
@@ -108,19 +124,23 @@ class modERN_TF_pooled(basic_experiment):
         self.file_types[('bigBed', 'optimal idr thresholded peaks')] = None
 
     def update_fields(self, processed_file):
-        f_format = processed_file.get('file_format')
-        if processed_file.get('output_type') in ['peaks']:
-            f_output = processed_file.get('file_format_type')
+        if len(processed_file.get('biological_replicates')) == 0:
+            self.orphan_files.append(processed_file.get('accession'))
+            self.orphan_files_flag = True
         else:
-            f_output = processed_file.get('output_type')
-        if (f_format, f_output) not in self.file_types:
-            self.unexpected_file_flag = True
-            to_add = (f_format, f_output, processed_file['accession'])
-            self.unexpected_files_set.add(to_add)
-        else:
-            self.file_types[(f_format, f_output)] = processed_file.get('accession')
-            self.replicates = processed_file.get('biological_replicates')
-            self.assembly = processed_file.get('assembly')
+            f_format = processed_file.get('file_format')
+            if processed_file.get('output_type') in ['peaks']:
+                f_output = processed_file.get('file_format_type')
+            else:
+                f_output = processed_file.get('output_type')
+            if (f_format, f_output) not in self.file_types:
+                self.unexpected_file_flag = True
+                to_add = (f_format, f_output, processed_file['accession'])
+                self.unexpected_files_set.add(to_add)
+            else:
+                self.file_types[(f_format, f_output)] = processed_file.get('accession')
+                self.replicates = processed_file.get('biological_replicates')
+                self.assembly = processed_file.get('assembly')
 
 
 class modERN_TF(object):
