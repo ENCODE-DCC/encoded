@@ -186,6 +186,19 @@ type_slims = {
 
 # Note this also shows the final datastructure for ontology.json
 ntr_assays = {
+    "NTR:0003660": {
+        "assay": ['Transcription'],
+        "category": [],
+        "developmental": [],
+        "name": "microRNA counts",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
     "NTR:0000612": {
         "assay": ['RNA binding'],
         "category": [],
