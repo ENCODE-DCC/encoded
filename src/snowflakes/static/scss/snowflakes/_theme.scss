@@ -1,0 +1,29 @@
+.btn {
+    font-weight: bold;
+    @include box-shadow(0 1px 1px rgba(0,0,0,.05), inset 0 -1px 0 rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.3));
+}
+
+.btn-link {
+    font-weight: normal;
+    @include box-shadow(none);
+}
+
+.btn-svgicon {
+    line-height: 0.9;
+    margin-right: 0 !important;
+    border-radius: 0;
+
+    .svg-icon {
+        fill: #fff;
+    }
+
+    &:first-child {
+        border-top-left-radius: $border-radius-small;
+        border-bottom-left-radius: $border-radius-small;
+    }
+
+    &:last-child {
+        border-top-right-radius: $border-radius-small;
+        border-bottom-right-radius: $border-radius-small;
+    }
+}

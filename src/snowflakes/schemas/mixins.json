@@ -1,0 +1,127 @@
+{
+    "title": "Mixin properties",
+    "schema_version": {
+        "schema_version": {
+            "title": "Schema Version",
+            "comment":  "Do not submit, value is assigned by the server. The version of the JSON schema that the server uses to validate the object. Schema version indicates generation of schema used to save version to to enable upgrade steps to work. Individual schemas should set the default.",
+            "type": "string",
+            "pattern": "^\\d+(\\.\\d+)*$",
+            "requestMethod": []
+        }
+    },
+    "uuid": {
+        "uuid": {
+            "title": "UUID",
+            "type": "string",
+            "format": "uuid",
+            "serverDefault": "uuid4",
+            "permission": "import_items",
+            "requestMethod": "POST"
+        }
+    },
+    "shared_status": {
+        "status": {
+            "title": "Status",
+            "type": "string",
+            "default": "current",
+            "enum" : [
+                "current",
+                "deleted",
+                "replaced",
+                "disabled"
+            ]
+        }
+    },
+    "submitted": {
+        "date_created": {
+            "rdfs:subPropertyOf": "dc:created",
+            "title": "Date created",
+            "comment": "Do not submit, value is assigned by the server. The date the object is created.",
+            "type": "string",
+            "anyOf": [
+                {"format": "date-time"},
+                {"format": "date"}
+            ],
+            "serverDefault": "now",
+            "permission": "import_items"
+        },
+        "submitted_by": {
+            "rdfs:subPropertyOf": "dc:creator",
+            "title": "Submitted by",
+            "comment": "Do not submit, value is assigned by the server. The user that created the object.",
+            "type": "string",
+            "linkTo": "User",
+            "serverDefault": "userid",
+            "permission": "import_items"
+        }
+    },
+    "attribution": {
+        "lab": {
+            "title": "Lab",
+             "description": "Lab associated with the submission.",
+            "comment": "See lab.json for list of available identifiers.",
+            "type": "string",
+            "linkTo": "Lab",
+            "linkSubmitsFor": true
+        },
+        "award": {
+            "title": "Grant",
+            "description": "Grant associated with the submission.",
+            "comment": "See award.json for list of available identifiers.",
+            "type": "string",
+            "linkTo": "Award"
+        }
+    },
+    "attachment": {
+        "attachment": {
+            "title": "Document file metadata",
+            "type": "object",
+            "additionalProperties": false,
+            "formInput": "file",
+            "attachment": true,
+            "properties": {
+                "download": {
+                    "title": "File Name",
+                    "type": "string"
+                },
+                "href": {
+                    "comment": "Internal webapp URL for document file",
+                    "type": "string"
+                },
+                "type": {
+                    "title": "MIME type",
+                    "type": "string",
+                    "enum": [
+                        "application/pdf",
+                        "text/plain",
+                        "text/tab-separated-values",
+                        "image/jpeg",
+                        "image/tiff",
+                        "image/gif",
+                        "text/html",
+                        "image/png",
+                        "image/svs",
+                        "text/autosql"
+                    ]
+                },
+                "md5sum": {
+                    "title": "MD5sum",
+                    "type": "string",
+                    "format": "md5sum"
+                },
+                "size": {
+                    "title": "File size",
+                    "type": "integer"
+                },
+                "width": {
+                    "title": "Image width",
+                    "type": "integer"
+                },
+                "height": {
+                    "title": "Image height",
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}

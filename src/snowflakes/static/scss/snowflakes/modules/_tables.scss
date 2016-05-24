@@ -1,0 +1,220 @@
+/*  TABLES    */
+
+table {
+    @include font-size(0.9);
+}
+
+thead, tfoot {
+    background: none repeat scroll 0 0 #f5f5f5;
+}
+
+table>thead>tr>th {
+    border-top: none !important;
+    border-bottom: 2px solid #fff !important;
+    border-left: 2px solid #fff !important;
+    padding: 8px 30px 9px 11px !important;
+
+    &:first-child {
+        border-left: none !important;
+    }
+}
+
+table>tbody>tr>td {
+    padding: 10px 11px !important;
+}
+
+// round table corners
+thead:first-child tr:first-child th:first-child, tbody:first-child tr:first-child td:first-child {
+    border-radius: 3px 3px 0 0;
+}
+thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td:first-child {
+    border-radius: 0 0 0 3px;
+}
+
+.table-panel {
+    @extend .panel;
+    padding: 0;
+    margin: 0;
+    border-collapse: separate;
+
+    tr:last-child td:first-child {
+        @include border-bottom-left-radius($border-radius-base);
+    }
+
+    tr:last-child td:last-child {
+        @include border-bottom-right-radius($border-radius-base);
+    }
+}
+
+.table-striped {
+    > tbody {
+        > tr:nth-child(odd) {
+            > td {
+                background-color: #fff;
+                border-top: none;
+            }
+        }
+        > tr:nth-child(even) {
+            > td {
+                background-color: #f9f9f9;
+                border-top: none;
+            }
+        }
+    }
+}
+
+@media (max-width: $screen-xs-max) {
+    .table-responsive {
+        th,
+        td {
+            max-width: 250px !important;
+            white-space: normal !important;
+        }
+    }
+}
+
+
+/* Table Controls */
+.table-responsive {
+    position: relative;
+    overflow-x: auto;
+    background-image: inline-image("../img/checker.svg");
+    background-size: 16px 16px;
+}
+
+table thead tr th button {
+    float: left;
+}
+
+form.table-filter {
+    position: absolute;
+    right: 10px;
+    margin: 0;
+}
+
+#table-filter {
+    display: inline-block;
+    width: 265px;
+    @include font-size(1.2);
+}
+
+.table-count {
+    @include font-size(1, true);
+    display: inline-block !important;
+    padding: 0.5em 2em !important;
+    margin-right: 1em;
+}
+
+.spinner-warning {
+    background: #F89406 url("../img/spinner-orange-bg.gif") no-repeat;
+    background-position: 7px 9px;
+}
+
+.table-meta-data {
+    height: $input-height-base;
+    display: block;
+    float: left;
+}
+
+.table-actions {
+    margin-left: 1em;
+    button {
+        float: none;
+    }
+}
+
+/* initial state is hidden (see template; class=hide) */
+#total-records {
+    font-weight: normal;
+}
+
+// Allow line breaks in table cells (esp Targets)
+.collection-table tbody span {
+    display: block;
+}
+
+.col-headers th:hover {
+    cursor: pointer;
+}
+
+.tcell-sortable {
+    cursor: pointer;
+}
+
+.table-file {
+    margin-bottom: 20px;
+
+    .table {
+        margin-bottom: 0;
+    }
+}
+
+.table-sortable {
+    thead {
+        tr {
+            border-bottom: 1px solid #e0e0e0;
+
+            th {
+                position: relative;
+                height: 4em;
+                vertical-align: middle;
+                border-left: 1px solid #e0e0e0 !important;
+                border-bottom: 1px solid #e0e0e0 !important;
+
+                &:first-child {
+                    border-left: none !important;
+                }
+            }
+        }
+    }
+}
+
+.table-section {
+    @include font-size(1.3);
+    font-weight: bold;
+    background-color: #e8e8e8;
+
+    th {
+        height: auto !important;
+    }
+}
+
+.tcell-sortable {
+    &:hover {
+        background-color: #e0e0e0;
+    }
+}
+
+%tcell-template {
+    @extend .icon;
+    position: absolute;
+    right: 5px;
+    top: 1.6em;
+}
+
+.tcell-sort {
+    @extend %tcell-template;
+    @extend .icon-sort;
+}
+
+.tcell-asc {
+    @extend %tcell-template;
+    @extend .icon-sort-asc;
+}
+
+.tcell-desc {
+    @extend %tcell-template;
+    @extend .icon-sort-desc;
+}
+
+.highlight-row {
+    td {
+        background-color: #606060 !important;
+        color: #fff;
+        font-weight: bold;
+
+        a {
+            color: #fff !important;
+        }
+    }
+}
