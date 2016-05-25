@@ -72,6 +72,7 @@ ORDER = [
     'hotspot_quality_metric',
     'idr_summary_quality_metric',
     'pbc_spp_quality_metric',
+    'duplicates_quality_metric',
     'filtering_quality_metric',
     'trimming_quality_metric',
     'samtools_stats_quality_metric',

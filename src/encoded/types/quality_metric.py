@@ -176,6 +176,17 @@ class PbcSppQualityMetric(QualityMetric):
 
 
 @collection(
+    name='duplicates-quality-metrics',
+    properties={
+        'title': "Quality Metrics for duplicates as counted by Picard (non-UMI) or stampipes (UMI).",
+        'description': "A set of duplicate read QC metrics as detected by 'picard mark_duplicates' or 'stampipes mark_umi_dups'",
+    })
+class DuplicatesQualityMetric(QualityMetric):
+    item_type = 'duplicates_quality_metric'
+    schema = load_schema('encoded:schemas/duplicates_quality_metric.json')
+
+
+@collection(
     name='filtering-quality-metrics',
     properties={
         'title': "Read Filtering Quality Metrics",
