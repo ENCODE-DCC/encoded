@@ -64,7 +64,6 @@ class basic_experiment(object):
 
 
 class encode_chip_control(basic_experiment):
-
     def __init__(self):
         basic_experiment.__init__(self)
         self.file_types[('bam', 'unfiltered alignments')] = None

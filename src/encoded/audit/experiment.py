@@ -173,12 +173,13 @@ def audit_experiment_missing_processed_files(value, system):
             elif len(replicates_string) > 0 and is_single_replicate(replicates_string) is False:
                 pooled_quantity += 1
                 present_assemblies.append(assembly)
-            elif replicate_structures[(bio_rep_num, assembly)].has_orphan_files() is True:
+
+            if replicate_structures[(bio_rep_num, assembly)].has_orphan_files() is True:
                 detail = 'Experiment {} contains '.format(value['@id']) + \
                          '{} '.format(replicate_structures[(bio_rep_num, assembly)].get_orphan_files()) + \
                          'files that are not associated with any replicate'
                 yield AuditFailure('orphan pipeline files', detail, level='DCC_ACTION')
-            elif replicate_structures[(bio_rep_num, assembly)].has_orphan_files() is False:
+            else:
                 if replicate_structures[(bio_rep_num, assembly)].has_unexpected_files() is True:
                     for unexpected_file in \
                             replicate_structures[(bio_rep_num, assembly)].get_unexpected_files():
@@ -237,19 +238,20 @@ def audit_experiment_missing_processed_files(value, system):
                 if len(replicates_string) > 0 and \
                    is_single_replicate(replicates_string) is True:
                     replicates_dict[(replicates_string, assembly)] = 1
-                    
+
                 elif len(replicates_string) > 0 and is_single_replicate(replicates_string) is False:
                     detail = 'ChIP-seq control experiment {} '.format(value['@id']) + \
                              'contains unexpected processed files for {} assembly, '.format(assembly) + \
                              'derived from files that ' + \
                              'belong to different biological replicates {}. '.format(bio_rep_num)
                     yield AuditFailure('mismatched pipeline files', detail, level='DCC_ACTION')
-                elif replicate_structures[(bio_rep_num, assembly)].has_orphan_files() is True:
+
+                if replicate_structures[(bio_rep_num, assembly)].has_orphan_files() is True:
                     detail = 'Experiment {} contains '.format(value['@id']) + \
                              '{} '.format(replicate_structures[(bio_rep_num, assembly)].get_orphan_files()) + \
                              'files that are not associated with any replicate'
                     yield AuditFailure('orphan pipeline files', detail, level='DCC_ACTION')
-                elif replicate_structures[(bio_rep_num, assembly)].has_orphan_files() is False:
+                else:
                     if replicate_structures[(bio_rep_num, assembly)].has_unexpected_files() is True:
                         for unexpected_file in \
                                 replicate_structures[(bio_rep_num,
