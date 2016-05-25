@@ -1975,12 +1975,6 @@ var QcDetailsView = function(metrics) {
             qcName = qcName[1].replace(/-/g, ' ');
         }
 
-        // Convert the QC metric object @id to a displayable string
-        var qcName = metrics.ref['@id'].match(/^\/([a-z0-9-]*)\/.*$/i);
-        if (qcName && qcName[1]) {
-            qcName = qcName[1].replace(/-/g, ' ');
-        }
-
         return (
             <div>
                 <div className="quality-metrics-header">
