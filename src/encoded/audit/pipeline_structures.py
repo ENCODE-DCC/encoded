@@ -202,7 +202,10 @@ class modERN_TF_pooled(basic_experiment):
 
 class modERN_TF(object):
     def __init__(self, replicates):
-        if len(replicates[1:-1]) == 1:
+        replicates_string = replicates[1:-1]
+
+        if len(replicates_string) > 0 and \
+           ',' not in replicates_string:
             self.rep = modERN_TF_replicate()
         else:
             self.rep = modERN_TF_pooled()
@@ -215,6 +218,12 @@ class modERN_TF(object):
 
     def get_unexpected_files(self):
         return self.rep.unexpected_files_set
+
+    def has_orphan_files(self):
+        return self.rep.has_orphan_files()
+
+    def get_orphan_files(self):
+        return self.rep.get_orphan_files()
 
     def get_missing_fields_tuples(self):
         return self.rep.get_missing_fields_tuples()

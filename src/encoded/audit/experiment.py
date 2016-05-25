@@ -138,6 +138,10 @@ def audit_experiment_missing_processed_files(value, system):
 
     bio_reps = get_bio_replicates(value)
     assemblies = get_assemblies(value['original_files'])
+
+    print (bio_reps)
+    print (assemblies)
+
     present_assemblies = []
     replicates_dict = {}
     for bio_rep in bio_reps:
@@ -145,6 +149,8 @@ def audit_experiment_missing_processed_files(value, system):
             replicates_dict[(bio_rep, assembly)] = 0
     pooled_quantity = 0
 
+    print (replicates_dict.keys())
+    print ('--------')
     if 'Transcription factor ChIP-seq pipeline (modERN)' in pipelines:
         # check if control
         target = value.get('target')
@@ -162,6 +168,8 @@ def audit_experiment_missing_processed_files(value, system):
             if len(replicates_string) > 0 and \
                is_single_replicate(replicates_string) is True:
                 replicates_dict[(replicates_string, assembly)] = 1
+                print (replicates_dict.keys())
+                print ('+++++++')
             elif len(replicates_string) > 0 and is_single_replicate(replicates_string) is False:
                 pooled_quantity += 1
                 present_assemblies.append(assembly)
@@ -229,6 +237,7 @@ def audit_experiment_missing_processed_files(value, system):
                 if len(replicates_string) > 0 and \
                    is_single_replicate(replicates_string) is True:
                     replicates_dict[(replicates_string, assembly)] = 1
+                    
                 elif len(replicates_string) > 0 and is_single_replicate(replicates_string) is False:
                     detail = 'ChIP-seq control experiment {} '.format(value['@id']) + \
                              'contains unexpected processed files for {} assembly, '.format(assembly) + \
@@ -272,13 +281,13 @@ def audit_experiment_missing_processed_files(value, system):
                                  'files for {} assembly.'.format(assembly)
                         yield AuditFailure('mismatched pipeline files', detail, level='DCC_ACTION')
 
-                for (rep_num, assembly) in replicates_dict:
-                    if replicates_dict[(rep_num, assembly)] == 0:
-                        detail = 'ChIP-seq control experiment {} '.format(value['@id']) + \
-                                 'contains biological replicate {}, '.format(rep_num) + \
-                                 'without any processed ' + \
-                                 'files associated with {} assembly.'.format(assembly)
-                        yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
+            for (rep_num, assembly) in replicates_dict:
+                if replicates_dict[(rep_num, assembly)] == 0:
+                    detail = 'ChIP-seq control experiment {} '.format(value['@id']) + \
+                             'contains biological replicate {}, '.format(rep_num) + \
+                             'without any processed ' + \
+                             'files associated with {} assembly.'.format(assembly)
+                    yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
     '''                
         elif 'transcription factor' in target.get('investigated_as'):
             # create TF experiment structure
