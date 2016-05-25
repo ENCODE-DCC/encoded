@@ -1,7 +1,7 @@
-Making changes to encoded schemas
+Making changes to a snovault schema
 =========================
 
-This document describes how to make changes to the JSON schemas ([JSONSchema], [JSON-LD]) and source code that describes the encoded metadata model.  For overview of code organization see [overview.rst].
+This document describes how to make changes to the JSON schemas ([JSONSchema], [JSON-LD]) and source code that was originally developed for the ENCODE metadata model.  For overview of code organization see [overview.rst].
 
 Guide to where to edit Source Code
 ----------------

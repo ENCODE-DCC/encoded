@@ -44,10 +44,10 @@ def acl_from_settings(settings):
 
 
 @root
-class EncodedRoot(Root):
+class SnowflakesRoot(Root):
     properties = {
         'title': 'Home',
-        'portal_title': 'ENCODE',
+        'portal_title': 'Snowflakes',
     }
 
     @reify
@@ -65,7 +65,7 @@ class EncodedRoot(Root):
         return self.connection.get_by_uuid(uuid, default)
 
     def get(self, name, default=None):
-        resource = super(EncodedRoot, self).get(name, None)
+        resource = super(SnowflakesRoot, self).get(name, None)
         if resource is not None:
             return resource
         resource = self.connection.get_by_unique_key('page:location', name)

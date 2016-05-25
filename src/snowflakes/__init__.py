@@ -33,7 +33,7 @@ def static_resources(config):
     from pkg_resources import resource_filename
     import mimetypes
     mimetypes.init()
-    mimetypes.init([resource_filename('encoded', 'static/mime.types')])
+    mimetypes.init([resource_filename('snowflakes', 'static/mime.types')])
     config.add_static_view('static', 'static', cache_max_age=STATIC_MAX_AGE)
     config.add_static_view('profiles', 'schemas', cache_max_age=STATIC_MAX_AGE)
 
@@ -68,10 +68,10 @@ def main(global_config, **local_config):
     settings = global_config
     settings.update(local_config)
 
-    settings['snovault.jsonld.namespaces'] = json_asset('encoded:schemas/namespaces.json')
+    settings['snovault.jsonld.namespaces'] = json_asset('snowflakes:schemas/namespaces.json')
     settings['snovault.jsonld.terms_namespace'] = 'https://www.encodeproject.org/terms/'
-    settings['snovault.jsonld.terms_prefix'] = 'encode'
-    settings['snovault.elasticsearch.index'] = 'encoded'
+    settings['snovault.jsonld.terms_prefix'] = 'snowflake'
+    settings['snovault.elasticsearch.index'] = 'snowflakes'
     hostname_command = settings.get('hostname_command', '').strip()
     if hostname_command:
         hostname = subprocess.check_output(hostname_command, shell=True).strip()

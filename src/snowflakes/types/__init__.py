@@ -24,6 +24,6 @@ def includeme(config):
     })
 class Award(Item):
     item_type = 'award'
-    schema = load_schema('encoded:schemas/award.json')
+    schema = load_schema('snowflakes:schemas/award.json')
     name_key = 'name'
     embedded = ['pi']

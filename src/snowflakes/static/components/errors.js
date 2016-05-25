@@ -54,7 +54,7 @@ var HTTPForbidden = module.exports.HTTPForbidden = React.createClass({
                     <div className="col-sm-12">
                         <h1>Not available</h1>
                         {logged_in ? <p>Your account is not allowed to view this page.</p> : <p>Please sign in to view this page.</p>}
-                        {logged_in ? null : <p>Or <a href='mailto:encode-help@lists.stanford.edu'>Request an account.</a></p>}
+                        {logged_in ? null : <p>Or <a href='mailto:snowflake-help@lists.stanford.edu'>Request an account.</a></p>}
                     </div>
                 </div>
             </div>
@@ -74,8 +74,8 @@ var LoginDenied = module.exports.LoginDenied = React.createClass({
                 <div className="row">
                     <div className="col-sm-12">
                         <h1>Login failure</h1>
-                        <p>Access is restricted to ENCODE consortium members.</p>
-                        <p><a href='mailto:encode-help@lists.stanford.edu'>Request an account</a></p>
+                        <p>Access is restricted to valid logins.</p>
+                        <p><a href='mailto:snowflake-help@lists.stanford.edu'>Request an account</a></p>
                         
                     </div>
                 </div>

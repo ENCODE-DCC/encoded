@@ -7,7 +7,7 @@ import pytest
 from pytest import fixture
 
 pytest_plugins = [
-    'encoded.tests.datafixtures',
+    'snowflakes.tests.datafixtures',
     'snovault.tests.serverfixtures',
     'snovault.tests.testappfixtures',
     'snovault.tests.toolfixtures',
@@ -24,9 +24,9 @@ _app_settings = {
     'collection_datastore': 'database',
     'item_datastore': 'database',
     'multiauth.policies': 'persona session remoteuser accesskey',
-    'multiauth.groupfinder': 'encoded.authorization.groupfinder',
+    'multiauth.groupfinder': 'snowflakes.authorization.groupfinder',
     'multiauth.policy.persona.use': 'snovault.authentication.NamespacedAuthenticationPolicy',
-    'multiauth.policy.persona.base': 'encoded.persona.PersonaAuthenticationPolicy',
+    'multiauth.policy.persona.base': 'snowflakes.persona.PersonaAuthenticationPolicy',
     'multiauth.policy.persona.namespace': 'persona',
     'multiauth.policy.session.use': 'snovault.authentication.NamespacedAuthenticationPolicy',
     'multiauth.policy.session.base': 'pyramid.authentication.SessionAuthenticationPolicy',
@@ -46,7 +46,7 @@ _app_settings = {
     'pyramid.debug_authorization': True,
     'postgresql.statement_timeout': 20,
     'tm.attempts': 3,
-    'ontology_path': pkg_resources.resource_filename('encoded', '../../ontology.json'),
+    'ontology_path': pkg_resources.resource_filename('snowflakes', '../../ontology.json'),
 }
 
 
@@ -63,7 +63,7 @@ def app_settings(request, wsgi_server_host_port, conn, DBSession):
 def app(app_settings):
     '''WSGI application level functional testing.
     '''
-    from encoded import main
+    from snowflakes import main
     return main({}, **app_settings)
 
 
@@ -81,8 +81,8 @@ def workbook(conn, app, app_settings):
 
         from ..loadxl import load_all
         from pkg_resources import resource_filename
-        inserts = resource_filename('encoded', 'tests/data/inserts/')
-        docsdir = [resource_filename('encoded', 'tests/data/documents/')]
+        inserts = resource_filename('snowflakes', 'tests/data/inserts/')
+        docsdir = [resource_filename('snowflakes', 'tests/data/documents/')]
         load_all(testapp, inserts, docsdir)
 
         yield

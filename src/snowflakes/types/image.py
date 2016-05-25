@@ -17,7 +17,7 @@ from snovault.attachment import ItemWithAttachment
     })
 class Image(ItemWithAttachment, Item):
     item_type = 'image'
-    schema = load_schema('encoded:schemas/image.json')
+    schema = load_schema('snowflakes:schemas/image.json')
     schema['properties']['attachment']['properties']['type']['enum'] = [
         'image/png',
         'image/jpeg',

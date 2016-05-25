@@ -32,7 +32,7 @@ from pyramid.view import view_config
     })
 class Page(SharedItem):
     item_type = 'page'
-    schema = load_schema('encoded:schemas/page.json')
+    schema = load_schema('snowflakes:schemas/page.json')
     name_key = 'name'
 
     embedded = [
