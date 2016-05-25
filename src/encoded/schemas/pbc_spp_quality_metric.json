@@ -1,0 +1,58 @@
+{
+    "description": "Schema for reporting 'PCR bottleneck coefficient' (PBC) and 'phantumpeakqualtools run_spp.R' quality metric",
+    "id": "/profiles/pbc_quality_metric.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["step_run", "award", "lab"],
+    "additionalProperties": false,
+    "identifyingProperties": ["uuid"],
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "quality_metric.json#/properties" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/assay" }
+   ],
+    "properties": {
+        "schema_version": {
+            "default": "3"
+        },
+        "sample size": {
+            "type": "number",
+            "description": "Total reads sampled (pairs if applicable)"
+        },
+        "paired-end": {
+            "type": "boolean",
+            "description": "Reads are paired-ended"
+        },
+        "read length": {
+            "type": "number",
+            "description": "Read length"
+        },
+        "NRF": {
+            "type": "number",
+            "description": "Non redundant fraction (indicates library complexity).  Distinct Locations Mapped / Sampled Reads"
+        },
+        "PBC1": {
+            "type": "number",
+            "description": "PCR Bottlenecking coefficient 1 = Single-read Locations / Distinct Locations"
+        },
+        "PBC2": {
+            "type": "number",
+            "minimum":0,
+            "pattern": "^Infinity$",
+            "description": "PCR Bottlenecking coefficient 2 (indicates library complexity) = Single-read Locations / Multi-read Locations"
+        },
+        "NSC": {
+            "type": "number",
+            "description": "Normalized strand cross-correlation = FRAGLEN_CC / MIN_CC. Ratio of strand cross-correlation at estimated fragment length to the minimum cross-correlation over all shifts."
+        },
+        "RSC": {
+            "type": "number",
+            "description": "Relative cross correlation coefficient. Ratio of strand cross-correlation at fragment length and at read length"
+        }
+    }
+}

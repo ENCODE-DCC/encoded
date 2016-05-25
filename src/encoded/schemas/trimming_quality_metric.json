@@ -1,6 +1,6 @@
 {
-    "description": "Schema for reporting hotspot 'spot.out' as a quality metric",
-    "id": "/profiles/hotspot_quality_metric.json",
+    "description": "Schema for reporting trimming from 'trim-adapters-illumina' as a quality metric",
+    "id": "/profiles/trimming_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["step_run","quality_metric_of", "award", "lab"],
@@ -20,17 +20,21 @@
         "schema_version": {
             "default": "3"
         },
-        "SPOT score": {
+        "PE read-pairs processed": {
             "type": "number",
-            "description": "SPOT score as calculated by hotspot2"
+            "description": "Total number read-pairs processed"
         },
-        "hotspot count": {
+        "PE read-pairs trimmed": {
             "type": "number",
-            "description": "Count of hotspots discovered by hotspot2"
+            "description": "Total number read-pairs trimmed"
         },
-        "peaks count": {
+        "SE reads processed": {
             "type": "number",
-            "description": "Count of peaks discovered by hotspot2"
+            "description": "Total number (single-end) reads processed"
+        },
+        "SE reads trimmed": {
+            "type": "number",
+            "description": "Total number (single-end) reads trimmed"
         }
     }
 }

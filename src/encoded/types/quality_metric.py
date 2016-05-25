@@ -165,25 +165,36 @@ class MadQualityMetric(QualityMetric):
 
 
 @collection(
-    name='pbc-quality-metrics',
+    name='pbc-spp-quality-metrics',
     properties={
-        'title': "Quality Metrics 'PCR Bottleneck Coefficient' (PBC) of Mapping Sample",
+        'title': "Quality Metrics for 'PCR Bottleneck Coefficient' (PBC1, PBC2 and NRF), and SPP (NSC and RSC) of Mapping Sample",
         'description': 'A set of sampled mapping QC metrics',
     })
-class PbcQualityMetric(QualityMetric):
-    item_type = 'pbc_quality_metric'
-    schema = load_schema('encoded:schemas/pbc_quality_metric.json')
+class PbcSppQualityMetric(QualityMetric):
+    item_type = 'pbc_spp_quality_metric'
+    schema = load_schema('encoded:schemas/pbc_spp_quality_metric.json')
 
 
 @collection(
-    name='phantompeaktooks-spp-quality-metrics',
+    name='filtering-quality-metrics',
     properties={
-        'title': "Mapping quality metrics from 'phantompeakqualtools run_spp.R'",
-        'description': "A set of sampled mapping QC metrics from 'phantompeakqualtools run_spp.R'",
+        'title': "Read Filtering Quality Metrics",
+        'description': 'QC metrics documenting bam file read filtering',
     })
-class PhantompeaktoolsSppQualityMetric(QualityMetric):
-    item_type = 'phantompeaktools_spp_quality_metric'
-    schema = load_schema('encoded:schemas/phantompeaktools_spp_quality_metric.json')
+class FilteringQualityMetric(QualityMetric):
+    item_type = 'filtering_quality_metric'
+    schema = load_schema('encoded:schemas/filtering_quality_metric.json')
+
+
+@collection(
+    name='trimming-quality-metrics',
+    properties={
+        'title': "Read Trimming Quality Metrics",
+        'description': 'QC metrics for documenting fastq file read trimming',
+    })
+class TrimmingQualityMetric(QualityMetric):
+    item_type = 'trimming_quality_metric'
+    schema = load_schema('encoded:schemas/trimming_quality_metric.json')
 
 
 @collection(
