@@ -68,6 +68,26 @@ class encode_chip_control(basic_experiment):
         basic_experiment.__init__(self)
         self.file_types[('bam', 'unfiltered alignments')] = None
 
+    def update_fields(self, processed_file):
+        if len(processed_file.get('biological_replicates')) == 0:
+            self.orphan_files.append(processed_file.get('accession'))
+            self.orphan_files_flag = True
+        else:
+            f_format = processed_file.get('file_format')
+            f_output = processed_file.get('output_type')
+
+            replicates_string = str(processed_file.get('biological_replicates'))[1:-1]
+
+            if ((f_format, f_output) not in self.file_types) or \
+               (len(replicates_string) > 0 and ',' in replicates_string):
+                self.unexpected_file_flag = True
+                to_add = (f_format, f_output, processed_file['accession'])
+                self.unexpected_files_set.add(to_add)
+            else:
+                self.file_types[(f_format, f_output)] = processed_file.get('accession')
+                self.replicates = processed_file.get('biological_replicates')
+                self.assembly = processed_file.get('assembly')
+
 
 class encode_chip_experiment_replicate(basic_experiment):
     def __init__(self):
@@ -132,6 +152,26 @@ class modERN_TF_control(basic_experiment):
         basic_experiment.__init__(self)
         self.file_types[('bigWig', 'signal of unique reads')] = None
         self.file_types[('bigWig', 'read-depth normalized signal')] = None
+
+    def update_fields(self, processed_file):
+        if len(processed_file.get('biological_replicates')) == 0:
+            self.orphan_files.append(processed_file.get('accession'))
+            self.orphan_files_flag = True
+        else:
+            f_format = processed_file.get('file_format')
+            f_output = processed_file.get('output_type')
+
+            replicates_string = str(processed_file.get('biological_replicates'))[1:-1]
+
+            if ((f_format, f_output) not in self.file_types) or \
+               (len(replicates_string) > 0 and ',' in replicates_string):
+                self.unexpected_file_flag = True
+                to_add = (f_format, f_output, processed_file['accession'])
+                self.unexpected_files_set.add(to_add)
+            else:
+                self.file_types[(f_format, f_output)] = processed_file.get('accession')
+                self.replicates = processed_file.get('biological_replicates')
+                self.assembly = processed_file.get('assembly')
 
 
 class modERN_TF_replicate(basic_experiment):
