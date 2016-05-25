@@ -13,7 +13,6 @@ from urllib.parse import urlencode
 from collections import OrderedDict
 
 
-
 _ASSEMBLY_MAPPER = {
     'GRCh38-minimal': 'hg38',
     'GRCh38': 'hg38',

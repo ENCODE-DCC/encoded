@@ -28,6 +28,8 @@
         "depleted_in_term_name": ["depleted_in_term_id"],
         "post_synchronization_time_units": ["post_synchronization_time"],
         "post_synchronization_time": ["post_synchronization_time_units"],
+        "post_treatment_time": ["post_treatment_time_units"],
+        "post_treatment_time_units": ["post_treatment_time"],
         "depleted_in_term_id": {
             "required": ["depleted_in_term_name"],
             "properties": {
@@ -528,7 +530,26 @@
                 "month",
                 "stage"
             ]
-        },       
+        },
+        "post_treatment_time": {
+            "title": "Post-treatment time",
+            "comment": "Use in conjunction with treatment to specify time elapsed post-treatment.",
+            "type": "string",
+            "pattern": "^(\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)$"
+        },
+        "post_treatment_time_units": {
+            "title": "Post-treatment time units",
+            "comment": "Use in conjunction with treatment to specify time elapsed post-treatment.",
+            "type": "string",
+            "enum": [
+                "minute",
+                "hour",
+                "day",
+                "week",
+                "month",
+                "stage"
+            ]
+        },              
         "worm_life_stage":{
             "title": "Worm life stage",
             "type": "string",

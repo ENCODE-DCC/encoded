@@ -59,6 +59,34 @@ non_seq_assays = [
     ]
 
 
+@audit_checker('experiment', frame=['replicates',
+                                    'replicates.library'])
+def audit_experiment_mixed_libraries(value, system):
+    '''
+    Experiments should not have mixed libraries nucleic acids
+    '''
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if 'replicates' not in value:
+        return
+
+    nucleic_acids = set()
+
+    for rep in value['replicates']:
+        if 'library' in rep and rep['library']['status'] not in ['deleted',
+                                                                 'replaced',
+                                                                 'revoked']:
+            if 'nucleic_acid_term_name' in rep['library']:
+                nucleic_acids.add(rep['library']['nucleic_acid_term_name'])
+
+    if len(nucleic_acids) > 1:
+        detail = 'Experiment {} '.format(value['@id']) + \
+                 'contains libraries with mixed nucleic acids {} '.format(nucleic_acids)
+        yield AuditFailure('mixed libraries', detail, level='DCC_ACTION')
+    return
+
+
 @audit_checker('Experiment', frame=['original_files',
                                     'original_files'])
 def audit_experiment_released_with_unreleased_files(value, system):

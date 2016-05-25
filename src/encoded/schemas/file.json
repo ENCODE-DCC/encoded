@@ -370,6 +370,8 @@
                         "candidate regulatory elements",
                         
                         "genome reference",
+                        "transcriptome reference",
+                        "transcriptome index",
                         "tRNA reference",
                         "miRNA reference",
                         "snRNA reference",
@@ -667,6 +669,9 @@
         "step_run": {
             "title": "Analysis step run"
         },
+        "lab": {
+            "title": "Lab"
+        },
         "date_created": {
             "title": "Date added"
         },
@@ -768,6 +773,8 @@
         "filtered SNPs": "annotation",
         "filtered indels": "annotation",
 
+        "transcriptome reference": "reference",
+        "transcriptome index": "reference",
         "genome index": "reference",
         "tRNA reference": "reference",
         "miRNA reference": "reference",
