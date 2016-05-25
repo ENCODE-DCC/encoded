@@ -644,12 +644,21 @@ var Term = search.Term = React.createClass({
             <li id={selected ? "selected" : null} key={term}>
                 {selected ? '' : <span className="bar" style={barStyle}></span>}
                 {field === 'lot_reviews.status' ? <span className={globals.statusClass(term, 'indicator pull-left facet-term-key icon icon-circle')}></span> : null}
-                <a id={selected ? "selected" : null} href={href} onClick={href ? this.props.onFilter : null}>
-                    <span className="pull-right">{count} {selected && this.props.canDeselect ? <i className="icon icon-times-circle-o"></i> : ''}</span>
-                    <span className="facet-item">
-                        {em ? <em>{title}</em> : <span>{title}</span>}
+                {count ?
+                    <a id={selected ? "selected" : null} href={href} onClick={href ? this.props.onFilter : null}>
+                        <span className="pull-right">{count} {selected && this.props.canDeselect ? <i className="icon icon-times-circle-o"></i> : ''}</span>
+                        <span className="facet-item">
+                            {em ? <em>{title}</em> : <span>{title}</span>}
+                        </span>
+                    </a>
+                :
+                    <span>
+                        <span className="pull-right">{count}</span>
+                        <span className="facet-item">
+                            {em ? <em>{title}</em> : <span>{title}</span>}
+                        </span>
                     </span>
-                </a>
+                }
             </li>
         );
     }
@@ -673,7 +682,10 @@ var TypeTerm = search.TypeTerm = React.createClass({
 
 var Facet = search.Facet = React.createClass({
     getDefaultProps: function() {
-        return {width: 'inherit'};
+        return {
+            width: 'inherit',
+            hideZeros: true
+        };
     },
 
     getInitialState: function () {
@@ -693,18 +705,21 @@ var Facet = search.Facet = React.createClass({
         var field = facet['field'];
         var total = facet['total'];
         var termID = title.replace(/\s+/g, '');
-        var terms = facet['terms'].filter(function (term) {
-            if (term.key) {
-                for(var filter in filters) {
-                    if(filters[filter].term === term.key) {
-                        return true;
+        var terms = facet.terms;
+        if (this.props.hideZeros) {
+            terms = terms.filter(function (term) {
+                if (term.key) {
+                    for(var filter in filters) {
+                        if(filters[filter].term === term.key) {
+                            return true;
+                        }
                     }
+                    return term.doc_count > 0;
+                } else {
+                    return false;
                 }
-                return term.doc_count > 0;
-            } else {
-                return false;
-            }
-        });
+            });
+        }
         var moreTerms = terms.slice(5);
         var TermComponent = field === 'type' ? TypeTerm : Term;
         var selectedTermCount = countSelectedTerms(moreTerms, field, filters);

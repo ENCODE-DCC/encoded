@@ -61,6 +61,13 @@ def schema_mapping(name, schema):
     else:
         type_ = schema['type']
 
+    # Avoid indexing layout rows, which have a heterogeneous structure
+    # and don't contain usefully searchable data anyway
+    if name == 'rows':
+        return {
+            'enabled': False,
+        }
+
     # Elasticsearch handles multiple values for a field
     if type_ == 'array' and schema['items']:
         return schema_mapping(name, schema['items'])

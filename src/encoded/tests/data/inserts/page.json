@@ -1,46 +1,75 @@
 [
     {
         "name": "homepage",
-        "title": "The ENCODE Project",
+        "title": "ENCODE: Encyclopedia of DNA Elements",
         "status": "released",
-        "uuid": "27f9abd9-0081-4ade-8c82-95ec12b3a7dd",
+        "uuid": "1b20c276-a595-4ad9-aaa8-b53f542a14e0",
+        "status": "released",
         "layout": {
-            "rows": [
+            "rows":  [
                 {
                     "cols": [
-                        {"blocks": ["#block1"]}
-                    ]
-                },
-                {
-                    "cols": [
-                        {"blocks": ["#block2"]},
-                        {"blocks": ["#block3"]},
-                        {"blocks": ["#block4"]}
+                        {
+                            "className": "col-md-4",
+                            "blocks": [
+                                "#block5"
+                            ]
+                        },
+                        {
+                            "className": "col-md-8",
+                            "blocks": [
+                                "#block6",
+                                {
+                                    "cols": [
+                                        {
+                                            "blocks": [
+                                                "#block4"
+                                            ]
+                                        },
+                                        {
+                                            "blocks": [
+                                                "#block1"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
                     ]
                 }
             ],
             "blocks": [
                 {
+                    "body": "<h3>News</h3>\n\n<p><strong>April 26th, 2016:</strong> Kudos to our ENCODE collaborators, the <a href=\"http://yeolab.github.io/\">Yeo lab</a>,&nbsp;for their recent <a href=\"http://www.ncbi.nlm.nih.gov/pubmed/27018577\">publication</a>&nbsp;in Nature Methods. Check out all&nbsp;the eCLIP data <a href=\"https://www.encodeproject.org/search/?type=Experiment&amp;assay_title=eCLIP&amp;status=released\">here</a>.</p>\n\n<p><strong>April 15, 2016: </strong>Abstract deadline for talk consideration at the <strong>2016 ENCODE Users Meeting</strong> is May 16th, 2016. &nbsp;Register and submit abstract <a href=\"http://www.encode2016.org\">here</a>!</p>\n\n<p><strong>April 1, 2016</strong>: Data release: 306 human datasets and 188 mouse datasets. [<a href=\"/news\">read more</a>]</p>\n\n<p><strong>March 22, 2016:</strong> We are happy to announce that the second annual ENCODE Users Meeting will be held at Stanford University on June 8th-10th, 2016. &nbsp;More details at <a href=\"http://www.encode2016.org\">www.encode2016.org</a></p>\n\n<p><b style=\"line-height: 1.6; font-size: 1rem;\">Oct 6, 2015</b><span style=\"line-height: 1.6; font-size: 1rem;\">:&nbsp;</span><span style=\"line-height: 22.4px; font-size: 1rem;\">We are pleased to announce that the metadata from&nbsp;</span><a href=\"https://www.encodeproject.org/search/?type=experiment&amp;award.project=Roadmap\" style=\"line-height: 22.4px; font-size: 1rem;\">3127 Roadmap experiments&nbsp;</a><span style=\"line-height: 22.4px; font-size: 1rem;\">have been released on the&nbsp;</span><a href=\"https://www.encodeproject.org/\" style=\"line-height: 22.4px; font-size: 1rem;\">ENCODE Portal</a><span style=\"line-height: 22.4px; font-size: 1rem;\">.&nbsp;</span></p>\n\n<p style=\"line-height: 22.4px; background-color: rgb(255, 255, 255);\"><b style=\"line-height: 1.6; font-size: 1rem;\">Aug 31, 2015</b><span style=\"line-height: 1.6; font-size: 1rem;\">: The presentation video and tutorials from the </span><a href=\"https://www.encodeproject.org/tutorials/encode-users-meeting-2015/\" style=\"line-height: 22.4px; font-size: 1rem; background-color: rgb(255, 255, 255);\">ENCODE 2015: Research Applications and Users Meeting</a><span style=\"line-height: 1.6; font-size: 1rem;\"> have been posted&nbsp;for public use.</span></p>\n\n<p><strong>June 29 to July 1, 2015</strong>: The ENCODE 2015: Research Applications and Users Meeting&nbsp;was held at at the <a href=\"http://www.bolgercenter.com/\">Bolger Center</a> in Potomoc, MD</p>\n\n<p><strong>June 23, 2015</strong>: Data release: 3 human and 91 mouse datasets. [<a href=\"/news/#06-23-2015\">read more</a>]</p>\n\n<p><strong>May 28, 2015</strong>: Changelog released for metadata schema updates. [<a href=\"/news/#05-28-2015\">read more</a>]</p>\n\n<p>See our&nbsp;<a href=\"/news/\" style=\"line-height: 1.6; background-color: rgb(255, 255, 255);\">news archive</a> for additional news and updates.</p>\n",
                     "@id": "#block1",
-                    "@type": "richtextblock",
-                    "body": "<div class=\"project-info site-title\">\n    <h1>ENCODE: The Encyclopedia of DNA Elements</h1>\n</div>\n<div id=\"info-box\" class=\"project-info text-panel\">\n  <p>The ENCODE project dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>\n</div>"
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ]
                 },
                 {
-                    "@id": "#block2",
-                    "@type": "richtextblock",
-                    "body": "<h2>Transcriptome</h2>\n<p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>"
-                },
-                {
-                    "@id": "#block3",
-                    "@type": "richtextblock",
-                    "body": "<h2>Regulation</h2>\n<p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum.</p>"
-                },
-                {
+                    "body": "<h3>Quick Start</h3>\n\n<p>To find and download ENCODE Consortium data:</p>\n\n<ul>\n\t<li>Click the Data toolbar above and browse data\n\t<blockquote>&bull;&nbsp;<a href=\"/search/?type=experiment\">By assay</a><br />\n\t&bull;&nbsp;<a href=\"/search/?type=biosample\">By biosample</a><br />\n\t&bull;&nbsp;<a href=\"/data/annotations/\">By genomic annotations</a></blockquote>\n\t</li>\n\t<li>Enter search terms like <a href=\"/search/?searchTerm=skin\">&quot;skin&quot;</a>, <a href=\"/search/?searchTerm=ChIP-seq\">&quot;ChIP-seq&quot;</a>, or <a href=\"/search/?searchTerm=CTCF\">&quot;CTCF&quot;</a></li>\n</ul>\n\n<p>Additional help using the ENCODE Portal:</p>\n\n<ul>\n\t<li><a href=\"/help/getting-started/\">Getting Started</a></li>\n\t<li><a href=\"/help/batch-download/\">Batch Download</a></li>\n</ul>\n\n<p>ENCODE investigators employ a variety of assays and methods to identify functional elements. The discovery and annotation of gene elements is accomplished primarily by sequencing a diverse range of RNA sources, comparative genomics, integrative bioinformatic methods, and human curation. Regulatory elements are typically investigated through DNA hypersensitivity assays, assays of DNA methylation, and immunoprecipitation (IP) of proteins that interact with DNA and RNA, i.e., modified histones, transcription factors, chromatin regulators, and RNA-binding proteins, followed by sequencing.</p>\n\n<p>All ENCODE data is freely available for download and analysis. Please refer to the <a href=\"/about/data-use-policy/\">ENCODE Data Release Policy</a></p>\n",
                     "@id": "#block4",
-                    "@type": "teaserblock",
-                    "image": "/images/8a91ae78-731a-4a92-ae7c-273214be408a/",
-                    "body": "<h2>Chromatin Structure</h2>",
-                    "href": "/about/chromatin-structure"
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ]
+                },
+                {
+                    "body": "<img \nsrc=\"/images/c45f4d8c-0340-4fcb-abe3-e4ff0bb919be/@@download/attachment/EncodeDatatypes2013-7.png\" style=\"max-width: 100%;\" />\n\n<p>&nbsp;</p>\n\n<p><span style=\"line-height:1.6\">The ENCODE (Encyclopedia of DNA Elements) Consortium is an international collaboration of research groups funded by the National Human Genome Research Institute (NHGRI). The goal of ENCODE is to build a comprehensive parts list of functional elements in the human genome, including elements that act at the protein and RNA levels, and regulatory elements that control cells and circumstances in which a gene is active.</span></p>\n<em>Image credits: Darryl Leja (NHGRI), Ian Dunham (EBI), Michael Pazin (NHGRI)</em>\n<p><span style=\"line-height:1.6\">&nbsp;</span><span style=\"line-height:1.6\">&nbsp;</span></p>\n",
+                    "@id": "#block5",
+                    "className": "full-width",
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ]
+                },
+                {
+                    "@id": "#block6",
+                    "@type": [
+                        "homepage-summary-block",
+                        "block"
+                    ]
                 }
             ]
         }
