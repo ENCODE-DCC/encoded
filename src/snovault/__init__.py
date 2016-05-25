@@ -97,15 +97,15 @@ def main(global_config, **local_config):
     config.commit()  # commit so search can override listing
 
     # Render an HTML page to browsers and a JSON document for API clients
-    config.include('encoded.renderers')
+    config.include('snowflakes.renderers')
     # these two should be application specific
     config.include('.authentication')
-    config.include('encoded.root')
+    config.include('snowflakes.root')
 
     if 'elasticsearch.server' in config.registry.settings:
         config.include('snovault.elasticsearch')
         # needed for /search/?
-        config.include('encoded.search')
+        config.include('snowflakes.search')
 
     config.include(static_resources)
     config.include(changelogs)

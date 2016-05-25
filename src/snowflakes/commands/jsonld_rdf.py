@@ -2,7 +2,7 @@
 Available formats: xml, n3, turtle, nt, pretty-xml, trix.
 Example.
 
-    %(prog)s "https://www.encodeproject.org/search/?type=organism&frame=object"
+    %(prog)s "$SITE_URL/search/?type=Item&frame=object"
 """
 EPILOG = __doc__
 

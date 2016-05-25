@@ -47,7 +47,7 @@ from snovault.validators import (
     ])
 class AccessKey(Item):
     item_type = 'access_key'
-    schema = load_schema('encoded:schemas/access_key.json')
+    schema = load_schema('snowflakes:schemas/access_key.json')
     name_key = 'access_key_id'
 
     STATUS_ACL = {

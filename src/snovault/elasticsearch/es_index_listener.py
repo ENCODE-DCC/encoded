@@ -76,7 +76,7 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, path='/index', control=
                     if not recovery:
                         # http://initd.org/psycopg/docs/advanced.html#asynchronous-notifications
                         cursor.execute("""LISTEN "snovault.transaction";""")
-                        cursor.execute("""LISTEN "encoded.transaction";""")  # BBB
+                        # cursor.execute("""LISTEN "encoded.transaction";""")  # BBB
                         log.debug("Listener connected")
                         listening = True
 
@@ -315,7 +315,7 @@ def main():
 
     # Loading app will have configured from config file. Reconfigure here:
     if args.verbose or args.dry_run:
-        logging.getLogger('encoded').setLevel(logging.DEBUG)
+        logging.getLogger('snowvault').setLevel(logging.DEBUG)
 
     return run(testapp, args.poll_interval, args.dry_run, args.path)
 

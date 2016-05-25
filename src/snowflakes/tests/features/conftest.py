@@ -1,8 +1,8 @@
 import pytest
 
 pytest_plugins = [
-    'encoded.tests.features.browsersteps',
-    'encoded.tests.features.customsteps',
+    'snowflakes.tests.features.browsersteps',
+    'snowflakes.tests.features.customsteps',
 ]
 
 
@@ -27,7 +27,7 @@ def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
     settings['sqlalchemy.url'] = postgresql_server
     settings['collection_datastore'] = 'elasticsearch'
     settings['item_datastore'] = 'elasticsearch'
-    settings['snovault.elasticsearch.index'] = 'encoded'
+    settings['snovault.elasticsearch.index'] = 'snowflakes'
     settings['indexer'] = True
     settings['indexer.processes'] = 2
     return settings
@@ -35,7 +35,7 @@ def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
 
 @pytest.yield_fixture(scope='session')
 def app(app_settings):
-    from encoded import main
+    from snowflakes import main
     from snovault.elasticsearch import create_mapping
     app = main({}, **app_settings)
 
@@ -64,8 +64,8 @@ def workbook(app):
 
     from ...loadxl import load_all
     from pkg_resources import resource_filename
-    inserts = resource_filename('encoded', 'tests/data/inserts/')
-    docsdir = [resource_filename('encoded', 'tests/data/documents/')]
+    inserts = resource_filename('snowflakes', 'tests/data/inserts/')
+    docsdir = [resource_filename('snowflakes', 'tests/data/documents/')]
     load_all(testapp, inserts, docsdir)
 
     testapp.post_json('/index', {})

@@ -1,6 +1,7 @@
 """\
 Move attachment blobs to S3.
-
+This is provided as an example upgrade script, it was used by the ENCODE project to migrate
+attachment BLOBs from postgres to s3
 """
 import copy
 import logging
@@ -60,7 +61,7 @@ def main():
     logging.basicConfig()
     app = get_app(args.config_uri, args.app_name)
     # Loading app will have configured from config file. Reconfigure here:
-    logging.getLogger('encoded').setLevel(logging.DEBUG)
+    logging.getLogger('snovault').setLevel(logging.DEBUG)
 
     raised = False
     try:

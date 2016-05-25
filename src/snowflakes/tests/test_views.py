@@ -9,7 +9,7 @@ def _type_length():
     import json
     utf8 = codecs.getreader("utf-8")
     return {
-        name: len(json.load(utf8(resource_stream('encoded', 'tests/data/inserts/%s.json' % name))))
+        name: len(json.load(utf8(resource_stream('snowflakes', 'tests/data/inserts/%s.json' % name))))
         for name in ORDER
     }
 
@@ -17,13 +17,8 @@ def _type_length():
 TYPE_LENGTH = _type_length()
 
 PUBLIC_COLLECTIONS = [
-    'source',
-    'platform',
-    'treatment',
     'lab',
     'award',
-    'target',
-    'organism',
 ]
 
 
@@ -131,33 +126,9 @@ def _test_antibody_approval_creation(testapp):
 
 
 def test_load_sample_data(
-        analysis_step,
-        analysis_step_run,
-        antibody_characterization,
-        antibody_lot,
         award,
-        biosample,
-        biosample_characterization,
-        construct,
-        document,
-        experiment,
-        file,
         lab,
-        library,
-        mouse_donor,
-        organism,
-        pipeline,
-        publication,
-        publication_data,
-        quality_metric,
-        replicate,
-        rnai,
-        software,
-        software_version,
-        source,
         submitter,
-        target,
-        ucsc_browser_composite,
         ):
     assert True, 'Fixtures have loaded sample data'
 

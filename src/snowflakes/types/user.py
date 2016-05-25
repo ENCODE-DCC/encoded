@@ -43,13 +43,13 @@ USER_DELETED = [
     name='users',
     unique_key='user:email',
     properties={
-        'title': 'DCC Users',
-        'description': 'Listing of current ENCODE DCC users',
+        'title': 'Snowflake  Users',
+        'description': 'Listing of current Snowflake users',
     },
     acl=[])
 class User(Item):
     item_type = 'user'
-    schema = load_schema('encoded:schemas/user.json')
+    schema = load_schema('snowflakes:schemas/user.json')
     # Avoid access_keys reverse link so editing access keys does not reindex content.
     embedded = [
         'lab',

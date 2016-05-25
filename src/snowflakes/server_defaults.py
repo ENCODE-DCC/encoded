@@ -21,7 +21,7 @@ def includeme(config):
     if accession_factory:
         factory = DottedNameResolver().resolve(accession_factory)
     else:
-        factory = enc_accession
+        factory = prod_accession
     config.registry[ACCESSION_FACTORY] = factory
 
 
@@ -62,12 +62,12 @@ def accession(instance, subschema):
     raise AssertionError("Free accession not found in %d attempts" % ATTEMPTS)
 
 
-ENC_ACCESSION_FORMAT = (digits, digits, digits, ascii_uppercase, ascii_uppercase, ascii_uppercase)
+PRODUCTION_ACCESSION_FORMAT = (digits, digits, digits, ascii_uppercase, ascii_uppercase, ascii_uppercase)
 
 
-def enc_accession(accession_type):
-    random_part = ''.join(random.choice(s) for s in ENC_ACCESSION_FORMAT)
-    return 'ENC' + accession_type + random_part
+def prod_accession(accession_type):
+    random_part = ''.join(random.choice(s) for s in PRODUCTION_ACCESSION_FORMAT)
+    return 'SNO' + accession_type + random_part
 
 
 TEST_ACCESSION_FORMAT = (digits, ) * 6

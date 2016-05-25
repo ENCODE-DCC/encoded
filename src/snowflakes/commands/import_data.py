@@ -10,8 +10,8 @@ Examples.
 
 To load the initial data:
 
-    %(prog)s --attach ../dccMetadataImport/data/documents/ \\
-        --attach ../dccMetadataImport/data/ENCODE3docs/ \\
+    %(prog)s --attach $DIR_HOLDING_ATTACHMENTS \\
+        --attach $DIR_HOLDING_SPREADSHHETS \\
         ../documents-export.zip dev-masterdata.ini
 
 To make updates from a single tsv file
@@ -116,7 +116,7 @@ def main():
         testapp = internal_app(args.url, args.app_name, args.username)
 
     # Loading app will have configured from config file. Reconfigure here:
-    logging.getLogger('encoded').setLevel(logging.INFO)
+    logging.getLogger('snovault').setLevel(logging.INFO)
     logging.getLogger('wsgi').setLevel(logging.WARNING)
 
     if args.method:

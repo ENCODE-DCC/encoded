@@ -2,7 +2,7 @@ from pyramid.paster import get_app
 import logging
 from webtest import TestApp
 
-index = 'encoded'
+index = 'snowflakes'
 
 EPILOG = __doc__
 
@@ -43,7 +43,7 @@ def main():
     app = get_app(args.config_uri, args.app_name, options)
 
     # Loading app will have configured from config file. Reconfigure here:
-    logging.getLogger('encoded').setLevel(logging.DEBUG)
+    logging.getLogger('snovault').setLevel(logging.DEBUG)
     return run(app, args.item_type, args.record)
 
 

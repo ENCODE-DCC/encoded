@@ -7,90 +7,19 @@ import os.path
 
 text = type(u'')
 
-logger = logging.getLogger('encoded')
+logger = logging.getLogger('snovault')
 logger.setLevel(logging.INFO)  # doesn't work to shut off sqla INFO
 
 ORDER = [
     'user',
     'award',
     'lab',
-    'organism',
-    'source',
-    'target',
-    'publication',
-    'document',
-    'antibody_lot',
-    'antibody_characterization',
-    'antibody_approval',
-    'treatment',
-    'construct',
-    'construct_characterization',
-    'rnai',
-    'rnai_characterization',
-    'talen',
-    'mouse_donor',
-    'fly_donor',
-    'worm_donor',
-    'human_donor',
-    'donor_characterization',
-    'biosample',
-    'biosample_characterization',
-    'platform',
-    'library',
-    'experiment',
-    'replicate',
-    'annotation',
-    'project',
-    'publication_data',
-    'reference',
-    'ucsc_browser_composite',
-    'matched_set',
-    'treatment_time_series',
-    'treatment_concentration_series',
-    'organism_development_series',
-    'replication_timing_series',
-    'reference_epigenome',
-    'software',
-    'software_version',
-    'analysis_step',
-    'analysis_step_version',
-    'pipeline',
-    'analysis_step_run',
-    'file',
-    'star_quality_metric',
-    'bismark_quality_metric',
-    'cpg_correlation_quality_metric',
-    'chipseq_filter_quality_metric',
-    'encode2_chipseq_quality_metric',
-    'fastqc_quality_metric',
-    'samtools_flagstats_quality_metric',
-    'mad_quality_metric',
-    'bigwigcorrelate_quality_metric',
-    'dnase_peak_quality_metric',
-    'edwbamstats_quality_metric',
-    'edwcomparepeaks_quality_metric',
-    'hotspot_quality_metric',
-    'idr_summary_quality_metric',
-    'pbc_quality_metric',
-    'phantompeaktools_spp_quality_metric',
-    'samtools_stats_quality_metric',
-    'idr_quality_metric',
-    'generic_quality_metric',
     'image',
     'page'
 ]
 
 IS_ATTACHMENT = [
     'attachment',
-    'IDR_plot_true',
-    'IDR_plot_rep1_pr',
-    'IDR_plot_rep2_pr',
-    'IDR_plot_pool_pr',
-    'IDR_parameters_true',
-    'IDR_parameters_rep1_pr',
-    'IDR_parameters_rep2_pr',
-    'IDR_parameters_pool_pr',
-    'cross_correlation_plot'
 ]
 
 ##############################################################################
@@ -510,15 +439,6 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None
         remove_keys_with_empty_value,
         skip_rows_missing_all_keys('uuid', 'accession', '@id', 'name'),
         remove_keys('schema_version'),
-        warn_keys_with_unknown_value_except_for(
-            'lot_id', 'sex', 'life_stage', 'health_status', 'ethnicity',
-            'strain_background', 'age', 'version',
-            'model_organism_health_status',
-            'model_organism_age',
-            'model_organism_sex',
-            'mouse_life_stage',
-            # 'flowcell_details.machine',
-        ),
         add_attachments(docsdir),
     ]
     if phase == 1:
@@ -543,51 +463,6 @@ PHASE1_PIPELINES = {
     'user': [
         remove_keys('lab', 'submits_for'),
     ],
-    'biosample': [
-        remove_keys('derived_from', 'pooled_from', 'part_of'),
-    ],
-    'library': [
-        remove_keys('spikeins_used'),
-    ],
-    'experiment': [
-        remove_keys('possible_controls', 'related_files'),
-    ],
-    'publication': [
-        remove_keys('datasets'),
-    ],
-    'annotation': [
-        remove_keys('related_files', 'software_used'),
-    ],
-    'project': [
-        remove_keys('related_files'),
-    ],
-    'publication_data': [
-        remove_keys('related_files'),
-    ],
-    'reference': [
-        remove_keys('related_files', 'software_used'),
-    ],
-    'ucsc_browser_composite': [
-        remove_keys('related_files'),
-    ],
-    'treatment_time_series': [
-        remove_keys('related_datasets'),
-    ],
-    'treatment_concentration_series': [
-        remove_keys('related_datasets'),
-    ],
-    'organism_development_series': [
-        remove_keys('related_datasets'),
-    ],
-    'replication_timing_series': [
-        remove_keys('related_datasets'),
-    ],
-    'reference_epigenome': [
-        remove_keys('related_datasets'),
-    ],
-    'matched_set': [
-        remove_keys('related_datasets'),
-    ]
 }
 
 
@@ -601,51 +476,6 @@ PHASE1_PIPELINES = {
 PHASE2_PIPELINES = {
     'user': [
         skip_rows_missing_all_keys('lab', 'submits_for'),
-    ],
-    'biosample': [
-        skip_rows_missing_all_keys('derived_from', 'pooled_from', 'part_of'),
-    ],
-    'library': [
-        skip_rows_missing_all_keys('spikeins_used'),
-    ],
-    'experiment': [
-        skip_rows_missing_all_keys('related_files', 'possible_controls'),
-    ],
-    'annotation': [
-        skip_rows_missing_all_keys('related_files', 'software_used'),
-    ],
-    'project': [
-        skip_rows_missing_all_keys('related_files'),
-    ],
-    'publication_data': [
-        skip_rows_missing_all_keys('related_files'),
-    ],
-    'reference': [
-        skip_rows_missing_all_keys('related_files', 'software_used'),
-    ],
-    'ucsc_browser_composite': [
-        skip_rows_missing_all_keys('related_files'),
-    ],
-    'treatment_time_series': [
-        skip_rows_missing_all_keys('related_datasets'),
-    ],
-    'treatment_concentration_series': [
-        skip_rows_missing_all_keys('related_datasets'),
-    ],
-    'organism_development_series': [
-        skip_rows_missing_all_keys('related_datasets'),
-    ],
-    'replication_timing_series': [
-        skip_rows_missing_all_keys('related_datasets'),
-    ],
-    'reference_epigenome': [
-        skip_rows_missing_all_keys('related_datasets'),
-    ],
-    'matched_set': [
-        skip_rows_missing_all_keys('related_datasets'),
-    ],
-    'publication': [
-        skip_rows_missing_all_keys('datasets'),
     ],
 }
 
@@ -680,6 +510,6 @@ def load_test_data(app):
     testapp = TestApp(app, environ)
 
     from pkg_resources import resource_filename
-    inserts = resource_filename('encoded', 'tests/data/inserts/')
-    docsdir = [resource_filename('encoded', 'tests/data/documents/')]
+    inserts = resource_filename('snowflakes', 'tests/data/inserts/')
+    docsdir = [resource_filename('snowflakes', 'tests/data/documents/')]
     load_all(testapp, inserts, docsdir)

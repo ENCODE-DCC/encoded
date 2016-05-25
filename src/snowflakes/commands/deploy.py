@@ -82,12 +82,12 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
         BlockDeviceMappings=bdm,
         InstanceInitiatedShutdownBehavior='terminate',
         IamInstanceProfile={
-            "Name": 'encoded-instance',
+            "Name": 'snowflake-instance',
         }
     )
 
     instance = reservation[0]  # Instance:i-34edd56f
-    print('%s.%s.encodedcc.org' % (instance.id, domain))
+    print('%s.%s.snowflake.org' % (instance.id, domain))
     instance.wait_until_exists()
     instance.create_tags(Tags=[
         {'Key': 'Name', 'Value': name},
@@ -95,9 +95,9 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
         {'Key': 'commit', 'Value': commit},
         {'Key': 'started_by', 'Value': username},
     ])
-    print('ssh %s.%s.encodedcc.org' % (name, domain))
+    print('ssh %s.%s.snowflake.org' % (name, domain))
     if domain == 'instance':
-        print('https://%s.demo.encodedcc.org' % name)
+        print('https://%s.demo.snowflake.org' % name)
 
     print('pending...')
     instance.wait_until_running()
@@ -114,11 +114,11 @@ def main():
         return value
 
     parser = argparse.ArgumentParser(
-        description="Deploy ENCODE on AWS",
+        description="Deploy SNOWFLAKE on AWS",
     )
     parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
     parser.add_argument('-n', '--name', type=hostname, help="Instance name")
-    parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')
+    parser.add_argument('--wale-s3-prefix', default='s3://snowflake-backups-prod/production')
     parser.add_argument(
         '--candidate', action='store_const', default='demo', const='candidate', dest='role',
         help="Deploy candidate instance")
