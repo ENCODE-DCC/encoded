@@ -391,6 +391,7 @@ def audit_file_controlled_by(value, system):
                                    detail, level='WARNING')
                 return
 
+
 @audit_checker('file', frame='object', condition=rfa('modERN', 'GGR'))
 def audit_file_flowcells(value, system):
     '''
