@@ -1107,19 +1107,19 @@ def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_thre
         if read_depth >= lower_threshold and read_depth < upper_threshold:
             detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                          read_depth) + \
-                     'uniquely mapped reads. Replicates for ' + \
+                     'aligned reads. Replicates for ' + \
                      '{} assay '.format(assay_term_name) + \
                      'processed by {} pipeline '.format(pipeline_title) + \
-                     'require {} uniquely mapped reads.'.format(upper_threshold)
+                     'require {} aligned reads.'.format(upper_threshold)
             yield AuditFailure('low read depth', detail, level='WARNING')
             return
         elif read_depth < lower_threshold:
             detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                          read_depth) + \
-                     'uniquely mapped reads. Replicates for ' + \
+                     'aligned reads. Replicates for ' + \
                      '{} assay '.format(assay_term_name) + \
                      'processed by {} pipeline '.format(pipeline_title) + \
-                     'require {} uniquely mapped reads.'.format(upper_threshold)
+                     'require {} aligned reads.'.format(upper_threshold)
             yield AuditFailure('insufficient read depth', detail,
                                level='NOT_COMPLIANT')
             return
@@ -1127,10 +1127,10 @@ def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_thre
     elif read_depth is not False and read_depth < upper_threshold:
         detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                      read_depth) + \
-                 'uniquely mapped reads. Replicates for ' + \
+                 'aligned reads. Replicates for ' + \
                  '{} assay '.format(assay_term_name) + \
                  'processed by {} pipeline '.format(pipeline_title) + \
-                 'require {} uniquely mapped reads.'.format(upper_threshold)
+                 'require {} aligned reads.'.format(upper_threshold)
         yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
         return
 
