@@ -263,80 +263,54 @@ def set_filters(request, query, result):
     """
     query_filters = query['filter']['and']['filters']
     used_filters = {}
-    for field, term in request.params.items():
-        if field in ['type', 'limit', 'y.limit', 'x.limit', 'mode', 'annotation',
-                     'format', 'frame', 'datastore', 'field', 'region', 'genome',
-                     'sort', 'from', 'referrer']:
+    for field, terms in request.params.dict_of_lists().items():
+        if field in [
+                'type', 'limit', 'y.limit', 'x.limit', 'mode', 'annotation',
+                'format', 'frame', 'datastore', 'field', 'region', 'genome',
+                'sort', 'from', 'referrer']:
             continue
 
         # Add filter to result
-        qs = urlencode([
-            (k.encode('utf-8'), v.encode('utf-8'))
-            for k, v in request.params.items() if v != term
-        ])
-        result['filters'].append({
-            'field': field,
-            'term': term,
-            'remove': '{}?{}'.format(request.path, qs)
-        })
+        for term in terms:
+            qs = urlencode([
+                (k.encode('utf-8'), v.encode('utf-8'))
+                for k, v in request.params.items() if v != term
+            ])
+            result['filters'].append({
+                'field': field,
+                'term': term,
+                'remove': '{}?{}'.format(request.path, qs)
+            })
 
         if field == 'searchTerm':
             continue
 
         # Add filter to query
-        if field.startswith('audit'):
-            query_field = field
+        if field.endswith('!'):
+            query_field = field[:-1]
         else:
-            query_field = 'embedded.' + field + '.raw'
+            query_field = field
+        if not query_field.startswith('audit'):
+            query_field = 'embedded.' + query_field + '.raw'
+
+        used_filters[field] = terms
 
         if field.endswith('!'):
-            if field not in used_filters:
-                # Setting not filter instead of terms filter
-                query_filters.append({
-                    'not': {
-                        'terms': {
-                            'embedded.' + field[:-1] + '.raw': [term],
-                        }
+            # Setting not filter instead of terms filter
+            query_filters.append({
+                'not': {
+                    'terms': {
+                        query_field: terms,
                     }
-                })
-                query_terms = used_filters[field] = []
-            else:
-                query_filters.remove({
-                    'not': {
-                        'terms': {
-                            'embedded.' + field[:-1] + '.raw': used_filters[field]
-                        }
-                    }
-                })
-                used_filters[field].append(term)
-                query_filters.append({
-                    'not': {
-                        'terms': {
-                            'embedded.' + field[:-1] + '.raw': used_filters[field]
-                        }
-                    }
-                })
+                }
+            })
         else:
-            if field not in used_filters:
-                query_terms = used_filters[field] = []
-                query_filters.append({
-                    'terms': {
-                        query_field: query_terms,
-                    }
-                })
-            else:
-                query_filters.remove({
-                    'terms': {
-                        query_field: used_filters[field]
-                    }
-                })
-                used_filters[field].append(term)
-                query_filters.append({
-                    'terms': {
-                        query_field: used_filters[field]
-                    }
-                })
-        used_filters[field].append(term)
+            query_filters.append({
+                'terms': {
+                    query_field: terms,
+                },
+            })
+
     return used_filters
 
 

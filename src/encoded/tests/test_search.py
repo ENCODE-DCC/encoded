@@ -1,5 +1,7 @@
 # Use workbook fixture from BDD tests (including elasticsearch)
 from .features.conftest import app_settings, app, workbook
+from webob.multidict import MultiDict
+import pytest
 
 
 # Integration tests
@@ -63,6 +65,254 @@ def test_matrix_view(workbook, testapp):
 
 
 # Unit tests
+
+
+class FakeRequest(object):
+    path = '/search/'
+
+    def __init__(self, params):
+        self.params = MultiDict(params)
+
+
+def test_set_filters():
+    from encoded.search import set_filters
+
+    request = FakeRequest((
+        ('field1', 'value1'),
+    ))
+    query = {
+        'filter': {
+            'and': {
+                'filters': [],
+            },
+        },
+    }
+    result = {'filters': []}
+    used_filters = set_filters(request, query, result)
+
+    assert used_filters == {'field1': ['value1']}
+    assert query == {
+        'filter': {
+            'and': {
+                'filters': [
+                    {
+                        'terms': {
+                            'embedded.field1.raw': ['value1'],
+                        },
+                    },
+                ],
+            },
+        },
+    }
+    assert result == {
+        'filters': [
+            {
+                'field': 'field1',
+                'term': 'value1',
+                'remove': '/search/?'
+            }
+        ]
+    }
+
+
+def test_set_filters_searchTerm():
+    from encoded.search import set_filters
+
+    request = FakeRequest((
+        ('searchTerm', 'value1'),
+    ))
+    query = {
+        'filter': {
+            'and': {
+                'filters': [],
+            },
+        },
+    }
+    result = {'filters': []}
+    used_filters = set_filters(request, query, result)
+
+    assert used_filters == {}
+    assert query == {
+        'filter': {
+            'and': {
+                'filters': [],
+            },
+        },
+    }
+    assert result == {
+        'filters': [
+            {
+                'field': 'searchTerm',
+                'term': 'value1',
+                'remove': '/search/?'
+            }
+        ]
+    }
+
+
+# Reserved params should NOT act as filters
+@pytest.mark.parametrize('param', [
+    'type', 'limit', 'y.limit', 'x.limit', 'mode', 'annotation',
+    'format', 'frame', 'datastore', 'field', 'region', 'genome',
+    'sort', 'from', 'referrer'])
+def test_set_filters_reserved_params(param):
+    from encoded.search import set_filters
+
+    request = FakeRequest((
+        (param, 'foo'),
+    ))
+    query = {
+        'filter': {
+            'and': {
+                'filters': [],
+            },
+        },
+    }
+    result = {'filters': []}
+    used_filters = set_filters(request, query, result)
+
+    assert used_filters == {}
+    assert query == {
+        'filter': {
+            'and': {
+                'filters': [],
+            },
+        },
+    }
+    assert result == {
+        'filters': [],
+    }
+
+
+def test_set_filters_multivalued():
+    from encoded.search import set_filters
+
+    request = FakeRequest((
+        ('field1', 'value1'),
+        ('field1', 'value2'),
+    ))
+    query = {
+        'filter': {
+            'and': {
+                'filters': [],
+            },
+        },
+    }
+    result = {'filters': []}
+    used_filters = set_filters(request, query, result)
+
+    assert used_filters == {'field1': ['value1', 'value2']}
+    assert query == {
+        'filter': {
+            'and': {
+                'filters': [
+                    {
+                        'terms': {
+                            'embedded.field1.raw': ['value1', 'value2'],
+                        },
+                    },
+                ],
+            },
+        },
+    }
+    assert result == {
+        'filters': [
+            {
+                'field': 'field1',
+                'term': 'value1',
+                'remove': '/search/?field1=value2'
+            },
+            {
+                'field': 'field1',
+                'term': 'value2',
+                'remove': '/search/?field1=value1'
+            }
+        ]
+    }
+
+
+def test_set_filters_negated():
+    from encoded.search import set_filters
+
+    request = FakeRequest((
+        ('field1!', 'value1'),
+    ))
+    query = {
+        'filter': {
+            'and': {
+                'filters': [],
+            },
+        },
+    }
+    result = {'filters': []}
+    used_filters = set_filters(request, query, result)
+
+    assert used_filters == {'field1!': ['value1']}
+    assert query == {
+        'filter': {
+            'and': {
+                'filters': [
+                    {
+                        'not': {
+                            'terms': {
+                                'embedded.field1.raw': ['value1'],
+                            },
+                        },
+                    },
+                ],
+            },
+        },
+    }
+    assert result == {
+        'filters': [
+            {
+                'field': 'field1!',
+                'term': 'value1',
+                'remove': '/search/?'
+            },
+        ],
+    }
+
+
+def test_set_filters_audit():
+    from encoded.search import set_filters
+
+    request = FakeRequest((
+        ('audit.foo', 'value1'),
+    ))
+    query = {
+        'filter': {
+            'and': {
+                'filters': [],
+            },
+        },
+    }
+    result = {'filters': []}
+    used_filters = set_filters(request, query, result)
+
+    assert used_filters == {'audit.foo': ['value1']}
+    assert query == {
+        'filter': {
+            'and': {
+                'filters': [
+                    {
+                        'terms': {
+                            'audit.foo': ['value1'],
+                        },
+                    },
+                ],
+            },
+        },
+    }
+    assert result == {
+        'filters': [
+            {
+                'field': 'audit.foo',
+                'term': 'value1',
+                'remove': '/search/?'
+            },
+        ],
+    }
 
 
 def test_set_facets():
