@@ -219,6 +219,11 @@ def audit_file_read_length(value, system):
         yield AuditFailure('missing read_length', detail, level='DCC_ACTION')
         return
 
+    if value['read_length'] == 0:
+        detail = 'Reads file {} has read_length of 0'.format(value['@id'])
+        yield AuditFailure('missing read_length', detail, level='DCC_ACTION')
+        return
+
 
 def check_presence(file_to_check, files_list):
     for f in files_list:
