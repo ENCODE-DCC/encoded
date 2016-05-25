@@ -178,6 +178,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
 .file-gallery-control {
     display: inline-block;
+    position: relative;
     vertical-align: bottom;
     margin-right: 5px;
 
@@ -188,6 +189,21 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
     select {
         height: 30px;
+        padding-right: 30px;
+        -webkit-appearance: none;
+    }
+
+    &:after {
+        content: '\f0dc';
+        font-family: FontAwesome;
+        padding: 8px;
+        position: absolute;
+        right: 10px;
+        top: 5px;
+        z-index: 1;
+        width: 10px;
+        line-height: 50%;
+        color: #428bca;
     }
 }
 
@@ -268,7 +284,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
         stroke: #000;
     }
 
-    .arrow {
+    .content-line {
         fill: none;
         stroke: #000;
         stroke-miterlimit: 10;

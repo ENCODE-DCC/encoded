@@ -1017,34 +1017,38 @@ var FileGraph = React.createClass({
             var goodGraph = this.jsonGraph && Object.keys(this.jsonGraph).length;
 
             // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
-            if (goodGraph || selectedAssembly || selectedAnnotation) {
-                var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
-                return (
-                    <div>
-                        <div className="file-gallery-graph-header">
-                            <a href="#" data-trigger onClick={this.handleCollapse} className="collapsing-title">
-                                <h4>
-                                    {CollapseIcon(this.state.collapsed, 'collapsing-title-icon')}
-                                    Association graph
-                                </h4>
-                            </a>
-                        </div>
-                        {!this.state.collapsed ?
-                            <div>
-                                {goodGraph ?
-                                    <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw>
-                                        <div id="graph-node-info">
-                                            {meta ? <PanelBody>{meta}</PanelBody> : null}
-                                        </div>
-                                    </Graph>
-                                :
-                                    <p className="browser-error">Currently selected assembly and genomic annotation hides the graph</p>
-                                }
+            if (goodGraph) {
+                if (selectedAssembly || selectedAnnotation) {
+                    var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
+                    return (
+                        <div>
+                            <div className="file-gallery-graph-header">
+                                <a href="#" data-trigger onClick={this.handleCollapse} className="collapsing-title">
+                                    <h4>
+                                        {CollapseIcon(this.state.collapsed, 'collapsing-title-icon')}
+                                        Association graph
+                                    </h4>
+                                </a>
                             </div>
-                        : null}
-                        <div className={'file-gallery-graph-footer' + (this.state.collapsed ? ' hiding' : '')}></div>
-                    </div>
-                );
+                            {!this.state.collapsed ?
+                                <div>
+                                    {goodGraph ?
+                                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw>
+                                            <div id="graph-node-info">
+                                                {meta ? <PanelBody>{meta}</PanelBody> : null}
+                                            </div>
+                                        </Graph>
+                                    :
+                                        <p className="browser-error">Currently selected assembly and genomic annotation hides the graph</p>
+                                    }
+                                </div>
+                            : null}
+                            <div className={'file-gallery-graph-footer' + (this.state.collapsed ? ' hiding' : '')}></div>
+                        </div>
+                    );
+                } else {
+                    return <p className="browser-error">Choose an assembly to see file association graph</p>;
+                }
             } else {
                 return <p className="browser-error">Graph not applicable to this experiment’s files.</p>;
             }
