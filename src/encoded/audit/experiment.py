@@ -1505,11 +1505,14 @@ def audit_experiment_consistent_sequencing_runs(value, system):
 
     for key in replicate_read_lengths:
         if len(replicate_read_lengths[key]) > 1:
-            detail = 'Biological replicate {} '.format(key) + \
-                     'in experiment {} '.format(value['@id']) + \
-                     'has mixed sequencing read lengths {}.'.format(replicate_read_lengths[key])
-            yield AuditFailure('mixed read lengths',
-                               detail, level='WARNING')
+            upper_value = max(list(replicate_read_lengths[key]))
+            lower_value = min(list(replicate_read_lengths[key]))
+            if ((upper_value - lower_value) > 2):
+                detail = 'Biological replicate {} '.format(key) + \
+                         'in experiment {} '.format(value['@id']) + \
+                         'has mixed sequencing read lengths {}.'.format(replicate_read_lengths[key])
+                yield AuditFailure('mixed read lengths',
+                                   detail, level='WARNING')
 
     for key in replicate_pairing_statuses:
         if len(replicate_pairing_statuses[key]) > 1:
@@ -1524,15 +1527,20 @@ def audit_experiment_consistent_sequencing_runs(value, system):
     if len(keys) > 1:
         for index_i in range(len(keys)):
             for index_j in range(index_i+1, len(keys)):
-                i_lengths = replicate_read_lengths[keys[index_i]]
-                j_lengths = replicate_read_lengths[keys[index_j]]
+                i_lengths = list(replicate_read_lengths[keys[index_i]])
+                j_lengths = list(replicate_read_lengths[keys[index_j]])
+
+                i_max = max(i_lengths)
+                i_min = min(i_lengths)
+                j_max = max(j_lengths)
+                j_min = min(j_lengths)
+
                 diff_flag = False
-                for entry in i_lengths:
-                    if entry not in j_lengths:
-                        diff_flag = True
-                for entry in j_lengths:
-                    if entry not in i_lengths:
-                        diff_flag = True
+                if (i_max - j_min) > 2:
+                    diff_flag = True
+                if (j_max - i_min) > 2:
+                    diff_flag = True
+
                 if diff_flag is True:
                     detail = 'Biological replicate {} '.format(keys[index_i]) + \
                              'in experiment {} '.format(value['@id']) + \

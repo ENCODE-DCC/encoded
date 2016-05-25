@@ -1242,6 +1242,31 @@ def test_audit_experiment_mismatched_inter_length_sequencing_files(testapp,
                for error in errors_list)
 
 
+def test_audit_experiment_mismatched_valid_inter_length_sequencing_files(testapp,
+                                                                         base_experiment,
+                                                                         replicate_1_1,
+                                                                         replicate_2_1,
+                                                                         library_1,
+                                                                         library_2,
+                                                                         biosample_1,
+                                                                         biosample_2,
+                                                                         mouse_donor_1,
+                                                                         mouse_donor_2,
+                                                                         file_fastq_3,
+                                                                         file_fastq_4,
+                                                                         file_fastq_5):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
+    testapp.patch_json(file_fastq_3['@id'], {'read_length': 50})
+    testapp.patch_json(file_fastq_5['@id'], {'read_length': 52})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'mixed read lengths'
+               for error in errors_list)
+
+
 def test_audit_experiment_rampage_standards(testapp,
                                             base_experiment,
                                             replicate_1_1,
