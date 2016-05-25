@@ -4,7 +4,7 @@ var fetched = require('../fetched');
 var globals = require('../globals');
 var search = require('../search');
 var url = require('url');
-var SvgIcon = require('../../libs/svg-icons');
+var SvgIcon = require('../../libs/svg-icons').SvgIcon;
 
 var Facet = search.Facet;
 
