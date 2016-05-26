@@ -462,7 +462,7 @@ def test_set_facets_nested():
                         'award-rfa': {
                             'terms': {
                                 'field': 'embedded.award.rfa.raw',
-                                'min_doc_count': 0,
+                                'min_doc_count': 1,
                                 'size': 100,
                             }
                         }
