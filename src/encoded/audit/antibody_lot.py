@@ -52,7 +52,7 @@ def audit_antibody_missing_characterizations(value, system):
                            level='NOT_COMPLIANT')
 
     if value['lot_reviews'][0]['detail'] in ['Characterizations not reviewed.']:
-        detail = '{} has old characterizations that were not reviewed'.format(
+        detail = '{} has old characterizations that were not reviewed.'.format(
             value['@id'])
         yield AuditFailure('characterizations not reviewed', detail, level='WARNING')
 
@@ -66,15 +66,19 @@ def audit_antibody_missing_characterizations(value, system):
             'Awaiting a compliant primary characterization.',
             'Characterizations in progress.'
         ]:
+            biosample = lot_review['bioasmple_term_name']
+            if biosample == 'not specified':
+                biosample = 'one or more cell types/tissues.'
+
             detail = '{} needs a compliant primary in {}'.format(
                 value['@id'],
                 lot_review['biosample_term_name'])
             yield AuditFailure('need compliant primaries', detail,
                                level='NOT_COMPLIANT')
 
-        if lot_review['detail'] is None and lot_review['status'] in ['awaiting lab characterization']:
-            detail = '{} needs a compliant primary characterization for one or more cell types.'.format(
-                value['@id'])
+        if lot_review['detail'] is None and lot_review['status'] == 'awaiting lab characterization':
+            detail = '{} needs a compliant primary characterization for one or more cell ' + \
+                'types/tissues.'.format(value['@id'])
             yield AuditFailure('need compliant primaries', detail,
                                level='NOT_COMPLIANT')
 
