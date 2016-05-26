@@ -590,3 +590,98 @@ def test_format_facets_adds_pseudo_facet_for_extra_filters():
         ],
         'total': 42,
     }]
+
+
+def test_format_facets_nested():
+    from encoded.search import format_facets
+    es_result = {
+        'aggregations': {
+            'award-project': {
+                'award-project': {
+                    'buckets': [
+                        {
+                            'key': 'value1',
+                            'doc_count': 2,
+                            'award-rfa': {
+                                'buckets': [
+                                    {
+                                        'key': 'value1',
+                                        'doc_count': 1,
+                                    },
+                                    {
+                                        'key': 'value2',
+                                        'doc_count': 1,
+                                    },
+                                ],
+                            },
+                        },
+                        {
+                            'key': 'value2',
+                            'doc_count': 1,
+                            'award-rfa': {
+                                'buckets': [
+                                    {
+                                        'key': 'value1',
+                                        'doc_count': 1,
+                                    },
+                                ],
+                            },
+                        }
+                    ],
+                },
+                'doc_count': 3,
+            }
+        }
+    }
+    facets = [
+        ('award.project', {
+            'title': 'Project',
+            'facets': {
+                'award.rfa': {'title': 'RFA'}
+            },
+        }),
+    ]
+    used_filters = {}
+    schemas = []
+    total = 42
+    result = format_facets(es_result, facets, used_filters, schemas, total)
+
+    assert result == [{
+        'field': 'award.project',
+        'title': 'Project',
+        'terms': [
+            {
+                'key': 'value1',
+                'doc_count': 2,
+                'facets': [{
+                    'field': 'award.rfa',
+                    'title': 'RFA',
+                    'terms': [
+                        {
+                            'key': 'value1',
+                            'doc_count': 1,
+                        },
+                        {
+                            'key': 'value2',
+                            'doc_count': 1,
+                        },
+                    ],
+                }],
+            },
+            {
+                'key': 'value2',
+                'doc_count': 1,
+                'facets': [{
+                    'field': 'award.rfa',
+                    'title': 'RFA',
+                    'terms': [
+                        {
+                            'key': 'value1',
+                            'doc_count': 1,
+                        }
+                    ]
+                }]
+            }
+        ],
+        'total': 3,
+    }]

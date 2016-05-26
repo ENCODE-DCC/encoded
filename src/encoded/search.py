@@ -445,6 +445,20 @@ def search_result_actions(request, doc_types, es_results, position=None):
     return actions
 
 
+def format_subfacets(facets, result):
+    result['facets'] = subfacets = []
+    for field, facet in facets.items():
+        agg_name = field.replace('.', '-')
+        agg = result.pop(agg_name)
+        subfacets.append({
+            'field': field,
+            'title': facet.get('title', field),
+            'terms': agg['buckets'],
+        })
+
+    return result
+
+
 def format_facets(es_results, facets, used_filters, schemas, total):
     result = []
     # Loading facets in to the results
@@ -460,6 +474,10 @@ def format_facets(es_results, facets, used_filters, schemas, total):
             terms = aggregations[agg_name][agg_name]['buckets']
             if len(terms) < 2:
                 continue
+            if 'facets' in facet:
+                subfacets = facet['facets']
+                for term in terms:
+                    format_subfacets(subfacets, term)
             result.append({
                 'field': field,
                 'title': facet.get('title', field),
