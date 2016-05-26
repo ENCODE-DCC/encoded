@@ -314,7 +314,7 @@ def set_filters(request, query, result):
     return used_filters
 
 
-def build_aggregation(facet_name, facet_options):
+def build_aggregation(facet_name, facet_options, min_doc_count=0):
     """Specify an elasticsearch aggregation from schema facet configuration.
     """
     exclude = []
@@ -329,7 +329,7 @@ def build_aggregation(facet_name, facet_options):
     agg = {
         'terms': {
             'field': field,
-            'min_doc_count': 0,
+            'min_doc_count': min_doc_count,
             'size': 100,
         },
     }
@@ -339,7 +339,7 @@ def build_aggregation(facet_name, facet_options):
         subaggs = agg['aggs'] = {}
         for subfacet_name, subfacet_options in facet_options['facets'].items():
             subagg_name, subagg = build_aggregation(
-                subfacet_name, subfacet_options)
+                subfacet_name, subfacet_options, min_doc_count=1)
             subaggs[subagg_name] = subagg
     return agg_name, agg
 
@@ -446,16 +446,19 @@ def search_result_actions(request, doc_types, es_results, position=None):
 
 
 def format_subfacets(facets, result):
-    result['facets'] = subfacets = []
+    subfacets = []
     for field, facet in facets.items():
         agg_name = field.replace('.', '-')
         agg = result.pop(agg_name)
-        subfacets.append({
-            'field': field,
-            'title': facet.get('title', field),
-            'terms': agg['buckets'],
-        })
-
+        buckets = agg['buckets']
+        if len(buckets):
+            subfacets.append({
+                'field': field,
+                'title': facet.get('title', field),
+                'terms': agg['buckets'],
+            })
+    if subfacets:
+        result['facets'] = subfacets
     return result
 
 
