@@ -709,7 +709,7 @@ def check_experiment_ERCC_spikeins(experiment, pipeline):
                 if 'files' in s:
                     for f in s['files']:
                         if (('ENCFF001RTP' == f['accession']) or
-                           ('ENCFF483UYH' == f['accession'] and
+                           ('ENCFF001RTO' == f['accession'] and
                            experiment['assay_term_name'] ==
                            'single cell isolation followed by RNA-seq')):
                             ercc_flag = True
