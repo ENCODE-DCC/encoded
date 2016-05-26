@@ -285,7 +285,21 @@ var FileTable = module.exports.FileTable = React.createClass({
     },
 
     render: function() {
-        var {context, items, filePanelHeader, encodevers, selectedAssembly, selectedAnnotation, anisogenic, noAudits, showFileCount, session} = this.props;
+        var {
+            context,
+            items,
+            filePanelHeader,
+            encodevers,
+            selectedAssembly,
+            selectedAnnotation,
+            filterOptions,
+            handleFilterChange,
+            anisogenic,
+            noAudits,
+            showFileCount,
+            session
+        } = this.props;
+
         var datasetFiles = _((items && items.length) ? items : []).uniq(file => file['@id']);
         if (datasetFiles.length) {
             var unfilteredCount = datasetFiles.length;
@@ -324,8 +338,8 @@ var FileTable = module.exports.FileTable = React.createClass({
                             list={files.raw} columns={this.rawTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
                         <SortTable title={<CollapsingTitle title="Raw data" collapsed={this.state.collapsed.rawArray} handleCollapse={this.handleCollapse.bind(null, 'rawArray')} />} collapsed={this.state.collapsed.rawArray}
                             list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
-                        <SortTable title={<CollapsingTitle title="Processed data" collapsed={this.state.collapsed.proc} handleCollapse={this.handleCollapse.bind(null, 'proc')} />} collapsed={this.state.collapsed.proc}
-                            list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
+                        <SortTable title={<CollapsingTitle title="Processed data" collapsed={this.state.collapsed.proc} handleCollapse={this.handleCollapse.bind(null, 'proc')} filterOptions={filterOptions} handleFilterChange={handleFilterChange} />}
+                            collapsed={this.state.collapsed.proc} list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
                         <SortTable title={<CollapsingTitle title="Reference data" collapsed={this.state.collapsed.ref} handleCollapse={this.handleCollapse.bind(null, 'ref')} />} collapsed={this.state.collapsed.ref}
                             list={files.ref} columns={this.refTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} />
                     </SortTablePanel>
@@ -358,7 +372,6 @@ var DatasetFiles = module.exports.DatasetFiles = React.createClass({
 // This component only triggers the data retrieval, which is done with a search for files associated
 // with the given experiment (in this.props.context). An odd thing is we specify query-string parameters
 // to the experiment URL, but they apply to the file search -- not the experiment itself.
-
 var FileGallery = module.exports.FileGallery = React.createClass({
     propTypes: {
         encodevers: React.PropTypes.string, // ENCODE version number
@@ -412,6 +425,7 @@ var FileGalleryRenderer = React.createClass({
 
     // React to a filter menu selection. The synthetic event given in `e`
     handleFilterChange: function(e) {
+        console.log('FILTERCHANGE: ' + e.target.value);
         this.setFilter(e.target.value);
     },
 
@@ -435,22 +449,11 @@ var FileGalleryRenderer = React.createClass({
         var filterOptions = files.length ? collectAssembliesAnnotations(files) : [];
         var loggedIn = this.context.session && this.context.session['auth.userid'];
 
-        // Build the graph; place resulting graph in this.jsonGraph
         if (this.state.selectedFilterValue && filterOptions[this.state.selectedFilterValue]) {
             selectedAssembly = filterOptions[this.state.selectedFilterValue].assembly;
             selectedAnnotation = filterOptions[this.state.selectedFilterValue].annotation;
         }
-
-        // Rendering the filtering menu
-        var filterMenu = filterOptions.length ?
-            <select className="form-control" defaultValue="0" onChange={this.handleFilterChange}>
-                <option value="default" key="title">All Assemblies and Annotations</option>
-                <option disabled="disabled"></option>
-                {filterOptions.map((option, i) =>
-                    <option key={i} value={i}>{option.assembly + (option.annotation ? ' ' + option.annotation : '')}</option>
-                )}
-            </select>
-        : null;
+        console.log('SELECTED: ' + selectedAssembly + ':' + selectedAnnotation);
 
         return (
             <Panel>
@@ -470,7 +473,11 @@ var FileGalleryRenderer = React.createClass({
                                 </DropdownButton>
                             </div>
                         : null}
-                        <div className="file-gallery-control">{filterMenu}</div>
+                        <div className="file-gallery-control">
+                            {filterOptions.length ?
+                                <FilterMenu filterOptions={filterOptions} handleFilterChange={this.handleFilterChange} />
+                            : null}
+                        </div>
                     </div>
                 </PanelHeading>
 
@@ -480,9 +487,13 @@ var FileGalleryRenderer = React.createClass({
                     this dataset to get released and unreleased ones. If not logged in, then just get
                     files from dataset.files */}
                 {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
-                    <FetchedItems {...this.props} url={globals.unreleased_files_url(context)} Component={DatasetFiles} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} encodevers={globals.encodeVersion(context)} session={this.context.session} showFileCount ignoreErrors noDefaultClasses />
+                    <FetchedItems {...this.props} url={globals.unreleased_files_url(context)} Component={DatasetFiles}
+                        selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} filterOptions={filterOptions} handleFilterChange={this.handleFilterChange}
+                        encodevers={globals.encodeVersion(context)} session={this.context.session} showFileCount ignoreErrors noDefaultClasses />
                 :
-                    <FileTable {...this.props} items={context.files} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} encodevers={globals.encodeVersion(context)} session={this.context.session} showFileCount noDefaultClasses />
+                    <FileTable {...this.props} items={context.files} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation}
+                        filterOptions={filterOptions} handleFilterChange={this.handleFilterChange}
+                        encodevers={globals.encodeVersion(context)} session={this.context.session} showFileCount noDefaultClasses />
                 }
             </Panel>
         );
@@ -490,16 +501,19 @@ var FileGalleryRenderer = React.createClass({
 });
 
 
+// Display a filtering <select>. `filterOptions` is an array of objects with two properties:
+// `assembly` and `annotation`. Both are strings that get concatenated to form each menu item. The
+// value of each <option> is its zero-based index.
 var FilterMenu = React.createClass({
     propTypes: {
-        filterOptions: React.PropTypes.array, // Contents of the filtering menu
-        handleFilterChange: React.PropTypes.func
+        filterOptions: React.PropTypes.array.isRequired, // Contents of the filtering menu
+        handleFilterChange: React.PropTypes.func.isRequired // Call when a filtering option changes
     },
 
     render: function() {
-        var filterOptions = this.props.filterOptions;
+        var {filterOptions, handleFilterChange} = this.props;
         return (
-            <select className="form-control" defaultValue="0" onChange={this.handleFilterChange}>
+            <select className="form-control" defaultValue="0" value="1" onChange={handleFilterChange}>
                 <option value="default" key="title">All Assemblies and Annotations</option>
                 <option disabled="disabled"></option>
                 {filterOptions.map((option, i) =>
@@ -515,17 +529,24 @@ var CollapsingTitle = React.createClass({
     propTypes: {
         title: React.PropTypes.string.isRequired, // Title to display in the title bar
         handleCollapse: React.PropTypes.func.isRequired, // Function to call to handle click in collapse button
+        filterOptions: React.PropTypes.array, // Array of filtering options
+        handleFilterChange: React.PropTypes.func, // Function to call when filter menu item is chosen
         collapsed: React.PropTypes.bool // T if the panel this is over has been collapsed
     },
 
     render: function() {
-        var {title, handleCollapse, collapsed} = this.props;
+        var {title, handleCollapse, collapsed, filterOptions, handleFilterChange} = this.props;
         return (
             <a href="#" data-trigger onClick={handleCollapse} className="collapsing-title">
                 <h4>
                     {CollapseIcon(collapsed, 'collapsing-title-icon')}
                     {title}
                 </h4>
+                {filterOptions && filterOptions.length && handleFilterChange ?
+                    <div className="file-gallery-control">
+                        <FilterMenu filterOptions={filterOptions} handleFilterChange={handleFilterChange} />
+                    </div>
+                : null}
             </a>
         );
     }
