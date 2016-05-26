@@ -190,10 +190,12 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     select {
         height: 30px;
         padding-right: 30px;
+        font-size: 0.9rem;
         -webkit-appearance: none;
+        -moz-appearance: none;
     }
 
-    &:after {
+    &.file-gallery-control-select:after {
         content: '\f0dc';
         font-family: FontAwesome;
         padding: 8px;
@@ -203,7 +205,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
         z-index: 1;
         width: 10px;
         line-height: 50%;
-        font-size: 0.9rem;
+        font-size: 0.86rem;
         color: #428bca;
     }
 }

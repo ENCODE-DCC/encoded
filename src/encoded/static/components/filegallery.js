@@ -477,7 +477,7 @@ var FileGalleryRenderer = React.createClass({
                                 </DropdownButton>
                             </div>
                         : null}
-                        <div className="file-gallery-control">
+                        <div className="file-gallery-control file-gallery-control-select">
                             {filterOptions.length ?
                                 <FilterMenu selectedFilterValue={this.state.selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleFilterChange} />
                             : null}
@@ -522,8 +522,8 @@ var CollapsingTitle = React.createClass({
                 <a href="#" className="collapsing-title-trigger pull-left" data-trigger onClick={handleCollapse}>{CollapseIcon(collapsed, 'collapsing-title-icon')}</a>
                 <h4>{title}</h4>
                 {filterOptions && filterOptions.length && handleFilterChange ?
-                    <div className="file-gallery-controls">
-                        <div className="file-gallery-control">
+                    <div className="file-gallery-controls ">
+                        <div className="file-gallery-control file-gallery-control-select">
                             <FilterMenu filterOptions={filterOptions} selectedFilterValue={selectedFilterValue} handleFilterChange={handleFilterChange} />
                         </div>
                     </div>
