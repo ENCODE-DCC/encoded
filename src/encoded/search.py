@@ -456,17 +456,16 @@ def format_facets(es_results, facets, used_filters, schemas, total):
     for field, facet in facets:
         used_facets.add(field)
         agg_name = field.replace('.', '-')
-        if agg_name not in aggregations:
-            continue
-        terms = aggregations[agg_name][agg_name]['buckets']
-        if len(terms) < 2:
-            continue
-        result.append({
-            'field': field,
-            'title': facet.get('title', field),
-            'terms': terms,
-            'total': aggregations[agg_name]['doc_count']
-        })
+        if agg_name in aggregations:
+            terms = aggregations[agg_name][agg_name]['buckets']
+            if len(terms) < 2:
+                continue
+            result.append({
+                'field': field,
+                'title': facet.get('title', field),
+                'terms': terms,
+                'total': aggregations[agg_name]['doc_count']
+            })
 
     # Show any filters that aren't facets as a fake facet with one entry,
     # so that the filter can be viewed and removed

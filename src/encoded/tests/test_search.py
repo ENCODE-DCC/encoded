@@ -479,3 +479,114 @@ def test_set_facets_nested():
             },
         }
     } == aggs
+
+
+def test_format_facets():
+    from encoded.search import format_facets
+    es_result = {
+        'aggregations': {
+            'field1': {
+                'field1': {
+                    'buckets': [
+                        {
+                            'key': 'value1',
+                            'doc_count': 2,
+                        },
+                        {
+                            'key': 'value2',
+                            'doc_count': 1,
+                        }
+                    ]
+                },
+                'doc_count': 3,
+            }
+        }
+    }
+    facets = [
+        ('field1', {'title': 'Field 1'}),
+    ]
+    used_filters = {}
+    schemas = []
+    total = 42
+    result = format_facets(es_result, facets, used_filters, schemas, total)
+
+    assert result == [{
+        'field': 'field1',
+        'title': 'Field 1',
+        'terms': [
+            {
+                'key': 'value1',
+                'doc_count': 2,
+            },
+            {
+                'key': 'value2',
+                'doc_count': 1,
+            }
+        ],
+        'total': 3,
+    }]
+
+
+def test_format_facets_no_aggregations():
+    from encoded.search import format_facets
+    result = format_facets({}, [], [], [], 0)
+    assert result == []
+
+
+def test_format_facets_skips_single_bucket_facets():
+    from encoded.search import format_facets
+    es_result = {
+        'aggregations': {
+            'field1': {
+                'field1': {
+                    'buckets': [
+                        {
+                            'key': 'value1',
+                            'doc_count': 2,
+                        },
+                    ]
+                },
+                'doc_count': 2,
+            }
+        }
+    }
+    facets = [
+        ('field1', {'title': 'Field 1'}),
+    ]
+    used_filters = {}
+    schemas = []
+    total = 42
+    result = format_facets(es_result, facets, used_filters, schemas, total)
+
+    assert result == []
+
+
+def test_format_facets_adds_pseudo_facet_for_extra_filters():
+    from encoded.search import format_facets
+    es_result = {
+        'aggregations': {},
+    }
+    facets = []
+    used_filters = {
+        'title': ['titlevalue'],
+    }
+    schemas = [{
+        'properties': {
+            'title': {
+                'title': 'Title',
+            },
+        },
+    }]
+    total = 42
+    result = format_facets(es_result, facets, used_filters, schemas, total)
+
+    assert result == [{
+        'field': 'title',
+        'title': 'Title',
+        'terms': [
+            {
+                'key': 'titlevalue',
+            },
+        ],
+        'total': 42,
+    }]
