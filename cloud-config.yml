@@ -212,11 +212,9 @@ runcmd:
 - then
 -   sudo -i -u encoded bin/batchupgrade production.ini --app-name app
 - fi
-- if test "%(ROLE)s" = "demo"
--   then
--       sudo echo "00 7 * * * sudo -i -u postgres /opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-push /var/lib/postgresql/9.3/main" > wal-e-backup
--       sudo crontab wal-e-backup
-- fi
+- sudo echo "00 7 * * * sudo -i -u postgres /opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-push /var/lib/postgresql/9.3/main" > wal-e-backup
+- sudo crontab wal-e-backup
+- 
 # - sleep 10
 # - sudo -u postgres echo "include 'master.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
 # - pg_ctlcluster 9.3 main reload
