@@ -4,6 +4,7 @@ var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
 var panel = require('../libs/bootstrap/panel');
+var {SvgIcon, CollapseIcon} = require('../libs/svg-icons');
 var globals = require('./globals');
 var navigation = require('./navigation');
 var dataset = require('./dataset');
@@ -390,10 +391,10 @@ var CharacterizationFile = React.createClass({
             <div className="dl-bar">
                 <div className="characterization-badge"><StatusLabel status={doc.status} /></div>
                 {detailSwitch ?
-                    <div className={'detail-switch' + (detailOpen ? ' open' : '')}>
-                        <i className={'icon detail-trigger' + (detailOpen ? '' : ' collapsed')} onClick={detailSwitch}>
-                            <span className="sr-only">More</span>
-                        </i>
+                    <div className="detail-switch">
+                        <a href="#" data-trigger onClick={detailSwitch} className="collapsing-doc">
+                            {CollapseIcon(!this.props.detailOpen)}
+                        </a>
                     </div>
                 : null}
             </div>
