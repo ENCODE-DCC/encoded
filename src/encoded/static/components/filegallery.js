@@ -490,6 +490,27 @@ var FileGalleryRenderer = React.createClass({
 });
 
 
+var FilterMenu = React.createClass({
+    propTypes: {
+        filterOptions: React.PropTypes.array, // Contents of the filtering menu
+        handleFilterChange: React.PropTypes.func
+    },
+
+    render: function() {
+        var filterOptions = this.props.filterOptions;
+        return (
+            <select className="form-control" defaultValue="0" onChange={this.handleFilterChange}>
+                <option value="default" key="title">All Assemblies and Annotations</option>
+                <option disabled="disabled"></option>
+                {filterOptions.map((option, i) =>
+                    <option key={i} value={i}>{option.assembly + (option.annotation ? ' ' + option.annotation : '')}</option>
+                )}
+            </select>
+        );
+    }
+});
+
+
 var CollapsingTitle = React.createClass({
     propTypes: {
         title: React.PropTypes.string.isRequired, // Title to display in the title bar
