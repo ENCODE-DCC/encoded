@@ -36,6 +36,7 @@ power_state:
 
 runcmd:
 - aws --region us-west-2 s3 cp s3://encoded-conf-proxy/ssl.tgz ssl.tgz
+# TODO this is database specific
 - mkdir -p /etc/nginx/ssl
 - tar -zxf ssl.tgz --directory /etc/nginx/ssl
 # Generate a big prime number for DH SSL (takes a few minutes.)

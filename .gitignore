@@ -16,10 +16,10 @@
 /parts/
 /production.ini
 /session-secret.b64
-/src/encoded/static/css/bootstrap.css
-/src/encoded/static/css/responsive.css
-/src/encoded/static/css/style.css
-/src/encoded/static/scss/_variables.original.scss
+/src/snowflakes/static/css/bootstrap.css
+/src/snowflakes/static/css/responsive.css
+/src/snowflakes/static/css/style.css
+/src/snowflakes/static/scss/_variables.original.scss
 
 *.DS_Store
 *.egg-info
