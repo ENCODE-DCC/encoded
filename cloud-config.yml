@@ -214,9 +214,7 @@ runcmd:
 - fi
 - if test "%(ROLE)s" = "demo"
 -   then
--       sudo echo "00 7 * * * * sudo -i -u postgres /opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-push /var/lib/postgresql/9.3/main" >> wal-eCron
--       sudo crontab wal-eCron
--       sudo rm wal-eCron
+-       sudo echo "00 7  * * * root sudo -i -u postgres /opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-push /var/lib/postgresql/9.3/main" >> /etc/crontab
 - fi
 # - sleep 10
 # - sudo -u postgres echo "include 'master.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
