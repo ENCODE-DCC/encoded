@@ -1998,7 +1998,7 @@ var QcDetailsView = function(metrics) {
                         </dl>
                     </div>
 
-                    {qcPanels && qcPanels.length ?
+                    {(qcPanels && qcPanels.length) || metrics.ref.attachment ?
                         <div className="col-md-8 col-sm-12 quality-metrics-attachments">
                             <h5>Quality metric attachments</h5>
                             <div className="row">
