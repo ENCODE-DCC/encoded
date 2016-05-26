@@ -66,7 +66,7 @@ def audit_antibody_missing_characterizations(value, system):
             'Awaiting a compliant primary characterization.',
             'Characterizations in progress.'
         ]:
-            biosample = lot_review['bioasmple_term_name']
+            biosample = lot_review['biosample_term_name']
             if biosample == 'not specified':
                 biosample = 'one or more cell types/tissues.'
 
