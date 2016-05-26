@@ -518,11 +518,9 @@ var CollapsingTitle = React.createClass({
     render: function() {
         var {title, handleCollapse, collapsed, filterOptions, selectedFilterValue, handleFilterChange} = this.props;
         return (
-            <a href="#" data-trigger onClick={handleCollapse} className="collapsing-title">
-                <h4>
-                    {CollapseIcon(collapsed, 'collapsing-title-icon')}
-                    {title}
-                </h4>
+            <div className="collapsing-title">
+                <a href="#" className="collapsing-title-trigger pull-left" data-trigger onClick={handleCollapse}>{CollapseIcon(collapsed, 'collapsing-title-icon')}</a>
+                <h4>{title}</h4>
                 {filterOptions && filterOptions.length && handleFilterChange ?
                     <div className="file-gallery-controls">
                         <div className="file-gallery-control">
@@ -530,7 +528,7 @@ var CollapsingTitle = React.createClass({
                         </div>
                     </div>
                 : null}
-            </a>
+            </div>
         );
     }
 });
@@ -1073,13 +1071,9 @@ var FileGraph = React.createClass({
                     var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
                     return (
                         <div>
-                            <div className="file-gallery-graph-header">
-                                <a href="#" data-trigger onClick={this.handleCollapse} className="collapsing-title">
-                                    <h4>
-                                        {CollapseIcon(this.state.collapsed, 'collapsing-title-icon')}
-                                        Association graph
-                                    </h4>
-                                </a>
+                            <div className="file-gallery-graph-header collapsing-title">
+                                <a href="#" className="collapsing-title-trigger" data-trigger onClick={this.handleCollapse}>{CollapseIcon(this.state.collapsed, 'collapsing-title-icon')}</a>
+                                <h4>Association graph</h4>
                             </div>
                             {!this.state.collapsed ?
                                 <div>
