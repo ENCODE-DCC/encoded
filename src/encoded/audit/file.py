@@ -28,7 +28,7 @@ paired_end_assays = [
 
 
 @audit_checker('File', frame=['derived_from'])
-def audit_file_bam_derived_from_fastqs_belonging_to_same_experiment(value, system):
+def audit_file_bam_derived_from(value, system):
     if value['file_format'] != 'bam':
         return
     if value['status'] in ['deleted', 'replaced', 'revoked']:
@@ -36,17 +36,24 @@ def audit_file_bam_derived_from_fastqs_belonging_to_same_experiment(value, syste
     if 'derived_from' not in value:
         return
     derived_from_files = value.get('derived_from')
+    fastq_counter = 0
     for f in derived_from_files:
         if f['status'] not in ['deleted', 'replaced', 'revoked'] and \
-           f['file_format'] == 'fastq' and \
-           f['dataset'] != value['dataset']:
-            detail = 'Processed alignments file {} '.format(value['@id']) + \
-                     'that belongs to experiment {} '.format(value['dataset']) + \
-                     'is derived from file {} '.format(f['@id']) + \
-                     'that belongs to different experiment {}.'.format(f['dataset'])
-            yield AuditFailure('mismatched derived_from',
-                               detail, level='DCC_ACTION')
-            return
+           f['file_format'] == 'fastq':
+                fastq_counter += 1
+                if f['dataset'] != value['dataset']:
+                    detail = 'Processed alignments file {} '.format(value['@id']) + \
+                             'that belongs to experiment {} '.format(value['dataset']) + \
+                             'is derived from file {} '.format(f['@id']) + \
+                             'that belongs to different experiment {}.'.format(f['dataset'])
+                    yield AuditFailure('mismatched derived_from',
+                                       detail, level='DCC_ACTION')
+    if fastq_counter == 0:
+        detail = 'Processed alignments file {} '.format(value['@id']) + \
+                 'that belongs to experiment {} '.format(value['dataset']) + \
+                 'does not specify which fastq files it was derived from.'
+        yield AuditFailure('missing derived_from',
+                           detail, level='DCC_ACTION')
 
 
 @audit_checker('File', frame=['object'],
