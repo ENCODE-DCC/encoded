@@ -24,7 +24,7 @@
             "type": "number",
             "description": "Count of all reads prior to filtering"
         },
-        "post-filter mapped reads": {
+        "pre-filter mapped reads": {
             "type": "number",
             "description": "Count of mapped reads prior to filtering"
         },
