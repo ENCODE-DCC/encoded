@@ -1121,6 +1121,24 @@
         ],
         "timezone": "US/Pacific",
         "uuid": "986b362f-4eb6-4a9c-8173-3ab267307e3b"
+    },
+    {
+        "email": "akundaje@stanford.edu",
+        "first_name": "Anshul",
+        "groups": [],
+        "lab": "/labs/anshul-kundaje/",
+        "last_name": "Kundaje",
+        "status": "current",
+        "submits_for": [
+            "/labs/anshul-kundaje/"
+        ],
+        "timezone": "US/Pacific",
+        "uuid": "5ee9af15-8447-47d5-9ef1-06d425b828eb",
+        "viewing_groups": [
+            "ENCODE",
+            "REMC",
+            "GGR"
+        ]
     }
 
 ]
