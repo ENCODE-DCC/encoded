@@ -12,7 +12,7 @@ table>thead>tr>th {
     border-top: none !important;
     border-bottom: 2px solid #fff !important;
     border-left: 2px solid #fff !important;
-    padding: 8px 30px 9px 11px !important;
+    padding: 8px 11px 9px 11px !important;
 
     &:first-child {
         border-left: none !important;
@@ -33,8 +33,9 @@ thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td
 
 .table-panel {
     @extend .panel;
+    margin-top: 0;
+    margin-bottom: 15px;
     padding: 0;
-    margin: 0;
     border-collapse: separate;
 
     tr:last-child td:first-child {
@@ -142,8 +143,6 @@ form.table-filter {
 }
 
 .table-file {
-    margin-bottom: 20px;
-
     .table {
         margin-bottom: 0;
     }
@@ -172,9 +171,10 @@ form.table-filter {
 .table-section {
     @include font-size(1.3);
     font-weight: bold;
-    background-color: #e8e8e8;
+    background-color: #d8e0e8;
 
     th {
+        padding: 0 !important;
         height: auto !important;
     }
 }
@@ -219,74 +219,12 @@ form.table-filter {
     }
 }
 
-// note the position of the inner span isn't calculated correctly yet
-$rotated-th-height: 130px;
-$rotated-th-width: 20px;
-$rotated-th-angle: 30deg;
+.file-table-footer {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: auto 40%;
 
-th.rotate30 {
-    height: $rotated-th-height;
-    width: $rotated-th-width;
-    min-width: $rotated-th-width;
-    max-width: $rotated-th-width;
-    position: relative;
-    vertical-align: bottom;
-    padding: 0 !important;
-    border: none !important;
-    > div {
-        position: relative;
-        top: 0;
-        left: $rotated-th-height * tan($rotated-th-angle) / 2;
-        height: 100%;
-        -webkit-transform: skew(-$rotated-th-angle, 0deg);
-        transform: skew(-$rotated-th-angle, 0deg);
-        background-color: #ddd;
-        border-left: solid 1px #fff;
-        border-right: solid 1px #fff;
-        > span {
-            -webkit-transform: skew($rotated-th-angle, 0deg) rotate(270deg + $rotated-th-angle);
-            transform: skew($rotated-th-angle, 0deg) rotate(270deg + $rotated-th-angle);
-            position: absolute;
-            bottom: 59px;
-            left: -57px;
-            display: inline-block;
-            width: $rotated-th-height / cos($rotated-th-angle) - $rotated-th-width * cos($rotated-th-angle);
-            text-align: left;
-            line-height: 1.2;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
-        }
-    }
-}
-th.rotate90 {
-    vertical-align: top;
-    > div {
-        position: relative;
-        > span {
-            position: absolute;
-            -webkit-transform: rotate(-90deg);
-            transform: rotate(-90deg);
-            -webkit-transform-origin: left bottom 0;
-            transform-origin: left bottom 0;
-            top: 80px;
-            left: 16px;        
-        }
-    }
-}
-table.matrix {
-    width: auto;
-    th {
-        text-align: right;
-        padding: 0 .5em;
-    }
-    td {
-        vertical-align: middle;
-        text-align: center;
-        padding: 0 !important;
-        border: solid 1px #f9f9f9;
-    }
-    tfoot {
-        background: transparent;
+    &.hiding {
+        background-image: inline-image('../img/hiding-dots.svg');
     }
 }

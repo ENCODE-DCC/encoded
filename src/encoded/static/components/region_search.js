@@ -2,8 +2,8 @@
 var React = require('react');
 var globals = require('./globals');
 var fetched = require('./fetched');
-var TabbedArea = require('react-bootstrap').TabbedArea;
-var TabPane = require('react-bootstrap').TabPane;
+var TabbedArea = require('react-bootstrap/lib/TabbedArea');
+var TabPane = require('react-bootstrap/lib/TabPane');
 var url = require('url');
 var search = require('./search');
 var button = require('../libs/bootstrap/button');
@@ -58,6 +58,7 @@ var AdvSearch = React.createClass({
             disclosed: false,
             showAutoSuggest: false,
             searchTerm: '',
+            coordinates: '',
             terms: {}
         };
     },
@@ -74,15 +75,14 @@ var AdvSearch = React.createClass({
     },
 
     handleChange: function(e) {
-        this.setState({showAutoSuggest: true});
+        this.setState({showAutoSuggest: true, terms: {}});
         this.newSearchTerm = e.target.value;
     },
 
     handleAutocompleteClick: function(term, id, name) {
-
         var newTerms = {};
         var inputNode = this.refs.annotation.getDOMNode();
-        inputNode.value = this.newSearchTerm = term;
+        inputNode.value = term;
         newTerms[name] = id;
         this.setState({terms: newTerms});
         this.setState({showAutoSuggest: false});
@@ -103,6 +103,11 @@ var AdvSearch = React.createClass({
         if (this.newSearchTerm !== this.state.searchTerm) {
             this.setState({searchTerm: this.newSearchTerm});
         }
+        if (this.coordinates !== this.props.context.coordinates && this.props.context.coordinates !== null) {
+            this.coordinates = this.props.context.coordinates
+            var inputNode = this.refs.annotation.getDOMNode();
+            inputNode.value = inputNode.value.concat(' ', this.coordinates)
+        }
     },
 
     render: function() {
@@ -115,11 +120,8 @@ var AdvSearch = React.createClass({
                     <div className="row">
                         <div className="form-group col-md-8">
                             <input type="hidden" name="genome" value="hg19" />
-                            {Object.keys(this.state.terms).map(function(key) {
-                                return <input type="hidden" name={key} value={this.state.terms[key]} />;
-                            }, this)}
+                            <input type="hidden" name="annotation" value={this.state.terms['annotation']} />
                             <input ref="annotation" defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange}
-                            
                                 placeholder="Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID" />
                             {(this.state.showAutoSuggest && this.state.searchTerm) ?
                                 <FetchedData loadingComplete={true}>
@@ -208,7 +210,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                                     }
 
                                     {context['download_elements'] ?
-                                        <DropdownButton title='Download Elements' label="downloadelements">
+                                        <DropdownButton title='Download Elements' label="downloadelements" wrapperClasses="results-table-button">
                                             <DropdownMenu>
                                                 {context['download_elements'].map(link =>
                                                     <a key={link} data-bypass="true" target="_blank" private-browsing="true" href={link}>
@@ -220,7 +222,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                                     : null}
 
                                     {batchHubKeys ?
-                                      <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'} label="batchhubs">
+                                      <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'} label="batchhubs" wrapperClasses="results-table-button">
                                           <DropdownMenu>
                                               {batchHubKeys.map(assembly =>
                                                   <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context['batch_hub'][assembly]}>

@@ -3,6 +3,7 @@ var React = require('react/addons');
 var panel = require('../libs/bootstrap/panel');
 var button = require('../libs/bootstrap/button');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
+var {SvgIcon, CollapseIcon} = require('../libs/svg-icons');
 var _ = require('underscore');
 var moment = require('moment');
 var globals = require('./globals');
@@ -14,9 +15,11 @@ var statuslabel = require('./statuslabel');
 var graph = require('./graph');
 var reference = require('./reference');
 var software = require('./software');
-var sortTable = require('./sorttable');
+var {SortTablePanel, SortTable} = require('./sorttable');
 var image = require('./image');
 var doc = require('./doc');
+var {FileTable, DatasetFiles} = require('./filegallery');
+var {FileGallery} = require('./filegallery');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -25,11 +28,7 @@ var StatusLabel = statuslabel.StatusLabel;
 var PubReferenceList = reference.PubReferenceList;
 var SoftwareVersionList = software.SoftwareVersionList;
 var DocumentsPanel = doc.DocumentsPanel;
-var AuditIndicators = audit.AuditIndicators;
-var AuditDetail = audit.AuditDetail;
-var AuditMixin = audit.AuditMixin;
-var SortTablePanel = sortTable.SortTablePanel;
-var SortTable = sortTable.SortTable;
+var {AuditIndicators, AuditDetail, AuditIcon, AuditMixin} = audit;
 var ProjectBadge = image.ProjectBadge;
 var {Panel, PanelBody, PanelHeading} = panel;
 var DropdownButton = button.DropdownButton;
@@ -80,12 +79,16 @@ var Annotation = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var statuses = [{status: context.status, title: "Status"}];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
 
         // Build up array of documents attached to this dataset
         var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
 
         // Make a biosample summary string
         var biosampleSummary = annotationBiosampleSummary(context);
+
+        // Determine this experiment's ENCODE version
+        var encodevers = globals.encodeVersion(context);
 
         // Set up the breadcrumbs
         var datasetType = context['@type'][1];
@@ -232,8 +235,8 @@ var Annotation = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {/* Display list of released and unreleased files */}
-                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
+                {/* Display the file widget with the facet, graph, and tables */}
+                <FileGallery context={context} encodevers={encodevers} />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -257,6 +260,7 @@ var PublicationData = React.createClass({
         var files = context.files;
         var itemClass = globals.itemClass(context, 'view-item');
         var statuses = [{status: context.status, title: "Status"}];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
 
         // Build up array of documents attached to this dataset
         var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -352,7 +356,7 @@ var PublicationData = React.createClass({
                                             <dd>{context.lab.title}</dd>
                                         </div>
                                     : null}
-                                    
+
                                     <div data-test="externalresources">
                                         <dt>External resources</dt>
                                         <dd>
@@ -374,8 +378,14 @@ var PublicationData = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {/* Display list of released and unreleased files */}
-                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
+                {/* If logged in and dataset is released, need to combine search of files that reference
+                    this dataset to get released and unreleased ones. If not logged in, then just get
+                    files from dataset.files */}
+                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
+                    <FetchedItems {...this.props} url={globals.unreleased_files_url(context)} Component={DatasetFiles} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                :
+                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} />
+                }
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -398,6 +408,7 @@ var Reference = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var statuses = [{status: context.status, title: "Status"}];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
 
         // Build up array of documents attached to this dataset
         var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -515,8 +526,14 @@ var Reference = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {/* Display list of released and unreleased files */}
-                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
+                {/* If logged in and dataset is released, need to combine search of files that reference
+                    this dataset to get released and unreleased ones. If not logged in, then just get
+                    files from dataset.files */}
+                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
+                    <FetchedItems {...this.props} url={globals.unreleased_files_url(context)} Component={DatasetFiles} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                :
+                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} />
+                }
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -539,6 +556,7 @@ var Project = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var statuses = [{status: context.status, title: "Status"}];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
 
         // Build up array of documents attached to this dataset
         var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -683,8 +701,14 @@ var Project = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {/* Display list of released and unreleased files */}
-                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
+                {/* If logged in and dataset is released, need to combine search of files that reference
+                    this dataset to get released and unreleased ones. If not logged in, then just get
+                    files from dataset.files */}
+                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
+                    <FetchedItems {...this.props} url={globals.unreleased_files_url(context)} Component={DatasetFiles} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                :
+                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} />
+                }
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -708,6 +732,7 @@ var UcscBrowserComposite = React.createClass({
         var files = context.files;
         var itemClass = globals.itemClass(context, 'view-item');
         var statuses = [{status: context.status, title: "Status"}];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
 
         // Build up array of documents attached to this dataset
         var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -838,8 +863,14 @@ var UcscBrowserComposite = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {/* Display list of released and unreleased files */}
-                <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} filePanelHeader={<FilePanelHeader context={context} />} noAudits />
+                {/* If logged in and dataset is released, need to combine search of files that reference
+                    this dataset to get released and unreleased ones. If not logged in, then just get
+                    files from dataset.files */}
+                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
+                    <FetchedItems {...this.props} url={globals.unreleased_files_url(context)} Component={DatasetFiles} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                :
+                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} />
+                }
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -1277,7 +1308,7 @@ var Series = module.exports.Series = React.createClass({
                 : null }
 
                 {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                <FetchedItems {...this.props} url={globals.unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -1286,33 +1317,6 @@ var Series = module.exports.Series = React.createClass({
 });
 
 globals.content_views.register(Series, 'Series');
-
-
-var unreleased_files_url = module.exports.unreleased_files_url = function (context) {
-    var file_states = [
-        '',
-        "uploading",
-        "uploaded",
-        "upload failed",
-        "format check failed",
-        "in progress",
-        "released"
-    ].map(encodeURIComponent).join('&status=');
-    return '/search/?limit=all&type=file&dataset=' + context['@id'] + file_states;
-};
-
-
-// Called once searches for unreleased files returns results in this.props.items. Displays both released and
-// unreleased files.
-var DatasetFiles = module.exports.DatasetFiles = React.createClass({
-    render: function () {
-        if (this.props.items) {
-            return <FileTable {...this.props} items={this.props.items} />;
-        } else {
-            return null;
-        }
-    }
-});
 
 
 // Display a count of experiments in the footer, with a link to the corresponding search if needed
@@ -1381,300 +1385,6 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
                 </SortTablePanel>
             </div>
         );
-    }
-});
-
-
-function humanFileSize(size) {
-    if (size === undefined) return undefined;
-    var i = Math.floor( Math.log(size) / Math.log(1024) );
-    return ( size / Math.pow(1024, i) ).toPrecision(3) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
-}
-
-
-var fileAuditStatus = function(file) {
-    var highestAuditStatus;
-    if (file.audit) {
-        var sortedAuditLevels = _(Object.keys(file.audit)).sortBy(level => -file.audit[level][0].level);
-        var highestAuditLevel = sortedAuditLevels[0];
-        highestAuditStatus = highestAuditLevel.toLowerCase();
-    } else {
-        highestAuditStatus = 'default';
-        highestAuditLevel = 'OK';
-    }
-    var iconClass = 'icon audit-icon-' + highestAuditLevel.toLowerCase() + '-badged';
-    return <StatusLabel status={'audit-' + highestAuditStatus} buttonLabel={<i className={iconClass}></i>} />;
-};
-
-
-var FileTable = module.exports.FileTable = React.createClass({
-    propTypes: {
-        context: React.PropTypes.object, // Optional parent object of file list
-        items: React.PropTypes.array.isRequired, // Array of files to appear in the table
-        originating: React.PropTypes.bool, // TRUE to display originating dataset column
-        session: React.PropTypes.object // Persona user session
-    },
-
-    getInitialState: function() {
-        return {
-            maxWidth: 'auto' // Width of widest table
-        };
-    },
-
-    cv: {
-        maxWidthRef: '', // ref key of table with this.state.maxWidth width
-        maxWidthNode: null // DOM node of table with this.state.maxWidth width 
-    },
-
-    // Configuration for raw file table
-    rawTableColumns: {
-        'accession': {
-            title: 'Accession',
-            display: item =>
-                <span>
-                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
-                </span>
-        },
-        'file_type': {title: 'File type'},
-        'biological_replicates': {
-            title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
-            getValue: item => item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''
-        },
-        'library': {
-            title: 'Library',
-            getValue: item => (item.replicate && item.replicate.library) ? item.replicate.library.accession : null
-        },
-        'run_type': {
-            title: 'Run type',
-            display: item => {
-                var runType;
-
-                if (item.run_type === 'single-ended') {
-                    runType = 'SE';
-                } else if (item.run_type === 'paired-ended') {
-                    runType = 'PE';
-                }
-
-                return (
-                    <span>
-                        <span>{runType ? runType : null}</span>
-                        <span>{item.read_length ? <span>{runType ? <span> </span> : null}{item.read_length + item.read_length_units}</span> : null}</span>
-                    </span>
-                );
-            },
-            objSorter: (a, b) => {
-                // Sort by their combined string values
-                var aStr = (a.run_type ? a.run_type : '') + (a.read_length ? a.read_length : '');
-                var bStr = (b.run_type ? b.run_type : '') + (b.read_length ? b.read_length : '');
-                return (aStr < bStr) ? -1 : (bStr < aStr ? 1 : 0);
-            }
-        },
-        'paired_end': {
-            title: 'Read',
-            display: item => <span>{item.paired_end ? <span>R{item.paired_end}</span> : null}</span>
-        },
-        'title': {
-            title: 'Lab',
-            getValue: item => item.lab && item.lab.title ? item.lab.title : null
-        },
-        'date_created': {
-            title: 'Date added',
-            getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
-            objSorter: (a, b) => {
-                if (a.date_created && b.date_created) {
-                    return Date.parse(a.date_created) - Date.parse(b.date_created);
-                }
-                return a.date_created ? -1 : (b.date_created ? 1 : 0);
-            }
-        },
-        'file_size': {
-            title: 'File size',
-            display: item => <span>{humanFileSize(item.file_size)}</span>
-        },
-        'audit': {
-            title: 'Audit status',
-            display: item => <div className="characterization-meta-data">{fileAuditStatus(item)}</div>,
-            hide: (list, columns, meta) => meta.noAudits || !(meta.session && meta.session['auth.userid'])
-        },
-        'status': {
-            title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
-            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
-        }
-    },
-
-    // Configuration for raw file table
-    rawArrayTableColumns: {
-        'accession': {
-            title: 'Accession',
-            display: item =>
-                <span>
-                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
-                </span>
-        },
-        'file_type': {title: 'File type'},
-        'biological_replicates': {
-            title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
-            getValue: item => item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''
-        },
-        'library': {
-            title: 'Library',
-            getValue: item => (item.replicate && item.replicate.library) ? item.replicate.library.accession : null
-        },
-        'assembly': {title: 'Mapping assembly'},
-        'title': {
-            title: 'Lab',
-            getValue: item => item.lab && item.lab.title ? item.lab.title : null
-        },
-        'date_created': {
-            title: 'Date added',
-            getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
-            objSorter: (a, b) => {
-                if (a.date_created && b.date_created) {
-                    return Date.parse(a.date_created) - Date.parse(b.date_created);
-                }
-                return a.date_created ? -1 : (b.date_created ? 1 : 0);
-            }
-        },
-        'file_size': {
-            title: 'File size',
-            display: item => <span>{humanFileSize(item.file_size)}</span>
-        },
-        'audit': {
-            title: 'Audit status',
-            display: item => <div className="characterization-meta-data">{fileAuditStatus(item)}</div>,
-            hide: (list, columns, meta) => meta.noAudits || !(meta.session && meta.session['auth.userid'])
-        },
-        'status': {
-            title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
-            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
-        }
-    },
-
-    // Configuration for process file table
-    procTableColumns: {
-        'accession': {
-            title: 'Accession',
-            display: item => {
-                return <span>
-                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
-                </span>;
-            }
-        },
-        'file_type': {title: 'File type'},
-        'output_type': {title: 'Output type'},
-        'biological_replicates': {
-            title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
-            getValue: item => item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''
-        },
-        'assembly': {title: 'Mapping assembly'},
-        'genome_annotation': {
-            title: 'Genome annotation',
-            hide: (list, columns, meta) => _(list).all(item => !item.genome_annotation)
-        },
-        'title': {
-            title: 'Lab',
-            getValue: item => item.lab && item.lab.title ? item.lab.title : null
-        },
-        'date_created': {
-            title: 'Date added',
-            getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
-            sorter: (a, b) => {
-                if (a.date_created && b.date_created) {
-                    return Date.parse(a.date_created) - Date.parse(b.date_created);
-                }
-                return a.date_created ? -1 : (b.date_created ? 1 : 0);
-            }
-        },
-        'file_size': {
-            title: 'File size',
-            display: item => <span>{humanFileSize(item.file_size)}</span>
-        },
-        'audit': {
-            title: 'Audit status',
-            display: item => <div className="characterization-meta-data">{fileAuditStatus(item)}</div>,
-            hide: (list, columns, meta) => meta.noAudits || !(meta.session && meta.session['auth.userid'])
-        },
-        'status': {
-            title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
-            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
-        }
-    },
-
-    // Configuration for reference file table
-    refTableColumns: {
-        'accession': {
-            title: 'Accession',
-            display: item =>
-                <span>
-                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
-                </span>
-        },
-        'file_type': {title: 'File type'},
-        'output_type': {title: 'Output type'},
-        'assembly': {title: 'Mapping assembly'},
-        'genome_annotation': {
-            title: 'Genome annotation',
-            hide: (list, columns, meta) => _(list).all(item => !item.genome_annotation)
-        },
-        'title': {
-            title: 'Lab',
-            getValue: item => item.lab && item.lab.title ? item.lab.title : null
-        },
-        'date_created': {
-            title: 'Date added',
-            getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
-            sorter: (a, b) => {
-                if (a.date_created && b.date_created) {
-                    return Date.parse(a.date_created) - Date.parse(b.date_created);
-                }
-                return a.date_created ? -1 : (b.date_created ? 1 : 0);
-            }
-        },
-        'file_size': {
-            title: 'File size',
-            display: item => <span>{humanFileSize(item.file_size)}</span>
-        },
-        'audit': {
-            title: 'Audit status',
-            display: item => <div className="characterization-meta-data">{fileAuditStatus(item)}</div>,
-            hide: (list, columns, meta) => meta.noAudits || !(meta.session && meta.session['auth.userid'])
-        },
-        'status': {
-            title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
-            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
-        }
-    },
-
-    render: function() {
-        var {context, items, filePanelHeader, encodevers, anisogenic, noAudits, session} = this.props;
-        var datasetFiles = (items && items.length) ? items : [];
-        if (datasetFiles.length) {
-            // Extract four kinds of file arrays
-            datasetFiles = _(datasetFiles).uniq(file => file['@id']);
-            var files = _(datasetFiles).groupBy(file => {
-                if (file.output_category === 'raw data') {
-                    return file.output_type === 'reads' ? 'raw' : 'rawArray';
-                } else if (file.output_category === 'reference') {
-                    return 'ref';
-                } else {
-                    return 'proc';
-                }
-            });
-
-            return (
-                <SortTablePanel header={filePanelHeader}>
-                    <SortTable title="Raw data files" list={files.raw} columns={this.rawTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
-                    <SortTable title="Raw data files" list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
-                    <SortTable title="Processed data files" list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
-                    <SortTable title="Reference data files" list={files.ref} columns={this.refTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} />
-                </SortTablePanel>
-            );
-        }
-        return null;
     }
 });
 

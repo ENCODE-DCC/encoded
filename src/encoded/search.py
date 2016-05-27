@@ -207,7 +207,9 @@ def list_visible_columns_for_schemas(request, schemas):
         else:
             # default columns if not explicitly specified
             columns.update(OrderedDict(
-                (name, schema['properties'][name].get('title', name))
+                (name, {
+                    'title': schema['properties'][name].get('title', name)
+                })
                 for name in [
                     '@id', 'title', 'description', 'name', 'accession',
                     'aliases'
@@ -631,8 +633,7 @@ def search(context, request, search_type=None, return_generator=False):
     # If searching for more than one type, don't specify which fields to search
     elif len(doc_types) != 1:
         del query['query']['query_string']['fields']
-        if len(query['query']['query_string']['query']) >= CHAR_COUNT:
-            query['query']['query_string']['fields'] = ['_all', '*.uuid', '*.md5sum']
+        query['query']['query_string']['fields'] = ['_all', '*.uuid', '*.md5sum', '*.submitted_file_name']
 
 
     # Set sort order
@@ -837,11 +838,13 @@ def matrix(context, request):
         query['query']['match_all'] = {}
         del query['query']['query_string']
 
-    # Setting filters
-    used_filters = set_filters(request, query, result)
-    # We don't actually need filters in the request,
-    # since we're only counting and the aggregations have their own filters
-    del query['filter']
+    # Setting filters.
+    # Rather than setting them at the top level of the query
+    # we collect them for use in aggregations later.
+    query_filters = query.pop('filter')
+    filter_collector = {'filter': query_filters}
+    used_filters = set_filters(request, filter_collector, result)
+    filters = filter_collector['filter']['and']['filters']
 
     # Adding facets to the query
     facets = [(field, facet) for field, facet in schema['facets'].items() if
@@ -855,17 +858,6 @@ def matrix(context, request):
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
     # Group results in 2 dimensions
-    matrix_terms = []
-    for q_field, q_terms in used_filters.items():
-        if q_field.startswith('audit.'):
-            matrix_terms.append({'terms': {q_field: q_terms}})
-        else:
-            matrix_terms.append(
-                {'terms': {'embedded.' + q_field + '.raw': q_terms}})
-    matrix_terms.extend((
-        {'terms': {'principals_allowed.view': principals}},
-        {'terms': {'embedded.@type.raw': doc_types}},
-    ))
     x_grouping = matrix['x']['group_by']
     y_groupings = matrix['y']['group_by']
     x_agg = {
@@ -889,7 +881,7 @@ def matrix(context, request):
     query['aggs']['matrix'] = {
         "filter": {
             "bool": {
-                "must": matrix_terms,
+                "must": filters,
             }
         },
         "aggs": aggs,
