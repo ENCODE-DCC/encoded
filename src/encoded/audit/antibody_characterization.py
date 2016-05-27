@@ -89,7 +89,7 @@ def audit_antibody_characterization_unique_reviews(value, system):
                 term_id,
                 organism
                 )
-            raise AuditFailure('duplicate lane review', detail, level='ERROR')
+            raise AuditFailure('duplicate lane review', detail, level='DCC_ACTION')
 
 
 @audit_checker('antibody_characterization', frame=[
