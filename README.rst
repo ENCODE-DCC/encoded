@@ -1,11 +1,11 @@
 ========================
-ENCODE Metadata Database
+SnoVault JSON-LD Database Framework
 ========================
 
 |Build status|_
 
-.. |Build status| image:: https://travis-ci.org/ENCODE-DCC/encoded.png?branch=master
-.. _Build status: https://travis-ci.org/ENCODE-DCC/encoded
+.. |Build status| image:: https://travis-ci.org/ENCODE-DCC/snovault.png?branch=master
+.. _Build status: https://travis-ci.org/ENCODE-DCC/snovault
 
 
 Step 1: Verify that homebrew is working properly::
@@ -24,7 +24,7 @@ If you need to update dependencies::
 
     $ brew update
     $ brew upgrade
-    $ rm -rf encoded/eggs
+    $ rm -rf snowflakes/eggs
 
 
 Step 3: Run buildout::
@@ -52,8 +52,8 @@ In one terminal startup the database servers and nginx proxy with::
 
     $ bin/dev-servers development.ini --app-name app --clear --init --load
 
-This will first clear any existing data in /tmp/encoded.
-Then postgres and elasticsearch servers will be initiated within /tmp/encoded.
+This will first clear any existing data in /tmp/snowflakes.
+Then postgres and elasticsearch servers will be initiated within /tmp/snowflakes.
 An nginx proxy running on port 8000 will be started.
 The servers are started, and finally the test set will be loaded.
 
@@ -80,7 +80,6 @@ To run with a debugger::
 Specific tests to run locally for schema changes::
 
     $ bin/test -k test_load_workbook
-    $ bin/test -k test_edw_sync
 
 Run the Pyramid tests with::
 
