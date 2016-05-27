@@ -74,6 +74,17 @@ $ mkdir v{YY}
 $ scp -r v{YY}.production.encodedcc.org:/var/log/apache2 v{YY}/apache2
 $ aws --profile production s3 cp --recursive v{YY} s3://encoded-logs/production/v{YY}
 
+# Add Wal-e backup to S3 via Crontab
+	$ sudo crontab -e
+		select nano
+	add this line for midnight updates
+	
+	$ 00 7 * * * sudo -i -u postgres /opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-push /var/lib/postgresql/9.3/main
+
+	save and close
+
+
+
 
 Update test server IF it was started as --test; demo mode is already Master
 ===========================================================================
