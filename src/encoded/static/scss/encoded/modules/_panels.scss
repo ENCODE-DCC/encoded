@@ -207,6 +207,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
         line-height: 50%;
         font-size: 0.86rem;
         color: #428bca;
+        pointer-events: none;
     }
 }
 
