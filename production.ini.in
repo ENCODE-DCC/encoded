@@ -5,7 +5,6 @@ file_upload_bucket = ${file_upload_bucket}
 blob_bucket = ${blob_bucket}
 blob_store_profile_name = encoded-files-upload
 accession_factory = ${accession_factory}
-snp_search.server = ${region_search_instance}
 indexer.processes = ${indexer_processes}
 
 [composite:indexer]
@@ -34,7 +33,7 @@ port = 6543
 threads = 1
 
 [loggers]
-keys = root, encoded, encoded_listener, file_encoded_listener
+keys = root, snovault, snovault_listener
 
 [handlers]
 keys = console
@@ -46,22 +45,16 @@ keys = generic
 level = WARN
 handlers = console
 
-[logger_encoded]
+[logger_snovault]
 level = WARN
 handlers = console
-qualname = encoded
+qualname = snovault
 propagate = 0
 
-[logger_encoded_listener]
+[logger_snovault_listener]
 level = INFO
 handlers = console
 qualname = snovault.elasticsearch.es_index_listener
-propagate = 0
-
-[logger_file_encoded_listener]
-level = INFO
-handlers = console
-qualname = encoded.commands.es_file_index_listener
 propagate = 0
 
 [handler_console]
