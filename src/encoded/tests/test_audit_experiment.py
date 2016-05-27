@@ -1113,7 +1113,7 @@ def test_audit_experiment_replicate_with_no_files_warning(testapp, file_bed_meth
                                                           base_library):
     testapp.patch_json(file_bed_methyl['@id'], {'replicate': base_replicate['@id']})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
-    testapp.patch_json(base_experiment['@id'], {'status': 'in progress'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'started'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
