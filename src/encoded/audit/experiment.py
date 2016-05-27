@@ -312,7 +312,7 @@ def check_experiemnt_rna_seq_encode3_standards(value,
                      'of {} assay'.format(value['assay_term_name']) + \
                      ', processed by {} pipeline '.format(pipeline_title) + \
                      ' has no read depth containig quality metric associated with it.'
-            yield AuditFailure('RNA-pipeline - missing read depth', detail, level='DCC_ACTION')
+            yield AuditFailure('missing read depth', detail, level='DCC_ACTION')
 
     if pipeline_title in ['RAMPAGE (paired-end, stranded)']:
         for failure in check_experiement_rampage_encode3_standards(value,

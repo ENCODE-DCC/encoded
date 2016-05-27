@@ -767,7 +767,7 @@ def get_target_name(bam_file):
                               'derived_from.controlled_by.dataset.original_files.analysis_step_version.software_versions.software'
                               ],
                condition=rfa('ENCODE3', 'ENCODE'))
-def audit_file_read_depth(value, system):
+def audit_file_chip_seq_control_read_depth(value, system):
     '''
     An alignment file from the ENCODE Processing Pipeline should have read depth
     in accordance with the criteria
@@ -816,22 +816,12 @@ def audit_file_read_depth(value, system):
         yield AuditFailure('missing software', detail, level='DCC_ACTION')
         return
 
-    '''
-    excluding bam files from TopHat
-    '''
-    for record in value['analysis_step_version']['software_versions']:
-        if record['software']['title'] == 'TopHat':
-            return
+    if 'Histone ChIP-seq' not in value['analysis_step_version']['analysis_step']['pipelines'] or \
+       'Raw mapping with no filtration' in \
+       value['analysis_step_version']['analysis_step']['pipelines']:
+        return
 
     quality_metrics = value.get('quality_metrics')
-
-    excluded_pipelines = ['Raw mapping with no filtration',
-                          'WGBS single-end pipeline - version 2',
-                          'WGBS single-end pipeline',
-                          'WGBS paired-end pipeline']
-    for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
-            if pipeline['title'] in excluded_pipelines:
-                return
 
     if ('quality_metrics' not in value) or (quality_metrics is None) or (quality_metrics == []):
         detail = 'ENCODE Processed alignment file {} has no quality_metrics'.format(
@@ -846,27 +836,10 @@ def audit_file_read_depth(value, system):
         yield AuditFailure('missing derived_from files', detail, level='DCC_ACTION')
         return
 
-    paring_status_detected = False
-    for derived_from_file in derived_from_files:
-        if 'file_type' in derived_from_file and derived_from_file['file_type'] == 'fastq' and \
-           'run_type' in derived_from_file:
-            paring_status_detected = True
-            break
-
-    if paring_status_detected is False:
-        detail = 'ENCODE Processed alignment file {} has no run_type in derived_from files'.format(
-            value['@id'])
-        yield AuditFailure('missing run_type', detail, level='WARNING')
-
-    special_assay_name = 'empty'
     target_name = 'empty'
     target_investigated_as = 'empty'
 
     if 'dataset' in value:
-        if value['dataset']['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
-            return
-        if value['dataset']['assay_term_name'] in special_assays_with_read_depth:
-            special_assay_name = value['dataset']['assay_term_name']
         if 'target' in value['dataset'] and 'name' in value['dataset']['target']:
             target_name = value['dataset']['target']['name']
             target_investigated_as = value['dataset']['target']['investigated_as']
@@ -877,31 +850,21 @@ def audit_file_read_depth(value, system):
         read_depth = get_bam_read_depth(value, False)
 
     if read_depth is False:
-        detail = 'ENCODE Processed alignment file {} has no read depth information'.format(
-            value['@id'])
-        yield AuditFailure('missing read depth', detail, level='DCC_ACTION')
         return
 
-    for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
-        if pipeline['title'] not in pipelines_with_read_depth:
-            return
-        if pipeline['title'] == 'Histone ChIP-seq':
-            if target_name not in ['Control-human', 'Control-mouse']:
-                #  this is control chip-seq
-                control_bam = get_control_bam(value, pipeline['title'])
-                if control_bam is not False:
-                    control_depth = get_bam_read_depth(control_bam, False)
-                    control_target = get_target_name(control_bam)
-
-                    if control_depth is not False and control_target is not False:
-                        for failure in check_chip_seq_standards(control_bam,
-                                                                control_depth,
-                                                                control_target,
-                                                                True,
-                                                                target_name,
-                                                                target_investigated_as):
-                            yield failure
-            return
+    if target_name not in ['Control-human', 'Control-mouse']:
+        control_bam = get_control_bam(value, 'Histone ChIP-seq')
+        if control_bam is not False:
+            control_depth = get_bam_read_depth(control_bam, False)
+            control_target = get_target_name(control_bam)
+            if control_depth is not False and control_target is not False:
+                for failure in check_chip_seq_standards(control_bam,
+                                                        control_depth,
+                                                        control_target,
+                                                        True,
+                                                        target_name,
+                                                        target_investigated_as):
+                    yield failure
 
 
 def check_chip_seq_standards(value, read_depth, target_name, is_control_file, control_to_target, target_investigated_as):
