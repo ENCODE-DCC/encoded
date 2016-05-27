@@ -24,7 +24,7 @@
         "_test": "domain annotation dataset",
         "accession": "ENCSR575ZXX",
         "award": "U54HG007004",
-        "annotation_type": "SAGA",
+        "annotation_type": "chromatin state",
         "description": "Domain annotation of IMR90 created by Segway with graph-based regularization",
         "lab": "j-michael-cherry",
         "status": "released",

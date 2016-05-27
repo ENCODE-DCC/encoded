@@ -37,4 +37,4 @@ def test_annotation_upgrade_3(registry, annotation_8):
     value = upgrader.upgrade('annotation',
                              annotation_8, registry=registry,
                              current_version='8', target_version='9')
-    assert value['annotation_type'] == 'SAGA'
+    assert value['annotation_type'] == 'chromatin state'

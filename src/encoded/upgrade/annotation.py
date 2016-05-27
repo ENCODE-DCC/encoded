@@ -10,7 +10,7 @@ def annotation_8_9(value, system):
     if 'annotation_type' in value:
         if value['annotation_type'] == 'segmentation':
             value['annotation_type'] = 'chromatin state'
-        if value['annotation_type'] == 'SAGA':
+        elif value['annotation_type'] == 'SAGA':
             value['annotation_type'] = 'chromatin state'
         elif value['annotation_type'] == 'enhancer prediction':
             value['annotation_type'] = 'enhancer predictions'
