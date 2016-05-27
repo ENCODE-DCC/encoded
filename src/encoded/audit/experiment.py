@@ -9,7 +9,10 @@ from .standards_data import pipelines_with_read_depth
 from .pipeline_structures import (
     modERN_TF_control,
     modERN_TF,
-    encode_chip_control
+    encode_chip_control,
+    encode_chip_histone_experiment_pooled,
+    encode_chip_tf_experiment_pooled,
+    encode_chip_experiment_replicate
     )
 
 import datetime
@@ -136,21 +139,6 @@ def audit_experiment_missing_processed_files(value, system):
     if len(pipelines) == 0:  # no pipelines detected
         return
 
-    bio_reps = get_bio_replicates(value)
-    assemblies = get_assemblies(value['original_files'])
-
-    print (bio_reps)
-    print (assemblies)
-
-    present_assemblies = []
-    replicates_dict = {}
-    for bio_rep in bio_reps:
-        for assembly in assemblies:
-            replicates_dict[(bio_rep, assembly)] = 0
-    pooled_quantity = 0
-
-    print (replicates_dict.keys())
-    print ('--------')
     if 'Transcription factor ChIP-seq pipeline (modERN)' in pipelines:
         # check if control
         target = value.get('target')
@@ -159,68 +147,13 @@ def audit_experiment_missing_processed_files(value, system):
         if 'control' in target.get('investigated_as'):
             replicate_structures = create_pipeline_structures(value['original_files'],
                                                               'modERN_control')
+            for failure in check_structures(replicate_structures, True, value['@id']):
+                yield failure
         else:
             replicate_structures = create_pipeline_structures(value['original_files'],
                                                               'modERN')
-
-        for (bio_rep_num, assembly) in replicate_structures.keys():
-            replicates_string = bio_rep_num[1:-1]
-            if len(replicates_string) > 0 and \
-               is_single_replicate(replicates_string) is True:
-                replicates_dict[(replicates_string, assembly)] = 1
-                print (replicates_dict.keys())
-                print ('+++++++')
-            elif len(replicates_string) > 0 and is_single_replicate(replicates_string) is False:
-                pooled_quantity += 1
-                present_assemblies.append(assembly)
-
-            if replicate_structures[(bio_rep_num, assembly)].has_orphan_files() is True:
-                detail = 'Experiment {} contains '.format(value['@id']) + \
-                         '{} '.format(replicate_structures[(bio_rep_num, assembly)].get_orphan_files()) + \
-                         'files that are not associated with any replicate'
-                yield AuditFailure('orphan pipeline files', detail, level='DCC_ACTION')
-            else:
-                if replicate_structures[(bio_rep_num, assembly)].has_unexpected_files() is True:
-                    for unexpected_file in \
-                            replicate_structures[(bio_rep_num, assembly)].get_unexpected_files():
-                        detail = 'In biological replicate {}, '.format(bio_rep_num[1:-1]) + \
-                                 'genomic assembly {}, '.format(assembly) + \
-                                 'the following file {} was unexpected.'.format(unexpected_file)
-                        yield AuditFailure('unexpected pipeline files', detail, level='DCC_ACTION')
-
-                if replicate_structures[(bio_rep_num, assembly)].is_complete() is False:
-                    for missing_tuple in \
-                            replicate_structures[(bio_rep_num, assembly)].get_missing_fields_tuples():
-                        if len(bio_rep_num[1:-1]) == 1:
-                            detail = 'In biological replicate {}, '.format(bio_rep_num[1:-1]) + \
-                                     'genomic assembly {}, '.format(assembly) + \
-                                     'the following file {} is missing.'.format(missing_tuple)
-                            yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
-                        else:
-                            detail = 'Files derived from biological replicates {}, '.format(bio_rep_num) + \
-                                     'genomic assembly {}, '.format(assembly) + \
-                                     'are missing the following file {}.'.format(missing_tuple)
-                            yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
-                if replicate_structures[(bio_rep_num, assembly)].is_analyzed_more_than_once() is True:
-                    detail = 'Transcription factor ChIP-seq experiment {} '.format(value['@id']) + \
-                             'contains biological replicate {}, '.format(bio_rep_num) + \
-                             'with multiple processed files associated with the same fastq ' + \
-                             'files for {} assembly.'.format(assembly)
-                    yield AuditFailure('mismatched pipeline files', detail, level='DCC_ACTION')
-
-        if pooled_quantity < (len(assemblies)) and 'control' not in target.get('investigated_as'):
-            detail = 'Transcription factor ChIP-seq experiment {} '.format(value['@id']) + \
-                     'does not contain all of the inter-replicate comparison anlaysis files. ' + \
-                     'Analysis was performed using {} assemblies, '.format(assemblies) + \
-                     'while inter-replicate comparison anlaysis was performed only using ' + \
-                     '{} assemblies.'.format(present_assemblies)
-            yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
-        for (rep_num, assembly) in replicates_dict:
-            if replicates_dict[(rep_num, assembly)] == 0:
-                detail = 'Transcription factor ChIP-seq experiment {} '.format(value['@id']) + \
-                         'contains biological replicate {}, '.format(rep_num) + \
-                         'without any processed files associated with {} assembly.'.format(assembly)
-                yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
+            for failure in check_structures(replicate_structures, False, value['@id']):
+                yield failure
 
     elif 'Histone ChIP-seq' in pipelines or \
          'Transcription factor ChIP-seq' or \
@@ -232,98 +165,43 @@ def audit_experiment_missing_processed_files(value, system):
         if 'control' in target.get('investigated_as'):
             replicate_structures = create_pipeline_structures(value['original_files'],
                                                               'encode_chip_control')
-            for (bio_rep_num, assembly) in replicate_structures.keys():
+            for failure in check_structures(replicate_structures, False, value['@id']):
+                yield failure
 
-                replicates_string = bio_rep_num[1:-1]
-                if len(replicates_string) > 0 and \
-                   is_single_replicate(replicates_string) is True:
-                    replicates_dict[(replicates_string, assembly)] = 1
-
-                elif len(replicates_string) > 0 and is_single_replicate(replicates_string) is False:
-                    detail = 'ChIP-seq control experiment {} '.format(value['@id']) + \
-                             'contains unexpected processed files for {} assembly, '.format(assembly) + \
-                             'derived from files that ' + \
-                             'belong to different biological replicates {}. '.format(bio_rep_num)
-                    yield AuditFailure('mismatched pipeline files', detail, level='DCC_ACTION')
-
-                if replicate_structures[(bio_rep_num, assembly)].has_orphan_files() is True:
-                    detail = 'Experiment {} contains '.format(value['@id']) + \
-                             '{} '.format(replicate_structures[(bio_rep_num, assembly)].get_orphan_files()) + \
-                             'files that are not associated with any replicate'
-                    yield AuditFailure('orphan pipeline files', detail, level='DCC_ACTION')
-                else:
-                    if replicate_structures[(bio_rep_num, assembly)].has_unexpected_files() is True:
-                        for unexpected_file in \
-                                replicate_structures[(bio_rep_num,
-                                                      assembly)].get_unexpected_files():
-                            detail = 'In biological replicate {}, '.format(bio_rep_num[1:-1]) + \
-                                     'genomic assembly {}, '.format(assembly) + \
-                                     'the following file {} was unexpected.'.format(unexpected_file)
-                            yield AuditFailure('unexpected pipeline files', detail,
-                                               level='DCC_ACTION')
-
-                    if replicate_structures[(bio_rep_num, assembly)].is_complete() is False:
-                        for missing_tuple in \
-                                replicate_structures[(bio_rep_num,
-                                                      assembly)].get_missing_fields_tuples():
-                            replicates_string = bio_rep_num[1:-1]
-                            if len(replicates_string) > 0 and \
-                               is_single_replicate(replicates_string) is True:
-                                detail = 'In biological replicate {}, '.format(replicates_string) + \
-                                         'genomic assembly {}, '.format(assembly) + \
-                                         'the following file {} is missing.'.format(missing_tuple)
-                                yield AuditFailure('missing pipeline files', detail,
-                                                   level='DCC_ACTION')
-
-                    if replicate_structures[(bio_rep_num, assembly)].is_analyzed_more_than_once() is \
-                       True:
-                        detail = 'ChIP-seq control experiment {} '.format(value['@id']) + \
-                                 'contains biological replicate {}, '.format(bio_rep_num) + \
-                                 'with multiple processed files associated with the same fastq ' + \
-                                 'files for {} assembly.'.format(assembly)
-                        yield AuditFailure('mismatched pipeline files', detail, level='DCC_ACTION')
-
-            for (rep_num, assembly) in replicates_dict:
-                if replicates_dict[(rep_num, assembly)] == 0:
-                    detail = 'ChIP-seq control experiment {} '.format(value['@id']) + \
-                             'contains biological replicate {}, '.format(rep_num) + \
-                             'without any processed ' + \
-                             'files associated with {} assembly.'.format(assembly)
-                    yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
-    '''                
         elif 'transcription factor' in target.get('investigated_as'):
-            # create TF experiment structure
-            print ('hello')
+            replicate_structures = create_pipeline_structures(value['original_files'],
+                                                              'encode_chip_tf')
+            for failure in check_structures(replicate_structures, False, value['@id']):
+                yield failure
         elif 'histone' in target.get('investigated_as'):
-            # create histone experiment structure
-            print ('hello')
-        
-            
+            replicate_structures = create_pipeline_structures(value['original_files'],
+                                                              'encode_chip_histone')
+            for failure in check_structures(replicate_structures, False, value['@id']):
+                yield failure
+
+    '''        
     elif 'RAMPAGE (paired-end, stranded)' in pipelines:
-        # create structure for RAMPAGE
-        
-         a. bam alignments
-         b. 4 bigwigs (plus all reads signal and unique reads, and same for minus)
-         c. transcription start sites (gff -gff3)
-         d. transcription start sites (bed tss
-         e. transcription start sites (bigBed tss
-         f. gene quantifications (tsv)
-         g. (IDR) transcription start sites (bed IDR peaks)
-         h. (IDR) transcription start sites (bigBed IDR peaks)
+
         
         print ('hello')
     '''
 
 
 def check_structures(replicate_structures, control_flag, experiment):
+    bio_reps = get_bio_replicates(experiment)
+    assemblies = get_assemblies(experiment['original_files'])
+    present_assemblies = []
+    replicates_dict = {}
+    for bio_rep in bio_reps:
+        for assembly in assemblies:
+            replicates_dict[(bio_rep, assembly)] = 0
+    pooled_quantity = 0
 
     for (bio_rep_num, assembly) in replicate_structures.keys():
         replicates_string = bio_rep_num[1:-1]
         if len(replicates_string) > 0 and \
            is_single_replicate(replicates_string) is True:
             replicates_dict[(replicates_string, assembly)] = 1
-            print (replicates_dict.keys())
-            print ('+++++++')
         elif len(replicates_string) > 0 and is_single_replicate(replicates_string) is False:
             pooled_quantity += 1
             present_assemblies.append(assembly)
@@ -340,43 +218,46 @@ def check_structures(replicate_structures, control_flag, experiment):
                     detail = 'Experiment {} contains '.format(experiment['@id']) + \
                              'unexpected file {} '.format(unexpected_file) + \
                              'that is associated with ' + \
-                             'biolofgical replicates {}.'.format(bio_rep_num)                    
+                             'biolofgical replicates {}.'.format(bio_rep_num)
                     yield AuditFailure('unexpected pipeline files', detail, level='DCC_ACTION')
->>>>>> PROCEED from here
-          if replicate_structures[(bio_rep_num, assembly)].is_complete() is False:
-              for missing_tuple in \
-                      replicate_structures[(bio_rep_num, assembly)].get_missing_fields_tuples():
-                  if len(bio_rep_num[1:-1]) == 1:
-                      detail = 'In biological replicate {}, '.format(bio_rep_num[1:-1]) + \
-                               'genomic assembly {}, '.format(assembly) + \
-                               'the following file {} is missing.'.format(missing_tuple)
-                      yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
-                  else:
-                      detail = 'Files derived from biological replicates {}, '.format(bio_rep_num) + \
-                               'genomic assembly {}, '.format(assembly) + \
-                               'are missing the following file {}.'.format(missing_tuple)
-                      yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
-          if replicate_structures[(bio_rep_num, assembly)].is_analyzed_more_than_once() is True:
-              detail = 'Transcription factor ChIP-seq experiment {} '.format(value['@id']) + \
-                       'contains biological replicate {}, '.format(bio_rep_num) + \
-                       'with multiple processed files associated with the same fastq ' + \
-                       'files for {} assembly.'.format(assembly)
-              yield AuditFailure('mismatched pipeline files', detail, level='DCC_ACTION')
 
-  if pooled_quantity < (len(assemblies)) and 'control' not in target.get('investigated_as'):
-      detail = 'Transcription factor ChIP-seq experiment {} '.format(value['@id']) + \
-               'does not contain all of the inter-replicate comparison anlaysis files. ' + \
-               'Analysis was performed using {} assemblies, '.format(assemblies) + \
-               'while inter-replicate comparison anlaysis was performed only using ' + \
-               '{} assemblies.'.format(present_assemblies)
-      yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
-  for (rep_num, assembly) in replicates_dict:
-      if replicates_dict[(rep_num, assembly)] == 0:
-          detail = 'Transcription factor ChIP-seq experiment {} '.format(value['@id']) + \
-                   'contains biological replicate {}, '.format(rep_num) + \
-                   'without any processed files associated with {} assembly.'.format(assembly)
-          yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
-  return
+            if replicate_structures[(bio_rep_num, assembly)].is_complete() is False:
+                for missing_tuple in \
+                        replicate_structures[(bio_rep_num, assembly)].get_missing_fields_tuples():
+                    if is_single_replicate(bio_rep_num[1:-1]) is True:
+                        detail = 'In experiment {}, '.format(experiment['@id']) + \
+                                 'biological replicate {}, '.format(bio_rep_num[1:-1]) + \
+                                 'genomic assembly {} '.format(assembly) + \
+                                 'the file {} is missing.'.format(missing_tuple)
+                        yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
+                    else:
+                        detail = 'In experiment {}, '.format(experiment['@id']) + \
+                                 'biological replicates {}, '.format(bio_rep_num) + \
+                                 'genomic assembly {}, '.format(assembly) + \
+                                 'the file {} is missing.'.format(missing_tuple)
+                        yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
+
+            if replicate_structures[(bio_rep_num, assembly)].is_analyzed_more_than_once() is True:
+                detail = 'In experiment {}, '.format(experiment['@id']) + \
+                         'biological replicate {} contains '.format(bio_rep_num) + \
+                         'multiple processed files associated with the same fastq ' + \
+                         'files for {} assembly.'.format(assembly)
+                yield AuditFailure('mismatched pipeline files', detail, level='DCC_ACTION')
+
+    if pooled_quantity < (len(assemblies)) and control_flag is False:
+        detail = 'Experiment {} '.format(experiment['@id']) + \
+                 'does not contain all of the inter-replicate comparison anlaysis files. ' + \
+                 'Analysis was performed using {} assemblies, '.format(assemblies) + \
+                 'while inter-replicate comparison anlaysis was performed only using ' + \
+                 '{} assemblies.'.format(present_assemblies)
+        yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
+    for (rep_num, assembly) in replicates_dict:
+        if replicates_dict[(rep_num, assembly)] == 0:
+            detail = 'Experiment {} '.format(experiment['@id']) + \
+                     'contains biological replicate {}, '.format(rep_num) + \
+                     'without any processed files associated with {} assembly.'.format(assembly)
+            yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
+    return
 
 
 def is_single_replicate(replicates_string):
@@ -389,7 +270,10 @@ def create_pipeline_structures(files_to_scan, structure_type):
     structures_mapping = {
         'modERN_control': modERN_TF_control,
         'modERN': modERN_TF,
-        'encode_chip_control': encode_chip_control
+        'encode_chip_control': encode_chip_control,
+        'encode_chip_histone_pooled': encode_chip_histone_experiment_pooled,
+        'encode_chip_tf_pooled': encode_chip_tf_experiment_pooled,
+        'encode_chip_replicate': encode_chip_experiment_replicate,
     }
     structures_to_return = {}
     replicates_set = set()
