@@ -335,7 +335,7 @@ def audit_biosample_depleted_term_match(value, system):
     if len(value['depleted_in_term_name']) != len(value['depleted_in_term_id']):
         detail = 'Biosample {} has a depleted_in_term_name array and depleted_in_term_id array of differing lengths'.format(
             value['@id'])
-        raise AuditFailure('mismatched depleted_in_term length', detail, level='ERROR')
+        raise AuditFailure('mismatched depleted_in_term length', detail, level='DCC_ACTION')
         return
 
     for i, dep_term in enumerate(value['depleted_in_term_name']):
