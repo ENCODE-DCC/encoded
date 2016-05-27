@@ -1,6 +1,6 @@
 {
     "description": "Schema for reporting 'PCR bottleneck coefficient' (PBC) and 'phantumpeakqualtools run_spp.R' quality metric",
-    "id": "/profiles/pbc_quality_metric.json",
+    "id": "/profiles/pbc_spp_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["step_run", "award", "lab"],
