@@ -1321,12 +1321,6 @@ def test_audit_experiment_rampage_standards(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-        '''print (error_type)
-        for e in errors[error_type]:
-            print (e['category'])
-            if (e['category'].startswith('RAMPAGE')):
-                print (e)
-        '''
 
     assert any(error['category'] == 'insufficient read depth' for error in errors_list)
 
@@ -1698,12 +1692,6 @@ def test_audit_experiment_chip_seq_standards(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-        '''print (error_type)
-        for e in errors[error_type]:
-            print (e['category'])
-            if (e['category'].startswith('ChIP-seq')):
-                print (e)
-        '''
     assert any(error['category'] == 'insufficient read depth' for error in errors_list)
 
 
@@ -2038,9 +2026,10 @@ def test_audit_experiment_chip_seq_control_missing_files(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    for e in errors_list:
+    '''for e in errors_list:
         if e['category'] == 'missing pipeline files':
             print (e['detail'])
+    '''
     assert any(error['category'] == 'missing pipeline files' for error in errors_list)
 
 

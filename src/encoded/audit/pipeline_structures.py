@@ -237,38 +237,3 @@ class modERN_TF_pooled(basic_experiment):
                 self.file_types[(f_format, f_output)] = processed_file.get('accession')
                 self.replicates = processed_file.get('biological_replicates')
                 self.assembly = processed_file.get('assembly')
-
-
-class modERN_TF(object):
-    def __init__(self, replicates):
-        replicates_string = replicates[1:-1]
-
-        if len(replicates_string) > 0 and \
-           ',' not in replicates_string:
-            self.rep = modERN_TF_replicate()
-        else:
-            self.rep = modERN_TF_pooled()
-
-    def is_complete(self):
-        return self.rep.is_complete()
-
-    def has_unexpected_files(self):
-        return self.rep.unexpected_file_flag
-
-    def get_unexpected_files(self):
-        return self.rep.unexpected_files_set
-
-    def has_orphan_files(self):
-        return self.rep.has_orphan_files()
-
-    def get_orphan_files(self):
-        return self.rep.get_orphan_files()
-
-    def get_missing_fields_tuples(self):
-        return self.rep.get_missing_fields_tuples()
-
-    def update_fields(self, processed_file):
-        self.rep.update_fields(processed_file)
-
-    def is_analyzed_more_than_once(self):
-        return self.rep.is_analyzed_more_than_once()
