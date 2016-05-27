@@ -1,4 +1,4 @@
-/** @preventMunge */
+
 /* ^ see http://stackoverflow.com/questions/30110437/leading-underscore-transpiled-wrong-with-es6-classes */
 
 'use strict';
@@ -18,7 +18,7 @@ var Breadcrumbs = navigation.Breadcrumbs;
 class AccessKeyStore extends ItemStore {
     resetSecret(id) {
         this.fetch(id + 'reset-secret', {
-            method: 'POST',
+            method: 'POST'
         }, response => this.dispatch('onResetSecret', response));
     }
 }

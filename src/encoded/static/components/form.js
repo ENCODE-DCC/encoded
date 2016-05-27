@@ -67,7 +67,6 @@ var RepeatingItem = React.createClass({
 var RepeatingFieldset = React.createClass({
 
   render() {
-    var cx = require('react/lib/cx');
     var cloneWithProps = require('react/lib/cloneWithProps');
     var ReactForms = require('react-forms');
     var {
@@ -76,7 +75,7 @@ var RepeatingFieldset = React.createClass({
     } = this.props;
     var {validation, isDirty, externalValidation} = value;
     return (
-      <div {...props} className={cx('rf-RepeatingFieldset', className)}>
+      <div {...props} className={'rf-RepeatingFieldset' + className}>
         {!noLabel &&
           <ReactForms.Label
             className="rf-RepeatingFieldset__label"
