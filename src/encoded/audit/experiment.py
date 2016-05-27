@@ -13,7 +13,9 @@ from .pipeline_structures import (
     encode_chip_control,
     encode_chip_histone_experiment_pooled,
     encode_chip_tf_experiment_pooled,
-    encode_chip_experiment_replicate
+    encode_chip_experiment_replicate,
+    encode_rampage_experiment_replicate,
+    encode_rampage_experiment_pooled
     )
 
 import datetime
@@ -180,12 +182,11 @@ def audit_experiment_missing_processed_files(value, system):
             for failure in check_structures(replicate_structures, False, value):
                 yield failure
 
-    '''        
     elif 'RAMPAGE (paired-end, stranded)' in pipelines:
-
-        
-        print ('hello')
-    '''
+        replicate_structures = create_pipeline_structures(value['original_files'],
+                                                          'rampage')
+        for failure in check_structures(replicate_structures, False, value):
+                yield failure
 
 
 def check_structures(replicate_structures, control_flag, experiment):
@@ -210,7 +211,8 @@ def check_structures(replicate_structures, control_flag, experiment):
         if replicate_structures[(bio_rep_num, assembly)].has_orphan_files() is True:
             detail = 'Experiment {} contains '.format(experiment['@id']) + \
                      '{} '.format(replicate_structures[(bio_rep_num, assembly)].get_orphan_files()) + \
-                     'files that are not associated with any replicate'
+                     'files, genomic assembly {} '.format(assembly) + \
+                     ' that are not associated with any replicate'
             yield AuditFailure('orphan pipeline files', detail, level='DCC_ACTION')
         else:
             if replicate_structures[(bio_rep_num, assembly)].has_unexpected_files() is True:
@@ -312,6 +314,13 @@ def create_pipeline_structures(files_to_scan, structure_type):
                         else:
                             structures_to_return[(bio_rep_num, assembly)] = \
                                 structures_mapping['encode_chip_tf_pooled']()
+                    elif structure_type == 'rampage':
+                        if is_single_replicate(str(bio_rep_num)) is True:
+                            structures_to_return[(bio_rep_num, assembly)] = \
+                                structures_mapping['encode_rampage_experiment_replicate']()
+                        else:
+                            structures_to_return[(bio_rep_num, assembly)] = \
+                                structures_mapping['encode_rampage_experiment_pooled']()
 
                 structures_to_return[(bio_rep_num, assembly)].update_fields(f)
             else:
