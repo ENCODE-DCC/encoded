@@ -80,7 +80,7 @@
             "type": "string",
             "enum": [
                 "The Snowflake Consortium",
-                "I.C.E.",
+                "I.C.E."
             ]
         },
         "viewing_group": {
@@ -89,7 +89,7 @@
             "type": "string",
             "enum": [
                 "SNOWFLAKE",
-                "ICE",
+                "ICE"
             ]
         }
     },
