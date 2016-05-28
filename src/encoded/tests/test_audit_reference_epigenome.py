@@ -15,7 +15,7 @@ def reference_experiment_RNA_seq(testapp, lab, award):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'started',
         'assay_term_name': 'RNA-seq'
 
     }
