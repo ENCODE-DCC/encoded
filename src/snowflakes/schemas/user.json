@@ -73,7 +73,7 @@
             "items": {
                 "type": "string",
                 "enum": [
-                    "ALL",
+                    "ALL"
                 ]
             }
         },
