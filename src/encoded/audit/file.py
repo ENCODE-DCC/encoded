@@ -592,32 +592,17 @@ def audit_file_paired_ended_run_type(value, system):
             raise AuditFailure('missing paired_end', detail, level='ERROR')
 
 
-def get_bam_read_depth(bam_file, h3k9_flag):
+def get_chip_seq_bam_read_depth(bam_file, h3k9_flag):
     if bam_file['status'] in ['deleted', 'replaced', 'revoked']:
         return False
 
-    if bam_file['file_format'] != 'bam':
-        return False
-
-    if bam_file['output_type'] == 'transcriptome alignments':
+    if bam_file['file_format'] != 'bam' or bam_file['output_type'] != 'alignments':
         return False
 
     if bam_file['lab'] != '/labs/encode-processing-pipeline/':
         return False
 
-    if 'analysis_step_version' not in bam_file:
-        return False
-
-    if 'analysis_step' not in bam_file['analysis_step_version']:
-        return False
-
-    if 'pipelines' not in bam_file['analysis_step_version']['analysis_step']:
-        return False
-
-    if 'software_versions' not in bam_file['analysis_step_version']:
-        return False
-
-    if bam_file['analysis_step_version']['software_versions'] == []:
+    if has_pipelines(bam_file) is False:
         return False
 
     quality_metrics = bam_file.get('quality_metrics')
@@ -625,42 +610,18 @@ def get_bam_read_depth(bam_file, h3k9_flag):
     if (quality_metrics is None) or (quality_metrics == []):
         return False
 
-    chip_seq_flag = False
-    interesting_pipeline = False
-    for pipeline in bam_file['analysis_step_version']['analysis_step']['pipelines']:
-        if pipeline['title'] in pipelines_with_read_depth:
-            if pipeline['title'] == 'Histone ChIP-seq':
-                chip_seq_flag = True
-            interesting_pipeline = pipeline
-            break
-
-    if interesting_pipeline is False:
-        return False
-
     read_depth = 0
 
-    derived_from_files = bam_file.get('derived_from')
-    if (derived_from_files is None) or (derived_from_files == []):
-        return False
-
-    read_depth_value_name = 'Uniquely mapped reads number'
-    if chip_seq_flag is True:
-        read_depth_value_name = 'total'
-
     for metric in quality_metrics:
-        if chip_seq_flag is False and read_depth_value_name in metric:
-            read_depth = metric[read_depth_value_name]
-            break
-        elif (chip_seq_flag is True and read_depth_value_name in metric and h3k9_flag is False and
-              (('processing_stage' in metric and metric['processing_stage'] == 'filtered') or
-               ('processing_stage' not in metric))):
+        if ('total' in metric and h3k9_flag is False and
+            (('processing_stage' in metric and metric['processing_stage'] == 'filtered') or
+             ('processing_stage' not in metric))):
                 if "read1" in metric and "read2" in metric:
-                    read_depth = int(metric[read_depth_value_name]/2)
+                    read_depth = int(metric['total']/2)
                 else:
-                    read_depth = metric[read_depth_value_name]
+                    read_depth = metric['total']
                 break
-        elif chip_seq_flag is True and \
-            h3k9_flag is True and  \
+        elif h3k9_flag is True and  \
             'processing_stage' in metric and\
             metric['processing_stage'] == 'unfiltered' and \
                 'mapped' in metric:
@@ -765,8 +726,7 @@ def get_target_name(bam_file):
                               'derived_from.controlled_by.dataset.original_files.analysis_step_version.analysis_step.pipelines',
                               'derived_from.controlled_by.dataset.original_files.analysis_step_version.software_versions',
                               'derived_from.controlled_by.dataset.original_files.analysis_step_version.software_versions.software'
-                              ],
-               condition=rfa('ENCODE3', 'ENCODE'))
+                              ])
 def audit_file_chip_seq_control_read_depth(value, system):
     '''
     An alignment file from the ENCODE Processing Pipeline should have read depth
@@ -844,30 +804,22 @@ def audit_file_chip_seq_control_read_depth(value, system):
             target_name = value['dataset']['target']['name']
             target_investigated_as = value['dataset']['target']['investigated_as']
 
-    if target_name in ['H3K9me3-human', 'H3K9me3-mouse']:
-        read_depth = get_bam_read_depth(value, True)
-    else:
-        read_depth = get_bam_read_depth(value, False)
-
-    if read_depth is False:
-        return
-
     if target_name not in ['Control-human', 'Control-mouse']:
         control_bam = get_control_bam(value, 'Histone ChIP-seq')
         if control_bam is not False:
-            control_depth = get_bam_read_depth(control_bam, False)
+            control_depth = get_chip_seq_bam_read_depth(control_bam, False)
             control_target = get_target_name(control_bam)
             if control_depth is not False and control_target is not False:
-                for failure in check_chip_seq_standards(control_bam,
-                                                        control_depth,
-                                                        control_target,
-                                                        True,
-                                                        target_name,
-                                                        target_investigated_as):
+                for failure in check_control_read_depth_standards(control_bam,
+                                                                  control_depth,
+                                                                  control_target,
+                                                                  True,
+                                                                  target_name,
+                                                                  target_investigated_as):
                     yield failure
 
 
-def check_chip_seq_standards(value, read_depth, target_name, is_control_file, control_to_target, target_investigated_as):
+def check_control_read_depth_standards(value, read_depth, target_name, is_control_file, control_to_target, target_investigated_as):
     marks = pipelines_with_read_depth['Histone ChIP-seq']
 
     if is_control_file is True:  # treat this file as control_bam -
