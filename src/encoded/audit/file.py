@@ -739,11 +739,15 @@ def audit_file_chip_seq_control_read_depth(value, system):
     if value['file_format'] != 'bam':
         return
 
+
+
     if value['output_type'] in ['transcriptome alignments', 'unfiltered alignments']:
         return
 
     if value['lab'] != '/labs/encode-processing-pipeline/':
         return
+
+
 
     if 'analysis_step_version' not in value:
         detail = 'ENCODE Processed alignment file {} has '.format(value['@id']) + \
@@ -776,17 +780,19 @@ def audit_file_chip_seq_control_read_depth(value, system):
         yield AuditFailure('missing software', detail, level='DCC_ACTION')
         return
 
-    if 'Histone ChIP-seq' not in value['analysis_step_version']['analysis_step']['pipelines'] or \
-       'Raw mapping with no filtration' in \
-       value['analysis_step_version']['analysis_step']['pipelines']:
+    chip_flag = False
+    for p in value['analysis_step_version']['analysis_step']['pipelines']:
+        if p['title'] == 'Histone ChIP-seq':
+            chip_flag = True
+        if p['title'] == 'Raw mapping with no filtration':
+            return
+
+    if chip_flag is False:
         return
 
     quality_metrics = value.get('quality_metrics')
 
-    if ('quality_metrics' not in value) or (quality_metrics is None) or (quality_metrics == []):
-        detail = 'ENCODE Processed alignment file {} has no quality_metrics'.format(
-            value['@id'])
-        yield AuditFailure('missing quality metrics', detail, level='DCC_ACTION')
+    if (quality_metrics is None) or (quality_metrics == []):
         return
 
     derived_from_files = value.get('derived_from')
