@@ -1,5 +1,5 @@
 'use strict';
-var React = require('react/addons');
+var React = require('react');
 var panel = require('../libs/bootstrap/panel');
 var button = require('../libs/bootstrap/button');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');

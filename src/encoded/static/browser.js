@@ -2,6 +2,7 @@
 // Entry point for browser
 require('./libs/react-patches');
 var React = require('react');
+var ReactDOM = require('react-dom');
 var ReactMount = require('react/lib/ReactMount');
 ReactMount.allowFullPageRender = true;
 
@@ -20,7 +21,7 @@ if (!window.TEST_RUNNER) domready(function ready() {
     var server_stats = require('querystring').parse(window.stats_cookie);
     App.recordServerStats(server_stats, 'html');
 
-    var app = React.render(<App {...props} />, document);
+    var app = ReactDOM.render(<App {...props} />, document);
 
     // Simplify debugging
     window.app = app;
