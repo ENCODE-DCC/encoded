@@ -362,7 +362,8 @@ var DatasetFiles = module.exports.DatasetFiles = React.createClass({
 var FileGallery = module.exports.FileGallery = React.createClass({
     propTypes: {
         encodevers: React.PropTypes.string, // ENCODE version number
-        anisogenic: React.PropTypes.bool // True if anisogenic experiment
+        anisogenic: React.PropTypes.bool, // True if anisogenic experiment
+        hideGraph: React.PropTypes.bool // T to hide graph display
     },
 
     contextTypes: {
@@ -371,12 +372,12 @@ var FileGallery = module.exports.FileGallery = React.createClass({
     },
 
     render: function() {
-        var {context, encodevers, anisogenic} = this.props;
+        var {context, encodevers, anisogenic, hideGraph} = this.props;
 
         return (
             <FetchedData ignoreErrors>
                 <Param name="data" url={globals.unreleased_files_url(context)} />
-                <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} />
+                <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} hideGraph={hideGraph} />
             </FetchedData>
         );
     }
@@ -388,7 +389,8 @@ var FileGallery = module.exports.FileGallery = React.createClass({
 var FileGalleryRenderer = React.createClass({
     propTypes: {
         encodevers: React.PropTypes.string, // ENCODE version number
-        anisogenic: React.PropTypes.bool // True if anisogenic experiment
+        anisogenic: React.PropTypes.bool, // True if anisogenic experiment
+        hideGraph: React.PropTypes.bool // T to hide graph display
     },
 
     contextTypes: {
@@ -474,7 +476,9 @@ var FileGalleryRenderer = React.createClass({
                     </div>
                 </PanelHeading>
 
-                <FileGraph context={context} items={files} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
+                {!this.props.hideGraph ?
+                    <FileGraph context={context} items={files} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
+                : null}
 
                 {/* If logged in and dataset is released, need to combine search of files that reference
                     this dataset to get released and unreleased ones. If not logged in, then just get
