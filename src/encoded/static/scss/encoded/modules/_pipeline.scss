@@ -183,19 +183,6 @@ g.pipeline-node-qc-metric {
     }
 }
 
-.quality-metrics-type {
-    color: #a0a0a0;
-    font-size: 0.9rem;
-
-    @media screen and (min-width: $screen-md-min) {
-        display: table-cell;
-        width: 40%;
-        padding-bottom: 10px;
-        text-align: right;
-        vertical-align: bottom;
-    }
-}
-
 .quality-metrics-attachments {
     h5 {
         margin-top: 0;

@@ -239,7 +239,7 @@ def composite(loader, global_conf, **settings):
         status = status_holder['status'].copy()
         status.update(**kw)
         if error is not None:
-            status['errors'] = [error] + status['errors'][:9]
+            status['errors'] = [error] + status['errors'][:2]
         if result is not None:
             status['results'] = [result] + status['results'][:9]
         status_holder['status'] = status

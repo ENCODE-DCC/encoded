@@ -17,6 +17,7 @@ _ASSEMBLY_MAPPER = {
     'GRCh38-minimal': 'hg38',
     'GRCh38': 'hg38',
     'GRCh37': 'hg19',
+    'mm10-minimal': 'mm10',
     'GRCm38': 'mm10',
     'GRCm37': 'mm9',
     'BDGP6': 'dm4',
@@ -437,7 +438,7 @@ def search_result_actions(request, doc_types, es_results, position=None):
                     if 'region-search' in request.url and position is not None:
                         actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly + '&position={}'.format(position)
                     else:
-                        actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly 
+                        actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly
 
     # generate batch download URL for experiments
     # TODO we could enable them for Datasets as well here, but not sure how well it will work
