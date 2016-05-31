@@ -90,7 +90,7 @@ var EditForm = module.exports.EditForm = React.createClass({
             require('brace/mode/json');
             require('brace/theme/solarized_light');
             var value = JSON.stringify(sorted_json(this.props.data), null, 4);
-            var editor = ace.edit(this.refs.editor.getDOMNode());
+            var editor = ace.edit(this.refs.editor);
             var session = editor.getSession();
             session.setMode('ace/mode/json');
             editor.setValue(value);

@@ -12,12 +12,12 @@ var Lightbox = module.exports.Lightbox = React.createClass({
 
     // Window resized; set max-height of image
     handleResize: function() {
-        this.setState({imgHeight: this.refs.lightbox.getDOMNode().offsetHeight - 40});
+        this.setState({imgHeight: this.refs.lightbox.offsetHeight - 40});
     },
 
     componentDidMount: function() {
         globals.bindEvent(window, 'resize', this.handleResize);
-        this.setState({imgHeight: this.refs.lightbox.getDOMNode().offsetHeight - 40});
+        this.setState({imgHeight: this.refs.lightbox.offsetHeight - 40});
     },
 
     componentWillUnmount: function() {

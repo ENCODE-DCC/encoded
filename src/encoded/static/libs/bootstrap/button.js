@@ -1,6 +1,5 @@
 'use strict';
 var React = require('react');
-var cloneWithProps = require('react/lib/cloneWithProps');
 var {DropdownMenu} = require('./dropdown-menu');
 
 
@@ -59,7 +58,7 @@ var DropdownButton = module.exports.DropdownButton = React.createClass({
         // Add the `label` property to any <DropdownMenu> child components
         var children = React.Children.map(this.props.children, child => {
             if (child.type === DropdownMenu.type) {
-                return cloneWithProps(child, {
+                return React.cloneElement(child, {
                     label: this.props.label
                 });
             }

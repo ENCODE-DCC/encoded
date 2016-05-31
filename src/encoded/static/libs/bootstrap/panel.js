@@ -123,7 +123,7 @@ var TabPanel = module.exports.TabPanel = React.createClass({
                     firstPaneIndex = firstPaneIndex === -1 ? i : firstPaneIndex;
 
                     // Replace the existing child <TabPanelPane> component
-                    return cloneWithProps(child, {id: child.key, active: this.state.currentTab ? this.state.currentTab === child.key : firstPaneIndex === i});
+                    return React.cloneElement(child, {id: child.key, active: this.state.currentTab ? this.state.currentTab === child.key : firstPaneIndex === i});
                 }
                 return child;
             });

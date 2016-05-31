@@ -311,7 +311,7 @@ var Graph = module.exports.Graph = React.createClass({
             require.ensure(['dagre-d3', 'd3'], require => {
                 this.d3 = require('d3');
                 this.dagreD3 = require('dagre-d3');
-                var el = this.refs.graphdisplay.getDOMNode();
+                var el = this.refs.graphdisplay;
 
                 // Add SVG element to the graph component, and assign it classes, sizes, and a group
                 var svg = this.d3.select(el).insert('svg', '#graph-node-info')
@@ -336,14 +336,14 @@ var Graph = module.exports.Graph = React.createClass({
             });
         } else {
             // Output text indicating that graphs aren't supported.
-            var el = this.refs.graphdisplay.getDOMNode();
+            var el = this.refs.graphdisplay;
             var para = document.createElement('p');
             para.className = 'browser-error';
             para.innerHTML = 'Graphs not supported in your browser. You need a more modern browser to view it.';
             el.appendChild(para);
 
             // Disable the download button
-            el = this.refs.dlButton.getDOMNode();
+            el = this.refs.dlButton;
             el.setAttribute('disabled', 'disabled');
         }
 
@@ -356,7 +356,7 @@ var Graph = module.exports.Graph = React.createClass({
     // State change; redraw the graph
     componentDidUpdate: function() {
         if (this.dagreD3 && !this.cv.zoomMouseDown) {
-            var el = this.refs.graphdisplay.getDOMNode(); // Change in React 0.14
+            var el = this.refs.graphdisplay; // Change in React 0.14
             var {viewBoxWidth, viewBoxHeight} = this.drawGraph(el);
 
             // Bind node/subnode click handlers to parent component handlers
@@ -482,7 +482,7 @@ var Graph = module.exports.Graph = React.createClass({
 
     rangeDoubleClick: function(e) {
         // Handle a double click in the zoom slider
-        var el = this.refs.graphdisplay.getDOMNode();
+        var el = this.refs.graphdisplay;
         var zoomLevel = this.setInitialZoomLevel(el, this.cv.savedSvg);
         this.setState({zoomLevel: zoomLevel});
     },
