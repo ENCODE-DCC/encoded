@@ -21,7 +21,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "accession": {
             "accessionType": "PL"
@@ -37,6 +37,22 @@
                 "archived",
                 "active"
             ]
+        },
+        "group": {
+            "type": "string",
+            "description": "Pipeline group description",          
+            "title": "Group",
+            "enum": [
+                "group 1",
+                "group 2",
+                "group 3"
+            ]           
+        },
+         "version": {
+            "title": "Version",
+            "description": "The version of the pipeline",
+            "type": "string",
+            "default": "1"
         },
         "title": {
             "title": "Title",
@@ -88,7 +104,7 @@
         "status": {
             "title": "Pipeline status"
         },
-        "title": {
+        "group": {
             "title": "Pipeline groups"
         },
         "analysis_steps.software_versions.software.title": {
@@ -151,5 +167,7 @@
         "assay_term_name": 1.0,
         "assay_term_id": 1.0,
         "title": 1.0
-    }
+    },
+    "changelog": "/profiles/changelogs/pipeline.md"
+}
 }

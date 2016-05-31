@@ -21,6 +21,16 @@ def pipeline_2(award, lab):
     }
 
 
+@pytest.fixture
+def pipeline_2(award, lab):
+    return {
+        'schema_version': '4',
+        'status': 'active',
+        'title': 'Test pipeline',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+    }
+
 def test_pipeline_upgrade_1_2(upgrader, pipeline_1):
     value = upgrader.upgrade('pipeline', pipeline_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -33,3 +43,10 @@ def test_pipeline_upgrade_2_3(upgrader, pipeline_2):
     assert 'name' not in value
     assert 'version' not in value
     assert 'end_points' not in value
+
+
+def test_pipeline_upgrade_4_5(upgrader, pipeline_4):
+    value = upgrader.upgrade('pipeline', pipeline_4, current_version='4', target_version='5')
+    assert value['schema_version'] == '5'
+    assert 'group' in value
+    assert 'version' in value

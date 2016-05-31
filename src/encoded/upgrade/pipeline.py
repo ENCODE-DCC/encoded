@@ -37,3 +37,9 @@ def pipeline_3_4(value, system):
 
     if 'references' in value:
         value['references'] = list(set(value['references']))
+
+
+@upgrade_step('pipeline', '4', '5')
+def pipeline_4_5(value, system):
+    # using Crickets table map pipelines to their corresponding groups
+    return
