@@ -592,7 +592,7 @@ def audit_file_paired_ended_run_type(value, system):
             raise AuditFailure('missing paired_end', detail, level='ERROR')
 
 
-def get_chip_seq_bam_read_depth(bam_file, h3k9_flag):
+def get_chip_seq_bam_read_depth(bam_file):
     if bam_file['status'] in ['deleted', 'replaced', 'revoked']:
         return False
 
@@ -613,7 +613,7 @@ def get_chip_seq_bam_read_depth(bam_file, h3k9_flag):
     read_depth = 0
 
     for metric in quality_metrics:
-        if ('total' in metric and h3k9_flag is False and
+        if ('total' in metric and
             (('processing_stage' in metric and metric['processing_stage'] == 'filtered') or
              ('processing_stage' not in metric))):
                 if "read1" in metric and "read2" in metric:
@@ -621,15 +621,6 @@ def get_chip_seq_bam_read_depth(bam_file, h3k9_flag):
                 else:
                     read_depth = metric['total']
                 break
-        elif h3k9_flag is True and  \
-            'processing_stage' in metric and\
-            metric['processing_stage'] == 'unfiltered' and \
-                'mapped' in metric:
-            if "read1" in metric and "read2" in metric:
-                read_depth = int(metric['mapped']/2)
-            else:
-                read_depth = int(metric['mapped'])
-            break
 
     if read_depth == 0:
         return False
@@ -813,7 +804,7 @@ def audit_file_chip_seq_control_read_depth(value, system):
     if target_name not in ['Control-human', 'Control-mouse']:
         control_bam = get_control_bam(value, 'Histone ChIP-seq')
         if control_bam is not False:
-            control_depth = get_chip_seq_bam_read_depth(control_bam, False)
+            control_depth = get_chip_seq_bam_read_depth(control_bam)
             control_target = get_target_name(control_bam)
             if control_depth is not False and control_target is not False:
                 for failure in check_control_read_depth_standards(control_bam,
