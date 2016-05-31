@@ -1237,33 +1237,33 @@ var QcDetailsView = function(metrics) {
         // property as a key to retrieve the list of properties appropriate for that QC type.
         var qcAttachmentPropertyList = qcAttachmentProperties[metrics.ref['@type'][0]];
         if (qcAttachmentPropertyList) {
-            qcPanels = qcAttachmentPropertyList.map(attachmentPropertyInfo => {
+            qcPanels = _(qcAttachmentPropertyList.map(attachmentPropertyInfo => {
                 // Each object in the list has only one key (the metric attachment property name), so get it here.
                 var attachmentPropertyName = Object.keys(attachmentPropertyInfo)[0];
+                var attachment = metrics.ref[attachmentPropertyName];
 
                 // Generate the JSX for the panel. Use the property name as the key to get the corresponding human-readable description for the title
-                return <AttachmentPanel key={attachmentPropertyName} context={metrics.ref} attachment={metrics.ref[attachmentPropertyName]} title={attachmentPropertyInfo[attachmentPropertyName]} />;
-            });
+                if (attachment) {
+                    return <AttachmentPanel context={metrics.ref} attachment={metrics.ref[attachmentPropertyName]} title={attachmentPropertyInfo[attachmentPropertyName]} />;
+                }
+                return null;
+            })).compact();
         }
 
         // Convert the QC metric object @id to a displayable string
         var qcName = metrics.ref['@id'].match(/^\/([a-z0-9-]*)\/.*$/i);
         if (qcName && qcName[1]) {
             qcName = qcName[1].replace(/-/g, ' ');
+            qcName = qcName[0].toUpperCase() + qcName.substring(1);
         }
 
         return (
             <div>
                 <div className="quality-metrics-header">
                     <div className="quality-metrics-info">
-                        <h4>Quality metric of {metrics.parent.accession}</h4>
+                        <h4>{qcName} of {metrics.parent.accession}</h4>
                         {filesOfMetric.length ? <h5>Shared with {filesOfMetric.join(', ')}</h5> : null}
                     </div>
-                    {qcName ?
-                        <div className="quality-metrics-type">
-                            {qcName}
-                        </div>
-                    : null}
                 </div>
                 <div className="row">
                     <div className="col-md-4 col-sm-6 col-xs-12">
@@ -1279,17 +1279,19 @@ var QcDetailsView = function(metrics) {
                         </dl>
                     </div>
 
-                    <div className="col-md-8 col-sm-12 quality-metrics-attachments">
-                        <h5>Quality metric attachments</h5>
-                        <div className="row">
-                            {/* If the metrics object has an `attachment` property, display that first, then display the properties
-                                not named `attachment` but which have their own schema attribute, `attachment`, set to true */}
-                            {metrics.ref.attachment ?
-                                <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} />
-                            : null}
-                            {qcPanels}
+                    {(qcPanels && qcPanels.length) || metrics.ref.attachment ?
+                        <div className="col-md-8 col-sm-12 quality-metrics-attachments">
+                            <h5>Quality metric attachments</h5>
+                            <div className="row">
+                                {/* If the metrics object has an `attachment` property, display that first, then display the properties
+                                    not named `attachment` but which have their own schema attribute, `attachment`, set to true */}
+                                {metrics.ref.attachment ?
+                                    <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} />
+                                : null}
+                                {qcPanels}
+                            </div>
                         </div>
-                    </div>
+                    : null}
                 </div>
             </div>
         );
