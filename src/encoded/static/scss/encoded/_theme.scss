@@ -79,9 +79,7 @@ select {
     color: #428bca !important;
     font-weight: bold;
 
-    &:hover {
-        color: darken(#428bca,20%);
-        background-color: lighten(#428bca,30%);
-        border: 1px solid #428bca !important;
+    &::-ms-expand {
+        display: none;
     }
 }
