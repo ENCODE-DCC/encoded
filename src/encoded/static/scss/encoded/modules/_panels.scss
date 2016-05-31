@@ -178,6 +178,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
 .file-gallery-control {
     display: inline-block;
+    position: relative;
     vertical-align: bottom;
     margin-right: 5px;
 
@@ -188,14 +189,32 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
     select {
         height: 30px;
+        padding-right: 30px;
+        font-size: 0.9rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+
+    &.file-gallery-control-select:after {
+        content: '\f0dc';
+        font-family: FontAwesome;
+        padding: 8px;
+        position: absolute;
+        right: 10px;
+        top: 5px;
+        z-index: 1;
+        width: 10px;
+        line-height: 50%;
+        font-size: 0.86rem;
+        color: #428bca;
+        pointer-events: none;
     }
 }
 
 // File gallery title bars that collapse
 .collapsing-title-icon {
     position: relative;
-    top: 3px;
-    margin-right: 10px;
+    top: 0;
 }
 
 .file-gallery-counts {
@@ -209,7 +228,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 }
 
 .file-gallery-graph-header {
-    padding: 0;
+    padding: 10px;
     background-color: #d8e0e8;
 
     h4 {
@@ -238,12 +257,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     padding: 10px;
 
     h4 {
-        margin: 0;
-    }
-
-    &:hover {
-        background-color: darken(#d8e0e8, 10%);
-        text-decoration: none;
+        margin: 0 0 0 40px;
     }
 
     &:focus, &:active {
@@ -268,11 +282,26 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
         stroke: #000;
     }
 
-    .arrow {
+    .content-line {
         fill: none;
         stroke: #000;
         stroke-miterlimit: 10;
         stroke-width: 60px;
+    }
+}
+
+.collapsing-title-trigger {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 41px;
+    padding: 10px;
+    border-right: 1px solid #fff;
+
+    &:hover {
+        background-color: darken(#d8e0e8, 10%);
+        text-decoration: none;
     }
 }
 
