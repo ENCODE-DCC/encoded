@@ -378,14 +378,8 @@ var PublicationData = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {/* If logged in and dataset is released, need to combine search of files that reference
-                    this dataset to get released and unreleased ones. If not logged in, then just get
-                    files from dataset.files */}
-                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
-                    <FetchedItems {...this.props} url={globals.unreleased_files_url(context)} Component={DatasetFiles} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
-                :
-                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} />
-                }
+                {/* Display the file widget with the facet, graph, and tables */}
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -526,14 +520,8 @@ var Reference = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {/* If logged in and dataset is released, need to combine search of files that reference
-                    this dataset to get released and unreleased ones. If not logged in, then just get
-                    files from dataset.files */}
-                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
-                    <FetchedItems {...this.props} url={globals.unreleased_files_url(context)} Component={DatasetFiles} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
-                :
-                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} />
-                }
+                {/* Display the file widget with the facet, graph, and tables */}
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -701,14 +689,8 @@ var Project = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {/* If logged in and dataset is released, need to combine search of files that reference
-                    this dataset to get released and unreleased ones. If not logged in, then just get
-                    files from dataset.files */}
-                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
-                    <FetchedItems {...this.props} url={globals.unreleased_files_url(context)} Component={DatasetFiles} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
-                :
-                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} />
-                }
+                {/* Display the file widget with the facet, graph, and tables */}
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -863,14 +845,8 @@ var UcscBrowserComposite = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {/* If logged in and dataset is released, need to combine search of files that reference
-                    this dataset to get released and unreleased ones. If not logged in, then just get
-                    files from dataset.files */}
-                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
-                    <FetchedItems {...this.props} url={globals.unreleased_files_url(context)} Component={DatasetFiles} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
-                :
-                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} />
-                }
+                {/* Display the file widget with the facet, graph, and tables */}
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
