@@ -284,7 +284,7 @@ def lot_reviews(characterizations, targets, request):
 
     if compliant_secondary or exempted_secondary:
         # A compliant secondary trumps all other reviewed secondary statuses
-        (pending_secondary, exempted_secondary, not_compliant_secondary) = False
+        (pending_secondary, exempted_secondary, not_compliant_secondary) = (False, False, False)
 
     # Now check the primaries and update their status accordingly
     char_reviews = {}
