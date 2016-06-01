@@ -79,8 +79,6 @@ thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td
 .table-responsive {
     position: relative;
     overflow-x: auto;
-    background-image: inline-image("../img/checker.svg");
-    background-size: 16px 16px;
 }
 
 table thead tr th button {
@@ -145,6 +143,11 @@ form.table-filter {
 .table-file {
     .table {
         margin-bottom: 0;
+    }
+
+    .table-responsive {
+        background-image: inline-image("../img/checker.svg");
+        background-size: 16px 16px;
     }
 }
 
