@@ -282,7 +282,7 @@ def lot_reviews(characterizations, targets, request):
         else:
             pass
 
-    if compliant_secondary:
+    if compliant_secondary or exempted_secondary:
         # A compliant secondary trumps all other reviewed secondary statuses
         (pending_secondary, exempted_secondary, not_compliant_secondary) = False
 
