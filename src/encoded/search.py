@@ -702,9 +702,11 @@ def search(context, request, search_type=None, return_generator=False):
     # Scan large result sets.
     del query['aggs']
     if size is None:
-        hits = scan(es, query=query, index=es_index, preserve_order=has_sort)
+        # preserve_order=True has unexpected results in clustered environment 
+        # https://github.com/elastic/elasticsearch-py/blob/master/elasticsearch/helpers/__init__.py#L257
+        hits = scan(es, query=query, index=es_index, preserve_order=False) 
     else:
-        hits = scan(es, query=query, index=es_index, from_=from_, size=size, preserve_order=has_sort)
+        hits = scan(es, query=query, index=es_index, from_=from_, size=size, preserve_order=False)
     graph = format_results(request, hits)
 
     # Support for request.embed() and `return_generator`
