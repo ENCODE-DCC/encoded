@@ -272,10 +272,8 @@ def lot_reviews(characterizations, targets, request):
             exempted_secondary = True
             break
         elif secondary['status'] == 'pending dcc review':
-            if not (compliant_secondary or exempted_secondary):
                 pending_secondary = True
         elif secondary['status'] == 'not compliant':
-            if not (compliant_secondary or exempted_secondary):
                 not_compliant_secondary = True
         elif secondary['status'] == 'in progress':
             in_progress_secondary += 1
@@ -283,6 +281,10 @@ def lot_reviews(characterizations, targets, request):
             not_reviewed_secondary += 1
         else:
             pass
+
+    if compliant_secondary:
+        # A compliant secondary trumps all other reviewed secondary statuses
+        (pending_secondary, exempted_secondary, not_compliant_secondary) = False
 
     # Now check the primaries and update their status accordingly
     char_reviews = {}
