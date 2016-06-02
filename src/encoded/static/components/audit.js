@@ -2,6 +2,7 @@
 var React = require('react');
 var _ = require('underscore');
 var {Panel} = require('../libs/bootstrap/panel');
+var {SvgIcon, CollapseIcon} = require('../libs/svg-icons');
 
 var editTargetMap = {
     'experiments': 'Experiment',
@@ -48,6 +49,20 @@ var AuditMixin = module.exports.AuditMixin = {
 };
 
 
+var AuditIcon = module.exports.AuditIcon = React.createClass({
+    propTypes: {
+        level: React.PropTypes.string // Level name from an audit object
+    },
+
+    render: function() {
+        var levelName = this.props.level.toLowerCase();
+        var iconClass = 'icon audit-activeicon-' + levelName;
+
+        return <i className={iconClass}><span className="sr-only">{'Audit'} {levelName}</span></i>;
+    }
+});
+
+
 var AuditIndicators = module.exports.AuditIndicators = React.createClass({
     contextTypes: {
         auditDetailOpen: React.PropTypes.bool,
@@ -63,12 +78,9 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
 
         if ((!this.context.hidePublicAudits || loggedIn) && audits && Object.keys(audits).length) {
             // Sort the audit levels by their level number, using the first element of each warning category
-            var sortedAuditLevels = _(Object.keys(audits)).sortBy(function(level) {
-                return -audits[level][0].level;
-            });
+            var sortedAuditLevels = _(Object.keys(audits)).sortBy(level => -audits[level][0].level);
 
-            var indicatorClass = "audit-indicators btn btn-default" + (this.context.auditDetailOpen ? ' active' : '') + (this.props.search ? ' audit-search' : '');
-
+            var indicatorClass = "audit-indicators btn btn-info" + (this.context.auditDetailOpen ? ' active' : '') + (this.props.search ? ' audit-search' : '');
             if (loggedIn || !(sortedAuditLevels.length === 1 && sortedAuditLevels[0] === 'DCC_ACTION')) {
                 return (
                     <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.context.auditDetailOpen} aria-controls={this.props.id} onClick={this.context.auditStateToggle}>
@@ -82,7 +94,7 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
 
                                 return (
                                     <span className={btnClass} key={level}>
-                                        <i className={iconClass}><span className="sr-only">{'Audit'} {levelName}</span></i>
+                                        <AuditIcon level={level} />
                                         {Object.keys(groupedAudits).length}
                                     </span>
                                 );
@@ -181,8 +193,8 @@ var AuditGroup = module.exports.AuditGroup = React.createClass({
             <div className={alertClass}>
                 {loggedIn ?
                     <div className={'icon audit-detail-trigger-' + auditLevelName}>
-                        <a href="#" className={'audit-detail-trigger-icon' + (detailOpen ? '' : ' collapsed')} data-trigger data-toggle="collapse" onClick={this.detailSwitch}>
-                            <span className="sr-only">More</span>
+                        <a href="#" data-trigger onClick={this.detailSwitch} className="collapsing-title">
+                            {CollapseIcon(!detailOpen)}
                         </a>
                     </div>
                 : null}

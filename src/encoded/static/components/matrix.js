@@ -1,7 +1,7 @@
 'use strict';
 var React = require('react');
 var color = require('color');
-var SvgIcon = require('../libs/svg-icons');
+var SvgIcon = require('../libs/svg-icons').SvgIcon;
 var globals = require('./globals');
 var search = require('./search');
 var url = require('url');

@@ -17,11 +17,12 @@ def test_report_download(testapp, workbook):
         b'Post-synchronization time', b'Post-synchronization time units',
         b'Replicates', b'Files', b'Dbxrefs'
     ]
-    assert lines[1].split(b'\t') == [
-        b'/experiments/ENCSR000AAL/', b'ENCSR000AAL', b'RNA-seq', b'RNA-seq',
-        b'', b'K562', b'RNA Evaluation K562 Small Total RNA-seq from Gingeras',
-        b'Thomas Gingeras, CSHL', b'ENCODE', b'released', b'',
-        b'', b'', b'', b'', b'', b'', b'', b'', b'',
-        b'', b'', b'', b'', b'', b'', b''
-    ]
+    # Sorting for scan and limit=all is disabled currently
+    # assert lines[1].split(b'\t') == [
+    #     b'/experiments/ENCSR000AAL/', b'ENCSR000AAL', b'RNA-seq', b'RNA-seq',
+    #     b'', b'K562', b'RNA Evaluation K562 Small Total RNA-seq from Gingeras',
+    #     b'Thomas Gingeras, CSHL', b'ENCODE', b'released', b'',
+    #     b'', b'', b'', b'', b'', b'', b'', b'', b'',
+    #     b'', b'', b'', b'', b'', b'', b''
+    # ]
     assert len(lines) == 44

@@ -28,6 +28,48 @@ paired_end_assays = [
 
 
 @audit_checker('File', frame=['derived_from'])
+def audit_file_bam_derived_from_fastqs_belonging_to_same_experiment(value, system):
+    if value['file_format'] != 'bam':
+        return
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+    if 'derived_from' not in value:
+        return
+    derived_from_files = value.get('derived_from')
+    for f in derived_from_files:
+        if f['status'] not in ['deleted', 'replaced', 'revoked'] and \
+           f['file_format'] == 'fastq' and \
+           f['dataset'] != value['dataset']:
+            detail = 'Processed alignments file {} '.format(value['@id']) + \
+                     'that belongs to experiment {} '.format(value['dataset']) + \
+                     'is derived from file {} '.format(f['@id']) + \
+                     'that belongs to different experiment {}.'.format(f['dataset'])
+            yield AuditFailure('mismatched derived_from',
+                               detail, level='DCC_ACTION')
+            return
+
+
+@audit_checker('File', frame=['object'],
+               condition=rfa('ENCODE3',
+                             'modENCODE',
+                             'modERN',
+                             'GGR'))
+def audit_file_processed_empty_derived_from(value, system):
+    if value['output_category'] in ['raw data',
+                                    'reference']:
+        return
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+            return
+    if 'derived_from' not in value or \
+       'derived_from' in value and len(value['derived_from']) == 0:
+            detail = 'The processed file {} '.format(value['@id']) + \
+                     'has no derived_from information supplied.'
+            yield AuditFailure('missing derived_from',
+                               detail, level='DCC_ACTION')
+            return
+
+
+@audit_checker('File', frame=['derived_from'])
 def audit_file_derived_from_revoked(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
             return
@@ -177,6 +219,11 @@ def audit_file_read_length(value, system):
         yield AuditFailure('missing read_length', detail, level='DCC_ACTION')
         return
 
+    if value['read_length'] == 0:
+        detail = 'Reads file {} has read_length of 0'.format(value['@id'])
+        yield AuditFailure('missing read_length', detail, level='DCC_ACTION')
+        return
+
 
 def check_presence(file_to_check, files_list):
     for f in files_list:
@@ -188,10 +235,12 @@ def check_presence(file_to_check, files_list):
 @audit_checker('file',
                frame=['dataset',
                       'dataset.target',
+                      'platform',
                       'controlled_by',
                       'controlled_by.replicate',
                       'controlled_by.dataset',
-                      'controlled_by.paired_with'],
+                      'controlled_by.paired_with',
+                      'controlled_by.platform'],
                condition=rfa('ENCODE2',
                              'ENCODE2-Mouse',
                              'ENCODE',
@@ -202,7 +251,7 @@ def audit_file_controlled_by(value, system):
     A fastq in a ChIP-seq experiment should have a controlled_by
     '''
 
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
+    if value['status'] in ['deleted', 'replaced', 'revoked', 'archived']:
         return
 
     if value['dataset'].get('assay_term_name') not in ['ChIP-seq',
@@ -213,6 +262,9 @@ def audit_file_controlled_by(value, system):
 
         return
 
+    if value['file_format'] not in ['fastq']:
+        return
+
     if 'target' in value['dataset'] and \
        'control' in value['dataset']['target'].get('investigated_as', []):
         return
@@ -220,7 +272,7 @@ def audit_file_controlled_by(value, system):
     if 'controlled_by' not in value:
         value['controlled_by'] = []
 
-    if (value['controlled_by'] == []) and (value['file_format'] in ['fastq']):
+    if value['controlled_by'] == []:
         detail = 'Fastq file {} from {} requires controlled_by'.format(
             value['@id'],
             value['dataset']['assay_term_name']
@@ -232,7 +284,7 @@ def audit_file_controlled_by(value, system):
                                                    'RAMPAGE']:
         bio_rep_numbers = set()
         pe_files = []
-        if (value['file_format'] in ['fastq']) and len(value['controlled_by']) > 0:
+        if len(value['controlled_by']) > 0:
             for control_file in value['controlled_by']:
                 if 'replicate' in control_file:
                     bio_rep_numbers.add(control_file['replicate']['biological_replicate_number'])
@@ -267,12 +319,14 @@ def audit_file_controlled_by(value, system):
     biosample = value['dataset'].get('biosample_term_id')
     run_type = value.get('run_type', None)
     read_length = value.get('read_length', None)
+    platform = value.get('platform', None)
 
     if value['controlled_by']:
         for ff in value['controlled_by']:
             control_bs = ff['dataset'].get('biosample_term_id')
             control_run = ff.get('run_type', None)
             control_length = ff.get('read_length', None)
+            control_platform = ff.get('platform', None)
 
             if control_bs != biosample:
                 detail = 'File {} has a controlled_by file {} with conflicting biosample {}'.format(
@@ -300,6 +354,19 @@ def audit_file_controlled_by(value, system):
                     )
                 yield AuditFailure('mismatched control', detail, level='ERROR')
                 return
+
+            if control_platform is not None and platform is not None:
+                platform_id = platform.get('term_id')
+                control_platform_id = control_platform.get('term_id')
+                if control_platform_id != platform_id:
+                    detail = 'File {} is on {} but its control file {} is on {}'.format(
+                        value['@id'],
+                        value['platform'].get('term_name'),
+                        ff['@id'],
+                        control_platform.get('term_name')
+                    )
+                    yield AuditFailure('mismatched control platform',
+                                       detail, level='WARNING')
 
             if (run_type is None) or (control_run is None):
                 continue
@@ -330,6 +397,7 @@ def audit_file_controlled_by(value, system):
                 yield AuditFailure('mismatched control read length',
                                    detail, level='WARNING')
                 return
+
 
 @audit_checker('file', frame='object', condition=rfa('modERN', 'GGR'))
 def audit_file_flowcells(value, system):
@@ -366,7 +434,7 @@ def audit_run_type(value, system):
         detail = 'File {} has file_format {}. It requires a value for run_type'.format(
             value['@id'],
             value['file_format'])
-        raise AuditFailure('missing run_type', detail, level='NOT_COMPLIANT')
+        raise AuditFailure('missing run_type', detail, level='WARNING')
 
 
 @audit_checker('file', frame=['paired_with'],)
@@ -523,11 +591,6 @@ def audit_file_paired_ended_run_type(value, system):
                      'but is missing its paired_end value'
             raise AuditFailure('missing paired_end', detail, level='ERROR')
 
-        if (value['paired_end'] == 1) and 'paired_with' not in value:
-            detail = 'File {} has a paired-ended '.format(value['@id']) + \
-                     'run_type but is missing a paired_end=2 mate'
-            raise AuditFailure('missing mate pair', detail, level='ERROR')
-
 
 def get_bam_read_depth(bam_file, h3k9_flag):
     if bam_file['status'] in ['deleted', 'replaced', 'revoked']:
@@ -637,7 +700,10 @@ def get_control_bam(experiment_bam, pipeline_name):
         for control_file in control_files:
             if control_file['status'] in ['deleted', 'replaced', 'revoked']:
                 continue
-            if control_file['file_format'] == 'bam':
+            if control_file['file_format'] == 'bam' and \
+               control_file['output_type'] == 'alignments' and \
+               'assembly' in control_file and 'assembly' in experiment_bam and \
+               control_file['assembly'] == experiment_bam['assembly']:
                 #  we have BAM file, now we have to make sure it was created by pipeline
                 #  with similar pipeline_name
 
@@ -790,7 +856,7 @@ def audit_file_read_depth(value, system):
     if paring_status_detected is False:
         detail = 'ENCODE Processed alignment file {} has no run_type in derived_from files'.format(
             value['@id'])
-        yield AuditFailure('missing run_type in derived_from files', detail, level='DCC_ACTION')
+        yield AuditFailure('missing run_type', detail, level='WARNING')
 
     special_assay_name = 'empty'
     target_name = 'empty'

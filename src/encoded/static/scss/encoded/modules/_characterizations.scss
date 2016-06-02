@@ -695,17 +695,8 @@ $dl-bar-height: 30px;
     right: 0;
     width: $dl-bar-height;
     height: $dl-bar-height;
-    background-color: #fff;
-    border-left: 1px solid #e8e8e8;
-
-    &:hover {
-        background-color: #f0f0f0;
-    }
-
-    &.open {
-        transition: 0.1s linear;
-        background-color: #c0c0c0;
-    }
+    background-color: #e8e8e8;
+    border-left: 1px solid #e0e0e0;
 }
 
 // Icon within .detail-switch to show the current state of the switch
@@ -724,6 +715,16 @@ $dl-bar-height: 30px;
     }
 }
 
+.collapsing-doc {
+    position: relative;
+    display: block;
+    padding: 5px;
+
+    &:hover {
+        background-color: darken(#d8e0e8, 10%);
+        text-decoration: none;
+    }
+}
 
 .key-value-trigger {
     display: block;
