@@ -248,6 +248,8 @@ def check_file(config, job):
                     'set -o pipefail; md5sum {};'.format(unzipped_original_bed_path),                    
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
                 print ('OUTPUT = ' + str(output))
+                print (output[:32])
+                print (output[:32].decode(errors='replace'))
                 print ('___________end__________')
                 #temp_path = strip_comments(local_path)
                 #check_format(config['encValData'], job, temp_path)
@@ -278,6 +280,8 @@ def check_file(config, job):
                 #out.write("PROCESSING: %d files in query: %s\n" % (len(r.json()['@graph']), search_query))
                 #####
                 print ('CORRECT output :' + str(output))
+                print (output[:32])
+                print (output[:32].decode(errors='replace'))
                 result['content_md5sum'] = output[:32].decode(errors='replace')
                 try:
                     int(result['content_md5sum'], 16)
