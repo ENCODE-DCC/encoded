@@ -282,11 +282,11 @@ def check_file(config, session, url, job):
                     int(result['content_md5sum'], 16)
                 except ValueError:
                     errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
-                print '****************************'
+                print ('****************************')
                 query = '/search/?type=File&content_md5sum=f00ff5ebe18635c9c3a4' #result['content_md5sum']
                 r = session.get(urljoin(url, query))
                 print (r)
-                print '****************************'
+                print ('****************************')
                 query = '/search/?type=File&content_md5sum=17ecee5f3c62a91d0c2ceed77353aa93' #result['content_md5sum']
                 r = session.get(urljoin(url, query))
                 print (r)
