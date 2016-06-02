@@ -240,6 +240,12 @@ def check_file(config, job):
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
 
                 print ('CREATED FILE ' + unzipped_original_bed_path)
+                unzipped_modified_bed_path = 'modified.bed'
+                subprocess.check_output(
+                    'set -o pipefail; grep -v \'^#\' {} > {};'.format(unzipped_original_bed_path,
+                                                                      unzipped_modified_bed_path),
+                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                print ('CREATED FILE ' + unzipped_modified_bed_path)
                 output = subprocess.check_output(
                     'set -o pipefail; md5sum {};'.format(unzipped_original_bed_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
@@ -248,13 +254,6 @@ def check_file(config, job):
                     int(result['content_md5sum'], 16)
                 except ValueError:
                     errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
-
-                unzipped_modified_bed_path = 'modified.bed'
-                output = subprocess.check_output(
-                    'set -o pipefail; grep -v \'^#\' {} > {};'.format(unzipped_original_bed_path,
-                                                                      unzipped_modified_bed_path),
-                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
-                print ('CREATED FILE ' + unzipped_modified_bed_path)
                 #os.remove(unzipped_original_bed_path)
                 print ('REMOVED FILE ' + unzipped_original_bed_path)
             except subprocess.CalledProcessError as e:
@@ -290,10 +289,12 @@ def check_file(config, job):
     if not errors:
         if item['file_format'] == 'bed':
             check_format(config['encValData'], job, unzipped_modified_bed_path)
-            #os.remove(unzipped_modified_bed_path)
-            print ('REMOVED FILE ' + unzipped_modified_bed_path)
         else:
             check_format(config['encValData'], job, local_path)
+
+    if item['file_format'] == 'bed':
+        #os.remove(unzipped_modified_bed_path)
+        print ('REMOVED FILE ' + unzipped_modified_bed_path)
 
     if item['status'] != 'uploading':
         errors['status_check'] = \
