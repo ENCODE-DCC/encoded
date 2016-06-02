@@ -234,10 +234,9 @@ def check_file(config, job):
             try:
                 unzipped_original_bed_path = '/temp/original.bed.gz'
                 output = subprocess.check_output(
-                    'set -o pipefail; gunzip -k %s > %s; ' +
-                    'md5sum %s' % quote(local_path,
-                                        unzipped_original_bed_path,
-                                        unzipped_original_bed_path),
+                    'set -o pipefail; gunzip -k {} > {}; '.format(local_path,
+                                                                  unzipped_original_bed_path) +
+                    'md5sum {}'.format(unzipped_original_bed_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
                 print ('CREATED FILE ' + unzipped_original_bed_path)
                 print (output)
