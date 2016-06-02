@@ -264,7 +264,7 @@ def check_file(config, session, url, job):
                 if len(r_graph) > 0:
                     errors['content_md5sum'] = \
                         'checked %s is conflicting with content_md5sum of %s' % (
-                            result['accession'],
+                            result['content_md5sum'],
                             r_graph[0]['accession'])
         else:
             # May want to replace this with something like:
@@ -288,7 +288,7 @@ def check_file(config, session, url, job):
                 if len(r_graph) > 0:
                     errors['content_md5sum'] = \
                         'checked %s is conflicting with content_md5sum of %s' % (
-                            result['accession'],
+                            result['content_md5sum'],
                             r_graph[0]['accession'])
     if not errors:
         if item['file_format'] == 'bed':
