@@ -232,11 +232,13 @@ def check_file(config, job):
 
         if item['file_format'] == 'bed':
             try:
-                unzipped_original_bed_path = '/temp/original.bed.gz'
+                unzipped_original_bed_path = 'original.bed.gz'
+                print (unzipped_original_bed_path)
                 output = subprocess.check_output(
-                    'set -o pipefail; gunzip -k {} > {}; '.format(local_path,
-                                                                  unzipped_original_bed_path) +
-                    'md5sum {}'.format(unzipped_original_bed_path),
+                    'set -o pipefail; gunzip -k {} {}; md5sum {}'.format(local_path,
+                                                                           unzipped_original_bed_path,
+                                                                           unzipped_original_bed_path),
+                    
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
                 print ('CREATED FILE ' + unzipped_original_bed_path)
                 print (output)
