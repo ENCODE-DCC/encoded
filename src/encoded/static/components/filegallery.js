@@ -118,6 +118,12 @@ var FileTable = module.exports.FileTable = React.createClass({
 
                 // Don't know how to sort
                 return 0;
+            },
+            getCellClasses: item => {
+                if (item.biological_replicates && item.biological_replicates.length === 1) {
+                    return 'cell-paired-group-' + item.biological_replicates[0];
+                }
+                return '';
             }
         },
         'title': {

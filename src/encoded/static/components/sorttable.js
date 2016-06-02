@@ -56,6 +56,10 @@
 //     hide -- (function): In some cases a column might need to be hidden. This function, if given, returns
 //                         TRUE to hide this column based on some criteria. This function gets passed the same
 //                         list, columns, and meta that <SortTable> itself gets.
+//
+//     getCellClasses -- (function): Returns a space-separated string of CSS classes to be used on the <td>
+//                       that contains the cell. It receives one parameter that's the single object of `list`
+//                       being displayed in a cell.
 // }
 
 var React = require('react');
@@ -230,7 +234,7 @@ var SortTable = module.exports.SortTable = React.createClass({
         // Now display the table, but only if we were passed a non-empty list
         if (list && list.length) {
             return (
-                <table className="table table-striped table-sortable">
+                <table className="table table-sortable">
 
                     <thead>
                         {this.props.title ? <tr className="table-section" key="title"><th colSpan={colCount}>{this.props.title}</th></tr> : null}
@@ -270,8 +274,16 @@ var SortTable = module.exports.SortTable = React.createClass({
                                     <tr key={i}>
                                         {columnIds.map(columnId => {
                                             if (!hiddenColumns[columnId]) {
+                                                var cellClasses;
+
+                                                // Get the cell CSS classes if specified
+                                                if (columns[columnId].getCellClasses) {
+                                                    cellClasses = columns[columnId].getCellClasses(item);
+                                                }
+
+                                                // Handle custom display function if specified
                                                 if (columns[columnId].display) {
-                                                    return <td key={columnId}>{columns[columnId].display(item)}</td>;
+                                                    return <td className={cellClasses} key={columnId}>{columns[columnId].display(item)}</td>;
                                                 }
 
                                                 // No custom display function; just display the standard way

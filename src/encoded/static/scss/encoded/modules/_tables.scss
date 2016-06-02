@@ -47,18 +47,18 @@ thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td
     }
 }
 
-.table-striped {
+.table-sortable {
     > tbody {
-        > tr:nth-child(odd) {
+        > tr {
             > td {
                 background-color: #fff;
-                border-top: none;
+                border-top: 1px solid #e8e8e8;
             }
-        }
-        > tr:nth-child(even) {
-            > td {
-                background-color: #f9f9f9;
-                border-top: none;
+
+            &:first-child {
+                > td {
+                    border-top: none;
+                }
             }
         }
     }
@@ -162,6 +162,7 @@ form.table-filter {
                 vertical-align: middle;
                 border-left: 1px solid #e0e0e0 !important;
                 border-bottom: 1px solid #e0e0e0 !important;
+                padding-right: 20px !important;
 
                 &:first-child {
                     border-left: none !important;
@@ -229,5 +230,23 @@ form.table-filter {
 
     &.hiding {
         background-image: inline-image('../img/hiding-dots.svg');
+    }
+}
+
+
+// Raw file table paired group cell colors
+$group-colors:
+    #50ceff,
+    #8dd16b,
+    #fc7257,
+    #ffb75f,
+    #9a9791,
+    #8088d2,
+    #8189d3,
+    #66d5ff;
+
+@for $i from 1 through length($group-colors) {
+    .cell-paired-group-#{$i} {
+        background-color: nth($group-colors, $i) !important;
     }
 }
