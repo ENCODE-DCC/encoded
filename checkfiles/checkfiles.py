@@ -235,10 +235,10 @@ def check_file(config, job):
                 unzipped_original_bed_path = 'original.bed'
                 print (unzipped_original_bed_path)
                 output = subprocess.check_output(
-                    'set -o pipefail; gunzip -k {} {};'.format(local_path,
+                    'set -o pipefail; gunzip --stdout {} > {};'.format(local_path,
                                                                unzipped_original_bed_path),                    
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
-                
+
                 print ('CREATED FILE ' + unzipped_original_bed_path)
                 print (output)
                 print ('___________end__________')
