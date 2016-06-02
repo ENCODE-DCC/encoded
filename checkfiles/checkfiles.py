@@ -174,7 +174,7 @@ def check_format(encValData, job, path):
         result['validateFiles'] = output.decode(errors='replace').rstrip('\n')
 
 
-def check_file(config, job):
+def check_file(config, session, url, job):
     item = job['item']
     errors = job['errors']
     result = job['result'] = {}
@@ -224,12 +224,6 @@ def check_file(config, job):
     elif not is_gzipped:
         errors['gzip'] = 'Expected gzipped file'
     else:
-        # May want to replace this with something like:
-        # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
-        # or http://stackoverflow.com/a/15343686/199100
-
-        # downloading bed files to strip from # lines (grep -v '^#' filename)
-
         if item['file_format'] == 'bed':
             try:
                 unzipped_original_bed_path = 'original.bed'
@@ -254,7 +248,7 @@ def check_file(config, job):
                     int(result['content_md5sum'], 16)
                 except ValueError:
                     errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
-                #os.remove(unzipped_original_bed_path)
+                os.remove(unzipped_original_bed_path)
                 print ('REMOVED FILE ' + unzipped_original_bed_path)
             except subprocess.CalledProcessError as e:
                 errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
@@ -265,6 +259,9 @@ def check_file(config, job):
                 except ValueError:
                     errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
         else:
+            # May want to replace this with something like:
+            # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
+            # or http://stackoverflow.com/a/15343686/199100
             try:
                 output = subprocess.check_output(
                     'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
@@ -285,6 +282,22 @@ def check_file(config, job):
                     int(result['content_md5sum'], 16)
                 except ValueError:
                     errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
+                print '****************************'
+                query = '/search/?type=File&content_md5sum=f00ff5ebe18635c9c3a4' #result['content_md5sum']
+                r = session.get(urljoin(url, query))
+                print (r)
+                print '****************************'
+                query = '/search/?type=File&content_md5sum=17ecee5f3c62a91d0c2ceed77353aa93' #result['content_md5sum']
+                r = session.get(urljoin(url, query))
+                print (r)
+                #r.json()['@graph']['accession']   
+                
+                #if result['content_md5sum'] is present on the portal:
+                #    errors['content_md5sum'] = \
+                #'checked %s is conflicting with %s' % (result['content_md5sum'], item['md5sum'])
+                
+
+
 
     if not errors:
         if item['file_format'] == 'bed':
@@ -293,7 +306,7 @@ def check_file(config, job):
             check_format(config['encValData'], job, local_path)
 
     if item['file_format'] == 'bed':
-        #os.remove(unzipped_modified_bed_path)
+        os.remove(unzipped_modified_bed_path)
         print ('REMOVED FILE ' + unzipped_modified_bed_path)
 
     if item['status'] != 'uploading':
@@ -412,7 +425,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
                              'Upload Expiration'])
         out.write(headers + '\n')
         err.write(headers + '\n')
-    for job in imap(functools.partial(check_file, config), jobs):
+    for job in imap(functools.partial(check_file, config, session, url), jobs):
         if not dry_run:
             patch_file(session, url, job)
 
