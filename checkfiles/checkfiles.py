@@ -227,35 +227,57 @@ def check_file(config, job):
         # May want to replace this with something like:
         # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
         # or http://stackoverflow.com/a/15343686/199100
-        try:
-            output = subprocess.check_output(
-                'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
-                shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
-        except subprocess.CalledProcessError as e:
-            errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
-        else:
-            #####
-            #3 >>>> call GET to compare with existing content_md5sum
-            #https://www.encodeproject.org/search/?type=File&content_md5sum=f00ff5ebe18635c9c3a40cde5c0d96be
-            #r = session.get(
-            #urljoin(url, '/search/?field=@id&limit=all&type=File&' + search_query))
-            #r.raise_for_status()
-            #out.write("PROCESSING: %d files in query: %s\n" % (len(r.json()['@graph']), search_query))
-            #####
-            result['content_md5sum'] = output[:32].decode(errors='replace')
+
+        # downloading bed files to strip from # lines (grep -v '^#' filename)
+
+        if item['file_format'] == 'bed':
             try:
-                int(result['content_md5sum'], 16)
-            except ValueError:
-                errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
+                unzipped_original_bed_path = '/temp/original.bed.gz'
+                output = subprocess.check_output(
+                    'set -o pipefail; gunzip -k %s > %s; ' +
+                    'md5sum %s' % quote(local_path,
+                                        unzipped_original_bed_path,
+                                        unzipped_original_bed_path),
+                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                print ('CREATED FILE ' + unzipped_original_bed_path)
+                print (output)
+                print ('___________end__________')
+                #temp_path = strip_comments(local_path)
+                #check_format(config['encValData'], job, temp_path)
+                #os.remove(temp_path)
+                #print ("REMOVED FILE: " + temp_path)
+            except subprocess.CalledProcessError as e:
+                errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
+            else:
+                result['content_md5sum'] = output[:32].decode(errors='replace')
+                try:
+                    int(result['content_md5sum'], 16)
+                except ValueError:
+                    errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
+        else:
+            try:
+                output = subprocess.check_output(
+                    'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
+                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+            except subprocess.CalledProcessError as e:
+                errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
+            else:
+                #####
+                #3 >>>> call GET to compare with existing content_md5sum
+                #https://www.encodeproject.org/search/?type=File&content_md5sum=f00ff5ebe18635c9c3a40cde5c0d96be
+                #r = session.get(
+                #urljoin(url, '/search/?field=@id&limit=all&type=File&' + search_query))
+                #r.raise_for_status()
+                #out.write("PROCESSING: %d files in query: %s\n" % (len(r.json()['@graph']), search_query))
+                #####
+                result['content_md5sum'] = output[:32].decode(errors='replace')
+                try:
+                    int(result['content_md5sum'], 16)
+                except ValueError:
+                    errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
 
     if not errors:
-        if item['file_format'] == 'bed':
-            temp_path = strip_comments(local_path, job)
-            check_format(config['encValData'], job, temp_path)
-            os.remove(temp_path)
-            print ("REMOVED FILE: " + temp_path)
-        else:
-            check_format(config['encValData'], job, local_path)
+        check_format(config['encValData'], job, local_path)
 
     if item['status'] != 'uploading':
         errors['status_check'] = \
