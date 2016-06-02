@@ -250,7 +250,7 @@ def check_file(config, job):
 
     if not errors:
         if item['file_format'] == 'bed':
-            temp_path = strip_comments(local_path)
+            temp_path = strip_comments(local_path, job)
             check_format(config['encValData'], job, temp_path)
             os.remove(temp_path)
             print ("REMOVED FILE: " + temp_path)
