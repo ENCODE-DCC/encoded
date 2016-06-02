@@ -99,7 +99,26 @@ var FileTable = module.exports.FileTable = React.createClass({
         },
         'paired_end': {
             title: 'Read',
-            display: item => <span>{item.paired_end ? <span>R{item.paired_end}</span> : null}</span>
+            display: item => <span>{item.paired_end ? <span>R{item.paired_end}</span> : null}</span>,
+            objSorter: (a, b) => {
+                // For raw files, they can only belong to one biological replicate, so don't sort
+                // if either has 0 or >1 biological replicates
+                if ((a.biological_replicates && a.biological_replicates.length === 1) && (b.biological_replicates && b.biological_replicates.length === 1)) {
+                    // Get the single biological replicate from each comparitor
+                    var abr = a.biological_replicates[0];
+                    var bbr = b.biological_replicates[0];
+                    if (abr === bbr && a.paired_end && b.paired_end) {
+                        // Biological replicates are the same, so sort them by paired_end
+                        return a.paired_end - b.paired_end;
+                    }
+
+                    // Biological replicates are different, so sort them by biological replicate
+                    return abr - bbr;
+                }
+
+                // Don't know how to sort
+                return 0;
+            }
         },
         'title': {
             title: 'Lab',
