@@ -120,7 +120,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                 return 0;
             },
             getCellClasses: item => {
-                if (item.biological_replicates && item.biological_replicates.length === 1) {
+                if (item.biological_replicates && item.biological_replicates.length === 1 && item.paired_end) {
                     return 'cell-paired-group-' + item.biological_replicates[0];
                 }
                 return '';
