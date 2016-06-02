@@ -258,6 +258,14 @@ def check_file(config, session, url, job):
                     int(result['content_md5sum'], 16)
                 except ValueError:
                     errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
+                query = '/search/?type=File&content_md5sum=' + result['content_md5sum']
+                r = session.get(urljoin(url, query))
+                r_graph = r.json().get('@graph')
+                if len(r_graph) > 0:
+                    errors['content_md5sum'] = \
+                        'checked %s is conflicting with content_md5sum of %s' % (
+                            result['accession'],
+                            r_graph[0]['accession'])
         else:
             # May want to replace this with something like:
             # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
@@ -269,36 +277,19 @@ def check_file(config, session, url, job):
             except subprocess.CalledProcessError as e:
                 errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
             else:
-                #####
-                #3 >>>> call GET to compare with existing content_md5sum
-                #https://www.encodeproject.org/search/?type=File&content_md5sum=f00ff5ebe18635c9c3a40cde5c0d96be
-                #r = session.get(
-                #urljoin(url, '/search/?field=@id&limit=all&type=File&' + search_query))
-                #r.raise_for_status()
-                #out.write("PROCESSING: %d files in query: %s\n" % (len(r.json()['@graph']), search_query))
-                #####
                 result['content_md5sum'] = output[:32].decode(errors='replace')
                 try:
                     int(result['content_md5sum'], 16)
                 except ValueError:
                     errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
-                print ('****************************')
-                query = '/search/?type=File&content_md5sum=f00ff5ebe18635c9c3a4' #result['content_md5sum']
+                query = '/search/?type=File&content_md5sum=' + result['content_md5sum']
                 r = session.get(urljoin(url, query))
-                print (r.json())
-                print ('****************************')
-                query = '/search/?type=File&content_md5sum=17ecee5f3c62a91d0c2ceed77353aa93' #result['content_md5sum']
-                r = session.get(urljoin(url, query))
-                print (r.json())
-                #r.json()['@graph']['accession']   
-                
-                #if result['content_md5sum'] is present on the portal:
-                #    errors['content_md5sum'] = \
-                #'checked %s is conflicting with %s' % (result['content_md5sum'], item['md5sum'])
-                
-
-
-
+                r_graph = r.json().get('@graph')
+                if len(r_graph) > 0:
+                    errors['content_md5sum'] = \
+                        'checked %s is conflicting with content_md5sum of %s' % (
+                            result['accession'],
+                            r_graph[0]['accession'])
     if not errors:
         if item['file_format'] == 'bed':
             check_format(config['encValData'], job, unzipped_modified_bed_path)
