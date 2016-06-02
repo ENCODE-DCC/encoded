@@ -236,25 +236,27 @@ def check_file(config, job):
                 print (unzipped_original_bed_path)
                 output = subprocess.check_output(
                     'set -o pipefail; gunzip --stdout {} > {};'.format(local_path,
-                                                               unzipped_original_bed_path),                    
+                                                                       unzipped_original_bed_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
 
                 print ('CREATED FILE ' + unzipped_original_bed_path)
-                print ('OUTPUT = ' + str(output))
-                print ('___________end__________')
-
-
                 output = subprocess.check_output(
-                    'set -o pipefail; md5sum {};'.format(unzipped_original_bed_path),                    
+                    'set -o pipefail; md5sum {};'.format(unzipped_original_bed_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
-                print ('OUTPUT = ' + str(output))
-                print (output[:32])
-                print (output[:32].decode(errors='replace'))
-                print ('___________end__________')
-                #temp_path = strip_comments(local_path)
-                #check_format(config['encValData'], job, temp_path)
-                #os.remove(temp_path)
-                #print ("REMOVED FILE: " + temp_path)
+                result['content_md5sum'] = output[:32].decode(errors='replace')
+                try:
+                    int(result['content_md5sum'], 16)
+                except ValueError:
+                    errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
+
+                unzipped_modified_bed_path = 'modified.bed'
+                output = subprocess.check_output(
+                    'set -o pipefail; grep -v \'^#\' {} > {};'.format(unzipped_original_bed_path,
+                                                                      unzipped_modified_bed_path),
+                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                print ('CREATED FILE ' + unzipped_modified_bed_path)
+                #os.remove(unzipped_original_bed_path)
+                print ('REMOVED FILE ' + unzipped_original_bed_path)
             except subprocess.CalledProcessError as e:
                 errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
             else:
@@ -279,9 +281,6 @@ def check_file(config, job):
                 #r.raise_for_status()
                 #out.write("PROCESSING: %d files in query: %s\n" % (len(r.json()['@graph']), search_query))
                 #####
-                print ('CORRECT output :' + str(output))
-                print (output[:32])
-                print (output[:32].decode(errors='replace'))
                 result['content_md5sum'] = output[:32].decode(errors='replace')
                 try:
                     int(result['content_md5sum'], 16)
@@ -289,7 +288,12 @@ def check_file(config, job):
                     errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
 
     if not errors:
-        check_format(config['encValData'], job, local_path)
+        if item['file_format'] == 'bed':
+            check_format(config['encValData'], job, unzipped_modified_bed_path)
+            #os.remove(unzipped_modified_bed_path)
+            print ('REMOVED FILE ' + unzipped_modified_bed_path)
+        else:
+            check_format(config['encValData'], job, local_path)
 
     if item['status'] != 'uploading':
         errors['status_check'] = \
@@ -297,56 +301,6 @@ def check_file(config, job):
 
     return job
 
-
-def strip_comments(local_path, job):
-    errors = job['errors']
-
-    path, filename = os.path.split(local_path)
-    filename = os.path.splitext(filename)[0]
-
-    unzipped_bed_filename = '%s' % filename
-    unzipped_bed_path = os.path.join(path, unzipped_bed_filename)
-
-    stripped_bed_filename = 'modified.%s' % filename
-    stripped_bed_path = os.path.join(path, stripped_bed_filename)
-
-    temp_gzipped_filename = 'modified.%s.gz' % filename
-    temp_gzipped_path = os.path.join(path, temp_gzipped_filename)
-
-    stripped_bed_file = open(stripped_bed_path, 'w')
-    print ("CREATED FILE: " + stripped_bed_path)
-    try:
-        try:
-            subprocess.check_output(
-                'gunzip --stdout %s > %s' % quote(local_path, unzipped_bed_path),
-                shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
-            print ("CREATED FILE: " + unzipped_bed_path)
-        except subprocess.CalledProcessError as e:
-            errors['gzip'] = e.output.decode(errors='replace').rstrip('\n')
-
-        unzipped_bed_file = open(unzipped_bed_path, 'r')
-        try:
-            for l in unzipped_bed_file:
-                if l.startswith('#') is False:
-                    stripped_bed_file.write(l)
-        finally:
-            unzipped_bed_file.close()
-            os.remove(unzipped_bed_path)
-            print ("REMOVED FILE: " + unzipped_bed_path)
-    finally:
-        stripped_bed_file.close()
-
-    try:
-        subprocess.check_output(
-            'gzip --stdout %s > %s' % quote(stripped_bed_path, temp_gzipped_path),
-            shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
-        print ("CREATED FILE: " + temp_gzipped_path)
-    except subprocess.CalledProcessError as e:
-        errors['gzip'] = e.output.decode(errors='replace').rstrip('\n')
-
-    os.remove(stripped_bed_path)
-    print ("REMOVED FILE: " + stripped_bed_path)
-    return temp_gzipped_path
 
 def fetch_files(session, url, search_query, out, include_unexpired_upload=False):
     r = session.get(
