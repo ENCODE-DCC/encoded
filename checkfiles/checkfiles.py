@@ -258,16 +258,6 @@ def check_file(config, session, url, job):
                     int(result['content_md5sum'], 16)
                 except ValueError:
                     errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
-                query = '/search/?type=File&content_md5sum=' + result['content_md5sum']
-                r = session.get(urljoin(url, query))
-                r_graph = r.json().get('@graph')
-                if len(r_graph) > 0:
-                    conflicts = []
-                    for entry in r_graph:
-                        conflicts.append('checked %s is conflicting with content_md5sum of %s' % (
-                                         result['content_md5sum'],
-                                         entry['accession']))
-                    errors['content_md5sum'] = str(conflicts)
         else:
             # May want to replace this with something like:
             # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
@@ -284,16 +274,17 @@ def check_file(config, session, url, job):
                     int(result['content_md5sum'], 16)
                 except ValueError:
                     errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
-                query = '/search/?type=File&content_md5sum=' + result['content_md5sum']
-                r = session.get(urljoin(url, query))
-                r_graph = r.json().get('@graph')
-                if len(r_graph) > 0:
-                    conflicts = []
-                    for entry in r_graph:
-                        conflicts.append('checked %s is conflicting with content_md5sum of %s' % (
-                                         result['content_md5sum'],
-                                         entry['accession']))
-                    errors['content_md5sum'] = str(conflicts)
+
+        query = '/search/?type=File&content_md5sum=' + result['content_md5sum']
+        r = session.get(urljoin(url, query))
+        r_graph = r.json().get('@graph')
+        if len(r_graph) > 0:
+            conflicts = []
+            for entry in r_graph:
+                conflicts.append('checked %s is conflicting with content_md5sum of %s' % (
+                                 result['content_md5sum'],
+                                 entry['accession']))
+            errors['content_md5sum'] = str(conflicts)
     if not errors:
         if item['file_format'] == 'bed':
             check_format(config['encValData'], job, unzipped_modified_bed_path)
