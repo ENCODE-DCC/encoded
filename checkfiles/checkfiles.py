@@ -227,19 +227,16 @@ def check_file(config, session, url, job):
         if item['file_format'] == 'bed':
             try:
                 unzipped_original_bed_path = 'original.bed'
-                print (unzipped_original_bed_path)
                 output = subprocess.check_output(
                     'set -o pipefail; gunzip --stdout {} > {};'.format(local_path,
                                                                        unzipped_original_bed_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
 
-                print ('CREATED FILE ' + unzipped_original_bed_path)
                 unzipped_modified_bed_path = 'modified.bed'
                 subprocess.check_output(
                     'set -o pipefail; grep -v \'^#\' {} > {};'.format(unzipped_original_bed_path,
                                                                       unzipped_modified_bed_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
-                print ('CREATED FILE ' + unzipped_modified_bed_path)
                 output = subprocess.check_output(
                     'set -o pipefail; md5sum {};'.format(unzipped_original_bed_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
@@ -249,7 +246,6 @@ def check_file(config, session, url, job):
                 except ValueError:
                     errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
                 os.remove(unzipped_original_bed_path)
-                print ('REMOVED FILE ' + unzipped_original_bed_path)
             except subprocess.CalledProcessError as e:
                 errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
             else:
@@ -293,7 +289,6 @@ def check_file(config, session, url, job):
 
     if item['file_format'] == 'bed':
         os.remove(unzipped_modified_bed_path)
-        print ('REMOVED FILE ' + unzipped_modified_bed_path)
 
     if item['status'] != 'uploading':
         errors['status_check'] = \
