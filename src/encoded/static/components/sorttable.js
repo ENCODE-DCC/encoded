@@ -14,6 +14,9 @@
 // The columns object (required) describes the columns of the table, and optionally how they get displayed,
 // sorted, and hidden.
 //
+// To provide a CSS class for each row, pass a rowGetClasses function to <SortTable>. It takes a
+// 
+//
 // 'columns' has one sub-object per table column. The key for each sub-object must be unique as the code uses
 // them to loop through the columns, though they never get displayed. Each sub-object has these properties:
 // key: {
@@ -145,6 +148,7 @@ var SortTable = module.exports.SortTable = React.createClass({
         list: React.PropTypes.array, // Array of objects to display in the table
         columns: React.PropTypes.object.isRequired, // Defines the columns of the table
         sortColumn: React.PropTypes.string, // ID of column to sort by default; first column if not given
+        rowGetClasses: React.PropTypes.func, // If provided, gets called to return CSS class string for each row
         footer: React.PropTypes.object, // Optional component to display in the footer
         collapsed: React.PropTypes.bool // T if only title bar should be displayed
     },
@@ -212,9 +216,7 @@ var SortTable = module.exports.SortTable = React.createClass({
     },
 
     render: function() {
-        var list = this.props.list;
-        var columns = this.props.columns;
-        var meta = this.props.meta;
+        var {list, columns, meta, rowGetClasses} = this.props;
         var columnIds = Object.keys(columns);
         var hiddenColumns = {};
         var hiddenCount = 0;
@@ -270,26 +272,23 @@ var SortTable = module.exports.SortTable = React.createClass({
                     {!this.props.collapsed ?
                         <tbody>
                             {list.sort(this.sortColumn).map((item, i) => {
+                                var rowClasses = rowGetClasses ? rowGetClasses(item) : '';
                                 return (
                                     <tr key={i}>
                                         {columnIds.map(columnId => {
                                             if (!hiddenColumns[columnId]) {
-                                                var cellClasses;
-
                                                 // Get the cell CSS classes if specified
-                                                if (columns[columnId].getCellClasses) {
-                                                    cellClasses = columns[columnId].getCellClasses(item);
-                                                }
+                                                var cellClasses = columns[columnId].getCellClasses ? columns[columnId].getCellClasses(item) : '';
 
                                                 // Handle custom display function if specified
                                                 if (columns[columnId].display) {
-                                                    return <td className={cellClasses} key={columnId}>{columns[columnId].display(item)}</td>;
+                                                    return <td className={rowClasses + ' ' + cellClasses} key={columnId}>{columns[columnId].display(item)}</td>;
                                                 }
 
                                                 // No custom display function; just display the standard way
                                                 var itemValue = columns[columnId].getValue ? columns[columnId].getValue(item) : item[columnId];
                                                 return (
-                                                    <td key={columnId}>{itemValue}</td>
+                                                    <td className={rowClasses + ' ' + cellClasses} key={columnId}>{itemValue}</td>
                                                 );
                                             }
 

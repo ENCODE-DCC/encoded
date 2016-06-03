@@ -246,7 +246,11 @@ $group-colors:
     #66d5ff;
 
 @for $i from 1 through length($group-colors) {
-    .cell-paired-group-#{$i} {
+    td.cell-paired-group-#{$i} {
         background-color: nth($group-colors, $i) !important;
+    }
+
+    .row-replicate-#{$i} {
+        background-color: lighten(nth($group-colors, $i), 30%) !important;
     }
 }

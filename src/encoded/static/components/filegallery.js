@@ -103,28 +103,14 @@ var FileTable = module.exports.FileTable = React.createClass({
             objSorter: (a, b) => {
                 // For raw files, they can only belong to one biological replicate, so don't sort
                 // if either has 0 or >1 biological replicates
-                if ((a.biological_replicates && a.biological_replicates.length === 1) && (b.biological_replicates && b.biological_replicates.length === 1)) {
-                    // Get the single biological replicate from each comparitor
-                    var abr = a.biological_replicates[0];
-                    var bbr = b.biological_replicates[0];
-                    if (abr === bbr && a.paired_end && b.paired_end) {
-                        // Biological replicates are the same, so sort them by paired_end
-                        return a.paired_end - b.paired_end;
-                    }
-
-                    // Biological replicates are different, so sort them by biological replicate
-                    return abr - bbr;
+                if (a.rawSortKey && b.rawSortKey) {
+                    return (a.rawSortKey < b.rawSortKey) ? -1 : (b.rawSortKey < a.rawSortKey ? 1 : 0);
                 }
 
                 // Don't know how to sort
                 return 0;
             },
-            getCellClasses: item => {
-                if (item.biological_replicates && item.biological_replicates.length === 1 && item.paired_end) {
-                    return 'cell-paired-group-' + item.biological_replicates[0];
-                }
-                return '';
-            }
+            getCellClasses: item => item.rawSortPair ? 'cell-paired-group-' + item.rawSortPair : ''
         },
         'title': {
             title: 'Lab',
@@ -309,6 +295,13 @@ var FileTable = module.exports.FileTable = React.createClass({
         this.setState({collapsed: collapsed});
     },
 
+    rowGetClasses: function(file) {
+        if (file.biological_replicates && file.biological_replicates.length === 1) {
+            return 'row-replicate-' + file.biological_replicates[0];
+        }
+        return '';
+    },
+
     render: function() {
         var {
             context,
@@ -360,11 +353,49 @@ var FileTable = module.exports.FileTable = React.createClass({
                 }
             });
 
+            // Raw file sorting needs assistance for grouping paired files.
+            if (files.raw) {
+                // Make object keyed by all files' @ids to make searching easy. Each key's value
+                // points to the corresponding file object.
+                var filesKeyed = {};
+                files.raw.forEach(file => {
+                    filesKeyed[file['@id']] = file;
+                });
+
+                // Generate the sorting keys for raw paired files.
+                files.raw.forEach((file, i) => {
+                    // Don't consider sorting unless the file has a single biological replicate and
+                    // is paired with another file, and the paired file is in our list too. The
+                    // file might already have a sorting key from a previous iteration, so skip
+                    // those too.
+                    if (!file.rawSortKey && file.biological_replicates && file.biological_replicates.length === 1 && file.paired_with && filesKeyed[file.paired_with]) {
+                        var pairedFile = filesKeyed[file.paired_with];
+
+                        // Convert biological replicate number to a 2-digit string with leading
+                        // zero if needed. Using leading zero because we're sorting, and want to
+                        // allow for up to 99 biological replicates.
+                        // http://stackoverflow.com/questions/2998784/how-to-output-integers-with-leading-zeros-in-javascript#answer-2998822
+                        var br = "0" + file.biological_replicates[0];
+                        br = br.substr(br.length - 2);
+
+                        // Add a property to the file so it can be sorted. The property comprises
+                        // the biological replicate concatenated with the earlier-sorting of the
+                        // two paired file @ids. Add the same key to the paired file, which
+                        // makes the shared @id effectively a pair identifier. Also add a number
+                        // to each file pair to help generate a CSS class for the pair.
+                        file.rawSortKey = br + (file['@id'] <= file.paired_with ? file['@id'] : file.paired_with);
+                        pairedFile.rawSortKey = file.rawSortKey + pairedFile.paired_end;
+                        file.rawSortKey = file.rawSortKey + file.paired_end;
+                        file.rawSortPair = pairedFile.rawSortPair = i + 1;
+                    }
+                });
+            }
+
             return (
                 <div>
                     {showFileCount ? <div className="file-gallery-counts">Displaying {filteredCount} of {unfilteredCount} files</div> : null}
                     <SortTablePanel header={filePanelHeader} noDefaultClasses={this.props.noDefaultClasses}>
-                        <SortTable title={<CollapsingTitle title="Raw data" collapsed={this.state.collapsed.raw} handleCollapse={this.handleCollapse.bind(null, 'raw')} />} collapsed={this.state.collapsed.raw}
+                        <SortTable title={<CollapsingTitle title="Raw data" collapsed={this.state.collapsed.raw} handleCollapse={this.handleCollapse.bind(null, 'raw')} />} collapsed={this.state.collapsed.raw} rowGetClasses={this.rowGetClasses}
                             list={files.raw} columns={this.rawTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
                         <SortTable title={<CollapsingTitle title="Raw data" collapsed={this.state.collapsed.rawArray} handleCollapse={this.handleCollapse.bind(null, 'rawArray')} />} collapsed={this.state.collapsed.rawArray}
                             list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
