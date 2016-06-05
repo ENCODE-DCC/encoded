@@ -38,7 +38,6 @@ var loaders = [
 		test: /\.js$/,
 		include: [
 			path.resolve(__dirname, 'src/encoded/static'),
-			path.resolve(__dirname, 'node_modules/react-forms'),
 		],
 		loader: 'babel',
 	},
