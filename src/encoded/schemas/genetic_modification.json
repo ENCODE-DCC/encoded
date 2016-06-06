@@ -1,0 +1,136 @@
+{
+    "title": "Genetic modification",
+    "description": "Schema for submitting an information on genetic modification.",
+    "id": "/profiles/genetic_modification.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["lab", "award", "source"],
+    "identifyingProperties": ["uuid","aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/product_id" },
+        { "$ref": "mixins.json#/source" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/documents" }
+    ],
+    "properties": {
+        "schema_version": {
+            "hidden comment": "Bump the default in the subclasses."
+        },
+        "url": {
+            "title": "URL",
+            "description": "An external resource with additional information about the modification.",
+            "type": "string",
+            "format": "uri"
+        },
+        "target": {
+            "title": "Target",
+            "description": "The name of the gene whose expression or product is modified by the genetic modification.",
+            "comment": "See target.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Target"
+        },
+        "modification_genome_coordinates": {
+            "title": "Modification genome coordinates",
+            "description": "Genomic coordinates of the modification.",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "assembly": {
+                    "title": "Mapping assembly",
+                    "description": "The genome assembly to which modification coordinates relate. e.g. GRCh38.",
+                    "type": "string",
+                    "enum": [
+                        "mm9",
+                        "mm10",
+                        "mm10-minimal",
+                        "hg19",
+                        "GRCh38",
+                        "GRCh38-minimal",
+                        "ce10",
+                        "ce11",
+                        "dm3",
+                        "dm6",
+                        "J02459.1"
+                        ]
+                },
+                "chromosome": {
+                    "title": "Chromosome",
+                    "description": "The number (or letter) designation for the target chromosome. e.g. 1, 2L, or X",
+                    "type": "string"
+                },
+                "start": {
+                    "title": "Start",
+                    "description": "The starting coordinate.",
+                    "type": "integer"
+                },
+                "end": {
+                    "title": "End",
+                    "description": "The ending coordinate (possibly equal to the starting coordinate for one base.)",
+                    "type": "integer"
+                }
+            }
+        },
+        "modifiction_description": {
+            "title": "Description",
+            "description": "A plain text description of the genetic modification.",
+            "type": "string",
+            "default": "",
+        },
+        "modification_type": {
+            "title": "Modification type",
+            "description": "The type of the genetic modification.",
+            "type": "string",
+            "enum": [
+                "monoallelic deletion",
+                "monoallelic insertion",
+                "biallelic deletion",
+                "biallelic insertion"
+            ]
+        },
+        "vector":{
+            "title": "Vector used for genetic modification",
+            "description": "A list of vectors used for genetic modification.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "description": "Vector details.",
+                "type": "object",
+                "additionalProperties": false,
+                "mixinProperties": [
+                    { "$ref": "mixins.json#/aliases" },
+                    { "$ref": "mixins.json#/product_id" },
+                    { "$ref": "mixins.json#/source" },
+                    { "$ref": "mixins.json#/notes" },
+                    { "$ref": "mixins.json#/documents" }
+                ],
+                "properties": {
+                    "vector_backbone_name":{
+                        "title": "Backbone name",
+                        "description": "The name of the vector backbone used for the modification.",
+                        "type": "string"
+                    },
+                    "promoter_used": {
+                        "title": "Promoter used on the vector",
+                        "description": "The name of the gene that the promoter regulates natively.",
+                        "comment": "See target.json for available identifiers.",
+                        "type": "string",
+                        "linkTo": "Target"
+                    },
+                    "url":{
+                        "title": "URL",
+                        "description": "An external resource with additional information about the vector.",
+                        "type": "string",
+                        "format": "uri"
+                    }
+                }
+            }
+        }        
+    }
+}

@@ -1,0 +1,51 @@
+ {
+    "title": "CRISPR",
+    "description": "Schema for submitting an information on CRISPR genomic editing.",
+    "id": "/profiles/crispr.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["lab", "award", "source"],
+    "identifyingProperties": ["uuid","aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/product_id" },
+        { "$ref": "mixins.json#/source" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/documents" },
+        { "$ref": "genetic_modofication.json#/properties" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "guide_rna_sequence": {
+        	"description": "",
+        	"type": "array",
+        	"default": [],
+        	"uniqueItems": true,
+            "items": {
+          		"title": "gRNA sequence",
+              	"description": "guide RNA sequence used in the experiment.",
+               	"type":  "string",
+               	"name": "",
+               	"pattern": "^[ACTG]+$"   
+			}
+		},
+		"insert_sequence": {
+            "description": "Insert sequence",
+        	"type": "string",
+        	"default": [],
+        	"uniqueItems": true,
+            "title": "gRNA sequence",
+            "type":  "string",
+            "pattern": "^[ACTG]+$"	
+		}
+    }
+}
+        
