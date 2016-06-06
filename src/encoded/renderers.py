@@ -108,6 +108,8 @@ def security_tween_factory(handler, registry):
                 return handler(request)
             raise CSRFTokenError('Incorrect CSRF token')
 
+        return handler(request)
+
         if login is None:
             login = request.authenticated_userid
         if login is not None:

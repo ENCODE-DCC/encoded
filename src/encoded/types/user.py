@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from pyramid.httpexceptions import HTTPUnprocessableEntity
 from pyramid.view import (
     view_config,
 )
@@ -20,6 +21,9 @@ from snovault import (
 from snovault.calculated import calculate_properties
 from snovault.resource_views import item_view_object
 from snovault.util import expand_path
+from snovault.crud_views import collection_add
+from snovault.schema_utils import validate_request
+from snovault.storage import User as AuthUser
 
 
 ONLY_ADMIN_VIEW_DETAILS = [
@@ -114,6 +118,41 @@ def user_basic_view(context, request):
             pass
     return filtered
 
+
+@view_config(context=User.Collection, permission='add', request_method='POST',
+             physical_path="/users")
+def user_add(context,request):
+    '''
+    if we have a password in our request, create and auth entry
+    for the user as well
+    '''
+    #do we have valid data
+    pwd = request.json.get('password', None)
+    pwd_less_data = request.json.copy()
+
+    if pwd is not None:
+        del pwd_less_data['password']
+
+    validate_request(context.type_info.schema, request, pwd_less_data)
+
+    if request.errors:
+        return HTTPUnprocessableEntity(json={'errors':request.errors},
+                                     content_type='application/json')
+
+    result = collection_add(context, request)
+    if result:
+        email = request.json.get('email')
+        pwd = request.json.get('password', None)
+        name = request.json.get('first_name')
+        if pwd is not None:
+            auth_user = AuthUser(email, pwd, name)
+            db = request.registry['dbsession']
+            db.add(auth_user)
+
+            import transaction
+            transaction.commit()
+
+    return result
 
 @calculated_property(context=User, category='user_action')
 def impersonate(request):

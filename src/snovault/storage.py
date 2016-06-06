@@ -16,7 +16,11 @@ from sqlalchemy.dialects import postgresql
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext import baked
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import collections
+from sqlalchemy.orm import (
+    collections,
+    scoped_session,
+    sessionmaker,
+)
 from sqlalchemy.orm.exc import (
     FlushError,
     NoResultFound,
@@ -32,10 +36,12 @@ import json
 import transaction
 import uuid
 
-
+_DBSESSION = None
 def includeme(config):
     registry = config.registry
     registry[STORAGE] = RDBStorage(registry[DBSESSION])
+    global _DBSESSION
+    _DBSESSION = registry[DBSESSION]
     if registry.settings.get('blob_bucket'):
         registry[BLOBS] = S3BlobStorage(
             registry.settings['blob_bucket'],
@@ -514,6 +520,49 @@ class TransactionRecord(Base):
         'eager_defaults': True,
     }
 
+
+# User specific stuff
+import cryptacular.bcrypt
+crypt = cryptacular.bcrypt.BCRYPTPasswordManager()
+
+def hash_password(password):
+    return crypt.encode(password)
+
+
+class User(Base):
+    """
+    Application's user model.  Use this if you want to store / manage your own user auth
+    """
+    __tablename__ = 'users'
+    user_id = Column(types.Integer, autoincrement=True, primary_key=True)
+    name = Column(types.Unicode(60))
+    email = Column(types.Unicode(60), unique=True)
+
+    _password = Column('password', types.Unicode(60))
+
+    @property
+    def password(self):
+        return self._password
+
+    @password.setter
+    def password(self, password):
+        self._password = hash_password(password)
+
+    def __init__(self, email, password, name):
+        self.name = name
+        self.email = email
+        self.password = password
+    
+    @classmethod
+    def get_by_username(cls, email):
+        return _DBSESSION.query(cls).filter(cls.email == email).first()
+
+    @classmethod
+    def check_password(cls, email, password):
+        user = cls.get_by_username(email)
+        if not user:
+            return False
+        return crypt.check(user.password, password)
 
 notify_ddl = DDL("""
     ALTER TABLE %(table)s ALTER COLUMN "xid" SET DEFAULT txid_current();

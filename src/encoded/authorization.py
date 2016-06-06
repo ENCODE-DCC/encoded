@@ -19,7 +19,7 @@ def groupfinder(login, request):
         elif localname in ['TEST_AUTHENTICATED']:
             return ['viewing_group.ENCODE']
 
-    if namespace in ('mailto', 'remoteuser', 'persona'):
+    if namespace in ('mailto', 'remoteuser', 'webuser'):
         users = root.by_item_type['user']
         try:
             user = users[localname]
@@ -27,6 +27,7 @@ def groupfinder(login, request):
             return None
 
     elif namespace == 'accesskey':
+
         access_keys = root.by_item_type['access_key']
         try:
             access_key = access_keys[localname]
