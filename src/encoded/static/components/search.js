@@ -938,6 +938,44 @@ var ResultTable = search.ResultTable = React.createClass({
         };
     },
 
+    componentDidMount: function() {
+        require.ensure(['chart.js'], (require) => {
+            var Chart = require('chart.js');
+            var colorList = [
+                '#1F518B',
+                '#1488C8',
+                '#F7E041',
+                '#E2413E',
+                '#B5292A'
+            ];
+            var data = [];
+            var labels = [];
+            var colors = [];
+
+            var facets = this.props.context.facets;
+            var assayFacet = facets.find(facet => facet.field === 'assay_title');
+            assayFacet.terms.forEach(function(term, i) {
+                data[i] = term.doc_count;
+                labels[i] = term.key;
+                colors[i] = colorList[i % colorList.length];
+            });
+            var ctx = document.getElementById("myChart").getContext("2d");
+            this.myPieChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors
+                    }]
+                },
+                options: {
+                    onClick: function(e, f) { console.log(f); }
+                }
+            });
+        });
+    },
+
     render: function() {
         const batchHubLimit = 100;
         var context = this.props.context;
@@ -994,6 +1032,7 @@ var ResultTable = search.ResultTable = React.createClass({
                                     searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
                     </div> : ''}
                     <div className="col-sm-7 col-md-8 col-lg-9">
+                        <canvas id="myChart" width="400" height="400"></canvas>
                         {context['notification'] === 'Success' ?
                             <div>
                                 <h4>Showing {results.length} of {total} {label}</h4>

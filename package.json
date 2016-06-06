@@ -41,6 +41,7 @@
   "dependencies": {
     "babel-polyfill": "^6.7.4",
     "brace": "^0.3.0",
+    "chart.js": "^2.1.4",
     "ckeditor": "file:node_shims/ckeditor",
     "color": "^0.10.1",
     "cookie-monster": "0.0.7",

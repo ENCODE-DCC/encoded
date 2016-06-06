@@ -83,6 +83,7 @@ module.exports = [
 			'brace/theme/solarized_light',
 			'd3',
 			'dagre-d3',
+			'chart.js',
 			// avoid bundling babel transpiler, which is not used at runtime
 			'babel-core/register',
 		],
