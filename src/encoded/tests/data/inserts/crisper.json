@@ -1,0 +1,36 @@
+[
+    {
+        "uuid": "0aec2477-9507-4f9c-bf7a-b09b6b8dfd2a",
+        "status": "released",
+        "lab": "/labs/robert-waterston/",
+        "award": "/awards/U41HG007355/",
+        "source":"/sources/valerie-reinke/",
+		"modifiction_description": "Very important modification",
+        "modification_type": "monoallelic deletion",
+        "guide_rna_sequence": [
+        	"AGCGACGT",
+        	"ACTCTGGGGGGCCAA"
+        ],
+        "insert_sequence": "ACTCTGGGGGGCCAAACTCTGGGGGGCCAAACTCTGGGGGGCCAAACTCTGGGGGGCCAAACTCTGGGGGGCCAAACTCTGGGGGGCCAA",
+ 		"modification_genome_coordinates": {
+			"assembly":"hg19",
+			"chromosome":"21",
+			"start":3454,
+			"end":5678,
+ 		},
+ 		"vector":[
+ 			{
+ 				"vector_backbone_name":"backbone_1",
+ 				"source":"/sources/valerie-reinke/",
+ 				"promoter_used": "/targets/AKNA-human/"
+ 			},
+ 			{
+ 				"vector_backbone_name":"backbone_2",
+				"source":"/sources/cgc/",
+				"url":"http://google.com/backbone_2"
+ 			}
+
+ 		]
+
+    }
+]
