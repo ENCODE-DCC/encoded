@@ -18,7 +18,7 @@
         { "$ref": "mixins.json#/source" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/documents" },
-        { "$ref": "genetic_modofication.json#/properties" }
+        { "$ref": "genetic_modification.json#/properties" }
     ],
     "properties": {
         "schema_version": {
