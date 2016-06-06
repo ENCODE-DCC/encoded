@@ -134,7 +134,7 @@ def peak_metadata(context, request):
             experiment_json = request.embed(file_json['dataset'])
             for hit in row['inner_hits']['positions']['hits']['hits']:
                 data_row = []
-                coordinates = '{}:{}-{}'.format(hit['_index'], hit['_source']['start'], hit['_source']['end'])
+                coordinates = '{}:{}-{}'.format(row['_index'], hit['_source']['start'], hit['_source']['end'])
                 file_accession = file_json['accession']
                 experiment_accession = experiment_json['accession']
                 assay_name = experiment_json['assay_term_name']

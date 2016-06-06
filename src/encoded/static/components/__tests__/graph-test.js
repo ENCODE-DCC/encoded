@@ -13,8 +13,8 @@ describe('Experiment Graph', function() {
     React = require('react');
     TestUtils = require('react/lib/ReactTestUtils');
     _ = require('underscore');
-    assembleGraph = require('../experiment').assembleGraph;
-    graphException = require('../experiment').graphException;
+    assembleGraph = require('../filegallery').assembleGraph;
+    graphException = require('../filegallery').graphException;
     context = require('../testdata/experiment');
     collectNodes = _.memoize(_collectNodes);
 
@@ -60,7 +60,7 @@ describe('Experiment Graph', function() {
 
     // One file derived from two files, through one step.
     describe('Basic graph display', function() {
-        var experimentGraph, graph, files;
+        var graph, files;
 
         beforeEach(function() {
             var context_graph = _.clone(context);
@@ -87,7 +87,7 @@ describe('Experiment Graph', function() {
     // There should be two copies of the step with different file
     // accessions in their IDs.
     describe('Basic graph step duplication display', function() {
-        var experimentGraph, graph, files;
+        var graph, files;
 
         beforeEach(function() {
             var context_graph = _.clone(context);
@@ -116,7 +116,7 @@ describe('Experiment Graph', function() {
     // Two files each deriving from one file they share; and they share a step.
     // There should be one copy of the step.
     describe('Basic graph step no duplication display', function() {
-        var experimentGraph, graph, files;
+        var graph, files;
 
         beforeEach(function() {
             var context_graph = _.clone(context);
@@ -144,7 +144,7 @@ describe('Experiment Graph', function() {
     // Two files derive from the same two files and share a step.
     // There should be one copy of the step.
     describe('Two files derived from same two files', function() {
-        var experimentGraph, graph, files;
+        var graph, files;
 
         beforeEach(function() {
             var context_graph = _.clone(context);
@@ -172,7 +172,7 @@ describe('Experiment Graph', function() {
     // Two files derive from two overlapping sets of files. The analysis
     // step should get duplicated, one for each set of derived_from files.
     describe('Two files derived from overlapping set of files', function() {
-        var experimentGraph, graph, files;
+        var graph, files;
 
         beforeEach(function() {
             var context_graph = _.clone(context);
@@ -201,7 +201,7 @@ describe('Experiment Graph', function() {
     // One file derived from two files, through one step.
     // Another file not derived from, and doesn't derive from others; it should vanish.
     describe('Basic graph with detached node', function() {
-        var experimentGraph, graph, files;
+        var graph, files;
 
         beforeEach(function() {
             var context_graph = _.clone(context);
@@ -230,7 +230,7 @@ describe('Experiment Graph', function() {
     // Two files derive from one file each through a shared step. Each file and derived from files in a replicate.
     // Total of two replicates with three nodes each
     describe('Two graphs in two replicates', function() {
-        var experimentGraph, graph, files;
+        var graph, files;
 
         beforeEach(function() {
             var context_graph = _.clone(context);
@@ -269,7 +269,7 @@ describe('Experiment Graph', function() {
     // Two files derive from one file each through a shared step. Each file and derived from files in a replicate.
     // Total of two replicates with three nodes each
     describe('Two graphs in two replicates; one derived-from missing', function() {
-        var experimentGraph, graph, files;
+        var graph, files;
     
         beforeEach(function() {
             var context_graph = _.clone(context);
@@ -287,18 +287,18 @@ describe('Experiment Graph', function() {
         it('Has the correct number of nodes and edges', function() {
             var subNodes = 0;
 
-            expect(graph.nodes.length).toEqual(2);
+            expect(graph.nodes.length).toEqual(1);
             graph.nodes.forEach(function(node) {
                 subNodes += node.nodes.length;
             });
-            expect(subNodes).toEqual(6);
-            expect(graph.edges.length).toEqual(4);
+            expect(subNodes).toEqual(3);
+            expect(graph.edges.length).toEqual(2);
         });
 
         it('has the right nodes', function() {
             expect(containsNodes(graph, ["rep:1", "file:/files/ENCFF000VUQ/", "file:/files/ENCFF003COS/",
                 "step:/files/ENCFF000VUQ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
-            expect(containsNodes(graph, ["rep:2"])).toBeTruthy();
+            expect(containsNodes(graph, ["rep:2"])).toBeFalsy();
         });
 
         it('has the right relationships between edges and nodes', function() {

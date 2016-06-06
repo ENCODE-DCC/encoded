@@ -99,6 +99,19 @@ module.exports.unbindEvent = function (el, eventName, eventHandler) {
     }
 };
 
+module.exports.unreleased_files_url = function (context) {
+    var file_states = [
+        '',
+        "uploading",
+        "uploaded",
+        "upload failed",
+        "format check failed",
+        "in progress",
+        "released"
+    ].map(encodeURIComponent).join('&status=');
+    return '/search/?limit=all&type=file&dataset=' + context['@id'] + file_states;
+};
+
 // Make the first character of the given string uppercase. Can be less fiddly than CSS text-transform.
 // http://stackoverflow.com/questions/1026069/capitalize-the-first-letter-of-string-in-javascript#answer-1026087
 String.prototype.uppercaseFirstChar = function(string) {
