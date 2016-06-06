@@ -130,6 +130,7 @@ packages:
 - libpq-dev
 - libssl-dev
 - libtiff5-dev
+- libffi-dev
 - libwebp-dev
 - libxml2-dev
 - libxslt1-dev
