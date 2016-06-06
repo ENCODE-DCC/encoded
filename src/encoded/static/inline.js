@@ -19,7 +19,7 @@ window.onload = function () {
 
 var $script = require('scriptjs');
 $script.path('/static/build/');
-$script('https://login.persona.org/include.js', 'persona');
+//$script('https://login.persona.org/include.js', 'persona');
 
 // Load the rest of the app as a separate chunk.
 require.ensure(['./libs/compat', './browser'], function(require) {
