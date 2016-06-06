@@ -350,7 +350,7 @@ var Graph = module.exports.Graph = React.createClass({
         }
 
         // Disable download button if running on Trident (IE non-Spartan) browsers
-        if (BrowserFeat.getBrowserCaps('uaTrident')) {
+        if (BrowserFeat.getBrowserCaps('uaTrident') || BrowserFeat.getBrowserCaps('uaEdge')) {
             this.setState({dlDisabled: true});
         }
     },
