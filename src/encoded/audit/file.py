@@ -33,7 +33,8 @@ def audit_file_bam_derived_from(value, system):
         return
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
-    if 'derived_from' not in value:
+    if 'derived_from' not in value or \
+       'derived_from' in value and len(value['derived_from']) == 0:
         return
     derived_from_files = value.get('derived_from')
     fastq_counter = 0
