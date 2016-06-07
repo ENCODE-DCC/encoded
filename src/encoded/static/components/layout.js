@@ -6,7 +6,6 @@ var closest = require('../libs/closest');
 var offset = require('../libs/offset');
 var _ = require('underscore');
 
-var cx = require('react/lib/cx');
 var ModalTrigger = require('react-bootstrap/lib/ModalTrigger');
 var Modal = require('react-bootstrap/lib/Modal');
 
@@ -123,20 +122,16 @@ var Block = module.exports.Block = React.createClass({
         }
         var BlockView = globals.blocks.lookup(block).view;
 
-        var classes = {
-            block: true,
-            clearfix: true,
-            dragging: _.isEqual(this.props.pos, this.context.src_pos),
-            hover: this.state.hover
-        };
+        var classes = 'block clearfix';
+        classes = classes + (_.isEqual(this.props.pos, this.context.src_pos) ? ' dragging' : '') + (this.state.hover ? ' hover' : '');
         if (block.className !== undefined) {
-            classes[block.className] = true;
+            classes += ' ' + block.className;
         }
         if (_.isEqual(this.props.pos, this.context.dst_pos)) {
-            classes['drop-' + this.context.dst_quad] = true;
+            classes += ' drop-' + this.context.dst_quad;
         }
         return (
-            <div className={block['@type'][0] + ' ' + cx(classes)} data-pos={this.props.pos}
+            <div className={block['@type'][0] + ' ' + classes} data-pos={this.props.pos}
                  draggable={this.context.editable && !this.state.focused}
                  onDragStart={this.dragStart}
                  onDragOver={this.dragOver}
@@ -291,31 +286,28 @@ var Col = React.createClass({
     },
 
     render: function() {
-        var classes = {};
-        classes[this.props.className] = true;
+        var classes = this.props.className;
         if (_.isEqual(this.props.pos, this.context.dst_pos)) {
-            classes['drop-' + this.context.dst_quad] = true;
+            classes += ' drop-' + this.context.dst_quad;
         }
         var blocks = this.props.value.blocks;
         return (
-            <div className={cx(classes)} onDragOver={this.dragOver}>
+            <div className={classes} onDragOver={this.dragOver}>
                 {blocks.map((blockId, k) => this.renderBlock(blockId, k))}
             </div>
         );
     },
 
-    dragOver: function(e) { this.context.dragOver(e, this); },
+    dragOver: function(e) { this.context.dragOver(e, this); }
 });
 
 
 var Row = React.createClass({
     contextTypes: LAYOUT_CONTEXT,
     render: function() {
-        var classes = {
-            row: true
-        };
+        var classes = 'row';
         if (_.isEqual(this.props.pos, this.context.dst_pos)) {
-            classes['drop-' + this.context.dst_quad] = true;
+            classes += ' drop-' + this.context.dst_quad;
         }
         var cols = this.props.value.cols;
         var col_class;
@@ -326,13 +318,13 @@ var Row = React.createClass({
             default: col_class = 'col-md-12'; break;
         }
         return (
-            <div className={cx(classes)} onDragOver={this.dragOver}>
+            <div className={classes} onDragOver={this.dragOver}>
                 {cols.map((col, j) => <Col value={col} className={col.className || col_class} key={j} pos={this.props.pos.concat([j])} />)}
             </div>
         );
     },
 
-    dragOver: function(e) { this.context.dragOver(e, this); },
+    dragOver: function(e) { this.context.dragOver(e, this); }
 });
 
 
@@ -393,15 +385,12 @@ var Layout = module.exports.Layout = React.createClass({
     },
 
     render: function() {
-        var classes = {
-            layout: true,
-            editable: this.props.editable,
-        };
+        var classes = 'layout' + (this.props.editable ? ' editable' : '');
         if (_.isEqual(this.state.dst_pos, [])) {
-            classes['drop-' + this.state.dst_quad] = true;
+            classes += ' drop-' + this.state.dst_quad;
         }
         return (
-            <div className={cx(classes)} onDragOver={this.dragOver} onDrop={this.drop}>
+            <div className={classes} onDragOver={this.dragOver} onDrop={this.drop}>
                 {this.props.editable ? <LayoutToolbar /> : ''}
                 {this.state.value.rows.map((row, i) => <Row value={row} key={i} pos={[i]} />)}
                 <canvas id="drag-marker" height="1" width="1"></canvas>

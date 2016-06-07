@@ -7,7 +7,6 @@ var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var button = require('../libs/bootstrap/button');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var SvgIcon = require('../libs/svg-icons').SvgIcon;
-var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
 var globals = require('./globals');
@@ -172,12 +171,12 @@ var StatusIndicator = React.createClass({
     },
 
     render: function() {
-        var classes = {tooltipopen: this.state.tipOpen};
+        var classes = this.state.tipOpen ? 'tooltipopen' : '';
 
         return (
             <span className="tooltip-status-trigger">
                 <i className={globals.statusClass(this.props.status, 'indicator icon icon-circle')} ref="indicator" onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}></i>
-                <div className={"tooltip-status sentence-case " + cx(classes)} style={this.state.tipStyles}>
+                <div className={"tooltip-status sentence-case " + classes} style={this.state.tipStyles}>
                     {this.props.status}<br /><span>{this.props.terms.join(', ')}</span>
                 </div>
             </span>

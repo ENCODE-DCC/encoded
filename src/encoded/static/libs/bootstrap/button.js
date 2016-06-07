@@ -58,7 +58,7 @@ var DropdownButton = module.exports.DropdownButton = React.createClass({
 
         // Add the `label` property to any <DropdownMenu> child components
         var children = React.Children.map(this.props.children, child => {
-            if (child.type === DropdownMenu.type) {
+            if (child.type === DropdownMenu) {
                 return cloneWithProps(child, {
                     label: this.props.label
                 });
