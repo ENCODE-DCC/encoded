@@ -80,8 +80,7 @@
         "modifiction_description": {
             "title": "Description",
             "description": "A plain text description of the genetic modification.",
-            "type": "string",
-            "default": "",
+            "type": "string"
         },
         "modification_type": {
             "title": "Modification type",

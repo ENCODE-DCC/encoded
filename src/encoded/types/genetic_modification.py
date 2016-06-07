@@ -1,7 +1,6 @@
 from snovault import (
     abstract_collection,
     collection,
-    calculated_property,
     load_schema,
 )
 from .base import (
@@ -12,7 +11,7 @@ from .base import (
 @abstract_collection(
     name='genetic-modifications',
     properties={
-        'title': 'Genetic modifications',
+        'title': "Genetic modifications",
         'description': 'Listing of all types of genetic modifications.',
     })
 class GeneticModification(Item):
