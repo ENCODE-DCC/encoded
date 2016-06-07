@@ -1,5 +1,5 @@
 {
-    "title": "Genetic modification",
+    "title": "Genetic Modification",
     "description": "Schema for submitting an information on genetic modification.",
     "id": "/profiles/genetic_modification.json",
     "$schema": "http://json-schema.org/draft-04/schema#",

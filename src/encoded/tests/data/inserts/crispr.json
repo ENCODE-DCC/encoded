@@ -1,16 +1,24 @@
 [
     {
+        "aliases": [
+            "encode:crispr-test-1"
+        ],
         "uuid": "0aec2477-9507-4f9c-bf7a-b09b6b8dfd2a",
         "status": "released",
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
-        "source":"/sources/valerie-reinke/"
+        "source":"gregory-crawford",
+        "insert_sequence": "CTCGGTG"
     },
     {
+        "aliases": [
+            "encode:crispr-test-2"
+        ],
         "uuid": "4c9733cd-7d0f-42b0-a27d-411c2b212329",
         "status": "in progress",
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
-        "source":"/sources/valerie-reinke/"
+        "source":"gregory-crawford",
+        "insert_sequence": "ACTCGT"
     }
 ]
