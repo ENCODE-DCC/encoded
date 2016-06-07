@@ -38,6 +38,7 @@ var {DocumentsPanel} = doc;
 var DropdownButton = button.DropdownButton;
 var DropdownMenu = dropdownMenu.DropdownMenu;
 var {Panel, PanelBody, PanelHeading} = panel;
+var ExperimentTable = dataset.ExperimentTable;
 
 
 var anisogenicValues = [
