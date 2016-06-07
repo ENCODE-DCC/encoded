@@ -4,7 +4,6 @@ from snovault import (
     calculated_property,
     load_schema,
 )
-from snovault.attachment import ItemWithAttachment
 from .base import (
     Item,
 )
@@ -13,19 +12,20 @@ from .base import (
 @abstract_collection(
     name='genetic-modifications',
     properties={
-        'title': "Genetic modifications",
+        'title': 'Genetic modifications',
         'description': 'Listing of all types of genetic modifications.',
     })
-class GeneticModification(ItemWithAttachment, Item):
+class GeneticModification(Item):
     base_types = ['GeneticModification'] + Item.base_types
 
 
 @collection(
-    name='crispr',
+    name='crisprs',
     properties={
-        'title': "CRISPR genetic modification",
+        'title': "CRISPR genetic modifications",
         'description': 'Listing of all CRISPR genetic modifications.',
     })
 class Crispr(GeneticModification):
     item_type = 'crispr'
+    base_types = ['Crispr'] + GeneticModification.base_types
     schema = load_schema('encoded:schemas/crispr.json')
