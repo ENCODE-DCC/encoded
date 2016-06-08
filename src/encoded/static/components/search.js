@@ -938,8 +938,12 @@ var ResultTable = search.ResultTable = React.createClass({
         };
     },
 
+    contextTypes: {
+        navigate: React.PropTypes.func
+    },
+
     componentDidMount: function() {
-        require.ensure(['chart.js'], (require) => {
+        require.ensure(['chart.js'], function(require) {
             var Chart = require('chart.js');
             var colorList = [
                 '#1F518B',
@@ -961,7 +965,7 @@ var ResultTable = search.ResultTable = React.createClass({
             });
             var ctx = document.getElementById("myChart").getContext("2d");
             this.myPieChart = new Chart(ctx, {
-                type: 'pie',
+                type: 'doughnut',
                 data: {
                     labels: labels,
                     datasets: [{
@@ -970,10 +974,15 @@ var ResultTable = search.ResultTable = React.createClass({
                     }]
                 },
                 options: {
-                    onClick: function(e, f) { console.log(f); }
+                    onClick: (e) => {
+                        var activePoints = this.myPieChart.getElementAtEvent(e);
+                        var term = assayFacet.terms[activePoints[0]._index].key;
+                        this.context.navigate(this.props.searchBase + '&assay_title=' + term);
+                        console.log(activePoints);
+                    }
                 }
             });
-        });
+        }.bind(this));
     },
 
     render: function() {
