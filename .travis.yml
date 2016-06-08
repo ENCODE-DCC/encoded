@@ -12,6 +12,7 @@ addons:
       - bsdtar
       - elasticsearch
       - graphviz
+  sauce_connect: true
 env:
   global:
     - secure: |-
