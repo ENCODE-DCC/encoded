@@ -3,6 +3,7 @@ from locust import HttpLocust, TaskSet, task
 '''
 To use you must have python2 with pipinstalled locustion.
 This script is not integrated with encoded or snovault python distribution
+see http://locust.io
 '''
 
 
