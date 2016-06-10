@@ -3,8 +3,8 @@ var webpack = require('webpack');
 var env = process.env.NODE_ENV;
 
 var PATHS = {
-	static: path.resolve(__dirname, 'src/encoded/static'),
-	build: path.resolve(__dirname, 'src/encoded/static/build'),
+	static: path.resolve(__dirname, 'src/snowflakes/static'),
+	build: path.resolve(__dirname, 'src/snowflakes/static/build'),
 }
 
 var plugins = [];
@@ -37,7 +37,7 @@ var loaders = [
 	{
 		test: /\.js$/,
 		include: [
-			path.resolve(__dirname, 'src/encoded/static'),
+			path.resolve(__dirname, 'src/snowflakes/static'),
 			path.resolve(__dirname, 'node_modules/react-forms'),
 		],
 		loader: 'babel',
@@ -70,7 +70,7 @@ module.exports = [
 	// for server-side rendering
 	{
 		entry: {
-			renderer: './src/encoded/static/server.js',
+			renderer: './src/snowflakes/static/server.js',
 		},
 		target: 'node',
 		// make sure compiled modules can use original __dirname

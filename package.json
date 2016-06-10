@@ -1,5 +1,5 @@
 {
-  "name": "encoded",
+  "name": "snowflakes",
   "version": "0.0.0",
   "description": "domready held back.",
   "scripts": {
@@ -12,7 +12,7 @@
   "files": [],
   "repository": "ENCODE-DCC/encoded",
   "jest": {
-    "rootDir": "src/encoded/static",
+    "rootDir": "src/snowflakes/static",
     "setupFiles": [
       "../../../jest/environment.js"
     ],
