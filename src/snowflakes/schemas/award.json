@@ -66,12 +66,19 @@
             "type": "string",
             "linkTo": "User"
         },
-        "rfa": {
+         "rfa": {
             "title": "Phase",
-            "description": "The name of the project phase.",
+            "description": "The name of the bioproject phase.",
             "type": "string",
             "enum": [
-                "0.0"
+                "ENCODE",
+                "ENCODE2",
+                "ENCODE2-Mouse",
+                "ENCODE3",
+                "GGR",
+                "Roadmap",
+                "modENCODE",
+                "modERN"
             ]
         },
         "project": {
@@ -79,8 +86,11 @@
             "description": "The collection of biological data related to a single initiative, originating from a consortium.",
             "type": "string",
             "enum": [
-                "The Snowflake Consortium",
-                "I.C.E."
+                "ENCODE",
+                "GGR",
+                "Roadmap",
+                "modENCODE",
+                "modERN"
             ]
         },
         "viewing_group": {
@@ -88,8 +98,9 @@
             "description": "The group that determines which set of data the user has permission to view.",
             "type": "string",
             "enum": [
-                "SNOWFLAKE",
-                "ICE"
+                "ENCODE",
+                "GGR",
+                "REMC"
             ]
         }
     },

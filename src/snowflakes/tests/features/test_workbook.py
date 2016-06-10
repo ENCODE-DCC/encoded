@@ -7,9 +7,5 @@ pytestmark = [
 ]
 
 scenarios(
-    'antibodies.feature',
-    'biosamples.feature',
-    'experiments.feature',
     'search.feature',
-    'targets.feature',
 )
