@@ -65,7 +65,7 @@ def main(global_config, **local_config):
     settings['snovault.jsonld.namespaces'] = json_asset('snowflakes:schemas/namespaces.json')
     settings['snovault.jsonld.terms_namespace'] = 'https://www.encodeproject.org/terms/'
     settings['snovault.jsonld.terms_prefix'] = 'snowflake'
-    settings['snovault.elasticsearch.index'] = 'snowflakes'
+    settings['snovault.elasticsearch.index'] = 'snovault'
     hostname_command = settings.get('hostname_command', '').strip()
     if hostname_command:
         hostname = subprocess.check_output(hostname_command, shell=True).strip()

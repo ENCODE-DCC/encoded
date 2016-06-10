@@ -13,11 +13,9 @@ var _ = require('underscore');
 var globals = require('./globals');
 var image = require('./image');
 var search = module.exports;
-var dbxref = require('./dbxref');
 var audit = require('./audit');
 var objectutils = require('./objectutils');
 
-var DbxrefList = dbxref.DbxrefList;
 var statusOrder = globals.statusOrder;
 var SingleTreatment = objectutils.SingleTreatment;
 var AuditIndicators = audit.AuditIndicators;
@@ -556,9 +554,6 @@ var Target = module.exports.Target = React.createClass({
                     </div>
                     <div className="data-row">
                         <strong>External resources: </strong>
-                        {result.dbxref && result.dbxref.length ?
-                            <DbxrefList values={result.dbxref} target_gene={result.gene_name} />
-                        : <em>None submitted</em> }
                     </div>
                 </div>
                 <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />

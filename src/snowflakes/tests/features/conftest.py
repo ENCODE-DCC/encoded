@@ -27,7 +27,7 @@ def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
     settings['sqlalchemy.url'] = postgresql_server
     settings['collection_datastore'] = 'elasticsearch'
     settings['item_datastore'] = 'elasticsearch'
-    settings['snovault.elasticsearch.index'] = 'snowflakes'
+    settings['snovault.elasticsearch.index'] = 'snovault'
     settings['indexer'] = True
     settings['indexer.processes'] = 2
     return settings
