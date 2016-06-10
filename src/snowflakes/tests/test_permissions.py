@@ -35,44 +35,6 @@ def other_lab(testapp):
 
 
 @pytest.fixture
-def step_run(testapp, lab, award):
-    software = {
-        'name': 'do-thing',
-        'description': 'It does the thing',
-        'title': 'THING_DOER',
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-    sw = testapp.post_json('/software', software, status=201).json['@graph'][0]
-
-    software_version = {
-        'version': '0.1',
-        'software': sw['@id']
-    }
-    swv = testapp.post_json('/software-versions', software_version, status=201).json['@graph'][0]
-
-    analysis_step = {
-        'name': 'do-thing-step',
-        'title': 'Do The Thing Step By Step',
-        'analysis_step_types': ["QA calculation"],
-        'input_file_types':  ['raw data']
-    }
-    astep = testapp.post_json('/analysis-steps', analysis_step, status=201).json['@graph'][0]
-
-    as_version = {
-        'software_versions': [swv['@id']],
-        'analysis_step':  astep['@id']
-    }
-    asv = testapp.post_json('/analysis-step-versions', as_version, status=201).json['@graph'][0]
-
-    step_run = {
-        'analysis_step_version': asv['@id'],
-        'status': "finished"
-    }
-    return testapp.post_json('/analysis-step-runs', step_run, status=201).json['@graph'][0]
-
-
-@pytest.fixture
 def wrangler_testapp(wrangler, app, external_tx, zsa_savepoints):
     return remote_user_testapp(app, wrangler['uuid'])
 
@@ -90,45 +52,6 @@ def viewing_group_member_testapp(viewing_group_member, app, external_tx, zsa_sav
 @pytest.fixture
 def remc_member_testapp(remc_member, app, external_tx, zsa_savepoints):
     return remote_user_testapp(app, remc_member['uuid'])
-
-
-def test_wrangler_post_non_lab_collection(wrangler_testapp):
-    item = {
-        'name': 'human',
-        'scientific_name': 'Homo sapiens',
-        'taxon_id': '9606',
-    }
-    return wrangler_testapp.post_json('/organism', item, status=201)
-
-
-def test_submitter_post_non_lab_collection(submitter_testapp):
-    item = {
-        'name': 'human',
-        'scientific_name': 'Homo sapiens',
-        'taxon_id': '9606',
-    }
-    return submitter_testapp.post_json('/organism', item, status=403)
-
-
-def test_submitter_post_update_experiment(submitter_testapp, lab, award):
-    experiment = {'lab': lab['@id'], 'award': award['@id']}
-    res = submitter_testapp.post_json('/experiment', experiment, status=201)
-    location = res.location
-    res = submitter_testapp.get(location + '@@testing-allowed?permission=edit', status=200)
-    assert res.json['has_permission'] is True
-    assert 'submits_for.%s' % lab['uuid'] in res.json['principals_allowed_by_permission']
-    submitter_testapp.patch_json(location, {'description': 'My experiment'}, status=200)
-
-
-def test_submitter_post_other_lab(submitter_testapp, other_lab, award):
-    experiment = {'lab': other_lab['@id'], 'award': award['@id']}
-    res = submitter_testapp.post_json('/experiment', experiment, status=422)
-    assert "not in user submits_for" in res.json['errors'][0]['description']
-
-
-def test_wrangler_post_other_lab(wrangler_testapp, other_lab, award):
-    experiment = {'lab': other_lab['@id'], 'award': award['@id']}
-    wrangler_testapp.post_json('/experiment', experiment, status=201)
 
 
 def test_user_view_details_admin(submitter, access_key, testapp):
@@ -254,36 +177,3 @@ def test_disabled_user_wrangler(wrangler_testapp, disabled_user):
 def test_labs_view_wrangler(wrangler_testapp, other_lab):
     labs = wrangler_testapp.get('/labs/', status=200)
     assert(len(labs.json['@graph']) == 1)
-
-
-def test_post_qc_metric(wrangler_testapp, step_run, file, lab, award):
-    item = {
-        'name': 'test-quality-metric',
-        'quality_metric_of': [file['@id']],
-        'step_run': step_run['@id'],
-        'lab': lab['@id'],
-        'award': award['@id']
-    }
-    wrangler_testapp.post_json('/generic-quality-metrics', item, status=201)
-
-
-def test_submitter_post_qc_metric(submitter_testapp, step_run, file, lab, award):
-    item = {
-        'name': 'test-quality-metric',
-        'quality_metric_of': [file['@id']],
-        'step_run': step_run['@id'],
-        'lab': lab['@id'],
-        'award': award['@id']
-    }
-    submitter_testapp.post_json('/generic-quality-metrics', item, status=201)
-
-
-def test_wronggroup_post_qc_metric(remc_member_testapp, step_run, file, remc_lab, award):
-    item = {
-        'name': 'test-quality-metric',
-        'quality_metric_of': [file['@id']],
-        'step_run': step_run['@id'],
-        'lab': remc_lab['@id'],
-        'award': award['@id']
-    }
-    remc_member_testapp.post_json('/generic-quality-metrics', item, status=403)

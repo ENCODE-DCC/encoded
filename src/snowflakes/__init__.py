@@ -6,7 +6,6 @@ try:
 except ImportError:
     import subprocess
 from pyramid.config import Configurator
-from elasticsearch import Elasticsearch
 from snovault.app import (
     json_asset,
     app_version,
@@ -16,15 +15,10 @@ from snovault.app import (
     changelogs,
     json_from_path,
     )
-from snovault.elasticsearch import (
-    PyramidJSONSerializer,
-    TimedUrllib3HttpConnection,
-)
 from pyramid.settings import (
     aslist,
     asbool,
 )
-from snovault.json_renderer import json_renderer
 
 STATIC_MAX_AGE = 0
 
@@ -101,28 +95,14 @@ def main(global_config, **local_config):
     config.include('.server_defaults')
     config.include('.types')
     config.include('.root')
-    config.include('.batch_download')
-    config.include('.visualization')
 
     if 'elasticsearch.server' in config.registry.settings:
         config.include('snovault.elasticsearch')
         config.include('.search')
 
-    if 'snp_search.server' in config.registry.settings:
-        addresses = aslist(config.registry.settings['snp_search.server'])
-        config.registry['snp_search'] = Elasticsearch(
-            addresses,
-            serializer=PyramidJSONSerializer(json_renderer),
-            connection_class=TimedUrllib3HttpConnection,
-            retry_on_timeout=True,
-            timeout=30,
-        )
-        config.include('.region_search')
-        config.include('.peak_indexer')
     config.include(static_resources)
     config.include(changelogs)
 
-    config.registry['ontology'] = json_from_path(settings.get('ontology_path'), {})
     aws_ip_ranges = json_from_path(settings.get('aws_ip_ranges_path'), {'prefixes': []})
     config.registry['aws_ipset'] = netaddr.IPSet(
         record['ip_prefix'] for record in aws_ip_ranges['prefixes'] if record['service'] == 'AMAZON')

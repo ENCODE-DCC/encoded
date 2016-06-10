@@ -16,6 +16,20 @@ def includeme(config):
 
 
 @collection(
+    name='labs',
+    unique_key='lab:name',
+    properties={
+        'title': 'Labs',
+        'description': 'Listing of ENCODE DCC labs',
+    })
+class Lab(Item):
+    item_type = 'lab'
+    schema = load_schema('snowflakes:schemas/lab.json')
+    name_key = 'name'
+    embedded = ['awards']
+
+
+@collection(
     name='awards',
     unique_key='award:name',
     properties={
