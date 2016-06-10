@@ -479,11 +479,11 @@ var FileGalleryRenderer = React.createClass({
                                 </DropdownButton>
                             </div>
                         : null}
-                        <div className="file-gallery-control file-gallery-control-select">
-                            {filterOptions.length ?
+                        {filterOptions.length ?
+                            <div className="file-gallery-control file-gallery-control-select">
                                 <FilterMenu selectedFilterValue={this.state.selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleFilterChange} />
-                            : null}
-                        </div>
+                            </div>
+                        : null}
                     </div>
                 </PanelHeading>
 
