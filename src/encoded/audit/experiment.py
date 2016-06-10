@@ -7,7 +7,6 @@ from .ontology_data import biosampleType_ontologyPrefix
 from .gtex_data import gtexDonorsList
 from .standards_data import pipelines_with_read_depth
 
-import datetime
 
 targetBasedAssayList = [
     'ChIP-seq',
@@ -28,6 +27,7 @@ controlRequiredAssayList = [
     'RIP-seq',
     'RAMPAGE',
     'CAGE',
+    'eCLIP',
     'single cell isolation followed by RNA-seq',
     'shRNA knockdown followed by RNA-seq',
     'CRISPR genome editing followed by RNA-seq',
