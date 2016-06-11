@@ -757,7 +757,7 @@ def report(context, request):
     }
     search_base = normalize_query(request)
     res['@id'] = '/report/' + search_base
-    res['download_tsv'] = request.route_path('report_download') + search_base
+    # res['download_tsv'] = request.route_path('report_download') + search_base
     res['title'] = 'Report'
     res['@type'] = ['Report']
     return res
