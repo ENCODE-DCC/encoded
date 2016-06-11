@@ -6,6 +6,7 @@ var mixins = require('./mixins');
 var Navigation = require('./navigation');
 var Footer = require('./footer');
 var url = require('url');
+var Home = require('./home').Home;
 
 var portal = {
     portal_title: 'ENCODE',
@@ -198,8 +199,8 @@ var App = React.createClass({
         var current_action = this.currentAction();
         if (!current_action && context.default_page) {
             context = context.default_page;
-        }
-        if (context) {
+            content = <Home context={context} />;
+        } else if (context) {
             var ContentView = globals.content_views.lookup(context, current_action);
             content = <ContentView context={context} />;
         }

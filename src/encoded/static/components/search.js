@@ -938,53 +938,6 @@ var ResultTable = search.ResultTable = React.createClass({
         };
     },
 
-    contextTypes: {
-        navigate: React.PropTypes.func
-    },
-
-    componentDidMount: function() {
-        require.ensure(['chart.js'], function(require) {
-            var Chart = require('chart.js');
-            var colorList = [
-                '#1F518B',
-                '#1488C8',
-                '#F7E041',
-                '#E2413E',
-                '#B5292A'
-            ];
-            var data = [];
-            var labels = [];
-            var colors = [];
-
-            var facets = this.props.context.facets;
-            var assayFacet = facets.find(facet => facet.field === 'assay_title');
-            assayFacet.terms.forEach(function(term, i) {
-                data[i] = term.doc_count;
-                labels[i] = term.key;
-                colors[i] = colorList[i % colorList.length];
-            });
-            var ctx = document.getElementById("myChart").getContext("2d");
-            this.myPieChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: colors
-                    }]
-                },
-                options: {
-                    onClick: (e) => {
-                        var activePoints = this.myPieChart.getElementAtEvent(e);
-                        var term = assayFacet.terms[activePoints[0]._index].key;
-                        this.context.navigate(this.props.searchBase + '&assay_title=' + term);
-                        console.log(activePoints);
-                    }
-                }
-            });
-        }.bind(this));
-    },
-
     render: function() {
         const batchHubLimit = 100;
         var context = this.props.context;
@@ -1041,7 +994,6 @@ var ResultTable = search.ResultTable = React.createClass({
                                     searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
                     </div> : ''}
                     <div className="col-sm-7 col-md-8 col-lg-9">
-                        <canvas id="myChart" width="400" height="400"></canvas>
                         {context['notification'] === 'Success' ?
                             <div>
                                 <h4>Showing {results.length} of {total} {label}</h4>
