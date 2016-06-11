@@ -11,7 +11,7 @@ def test_server_defaults(admin, anontestapp):
     item = res.json['@graph'][0]
     assert item['now'].startswith('2')
     assert item['user'] == admin['@id']
-    assert item['accession'].startswith('ENCAB')
+    assert item['accession'].startswith('SNO')
 
     anontestapp.patch_json(
         res.location, {}, status=200,

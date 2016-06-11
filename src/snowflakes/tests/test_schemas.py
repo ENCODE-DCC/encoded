@@ -33,7 +33,7 @@ def test_dependencies(testapp):
 
 
 def test_page_schema_validates_parent_is_not_collection_default_page(testapp):
-    res = testapp.post_json('/pages/', {'name': 'biosamples', 'title': 'Biosamples'})
+    res = testapp.post_json('/pages/', {'name': 'users', 'title': 'Users'})
     uuid = res.json['@graph'][0]['@id']
     testapp.post_json('/pages/', {'parent': uuid, 'name': 'test', 'title': 'Test'}, status=422)
 
@@ -54,8 +54,8 @@ def test_schemas_etag(testapp):
     testapp.get('/profiles/', headers={'If-None-Match': etag}, status=304)
 
 
-def test_etag_if_match_tid(testapp, organism):
-    res = testapp.get(organism['@id'] + '?frame=edit', status=200)
+def test_etag_if_match_tid(testapp, award):
+    res = testapp.get(award['@id'] + '?frame=edit', status=200)
     etag = res.etag
-    testapp.patch_json(organism['@id'], {}, headers={'If-Match': etag}, status=200)
-    testapp.patch_json(organism['@id'], {}, headers={'If-Match': etag}, status=412)
+    testapp.patch_json(award['@id'], {}, headers={'If-Match': etag}, status=200)
+    testapp.patch_json(award['@id'], {}, headers={'If-Match': etag}, status=412)

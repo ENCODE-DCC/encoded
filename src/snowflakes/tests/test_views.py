@@ -109,22 +109,6 @@ def test_json_basic_auth(anonhtmltestapp):
     assert res.content_type == 'application/json'
 
 
-def _test_antibody_approval_creation(testapp):
-    from urllib.parse import urlparse
-    new_antibody = {'foo': 'bar'}
-    res = testapp.post_json('/antibodies/', new_antibody, status=201)
-    assert res.location
-    assert '/profiles/result' in res.json['@type']['profile']
-    assert res.json['@graph'] == [{'href': urlparse(res.location).path}]
-    res = testapp.get(res.location, status=200)
-    assert '/profiles/antibody_approval' in res.json['@type']
-    data = res.json
-    for key in new_antibody:
-        assert data[key] == new_antibody[key]
-    res = testapp.get('/antibodies/', status=200)
-    assert len(res.json['@graph']) == 1
-
-
 def test_load_sample_data(
         award,
         lab,
@@ -133,6 +117,7 @@ def test_load_sample_data(
     assert True, 'Fixtures have loaded sample data'
 
 
+@pytest.mark.xfail
 def test_abstract_collection(testapp, experiment):
     testapp.get('/Dataset/{accession}'.format(**experiment))
     testapp.get('/datasets/{accession}'.format(**experiment))
@@ -149,42 +134,43 @@ def test_load_workbook(workbook, testapp, item_type, length):
 
 @pytest.mark.slow
 def test_collection_limit(workbook, testapp):
-    res = testapp.get('/antibodies/?limit=2', status=200)
+    res = testapp.get('/awards/?limit=2', status=200)
     assert len(res.json['@graph']) == 2
 
 
 def test_collection_post(testapp):
     item = {
-        'name': 'human',
-        'scientific_name': 'Homo sapiens',
-        'taxon_id': '9606',
+        'name': 'NIS39393',
+        'title': 'Grant to make snow',
+        'project': 'ENCODE',
+        'rfa': 'ENCODE3',
     }
-    return testapp.post_json('/organism', item, status=201)
+    return testapp.post_json('/award', item, status=201)
 
 
 def test_collection_post_bad_json(testapp):
     item = {'foo': 'bar'}
-    res = testapp.post_json('/organism', item, status=422)
+    res = testapp.post_json('/award', item, status=422)
     assert res.json['errors']
 
 
 def test_collection_post_malformed_json(testapp):
     item = '{'
     headers = {'Content-Type': 'application/json'}
-    res = testapp.post('/organism', item, status=400, headers=headers)
+    res = testapp.post('/award', item, status=400, headers=headers)
     assert res.json['detail'].startswith('Expecting')
 
 
 def test_collection_post_missing_content_type(testapp):
     item = '{}'
-    testapp.post('/organism', item, status=415)
+    testapp.post('/award', item, status=415)
 
 
 def test_collection_post_bad_(anontestapp):
     from base64 import b64encode
     from pyramid.compat import ascii_native_
     value = "Authorization: Basic %s" % ascii_native_(b64encode(b'nobody:pass'))
-    anontestapp.post_json('/organism', {}, headers={'Authorization': value}, status=401)
+    anontestapp.post_json('/award', {}, headers={'Authorization': value}, status=401)
 
 
 def test_collection_actions_filtered_by_permission(workbook, testapp, anontestapp):
@@ -195,8 +181,8 @@ def test_collection_actions_filtered_by_permission(workbook, testapp, anontestap
     assert not any(action for action in res.json.get('actions', []) if action['name'] == 'add')
 
 
-def test_item_actions_filtered_by_permission(testapp, authenticated_testapp, source):
-    location = source['@id']
+def test_item_actions_filtered_by_permission(testapp, authenticated_testapp, award):
+    location = award['@id']
 
     res = testapp.get(location)
     assert any(action for action in res.json.get('actions', []) if action['name'] == 'edit')
@@ -207,11 +193,12 @@ def test_item_actions_filtered_by_permission(testapp, authenticated_testapp, sou
 
 def test_collection_put(testapp, execute_counter):
     initial = {
-        'name': 'human',
-        'scientific_name': 'Homo sapiens',
-        'taxon_id': '9606',
+        'name': 'NIS39393',
+        'title': 'Grant to make snow',
+        'project': 'ENCODE',
+        'rfa': 'ENCODE3',
     }
-    item_url = testapp.post_json('/organism', initial).location
+    item_url = testapp.post_json('/award', initial).location
 
     with execute_counter.expect(1):
         item = testapp.get(item_url).json
@@ -220,9 +207,10 @@ def test_collection_put(testapp, execute_counter):
         assert item[key] == initial[key]
 
     update = {
-        'name': 'mouse',
-        'scientific_name': 'Mus musculus',
-        'taxon_id': '10090',
+        'name': 'NIS440404',
+        'title': 'Frozen wastland',
+        'project': 'ENCODE',
+        'rfa': 'ENCODE3',
     }
     testapp.put_json(item_url, update, status=200)
 
@@ -232,14 +220,15 @@ def test_collection_put(testapp, execute_counter):
         assert res[key] == update[key]
 
 
-def test_post_duplicate_uuid(testapp, mouse):
+def test_post_duplicate_uuid(testapp, award):
     item = {
-        'uuid': mouse['uuid'],
-        'name': 'human',
-        'scientific_name': 'Homo sapiens',
-        'taxon_id': '9606',
+        'uuid': award['uuid'],
+        'name': 'NIS39393',
+        'title': 'Grant to make snow',
+        'project': 'ENCODE',
+        'rfa': 'ENCODE3',
     }
-    testapp.post_json('/organism', item, status=409)
+    testapp.post_json('/award', item, status=409)
 
 
 def test_user_effective_principals(submitter, lab, anontestapp, execute_counter):
@@ -294,20 +283,6 @@ def test_page_collection_default(workbook, anontestapp):
     assert res.json['default_page']['@id'] == '/pages/images/'
 
 
-def test_antibody_redirect(testapp, antibody_approval, anontestapp):
-    assert antibody_approval['@id'].startswith('/antibody-approvals/')
-
-    res = testapp.get(antibody_approval['@id'], status=200)
-    assert 'antibody' in res.json
-
-    anontestapp.get(antibody_approval['@id'], status=403)
-
-    res = testapp.get('/antibodies/%s/' % antibody_approval['uuid']).follow(status=200)
-    assert res.json['@type'] == ['AntibodyLot', 'Item']
-
-    assert anontestapp.get('/antibodies/%s/' % antibody_approval['uuid'], status=301)
-
-
 def test_jsonld_context(testapp):
     res = testapp.get('/terms/')
     assert res.json
@@ -325,6 +300,7 @@ def test_index_data_workbook(workbook, testapp, indexer_testapp, item_type):
     for item in res.json['@graph']:
         indexer_testapp.get(item['@id'] + '@@index-data')
 
+
 @pytest.mark.parametrize('item_type', TYPE_LENGTH)
 def test_profiles(testapp, item_type):
     from jsonschema_serialize_fork import Draft4Validator
@@ -333,6 +309,6 @@ def test_profiles(testapp, item_type):
     assert not errors
 
 
-def test_bad_frame(testapp, human):
-    res = testapp.get(human['@id'] + '?frame=bad', status=404)
+def test_bad_frame(testapp, award):
+    res = testapp.get(award['@id'] + '?frame=bad', status=404)
     assert res.json['detail'] == '?frame=bad'

@@ -102,18 +102,6 @@ def test_users_view_basic_indexer(submitter, indexer_testapp):
     assert 'access_keys' not in res.json
 
 
-def test_viewing_group_member_view(viewing_group_member_testapp, experiment):
-    viewing_group_member_testapp.get(experiment['@id'], status=200)
-
-
-def test_remc_member_view_disallowed(remc_member_testapp, experiment):
-    remc_member_testapp.get(experiment['@id'], status=403)
-
-
-def test_remc_member_view_shared(remc_member_testapp, mouse_donor):
-    remc_member_testapp.get(mouse_donor['@id'], status=200)
-
-
 def test_submitter_patch_lab_disallowed(submitter, other_lab, submitter_testapp):
     res = submitter_testapp.get(submitter['@id'])
     lab = {'lab': other_lab['@id']}
