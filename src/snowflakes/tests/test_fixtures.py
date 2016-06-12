@@ -13,11 +13,12 @@ def minitestdata(app, conn):
     testapp = TestApp(app, environ)
 
     item = {
-        'name': 'human',
-        'scientific_name': 'Homo sapiens',
-        'taxon_id': '9606',
+        'name': 'NIS39344',
+        'title': 'Grant to make snow',
+        'project': 'ENCODE',
+        'rfa': 'ENCODE3',
     }
-    testapp.post_json('/organism', item, status=201)
+    testapp.post_json('/awards', item, status=201)
 
     yield
     tx.rollback()
@@ -35,11 +36,12 @@ def minitestdata2(app, conn):
     testapp = TestApp(app, environ)
 
     item = {
-        'name': 'human',
-        'scientific_name': 'Homo sapiens',
-        'taxon_id': '9606',
+        'name': 'NIS39344',
+        'title': 'Grant to make snow',
+        'project': 'ENCODE',
+        'rfa': 'ENCODE3',
     }
-    testapp.post_json('/organism', item, status=201)
+    testapp.post_json('/awards', item, status=201)
 
     yield
     tx.rollback()
@@ -51,42 +53,43 @@ def test_fixtures1(testapp):
 
     Still need to inspect the sql log to verify fixture correctness.
     """
-    res = testapp.get('/organism').maybe_follow()
+    res = testapp.get('/awards').maybe_follow()
     items = res.json['@graph']
     assert len(items) == 1
 
     # Trigger an error
     item = {'foo': 'bar'}
-    res = testapp.post_json('/organism', item, status=422)
+    res = testapp.post_json('/awards', item, status=422)
     assert res.json['errors']
 
-    res = testapp.get('/organism').maybe_follow()
+    res = testapp.get('/awards').maybe_follow()
     items = res.json['@graph']
     assert len(items) == 1
 
     item = {
-        'name': 'mouse',
-        'scientific_name': 'Mus musculus',
-        'taxon_id': '10090',
+        'name': 'NIS39339',
+        'title': 'Grant to make snow',
+        'project': 'ENCODE',
+        'rfa': 'ENCODE3',
     }
-    testapp.post_json('/organism', item, status=201)
+    testapp.post_json('/awards', item, status=201)
 
-    res = testapp.get('/organism').maybe_follow()
+    res = testapp.get('/awards').maybe_follow()
     items = res.json['@graph']
     assert len(items) == 2
 
     # Trigger an error
     item = {'foo': 'bar'}
-    res = testapp.post_json('/organism', item, status=422)
+    res = testapp.post_json('/awards', item, status=422)
     assert res.json['errors']
 
-    res = testapp.get('/organism').maybe_follow()
+    res = testapp.get('/awards').maybe_follow()
     items = res.json['@graph']
     assert len(items) == 2
 
 
 def test_fixtures2(minitestdata2, testapp):
     # http://stackoverflow.com/questions/15775601/mutually-exclusive-fixtures
-    res = testapp.get('/organisms/')
+    res = testapp.get('/awards/')
     items = res.json['@graph']
     assert len(items) == 1
