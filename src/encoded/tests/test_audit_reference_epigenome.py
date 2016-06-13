@@ -15,7 +15,7 @@ def reference_experiment_RNA_seq(testapp, lab, award):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'started',
         'assay_term_name': 'RNA-seq'
 
     }
@@ -27,7 +27,7 @@ def reference_experiment_RRBS(testapp, lab, award):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'started',
         'assay_term_name': 'RRBS'
 
     }
@@ -39,7 +39,7 @@ def reference_experiment_WGBS(testapp, lab, award):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'started',
         'assay_term_name': 'whole-genome shotgun bisulfite sequencing'
 
     }
@@ -51,7 +51,7 @@ def reference_experiment_chip_seq_control(testapp, lab, award, target_control):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'started',
         'assay_term_name': 'ChIP-seq',
         'target': target_control['uuid']
 
@@ -64,7 +64,7 @@ def reference_experiment_chip_seq_H3K27me3(testapp, lab, award, target_H3K27me3)
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'started',
         'assay_term_name': 'ChIP-seq',
         'target': target_H3K27me3['uuid']
 
@@ -77,7 +77,7 @@ def reference_experiment_chip_seq_H3K36me3(testapp, lab, award, target_H3K36me3)
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'started',
         'assay_term_name': 'ChIP-seq',
         'target': target_H3K36me3['uuid']
 
@@ -90,7 +90,7 @@ def reference_experiment_chip_seq_H3K4me1(testapp, lab, award, target_H3K4me1):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'started',
         'assay_term_name': 'ChIP-seq',
         'target': target_H3K4me1['uuid']
 
@@ -103,7 +103,7 @@ def reference_experiment_chip_seq_H3K4me3(testapp, lab, award, target_H3K4me3):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'started',
         'assay_term_name': 'ChIP-seq',
         'target': target_H3K4me3['uuid']
 
@@ -116,7 +116,7 @@ def reference_experiment_chip_seq_H3K27ac(testapp, lab, award, target_H3K27ac):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'started',
         'assay_term_name': 'ChIP-seq',
         'target': target_H3K27ac['uuid']
 
@@ -129,7 +129,7 @@ def reference_experiment_chip_seq_H3K9me3(testapp, lab, award, target_H3K9me3):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'started',
         'assay_term_name': 'ChIP-seq',
         'target': target_H3K9me3['uuid']
 
