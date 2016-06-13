@@ -3,39 +3,42 @@ var React = require('react');
 var globals = require('./globals');
 var {FetchedData, Param} = require('./fetched');
 
+
+// Main page component to render the home page
 var Home = module.exports.Home = React.createClass({
-    componentDidMount: function() {
-    },
 
     render: function() {
         return (
             <div>
-                <div className="homepage-main-box panel-gray">
-                    <div className="row">
-                        <div className="col-sm-12">
-                            <div className="project-info site-title">
-                                <h1>ENCODE: The Encyclopedia of DNA Elements</h1>
-                            </div>
-                            <div id="info-box" className="project-info text-panel">
-                                <h4>Preview the new ENCODE Portal</h4>
-                                <p>Enter a search term like "skin", "ChIP-seq", or "CTCF" or select a data type in the toolbar above.</p>
-                            </div>
-                            <HomepageSummaryLoader />
-                        </div>
+                <div className="homepage-banner">
+                    <div className="home-page-banner-title">
+                        ENCYCLOPEDIA of DNA ELEMENTS
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-sm-12">
+                        <HomepageChartLoader />
                     </div>
                 </div>
             </div>
         );
     }
+
 });
 
 
-var HomepageSummary = React.createClass({
+// Component to display the D3-based chart
+var HomepageChart = React.createClass({
+
     contextTypes: {
         navigate: React.PropTypes.func
     },
 
     componentDidMount: function() {
+        // Draw the chart of search results given in this.props.data.facets. Since D3 doesn't work
+        // with the React virtual DOM, we have to load it separately using the webpack .ensure
+        // mechanism. Once the callback is called, it's loaded and can be referenced through
+        // require.
         require.ensure(['chart.js'], function(require) {
             var Chart = require('chart.js');
             var colorList = [
@@ -49,14 +52,19 @@ var HomepageSummary = React.createClass({
             var labels = [];
             var colors = [];
 
-            console.log(this.props);
+            // Get the assay_title counts from the facets
             var facets = this.props.data.facets;
             var assayFacet = facets.find(facet => facet.field === 'assay_title');
+
+            // Collect up the experiment assay_title counts to our local arrays to prepare for
+            // the charts.
             assayFacet.terms.forEach(function(term, i) {
                 data[i] = term.doc_count;
                 labels[i] = term.key;
                 colors[i] = colorList[i % colorList.length];
             });
+
+            // Pass the assay_title counts to the charting library to render it.
             var canvas = document.getElementById("myChart");
             var ctx = canvas.getContext("2d");
             this.myPieChart = new Chart(ctx, {
@@ -70,10 +78,10 @@ var HomepageSummary = React.createClass({
                 },
                 options: {
                     onClick: (e) => {
+                        // React to clicks on pie sections
                         var activePoints = this.myPieChart.getElementAtEvent(e);
                         var term = assayFacet.terms[activePoints[0]._index].key;
-                        this.context.navigate(this.props.data['@id'] + '&assay_title=' + term + '&ratio=' + window.devicePixelRatio);
-                        console.log(activePoints);
+                        this.context.navigate(this.props.data['@id'] + '&assay_title=' + term);
                     }
                 }
             });
@@ -89,9 +97,12 @@ var HomepageSummary = React.createClass({
 });
 
 
-var HomepageSummaryLoader = React.createClass({
+// Initiates the GET request to search for experiments, and then pass the data to the HomepageChart
+// component to draw the resulting chart.
+var HomepageChartLoader = React.createClass({
 
     getDefaultProps: function () {
+        // Default searchBase if none passed in
         return {searchBase: '?type=Experiment'};
     },
 
@@ -103,7 +114,7 @@ var HomepageSummaryLoader = React.createClass({
         return (
             <FetchedData>
                 <Param name="data" url={'/search/' + this.state.search} />
-                <HomepageSummary searchBase={this.state.search + '&'} />
+                <HomepageChart searchBase={this.state.search + '&'} />
             </FetchedData>
         );
     }

@@ -1,0 +1,28 @@
+// Graphical banner for the home page
+.homepage-banner {
+    position: relative;
+    height: 250px;
+    background-image: url(../img/home-banner.jpg);
+    background-size: auto 100%;
+    background-color: black;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+// Title that overlays the banner
+.home-page-banner-title {
+    position: absolute;
+    width: 100%;
+    padding: 10px 0;
+    bottom: 0;
+    text-align: center;
+    color: #fff;
+    background-color: rgba(188,188,188,0.25);
+    font-size: 1.2rem;
+    font-weight: 100;
+
+    @media screen and (min-width: $screen-sm-min) {
+        letter-spacing: 10px;
+        font-size: 2rem;
+    }
+}

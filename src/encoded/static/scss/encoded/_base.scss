@@ -58,6 +58,7 @@ body { background: $mainThemeColor; @include font-size(1); }
 
 #slot-application, #application {
 	height: 100%;
+    overflow-x: hidden;
 }
 
 hr { clear: both; }

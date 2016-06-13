@@ -191,7 +191,7 @@ var App = React.createClass({
 
     render: function() {
         console.log('render app');
-        var content;
+        var content, containerClass;
         var context = this.props.context;
         var href_url = url.parse(this.props.href);
         // Switching between collections may leave component in place
@@ -200,9 +200,11 @@ var App = React.createClass({
         if (!current_action && context.default_page) {
             context = context.default_page;
             content = <Home context={context} />;
+            containerClass = 'container-homepage';
         } else if (context) {
             var ContentView = globals.content_views.lookup(context, current_action);
             content = <ContentView context={context} />;
+            containerClass = 'container';
         }
         var errors = this.state.errors.map(function (error) {
             return <div className="alert alert-error"></div>;
@@ -260,7 +262,7 @@ var App = React.createClass({
 
                             <div id="layout" onClick={this.handleLayoutClick} onKeyPress={this.handleKey}>
                                 <Navigation />
-                                <div id="content" className="container" key={key}>
+                                <div id="content" className={containerClass} key={key}>
                                     {content}
                                 </div>
                                 {errors}
