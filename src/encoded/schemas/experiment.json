@@ -207,7 +207,10 @@
             "title": "Assay Nickname"
         },
         "target.label": {
-            "title": "Target"
+            "title": "Target label"
+        },
+        "target.gene_name": {
+            "title": "Target gene"
         },
         "biosample_term_name": {
             "title": "Biosample"
