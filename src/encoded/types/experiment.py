@@ -258,8 +258,6 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         # Compare the biosamples to see if for humans they are the same donor and for
         # model organisms if they are sex-matched and age-matched
         biosample_dict = {}
-        biosample_age_list = []
-        biosample_sex_list = []
         biosample_donor_list = []
         biosample_number_list = []
 
@@ -272,8 +270,6 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
                 if 'biosample' in libraryObject:
                     biosampleObject = request.embed(libraryObject['biosample'], '@@object')
                     biosample_dict[biosampleObject['accession']] = biosampleObject
-                    biosample_age_list.append(biosampleObject.get('age'))
-                    biosample_sex_list.append(biosampleObject.get('sex'))
                     biosample_donor_list.append(biosampleObject.get('donor'))
                     biosample_number_list.append(replicateObject.get('biological_replicate_number'))
                     biosample_species = biosampleObject.get('organism')
@@ -314,28 +310,7 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
             else:
                 return 'isogenic'
 
-        if 'unknown' in biosample_age_list:
-            matchedAgeFlag = False
-        elif len(set(biosample_age_list)) == 1:
-            matchedAgeFlag = True
-        else:
-            matchedAgeFlag = False
-
-        if 'unknown' in biosample_sex_list:
-            matchedSexFlag = False
-        elif len(set(biosample_sex_list)) == 1:
-            matchedSexFlag = True
-        else:
-            matchedSexFlag = False
-
-        if matchedAgeFlag and matchedSexFlag:
-            return 'anisogenic, sex-matched and age-matched'
-        if matchedAgeFlag and not matchedSexFlag:
-            return 'anisogenic, age-matched'
-        if not matchedAgeFlag and matchedSexFlag:
-            return 'anisogenic, sex-matched'
-        if not matchedAgeFlag and not matchedSexFlag:
-            return 'anisogenic'
+        return 'anisogenic'
 
     matrix = {
         'y': {

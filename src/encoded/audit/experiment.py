@@ -641,10 +641,7 @@ def check_idr(metrics, rescue, self_consistency, pipeline):
 
 
 def check_mad(metrics, replication_type, mad_threshold, pipeline):
-    if replication_type in ['anisogenic',
-                            'anisogenic, sex-matched and age-matched',
-                            'anisogenic, age-matched',
-                            'anisogenic, sex-matched']:
+    if replication_type == 'anisogenic':
         experiment_replication_type = 'anisogenic'
     elif replication_type == 'isogenic':
         experiment_replication_type = 'isogenic'
@@ -732,10 +729,7 @@ def get_target(experiment):
 def check_spearman(metrics, replication_type, isogenic_threshold,
                    anisogenic_threshold, pipeline):
 
-    if replication_type in ['anisogenic',
-                            'anisogenic, sex-matched and age-matched',
-                            'anisogenic, age-matched',
-                            'anisogenic, sex-matched']:
+    if replication_type == 'anisogenic':
         threshold = anisogenic_threshold
     elif replication_type == 'isogenic':
         threshold = isogenic_threshold
@@ -2329,4 +2323,4 @@ def audit_library_RNA_size_range(value, system):
         lib = rep['library']
         if (lib['nucleic_acid_term_id'] in RNAs) and ('size_range' not in lib):
             detail = 'RNA library {} requires a value for size_range'.format(rep['library']['@id'])
-            raise AuditFailure('missing RNA fragment size', detail, level='NOT_COMPLIANT')
+            yield AuditFailure('missing RNA fragment size', detail, level='NOT_COMPLIANT')
