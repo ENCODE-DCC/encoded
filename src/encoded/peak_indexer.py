@@ -102,7 +102,7 @@ def get_assay_term_name(accession, request):
     return None
 
 
-def index_peaks(uuid, request):
+def index_peaks(uuid, request, success_flag):
     """
     Indexes bed files in elasticsearch index
     """
@@ -179,6 +179,7 @@ def index_peaks(uuid, request):
                                    body=get_mapping(context['assembly']))
         es.index(index=key, doc_type=context['assembly'], body=doc,
                  id=context['uuid'])
+    success_flag['found_single_file'] = True
     
 
 
@@ -212,7 +213,7 @@ def index_file(request):
         last_xmin = request.json['last_xmin']
     else:
         try:
-            status = es_peaks.get(index='encoded_peaks', doc_type='meta', id='indexing')
+            status = es_peaks.get(index='encoded', doc_type='meta', id='peak_indexing')
         except NotFoundError:
             pass
         else:
@@ -290,18 +291,20 @@ def index_file(request):
         err = None
         uuid_current = None
         try:
+            success_flag = {'found_single_file': False}
             for uuid in invalidated:
-                uuid_current = uuid
-                index_peaks(uuid, request)
+                if success_flag['found_single_file'] == False:
+                    uuid_current = uuid
+                    index_peaks(uuid, request, success_flag)
+                else:
+                    break
         except Exception as e:
             log.error('Error indexing %s', uuid_current, exc_info=True)
             err = repr(e)
         result['errors'] = [err]
         result['indexed'] = len(invalidated)
         if record:
-            if not es_peaks.indices.exists('encoded_peaks'):
-                es_peaks.indices.create(index='encoded_peaks', body=index_settings())
-            es_peaks.index(index='encoded_peaks', doc_type='meta', body=result, id='indexing')
+            es_peaks.index(index='encoded', doc_type='meta', body=result, id='peak_indexing')
 
 
     return result
