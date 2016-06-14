@@ -98,6 +98,11 @@ def audit_file_assembly(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
     if value['output_category'] in ['raw data', 'reference']:
+        if value['file_format'] in ['fastq', 'csfasta', 'csqual']:
+            detail = 'Raw data file {} '.format(value['@id']) + \
+                     'have improperly specified assembly value.'
+            yield AuditFailure('erroneous property',
+                               detail, level='DCC_ACTION')
         return
     if 'assembly' not in value:
         detail = 'Processed file {} '.format(value['@id']) + \
