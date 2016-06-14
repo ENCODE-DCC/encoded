@@ -111,21 +111,32 @@
     }
 }
 
-.flexcol-sm-6 {
-    @extend .col-sm-6;
 
-    @media screen and (min-width: $screen-sm-min) {
-        .flexbox & {
-            flex: 1 1 0px;
-            width: auto;
-            border-left: 1px solid #c0c0c0;
+%flexcol {
+    width: auto;
+    padding-left: ($grid-gutter-width / 2);
+    padding-right: ($grid-gutter-width / 2);
+    border-left: 1px solid #e8e8e8;
 
-            &:first-child {
-                border-left: none;
+    &:first-child {
+        border-left: none;
+    }
+}
+
+@each $width, $widthcat in ($screen-xs-min, xs), ($screen-sm-min, sm), ($screen-md-min, md), ($screen-lg-min, lg) {
+    @for $i from 1 through $grid-columns {
+        .flexcol-#{$widthcat}-#{$i} {
+            @extend %flexcol;
+
+            @media screen and (min-width: $width) {
+                .flexbox & {
+                    flex: #{$i} 1 0;
+                }
             }
         }
     }
 }
+
 
 .flexcol-heading {
     position: relative;

@@ -988,12 +988,14 @@ var ResultTable = search.ResultTable = React.createClass({
 
         return (
             <div>
-                <div className="row">
-                    {facets.length ? <div className="col-sm-5 col-md-4 col-lg-3">
-                        <FacetList {...this.props} facets={facets} filters={filters}
-                                    searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
-                    </div> : ''}
-                    <div className="col-sm-7 col-md-8 col-lg-9">
+                <div className="flexrow">
+                    {facets.length ?
+                        <div className="flexcol-sm-5 flexcol-md-4 flexcol-lg-3">
+                            <FacetList {...this.props} facets={facets} filters={filters}
+                                        searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
+                        </div>
+                    : ''}
+                    <div className="flexcol-sm-7 flexcol-md-8 flexcol-lg-9">
                         {context['notification'] === 'Success' ?
                             <div>
                                 <h4>Showing {results.length} of {total} {label}</h4>
