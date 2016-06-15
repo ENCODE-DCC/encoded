@@ -102,7 +102,7 @@ def get_assay_term_name(accession, request):
     return None
 
 
-def index_peaks(uuid, request, success_flag):
+def index_peaks(uuid, request):
     """
     Indexes bed files in elasticsearch index
     """
@@ -177,10 +177,7 @@ def index_peaks(uuid, request, success_flag):
             es.indices.create(index=key, body=index_settings())
             es.indices.put_mapping(index=key, doc_type=context['assembly'],
                                    body=get_mapping(context['assembly']))
-        es.index(index=key, doc_type=context['assembly'], body=doc,
-                 id=context['uuid'])
-    success_flag['found_single_file'] = True
-    
+        es.index(index=key, doc_type=context['assembly'], body=doc, id=context['uuid'])
 
 
 @view_config(route_name='index_file', request_method='POST', permission="index")
@@ -291,13 +288,9 @@ def index_file(request):
         err = None
         uuid_current = None
         try:
-            success_flag = {'found_single_file': False}
             for uuid in invalidated:
-                if success_flag['found_single_file'] == False:
-                    uuid_current = uuid
-                    index_peaks(uuid, request, success_flag)
-                else:
-                    break
+                uuid_current = uuid
+                index_peaks(uuid, request)
         except Exception as e:
             log.error('Error indexing %s', uuid_current, exc_info=True)
             err = repr(e)
