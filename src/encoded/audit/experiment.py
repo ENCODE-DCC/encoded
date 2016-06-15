@@ -159,7 +159,7 @@ def audit_experiment_missing_processed_files(value, system):
                 yield failure
 
     elif 'Histone ChIP-seq' in pipelines or \
-         'Transcription factor ChIP-seq' or \
+         'Transcription factor ChIP-seq' in pipelines or \
          'Raw mapping with no filtration' in pipelines:
         # check if control
         target = value.get('target')
@@ -221,7 +221,7 @@ def check_structures(replicate_structures, control_flag, experiment):
                     detail = 'Experiment {} contains '.format(experiment['@id']) + \
                              'unexpected file {} '.format(unexpected_file) + \
                              'that is associated with ' + \
-                             'biolofgical replicates {}.'.format(bio_rep_num)
+                             'biological replicates {}.'.format(bio_rep_num)
                     yield AuditFailure('unexpected pipeline files', detail, level='DCC_ACTION')
 
             if replicate_structures[(bio_rep_num, assembly)].is_complete() is False:
