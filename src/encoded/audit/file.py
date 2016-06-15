@@ -97,8 +97,10 @@ def audit_file_derived_from_revoked(value, system):
 def audit_file_assembly(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
+
     if value['output_category'] in ['raw data', 'reference']:
-        if value['file_format'] in ['fastq', 'csfasta', 'csqual']:
+        if value['file_format'] in ['fastq', 'csfasta', 'csqual'] and \
+           'assembly' in value:
             detail = 'Raw data file {} '.format(value['@id']) + \
                      'have improperly specified assembly value.'
             yield AuditFailure('erroneous property',
