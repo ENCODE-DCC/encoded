@@ -162,6 +162,10 @@ $audit-types:
 
     .audit-detail-trigger-#{$audit-type} {
         @extend %audit-detail-trigger;
+
+        &:hover {
+            background-color: darken(fg-to-bg-color($color), 10%);
+        }
     }
 
     // Audit level name text
