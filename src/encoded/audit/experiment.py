@@ -18,8 +18,6 @@ from .pipeline_structures import (
     encode_rampage_experiment_pooled
     )
 
-import datetime
-
 targetBasedAssayList = [
     'ChIP-seq',
     'RNA Bind-n-Seq',
@@ -278,6 +276,9 @@ def create_pipeline_structures(files_to_scan, structure_type):
         'encode_chip_histone_pooled': encode_chip_histone_experiment_pooled,
         'encode_chip_tf_pooled': encode_chip_tf_experiment_pooled,
         'encode_chip_replicate': encode_chip_experiment_replicate,
+        'encode_rampage_experiment_replicate': encode_rampage_experiment_replicate,
+        'encode_rampage_experiment_pooled': encode_rampage_experiment_pooled
+
     }
     structures_to_return = {}
     replicates_set = set()
