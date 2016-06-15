@@ -58,7 +58,8 @@ class basic_experiment(object):
                 to_add = (f_format, f_output, processed_file['accession'])
                 self.unexpected_files_set.add(to_add)
             else:
-                self.file_types[(f_format, f_output)] = processed_file.get('accession')
+                # self.file_types[(f_format, f_output)] = processed_file.get('accession')
+                self.set_file((f_format, f_output), processed_file.get('accession'))
                 self.replicates = processed_file.get('biological_replicates')
                 self.assembly = processed_file.get('assembly')
 
@@ -84,7 +85,8 @@ class encode_chip_control(basic_experiment):
                 to_add = (f_format, f_output, processed_file['accession'])
                 self.unexpected_files_set.add(to_add)
             else:
-                self.file_types[(f_format, f_output)] = processed_file.get('accession')
+                # self.file_types[(f_format, f_output)] = processed_file.get('accession')
+                self.set_file((f_format, f_output), processed_file.get('accession'))
                 self.replicates = processed_file.get('biological_replicates')
                 self.assembly = processed_file.get('assembly')
 
@@ -169,7 +171,8 @@ class modERN_TF_control(basic_experiment):
                 to_add = (f_format, f_output, processed_file['accession'])
                 self.unexpected_files_set.add(to_add)
             else:
-                self.file_types[(f_format, f_output)] = processed_file.get('accession')
+                # self.file_types[(f_format, f_output)] = processed_file.get('accession')
+                self.set_file((f_format, f_output), processed_file.get('accession'))
                 self.replicates = processed_file.get('biological_replicates')
                 self.assembly = processed_file.get('assembly')
 
@@ -201,7 +204,8 @@ class modERN_TF_replicate(basic_experiment):
                 to_add = (f_format, f_output, processed_file['accession'])
                 self.unexpected_files_set.add(to_add)
             else:
-                self.file_types[(f_format, f_output)] = processed_file.get('accession')
+                # self.file_types[(f_format, f_output)] = processed_file.get('accession')
+                self.set_file((f_format, f_output), processed_file.get('accession'))
                 self.replicates = processed_file.get('biological_replicates')
                 self.assembly = processed_file.get('assembly')
 
@@ -234,6 +238,7 @@ class modERN_TF_pooled(basic_experiment):
                 to_add = (f_format, f_output, processed_file['accession'])
                 self.unexpected_files_set.add(to_add)
             else:
-                self.file_types[(f_format, f_output)] = processed_file.get('accession')
+                # self.file_types[(f_format, f_output)] = processed_file.get('accession')
+                self.set_file((f_format, f_output), processed_file.get('accession'))
                 self.replicates = processed_file.get('biological_replicates')
                 self.assembly = processed_file.get('assembly')
