@@ -3,7 +3,7 @@
     position: relative;
     height: 250px;
     background-image: url(../img/home-banner.jpg);
-    background-size: auto 100%;
+    background-size: auto 90%;
     background-color: black;
     background-repeat: no-repeat;
     background-position: center;
@@ -25,4 +25,19 @@
         letter-spacing: 10px;
         font-size: 2rem;
     }
+}
+
+
+.col-sm-12 {
+    height:50%;
+    width:50%;
+    
+    border: 3px solid #C6E2FF;
+}
+
+.right-graph {
+    height:50%;
+    width:50%;
+    float:left;
+    border: 3px solid #3B6AA0;
 }
