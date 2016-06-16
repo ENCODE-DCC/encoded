@@ -20,7 +20,7 @@ var Home = module.exports.Home = React.createClass({
                     <div className="right-graph">
                         <HomepageChartLoader />
                     </div>
-                    
+
                     <div className="col-sm-12">
                         <HomepageChartLoader2 />
                     </div>
@@ -73,7 +73,7 @@ var HomepageChart = React.createClass({
 
             // Pass the assay_title counts to the charting library to render it.
             var canvas = document.getElementById("myChart");
-            var ctx = canvas.getContext("2d")
+            var ctx = canvas.getContext("2d");
             this.myPieChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
@@ -88,7 +88,7 @@ var HomepageChart = React.createClass({
                         // React to clicks on pie sections
                         var activePoints = this.myPieChart.getElementAtEvent(e);
                         var term = assayFacet.terms[activePoints[0]._index].key;
-                        this.context.navigate(this.props.data['@id'] + '&assay_title=' + term)    
+                        this.context.navigate(this.props.data['@id'] + '&assay_title=' + term);    
                 }
             });
         }.bind(this));
@@ -190,7 +190,7 @@ var HomepageChart2 = React.createClass({
 
             // Pass the assay_title counts to the charting library to render it.
             var canvas = document.getElementById("myChart2");
-            var ctx = canvas.getContext("2d")
+            var ctx = canvas.getContext("2d");
             this.myPieChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
