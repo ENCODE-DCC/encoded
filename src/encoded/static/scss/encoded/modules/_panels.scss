@@ -1,22 +1,39 @@
+$panel-border-color-exterior: #a0a0a0; // Exterior border cooor of panels
+$panel-border-color-interior: #d8d8d8; // Interior border color of panels
+
 /* Panels */
 .panel {
     background-color: #fff;
-    border: 1px solid #e0e0e0;
-    margin-top: 15px;
-    margin-bottom: 15px;
+    border: 1px solid $panel-border-color-exterior;
+    margin-top: 30px;
+    margin-bottom: 30px;
     padding: 15px 20px;
     overflow: visible;
+    box-shadow: none;
 
     &.panel-default {
         padding: 0;
 
         & > .panel-heading {
-            background-color: #d8d8d8;
+            background-color: #fff;
 
             h1, h2, h3, h4, h5, h6 {
                 margin: 0;
             }
         }
+    }
+
+    h3, h4 {
+        color: #606060;
+        font-weight: bold;
+    }
+
+    h3 {
+        font-size: 1.2rem;
+    }
+
+    h4 {
+        font-size: 1.3rem;
     }
 }
 
@@ -61,8 +78,6 @@
     padding: 15px 30px;
     overflow: hidden;
 }
-
-.panel h3, .panel h4 {color: #0A253D;}
 
 .view-detail h3 {line-height: 24.5px;}
 
@@ -220,9 +235,9 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     text-align: center;
     font-size: 0.9rem;
     color: #606060;
-    background-color: #d8d8d8;
-    border-top: 1px solid #a0a0a0;
-    border-bottom: 1px solid #a0a0a0;
+    background-color: #f0f0f0;
+    border-top: 1px solid $panel-border-color-interior;
+    border-bottom: 1px solid $panel-border-color-interior;
 }
 
 .file-gallery-graph-header {
