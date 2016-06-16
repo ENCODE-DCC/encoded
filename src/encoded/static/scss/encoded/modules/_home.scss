@@ -3,7 +3,7 @@
     position: relative;
     height: 250px;
     background-image: url(../img/home-banner.jpg);
-    background-size: auto 100%;
+    background-size: auto 90%;
     background-color: black;
     background-repeat: no-repeat;
     background-position: center;
@@ -25,4 +25,24 @@
         letter-spacing: 10px;
         font-size: 2rem;
     }
+}
+
+.row {
+    width: 800px;
+    border: 1px solid black;
+    overflow: hidden; /* will contain if #first is longer than #second */
+}
+
+.col-sm-12 {
+    height:500px;
+    width:750px;
+    float:left;
+    border: 3px solid #C6E2FF;
+}
+
+.right-graph {
+    height:500px;
+    width:750px;
+    float:right;
+    border: 3px solid #3B6AA0;
 }
