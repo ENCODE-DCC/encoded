@@ -12,7 +12,7 @@ var Home = module.exports.Home = React.createClass({
             <div>
                 <div className="homepage-banner">
                     <div className="home-page-banner-title">
-                        HELLOOO of DNA ELEMENTS
+                        ENCYCLOPEDIA of DNA ELEMENTS
                     </div>
                 </div>
                 <div className="row">
@@ -87,7 +87,7 @@ var HomepageChart = React.createClass({
                         // React to clicks on pie sections
                         var activePoints = this.myPieChart.getElementAtEvent(e);
                         var term = assayFacet.terms[activePoints[0]._index].key;
-                        //this.context.navigate(this.props.data['@id'] + '&assay_title=' + term)    
+                        this.context.navigate(this.props.data['@id'] + '&assay_title=' + term)    
                 }
             });
         }.bind(this));
