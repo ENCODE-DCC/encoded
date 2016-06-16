@@ -20,6 +20,7 @@ var Home = module.exports.Home = React.createClass({
                     <div className="right-graph">
                         <HomepageChartLoader />
                     </div>
+                    
                     <div className="col-sm-12">
                         <HomepageChartLoader2 />
                     </div>
