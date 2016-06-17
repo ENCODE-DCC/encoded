@@ -179,13 +179,13 @@ def audit_experiment_missing_processed_files(value, system):
                                                               'encode_chip_histone')
             for failure in check_structures(replicate_structures, False, value):
                 yield failure
-
+    '''
     elif 'RAMPAGE (paired-end, stranded)' in pipelines:
         replicate_structures = create_pipeline_structures(value['original_files'],
                                                           'rampage')
         for failure in check_structures(replicate_structures, False, value):
                 yield failure
-
+    '''
 
 def check_structures(replicate_structures, control_flag, experiment):
     bio_reps = get_bio_replicates(experiment)
