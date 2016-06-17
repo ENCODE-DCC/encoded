@@ -263,7 +263,30 @@ def set_filters(request, query, result):
     """
     query_filters = query['filter']['and']['filters']
     used_filters = {}
-    for field, terms in request.params.dict_of_lists().items():
+
+    # Fix up field=value1:subfield=value2
+    params = request.params.dict_of_lists()
+    new_params = {}
+    to_delete = []
+    for field, terms in params.items():
+        normal_terms = []
+        for term in terms:
+            if '=' in term:
+                new_field, new_term = '{}={}'.format(field, term).rsplit('=', 1)
+                if new_field not in new_params:
+                    new_params[new_field] = []
+                new_params[new_field].append(new_term)
+            else:
+                normal_terms.append(term)
+        if normal_terms:
+            new_params[field] = normal_terms
+        else:
+            to_delete.append(field)
+    params.update(new_params)
+    for field in to_delete:
+        del params[field]
+
+    for field, terms in params.items():
         if field in [
                 'type', 'limit', 'y.limit', 'x.limit', 'mode', 'annotation',
                 'format', 'frame', 'datastore', 'field', 'region', 'genome',
@@ -274,7 +297,8 @@ def set_filters(request, query, result):
         for term in terms:
             qs = urlencode([
                 (k.encode('utf-8'), v.encode('utf-8'))
-                for k, v in request.params.items() if v != term
+                for k, v in request.params.items()
+                if '{}={}'.format(k, v) != '{}={}'.format(field, term)
             ])
             result['filters'].append({
                 'field': field,
@@ -290,6 +314,8 @@ def set_filters(request, query, result):
             query_field = field[:-1]
         else:
             query_field = field
+        if ':' in query_field:
+            query_field = query_field.split(':')[-1]
         if not query_field.startswith('audit'):
             query_field = 'embedded.' + query_field + '.raw'
 
@@ -352,20 +378,34 @@ def set_facets(facets, used_filters, principals, doc_types):
     for facet_name, facet_options in facets:
         # Filter facet results to only include
         # objects of the specified type(s) that the user can see
-        terms = [
+        filters = [
             {'terms': {'principals_allowed.view': principals}},
             {'terms': {'embedded.@type.raw': doc_types}},
         ]
         # Also apply any filters NOT from the same field as the facet
-        for q_field, q_terms in used_filters.items():
-            if q_field != facet_name and q_field.startswith('audit'):
-                terms.append({'terms': {q_field: q_terms}})
-            elif q_field != facet_name and not q_field.endswith('!'):
-                terms.append({
-                    'terms': {'embedded.' + q_field + '.raw': q_terms}})
-            elif q_field != facet_name and q_field.endswith('!'):
-                terms.append({'not': {
-                    'terms': {'embedded.' + q_field[:-1] + '.raw': q_terms}}})
+        for field, terms in used_filters.items():
+            if field.endswith('!'):
+                query_field = field[:-1]
+            else:
+                query_field = field
+            if ':' in query_field:
+                # subfacet filters should not filter their parent facet
+                if query_field.split(':')[0].split('=')[0] == facet_name:
+                    continue
+                query_field = query_field.split(':')[-1]
+
+            # if an option was selected in a facet,
+            # don't filter the facet to only include that option
+            if query_field == facet_name:
+                continue
+
+            if not query_field.startswith('audit'):
+                query_field = 'embedded.' + query_field + '.raw'
+
+            if field.endswith('!'):
+                filters.append({'not': {'terms': {query_field: terms}}})
+            else:
+                filters.append({'terms': {query_field: terms}})
 
         agg_name, agg = build_aggregation(facet_name, facet_options)
         aggs[agg_name] = {
@@ -374,7 +414,7 @@ def set_facets(facets, used_filters, principals, doc_types):
             },
             'filter': {
                 'bool': {
-                    'must': terms,
+                    'must': filters,
                 },
             },
         }

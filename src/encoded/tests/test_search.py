@@ -315,6 +315,47 @@ def test_set_filters_audit():
     }
 
 
+def test_set_filters_subfacet():
+    from encoded.search import set_filters
+
+    request = FakeRequest((
+        ('award.project', 'ENCODE:award.rfa=ENCODE2'),
+    ))
+    query = {
+        'filter': {
+            'and': {
+                'filters': [],
+            },
+        },
+    }
+    result = {'filters': []}
+    used_filters = set_filters(request, query, result)
+
+    assert used_filters == {'award.project=ENCODE:award.rfa': ['ENCODE2']}
+    assert query == {
+        'filter': {
+            'and': {
+                'filters': [
+                    {
+                        'terms': {
+                            'embedded.award.rfa.raw': ['ENCODE2'],
+                        },
+                    },
+                ],
+            },
+        },
+    }
+    assert result == {
+        'filters': [
+            {
+                'field': 'award.project=ENCODE:award.rfa',
+                'term': 'ENCODE2',
+                'remove': '/search/?'
+            },
+        ],
+    }
+
+
 def test_set_facets():
     from collections import OrderedDict
     from encoded.search import set_facets
@@ -474,6 +515,76 @@ def test_set_facets_nested():
                     'must': [
                         {'terms': {'principals_allowed.view': ['group.admin']}},
                         {'terms': {'embedded.@type.raw': ['Experiment']}},
+                    ],
+                },
+            },
+        }
+    } == aggs
+
+
+def test_set_facets_nested_subfilter_does_not_filter_parent():
+    from encoded.search import set_facets
+    facets = [
+        ('award.project', {
+            'title': 'Project',
+            'facets': {
+                'award.rfa': {'title': 'RFA'},
+            }
+        }),
+        ('foo', {
+            'title': 'Foo',
+        }),
+    ]
+    used_filters = {'award.project=ENCODE:award.rfa': ['ENCODE2']}
+    principals = ['group.admin']
+    doc_types = ['Experiment']
+    aggs = set_facets(facets, used_filters, principals, doc_types)
+
+    assert {
+        'award-project': {
+            'aggs': {
+                'award-project': {
+                    'terms': {
+                        'field': 'embedded.award.project.raw',
+                        'min_doc_count': 0,
+                        'size': 100,
+                    },
+                    'aggs': {
+                        'award-rfa': {
+                            'terms': {
+                                'field': 'embedded.award.rfa.raw',
+                                'min_doc_count': 1,
+                                'size': 100,
+                            }
+                        }
+                    }
+                },
+            },
+            'filter': {
+                'bool': {
+                    'must': [
+                        {'terms': {'principals_allowed.view': ['group.admin']}},
+                        {'terms': {'embedded.@type.raw': ['Experiment']}},
+                    ],
+                },
+            },
+        },
+        'foo': {
+            'aggs': {
+                'foo': {
+                    'terms': {
+                        'field': 'embedded.foo.raw',
+                        'min_doc_count': 0,
+                        'size': 100,
+                    },
+                },
+            },
+            'filter': {
+                'bool': {
+                    'must': [
+                        {'terms': {'principals_allowed.view': ['group.admin']}},
+                        {'terms': {'embedded.@type.raw': ['Experiment']}},
+                        {'terms': {'embedded.award.rfa.raw': ['ENCODE2']}},
                     ],
                 },
             },
