@@ -16,6 +16,7 @@ $qualitymetric-figure-height: 96px;
 
 .type-Document.view-detail {
     padding: 0;
+    overflow: hidden;
 
     figure {
         margin: 14px;
@@ -726,4 +727,32 @@ $dl-bar-height: 30px;
 
 .journal, .author {
     @include font-size(1);
+}
+
+// Characterization panel biosample terms
+// **********
+
+// area to hold biosample terms
+.characterization-biosample-terms {
+    display: flex;
+    margin-top: -1px;
+    margin-right: -1px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: flex-start;
+    border-bottom: 1px solid #c0c0c0;
+}
+
+// each biosample term
+.characterization-biosample-term {
+    order: 0;
+    padding: 2px 5px;
+    align-self: auto;
+    text-align: center;
+    background-color: #e8e8e8;
+    border-top: 1px solid #fff;
+    border-right: 1px solid #fff;
+    font-size: 0.9rem;
 }
