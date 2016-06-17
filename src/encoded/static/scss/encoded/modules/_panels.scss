@@ -187,6 +187,13 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     padding: 10px 0 0 10px;
 }
 
+// Holds documents, but as a panel within a panel
+.panel-body-doc-interior {
+    @extend .panel-body-doc;
+    padding-left: 0;
+    margin-right: -10px;
+}
+
 // Styles for the File Gallery component that displays the file tables and graphs
 .file-gallery-heading {
     position: relative;

@@ -768,16 +768,6 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                                 </div>
                             : null}
 
-                            {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
-                                <section className="multi-columns-row">
-                                    <hr />
-                                    <h4>Characterizations</h4>
-                                    <div className="row multi-columns-row">
-                                        {biosample.donor.characterizations.map(PanelLookup)}
-                                    </div>
-                                </section>
-                            : null}
-
                             {context.dbxrefs && context.dbxrefs.length ?
                                 <div data-test="external-resources">
                                     <dt>External resources</dt>
@@ -792,6 +782,16 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                                 </div>
                             : null}
                         </dl>
+
+                        {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
+                            <div>
+                                <hr />
+                                <h4>Characterizations</h4>
+                                <PanelBody addClasses="panel-body-doc-interior">
+                                    <DocumentsSubpanels documentSpec={{documents: biosample.donor.characterizations}} />
+                                </PanelBody>
+                            </div>
+                        : null}
                     </PanelBody>
                 </Panel>
             </div>
