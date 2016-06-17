@@ -163,7 +163,7 @@ def ctrl_experiment(testapp, lab, award, control_target):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'started',
         'assay_term_name': 'ChIP-seq',
         'assay_term_id': 'OBI:0000716'
     }
@@ -599,7 +599,7 @@ def test_audit_experiment_target(testapp, base_experiment):
 
 
 def test_audit_experiment_replicated(testapp, base_experiment, base_replicate, base_library):
-    testapp.patch_json(base_experiment['@id'], {'status': 'release ready'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'ready for review'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -652,7 +652,7 @@ def test_audit_experiment_technical_replicates_biosample(testapp, base_experimen
 
 
 def test_audit_experiment_with_libraryless_replicated(testapp, base_experiment, base_replicate, base_library):
-    testapp.patch_json(base_experiment['@id'], {'status': 'release ready'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'ready for review'})
     testapp.patch_json(base_experiment['@id'], {'replicates': [base_replicate['@id']]})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -664,7 +664,7 @@ def test_audit_experiment_with_libraryless_replicated(testapp, base_experiment, 
 
 def test_audit_experiment_single_cell_replicated(testapp, base_experiment, base_replicate,
                                                  base_library):
-    testapp.patch_json(base_experiment['@id'], {'status': 'release ready'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'ready for review'})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name':
                                                 'single cell isolation followed by RNA-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
@@ -677,7 +677,7 @@ def test_audit_experiment_single_cell_replicated(testapp, base_experiment, base_
 
 def test_audit_experiment_RNA_bind_n_seq_replicated(testapp, base_experiment, base_replicate,
                                                     base_library):
-    testapp.patch_json(base_experiment['@id'], {'status': 'release ready'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'ready for review'})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name':
                                                 'RNA Bind-n-Seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
@@ -815,6 +815,18 @@ def test_audit_experiment_documents(testapp, base_experiment, base_library, base
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing documents' for error in errors_list)
+
+
+def test_audit_experiment_documents_excluded(testapp, base_experiment,
+                                             base_library, award, base_replicate):
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    testapp.patch_json(award['@id'], {'rfa': 'modENCODE'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] != 'missing documents' for error in errors_list)
 
 
 def test_audit_experiment_model_organism_mismatched_sex(testapp,
@@ -1101,7 +1113,7 @@ def test_audit_experiment_replicate_with_no_files_warning(testapp, file_bed_meth
                                                           base_library):
     testapp.patch_json(file_bed_methyl['@id'], {'replicate': base_replicate['@id']})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
-    testapp.patch_json(base_experiment['@id'], {'status': 'in progress'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'started'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -1230,6 +1242,31 @@ def test_audit_experiment_mismatched_inter_length_sequencing_files(testapp,
                for error in errors_list)
 
 
+def test_audit_experiment_mismatched_valid_inter_length_sequencing_files(testapp,
+                                                                         base_experiment,
+                                                                         replicate_1_1,
+                                                                         replicate_2_1,
+                                                                         library_1,
+                                                                         library_2,
+                                                                         biosample_1,
+                                                                         biosample_2,
+                                                                         mouse_donor_1,
+                                                                         mouse_donor_2,
+                                                                         file_fastq_3,
+                                                                         file_fastq_4,
+                                                                         file_fastq_5):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
+    testapp.patch_json(file_fastq_3['@id'], {'read_length': 50})
+    testapp.patch_json(file_fastq_5['@id'], {'read_length': 52})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'mixed read lengths'
+               for error in errors_list)
+
+
 def test_audit_experiment_rampage_standards(testapp,
                                             base_experiment,
                                             replicate_1_1,
@@ -1258,7 +1295,10 @@ def test_audit_experiment_rampage_standards(testapp,
                                              'assembly': 'mm10'})
     testapp.patch_json(file_bam_2_1['@id'], {'step_run': analysis_step_run_bam['@id'],
                                              'assembly': 'mm10'})
-
+    testapp.patch_json(bam_quality_metric_1_1['@id'],
+                       {'Number of reads mapped to multiple loci': 100})
+    testapp.patch_json(bam_quality_metric_2_1['@id'],
+                       {'Number of reads mapped to multiple loci': 100})
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'RAMPAGE (paired-end, stranded)'})
 
@@ -1325,7 +1365,10 @@ def test_audit_experiment_small_rna_standards(testapp,
 
     testapp.patch_json(bam_quality_metric_1_1['@id'], {'Uniquely mapped reads number': 26000000})
     testapp.patch_json(bam_quality_metric_2_1['@id'], {'Uniquely mapped reads number': 26000000})
-
+    testapp.patch_json(bam_quality_metric_1_1['@id'],
+                       {'Number of reads mapped to multiple loci': 1000000})
+    testapp.patch_json(bam_quality_metric_2_1['@id'],
+                       {'Number of reads mapped to multiple loci': 1000000})
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
@@ -1382,7 +1425,10 @@ def test_audit_experiment_MAD_long_rna_standards(testapp,
 
     testapp.patch_json(bam_quality_metric_1_1['@id'], {'Uniquely mapped reads number': 29000000})
     testapp.patch_json(bam_quality_metric_2_1['@id'], {'Uniquely mapped reads number': 38000000})
-
+    testapp.patch_json(bam_quality_metric_1_1['@id'],
+                       {'Number of reads mapped to multiple loci': 1})
+    testapp.patch_json(bam_quality_metric_2_1['@id'],
+                       {'Number of reads mapped to multiple loci': 1})
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
@@ -1439,7 +1485,10 @@ def test_audit_experiment_long_rna_standards_crispr(testapp,
 
     testapp.patch_json(bam_quality_metric_1_1['@id'], {'Uniquely mapped reads number': 5000000})
     testapp.patch_json(bam_quality_metric_2_1['@id'], {'Uniquely mapped reads number': 10000000})
-
+    testapp.patch_json(bam_quality_metric_1_1['@id'],
+                       {'Number of reads mapped to multiple loci': 10})
+    testapp.patch_json(bam_quality_metric_2_1['@id'],
+                       {'Number of reads mapped to multiple loci': 100})
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
@@ -1500,6 +1549,10 @@ def test_audit_experiment_long_rna_standards(testapp,
 
     testapp.patch_json(bam_quality_metric_1_1['@id'], {'Uniquely mapped reads number': 1000000})
     testapp.patch_json(bam_quality_metric_2_1['@id'], {'Uniquely mapped reads number': 38000000})
+    testapp.patch_json(bam_quality_metric_1_1['@id'],
+                       {'Number of reads mapped to multiple loci': 10})
+    testapp.patch_json(bam_quality_metric_2_1['@id'],
+                       {'Number of reads mapped to multiple loci': 30})
     testapp.patch_json(mad_quality_metric_1_2['@id'], {'quality_metric_of': [
                                                        file_tsv_1_1['@id'],
                                                        file_tsv_1_2['@id']]})
@@ -1713,7 +1766,7 @@ def test_audit_experiment_chip_seq_no_target_standards(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'ChIP-seq missing target' for error in errors_list)
+    assert any(error['category'] == 'missing target' for error in errors_list)
 
 
 def test_audit_experiment_chip_seq_library_complexity_standards(testapp,

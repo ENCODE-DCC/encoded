@@ -89,7 +89,7 @@ def audit_antibody_characterization_unique_reviews(value, system):
                 term_id,
                 organism
                 )
-            raise AuditFailure('duplicate lane review', detail, level='ERROR')
+            raise AuditFailure('duplicate lane review', detail, level='DCC_ACTION')
 
 
 @audit_checker('antibody_characterization', frame=[
@@ -183,26 +183,3 @@ def audit_antibody_characterization_status(value, system):
             value['status']
             )
         raise AuditFailure('mismatched lane status', detail, level='DCC_ACTION')
-
-
-@audit_checker('antibody_characterization', frame=['target'], condition=rfa('ENCODE3'))
-def audit_antibody_characterization_method_allowed(value, system):
-    '''
-    Warn if a lab submits an ENCODE3 characterization if
-    the method is not yet approved by the standards document.
-    '''
-    if 'primary_characterization_method' in value:
-        return
-
-    target = value['target']
-    is_histone = False
-    if 'histone modification' in target['investigated_as']:
-        is_histone = True
-
-    secondary = value['secondary_characterization_method']
-    if (secondary == 'motif enrichment') or (is_histone and secondary == 'ChIP-seq comparison'):
-        detail = '{} used in {} is not an approved secondary_characterization_method according to the current standards'.format(
-            value['secondary_characterization_method'],
-            value['@id']
-            )
-        raise AuditFailure('antibody characterized by unapproved method', detail, level='NOT_COMPLIANT')
