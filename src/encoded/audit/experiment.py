@@ -1246,7 +1246,7 @@ def scanFilesForPipelineTitle_not_chipseq(files_to_scan, assemblies, pipeline_ti
                condition=rfa('ENCODE3'))
 def audit_experiment_needs_pipeline(value, system):
 
-    if value['status'] not in ['released', 'release ready']:
+    if value['status'] not in ['released', 'ready for review']:
         return
 
     if 'assay_term_name' not in value:
@@ -1639,10 +1639,10 @@ def audit_experiment_release_date(value, system):
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicated(value, system):
     '''
-    Experiments in ready for review or release ready state should be replicated. If not,
+    Experiments in ready for review state should be replicated. If not,
     wranglers should check with lab as to why before release.
     '''
-    if value['status'] not in ['released', 'release ready', 'ready for review']:
+    if value['status'] not in ['released', 'ready for review']:
         return
     '''
     Excluding single cell isolation experiments from the replication requirement

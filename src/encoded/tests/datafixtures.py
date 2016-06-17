@@ -221,7 +221,7 @@ def base_experiment(testapp, lab, award):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress'
+        'status': 'started'
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
