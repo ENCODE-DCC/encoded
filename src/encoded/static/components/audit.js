@@ -191,39 +191,26 @@ var AuditGroup = module.exports.AuditGroup = React.createClass({
 
         return (
             <div className={alertClass}>
-                {loggedIn ?
-                    <div className={'icon audit-detail-trigger-' + auditLevelName}>
-                        <a href="#" data-trigger onClick={this.detailSwitch} className="collapsing-title">
-                            {CollapseIcon(!detailOpen)}
-                        </a>
-                    </div>
-                : null}
+                <div className={'icon audit-detail-trigger-' + auditLevelName}>
+                    <a href="#" data-trigger onClick={this.detailSwitch} className="collapsing-title">
+                        {CollapseIcon(!detailOpen)}
+                    </a>
+                </div>
                 <div className="audit-detail-info">
                     <i className={iconClass}></i>
-                    <span>
-                        {loggedIn ?
-                            <strong className={levelClass}>{auditLevelName.split('_').join(' ').toUpperCase()}&nbsp;&mdash;</strong>
-                        :
-                            <span>&nbsp;&nbsp;&nbsp;</span>
-                        }
-                    </span>
                     <strong>&nbsp;{categoryName}</strong>
-                    {!loggedIn ?
-                        <div className="btn-info-audit">
-                            <a href={'/data-standards/#' + categoryName.toLowerCase().split(' ').join('_')} title={'View description of ' + categoryName + ' in a new tab'} target="_blank"><i className="icon icon-question-circle"></i></a>
-                        </div>
-                    : null}
-                </div>
-                {loggedIn ?
-                    <div className="audit-details-section">
-                        <div className="audit-details-decoration"></div>
-                        {group.map((audit, i) =>
-                            <div className={alertItemClass} key={i} role="alert">
-                                <DetailEmbeddedLink detail={audit.detail} except={context['@id']} forcedEditLink={this.props.forcedEditLink} />
-                            </div>
-                        )}
+                    <div className="btn-info-audit">
+                        <a href={'/data-standards/#' + categoryName.toLowerCase().split(' ').join('_')} title={'View description of ' + categoryName + ' in a new tab'} target="_blank"><i className="icon icon-question-circle"></i></a>
                     </div>
-                : null}
+                </div>
+                <div className="audit-details-section">
+                    <div className="audit-details-decoration"></div>
+                    {group.map((audit, i) =>
+                        <div className={alertItemClass} key={i} role="alert">
+                            <DetailEmbeddedLink detail={audit.detail} except={context['@id']} forcedEditLink={this.props.forcedEditLink} />
+                        </div>
+                    )}
+                </div>
             </div>
         );
     }
