@@ -55,9 +55,17 @@ var HomepageChart = React.createClass({
                 '#3D9140',
                 '#E5E4E2'
             ];
+            var colorList2 = [
+                '#bf2e25',
+                '#bf2e25',
+                '#bf2e25',
+                '#bf2e25',
+                '#bf2e25'
+            ];
             var data = [];
             var labels = [];
             var colors = [];
+            var tempColors = ['0000FF'];
 
             // Get the assay_title counts from the facets
             var facets = this.props.data.facets;
@@ -73,7 +81,7 @@ var HomepageChart = React.createClass({
 
             // Pass the assay_title counts to the charting library to render it.
             var canvas = document.getElementById("myChart");
-            var ctx = canvas.getContext("2d");
+            var ctx = canvas.getContext("2d")
             this.myPieChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
@@ -87,8 +95,21 @@ var HomepageChart = React.createClass({
                     onClick: (e) => {
                         // React to clicks on pie sections
                         var activePoints = this.myPieChart.getElementAtEvent(e);
-                        var term = assayFacet.terms[activePoints[0]._index].key;
-                        this.context.navigate(this.props.data['@id'] + '&assay_title=' + term);    
+                        //var term = assayFacet.terms[activePoints[0]._index].key;
+                        //this.context.navigate(this.props.data['@id'] + '&assay_title=' + term);
+                        //var hello = 0;
+                        colors[0] = "0000FF"; //changes initial color values
+                        // assayFacet.terms.forEach(function(x) {
+                        //     //data[i] = term.doc_count;
+                        //     //labels[i] = term.key;
+                        //     colors[x] = colorList2[x % colorList2.length];
+                        // });
+                        //this.myPieChart.data.backgroundColor[0] = 'bf2e25';
+                        this.myPieChart.update();
+                        //this.myPieChart.clear();
+                        this.myPieChart.render();
+                        this.forceUpdate();
+                    }
                 }
             });
         }.bind(this));
@@ -101,6 +122,7 @@ var HomepageChart = React.createClass({
     }
 
 });
+
 
 // Initiates the GET request to search for experiments, and then pass the data to the HomepageChart
 // component to draw the resulting chart.
@@ -241,4 +263,3 @@ var HomepageChartLoader2 = React.createClass({
     }
 
 });
-
