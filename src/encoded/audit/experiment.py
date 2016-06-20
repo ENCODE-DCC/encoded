@@ -312,7 +312,7 @@ def check_experiemnt_rna_seq_encode3_standards(value,
                      'of {} assay'.format(value['assay_term_name']) + \
                      ', processed by {} pipeline '.format(pipeline_title) + \
                      ' has no read depth containig quality metric associated with it.'
-            yield AuditFailure('RNA-pipeline - missing read depth', detail, level='DCC_ACTION')
+            yield AuditFailure('missing read depth', detail, level='DCC_ACTION')
 
     if pipeline_title in ['RAMPAGE (paired-end, stranded)']:
         for failure in check_experiement_rampage_encode3_standards(value,
@@ -969,7 +969,7 @@ def check_file_chip_seq_read_depth(file_to_check,
     marks = pipelines_with_read_depth['Histone ChIP-seq']
 
     if read_depth is False:
-        detail = 'ENCODE Processed alignment file {} has no read depth information'.format(
+        detail = 'ENCODE Processed alignment file {} has no read depth information.'.format(
             file_to_check['@id'])
         yield AuditFailure('missing read depth', detail, level='DCC_ACTION')
         return
@@ -1094,6 +1094,9 @@ def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_thre
                           assay_term_name,
                           pipeline_title):
     if read_depth is False:
+        detail = 'ENCODE Processed alignment file {} has no read depth information.'.format(
+            file_to_check['@id'])
+        yield AuditFailure('missing read depth', detail, level='DCC_ACTION')
         return
 
     if read_depth is not False and assay_term_name in ['RAMPAGE',
