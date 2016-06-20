@@ -121,12 +121,12 @@ var FileTable = module.exports.FileTable = React.createClass({
         },
         'audit': {
             title: 'Audit status',
-            display: item => <div>{fileAuditStatus(item)}</div>,
-            hide: (list, columns, meta) => meta.noAudits || !(meta.session && meta.session['auth.userid'])
+            display: item => <div>{fileAuditStatus(item)}</div>
         },
         'status': {
             title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>
+            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
+            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
         }
     },
 
@@ -169,12 +169,12 @@ var FileTable = module.exports.FileTable = React.createClass({
         },
         'audit': {
             title: 'Audit status',
-            display: item => <div>{fileAuditStatus(item)}</div>,
-            hide: (list, columns, meta) => meta.noAudits || !(meta.session && meta.session['auth.userid'])
+            display: item => <div>{fileAuditStatus(item)}</div>
         },
         'status': {
             title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>
+            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
+            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
         }
     },
 
