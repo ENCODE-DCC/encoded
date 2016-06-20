@@ -1962,7 +1962,7 @@ def audit_experiment_target(value, system):
                     yield AuditFailure('mismatched target', detail, level='ERROR')
 
 
-@audit_checker('experiment', frame=['target', 'possible_controls'])
+@audit_checker('experiment', frame=['award', 'target', 'possible_controls'])
 def audit_experiment_control(value, system):
     '''
     Certain assay types (ChIP-seq, ...) require possible controls with a matching biosample.
@@ -1982,7 +1982,12 @@ def audit_experiment_control(value, system):
 
     audit_level = 'ERROR'
     if value.get('assay_term_name') in ['CAGE',
-                                        'RAMPAGE']:
+                                        'RAMPAGE'] or \
+       value['award']['rfa'] in ["ENCODE2",
+                                 "Roadmap",
+                                 "modENCODE",
+                                 "MODENCODE",
+                                 "ENCODE2-Mouse"]:
         audit_level = 'NOT_COMPLIANT'
     if value['possible_controls'] == []:
         detail = '{} experiments require a value in possible_control'.format(
