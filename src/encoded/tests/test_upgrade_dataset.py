@@ -185,3 +185,10 @@ def test_experiment_unique_array(root, upgrader, experiment, experiment_7, dummy
     assert value['schema_version'] == '8'
     assert len(value['dbxrefs']) == len(set(value['dbxrefs']))
     assert len(value['aliases']) == len(set(value['aliases']))
+
+
+def test_experiment_upgrade_status_encode3(root, upgrader, experiment_3):
+    experiment_3['status'] = 'in progress'
+    value = upgrader.upgrade('experiment', experiment_3, current_version='8', target_version='9')
+    assert value['schema_version'] == '9'
+    assert value['status'] == 'started'
