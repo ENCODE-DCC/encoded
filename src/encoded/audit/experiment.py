@@ -1959,7 +1959,7 @@ def audit_experiment_target(value, system):
                         target['name'],
                         antibody['@id']
                         )
-                    yield AuditFailure('mismatched target', detail, level='ERROR')
+                    yield AuditFailure('inconsistent target', detail, level='ERROR')
 
 
 @audit_checker('experiment', frame=['award', 'target', 'possible_controls'])
@@ -2145,7 +2145,7 @@ def audit_experiment_biosample_term(value, system):
                     term_name,
                     ontology_name
                     )
-                yield AuditFailure('mismatched ontology term', detail, level='ERROR')
+                yield AuditFailure('inconsistent ontology term', detail, level='ERROR')
 
     if 'replicates' in value:
         for rep in value['replicates']:
