@@ -1980,11 +1980,15 @@ def audit_experiment_control(value, system):
     if 'target' in value and 'control' in value['target']['investigated_as']:
         return
 
+    audit_level = 'ERROR'
+    if value.get('assay_term_name') in ['CAGE',
+                                        'RAMPAGE']:
+        audit_level = 'NOT_COMPLIANT'
     if value['possible_controls'] == []:
         detail = '{} experiments require a value in possible_control'.format(
             value['assay_term_name']
             )
-        raise AuditFailure('missing possible_controls', detail, level='ERROR')
+        raise AuditFailure('missing possible_controls', detail, level=audit_level)
 
     for control in value['possible_controls']:
         if control.get('biosample_term_id') != value.get('biosample_term_id'):
