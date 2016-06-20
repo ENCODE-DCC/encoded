@@ -1573,8 +1573,8 @@ def audit_experiment_consistent_sequencing_runs(value, system):
 
 
 @audit_checker('experiment',
-               frame=['replicates', 'original_files', 'original_files.replicate'],
-               condition=rfa("ENCODE3", "modERN", "ENCODE2", "GGR",
+               frame=['award', 'replicates', 'original_files', 'original_files.replicate'],
+               condition=rfa("ENCODE3", "modERN", "ENCODE2", "GGR", "Roadmap",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicate_with_no_files(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked', 'proposed', 'preliminary']:
@@ -1603,8 +1603,9 @@ def audit_experiment_replicate_with_no_files(value, system):
                 rep_dictionary[file_replicate['@id']].append(file_object['output_category'])
 
     audit_level = 'ERROR'
-    if value['status'] in ['in progress', 'started']:
-        audit_level = 'WARNING'
+    if value['award']['rfa'] in ["ENCODE2", "Roadmap",
+                                 "modENCODE", "MODENCODE", "ENCODE2-Mouse"]:
+        audit_level = 'DCC_ACTION'
 
     for key in rep_dictionary.keys():
 
