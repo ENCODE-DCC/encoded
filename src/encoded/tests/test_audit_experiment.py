@@ -857,7 +857,7 @@ def test_audit_experiment_model_organism_mismatched_sex(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched sex' for error in errors_list)
+    assert any(error['category'] == 'inconsistent sex' for error in errors_list)
 
 
 def test_audit_experiment_model_organism_mismatched_age(testapp,
@@ -888,7 +888,7 @@ def test_audit_experiment_model_organism_mismatched_age(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched age' for error in errors_list)
+    assert any(error['category'] == 'inconsistent age' for error in errors_list)
 
 
 def test_audit_experiment_model_organism_mismatched_donor(testapp,
@@ -916,7 +916,7 @@ def test_audit_experiment_model_organism_mismatched_donor(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched donor' for error in errors_list)
+    assert any(error['category'] == 'inconsistent donor' for error in errors_list)
 
 
 def test_audit_experiment_with_library_without_biosample(testapp, base_experiment, base_replicate,
