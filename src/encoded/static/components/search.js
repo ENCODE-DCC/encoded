@@ -20,9 +20,7 @@ var objectutils = require('./objectutils');
 var DbxrefList = dbxref.DbxrefList;
 var statusOrder = globals.statusOrder;
 var SingleTreatment = objectutils.SingleTreatment;
-var AuditIndicators = audit.AuditIndicators;
-var AuditDetail = audit.AuditDetail;
-var AuditMixin = audit.AuditMixin;
+var {AuditIndicators, AuditDetail, AuditMixin, AuditIcon} = audit;
 var DropdownButton = button.DropdownButton;
 var DropdownMenu = dropdownMenu.DropdownMenu;
 
@@ -717,8 +715,8 @@ var Facet = search.Facet = React.createClass({
         if (field.substr(0, 6) === 'audit.') {
             var titleParts = title.split(': ');
             var fieldParts = field.match(/^audit.(.+).category$/i);
-            var iconClass = 'icon audit-activeicon-' + fieldParts[1].toLowerCase();
-            title = <span>{titleParts[0]}: <i className={iconClass}></i></span>;
+            var level = fieldParts[1].toLowerCase();
+            title = <span>{titleParts[0]}: <AuditIcon level={level} /></span>;
         }
 
         return (

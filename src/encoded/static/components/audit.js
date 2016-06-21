@@ -56,9 +56,9 @@ var AuditIcon = module.exports.AuditIcon = React.createClass({
 
     render: function() {
         var levelName = this.props.level.toLowerCase();
-        var iconClass = 'icon audit-activeicon-' + levelName;
+        var iconClass = 'audit-icon-' + levelName;
 
-        return <i className={iconClass}><span className="sr-only">{'Audit'} {levelName}</span></i>;
+        return <div className={iconClass}>{SvgIcon('flag')}</div>;
     }
 });
 
@@ -80,7 +80,7 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
             // Sort the audit levels by their level number, using the first element of each warning category
             var sortedAuditLevels = _(Object.keys(audits)).sortBy(level => -audits[level][0].level);
 
-            var indicatorClass = "audit-indicators btn btn-info" + (this.context.auditDetailOpen ? ' active' : '') + (this.props.search ? ' audit-search' : '');
+            var indicatorClass = "audit-indicators btn btn-info" + (this.context.auditDetailOpen ? ' active' : '');
             if (loggedIn || !(sortedAuditLevels.length === 1 && sortedAuditLevels[0] === 'DCC_ACTION')) {
                 return (
                     <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.context.auditDetailOpen} aria-controls={this.props.id} onClick={this.context.auditStateToggle}>
@@ -88,14 +88,13 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
                             if (loggedIn || level !== 'DCC_ACTION') {
                                 // Calculate the CSS class for the icon
                                 var levelName = level.toLowerCase();
-                                var btnClass = 'btn-audit btn-audit-' + levelName + ' audit-level-' + levelName;
-                                var iconClass = 'icon audit-activeicon-' + levelName;
+                                var btnClass = 'btn-audit';
                                 var groupedAudits = _(audits[level]).groupBy('category');
 
                                 return (
-                                    <span className={btnClass} key={level}>
-                                        <AuditIcon level={level} />
+                                    <span className="audit-indicator" key={level}>
                                         {Object.keys(groupedAudits).length}
+                                        <AuditIcon level={level} />
                                     </span>
                                 );
                             }
@@ -197,7 +196,7 @@ var AuditGroup = module.exports.AuditGroup = React.createClass({
                     </a>
                 </div>
                 <div className="audit-detail-info">
-                    <i className={iconClass}></i>
+                    <AuditIcon level={level} />
                     <strong>&nbsp;{categoryName}</strong>
                     <div className="btn-info-audit">
                         <a href={'/data-standards/#' + categoryName.toLowerCase().split(' ').join('_')} title={'View description of ' + categoryName + ' in a new tab'} target="_blank"><i className="icon icon-question-circle"></i></a>

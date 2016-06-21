@@ -1,6 +1,7 @@
 $audit-group-height: 40px;
 
 
+// Button of audit indicators
 .audit-indicators {
     margin-top: 5px;
     vertical-align: top;
@@ -17,38 +18,18 @@ $audit-group-height: 40px;
     .search-meta & {
         margin: 5px 0 5px 5px;
     }
-
-    &.audit-search {
-        @include font-size(0.85);
-        height: 28px;
-    }
 }
 
-// Audit icon for display only
+// One audit indicator inside an .audit-indicators button
+.audit-indicator {
+    display: inline-block;
+    height: 26px;
+    line-height: 26px;
+}
+
+
 %audit-icon {
     display: inline-block;
-    margin-right: 10px;
-    line-height: 32px;
-    @include font-size(1.3);
-    text-align: center;
-    border: none;
-    background-color: transparent;
-    vertical-align: middle;
-
-    &:first-child {
-        margin-left: 0;
-    }
-
-    .audit-search & {
-        @include font-size(0.85);
-        line-height: 24px;
-    }
-}
-
-// Audit icon that's clickable as well as displayable
-%audit-active-icon {
-    @extend %audit-icon;
-    margin: 0 5px 2px 0;
 }
 
 // Connect audit types to fontawesome icon suffixes and colors.
@@ -56,11 +37,11 @@ $audit-group-height: 40px;
 // Icon names are for font-awesome and are suffixed to 'icon-'.
 // BG colors automatically generated from the FG colors set here.
 $audit-types:
-    (error, warning, #cc0700),
-    (warning, circle, #e0e000),
-    (not_compliant, file-text, #ff8000),
-    (dcc_action, ambulance, #a0a0a0),
-    (ok, check, #4C994C);
+    (error, warning, #dd0011),
+    (warning, circle, #3300ff),
+    (not_compliant, file-text, #ff9900),
+    (dcc_action, ambulance, #666666),
+    (ok, check, #00cc33);
 
 // Function for an inverse curve; used for saturation and lightness of backgrounds
 @function inverse-curve($value) {
@@ -77,17 +58,6 @@ $audit-types:
         @return $basecolor;
     } @else {
         @return darken($basecolor,10%);
-    }
-}
-
-.btn-audit {
-    display: inline-block;
-    margin: 0 10px;
-    height: 26px;
-
-    .audit-search & {
-        margin: 0 6px;
-        height: 24px;
     }
 }
 
@@ -118,28 +88,22 @@ $audit-types:
 @each $audit-type, $suffix, $color in $audit-types {
     // Audit icons
     .audit-icon-#{$audit-type} {
-        @extend .icon-#{$suffix}; // FontAwesome icon
         @extend %audit-icon;
         color: $color;
+
+        // Audit icons inside of audit-indicator portion of audit-indicators button
+        .audit-indicator & {
+            width: 12px;
+            height: 12px;
+        }
     }
 
     .audit-icon-#{$audit-type}-badged {
-        @extend .icon-#{$suffix}; // FontAwesome icon
         @extend %audit-icon;
         color: #fff;
         font-size: 0.7rem;
         line-height: 1;
         padding: 0 5px;
-    }
-
-    // Clickable audit icons
-    .audit-activeicon-#{$audit-type} {
-        @extend .icon-#{$suffix}; // FontAwesome icon
-        @extend %audit-active-icon;
-        color: $color;
-        @include font-size(1.2);
-        height: 26px;
-        line-height: 28px;
     }
 
     // Button for each class of audit error
