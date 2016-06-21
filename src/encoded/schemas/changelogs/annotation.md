@@ -5,7 +5,7 @@ Change log for annotation.json
 Schema version 9
 ----------------
 
-* *annotation_type* was extended to be the following list
+* *annotation_type* was changed to be the following list
  
         "enum": [
             "binding sites",
@@ -18,10 +18,7 @@ Schema version 9
             "enhancer predictions",
             "DNase master peaks",
             "transcription factor motifs",
-            "SAGA",
             "validated enhancers",
             "overlap",
-            "segmentation",
-            "encyclopedia",
             "other"
         ]

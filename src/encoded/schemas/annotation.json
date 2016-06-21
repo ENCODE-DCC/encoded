@@ -65,11 +65,8 @@
                 "enhancer predictions",
                 "DNase master peaks",
                 "transcription factor motifs",
-                "SAGA",
                 "validated enhancers",
                 "overlap",
-                "segmentation",
-                "encyclopedia",
                 "other"
             ]
         },
