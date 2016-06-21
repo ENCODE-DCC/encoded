@@ -1994,6 +1994,58 @@ def audit_experiment_control(value, system):
             raise AuditFailure('mismatched control', detail, level='ERROR')
 
 
+@audit_checker('experiment', frame=['possible_controls',
+                                    'possible_controls.original_files',
+                                    'possible_controls.original_files.platform',
+                                    'original_files',
+                                    'original_files.platform'])
+def audit_experiment_platforms_mismatches(value, system):
+    if value['status'] in ['deleted', 'replaced']:
+        return
+    if 'original_files' not in value or \
+       value['original_files'] == []:
+        return
+    platforms = get_platforms_used_in_experiment(value)
+    if len(platforms) > 1:
+        detail = 'Experiment {} '.format(value['@id']) + \
+                 'contains data produced on incompatible ' + \
+                 'platforms {}.'.format(platforms)
+        yield AuditFailure('inconsistent platforms', detail, level='WARNING')
+    elif len(platforms) == 1:
+        platform_term_name = platforms[0]
+        if 'possible_controls' in value and \
+           value['possible_controls'] != []:
+            for control in value['possible_controls']:
+                control_platforms = get_platforms_used_in_experiment(control)
+                if len(control_platforms) > 1:
+                    detail = 'Possible control experiment {} '.format(control['@id']) + \
+                             'platforms {} '.format(control_platforms) + \
+                             'are not compatible with experiment {} '.format(value['@id']) + \
+                             'platform {}.'.format(platform_term_name)
+                    yield AuditFailure('inconsistent platforms', detail, level='WARNING')
+                elif len(control_platforms) == 1 and \
+                        control_platforms[0] != platform_term_name:
+                    detail = 'Possible control experiment {} '.format(control['@id']) + \
+                             'platform {} '.format(control_platforms[0]) + \
+                             'is not compatible with experiment {} '.format(value['@id']) + \
+                             'platform {}.'.format(platform_term_name)
+                    yield AuditFailure('inconsistent platforms', detail, level='WARNING')
+    return
+
+
+def get_platforms_used_in_experiment(experiment):
+    platforms = set()
+    if 'original_files' not in experiment or \
+       experiment['original_files'] == []:
+        return platforms
+
+    for f in experiment['original_files']:
+        if f['output_category'] == 'raw data' and \
+           'platform' in f:
+            platforms.add(f['platform']['term_name'])
+    return platforms
+
+
 @audit_checker('experiment', frame=['target',
                                     'possible_controls',
                                     'replicates', 'replicates.antibody',
