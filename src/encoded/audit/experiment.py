@@ -2012,7 +2012,7 @@ def audit_experiment_platforms_mismatches(value, system):
                  'platforms {}.'.format(platforms)
         yield AuditFailure('inconsistent platforms', detail, level='WARNING')
     elif len(platforms) == 1:
-        platform_term_name = platforms[0]
+        platform_term_name = list(platforms)[0]
         if 'possible_controls' in value and \
            value['possible_controls'] != []:
             for control in value['possible_controls']:
@@ -2024,9 +2024,9 @@ def audit_experiment_platforms_mismatches(value, system):
                              'platform {}.'.format(platform_term_name)
                     yield AuditFailure('inconsistent platforms', detail, level='WARNING')
                 elif len(control_platforms) == 1 and \
-                        control_platforms[0] != platform_term_name:
+                        list(control_platforms)[0] != platform_term_name:
                     detail = 'Possible control experiment {} '.format(control['@id']) + \
-                             'platform {} '.format(control_platforms[0]) + \
+                             'platform {} '.format(list(control_platforms)[0]) + \
                              'is not compatible with experiment {} '.format(value['@id']) + \
                              'platform {}.'.format(platform_term_name)
                     yield AuditFailure('inconsistent platforms', detail, level='WARNING')

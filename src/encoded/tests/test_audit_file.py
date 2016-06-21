@@ -173,24 +173,6 @@ def file7(file_exp2, award, encode_lab, testapp, analysis_step_run_bam):
 
 
 @pytest.fixture
-def platform1(testapp):
-    item = {
-        'term_id': 'OBI:0002001',
-        'term_name': 'HiSeq2000'
-    }
-    return testapp.post_json('/platform', item).json['@graph'][0]
-
-
-@pytest.fixture
-def platform2(testapp):
-    item = {
-        'term_id': 'OBI:0002049',
-        'term_name': 'HiSeq4000'
-    }
-    return testapp.post_json('/platform', item).json['@graph'][0]
-
-
-@pytest.fixture
 def chipseq_bam_quality_metric(testapp, analysis_step_run_bam, file6, lab, award):
     item = {
         'step_run': analysis_step_run_bam['@id'],
