@@ -182,18 +182,6 @@ def get_derived_from_files_set(list_of_files):
     return derived_from_set
 
 
-def removeTopHat(alignment_files):
-    list_to_return = []
-    for f in alignment_files:
-        tophat_flag = False
-        for record in f['analysis_step_version']['software_versions']:
-            if record['software']['title'] == 'TopHat':
-                tophat_flag = True
-        if tophat_flag is False:
-            list_to_return.append(f)
-    return list_to_return
-
-
 @audit_checker('Experiment', frame=['original_files',
                                     'award',
                                     'target',
@@ -251,8 +239,8 @@ def audit_experiment_standards_dispatcher(value, system):
         else:
             return
 
-    alignment_files = removeTopHat(scan_files_for_file_format_output_type(value['original_files'],
-                                                                          'bam', 'alignments'))
+    alignment_files = scan_files_for_file_format_output_type(value['original_files'],
+                                                             'bam', 'alignments')
 
     fastq_files = scan_files_for_file_format_output_type(value['original_files'],
                                                          'fastq', 'reads')
@@ -261,7 +249,6 @@ def audit_experiment_standards_dispatcher(value, system):
                                     'shRNA knockdown followed by RNA-seq',
                                     'CRISPR genome editing followed by RNA-seq',
                                     'single cell isolation followed by RNA-seq']:
-
         gene_quantifications = scanFilesForOutputType(value['original_files'],
                                                       'gene quantifications')
         for failure in check_experiemnt_rna_seq_encode3_standards(value,
@@ -322,12 +309,15 @@ def check_experiemnt_rna_seq_encode3_standards(value,
         star_metrics = get_metrics(alignment_files,
                                    'StarQualityMetric',
                                    desired_assembly)
+
         if len(star_metrics) < 1:
             detail = 'ENCODE experiment {} '.format(value['@id']) + \
                      'of {} assay'.format(value['assay_term_name']) + \
                      ', processed by {} pipeline '.format(pipeline_title) + \
                      ' has no read depth containig quality metric associated with it.'
             yield AuditFailure('missing read depth', detail, level='DCC_ACTION')
+
+    alignment_files = get_non_tophat_alignment_files(alignment_files)
 
     if pipeline_title in ['RAMPAGE (paired-end, stranded)']:
         for failure in check_experiement_rampage_encode3_standards(value,
@@ -374,7 +364,7 @@ def check_experiment_wgbs_encode3_standards(experiment,
     for failure in check_wgbs_read_lengths(fastq_files, organism_name, 130, 100):
         yield failure
 
-    read_lengths = get_read_lengths_wgbs(fastq_files)
+    # read_lengths = get_read_lengths_wgbs(fastq_files)
 
     pipeline_title = scanFilesForPipelineTitle_not_chipseq(alignment_files,
                                                            ['GRCh38', 'mm10'],
@@ -394,7 +384,7 @@ def check_experiment_wgbs_encode3_standards(experiment,
     samtools_metrics = get_metrics(cpg_quantifications,
                                    'SamtoolsFlagstatsQualityMetric',
                                    desired_assembly)
-    
+
     for failure in check_wgbs_coverage(samtools_metrics,
                                        pipeline_title,
                                        min(read_lengths),
@@ -439,6 +429,23 @@ def check_wgbs_read_lengths(fastq_files,
                          'data is > 100bp.'
                 yield AuditFailure('insufficient read length',
                                    detail, level='NOT_COMPLIANT')
+
+
+def get_non_tophat_alignment_files(files_list):
+    list_to_return = []
+    for f in files_list:
+        tophat_flag = False
+        if 'analysis_step_version' in f and \
+           'software_versions' in f['analysis_step_version']:
+            for soft_version in f['analysis_step_version']['software_versions']:
+                #  removing TopHat files
+                if 'software' in soft_version and \
+                   soft_version['software']['uuid'] == '7868f960-50ac-11e4-916c-0800200c9a66':
+                    tophat_flag = True
+        if tophat_flag is False and \
+           f['lab'] == '/labs/encode-processing-pipeline/':
+            list_to_return.append(f)
+    return list_to_return
 
 
 def get_metrics(files_list, metric_type, desired_assembly=None, desired_annotation=None):
