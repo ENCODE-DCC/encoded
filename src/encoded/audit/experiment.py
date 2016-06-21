@@ -312,7 +312,7 @@ def check_experiemnt_rna_seq_encode3_standards(value,
                      'of {} assay'.format(value['assay_term_name']) + \
                      ', processed by {} pipeline '.format(pipeline_title) + \
                      ' has no read depth containig quality metric associated with it.'
-            yield AuditFailure('RNA-pipeline - missing read depth', detail, level='DCC_ACTION')
+            yield AuditFailure('missing read depth', detail, level='DCC_ACTION')
 
     if pipeline_title in ['RAMPAGE (paired-end, stranded)']:
         for failure in check_experiement_rampage_encode3_standards(value,
@@ -641,10 +641,7 @@ def check_idr(metrics, rescue, self_consistency, pipeline):
 
 
 def check_mad(metrics, replication_type, mad_threshold, pipeline):
-    if replication_type in ['anisogenic',
-                            'anisogenic, sex-matched and age-matched',
-                            'anisogenic, age-matched',
-                            'anisogenic, sex-matched']:
+    if replication_type == 'anisogenic':
         experiment_replication_type = 'anisogenic'
     elif replication_type == 'isogenic':
         experiment_replication_type = 'isogenic'
@@ -732,10 +729,7 @@ def get_target(experiment):
 def check_spearman(metrics, replication_type, isogenic_threshold,
                    anisogenic_threshold, pipeline):
 
-    if replication_type in ['anisogenic',
-                            'anisogenic, sex-matched and age-matched',
-                            'anisogenic, age-matched',
-                            'anisogenic, sex-matched']:
+    if replication_type == 'anisogenic':
         threshold = anisogenic_threshold
     elif replication_type == 'isogenic':
         threshold = isogenic_threshold
@@ -975,7 +969,7 @@ def check_file_chip_seq_read_depth(file_to_check,
     marks = pipelines_with_read_depth['Histone ChIP-seq']
 
     if read_depth is False:
-        detail = 'ENCODE Processed alignment file {} has no read depth information'.format(
+        detail = 'ENCODE Processed alignment file {} has no read depth information.'.format(
             file_to_check['@id'])
         yield AuditFailure('missing read depth', detail, level='DCC_ACTION')
         return
@@ -1100,6 +1094,9 @@ def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_thre
                           assay_term_name,
                           pipeline_title):
     if read_depth is False:
+        detail = 'ENCODE Processed alignment file {} has no read depth information.'.format(
+            file_to_check['@id'])
+        yield AuditFailure('missing read depth', detail, level='DCC_ACTION')
         return
 
     if read_depth is not False and assay_term_name in ['RAMPAGE',
@@ -1252,7 +1249,7 @@ def scanFilesForPipelineTitle_not_chipseq(files_to_scan, assemblies, pipeline_ti
                condition=rfa('ENCODE3'))
 def audit_experiment_needs_pipeline(value, system):
 
-    if value['status'] not in ['released', 'release ready']:
+    if value['status'] not in ['released', 'ready for review']:
         return
 
     if 'assay_term_name' not in value:
@@ -1645,10 +1642,10 @@ def audit_experiment_release_date(value, system):
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicated(value, system):
     '''
-    Experiments in ready for review or release ready state should be replicated. If not,
+    Experiments in ready for review state should be replicated. If not,
     wranglers should check with lab as to why before release.
     '''
-    if value['status'] not in ['released', 'release ready', 'ready for review']:
+    if value['status'] not in ['released', 'ready for review']:
         return
     '''
     Excluding single cell isolation experiments from the replication requirement
@@ -2329,4 +2326,4 @@ def audit_library_RNA_size_range(value, system):
         lib = rep['library']
         if (lib['nucleic_acid_term_id'] in RNAs) and ('size_range' not in lib):
             detail = 'RNA library {} requires a value for size_range'.format(rep['library']['@id'])
-            raise AuditFailure('missing RNA fragment size', detail, level='NOT_COMPLIANT')
+            yield AuditFailure('missing RNA fragment size', detail, level='NOT_COMPLIANT')

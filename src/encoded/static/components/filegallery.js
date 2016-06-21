@@ -382,7 +382,8 @@ var FileGallery = module.exports.FileGallery = React.createClass({
     propTypes: {
         encodevers: React.PropTypes.string, // ENCODE version number
         anisogenic: React.PropTypes.bool, // True if anisogenic experiment
-        hideGraph: React.PropTypes.bool // T to hide graph display
+        hideGraph: React.PropTypes.bool, // T to hide graph display
+        altFilterDefault: React.PropTypes.bool // T to default to All Assemblies and Annotations
     },
 
     contextTypes: {
@@ -391,12 +392,12 @@ var FileGallery = module.exports.FileGallery = React.createClass({
     },
 
     render: function() {
-        var {context, encodevers, anisogenic, hideGraph} = this.props;
+        var {context, encodevers, anisogenic, hideGraph, altFilterDefault} = this.props;
 
         return (
             <FetchedData ignoreErrors>
                 <Param name="data" url={globals.unreleased_files_url(context)} />
-                <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} hideGraph={hideGraph} />
+                <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} hideGraph={hideGraph} altFilterDefault={altFilterDefault} />
             </FetchedData>
         );
     }
@@ -409,7 +410,8 @@ var FileGalleryRenderer = React.createClass({
     propTypes: {
         encodevers: React.PropTypes.string, // ENCODE version number
         anisogenic: React.PropTypes.bool, // True if anisogenic experiment
-        hideGraph: React.PropTypes.bool // T to hide graph display
+        hideGraph: React.PropTypes.bool, // T to hide graph display
+        altFilterDefault: React.PropTypes.bool // T to default to All Assemblies and Annotations
     },
 
     contextTypes: {
@@ -438,7 +440,9 @@ var FileGalleryRenderer = React.createClass({
 
     // Set the default filter after the graph has been analayzed once.
     componentDidMount: function() {
-        this.setFilter('0');
+        if (!this.props.altFilterDefault) {
+            this.setFilter('0');
+        }
     },
 
     render: function() {
@@ -479,11 +483,11 @@ var FileGalleryRenderer = React.createClass({
                                 </DropdownButton>
                             </div>
                         : null}
-                        <div className="file-gallery-control file-gallery-control-select">
-                            {filterOptions.length ?
+                        {filterOptions.length ?
+                            <div className="file-gallery-control file-gallery-control-select">
                                 <FilterMenu selectedFilterValue={this.state.selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleFilterChange} />
-                            : null}
-                        </div>
+                            </div>
+                        : null}
                     </div>
                 </PanelHeading>
 
