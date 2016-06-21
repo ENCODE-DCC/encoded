@@ -297,7 +297,7 @@ def index_file(request):
             log.error('Error indexing %s', uuid_current, exc_info=True)
             err = repr(e)
         result['errors'] = [err]
-        result['index'] = len(invalidated)
+        result['indexed'] = len(invalidated)
         if record:
             if not es_peaks.indices.exists('encoded_peaks'):
                 es_peaks.indices.create(index='encoded_peaks', body=index_settings())

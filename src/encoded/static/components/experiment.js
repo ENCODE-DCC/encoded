@@ -38,6 +38,7 @@ var {DocumentsPanel} = doc;
 var DropdownButton = button.DropdownButton;
 var DropdownMenu = dropdownMenu.DropdownMenu;
 var {Panel, PanelBody, PanelHeading} = panel;
+var ExperimentTable = dataset.ExperimentTable;
 
 
 var anisogenicValues = [
@@ -73,7 +74,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         var itemClass = globals.itemClass(context, 'view-item');
         var replicates = context.replicates;
         if (replicates) {
-            var condensedReplicatesKeyed = _(replicates).groupBy(replicate => replicate.library && replicate.library['@id']);
+            var condensedReplicatesKeyed = _(replicates).groupBy(replicate => replicate.library ? replicate.library['@id'] : replicate.uuid);
             if (Object.keys(condensedReplicatesKeyed).length) {
                 condensedReplicates = _.toArray(condensedReplicatesKeyed);
             }
