@@ -716,7 +716,7 @@ var Facet = search.Facet = React.createClass({
             var titleParts = title.split(': ');
             var fieldParts = field.match(/^audit.(.+).category$/i);
             var level = fieldParts[1].toLowerCase();
-            title = <span>{titleParts[0]}: <AuditIcon level={level} /></span>;
+            title = <span className="audit-facet-title">{titleParts[0]}: <AuditIcon level={level} /></span>;
         }
 
         return (

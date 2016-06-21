@@ -7,7 +7,7 @@ $audit-group-height: 40px;
     vertical-align: top;
     padding: 0 5px;
     background: #fff;
-    @include font-size(1);
+    font-size: 1rem;
 
     @media screen and (min-width: $screen-sm-min) {
         display: inline-block;
@@ -24,6 +24,7 @@ $audit-group-height: 40px;
 .audit-indicator {
     display: inline-block;
     height: 26px;
+    margin: 0 5px;
     line-height: 26px;
 }
 
@@ -83,19 +84,48 @@ $audit-types:
     line-height: $audit-group-height - 10;
 }
 
+.btn-audit {
+    @extend .btn;
+    background-color: #fff;
+    border: 1px solid #428bca;
+}
 
 // Generate the audit icon classes for each of the audit types
 @each $audit-type, $suffix, $color in $audit-types {
     // Audit icons
     .audit-icon-#{$audit-type} {
         @extend %audit-icon;
-        color: $color;
+        fill: $color;
 
         // Audit icons inside of audit-indicator portion of audit-indicators button
         .audit-indicator & {
-            width: 12px;
-            height: 12px;
+            width: 11px;
+            height: 11px;
+            margin-left: 2px;
         }
+
+        // Audit icons in drop-down audit detail panels
+        .audit-detail-info & {
+            position: relative;
+            top: 3px;
+            width: 16px;
+            height: 16px;
+            margin-right: 5px;
+        }
+
+        // Audit icons in audit facet titles
+        .audit-facet-title & {
+            position: relative;
+            top: 3px;
+            width: 16px;
+            height: 16px;
+            margin-right: 5px;
+        }
+    }
+
+    // Counts of audits for a level
+    .audit-count-#{$audit-type} {
+        color: $color;
     }
 
     .audit-icon-#{$audit-type}-badged {

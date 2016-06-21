@@ -80,7 +80,7 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
             // Sort the audit levels by their level number, using the first element of each warning category
             var sortedAuditLevels = _(Object.keys(audits)).sortBy(level => -audits[level][0].level);
 
-            var indicatorClass = "audit-indicators btn btn-info" + (this.context.auditDetailOpen ? ' active' : '');
+            var indicatorClass = "audit-indicators btn-audit" + (this.context.auditDetailOpen ? ' active' : '');
             if (loggedIn || !(sortedAuditLevels.length === 1 && sortedAuditLevels[0] === 'DCC_ACTION')) {
                 return (
                     <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.context.auditDetailOpen} aria-controls={this.props.id} onClick={this.context.auditStateToggle}>
@@ -88,12 +88,11 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
                             if (loggedIn || level !== 'DCC_ACTION') {
                                 // Calculate the CSS class for the icon
                                 var levelName = level.toLowerCase();
-                                var btnClass = 'btn-audit';
                                 var groupedAudits = _(audits[level]).groupBy('category');
 
                                 return (
                                     <span className="audit-indicator" key={level}>
-                                        {Object.keys(groupedAudits).length}
+                                        <span className={'audit-count-' + levelName}>{Object.keys(groupedAudits).length}</span>
                                         <AuditIcon level={level} />
                                     </span>
                                 );
