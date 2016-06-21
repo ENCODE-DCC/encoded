@@ -182,6 +182,18 @@ def get_derived_from_files_set(list_of_files):
     return derived_from_set
 
 
+def removeTopHat(alignment_files):
+    list_to_return = []
+    for f in alignment_files:
+        tophat_flag = False
+        for record in f['analysis_step_version']['software_versions']:
+            if record['software']['title'] == 'TopHat':
+                tophat_flag = True
+        if tophat_flag is False:
+            list_to_return.append(f)
+    return list_to_return
+
+
 @audit_checker('Experiment', frame=['original_files',
                                     'award',
                                     'target',
@@ -196,6 +208,8 @@ def get_derived_from_files_set(list_of_files):
                                     'original_files.quality_metrics.quality_metric_of.replicate',
                                     'original_files.derived_from',
                                     'original_files.analysis_step_version',
+                                    'original_files.analysis_step_version.software_versions',
+                                    'original_files.analysis_step_version.software_versions.software',
                                     'original_files.analysis_step_version.analysis_step',
                                     'original_files.analysis_step_version.analysis_step.pipelines'],
                condition=rfa('ENCODE3', 'ENCODE'))
@@ -237,8 +251,9 @@ def audit_experiment_standards_dispatcher(value, system):
         else:
             return
 
-    alignment_files = scan_files_for_file_format_output_type(value['original_files'],
-                                                             'bam', 'alignments')
+    alignment_files = removeTopHat(scan_files_for_file_format_output_type(value['original_files'],
+                                                                          'bam', 'alignments'))
+
     fastq_files = scan_files_for_file_format_output_type(value['original_files'],
                                                          'fastq', 'reads')
 
