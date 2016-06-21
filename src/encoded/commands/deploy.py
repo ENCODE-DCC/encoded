@@ -5,13 +5,62 @@ import subprocess
 import sys
 
 
+BDM = [
+    {
+        'DeviceName': '/dev/sda1',
+        'Ebs': {
+            'VolumeSize': 120,
+            'VolumeType': 'gp2',
+            'DeleteOnTermination': True
+        }
+    },
+    {
+        'DeviceName': '/dev/sdb',
+        'NoDevice': "",
+    },
+    {
+        'DeviceName': '/dev/sdc',
+        'NoDevice': "",
+    },
+]
+
+
 def nameify(s):
     name = ''.join(c if c.isalnum() else '-' for c in s.lower()).strip('-')
     return re.subn(r'\-+', '-', name)[0]
 
+def create_ec2_instances(client, image_id, count, instance_type, security_groups, user_data, bdm, iam_role):
+    reservations = client.create_instances(
+        ImageId=image_id,
+        MinCount=count,
+        MaxCount=count,
+        InstanceType=instance_type,
+        SecurityGroups=security_groups,
+        UserData=user_data,
+        BlockDeviceMappings=bdm,
+        InstanceInitiatedShutdownBehavior='terminate',
+        IamInstanceProfile={
+            "Name": iam_role,
+        }
+    )
+    return reservations
 
-def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
-        branch=None, name=None, role='demo', profile_name=None):
+def tag_ec2_instance(instance, name, branch, commit, username, elasticsearch):
+    tags=[
+        {'Key': 'Name', 'Value': name},
+        {'Key': 'branch', 'Value': branch},
+        {'Key': 'commit', 'Value': commit},
+        {'Key': 'started_by', 'Value': username},
+    ]
+    if elasticsearch == 'yes':
+        tags.append({'Key': 'elasticsearch', 'Value': elasticsearch})
+    instance.create_tags(Tags=tags)
+    return instance
+
+
+def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size, cluster_name,
+        branch=None, name=None, role='demo', profile_name=None, teardown_cluster=None):
+    
     if branch is None:
         branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode('utf-8').strip()
 
@@ -41,67 +90,52 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
         print('An instance already exists with name: %s' % name)
         sys.exit(1)
 
-    bdm = [
-        {
-            'DeviceName': '/dev/sda1',
-            'Ebs': {
-                'VolumeSize': 120,
-                'VolumeType': 'gp2',
-                'DeleteOnTermination': True
-            }
-        },
-        {
-            'DeviceName': '/dev/sdb',
-            'NoDevice': "",
-        },
-        {
-            'DeviceName': '/dev/sdc',
-            'NoDevice': "",
-        },
-    ]
 
     if not elasticsearch == 'yes':
-        user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml']).decode('utf-8')
-        user_data = user_data % {
+        if cluster_name:
+            config_file = ':cloud-config-cluster.yml'
+        else:
+            config_file = ':cloud-config.yml'
+        user_data = subprocess.check_output(['git', 'show', commit + config_file]).decode('utf-8')
+        data_insert = {
             'WALE_S3_PREFIX': wale_s3_prefix,
             'COMMIT': commit,
             'ROLE': role,
         }
+        if cluster_name:
+            data_insert['CLUSTER_NAME'] = cluster_name
+        user_data = user_data % data_insert
         security_groups = ['ssh-http-https']
+        iam_role = 'encoded-instance'
+        count = 1
     else:
+        if not cluster_name:
+            print("Cluster must have a name")
+            sys.exit(1)
+
         user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config-elasticsearch.yml']).decode('utf-8')
-        security_groups = ['elasticsearch-https']
-
-    reservation = ec2.create_instances(
-        ImageId=image_id,
-        MinCount=1,
-        MaxCount=1,
-        InstanceType=instance_type,
-        SecurityGroups=security_groups,
-        UserData=user_data,
-        BlockDeviceMappings=bdm,
-        InstanceInitiatedShutdownBehavior='terminate',
-        IamInstanceProfile={
-            "Name": 'encoded-instance',
+        user_data = user_data % {
+            'CLUSTER_NAME': cluster_name,
         }
-    )
+        security_groups = ['elasticsearch-https']
+        iam_role = 'elasticsearch-instance'
+        count = int(cluster_size)
 
-    instance = reservation[0]  # Instance:i-34edd56f
-    print('%s.%s.encodedcc.org' % (instance.id, domain))
-    instance.wait_until_exists()
-    instance.create_tags(Tags=[
-        {'Key': 'Name', 'Value': name},
-        {'Key': 'branch', 'Value': branch},
-        {'Key': 'commit', 'Value': commit},
-        {'Key': 'started_by', 'Value': username},
-    ])
-    print('ssh %s.%s.encodedcc.org' % (name, domain))
-    if domain == 'instance':
-        print('https://%s.demo.encodedcc.org' % name)
+    instances = create_ec2_instances(ec2, image_id, count, instance_type, security_groups, user_data, BDM, iam_role)
 
-    print('pending...')
-    instance.wait_until_running()
-    print(instance.state['Name'])
+    for i, instance in enumerate(instances):
+        if elasticsearch == 'yes' and count > 1:
+            print('Creating Elasticsearch cluster')
+            tmp_name = "{}{}".format(name,i)
+        else:
+            tmp_name = name
+        print('%s.%s.encodedcc.org' % (instance.id, domain))  # Instance:i-34edd56f
+        instance.wait_until_exists()
+        tag_ec2_instance(instance, tmp_name, branch, commit, username, elasticsearch)
+        print('ssh %s.%s.encodedcc.org' % (tmp_name, domain))
+        if domain == 'instance':
+            print('https://%s.demo.encodedcc.org' % tmp_name)
+
 
 
 def main():
@@ -134,6 +168,9 @@ def main():
         "(m4.xlarge or c4.xlarge)")
     parser.add_argument('--profile-name', default=None, help="AWS creds profile")
     parser.add_argument('--elasticsearch', default=None, help="Launch an Elasticsearch instance")
+    parser.add_argument('--cluster-size', default=2, help="Elasticsearch cluster size")
+    parser.add_argument('--teardown-cluster', default=None, help="Takes down all the cluster launched from the branch")
+    parser.add_argument('--cluster-name', default=None, help="Name of the cluster")
     args = parser.parse_args()
 
     return run(**vars(args))

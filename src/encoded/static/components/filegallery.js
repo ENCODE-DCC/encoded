@@ -285,10 +285,29 @@ var FileTable = module.exports.FileTable = React.createClass({
     },
 
     render: function() {
-        var {context, items, filePanelHeader, encodevers, selectedAssembly, selectedAnnotation, anisogenic, noAudits, showFileCount, session} = this.props;
+        var {
+            context,
+            items,
+            filePanelHeader,
+            encodevers,
+            selectedFilterValue,
+            filterOptions,
+            handleFilterChange,
+            anisogenic,
+            noAudits,
+            showFileCount,
+            session
+        } = this.props;
+        var selectedAssembly, selectedAnnotation;
+
         var datasetFiles = _((items && items.length) ? items : []).uniq(file => file['@id']);
         if (datasetFiles.length) {
             var unfilteredCount = datasetFiles.length;
+
+            if (selectedFilterValue && filterOptions[selectedFilterValue]) {
+                selectedAssembly = filterOptions[selectedFilterValue].assembly;
+                selectedAnnotation = filterOptions[selectedFilterValue].annotation;
+            }
 
             // Filter all the files according to the given filters, and remove duplicates
             datasetFiles = _(datasetFiles).filter(file => {
@@ -324,8 +343,9 @@ var FileTable = module.exports.FileTable = React.createClass({
                             list={files.raw} columns={this.rawTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
                         <SortTable title={<CollapsingTitle title="Raw data" collapsed={this.state.collapsed.rawArray} handleCollapse={this.handleCollapse.bind(null, 'rawArray')} />} collapsed={this.state.collapsed.rawArray}
                             list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
-                        <SortTable title={<CollapsingTitle title="Processed data" collapsed={this.state.collapsed.proc} handleCollapse={this.handleCollapse.bind(null, 'proc')} />} collapsed={this.state.collapsed.proc}
-                            list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
+                        <SortTable title={<CollapsingTitle title="Processed data" collapsed={this.state.collapsed.proc} handleCollapse={this.handleCollapse.bind(null, 'proc')}
+                            selectedFilterValue={selectedFilterValue} filterOptions={filterOptions} handleFilterChange={handleFilterChange} />}
+                            collapsed={this.state.collapsed.proc} list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
                         <SortTable title={<CollapsingTitle title="Reference data" collapsed={this.state.collapsed.ref} handleCollapse={this.handleCollapse.bind(null, 'ref')} />} collapsed={this.state.collapsed.ref}
                             list={files.ref} columns={this.refTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} />
                     </SortTablePanel>
@@ -358,11 +378,12 @@ var DatasetFiles = module.exports.DatasetFiles = React.createClass({
 // This component only triggers the data retrieval, which is done with a search for files associated
 // with the given experiment (in this.props.context). An odd thing is we specify query-string parameters
 // to the experiment URL, but they apply to the file search -- not the experiment itself.
-
 var FileGallery = module.exports.FileGallery = React.createClass({
     propTypes: {
         encodevers: React.PropTypes.string, // ENCODE version number
-        anisogenic: React.PropTypes.bool // True if anisogenic experiment
+        anisogenic: React.PropTypes.bool, // True if anisogenic experiment
+        hideGraph: React.PropTypes.bool, // T to hide graph display
+        altFilterDefault: React.PropTypes.bool // T to default to All Assemblies and Annotations
     },
 
     contextTypes: {
@@ -371,12 +392,12 @@ var FileGallery = module.exports.FileGallery = React.createClass({
     },
 
     render: function() {
-        var {context, encodevers, anisogenic} = this.props;
+        var {context, encodevers, anisogenic, hideGraph, altFilterDefault} = this.props;
 
         return (
             <FetchedData ignoreErrors>
                 <Param name="data" url={globals.unreleased_files_url(context)} />
-                <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} />
+                <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} hideGraph={hideGraph} altFilterDefault={altFilterDefault} />
             </FetchedData>
         );
     }
@@ -388,7 +409,9 @@ var FileGallery = module.exports.FileGallery = React.createClass({
 var FileGalleryRenderer = React.createClass({
     propTypes: {
         encodevers: React.PropTypes.string, // ENCODE version number
-        anisogenic: React.PropTypes.bool // True if anisogenic experiment
+        anisogenic: React.PropTypes.bool, // True if anisogenic experiment
+        hideGraph: React.PropTypes.bool, // T to hide graph display
+        altFilterDefault: React.PropTypes.bool // T to default to All Assemblies and Annotations
     },
 
     contextTypes: {
@@ -417,7 +440,9 @@ var FileGalleryRenderer = React.createClass({
 
     // Set the default filter after the graph has been analayzed once.
     componentDidMount: function() {
-        this.setFilter('0');
+        if (!this.props.altFilterDefault) {
+            this.setFilter('0');
+        }
     },
 
     render: function() {
@@ -435,22 +460,10 @@ var FileGalleryRenderer = React.createClass({
         var filterOptions = files.length ? collectAssembliesAnnotations(files) : [];
         var loggedIn = this.context.session && this.context.session['auth.userid'];
 
-        // Build the graph; place resulting graph in this.jsonGraph
         if (this.state.selectedFilterValue && filterOptions[this.state.selectedFilterValue]) {
             selectedAssembly = filterOptions[this.state.selectedFilterValue].assembly;
             selectedAnnotation = filterOptions[this.state.selectedFilterValue].annotation;
         }
-
-        // Rendering the filtering menu
-        var filterMenu = filterOptions.length ?
-            <select className="form-control" defaultValue="0" onChange={this.handleFilterChange}>
-                <option value="default" key="title">All Assemblies and Annotations</option>
-                <option disabled="disabled"></option>
-                {filterOptions.map((option, i) =>
-                    <option key={i} value={i}>{option.assembly + (option.annotation ? ' ' + option.annotation : '')}</option>
-                )}
-            </select>
-        : null;
 
         return (
             <Panel>
@@ -470,19 +483,29 @@ var FileGalleryRenderer = React.createClass({
                                 </DropdownButton>
                             </div>
                         : null}
-                        <div className="file-gallery-control">{filterMenu}</div>
+                        {filterOptions.length ?
+                            <div className="file-gallery-control file-gallery-control-select">
+                                <FilterMenu selectedFilterValue={this.state.selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleFilterChange} />
+                            </div>
+                        : null}
                     </div>
                 </PanelHeading>
 
-                <FileGraph context={context} items={files} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
+                {!this.props.hideGraph ?
+                    <FileGraph context={context} items={files} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
+                : null}
 
                 {/* If logged in and dataset is released, need to combine search of files that reference
                     this dataset to get released and unreleased ones. If not logged in, then just get
                     files from dataset.files */}
                 {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
-                    <FetchedItems {...this.props} url={globals.unreleased_files_url(context)} Component={DatasetFiles} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} encodevers={globals.encodeVersion(context)} session={this.context.session} showFileCount ignoreErrors noDefaultClasses />
+                    <FetchedItems {...this.props} url={globals.unreleased_files_url(context)} Component={DatasetFiles}
+                        selectedFilterValue={this.state.selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleFilterChange}
+                        encodevers={globals.encodeVersion(context)} session={this.context.session} showFileCount ignoreErrors noDefaultClasses />
                 :
-                    <FileTable {...this.props} items={context.files} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} encodevers={globals.encodeVersion(context)} session={this.context.session} showFileCount noDefaultClasses />
+                    <FileTable {...this.props} items={context.files} selectedFilterValue={this.state.selectedFilterValue}
+                        filterOptions={filterOptions} handleFilterChange={this.handleFilterChange}
+                        encodevers={globals.encodeVersion(context)} session={this.context.session} showFileCount noDefaultClasses />
                 }
             </Panel>
         );
@@ -494,18 +517,52 @@ var CollapsingTitle = React.createClass({
     propTypes: {
         title: React.PropTypes.string.isRequired, // Title to display in the title bar
         handleCollapse: React.PropTypes.func.isRequired, // Function to call to handle click in collapse button
+        selectedFilterValue: React.PropTypes.string, // Currently selected filter
+        filterOptions: React.PropTypes.array, // Array of filtering options
+        handleFilterChange: React.PropTypes.func, // Function to call when filter menu item is chosen
         collapsed: React.PropTypes.bool // T if the panel this is over has been collapsed
     },
 
     render: function() {
-        var {title, handleCollapse, collapsed} = this.props;
+        var {title, handleCollapse, collapsed, filterOptions, selectedFilterValue, handleFilterChange} = this.props;
         return (
-            <a href="#" data-trigger onClick={handleCollapse} className="collapsing-title">
-                <h4>
-                    {CollapseIcon(collapsed, 'collapsing-title-icon')}
-                    {title}
-                </h4>
-            </a>
+            <div className="collapsing-title">
+                <a href="#" className="collapsing-title-trigger pull-left" data-trigger onClick={handleCollapse}>{CollapseIcon(collapsed, 'collapsing-title-icon')}</a>
+                <h4>{title}</h4>
+                {filterOptions && filterOptions.length && handleFilterChange ?
+                    <div className="file-gallery-controls ">
+                        <div className="file-gallery-control file-gallery-control-select">
+                            <FilterMenu filterOptions={filterOptions} selectedFilterValue={selectedFilterValue} handleFilterChange={handleFilterChange} />
+                        </div>
+                    </div>
+                : null}
+            </div>
+        );
+    }
+});
+
+
+// Display a filtering <select>. `filterOptions` is an array of objects with two properties:
+// `assembly` and `annotation`. Both are strings that get concatenated to form each menu item. The
+// value of each <option> is its zero-based index.
+var FilterMenu = React.createClass({
+    propTypes: {
+        selectedFilterValue: React.PropTypes.string, // Currently selected filter
+        filterOptions: React.PropTypes.array.isRequired, // Contents of the filtering menu
+        handleFilterChange: React.PropTypes.func.isRequired // Call when a filtering option changes
+    },
+
+    render: function() {
+        var {selectedFilterValue, filterOptions, handleFilterChange} = this.props;
+        selectedFilterValue = selectedFilterValue ? selectedFilterValue : 'default';
+        return (
+            <select className="form-control" defaultValue="0" value={selectedFilterValue} onChange={handleFilterChange}>
+                <option value="default" key="title">All Assemblies and Annotations</option>
+                <option disabled="disabled"></option>
+                {filterOptions.map((option, i) =>
+                    <option key={i} value={i}>{option.assembly + (option.annotation ? ' ' + option.annotation : '')}</option>
+                )}
+            </select>
         );
     }
 });
@@ -1017,34 +1074,34 @@ var FileGraph = React.createClass({
             var goodGraph = this.jsonGraph && Object.keys(this.jsonGraph).length;
 
             // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
-            if (goodGraph || selectedAssembly || selectedAnnotation) {
-                var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
-                return (
-                    <div>
-                        <div className="file-gallery-graph-header">
-                            <a href="#" data-trigger onClick={this.handleCollapse} className="collapsing-title">
-                                <h4>
-                                    {CollapseIcon(this.state.collapsed, 'collapsing-title-icon')}
-                                    Association graph
-                                </h4>
-                            </a>
-                        </div>
-                        {!this.state.collapsed ?
-                            <div>
-                                {goodGraph ?
-                                    <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw>
-                                        <div id="graph-node-info">
-                                            {meta ? <PanelBody>{meta}</PanelBody> : null}
-                                        </div>
-                                    </Graph>
-                                :
-                                    <p className="browser-error">Currently selected assembly and genomic annotation hides the graph</p>
-                                }
+            if (goodGraph) {
+                if (selectedAssembly || selectedAnnotation) {
+                    var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
+                    return (
+                        <div>
+                            <div className="file-gallery-graph-header collapsing-title">
+                                <a href="#" className="collapsing-title-trigger" data-trigger onClick={this.handleCollapse}>{CollapseIcon(this.state.collapsed, 'collapsing-title-icon')}</a>
+                                <h4>Association graph</h4>
                             </div>
-                        : null}
-                        <div className={'file-gallery-graph-footer' + (this.state.collapsed ? ' hiding' : '')}></div>
-                    </div>
-                );
+                            {!this.state.collapsed ?
+                                <div>
+                                    {goodGraph ?
+                                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw>
+                                            <div id="graph-node-info">
+                                                {meta ? <PanelBody>{meta}</PanelBody> : null}
+                                            </div>
+                                        </Graph>
+                                    :
+                                        <p className="browser-error">Currently selected assembly and genomic annotation hides the graph</p>
+                                    }
+                                </div>
+                            : null}
+                            <div className={'file-gallery-graph-footer' + (this.state.collapsed ? ' hiding' : '')}></div>
+                        </div>
+                    );
+                } else {
+                    return <p className="browser-error">Choose an assembly to see file association graph</p>;
+                }
             } else {
                 return <p className="browser-error">Graph not applicable to this experiment’s files.</p>;
             }
@@ -1233,33 +1290,33 @@ var QcDetailsView = function(metrics) {
         // property as a key to retrieve the list of properties appropriate for that QC type.
         var qcAttachmentPropertyList = qcAttachmentProperties[metrics.ref['@type'][0]];
         if (qcAttachmentPropertyList) {
-            qcPanels = qcAttachmentPropertyList.map(attachmentPropertyInfo => {
+            qcPanels = _(qcAttachmentPropertyList.map(attachmentPropertyInfo => {
                 // Each object in the list has only one key (the metric attachment property name), so get it here.
                 var attachmentPropertyName = Object.keys(attachmentPropertyInfo)[0];
+                var attachment = metrics.ref[attachmentPropertyName];
 
                 // Generate the JSX for the panel. Use the property name as the key to get the corresponding human-readable description for the title
-                return <AttachmentPanel key={attachmentPropertyName} context={metrics.ref} attachment={metrics.ref[attachmentPropertyName]} title={attachmentPropertyInfo[attachmentPropertyName]} />;
-            });
+                if (attachment) {
+                    return <AttachmentPanel context={metrics.ref} attachment={metrics.ref[attachmentPropertyName]} title={attachmentPropertyInfo[attachmentPropertyName]} />;
+                }
+                return null;
+            })).compact();
         }
 
         // Convert the QC metric object @id to a displayable string
         var qcName = metrics.ref['@id'].match(/^\/([a-z0-9-]*)\/.*$/i);
         if (qcName && qcName[1]) {
             qcName = qcName[1].replace(/-/g, ' ');
+            qcName = qcName[0].toUpperCase() + qcName.substring(1);
         }
 
         return (
             <div>
                 <div className="quality-metrics-header">
                     <div className="quality-metrics-info">
-                        <h4>Quality metric of {metrics.parent.accession}</h4>
+                        <h4>{qcName} of {metrics.parent.accession}</h4>
                         {filesOfMetric.length ? <h5>Shared with {filesOfMetric.join(', ')}</h5> : null}
                     </div>
-                    {qcName ?
-                        <div className="quality-metrics-type">
-                            {qcName}
-                        </div>
-                    : null}
                 </div>
                 <div className="row">
                     <div className="col-md-4 col-sm-6 col-xs-12">
@@ -1275,17 +1332,19 @@ var QcDetailsView = function(metrics) {
                         </dl>
                     </div>
 
-                    <div className="col-md-8 col-sm-12 quality-metrics-attachments">
-                        <h5>Quality metric attachments</h5>
-                        <div className="row">
-                            {/* If the metrics object has an `attachment` property, display that first, then display the properties
-                                not named `attachment` but which have their own schema attribute, `attachment`, set to true */}
-                            {metrics.ref.attachment ?
-                                <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} />
-                            : null}
-                            {qcPanels}
+                    {(qcPanels && qcPanels.length) || metrics.ref.attachment ?
+                        <div className="col-md-8 col-sm-12 quality-metrics-attachments">
+                            <h5>Quality metric attachments</h5>
+                            <div className="row">
+                                {/* If the metrics object has an `attachment` property, display that first, then display the properties
+                                    not named `attachment` but which have their own schema attribute, `attachment`, set to true */}
+                                {metrics.ref.attachment ?
+                                    <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} />
+                                : null}
+                                {qcPanels}
+                            </div>
                         </div>
-                    </div>
+                    : null}
                 </div>
             </div>
         );
