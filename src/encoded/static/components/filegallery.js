@@ -108,11 +108,11 @@ var FileTable = module.exports.FileTable = React.createClass({
         'date_created': {
             title: 'Date added',
             getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
-            objSorter: (a, b) => {
-                if (a.date_created && b.date_created) {
-                    return Date.parse(a.date_created) - Date.parse(b.date_created);
+            sorter: (a, b) => {
+                if (a && b) {
+                    return Date.parse(a) - Date.parse(b);
                 }
-                return a.date_created ? -1 : (b.date_created ? 1 : 0);
+                return a ? -1 : (b ? 1 : 0);
             }
         },
         'file_size': {
@@ -157,11 +157,11 @@ var FileTable = module.exports.FileTable = React.createClass({
         'date_created': {
             title: 'Date added',
             getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
-            objSorter: (a, b) => {
-                if (a.date_created && b.date_created) {
-                    return Date.parse(a.date_created) - Date.parse(b.date_created);
+            sorter: (a, b) => {
+                if (a && b) {
+                    return Date.parse(a) - Date.parse(b);
                 }
-                return a.date_created ? -1 : (b.date_created ? 1 : 0);
+                return a ? -1 : (b ? 1 : 0);
             }
         },
         'file_size': {
@@ -209,10 +209,10 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: 'Date added',
             getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
             sorter: (a, b) => {
-                if (a.date_created && b.date_created) {
-                    return Date.parse(a.date_created) - Date.parse(b.date_created);
+                if (a && b) {
+                    return Date.parse(a) - Date.parse(b);
                 }
-                return a.date_created ? -1 : (b.date_created ? 1 : 0);
+                return a ? -1 : (b ? 1 : 0);
             }
         },
         'file_size': {
@@ -255,10 +255,10 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: 'Date added',
             getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
             sorter: (a, b) => {
-                if (a.date_created && b.date_created) {
-                    return Date.parse(a.date_created) - Date.parse(b.date_created);
+                if (a && b) {
+                    return Date.parse(a) - Date.parse(b);
                 }
-                return a.date_created ? -1 : (b.date_created ? 1 : 0);
+                return a ? -1 : (b ? 1 : 0);
             }
         },
         'file_size': {
