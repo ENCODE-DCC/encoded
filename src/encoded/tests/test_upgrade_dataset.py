@@ -77,6 +77,17 @@ def experiment_7(root, experiment):
     return properties
 
 
+@pytest.fixture
+def annotation_8(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '8',
+        'annotation_type': 'encyclopedia',
+        'status': 'released'
+    }
+
+
 def test_experiment_upgrade(root, upgrader, experiment, experiment_1, file_ucsc_browser_composite, threadlocals, dummy_request):
     context = root.get_by_uuid(experiment['uuid'])
     dummy_request.context = context
@@ -187,8 +198,17 @@ def test_experiment_unique_array(root, upgrader, experiment, experiment_7, dummy
     assert len(value['aliases']) == len(set(value['aliases']))
 
 
-def test_experiment_upgrade_status_encode3(root, upgrader, experiment_3):
+def test_experiment_upgrade_status_encode3_1(root, upgrader, experiment_3):
     experiment_3['status'] = 'in progress'
     value = upgrader.upgrade('experiment', experiment_3, current_version='8', target_version='9')
     assert value['schema_version'] == '9'
     assert value['status'] == 'started'
+
+
+def test_annotation_upgrade_1(registry, annotation_8):
+    from snovault import UPGRADER
+    upgrader = registry[UPGRADER]
+    value = upgrader.upgrade('annotation',
+                             annotation_8, registry=registry,
+                             current_version='8', target_version='9')
+    assert value['annotation_type'] == 'other'
