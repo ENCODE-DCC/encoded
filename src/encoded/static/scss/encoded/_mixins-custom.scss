@@ -11,6 +11,7 @@
 	$root-footer-selector: unquote("#root_footer"), 
 	$footer-selector: unquote("#footer")) {
   html, body {
+    height: 100%; 
     }
   #{$root-selector} {
     clear: both;
