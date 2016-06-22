@@ -375,7 +375,7 @@ module.exports.HistoryAndTriggers = {
                         // DOM has a matching anchor; scroll to it
                         var elTop = domTarget.getBoundingClientRect().top;
                         var docTop = document.documentElement.scrollTop || document.body.scrollTop;
-                        document.documentElement.scrollTop = document.body.scrollTop = elTop + docTop - 75;
+                        document.documentElement.scrollTop = document.body.scrollTop = elTop + docTop - (window.innerWidth >= 960 ? 75 : 0);
                     }
                 }
             }
