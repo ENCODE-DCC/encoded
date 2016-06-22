@@ -143,7 +143,6 @@ def index_peaks(uuid, request):
     http = urllib3.PoolManager()
     r = http.request('GET', request.host_url + context['href'])
     if r.status != 200:
-        log.warn('File status is not 200: {}, will not index file'.format(r.status))
         return
     comp = io.BytesIO()
     comp.write(r.data)
