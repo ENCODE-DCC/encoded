@@ -200,7 +200,7 @@ var AuditGroup = module.exports.AuditGroup = React.createClass({
                     <i className={iconClass}></i>
                     <strong>&nbsp;{categoryName}</strong>
                     <div className="btn-info-audit">
-                        <a href={'/data-standards/#' + categoryName.toLowerCase().split(' ').join('_')} title={'View description of ' + categoryName + ' in a new tab'} target="_blank"><i className="icon icon-question-circle"></i></a>
+                        <a href={'/data-standards/audits/#' + categoryName.toLowerCase().split(' ').join('_')} title={'View description of ' + categoryName + ' in a new tab'} target="_blank"><i className="icon icon-question-circle"></i></a>
                     </div>
                 </div>
                 <div className="audit-details-section">
