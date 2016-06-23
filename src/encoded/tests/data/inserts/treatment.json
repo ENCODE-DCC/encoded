@@ -1,7 +1,7 @@
 [
      {
         "concentration": 5000000,
-        "concentration_units": "p.f.u.",      
+        "concentration_units": "pfu",      
         "lab": "john-stamatoyannopoulos",        
         "submitted_by": "blandit.orci@conubia.magna",
         "treatment_term_id": "Taxon:11623",
