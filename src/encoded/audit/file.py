@@ -524,7 +524,7 @@ def audit_modERN_ChIP_pipeline_steps(value, system):
 
     if (value['file_format'] != 'fastq') and ('derived_from' not in value):
         detail = 'File {} is missing its derived_from'.format(value['@id'])
-        yield AuditFailure('missing derived_from', detail, level='WARNING')
+        return
 
     step = value['step_run']
     if (value['file_format'] == 'bam') and step['aliases'][0] != 'modern:chip-seq-bwa-alignment-step-run-v-1-virtual':
@@ -803,9 +803,6 @@ def audit_file_chip_seq_control_read_depth(value, system):
 
     derived_from_files = value.get('derived_from')
     if (derived_from_files is None) or (derived_from_files == []):
-        detail = 'ENCODE Processed alignment file {} has no derived_from files'.format(
-            value['@id'])
-        yield AuditFailure('missing derived_from files', detail, level='DCC_ACTION')
         return
 
     target_name = 'empty'
