@@ -19,6 +19,16 @@ var Dbxref = module.exports.Dbxref = function (props) {
         prefix = 'GEOSAMN';
     }
 
+    // Handle two different kinds of WormBase IDs -- Target vs Strain
+    if (prefix === 'WormBase' && local.substr(0, 6) === 'WBGene') {
+        prefix = 'WormBaseTargets';
+    }
+
+    // Handle two different kinds of FlyBase IDs -- Target vs Stock
+    if (prefix === 'FlyBase' && local.substr(0, 4) === 'FBst') {
+        prefix = 'FlyBaseStock';
+    }
+
     var base = prefix && globals.dbxref_prefix_map[prefix];
     if (!base) {
         return <span>{value}</span>;
@@ -33,6 +43,12 @@ var Dbxref = module.exports.Dbxref = function (props) {
     } else if (prefix === 'MGI.D') {
         var id = value.substr(sep + 1);
         local = id + '.shtml';
+    } else if (prefix === "CGC") {
+        var id = value.substr(sep + 1);
+        local = id + '&field=all&exst=&exfield=all'
+    } else if (prefix === "DSSC") {
+        var id = value.substr(sep + 1);
+        local = id + '&table=Species&submit=Search'
     }
 
     return <a href={base + local}>{value}</a>;
