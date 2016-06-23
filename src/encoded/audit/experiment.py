@@ -2042,7 +2042,15 @@ def get_platforms_used_in_experiment(experiment):
     for f in experiment['original_files']:
         if f['output_category'] == 'raw data' and \
            'platform' in f:
-            platforms.add(f['platform']['term_name'])
+            # collapsing interchangable platforms
+            if f['platform'] in ['HiSeq 2000', 'HiSeq 2500']:
+                platforms.add('HiSeq 2000/2500')
+            elif f['platform'] in ['Illumina Genome Analyzer IIx',
+                                   'Illumina Genome Analyzer IIe',
+                                   'Illumina Genome Analyzer II']:
+                platforms.add('Illumina Genome Analyzer II/e/x')
+            else:
+                platforms.add(f['platform']['term_name'])
     return platforms
 
 
