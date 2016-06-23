@@ -76,18 +76,13 @@
             "enum" : [
                 "proposed",
                 "started",
-                "in progress",
                 "submitted",
                 "ready for review",
                 "deleted",
                 "released",
                 "revoked",
                 "archived",
-                "replaced",
-                "in review",
-                "release ready",
-                "verified",
-                "preliminary"
+                "replaced"
             ]
         }
     },
@@ -148,5 +143,6 @@
         "files.output_type": 1.0,
         "files.md5sum": 1.0,
         "references.title": 1.0
-    }
+    },
+    "changelog": "/profiles/changelogs/dataset.md"
 }

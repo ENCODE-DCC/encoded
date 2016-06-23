@@ -196,6 +196,8 @@ def get_derived_from_files_set(list_of_files):
                                     'original_files.quality_metrics.quality_metric_of.replicate',
                                     'original_files.derived_from',
                                     'original_files.analysis_step_version',
+                                    'original_files.analysis_step_version.software_versions',
+                                    'original_files.analysis_step_version.software_versions.software',
                                     'original_files.analysis_step_version.analysis_step',
                                     'original_files.analysis_step_version.analysis_step.pipelines'],
                condition=rfa('ENCODE3', 'ENCODE'))
@@ -239,6 +241,7 @@ def audit_experiment_standards_dispatcher(value, system):
 
     alignment_files = scan_files_for_file_format_output_type(value['original_files'],
                                                              'bam', 'alignments')
+
     fastq_files = scan_files_for_file_format_output_type(value['original_files'],
                                                          'fastq', 'reads')
 
@@ -246,7 +249,6 @@ def audit_experiment_standards_dispatcher(value, system):
                                     'shRNA knockdown followed by RNA-seq',
                                     'CRISPR genome editing followed by RNA-seq',
                                     'single cell isolation followed by RNA-seq']:
-
         gene_quantifications = scanFilesForOutputType(value['original_files'],
                                                       'gene quantifications')
         for failure in check_experiemnt_rna_seq_encode3_standards(value,
@@ -307,12 +309,15 @@ def check_experiemnt_rna_seq_encode3_standards(value,
         star_metrics = get_metrics(alignment_files,
                                    'StarQualityMetric',
                                    desired_assembly)
+
         if len(star_metrics) < 1:
             detail = 'ENCODE experiment {} '.format(value['@id']) + \
                      'of {} assay'.format(value['assay_term_name']) + \
                      ', processed by {} pipeline '.format(pipeline_title) + \
                      ' has no read depth containig quality metric associated with it.'
-            yield AuditFailure('RNA-pipeline - missing read depth', detail, level='DCC_ACTION')
+            yield AuditFailure('missing read depth', detail, level='DCC_ACTION')
+
+    alignment_files = get_non_tophat_alignment_files(alignment_files)
 
     if pipeline_title in ['RAMPAGE (paired-end, stranded)']:
         for failure in check_experiement_rampage_encode3_standards(value,
@@ -359,7 +364,7 @@ def check_experiment_wgbs_encode3_standards(experiment,
     for failure in check_wgbs_read_lengths(fastq_files, organism_name, 130, 100):
         yield failure
 
-    read_lengths = get_read_lengths_wgbs(fastq_files)
+    # read_lengths = get_read_lengths_wgbs(fastq_files)
 
     pipeline_title = scanFilesForPipelineTitle_not_chipseq(alignment_files,
                                                            ['GRCh38', 'mm10'],
@@ -424,6 +429,23 @@ def check_wgbs_read_lengths(fastq_files,
                          'data is > 100bp.'
                 yield AuditFailure('insufficient read length',
                                    detail, level='NOT_COMPLIANT')
+
+
+def get_non_tophat_alignment_files(files_list):
+    list_to_return = []
+    for f in files_list:
+        tophat_flag = False
+        if 'analysis_step_version' in f and \
+           'software_versions' in f['analysis_step_version']:
+            for soft_version in f['analysis_step_version']['software_versions']:
+                #  removing TopHat files
+                if 'software' in soft_version and \
+                   soft_version['software']['uuid'] == '7868f960-50ac-11e4-916c-0800200c9a66':
+                    tophat_flag = True
+        if tophat_flag is False and \
+           f['lab'] == '/labs/encode-processing-pipeline/':
+            list_to_return.append(f)
+    return list_to_return
 
 
 def get_metrics(files_list, metric_type, desired_assembly=None, desired_annotation=None):
@@ -641,10 +663,7 @@ def check_idr(metrics, rescue, self_consistency, pipeline):
 
 
 def check_mad(metrics, replication_type, mad_threshold, pipeline):
-    if replication_type in ['anisogenic',
-                            'anisogenic, sex-matched and age-matched',
-                            'anisogenic, age-matched',
-                            'anisogenic, sex-matched']:
+    if replication_type == 'anisogenic':
         experiment_replication_type = 'anisogenic'
     elif replication_type == 'isogenic':
         experiment_replication_type = 'isogenic'
@@ -732,10 +751,7 @@ def get_target(experiment):
 def check_spearman(metrics, replication_type, isogenic_threshold,
                    anisogenic_threshold, pipeline):
 
-    if replication_type in ['anisogenic',
-                            'anisogenic, sex-matched and age-matched',
-                            'anisogenic, age-matched',
-                            'anisogenic, sex-matched']:
+    if replication_type == 'anisogenic':
         threshold = anisogenic_threshold
     elif replication_type == 'isogenic':
         threshold = isogenic_threshold
@@ -975,7 +991,7 @@ def check_file_chip_seq_read_depth(file_to_check,
     marks = pipelines_with_read_depth['Histone ChIP-seq']
 
     if read_depth is False:
-        detail = 'ENCODE Processed alignment file {} has no read depth information'.format(
+        detail = 'ENCODE Processed alignment file {} has no read depth information.'.format(
             file_to_check['@id'])
         yield AuditFailure('missing read depth', detail, level='DCC_ACTION')
         return
@@ -1100,6 +1116,9 @@ def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_thre
                           assay_term_name,
                           pipeline_title):
     if read_depth is False:
+        detail = 'ENCODE Processed alignment file {} has no read depth information.'.format(
+            file_to_check['@id'])
+        yield AuditFailure('missing read depth', detail, level='DCC_ACTION')
         return
 
     if read_depth is not False and assay_term_name in ['RAMPAGE',
@@ -1252,7 +1271,7 @@ def scanFilesForPipelineTitle_not_chipseq(files_to_scan, assemblies, pipeline_ti
                condition=rfa('ENCODE3'))
 def audit_experiment_needs_pipeline(value, system):
 
-    if value['status'] not in ['released', 'release ready']:
+    if value['status'] not in ['released', 'ready for review']:
         return
 
     if 'assay_term_name' not in value:
@@ -1645,10 +1664,10 @@ def audit_experiment_release_date(value, system):
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicated(value, system):
     '''
-    Experiments in ready for review or release ready state should be replicated. If not,
+    Experiments in ready for review state should be replicated. If not,
     wranglers should check with lab as to why before release.
     '''
-    if value['status'] not in ['released', 'release ready', 'ready for review']:
+    if value['status'] not in ['released', 'ready for review']:
         return
     '''
     Excluding single cell isolation experiments from the replication requirement
@@ -2329,4 +2348,4 @@ def audit_library_RNA_size_range(value, system):
         lib = rep['library']
         if (lib['nucleic_acid_term_id'] in RNAs) and ('size_range' not in lib):
             detail = 'RNA library {} requires a value for size_range'.format(rep['library']['@id'])
-            raise AuditFailure('missing RNA fragment size', detail, level='NOT_COMPLIANT')
+            yield AuditFailure('missing RNA fragment size', detail, level='NOT_COMPLIANT')

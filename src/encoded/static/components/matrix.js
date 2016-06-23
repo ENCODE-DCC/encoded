@@ -74,7 +74,7 @@ var Matrix = module.exports.Matrix = React.createClass({
             var y_groups = matrix.y[primary_y_grouping].buckets;
             var y_limit = matrix.y.limit;
             var y_group_facet = _.findWhere(context.facets, {field: primary_y_grouping});
-            var y_group_options = y_group_facet.terms.map(term => term.key);
+            var y_group_options = y_group_facet ? y_group_facet.terms.map(term => term.key) : [];
             y_group_options.sort();
             var search_base = context.matrix.search_base;
             var batch_hub_disabled = matrix.doc_count > batchHubLimit;
