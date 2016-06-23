@@ -178,7 +178,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                     }
                     return null;
                 },
-                strand_specificity: library => <span>{library.strand_specificity === true ? 'Strand-specific' : (library.strand_specificity === false ? 'Non-strand-specific' : null)}</span>,
+                strand_specificity: library => <span>{library.strand_specificity ? 'Strand-specific' : 'Non-strand-specific'}</span>,
                 spikeins_used: library => {
                     var spikeins = library.spikeins_used;
                     if (spikeins && spikeins.length) {
