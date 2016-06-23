@@ -79,4 +79,4 @@ def test_audit_antibody_lot_target(testapp, antibody_lot, base_antibody_characte
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched target' for error in errors_list)
+    assert any(error['category'] == 'inconsistent target' for error in errors_list)
