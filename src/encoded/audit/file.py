@@ -186,10 +186,12 @@ def audit_file_replicate_match(value, system):
     file_exp = value['dataset']['uuid']
 
     if rep_exp != file_exp:
-        detail = 'File {} has a replicate {} in experiment {}'.format(
-            value['@id'],
-            value['replicate']['@id'],
-            value['replicate']['experiment']['@id'])
+        detail = 'File {} from experiment {} '.format(value['@id'], value['dataset']['@id']) + \
+                 'is associated with replicate [{},{}] '.format(
+                     value['replicate']['biological_replicate_number'],
+                     value['replicate']['technical_replicate_number']) + \
+                 '{}, but that replicate is associated with different '.format(value['replicate']['@id']) + \
+                 'experiment {}.'.format(value['replicate']['experiment']['@id'])
         raise AuditFailure('inconsistent replicate', detail, level='ERROR')
 
 
