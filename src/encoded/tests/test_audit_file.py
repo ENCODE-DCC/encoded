@@ -502,7 +502,7 @@ def test_audit_file_biological_replicate_number_match(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'inconsistent biological replicate number'
+    assert all(error['category'] != 'inconsistent replicate'
                for error in errors_list)
 
 
@@ -518,7 +518,7 @@ def test_audit_file_biological_replicate_number_mismatch(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent biological replicate number'
+    assert any(error['category'] == 'inconsistent replicate'
                for error in errors_list)
 
 

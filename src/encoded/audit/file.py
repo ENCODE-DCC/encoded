@@ -159,12 +159,13 @@ def audit_file_biological_replicate_number_match(value, system):
             derived_tech_rep_num = derived_from_file['replicate']['technical_replicate_number']
             derived_replicate = (derived_bio_rep_num, derived_tech_rep_num)
             if file_replicate != derived_replicate:
-                detail = 'Biological replicate number of the file {} '.format(value['@id']) + \
-                         'is {}'.format(file_replicate) + \
-                         ', it is inconsistent with the biological replicate number ' +\
-                         '{} of the file {} it was derived from'.format(derived_replicate,
-                                                                        derived_from_file['@id'])
-                raise AuditFailure('inconsistent biological replicate number',
+                detail = 'File {} '.format(value['@id']) + \
+                         'is associated with replicate [{},{}] '.format(file_replicate[0],
+                                                                        file_replicate[1]) + \
+                         ', but it was derived from file {} '.format(derived_from_file['@id']) + \
+                         'which is associated with replicate [{},{}].'.format(derived_replicate[0],
+                                                                              derived_replicate[1]),
+                raise AuditFailure('inconsistent replicate',
                                    detail, level='ERROR')
 
 
