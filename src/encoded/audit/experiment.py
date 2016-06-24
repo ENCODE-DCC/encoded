@@ -2033,11 +2033,11 @@ def audit_experiment_control(value, system):
 
     for control in value['possible_controls']:
         if control.get('biosample_term_id') != value.get('biosample_term_id'):
-            detail = 'Control {} is for {} but experiment is done on {}'.format(
+            detail = 'The specified control {} for this experiment is on {}, '.format(
                 control['@id'],
-                control.get('biosample_term_name'),
-                value['biosample_term_name'])
-            raise AuditFailure('mismatched control', detail, level='ERROR')
+                control.get('biosample_term_name')) + \
+                'but this experiment is done on {}.'.format(value['biosample_term_name'])
+            raise AuditFailure('inconsistent control', detail, level='ERROR')
 
 
 @audit_checker('experiment', frame=['target',
