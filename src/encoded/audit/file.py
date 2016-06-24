@@ -332,6 +332,7 @@ def audit_file_controlled_by(value, system):
 
     possible_controls = value['dataset'].get('possible_controls')
     biosample = value['dataset'].get('biosample_term_id')
+    biosample_term_name = value['dataset'].get('biosample_term_name')
     run_type = value.get('run_type', None)
     read_length = value.get('read_length', None)
     platform = value.get('platform', None)
@@ -344,29 +345,36 @@ def audit_file_controlled_by(value, system):
             control_platform = ff.get('platform', None)
 
             if control_bs != biosample:
-                detail = 'File {} has a controlled_by file {} with conflicting biosample {}'.format(
-                    value['@id'],
-                    ff['@id'],
-                    control_bs)
+                detail = 'controlled_by is a list of files that are used as controls for a given file. ' + \
+                         'This experiment was performed using {}, but '.format(biosample_term_name) + \
+                         'file {} contains in controlled_by list a file '.format(value['@id']) + \
+                         '{} that belongs to experiment with different biosample {}.'.format(
+                             ff['@id'],
+                             ff['dataset'].get('biosample_term_name'))
                 yield AuditFailure('mismatched control', detail, level='ERROR')
                 return
 
             if ff['file_format'] != value['file_format']:
-                detail = 'File {} with file_format {} has a controlled_by file {} with file_format {}'.format(
-                    value['@id'],
-                    value['file_format'],
-                    ff['@id'],
-                    ff['file_format']
-                    )
+                detail = 'controlled_by is a list of files that are used as controls for a given file. ' + \
+                         'File {} with file_format {} contains in controlled_by list '.format(
+                             value['@id'],
+                             value['file_format'],) + \
+                         'a file {} with different file_format {}.'.format(
+                             ff['@id'],
+                             ff['file_format'])
                 yield AuditFailure('mismatched control', detail, level='ERROR')
                 return
 
             if (possible_controls is None) or (ff['dataset']['@id'] not in possible_controls):
-                detail = 'File {} has a controlled_by file {} with a dataset {} that is not in possible_controls'.format(
-                    value['@id'],
-                    ff['@id'],
-                    ff['dataset']['@id']
-                    )
+                detail = 'possible_controls is a list of experiment(s) that can serve as ' + \
+                         'analytical controls for a given experiment. ' + \
+                         'controlled_by is a list of files that are used as ' + \
+                         'controls for a given file. ' + \
+                         'File {} contains in controlled_by list a file {} '.format(
+                             value['@id'],
+                             ff['@id']) + \
+                         'that belongs to an experiment {} that '.format(ff['dataset']['@id']) + \
+                         'is not specified in possible_controls list of this experiment.'
                 yield AuditFailure('mismatched control', detail, level='ERROR')
                 return
 
