@@ -1945,9 +1945,11 @@ def audit_experiment_target(value, system):
     # Check that target of experiment matches target of antibody
     for rep in value['replicates']:
         if 'antibody' not in rep:
-            detail = 'Replicate {} in a {} assay requires an antibody'.format(
-                rep['@id'],
-                value['assay_term_name']
+            detail = '{} assay requires an antibody specification. '.format(value['assay_term_name']) + \
+                     ' Replicate [{},{}] {} antibody needs to be specified.'.format(
+                rep['biological_replicate_number'],
+                rep['technical_replicate_number'],
+                rep['@id']
                 )
             yield AuditFailure('missing antibody', detail, level='ERROR')
         else:
