@@ -614,8 +614,10 @@ def audit_file_paired_ended_run_type(value, system):
 
     if (value['output_type'] == 'reads') and (value.get('run_type') == 'paired-ended'):
         if 'paired_end' not in value:
-            detail = 'File {} has a paired-ended run_type '.format(value['@id']) + \
-                     'but is missing its paired_end value'
+            detail = 'Sequncing file {} '.format(value['@id']) + \
+                     'is the result of a paired-end sequencing run ' + \
+                     'according to the submitted metadata but is missing the requisite ' + \
+                     'information to classify it as read1 or read2 in the pair.'
             raise AuditFailure('missing paired_end', detail, level='ERROR')
 
 
