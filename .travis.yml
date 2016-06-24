@@ -4,6 +4,8 @@ cache:
   directories:
     - eggs
     - .npm
+notifications:
+  slack: encode-dcc:UzhrrCRXvfpTd8bHAQ775aZw
 addons:
   apt:
     sources:
