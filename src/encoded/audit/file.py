@@ -208,7 +208,8 @@ def audit_file_platform(value, system):
 
     if 'award' in value and 'rfa' in value['award'] and \
        'platform' not in value:
-        detail = 'Raw data file {} missing platform information'.format(value['@id'])
+        detail = 'File {} metadata lacks information on the instrument/platform '.format(value['@id']) + \
+                 'used to produce it.'
         raise AuditFailure('missing platform', detail, level='ERROR')
 
 
