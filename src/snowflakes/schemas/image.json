@@ -1,6 +1,6 @@
 {
     "title": "Image",
-    "description": "Schema for images embedded in portal pages",
+    "description": "Schema for images embedded in page objects",
     "id": "/profiles/image.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",

@@ -115,6 +115,7 @@ module.exports.statusOrder = [
     'not reviewed'
 ];
 
+// TODO: move this to encode project specific file
 module.exports.productionHost = {'www.encodeproject.org':1, 'encodeproject.org':1, 'www.encodedcc.org':1};
 
 var encodeVersionMap = module.exports.encodeVersionMap = {

@@ -76,7 +76,6 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, path='/index', control=
                     if not recovery:
                         # http://initd.org/psycopg/docs/advanced.html#asynchronous-notifications
                         cursor.execute("""LISTEN "snovault.transaction";""")
-                        # cursor.execute("""LISTEN "encoded.transaction";""")  # BBB
                         log.debug("Listener connected")
                         listening = True
 
