@@ -334,21 +334,19 @@ def audit_file_controlled_by(value, system):
     biosample = value['dataset'].get('biosample_term_id')
     run_type = value.get('run_type', None)
     read_length = value.get('read_length', None)
-    platform = value.get('platform', None)
 
     if value['controlled_by']:
         for ff in value['controlled_by']:
             control_bs = ff['dataset'].get('biosample_term_id')
             control_run = ff.get('run_type', None)
             control_length = ff.get('read_length', None)
-            control_platform = ff.get('platform', None)
 
             if control_bs != biosample:
                 detail = 'File {} has a controlled_by file {} with conflicting biosample {}'.format(
                     value['@id'],
                     ff['@id'],
                     control_bs)
-                yield AuditFailure('mismatched control', detail, level='ERROR')
+                yield AuditFailure('inconsistent control', detail, level='ERROR')
                 return
 
             if ff['file_format'] != value['file_format']:
@@ -358,7 +356,7 @@ def audit_file_controlled_by(value, system):
                     ff['@id'],
                     ff['file_format']
                     )
-                yield AuditFailure('mismatched control', detail, level='ERROR')
+                yield AuditFailure('inconsistent control', detail, level='ERROR')
                 return
 
             if (possible_controls is None) or (ff['dataset']['@id'] not in possible_controls):
@@ -367,21 +365,8 @@ def audit_file_controlled_by(value, system):
                     ff['@id'],
                     ff['dataset']['@id']
                     )
-                yield AuditFailure('mismatched control', detail, level='ERROR')
+                yield AuditFailure('inconsisted control', detail, level='ERROR')
                 return
-
-            if control_platform is not None and platform is not None:
-                platform_id = platform.get('term_id')
-                control_platform_id = control_platform.get('term_id')
-                if control_platform_id != platform_id:
-                    detail = 'File {} is on {} but its control file {} is on {}'.format(
-                        value['@id'],
-                        value['platform'].get('term_name'),
-                        ff['@id'],
-                        control_platform.get('term_name')
-                    )
-                    yield AuditFailure('inconsistent control platform',
-                                       detail, level='WARNING')
 
             if (run_type is None) or (control_run is None):
                 continue
