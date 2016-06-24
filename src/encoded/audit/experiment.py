@@ -1635,7 +1635,7 @@ def audit_experiment_replicate_with_no_files(value, system):
 
         if len(rep_dictionary[key]) == 0:
             detail = 'This experiment contains a replicate ' + \
-                     '[{},{}] {} witout any associated files.'.format(
+                     '[{},{}] {} without any associated files.'.format(
                          rep_numbers[key][0],
                          rep_numbers[key][1],
                          key)
@@ -1644,8 +1644,11 @@ def audit_experiment_replicate_with_no_files(value, system):
         else:
             if seq_assay_flag is True:
                 if 'raw data' not in rep_dictionary[key]:
-                    detail = 'Replicate ' + \
-                             '{} does not have raw data files associated with it.'.format(key)
+                    detail = 'This experiment contains a replicate ' + \
+                             '[{},{}] {} without raw data associated files.'.format(
+                                 rep_numbers[key][0],
+                                 rep_numbers[key][1],
+                                 key)
                     yield AuditFailure('missing raw data in replicate',
                                        detail, level=audit_level)
     return
@@ -2020,9 +2023,12 @@ def audit_experiment_control(value, system):
                                  "ENCODE2-Mouse"]:
         audit_level = 'NOT_COMPLIANT'
     if value['possible_controls'] == []:
-        detail = '{} experiments require a value in possible_control'.format(
-            value['assay_term_name']
-            )
+        detail = 'possible_controls is a list of experiment(s) that can ' + \
+                 'serve as analytical controls for a given experiment. ' + \
+                 '{} experiments require a value in possible_controls. '.format(
+                     value['assay_term_name']) + \
+                 'This experiment should be associated with at least one control ' + \
+                 'experiment, but has no specified values in the possible_controls list.'
         raise AuditFailure('missing possible_controls', detail, level=audit_level)
 
     for control in value['possible_controls']:
