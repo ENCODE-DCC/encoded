@@ -1704,9 +1704,9 @@ def audit_experiment_replicated(value, system):
     if len(num_bio_reps) <= 1:
         # different levels of severity for different rfas
         if value['award']['rfa'] in ['ENCODE3', 'GGR']:
-            detail = 'Experiment {} has only one biological '.format(value['@id']) + \
-                     'replicate and is released. Check for proper annotation ' + \
-                     'of this state in the metadata'
+            detail = 'This experiment is expected to be replicated, but ' + \
+                     'contains only one listed biological replicate [{}].'.format(
+                         list(num_bio_reps)[0])
             raise AuditFailure('unreplicated experiment', detail, level='NOT_COMPLIANT')
 
 
