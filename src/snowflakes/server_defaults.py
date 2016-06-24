@@ -74,7 +74,7 @@ TEST_ACCESSION_FORMAT = (digits, ) * 6
 
 
 def test_accession(accession_type):
-    """ Test accessions are generated on test.encodedcc.org
+    """ Test accessions are generated on test servers to not clash with production accessions
     """
     random_part = ''.join(random.choice(s) for s in TEST_ACCESSION_FORMAT)
     return 'TST' + accession_type + random_part

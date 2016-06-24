@@ -1,0 +1,95 @@
+{
+    "title": "Snowflake ",
+    "description": "Schema for submitting metadata for a snowflake",
+    "id": "/profiles/snowflake.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["snowset", "type","award", "lab"],
+    "identifyingProperties": ["uuid", "accession"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/accessioned_status" }
+    ],
+    "facets": {
+        "status": {
+            "title": "Snowflake status"
+        },
+        "type": {
+            "title": "Snowflake type"
+        },
+        "lab.title": {
+            "title": "Lab"
+        }
+    },
+    "dependencies": {
+        "external_accession": {
+            "not": {
+                "required": ["accession"]
+            }
+        }
+    },
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "accession": {
+            "accessionType": "FL"
+        },
+        "external_accession": {
+            "title": "External accession",
+            "comment": "Only admins are allowed to set or update this value.",
+            "type": "string",
+            "permission": "import_items",
+            "uniqueKey": "accession"
+        },
+        "type": {
+            "title": "Snoflake type",
+            "type": "string",
+            "enum": [
+                    "fluffy",
+                    "crisp",
+                    "slushy",
+                    "assymetric",
+                    "wet",
+                    "dry"
+             ]
+        },
+        "snowset": {
+            "title": "Snowset",
+            "description": "The snowset (ball, fort, etc.) the snowflake belongs to.",
+            "type": "string",
+            "linkTo": ["Snowset", "Snowball", "Snowfort"]
+        } 
+    },
+    "columns": {
+        "title": {
+            "title": "Title"
+        },
+        "accession": {
+            "title": "Accession"
+        },
+        "snowset": {
+            "title": "Snowset"
+        },
+        "type": {
+            "title": "Snowflake Type"
+        },
+        "lab": {
+            "title": "Lab"
+        },
+        "lab": {
+            "title": "Lab"
+        },
+        "date_created": {
+            "title": "Date added"
+        },
+        "status": {
+            "title": "Snowflake status"
+        }
+    }
+}
