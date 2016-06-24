@@ -673,6 +673,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
     // to de-dup the file array since there can be repeated files in it.
     files.forEach(function(file) {
         if (!allFiles[file['@id']]) {
+            file.removed = false;
             allFiles[file['@id']] = file;
         }
     });
@@ -770,11 +771,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
             allFiles[contributingFileId] = allContributing[contributingFileId];
         }
     });
-
-    // Don't draw anything if no files have an analysis_step
-    if (!stepExists) {
-        throw new graphException('No graph: no files have step runs');
-    }
 
     // Now that we know at least some files derive from each other through analysis steps, mark file objects that
     // don't derive from other files — and that no files derive from them — as removed from the graph.
