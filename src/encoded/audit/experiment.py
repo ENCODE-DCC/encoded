@@ -7,7 +7,6 @@ from .ontology_data import biosampleType_ontologyPrefix
 from .gtex_data import gtexDonorsList
 from .standards_data import pipelines_with_read_depth
 
-import datetime
 
 targetBasedAssayList = [
     'ChIP-seq',
@@ -28,6 +27,7 @@ controlRequiredAssayList = [
     'RIP-seq',
     'RAMPAGE',
     'CAGE',
+    'eCLIP',
     'single cell isolation followed by RNA-seq',
     'shRNA knockdown followed by RNA-seq',
     'CRISPR genome editing followed by RNA-seq',
@@ -1595,8 +1595,8 @@ def audit_experiment_consistent_sequencing_runs(value, system):
 
 
 @audit_checker('experiment',
-               frame=['replicates', 'original_files', 'original_files.replicate'],
-               condition=rfa("ENCODE3", "modERN", "ENCODE2", "GGR",
+               frame=['award', 'replicates', 'original_files', 'original_files.replicate'],
+               condition=rfa("ENCODE3", "modERN", "ENCODE2", "GGR", "Roadmap",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicate_with_no_files(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked', 'proposed', 'preliminary']:
@@ -1625,8 +1625,9 @@ def audit_experiment_replicate_with_no_files(value, system):
                 rep_dictionary[file_replicate['@id']].append(file_object['output_category'])
 
     audit_level = 'ERROR'
-    if value['status'] in ['in progress', 'started']:
-        audit_level = 'WARNING'
+    if value['award']['rfa'] in ["ENCODE2", "Roadmap",
+                                 "modENCODE", "MODENCODE", "ENCODE2-Mouse"]:
+        audit_level = 'DCC_ACTION'
 
     for key in rep_dictionary.keys():
 
@@ -1762,19 +1763,19 @@ def audit_experiment_isogeneity(value, system):
         detail = 'In experiment {} the biosamples have varying strains {}'.format(
             value['@id'],
             biosample_donor_list)
-        yield AuditFailure('mismatched donor', detail, level='ERROR')
+        yield AuditFailure('inconsistent donor', detail, level='ERROR')
 
     if len(set(biosample_age_list)) > 1:
         detail = 'In experiment {} the biosamples have varying ages {}'.format(
             value['@id'],
             biosample_age_list)
-        yield AuditFailure('mismatched age', detail, level='NOT_COMPLIANT')
+        yield AuditFailure('inconsistent age', detail, level='NOT_COMPLIANT')
 
     if len(set(biosample_sex_list)) > 1:
         detail = 'In experiment {} the biosamples have varying sexes {}'.format(
             value['@id'],
             repr(biosample_sex_list))
-        yield AuditFailure('mismatched sex', detail, level='NOT_COMPLIANT')
+        yield AuditFailure('inconsistent sex', detail, level='NOT_COMPLIANT')
     return
 
 
@@ -1980,10 +1981,10 @@ def audit_experiment_target(value, system):
                         target['name'],
                         antibody['@id']
                         )
-                    yield AuditFailure('mismatched target', detail, level='ERROR')
+                    yield AuditFailure('inconsistent target', detail, level='ERROR')
 
 
-@audit_checker('experiment', frame=['target', 'possible_controls'])
+@audit_checker('experiment', frame=['award', 'target', 'possible_controls'])
 def audit_experiment_control(value, system):
     '''
     Certain assay types (ChIP-seq, ...) require possible controls with a matching biosample.
@@ -2001,11 +2002,20 @@ def audit_experiment_control(value, system):
     if 'target' in value and 'control' in value['target']['investigated_as']:
         return
 
+    audit_level = 'ERROR'
+    if value.get('assay_term_name') in ['CAGE',
+                                        'RAMPAGE'] or \
+       value['award']['rfa'] in ["ENCODE2",
+                                 "Roadmap",
+                                 "modENCODE",
+                                 "MODENCODE",
+                                 "ENCODE2-Mouse"]:
+        audit_level = 'NOT_COMPLIANT'
     if value['possible_controls'] == []:
         detail = '{} experiments require a value in possible_control'.format(
             value['assay_term_name']
             )
-        raise AuditFailure('missing possible_controls', detail, level='ERROR')
+        raise AuditFailure('missing possible_controls', detail, level=audit_level)
 
     for control in value['possible_controls']:
         if control.get('biosample_term_id') != value.get('biosample_term_id'):
@@ -2157,7 +2167,7 @@ def audit_experiment_biosample_term(value, system):
                     term_name,
                     ontology_name
                     )
-                yield AuditFailure('mismatched ontology term', detail, level='ERROR')
+                yield AuditFailure('inconsistent ontology term', detail, level='ERROR')
 
     if 'replicates' in value:
         for rep in value['replicates']:

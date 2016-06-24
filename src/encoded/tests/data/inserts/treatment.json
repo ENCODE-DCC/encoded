@@ -1,4 +1,14 @@
 [
+     {
+        "concentration": 5000000,
+        "concentration_units": "pfu",      
+        "lab": "john-stamatoyannopoulos",        
+        "submitted_by": "blandit.orci@conubia.magna",
+        "treatment_term_id": "Taxon:11623",
+        "treatment_term_name": "LCMV",
+        "treatment_type": "infection",
+        "uuid": "81251aeb-7975-4364-a078-86db3fa526d4"
+    },
     {
         "concentration": 97.2,
         "concentration_units": "nM",

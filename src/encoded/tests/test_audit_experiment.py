@@ -746,7 +746,7 @@ def test_audit_experiment_target_mismatch(testapp, base_experiment, base_replica
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched target' for error in errors_list)
+    assert any(error['category'] == 'inconsistent target' for error in errors_list)
 
 
 def test_audit_experiment_eligible_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, antibody_lot, target, base_antibody_characterization1, base_antibody_characterization2):
@@ -857,7 +857,7 @@ def test_audit_experiment_model_organism_mismatched_sex(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched sex' for error in errors_list)
+    assert any(error['category'] == 'inconsistent sex' for error in errors_list)
 
 
 def test_audit_experiment_model_organism_mismatched_age(testapp,
@@ -888,7 +888,7 @@ def test_audit_experiment_model_organism_mismatched_age(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched age' for error in errors_list)
+    assert any(error['category'] == 'inconsistent age' for error in errors_list)
 
 
 def test_audit_experiment_model_organism_mismatched_donor(testapp,
@@ -916,7 +916,7 @@ def test_audit_experiment_model_organism_mismatched_donor(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched donor' for error in errors_list)
+    assert any(error['category'] == 'inconsistent donor' for error in errors_list)
 
 
 def test_audit_experiment_with_library_without_biosample(testapp, base_experiment, base_replicate,
@@ -1118,7 +1118,7 @@ def test_audit_experiment_replicate_with_no_files_warning(testapp, file_bed_meth
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
-        if error_type == 'WARNING':
+        if error_type == 'ERROR':
             errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing raw data in replicate' for error in errors_list)
 
