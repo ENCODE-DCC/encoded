@@ -266,7 +266,7 @@ def audit_biosample_donor(value, system):
         return
 
     if ('donor' not in value):
-        detail = 'Biosample {} requires a donor'.format(value['@id'])
+        detail = 'Biosample {} is not associated with any donor.'.format(value['@id'])
         raise AuditFailure('missing donor', detail, level='ERROR')
         return
 
