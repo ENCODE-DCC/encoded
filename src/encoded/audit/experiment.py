@@ -1984,14 +1984,15 @@ def audit_experiment_target(value, system):
                         yield AuditFailure('mismatched tag target', detail, level='ERROR')
             else:
                 target_matches = False
+                antibody_targets = []
                 for antibody_target in antibody['targets']:
+                    antibody_targets.append(antibody_target.get('name'))
                     if target['name'] == antibody_target.get('name'):
                         target_matches = True
                 if not target_matches:
-                    detail = '{} is not found in target list for antibody {}'.format(
-                        target['name'],
-                        antibody['@id']
-                        )
+                    detail = 'The target of the experiment is {}, '.format(target['name']) + \
+                             'but it could not be found in the experiment\'s antibody {} '.format(antibody['@id']) + \
+                             'target list {}.'.format(antibody_targets)
                     yield AuditFailure('inconsistent target', detail, level='ERROR')
 
 
