@@ -1613,8 +1613,10 @@ def audit_experiment_replicate_with_no_files(value, system):
         seq_assay_flag = True
 
     rep_dictionary = {}
+    rep_numbers = {}
     for rep in value['replicates']:
         rep_dictionary[rep['@id']] = []
+        rep_numbers[rep['@id']] = (rep['biological_replicate_number'],rep['technical_replicate_number'])
 
     for file_object in value['original_files']:
         if file_object['status'] in ['deleted', 'replaced', 'revoked']:
@@ -1632,8 +1634,12 @@ def audit_experiment_replicate_with_no_files(value, system):
     for key in rep_dictionary.keys():
 
         if len(rep_dictionary[key]) == 0:
-            detail = 'Replicate ' + \
-                     '{} does not have files associated with it.'.format(key)
+            detail = 'This experiment contains a replicate ' + \
+                     '[{},{}] {} witout any associated files.'.format(
+                         rep_numbers[key][0],
+                         rep_numbers[key][1],
+                         key)
+
             yield AuditFailure('missing raw data in replicate', detail, level=audit_level)
         else:
             if seq_assay_flag is True:
