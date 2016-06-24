@@ -163,7 +163,7 @@ def ctrl_experiment(testapp, lab, award, control_target):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'started',
         'assay_term_name': 'ChIP-seq',
         'assay_term_id': 'OBI:0000716'
     }
@@ -599,7 +599,7 @@ def test_audit_experiment_target(testapp, base_experiment):
 
 
 def test_audit_experiment_replicated(testapp, base_experiment, base_replicate, base_library):
-    testapp.patch_json(base_experiment['@id'], {'status': 'release ready'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'ready for review'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -652,7 +652,7 @@ def test_audit_experiment_technical_replicates_biosample(testapp, base_experimen
 
 
 def test_audit_experiment_with_libraryless_replicated(testapp, base_experiment, base_replicate, base_library):
-    testapp.patch_json(base_experiment['@id'], {'status': 'release ready'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'ready for review'})
     testapp.patch_json(base_experiment['@id'], {'replicates': [base_replicate['@id']]})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -664,7 +664,7 @@ def test_audit_experiment_with_libraryless_replicated(testapp, base_experiment, 
 
 def test_audit_experiment_single_cell_replicated(testapp, base_experiment, base_replicate,
                                                  base_library):
-    testapp.patch_json(base_experiment['@id'], {'status': 'release ready'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'ready for review'})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name':
                                                 'single cell isolation followed by RNA-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
@@ -677,7 +677,7 @@ def test_audit_experiment_single_cell_replicated(testapp, base_experiment, base_
 
 def test_audit_experiment_RNA_bind_n_seq_replicated(testapp, base_experiment, base_replicate,
                                                     base_library):
-    testapp.patch_json(base_experiment['@id'], {'status': 'release ready'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'ready for review'})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name':
                                                 'RNA Bind-n-Seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
@@ -746,7 +746,7 @@ def test_audit_experiment_target_mismatch(testapp, base_experiment, base_replica
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched target' for error in errors_list)
+    assert any(error['category'] == 'inconsistent target' for error in errors_list)
 
 
 def test_audit_experiment_eligible_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, antibody_lot, target, base_antibody_characterization1, base_antibody_characterization2):
@@ -857,7 +857,7 @@ def test_audit_experiment_model_organism_mismatched_sex(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched sex' for error in errors_list)
+    assert any(error['category'] == 'inconsistent sex' for error in errors_list)
 
 
 def test_audit_experiment_model_organism_mismatched_age(testapp,
@@ -888,7 +888,7 @@ def test_audit_experiment_model_organism_mismatched_age(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched age' for error in errors_list)
+    assert any(error['category'] == 'inconsistent age' for error in errors_list)
 
 
 def test_audit_experiment_model_organism_mismatched_donor(testapp,
@@ -916,7 +916,7 @@ def test_audit_experiment_model_organism_mismatched_donor(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched donor' for error in errors_list)
+    assert any(error['category'] == 'inconsistent donor' for error in errors_list)
 
 
 def test_audit_experiment_with_library_without_biosample(testapp, base_experiment, base_replicate,
@@ -1113,12 +1113,12 @@ def test_audit_experiment_replicate_with_no_files_warning(testapp, file_bed_meth
                                                           base_library):
     testapp.patch_json(file_bed_methyl['@id'], {'replicate': base_replicate['@id']})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
-    testapp.patch_json(base_experiment['@id'], {'status': 'in progress'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'started'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
-        if error_type == 'WARNING':
+        if error_type == 'ERROR':
             errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing raw data in replicate' for error in errors_list)
 

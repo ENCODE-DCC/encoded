@@ -42,9 +42,17 @@ def is_path_gzipped(path):
 def check_format(encValData, job, path):
     """ Local validation
     """
+    ASSEMBLY_MAP = {
+        'GRCh38-minimal': 'GRCh38',
+        'mm10-minimal': 'mm10'
+    }
+
     errors = job['errors']
     item = job['item']
     result = job['result']
+
+    # if assembly is in the map, use the mapping, otherwise just use the string in assembly
+    assembly = ASSEMBLY_MAP.get(item.get('assembly'), item.get('assembly'))
 
     if item['file_format'] == 'bam' and item.get('output_type') == 'transcriptome alignments':
         if 'assembly' not in item:
@@ -54,9 +62,9 @@ def check_format(encValData, job, path):
         if errors:
             return errors
         chromInfo = '-chromInfo=%s/%s/%s/chrom.sizes' % (
-            encValData, item['assembly'], item['genome_annotation'])
+            encValData, assembly, item['genome_annotation'])
     else:
-        chromInfo = '-chromInfo=%s/%s/chrom.sizes' % (encValData, item.get('assembly'))
+        chromInfo = '-chromInfo=%s/%s/chrom.sizes' % (encValData, assembly)
 
     validate_map = {
         ('fasta', None): ['-type=fasta'],
