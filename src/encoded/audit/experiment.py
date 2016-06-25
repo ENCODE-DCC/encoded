@@ -1725,7 +1725,9 @@ def audit_experiment_replicates_with_no_libraries(value, system):
     return
 
 
-@audit_checker('experiment', frame=['replicates', 'replicates.library.biosample'])
+@audit_checker('experiment', frame=['replicates',
+                                    'replicates.library',
+                                    'replicates.library.biosample'])
 def audit_experiment_isogeneity(value, system):
 
     if value['status'] in ['deleted', 'replaced', 'revoked']:
@@ -1739,18 +1741,18 @@ def audit_experiment_isogeneity(value, system):
         yield AuditFailure('undetermined replication_type', detail, level='DCC_ACTION')
 
     biosample_dict = {}
-    biosample_age_list = []
-    biosample_sex_list = []
-    biosample_donor_list = []
+    biosample_age_set = set()
+    biosample_sex_set = set()
+    biosample_donor_set = set()
 
     for rep in value['replicates']:
         if 'library' in rep:
             if 'biosample' in rep['library']:
                 biosampleObject = rep['library']['biosample']
                 biosample_dict[biosampleObject['accession']] = biosampleObject
-                biosample_age_list.append(biosampleObject.get('age'))
-                biosample_sex_list.append(biosampleObject.get('sex'))
-                biosample_donor_list.append(biosampleObject.get('donor'))
+                biosample_age_set.add(biosampleObject.get('age_display'))
+                biosample_sex_set.add(biosampleObject.get('sex'))
+                biosample_donor_set.add(biosampleObject.get('donor'))
                 biosample_species = biosampleObject.get('organism')
             else:
                 # If I have a library without a biosample,
@@ -1768,22 +1770,22 @@ def audit_experiment_isogeneity(value, system):
     if biosample_species == '/organisms/human/':
         return  # humans are handled in the the replication_type
 
-    if len(set(biosample_donor_list)) > 1:
-        detail = 'In experiment {} the biosamples have varying strains {}'.format(
-            value['@id'],
-            biosample_donor_list)
+    if len(biosample_donor_set) > 1:
+        donors_list = str(list(biosample_donor_set)).replace('\'', '')
+        detail = 'Replicates of this experiment were prepared using biosamples ' + \
+                 'from different strains {}.'.format(donors_list)
         yield AuditFailure('inconsistent donor', detail, level='ERROR')
 
-    if len(set(biosample_age_list)) > 1:
-        detail = 'In experiment {} the biosamples have varying ages {}'.format(
-            value['@id'],
-            biosample_age_list)
+    if len(biosample_age_set) > 1:
+        ages_list = str(list(biosample_age_set)).replace('\'', '')
+        detail = 'Replicates of this experiment were prepared using biosamples ' + \
+                 'of different ages {}.'.format(ages_list)
         yield AuditFailure('inconsistent age', detail, level='NOT_COMPLIANT')
 
-    if len(set(biosample_sex_list)) > 1:
-        detail = 'In experiment {} the biosamples have varying sexes {}'.format(
-            value['@id'],
-            repr(biosample_sex_list))
+    if len(biosample_sex_set) > 1:
+        sexes_list = str(list(biosample_sex_set)).replace('\'', '')
+        detail = 'Replicates of this experiment were prepared using biosamples ' + \
+                 'of different sexes {}.'.format(sexes_list)
         yield AuditFailure('inconsistent sex', detail, level='NOT_COMPLIANT')
     return
 
