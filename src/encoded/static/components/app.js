@@ -97,7 +97,7 @@ var App = React.createClass({
             location_href: this.props.href,
             onDropdownChange: this.handleDropdownChange, // Function to process dropdown state change
             portal: portal,
-            hidePublicAudits: true // True if audits should be hidden on the UI while logged out
+            hidePublicAudits: false // True if audits should be hidden on the UI while logged out
         };
     },
 
