@@ -2065,7 +2065,7 @@ def audit_experiment_platforms_mismatches(value, system):
                              'as analytical controls for a given experiment. ' + \
                              'Experiment {} found in possible_controls list of this experiment '.format(control['@id']) + \
                              'contains data produced on platform {} '.format(list(control_platforms)[0]) + \
-                             'which are not compatible with platform {} '.format(platform_term_name) + \
+                             'which is not compatible with platform {} '.format(platform_term_name) + \
                              'used in this experiment.'
                     yield AuditFailure('inconsistent platforms', detail, level='WARNING')
     return
