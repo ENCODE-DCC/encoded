@@ -265,8 +265,12 @@ def check_file(config, session, url, job):
                     errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
 
                 if os.path.exists(unzipped_original_bed_path):
-                    os.remove(unzipped_original_bed_path)
-                    print ('Removed the local ' + unzipped_original_bed_path)
+                    try:
+                        os.remove(unzipped_original_bed_path)
+                        print ('Removed the local ' + unzipped_original_bed_path)
+                    except OSError, e:
+                        print ("Error: %s - %s." % (e.unzipped_original_bed_path, e.strerror))
+
         else:
             # May want to replace this with something like:
             # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
@@ -280,13 +284,11 @@ def check_file(config, session, url, job):
             else:
 
                 result['content_md5sum'] = output[:32].decode(errors='replace')
-                print ('Content md5sum for non-bed file ' + unzipped_original_bed_path + ' is ' + str(result['content_md5sum']))
+                print ('Content md5sum for non-bed file is ' + str(result['content_md5sum']))
                 try:
                     int(result['content_md5sum'], 16)
                 except ValueError:
                     errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
-
-
 
         query = '/search/?type=File&content_md5sum=' + result['content_md5sum']
         r = session.get(urljoin(url, query))
@@ -309,8 +311,11 @@ def check_file(config, session, url, job):
     if item['file_format'] == 'bed':
         # print ('Removing the local modified file ' + unzipped_original_bed_path)
         if os.path.exists(unzipped_modified_bed_path):
-            os.remove(unzipped_modified_bed_path)
-            print ('Removed the local modified file ' + unzipped_original_bed_path)
+            try:
+                os.remove(unzipped_modified_bed_path)
+                print ('Removed the local modified file ' + unzipped_modified_bed_path)
+            except OSError, e:
+                print ("Error: %s - %s." % (e.unzipped_modified_bed_path, e.strerror))
     if item['status'] != 'uploading':
         errors['status_check'] = \
             "status '{}' is not 'uploading'".format(item['status'])
