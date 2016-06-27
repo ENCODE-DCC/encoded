@@ -90,3 +90,4 @@ after_script:
     kill $(cat "$SC_PIDFILE")
     wait $(cat "$SC_PIDFILE")
   fi
+
