@@ -20,6 +20,9 @@ from urllib.parse import urlencode
 import logging
 import re
 
+import pdb
+from pprint import pprint as pp
+
 
 log = logging.getLogger(__name__)
 
@@ -356,6 +359,7 @@ def suggest(context, request):
         'title': 'Suggest',
         '@graph': [],
     }
+    pp(request.params)
     if 'q' in request.params:
         text = request.params.get('q', '')
         requested_genome = request.params.get('genome', '')
