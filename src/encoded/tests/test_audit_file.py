@@ -255,7 +255,7 @@ def test_audit_file_mismatched_paired_with(testapp, file1, file4):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched paired_with' for error in errors_list)
+    assert any(error['category'] == 'inconsistent paired_with' for error in errors_list)
 
 
 def test_audit_file_size(testapp, file1):
@@ -361,7 +361,7 @@ def test_audit_file_mismatched_platform_controlled_by(testapp, file1, file2, fil
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched control platform' for error in errors_list)
+    assert any(error['category'] == 'inconsistent control platform' for error in errors_list)
 
 
 def test_audit_file_replicate_match(testapp, file1, file_rep2):
@@ -371,7 +371,7 @@ def test_audit_file_replicate_match(testapp, file1, file_rep2):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched replicate' for error in errors_list)
+    assert any(error['category'] == 'inconsistent replicate' for error in errors_list)
 
 
 def test_audit_file_paired_ended_run_type1(testapp, file2, file_rep2):

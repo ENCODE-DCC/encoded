@@ -232,7 +232,7 @@ def audit_biosample_term(value, system):
         detail = 'Biosample {} has '.format(value['@id']) + \
                  'a mismatch between biosample_term_id {} '.format(term_id) + \
                  'and biosample_term_name {}'.format(term_name)
-        yield AuditFailure('mismatched ontology term', detail, level='ERROR')
+        yield AuditFailure('inconsistent ontology term', detail, level='ERROR')
         return
 
 @audit_checker('biosample', frame='object')
@@ -277,7 +277,7 @@ def audit_biosample_donor(value, system):
             value['organism']['name'],
             donor['@id'],
             donor['organism']['name'])
-        raise AuditFailure('mismatched organism', detail, level='ERROR')
+        raise AuditFailure('inconsistent organism', detail, level='ERROR')
 
     if 'mutated_gene' not in donor:
         return
@@ -288,7 +288,7 @@ def audit_biosample_donor(value, system):
             value['organism']['name'],
             donor['@id'],
             donor['mutated_gene']['organism']['name'])
-        raise AuditFailure('mismatched mutated_gene organism', detail, level='ERROR')
+        raise AuditFailure('inconsistent mutated_gene organism', detail, level='ERROR')
 
     for i in donor['mutated_gene']['investigated_as']:
         if i in ['histone modification', 'tag', 'control', 'recombinant protein', 'nucleotide modification', 'other post-translational modification']:
@@ -316,7 +316,7 @@ def audit_biosample_subcellular_term_match(value, system):
             value['@id'],
             value['subcellular_fraction_term_name'],
             value['subcellular_fraction_term_id'])
-        raise AuditFailure('mismatched subcellular_fraction_term', detail, level='ERROR')
+        raise AuditFailure('inconsistent subcellular_fraction_term', detail, level='ERROR')
 
 
 @audit_checker('biosample', frame='object')
@@ -335,7 +335,7 @@ def audit_biosample_depleted_term_match(value, system):
     if len(value['depleted_in_term_name']) != len(value['depleted_in_term_id']):
         detail = 'Biosample {} has a depleted_in_term_name array and depleted_in_term_id array of differing lengths'.format(
             value['@id'])
-        raise AuditFailure('mismatched depleted_in_term length', detail, level='DCC_ACTION')
+        raise AuditFailure('inconsistent depleted_in_term length', detail, level='DCC_ACTION')
         return
 
     for i, dep_term in enumerate(value['depleted_in_term_name']):
@@ -344,7 +344,7 @@ def audit_biosample_depleted_term_match(value, system):
                 value['@id'],
                 dep_term,
                 value['depleted_in_term_id'][i])
-            raise AuditFailure('mismatched depleted_in_term', detail, level='ERROR')
+            raise AuditFailure('inconsistent depleted_in_term', detail, level='ERROR')
 
 
 @audit_checker('biosample', frame='object')

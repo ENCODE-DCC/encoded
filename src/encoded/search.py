@@ -744,9 +744,24 @@ def collection_view_listing_es(context, request):
 
 @view_config(route_name='report', request_method='GET', permission='search')
 def report(context, request):
-    types = request.params.getall('type')
-    if len(types) != 1:
+    doc_types = request.params.getall('type')
+    if len(doc_types) != 1:
         msg = 'Report view requires specifying a single type.'
+        raise HTTPBadRequest(explanation=msg)
+
+    types = request.registry[TYPES]
+
+    # Get the subtypes of the requested type
+    try:
+        sub_types = types[doc_types[0]].subtypes
+    except KeyError:
+        # Raise an error for an invalid type
+        msg = "Invalid type: " + doc_types[0]
+        raise HTTPBadRequest(explanation=msg)
+
+    # Raise an error if the requested type has subtypes.
+    if len(sub_types) > 1:
+        msg = 'Report view requires a type with no child types.'
         raise HTTPBadRequest(explanation=msg)
 
     # Ignore large limits, which make `search` return a Response
