@@ -265,12 +265,7 @@ def check_file(config, session, url, job):
 
             except subprocess.CalledProcessError as e:
                 errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
-            else:
-                result['content_md5sum'] = output[:32].decode(errors='replace')
-                try:
-                    int(result['content_md5sum'], 16)
-                except ValueError:
-                    errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
+
         else:
             # May want to replace this with something like:
             # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
@@ -281,12 +276,12 @@ def check_file(config, session, url, job):
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
             except subprocess.CalledProcessError as e:
                 errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
-            else:
-                result['content_md5sum'] = output[:32].decode(errors='replace')
-                try:
-                    int(result['content_md5sum'], 16)
-                except ValueError:
-                    errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
+
+        result['content_md5sum'] = output[:32].decode(errors='replace')
+        try:
+            int(result['content_md5sum'], 16)
+        except ValueError:
+            errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
 
         query = '/search/?type=File&content_md5sum=' + result['content_md5sum']
         r = session.get(urljoin(url, query))
