@@ -234,14 +234,14 @@ def check_file(config, session, url, job):
     else:
         if item['file_format'] == 'bed':
             try:
-                unzipped_original_bed_path = 'original.bed'
+                unzipped_original_bed_path = local_path[-18:-7] + '_original.bed'
                 print ("Trying to create local UNZIPPED bed file : " + unzipped_original_bed_path + " from " + local_path)
                 output = subprocess.check_output(
                     'set -o pipefail; gunzip --stdout {} > {};'.format(local_path,
                                                                        unzipped_original_bed_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
                 print ("Finished creating loacl UNZIPPED bed file : " + unzipped_original_bed_path + " from " + local_path)
-                unzipped_modified_bed_path = 'modified.bed'
+                unzipped_modified_bed_path = local_path[-18:-7] + '_modified.bed'
                 print ("Trying to remove comments from local UNZIPPED bed file : " + unzipped_original_bed_path + " into " + unzipped_modified_bed_path)
                 subprocess.check_output(
                     'set -o pipefail; grep -v \'^#\' {} > {};'.format(unzipped_original_bed_path,
