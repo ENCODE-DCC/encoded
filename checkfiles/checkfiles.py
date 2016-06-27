@@ -237,14 +237,14 @@ def check_file(config, session, url, job):
                 unzipped_original_bed_path = local_path[-18:-7] + '_original.bed'
                 # print ("Trying to create local UNZIPPED bed file : " + unzipped_original_bed_path + " from " + local_path)
                 output = subprocess.check_output(
-                    'set -o pipefail; gunzip --stdout {} > {};'.format(local_path,
+                    'gunzip --stdout {} > {};'.format(local_path,
                                                                        unzipped_original_bed_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
                 # print ("Finished creating loacl UNZIPPED bed file : " + unzipped_original_bed_path + " from " + local_path)
                 unzipped_modified_bed_path = local_path[-18:-7] + '_modified.bed'
                 # print ("Trying to remove comments from local UNZIPPED bed file : " + unzipped_original_bed_path + " into " + unzipped_modified_bed_path)
                 subprocess.check_output(
-                    'set -o pipefail; grep -v \'^#\' {} > {};'.format(unzipped_original_bed_path,
+                    'grep -v \'^#\' {} > {};'.format(unzipped_original_bed_path,
                                                                       unzipped_modified_bed_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
                 # print ("Finished to remove comments from local UNZIPPED bed file : " + unzipped_original_bed_path + " into " + unzipped_modified_bed_path)
@@ -254,14 +254,14 @@ def check_file(config, session, url, job):
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
                 # print ('Calculating content md5sum for ' + unzipped_original_bed_path)
                 result['content_md5sum'] = output[:32].decode(errors='replace')
-                # print ('Content md5sum for ' + unzipped_original_bed_path + ' is ' + str(result['content_md5sum']))
+                print ('Content md5sum for ' + unzipped_original_bed_path + ' is ' + str(result['content_md5sum']))
                 try:
                     int(result['content_md5sum'], 16)
                 except ValueError:
                     errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
                 # print ('Removing the local ' + unzipped_original_bed_path)
                 os.remove(unzipped_original_bed_path)
-                # print ('Removed the loacl ' + unzipped_original_bed_path)
+                print ('Removed the loacl ' + unzipped_original_bed_path)
 
             except subprocess.CalledProcessError as e:
                 errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
@@ -304,7 +304,7 @@ def check_file(config, session, url, job):
     if item['file_format'] == 'bed':
         # print ('Removing the local modified file ' + unzipped_original_bed_path)
         os.remove(unzipped_modified_bed_path)
-        # print ('Removed the local modified file ' + unzipped_original_bed_path)
+        print ('Removed the local modified file ' + unzipped_original_bed_path)
     if item['status'] != 'uploading':
         errors['status_check'] = \
             "status '{}' is not 'uploading'".format(item['status'])
