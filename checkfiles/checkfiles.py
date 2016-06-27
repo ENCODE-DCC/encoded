@@ -235,30 +235,24 @@ def check_file(config, session, url, job):
         if item['file_format'] == 'bed':
             try:
                 unzipped_original_bed_path = local_path[-18:-7] + '_original.bed'
-                # print ("Trying to create local UNZIPPED bed file : " + unzipped_original_bed_path + " from " + local_path)
                 output = subprocess.check_output(
                     'gunzip --stdout {} > {}'.format(local_path,
                                                      unzipped_original_bed_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
-                # print ("Finished creating loacl UNZIPPED bed file : " + unzipped_original_bed_path + " from " + local_path)
                 unzipped_modified_bed_path = local_path[-18:-7] + '_modified.bed'
-                # print ("Trying to remove comments from local UNZIPPED bed file : " + unzipped_original_bed_path + " into " + unzipped_modified_bed_path)
                 subprocess.check_output(
                     'grep -v \'^#\' {} > {}'.format(unzipped_original_bed_path,
                                                     unzipped_modified_bed_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
-                # print ("Finished to remove comments from local UNZIPPED bed file : " + unzipped_original_bed_path + " into " + unzipped_modified_bed_path)
 
                 output = subprocess.check_output(
                     'set -o pipefail; md5sum {}'.format(unzipped_original_bed_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
-                # print ('Calculating content md5sum for ' + unzipped_original_bed_path)
 
             except subprocess.CalledProcessError as e:
                 errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
             else:
                 result['content_md5sum'] = output[:32].decode(errors='replace')
-                print ('Content md5sum for bed file ' + unzipped_original_bed_path + ' is ' + str(result['content_md5sum']))
                 try:
                     int(result['content_md5sum'], 16)
                 except ValueError:
@@ -278,10 +272,9 @@ def check_file(config, session, url, job):
                 if os.path.exists(unzipped_original_bed_path):
                     try:
                         os.remove(unzipped_original_bed_path)
-                        print ('Removed the local ' + unzipped_original_bed_path)
                     except OSError as e:
-                        print ("Error: %s - %s." % (e.unzipped_original_bed_path, e.strerror))
-
+                        errors['file_remove_error'] = 'OS could not remove the file ' + \
+                                                      unzipped_original_bed_path
         else:
             # May want to replace this with something like:
             # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
@@ -295,7 +288,6 @@ def check_file(config, session, url, job):
             else:
 
                 result['content_md5sum'] = output[:32].decode(errors='replace')
-                print ('Content md5sum for non-bed file is ' + str(result['content_md5sum']))
                 try:
                     int(result['content_md5sum'], 16)
                 except ValueError:
@@ -313,20 +305,17 @@ def check_file(config, session, url, job):
                         errors['content_md5sum'] = str(conflicts)
     if not errors:
         if item['file_format'] == 'bed':
-            # print ('Validating the local (comments stripped) file ' + unzipped_modified_bed_path)
             check_format(config['encValData'], job, unzipped_modified_bed_path)
-            # print ('Finished validating the local (comments stripped) file ' + unzipped_modified_bed_path)
         else:
             check_format(config['encValData'], job, local_path)
 
     if item['file_format'] == 'bed':
-        # print ('Removing the local modified file ' + unzipped_original_bed_path)
         if os.path.exists(unzipped_modified_bed_path):
             try:
                 os.remove(unzipped_modified_bed_path)
-                print ('Removed the local modified file ' + unzipped_modified_bed_path)
             except OSError as e:
-                print ("Error: %s - %s." % (e.unzipped_modified_bed_path, e.strerror))
+                errors['file_remove_error'] = 'OS could not remove the file ' + \
+                                              unzipped_modified_bed_path
     if item['status'] != 'uploading':
         errors['status_check'] = \
             "status '{}' is not 'uploading'".format(item['status'])
