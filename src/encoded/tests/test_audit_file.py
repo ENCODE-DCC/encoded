@@ -533,6 +533,21 @@ def test_audit_file_fastq_assembly(testapp, file4):
                for error in errors_list)
 
 
+def test_audit_file_rbns_assembly(testapp, file4, file_exp):
+    testapp.patch_json(file_exp['@id'], {'assay_term_id': 'OBI:0002044'})
+    testapp.patch_json(file4['@id'], {'assembly': 'GRCh38',
+                                      'dataset': file_exp['@id'],
+                                      'file_format': 'bam',
+                                      'output_type': 'alignments'})
+    res = testapp.get(file4['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'erroneous property'
+               for error in errors_list)
+
+
 def test_audit_file_assembly(testapp, file6, file7):
     testapp.patch_json(file6['@id'], {'assembly': 'GRCh38'})
     testapp.patch_json(file7['@id'], {'derived_from': [file6['@id']],

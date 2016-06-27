@@ -93,7 +93,7 @@ def audit_file_derived_from_revoked(value, system):
                 return
 
 
-@audit_checker('file', frame=['derived_from'])
+@audit_checker('file', frame=['dataset', 'derived_from'])
 def audit_file_assembly(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
@@ -106,26 +106,36 @@ def audit_file_assembly(value, system):
             yield AuditFailure('erroneous property',
                                detail, level='DCC_ACTION')
         return
-    if 'assembly' not in value:
-        detail = 'Processed file {} '.format(value['@id']) + \
-                 'does not have assembly specified.'
-        yield AuditFailure('missing assembly',
-                           detail, level='DCC_ACTION')
-        return
-    if 'derived_from' not in value:
-        return
-    for f in value['derived_from']:
-        if 'assembly' in f:
-            if f['assembly'] != value['assembly']:
-                detail = 'Processed file {} '.format(value['@id']) + \
-                         'assembly {} '.format(value['assembly']) + \
-                         'does not match assembly {} of the file {} '.format(
-                         f['assembly'],
-                         f['@id']) + \
-                    'it was derived from.'
-                yield AuditFailure('mismatched assembly',
-                                   detail, level='DCC_ACTION')
-                return
+    # special treatment of RNA-Bind-n-Seq
+    if 'assay_term_id' in value['dataset'] and \
+       value['dataset']['assay_term_id'] == 'OBI:0002044':
+        if 'assembly' in value:
+            detail = 'RNA Bind-n-Seq file {} '.format(value['@id']) + \
+                     'has improperly specified assembly value.'
+            yield AuditFailure('erroneous property',
+                               detail, level='DCC_ACTION')
+            return
+    else:
+        if 'assembly' not in value:
+            detail = 'Processed file {} '.format(value['@id']) + \
+                     'does not have assembly specified.'
+            yield AuditFailure('missing assembly',
+                               detail, level='DCC_ACTION')
+            return
+        if 'derived_from' not in value:
+            return
+        for f in value['derived_from']:
+            if 'assembly' in f:
+                if f['assembly'] != value['assembly']:
+                    detail = 'Processed file {} '.format(value['@id']) + \
+                             'assembly {} '.format(value['assembly']) + \
+                             'does not match assembly {} of the file {} '.format(
+                             f['assembly'],
+                             f['@id']) + \
+                        'it was derived from.'
+                    yield AuditFailure('mismatched assembly',
+                                       detail, level='DCC_ACTION')
+                    return
 
 
 @audit_checker('file', frame=['replicate', 'replicate.experiment',
