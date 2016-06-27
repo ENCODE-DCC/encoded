@@ -593,12 +593,16 @@ var MaybeLink = React.createClass({
 });
 
 
+// Display the biosample term ID given in `termId`, and link to a corresponding site if the prefix
+// of the term ID needs it. Any term IDs with prefixes not maching any in the `urlMap` property
+// simply display without a link.
 var BiosampleTermId = React.createClass({
     propTypes: {
         termId: React.PropTypes.string // Biosample whose term is being displayed.
     },
 
     // Map from prefixes to corresponding URL bases. Not all term ID prefixes covered here.
+    // Specific term IDs are appended to these after converting ':' to '_'.
     urlMap: {
         'EFO': 'http://www.ebi.ac.uk/efo/',
         'UBERON': 'http://www.ontobee.org/ontology/UBERON?iri=http://purl.obolibrary.org/obo/',
