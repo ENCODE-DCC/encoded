@@ -268,7 +268,7 @@ def check_file(config, session, url, job):
                     try:
                         os.remove(unzipped_original_bed_path)
                         print ('Removed the local ' + unzipped_original_bed_path)
-                    except OSError, e:
+                    except OSError as e:
                         print ("Error: %s - %s." % (e.unzipped_original_bed_path, e.strerror))
 
         else:
@@ -314,7 +314,7 @@ def check_file(config, session, url, job):
             try:
                 os.remove(unzipped_modified_bed_path)
                 print ('Removed the local modified file ' + unzipped_modified_bed_path)
-            except OSError, e:
+            except OSError as e:
                 print ("Error: %s - %s." % (e.unzipped_modified_bed_path, e.strerror))
     if item['status'] != 'uploading':
         errors['status_check'] = \
