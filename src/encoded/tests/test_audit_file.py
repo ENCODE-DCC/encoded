@@ -529,7 +529,7 @@ def test_audit_file_fastq_assembly(testapp, file4):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'erroneous property'
+    assert any(error['category'] == 'unexpected property'
                for error in errors_list)
 
 
@@ -544,7 +544,7 @@ def test_audit_file_rbns_assembly(testapp, file4, file_exp):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'erroneous property'
+    assert any(error['category'] == 'unexpected property'
                for error in errors_list)
 
 
@@ -557,7 +557,7 @@ def test_audit_file_assembly(testapp, file6, file7):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched assembly'
+    assert any(error['category'] == 'inconsistent assembly'
                for error in errors_list)
 
 
