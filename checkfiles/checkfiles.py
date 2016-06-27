@@ -253,19 +253,20 @@ def check_file(config, session, url, job):
                     'set -o pipefail; md5sum {}'.format(unzipped_original_bed_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
                 # print ('Calculating content md5sum for ' + unzipped_original_bed_path)
+
+            except subprocess.CalledProcessError as e:
+                errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
+            else:
                 result['content_md5sum'] = output[:32].decode(errors='replace')
-                print ('Content md5sum for ' + unzipped_original_bed_path + ' is ' + str(result['content_md5sum']))
+                print ('Content md5sum for bed file ' + unzipped_original_bed_path + ' is ' + str(result['content_md5sum']))
                 try:
                     int(result['content_md5sum'], 16)
                 except ValueError:
                     errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
-                # print ('Removing the local ' + unzipped_original_bed_path)
-                os.remove(unzipped_original_bed_path)
-                print ('Removed the loacl ' + unzipped_original_bed_path)
 
-            except subprocess.CalledProcessError as e:
-                errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
-
+                if os.path.exists(unzipped_original_bed_path):
+                    os.remove(unzipped_original_bed_path)
+                    print ('Removed the local ' + unzipped_original_bed_path)
         else:
             # May want to replace this with something like:
             # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
@@ -276,12 +277,16 @@ def check_file(config, session, url, job):
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
             except subprocess.CalledProcessError as e:
                 errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
+            else:
 
-        result['content_md5sum'] = output[:32].decode(errors='replace')
-        try:
-            int(result['content_md5sum'], 16)
-        except ValueError:
-            errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
+                result['content_md5sum'] = output[:32].decode(errors='replace')
+                print ('Content md5sum for non-bed file ' + unzipped_original_bed_path + ' is ' + str(result['content_md5sum']))
+                try:
+                    int(result['content_md5sum'], 16)
+                except ValueError:
+                    errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
+
+
 
         query = '/search/?type=File&content_md5sum=' + result['content_md5sum']
         r = session.get(urljoin(url, query))
@@ -303,8 +308,9 @@ def check_file(config, session, url, job):
 
     if item['file_format'] == 'bed':
         # print ('Removing the local modified file ' + unzipped_original_bed_path)
-        os.remove(unzipped_modified_bed_path)
-        print ('Removed the local modified file ' + unzipped_original_bed_path)
+        if os.path.exists(unzipped_modified_bed_path):
+            os.remove(unzipped_modified_bed_path)
+            print ('Removed the local modified file ' + unzipped_original_bed_path)
     if item['status'] != 'uploading':
         errors['status_check'] = \
             "status '{}' is not 'uploading'".format(item['status'])
