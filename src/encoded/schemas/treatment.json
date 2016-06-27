@@ -77,7 +77,8 @@
                 "M",
                 "percent",
                 "units",
-                "U/mL"
+                "U/mL",
+                "pfu"
             ]
         },
         "duration": {

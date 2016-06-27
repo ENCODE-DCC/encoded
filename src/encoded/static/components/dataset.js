@@ -521,7 +521,7 @@ var Reference = React.createClass({
                 </Panel>
 
                 {/* Display the file widget with the facet, graph, and tables */}
-                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph altFilterDefault />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
