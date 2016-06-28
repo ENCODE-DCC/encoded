@@ -848,28 +848,28 @@ def check_file_chip_seq_library_complexity(alignment_file):
     if ('quality_metrics' not in alignment_file) or (alignment_file.get('quality_metrics') == []):
         return
 
-    nrf_end_of_detail = 'NRF (Non Redundant Fraction) equals to the result of ' + \
-                        'division of the number of reads after duplicates removal by ' + \
-                        'the total number of reads. ' + \
-                        'NRF value in the range 0 - 0.5 is poor complexity, ' + \
-                        '0.5 - 0.8 is moderate complexity, ' + \
-                        'and > 0.8 high complexity. NRF value > 0.8 is recommended, ' + \
-                        'but > 0.5 is acceptable.'
+    nrf_detail = 'NRF (Non Redundant Fraction) equals to the result of ' + \
+                 'division of the number of reads after duplicates removal by ' + \
+                 'the total number of reads. ' + \
+                 'NRF value in the range 0 - 0.5 is poor complexity, ' + \
+                 '0.5 - 0.8 is moderate complexity, ' + \
+                 'and > 0.8 high complexity. NRF value > 0.8 is recommended, ' + \
+                 'but > 0.5 is acceptable. '
 
-    pbc1_end_of_detail = 'PBC1 (PCR Bottlenecking Coefficient 1) equals to the result of division of ' + \
-                         'the number of genomic locations where exactly one read maps uniquely by ' + \
-                         'the number of distinct genomic locations to which some read maps uniquely. ' + \
-                         'PBC1 value in the range 0 - 0.5 is severe bottlenecking, 0.5 - 0.8 ' + \
-                         'is moderate bottlenecking, 0.8 - 0.9 is mild bottlenecking, and > 0.9 ' + \
-                         'is no bottlenecking. PBC1 value > 0.9 is recommended, but > 0.8 is ' + \
-                         'acceptable.'
+    pbc1_detail = 'PBC1 (PCR Bottlenecking Coefficient 1) equals to the result of division of ' + \
+                  'the number of genomic locations where exactly one read maps uniquely by ' + \
+                  'the number of distinct genomic locations to which some read maps uniquely. ' + \
+                  'PBC1 value in the range 0 - 0.5 is severe bottlenecking, 0.5 - 0.8 ' + \
+                  'is moderate bottlenecking, 0.8 - 0.9 is mild bottlenecking, and > 0.9 ' + \
+                  'is no bottlenecking. PBC1 value > 0.9 is recommended, but > 0.8 is ' + \
+                  'acceptable. '
 
-    pbc2_end_of_detail = 'PBC2 (PCR Bottlenecking Coefficient 2) equals to the result of division of ' + \
-                         'the number of genomic locations where only one read maps uniquely by ' + \
-                         'the number of genomic locations where 2 reads map uniquely. ' + \
-                         'PBC2 value in the range 0 - 1 is severe bottlenecking, 1 - 3 ' + \
-                         'is moderate bottlenecking, 3 - 10 is mild bottlenecking, > 10 is ' + \
-                         'no bottlenecking. PBC2 value > 10 is recommended, but > 3 is acceptable.'
+    pbc2_detail = 'PBC2 (PCR Bottlenecking Coefficient 2) equals to the result of division of ' + \
+                  'the number of genomic locations where only one read maps uniquely by ' + \
+                  'the number of genomic locations where 2 reads map uniquely. ' + \
+                  'PBC2 value in the range 0 - 1 is severe bottlenecking, 1 - 3 ' + \
+                  'is moderate bottlenecking, 3 - 10 is mild bottlenecking, > 10 is ' + \
+                  'no bottlenecking. PBC2 value > 10 is recommended, but > 3 is acceptable. '
 
     quality_metrics = alignment_file.get('quality_metrics')
     for metric in quality_metrics:
@@ -877,29 +877,30 @@ def check_file_chip_seq_library_complexity(alignment_file):
         if 'NRF' in metric:
             NRF_value = float(metric['NRF'])
             if NRF_value < 0.5:
-                detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
-                         'was generated from a library with NRF value of {}'.format(NRF_value) + \
-                         '. '+nrf_end_of_detail
+                detail = nrf_detail + 'ENCODE processed alignment file {} '.format(
+                    alignment_file['@id']) + \
+                    'was generated from a library with ' + \
+                    'NRF value of {0:.2f}.'.format(NRF_value)
                 yield AuditFailure('poor library complexity', detail,
                                    level='NOT_COMPLIANT')
             elif NRF_value >= 0.5 and NRF_value < 0.8:
-                detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
-                         'was generated from a library with NRF value of {}'.format(NRF_value) + \
-                         '. '+nrf_end_of_detail
+                detail = nrf_detail + 'ENCODE Processed alignment file {} '.format(
+                    alignment_file['@id']) + \
+                    'was generated from a library with NRF value of {0:.2f}.'
                 yield AuditFailure('moderate library complexity', detail,
                                    level='WARNING')
         if 'PBC1' in metric:
             PBC1_value = float(metric['PBC1'])
             if PBC1_value < 0.5:
-                detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
-                         'was generated from a library with PBC1 value of {}'.format(PBC1_value) + \
-                         '. '+pbc1_end_of_detail
+                detail = pbc1_detail + 'ENCODE processed alignment file {} '.format(
+                    alignment_file['@id']) + \
+                    'was generated from a library with PBC1 value of {0:.2f}.'
                 yield AuditFailure('severe bottlenecking', detail,
                                    level='NOT_COMPLIANT')
             elif PBC1_value >= 0.5 and PBC1_value < 0.9:
-                detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
-                         'was generated from a library with PBC1 value of {}'.format(PBC1_value) + \
-                         '. '+pbc1_end_of_detail
+                detail = pbc1_detail + 'ENCODE processed alignment file {} '.format(
+                    alignment_file['@id']) + \
+                    'was generated from a library with PBC1 value of {0:.2f}.'
                 yield AuditFailure('mild to moderate bottlenecking', detail,
                                    level='WARNING')
         if 'PBC2' in metric:
@@ -909,15 +910,15 @@ def check_file_chip_seq_library_complexity(alignment_file):
             else:
                 PBC2_value = float(metric['PBC2'])
             if PBC2_value < 1:
-                detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
-                         'was generated from a library with PBC2 value of {}'.format(PBC2_value) + \
-                         '. '+pbc2_end_of_detail
+                detail = pbc2_detail + 'ENCODE processed alignment file {} '.format(
+                    alignment_file['@id']) + \
+                    'was generated from a library with PBC2 value of {0:.2f}.'
                 yield AuditFailure('severe bottlenecking', detail,
                                    level='NOT_COMPLIANT')
             elif PBC2_value >= 1 and PBC2_value < 10:
-                detail = 'ENCODE Processed alignment file {} '.format(alignment_file['@id']) + \
-                         'was generated from a library with PBC2 value of {}'.format(PBC2_value) + \
-                         '. '+pbc2_end_of_detail
+                detail = pbc2_detail + 'ENCODE processed alignment file {} '.format(
+                    alignment_file['@id']) + \
+                    'was generated from a library with PBC2 value of {0:.2f}.'.format(PBC2_value)
                 yield AuditFailure('mild to moderate bottlenecking', detail,
                                    level='WARNING')
 
