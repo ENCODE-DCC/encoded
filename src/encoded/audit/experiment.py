@@ -765,11 +765,16 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
                 file_names = []
                 for f in m['quality_metric_of']:
                     file_names.append(f['@id'])
-                detail = 'ENCODE processed gene quantification files {} '.format(file_names) + \
-                         'have Spearman correlation of {}.'.format(spearman_correlation) + \
-                         ' For gene quantification files from an {}'.format(replication_type) + \
-                         ' assay in the {} '.format(pipeline) + \
-                         'pipeline, >{} is recommended.'.format(threshold)
+                file_names_string = str(file_names).replace('\'', '')
+                detail = 'Replicate concordance in RNA-seq expriments is measured by ' + \
+                         'calculating Spearman correlation between gene quantifications ' + \
+                         'of the replicates. ' + \
+                         'ENCODE processed gene quantification files {} '.format(file_names_string) + \
+                         'have Spearman correlation of {}. '.format(spearman_correlation) + \
+                         'According to ENCODE3 standards in {} '.format(replication_type) + \
+                         'assay analyzed using the {} pipeline, '.format(pipeline) + \
+                         'Spearman correlation value > {} '.format(threshold) + \
+                         'is recommended.'
                 yield AuditFailure('low replicate concordance', detail,
                                    level='WARNING')
 
