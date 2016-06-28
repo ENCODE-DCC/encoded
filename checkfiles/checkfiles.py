@@ -42,9 +42,17 @@ def is_path_gzipped(path):
 def check_format(encValData, job, path):
     """ Local validation
     """
+    ASSEMBLY_MAP = {
+        'GRCh38-minimal': 'GRCh38',
+        'mm10-minimal': 'mm10'
+    }
+
     errors = job['errors']
     item = job['item']
     result = job['result']
+
+    # if assembly is in the map, use the mapping, otherwise just use the string in assembly
+    assembly = ASSEMBLY_MAP.get(item.get('assembly'), item.get('assembly'))
 
     if item['file_format'] == 'bam' and item.get('output_type') == 'transcriptome alignments':
         if 'assembly' not in item:
@@ -54,9 +62,9 @@ def check_format(encValData, job, path):
         if errors:
             return errors
         chromInfo = '-chromInfo=%s/%s/%s/chrom.sizes' % (
-            encValData, item['assembly'], item['genome_annotation'])
+            encValData, assembly, item['genome_annotation'])
     else:
-        chromInfo = '-chromInfo=%s/%s/chrom.sizes' % (encValData, item.get('assembly'))
+        chromInfo = '-chromInfo=%s/%s/chrom.sizes' % (encValData, assembly)
 
     validate_map = {
         ('fasta', None): ['-type=fasta'],
@@ -174,7 +182,7 @@ def check_format(encValData, job, path):
         result['validateFiles'] = output.decode(errors='replace').rstrip('\n')
 
 
-def check_file(config, job):
+def check_file(config, session, url, job):
     item = job['item']
     errors = job['errors']
     result = job['result'] = {}
@@ -224,24 +232,71 @@ def check_file(config, job):
     elif not is_gzipped:
         errors['gzip'] = 'Expected gzipped file'
     else:
-        # May want to replace this with something like:
-        # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
-        # or http://stackoverflow.com/a/15343686/199100
-        try:
-            output = subprocess.check_output(
-                'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
-                shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
-        except subprocess.CalledProcessError as e:
-            errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
-        else:
-            result['content_md5sum'] = output[:32].decode(errors='replace')
+        if item['file_format'] == 'bed':
             try:
-                int(result['content_md5sum'], 16)
-            except ValueError:
-                errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
+                unzipped_original_bed_path = 'original.bed'
+                output = subprocess.check_output(
+                    'set -o pipefail; gunzip --stdout {} > {};'.format(local_path,
+                                                                       unzipped_original_bed_path),
+                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
 
+                unzipped_modified_bed_path = 'modified.bed'
+                subprocess.check_output(
+                    'set -o pipefail; grep -v \'^#\' {} > {};'.format(unzipped_original_bed_path,
+                                                                      unzipped_modified_bed_path),
+                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                output = subprocess.check_output(
+                    'set -o pipefail; md5sum {};'.format(unzipped_original_bed_path),
+                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                result['content_md5sum'] = output[:32].decode(errors='replace')
+                try:
+                    int(result['content_md5sum'], 16)
+                except ValueError:
+                    errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
+                os.remove(unzipped_original_bed_path)
+            except subprocess.CalledProcessError as e:
+                errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
+            else:
+                result['content_md5sum'] = output[:32].decode(errors='replace')
+                try:
+                    int(result['content_md5sum'], 16)
+                except ValueError:
+                    errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
+        else:
+            # May want to replace this with something like:
+            # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
+            # or http://stackoverflow.com/a/15343686/199100
+            try:
+                output = subprocess.check_output(
+                    'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
+                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+            except subprocess.CalledProcessError as e:
+                errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
+            else:
+                result['content_md5sum'] = output[:32].decode(errors='replace')
+                try:
+                    int(result['content_md5sum'], 16)
+                except ValueError:
+                    errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
+
+        query = '/search/?type=File&content_md5sum=' + result['content_md5sum']
+        r = session.get(urljoin(url, query))
+        r_graph = r.json().get('@graph')
+        if len(r_graph) > 0:
+            conflicts = []
+            for entry in r_graph:
+                conflicts.append('checked %s is conflicting with content_md5sum of %s' % (
+                                 result['content_md5sum'],
+                                 entry['accession']))
+            errors['content_md5sum'] = str(conflicts)
     if not errors:
-        check_format(config['encValData'], job, local_path)
+        if item['file_format'] == 'bed':
+            check_format(config['encValData'], job, unzipped_modified_bed_path)
+        else:
+            check_format(config['encValData'], job, local_path)
+
+    if item['file_format'] == 'bed':
+        os.remove(unzipped_modified_bed_path)
 
     if item['status'] != 'uploading':
         errors['status_check'] = \
@@ -359,7 +414,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
                              'Upload Expiration'])
         out.write(headers + '\n')
         err.write(headers + '\n')
-    for job in imap(functools.partial(check_file, config), jobs):
+    for job in imap(functools.partial(check_file, config, session, url), jobs):
         if not dry_run:
             patch_file(session, url, job)
 
