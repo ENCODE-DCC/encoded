@@ -645,9 +645,9 @@ def check_idr(metrics, rescue, self_consistency, pipeline):
                 detail = 'Replicate concordance in ChIP-seq expriments is measured by ' + \
                          'calculating IDR values (Irreproducible Discovery Rate). ' + \
                          'ENCODE processed IDR thresholded peaks files {} '.format(file_names_string) + \
-                         'have rescue ratio of {0:.2f}, and '.format(rescue_r) + \
+                         'have rescue ratio of {0:.2f} and a '.format(rescue_r) + \
                          'self consistency ratio of {0:.2f}. '.format(self_r) + \
-                         'According to ENCODE3 standards having both rescue ratio ' + \
+                         'According to ENCODE3 standards, having both rescue ratio ' + \
                          'and self consistency ration values < 2 is recommended, but ' + \
                          'having only one of the ratio values < 2 is acceptable.'
                 yield AuditFailure('insufficient replicate concordance', detail,
@@ -661,9 +661,9 @@ def check_idr(metrics, rescue, self_consistency, pipeline):
                     detail = 'Replicate concordance in ChIP-seq expriments is measured by ' + \
                              'calculating IDR values (Irreproducible Discovery Rate). ' + \
                              'ENCODE processed IDR thresholded peaks files {} '.format(file_names_string) + \
-                             'have rescue ratio of {0:.2f}, and '.format(rescue_r) + \
+                             'have rescue ratio of {0:.2f} and a '.format(rescue_r) + \
                              'self consistency ratio of {0:.2f}. '.format(self_r) + \
-                             'According to ENCODE3 standards having both rescue ratio ' + \
+                             'According to ENCODE3 standards, having both rescue ratio ' + \
                              'and self consistency ration values < 2 is recommended, but ' + \
                              'having only one of the ratio values < 2 is acceptable.'
                     yield AuditFailure('borderline replicate concordance', detail,
@@ -775,13 +775,13 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
                     file_names.append(f['@id'])
                 file_names_string = str(file_names).replace('\'', '')
                 detail = 'Replicate concordance in RNA-seq expriments is measured by ' + \
-                         'calculating Spearman correlation between gene quantifications ' + \
+                         'calculating the Spearman correlation between gene quantifications ' + \
                          'of the replicates. ' + \
                          'ENCODE processed gene quantification files {} '.format(file_names_string) + \
-                         'have Spearman correlation of {0:.2f}. '.format(spearman_correlation) + \
-                         'According to ENCODE3 standards in {} '.format(replication_type) + \
+                         'have a Spearman correlation of {0:.2f}. '.format(spearman_correlation) + \
+                         'According to ENCODE3 standards, in an {} '.format(replication_type) + \
                          'assay analyzed using the {} pipeline, '.format(pipeline) + \
-                         'Spearman correlation value > {} '.format(threshold) + \
+                         'a Spearman correlation value > {} '.format(threshold) + \
                          'is recommended.'
                 yield AuditFailure('low replicate concordance', detail,
                                    level='WARNING')
@@ -856,26 +856,26 @@ def check_file_chip_seq_library_complexity(alignment_file):
     if ('quality_metrics' not in alignment_file) or (alignment_file.get('quality_metrics') == []):
         return
 
-    nrf_detail = 'NRF (Non Redundant Fraction) equals to the result of ' + \
+    nrf_detail = 'NRF (Non Redundant Fraction) equal to the result of the ' + \
                  'division of the number of reads after duplicates removal by ' + \
                  'the total number of reads. ' + \
-                 'NRF value in the range 0 - 0.5 is poor complexity, ' + \
+                 'An NRF value in the range 0 - 0.5 is poor complexity, ' + \
                  '0.5 - 0.8 is moderate complexity, ' + \
                  'and > 0.8 high complexity. NRF value > 0.8 is recommended, ' + \
                  'but > 0.5 is acceptable. '
 
-    pbc1_detail = 'PBC1 (PCR Bottlenecking Coefficient 1) equals to the result of division of ' + \
+    pbc1_detail = 'PBC1 (PCR Bottlenecking Coefficient 1) equal to the result of the division of ' + \
                   'the number of genomic locations where exactly one read maps uniquely by ' + \
                   'the number of distinct genomic locations to which some read maps uniquely. ' + \
-                  'PBC1 value in the range 0 - 0.5 is severe bottlenecking, 0.5 - 0.8 ' + \
+                  'A PBC1 value in the range 0 - 0.5 is severe bottlenecking, 0.5 - 0.8 ' + \
                   'is moderate bottlenecking, 0.8 - 0.9 is mild bottlenecking, and > 0.9 ' + \
                   'is no bottlenecking. PBC1 value > 0.9 is recommended, but > 0.8 is ' + \
                   'acceptable. '
 
-    pbc2_detail = 'PBC2 (PCR Bottlenecking Coefficient 2) equals to the result of division of ' + \
+    pbc2_detail = 'PBC2 (PCR Bottlenecking Coefficient 2) equal to the result of the division of ' + \
                   'the number of genomic locations where only one read maps uniquely by ' + \
                   'the number of genomic locations where 2 reads map uniquely. ' + \
-                  'PBC2 value in the range 0 - 1 is severe bottlenecking, 1 - 3 ' + \
+                  'A PBC2 value in the range 0 - 1 is severe bottlenecking, 1 - 3 ' + \
                   'is moderate bottlenecking, 3 - 10 is mild bottlenecking, > 10 is ' + \
                   'no bottlenecking. PBC2 value > 10 is recommended, but > 3 is acceptable. '
 
@@ -894,7 +894,7 @@ def check_file_chip_seq_library_complexity(alignment_file):
             elif NRF_value >= 0.5 and NRF_value < 0.8:
                 detail = nrf_detail + 'ENCODE Processed alignment file {} '.format(
                     alignment_file['@id']) + \
-                    'was generated from a library with NRF value of {0:.2f}.'
+                    'was generated from a library with NRF value of {0:.2f}.'.format(NRF_value)
                 yield AuditFailure('moderate library complexity', detail,
                                    level='WARNING')
         if 'PBC1' in metric:
@@ -902,13 +902,13 @@ def check_file_chip_seq_library_complexity(alignment_file):
             if PBC1_value < 0.5:
                 detail = pbc1_detail + 'ENCODE processed alignment file {} '.format(
                     alignment_file['@id']) + \
-                    'was generated from a library with PBC1 value of {0:.2f}.'
+                    'was generated from a library with PBC1 value of {0:.2f}.'.format(PBC1_value)
                 yield AuditFailure('severe bottlenecking', detail,
                                    level='NOT_COMPLIANT')
             elif PBC1_value >= 0.5 and PBC1_value < 0.9:
                 detail = pbc1_detail + 'ENCODE processed alignment file {} '.format(
                     alignment_file['@id']) + \
-                    'was generated from a library with PBC1 value of {0:.2f}.'
+                    'was generated from a library with PBC1 value of {0:.2f}.'.format(PBC1_value)
                 yield AuditFailure('mild to moderate bottlenecking', detail,
                                    level='WARNING')
         if 'PBC2' in metric:
@@ -920,7 +920,7 @@ def check_file_chip_seq_library_complexity(alignment_file):
             if PBC2_value < 1:
                 detail = pbc2_detail + 'ENCODE processed alignment file {} '.format(
                     alignment_file['@id']) + \
-                    'was generated from a library with PBC2 value of {0:.2f}.'
+                    'was generated from a library with PBC2 value of {0:.2f}.'.format(PBC2_value)
                 yield AuditFailure('severe bottlenecking', detail,
                                    level='NOT_COMPLIANT')
             elif PBC2_value >= 1 and PBC2_value < 10:
@@ -1714,8 +1714,7 @@ def audit_experiment_replicated(value, system):
         # different levels of severity for different rfas
         if value['award']['rfa'] in ['ENCODE3', 'GGR']:
             detail = 'This experiment is expected to be replicated, but ' + \
-                     'contains only one listed biological replicate [{}].'.format(
-                         list(num_bio_reps)[0])
+                     'contains only one listed biological replicate.'
             raise AuditFailure('unreplicated experiment', detail, level='NOT_COMPLIANT')
 
 
@@ -1965,8 +1964,8 @@ def audit_experiment_target(value, system):
     # Check that target of experiment matches target of antibody
     for rep in value['replicates']:
         if 'antibody' not in rep:
-            detail = '{} assay requires an antibody specification. '.format(value['assay_term_name']) + \
-                     ' Replicate [{},{}] {} antibody needs to be specified.'.format(
+            detail = '{} assays require an antibody specification. '.format(value['assay_term_name']) + \
+                     'In replicate [{},{}] {}, the antibody needs to be specified.'.format(
                 rep['biological_replicate_number'],
                 rep['technical_replicate_number'],
                 rep['@id']
@@ -2002,7 +2001,7 @@ def audit_experiment_target(value, system):
                         target_matches = True
                 if not target_matches:
                     detail = 'The target of the experiment is {}, '.format(target['name']) + \
-                             'but it could not be found in the experiment\'s antibody {} '.format(antibody['@id']) + \
+                             'but it is not present in the experiment\'s antibody {} '.format(antibody['@id']) + \
                              'target list {}.'.format(antibody_targets)
                     yield AuditFailure('inconsistent target', detail, level='ERROR')
 

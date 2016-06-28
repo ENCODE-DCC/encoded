@@ -161,8 +161,9 @@ def audit_file_biological_replicate_number_match(value, system):
                          'is associated with replicate [{},{}] '.format(file_replicate[0],
                                                                         file_replicate[1]) + \
                          ', but it was derived from file {} '.format(derived_from_file['@id']) + \
-                         'which is associated with replicate [{},{}].'.format(derived_replicate[0],
-                                                                              derived_replicate[1]),
+                         'which is associated with a replicate [{},{}].'.format(
+                             derived_replicate[0],
+                             derived_replicate[1]),
                 raise AuditFailure('inconsistent replicate',
                                    detail, level='ERROR')
 
@@ -188,7 +189,8 @@ def audit_file_replicate_match(value, system):
                  'is associated with replicate [{},{}] '.format(
                      value['replicate']['biological_replicate_number'],
                      value['replicate']['technical_replicate_number']) + \
-                 '{}, but that replicate is associated with different '.format(value['replicate']['@id']) + \
+                 '{}, but that replicate is associated with a different '.format(
+                     value['replicate']['@id']) + \
                  'experiment {}.'.format(value['replicate']['experiment']['@id'])
         raise AuditFailure('inconsistent replicate', detail, level='ERROR')
 
@@ -612,9 +614,9 @@ def audit_file_paired_ended_run_type(value, system):
 
     if (value['output_type'] == 'reads') and (value.get('run_type') == 'paired-ended'):
         if 'paired_end' not in value:
-            detail = 'Sequncing file {} '.format(value['@id']) + \
+            detail = 'Sequencing file {} '.format(value['@id']) + \
                      'is the result of a paired-end sequencing run ' + \
-                     'according to the submitted metadata but is missing the requisite ' + \
+                     'according to the submitted metadata, but is missing the requisite ' + \
                      'information to classify it as read1 or read2 in the pair.'
             raise AuditFailure('missing paired_end', detail, level='ERROR')
 

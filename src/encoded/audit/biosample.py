@@ -103,13 +103,13 @@ def audit_biosample_human_no_model_organism_properties(value, system):
             terms_list.append(term)
     if len(terms_list) == 1:
         detail = 'Human biosample {}'.format(value['@id']) + \
-                 ' contains model organism fileld {}'.format(terms_list[0])
+                 ' contains model organism field {}'.format(terms_list[0])
         yield AuditFailure('model organism term in human biosample', detail,
                            level='ERROR')
         return
     if len(terms_list) > 1:
         detail = 'Human biosample {}'.format(value['@id']) + \
-                 ' contains model organism filelds {}'.format(terms_list)
+                 ' contains model organism fields {}'.format(terms_list)
         yield AuditFailure('model organism term in human biosample', detail,
                            level='ERROR')
         return
