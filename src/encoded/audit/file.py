@@ -189,7 +189,7 @@ def audit_file_replicate_match(value, system):
             value['@id'],
             value['replicate']['@id'],
             value['replicate']['experiment']['@id'])
-        raise AuditFailure('mismatched replicate', detail, level='ERROR')
+        raise AuditFailure('inconsistent replicate', detail, level='ERROR')
 
 
 @audit_checker('file', frame=['award'],
@@ -380,7 +380,7 @@ def audit_file_controlled_by(value, system):
                         ff['@id'],
                         control_platform.get('term_name')
                     )
-                    yield AuditFailure('mismatched control platform',
+                    yield AuditFailure('inconsistent control platform',
                                        detail, level='WARNING')
 
             if (run_type is None) or (control_run is None):
@@ -396,7 +396,7 @@ def audit_file_controlled_by(value, system):
                     ff['@id'],
                     control_run
                     )
-                yield AuditFailure('mismatched control run_type',
+                yield AuditFailure('inconsistent control run_type',
                                    detail, level='WARNING')
 
             if read_length != control_length and \
@@ -409,7 +409,7 @@ def audit_file_controlled_by(value, system):
                     ff['@id'],
                     ff['read_length']
                     )
-                yield AuditFailure('mismatched control read length',
+                yield AuditFailure('inconsistent control read length',
                                    detail, level='WARNING')
                 return
 
@@ -487,7 +487,7 @@ def audit_paired_with(value, system):
             value.get('replicate'),
             value['paired_with']['@id'],
             value['paired_with'].get('replicate'))
-        raise AuditFailure('mismatched paired_with', detail, level='ERROR')
+        raise AuditFailure('inconsistent paired_with', detail, level='ERROR')
 
     if value['paired_end'] == '1':
         context = system['context']
@@ -524,7 +524,7 @@ def audit_modERN_ChIP_pipeline_steps(value, system):
 
     if (value['file_format'] != 'fastq') and ('derived_from' not in value):
         detail = 'File {} is missing its derived_from'.format(value['@id'])
-        yield AuditFailure('missing derived_from', detail, level='WARNING')
+        return
 
     step = value['step_run']
     if (value['file_format'] == 'bam') and step['aliases'][0] != 'modern:chip-seq-bwa-alignment-step-run-v-1-virtual':
@@ -582,7 +582,7 @@ def audit_file_format_specifications(value, system):
                 value['@id'],
                 doc['@id']
                 )
-            raise AuditFailure('wrong document_type', detail, level='ERROR')
+            raise AuditFailure('inconsistent document_type', detail, level='ERROR')
 
 
 @audit_checker('file', frame='object')
@@ -803,9 +803,6 @@ def audit_file_chip_seq_control_read_depth(value, system):
 
     derived_from_files = value.get('derived_from')
     if (derived_from_files is None) or (derived_from_files == []):
-        detail = 'ENCODE Processed alignment file {} has no derived_from files'.format(
-            value['@id'])
-        yield AuditFailure('missing derived_from files', detail, level='DCC_ACTION')
         return
 
     target_name = 'empty'
@@ -840,7 +837,7 @@ def check_control_read_depth_standards(value, read_depth, target_name, is_contro
             detail = 'Control ENCODE Processed alignment file {} '.format(value['@id']) + \
                      'has a target {} that is neither '.format(target_name) + \
                      'Control-human nor Control-mouse.'
-            yield AuditFailure('mismatched target of control experiment', detail, level='WARNING')
+            yield AuditFailure('inconsistent target of control experiment', detail, level='WARNING')
             return
 
         if control_to_target == 'empty':
