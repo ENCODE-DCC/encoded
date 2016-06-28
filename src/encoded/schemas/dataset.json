@@ -69,6 +69,20 @@
             ],
             "permission": "import_items"
         },
+        "collections": {
+            "title": "Collections",
+            "description": "Some datasets are part of particular data collections",
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string",
+                "enum": [
+                    "DREAM",
+                    "ENCORE",
+                    "EN-Tex",
+                    "SESCC"
+            ]
+        },
         "status": {
             "title": "Status",
             "type": "string",
