@@ -723,7 +723,7 @@ def analysis_step_run_bam(testapp, analysis_step_version_bam):
 
 
 @pytest.fixture
-def pipeline_bam(testapp, lab, award, analysis_step_bam ):
+def pipeline_bam(testapp, lab, award, analysis_step_bam):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],

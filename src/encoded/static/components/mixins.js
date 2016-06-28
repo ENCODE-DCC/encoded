@@ -362,6 +362,24 @@ module.exports.HistoryAndTriggers = {
                 // Might fail due to too large data
                 window.history.replaceState(null, '', window.location.href);
             }
+
+            // If it looks like an anchor target link, scroll to it, plus an offset for the fixed navbar
+            // Hints from https://dev.opera.com/articles/fixing-the-scrolltop-bug/
+            if (this.props.href) {
+                var splitHref = this.props.href.split('#');
+                if (splitHref.length >= 2 && splitHref[1][0] !== '!') {
+                    // URL has hash tag, but not the '#!edit' type
+                    var hashTarget = splitHref[1];
+                    var domTarget = document.getElementById(hashTarget);
+                    if (domTarget) {
+                        // DOM has a matching anchor; scroll to it
+                        var elTop = domTarget.getBoundingClientRect().top;
+                        var docTop = document.documentElement.scrollTop || document.body.scrollTop;
+                        document.documentElement.scrollTop = document.body.scrollTop = elTop + docTop - (window.innerWidth >= 960 ? 75 : 0);
+                    }
+                }
+            }
+
             // Avoid popState on load, see: http://stackoverflow.com/q/6421769/199100
             var register = window.addEventListener.bind(window, 'popstate', this.handlePopState, true);
             if (window._onload_event_fired) {
