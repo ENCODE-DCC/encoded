@@ -848,23 +848,28 @@ def check_file_chip_seq_library_complexity(alignment_file):
     if ('quality_metrics' not in alignment_file) or (alignment_file.get('quality_metrics') == []):
         return
 
-    nrf_end_of_detail = "Non redundant fraction (NRF, Number of reads after " + \
-                        "removing duplicates / Total number of reads). 0.0-0.5 is " + \
-                        "poor complexity, 0.5-0.8 is moderate complexity, " + \
-                        "and >0.8 high complexity. NRF >0.8 is recommended, " + \
-                        "but >0.5 is acceptable"
-    pbc1_end_of_detail = "PCR Bottlenecking coefficient 1 (PBC1, Number of genomic " + \
-                         "locations where exactly one read maps uniquely/Number of " + \
-                         "distinct genomic locations to which some read maps uniquely). " + \
-                         "0 - 0.5 is severe bottlenecking, 0.5 - 0.8 is moderate " + \
-                         "bottlenecking, 0.8 - 0.9 is mild bottlenecking, and > 0.9 is " + \
-                         "no bottlenecking. PBC1 >0.9 is recommended, but >0.8 is acceptable"
+    nrf_end_of_detail = 'NRF (Non Redundant Fraction) equals to the result of ' + \
+                        'division of the number of reads after duplicates removal by ' + \
+                        'the total number of reads. ' + \
+                        'NRF value in the range 0 - 0.5 is poor complexity, ' + \
+                        '0.5 - 0.8 is moderate complexity, ' + \
+                        'and > 0.8 high complexity. NRF value > 0.8 is recommended, ' + \
+                        'but > 0.5 is acceptable.'
 
-    pbc2_end_of_detail = "PCR Bottlenecking coefficient 2 (PBC2, Number of genomic locations " + \
-                         "where only one read maps uniquely/Number of genomic locations where " + \
-                         "2 reads map uniquely). 0 - 1 is severe bottlenecking, 1 - 3 is " + \
-                         "moderate bottlenecking, 3 -10 is mild bottlenecking, > 10 is no " + \
-                         "bottlenecking. PBC2 >10 is recommended, but >3 is acceptable"
+    pbc1_end_of_detail = 'PBC1 (PCR Bottlenecking Coefficient 1) equals to the result of division of ' + \
+                         'the number of genomic locations where exactly one read maps uniquely by ' + \
+                         'the number of distinct genomic locations to which some read maps uniquely. ' + \
+                         'PBC1 value in the range 0 - 0.5 is severe bottlenecking, 0.5 - 0.8 ' + \
+                         'is moderate bottlenecking, 0.8 - 0.9 is mild bottlenecking, and > 0.9 ' + \
+                         'is no bottlenecking. PBC1 value > 0.9 is recommended, but > 0.8 is ' + \
+                         'acceptable.'
+
+    pbc2_end_of_detail = 'PBC2 (PCR Bottlenecking Coefficient 2) equals to the result of division of ' + \
+                         'the number of genomic locations where only one read maps uniquely by ' + \
+                         'the number of genomic locations where 2 reads map uniquely. ' + \
+                         'PBC2 value in the range 0 - 1 is severe bottlenecking, 1 - 3 ' + \
+                         'is moderate bottlenecking, 3 - 10 is mild bottlenecking, > 10 is ' + \
+                         'no bottlenecking. PBC2 value > 10 is recommended, but > 3 is acceptable.'
 
     quality_metrics = alignment_file.get('quality_metrics')
     for metric in quality_metrics:
