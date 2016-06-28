@@ -37,7 +37,7 @@ $pipeline-node-types:
 
 g.label {
     font-size: $font-size-base * 0.85; // Don't use rems; maintain size on mobile
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-weight: bold;
     fill: #000;
 }
@@ -138,7 +138,7 @@ g.pipeline-node-qc-metric {
     }
 
     text {
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-weight: bold;
         fill: #000;
     }

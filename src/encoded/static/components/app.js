@@ -249,6 +249,7 @@ var App = React.createClass({
                     <link rel="canonical" href={canonical} />
                     <script async src='//www.google-analytics.com/analytics.js'></script>
                     <script data-prop-name="inline" dangerouslySetInnerHTML={{__html: this.props.inline}}></script>
+                    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic' rel='stylesheet' type='text/css' />
                     <link rel="stylesheet" href="/static/css/style.css" />
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
