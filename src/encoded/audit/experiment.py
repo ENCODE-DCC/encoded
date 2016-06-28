@@ -770,7 +770,7 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
                          'calculating Spearman correlation between gene quantifications ' + \
                          'of the replicates. ' + \
                          'ENCODE processed gene quantification files {} '.format(file_names_string) + \
-                         'have Spearman correlation of {}. '.format(spearman_correlation) + \
+                         'have Spearman correlation of {0:.2f}. '.format(spearman_correlation) + \
                          'According to ENCODE3 standards in {} '.format(replication_type) + \
                          'assay analyzed using the {} pipeline, '.format(pipeline) + \
                          'Spearman correlation value > {} '.format(threshold) + \
