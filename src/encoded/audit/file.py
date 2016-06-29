@@ -45,12 +45,13 @@ def audit_file_bam_derived_from(value, system):
                              'that belongs to experiment {} '.format(value['dataset']) + \
                              'is derived from file {} '.format(f['@id']) + \
                              'that belongs to different experiment {} .'.format(f['dataset'])
-                    yield AuditFailure('mismatched derived_from',
+                    yield AuditFailure('inconsistent derived_from',
                                        detail, level='DCC_ACTION')
     if fastq_counter == 0:
-        detail = 'Processed alignments file {} '.format(value['@id']) + \
-                 'that belongs to experiment {} '.format(value['dataset']) + \
-                 'does not specify which fastq files it was derived from.'
+        detail = 'derived_from is a list of files that were used to create a given file, ' + \
+                 'for example fastq files will appear in derived_from list of alignments file. ' + \
+                 'Alignments file {} '.format(value['@id']) + \
+                 'is missing the requisite file specification in derived_from list.'
         yield AuditFailure('missing derived_from',
                            detail, level='DCC_ACTION')
 
