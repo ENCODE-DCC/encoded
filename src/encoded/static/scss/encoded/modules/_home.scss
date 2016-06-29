@@ -1,3 +1,4 @@
+
 // Graphical banner for the home page
 .homepage-banner {
     position: relative;
@@ -27,22 +28,50 @@
     }
 }
 
-.row {
-    width: 800px;
-    border: 1px solid black;
-    overflow: hidden; /* will contain if #first is longer than #second */
-}
 
 .col-sm-12 {
-    height:500px;
-    width:750px;
-    float:left;
+    height:50%;
+    width:50%;
+    
     border: 3px solid #C6E2FF;
 }
 
-.right-graph {
-    height:500px;
-    width:750px;
-    float:right;
+.col-sm-3 {
+    height:50%;
+    width:50%;
+    //float:left;
     border: 3px solid #3B6AA0;
 }
+
+.title {
+    
+    width: 100%;
+    
+    padding: 10px;
+    
+    text-align: center;
+    color: black
+    ;
+   
+    font-size: 30px;
+    font-weight: 100;
+}
+
+
+
+hr {
+    margin: 20px;
+}
+
+/*
+
+.line-separator{
+margin: 0 0 15px 0;
+border-bottom:1px solid #cccccc;
+padding: 0px 0 0px 0;
+padding: 20px 0 20px 0;
+padding: 20px 0 20px 0;
+
+}
+
+*/
