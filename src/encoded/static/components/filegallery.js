@@ -121,8 +121,7 @@ var FileTable = module.exports.FileTable = React.createClass({
         },
         'audit': {
             title: 'Audit status',
-            display: item => <div>{fileAuditStatus(item)}</div>,
-            hide: (list, columns, meta) => meta.noAudits || !(meta.session && meta.session['auth.userid'])
+            display: item => <div>{fileAuditStatus(item)}</div>
         },
         'status': {
             title: 'File status',
@@ -170,8 +169,7 @@ var FileTable = module.exports.FileTable = React.createClass({
         },
         'audit': {
             title: 'Audit status',
-            display: item => <div>{fileAuditStatus(item)}</div>,
-            hide: (list, columns, meta) => meta.noAudits || !(meta.session && meta.session['auth.userid'])
+            display: item => <div>{fileAuditStatus(item)}</div>
         },
         'status': {
             title: 'File status',
@@ -221,8 +219,7 @@ var FileTable = module.exports.FileTable = React.createClass({
         },
         'audit': {
             title: 'Audit status',
-            display: item => <div>{fileAuditStatus(item)}</div>,
-            hide: (list, columns, meta) => { return meta.noAudits || !(meta.session && meta.session['auth.userid']); }
+            display: item => <div>{fileAuditStatus(item)}</div>
         },
         'status': {
             title: 'File status',
@@ -267,8 +264,7 @@ var FileTable = module.exports.FileTable = React.createClass({
         },
         'audit': {
             title: 'Audit status',
-            display: item => <div>{fileAuditStatus(item)}</div>,
-            hide: (list, columns, meta) => { return (meta.noAudits || !(meta.session && meta.session['auth.userid'])); }
+            display: item => <div>{fileAuditStatus(item)}</div>
         },
         'status': {
             title: 'File status',
@@ -294,7 +290,6 @@ var FileTable = module.exports.FileTable = React.createClass({
             filterOptions,
             handleFilterChange,
             anisogenic,
-            noAudits,
             showFileCount,
             session
         } = this.props;
@@ -340,14 +335,14 @@ var FileTable = module.exports.FileTable = React.createClass({
                     {showFileCount ? <div className="file-gallery-counts">Displaying {filteredCount} of {unfilteredCount} files</div> : null}
                     <SortTablePanel header={filePanelHeader} noDefaultClasses={this.props.noDefaultClasses}>
                         <SortTable title={<CollapsingTitle title="Raw data" collapsed={this.state.collapsed.raw} handleCollapse={this.handleCollapse.bind(null, 'raw')} />} collapsed={this.state.collapsed.raw}
-                            list={files.raw} columns={this.rawTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
+                            list={files.raw} columns={this.rawTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
                         <SortTable title={<CollapsingTitle title="Raw data" collapsed={this.state.collapsed.rawArray} handleCollapse={this.handleCollapse.bind(null, 'rawArray')} />} collapsed={this.state.collapsed.rawArray}
-                            list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
+                            list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
                         <SortTable title={<CollapsingTitle title="Processed data" collapsed={this.state.collapsed.proc} handleCollapse={this.handleCollapse.bind(null, 'proc')}
                             selectedFilterValue={selectedFilterValue} filterOptions={filterOptions} handleFilterChange={handleFilterChange} />}
-                            collapsed={this.state.collapsed.proc} list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
+                            collapsed={this.state.collapsed.proc} list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
                         <SortTable title={<CollapsingTitle title="Reference data" collapsed={this.state.collapsed.ref} handleCollapse={this.handleCollapse.bind(null, 'ref')} />} collapsed={this.state.collapsed.ref}
-                            list={files.ref} columns={this.refTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} />
+                            list={files.ref} columns={this.refTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} />
                     </SortTablePanel>
                 </div>
             );
@@ -382,7 +377,8 @@ var FileGallery = module.exports.FileGallery = React.createClass({
     propTypes: {
         encodevers: React.PropTypes.string, // ENCODE version number
         anisogenic: React.PropTypes.bool, // True if anisogenic experiment
-        hideGraph: React.PropTypes.bool // T to hide graph display
+        hideGraph: React.PropTypes.bool, // T to hide graph display
+        altFilterDefault: React.PropTypes.bool // T to default to All Assemblies and Annotations
     },
 
     contextTypes: {
@@ -391,12 +387,12 @@ var FileGallery = module.exports.FileGallery = React.createClass({
     },
 
     render: function() {
-        var {context, encodevers, anisogenic, hideGraph} = this.props;
+        var {context, encodevers, anisogenic, hideGraph, altFilterDefault} = this.props;
 
         return (
             <FetchedData ignoreErrors>
                 <Param name="data" url={globals.unreleased_files_url(context)} />
-                <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} hideGraph={hideGraph} />
+                <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} hideGraph={hideGraph} altFilterDefault={altFilterDefault} />
             </FetchedData>
         );
     }
@@ -409,7 +405,8 @@ var FileGalleryRenderer = React.createClass({
     propTypes: {
         encodevers: React.PropTypes.string, // ENCODE version number
         anisogenic: React.PropTypes.bool, // True if anisogenic experiment
-        hideGraph: React.PropTypes.bool // T to hide graph display
+        hideGraph: React.PropTypes.bool, // T to hide graph display
+        altFilterDefault: React.PropTypes.bool // T to default to All Assemblies and Annotations
     },
 
     contextTypes: {
@@ -438,7 +435,9 @@ var FileGalleryRenderer = React.createClass({
 
     // Set the default filter after the graph has been analayzed once.
     componentDidMount: function() {
-        this.setFilter('0');
+        if (!this.props.altFilterDefault) {
+            this.setFilter('0');
+        }
     },
 
     render: function() {
