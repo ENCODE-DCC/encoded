@@ -225,7 +225,8 @@ var TestLoaderHuman = React.createClass({
 
     getDefaultProps: function () {
         // Default searchBase if none passed in
-        return {searchBase: '?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&organ_slims=bronchus'};
+        return {searchBase: '?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'};
+        //return {searchBase: '?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&organ_slims=bronchus'};
     },
 
     getInitialState: function() {
@@ -381,7 +382,7 @@ var HomepageChart2 = React.createClass({
             var canvas = document.getElementById("myChart2");
             var ctx = canvas.getContext("2d");
             this.myPieChart = new Chart(ctx, {
-                type: 'doughnut',
+                type: 'pie',
                 data: {
                     labels: labels,
                     datasets: [{
@@ -398,6 +399,7 @@ var HomepageChart2 = React.createClass({
                     }
                 }
             });
+
         }.bind(this));
     },
 
