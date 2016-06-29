@@ -49,7 +49,7 @@ def audit_file_bam_derived_from(value, system):
                              'that belongs to experiment {} '.format(value['dataset']) + \
                              'is derived from file {} '.format(f['@id']) + \
                              'that belongs to different experiment {}.'.format(f['dataset'])
-                    yield AuditFailure('mismatched derived_from',
+                    yield AuditFailure('inconsistent derived_from',
                                        detail, level='DCC_ACTION')
     if raw_data_counter == 0:
         detail = 'Processed alignments file {} '.format(value['@id']) + \
