@@ -292,10 +292,14 @@ def audit_file_controlled_by(value, system):
         value['controlled_by'] = []
 
     if value['controlled_by'] == []:
-        detail = 'Fastq file {} from {} requires controlled_by'.format(
-            value['@id'],
-            value['dataset']['assay_term_name']
-            )
+        detail = 'controlled_by is a list of files that are used as controls for a given file. ' + \
+                 'Fastq files generated in {} assay require '.format(
+                     value['dataset']['assay_term_name']) + \
+                 'specification of control fastq file(s) in controlled_by list. ' + \
+                 'Fastq file {} generated in {} assay '.format(
+                     value['@id'],
+                     value['dataset']['assay_term_name']) + \
+                 'is missing the requisite file specification in controlled_by list.'
         yield AuditFailure('missing controlled_by', detail, level='NOT_COMPLIANT')
         return
 
