@@ -2384,5 +2384,6 @@ def audit_library_RNA_size_range(value, system):
             continue
         lib = rep['library']
         if (lib['nucleic_acid_term_id'] in RNAs) and ('size_range' not in lib):
-            detail = 'RNA library {} requires a value for size_range'.format(rep['library']['@id'])
+            detail = 'Metadata of RNA library {} lacks information on '.format(rep['library']['@id']) + \
+                     'the size range of fragments used to construct the library.'
             yield AuditFailure('missing RNA fragment size', detail, level='NOT_COMPLIANT')
