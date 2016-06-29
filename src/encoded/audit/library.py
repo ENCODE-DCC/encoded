@@ -34,7 +34,7 @@ def audit_library_nucleic_acid(value, system):
             value['nucleic_acid_term_id'],
             value['nucleic_acid_term_id'],
             expected)
-        raise AuditFailure('mismatched nucleic_acid_term', detail, level='ERROR')
+        raise AuditFailure('inconsistent nucleic_acid_term', detail, level='ERROR')
 
 
 @audit_checker('library', frame='object')
@@ -71,4 +71,4 @@ def audit_library_depleted_in(value, system):
                 value['@id'],
                 value['depleted_in_term_name'][i],
                 value['depleted_in_term_id'][i])
-            yield AuditFailure('mismatched depleted_in_term', detail, level='ERROR')
+            yield AuditFailure('inconsistent depleted_in_term', detail, level='ERROR')
