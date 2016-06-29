@@ -20,7 +20,7 @@ var Home = module.exports.Home = React.createClass({
                     <TabPanel tabs={{panel1: 'Human', panel2: 'Mouse', panel3: 'Worm', panel4: 'Fly'}}>
                         <TabPanelPane key="panel1">
                             <div>
-                                <div className="right-graph">
+                                <div className="col-sm-6">
                                     <div className="title">
                                         Human
                                     </div>
@@ -31,7 +31,7 @@ var Home = module.exports.Home = React.createClass({
                         </TabPanelPane>
                         <TabPanelPane key="panel2">
                             <div>
-                                <div className="right-graph">
+                                <div className="col-sm-6">
                                     <div className="title">
                                         Mouse
                                     </div>
@@ -42,7 +42,7 @@ var Home = module.exports.Home = React.createClass({
                         </TabPanelPane>
                         <TabPanelPane key="panel3">
                             <div>
-                                <div className="right-graph">
+                                <div className="col-sm-6">
                                     <div className="title">
                                         Worm
                                     </div>
@@ -53,7 +53,7 @@ var Home = module.exports.Home = React.createClass({
                         </TabPanelPane>
                         <TabPanelPane key="panel4">
                             <div>
-                                <div className="right-graph">
+                                <div className="col-sm-6">
                                     <div className="title">
                                         Fly
                                     </div>
@@ -65,9 +65,9 @@ var Home = module.exports.Home = React.createClass({
                     </TabPanel>
                     
 
-                    <div className="col-sm-12">
+                    <div className="col-sm-6">
                         <div className="title">
-                            Title Two
+                            Assay Title
                         </div>
                         <center> <hr width="80%"></hr> </center>
                         <HomepageChartLoader2 />
@@ -146,7 +146,26 @@ var HomepageChart = React.createClass({
                         //var tempString = this.myPieChart.getElementAtEvent(e).backgroundColor;
                         colors[0] = "#0000FF"; //changes initial color values
                         var term = assayFacet.terms[activePoints[0]._index].key;
-                        //this.context.navigate(this.props.data['@id'] + '&assay_title=' + term);
+                        var idk = new Array();
+                        assayFacet.terms.forEach(function(term, i) {
+                            idk.push(term.key);
+                        });
+                        this.context.navigate(this.props.data['@id'] + '&assay_title=' + term);
+
+                        //HumanSecondLoader.getPassedProps(term);
+
+
+
+
+
+
+
+
+
+
+
+
+
                         //var hello = 0;
                         //colors[0] = "#0000FF"; //changes initial color values
                         // assayFacet.terms.forEach(function(x) {
@@ -173,6 +192,32 @@ var HomepageChart = React.createClass({
 
 });
 
+/*
+
+// Initiates the GET request to search for experiments, and then pass the data to the HomepageChart
+// component to draw the resulting chart.
+var HumanSecondLoader = React.createClass({
+
+    getDefaultProps: function () {
+        // Default searchBase if none passed in
+        return {searchBase: '?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens';
+    },
+
+    getInitialState: function() {
+        return {search: this.props.searchBase};
+    },
+
+    render: function() {
+        return (
+            <FetchedData>
+                <Param name="data" url={'/search/' + this.state.search} />
+                <HomepageChart searchBase={this.state.search + '&'} />
+            </FetchedData>
+        );
+    }
+
+});
+*/
 
 // Initiates the GET request to search for experiments, and then pass the data to the HomepageChart
 // component to draw the resulting chart.
@@ -180,7 +225,7 @@ var TestLoaderHuman = React.createClass({
 
     getDefaultProps: function () {
         // Default searchBase if none passed in
-        return {searchBase: '?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'};
+        return {searchBase: '?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&organ_slims=bronchus'};
     },
 
     getInitialState: function() {
@@ -336,7 +381,7 @@ var HomepageChart2 = React.createClass({
             var canvas = document.getElementById("myChart2");
             var ctx = canvas.getContext("2d");
             this.myPieChart = new Chart(ctx, {
-                type: 'bar',
+                type: 'doughnut',
                 data: {
                     labels: labels,
                     datasets: [{
@@ -368,7 +413,8 @@ var HomepageChartLoader2 = React.createClass({
 
     getDefaultProps: function () {
         // Default searchBase if none passed in
-        return {searchBase: '?type=Experiment&files.file_type=fastq&assay_title=ChIP-seq'};
+        //return {searchBase: '?type=Experiment&files.file_type=fastq&assay_title=ChIP-seq'};
+        return {searchBase: '?type=Experiment'};
     },
 
     getInitialState: function() {
