@@ -41,15 +41,17 @@ def audit_file_bam_derived_from(value, system):
            f['file_format'] == 'fastq':
                 fastq_counter += 1
                 if f['dataset'] != value['dataset']:
-                    detail = 'Processed alignments file {} '.format(value['@id']) + \
-                             'that belongs to experiment {} '.format(value['dataset']) + \
-                             'is derived from file {} '.format(f['@id']) + \
-                             'that belongs to different experiment {} .'.format(f['dataset'])
+                    detail = 'derived_from is a list of files that were used to create a given file, ' + \
+                             'for example fastq file(s) will appear in derived_from list of an alignments file. ' + \
+                             'Alignments file {} '.format(value['@id']) + \
+                             'from experiment {} '.format(value['dataset']) + \
+                             'specifies in derived_from list a file {} '.format(f['@id']) + \
+                             'from a different experiment {} .'.format(f['dataset'])
                     yield AuditFailure('inconsistent derived_from',
                                        detail, level='DCC_ACTION')
     if fastq_counter == 0:
         detail = 'derived_from is a list of files that were used to create a given file, ' + \
-                 'for example fastq files will appear in derived_from list of alignments file. ' + \
+                 'for example fastq file(s) will appear in derived_from list of an alignments file. ' + \
                  'Alignments file {} '.format(value['@id']) + \
                  'is missing the requisite file specification in derived_from list.'
         yield AuditFailure('missing derived_from',
@@ -69,8 +71,10 @@ def audit_file_processed_empty_derived_from(value, system):
             return
     if 'derived_from' not in value or \
        'derived_from' in value and len(value['derived_from']) == 0:
-            detail = 'The processed file {} '.format(value['@id']) + \
-                     'has no derived_from information supplied.'
+            detail = 'derived_from is a list of files that were used to create a given file, ' + \
+                     'for example fastq file(s) will appear in derived_from list of an alignments file. ' + \
+                     'Processed file {} '.format(value['@id']) + \
+                     'is missing the requisite file specification in derived_from list.'
             yield AuditFailure('missing derived_from',
                                detail, level='DCC_ACTION')
             return

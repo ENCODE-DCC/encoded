@@ -614,5 +614,5 @@ def test_audit_file_bam_derived_from_different_experiment(testapp, file6, file4,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched derived_from'
+    assert any(error['category'] == 'inconsistent derived_from'
                for error in errors_list)
