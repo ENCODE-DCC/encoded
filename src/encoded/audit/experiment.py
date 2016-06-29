@@ -293,12 +293,13 @@ def check_experiemnt_rna_seq_encode3_standards(value,
         for failure in check_file_platform(f, ['OBI:0002024', 'OBI:0000696']):
             yield failure
 
-    pipeline_title = scanFilesForPipelineTitle_not_chipseq(alignment_files,
-                                                           ['GRCh38', 'mm10'],
-                                                           ['RNA-seq of long RNAs (paired-end, stranded)',
-                                                            'RNA-seq of long RNAs (single-end, unstranded)',
-                                                            'Small RNA-seq single-end pipeline',
-                                                            'RAMPAGE (paired-end, stranded)'])
+    pipeline_title = scanFilesForPipelineTitle_not_chipseq(
+        alignment_files,
+        ['GRCh38', 'mm10'],
+        ['RNA-seq of long RNAs (paired-end, stranded)',
+         'RNA-seq of long RNAs (single-end, unstranded)',
+         'Small RNA-seq single-end pipeline',
+         'RAMPAGE (paired-end, stranded)'])
     if pipeline_title is False:
         return
 
@@ -641,7 +642,7 @@ def check_idr(metrics, rescue, self_consistency, pipeline):
                 file_names = []
                 for f in m['quality_metric_of']:
                     file_names.append(f['@id'])
-                file_names_string = str(file_names).replace('\'', '')
+                file_names_string = str(file_names).replace('\'', ' ')
                 detail = 'Replicate concordance in ChIP-seq expriments is measured by ' + \
                          'calculating IDR values (Irreproducible Discovery Rate). ' + \
                          'ENCODE processed IDR thresholded peaks files {} '.format(file_names_string) + \
@@ -657,7 +658,7 @@ def check_idr(metrics, rescue, self_consistency, pipeline):
                     file_names = []
                     for f in m['quality_metric_of']:
                         file_names.append(f['@id'])
-                    file_names_string = str(file_names).replace('\'', '')
+                    file_names_string = str(file_names).replace('\'', ' ')
                     detail = 'Replicate concordance in ChIP-seq expriments is measured by ' + \
                              'calculating IDR values (Irreproducible Discovery Rate). ' + \
                              'ENCODE processed IDR thresholded peaks files {} '.format(file_names_string) + \
@@ -773,7 +774,7 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
                 file_names = []
                 for f in m['quality_metric_of']:
                     file_names.append(f['@id'])
-                file_names_string = str(file_names).replace('\'', '')
+                file_names_string = str(file_names).replace('\'', ' ')
                 detail = 'Replicate concordance in RNA-seq expriments is measured by ' + \
                          'calculating the Spearman correlation between gene quantifications ' + \
                          'of the replicates. ' + \
@@ -1779,19 +1780,19 @@ def audit_experiment_isogeneity(value, system):
         return  # humans are handled in the the replication_type
 
     if len(biosample_donor_set) > 1:
-        donors_list = str(list(biosample_donor_set)).replace('\'', '')
+        donors_list = str(list(biosample_donor_set)).replace('\'', ' ')
         detail = 'Replicates of this experiment were prepared using biosamples ' + \
                  'from different strains {}.'.format(donors_list)
         yield AuditFailure('inconsistent donor', detail, level='ERROR')
 
     if len(biosample_age_set) > 1:
-        ages_list = str(list(biosample_age_set)).replace('\'', '')
+        ages_list = str(list(biosample_age_set)).replace('\'', ' ')
         detail = 'Replicates of this experiment were prepared using biosamples ' + \
                  'of different ages {}.'.format(ages_list)
         yield AuditFailure('inconsistent age', detail, level='NOT_COMPLIANT')
 
     if len(biosample_sex_set) > 1:
-        sexes_list = str(list(biosample_sex_set)).replace('\'', '')
+        sexes_list = str(list(biosample_sex_set)).replace('\'', ' ')
         detail = 'Replicates of this experiment were prepared using biosamples ' + \
                  'of different sexes {}.'.format(sexes_list)
         yield AuditFailure('inconsistent sex', detail, level='NOT_COMPLIANT')
@@ -2000,9 +2001,10 @@ def audit_experiment_target(value, system):
                     if target['name'] == antibody_target.get('name'):
                         target_matches = True
                 if not target_matches:
+                    antibody_targets_string = str(antibody_targets).replace('\'', '')
                     detail = 'The target of the experiment is {}, '.format(target['name']) + \
                              'but it is not present in the experiment\'s antibody {} '.format(antibody['@id']) + \
-                             'target list {}.'.format(antibody_targets)
+                             'target list {}.'.format(antibody_targets_string)
                     yield AuditFailure('inconsistent target', detail, level='ERROR')
 
 

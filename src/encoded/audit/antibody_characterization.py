@@ -136,11 +136,12 @@ def audit_antibody_characterization_target(value, system):
             if target['name'] == antibody_target.get('name'):
                 target_matches = True
         if not target_matches:
+            antibody_targets_string = str(antibody_targets).replace('\'', '')
             detail = 'Antibody characterization {} target is {}, '.format(
                 value['@id'],
                 target['name']) + \
                 'but it could not be found in antibody\'s {} '.format(antibody['@id']) + \
-                'target list {}.'.format(antibody_targets)
+                'target list {}.'.format(antibody_targets_string)
             raise AuditFailure('inconsistent target', detail, level='ERROR')
 
 
