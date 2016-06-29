@@ -139,7 +139,15 @@ var HomepageChart = React.createClass({
                         backgroundColor: colors
                     }]
                 },
+                legend:{ // to create onClick events for legend, similar to onClick on doughnut sections
+                    onClick: function(event, legendItem){
+                        var activePoints1 = this.myPieChart.getElementAtEvent(event);
+                        var term1 = assayFacet.terms[activePoints1[0]._index].key;
+                        this.context.navigate(this.props.data['@id'] + '&assay_title=' + term1);
+                    }
+                },
                 options: {
+                    
                     onClick: (e) => {
                         // React to clicks on pie sections
                         var activePoints = this.myPieChart.getElementAtEvent(e);
