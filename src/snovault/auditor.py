@@ -36,6 +36,8 @@ _levelNames = {
     40: 'WARNING',
     50: 'NOT_COMPLIANT',
     60: 'ERROR',
+    70: 'ACCEPTABLE',
+    80: 'CONCERNING',
     'DEBUG': 10,
     'ERROR': 60,
     'INFO': 20,
@@ -43,6 +45,8 @@ _levelNames = {
     'WARNING': 40,
     'NOT_COMPLIANT': 50,
     'DCC_ACTION': 30,
+    'ACCEPTABLE': 70,
+    'CONCERNING': 80
 }
 
 

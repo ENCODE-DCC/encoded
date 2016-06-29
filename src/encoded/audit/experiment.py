@@ -1023,7 +1023,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                      'transcription factors, which ' + \
                      'require {} usable fragments, according to '.format(marks['narrow']) + \
                      'June 2015 standards.'
-            yield AuditFailure('low read depth', detail, level='WARNING')
+            yield AuditFailure('low read depth', detail, level='ACCEPTABLE')
         if read_depth < 10000000:
             detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                          read_depth) + \
@@ -1034,7 +1034,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                      'June 2015 standards, and 10000000 usable fragments according to' + \
                      ' ENCODE2 standards.'
             yield AuditFailure('insufficient read depth',
-                               detail, level='NOT_COMPLIANT')
+                               detail, level='CONCERNING')
         return
     elif 'broad histone mark' in target_investigated_as:  # target_name in broad_peaks_targets:
         if target_name in ['H3K9me3-human', 'H3K9me3-mouse']:
@@ -1047,7 +1047,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                          '{} mapped reads, according to '.format(marks['broad']) + \
                          'June 2015 standards.'
                 yield AuditFailure('insufficient read depth',
-                                   detail, level='NOT_COMPLIANT')
+                                   detail, level='CONCERNING')
         else:
             if read_depth >= 40000000 and read_depth < marks['broad']:
                 detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
@@ -1057,7 +1057,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                          'investigated as broad histone mark require ' + \
                          '{} usable fragments, according to '.format(marks['broad']) + \
                          'June 2015 standards.'
-                yield AuditFailure('low read depth', detail, level='WARNING')
+                yield AuditFailure('low read depth', detail, level='ACCEPTABLE')
             elif read_depth < 40000000:
                 detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                              read_depth) + \
@@ -1067,7 +1067,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                          '{} usable fragments, according to '.format(marks['broad']) + \
                          'June 2015 standards.'
                 yield AuditFailure('insufficient read depth',
-                                   detail, level='NOT_COMPLIANT')
+                                   detail, level='CONCERNING')
     elif 'narrow histone mark' in target_investigated_as:
         if read_depth >= 10000000 and read_depth < marks['narrow']:
             detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
@@ -1077,7 +1077,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                      'investigated as narrow histone mark require ' + \
                      '{} usable fragments, according to '.format(marks['narrow']) + \
                      'June 2015 standards.'
-            yield AuditFailure('low read depth', detail, level='WARNING')
+            yield AuditFailure('low read depth', detail, level='ACCEPTABLE')
         elif read_depth < 10000000:
             detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                          read_depth) + \
@@ -1088,7 +1088,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                      'June 2015 standards, and 10000000 usable fragments according to' + \
                      ' ENCODE2 standards.'
             yield AuditFailure('insufficient read depth',
-                               detail, level='NOT_COMPLIANT')
+                               detail, level='CONCERNING')
     elif 'transcription factor' in target_investigated_as:
         if read_depth >= 10000000 and read_depth < marks['narrow']:
             detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
@@ -1098,7 +1098,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                      'investigated as transcription factor require ' + \
                      '{} usable fragments, according to '.format(marks['narrow']) + \
                      'June 2015 standards.'
-            yield AuditFailure('low read depth', detail, level='WARNING')
+            yield AuditFailure('low read depth', detail, level='ACCEPTABLE')
         elif read_depth < 10000000:
             detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                          read_depth) + \
@@ -1109,7 +1109,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                      'June 2015 standards, and 10000000 usable fragments according to' + \
                      ' ENCODE2 standards.'
             yield AuditFailure('insufficient read depth',
-                               detail, level='NOT_COMPLIANT')
+                               detail, level='CONCERNING')
 
 
 def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_threshold,
@@ -1130,7 +1130,7 @@ def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_thre
                      '{} assay '.format(assay_term_name) + \
                      'processed by {} pipeline '.format(pipeline_title) + \
                      'require {} aligned reads.'.format(upper_threshold)
-            yield AuditFailure('low read depth', detail, level='WARNING')
+            yield AuditFailure('low read depth', detail, level='ACCEPTABLE')
             return
         elif read_depth < lower_threshold:
             detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
@@ -1140,7 +1140,7 @@ def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_thre
                      'processed by {} pipeline '.format(pipeline_title) + \
                      'require {} aligned reads.'.format(upper_threshold)
             yield AuditFailure('insufficient read depth', detail,
-                               level='NOT_COMPLIANT')
+                               level='CONCERNING')
             return
 
     elif read_depth is not False and read_depth < upper_threshold:
@@ -1150,7 +1150,7 @@ def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_thre
                  '{} assay '.format(assay_term_name) + \
                  'processed by {} pipeline '.format(pipeline_title) + \
                  'require {} aligned reads.'.format(upper_threshold)
-        yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
+        yield AuditFailure('insufficient read depth', detail, level='CONCERNING')
         return
 
 
@@ -1177,16 +1177,16 @@ def check_file_read_length_chip(file_to_check, upper_threshold_length, lower_thr
              'According to ENCODE3 standards fastq files ' + \
              'should be at least {}bp long.'.format(upper_threshold_length)
     if read_length < lower_threshold_length:
-        yield AuditFailure('insufficient read length', detail, level='NOT_COMPLIANT')
+        yield AuditFailure('insufficient read length', detail, level='CONCERNING')
     elif read_length >= lower_threshold_length and read_length < upper_threshold_length:
-        yield AuditFailure('low read length', detail, level='WARNING')
+        yield AuditFailure('low read length', detail, level='ACCEPTABLE')
     return
 
 
 def check_file_read_length_rna(file_to_check, threshold_length):
     if 'read_length' not in file_to_check:
         detail = 'Reads file {} missing read_length'.format(file_to_check['@id'])
-        yield AuditFailure('missing read_length', detail, level='NOT_COMPLIANT')
+        yield AuditFailure('missing read_length', detail, level='CONCERNING')
         return
 
     read_length = file_to_check['read_length']
@@ -1197,7 +1197,7 @@ def check_file_read_length_rna(file_to_check, threshold_length):
                  ' According to ENCODE3 standards sequencing reads ' + \
                  'should be at least {}bp long.'.format(threshold_length)
         yield AuditFailure('insufficient read length', detail,
-                           level='NOT_COMPLIANT')
+                           level='CONCERNING')
     return
 
 
@@ -1698,7 +1698,7 @@ def audit_experiment_replicated(value, system):
             detail = 'Experiment {} has only one biological '.format(value['@id']) + \
                      'replicate and is released. Check for proper annotation ' + \
                      'of this state in the metadata'
-            raise AuditFailure('unreplicated experiment', detail, level='NOT_COMPLIANT')
+            raise AuditFailure('unreplicated experiment', detail, level='CONCERNING')
 
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'])
