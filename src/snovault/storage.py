@@ -32,6 +32,11 @@ import json
 import transaction
 import uuid
 
+import logging
+log = logging.getLogger(__name__)
+from pprint import pprint as pp
+
+
 
 def includeme(config):
     registry = config.registry
@@ -273,8 +278,14 @@ class S3BlobStorage(object):
         self.store_conn = boto.connect_s3(profile_name=store_profile_name)
         self.read_conn = boto.connect_s3(profile_name=read_profile_name)
         self.bucket = self.store_conn.get_bucket(bucket, validate=False)
+        log.warn('bucket: {}, read_profile_name: {}, store_profile_name: {}')
 
     def store_blob(self, data, download_meta, blob_id=None):
+        log.warn(pp(data))
+        log.warn(data)
+        log.warn(pp(download_meta))
+        log.warn(download_meta)
+        log.warn(blob_id)
         if blob_id is None:
             blob_id = str(uuid.uuid4())
             key = None

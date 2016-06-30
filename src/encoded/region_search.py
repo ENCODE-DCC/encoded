@@ -351,7 +351,6 @@ def region_search(context, request):
 
 @view_config(route_name='suggest', request_method='GET', permission='search')
 def suggest(context, request):
-    request.response.headers['X-Request-URL'] = request.url
     text = ''
     requested_genome = ''
     result = {
