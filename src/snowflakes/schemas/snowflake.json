@@ -48,7 +48,7 @@
             "uniqueKey": "accession"
         },
         "type": {
-            "title": "Snoflake type",
+            "title": "Snowflake type",
             "type": "string",
             "enum": [
                     "fluffy",

@@ -1,0 +1,26 @@
+[
+    {
+        "accession": "SNOSS727WCB",
+        "award": "U54HG007004",
+        "description": "Sample Snowfort",
+        "status": "released",
+        "lab": "michael-snyder",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "4eafdd35-40ea-463a-9e05-c85fb91d25d0",
+        "method": "shovel",
+        "size": "grande",
+        "date_released": "2014-10-07"
+    },
+    {
+        "accession": "SNOSS000AER",
+        "award": "U54HG007004",
+        "description": "Sample empty snowfort",
+        "lab": "thomas-gingeras",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "method": "bulldozer",
+        "size": "venti",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "5a6d5a57-e62d-44b9-a1bd-5d1815247348"
+    }
+]

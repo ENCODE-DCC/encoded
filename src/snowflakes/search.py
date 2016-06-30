@@ -13,16 +13,6 @@ from urllib.parse import urlencode
 from collections import OrderedDict
 
 
-_ASSEMBLY_MAPPER = {
-    'GRCh38-minimal': 'hg38',
-    'GRCh38': 'hg38',
-    'GRCh37': 'hg19',
-    'GRCm38': 'mm10',
-    'GRCm37': 'mm9',
-    'BDGP6': 'dm4',
-    'BDGP5': 'dm3',
-    'WBcel235': 'WBcel235'
-}
 
 CHAR_COUNT = 32
 
@@ -36,22 +26,14 @@ def includeme(config):
 
 sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
 
-hgConnect = ''.join([
-    'http://genome.ucsc.edu/cgi-bin/hgTracks',
-    '?hubClear=',
-])
-
-audit_facets = [
-    ('audit.ERROR.category', {'title': 'Audit category: ERROR'}),
-    ('audit.NOT_COMPLIANT.category', {'title': 'Audit category: NOT COMPLIANT'}),
-    ('audit.WARNING.category', {'title': 'Audit category: WARNING'}),
-    ('audit.DCC_ACTION.category', {'title': 'Audit category: DCC ACTION'})
-]
-
 
 DEFAULT_DOC_TYPES = [
     'Page',
     'Lab',
+    'Snowset',
+    'Snowball',
+    'Snowfort',
+    'Snowflake',
 ]
 
 
