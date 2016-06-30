@@ -8,7 +8,8 @@ In a clean checkout of master
 $ git tag -am v{XX}.0 v{XX}.0
 $ git push -u origin v{XX}.0
 
-== For a single, combined instance ==
+For a single, combined (ES/Python 1 datanode) instance 
+===============================
 $ bin/deploy --candidate --instance-type c4.4xlarge --profile-name production -n v{XX}-b v{XX}.0
 
 "production" must be a key on encode-prod AWS project with valid key/password in .aws/credentials
@@ -19,7 +20,8 @@ Or just as a demo instance to avoid the switchover
 
 $ bin/deploy --instance-type c4.4xlarge -n v{XX}-test -b v{XX}.0
 
-== For a clustered instance (current production as of 5/2016) ==
+For a clustered instance - 5 data nodes (current production as of 5/2016)
+================================
 $ bin/deploy -b v{XX}.0 --elasticsearch yes --cluster-name v{XX}-cluster --cluster-size 5 --profile-name production --name v{XX}-data --instance-type m4.xlarge
 $ bin/deploy -b v{XX}.0 -n v{XX}-master --cluster-name v{XX}-cluster --profile-name production --candidate --instance-type c4.8xlarge
 
