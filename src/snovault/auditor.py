@@ -32,7 +32,7 @@ _levelNames = {
     0: 'NOTSET',
     10: 'DEBUG',
     20: 'INFO',
-    30: 'DCC_ACTION',
+    30: 'INTERNAL_ACTION',
     40: 'WARNING',
     50: 'NOT_COMPLIANT',
     60: 'ERROR',
@@ -42,7 +42,7 @@ _levelNames = {
     'NOTSET': 0,
     'WARNING': 40,
     'NOT_COMPLIANT': 50,
-    'DCC_ACTION': 30,
+    'INTERNAL_ACTION': 30,
 }
 
 

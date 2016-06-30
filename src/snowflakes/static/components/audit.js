@@ -51,11 +51,11 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
 
             var indicatorClass = "audit-indicators btn btn-default" + (this.context.auditDetailOpen ? ' active' : '') + (this.props.search ? ' audit-search' : '');
 
-            if (loggedIn || !(sortedAuditLevels.length === 1 && sortedAuditLevels[0] === 'DCC_ACTION')) {
+            if (loggedIn || !(sortedAuditLevels.length === 1 && sortedAuditLevels[0] === 'INTERNAL_ACTION')) {
                 return (
                     <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.context.auditDetailOpen} aria-controls={this.props.id} onClick={this.context.auditStateToggle}>
                         {sortedAuditLevels.map(level => {
-                            if (loggedIn || level !== 'DCC_ACTION') {
+                            if (loggedIn || level !== 'INTERNAL_ACTION') {
                                 // Calculate the CSS class for the icon
                                 var levelName = level.toLowerCase();
                                 var btnClass = 'btn-audit btn-audit-' + levelName + ' audit-level-' + levelName;
@@ -103,7 +103,7 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
             return (
                 <Panel addClasses="audit-details" id={this.props.id.replace(/\W/g, '')} aria-hidden={!this.context.auditDetailOpen}>
                     {sortedAuditLevelNames.map(auditLevelName => {
-                        if (loggedIn || auditLevelName !== 'DCC_ACTION') {
+                        if (loggedIn || auditLevelName !== 'INTERNAL_ACTION') {
                             var audits = auditLevels[auditLevelName];
                             var level = auditLevelName.toLowerCase();
                             var iconClass = 'icon audit-icon-' + level;

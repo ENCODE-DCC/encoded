@@ -357,7 +357,7 @@ def es_mapping(mapping):
                         'type': 'object',
                         'properties': audit_mapping()
                     },
-                    'DCC_ACTION': {
+                    'INTERNAL_ACTION': {
                         'type': 'object',
                         'properties': audit_mapping()
                     },
