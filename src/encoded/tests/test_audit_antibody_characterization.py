@@ -135,7 +135,7 @@ def test_audit_antibody_mismatched_in_review(testapp, base_antibody_characteriza
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched ontology term' for error in errors_list)
+    assert any(error['category'] == 'inconsistent ontology term' for error in errors_list)
 
 
 def test_audit_antibody_biosample_invalid_term_in_review(testapp, base_antibody_characterization):
@@ -187,7 +187,7 @@ def test_audit_antibody_target_mismatch(testapp, base_antibody_characterization,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched target' for error in errors_list)
+    assert any(error['category'] == 'inconsistent target' for error in errors_list)
 
 
 def test_audit_antibody_not_tag_antibody(testapp, base_antibody_characterization, recombinant_target):

@@ -8,6 +8,8 @@ In a clean checkout of master
 $ git tag -am v{XX}.0 v{XX}.0
 $ git push -u origin v{XX}.0
 
+For a single, combined (ES/Python 1 datanode) instance 
+===============================
 $ bin/deploy --candidate --instance-type c4.4xlarge --profile-name production -n v{XX}-b v{XX}.0
 
 "production" must be a key on encode-prod AWS project with valid key/password in .aws/credentials
@@ -18,6 +20,35 @@ Or just as a demo instance to avoid the switchover
 
 $ bin/deploy --instance-type c4.4xlarge -n v{XX}-test -b v{XX}.0
 
+For a clustered instance - 5 data nodes (current production as of 5/2016)
+================================
+$ bin/deploy -b v{XX}.0 --elasticsearch yes --cluster-name v{XX}-cluster --cluster-size 5 --profile-name production --name v{XX}-data --instance-type m4.xlarge
+$ bin/deploy -b v{XX}.0 -n v{XX}-master --cluster-name v{XX}-cluster --profile-name production --candidate --instance-type c4.8xlarge
+
+"production" must be a key on encode-prod AWS project with valid key/password in .aws/credentials
+
+Once the master is up, you can run: 
+$ curl localhost:9200/_cluster/health?pretty 
+
+To make sure any cluster nodes are running correctly, and swap them out if necessary.
+You can create a single node with something like:
+$ bin/deploy -b v{XX}.0 --elasticsearch yes --cluster-name v{XX}-cluster --cluster-size 1 --profile-name production --name v{XX}-dataX --instance-type m4.xlarge
+
+Where X is the node you just terminated.  Note cluster names must match!
+
+and for DEV (non candidate/--test just as demo)
+$ bin/deploy -b v{XX}.0 --elasticsearch yes --cluster-name v{XX}-test-cluster --cluster-size 5 --name v{XX}-test-data --instance-type m4.xlarge
+$ bin/deploy -b v{XX}.0 -n v{XX}-test-master --cluster-name v{XX}-test-cluster --instance-type c4.8xlarge
+
+To set replicas (this should move to automatic installation):
+$ curl -XPUT 'localhost:9200/_all/_settings' -d '{"index": {"number_of_replicas": 2}}'
+
+This will set cluster status to "yellow"; probably best to wait for green for full release.
+
+
+== Create and install keys ==
+
+THis is all done only on the master node, v{XX}-master.production.encodedcc.org
 
 Go to the AWS console and create new write-encoded-backups-prod access key and add to new instance ~postgres/.aws/credentials (write-encode-backups and upload-encode-files are AWS users; they can each only have 2 keys so you have to delete the old inactive ones)
 $ sudo -u postgres mkdir ~postgres/.aws
