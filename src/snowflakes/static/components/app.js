@@ -8,35 +8,17 @@ var Footer = require('./footer');
 var url = require('url');
 
 var portal = {
-    portal_title: 'ENCODE',
+    portal_title: 'SNOWFLAKES',
     global_sections: [
         {id: 'data', title: 'Data', children: [
-            {id: 'assaymatrix', title: 'Matrix', url: '/matrix/?type=Experiment'},
-            {id: 'assaysearch', title: 'Search', url: '/search/?type=Experiment'},
-            {id: 'region-search', title: 'Search by region', url: '/region-search/'},
-            {id: 'publications', title: 'Publications', url: '/publications/'}
-        ]},
-        {id: 'encyclopedia', title: 'Encyclopedia', children: [
-            {id: 'aboutannotations', title: 'About', url: '/data/annotations/'},
-            {id: 'annotationmatrix', title: 'Matrix', url: '/matrix/?type=Annotation'},
-            {id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation'}
-        ]},
-        {id: 'materialsmethods', title: 'Materials & Methods', children: [
-            {id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot'},
-            {id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample'},
-            {id: 'datastandards', title: 'Standards and guidelines', url: '/data-standards/'},
-            {id: 'ontologies', title: 'Ontologies', url: '/help/getting-started/#Ontologies'},
-            {id: 'fileformats', title: 'File formats', url: '/help/file-formats/'},
-            {id: 'softwaretools', title: 'Software tools', url: '/software/'},
-            {id: 'pipelines', title: 'Pipelines', url: '/pipelines/'},
-            {id: 'datause', title: 'Release policy', url: '/about/data-use-policy/'},
-            {id: 'dataaccess', title: 'Data access', url: '/about/data-access/'}
+            {id: 'snowballsearch', title: 'Snowballs', url: '/search/?type=Snowball'},
+            {id: 'snowfortsearch', title: 'Snowforts', url: '/search/?type=Snowfort'},
+            {id: 'snowflakesearch', title: 'Snowflakes', url: '/search/?type=Snowflakes'},
         ]},
         {id: 'help', title: 'Help', children: [
             {id: 'gettingstarted', title: 'Getting started', url: '/help/getting-started/'},
             {id: 'restapi', title: 'REST API', url: '/help/rest-api/'},
             {id: 'projectoverview', title: 'Project overview', url: '/about/contributors/'},
-            {id: 'tutorials', title: 'Tutorials', url: '/tutorials/'},
             {id: 'news', title: 'News', url: '/news'},
             {id: 'acknowledgements', title: 'Acknowledgements', url: '/acknowledgements/'},
             {id: 'contact', title: 'Contact', url: '/help/contacts/'}
@@ -230,8 +212,8 @@ var App = React.createClass({
 
         // Google does not update the content of 301 redirected pages
         var base;
-        if (({'http://www.encodeproject.org/': 1, 'http://encodeproject.org/': 1})[canonical]) {
-            base = canonical = 'https://www.encodeproject.org/';
+        if (({'http://www.snovault.org/': 1, 'http://snovault.org/': 1})[canonical]) {
+            base = canonical = 'https://www.snovault.org/';
             this.historyEnabled = false;
         }
 
