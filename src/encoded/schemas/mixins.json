@@ -306,6 +306,22 @@
             "type": "string"
         }
     },
+    "genetic_modifications": {
+        "genetic_modifications": {
+            "title": "Genetic modifications",
+            "description": "Genetic modification(s) of the biosample. Any genomic alteration or addition of vectors stably or transiently transfected to the biosample.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "Genetic modification",
+                "description": "Genetic modification(s) of the biosample.",
+                "comment": "See genetic_modification.json for available identifiers.",
+                "type":  "string",
+                "linkTo": "GeneticModification"
+            }
+        }
+    },
     "genomic_alterations": {
         "genotype": {
             "title": "Strain genotype",
@@ -407,19 +423,5 @@
                 "linkTo": "Document"
             }
         }
-    },
-    "genetic_modifications": {
-        "title": "Genetic modifications",
-        "description": "Genetic modification(s) of the biosample. Any genomic alteration or addition of vectors stably or transiently transfected to the biosample.",
-        "type": "array",
-        "default": [],
-        "uniqueItems": true,
-        "items": {
-            "title": "Genetic modification",
-            "description": "Genetic modification(s) of the biosample.",
-            "comment": "See genetic_modification.json for available identifiers.",
-            "type":  "string",
-            "linkTo": "GeneticModification"
-        }
-   }
+    }    
 }
