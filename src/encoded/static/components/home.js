@@ -86,6 +86,7 @@ var Home = module.exports.Home = React.createClass({
 var HomepageChart = React.createClass({
 
     contextTypes: {
+        location_href: React.PropTypes.string,
         navigate: React.PropTypes.func
     },
 
@@ -127,6 +128,24 @@ var HomepageChart = React.createClass({
                 colors[i] = colorList[i % colorList.length];
             });
 
+            // var data1 = [];
+            // var labels1 = [];
+            // var colors1 = [];
+            // var tempColors1 = ['0000FF'];
+
+            // // Get the assay_title counts from the facets
+            // var facets1 = this.props.data.facets;
+
+            // var assayFacet1 = facets1.find(facet => facet.field === 'assay_title');
+
+            // // Collect up the experiment assay_title counts to our local arrays to prepare for
+            // // the charts.
+            // assayFacet1.terms.forEach(function(term, i) {
+            //     data1[i] = term.doc_count;
+            //     labels1[i] = term.key;
+            //     colors1[i] = colorList[i % colorList.length];
+            // });
+
             // Pass the assay_title counts to the charting library to render it.
             var canvas = document.getElementById("myChart");
             var ctx = canvas.getContext("2d")
@@ -139,28 +158,40 @@ var HomepageChart = React.createClass({
                         backgroundColor: colors
                     }]
                 },
-                legend:{ // to create onClick events for legend, similar to onClick on doughnut sections
-                    onClick: function(event, legendItem){
-                        var activePoints1 = this.myPieChart.getElementAtEvent(event);
-                        var term1 = assayFacet.terms[activePoints1[0]._index].key;
-                        this.context.navigate(this.props.data['@id'] + '&assay_title=' + term1);
-                    }
-                },
+
+                // tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>%",
+                // animateRotate: true
+                
                 options: {
+                    legend:{ // to create onClick events for legend, similar to onClick on doughnut sections
+                        //legendItemClick: function(){}
+                        onClick: (e, legendItem) => {
+                            var activeLabel = legendItem;
+                            var labelTerm = activeLabel.text;
+                            this.context.navigate(this.props.data['@id'] + '&assay_title=' + labelTerm);
+                            var blocker = 0;
+                            
+                        },
+                    },
                     
                     onClick: (e) => {
                         // React to clicks on pie sections
                         var activePoints = this.myPieChart.getElementAtEvent(e);
-                        //var tempString = this.myPieChart.getElementAtEvent(e).backgroundColor;
-                        colors[0] = "#0000FF"; //changes initial color values
-                        var term = assayFacet.terms[activePoints[0]._index].key;
-                        var idk = new Array();
-                        assayFacet.terms.forEach(function(term, i) {
-                            idk.push(term.key);
-                        });
-                        this.context.navigate(this.props.data['@id'] + '&assay_title=' + term);
+                        //colors[0] = "#0000FF"; //changes initial color values
+                        if (activePoints[0] == null) {
+                            var hi = 0;
+                        }
+                        else{
+                            var term = assayFacet.terms[activePoints[0]._index].key;
+                            // var idk = new Array();
+                            // assayFacet.terms.forEach(function(term, i) {
+                            //     idk.push(term.key);
+                            // });
+                            this.context.navigate(this.props.data['@id'] + '&assay_title=' + term);
+                        }
+                        
 
-                        //HumanSecondLoader.getPassedProps(term);
+                    //     //HumanSecondLoader.getPassedProps(term);
 
 
 
@@ -191,6 +222,24 @@ var HomepageChart = React.createClass({
             });
         }.bind(this));
     },
+
+    // var legendHolder = document.createElement('div');
+    // legendHolder.innerHTML = this.myPieChart.generateLegend();
+
+    // helpers.each(legendHolder.firstChild.childNodes, function (legendNode, index) {
+    //     helpers.addEvent(legendNode, 'mouseover', function () {
+    //         var activeSegment = this.myPieChart.segments[index];
+    //         activeSegment.save();
+    //         this.myPieChart.showTooltip([activeSegment]);
+    //         activeSegment.restore();
+    //     });
+    // });
+
+    // helpers.addEvent(legendHolder.firstChild, 'mouseout', function () {
+    //     this.myPieChart.draw();
+    // });
+
+    // this.myPieChart.chart.canvas.parentNode.parentNode.appendChild(legendHolder.firstChild);
 
     render: function() {
         return (
