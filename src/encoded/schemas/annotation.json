@@ -165,6 +165,18 @@
                 "comment": "See software_version.json for available identifiers.",
                 "linkTo": "SoftwareVersion"
             }
+        },
+        "supersedes": {
+            "title": "Supersedes" ,
+            "description": "The annotation set(s) that this annotation set supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                    "comment": "See annotation.json for a list of available identifiers.",
+                    "type": "string",
+                    "linkTo": "Annotation"
+            }
         }
     },
     "facets": {

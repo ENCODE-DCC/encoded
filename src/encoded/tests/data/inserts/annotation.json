@@ -74,5 +74,22 @@
         "uuid": "5047a772-d977-4ac8-8ada-9ddc3065d68f",
         "related_files": ["ENCFF000LSP", "ENCFF000LSQ", "ENCFF690MGJ", "ENCFF145DKR"],
         "date_released": "2016-01-01"
+    },
+    {
+        "_test": "superseded annotation",
+        "accession": "ENCSR937GWB",
+        "award": "U54HG007004",
+        "annotation_type": "encyclopedia",
+        "description": "ENCODE Annotations v2",
+        "encyclopedia_version": "2",
+        "targets": ["/targets/H3K4me3-human"],
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "organism": "human",
+        "uuid": "30549432-5196-43f9-a856-d19394e2e1b3",
+        "related_files": ["ENCFF000LSP", "ENCFF000LSQ"],
+        "date_released": "2016-06-01",
+        "supersedes": ["ENCSR385DCD"]
     }
 ]
