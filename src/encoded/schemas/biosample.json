@@ -21,7 +21,8 @@
         { "$ref": "mixins.json#/source" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/submitter_comment" }
+        { "$ref": "mixins.json#/submitter_comment" },
+        { "$ref": "mixins.json#/genetic_modifications" }
     ],
     "dependencies": {
         "transfection_method": ["transfection_type"],
@@ -144,20 +145,6 @@
                 ]
             }
         },
-       "genetic_modifications": {
-            "title": "Genetic modifications",
-            "description": "Genetic modification(s) of the biosample. Any genomic alternation or addition of vectors stably or transiently transfected to the biosample.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Genetic modification",
-                "description": "Genetic modification(s) of the biosample.",
-                "comment": "See genetic_modification.json for available identifiers.",
-                "type":  "string",
-                "linkTo": "GeneticModification"
-            }
-       },
        "constructs": {
             "title": "DNA constructs",
             "description": "Expression or targeting vectors stably or transiently transfected (not RNAi or TALEN).",
