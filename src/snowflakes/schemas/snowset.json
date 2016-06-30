@@ -12,7 +12,7 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/shared_status" },
+        { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {

@@ -1,0 +1,243 @@
+[
+    {
+        "accession": "SNOSS000AEM",
+        "method": "scoop-formed",
+        "award": "U54HG007004",
+        "description": "example snowball",
+        "lab": "thomas-gingeras",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "a357b33b-cdaa-4312-91c0-086bfec24181"
+    },
+    {
+        "accession": "SNOSS000AES",
+        "method": "scoop-formed",
+        "award": "U54HG007004",
+        "description": "example snowball",
+        "lab": "thomas-gingeras",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "d8e3c296-ae36-417b-855a-8bfbe3d33e3b"
+    },
+    {
+        "accession": "SNOSS000ADH",
+        "method": "hand-packed",
+        "award": "ENCODE2-Mouse",
+        "description": "example snowball",
+        "lab": "sherman-weissman",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "uuid": "df02f3f9-a6d4-40e4-a8dc-c1c7387e4556"
+    },
+    {
+        "accession": "SNOSS000ADI",
+        "method": "hand-packed",
+        "award": "ENCODE2-Mouse",
+        "description": "example snowball",
+        "lab": "sherman-weissman",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "uuid": "c05a9d79-713e-4d54-8d8e-6daae94368b3"
+    },
+    {
+        "accession": "SNOSS001ADI",
+        "method": "hand-packed",
+        "award": "ENCODE2-Mouse",
+        "description": "example snowball",
+        "lab": "sherman-weissman",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "uuid": "2629336f-0f99-4f30-9457-b2a4834e9e69"
+    },
+    {
+        "accession": "SNOSS000ACY",
+        "method": "accreted",
+        "award": "ENCODE2",
+        "description": "example snowball",
+        "lab": "richard-myers",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "b29de469-ed4b-4acf-8b4d-f1af02def8e8"
+    },
+    {
+        "accession": "SNOSS000AJK",
+        "method": "accreted",
+        "award": "U54HG006998",
+        "description": "example snowball",
+        "lab": "ali-mortazavi",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "submitted_by": "netus.lorem@risus.lobortis",
+        "uuid": "355ffbf8-0bc9-4545-ad3c-1ae71b4e2d85"
+    },
+    {
+        "accession": "SNOSS000AEN",
+        "method": "accreted",
+        "award": "U54HG007005",
+        "description": "example snowball",
+        "lab": "brenton-graveley",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "uuid": "0cb85395-da45-47e5-84c7-888f90c983fc"
+    },
+    {
+        "accession": "SNOSS000AAL",
+        "method": "scoop-formed",
+        "award": "U54HG007004",
+        "description": "example snowball",
+        "lab": "thomas-gingeras",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "ddd11381-7958-4d58-af02-fc56255c838b"
+    },
+    {
+        "accession": "SNOSS999NOF",
+        "method": "scoop-formed",
+        "award": "U54HG007004",
+        "description": "example snowball",
+        "lab": "thomas-gingeras",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "223af596-e5ca-4048-9ea8-9a41c240181d"
+    },
+    {
+        "accession": "SNOSS000ACT",
+        "method": "accreted",
+        "award": "ENCODE2",
+        "description": "example snowball",
+        "lab": "richard-myers",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "509cf1b1-4113-4a1e-a49f-d62ebf3367cf"
+    },
+    {
+        "accession": "SNOSS001ACT",
+        "method": "accreted",
+        "award": "ENCODE2",
+        "description": "example snowball",
+        "lab": "richard-myers",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "4ae10d69-f6fa-4757-b243-821dd8a9bf25"
+    },
+    {
+        "accession": "SNOSS002ACT",
+        "method": "accreted",
+        "award": "ENCODE2",
+        "description": "example snowball",
+        "lab": "richard-myers",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "a099b9ac-50c0-4c96-a3eb-9fa032388ebf"
+    },
+    {
+        "accession": "SNOSS666EMD",
+        "method": "accreted",
+        "award": "ENCODE2",
+        "description": "example snowball",
+        "lab": "chris-burge",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "32bd1f35-d011-4b8e-9601-2929d9688474"
+    },
+    {
+        "accession": "SNOSS765JPC",
+        "uuid": "e998735d-9a72-453f-b947-5fb604027d01",
+        "award": "U54HG006998",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "description": "example snowball",
+        "method": "accreted",
+        "lab": "richard-myers",
+        "submitted_by": "facilisi.tristique@potenti.vivamus"
+    },
+    {
+        "accession": "SNOSS001CTL",
+        "method": "accreted",
+        "award": "U54HG007004",
+        "description": "example snowball",
+        "lab": "robert-waterston",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "e162561a-08c0-463c-93d8-c4f924584e13"
+    },
+    {
+        "accession": "SNOSS001SER",
+        "method": "hand-packed",
+        "award": "U54HG007004",
+        "description": "example snowball",
+        "lab": "robert-waterston",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "4cead359-10e9-49a8-9d20-f05b2499b919"
+    },
+    {
+        "accession": "SNOSS002SER",
+        "method": "hand-packed",
+        "award": "U54HG007004",
+        "description": "example snowball",
+        "lab": "robert-waterston",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "2e83f6f9-6744-4ab1-893b-0c14d0a6e8ed"
+    },
+    {
+        "accession": "SNOSS003SER",
+        "method": "hand-packed",
+        "award": "U54HG007004",
+        "description": "example snowball",
+        "lab": "robert-waterston",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "fe9fe0cb-b859-461c-8d0f-4fa5f8e9377f"
+    },
+        {
+        "accession": "SNOSS001CON",
+        "method": "hand-packed",
+        "award": "U54HG007004",
+        "description": "example snowball",
+        "lab": "robert-waterston",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "7a9ac6d3-278f-4a0f-bc6b-8356ff10fa8b"
+    },
+    {
+        "accession": "SNOSS002CON",
+        "method": "hand-packed",
+        "award": "U54HG007004",
+        "description": "example snowball",
+        "lab": "robert-waterston",
+        "status": "proposed",
+        "date_released": "2016-01-01",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "4c1be4ea-22ae-4880-9002-03617e3dde92"
+    },
+    {
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "status": "released",
+        "award": "U54HG007010",
+        "method": "accreted",
+        "lab": "/labs/john-stamatoyannopoulos/",
+        "date_released": "2015-08-31",
+        "accession": "SNOSS704RSS",
+        "uuid": "c62d6a59-a444-49d1-b9f8-c4502c7cc4b2"
+    }
+]

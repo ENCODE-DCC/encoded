@@ -14,6 +14,10 @@ ORDER = [
     'user',
     'award',
     'lab',
+    'snowset',
+    'snowball',
+    'snowfort',
+    'snowflake',
     'image',
     'page'
 ]
