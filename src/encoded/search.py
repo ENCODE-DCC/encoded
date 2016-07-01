@@ -816,7 +816,10 @@ def matrix(context, request):
         msg = 'No matrix configured for type: {}'.format(item_type)
         raise HTTPBadRequest(explanation=msg)
     schema = type_info.schema
-    result['title'] = type_info.name + ' Matrix'
+    if type_info.name is 'Annotation':
+        result['title'] = 'Encyclopedia'
+    else:
+        result['title'] = type_info.name + ' Matrix'
 
     matrix = result['matrix'] = type_info.factory.matrix.copy()
     matrix['x']['limit'] = request.params.get('x.limit', 20)
