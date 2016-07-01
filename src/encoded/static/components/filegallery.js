@@ -108,11 +108,11 @@ var FileTable = module.exports.FileTable = React.createClass({
         'date_created': {
             title: 'Date added',
             getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
-            objSorter: (a, b) => {
-                if (a.date_created && b.date_created) {
-                    return Date.parse(a.date_created) - Date.parse(b.date_created);
+            sorter: (a, b) => {
+                if (a && b) {
+                    return Date.parse(a) - Date.parse(b);
                 }
-                return a.date_created ? -1 : (b.date_created ? 1 : 0);
+                return a ? -1 : (b ? 1 : 0);
             }
         },
         'file_size': {
@@ -156,11 +156,11 @@ var FileTable = module.exports.FileTable = React.createClass({
         'date_created': {
             title: 'Date added',
             getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
-            objSorter: (a, b) => {
-                if (a.date_created && b.date_created) {
-                    return Date.parse(a.date_created) - Date.parse(b.date_created);
+            sorter: (a, b) => {
+                if (a && b) {
+                    return Date.parse(a) - Date.parse(b);
                 }
-                return a.date_created ? -1 : (b.date_created ? 1 : 0);
+                return a ? -1 : (b ? 1 : 0);
             }
         },
         'file_size': {
@@ -207,10 +207,10 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: 'Date added',
             getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
             sorter: (a, b) => {
-                if (a.date_created && b.date_created) {
-                    return Date.parse(a.date_created) - Date.parse(b.date_created);
+                if (a && b) {
+                    return Date.parse(a) - Date.parse(b);
                 }
-                return a.date_created ? -1 : (b.date_created ? 1 : 0);
+                return a ? -1 : (b ? 1 : 0);
             }
         },
         'file_size': {
@@ -252,10 +252,10 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: 'Date added',
             getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
             sorter: (a, b) => {
-                if (a.date_created && b.date_created) {
-                    return Date.parse(a.date_created) - Date.parse(b.date_created);
+                if (a && b) {
+                    return Date.parse(a) - Date.parse(b);
                 }
-                return a.date_created ? -1 : (b.date_created ? 1 : 0);
+                return a ? -1 : (b ? 1 : 0);
             }
         },
         'file_size': {
@@ -668,6 +668,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
     // to de-dup the file array since there can be repeated files in it.
     files.forEach(function(file) {
         if (!allFiles[file['@id']]) {
+            file.removed = false;
             allFiles[file['@id']] = file;
         }
     });
@@ -765,11 +766,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
             allFiles[contributingFileId] = allContributing[contributingFileId];
         }
     });
-
-    // Don't draw anything if no files have an analysis_step
-    if (!stepExists) {
-        throw new graphException('No graph: no files have step runs');
-    }
 
     // Now that we know at least some files derive from each other through analysis steps, mark file objects that
     // don't derive from other files — and that no files derive from them — as removed from the graph.
