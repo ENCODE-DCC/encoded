@@ -127,7 +127,7 @@ class AntibodyLot(SharedItem):
                     "Do not submit, the value is assigned by server. "
                     "The status is updated by the DCC.",
                 "type": "string",
-                "default": "awaiting lab characterization",
+                "default": "awaiting characterization",
                 "enum": [
                     "awaiting characterization",
                     "pending dcc review",
@@ -157,14 +157,14 @@ def lot_reviews(characterizations, targets, request):
     target_organisms['all'] = tmp
 
     if not characterizations:
-        # If there are no characterizations, then default to awaiting lab characterization.
+        # If there are no characterizations, then default to awaiting characterization.
         return [{
             'biosample_term_name': 'any cell type or tissues',
             'biosample_term_id': 'NTR:99999999',
             'organisms': sorted(target_organisms['all']),
             'targets': sorted(targets),  # Copy to prevent modification of original data
-            'status': 'characterized to standards' if is_control else 'awaiting characterization',
-            'detail': None if is_control else 'No characterizations submitted for this antibody lot yet.'
+            'status': 'characterized to standards (via exemption)' if is_control else 'awaiting characterization',
+            'detail': 'IgG does not require further characterization.' if is_control else 'No characterizations submitted for this antibody lot yet.'
         }]
 
     histone_mod_target = False
@@ -272,23 +272,19 @@ def lot_reviews(characterizations, targets, request):
         elif secondary['status'] == 'exempt from standards':
             exempted_secondary = True
             break
-        elif secondary['status'] == 'pending dcc review':
-            if not (compliant_secondary or exempted_secondary):
-                pending_secondary = True
-        elif secondary['status'] == 'not compliant':
-            if not (compliant_secondary or exempted_secondary):
-                not_compliant_secondary = True
-        elif secondary['status'] == 'in progress':
-            in_progress_secondary += 1
-        elif secondary['status'] == 'not reviwed':
-            not_reviewed_secondary += 1
         else:
-            pass
+            if not (compliant_secondary or exempted_secondary):
+                if secondary['status'] == 'pending dcc review':
+                    pending_secondary = True
+                if secondary['status'] == 'not compliant':
+                    not_compliant_secondary = True
+                if secondary['status'] == 'in progress':
+                    in_progress_secondary += 1
+                if secondary['status'] == 'not reviwed':
+                    not_reviewed_secondary += 1
 
     # Now check the primaries and update their status accordingly
     char_reviews = {}
-    # characterized_organisms = set()
-    # exempted_organisms = set()
 
     for primary in primary_chars:
         if primary['status'] in ['not reviewed', 'not submitted for review by lab']:
