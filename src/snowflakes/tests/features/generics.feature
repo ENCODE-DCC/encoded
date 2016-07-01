@@ -22,7 +22,9 @@ Feature: Generics
     Examples: Collections
         | type_name                     | link_text                             |
         | Award                         | A DATA COORDINATING CENTER FOR ENCODE |
-        | Snowflake                     | ENCFF000LSP                           |
+        | Snowflake                     | SNOFL000LSP                           |
+        | Snowball                      | SNOSS704RSS                           |
+        | Snowfort                      | SNOSS000AER                           |
         | Lab                           | Cherry                                |
 
 # must log in for users

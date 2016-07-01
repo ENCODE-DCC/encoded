@@ -20,7 +20,7 @@ def includeme(config):
     unique_key='lab:name',
     properties={
         'title': 'Labs',
-        'description': 'Listing of ENCODE DCC labs',
+        'description': 'Listing of Snowflake labs',
     })
 class Lab(Item):
     item_type = 'lab'

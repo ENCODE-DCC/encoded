@@ -40,7 +40,7 @@ def admin(testapp):
 @pytest.fixture
 def wrangler(testapp):
     item = {
-        # antibody_characterization reviewed_by has linkEnum
+        # some objects have linkEnums
         'uuid': '4c23ec32-c7c8-4ac0-affb-04befcc881d4',
         'first_name': 'Wrangler',
         'last_name': 'Admin',

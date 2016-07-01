@@ -105,18 +105,9 @@ String.prototype.uppercaseFirstChar = function(string) {
     return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
-// Order that antibody statuses should be displayed
-module.exports.statusOrder = [
-    'eligible for new data',
-    'not eligible for new data',
-    'pending dcc review',
-    'awaiting lab characterization',
-    'not pursued',
-    'not reviewed'
-];
 
 // TODO: move this to encode project specific file
-module.exports.productionHost = {'www.encodeproject.org':1, 'encodeproject.org':1, 'www.encodedcc.org':1};
+module.exports.productionHost = {'www.snovault.org':1, 'snovault.org':1, 'www.snovault.org':1};
 
 var encodeVersionMap = module.exports.encodeVersionMap = {
     "ENCODE2": "2",
@@ -136,28 +127,6 @@ module.exports.encodeVersion = function(context) {
 };
 
 module.exports.dbxref_prefix_map = {
-    "UniProtKB": "http://www.uniprot.org/uniprot/",
-    "HGNC": "http://www.genecards.org/cgi-bin/carddisp.pl?gene=",
-    // ENSEMBL link only works for human
-    "ENSEMBL": "http://www.ensembl.org/Homo_sapiens/Gene/Summary?g=",
-    "GeneID": "http://www.ncbi.nlm.nih.gov/gene/",
-    "GEO": "http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=",
-    "GEOSAMN": "http://www.ncbi.nlm.nih.gov/biosample/",
-    "IHEC": "http://www.ebi.ac.uk/vg/epirr/view/",
-    "Caltech": "http://jumpgate.caltech.edu/library/",
-    "Cellosaurus": "http://web.expasy.org/cellosaurus/",
-    "FlyBase": "http://flybase.org/cgi-bin/quicksearch_solr.cgi?caller=quicksearch&tab=basic_tab&data_class=FBgn&species=Dmel&search_type=all&context=",
-    "WormBase": "http://www.wormbase.org/species/c_elegans/gene/",
-    "MGI": "http://www.informatics.jax.org/marker/",
-    "MGI.D": "http://www.informatics.jax.org/external/festing/mouse/docs/",
-    "RefSeq": "http://www.ncbi.nlm.nih.gov/gene/?term=",
-    // UCSC links need assembly (&db=) and accession (&hgt_mdbVal1=) added to url
-    "UCSC-ENCODE-mm9": "http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=mm9&hgt_mdbVal1=",
-    "UCSC-ENCODE-hg19": "http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=hg19&hgt_mdbVal1=",
-    "UCSC-ENCODE-cv": "http://genome.cse.ucsc.edu/cgi-bin/hgEncodeVocab?ra=encode%2Fcv.ra&term=",
-    "UCSC-GB-mm9": "http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=mm9&g=",
-    "UCSC-GB-hg19": "http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=hg19&g=",
-    // Dataset, experiment, and document references
     "PMID": "http://www.ncbi.nlm.nih.gov/pubmed/?term=",
     "PMCID": "http://www.ncbi.nlm.nih.gov/pmc/articles/",
     "doi": "http://dx.doi.org/doi:"
