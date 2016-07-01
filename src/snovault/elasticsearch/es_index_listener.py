@@ -314,7 +314,7 @@ def main():
 
     # Loading app will have configured from config file. Reconfigure here:
     if args.verbose or args.dry_run:
-        logging.getLogger('snowvault').setLevel(logging.DEBUG)
+        logging.getLogger('snovault').setLevel(logging.DEBUG)
 
     return run(testapp, args.poll_interval, args.dry_run, args.path)
 
