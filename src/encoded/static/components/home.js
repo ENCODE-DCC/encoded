@@ -122,8 +122,10 @@ var HomepageChart = React.createClass({
 
             // Collect up the experiment assay_title counts to our local arrays to prepare for
             // the charts.
+            var totalDocCount = 0;
             assayFacet.terms.forEach(function(term, i) {
                 data[i] = term.doc_count;
+                totalDocCount += term.doc_count;
                 labels[i] = term.key;
                 colors[i] = colorList[i % colorList.length];
             });
@@ -147,8 +149,23 @@ var HomepageChart = React.createClass({
             // });
 
             // Pass the assay_title counts to the charting library to render it.
+
             var canvas = document.getElementById("myChart");
             var ctx = canvas.getContext("2d")
+
+
+            var width = 400,
+                height = 400;
+
+            var text = "Total: " + totalDocCount,
+                textX = Math.round((width - ctx.measureText(text).width) / 2),
+                textY = height / 2;
+
+            ctx.fillText(text, textX, textY);
+            ctx.save();
+
+
+
             this.myPieChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
@@ -161,8 +178,24 @@ var HomepageChart = React.createClass({
 
                 // tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>%",
                 // animateRotate: true
-                
+                // multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>",
                 options: {
+
+                    // tooltips: {
+                    //         enabled: true;
+                    // },
+
+                    tooltips: {
+                        enabled: true,
+                        mode: 'single',
+                        callbacks: {
+                            legend: function(tooltipItems, data) {
+                                return data.labels[tooltipItems.index];
+                                //return tooltipItems.yLabel + ' €';
+                            }
+                        }
+                    },
+
                     legend:{ // to create onClick events for legend, similar to onClick on doughnut sections
                         //legendItemClick: function(){}
                         onClick: (e, legendItem) => {
@@ -171,7 +204,10 @@ var HomepageChart = React.createClass({
                             this.context.navigate(this.props.data['@id'] + '&assay_title=' + labelTerm);
                             var blocker = 0;
                             
-                        },
+                        }
+                        
+                        // showTooltip([activeSegment]);
+                        // activeSegment.restore();
                     },
                     
                     onClick: (e) => {
