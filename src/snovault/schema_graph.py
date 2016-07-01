@@ -64,8 +64,6 @@ def digraph(types, exclude=None):
             continue
         if type_info.item_type.startswith('testing_'):
             continue
-        if type_info.item_type == 'antibody_approval':
-            continue
         out.extend(node(type_info.name, type_info.schema['properties']))
         for name, prop in type_info.schema['properties'].items():
             if name in exclude or prop.get('calculatedProperty'):

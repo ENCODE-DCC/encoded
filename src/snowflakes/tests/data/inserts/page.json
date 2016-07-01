@@ -1,7 +1,7 @@
 [
     {
         "name": "homepage",
-        "title": "The ENCODE Project",
+        "title": "Snowflakes... By SnoVault",
         "status": "released",
         "uuid": "27f9abd9-0081-4ade-8c82-95ec12b3a7dd",
         "layout": {
@@ -23,24 +23,24 @@
                 {
                     "@id": "#block1",
                     "@type": "richtextblock",
-                    "body": "<div class=\"project-info site-title\">\n    <h1>ENCODE: The Encyclopedia of DNA Elements</h1>\n</div>\n<div id=\"info-box\" class=\"project-info text-panel\">\n  <p>The ENCODE project dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>\n</div>"
+                    "body": "<div class=\"project-info site-title\">\n    <h1>SNOWFLAKES: Where all objects are special</h1>\n</div>\n<div id=\"info-box\" class=\"project-info text-panel\">\n  <p>Let it Snow, let it Snow, let it Snow dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>\n</div>"
                 },
                 {
                     "@id": "#block2",
                     "@type": "richtextblock",
-                    "body": "<h2>Transcriptome</h2>\n<p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>"
+                    "body": "<h2>The Enchanced Flakeome</h2>\n<p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>"
                 },
                 {
                     "@id": "#block3",
                     "@type": "richtextblock",
-                    "body": "<h2>Regulation</h2>\n<p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum.</p>"
+                    "body": "<h2>Snowforts!</h2>\n<p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum.</p>"
                 },
                 {
                     "@id": "#block4",
                     "@type": "teaserblock",
                     "image": "/images/8a91ae78-731a-4a92-ae7c-273214be408a/",
-                    "body": "<h2>Chromatin Structure</h2>",
-                    "href": "/about/chromatin-structure"
+                    "body": "<h2>Snowballs!!</h2>",
+                    "href": "/search/?type=Snowball"
                 }
             ]
         }

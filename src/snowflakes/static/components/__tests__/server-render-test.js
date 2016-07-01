@@ -14,7 +14,7 @@ describe("Server rendering", function () {
     var home = {
         "@id": "/",
         "@type": ["Portal"],
-        "portal_title": "Snowflakes",
+        "portal_title": "SNOWFLAKES",
         "title": "Home"
     };
 
