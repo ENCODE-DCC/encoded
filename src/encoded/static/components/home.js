@@ -22,7 +22,7 @@ var Home = module.exports.Home = React.createClass({
                             <div>
                                 <div className="col-sm-6">
                                     <div className="title">
-                                        Human
+                                        Project: Human
                                     </div>
                                     <center> <hr width="80%" position="static"></hr> </center>
                                     <TestLoaderHuman />
@@ -33,7 +33,7 @@ var Home = module.exports.Home = React.createClass({
                             <div>
                                 <div className="col-sm-6">
                                     <div className="title">
-                                        Mouse
+                                        Project: Mouse
                                     </div>
                                     <center> <hr width="80%" position="static"></hr> </center>
                                     <TestLoaderMouse />
@@ -44,7 +44,7 @@ var Home = module.exports.Home = React.createClass({
                             <div>
                                 <div className="col-sm-6">
                                     <div className="title">
-                                        Worm
+                                        Project: Worm
                                     </div>
                                     <center> <hr width="80%" position="static"></hr> </center>
                                     <TestLoaderWorm />
@@ -55,7 +55,7 @@ var Home = module.exports.Home = React.createClass({
                             <div>
                                 <div className="col-sm-6">
                                     <div className="title">
-                                        Fly
+                                        Project: Fly
                                     </div>
                                     <center> <hr width="80%" position="static"></hr> </center>
                                     <TestLoaderFly />
@@ -67,7 +67,7 @@ var Home = module.exports.Home = React.createClass({
 
                     <div className="col-sm-6">
                         <div className="title">
-                            Assay Title
+                            Biosample Type
                         </div>
                         <center> <hr width="80%"></hr> </center>
                         <HomepageChartLoader2 />
@@ -118,7 +118,7 @@ var HomepageChart = React.createClass({
 
             // Get the assay_title counts from the facets
             var facets = this.props.data.facets;
-            var assayFacet = facets.find(facet => facet.field === 'assay_title');
+            var assayFacet = facets.find(facet => facet.field === 'award.project');
 
             // Collect up the experiment assay_title counts to our local arrays to prepare for
             // the charts.
@@ -130,23 +130,6 @@ var HomepageChart = React.createClass({
                 colors[i] = colorList[i % colorList.length];
             });
 
-            // var data1 = [];
-            // var labels1 = [];
-            // var colors1 = [];
-            // var tempColors1 = ['0000FF'];
-
-            // // Get the assay_title counts from the facets
-            // var facets1 = this.props.data.facets;
-
-            // var assayFacet1 = facets1.find(facet => facet.field === 'assay_title');
-
-            // // Collect up the experiment assay_title counts to our local arrays to prepare for
-            // // the charts.
-            // assayFacet1.terms.forEach(function(term, i) {
-            //     data1[i] = term.doc_count;
-            //     labels1[i] = term.key;
-            //     colors1[i] = colorList[i % colorList.length];
-            // });
 
             // Pass the assay_title counts to the charting library to render it.
 
@@ -201,7 +184,7 @@ var HomepageChart = React.createClass({
                         onClick: (e, legendItem) => {
                             var activeLabel = legendItem;
                             var labelTerm = activeLabel.text;
-                            this.context.navigate(this.props.data['@id'] + '&assay_title=' + labelTerm);
+                            this.context.navigate(this.props.data['@id'] + '&award.project=' + labelTerm);
                             var blocker = 0;
                             
                         }
@@ -223,32 +206,9 @@ var HomepageChart = React.createClass({
                             // assayFacet.terms.forEach(function(term, i) {
                             //     idk.push(term.key);
                             // });
-                            this.context.navigate(this.props.data['@id'] + '&assay_title=' + term);
+                            this.context.navigate(this.props.data['@id'] + '&award.project=' + term);
                         }
                         
-
-                    //     //HumanSecondLoader.getPassedProps(term);
-
-
-
-
-
-
-
-
-
-
-
-
-
-                        //var hello = 0;
-                        //colors[0] = "#0000FF"; //changes initial color values
-                        // assayFacet.terms.forEach(function(x) {
-                        //     //data[i] = term.doc_count;
-                        //     //labels[i] = term.key;
-                        //     colors[x] = colorList2[x % colorList2.length];
-                        // });
-                        //this.myPieChart.data.backgroundColor[0] = 'bf2e25';
                         this.myPieChart.update();
                         //this.myPieChart.clear();
                         this.myPieChart.render();
@@ -318,7 +278,7 @@ var TestLoaderHuman = React.createClass({
 
     getDefaultProps: function () {
         // Default searchBase if none passed in
-        return {searchBase: '?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'};
+        return {searchBase: '?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'};
         //return {searchBase: '?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&organ_slims=bronchus'};
     },
 
@@ -329,7 +289,7 @@ var TestLoaderHuman = React.createClass({
     render: function() {
         return (
             <FetchedData>
-                <Param name="data" url={'/search/' + this.state.search} />
+                <Param name="data" url={'/matrix/' + this.state.search} />
                 <HomepageChart searchBase={this.state.search + '&'} />
             </FetchedData>
         );
@@ -343,7 +303,7 @@ var TestLoaderMouse = React.createClass({
 
     getDefaultProps: function () {
         // Default searchBase if none passed in
-        return {searchBase: '?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus'};
+        return {searchBase: '?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus'};
     },
 
     getInitialState: function() {
@@ -353,7 +313,7 @@ var TestLoaderMouse = React.createClass({
     render: function() {
         return (
             <FetchedData>
-                <Param name="data" url={'/search/' + this.state.search} />
+                <Param name="data" url={'/matrix/' + this.state.search} />
                 <HomepageChart searchBase={this.state.search + '&'} />
             </FetchedData>
         );
@@ -367,7 +327,7 @@ var TestLoaderWorm = React.createClass({
 
     getDefaultProps: function () {
         // Default searchBase if none passed in
-        return {searchBase: '?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Caenorhabditis+elegans'};
+        return {searchBase: '?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=Caenorhabditis+elegans'};
     },
 
     getInitialState: function() {
@@ -377,7 +337,7 @@ var TestLoaderWorm = React.createClass({
     render: function() {
         return (
             <FetchedData>
-                <Param name="data" url={'/search/' + this.state.search} />
+                <Param name="data" url={'/matrix/' + this.state.search} />
                 <HomepageChart searchBase={this.state.search + '&'} />
             </FetchedData>
         );
@@ -391,7 +351,7 @@ var TestLoaderFly = React.createClass({
 
     getDefaultProps: function () {
         // Default searchBase if none passed in
-        return {searchBase: '?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Drosophila+melanogaster'};
+        return {searchBase: '?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=Drosophila+melanogaster'};
     },
 
     getInitialState: function() {
@@ -401,7 +361,7 @@ var TestLoaderFly = React.createClass({
     render: function() {
         return (
             <FetchedData>
-                <Param name="data" url={'/search/' + this.state.search} />
+                <Param name="data" url={'/matrix/' + this.state.search} />
                 <HomepageChart searchBase={this.state.search + '&'} />
             </FetchedData>
         );
@@ -416,7 +376,7 @@ var HomepageChartLoader = React.createClass({
 
     getDefaultProps: function () {
         // Default searchBase if none passed in
-        return {searchBase: '?type=Experiment'};
+        return {searchBase: '?type=Experiment&status=released'};
     },
 
     getInitialState: function() {
@@ -426,7 +386,7 @@ var HomepageChartLoader = React.createClass({
     render: function() {
         return (
             <FetchedData>
-                <Param name="data" url={'/search/' + this.state.search} />
+                <Param name="data" url={'/matrix/' + this.state.search} />
                 <HomepageChart searchBase={this.state.search + '&'} />
             </FetchedData>
         );
@@ -461,7 +421,7 @@ var HomepageChart2 = React.createClass({
 
             // Get the assay_title counts from the facets
             var facets = this.props.data.facets;
-            var assayFacet = facets.find(facet => facet.field === 'assay_title');
+            var assayFacet = facets.find(facet => facet.field === 'replicates.library.biosample.biosample_type');
 
             // Collect up the experiment assay_title counts to our local arrays to prepare for
             // the charts.
@@ -475,7 +435,7 @@ var HomepageChart2 = React.createClass({
             var canvas = document.getElementById("myChart2");
             var ctx = canvas.getContext("2d");
             this.myPieChart = new Chart(ctx, {
-                type: 'pie',
+                type: 'doughnut',
                 data: {
                     labels: labels,
                     datasets: [{
@@ -488,7 +448,7 @@ var HomepageChart2 = React.createClass({
                         // React to clicks on pie sections
                         var activePoints = this.myPieChart.getElementAtEvent(e);
                         var term = assayFacet.terms[activePoints[0]._index].key;
-                        this.context.navigate(this.props.data['@id'] + '&assay_title=' + term);
+                        this.context.navigate(this.props.data['@id'] + '&replicates.library.biosample.biosample_type=' + term);
                     }
                 }
             });
@@ -509,7 +469,7 @@ var HomepageChartLoader2 = React.createClass({
     getDefaultProps: function () {
         // Default searchBase if none passed in
         //return {searchBase: '?type=Experiment&files.file_type=fastq&assay_title=ChIP-seq'};
-        return {searchBase: '?type=Experiment'};
+        return {searchBase: '?type=Experiment&status=released'};
     },
 
     getInitialState: function() {
@@ -519,7 +479,7 @@ var HomepageChartLoader2 = React.createClass({
     render: function() {
         return (
             <FetchedData>
-                <Param name="data" url={'/search/' + this.state.search} />
+                <Param name="data" url={'/matrix/' + this.state.search} />
                 <HomepageChart2 searchBase={this.state.search + '&'} />
             </FetchedData>
         );
