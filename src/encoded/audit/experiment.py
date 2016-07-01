@@ -2224,8 +2224,8 @@ def audit_experiment_biosample_term(value, system):
         'replicates.library.biosample.organism',
     ],
     condition=rfa('ENCODE3', 'modERN'))
-def audit_experiment_antibody_eligible(value, system):
-    '''Check that biosample in the experiment is eligible for new data for the given antibody.'''
+def audit_experiment_antibody_characterized(value, system):
+    '''Check that biosample in the experiment has been characterized for the given antibody.'''
 
     if value['status'] in ['deleted', 'proposed', 'preliminary']:
         return
@@ -2264,22 +2264,23 @@ def audit_experiment_antibody_eligible(value, system):
                 ab_targets_investigated_as.add(i)
 
         # We only want the audit raised if the organism in lot reviews matches that of the biosample
-        # and if is not eligible for new data. Otherwise, it doesn't apply and we shouldn't raise a stink
+        # and if has not been characterized to standards. Otherwise, it doesn't apply and we shouldn't
+        # raise a stink
 
         if 'histone modification' in ab_targets_investigated_as:
             for lot_review in antibody['lot_reviews']:
                 if (lot_review['status'] == 'awaiting lab characterization'):
                     for lot_organism in lot_review['organisms']:
                         if organism == lot_organism:
-                            detail = '{} is not eligible for {}: {}'.format(
+                            detail = '{} has not been characterized to the standard for {}: {}'.format(
                                 antibody['@id'], organism, lot_review['detail'])
-                            yield AuditFailure('not eligible antibody', detail, level='NOT_COMPLIANT')
-                if lot_review['status'] == 'eligible for new data (via exemption)':
+                            yield AuditFailure('not characterized antibody', detail, level='NOT_COMPLIANT')
+                if lot_review['status'] == 'characterized to standards (via exemption)':
                     for lot_organism in lot_review['organisms']:
                         if organism == lot_organism:
-                            detail = '{} is eligible via exemption for {}'.format(antibody['@id'],
-                                                                                  organism)
-                            yield AuditFailure('antibody eligible via exemption',
+                            detail = '{} has been characterized to the standard (via exemption) for' + \
+                                ' {}'.format(antibody['@id'], organism)
+                            yield AuditFailure('antibody characterized via exemption',
                                                detail, level='WARNING')
 
         else:
@@ -2289,24 +2290,23 @@ def audit_experiment_antibody_eligible(value, system):
             eligible_biosamples = set()
             exempt_biosamples = set()
             for lot_review in antibody['lot_reviews']:
-                if lot_review['status'] in ['eligible for new data',
-                                            'eligible for new data (via exemption)']:
+                if lot_review['status'] in ['characterized to standards',
+                                            'characterized to standards (via exemption)']:
                     for lot_organism in lot_review['organisms']:
                         eligible_biosample = (lot_review['biosample_term_id'], lot_organism)
-                        if lot_review['status'] == 'eligible for new data (via exemption)':
+                        if lot_review['status'] == 'characterized to standards (via exemption)':
                             exempt_biosamples.add(eligible_biosample)
                         eligible_biosamples.add(eligible_biosample)
 
             if experiment_biosample in exempt_biosamples:
-                detail = '{} is eligible via exemption for {} in {}'.format(antibody['@id'],
-                                                                            biosample_term_name,
-                                                                            organism)
-                yield AuditFailure('antibody eligible via exemption', detail, level='WARNING')
+                detail = '{} has been characterized to the standard (with exemption) ' + \
+                    'for {} in {}'.format(antibody['@id'], biosample_term_name, organism)
+                yield AuditFailure('antibody characterized via exemption', detail, level='WARNING')
 
             if experiment_biosample not in eligible_biosamples:
-                detail = '{} is not eligible for {} in {}: {}'.format(
+                detail = '{} has not been characterized to the standard for {} in {}: {}'.format(
                     antibody['@id'], biosample_term_name, organism, lot_review['detail'])
-                yield AuditFailure('not eligible antibody', detail, level='NOT_COMPLIANT')
+                yield AuditFailure('not characterized antibody', detail, level='NOT_COMPLIANT')
 
 
 @audit_checker(
