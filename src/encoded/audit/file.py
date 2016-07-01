@@ -37,22 +37,24 @@ def audit_file_bam_derived_from(value, system):
        'derived_from' in value and len(value['derived_from']) == 0:
         return
     derived_from_files = value.get('derived_from')
-    fastq_counter = 0
+    raw_data_counter = 0
     for f in derived_from_files:
         if f['status'] not in ['deleted', 'replaced', 'revoked'] and \
-           f['file_format'] == 'fastq':
-                fastq_counter += 1
+           (f['file_format'] == 'fastq' or (f['file_format'] == 'fasta' and
+                                            f['output_type'] == 'reads' and
+                                            f['output_category'] == 'raw data')):
+                raw_data_counter += 1
                 if f['dataset'] != value['dataset']:
                     detail = 'Processed alignments file {} '.format(value['@id']) + \
                              'that belongs to experiment {} '.format(value['dataset']) + \
                              'is derived from file {} '.format(f['@id']) + \
                              'that belongs to different experiment {}.'.format(f['dataset'])
-                    yield AuditFailure('mismatched derived_from',
+                    yield AuditFailure('inconsistent derived_from',
                                        detail, level='DCC_ACTION')
-    if fastq_counter == 0:
+    if raw_data_counter == 0:
         detail = 'Processed alignments file {} '.format(value['@id']) + \
                  'that belongs to experiment {} '.format(value['dataset']) + \
-                 'does not specify which fastq files it was derived from.'
+                 'does not specify which raw data files it was derived from.'
         yield AuditFailure('missing derived_from',
                            detail, level='DCC_ACTION')
 
