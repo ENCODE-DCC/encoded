@@ -234,26 +234,21 @@ def check_file(config, session, url, job):
     else:
         if item['file_format'] == 'bed':
             try:
-                unzipped_original_bed_path = 'original.bed'
+                unzipped_original_bed_path = local_path[-18:-7] + '_original.bed'
                 output = subprocess.check_output(
-                    'set -o pipefail; gunzip --stdout {} > {};'.format(local_path,
-                                                                       unzipped_original_bed_path),
+                    'gunzip --stdout {} > {}'.format(local_path,
+                                                     unzipped_original_bed_path),
+                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                unzipped_modified_bed_path = local_path[-18:-7] + '_modified.bed'
+                subprocess.check_output(
+                    'grep -v \'^#\' {} > {}'.format(unzipped_original_bed_path,
+                                                    unzipped_modified_bed_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
 
-                unzipped_modified_bed_path = 'modified.bed'
-                subprocess.check_output(
-                    'set -o pipefail; grep -v \'^#\' {} > {};'.format(unzipped_original_bed_path,
-                                                                      unzipped_modified_bed_path),
-                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
                 output = subprocess.check_output(
-                    'set -o pipefail; md5sum {};'.format(unzipped_original_bed_path),
+                    'set -o pipefail; md5sum {}'.format(unzipped_original_bed_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
-                result['content_md5sum'] = output[:32].decode(errors='replace')
-                try:
-                    int(result['content_md5sum'], 16)
-                except ValueError:
-                    errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
-                os.remove(unzipped_original_bed_path)
+
             except subprocess.CalledProcessError as e:
                 errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
             else:
@@ -262,6 +257,25 @@ def check_file(config, session, url, job):
                     int(result['content_md5sum'], 16)
                 except ValueError:
                     errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
+                else:
+                    query = '/search/?type=File&content_md5sum=' + result['content_md5sum']
+                    r = session.get(urljoin(url, query))
+                    r_graph = r.json().get('@graph')
+                    if len(r_graph) > 0:
+                        conflicts = []
+                        for entry in r_graph:
+                            conflicts.append(
+                                'checked %s is conflicting with content_md5sum of %s' % (
+                                    result['content_md5sum'],
+                                    entry['accession']))
+                        errors['content_md5sum'] = str(conflicts)
+
+                if os.path.exists(unzipped_original_bed_path):
+                    try:
+                        os.remove(unzipped_original_bed_path)
+                    except OSError as e:
+                        errors['file_remove_error'] = 'OS could not remove the file ' + \
+                                                      unzipped_original_bed_path
         else:
             # May want to replace this with something like:
             # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
@@ -273,22 +287,24 @@ def check_file(config, session, url, job):
             except subprocess.CalledProcessError as e:
                 errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
             else:
+
                 result['content_md5sum'] = output[:32].decode(errors='replace')
                 try:
                     int(result['content_md5sum'], 16)
                 except ValueError:
                     errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
-
-        query = '/search/?type=File&content_md5sum=' + result['content_md5sum']
-        r = session.get(urljoin(url, query))
-        r_graph = r.json().get('@graph')
-        if len(r_graph) > 0:
-            conflicts = []
-            for entry in r_graph:
-                conflicts.append('checked %s is conflicting with content_md5sum of %s' % (
-                                 result['content_md5sum'],
-                                 entry['accession']))
-            errors['content_md5sum'] = str(conflicts)
+                else:
+                    query = '/search/?type=File&content_md5sum=' + result['content_md5sum']
+                    r = session.get(urljoin(url, query))
+                    r_graph = r.json().get('@graph')
+                    if len(r_graph) > 0:
+                        conflicts = []
+                        for entry in r_graph:
+                            conflicts.append(
+                                'checked %s is conflicting with content_md5sum of %s' % (
+                                    result['content_md5sum'],
+                                    entry['accession']))
+                        errors['content_md5sum'] = str(conflicts)
     if not errors:
         if item['file_format'] == 'bed':
             check_format(config['encValData'], job, unzipped_modified_bed_path)
@@ -296,8 +312,12 @@ def check_file(config, session, url, job):
             check_format(config['encValData'], job, local_path)
 
     if item['file_format'] == 'bed':
-        os.remove(unzipped_modified_bed_path)
-
+        if os.path.exists(unzipped_modified_bed_path):
+            try:
+                os.remove(unzipped_modified_bed_path)
+            except OSError as e:
+                errors['file_remove_error'] = 'OS could not remove the file ' + \
+                                              unzipped_modified_bed_path
     if item['status'] != 'uploading':
         errors['status_check'] = \
             "status '{}' is not 'uploading'".format(item['status'])
