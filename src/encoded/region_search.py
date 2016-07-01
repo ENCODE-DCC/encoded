@@ -349,7 +349,7 @@ def region_search(context, request):
     return result
 
 
-@view_config(route_name='suggest', request_method='GET', permission='search')
+@view_config(route_name='suggest', request_method='GET', permission='search', http_cache=0)
 def suggest(context, request):
     text = ''
     requested_genome = ''
