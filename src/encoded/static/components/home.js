@@ -148,7 +148,6 @@ var HomepageChart = React.createClass({
             // ctx.save();
 
 
-
             this.myPieChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
