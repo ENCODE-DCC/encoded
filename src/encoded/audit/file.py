@@ -889,7 +889,7 @@ def check_control_read_depth_standards(value, read_depth, target_name, is_contro
                 'usable fragments. According to ENCODE3 standards in control ' + \
                 'experiemnts for ChIP-seq assays targeting {} '.format(control_to_target) + \
                 'investigated as broad histone mark the recommended ' + \
-                'usable fragments quantity is > 45 million. ' + \
+                'number of usable fragments is > 45 million. ' + \
                 'According to ENCODE2 standards > 20 million ' + \
                 'usable fragments was acceptable.'
             if read_depth >= marks['narrow'] and read_depth < marks['broad']:
@@ -903,7 +903,7 @@ def check_control_read_depth_standards(value, read_depth, target_name, is_contro
                 'usable fragments. According to ENCODE3 standards in control ' + \
                 'experiemnts for ChIP-seq assays targeting {} '.format(control_to_target) + \
                 'investigated as narrow histone mark the recommended ' + \
-                'usable fragments quantity is > 20 million. ' + \
+                'number of usable fragments is > 20 million. ' + \
                 'According to ENCODE2 standards > 10 million ' + \
                 'usable fragments was acceptable.'
             if read_depth >= 10000000 and read_depth < marks['narrow']:
@@ -917,7 +917,7 @@ def check_control_read_depth_standards(value, read_depth, target_name, is_contro
                 'usable fragments. According to ENCODE3 standards in control ' + \
                 'experiemnts for ChIP-seq assays targeting {} '.format(control_to_target) + \
                 'investigated as transcription factor the recommended ' + \
-                'usable fragments quantity is > 20 million. ' + \
+                'number of usable fragments is > 20 million. ' + \
                 'According to ENCODE2 standards > 10 million ' + \
                 'usable fragments was acceptable.'
             if read_depth >= 10000000 and read_depth < marks['narrow']:

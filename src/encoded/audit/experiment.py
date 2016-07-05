@@ -1065,7 +1065,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                                                                              read_depth) + \
                          'mapped reads. According to ENCODE3 standards for ' + \
                          'ChIP-seq experiments targeting H3K9me3 histone mark ' + \
-                         'the recommended mapped reads quantity is > ' + \
+                         'the recommended number of mapped reads is > ' + \
                          '45 million, but > 40 million is acceptable.'
                 yield AuditFailure('insufficient read depth',
                                    detail, level='NOT_COMPLIANT')
@@ -1076,7 +1076,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                 'usable fragments. According to ENCODE3 standards for ChIP-seq ' + \
                 'experiments targeting {} '.format(target_name) + \
                 'investigated as broad histone mark ' + \
-                'the recommended usable fragments quantity ' + \
+                'the recommended number of usable fragments ' + \
                 'is > 45 million, but > 40 million is acceptable. ' + \
                 'According to ENCODE2 standards > 20 million usable ' + \
                 'fragments was acceptable.'
@@ -1094,7 +1094,7 @@ def check_file_chip_seq_read_depth(file_to_check,
             'According to ENCODE3 standards for ChIP-seq ' + \
             'experiments targeting {} '.format(target_name) + \
             'investigated as narrow histone mark ' + \
-            'the recommended usable fragments quantity ' + \
+            'the recommended number of usable fragments ' + \
             'is > 20 million, but > 10 million is acceptable. ' + \
             'According to ENCODE2 standards > 10 million usable ' + \
             'fragments was acceptable.'
@@ -1111,7 +1111,7 @@ def check_file_chip_seq_read_depth(file_to_check,
             'According to ENCODE3 standards for ChIP-seq ' + \
             'experiments targeting {} '.format(target_name) + \
             'investigated as transcription factor ' + \
-            'the recommended usable fragments quantity ' + \
+            'the recommended number of usable fragments ' + \
             'is > 20 million, but > 10 million is acceptable. ' + \
             'According to ENCODE2 standards > 10 million usable ' + \
             'fragments was acceptable.'
