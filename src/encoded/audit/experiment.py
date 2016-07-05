@@ -857,7 +857,7 @@ def check_file_chip_seq_library_complexity(alignment_file):
     if ('quality_metrics' not in alignment_file) or (alignment_file.get('quality_metrics') == []):
         return
 
-    nrf_detail = 'NRF (Non Redundant Fraction) equal to the result of the ' + \
+    nrf_detail = 'NRF (Non Redundant Fraction) is equal to the result of the ' + \
                  'division of the number of reads after duplicates removal by ' + \
                  'the total number of reads. ' + \
                  'An NRF value in the range 0 - 0.5 is poor complexity, ' + \
@@ -865,7 +865,7 @@ def check_file_chip_seq_library_complexity(alignment_file):
                  'and > 0.8 high complexity. NRF value > 0.8 is recommended, ' + \
                  'but > 0.5 is acceptable. '
 
-    pbc1_detail = 'PBC1 (PCR Bottlenecking Coefficient 1) equal to the result of the division of ' + \
+    pbc1_detail = 'PBC1 (PCR Bottlenecking Coefficient 1) is equal to the result of the division of ' + \
                   'the number of genomic locations where exactly one read maps uniquely by ' + \
                   'the number of distinct genomic locations to which some read maps uniquely. ' + \
                   'A PBC1 value in the range 0 - 0.5 is severe bottlenecking, 0.5 - 0.8 ' + \
@@ -873,7 +873,7 @@ def check_file_chip_seq_library_complexity(alignment_file):
                   'is no bottlenecking. PBC1 value > 0.9 is recommended, but > 0.8 is ' + \
                   'acceptable. '
 
-    pbc2_detail = 'PBC2 (PCR Bottlenecking Coefficient 2) equal to the result of the division of ' + \
+    pbc2_detail = 'PBC2 (PCR Bottlenecking Coefficient 2) is equal to the result of the division of ' + \
                   'the number of genomic locations where only one read maps uniquely by ' + \
                   'the number of genomic locations where 2 reads map uniquely. ' + \
                   'A PBC2 value in the range 0 - 1 is severe bottlenecking, 1 - 3 ' + \
