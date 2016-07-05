@@ -29,6 +29,26 @@
 }
 
 
+.classic-svg {
+    position: relative;
+    height: 400px;
+    //background-image: url(../img/testTake2.svg);
+    //background-size: auto 100%;
+    //background-color: red;
+    //background-repeat: no-repeat;
+    //background-position: center;
+}
+
+.testImage {
+    position: relative;
+    height: 400px;
+    background-image: url(../img/classic-image.jpg);
+    background-size: auto 100%;
+    background-color: white;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
 .col-sm-12 {
     height:50%;
     width:50%;
