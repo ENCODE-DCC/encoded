@@ -43,19 +43,20 @@ def audit_file_bam_derived_from(value, system):
                                             f['output_category'] == 'raw data')):
                 raw_data_counter += 1
                 if f['dataset'] != value['dataset']:
-                    detail = 'derived_from is a list of files that were used to create a given file, ' + \
-                             'for example fastq file(s) will appear in derived_from list of an alignments file. ' + \
+                    detail = 'derived_from is a list of files that were used to create a given file; ' + \
+                             'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
                              'Alignments file {} '.format(value['@id']) + \
                              'from experiment {} '.format(value['dataset']) + \
-                             'specifies in derived_from list a file {} '.format(f['@id']) + \
-                             'from a different experiment {} .'.format(f['dataset'])
+                             'specifies a file {} '.format(f['@id']) + \
+                             'from a different experiment {} '.format(f['dataset']) + \
+                             'in its derived_from list.'
                     yield AuditFailure('inconsistent derived_from',
                                        detail, level='DCC_ACTION')
         if raw_data_counter == 0:
-            detail = 'derived_from is a list of files that were used to create a given file, ' + \
-                     'for example fastq file(s) will appear in derived_from list of an alignments file. ' + \
+            detail = 'derived_from is a list of files that were used to create a given file; ' + \
+                     'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
                      'Alignments file {} '.format(value['@id']) + \
-                     'is missing the requisite file specification in derived_from list.'
+                     'is missing the requisite file specification in its derived_from list.'
         yield AuditFailure('missing derived_from',
                            detail, level='DCC_ACTION')
 
@@ -73,10 +74,10 @@ def audit_file_processed_empty_derived_from(value, system):
             return
     if 'derived_from' not in value or \
        'derived_from' in value and len(value['derived_from']) == 0:
-            detail = 'derived_from is a list of files that were used to create a given file, ' + \
-                     'for example fastq file(s) will appear in derived_from list of an alignments file. ' + \
+            detail = 'derived_from is a list of files that were used to create a given file; ' + \
+                     'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
                      'Processed file {} '.format(value['@id']) + \
-                     'is missing the requisite file specification in derived_from list.'
+                     'is missing the requisite file specification in its derived_from list.'
             yield AuditFailure('missing derived_from',
                                detail, level='DCC_ACTION')
             return
@@ -311,13 +312,12 @@ def audit_file_controlled_by(value, system):
         value['controlled_by'] = []
 
     if value['controlled_by'] == []:
-        detail = 'controlled_by is a list of files that are used as controls for a given file. ' + \
-                 'Fastq files generated in {} assay require '.format(
+        detail = 'controlled_by is a list of files that are used as controls for a given experimental file. ' + \
+                 'Fastq files generated in a {} assay require the '.format(
                      value['dataset']['assay_term_name']) + \
-                 'specification of control fastq file(s) in controlled_by list. ' + \
-                 'Fastq file {} generated in {} assay '.format(
-                     value['@id'],
-                     value['dataset']['assay_term_name']) + \
+                 'specification of control fastq file(s) in the controlled_by list. ' + \
+                 'Fastq file {} '.format(
+                     value['@id']) + \
                  'is missing the requisite file specification in controlled_by list.'
         yield AuditFailure('missing controlled_by', detail, level='NOT_COMPLIANT')
         return
