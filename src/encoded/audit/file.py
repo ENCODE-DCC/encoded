@@ -208,7 +208,7 @@ def audit_file_replicate_match(value, system):
                  'is associated with replicate [{},{}] '.format(
                      value['replicate']['biological_replicate_number'],
                      value['replicate']['technical_replicate_number']) + \
-                 '{}, but that replicate is associated with a different '.format(
+                 '{} , but that replicate is associated with a different '.format(
                      value['replicate']['@id']) + \
                  'experiment {} .'.format(value['replicate']['experiment']['@id'])
         raise AuditFailure('inconsistent replicate', detail, level='ERROR')
