@@ -538,12 +538,13 @@ def check_experiemnt_rna_seq_encode3_standards(value,
         for failure in check_file_platform(f, ['OBI:0002024', 'OBI:0000696']):
             yield failure
 
-    pipeline_title = scanFilesForPipelineTitle_not_chipseq(alignment_files,
-                                                           ['GRCh38', 'mm10'],
-                                                           ['RNA-seq of long RNAs (paired-end, stranded)',
-                                                            'RNA-seq of long RNAs (single-end, unstranded)',
-                                                            'Small RNA-seq single-end pipeline',
-                                                            'RAMPAGE (paired-end, stranded)'])
+    pipeline_title = scanFilesForPipelineTitle_not_chipseq(
+        alignment_files,
+        ['GRCh38', 'mm10'],
+        ['RNA-seq of long RNAs (paired-end, stranded)',
+         'RNA-seq of long RNAs (single-end, unstranded)',
+         'Small RNA-seq single-end pipeline',
+         'RAMPAGE (paired-end, stranded)'])
     if pipeline_title is False:
         return
 
