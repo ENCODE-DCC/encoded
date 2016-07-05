@@ -1966,7 +1966,7 @@ def audit_experiment_target(value, system):
     for rep in value['replicates']:
         if 'antibody' not in rep:
             detail = '{} assays require an antibody specification. '.format(value['assay_term_name']) + \
-                     'In replicate [{},{}] {}, the antibody needs to be specified.'.format(
+                     'In replicate [{},{}] {} , the antibody needs to be specified.'.format(
                 rep['biological_replicate_number'],
                 rep['technical_replicate_number'],
                 rep['@id']
