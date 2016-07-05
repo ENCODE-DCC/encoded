@@ -646,10 +646,10 @@ def check_idr(metrics, rescue, self_consistency, pipeline):
                 detail = 'Replicate concordance in ChIP-seq expriments is measured by ' + \
                          'calculating IDR values (Irreproducible Discovery Rate). ' + \
                          'ENCODE processed IDR thresholded peaks files {} '.format(file_names_string) + \
-                         'have rescue ratio of {0:.2f} and a '.format(rescue_r) + \
+                         'have a rescue ratio of {0:.2f} and a '.format(rescue_r) + \
                          'self consistency ratio of {0:.2f}. '.format(self_r) + \
                          'According to ENCODE3 standards, having both rescue ratio ' + \
-                         'and self consistency ration values < 2 is recommended, but ' + \
+                         'and self consistency ratio values < 2 is recommended, but ' + \
                          'having only one of the ratio values < 2 is acceptable.'
                 yield AuditFailure('insufficient replicate concordance', detail,
                                    level='NOT_COMPLIANT')
@@ -662,10 +662,10 @@ def check_idr(metrics, rescue, self_consistency, pipeline):
                     detail = 'Replicate concordance in ChIP-seq expriments is measured by ' + \
                              'calculating IDR values (Irreproducible Discovery Rate). ' + \
                              'ENCODE processed IDR thresholded peaks files {} '.format(file_names_string) + \
-                             'have rescue ratio of {0:.2f} and a '.format(rescue_r) + \
+                             'have a rescue ratio of {0:.2f} and a '.format(rescue_r) + \
                              'self consistency ratio of {0:.2f}. '.format(self_r) + \
                              'According to ENCODE3 standards, having both rescue ratio ' + \
-                             'and self consistency ration values < 2 is recommended, but ' + \
+                             'and self consistency ratio values < 2 is recommended, but ' + \
                              'having only one of the ratio values < 2 is acceptable.'
                     yield AuditFailure('borderline replicate concordance', detail,
                                        level='WARNING')
