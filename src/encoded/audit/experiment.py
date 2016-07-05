@@ -2298,7 +2298,7 @@ def audit_experiment_antibody_eligible(value, system):
                 if (lot_review['status'] == 'awaiting lab characterization'):
                     for lot_organism in lot_review['organisms']:
                         if organism == lot_organism:
-                            detail = 'Antibody {} is not eligible for {} : {}'.format(
+                            detail = 'Antibody {} is not eligible for {} . {} .'.format(
                                 antibody['@id'],
                                 organism,
                                 lot_review['detail'])
@@ -2337,7 +2337,7 @@ def audit_experiment_antibody_eligible(value, system):
                 yield AuditFailure('antibody eligible via exemption', detail, level='WARNING')
 
             if experiment_biosample not in eligible_biosamples:
-                detail = 'Antibody {} is not eligible for {} in {} : {}'.format(
+                detail = 'Antibody {} is not eligible for {} in {} . {} .'.format(
                     antibody['@id'], biosample_term_name, organism, lot_review['detail'])
                 yield AuditFailure('not eligible antibody', detail, level='NOT_COMPLIANT')
 
