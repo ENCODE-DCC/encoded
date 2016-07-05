@@ -35,11 +35,13 @@ def audit_file_bam_derived_from(value, system):
        'derived_from' in value and len(value['derived_from']) == 0:
         return
     derived_from_files = value.get('derived_from')
-    fastq_counter = 0
+    raw_data_counter = 0
     for f in derived_from_files:
         if f['status'] not in ['deleted', 'replaced', 'revoked'] and \
-           f['file_format'] == 'fastq':
-                fastq_counter += 1
+           (f['file_format'] == 'fastq' or (f['file_format'] == 'fasta' and
+                                            f['output_type'] == 'reads' and
+                                            f['output_category'] == 'raw data')):
+                raw_data_counter += 1
                 if f['dataset'] != value['dataset']:
                     detail = 'derived_from is a list of files that were used to create a given file, ' + \
                              'for example fastq file(s) will appear in derived_from list of an alignments file. ' + \
@@ -49,11 +51,11 @@ def audit_file_bam_derived_from(value, system):
                              'from a different experiment {} .'.format(f['dataset'])
                     yield AuditFailure('inconsistent derived_from',
                                        detail, level='DCC_ACTION')
-    if fastq_counter == 0:
-        detail = 'derived_from is a list of files that were used to create a given file, ' + \
-                 'for example fastq file(s) will appear in derived_from list of an alignments file. ' + \
-                 'Alignments file {} '.format(value['@id']) + \
-                 'is missing the requisite file specification in derived_from list.'
+        if raw_data_counter == 0:
+            detail = 'derived_from is a list of files that were used to create a given file, ' + \
+                     'for example fastq file(s) will appear in derived_from list of an alignments file. ' + \
+                     'Alignments file {} '.format(value['@id']) + \
+                     'is missing the requisite file specification in derived_from list.'
         yield AuditFailure('missing derived_from',
                            detail, level='DCC_ACTION')
 
@@ -96,39 +98,51 @@ def audit_file_derived_from_revoked(value, system):
                 return
 
 
-@audit_checker('file', frame=['derived_from'])
+@audit_checker('file', frame=['dataset', 'derived_from'])
 def audit_file_assembly(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
-    if value['output_category'] in ['raw data', 'reference']:
-        if value['file_format'] in ['fastq', 'csfasta', 'csqual'] and \
+    if value['output_category'] in ['raw data']:
+        if value['file_format'] in ['fastq', 'csfasta', 'csqual', 'fasta'] and \
            'assembly' in value:
             detail = 'Raw data file {} '.format(value['@id']) + \
                      'has improperly specified assembly value.'
-            yield AuditFailure('erroneous property',
+            yield AuditFailure('unexpected property',
                                detail, level='DCC_ACTION')
         return
-    if 'assembly' not in value:
-        detail = 'Processed file {} '.format(value['@id']) + \
-                 'does not have assembly specified.'
-        yield AuditFailure('missing assembly',
-                           detail, level='DCC_ACTION')
-        return
-    if 'derived_from' not in value:
-        return
-    for f in value['derived_from']:
-        if 'assembly' in f:
-            if f['assembly'] != value['assembly']:
-                detail = 'Processed file {} '.format(value['@id']) + \
-                         'assembly {} '.format(value['assembly']) + \
-                         'does not match assembly {} of the file {} '.format(
-                         f['assembly'],
-                         f['@id']) + \
-                    'it was derived from.'
-                yield AuditFailure('mismatched assembly',
+    else:  # not row data file
+        # special treatment of RNA-Bind-n-Seq
+        if 'assay_term_id' in value['dataset'] and \
+           value['dataset']['assay_term_id'] == 'OBI:0002044':
+            if 'assembly' in value:
+                detail = 'RNA Bind-n-Seq file {} '.format(value['@id']) + \
+                         'has improperly specified assembly value.'
+                yield AuditFailure('unexpected property',
                                    detail, level='DCC_ACTION')
                 return
+        #  any other asssay processed file
+        else:
+            if 'assembly' not in value:
+                detail = 'Processed file {} '.format(value['@id']) + \
+                         'does not have assembly specified.'
+                yield AuditFailure('missing assembly',
+                                   detail, level='DCC_ACTION')
+                return
+            if 'derived_from' not in value:
+                return
+            for f in value['derived_from']:
+                if 'assembly' in f:
+                    if f['assembly'] != value['assembly']:
+                        detail = 'Processed file {} '.format(value['@id']) + \
+                                 'assembly {} '.format(value['assembly']) + \
+                                 'does not match assembly {} of the file {} '.format(
+                                 f['assembly'],
+                                 f['@id']) + \
+                            'it was derived from.'
+                        yield AuditFailure('inconsistent assembly',
+                                           detail, level='DCC_ACTION')
+                        return
 
 
 @audit_checker('file', frame=['replicate', 'replicate.experiment',
