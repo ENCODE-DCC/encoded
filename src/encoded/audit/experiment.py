@@ -2269,7 +2269,7 @@ def audit_experiment_antibody_characterized(value, system):
 
         if 'histone modification' in ab_targets_investigated_as:
             for lot_review in antibody['lot_reviews']:
-                if (lot_review['status'] == 'awaiting lab characterization'):
+                if (lot_review['status'] == 'awaiting characterization'):
                     for lot_organism in lot_review['organisms']:
                         if organism == lot_organism:
                             detail = '{} has not been characterized to the standard for {}: {}'.format(
