@@ -79,7 +79,7 @@
         "_test": "superseded annotation",
         "accession": "ENCSR937GWB",
         "award": "U54HG007004",
-        "annotation_type": "encyclopedia",
+        "annotation_type": "other",
         "description": "ENCODE Annotations v2",
         "encyclopedia_version": "2",
         "targets": ["/targets/H3K4me3-human"],
