@@ -29,24 +29,30 @@
 }
 
 
+.overall-classic {
+    position: relative;
+}
+
 .classic-svg {
     position: relative;
-    height: 400px;
-    //background-image: url(../img/testTake2.svg);
-    //background-size: auto 100%;
-    //background-color: red;
-    //background-repeat: no-repeat;
-    //background-position: center;
+    visibility: visible;
+    max-width: 100%;
+    top: 0;
+    left: 0;
+    fill: blue;
+    fill-opacity: 0.05;
+}
+
+.box:hover {
+    fill-opacity: 0.1;
 }
 
 .testImage {
-    position: relative;
-    height: 400px;
-    background-image: url(../img/classic-image.jpg);
-    background-size: auto 100%;
-    background-color: white;
-    background-repeat: no-repeat;
-    background-position: center;
+    position: absolute;
+    height: auto;
+    max-width: 100%;
+    top: 0;
+    left: 0;
 }
 
 .col-sm-12 {
