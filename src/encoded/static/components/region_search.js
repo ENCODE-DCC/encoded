@@ -119,10 +119,13 @@ var AdvSearch = React.createClass({
         if (this.newSearchTerm !== this.state.searchTerm) {
             this.setState({searchTerm: this.newSearchTerm});
         }
-        if (this.coordinates !== this.props.context.coordinates && this.props.context.coordinates !== null) {
+        if (this.coordinates !== this.props.context.coordinates && this.props.context.coordinates !== undefined) {
             this.coordinates = this.props.context.coordinates;
             var inputNode = this.refs.annotation.getDOMNode();
-            inputNode.value = inputNode.value.concat(' ', this.coordinates);
+            console.log(inputNode.value.includes(this.coordinates))
+            if (!inputNode.value.includes(this.coordinates)) {
+                inputNode.value = inputNode.value.concat(' ', this.coordinates);
+            }
         }
     },
 
