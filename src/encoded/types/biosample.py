@@ -572,10 +572,9 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
 
         summary_phrase = ''
 
-        if 'organism_name' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['organism_name']
-
-        if 'strain_name' in dict_of_phrases:
+        if 'genotype' in dict_of_phrases:
+            summary_phrase += ' (' + dict_of_phrases['genotype'] + ')'
+        elif 'strain_name' in dict_of_phrases:
             summary_phrase += ' (' + dict_of_phrases['strain_name'] + ')'
 
         term_name = ''
