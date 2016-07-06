@@ -57,8 +57,8 @@ def audit_file_bam_derived_from(value, system):
                      'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
                      'Alignments file {} '.format(value['@id']) + \
                      'is missing the requisite file specification in its derived_from list.'
-        yield AuditFailure('missing derived_from',
-                           detail, level='DCC_ACTION')
+            yield AuditFailure('missing derived_from',
+                               detail, level='DCC_ACTION')
 
 
 @audit_checker('File', frame=['object'],
