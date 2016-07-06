@@ -353,7 +353,7 @@ def suggest(context, request):
     text = ''
     requested_genome = ''
     result = {
-        '@id': '/suggest/?' + urlencode({'genome': requested_genome, 'q': text}),
+        '@id': '/suggest/?' + urlencode({'genome': requested_genome, 'q': text}, ['q', 'genome']),
         '@type': ['suggest'],
         'title': 'Suggest',
         '@graph': [],
@@ -379,7 +379,7 @@ def suggest(context, request):
     except:
         return {}
     else:
-        result['@id'] = '/suggest/?' + urlencode({'genome': requested_genome, 'q': text})
+        result['@id'] = '/suggest/?' + urlencode({'genome': requested_genome, 'q': text}, ['q','genome'])
         result['@graph'] = []
         for item in results['suggester'][0]['options']:
             if _GENOME_TO_SPECIES[requested_genome].replace('_', ' ') == item['payload']['species']:
