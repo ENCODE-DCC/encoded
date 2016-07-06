@@ -16,6 +16,25 @@ var Home = module.exports.Home = React.createClass({
                         ENCYCLOPEDIA of DNA ELEMENTS
                     </div>
                 </div>
+                <div className="overall-classic">
+
+                    <img src="static/img/classic-image.jpg" className="testImage"/>
+                    
+                    <svg id="classic-image-svg-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3840 1440" className="classic-svg">
+                    
+                    <rect id = "3D+chromatin+structure" x="1025" y="774.1" class="st0" width="240.4" height="213.2" className="box"/>
+                    <rect id = "DNA+accessibility" x="1289.3" y="774.1" class="st0" width="255.6" height="213.2" className="box"/>
+                    <rect id = "DNA+binding" x="1566.7" y="774.1" class="st0" width="219.2" height="213.2" className="box"/>
+                    <rect id = "DNA+methylation" x="1807.8" y="774.1" class="st0" width="272.2" height="213.2" className="box"/>
+                    <rect id = "tbd" x="2104.5" y="774.1" class="st0" width="345" height="213.2" className="box"/>
+                    <rect id = "Transcription" x="2472" y="774.1" class="st0" width="219.2" height="213.2" className="box"/>
+                    <rect id = "RNA+binding" x="2713.8" y="774.1" class="st0" width="209.3" height="214.6" className="box"/>
+                    </svg>
+                    
+                    
+
+                </div>
+
                 <div className="row">
                     <TabPanel tabs={{panel1: 'Human', panel2: 'Mouse', panel3: 'Worm', panel4: 'Fly'}}>
                         <TabPanelPane key="panel1">
@@ -80,6 +99,101 @@ var Home = module.exports.Home = React.createClass({
     }
 
 });
+
+
+
+
+// Component to display the D3-based chart
+var AssayClicking = React.createClass({
+
+
+    componentDidMount: function() {
+        // Draw the chart of search results given in this.props.data.facets. Since D3 doesn't work
+        // with the React virtual DOM, we have to load it separately using the webpack .ensure
+        // mechanism. Once the callback is called, it's loaded and can be referenced through
+        // require.
+
+        var chromatin = document.getElementById("3D+chromatin+structure");
+        chromatin.addEventListener("click", AssayChartLoader);
+        var breaker = 0;
+
+        var chromatin = document.getElementById("3D+chromatin+structure");
+        chromatin.addEventListener("click", AssayChartLoader);
+
+        var chromatin = document.getElementById("3D+chromatin+structure");
+        chromatin.addEventListener("click", AssayChartLoader);
+
+        var chromatin = document.getElementById("3D+chromatin+structure");
+        chromatin.addEventListener("click", AssayChartLoader);
+
+        var chromatin = document.getElementById("3D+chromatin+structure");
+        chromatin.addEventListener("click", AssayChartLoader);
+
+
+    },
+
+    render: function() {
+        return (
+            null
+            //<canvas id="myChart" width="0" height="0"></canvas>
+        );
+    }
+
+});
+
+
+
+function hello(){
+    console.log("hi");
+    return true;
+}
+
+
+function gettingID(){
+
+    var tempID = this.id;
+    var bro = 0;
+    var bro2 = 10;
+
+//     var AssayChartLoader = React.createClass({
+
+//     getDefaultProps: function () {
+//         // Default searchBase if none passed in
+//         var oldSearch = this.props.searchBase;
+//         return {searchBase: '?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'};
+//         //return {searchBase: '?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&organ_slims=bronchus'};
+//     },
+
+//     getInitialState: function() {
+//         return {search: this.props.searchBase};
+//     },
+
+//     render: function() {
+//         return (
+//             <FetchedData>
+//                 <Param name="data" url={'/matrix/' + this.state.search} />
+//                 <HomepageChart searchBase={this.state.search + '&'} />
+//             </FetchedData>
+//         );
+//     }
+
+// });
+    return (null);
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // Component to display the D3-based chart
@@ -271,12 +385,36 @@ var HumanSecondLoader = React.createClass({
 });
 */
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Initiates the GET request to search for experiments, and then pass the data to the HomepageChart
 // component to draw the resulting chart.
 var TestLoaderHuman = React.createClass({
 
     getDefaultProps: function () {
         // Default searchBase if none passed in
+        //var oldSearch = this.props.searchBase;
         return {searchBase: '?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'};
         //return {searchBase: '?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&organ_slims=bronchus'};
     },

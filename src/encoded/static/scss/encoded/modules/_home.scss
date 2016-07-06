@@ -29,6 +29,32 @@
 }
 
 
+.overall-classic {
+    position: relative;
+}
+
+.classic-svg {
+    position: relative;
+    visibility: visible;
+    max-width: 100%;
+    top: 0;
+    left: 0;
+    fill: blue;
+    fill-opacity: 0.05;
+}
+
+.box:hover {
+    fill-opacity: 0.1;
+}
+
+.testImage {
+    position: absolute;
+    height: auto;
+    max-width: 100%;
+    top: 0;
+    left: 0;
+}
+
 .col-sm-12 {
     height:50%;
     width:50%;
