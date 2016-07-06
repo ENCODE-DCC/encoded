@@ -176,7 +176,7 @@ def index_peaks(uuid, request):
         if not es.indices.exists_type(index=key, doc_type=context['assembly']):
             es.indices.put_mapping(index=key, doc_type=context['assembly'],
                                    body=get_mapping(context['assembly']))
-            
+
         es.index(index=key, doc_type=context['assembly'], body=doc, id=context['uuid'])
 
 
@@ -288,7 +288,7 @@ def index_file(request):
         err = None
         uuid_current = None
         try:
-            for uuid in invalidated:
+            for uuid in reversed(invalidated):
                 uuid_current = uuid
                 index_peaks(uuid, request)
         except Exception as e:
