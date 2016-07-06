@@ -139,7 +139,6 @@ def sanitize_rsid(rsid):
 
 def get_annotation_coordinates(es, id, assembly):
     ''' Gets annotation coordinates from annotation index in ES '''
-
     chromosome, start, end = '', '', ''
     try:
         es_results = es.get(index='annotations', doc_type='default', id=id)
@@ -152,8 +151,8 @@ def get_annotation_coordinates(es, id, assembly):
                 return ('chr' + annotation['chromosome'],
                         annotation['start'],
                         annotation['end'])
-            else:
-                return (chromosome, start, end)
+        else:
+            return (chromosome, start, end)
 
 def assembly_mapper(location, species, input_assembly, output_assembly):
     # All others
