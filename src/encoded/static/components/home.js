@@ -29,8 +29,9 @@ var Home = module.exports.Home = React.createClass({
                     <rect id = "tbd" x="2104.5" y="774.1" class="st0" width="345" height="213.2" className="box"/>
                     <rect id = "Transcription" x="2472" y="774.1" class="st0" width="219.2" height="213.2" className="box"/>
                     <rect id = "RNA+binding" x="2713.8" y="774.1" class="st0" width="209.3" height="214.6" className="box"/>
+                    <AssayClicking />
                     </svg>
-                    
+
                     
 
                 </div>
@@ -113,74 +114,104 @@ var AssayClicking = React.createClass({
         // mechanism. Once the callback is called, it's loaded and can be referenced through
         // require.
 
-        var chromatin = document.getElementById("3D+chromatin+structure");
-        chromatin.addEventListener("click", AssayChartLoader);
-        var breaker = 0;
 
-        var chromatin = document.getElementById("3D+chromatin+structure");
-        chromatin.addEventListener("click", AssayChartLoader);
+        require.ensure(['d3'], function(require) {
+                 if (this.refs.graphdisplay) {
+                    this.d3 = require('d3');
+                //     this.dagreD3 = require('dagre-d3');
+                    var el = this.d3.select("svg");
+                    var breakPoint = 0;
+                //     // Add SVG element to the graph component, and assign it classes, sizes, and a group
+                //     var svg = this.d3.selectAll("rect");
+                //         .attr('id', 'pipeline-graph')
+                //         .attr('preserveAspectRatio', 'none')
+                //         .attr('version', '1.1');
+                //     var svgGroup = svg.append("g");
+                //     this.cv.savedSvg = svg;
 
-        var chromatin = document.getElementById("3D+chromatin+structure");
-        chromatin.addEventListener("click", AssayChartLoader);
+                //     // Draw the graph into the panel; get the graph's view box and save it for
+                //     // comparisons later
+                //     var {viewBoxWidth, viewBoxHeight} = this.drawGraph(el);
+                //     this.cv.viewBoxWidth = viewBoxWidth;
+                //     this.cv.viewBoxHeight = viewBoxHeight;
 
-        var chromatin = document.getElementById("3D+chromatin+structure");
-        chromatin.addEventListener("click", AssayChartLoader);
+                //     // Based on the size of the graph and view box, 
+                //     var initialZoomLevel = this.setInitialZoomLevel(el, svg);
+                //     this.setState({zoomLevel: initialZoomLevel});
 
-        var chromatin = document.getElementById("3D+chromatin+structure");
-        chromatin.addEventListener("click", AssayChartLoader);
+                //     // Bind node/subnode click handlers to parent component handlers
+                     this.bindClickHandlers(this.d3, el);
+                 }
+
+                
+            }.bind(this));
+
+
+        var temp = document.getElementById("graphdisplay");
+
+        // var chromatin = document.getElementById("3D+chromatin+structure");
+        // chromatin.addEventListener("click", AssayChartLoader);
+        // var breaker = 0;
+
 
 
     },
 
     render: function() {
         return (
-            null
-            //<canvas id="myChart" width="0" height="0"></canvas>
+            <div ref="graphdisplay"> </div>
         );
     }
 
 });
 
 
+// function gettingID(){
 
-function hello(){
-    console.log("hi");
-    return true;
-}
+//     var tempID = this.id;
 
 
-function gettingID(){
+    var AssayChartLoader = React.createClass({
 
-    var tempID = this.id;
-    var bro = 0;
-    var bro2 = 10;
+    getDefaultProps: function () {
+        // Default searchBase if none passed in
+        
+        return {searchBase: '?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'};
+        //return {searchBase: '?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&organ_slims=bronchus'};
+    },
 
-//     var AssayChartLoader = React.createClass({
+    getInitialState: function() {
+        return {search: this.props.searchBase};
+    },
 
-//     getDefaultProps: function () {
-//         // Default searchBase if none passed in
-//         var oldSearch = this.props.searchBase;
-//         return {searchBase: '?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'};
-//         //return {searchBase: '?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&organ_slims=bronchus'};
-//     },
+    bindClickHandlers: function(d3, el) {
+        // Add click event listeners txo each node rendering. Node's ID is its ENCODE object ID
+        var svg = d3.select(el);
+        var nodes = svg.selectAll("rect");
+        //var subnodes = svg.selectAll("g.subnode circle");
 
-//     getInitialState: function() {
-//         return {search: this.props.searchBase};
-//     },
+        nodes.on('click', rect => {
+            this.props.nodeClickHandler(rect.id);
+        });
+        // subnodes.on('click', subnode => {
+        //     d3.event.stopPropagation();
+        //     this.props.nodeClickHandler(subnode.id);
+        // });
+    },
 
-//     render: function() {
-//         return (
-//             <FetchedData>
-//                 <Param name="data" url={'/matrix/' + this.state.search} />
-//                 <HomepageChart searchBase={this.state.search + '&'} />
-//             </FetchedData>
-//         );
-//     }
+    render: function() {
+        return (
+            <FetchedData>
+                <Param name="data" url={'/matrix/' + this.state.search} />
+                <HomepageChart searchBase={this.state.search + '&'} />
+            </FetchedData>
+        );
+    }
 
-// });
-    return (null);
+});
+//     return (null);
 
-}
+// }
 
 
 
