@@ -127,6 +127,7 @@ var AdvSearch = React.createClass({
     },
 
     render: function() {
+        console.log('render called')
         var context = this.props.context;
         var id = url.parse(this.context.location_href, true);
         var region = id.query['region'] || '';
@@ -142,7 +143,7 @@ var AdvSearch = React.createClass({
                                 <input ref="annotation" defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange} />
                                 {(this.state.showAutoSuggest && this.state.searchTerm) ?
                                     <FetchedData loadingComplete={true}>
-                                        <Param name="auto" url={'/suggest/?genome=' + this.state.genome + '&q=' + this.state.searchTerm } />
+                                        <Param name="auto" url={'/suggest/?genome=' + this.state.genome + '&q=' + this.state.searchTerm } type='json' />
                                         <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} />
                                     </FetchedData>
                                 : null}
