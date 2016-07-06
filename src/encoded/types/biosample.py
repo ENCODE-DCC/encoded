@@ -581,8 +581,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         term_name = ''
 
         if 'sample_term_name' in dict_of_phrases:
-            if dict_of_phrases['sample_term_name'] != 'multi-cellular organism':
-                term_name += dict_of_phrases['sample_term_name']
+            term_name += dict_of_phrases['sample_term_name']
 
         term_type = ''
 
@@ -630,8 +629,6 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             else:
                 if 'synchronization' in dict_of_phrases:
                     summary_phrase += ' (' + dict_of_phrases['synchronization'] + ')'
-                #else:
-                #    summary_phrase += ''
 
         if 'derived_from' in dict_of_phrases:
             summary_phrase += ' ' + dict_of_phrases['derived_from']
