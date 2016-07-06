@@ -169,10 +169,14 @@ def index_peaks(uuid, request):
             'uuid': context['uuid'],
             'positions': file_data[key]
         }
+
         if not es.indices.exists(key):
             es.indices.create(index=key, body=index_settings())
+
+        if not es.indices.exists_type(index=key, doc_type=context['assembly']):
             es.indices.put_mapping(index=key, doc_type=context['assembly'],
                                    body=get_mapping(context['assembly']))
+            
         es.index(index=key, doc_type=context['assembly'], body=doc, id=context['uuid'])
 
 
