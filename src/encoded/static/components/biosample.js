@@ -258,7 +258,7 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                                     <div data-test="term-id">
                                         <dt>Term ID</dt>
-                                        <dd>{context.biosample_term_id}</dd>
+                                        <dd><BiosampleTermId termId={context.biosample_term_id} /></dd>
                                     </div>
 
                                     {context.summary ?
@@ -593,6 +593,46 @@ var MaybeLink = React.createClass({
 });
 
 
+// Display the biosample term ID given in `termId`, and link to a corresponding site if the prefix
+// of the term ID needs it. Any term IDs with prefixes not maching any in the `urlMap` property
+// simply display without a link.
+var BiosampleTermId = React.createClass({
+    propTypes: {
+        termId: React.PropTypes.string // Biosample whose term is being displayed.
+    },
+
+    // Map from prefixes to corresponding URL bases. Not all term ID prefixes covered here.
+    // Specific term IDs are appended to these after converting ':' to '_'.
+    urlMap: {
+        'EFO': 'http://www.ebi.ac.uk/efo/',
+        'UBERON': 'http://www.ontobee.org/ontology/UBERON?iri=http://purl.obolibrary.org/obo/',
+        'CL': 'http://www.ontobee.org/ontology/CL?iri=http://purl.obolibrary.org/obo/'
+    },
+
+    render: function() {
+        var termId = this.props.termId;
+
+        if (termId) {
+            // All are of the form XXX:nnnnnnn...
+            var idPieces = termId.split(':');
+            if (idPieces.length === 2) {
+                var urlBase = this.urlMap[idPieces[0]];
+                if (urlBase) {
+                    return <a href={urlBase + termId.replace(':', '_')}>{termId}</a>;
+                }
+            }
+
+            // Either term ID not in specified form (schema should disallow) or not one of the ones
+            // we link to. Just display the term ID without linking out.
+            return <span>{termId}</span>;
+        }
+
+        // biosample_term_id is a required property, but just in case...
+        return null;
+    }
+});
+
+
 var HumanDonor = module.exports.HumanDonor = React.createClass({
     render: function() {
         var context = this.props.context;
@@ -768,16 +808,6 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                                 </div>
                             : null}
 
-                            {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
-                                <section className="multi-columns-row">
-                                    <hr />
-                                    <h4>Characterizations</h4>
-                                    <div className="row multi-columns-row">
-                                        {biosample.donor.characterizations.map(PanelLookup)}
-                                    </div>
-                                </section>
-                            : null}
-
                             {context.dbxrefs && context.dbxrefs.length ?
                                 <div data-test="external-resources">
                                     <dt>External resources</dt>
@@ -792,6 +822,16 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                                 </div>
                             : null}
                         </dl>
+
+                        {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
+                            <div>
+                                <hr />
+                                <h4>Characterizations</h4>
+                                <PanelBody addClasses="panel-body-doc-interior">
+                                    <DocumentsSubpanels documentSpec={{documents: biosample.donor.characterizations}} />
+                                </PanelBody>
+                            </div>
+                        : null}
                     </PanelBody>
                 </Panel>
             </div>
