@@ -41,17 +41,17 @@ def audit_file_bam_derived_from(value, system):
            (f['file_format'] == 'fastq' or (f['file_format'] == 'fasta' and
                                             f['output_type'] == 'reads' and
                                             f['output_category'] == 'raw data')):
-                raw_data_counter += 1
-                if f['dataset'] != value['dataset']:
-                    detail = 'derived_from is a list of files that were used to create a given file; ' + \
-                             'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
-                             'Alignments file {} '.format(value['@id']) + \
-                             'from experiment {} '.format(value['dataset']) + \
-                             'specifies a file {} '.format(f['@id']) + \
-                             'from a different experiment {} '.format(f['dataset']) + \
-                             'in its derived_from list.'
-                    yield AuditFailure('inconsistent derived_from',
-                                       detail, level='DCC_ACTION')
+            raw_data_counter += 1
+            if f['dataset'] != value['dataset']:
+                detail = 'derived_from is a list of files that were used to create a given file; ' + \
+                         'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
+                         'Alignments file {} '.format(value['@id']) + \
+                         'from experiment {} '.format(value['dataset']) + \
+                         'specifies a file {} '.format(f['@id']) + \
+                         'from a different experiment {} '.format(f['dataset']) + \
+                         'in its derived_from list.'
+                yield AuditFailure('inconsistent derived_from',
+                                   detail, level='DCC_ACTION')
         if raw_data_counter == 0:
             detail = 'derived_from is a list of files that were used to create a given file; ' + \
                      'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
