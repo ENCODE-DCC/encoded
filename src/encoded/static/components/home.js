@@ -212,10 +212,10 @@ var HomepageChart = React.createClass({
         require.ensure(['chart.js'], function(require) {
             var Chart = require('chart.js');
             var colorList = [
-                '#871F78',
-                '#FFB90F',
-                '#003F87',
-                '#3D9140',
+                '#9C008A',
+                '#FDC325',
+                '#33298C',
+                '#179A53',
                 '#E5E4E2'
             ];
             var colorList2 = [
