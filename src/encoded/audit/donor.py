@@ -16,6 +16,6 @@ def audit_fly_worm_donor_genotype_dbxrefs(value, system):
                 'specified for genotype.'
             yield AuditFailure('missing genotype', detail, level='WARNING')
         if not value['dbxrefs']:
-            detail = 'Strain {} should one or more ids '.format(value['@id']) + \
+            detail = 'Strain {} should have one or more ids '.format(value['@id']) + \
                 'specified in the dbxrefs array.'
             yield AuditFailure('missing dbxrefs', detail, level='WARNING')
