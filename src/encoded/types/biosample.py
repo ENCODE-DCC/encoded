@@ -572,7 +572,14 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
 
         summary_phrase = ''
 
-        if 'genotype' in dict_of_phrases:
+        fly_worm_flag = False
+
+        if 'organism_name' in dict_of_phrases and \
+            ('Drosophila' in dict_of_phrases['organism_name'] or
+                'Caenorhabditis' in dict_of_phrases['organism_name']):
+            fly_worm_flag = True
+
+        if 'genotype' in dict_of_phrases and fly_worm_flag is True:
             summary_phrase += ' (' + dict_of_phrases['genotype'] + ')'
         elif 'strain_name' in dict_of_phrases:
             summary_phrase += ' (' + dict_of_phrases['strain_name'] + ')'
