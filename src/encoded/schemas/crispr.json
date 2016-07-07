@@ -17,14 +17,14 @@
         { "$ref": "mixins.json#/product_id" },
         { "$ref": "mixins.json#/source" },
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "genetic_modification.json#/properties" },
+        { "$ref": "modification_technique.json#/properties" },
         { "$ref": "mixins.json#/documents" }
     ],
     "properties": {
         "schema_version": {
             "default": "1"
         },
-        "guide_rna_sequence": {
+        "guide_rna_sequences": {
         	"description": "gRNA sequences used in CRISPR genetic modification",
         	"type": "array",
         	"default": [],

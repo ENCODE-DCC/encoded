@@ -21,7 +21,7 @@
     ],
     "properties": {
         "schema_version": {
-            "hidden comment": "Bump the default in the subclasses."
+            "default": "1"
         },
         "url": {
             "title": "URL",
@@ -90,46 +90,42 @@
                 "monoallelic deletion",
                 "monoallelic insertion",
                 "biallelic deletion",
-                "biallelic insertion"
+                "biallelic insertion",
+                "monoallelic replacement",                
+                "biallelic replacement",
+                "repression",
+                "activation",
+                "overexpression",
+                "random mutagenesis",
+                "epitope tagging",
+                "fluorescence tagging"
             ]
         },
-        "vector":{
-            "title": "Vector used for genetic modification",
-            "description": "A list of vectors used for genetic modification.",
+        "modification_techniques": {
+            "description": "Genetic modification technique(s)/tool(s) used to perform the modification.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
-                "description": "Vector details.",
-                "type": "object",
-                "additionalProperties": false,
-                "mixinProperties": [
-                    { "$ref": "mixins.json#/aliases" },
-                    { "$ref": "mixins.json#/product_id" },
-                    { "$ref": "mixins.json#/source" },
-                    { "$ref": "mixins.json#/notes" },
-                    { "$ref": "mixins.json#/documents" }
-                ],
-                "properties": {
-                    "vector_backbone_name":{
-                        "title": "Backbone name",
-                        "description": "The name of the vector backbone used for the modification.",
-                        "type": "string"
-                    },
-                    "promoter_used": {
-                        "title": "Promoter used on the vector",
-                        "description": "The name of the gene that the promoter regulates natively.",
-                        "comment": "See target.json for available identifiers.",
-                        "type": "string",
-                        "linkTo": "Target"
-                    },
-                    "url":{
-                        "title": "URL",
-                        "description": "An external resource with additional information about the vector.",
-                        "type": "string",
-                        "format": "uri"
-                    }
-                }
+                "title": "Modification technique",
+                "description": "Genetic modification technique/tool.",
+                "comment": "See modification_technique.json for available identifiers.",
+                "type":  "string",
+                "linkTo": "ModificationTechnique"
             }
-        }        
+        },
+        "modification_treatments": {
+            "description": "Treatment(s) used to perform the genetic modification.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "Treatment",
+                "description": "Treatment used to perform the genetic modification.",
+                "comment": "See treatment.json for available identifiers.",
+                "type":  "string",
+                "linkTo": "Treatment"
+            }
+        }
     }
 }

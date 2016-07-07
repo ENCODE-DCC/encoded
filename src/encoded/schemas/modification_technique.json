@@ -1,0 +1,44 @@
+
+    "properties": {
+        "schema_version": {
+            "hidden comment": "Bump the default in the subclasses."
+        },
+        
+"vector":{
+            "title": "Vector used for genetic modification",
+            "description": "A list of vectors used for genetic modification.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "description": "Vector details.",
+                "type": "object",
+                "additionalProperties": false,
+                "mixinProperties": [
+                    { "$ref": "mixins.json#/aliases" },
+                    { "$ref": "mixins.json#/product_id" },
+                    { "$ref": "mixins.json#/source" },
+                    { "$ref": "mixins.json#/notes" },
+                    { "$ref": "mixins.json#/documents" }
+                ],
+                "properties": {
+                    "vector_backbone_name":{
+                        "title": "Backbone name",
+                        "description": "The name of the vector backbone used for the modification.",
+                        "type": "string"
+                    },
+                    "promoter_used": {
+                        "title": "Promoter used on the vector",
+                        "description": "The name of the gene that the promoter regulates natively.",
+                        "comment": "See target.json for available identifiers.",
+                        "type": "string",
+                        "linkTo": "Target"
+                    },
+                    "url":{
+                        "title": "URL",
+                        "description": "An external resource with additional information about the vector.",
+                        "type": "string",
+                        "format": "uri"
+                    }
+                }
+            }
+        }  

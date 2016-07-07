@@ -309,7 +309,7 @@
     "genetic_modifications": {
         "genetic_modifications": {
             "title": "Genetic modifications",
-            "description": "Genetic modification(s) of the biosample. Any genomic alteration or addition of vectors stably or transiently transfected to the biosample.",
+            "description": "Genetic modification(s). Any genomic alteration or addition of vectors stably or transiently transfected to the biosample.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
