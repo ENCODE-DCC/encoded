@@ -556,9 +556,9 @@ var Experiment = module.exports.Experiment = React.createClass({
                                     : null}
 
                                     {tagBadges ?
-                                        <div data-test="tags">
+                                        <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
-                                            <dd className="tag-badges">{tagBadges}</dd>
+                                            <dd>{tagBadges}</dd>
                                         </div>
                                     : null}
                                 </dl>

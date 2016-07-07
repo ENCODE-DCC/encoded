@@ -42,12 +42,25 @@ $projects:
 
 // Badges of experiment.tags
 .tag-badges {
-    img {
-        display: inline-block;
-        margin: 0 2px 2px 0;
-        padding: 4px;
-        height: 32px;
-        background-color: #e8e8e8;
-        border: 1px solid #e0e0e0;
+    display: block !important;
+
+    dt {
+        display: block !important;
+        padding-bottom: 0 !important;
+    }
+
+    dd {
+        display: block !important;
+        padding-top: 0 !important;
+        padding-left: 0 !important;
+
+        img {
+            display: inline-block;
+            margin: 0 2px 2px 0;
+            padding: 4px;
+            height: 32px;
+            background-color: #e8e8e8;
+            border: 1px solid #e0e0e0;
+        }
     }
 }
