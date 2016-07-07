@@ -330,7 +330,12 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms)
         'files.quality_metrics',
         'files.quality_metrics.step_run',
         'files.quality_metrics.step_run.analysis_step_version.analysis_step',
+        'supersedes'
     ]
+    rev = Dataset.rev.copy()
+    rev.update({
+        'superseded_by': ('Annotation', 'supersedes')
+    })
 
     matrix = {
         'y': {
@@ -355,6 +360,18 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms)
             'label': 'Type',
         },
     }
+
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Annotation.supersedes",
+        },
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
+
 
 @collection(
     name='publication-data',
