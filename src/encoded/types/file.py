@@ -238,6 +238,39 @@ class File(Item):
         return sorted(bioreps)
 
     @calculated_property(schema={
+        "title": "Technical replicates",
+        "type": "array",
+        "items": {
+            "title": "Technical replicate number",
+            "description": "The identifying number of each relevant technical replicate",
+            "type": "integer",
+        }
+    })
+    def technical_replicates(self, request, registry, root, replicate=None):
+        if replicate is not None:
+            replicate_obj = traverse(root, replicate)['context']
+            replicate_biorep = replicate_obj.__json__(request)['biological_replicate_number']
+            replicate_techrep = replicate_obj.__json__(request)['technical_replicate_number']
+            tech_rep_string = str(replicate_biorep)+"_"+str(replicate_techrep)
+            return [tech_rep_string]
+
+        conn = registry[CONNECTION]
+        derived_from_closure = property_closure(request, 'derived_from', self.uuid)
+        dataset_uuid = self.__json__(request)['dataset']
+        obj_props = (conn.get_by_uuid(uuid).__json__(request) for uuid in derived_from_closure)
+        replicates = {
+            props['replicate']
+            for props in obj_props
+            if props['dataset'] == dataset_uuid and 'replicate' in props
+        }
+        techreps = {
+            str(conn.get_by_uuid(uuid).__json__(request)['biological_replicate_number']) +
+            '_' + str(conn.get_by_uuid(uuid).__json__(request)['technical_replicate_number'])
+            for uuid in replicates
+        }
+        return sorted(techreps)
+
+    @calculated_property(schema={
         "title": "Analysis Step Version",
         "type": "string",
         "linkTo": "AnalysisStepVersion"
