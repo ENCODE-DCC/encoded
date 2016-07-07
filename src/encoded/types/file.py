@@ -243,7 +243,7 @@ class File(Item):
         "items": {
             "title": "Technical replicate number",
             "description": "The identifying number of each relevant technical replicate",
-            "type": "integer",
+            "type": "string"
         }
     })
     def technical_replicates(self, request, registry, root, replicate=None):
