@@ -338,6 +338,11 @@ def test_set_filters_subfacet():
                 'filters': [
                     {
                         'terms': {
+                            'embedded.award.project.raw': ['ENCODE'],
+                        },
+                    },
+                    {
+                        'terms': {
                             'embedded.award.rfa.raw': ['ENCODE2'],
                         },
                     },

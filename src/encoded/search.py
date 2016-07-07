@@ -257,6 +257,29 @@ def list_result_fields(request, doc_types):
     return fields
 
 
+def build_terms_filter(field, terms):
+    if field.endswith('!'):
+        field = field[:-1]
+        if not field.startswith('audit'):
+            field = 'embedded.' + field + '.raw'
+        # Setting not filter instead of terms filter
+        return {
+            'not': {
+                'terms': {
+                    field: terms,
+                }
+            }
+        }
+    else:
+        if not field.startswith('audit'):
+            field = 'embedded.' + field + '.raw'
+        return {
+            'terms': {
+                field: terms,
+            },
+        }
+
+
 def set_filters(request, query, result):
     """
     Sets filters in the query
@@ -287,6 +310,7 @@ def set_filters(request, query, result):
         del params[field]
 
     for field, terms in params.items():
+        # Skip reserved params that we know aren't filters
         if field in [
                 'type', 'limit', 'y.limit', 'x.limit', 'mode', 'annotation',
                 'format', 'frame', 'datastore', 'field', 'region', 'genome',
@@ -309,33 +333,19 @@ def set_filters(request, query, result):
         if field == 'searchTerm':
             continue
 
-        # Add filter to query
-        if field.endswith('!'):
-            query_field = field[:-1]
-        else:
-            query_field = field
-        if ':' in query_field:
-            query_field = query_field.split(':')[-1]
-        if not query_field.startswith('audit'):
-            query_field = 'embedded.' + query_field + '.raw'
-
+        # Add to list of active filters
         used_filters[field] = terms
 
-        if field.endswith('!'):
-            # Setting not filter instead of terms filter
-            query_filters.append({
-                'not': {
-                    'terms': {
-                        query_field: terms,
-                    }
-                }
-            })
+        # Add filter to query
+        if ':' in field:  # subfacet, field1=term1:field2=term2
+            parts = field.split(':')
+            for part in parts[:-1]:
+                part_field, part_term = part.split('=')
+                query_filters.append(
+                    build_terms_filter(part_field, [part_term]))
+            query_filters.append(build_terms_filter(parts[-1], terms))
         else:
-            query_filters.append({
-                'terms': {
-                    query_field: terms,
-                },
-            })
+            query_filters.append(build_terms_filter(field, terms))
 
     return used_filters
 
