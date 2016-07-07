@@ -1113,7 +1113,7 @@ def test_audit_experiment_replicate_with_no_files_dream(testapp,
                                                         base_replicate,
                                                         base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq',
-                                                'collections': ['DREAM'],
+                                                'tags': ['DREAM'],
                                                 'status': 'released',
                                                 'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')

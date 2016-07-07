@@ -69,8 +69,8 @@
             ],
             "permission": "import_items"
         },
-        "collections": {
-            "title": "Collections",
+        "tags": {
+            "title": "Tags",
             "description": "Some datasets are part of particular data collections",
             "type": "array",
             "default": [],
