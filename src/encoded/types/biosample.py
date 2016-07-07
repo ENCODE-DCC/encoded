@@ -431,7 +431,8 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                     str(starting_amount_units)
 
         if depleted_in_term_name is not None and len(depleted_in_term_name) > 0:
-            dict_of_phrases['depleted_in'] = 'depleted in '+str(depleted_in_term_name)
+            dict_of_phrases['depleted_in'] = 'depleted in ' + \
+                                             str(depleted_in_term_name).replace('\'', '')[1:-1]
 
         if phase is not None:
             dict_of_phrases['phase'] = phase + ' phase'
