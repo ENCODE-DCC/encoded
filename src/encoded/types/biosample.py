@@ -588,7 +588,10 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         term_name = ''
 
         if 'sample_term_name' in dict_of_phrases:
-            term_name += dict_of_phrases['sample_term_name']
+            if dict_of_phrases['sample_term_name'] == 'multi-cellular organism':
+                term_name += 'whole organisms'
+            else:
+                term_name += dict_of_phrases['sample_term_name']
 
         term_type = ''
 
