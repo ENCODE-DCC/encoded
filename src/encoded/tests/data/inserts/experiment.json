@@ -273,7 +273,8 @@
         "status": "released",
         "date_released": "2016-01-01",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "4ae10d69-f6fa-4757-b243-821dd8a9bf25"
+        "uuid": "4ae10d69-f6fa-4757-b243-821dd8a9bf25",
+        "supersedes": ["ENCSR000ACT"]
     },
     {
         "_test": "patch users",
@@ -289,7 +290,8 @@
         "status": "released",
         "date_released": "2016-01-01",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "a099b9ac-50c0-4c96-a3eb-9fa032388ebf"
+        "uuid": "a099b9ac-50c0-4c96-a3eb-9fa032388ebf",
+        "supersedes": ["ENCSR000ACT", "ENCSR001ACT"]
     },
     {
         "_test": "Bind and Seq",

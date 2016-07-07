@@ -90,6 +90,18 @@
                 "linkTo": "Experiment"
             }
         },
+        "supersedes": {
+            "title": "Supersedes" ,
+            "description": "The experiment(s) that this experiment supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                    "comment": "See experiment.json for a list of available identifiers.",
+                    "type": "string",
+                    "linkTo": "Experiment"
+            }
+        },
         "related_files": {
             "title": "Additional data files",
             "description": "To be removed in a future release after data cleanup.",
