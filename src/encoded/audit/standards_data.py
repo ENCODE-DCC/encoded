@@ -39,7 +39,8 @@ pipelines_with_read_depth = {
     'Histone ChIP-seq': {
         'narrow': 20000000,
         'broad': 45000000
-        }
+        },
+    'Transcription factor ChIP-seq pipeline (modERN)': 5000000
     }
 
 special_assays_with_read_depth = {
