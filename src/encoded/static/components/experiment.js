@@ -378,6 +378,12 @@ var Experiment = module.exports.Experiment = React.createClass({
         // Make a list of reference links, if any
         var references = PubReferenceList(context.references);
 
+        // Render tags badges
+        var tagBadges;
+        if (context.tags && context.tags.length) {
+            tagBadges = context.tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
+
         // XXX This makes no sense.
         //var control = context.possible_controls[0];
         return (
@@ -546,6 +552,13 @@ var Experiment = module.exports.Experiment = React.createClass({
                                         <div data-test="submittercomment">
                                             <dt>Submitter comment</dt>
                                             <dd>{context.submitter_comment}</dd>
+                                        </div>
+                                    : null}
+
+                                    {tagBadges ?
+                                        <div data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd className="tag-badges">{tagBadges}</dd>
                                         </div>
                                     : null}
                                 </dl>
