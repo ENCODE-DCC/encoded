@@ -178,54 +178,6 @@
         "uuid": "b29de469-ed4b-4acf-8b4d-f1af02def8e8"
     },
     {
-        "_test": "methy array",
-        "accession": "ENCSR000ACY",
-        "assay_term_id": "OBI:0001332",
-        "assay_term_name": "MethylArrayTEST1",
-        "award": "ENCODE2",
-        "biosample_term_id": "CL:1000350",
-        "biosample_term_name": "basal cell of epithelium of terminal bronchiole",
-        "biosample_type": "primary cell",
-        "dbxrefs": [
-            "UCSC-ENCODE-hg19:wgEncodeEH002229",
-            "GEO:GSM999346",
-            "GEO:GSE40699"
-        ],
-        "description": "UW  SAEC",
-        "documents": [
-            "ENCODE:Myers_Methyl450_protocol"
-        ],
-        "lab": "richard-myers",
-        "status": "released",
-        "date_released": "2016-01-01",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "94d6b328-1400-4906-9f91-2bea52aa8473"
-    },
-    {
-        "_test": "methy array",
-        "accession": "ENCSR000ACY",
-        "assay_term_id": "OBI:0001332",
-        "assay_term_name": "MethylArrayTEST2",
-        "award": "ENCODE2",
-        "biosample_term_id": "CL:1000350",
-        "biosample_term_name": "basal cell of epithelium of terminal bronchiole",
-        "biosample_type": "primary cell",
-        "dbxrefs": [
-            "UCSC-ENCODE-hg19:wgEncodeEH002229",
-            "GEO:GSM999346",
-            "GEO:GSE40699"
-        ],
-        "description": "UW  SAEC",
-        "documents": [
-            "ENCODE:Myers_Methyl450_protocol"
-        ],
-        "lab": "richard-myers",
-        "status": "released",
-        "date_released": "2016-01-01",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "5fc9c65c-c418-43d0-9e43-ad3bcb0a474f"
-    },
-    {
         "_test": "NTR for assay and no replicates",
         "accession": "ENCSR000AJK",
         "assay_term_id": "OBI:0002042",

@@ -7,6 +7,19 @@ var cloneWithProps = require('react/lib/cloneWithProps');
 
 // Main page component to render the home page
 var Home = module.exports.Home = React.createClass({
+    getInitialState: function(){
+        return {
+            current: "?type=Experiment&status=released"
+        };
+    },
+
+    callback: function(newUrl){
+        this.setState({
+            current: newUrl
+
+        });
+        console.log(this.state.current);
+    },
 
     render: function() {
         return (
@@ -16,26 +29,7 @@ var Home = module.exports.Home = React.createClass({
                         ENCYCLOPEDIA of DNA ELEMENTS
                     </div>
                 </div>
-                <div className="overall-classic">
-
-                    <img src="static/img/classic-image.jpg" className="testImage"/>
-                    
-                    <svg id="classic-image-svg-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3840 1440" className="classic-svg">
-                    
-                    <rect id = "3D+chromatin+structure" x="1025" y="774.1" class="st0" width="240.4" height="213.2" className="box"/>
-                    <rect id = "DNA+accessibility" x="1289.3" y="774.1" class="st0" width="255.6" height="213.2" className="box"/>
-                    <rect id = "DNA+binding" x="1566.7" y="774.1" class="st0" width="219.2" height="213.2" className="box"/>
-                    <rect id = "DNA+methylation" x="1807.8" y="774.1" class="st0" width="272.2" height="213.2" className="box"/>
-                    <rect id = "tbd" x="2104.5" y="774.1" class="st0" width="345" height="213.2" className="box"/>
-                    <rect id = "Transcription" x="2472" y="774.1" class="st0" width="219.2" height="213.2" className="box"/>
-                    <rect id = "RNA+binding" x="2713.8" y="774.1" class="st0" width="209.3" height="214.6" className="box"/>
-                    <AssayClicking />
-                    </svg>
-
-                    
-
-                </div>
-
+                <AssayClicking current={this.state.current} callback={this.callback}/>
                 <div className="row">
                     <TabPanel tabs={{panel1: 'Human', panel2: 'Mouse', panel3: 'Worm', panel4: 'Fly'}}>
                         <TabPanelPane key="panel1">
@@ -45,7 +39,8 @@ var Home = module.exports.Home = React.createClass({
                                         Project: Human
                                     </div>
                                     <center> <hr width="80%" position="static"></hr> </center>
-                                    <TestLoaderHuman />
+                                    <HomepageChartLoader searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'} 
+                                        current={this.state.current} callback={this.callback}/>
                                 </div>
                             </div>
                         </TabPanelPane>
@@ -106,6 +101,49 @@ var Home = module.exports.Home = React.createClass({
 
 // Component to display the D3-based chart
 var AssayClicking = React.createClass({
+    propTypes: {
+        current: React.PropTypes.string,
+        callback: React.PropTypes.func
+    },
+
+    getInitialState: function(){
+        return {
+            updatedLink: this.props.current
+        };
+    },
+
+    sortByAssay: function(category) {
+        // var temp = category;
+        // var oldSearchBase = this.props.searchBase;
+        //var updatedLink = this.props.current + '&assay_slims=' + category;
+        this.props.callback(this.props.current + '&assay_slims=' + category);
+        //return {this.props.callback.bind(null, this.props.current + '&assay_slims=' + category)};
+        //return {updatedLink: this.props.current + '&assay_slims=' + category};
+        this.setState({updatedLink: this.props.current + '&assay_slims=' + category});
+
+    },
+
+    bindClickHandlers: function(d3, el) {
+        // Add click event listeners txo each node rendering. Node's ID is its ENCODE object ID
+        var svg = el[0];
+        //var nodes = svg.selectAll("rect.id");
+        //var breakPoint2 = 0;
+        //var subnodes = svg.selectAll("g.subnode circle");
+
+        el.on('click', rect => {
+            console.log(rect);
+            //this.props.
+            this.sortByAssay(rect);
+        });
+        // subnodes.on('click', subnode => {
+        //     d3.event.stopPropagation();
+        //     this.props.nodeClickHandler(subnode.id);
+        // });
+    },
+
+
+
+    
 
 
     componentDidMount: function() {
@@ -119,7 +157,15 @@ var AssayClicking = React.createClass({
                  if (this.refs.graphdisplay) {
                     this.d3 = require('d3');
                 //     this.dagreD3 = require('dagre-d3');
-                    var el = this.d3.select("svg");
+                var allRects = this.d3.selectAll("rect.box");
+                var dataset = [];
+                for(var x = 0; x < allRects[0].length; x++){
+                    dataset.push(allRects[0][x].id);
+                }
+
+                    var el = this.d3.selectAll("rect.box")
+                        .data(dataset);
+                        //.enter();
                     var breakPoint = 0;
                 //     // Add SVG element to the graph component, and assign it classes, sizes, and a group
                 //     var svg = this.d3.selectAll("rect");
@@ -159,9 +205,40 @@ var AssayClicking = React.createClass({
 
     render: function() {
         return (
-            <div ref="graphdisplay"> </div>
+            <div ref="graphdisplay"> 
+             <div className="overall-classic">
+
+                    <img src="static/img/classic-image.jpg" className="testImage"/>
+                    
+                    <svg id="classic-image-svg-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3840 1440" className="classic-svg" 
+                        onClick={this.props.callback.bind(null, this.state.updatedLink)}>
+                    
+                    <rect id = "3D+chromatin+structure" x="1025" y="774.1" class="st0" width="240.4" height="213.2" className="box"/>
+                    <rect id = "DNA+accessibility" x="1289.3" y="774.1" class="st0" width="255.6" height="213.2" className="box"/>
+                    <rect id = "DNA+binding" x="1566.7" y="774.1" class="st0" width="219.2" height="213.2" className="box"/>
+                    <rect id = "DNA+methylation" x="1807.8" y="774.1" class="st0" width="272.2" height="213.2" className="box"/>
+                    <rect id = "tbd" x="2104.5" y="774.1" class="st0" width="345" height="213.2" className="box"/>
+                    <rect id = "Transcription" x="2472" y="774.1" class="st0" width="219.2" height="213.2" className="box"/>
+                    <rect id = "RNA+binding" x="2713.8" y="774.1" class="st0" width="209.3" height="214.6" className="box"/>
+                    
+                    </svg>
+
+                    
+
+                </div>
+            </div>
         );
     }
+
+
+    // render: function() {
+    //     return (
+    //         <FetchedData>
+    //             <Param name="data" url={'/matrix/' + this.state.search} />
+    //             <HomepageChart searchBase={this.state.search + '&'} />
+    //         </FetchedData>
+    //     );
+    // }
 
 });
 
@@ -171,44 +248,50 @@ var AssayClicking = React.createClass({
 //     var tempID = this.id;
 
 
-    var AssayChartLoader = React.createClass({
+//     var AssayChartLoader = React.createClass({
 
-    getDefaultProps: function () {
-        // Default searchBase if none passed in
+//     // getDefaultProps: function () {
+//     //     // Default searchBase if none passed in
         
-        return {searchBase: '?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'};
-        //return {searchBase: '?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&organ_slims=bronchus'};
-    },
+//     //     return {searchBase: '?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'};
+//     //     //return {searchBase: '?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&organ_slims=bronchus'};
+//     // },
 
-    getInitialState: function() {
-        return {search: this.props.searchBase};
-    },
+//     // getInitialState: function() {
+//     //     return {search: this.props.searchBase};
+//     // },
 
-    bindClickHandlers: function(d3, el) {
-        // Add click event listeners txo each node rendering. Node's ID is its ENCODE object ID
-        var svg = d3.select(el);
-        var nodes = svg.selectAll("rect");
-        //var subnodes = svg.selectAll("g.subnode circle");
+//     bindClickHandlers: function(d3, el) {
+//         // Add click event listeners txo each node rendering. Node's ID is its ENCODE object ID
+//         var svg = d3.select(el);
+//         var nodes = svg.selectAll("rect");
+//         //var subnodes = svg.selectAll("g.subnode circle");
 
-        nodes.on('click', rect => {
-            this.props.nodeClickHandler(rect.id);
-        });
-        // subnodes.on('click', subnode => {
-        //     d3.event.stopPropagation();
-        //     this.props.nodeClickHandler(subnode.id);
-        // });
-    },
+//         nodes.on('click', rect => {
+//             this.props.sortByAssayCategory(rect.id);
+//         });
+//         // subnodes.on('click', subnode => {
+//         //     d3.event.stopPropagation();
+//         //     this.props.nodeClickHandler(subnode.id);
+//         // });
+//     },
 
-    render: function() {
-        return (
-            <FetchedData>
-                <Param name="data" url={'/matrix/' + this.state.search} />
-                <HomepageChart searchBase={this.state.search + '&'} />
-            </FetchedData>
-        );
-    }
+//     sortByAssayCategory: function(category) {
+//         var oldSearchBase = this.props.searchBase;
+//         var search = oldSearchBase + '&assay_slims=' + category;
 
-});
+//     },
+
+//     render: function() {
+//         return (
+//             <FetchedData>
+//                 <Param name="data" url={'/matrix/' + this.state.search} />
+//                 <HomepageChart searchBase={this.state.search + '&'} />
+//             </FetchedData>
+//         );
+//     }
+
+// });
 //     return (null);
 
 // }
@@ -541,6 +624,10 @@ var TestLoaderFly = React.createClass({
 // Initiates the GET request to search for experiments, and then pass the data to the HomepageChart
 // component to draw the resulting chart.
 var HomepageChartLoader = React.createClass({
+    propTypes: {
+        current: React.PropTypes.string,
+        callback: React.PropTypes.func
+    },
 
     getDefaultProps: function () {
         // Default searchBase if none passed in
@@ -556,6 +643,7 @@ var HomepageChartLoader = React.createClass({
             <FetchedData>
                 <Param name="data" url={'/matrix/' + this.state.search} />
                 <HomepageChart searchBase={this.state.search + '&'} />
+                
             </FetchedData>
         );
     }
