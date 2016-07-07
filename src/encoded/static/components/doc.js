@@ -84,7 +84,7 @@ var DocumentsSubpanels = module.exports.DocumentsSubpanels = React.createClass({
         return (
             <div>
                 {documentSpec.title ? <h4>{documentSpec.title}</h4> : null}
-                <div className="row multi-columns-row">
+                <div className="panel-docs-list">
                     {documentSpec.documents.map(doc => {
                         var PanelView = globals.panel_views.lookup(doc);
                         return <PanelView key={doc['@id']} context={doc} />;
@@ -124,8 +124,7 @@ var Document = module.exports.Document = React.createClass({
         var DocumentDetailView = globals.document_views.detail.lookup(context);
 
         return (
-            // Each section is a panel; name all Bootstrap 3 sizes so .multi-columns-row class works
-            <section className="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+            <section className="panel-doc">
                 <Panel addClasses={globals.itemClass(context, 'view-detail')}>
                     <DocumentHeaderView doc={context} />
                     <PanelBody>

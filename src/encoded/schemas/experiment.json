@@ -49,7 +49,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "8"
+            "default": "9"
         },
         "target": {
             "title": "Target",
@@ -88,6 +88,18 @@
                 "comment": "See experiment.json for a list of available identifiers. Exact pairing of data files with their controls is done using file relationships.",
                 "type": "string",
                 "linkTo": "Experiment"
+            }
+        },
+        "supersedes": {
+            "title": "Supersedes" ,
+            "description": "The experiment(s) that this experiment supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                    "comment": "See experiment.json for a list of available identifiers.",
+                    "type": "string",
+                    "linkTo": "Experiment"
             }
         },
         "related_files": {
@@ -217,7 +229,10 @@
             "title": "Assay Nickname"
         },
         "target.label": {
-            "title": "Target"
+            "title": "Target label"
+        },
+        "target.gene_name": {
+            "title": "Target gene"
         },
         "biosample_term_name": {
             "title": "Biosample"

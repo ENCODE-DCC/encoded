@@ -111,6 +111,7 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         'possible_controls.lab',
         'target.organism',
         'references',
+        'supersedes',
     ]
     audit_inherit = [
         'original_files',
@@ -123,7 +124,6 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         'lab',
         'award',
         'documents',
-        'replicates.antibody',
         'replicates.antibody.characterizations',
         'replicates.antibody.targets',
         'replicates.library',
@@ -145,6 +145,7 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
     rev.update({
         'replicates': ('Replicate', 'experiment'),
         'related_series': ('Series', 'related_datasets'),
+        'superseded_by': ('Experiment', 'supersedes')
     })
 
     @calculated_property(schema={
@@ -250,6 +251,17 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         return paths_filtered_by_status(request, related_series)
 
     @calculated_property(schema={
+        "title": "Superseded by",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Experiment.supersedes",
+        },
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
+
+    @calculated_property(schema={
         "title": "Replication type",
         "description": "Calculated field that indicates the replication model",
         "type": "string"
@@ -258,8 +270,6 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         # Compare the biosamples to see if for humans they are the same donor and for
         # model organisms if they are sex-matched and age-matched
         biosample_dict = {}
-        biosample_age_list = []
-        biosample_sex_list = []
         biosample_donor_list = []
         biosample_number_list = []
 
@@ -272,8 +282,6 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
                 if 'biosample' in libraryObject:
                     biosampleObject = request.embed(libraryObject['biosample'], '@@object')
                     biosample_dict[biosampleObject['accession']] = biosampleObject
-                    biosample_age_list.append(biosampleObject.get('age'))
-                    biosample_sex_list.append(biosampleObject.get('sex'))
                     biosample_donor_list.append(biosampleObject.get('donor'))
                     biosample_number_list.append(replicateObject.get('biological_replicate_number'))
                     biosample_species = biosampleObject.get('organism')
@@ -314,28 +322,7 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
             else:
                 return 'isogenic'
 
-        if 'unknown' in biosample_age_list:
-            matchedAgeFlag = False
-        elif len(set(biosample_age_list)) == 1:
-            matchedAgeFlag = True
-        else:
-            matchedAgeFlag = False
-
-        if 'unknown' in biosample_sex_list:
-            matchedSexFlag = False
-        elif len(set(biosample_sex_list)) == 1:
-            matchedSexFlag = True
-        else:
-            matchedSexFlag = False
-
-        if matchedAgeFlag and matchedSexFlag:
-            return 'anisogenic, sex-matched and age-matched'
-        if matchedAgeFlag and not matchedSexFlag:
-            return 'anisogenic, age-matched'
-        if not matchedAgeFlag and matchedSexFlag:
-            return 'anisogenic, sex-matched'
-        if not matchedAgeFlag and not matchedSexFlag:
-            return 'anisogenic'
+        return 'anisogenic'
 
     matrix = {
         'y': {

@@ -239,7 +239,8 @@ def main(global_config, **local_config):
             serializer=PyramidJSONSerializer(json_renderer),
             connection_class=TimedUrllib3HttpConnection,
             retry_on_timeout=True,
-            timeout=30,
+            timeout=60,
+            maxsize=50
         )
         config.include('.region_search')
         config.include('.peak_indexer')

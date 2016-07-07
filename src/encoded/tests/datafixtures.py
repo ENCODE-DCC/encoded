@@ -221,7 +221,7 @@ def base_experiment(testapp, lab, award):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress'
+        'status': 'started'
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
@@ -723,7 +723,7 @@ def analysis_step_run_bam(testapp, analysis_step_version_bam):
 
 
 @pytest.fixture
-def pipeline_bam(testapp, lab, award, analysis_step_bam ):
+def pipeline_bam(testapp, lab, award, analysis_step_bam):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],

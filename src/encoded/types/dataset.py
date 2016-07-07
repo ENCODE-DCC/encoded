@@ -302,7 +302,40 @@ class FileSet(Dataset):
 class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
     item_type = 'annotation'
     schema = load_schema('encoded:schemas/annotation.json')
-    embedded = FileSet.embedded + ['software_used', 'software_used.software', 'organism', 'targets', 'files.dataset']
+    embedded = FileSet.embedded + [
+        'software_used',
+        'software_used.software',
+        'organism',
+        'targets',
+        'files.dataset',
+        'files.derived_from',
+        'files.derived_from.analysis_step_version.software_versions',
+        'files.derived_from.analysis_step_version.software_versions.software',
+        'files.derived_from.replicate',
+        'files.analysis_step_version.analysis_step',
+        'files.analysis_step_version.analysis_step.documents',
+        'files.analysis_step_version.analysis_step.documents.award',
+        'files.analysis_step_version.analysis_step.documents.lab',
+        'files.analysis_step_version.analysis_step.documents.submitted_by',
+        'files.analysis_step_version.analysis_step.pipelines',
+        'files.analysis_step_version.analysis_step.pipelines.documents',
+        'files.analysis_step_version.analysis_step.pipelines.documents.award',
+        'files.analysis_step_version.analysis_step.pipelines.documents.lab',
+        'files.analysis_step_version.analysis_step.pipelines.documents.submitted_by',
+        'files.analysis_step_version.analysis_step.versions',
+        'files.analysis_step_version.analysis_step.versions.software_versions',
+        'files.analysis_step_version.analysis_step.versions.software_versions.software',
+        'files.analysis_step_version.software_versions',
+        'files.analysis_step_version.software_versions.software',
+        'files.quality_metrics',
+        'files.quality_metrics.step_run',
+        'files.quality_metrics.step_run.analysis_step_version.analysis_step',
+        'supersedes'
+    ]
+    rev = Dataset.rev.copy()
+    rev.update({
+        'superseded_by': ('Annotation', 'supersedes')
+    })
 
     matrix = {
         'y': {
@@ -327,6 +360,18 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms)
             'label': 'Type',
         },
     }
+
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Annotation.supersedes",
+        },
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
+
 
 @collection(
     name='publication-data',
