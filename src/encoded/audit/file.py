@@ -628,7 +628,9 @@ def get_chip_seq_bam_read_depth(bam_file):
     if bam_file['file_format'] != 'bam' or bam_file['output_type'] != 'alignments':
         return False
 
-    if bam_file['lab'] != '/labs/encode-processing-pipeline/':
+    # Check to see if bam is from ENCODE or modERN pipelines
+    if (bam_file['lab'] != '/labs/encode-processing-pipeline/') or \
+            (bam_file['step_run'] != '/analysis-step-runs/a72059ad-5a54-4c27-b0ef-a20c17f76a66/'):
         return False
 
     if has_pipelines(bam_file) is False:
