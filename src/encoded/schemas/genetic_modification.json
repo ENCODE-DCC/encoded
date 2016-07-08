@@ -4,7 +4,7 @@
     "id": "/profiles/genetic_modification.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["lab", "award", "source"],
+    "required": ["lab", "award", "modification_type"],
     "identifyingProperties": ["uuid","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -19,6 +19,11 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/documents" }
     ],
+
+
+WE have to ADD dependency that requires at least 1 item in treatments/techniques lists
+
+
     "properties": {
         "schema_version": {
             "default": "1"
