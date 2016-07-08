@@ -77,7 +77,7 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^(UCSC-ENCODE-cv:\\S+)$"
+                "pattern": "^(UCSC-ENCODE-cv:\\S+|AR:AB_\\d+)$"
             }
         },
         "host_organism": {
