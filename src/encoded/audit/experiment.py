@@ -309,19 +309,11 @@ def audit_modERN_experiment_standards_dispatcher(value, system):
 
     if value['status'] in ['revoked', 'deleted', 'replaced']:
         return
-    if 'assay_term_name' not in value or \
-       value['assay_term_name'] not in ['ChIP-seq']:
+    if 'assay_term_name' not in value or value['assay_term_name'] not in ['ChIP-seq']:
         return
     if 'original_files' not in value or len(value['original_files']) == 0:
         return
     if 'replicates' not in value:
-        return
-
-    num_bio_reps = set()
-    for rep in value['replicates']:
-        num_bio_reps.add(rep['biological_replicate_number'])
-
-    if len(num_bio_reps) < 1:
         return
 
     alignment_files = scan_files_for_file_format_output_type(value['original_files'],
@@ -535,10 +527,10 @@ def check_experiment_chip_seq_encode3_standards(experiment,
         for failure in check_file_read_length_chip(f, 50, 36):
             yield failure
 
-    pipeline_title = scanFilesForPipelineTitle_yes_chipseq(alignment_files,
-                                                           ['Histone ChIP-seq',
-                                                            'Transcription factor ChIP-seq pipeline \
-                                                            (modERN)'])
+    pipeline_title = scanFilesForPipelineTitle_yes_chipseq(
+        alignment_files,
+        ['Histone ChIP-seq', 'Transcription factor ChIP-seq pipeline (modERN)']
+    )
     if pipeline_title is False:
         return
 
@@ -843,7 +835,7 @@ def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
                                          'unfiltered alignments']:
         return False
 
-    if alignment_file['lab'] != '/labs/encode-processing-pipeline/':
+    if alignment_file['lab'] not in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/']:
         return False
 
     quality_metrics = alignment_file.get('quality_metrics')
