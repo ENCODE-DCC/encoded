@@ -18,7 +18,7 @@ var Home = module.exports.Home = React.createClass({
             current: newUrl
 
         });
-        console.log(this.state.current);
+        console.log("this.state.current: " + this.state.current);
     },
 
     render: function() {
@@ -40,7 +40,7 @@ var Home = module.exports.Home = React.createClass({
                                     </div>
                                     <center> <hr width="80%" position="static"></hr> </center>
                                     <HomepageChartLoader searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'} 
-                                        current={this.state.current} callback={this.callback}/>
+                                         callback={this.callback}/>
                                 </div>
                             </div>
                         </TabPanelPane>
@@ -625,24 +625,26 @@ var TestLoaderFly = React.createClass({
 // component to draw the resulting chart.
 var HomepageChartLoader = React.createClass({
     propTypes: {
-        current: React.PropTypes.string,
+        
         callback: React.PropTypes.func
     },
 
-    getDefaultProps: function () {
-        // Default searchBase if none passed in
-        return {searchBase: '?type=Experiment&status=released'};
-    },
+    // getDefaultProps: function () {
+    //     // Default searchBase if none passed in
+    //     return {searchBase: this.props.current};
+    // },
 
-    getInitialState: function() {
-        return {search: this.props.searchBase};
-    },
+    // getInitialState: function() {
+    //     console.log("getInitialState searchBase: " + this.props.searchBase);
+    //     return {search: this.props.searchBase};
+    // },
 
     render: function() {
+        console.log("searchBase: " + this.props.searchBase);
         return (
             <FetchedData>
-                <Param name="data" url={'/matrix/' + this.state.search} />
-                <HomepageChart searchBase={this.state.search + '&'} />
+                <Param name="data" url={'/matrix/' + this.props.searchBase} />
+                <HomepageChart searchBase={this.props.searchBase + '&'} />
                 
             </FetchedData>
         );
