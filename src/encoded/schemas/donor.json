@@ -42,12 +42,13 @@
             "description": "Some donors are part of particular data collections",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "type": "string",
                 "enum": [
                     "DREAM",
                     "ENCORE",
-                    "EN-Tex",
+                    "GTEx",
                     "SESCC"]
             }
         }

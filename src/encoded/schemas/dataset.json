@@ -73,13 +73,14 @@
             "title": "Tags",
             "description": "Some datasets are part of particular data collections",
             "type": "array",
+            "uniqueItems": true,
             "default": [],
             "items": {
                 "type": "string",
                 "enum": [
                     "DREAM",
                     "ENCORE",
-                    "EN-Tex",
+                    "GTEx",
                     "SESCC"]
             }
         },
