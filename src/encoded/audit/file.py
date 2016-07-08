@@ -629,8 +629,7 @@ def get_chip_seq_bam_read_depth(bam_file):
         return False
 
     # Check to see if bam is from ENCODE or modERN pipelines
-    if (bam_file['lab'] != '/labs/encode-processing-pipeline/') or \
-            (bam_file['step_run'] != '/analysis-step-runs/a72059ad-5a54-4c27-b0ef-a20c17f76a66/'):
+    if bam_file['lab'] not in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/']:
         return False
 
     if has_pipelines(bam_file) is False:
@@ -766,10 +765,8 @@ def audit_file_chip_seq_control_read_depth(value, system):
     if value['output_type'] in ['transcriptome alignments', 'unfiltered alignments']:
         return
 
-    if value['lab'] != '/labs/encode-processing-pipeline/':
+    if value['lab'] not in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/']:
         return
-
-
 
     if 'analysis_step_version' not in value:
         detail = 'ENCODE Processed alignment file {} has '.format(value['@id']) + \
@@ -846,6 +843,7 @@ def audit_file_chip_seq_control_read_depth(value, system):
 
 def check_control_read_depth_standards(value, read_depth, target_name, is_control_file, control_to_target, target_investigated_as):
     marks = pipelines_with_read_depth['Histone ChIP-seq']
+    modERN_cutoff = pipelines_with_read_depth['Transcription factor ChIP-seq pipeline (modERN)']
 
     if is_control_file is True:  # treat this file as control_bam -
         # raising insufficient control read depth
@@ -899,7 +897,17 @@ def check_control_read_depth_standards(value, read_depth, target_name, is_contro
                          'June 2015 standards, and 10000000 usable fragments according to' + \
                          ' ENCODE2 standards.'
                 yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
-        elif 'transcription factor' in target_investigated_as:  # was absent previusly, was merged with narrow marks
+        elif 'transcription factor' in target_investigated_as:
+            if value['lab'] == '/labs/kevin-white/':
+                if read_depth < modERN_cutoff:
+                    detail = 'Control modERN processed alignment file {} has {} '.format(
+                        value['@id'], read_depth) + 'usable fragments. Control for ChIP-seq ' + \
+                        'assays and target {} '.format(control_to_target) + \
+                        'investigated as transcription factor requires ' + \
+                        '{} usable fragments, according to '.format(modERN_cutoff) + \
+                        'the standards defined by the modERN project.'
+                yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
+
             if read_depth >= 10000000 and read_depth < marks['narrow']:
                 detail = 'Control ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                                      read_depth) + \
