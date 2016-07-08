@@ -301,6 +301,20 @@
                 "mixed"
             ]
         },
+        "tags": {
+            "title": "Tags",
+            "description": "Some biosamples are part of particular data collections",
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string",
+                "enum": [
+                    "DREAM",
+                    "ENCORE",
+                    "EN-Tex",
+                    "SESCC"]
+            }
+        },
         "derived_from": {
             "title": "Derived from",
             "description": "A biosample that the sample derives from via a construct or treatment.",

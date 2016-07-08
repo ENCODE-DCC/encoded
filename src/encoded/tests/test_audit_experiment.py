@@ -1098,13 +1098,30 @@ def test_audit_experiment_replicate_with_no_files(testapp,
                                                   base_replicate,
                                                   base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
-    testapp.patch_json(base_experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released',
+                                                'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing raw data in replicate' for error in errors_list)
+
+
+def test_audit_experiment_replicate_with_no_files_dream(testapp,
+                                                        base_experiment,
+                                                        base_replicate,
+                                                        base_library):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq',
+                                                'tags': ['DREAM'],
+                                                'status': 'released',
+                                                'date_released': '2016-01-01'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'missing raw data in replicate' for error in errors_list)
 
 
 def test_audit_experiment_replicate_with_no_files_warning(testapp, file_bed_methyl,
