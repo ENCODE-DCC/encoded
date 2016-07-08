@@ -334,6 +334,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                 <div>
                     {showFileCount ? <div className="file-gallery-counts">Displaying {filteredCount} of {unfilteredCount} files</div> : null}
                     <SortTablePanel header={filePanelHeader} noDefaultClasses={this.props.noDefaultClasses}>
+                        <RawFileTable files={files.raw} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} />
                         <SortTable title={<CollapsingTitle title="Raw data" collapsed={this.state.collapsed.raw} handleCollapse={this.handleCollapse.bind(null, 'raw')} />} collapsed={this.state.collapsed.raw}
                             list={files.raw} columns={this.rawTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
                         <SortTable title={<CollapsingTitle title="Raw data" collapsed={this.state.collapsed.rawArray} handleCollapse={this.handleCollapse.bind(null, 'rawArray')} />} collapsed={this.state.collapsed.rawArray}
@@ -347,6 +348,75 @@ var FileTable = module.exports.FileTable = React.createClass({
                 </div>
             );
         }
+        return null;
+    }
+});
+
+
+var RawFileTable = React.createClass({
+    propTypes: {
+        files: React.PropTypes.array, // Raw files to display
+        meta: React.PropTypes.object // Extra metadata in the same format passed to SortTable
+    },
+
+    render: function() {
+        var {files, meta} = this.props;
+
+        if (files && files.length) {
+
+            // Make object keyed by all files' @ids to make searching easy. Each key's value
+            // points to the corresponding file object.
+            var filesKeyed = {};
+            files.forEach(file => {
+                filesKeyed[file['@id']] = file;
+            });
+
+            // Generate the sorting keys for raw paired files.
+            files.forEach((file, i) => {
+                // Don't consider sorting unless the file has a single biological replicate and
+                // is paired with another file, and the paired file is in our list too. The
+                // file might already have a sorting key from a previous iteration, so skip
+                // those too.
+                if (!file.sortKey && file.biological_replicates && file.biological_replicates.length === 1 && file.paired_with && filesKeyed[file.paired_with]) {
+                    var pairedFile = filesKeyed[file.paired_with];
+
+                    // Convert biological replicate number to a 2-digit string with leading
+                    // zero if needed. Using leading zero because we're sorting, and want to
+                    // allow for up to 99 biological replicates.
+                    var br = globals.zeroFill(file.biological_replicates[0], 2);
+
+                    // Add a property to the file so it can be sorted. The property comprises
+                    // the biological replicate concatenated with the earlier-sorting of the
+                    // two paired file @ids. Add the same key to the paired file, which
+                    // makes the shared @id effectively a pair identifier. Also add a number
+                    // to each file pair to help generate a CSS class for the pair.
+                    file.sortKey = br + (file['@id'] <= file.paired_with ? file['@id'] : file.paired_with);
+                    pairedFile.sortKey = file.sortKey + pairedFile.paired_end;
+                    file.sortKey = file.sortKey + file.paired_end;
+                    file.sortPair = pairedFile.sortPair = i + 1;
+                }
+            });
+
+            console.log(files.map(file => file.sortKey + ':' + file.sortPair));
+
+            return (
+                <table className="table table-striped">
+                    <tbody>
+                        {files.sort((a,b) => a > b ? 1 : (a < b ? -1 : 0)).map((file, i) => {
+                            return (
+                                <tr key={i}>
+                                    <td>{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''}</td>
+                                    <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
+                                    <td>{file.accession}</td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            );
+        }
+
+        // No files to display
         return null;
     }
 });
