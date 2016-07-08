@@ -760,8 +760,6 @@ def audit_file_chip_seq_control_read_depth(value, system):
     if value['file_format'] != 'bam':
         return
 
-
-
     if value['output_type'] in ['transcriptome alignments', 'unfiltered alignments']:
         return
 
@@ -857,7 +855,7 @@ def check_control_read_depth_standards(value, read_depth, target_name, is_contro
         if control_to_target == 'empty':
             return
 
-        elif 'broad histone mark' in target_investigated_as: #  control_to_target in broad_peaks_targets:
+        elif 'broad histone mark' in target_investigated_as:
             if read_depth >= marks['narrow'] and read_depth < marks['broad']:
                 detail = 'Control ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                                      read_depth) + \
