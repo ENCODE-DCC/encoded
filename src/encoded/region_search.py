@@ -352,18 +352,17 @@ def region_search(context, request):
 def suggest(context, request):
     text = ''
     requested_genome = ''
+    if 'q' in request.params:
+        text = request.params.get('q', '')
+        requested_genome = request.params.get('genome', '')
+        # print(requested_genome)
+
     result = {
         '@id': '/suggest/?' + urlencode({'genome': requested_genome, 'q': text}, ['q', 'genome']),
         '@type': ['suggest'],
         'title': 'Suggest',
         '@graph': [],
     }
-    if 'q' in request.params:
-        text = request.params.get('q', '')
-        requested_genome = request.params.get('genome', '')
-        # print(requested_genome)
-    else:
-        return []
     es = request.registry[ELASTIC_SEARCH]
     query = {
         "suggester": {
@@ -377,7 +376,7 @@ def suggest(context, request):
     try:
         results = es.suggest(index='annotations', body=query)
     except:
-        return {}
+        return result
     else:
         result['@id'] = '/suggest/?' + urlencode({'genome': requested_genome, 'q': text}, ['q','genome'])
         result['@graph'] = []
