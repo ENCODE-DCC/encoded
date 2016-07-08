@@ -105,6 +105,12 @@ var Annotation = React.createClass({
         // Get a list of reference links, if any
         var references = PubReferenceList(context.references);
 
+        // Render tags badges
+        var tagBadges;
+        if (context.tags && context.tags.length) {
+            tagBadges = context.tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
+
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -229,6 +235,13 @@ var Annotation = React.createClass({
                                             <dd>{references}</dd>
                                         </div>
                                     : null}
+
+                                    {tagBadges ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd>{tagBadges}</dd>
+                                        </div>
+                                    : null}
                                 </dl>
                             </div>
                         </div>
@@ -279,6 +292,12 @@ var PublicationData = React.createClass({
 
         // Render the publication links
         var referenceList = PubReferenceList(context.references);
+
+        // Render tags badges
+        var tagBadges;
+        if (context.tags && context.tags.length) {
+            tagBadges = context.tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
 
         return (
             <div className={itemClass}>
@@ -372,6 +391,13 @@ var PublicationData = React.createClass({
                                             <dd>{referenceList}</dd>
                                         </div>
                                     : null}
+
+                                    {tagBadges ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd>{tagBadges}</dd>
+                                        </div>
+                                    : null}
                                 </dl>
                             </div>
                         </div>
@@ -421,6 +447,12 @@ var Reference = React.createClass({
 
         // Get a list of reference links, if any
         var references = PubReferenceList(context.references);
+
+        // Render tags badges
+        var tagBadges;
+        if (context.tags && context.tags.length) {
+            tagBadges = context.tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
 
         return (
             <div className={itemClass}>
@@ -514,6 +546,13 @@ var Reference = React.createClass({
                                             <dd>{references}</dd>
                                         </div>
                                     : null}
+
+                                    {tagBadges ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd>{tagBadges}</dd>
+                                        </div>
+                                    : null}
                                 </dl>
                             </div>
                         </div>
@@ -569,6 +608,12 @@ var Project = React.createClass({
 
         // Get a list of reference links
         var references = PubReferenceList(context.references);
+
+        // Render tags badges
+        var tagBadges;
+        if (context.tags && context.tags.length) {
+            tagBadges = context.tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
 
         return (
             <div className={itemClass}>
@@ -683,6 +728,13 @@ var Project = React.createClass({
                                             <dd>{references}</dd>
                                         </div>
                                     : null}
+
+                                    {tagBadges ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd>{tagBadges}</dd>
+                                        </div>
+                                    : null}
                                 </dl>
                             </div>
                         </div>
@@ -739,6 +791,12 @@ var UcscBrowserComposite = React.createClass({
 
         // Get a list of reference links, if any
         var references = PubReferenceList(context.references);
+
+        // Render tags badges
+        var tagBadges;
+        if (context.tags && context.tags.length) {
+            tagBadges = context.tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
 
         return (
             <div className={itemClass}>
@@ -837,6 +895,13 @@ var UcscBrowserComposite = React.createClass({
                                         <div data-test="references">
                                             <dt>Publications</dt>
                                             <dd>{references}</dd>
+                                        </div>
+                                    : null}
+
+                                    {tagBadges ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd>{tagBadges}</dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -1176,6 +1241,12 @@ var Series = module.exports.Series = React.createClass({
         }
         var terms = (context.biosample_term_name && context.biosample_term_name.length) ? _.uniq(context.biosample_term_name) : [];
 
+        // Render tags badges
+        var tagBadges;
+        if (context.tags && context.tags.length) {
+            tagBadges = context.tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
+
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -1267,6 +1338,13 @@ var Series = module.exports.Series = React.createClass({
                                         <div data-test="submittercomment">
                                             <dt>Submitter comment</dt>
                                             <dd>{context.submitter_comment}</dd>
+                                        </div>
+                                    : null}
+
+                                    {tagBadges ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd>{tagBadges}</dd>
                                         </div>
                                     : null}
                                 </dl>
