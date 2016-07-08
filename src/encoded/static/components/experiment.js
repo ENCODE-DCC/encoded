@@ -121,6 +121,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 extraction_method:              {values: {}, value: undefined, component: {}, title: 'Extraction method',         test: 'extractionmethod'},
                 fragmentation_method:           {values: {}, value: undefined, component: {}, title: 'Fragmentation method',      test: 'fragmentationmethod'},
                 library_size_selection_method:  {values: {}, value: undefined, component: {}, title: 'Size selection method',     test: 'sizeselectionmethod'},
+                strand_specificity:             {values: {}, value: undefined, component: {}, title: 'Strand specificity',        test: 'strandspecificity'},
                 spikeins_used:                  {values: {}, value: undefined, component: {}, title: 'Spike-ins datasets',        test: 'spikeins'}
             };
 
@@ -171,13 +172,14 @@ var Experiment = module.exports.Experiment = React.createClass({
                 }
             };
             var libraryComponents = {
-                nucleic_acid_starting_quantity: function(library) {
+                nucleic_acid_starting_quantity: library => {
                     if (library.nucleic_acid_starting_quantity && library.nucleic_acid_starting_quantity_units) {
                         return <span>{library.nucleic_acid_starting_quantity}<span className="unit">{library.nucleic_acid_starting_quantity_units}</span></span>;
                     }
                     return null;
                 },
-                spikeins_used: function(library) {
+                strand_specificity: library => <span>{library.strand_specificity ? 'Strand-specific' : 'Non-strand-specific'}</span>,
+                spikeins_used: library => {
                     var spikeins = library.spikeins_used;
                     if (spikeins && spikeins.length) {
                         return (
@@ -376,6 +378,12 @@ var Experiment = module.exports.Experiment = React.createClass({
         // Make a list of reference links, if any
         var references = PubReferenceList(context.references);
 
+        // Render tags badges
+        var tagBadges;
+        if (context.tags && context.tags.length) {
+            tagBadges = context.tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
+
         // XXX This makes no sense.
         //var control = context.possible_controls[0];
         return (
@@ -544,6 +552,13 @@ var Experiment = module.exports.Experiment = React.createClass({
                                         <div data-test="submittercomment">
                                             <dt>Submitter comment</dt>
                                             <dd>{context.submitter_comment}</dd>
+                                        </div>
+                                    : null}
+
+                                    {tagBadges ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd>{tagBadges}</dd>
                                         </div>
                                     : null}
                                 </dl>
