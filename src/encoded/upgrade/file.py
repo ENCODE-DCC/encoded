@@ -453,3 +453,8 @@ def file_6_7(value, system):
 
     if 'aliases' in value:
         value['aliases'] = list(set(value['aliases']))
+
+
+@upgrade_step('file', '7', '8')
+def file_7_8(value, system):
+    return
