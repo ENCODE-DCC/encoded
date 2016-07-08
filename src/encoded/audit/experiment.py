@@ -294,6 +294,7 @@ def audit_experiment_standards_dispatcher(value, system):
                                     'original_files.quality_metrics.quality_metric_of',
                                     'original_files.quality_metrics.quality_metric_of.replicate',
                                     'original_files.derived_from',
+                                    'original_files.step_run',
                                     'original_files.analysis_step_version',
                                     'original_files.analysis_step_version.software_versions',
                                     'original_files.analysis_step_version.software_versions.software',
@@ -899,10 +900,8 @@ def check_file_chip_seq_library_complexity(alignment_file):
     if alignment_file['output_type'] == 'transcriptome alignments':
         return
 
-    if (alignment_file['lab'] != '/labs/encode-processing-pipeline/') \
-        or (alignment_file['step_run'] !=
-            '/analysis-step-runs/a72059ad-5a54-4c27-b0ef-a20c17f76a66/'):
-                return
+    if alignment_file['lab'] not in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/']:
+        return
 
     if ('quality_metrics' not in alignment_file) or (alignment_file.get('quality_metrics') == []):
         return
