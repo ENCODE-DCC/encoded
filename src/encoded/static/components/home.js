@@ -116,6 +116,19 @@ var AssayClicking = React.createClass({
         // var temp = category;
         // var oldSearchBase = this.props.searchBase;
         //var updatedLink = this.props.current + '&assay_slims=' + category;
+        var oldLink = this.props.current;
+        var startingIndex = oldLink.search("&assay_slims=");
+        if (startingIndex != -1) { // if &assay_slims already is in this.props.current
+            startingIndex += 13; // adding the length of "&assay_slims" to make startingIndex the index of the category
+            var endingIndex = startingIndex;
+            while (endingIndex < oldLink.size()-1 && oldLink.substring(endingIndex, endingIndex + 1) != "&") { // find 
+                endingIndex++;
+            }
+            if(endingIndex != oldLink.size()-1){
+                
+            }
+        }
+        
         this.props.callback(this.props.current + '&assay_slims=' + category);
         //return {this.props.callback.bind(null, this.props.current + '&assay_slims=' + category)};
         //return {updatedLink: this.props.current + '&assay_slims=' + category};
@@ -211,7 +224,7 @@ var AssayClicking = React.createClass({
                     <img src="static/img/classic-image.jpg" className="testImage"/>
                     
                     <svg id="classic-image-svg-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3840 1440" className="classic-svg" 
-                        onClick={this.props.callback.bind(null, this.state.updatedLink)}>
+                        >
                     
                     <rect id = "3D+chromatin+structure" x="1025" y="774.1" class="st0" width="240.4" height="213.2" className="box"/>
                     <rect id = "DNA+accessibility" x="1289.3" y="774.1" class="st0" width="255.6" height="213.2" className="box"/>
@@ -318,8 +331,8 @@ var HomepageChart = React.createClass({
         navigate: React.PropTypes.func
     },
 
-    componentDidMount: function() {
-        // Draw the chart of search results given in this.props.data.facets. Since D3 doesn't work
+    drawChart: function() {
+          // Draw the chart of search results given in this.props.data.facets. Since D3 doesn't work
         // with the React virtual DOM, we have to load it separately using the webpack .ensure
         // mechanism. Once the callback is called, it's loaded and can be referenced through
         // require.
@@ -444,6 +457,14 @@ var HomepageChart = React.createClass({
                 }
             });
         }.bind(this));
+    },
+
+    componentDidMount: function() {
+        this.drawChart();
+    },
+
+    componentDidUpdate: function(){
+        this.drawChart();
     },
 
     // var legendHolder = document.createElement('div');
