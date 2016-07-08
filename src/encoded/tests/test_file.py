@@ -130,3 +130,10 @@ def test_file_external_accession(testapp, external_accession):
     item = testapp.get(res.location).json
     assert 'accession' not in item
     assert item['@id'] == '/files/EXTERNAL/'
+
+
+def test_file_technical_replicates(testapp, fastq_pair_1):
+    res = testapp.post_json('/file', fastq_pair_1, status=201)
+    location1 = res.json['@graph'][0]['@id']
+    res = testapp.get(location1)
+    assert res.json['technical_replicates'] == ['1_1']
