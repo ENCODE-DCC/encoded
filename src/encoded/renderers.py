@@ -201,8 +201,7 @@ def canonical_redirect(event):
         return
 
     if (parse_qs(canonical_qs) == parse_qs(request.query_string) and
-            '/suggest/' in request_path):
-        print('a match')
+            '/suggest' in request_path):
         return
 
     qs = canonical_qs or request.query_string
