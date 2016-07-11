@@ -51,7 +51,8 @@ var Home = module.exports.Home = React.createClass({
                                         Project: Mouse
                                     </div>
                                     <center> <hr width="80%" position="static"></hr> </center>
-                                    <TestLoaderMouse />
+                                    <HomepageChartLoader searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus'} 
+                                         callback={this.callback}/>
                                 </div>
                             </div>
                         </TabPanelPane>
@@ -62,7 +63,8 @@ var Home = module.exports.Home = React.createClass({
                                         Project: Worm
                                     </div>
                                     <center> <hr width="80%" position="static"></hr> </center>
-                                    <TestLoaderWorm />
+                                    <HomepageChartLoader searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Caenorhabditis+elegans'} 
+                                         callback={this.callback}/>
                                 </div>
                             </div>
                         </TabPanelPane>
@@ -73,7 +75,14 @@ var Home = module.exports.Home = React.createClass({
                                         Project: Fly
                                     </div>
                                     <center> <hr width="80%" position="static"></hr> </center>
-                                    <TestLoaderFly />
+                                    <HomepageChartLoader searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+melanogaster' +
+                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+pseudoobscura' +
+                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+simulans' +
+                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+mojavensis' +
+                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+ananassae' +
+                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+virilis' +
+                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+yakuba'} 
+                                                        callback={this.callback}/>
                                 </div>
                             </div>
                         </TabPanelPane>
@@ -85,7 +94,7 @@ var Home = module.exports.Home = React.createClass({
                             Biosample Type
                         </div>
                         <center> <hr width="80%"></hr> </center>
-                        <HomepageChartLoader2 />
+                        <HomepageChartLoader2 searchBase={this.state.current} callback={this.callback}/>
                     </div>
                 
                 </div>
@@ -116,23 +125,27 @@ var AssayClicking = React.createClass({
         // var temp = category;
         // var oldSearchBase = this.props.searchBase;
         //var updatedLink = this.props.current + '&assay_slims=' + category;
-        var oldLink = this.props.current;
-        var startingIndex = oldLink.search("&assay_slims=");
-        if (startingIndex != -1) { // if &assay_slims already is in this.props.current
-            startingIndex += 13; // adding the length of "&assay_slims" to make startingIndex the index of the category
-            var endingIndex = startingIndex;
-            while (endingIndex < oldLink.size()-1 && oldLink.substring(endingIndex, endingIndex + 1) != "&") { // find 
-                endingIndex++;
+        var oldLink = this.props.current; // getting original search
+        var startingIndex = oldLink.search("&assay_slims="); // getting index of "&assay_slims=" in original search link if it's there
+        if (startingIndex != -1) { // if &assay_slims already is in original search link, then remove it so we can add the correct "&assay_slims="
+            var endingIndex = startingIndex + 13; // adding the length of "&assay_slims" to make endingIndex the index of the category
+            while (endingIndex < oldLink.length-1 && oldLink.substring(endingIndex, endingIndex + 1) != "&") { // either get to end of string or find next parameter starting with "&"
+                endingIndex++; // increase endingIndex until the end of the "&assay_slims=" parameter
+                console.log("endingIndex: " + endingIndex);
             }
-            if(endingIndex != oldLink.size()-1){
-                
+            if(endingIndex != oldLink.length-1){ // if did not reach end of string, "&assay_slims=" is in middle of search
+                console.log("from starting to ending: " + oldLink.substr(startingIndex, endingIndex));
+                oldLink = oldLink.substr(0, startingIndex) + oldLink.substr(endingIndex +1); // assay_slims part is from (startingIndex, endingIndex), so cut that out of oldLink
+            }
+            else{ // "&assay_slims=" is at end of search
+                oldLink = oldLink.substr(0, startingIndex); // assay_slims is from (startingIndex, oldLink.length, so cut that out
             }
         }
         
-        this.props.callback(this.props.current + '&assay_slims=' + category);
+        this.props.callback(oldLink + '&assay_slims=' + category);
         //return {this.props.callback.bind(null, this.props.current + '&assay_slims=' + category)};
         //return {updatedLink: this.props.current + '&assay_slims=' + category};
-        this.setState({updatedLink: this.props.current + '&assay_slims=' + category});
+        this.setState({updatedLink: oldLink + '&assay_slims=' + category});
 
     },
 
@@ -153,10 +166,6 @@ var AssayClicking = React.createClass({
         //     this.props.nodeClickHandler(subnode.id);
         // });
     },
-
-
-
-    
 
 
     componentDidMount: function() {
@@ -221,7 +230,7 @@ var AssayClicking = React.createClass({
             <div ref="graphdisplay"> 
              <div className="overall-classic">
 
-                    <img src="static/img/classic-image.jpg" className="testImage"/>
+                    <img src="static/img/classic-image.jpg" className="classicImage"/>
                     
                     <svg id="classic-image-svg-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3840 1440" className="classic-svg" 
                         >
@@ -243,81 +252,7 @@ var AssayClicking = React.createClass({
         );
     }
 
-
-    // render: function() {
-    //     return (
-    //         <FetchedData>
-    //             <Param name="data" url={'/matrix/' + this.state.search} />
-    //             <HomepageChart searchBase={this.state.search + '&'} />
-    //         </FetchedData>
-    //     );
-    // }
-
 });
-
-
-// function gettingID(){
-
-//     var tempID = this.id;
-
-
-//     var AssayChartLoader = React.createClass({
-
-//     // getDefaultProps: function () {
-//     //     // Default searchBase if none passed in
-        
-//     //     return {searchBase: '?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'};
-//     //     //return {searchBase: '?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&organ_slims=bronchus'};
-//     // },
-
-//     // getInitialState: function() {
-//     //     return {search: this.props.searchBase};
-//     // },
-
-//     bindClickHandlers: function(d3, el) {
-//         // Add click event listeners txo each node rendering. Node's ID is its ENCODE object ID
-//         var svg = d3.select(el);
-//         var nodes = svg.selectAll("rect");
-//         //var subnodes = svg.selectAll("g.subnode circle");
-
-//         nodes.on('click', rect => {
-//             this.props.sortByAssayCategory(rect.id);
-//         });
-//         // subnodes.on('click', subnode => {
-//         //     d3.event.stopPropagation();
-//         //     this.props.nodeClickHandler(subnode.id);
-//         // });
-//     },
-
-//     sortByAssayCategory: function(category) {
-//         var oldSearchBase = this.props.searchBase;
-//         var search = oldSearchBase + '&assay_slims=' + category;
-
-//     },
-
-//     render: function() {
-//         return (
-//             <FetchedData>
-//                 <Param name="data" url={'/matrix/' + this.state.search} />
-//                 <HomepageChart searchBase={this.state.search + '&'} />
-//             </FetchedData>
-//         );
-//     }
-
-// });
-//     return (null);
-
-// }
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -530,116 +465,109 @@ var HumanSecondLoader = React.createClass({
 
 
 
+// // Initiates the GET request to search for experiments, and then pass the data to the HomepageChart
+// // component to draw the resulting chart.
+// var TestLoaderHuman = React.createClass({
 
+//     getDefaultProps: function () {
+//         // Default searchBase if none passed in
+//         //var oldSearch = this.props.searchBase;
+//         return {searchBase: '?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'};
+//         //return {searchBase: '?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&organ_slims=bronchus'};
+//     },
 
+//     getInitialState: function() {
+//         return {search: this.props.searchBase};
+//     },
 
+//     render: function() {
+//         return (
+//             <FetchedData>
+//                 <Param name="data" url={'/matrix/' + this.state.search} />
+//                 <HomepageChart searchBase={this.state.search + '&'} />
+//             </FetchedData>
+//         );
+//     }
 
+// });
 
+// // Initiates the GET request to search for experiments, and then pass the data to the HomepageChart
+// // component to draw the resulting chart.
+// var TestLoaderMouse = React.createClass({
 
+//     getDefaultProps: function () {
+//         // Default searchBase if none passed in
+//         return {searchBase: '?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus'};
+//     },
 
+//     getInitialState: function() {
+//         return {search: this.props.searchBase};
+//     },
 
+//     render: function() {
+//         return (
+//             <FetchedData>
+//                 <Param name="data" url={'/matrix/' + this.state.search} />
+//                 <HomepageChart searchBase={this.state.search + '&'} />
+//             </FetchedData>
+//         );
+//     }
 
+// });
 
+// // Initiates the GET request to search for experiments, and then pass the data to the HomepageChart
+// // component to draw the resulting chart.
+// var TestLoaderWorm = React.createClass({
 
+//     getDefaultProps: function () {
+//         // Default searchBase if none passed in
+//         return {searchBase: '?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=Caenorhabditis+elegans'};
+//     },
 
+//     getInitialState: function() {
+//         return {search: this.props.searchBase};
+//     },
 
-// Initiates the GET request to search for experiments, and then pass the data to the HomepageChart
-// component to draw the resulting chart.
-var TestLoaderHuman = React.createClass({
+//     render: function() {
+//         return (
+//             <FetchedData>
+//                 <Param name="data" url={'/matrix/' + this.state.search} />
+//                 <HomepageChart searchBase={this.state.search + '&'} />
+//             </FetchedData>
+//         );
+//     }
 
-    getDefaultProps: function () {
-        // Default searchBase if none passed in
-        //var oldSearch = this.props.searchBase;
-        return {searchBase: '?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'};
-        //return {searchBase: '?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&organ_slims=bronchus'};
-    },
+// });
 
-    getInitialState: function() {
-        return {search: this.props.searchBase};
-    },
+// // Initiates the GET request to search for experiments, and then pass the data to the HomepageChart
+// // component to draw the resulting chart.
+// var TestLoaderFly = React.createClass({
 
-    render: function() {
-        return (
-            <FetchedData>
-                <Param name="data" url={'/matrix/' + this.state.search} />
-                <HomepageChart searchBase={this.state.search + '&'} />
-            </FetchedData>
-        );
-    }
+//     getDefaultProps: function () {
+//         // Default searchBase if none passed in
+//         return {searchBase: '?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=Drosophila+melanogaster' + 
+//                             '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+pseudoobscura' +
+//                             '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+simulans' +
+//                             '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+mojavensis' +
+//                             '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+ananassae' +
+//                             '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+virilis' +
+//                             '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+yakuba'};
+//     },
 
-});
+//     getInitialState: function() {
+//         return {search: this.props.searchBase};
+//     },
 
-// Initiates the GET request to search for experiments, and then pass the data to the HomepageChart
-// component to draw the resulting chart.
-var TestLoaderMouse = React.createClass({
+//     render: function() {
+//         return (
+//             <FetchedData>
+//                 <Param name="data" url={'/matrix/' + this.state.search} />
+//                 <HomepageChart searchBase={this.state.search + '&'} />
+//             </FetchedData>
+//         );
+//     }
 
-    getDefaultProps: function () {
-        // Default searchBase if none passed in
-        return {searchBase: '?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus'};
-    },
-
-    getInitialState: function() {
-        return {search: this.props.searchBase};
-    },
-
-    render: function() {
-        return (
-            <FetchedData>
-                <Param name="data" url={'/matrix/' + this.state.search} />
-                <HomepageChart searchBase={this.state.search + '&'} />
-            </FetchedData>
-        );
-    }
-
-});
-
-// Initiates the GET request to search for experiments, and then pass the data to the HomepageChart
-// component to draw the resulting chart.
-var TestLoaderWorm = React.createClass({
-
-    getDefaultProps: function () {
-        // Default searchBase if none passed in
-        return {searchBase: '?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=Caenorhabditis+elegans'};
-    },
-
-    getInitialState: function() {
-        return {search: this.props.searchBase};
-    },
-
-    render: function() {
-        return (
-            <FetchedData>
-                <Param name="data" url={'/matrix/' + this.state.search} />
-                <HomepageChart searchBase={this.state.search + '&'} />
-            </FetchedData>
-        );
-    }
-
-});
-
-// Initiates the GET request to search for experiments, and then pass the data to the HomepageChart
-// component to draw the resulting chart.
-var TestLoaderFly = React.createClass({
-
-    getDefaultProps: function () {
-        // Default searchBase if none passed in
-        return {searchBase: '?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=Drosophila+melanogaster'};
-    },
-
-    getInitialState: function() {
-        return {search: this.props.searchBase};
-    },
-
-    render: function() {
-        return (
-            <FetchedData>
-                <Param name="data" url={'/matrix/' + this.state.search} />
-                <HomepageChart searchBase={this.state.search + '&'} />
-            </FetchedData>
-        );
-    }
-
-});
+// });
 
 
 // Initiates the GET request to search for experiments, and then pass the data to the HomepageChart
@@ -648,6 +576,15 @@ var HomepageChartLoader = React.createClass({
     propTypes: {
         
         callback: React.PropTypes.func
+    },
+
+    updateSearch: function(newSearch) {
+
+        this.props.callback(newSearch);
+    },
+
+    componentDidMount: function(){
+        this.updateSearch(this.props.searchBase);
     },
 
     // getDefaultProps: function () {
@@ -680,7 +617,8 @@ var HomepageChart2 = React.createClass({
         navigate: React.PropTypes.func
     },
 
-    componentDidMount: function() {
+    drawChart: function() {
+
         // Draw the chart of search results given in this.props.data.facets. Since D3 doesn't work
         // with the React virtual DOM, we have to load it separately using the webpack .ensure
         // mechanism. Once the callback is called, it's loaded and can be referenced through
@@ -733,6 +671,15 @@ var HomepageChart2 = React.createClass({
             });
 
         }.bind(this));
+
+    },
+
+    componentDidMount: function() {
+        this.drawChart();
+    },
+
+    componentDidUpdate: function() {
+        this.drawChart();
     },
 
     render: function() {
@@ -744,22 +691,27 @@ var HomepageChart2 = React.createClass({
 });
 
 var HomepageChartLoader2 = React.createClass({
-
-    getDefaultProps: function () {
-        // Default searchBase if none passed in
-        //return {searchBase: '?type=Experiment&files.file_type=fastq&assay_title=ChIP-seq'};
-        return {searchBase: '?type=Experiment&status=released'};
+    propTypes: {
+        
+        callback: React.PropTypes.func
     },
 
-    getInitialState: function() {
-        return {search: this.props.searchBase};
-    },
+
+    // getDefaultProps: function () {
+    //     // Default searchBase if none passed in
+    //     //return {searchBase: '?type=Experiment&files.file_type=fastq&assay_title=ChIP-seq'};
+    //     return {searchBase: '?type=Experiment&status=released'};
+    // },
+
+    // getInitialState: function() {
+    //     return {search: this.props.searchBase};
+    // },
 
     render: function() {
         return (
             <FetchedData>
-                <Param name="data" url={'/matrix/' + this.state.search} />
-                <HomepageChart2 searchBase={this.state.search + '&'} />
+                <Param name="data" url={'/matrix/' + this.props.searchBase} />
+                <HomepageChart2 searchBase={this.props.searchBase + '&'} />
             </FetchedData>
         );
     }
