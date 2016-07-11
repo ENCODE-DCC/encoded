@@ -282,6 +282,8 @@ def region_search(context, request):
             chromosome, start, end = get_ensemblid_coordinates(region, assembly)
         elif region.startswith('chr'):
             chromosome, start, end = sanitize_coordinates(region)
+    else:
+        chromosome, start, end = ('', '', '')
     
     # Check if there are valid coordinates
     if chromosome == '' or start == '' or end == '':
