@@ -19,11 +19,42 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/documents" }
     ],
-
-
-WE have to ADD dependency that requires at least 1 item in treatments/techniques lists
-
-
+    "dependencies": {
+        "modification_techniques":{
+            "oneOf":[
+                {
+                    "modification_treatments": {
+                        "minItems": 0
+                    },
+                    "properties": {
+                        "modification_techniques": {
+                            "minItems": 1
+                        }
+                    }                   
+                },
+                {
+                    "modification_treatments": {
+                        "minItems": 1
+                    },
+                    "properties": {
+                        "modification_techniques": {
+                            "minItems": 0
+                        }
+                    }                   
+                },
+                {
+                    "modification_treatments": {
+                        "minItems": 1
+                    },
+                    "properties": {
+                        "modification_techniques": {
+                            "minItems": 1
+                        }
+                    }                   
+                }
+            ]
+        }       
+    },
     "properties": {
         "schema_version": {
             "default": "1"
