@@ -269,7 +269,7 @@ def region_search(context, request):
     
     if annotation != '*':
         if annotation.lower().startswith('ens'):
-            chromosome, start, end = get_ensemblid_coordinates(region, assembly)
+            chromosome, start, end = get_ensemblid_coordinates(annotation, assembly)
         else:
             chromosome, start, end = get_annotation_coordinates(es, annotation, assembly)
     elif region != '*':
