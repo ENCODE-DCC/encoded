@@ -23,20 +23,13 @@
         "schema_version": {
             "hidden comment": "Bump the default in the subclasses."
         },
-
         "vectors": {
             "description": "Vector(s) used to perform the genetic modification.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
-            "items": {
-     
-
-    WE have to RETHINK vector to point out to ADDGENE
-    ON the other hand if lab performed modification to the vector - shouldwe require submission to ADDGENE?
-    ONE OF THE options is to add VECTOR object that will be minimal CONSTRUCT version and keep an array of these here.
-
-         
+            "items": 
+                {
                     "description": "Vector details.",
                     "type": "object",
                     "additionalProperties": false,
