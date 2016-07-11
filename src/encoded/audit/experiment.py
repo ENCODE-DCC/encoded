@@ -1318,7 +1318,7 @@ def scanFilesForPipelineTitle_yes_chipseq(alignment_files, pipeline_titles):
     for f in alignment_files:
         if 'file_format' in f and f['file_format'] == 'bam' and \
            f['status'] not in ['replaced', 'revoked', 'deleted'] and \
-           f['lab'] == '/labs/encode-processing-pipeline/' and \
+           f['lab'] in ['/labs/encode-processing-pipeline/', 'kevin-white'] and \
            'analysis_step_version' in f and \
            'analysis_step' in f['analysis_step_version'] and \
            'pipelines' in f['analysis_step_version']['analysis_step']:
