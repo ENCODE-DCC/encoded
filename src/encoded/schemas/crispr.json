@@ -4,7 +4,7 @@
     "id": "/profiles/crispr.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["lab", "award", "source"],
+    "required": ["lab", "award", "modification_type", "source"],
     "identifyingProperties": ["uuid","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
