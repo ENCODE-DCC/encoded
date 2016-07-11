@@ -2,6 +2,12 @@
 Change log for file.json
 =========================
 
+Schema version 8
+----------------
+
+* *technical_replicates* was added as a calculated field.
+
+
 Schema version 6
 ----------------
 
