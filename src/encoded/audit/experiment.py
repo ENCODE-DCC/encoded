@@ -1208,8 +1208,8 @@ def check_file_chip_seq_read_depth(file_to_check,
                     'investigated as transcription factor require ' + \
                     '{} usable fragments, according to '.format(modERN_cutoff) + \
                     'the standards defined by the modERN project.'
-            yield AuditFailure('insufficient read depth',
-                               detail, level='NOT_COMPLIANT')
+                yield AuditFailure('insufficient read depth',
+                                   detail, level='NOT_COMPLIANT')
         else:
             if read_depth >= 10000000 and read_depth < marks['narrow']:
                 detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
