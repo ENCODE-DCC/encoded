@@ -200,7 +200,7 @@ def get_rsid_coordinates(id, assembly):
 
 
 def get_ensemblid_coordinates(id, assembly):
-    species = _GENOME_TO_SPECIES['assembly']
+    species = _GENOME_TO_SPECIES[assembly]
     url = '{ensembl}lookup/id/{id}?content-type=application/json'.format(
         ensembl=_ENSEMBL_URL,
         id=id
@@ -267,7 +267,12 @@ def region_search(context, request):
     assembly = request.params.get('genome', '*')
     annotation = request.params.get('annotation', '*')
     
-    if region != '*':
+    if annotation != '*':
+        if annotation.lower().startswith('ens'):
+            chromosome, start, end = get_ensemblid_coordinates(region, assembly)
+        else:
+            chromosome, start, end = get_annotation_coordinates(es, annotation, assembly)
+    elif region != '*':
         region = region.lower()
         if region.startswith('rs'):
             sanitized_region = sanitize_rsid(region)
@@ -277,11 +282,7 @@ def region_search(context, request):
             chromosome, start, end = get_ensemblid_coordinates(region, assembly)
         elif region.startswith('chr'):
             chromosome, start, end = sanitize_coordinates(region)
-    if annotation != '*':
-        chromosome, start, end = get_annotation_coordinates(es, annotation, assembly)
-    else:
-        result['notification'] = 'Please select valid annotation or enter coordinates'
-
+    
     # Check if there are valid coordinates
     if chromosome == '' or start == '' or end == '':
         result['notification'] = 'No annotations found'
