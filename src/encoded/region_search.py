@@ -277,7 +277,7 @@ def region_search(context, request):
             chromosome, start, end = get_ensemblid_coordinates(region, assembly)
         elif region.startswith('chr'):
             chromosome, start, end = sanitize_coordinates(region)
-    elif annotation != '*':
+    if annotation != '*':
         chromosome, start, end = get_annotation_coordinates(es, annotation, assembly)
     else:
         result['notification'] = 'Please select valid annotation or enter coordinates'
