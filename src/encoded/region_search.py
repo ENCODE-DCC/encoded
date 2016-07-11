@@ -266,9 +266,8 @@ def region_search(context, request):
 
     assembly = request.params.get('genome', '*')
     annotation = request.params.get('annotation', '*')
-    if annotation != '*':
-        chromosome, start, end = get_annotation_coordinates(es, annotation, assembly)
-    elif region != '*':
+    
+    if region != '*':
         region = region.lower()
         if region.startswith('rs'):
             sanitized_region = sanitize_rsid(region)
@@ -278,12 +277,10 @@ def region_search(context, request):
             chromosome, start, end = get_ensemblid_coordinates(region, assembly)
         elif region.startswith('chr'):
             chromosome, start, end = sanitize_coordinates(region)
-        else:
-            result['notification'] = 'Please select valid annotation or enter coordinates'
-            return result
+    elif annotation != '*':
+        chromosome, start, end = get_annotation_coordinates(es, annotation, assembly)
     else:
-        result['notification'] = 'Please enter valid coordinates'
-        return result
+        result['notification'] = 'Please select valid annotation or enter coordinates'
 
     # Check if there are valid coordinates
     if chromosome == '' or start == '' or end == '':
