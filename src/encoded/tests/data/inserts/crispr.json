@@ -8,8 +8,8 @@
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
         "source":"gregory-crawford",
-        "insert_sequence": "CTCGGTG",
-        "modification_type": "monoallelic insertion"
+        "insert_sequence": "CTCGGTG"
+
     },
     {
         "aliases": [
@@ -20,7 +20,7 @@
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
         "source":"gregory-crawford",
-        "insert_sequence": "ACTCGT",
-        "modification_type": "monoallelic deletion"
+        "insert_sequence": "ACTCGT"
+        
     }
 ]

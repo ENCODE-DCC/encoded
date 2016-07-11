@@ -315,7 +315,7 @@
             "uniqueItems": true,
             "items": {
                 "title": "Genetic modification",
-                "description": "Genetic modification(s) of the biosample.",
+                "description": "Genetic modification(s).",
                 "comment": "See genetic_modification.json for available identifiers.",
                 "type":  "string",
                 "linkTo": "GeneticModification"

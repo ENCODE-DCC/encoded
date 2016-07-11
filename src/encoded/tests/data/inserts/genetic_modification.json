@@ -1,0 +1,16 @@
+[
+    {
+        "aliases": [
+            "encode:modification-test-1"
+        ],
+        "uuid": "8163d8c9-15c5-4583-8b43-0e21422297a0",
+        "status": "released",
+        "lab": "/labs/robert-waterston/",
+        "award": "/awards/U41HG007355/",
+        "source":"gregory-crawford",
+        "modification_type": "monoallelic deletion",
+        "modification_techniques": [
+        	"encode:crispr-test-1"
+        ]
+    }
+]
