@@ -78,7 +78,8 @@ ORDER = [
     'generic_quality_metric',
     'image',
     'page',
-    'crispr'
+    'crispr',
+    'genetic_modification'
 ]
 
 IS_ATTACHMENT = [

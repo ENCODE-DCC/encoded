@@ -82,6 +82,17 @@ class Treatment(Item):
 
 
 @collection(
+    name='genetic-modifications',
+    properties={
+        'title': 'Genetic modifications',
+        'description': 'Listing of genetic modifications',
+    })
+class GeneticModification(Item):
+    item_type = 'genetic_modification'
+    schema = load_schema('encoded:schemas/genetic_modification.json')
+
+
+@collection(
     name='constructs',
     properties={
         'title': 'Constructs',

@@ -29,17 +29,3 @@ class Crispr(ModificationTechnique):
     item_type = 'crispr'
     schema = load_schema('encoded:schemas/crispr.json')
     embedded = ModificationTechnique.embedded
-
-
-@collection(
-    name='genetic-modifications',
-    properties={
-        'title': "Genetic modifications",
-        'description': 'Listing of all types of genetic modifications.'
-    })
-class GeneticModification(Item):
-    item_type = 'genetic_modification'
-    base_types = ['GeneticModification'] + Item.base_types
-    schema = load_schema('encoded:schemas/genetic_modification.json')
-    embedded = ['treatment',
-                'genetic_modification']
