@@ -171,7 +171,7 @@ EXP_COMPOSITE_DEF_DEFAULT = {
     "shortLabel": "{accession}",
     "color":      "{biosample_term_name}",
     "altColor":   "{biosample_term_name}",
-    "pennantIcon": "http://genome.cse.ucsc.edu/images/encodeThumbnail.jpg https://www.encodeproject.org/ \"ENCODE: Encyclopedia of DNA Elements\"",
+    "pennantIcon": 'http://genome.cse.ucsc.edu/images/encodeThumbnail.jpg https://www.encodeproject.org/ "ENCODE: Encyclopedia of DNA Elements"',
     "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
     "Views":  {
         "tag": "view",
@@ -184,8 +184,7 @@ EXP_COMPOSITE_DEF_DEFAULT = {
                 "file_format_type": "narrowPeak",
                 "scoreFilter": "0:1",
                 "spectrum": "on",
-                #"output_type": [ "DHS peaks" ]
-                "output_type": [ "optimal idr thresholded peaks" ]
+                "output_type": [ "DHS peaks", "optimal idr thresholded peaks" ],
             },
             "Plus Signals": {
                 "tag": "PSIG",
@@ -195,8 +194,7 @@ EXP_COMPOSITE_DEF_DEFAULT = {
                 "autoScale": "off",
                 "maxHeightPixels": "32:16:8",
                 "windowingFunction": "mean+whiskers",
-                #"output_type": [ "plus strand signal of unique reads" ]
-                "output_type": [ "signal of all reads" ]
+                "output_type": [ "plus strand signal of unique reads", "signal of all reads" ],
             },
             "Minus Signals": {
                 "tag": "SIGM",
@@ -207,23 +205,130 @@ EXP_COMPOSITE_DEF_DEFAULT = {
                 "negateValues": "on",
                 "maxHeightPixels": "32:16:8",
                 "windowingFunction": "mean+whiskers",
-                "output_type": [ "minus strand signal of unique reads" ]
-            }
+                "output_type": [ "minus strand signal of unique reads" ],
+            },
         },
     },
     "other_groups":  {
         "dimensions": { "Biosample": "dimX", "Targets": "dimY", "Replicates": "dimA" },
-        "filterComposite": { "Replicates": "multiple" }, # or "Replicates": "one"
+        "filterComposite": { "Replicates": "multiple" },
         "groups": {
             "Replicates": {
                 "tag": "REP",
                 "group_order": "sort",
                 "groups": {
                     "replicate": {
-                        "title_mask": "Replicate_{replicate_number}", # Optional
-                        #"title_mask": "{replicate}",
-                        #"tag_mask": "{replicate}",  # Implicit
-                        "combined_title": "Pooled", # "Combined"
+                        "title_mask": "Replicate_{replicate_number}",
+                        "combined_title": "Pooled",
+                    },
+                },
+            },
+            "Biosample": {
+                "tag": "BS",
+                "sortable": True,
+                "group_order": "sort",
+                "groups": { "one": { "title_mask": "{biosample_term_name}" } },
+            },
+            "Targets": {
+                "tag": "TARG",
+                "group_order": "sort",
+                "groups": { "one": { "title_mask": "{target.label}" } },
+            },
+        }
+    },
+    "file_defs": {
+        "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate} {experiment.accession} - {file.accession}",
+        "shortLabel": "{replicate} {output_type_short_label}",
+    },
+}
+
+LRNA_EXP_COMPOSITE_DEF_DEFAULT = {
+    "longLabel": "{assay_title} of {replicates.library.biosample.summary} - {accession}",
+    "shortLabel": "{accession}",
+    "color": "{biosample_term_name}",
+    "altColor": "{biosample_term_name}",
+    "pennantIcon": "http://genome.cse.ucsc.edu/images/encodeThumbnail.jpg https://www.encodeproject.org/ \"ENCODE: Encyclopedia of DNA Elements\"",
+    "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
+    "Views": {
+        "tag": "view",
+        "group_order": [ "Signal of Unique Reads", "Signal of All Reads", "Plus Signal of Unique Reads", "Minus Signal of Unique Reads", "Plus Signal of All Reads", "Minus Signal of All Reads", ],
+        "groups": {
+            "Signal of All Reads": {
+                "tag": "SIGA",
+                "visibility": "hide",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "autoScale": "off",
+                "maxHeightPixels": "32:16:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "signal of all reads" ]
+            },
+            "Signal of Unique Reads": {
+                "tag": "SIGU",
+                "visibility": "full",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "autoScale": "off",
+                "maxHeightPixels": "32:16:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "signal of unique reads" ]
+            },
+            "Plus Signal of All Reads": {
+                "tag": "PSIGA",
+                "visibility": "hide",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "autoScale": "off",
+                "maxHeightPixels": "32:16:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "plus strand signal of all reads" ]
+            },
+            "Plus Signal of Unique Reads": {
+                "tag": "PSIGU",
+                "visibility": "full",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "autoScale": "off",
+                "maxHeightPixels": "32:16:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "plus strand signal of unique reads" ]
+            },
+            "Minus Signal of All Reads": {
+                "tag": "SIGMA",
+                "visibility": "hide",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "autoScale": "off",
+                "negateValues": "on",
+                "maxHeightPixels": "32:16:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "minus strand signal of all reads" ]
+            },
+            "Minus Signal of Unique Reads": {
+                "tag": "SIGMU",
+                "visibility": "full",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "autoScale": "off",
+                "negateValues": "on",
+                "maxHeightPixels": "32:16:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "minus strand signal of unique reads" ]
+            },
+        },
+    },
+    "other_groups": {
+        "dimensions": { "Replicates": "dimA" },
+        "filterComposite": { "Replicates": "multiple" }, # or "Replicates": "one"
+        "groups": {
+            "Replicates": {
+                "tag": "REP",
+                "group_order": "sort",
+                "groups": {
+                "replicate": {
+                    "title_mask": "Replicate_{replicate_number}", # Optional
+                    #"tag_mask": "{replicate}", # Implicit
+                    "combined_title": "Pooled", # "Combined"
                     }
                 },
             },
@@ -245,14 +350,20 @@ EXP_COMPOSITE_DEF_DEFAULT = {
         "shortLabel": "{replicate} {output_type_short_label}",
     }
 }
+
 EXP_DEFS_BY_ASSAY = {
-    "RNA-seq": EXP_COMPOSITE_DEF_DEFAULT
+    "RNA-seq": LRNA_EXP_COMPOSITE_DEF_DEFAULT,
+    "ChIP-seq": EXP_COMPOSITE_DEF_DEFAULT
     }
 
 def lookup_exp_defs(exp):
     '''returns the best static composite definition set, based upon exp.'''
-    assay = exp.get("assay_term_name","unknown")
-    return EXP_DEFS_BY_ASSAY.get(assay, EXP_COMPOSITE_DEF_DEFAULT)
+    global EXP_COMPOSITE_DEF_DEFAULT
+    global EXP_DEFS_BY_ASSAY
+    assay = str(exp.get("assay_term_name","unknown"))
+    return EXP_DEFS_BY_ASSAY.get(assay, EXP_COMPOSITE_DEF_DEFAULT )
+    #return exp_def
+    #return EXP_COMPOSITE_DEF_DEFAULT
 
 SUPPORTED_SUBGROUPS = [
     "Biosample", "Targets", "Replicates", "Views"
@@ -353,22 +464,24 @@ OUTPUT_TYPE_7CHARS = {
     #"semi-automated genome annotation":"gene an"
     }
 
-BIOSAMPLE_COLOR = {}
+BIOSAMPLE_COLOR = { "fred": "0,0,0",
+                    "ethyl": "63,0,127" }
 
 def lookup_color(mask,exp,altColor=False):
     '''Using the mask, determine which color table to use.'''
+    global BIOSAMPLE_COLOR
     color = None
     if mask == "{biosample_term_name}":
-        biosample = exp.get('biosample_term_name', 'Unknown Biosample')
+        biosample = str(exp.get('biosample_term_name', 'Unknown Biosample'))
         color = BIOSAMPLE_COLOR.get(biosample)
     else:
         color = None
     if altColor and color is not None:
-        shades = color.split('.')
+        shades = color.split(',')
         red = int(shades[0]) / 2
         green = int(shades[1]) / 2
         blue = int(shades[2]) / 2
-        color = "%d.%d.%d" % (red,green.blue)
+        color = "%d,%d,%d" % (red,green.blue)
     return color
 
 
@@ -466,16 +579,22 @@ def rep_for_file(a_file):
 
 def lookup_token(token,exp,a_file=None):
     '''Encodes the string to swap special characters and remove spaces.'''
+    global SUPPORTED_MASK_TOKENS
+    global OUTPUT_TYPE_7CHARS
+
     assert(token in SUPPORTED_MASK_TOKENS)
     if token in ["{biosample_term_name}","{accession}","{assay_title}","{assay_term_name}"]:
         term = exp.get(token[1:-1])
         if term is None:
-            term = "Unknown " + capitalize(token[1:-1].split('_')[0])
+            term = "Unknown " + token[1:-1].split('_')[0].capitalize()
         return term
     elif token == "{experiment.accession}":
         return exp['accession']
     elif token == "{target.label}":
-        return exp.get('target',{}).get('label',"Unknown Target")
+        target = exp.get('target',{})
+        if isinstance(target,list):
+            target = target[0]
+        return target.get('label',"Unknown Target")
     elif a_file is not None:
         if token == "{file.accession}":
             return a_file['accession']
@@ -527,12 +646,12 @@ def convert_mask(mask,exp,a_file=None):
         if end_ix == -1:
             break
         term = lookup_token(working_on[beg_ix:end_ix+1],exp,a_file=a_file)
-        new_mask = ""
+        new_mask = []
         if beg_ix > 0:
             new_mask = working_on[0:beg_ix]
-        new_mask += term + working_on[end_ix+1:]
+        new_mask += "%s%s" % (term,working_on[end_ix+1:])
         chars = len(working_on[end_ix+1:])
-        working_on = new_mask
+        working_on = ''.join(new_mask)
 
     return working_on
 
@@ -606,7 +725,8 @@ def exp_composite_extend_with_tracks(composite, exp_defs, exp, assembly):
     files = []
 
     # first time through just to get rep_tech
-    for view_tag in composite["view"]["group_order"]:
+    group_order = composite["view"].get("group_order",[])
+    for view_tag in group_order:
         view = composite["view"]["groups"][view_tag]
         output_types = view.get("output_type",[])
         file_format_types = view.get("file_format_type",[])
@@ -642,8 +762,9 @@ def exp_composite_extend_with_tracks(composite, exp_defs, exp, assembly):
         rep_tags.append(rep_tag)
 
     # Now we can fill in "Replicate" subgroups with with "replicate"
-    if "Replicates" in exp_defs["other_groups"]["groups"]:
-        group = exp_defs["other_groups"]["groups"]["Replicates"]
+    other_groups = exp_defs.get("other_groups",[]).get("groups",[])
+    if "Replicates" in other_groups:
+        group = other_groups["Replicates"]
         group_tag = group["tag"]
         subgroups = group["groups"]
         if "replicate" in subgroups:
@@ -654,7 +775,7 @@ def exp_composite_extend_with_tracks(composite, exp_defs, exp, assembly):
             composite_rep_group["group_order"] = repgroup.get("group_order",[])
 
     # second pass once all rep_techs are known
-    for view_tag in composite["view"]["group_order"]:
+    for view_tag in composite["view"].get("group_order",[]):
         view = composite["view"]["groups"][view_tag]
         output_types = view.get("output_type",[])
         file_format_types = view.get("file_format_type",[])
@@ -688,6 +809,7 @@ def exp_composite_extend_with_tracks(composite, exp_defs, exp, assembly):
                 shortLabel = "{biological_replicate_number} {output_type}"
             track["shortLabel"] = sanitize_label( convert_mask(shortLabel,exp,a_file) )
             # Inheritance should handle
+            #global SUPPORTED_TRACK_SETTINGS
             #for key in view:
             #    if key in SUPPORTED_TRACK_SETTINGS:
             #        track[key] = view[key]
@@ -754,6 +876,7 @@ def make_exp_composite(exp_defs, exp, assembly):
         composite[tag] = views
         title_to_tag["Views"] = tag
 
+    global SUPPORTED_SUBGROUPS
     if "other_groups" in exp_defs:
         subgroups = exp_defs["other_groups"].get("groups",{})
         subgroup_ix = 2 # views are subgroup 1
@@ -845,6 +968,7 @@ def ucsc_trackDb_composite_blob(composite):
     blob += '\n'
 
     # Now cycle through views
+    global SUPPORTED_TRACK_SETTINGS
     for view_tag in views["group_order"]:
         view = views["groups"][view_tag]
         tracks = view.get("tracks",[])
