@@ -19,42 +19,6 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/documents" }
     ],
-    "dependencies": {
-        "modification_techniques":{
-            "oneOf":[
-                {
-                    "modification_treatments": {
-                        "minItems": 0
-                    },
-                    "properties": {
-                        "modification_techniques": {
-                            "minItems": 1
-                        }
-                    }                   
-                },
-                {
-                    "modification_treatments": {
-                        "minItems": 1
-                    },
-                    "properties": {
-                        "modification_techniques": {
-                            "minItems": 0
-                        }
-                    }                   
-                },
-                {
-                    "modification_treatments": {
-                        "minItems": 1
-                    },
-                    "properties": {
-                        "modification_techniques": {
-                            "minItems": 1
-                        }
-                    }                   
-                }
-            ]
-        }       
-    },
     "properties": {
         "schema_version": {
             "hidden comment": "Bump the default in the subclasses."
