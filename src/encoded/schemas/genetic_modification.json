@@ -21,9 +21,8 @@
     ],    
     "dependencies": {
         "modification_type":{
-            "oneOf":[
+            "anyOf":[
                 {
-                    "required": ["modification_techniques", "modification_treatments"],
                     "properties": {
                         "modification_treatments": {
                             "minItems": 0
@@ -34,7 +33,6 @@
                     }                   
                 },
                 {
-                    "required": ["modification_techniques", "modification_treatments"],
                     "properties": {
                         "modification_treatments": {
                             "minItems": 1
@@ -44,18 +42,17 @@
                         }
                     }                   
                 },
-                {
-                    "not": {
-                        "required": ["modification_techniques", "modification_treatments"],
-                        "properties": {
-                            "modification_treatments": {
-                                "minItems": 0
-                            },
-                            "modification_techniques": {
-                                "minItems": 0
-                            }
+                {                 
+
+                    "properties": {
+                        "modification_treatments": {
+                            "minItems": 1
+                        },
+                        "modification_techniques": {
+                            "minItems": 1
                         }
-                    }           
+                    }
+                              
                 }
             ]
         }       

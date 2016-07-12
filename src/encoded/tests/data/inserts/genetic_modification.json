@@ -13,18 +13,5 @@
         	"encode:crispr-test-1"
         ],
         "modification_treatments": []
-    },
-    {
-        "aliases": [
-            "encode:modification-test-2"
-        ],
-        "uuid": "6a077d81-601a-4682-96ba-9bb392e00b10",
-        "status": "released",
-        "lab": "/labs/robert-waterston/",
-        "award": "/awards/U41HG007355/",
-        "source":"gregory-crawford",
-        "modification_type": "monoallelic deletion",
-        "modification_treatments": [],
-        "modification_techniques": []
     }
 ]
