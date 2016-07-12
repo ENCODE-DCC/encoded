@@ -11,7 +11,8 @@
         "modification_type": "monoallelic deletion",
         "modification_techniques": [
         	"encode:crispr-test-1"
-        ]
+        ],
+        "modification_treatments": []
     },
     {
         "aliases": [
@@ -23,8 +24,7 @@
         "award": "/awards/U41HG007355/",
         "source":"gregory-crawford",
         "modification_type": "monoallelic deletion",
-        "modification_techniques": [
-            "encode:crispr-test-1"
-        ]
+        "modification_treatments": [],
+        "modification_techniques": []
     }
 ]
