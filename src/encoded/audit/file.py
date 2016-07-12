@@ -52,13 +52,13 @@ def audit_file_bam_derived_from(value, system):
                          'in its derived_from list.'
                 yield AuditFailure('inconsistent derived_from',
                                    detail, level='DCC_ACTION')
-        if raw_data_counter == 0:
-            detail = 'derived_from is a list of files that were used to create a given file; ' + \
-                     'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
-                     'Alignments file {} '.format(value['@id']) + \
-                     'is missing the requisite file specification in its derived_from list.'
-            yield AuditFailure('missing derived_from',
-                               detail, level='DCC_ACTION')
+    if raw_data_counter == 0:
+        detail = 'derived_from is a list of files that were used to create a given file; ' + \
+                 'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
+                 'Alignments file {} '.format(value['@id']) + \
+                 'is missing the requisite file specification in its derived_from list.'
+        yield AuditFailure('missing derived_from',
+                           detail, level='DCC_ACTION')
 
 
 @audit_checker('File', frame=['object'],
@@ -209,9 +209,9 @@ def audit_file_replicate_match(value, system):
                  'is associated with replicate [{},{}] '.format(
                      value['replicate']['biological_replicate_number'],
                      value['replicate']['technical_replicate_number']) + \
-                 '{} , but that replicate is associated with a different '.format(
+                 '{}, but that replicate is associated with a different '.format(
                      value['replicate']['@id']) + \
-                 'experiment {} .'.format(value['replicate']['experiment']['@id'])
+                 'experiment {}.'.format(value['replicate']['experiment']['@id'])
         raise AuditFailure('inconsistent replicate', detail, level='ERROR')
 
 
@@ -375,7 +375,7 @@ def audit_file_controlled_by(value, system):
                 detail = 'controlled_by is a list of files that are used as controls for a given file. ' + \
                          'This experiment was performed using {}, but '.format(biosample_term_name) + \
                          'file {} contains in controlled_by list a file '.format(value['@id']) + \
-                         '{} that belongs to experiment with different biosample {} .'.format(
+                         '{} that belongs to experiment with different biosample {}.'.format(
                              ff['@id'],
                              ff['dataset'].get('biosample_term_name'))
                 yield AuditFailure('mismatched control', detail, level='ERROR')
@@ -386,7 +386,7 @@ def audit_file_controlled_by(value, system):
                          'File {} with file_format {} contains in controlled_by list '.format(
                              value['@id'],
                              value['file_format'],) + \
-                         'a file {} with different file_format {} .'.format(
+                         'a file {} with different file_format {}.'.format(
                              ff['@id'],
                              ff['file_format'])
                 yield AuditFailure('mismatched control', detail, level='ERROR')
@@ -481,7 +481,7 @@ def audit_run_type(value, system):
         return
 
     if 'run_type' not in value:
-        detail = 'File {} has file_format {} . It requires a value for run_type'.format(
+        detail = 'File {} has file_format {}. It requires a value for run_type'.format(
             value['@id'],
             value['file_format'])
         raise AuditFailure('missing run_type', detail, level='WARNING')
@@ -517,13 +517,13 @@ def audit_paired_with(value, system):
         return
 
     if 'replicate' not in value:
-        detail = 'File {} has paired_end = {} . It requires a replicate'.format(
+        detail = 'File {} has paired_end = {}. It requires a replicate'.format(
             value['@id'],
             value['paired_end'])
         raise AuditFailure('missing replicate', detail, level='DCC_ACTION')
 
     if value['replicate'] != value['paired_with']['replicate']:
-        detail = 'File {} has replicate {} . It is paired_with file {} with replicate {}'.format(
+        detail = 'File {} has replicate {}. It is paired_with file {} with replicate {}'.format(
             value['@id'],
             value.get('replicate'),
             value['paired_with']['@id'],
