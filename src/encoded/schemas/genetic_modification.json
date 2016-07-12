@@ -20,37 +20,42 @@
         { "$ref": "mixins.json#/documents" }
     ],    
     "dependencies": {
-        "modification_techniques":{
+        "modification_type":{
             "oneOf":[
                 {
-                    "modification_treatments": {
-                        "minItems": 0
-                    },
+                    "required": ["modification_techniques", "modification_treatments"],
                     "properties": {
+                        "modification_treatments": {
+                            "minItems": 0
+                        },
                         "modification_techniques": {
                             "minItems": 1
                         }
                     }                   
                 },
                 {
-                    "modification_treatments": {
-                        "minItems": 1
-                    },
+                    "required": ["modification_techniques", "modification_treatments"],
                     "properties": {
+                        "modification_treatments": {
+                            "minItems": 1
+                        },
                         "modification_techniques": {
                             "minItems": 0
                         }
                     }                   
                 },
                 {
-                    "modification_treatments": {
-                        "minItems": 1
-                    },
-                    "properties": {
-                        "modification_techniques": {
-                            "minItems": 1
+                    "not": {
+                        "required": ["modification_techniques", "modification_treatments"],
+                        "properties": {
+                            "modification_treatments": {
+                                "minItems": 0
+                            },
+                            "modification_techniques": {
+                                "minItems": 0
+                            }
                         }
-                    }                   
+                    }           
                 }
             ]
         }       
