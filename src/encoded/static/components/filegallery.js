@@ -335,8 +335,6 @@ var FileTable = module.exports.FileTable = React.createClass({
                     {showFileCount ? <div className="file-gallery-counts">Displaying {filteredCount} of {unfilteredCount} files</div> : null}
                     <SortTablePanel header={filePanelHeader} noDefaultClasses={this.props.noDefaultClasses}>
                         <RawFileTable files={files.raw} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} />
-                        <SortTable title={<CollapsingTitle title="Raw data" collapsed={this.state.collapsed.raw} handleCollapse={this.handleCollapse.bind(null, 'raw')} />} collapsed={this.state.collapsed.raw}
-                            list={files.raw} columns={this.rawTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
                         <SortTable title={<CollapsingTitle title="Raw data" collapsed={this.state.collapsed.rawArray} handleCollapse={this.handleCollapse.bind(null, 'rawArray')} />} collapsed={this.state.collapsed.rawArray}
                             list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
                         <SortTable title={<CollapsingTitle title="Processed data" collapsed={this.state.collapsed.proc} handleCollapse={this.handleCollapse.bind(null, 'proc')}
@@ -359,11 +357,22 @@ var RawFileTable = React.createClass({
         meta: React.PropTypes.object // Extra metadata in the same format passed to SortTable
     },
 
+    getInitialState: function() {
+        return {
+            collapsed: false // Raw 
+        };
+    },
+
+    handleCollapse: function(table) {
+        // Handle a click on a collapse button by toggling the corresponding tableCollapse state var
+        this.setState({collapsed: !this.state.collapsed});
+    },
+
     render: function() {
         var {files, meta} = this.props;
+        var loggedIn = meta.session && meta.session['auth.userid'];
 
         if (files && files.length) {
-
             // Make object keyed by all files' @ids to make searching easy. Each key's value
             // points to the corresponding file object.
             var filesKeyed = {};
@@ -371,47 +380,163 @@ var RawFileTable = React.createClass({
                 filesKeyed[file['@id']] = file;
             });
 
-            // Generate the sorting keys for raw paired files.
-            files.forEach((file, i) => {
-                // Don't consider sorting unless the file has a single biological replicate and
-                // is paired with another file, and the paired file is in our list too. The
-                // file might already have a sorting key from a previous iteration, so skip
-                // those too.
-                if (!file.sortKey && file.biological_replicates && file.biological_replicates.length === 1 && file.paired_with && filesKeyed[file.paired_with]) {
-                    var pairedFile = filesKeyed[file.paired_with];
-
-                    // Convert biological replicate number to a 2-digit string with leading
-                    // zero if needed. Using leading zero because we're sorting, and want to
-                    // allow for up to 99 biological replicates.
-                    var br = globals.zeroFill(file.biological_replicates[0], 2);
-
-                    // Add a property to the file so it can be sorted. The property comprises
-                    // the biological replicate concatenated with the earlier-sorting of the
-                    // two paired file @ids. Add the same key to the paired file, which
-                    // makes the shared @id effectively a pair identifier. Also add a number
-                    // to each file pair to help generate a CSS class for the pair.
-                    file.sortKey = br + (file['@id'] <= file.paired_with ? file['@id'] : file.paired_with);
-                    pairedFile.sortKey = file.sortKey + pairedFile.paired_end;
-                    file.sortKey = file.sortKey + file.paired_end;
-                    file.sortPair = pairedFile.sortPair = i + 1;
+            // Make lists of files that are and aren't paired. Paired files with missing partners
+            // count as not paired. Files with more than one biological replicate don't count as
+            // paired.
+            var nonpairedFiles = [];
+            var pairedFiles = _(files).filter(file => {
+                if (file.pairSortKey) {
+                    // If we already know this file is part of a good pair from before, just let it
+                    // pass the filter
+                    return true;
                 }
+
+                // See if the file qualifies as a pair element
+                if (file.paired_with &&
+                    file.biological_replicates && file.biological_replicates.length === 1 &&
+                    file.replicate && file.replicate.library) {
+                    // File is paired and has exactly one biological replicate. Now make sure its
+                    // partner exists and also qualifies.
+                    var partner = filesKeyed[file.paired_with];
+                    if (partner && partner.paired_with === file['@id'] &&
+                        partner.biological_replicates && partner.biological_replicates.length === 1 &&
+                        partner.replicate && partner.replicate.library &&
+                        partner.biological_replicates[0] === file.biological_replicates[0]) {
+                        // Both the file and its partner qualify as good pairs of each other. Let
+                        // them pass the filter, and record set their sort keys to the lower of
+                        // the two accessions -- that's how pairs will sort within a biological
+                        // replicate
+                        file.pairSortKey = partner.pairSortKey = file.accession < partner.accession ? file.accession : partner.accession;
+                        file.pairSortKey += file.paired_end;
+                        partner.pairSortKey += partner.paired_end;
+                        return true;
+                    }
+                }
+
+                // File not part of a pair; add to non-paired list and filter it out
+                nonpairedFiles.push(file);
+                return false;
             });
 
-            console.log(files.map(file => file.sortKey + ':' + file.sortPair));
+            // Group paired files by biological replicate and library -- four-digit biological
+            // replicate concatenated with library accession becomes the group key, and all files
+            // with that biological replicate and library form an array under that key.
+            var pairedRepGroups = {};
+            var pairedRepKeys = [];
+            if (pairedFiles.length) {
+                pairedRepGroups = _(pairedFiles).groupBy(file => globals.zeroFill(file.biological_replicates[0]) + file.replicate.library.accession);
+
+                // Make a sorted list of keys
+                pairedRepKeys = Object.keys(pairedRepGroups).sort();
+            }
 
             return (
-                <table className="table table-striped">
-                    <tbody>
-                        {files.sort((a,b) => a > b ? 1 : (a < b ? -1 : 0)).map((file, i) => {
-                            return (
-                                <tr key={i}>
-                                    <td>{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''}</td>
-                                    <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
-                                    <td>{file.accession}</td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
+                <table className="table table-sortable table-raw">
+                    <thead>
+                        <tr className="table-section">
+                            <th colSpan={loggedIn ? '11' : '10'}>
+                                <CollapsingTitle title="Raw data" collapsed={this.state.collapsed} handleCollapse={this.handleCollapse} />
+                            </th>
+                        </tr>
+
+                        {!this.state.collapsed ?
+                            <tr key="header">
+                                <th>Biological replicate</th>
+                                <th>Library</th>
+                                <th>Accession</th>
+                                <th>File type</th>
+                                <th>Run type</th>
+                                <th>Read</th>
+                                <th>Lab</th>
+                                <th>Date added</th>
+                                <th>File size</th>
+                                <th>Audit status</th>
+                                {loggedIn ? <th>File status</th> : null}
+                            </tr>
+                        : null}
+                    </thead>
+
+                    {!this.state.collapsed ?
+                        <tbody>
+                            {pairedRepKeys.map((pairedRepKey, j) => {
+                                // groupFiles is an array of files under a bioreplicate/library
+                                var groupFiles = pairedRepGroups[pairedRepKey];
+                                var bottomClass = j < (pairedRepKeys.length - 1) ? 'merge-bottom' : '';
+
+                                // Render an array of biological replicate and library to display on
+                                // the first row of files, spanned to all rows for that replicate and
+                                // library
+                                var spanned = [
+                                    <td key="br" rowSpan={groupFiles.length} className={bottomClass + ' table-raw-merged'}>{groupFiles[0].biological_replicates[0]}</td>,
+                                    <td key="lib" rowSpan={groupFiles.length} className={bottomClass + ' merge-right + table-raw-merged'}>{groupFiles[0].replicate.library.accession}</td>
+                                ];
+
+                                // Render each file's row, with the biological replicate and library
+                                // cells only on the first row.
+                                return groupFiles.sort((a, b) => a.pairSortKey < b.pairSortKey ? -1 : 1).map((file, i) => {
+                                    var pairClass = (file.paired_end === "2") ? 'align-pair2' : 'align-pair1';
+                                    if (file.paired_end === "2") {
+                                        pairClass = 'align-pair2' + ((i === groupFiles.length - 1) && (j === pairedRepKeys.length - 1) ? '' : ' pair-bottom');
+                                    } else {
+                                        pairClass = 'align-pair1';
+                                    }
+
+                                    // Prepare for run_type display
+                                    var runType;
+                                    if (file.run_type === 'single-ended') {
+                                        runType = 'SE';
+                                    } else if (file.run_type === 'paired-ended') {
+                                        runType = 'PE';
+                                    }
+                                    return (
+                                        <tr key={i}>
+                                            {i === 0 ? {spanned} : null}
+                                            <td className={pairClass}>{file.accession}</td>
+                                            <td className={pairClass}>{file.file_type}</td>
+                                            <td className={pairClass}>{runType}{file.read_length ? <span>{runType ? <span> </span> : null}{file.read_length + file.read_length_units}</span> : null}</td>
+                                            <td className={pairClass}>{file.paired_end}</td>
+                                            <td className={pairClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
+                                            <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
+                                            <td className={pairClass}>{humanFileSize(file.file_size)}</td>
+                                            <td className={pairClass}>{fileAuditStatus(file)}</td>
+                                            {loggedIn ? <td className={pairClass + ' characterization-meta-data'}><StatusLabel status={file.status} /></td> : null}
+                                        </tr>
+                                    );
+                                });
+                            })}
+                            {nonpairedFiles.sort((a,b) => a.accession > b.accession ? 1 : (a.accession < b.accession ? -1 : 0)).map((file, i) => {
+                                // Prepare for run_type display
+                                var runType;
+                                if (file.run_type === 'single-ended') {
+                                    runType = 'SE';
+                                } else if (file.run_type === 'paired-ended') {
+                                    runType = 'PE';
+                                }
+                                return (
+                                    <tr key={i}>
+                                        <td>{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''}</td>
+                                        <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
+                                        <td>{file.accession}</td>
+                                        <td>{file.file_type}</td>
+                                        <td>{runType}{file.read_length ? <span>{runType ? <span> </span> : null}{file.read_length + file.read_length_units}</span> : null}</td>
+                                        <td>{file.paired_end}</td>
+                                        <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
+                                        <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
+                                        <td>{humanFileSize(file.file_size)}</td>
+                                        <td>{fileAuditStatus(file)}</td>
+                                        {loggedIn ? <td className="characterization-meta-data"><StatusLabel status={file.status} /></td> : null}
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    : null}
+
+                    <tfoot>
+                        <tr>
+                            <td className={'file-table-footer' + (this.state.collapsed ? ' hiding' : '')} colSpan={loggedIn ? '11' : '10'}>
+                            </td>
+                        </tr>
+                    </tfoot>
                 </table>
             );
         }
@@ -1474,7 +1599,7 @@ var fileAuditStatus = function(file) {
         highestAuditStatus = 'default';
         highestAuditLevel = 'OK';
     }
-    return <AuditIcon level={highestAuditLevel} />;
+    return <AuditIcon level={highestAuditLevel} addClasses="file-audit-status" />;
 };
 
 function humanFileSize(size) {
