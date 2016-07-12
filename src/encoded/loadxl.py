@@ -28,6 +28,8 @@ ORDER = [
     'rnai',
     'rnai_characterization',
     'talen',
+    'crispr',
+    'genetic_modification',
     'mouse_donor',
     'fly_donor',
     'worm_donor',
@@ -77,9 +79,7 @@ ORDER = [
     'idr_quality_metric',
     'generic_quality_metric',
     'image',
-    'page',
-    'crispr',
-    'genetic_modification'
+    'page'
 ]
 
 IS_ATTACHMENT = [
