@@ -1969,7 +1969,7 @@ def audit_experiment_target(value, system):
     for rep in value['replicates']:
         if 'antibody' not in rep:
             detail = '{} assays require an antibody specification. '.format(value['assay_term_name']) + \
-                     'In replicate [{},{}] {} , the antibody needs to be specified.'.format(
+                     'In replicate [{},{}] {}, the antibody needs to be specified.'.format(
                 rep['biological_replicate_number'],
                 rep['technical_replicate_number'],
                 rep['@id']
@@ -2301,7 +2301,7 @@ def audit_experiment_antibody_eligible(value, system):
                 if (lot_review['status'] == 'awaiting lab characterization'):
                     for lot_organism in lot_review['organisms']:
                         if organism == lot_organism:
-                            detail = 'Antibody {} is not eligible for {} . {} '.format(
+                            detail = 'Antibody {} is not eligible for {}. {} '.format(
                                 antibody['@id'],
                                 organism,
                                 lot_review['detail'])
@@ -2311,7 +2311,7 @@ def audit_experiment_antibody_eligible(value, system):
                 if lot_review['status'] == 'eligible for new data (via exemption)':
                     for lot_organism in lot_review['organisms']:
                         if organism == lot_organism:
-                            detail = 'Antibody {} is eligible via exemption for {} .'.format(
+                            detail = 'Antibody {} is eligible via exemption for {}.'.format(
                                 antibody['@id'],
                                 organism)
                             yield AuditFailure('antibody eligible via exemption',
@@ -2340,7 +2340,7 @@ def audit_experiment_antibody_eligible(value, system):
                 yield AuditFailure('antibody eligible via exemption', detail, level='WARNING')
 
             if experiment_biosample not in eligible_biosamples:
-                detail = 'Antibody {} is not eligible for {} in {} . {} '.format(
+                detail = 'Antibody {} is not eligible for {} in {}. {} '.format(
                     antibody['@id'], biosample_term_name, organism, lot_review['detail'])
                 yield AuditFailure('not eligible antibody', detail, level='NOT_COMPLIANT')
 
