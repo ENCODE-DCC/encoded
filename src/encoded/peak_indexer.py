@@ -143,7 +143,6 @@ def index_peaks(uuid, request):
     http = urllib3.PoolManager()
     r = http.request('GET', request.host_url + context['href'])
     if r.status != 200:
-        log.warn('File status is not 200: {}, will not index file'.format(r.status))
         return
     comp = io.BytesIO()
     comp.write(r.data)
@@ -177,9 +176,7 @@ def index_peaks(uuid, request):
             es.indices.create(index=key, body=index_settings())
             es.indices.put_mapping(index=key, doc_type=context['assembly'],
                                    body=get_mapping(context['assembly']))
-        es.index(index=key, doc_type=context['assembly'], body=doc,
-                 id=context['uuid'])
-    
+        es.index(index=key, doc_type=context['assembly'], body=doc, id=context['uuid'])
 
 
 @view_config(route_name='index_file', request_method='POST', permission="index")
@@ -212,7 +209,7 @@ def index_file(request):
         last_xmin = request.json['last_xmin']
     else:
         try:
-            status = es_peaks.get(index='encoded_peaks', doc_type='meta', id='indexing')
+            status = es_peaks.get(index='encoded', doc_type='meta', id='peak_indexing')
         except NotFoundError:
             pass
         else:
@@ -299,9 +296,7 @@ def index_file(request):
         result['errors'] = [err]
         result['indexed'] = len(invalidated)
         if record:
-            if not es_peaks.indices.exists('encoded_peaks'):
-                es_peaks.indices.create(index='encoded_peaks', body=index_settings())
-            es_peaks.index(index='encoded_peaks', doc_type='meta', body=result, id='indexing')
+            es_peaks.index(index='encoded', doc_type='meta', body=result, id='peak_indexing')
 
 
     return result
