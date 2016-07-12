@@ -37,8 +37,8 @@
             "type": "string",
             "format": "uri"
         },
-        "tags": {
-            "title": "Tags",
+        "cues": {
+            "title": "Cues",
             "description": "Some donors are part of particular data collections",
             "type": "array",
             "default": [],
@@ -48,9 +48,12 @@
                 "enum": [
                     "DREAM",
                     "ENCORE",
-                    "GTEx",
+                    "ENTEx",
                     "SESCC"]
             }
         }
+    },
+    "boost_values": {
+        "cues": 1.0
     }
 }

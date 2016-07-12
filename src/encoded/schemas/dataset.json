@@ -69,8 +69,8 @@
             ],
             "permission": "import_items"
         },
-        "tags": {
-            "title": "Tags",
+        "cues": {
+            "title": "Cues",
             "description": "Some datasets are part of particular data collections",
             "type": "array",
             "uniqueItems": true,
@@ -80,7 +80,7 @@
                 "enum": [
                     "DREAM",
                     "ENCORE",
-                    "GTEx",
+                    "ENTEx",
                     "SESCC"]
             }
         },
@@ -157,7 +157,8 @@
         "files.file_format": 1.0,
         "files.output_type": 1.0,
         "files.md5sum": 1.0,
-        "references.title": 1.0
+        "references.title": 1.0,
+        "cues": 1.0
     },
     "changelog": "/profiles/changelogs/dataset.md"
 }
