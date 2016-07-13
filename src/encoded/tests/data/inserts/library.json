@@ -1,5 +1,51 @@
 [
     {
+        "accession": "ENCLB309ZZW",
+        "award": "ENCODE2",
+        "biosample": "ENCSR622ROQ",
+        "documents": [
+            "ENCODE:Myers_Lab_ChIP-seq_Protocol_v042211"
+        ],
+        "extraction_method": "see document",
+        "fragmentation_method": "sonication (Bioruptor Twin)",
+        "lab": "richard-myers",
+        "library_size_selection_method": "SPRI beads AMPURE",
+        "lysis_method": "see document",
+        "nucleic_acid_term_id": "SO:0000352",
+        "nucleic_acid_term_name": "DNA",
+        "nucleic_acid_starting_quantity": "1",
+        "nucleic_acid_starting_quantity_units": "cell-equivalent",
+        "size_range": "100-300",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "e53cd847-4b1a-4fe3-b26a-73548e73160d",
+        "dbxrefs": [
+            "GEO:GSM433174"
+        ]
+    },
+    {
+        "accession": "ENCLB309ZZQ",
+        "award": "ENCODE2",
+        "biosample": "ENCBS468KEQ",
+        "documents": [
+            "ENCODE:Myers_Lab_ChIP-seq_Protocol_v042211"
+        ],
+        "extraction_method": "see document",
+        "fragmentation_method": "sonication (Bioruptor Twin)",
+        "lab": "richard-myers",
+        "library_size_selection_method": "SPRI beads AMPURE",
+        "lysis_method": "see document",
+        "nucleic_acid_term_id": "SO:0000352",
+        "nucleic_acid_term_name": "DNA",
+        "nucleic_acid_starting_quantity": "1",
+        "nucleic_acid_starting_quantity_units": "cell-equivalent",
+        "size_range": "100-300",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "d5592734-dacc-4926-b71e-dff294589830",
+        "dbxrefs": [
+            "GEO:GSM433174"
+        ]
+    },
+    {
         "accession": "ENCLB309ZZZ",
         "aliases": [
             "richard-myers:SL14572"

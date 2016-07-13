@@ -581,14 +581,30 @@ var HomepageChartLoader = React.createClass({
         callback: React.PropTypes.func
     },
 
-    updateSearch: function(newSearch) {
+    // updateSearch: function(newSearch) {
+    //     var tempSearch = newSearch;
+    //     var organismIndex = tempSearch.search("&assay_slims="); // getting index of "&assay_slims=" in original search link if it's there
+    //     if (startingIndex != -1) { // if &assay_slims already is in original search link, then remove it so we can add the correct "&assay_slims="
+    //         var endingIndex = startingIndex + 13; // adding the length of "&assay_slims" to make endingIndex the index of the category
+    //         while (endingIndex < oldLink.length-1 && oldLink.substring(endingIndex, endingIndex + 1) != "&") { // either get to end of string or find next parameter starting with "&"
+    //             endingIndex++; // increase endingIndex until the end of the "&assay_slims=" parameter
+    //             console.log("endingIndex: " + endingIndex);
+    //         }
+    //         if(endingIndex != oldLink.length-1){ // if did not reach end of string, "&assay_slims=" is in middle of search
+    //             console.log("from starting to ending: " + oldLink.substr(startingIndex, endingIndex));
+    //             oldLink = oldLink.substr(0, startingIndex) + oldLink.substr(endingIndex +1); // assay_slims part is from (startingIndex, endingIndex), so cut that out of oldLink
+    //         }
+    //         else{ // "&assay_slims=" is at end of search
+    //             oldLink = oldLink.substr(0, startingIndex); // assay_slims is from (startingIndex, oldLink.length, so cut that out
+    //         }
+    //     }
 
-        this.props.callback(newSearch);
-    },
+    //     this.props.callback(newSearch);
+    // },
 
-    componentDidMount: function(){
-        this.updateSearch(this.props.searchBase);
-    },
+    // componentDidMount: function(){
+    //     this.updateSearch(this.props.searchBase);
+    // },
 
     // getDefaultProps: function () {
     //     // Default searchBase if none passed in

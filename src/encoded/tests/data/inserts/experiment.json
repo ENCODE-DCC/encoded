@@ -1,6 +1,38 @@
 [
     {
         "_test": "shared biosample",
+        "accession": "ENCSR622ROA",
+        "assay_term_id": "OBI:0001864",
+        "assay_term_name": "ChIP-seq",
+        "award": "U54HG007004",
+        "biosample_term_id": "EFO:0002067",
+        "biosample_term_name": "multi-cellular organism",
+        "biosample_type": "whole organisms",
+        "description": "ChIP-seq on transgenic flies expressing E(spl)m3-eGFP fusion proteins.  The IP was performed using an anti-GFP antibody.",
+        "lab": "Kevin White, UChicago",
+        "status": "released",
+        "date_released": "2016-07-06",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "bd4431dd-c779-452a-94f9-452cbc1c5f23"
+    },
+    {
+        "_test": "shared biosample",
+        "accession": "ENCSR671XAK",
+        "assay_term_id": "OBI:0001864",
+        "assay_term_name": "ChIP-seq",
+        "award": "U54HG007004",
+        "biosample_term_id": "EFO:0002067",
+        "biosample_term_name": "multi-cellular organism",
+        "biosample_type": "whole organisms",
+        "description": "ChIP-seq on transgenic flies expressing E(spl)m3-eGFP fusion proteins.  The IP was performed using an anti-GFP antibody.",
+        "lab": "Kevin White, UChicago",
+        "status": "released",
+        "date_released": "2016-07-06",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "35219424-38d5-406a-8c2a-19cf14467c5d"
+    },
+    {
+        "_test": "shared biosample",
         "accession": "ENCSR000AER",
         "assay_term_id": "OBI:0001864",
         "assay_term_name": "RAMPAGE",
