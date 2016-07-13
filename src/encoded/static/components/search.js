@@ -619,9 +619,16 @@ function countSelectedTerms(terms, field, filters) {
 }
 
 var Term = search.Term = React.createClass({
+    getInitialState: function() {
+        return {
+            subfacetsOpen: false // True if subfacets are currently displayed
+        };
+    },
+
     render: function () {
         var filters = this.props.filters;
         var term = this.props.term['key'];
+        var subfacets = this.props.term.facets;
         var count = this.props.term['doc_count'];
         var title = this.props.title || term;
         var field = this.props.facet['field'];
@@ -650,6 +657,9 @@ var Term = search.Term = React.createClass({
                         {em ? <em>{title}</em> : <span>{title}</span>}
                     </span>
                 </a>
+                {subfacets && subfacets.length ?
+                    <Facet {...this.props} facet={subfacets[0]} />
+                : null}
             </li>
         );
     }
@@ -678,12 +688,12 @@ var Facet = search.Facet = React.createClass({
 
     getInitialState: function () {
         return {
-            facetOpen: false
+            facetExpanded: false
         };
     },
 
     handleClick: function () {
-        this.setState({facetOpen: !this.state.facetOpen});
+        this.setState({facetExpanded: !this.state.facetExpanded});
     },
 
     render: function() {
@@ -710,8 +720,8 @@ var Facet = search.Facet = React.createClass({
         var selectedTermCount = countSelectedTerms(moreTerms, field, filters);
         var moreTermSelected = selectedTermCount > 0;
         var canDeselect = (!facet.restrictions || selectedTermCount >= 2);
-        var moreSecClass = 'collapse' + ((moreTermSelected || this.state.facetOpen) ? ' in' : '');
-        var seeMoreClass = 'btn btn-link' + ((moreTermSelected || this.state.facetOpen) ? '' : ' collapsed');
+        var moreSecClass = 'collapse' + ((moreTermSelected || this.state.facetExpanded) ? ' in' : '');
+        var seeMoreClass = 'btn btn-link' + ((moreTermSelected || this.state.facetExpanded) ? '' : ' collapsed');
 
         // Handle audit facet titles
         if (field.substr(0, 6) === 'audit.') {
