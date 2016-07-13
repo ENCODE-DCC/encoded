@@ -37,8 +37,8 @@
             "type": "string",
             "format": "uri"
         },
-        "cues": {
-            "title": "Cues",
+        "internal_tags": {
+            "title": "Internal tags",
             "description": "Some donors are part of particular data collections",
             "type": "array",
             "default": [],
@@ -54,6 +54,6 @@
         }
     },
     "boost_values": {
-        "cues": 1.0
+        "internal_tags": 1.0
     }
 }

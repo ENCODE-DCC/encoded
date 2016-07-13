@@ -69,8 +69,8 @@
             ],
             "permission": "import_items"
         },
-        "cues": {
-            "title": "Cues",
+        "internal_tags": {
+            "title": "Internal tags",
             "description": "Some datasets are part of particular data collections",
             "type": "array",
             "uniqueItems": true,
@@ -158,7 +158,7 @@
         "files.output_type": 1.0,
         "files.md5sum": 1.0,
         "references.title": 1.0,
-        "cues": 1.0
+        "internal_tags": 1.0
     },
     "changelog": "/profiles/changelogs/dataset.md"
 }
