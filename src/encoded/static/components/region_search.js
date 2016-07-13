@@ -119,21 +119,12 @@ var AdvSearch = React.createClass({
         if (this.newSearchTerm !== this.state.searchTerm) {
             this.setState({searchTerm: this.newSearchTerm});
         }
-        if (this.coordinates !== this.props.context.coordinates && this.props.context.coordinates !== undefined) {
-            this.coordinates = this.props.context.coordinates;
-            var inputNode = this.refs.annotation.getDOMNode();
-            if (!inputNode.value.includes(this.coordinates)) {
-                inputNode.value = inputNode.value.concat(' ', this.coordinates);
-            }
-        }
     },
 
     render: function() {
-        console.log('render called')
         var context = this.props.context;
         var id = url.parse(this.context.location_href, true);
         var region = id.query['region'] || '';
-        console.log('RENDER: ' + this.state.genome);
         return (
             <Panel>
                 <PanelBody>
@@ -163,6 +154,9 @@ var AdvSearch = React.createClass({
                         </div>
                         <input type="submit" value="Search" className="btn btn-sm btn-info pull-right" />
                     </form>
+                    {context.coordinates ?
+                        <p>Searched coordinates: <strong>{context.coordinates}</strong></p>
+                    : null}
                 </PanelBody>
             </Panel>
         );
