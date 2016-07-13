@@ -42,6 +42,13 @@ var Home = module.exports.Home = React.createClass({
                                     <HomepageChartLoader searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'} 
                                          callback={this.callback}/>
                                 </div>
+                                <div className="col-sm-6">
+                                    <div className="title">
+                                        Biosample Type
+                                    </div>
+                                    <center> <hr width="80%"></hr> </center>
+                                    <HomepageChartLoader2 searchBase={this.state.current} callback={this.callback}/>
+                                </div>
                             </div>
                         </TabPanelPane>
                         <TabPanelPane key="panel2">
@@ -89,13 +96,7 @@ var Home = module.exports.Home = React.createClass({
                     </TabPanel>
                     
 
-                    <div className="col-sm-6">
-                        <div className="title">
-                            Biosample Type
-                        </div>
-                        <center> <hr width="80%"></hr> </center>
-                        <HomepageChartLoader2 searchBase={this.state.current} callback={this.callback}/>
-                    </div>
+                    
                 
                 </div>
                 
@@ -383,7 +384,8 @@ var HomepageChart = React.createClass({
                             // });
                             this.context.navigate(this.props.data['@id'] + '&award.project=' + term);
                         }
-                        
+
+                        //this.myPieChart.clear();
                         this.myPieChart.update();
                         //this.myPieChart.clear();
                         this.myPieChart.render();
@@ -421,6 +423,7 @@ var HomepageChart = React.createClass({
     // this.myPieChart.chart.canvas.parentNode.parentNode.appendChild(legendHolder.firstChild);
 
     render: function() {
+        console.log("RENDERING");
         return (
             <canvas id="myChart" width="0" height="0"></canvas>
         );
