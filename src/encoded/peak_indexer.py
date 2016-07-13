@@ -17,6 +17,7 @@ from snovault.elasticsearch.interfaces import (
     ELASTIC_SEARCH,
     SNP_SEARCH_ES,
 )
+from random import shuffle
 
 
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
@@ -174,8 +175,7 @@ def index_peaks(uuid, request):
             es.indices.create(index=key, body=index_settings())
 
         if not es.indices.exists_type(index=key, doc_type=context['assembly']):
-            es.indices.put_mapping(index=key, doc_type=context['assembly'],
-                                   body=get_mapping(context['assembly']))
+            es.indices.put_mapping(index=key, doc_type=context['assembly'], body=get_mapping(context['assembly']))
 
         es.index(index=key, doc_type=context['assembly'], body=doc, id=context['uuid'])
 
@@ -288,7 +288,8 @@ def index_file(request):
         err = None
         uuid_current = None
         try:
-            for uuid in reversed(invalidated):
+            shuffle(invalidated)
+            for uuid in invalidated:
                 uuid_current = uuid
                 index_peaks(uuid, request)
         except Exception as e:
