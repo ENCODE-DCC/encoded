@@ -658,7 +658,7 @@ var Term = search.Term = React.createClass({
                     </span>
                 </a>
                 {subfacets && subfacets.length ?
-                    <Facet {...this.props} facet={subfacets[0]} />
+                    <Facet {...this.props} facet={subfacets[0]} searchBase={href + ':'} />
                 : null}
             </li>
         );
