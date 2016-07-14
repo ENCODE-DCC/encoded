@@ -308,7 +308,7 @@ def region_search(context, request):
                                      doc_type=_GENOME_TO_ALIAS[assembly],
                                      size=99999)
     except Exception:
-        result['notification'] = 'Please enter valid coordinates'
+        result['notification'] = 'Error during search'
         return result
     file_uuids = []
     for hit in peak_results['hits']['hits']:
