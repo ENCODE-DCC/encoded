@@ -36,6 +36,20 @@
             "description": "An external resource with additional information about the donor.",
             "type": "string",
             "format": "uri"
+        },
+        "tags": {
+            "title": "Tags",
+            "description": "Some donors are part of particular data collections",
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string",
+                "enum": [
+                    "DREAM",
+                    "ENCORE",
+                    "EN-Tex",
+                    "SESCC"]
+            }
         }
     }
 }

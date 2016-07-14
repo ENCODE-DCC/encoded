@@ -161,9 +161,11 @@ module.exports.dbxref_prefix_map = {
     "FlyBase": "http://flybase.org/cgi-bin/quicksearch_solr.cgi?caller=quicksearch&tab=basic_tab&data_class=FBgn&species=Dmel&search_type=all&context=",
     // This WormBase link is strictly for Fly strains
     "FlyBaseStock": "http://flybase.org/reports/",
+    "BDSC": "http://flystocks.bio.indiana.edu/Reports/",
     "WormBaseTargets": "http://www.wormbase.org/species/c_elegans/gene/",
     // This WormBase link is strictly for C. elegans strains
     "WormBase": "http://www.wormbase.org/species/c_elegans/strain/",
+    "NBP": "http://shigen.nig.ac.jp/c.elegans/mutants/DetailsSearch?lang=english&seq=",
     "CGC": "http://www.cgc.cbs.umn.edu/search.php?st=",
     "DSSC": "https://stockcenter.ucsd.edu/index.php?action=view&q=",
     "MGI": "http://www.informatics.jax.org/marker/",
@@ -178,5 +180,7 @@ module.exports.dbxref_prefix_map = {
     // Dataset, experiment, and document references
     "PMID": "http://www.ncbi.nlm.nih.gov/pubmed/?term=",
     "PMCID": "http://www.ncbi.nlm.nih.gov/pmc/articles/",
-    "doi": "http://dx.doi.org/doi:"
+    "doi": "http://dx.doi.org/doi:",
+    // Antibody RRids
+    "AR": "http://antibodyregistry.org/search.php?q="
 };
