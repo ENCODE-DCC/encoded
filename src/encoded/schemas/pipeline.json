@@ -4,7 +4,7 @@
     "id": "/profiles/pipeline.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["title","lab","award"],
+    "required": ["title", "lab", "award", "group", "version"],
     "identifyingProperties": ["uuid", "aliases", "accession"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -21,10 +21,32 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "accession": {
             "accessionType": "PL"
+        },
+        "group":{
+            "title": "Group",
+            "type": "string",
+            "description": "Group the pipeline belongs to.",
+            "enum":[
+                "GGR-DNASE-SEQ",
+                "GGR-CHIP-SEQ",
+                "GGR-RNA-SEQ",
+                "ENCODE-ATAC-SEQ",
+                "ENCODE-CHIP-SEQ",
+                "ENCODE-RAW-MAPPING",
+                "ENCODE-DNASE-SEQ",
+                "ENCODE-RAMPAGE",
+                "ENCODE-RIP-SEQ",
+                "ENCODE-RNA-SEQ",
+                "ENCODE-MICRO-RNA-SEQ",
+                "ENCODE-MICRO-RNA-COUNTS",
+                "ENCODE-WGBS",
+                "ENCODE-ECLIP",
+                "modERN-CHIP-SEQ"
+            ]
         },
         "status": {
             "title": "Status",
@@ -61,6 +83,11 @@
                 ]
             }
         },
+        "version": {
+            "title": "Pipeline version",
+            "description": "Version of the pipeline.",
+            "type": "string"
+        },
         "analysis_steps": {
             "title": "Analysis steps",
             "description": "The particular computational analysis steps used by the pipeline.",
@@ -88,7 +115,7 @@
         "status": {
             "title": "Pipeline status"
         },
-        "title": {
+        "group": {
             "title": "Pipeline groups"
         },
         "analysis_steps.software_versions.software.title": {

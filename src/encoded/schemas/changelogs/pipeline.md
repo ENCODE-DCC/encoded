@@ -1,6 +1,13 @@
 Change log for pipeline.json
 =============================
 
+
+Schema version 5
+----------------
+
+* *group* field added
+
+
 Schema version 3
 ----------------
 
