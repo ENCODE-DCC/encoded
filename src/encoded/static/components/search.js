@@ -597,14 +597,11 @@ var Image = module.exports.Image = React.createClass({
 globals.listing_views.register(Image, 'Image');
 
 
-// If the given term is selected, return the href for the term
+// If the given term is selected, return the href for the term that removes the term from the query
+// string when clicked.
 function termSelected(term, field, filters) {
-    for (var filter in filters) {
-        if (filters[filter]['field'] == field && filters[filter]['term'] == term) {
-            return url.parse(filters[filter]['remove']).search;
-        }
-    }
-    return null;
+    var matchingFilter = _(filters).find(filter => filter.field === field && filter.term === term);
+    return matchingFilter ? url.parse(matchingFilter.remove).search : null;
 }
 
 // Determine whether any of the given terms are selected
@@ -626,12 +623,13 @@ var Term = search.Term = React.createClass({
     },
 
     render: function () {
-        var filters = this.props.filters;
+        // We know we're rendering a subfacet if this.props.parent defined
+        var {filters, parent} = this.props;
         var term = this.props.term['key'];
         var subfacets = this.props.term.facets;
         var count = this.props.term['doc_count'];
         var title = this.props.title || term;
-        var field = this.props.facet['field'];
+        var field = (parent ? parent.field + '=' + parent.term + ':' : '') + this.props.facet['field'];
         var em = field === 'target.organism.scientific_name' ||
                     field === 'organism.scientific_name' ||
                     field === 'replicates.library.biosample.donor.organism.scientific_name';
@@ -658,7 +656,7 @@ var Term = search.Term = React.createClass({
                     </span>
                 </a>
                 {subfacets && subfacets.length ?
-                    <Facet {...this.props} facet={subfacets[0]} searchBase={href + ':'} />
+                    <Facet {...this.props} facet={subfacets[0]} parent={{term: term, field: field}} />
                 : null}
             </li>
         );
