@@ -289,7 +289,7 @@ def region_search(context, request):
         chromosome, start, end = ('', '', '')
     
     # Check if there are valid coordinates
-    if chromosome == '' or start == '' or end == '':
+    if not chromosome or not start or not end:
         result['notification'] = 'No annotations found'
         return result
     else:
