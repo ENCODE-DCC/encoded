@@ -618,24 +618,32 @@ function countSelectedTerms(terms, field, filters) {
 var Term = search.Term = React.createClass({
     getInitialState: function() {
         return {
-            subfacetsOpen: false // True if subfacets are currently displayed
+            subfacetOpen: false // True if subfacets are currently displayed for this term
         };
     },
 
+    subfacetOpenToggle: function() {
+        // Called when the user clicks a parent facet term's disclosure icon is clicked.
+        this.setState({subfacetOpen: !this.state.subfacetOpen});
+    },
+
     render: function () {
-        // We know we're rendering a subfacet if this.props.parent defined
-        var {filters, parent} = this.props;
+        // We know we're rendering a subfacet if this.props.parentInfo defined
+        var {filters, parentInfo, subfacetOpen} = this.props;
         var term = this.props.term['key'];
-        var subfacets = this.props.term.facets;
+        var subfacets = this.props.term.facets && this.props.term.facets.length ? this.props.term.facets : null;
         var count = this.props.term['doc_count'];
         var title = this.props.title || term;
-        var field = (parent ? parent.field + '=' + parent.term + ':' : '') + this.props.facet['field'];
+        var field = (parentInfo ? parentInfo.field + '=' + parentInfo.term + ':' : '') + this.props.facet['field'];
+        
         var em = field === 'target.organism.scientific_name' ||
                     field === 'organism.scientific_name' ||
                     field === 'replicates.library.biosample.donor.organism.scientific_name';
         var barStyle = {
             width:  Math.ceil( (count/this.props.total) * 100) + "%"
         };
+
+        // Get the `remove` href if this term and field is selected, based on the given filters.
         var selected = termSelected(term, field, filters);
         var href;
         if (selected && !this.props.canDeselect) {
@@ -645,8 +653,10 @@ var Term = search.Term = React.createClass({
         } else {
             href = this.props.searchBase + field + '=' + encodeURIComponent(term).replace(/%20/g, '+');
         }
+
         return (
             <li id={selected ? "selected" : null} key={term}>
+                {subfacets ? <a data-trigger href="#" onClick={this.subfacetOpenToggle}>{this.state.subfacetOpen ? <i className="icon icon-minus"></i> : <i className="icon icon-plus"></i>}</a> : null}
                 {selected ? '' : <span className="bar" style={barStyle}></span>}
                 {field === 'lot_reviews.status' ? <span className={globals.statusClass(term, 'indicator pull-left facet-term-key icon icon-circle')}></span> : null}
                 <a id={selected ? "selected" : null} href={href} onClick={href ? this.props.onFilter : null}>
@@ -655,8 +665,8 @@ var Term = search.Term = React.createClass({
                         {em ? <em>{title}</em> : <span>{title}</span>}
                     </span>
                 </a>
-                {subfacets && subfacets.length ?
-                    <Facet {...this.props} facet={subfacets[0]} parent={{term: term, field: field}} />
+                {subfacets ?
+                    <Facet {...this.props} facet={subfacets[0]} parentInfo={{term: term, field: field}} subfacetOpen={this.state.subfacetOpen} />
                 : null}
             </li>
         );
@@ -731,7 +741,7 @@ var Facet = search.Facet = React.createClass({
 
         return (
             <div className="facet" hidden={terms.length === 0} style={{width: this.props.width}}>
-                <h5>{title}</h5>
+                {!this.props.parent ? <h5>{title}</h5> : null}
                 <ul className="facet-list nav">
                     <div>
                         {terms.slice(0, 5).map(function (term) {
