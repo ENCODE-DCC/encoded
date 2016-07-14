@@ -221,7 +221,7 @@ def get_ensemblid_coordinates(id, assembly):
         elif assembly == 'GRCh37':
             return assembly_mapper(location, species, 'GRCh38', assembly)
         elif assembly == 'GRCm37':
-            return assembly_mapper(location, species, 'GRCm38', assembly)
+            return assembly_mapper(location, species, 'GRCm38', 'NCBIM37')
 
 def format_position(position, resolution):
     chromosome, start, end = re.split(':|-', position)
