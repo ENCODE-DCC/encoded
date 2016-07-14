@@ -197,6 +197,7 @@ def get_rsid_coordinates(id, assembly):
                     return assembly_mapper(location, species, 'GRCh38', assembly)
                 elif assembly == 'GRCm37':
                     return assembly_mapper(location, species, 'GRCm38', 'NCBIM37')
+        return ('', '', '',)
 
 
 def get_ensemblid_coordinates(id, assembly):
@@ -222,6 +223,8 @@ def get_ensemblid_coordinates(id, assembly):
             return assembly_mapper(location, species, 'GRCh38', assembly)
         elif assembly == 'GRCm37':
             return assembly_mapper(location, species, 'GRCm38', 'NCBIM37')
+        else:
+            return ('', '', '')
 
 def format_position(position, resolution):
     chromosome, start, end = re.split(':|-', position)
