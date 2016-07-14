@@ -30,6 +30,6 @@
             "ENCODE:sample_strain_generation_protocol"
         ],
         "uuid": "094a484e-817c-4cb3-a8dd-9ea2c3c1067b",
-        "dbxrefs": ["FlyBase:FBst0038626"]
+        "dbxrefs": ["FlyBase:FBst0038626", "BDSC:38626"]
     }
 ]
