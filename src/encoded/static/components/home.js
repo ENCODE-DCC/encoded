@@ -47,7 +47,8 @@ var Home = module.exports.Home = React.createClass({
                                         Biosample Type
                                     </div>
                                     <center> <hr width="80%"></hr> </center>
-                                    <HomepageChartLoader2 searchBase={this.state.current} callback={this.callback}/>
+                                    <HomepageChartLoader2 searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'}
+                                         callback={this.callback}/>
                                 </div>
                             </div>
                         </TabPanelPane>
@@ -61,6 +62,14 @@ var Home = module.exports.Home = React.createClass({
                                     <HomepageChartLoader searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus'} 
                                          callback={this.callback}/>
                                 </div>
+                                <div className="col-sm-6">
+                                    <div className="title">
+                                        Biosample Type
+                                    </div>
+                                    <center> <hr width="80%"></hr> </center>
+                                    <HomepageChartLoader2 searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus'}
+                                         callback={this.callback}/>
+                                </div>
                             </div>
                         </TabPanelPane>
                         <TabPanelPane key="panel3">
@@ -71,6 +80,14 @@ var Home = module.exports.Home = React.createClass({
                                     </div>
                                     <center> <hr width="80%" position="static"></hr> </center>
                                     <HomepageChartLoader searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Caenorhabditis+elegans'} 
+                                         callback={this.callback}/>
+                                </div>
+                                <div className="col-sm-6">
+                                    <div className="title">
+                                        Biosample Type
+                                    </div>
+                                    <center> <hr width="80%"></hr> </center>
+                                    <HomepageChartLoader2 searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Caenorhabditis+elegans'}
                                          callback={this.callback}/>
                                 </div>
                             </div>
@@ -90,6 +107,20 @@ var Home = module.exports.Home = React.createClass({
                                                                                         '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+virilis' +
                                                                                         '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+yakuba'} 
                                                         callback={this.callback}/>
+                                </div>
+                                <div className="col-sm-6">
+                                    <div className="title">
+                                        Biosample Type
+                                    </div>
+                                    <center> <hr width="80%"></hr> </center>
+                                    <HomepageChartLoader2 searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+melanogaster' +
+                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+pseudoobscura' +
+                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+simulans' +
+                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+mojavensis' +
+                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+ananassae' +
+                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+virilis' +
+                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+yakuba'}
+                                         callback={this.callback}/>
                                 </div>
                             </div>
                         </TabPanelPane>
