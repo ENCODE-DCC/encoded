@@ -106,7 +106,11 @@ def index_peaks(uuid, request):
     Indexes bed files in elasticsearch index
     """
     context = request.embed('/', str(uuid), '@@object')
+    assembly = context['assembly']
 
+    # Treat mm10-minimal as mm1
+    if assembly == 'mm10-minimal':
+        assembly = 'mm10'
 
 
     if 'File' not in context['@type'] or 'dataset' not in context:
@@ -115,7 +119,7 @@ def index_peaks(uuid, request):
     if 'status' not in context or context['status'] != 'released':
         return
 
-    if 'assembly' not in context or context['assembly'] not in _ASSEMBLIES:
+    if 'assembly' not in context or assembly not in _ASSEMBLIES:
         return
 
     assay_term_name = get_assay_term_name(context['dataset'], request)
@@ -174,10 +178,10 @@ def index_peaks(uuid, request):
         if not es.indices.exists(key):
             es.indices.create(index=key, body=index_settings())
 
-        if not es.indices.exists_type(index=key, doc_type=context['assembly']):
-            es.indices.put_mapping(index=key, doc_type=context['assembly'], body=get_mapping(context['assembly']))
+        if not es.indices.exists_type(index=key, doc_type=assembly):
+            es.indices.put_mapping(index=key, doc_type=assembly, body=get_mapping(assembly))
 
-        es.index(index=key, doc_type=context['assembly'], body=doc, id=context['uuid'])
+        es.index(index=key, doc_type=assembly, body=doc, id=context['uuid'])
 
 
 @view_config(route_name='index_file', request_method='POST', permission="index")
@@ -272,7 +276,7 @@ def index_file(request):
         if res['hits']['total'] > SEARCH_MAX:
             invalidated = list(all_uuids(request.root))
         else:
-            referencing = {hit['_id'] for hit in res['hits']['hits']}
+            referencing = {hit['_id'] for hit in res['hits']['hits']} 
             invalidated = referencing | updated
             result.update(
                 max_xid=max_xid,
