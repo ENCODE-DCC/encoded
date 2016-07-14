@@ -2,7 +2,6 @@ from snovault import (
     AuditFailure,
     audit_checker,
 )
-from .conditions import rfa
 from .ontology_data import biosampleType_ontologyPrefix
 
 
@@ -58,6 +57,26 @@ def audit_antibody_characterization_review(value, system):
                 yield AuditFailure('characterization review with biosample term-type mismatch', detail,
                                    level='DCC_ACTION')
                 return
+
+
+def isEnglish(s):
+    try:
+        s.encode('ascii')
+    except UnicodeEncodeError:
+        return False
+    else:
+        return True
+
+
+@audit_checker('AntibodyCharacterization')
+def audit_antibody_characterization_caption(value, system):
+    if 'caption' not in value:
+        return
+    if isEnglish(value['caption']) is False:
+        detail = 'Antibody characterization caption text ' + \
+                 '{} contains non-English characters.'.format(value['caption'])
+        yield AuditFailure('inconsistent caption', detail, level='DCC_ACTION')
+
 
 @audit_checker('antibody_characterization', frame=[
     'characterization_reviews',
