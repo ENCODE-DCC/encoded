@@ -204,5 +204,8 @@
                 "pattern": "^((PGP:hu[\\S\\s\\d]+)|(GTEx:[a-zA-Z0-9\\-_]+)|(GEO:SAMN\\d+))$"
             }
         }
+    },
+    "boost_values": {
+        "internal_tags": 1.0
     }
 }

@@ -77,5 +77,8 @@
                 "pattern": "^(((CGC|WormBase|NBP):.+)|(GEO:SAMN\\d+))$"
             }
         }
+    },
+    "boost_values": {
+        "internal_tags": 1.0
     }
 }
