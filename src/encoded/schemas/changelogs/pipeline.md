@@ -5,7 +5,8 @@ Change log for pipeline.json
 Schema version 5
 ----------------
 
-* *group* field added
+* *group* field added and is required
+* *version* field added  and is required
 
 
 Schema version 3
