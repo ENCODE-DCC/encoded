@@ -106,6 +106,10 @@ def index_peaks(uuid, request):
     Indexes bed files in elasticsearch index
     """
     context = request.embed('/', str(uuid), '@@object')
+
+    if 'assembly' not in context:
+        return
+        
     assembly = context['assembly']
 
     # Treat mm10-minimal as mm1
@@ -119,7 +123,7 @@ def index_peaks(uuid, request):
     if 'status' not in context or context['status'] != 'released':
         return
 
-    if 'assembly' not in context or assembly not in _ASSEMBLIES:
+    if assembly not in _ASSEMBLIES:
         return
 
     assay_term_name = get_assay_term_name(context['dataset'], request)
