@@ -103,7 +103,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'talens.documents.submitted_by',
     ]
     audit_inherit = [
-            'donor',
+        'donor',
         'donor.mutated_gene',
         'donor.organism',
         'donor.characterizations',
@@ -140,7 +140,6 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'protocol_documents.award',
         'protocol_documents.submitted_by',
         'derived_from',
-        'parent_of',
         'pooled_from',
         'characterizations.submitted_by',
         'characterizations.award',
@@ -431,7 +430,8 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                     str(starting_amount_units)
 
         if depleted_in_term_name is not None and len(depleted_in_term_name) > 0:
-            dict_of_phrases['depleted_in'] = 'depleted in '+str(depleted_in_term_name)
+            dict_of_phrases['depleted_in'] = 'depleted in ' + \
+                                             str(depleted_in_term_name).replace('\'', '')[1:-1]
 
         if phase is not None:
             dict_of_phrases['phase'] = phase + ' phase'
@@ -572,16 +572,24 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
 
         summary_phrase = ''
 
-        if 'organism_name' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['organism_name']
+        fly_worm_flag = False
 
-        if 'strain_name' in dict_of_phrases:
+        if 'organism_name' in dict_of_phrases and \
+            ('Drosophila' in dict_of_phrases['organism_name'] or
+                'Caenorhabditis' in dict_of_phrases['organism_name']):
+            fly_worm_flag = True
+
+        if 'genotype' in dict_of_phrases and fly_worm_flag is True:
+            summary_phrase += ' (' + dict_of_phrases['genotype'] + ')'
+        elif 'strain_name' in dict_of_phrases:
             summary_phrase += ' (' + dict_of_phrases['strain_name'] + ')'
 
         term_name = ''
 
         if 'sample_term_name' in dict_of_phrases:
-            if dict_of_phrases['sample_term_name'] != 'multi-cellular organism':
+            if dict_of_phrases['sample_term_name'] == 'multi-cellular organism':
+                term_name += 'whole organisms'
+            else:
                 term_name += dict_of_phrases['sample_term_name']
 
         term_type = ''
@@ -630,8 +638,6 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             else:
                 if 'synchronization' in dict_of_phrases:
                     summary_phrase += ' (' + dict_of_phrases['synchronization'] + ')'
-                #else:
-                #    summary_phrase += ''
 
         if 'derived_from' in dict_of_phrases:
             summary_phrase += ' ' + dict_of_phrases['derived_from']

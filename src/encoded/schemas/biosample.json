@@ -301,6 +301,21 @@
                 "mixed"
             ]
         },
+        "internal_tags": {
+            "title": "Internal tags",
+            "description": "Some biosamples are part of particular data collections",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "type": "string",
+                "enum": [
+                    "DREAM",
+                    "ENCORE",
+                    "ENTEx",
+                    "SESCC"]
+            }
+        },
         "derived_from": {
             "title": "Derived from",
             "description": "A biosample that the sample derives from via a construct or treatment.",
@@ -809,6 +824,7 @@
         "constructs.target.aliases": 1.0,
         "constructs.target.gene_name": 1.0,
         "award.pi.title": 1.0,
-        "notes": 1.0
+        "notes": 1.0,
+        "internal_tags": 1.0
     }
 }

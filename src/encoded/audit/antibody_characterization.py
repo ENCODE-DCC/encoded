@@ -46,7 +46,7 @@ def audit_antibody_characterization_review(value, system):
                                                                             term_name,
                                                                             ontology_term_name)
 
-                yield AuditFailure('mismatched ontology term', detail, level='ERROR')
+                yield AuditFailure('inconsistent ontology term', detail, level='ERROR')
                 return
             biosample_prefix = term_id.split(':')[0]
             if biosample_prefix not in biosampleType_ontologyPrefix[review['biosample_type']]:
@@ -130,16 +130,19 @@ def audit_antibody_characterization_target(value, system):
                 raise AuditFailure('mismatched tag target', detail, level='ERROR')
     else:
         target_matches = False
+        antibody_targets = []
         for antibody_target in antibody['targets']:
+            antibody_targets.append(antibody_target.get('name'))
             if target['name'] == antibody_target.get('name'):
                 target_matches = True
         if not target_matches:
-            detail = 'Target {} in {} is not found in target list for antibody {}'.format(
-                target['name'],
+            antibody_targets_string = str(antibody_targets).replace('\'', '')
+            detail = 'Antibody characterization {} target is {}, '.format(
                 value['@id'],
-                antibody['@id']
-                )
-            raise AuditFailure('mismatched target', detail, level='ERROR')
+                target['name']) + \
+                'but it could not be found in antibody\'s {} '.format(antibody['@id']) + \
+                'target list {}.'.format(antibody_targets_string)
+            raise AuditFailure('inconsistent target', detail, level='ERROR')
 
 
 @audit_checker('antibody_characterization', frame=[

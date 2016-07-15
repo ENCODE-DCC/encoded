@@ -255,7 +255,7 @@ def test_audit_file_mismatched_paired_with(testapp, file1, file4):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched paired_with' for error in errors_list)
+    assert any(error['category'] == 'inconsistent paired_with' for error in errors_list)
 
 
 def test_audit_file_size(testapp, file1):
@@ -361,7 +361,7 @@ def test_audit_file_mismatched_platform_controlled_by(testapp, file1, file2, fil
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched control platform' for error in errors_list)
+    assert any(error['category'] == 'inconsistent control platform' for error in errors_list)
 
 
 def test_audit_file_replicate_match(testapp, file1, file_rep2):
@@ -371,7 +371,7 @@ def test_audit_file_replicate_match(testapp, file1, file_rep2):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched replicate' for error in errors_list)
+    assert any(error['category'] == 'inconsistent replicate' for error in errors_list)
 
 
 def test_audit_file_paired_ended_run_type1(testapp, file2, file_rep2):
@@ -502,7 +502,7 @@ def test_audit_file_biological_replicate_number_match(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'inconsistent biological replicate number'
+    assert all(error['category'] != 'inconsistent replicate'
                for error in errors_list)
 
 
@@ -518,7 +518,7 @@ def test_audit_file_biological_replicate_number_mismatch(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent biological replicate number'
+    assert any(error['category'] == 'inconsistent replicate'
                for error in errors_list)
 
 
@@ -529,7 +529,22 @@ def test_audit_file_fastq_assembly(testapp, file4):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'erroneous property'
+    assert any(error['category'] == 'unexpected property'
+               for error in errors_list)
+
+
+def test_audit_file_rbns_assembly(testapp, file4, file_exp):
+    testapp.patch_json(file_exp['@id'], {'assay_term_id': 'OBI:0002044'})
+    testapp.patch_json(file4['@id'], {'assembly': 'GRCh38',
+                                      'dataset': file_exp['@id'],
+                                      'file_format': 'bam',
+                                      'output_type': 'alignments'})
+    res = testapp.get(file4['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'unexpected property'
                for error in errors_list)
 
 
@@ -542,7 +557,7 @@ def test_audit_file_assembly(testapp, file6, file7):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched assembly'
+    assert any(error['category'] == 'inconsistent assembly'
                for error in errors_list)
 
 
@@ -614,5 +629,5 @@ def test_audit_file_bam_derived_from_different_experiment(testapp, file6, file4,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched derived_from'
+    assert any(error['category'] == 'inconsistent derived_from'
                for error in errors_list)

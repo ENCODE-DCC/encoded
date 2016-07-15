@@ -557,7 +557,7 @@ var Target = module.exports.Target = React.createClass({
                     <div className="data-row">
                         <strong>External resources: </strong>
                         {result.dbxref && result.dbxref.length ?
-                            <DbxrefList values={result.dbxref} target_gene={result.gene_name} />
+                            <DbxrefList values={result.dbxref} target_gene={result.gene_name} target_ref />
                         : <em>None submitted</em> }
                     </div>
                 </div>
@@ -712,6 +712,15 @@ var Facet = search.Facet = React.createClass({
         var canDeselect = (!facet.restrictions || selectedTermCount >= 2);
         var moreSecClass = 'collapse' + ((moreTermSelected || this.state.facetOpen) ? ' in' : '');
         var seeMoreClass = 'btn btn-link' + ((moreTermSelected || this.state.facetOpen) ? '' : ' collapsed');
+
+        // Handle audit facet titles
+        if (field.substr(0, 6) === 'audit.') {
+            var titleParts = title.split(': ');
+            var fieldParts = field.match(/^audit.(.+).category$/i);
+            var iconClass = 'icon audit-activeicon-' + fieldParts[1].toLowerCase();
+            title = <span>{titleParts[0]}: <i className={iconClass}></i></span>;
+        }
+
         return (
             <div className="facet" hidden={terms.length === 0} style={{width: this.props.width}}>
                 <h5>{title}</h5>
