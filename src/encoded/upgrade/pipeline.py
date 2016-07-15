@@ -133,6 +133,6 @@ def pipeline_4_5(value, system):
         value['group'] = 'ENCODE-ATAC-SEQ'
         value['version'] = 'v2'
 
-    if value.get('accession') in []:
-        value['group'] = ''
-        value['version'] = ''
+    if value.get('accession') in ['ENCPL915EEO']:
+        value['group'] = 'ENCODE-DNA-SEQ'
+        value['version'] = 'v1'
