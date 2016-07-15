@@ -96,6 +96,16 @@
 .facet-list li a {
     display: block;
     color: #000;
+
+    &.term-trigger {
+        display: inline-block;
+        width: 6%;
+    }
+
+    &.term-item {
+        display: inline-block;
+        width: 94%;
+    }
 }
 
 .facet-list li a:hover {
@@ -127,6 +137,7 @@
 .facet-list label {
     margin: 0;
 }
+
 
 .accession {
     position: relative;

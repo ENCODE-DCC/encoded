@@ -616,9 +616,20 @@ function countSelectedTerms(terms, field, filters) {
 }
 
 var Term = search.Term = React.createClass({
+    propTypes: {
+        term: React.PropTypes.object.isRequired, // key, count, and subfacets of term to render
+        searchBase: React.PropTypes.string.isRequired, // Search URI not including this term
+        filters: React.PropTypes.array.isRequired, // Array of selected terms, fields, and removal href
+        total: React.PropTypes.number, // Total count for all terms in this term's facet
+        canDeselect: React.PropTypes.bool.isRequired, // True if term can be deselected (the normal case)
+        title: React.PropTypes.string, // Title to render if any
+        parentInfo: React.PropTypes.object, // Term and field for parent term if this is a subfacet term
+        startSubfacetOpen: React.PropTypes.bool // True of the term's subfacet should start opened
+    },
+
     getInitialState: function() {
         return {
-            subfacetOpen: false // True if subfacets are currently displayed for this term
+            subfacetOpen: this.props.startSubfacetOpen // True if subfacets are currently displayed for this term
         };
     },
 
@@ -631,11 +642,10 @@ var Term = search.Term = React.createClass({
         // We know we're rendering a subfacet if this.props.parentInfo defined
         var {filters, parentInfo, subfacetOpen} = this.props;
         var term = this.props.term['key'];
-        var subfacets = this.props.term.facets && this.props.term.facets.length ? this.props.term.facets : null;
+        var subfacet = this.props.term.facets && this.props.term.facets.length ? this.props.term.facets[0] : null;
         var count = this.props.term['doc_count'];
         var title = this.props.title || term;
         var field = (parentInfo ? parentInfo.field + '=' + parentInfo.term + ':' : '') + this.props.facet['field'];
-        
         var em = field === 'target.organism.scientific_name' ||
                     field === 'organism.scientific_name' ||
                     field === 'replicates.library.biosample.donor.organism.scientific_name';
@@ -656,17 +666,17 @@ var Term = search.Term = React.createClass({
 
         return (
             <li id={selected ? "selected" : null} key={term}>
-                {subfacets ? <a data-trigger href="#" onClick={this.subfacetOpenToggle}>{this.state.subfacetOpen ? <i className="icon icon-minus"></i> : <i className="icon icon-plus"></i>}</a> : null}
+                {subfacet ? <a data-trigger className="term-trigger" href="#" onClick={this.subfacetOpenToggle}>{this.state.subfacetOpen ? <i className="icon icon-minus"></i> : <i className="icon icon-plus"></i>}</a> : null}
                 {selected ? '' : <span className="bar" style={barStyle}></span>}
                 {field === 'lot_reviews.status' ? <span className={globals.statusClass(term, 'indicator pull-left facet-term-key icon icon-circle')}></span> : null}
-                <a id={selected ? "selected" : null} href={href} onClick={href ? this.props.onFilter : null}>
+                <a id={selected ? "selected" : null} className="term-item" href={href} onClick={href ? this.props.onFilter : null}>
                     <span className="pull-right">{count} {selected && this.props.canDeselect ? <i className="icon icon-times-circle-o"></i> : ''}</span>
                     <span className="facet-item">
                         {em ? <em>{title}</em> : <span>{title}</span>}
                     </span>
                 </a>
-                {subfacets ?
-                    <Facet {...this.props} facet={subfacets[0]} parentInfo={{term: term, field: field}} subfacetOpen={this.state.subfacetOpen} />
+                {subfacet && this.state.subfacetOpen ?
+                    <Facet {...this.props} facet={subfacet} parentInfo={{term: term, field: field}} subfacetOpen={this.state.subfacetOpen} />
                 : null}
             </li>
         );
@@ -741,25 +751,41 @@ var Facet = search.Facet = React.createClass({
 
         return (
             <div className="facet" hidden={terms.length === 0} style={{width: this.props.width}}>
-                {!this.props.parent ? <h5>{title}</h5> : null}
+                {!this.props.parentInfo ? <h5>{title}</h5> : null}
                 <ul className="facet-list nav">
                     <div>
                         {terms.slice(0, 5).map(function (term) {
-                            return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
+                            if (term.facets && term.facets.length) {
+                                // Term has a subfacet. For all subfacet terms/fields, see if any
+                                // are selected. If they are, the subfacet should start open.
+                                var subfacetField = field + '=' + term.key + ':' + term.facets[0].field;
+                                var startSubfacetOpen = _(term.facets[0].terms).any(subfacetTerm => {
+                                    return termSelected(subfacetTerm.key, subfacetField, filters);
+                                });
+                            }
+                            return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} startSubfacetOpen={startSubfacetOpen} />;
                         }.bind(this))}
                     </div>
                     {terms.length > 5 ?
                         <div id={termID} className={moreSecClass}>
                             {moreTerms.map(function (term) {
-                                return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
+                                if (term.facets && term.facets.length) {
+                                    // Term has a subfacet. For all subfacet terms/fields, see if any
+                                    // are selected. If they are, the subfacet should start open.
+                                    var subfacetField = field + '=' + term.key + ':' + term.facets[0].field;
+                                    var startSubfacetOpen = _(term.facets[0].terms).any(subfacetTerm => {
+                                        return termSelected(subfacetTerm.key, subfacetField, filters);
+                                    });
+                                }
+                                return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} startSubfacetOpen={startSubfacetOpen} />;
                             }.bind(this))}
                         </div>
                     : null}
                     {(terms.length > 5 && !moreTermSelected) ?
                         <label className="pull-right">
-                                <small>
-                                    <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} onClick={this.handleClick} />
-                                </small>
+                            <small>
+                                <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} onClick={this.handleClick} />
+                            </small>
                         </label>
                     : null}
                 </ul>
