@@ -93,18 +93,17 @@
     font-weight: normal;
 }
 
-.facet-list li a {
-    display: block;
+.facet-list li > a, .facet-list li > span {
     color: #000;
 
     &.term-trigger {
         display: inline-block;
-        width: 6%;
+        width: 8%;
     }
 
     &.term-item {
         display: inline-block;
-        width: 94%;
+        width: 92%;
     }
 }
 

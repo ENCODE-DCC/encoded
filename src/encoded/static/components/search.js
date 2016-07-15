@@ -640,7 +640,7 @@ var Term = search.Term = React.createClass({
 
     render: function () {
         // We know we're rendering a subfacet if this.props.parentInfo defined
-        var {filters, parentInfo, subfacetOpen} = this.props;
+        var {filters, searchBase, parentInfo, subfacetOpen} = this.props;
         var term = this.props.term['key'];
         var subfacet = this.props.term.facets && this.props.term.facets.length ? this.props.term.facets[0] : null;
         var count = this.props.term['doc_count'];
@@ -656,17 +656,55 @@ var Term = search.Term = React.createClass({
         // Get the `remove` href if this term and field is selected, based on the given filters.
         var selected = termSelected(term, field, filters);
         var href;
+        var searchBaseObj;
         if (selected && !this.props.canDeselect) {
             href = null;
         } else if (selected) {
             href = selected;
         } else {
-            href = this.props.searchBase + field + '=' + encodeURIComponent(term).replace(/%20/g, '+');
+            // Term not selected, so build its href from searchBase and given field and term.
+
+            // If this term is a parent of a subfacet, and searchBase includes this term's subfacet
+            // term specification, remove it/them. You can't select both a term and its subfacet
+            // terms.
+            if (subfacet) {
+                searchBaseObj = queryString.parse(searchBase);
+                delete searchBaseObj[field];
+                searchBase = '?' + queryString.stringify(searchBaseObj) + '&';
+            }
+
+            // If this term is in a subfacet, remove its parent term from searchBase. You can't
+            // select both a subfacet term and its parent.
+            if (parentInfo) {
+                searchBaseObj = queryString.parse(searchBase);
+                console.log('QUERY: %s:%o', searchBase, searchBaseObj);
+                if (searchBaseObj[parentInfo.field]) {
+                    if (typeof searchBaseObj[parentInfo.field] === 'string') {
+                        // Query string parameter for parent's field is a string. Delete it if it
+                        // doesn't contain a colon, meaning the parent term is selected
+                        if (searchBaseObj[parentInfo.field].indexOf(':') === -1) {
+                            delete searchBaseObj[parentInfo.field];
+                        }
+                    } else {
+                        searchBaseObj[parentInfo.field].forEach((parm, i) => {
+                            if (parm && parm.indexOf(':') === -1) {
+                                delete searchBaseObj[parentInfo.field][i];
+                            }
+                        });
+                    }
+                    searchBase = '?' + queryString.stringify(searchBaseObj) + '&';
+                }
+            }
+            href = searchBase + field + '=' + encodeURIComponent(term).replace(/%20/g, '+');
         }
 
         return (
             <li id={selected ? "selected" : null} key={term}>
-                {subfacet ? <a data-trigger className="term-trigger" href="#" onClick={this.subfacetOpenToggle}>{this.state.subfacetOpen ? <i className="icon icon-minus"></i> : <i className="icon icon-plus"></i>}</a> : null}
+                {subfacet ?
+                    <a data-trigger className="term-trigger" href="#" onClick={this.subfacetOpenToggle}>{this.state.subfacetOpen ? <i className="icon icon-minus"></i> : <i className="icon icon-plus"></i>}</a>
+                :
+                    <span className="term-trigger"></span>
+                }
                 {selected ? '' : <span className="bar" style={barStyle}></span>}
                 {field === 'lot_reviews.status' ? <span className={globals.statusClass(term, 'indicator pull-left facet-term-key icon icon-circle')}></span> : null}
                 <a id={selected ? "selected" : null} className="term-item" href={href} onClick={href ? this.props.onFilter : null}>
@@ -714,6 +752,15 @@ var Facet = search.Facet = React.createClass({
         this.setState({facetExpanded: !this.state.facetExpanded});
     },
 
+    // Determine whether the subfacet of each facet term should start opened on page load. This
+    // is true if any subfacet term is selected.
+    isSubfacetTermSelected: function(term, field, filters) {
+        var subfacetField = field + '=' + term.key + ':' + term.facets[0].field;
+        return _(term.facets[0].terms).any(subfacetTerm => {
+            return termSelected(subfacetTerm.key, subfacetField, filters);
+        });
+    },
+
     render: function() {
         var facet = this.props.facet;
         var filters = this.props.filters;
@@ -740,6 +787,7 @@ var Facet = search.Facet = React.createClass({
         var canDeselect = (!facet.restrictions || selectedTermCount >= 2);
         var moreSecClass = 'collapse' + ((moreTermSelected || this.state.facetExpanded) ? ' in' : '');
         var seeMoreClass = 'btn btn-link' + ((moreTermSelected || this.state.facetExpanded) ? '' : ' collapsed');
+        var startSubfacetOpen; // True if subfacet should be open on page load
 
         // Handle audit facet titles
         if (field.substr(0, 6) === 'audit.') {
@@ -758,10 +806,7 @@ var Facet = search.Facet = React.createClass({
                             if (term.facets && term.facets.length) {
                                 // Term has a subfacet. For all subfacet terms/fields, see if any
                                 // are selected. If they are, the subfacet should start open.
-                                var subfacetField = field + '=' + term.key + ':' + term.facets[0].field;
-                                var startSubfacetOpen = _(term.facets[0].terms).any(subfacetTerm => {
-                                    return termSelected(subfacetTerm.key, subfacetField, filters);
-                                });
+                                startSubfacetOpen = this.isSubfacetTermSelected(term, field, filters);
                             }
                             return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} startSubfacetOpen={startSubfacetOpen} />;
                         }.bind(this))}
@@ -772,10 +817,7 @@ var Facet = search.Facet = React.createClass({
                                 if (term.facets && term.facets.length) {
                                     // Term has a subfacet. For all subfacet terms/fields, see if any
                                     // are selected. If they are, the subfacet should start open.
-                                    var subfacetField = field + '=' + term.key + ':' + term.facets[0].field;
-                                    var startSubfacetOpen = _(term.facets[0].terms).any(subfacetTerm => {
-                                        return termSelected(subfacetTerm.key, subfacetField, filters);
-                                    });
+                                    startSubfacetOpen = this.isSubfacetTermSelected(term, field, filters);
                                 }
                                 return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} startSubfacetOpen={startSubfacetOpen} />;
                             }.bind(this))}
