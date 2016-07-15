@@ -69,7 +69,11 @@ def get_hub(label):
 # title: (required) same as the static group's key
 # groups: (if appropriate) { subgroups keyed by subgroup tag }
 # group_order: (if appropriate) [ ordered list of subgroup tags ]
-EXP_COMPOSITE_DEF_DEFAULT = {
+COMPOSITE_VIS_DEFS_DEFAULT = {
+    "assay_composite": {
+        "longLabel":  "Collection of Miscellaneous ENCODE datasets",
+        "shortLabel": "ENCODE Misc.",
+    },
     "longLabel":  "{assay_term_name} of {biosample_term_name} - {accession}",
     "shortLabel": "{accession}",
     "color":      "{biosample_term_name}",
@@ -145,7 +149,11 @@ EXP_COMPOSITE_DEF_DEFAULT = {
     },
 }
 
-LRNA_EXP_COMPOSITE_DEF_DEFAULT = {
+LRNA_COMPOSITE_VIS_DEFS = {
+    "assay_composite": {
+        "longLabel":  "Collection of ENCODE long-RNA-seq experiments",
+        "shortLabel": "ENCODE long-RNA-seq",
+    },
     "longLabel": "{assay_title} of {replicates.library.biosample.summary} - {accession}",
     "shortLabel": "{accession}",
     #"color": "{biosample_term_name}",
@@ -262,7 +270,11 @@ LRNA_EXP_COMPOSITE_DEF_DEFAULT = {
     }
 }
 
-CHIP_EXP_COMPOSITE_DEF_DEFAULT = {
+CHIP_COMPOSITE_VIS_DEFS = {
+    "assay_composite": {
+        "longLabel":  "Collection of ENCODE ChIP-seq experiments",
+        "shortLabel": "ENCODE ChIP-seq",
+    },
     "longLabel":  "{target} {assay_title} of {replicates.library.biosample.summary} - {accession}",
     "shortLabel": "{target} {assay_title} of {biosample_term_name} {accession}",
     "color":      "{biosample_term_name}",
@@ -377,9 +389,9 @@ CHIP_EXP_COMPOSITE_DEF_DEFAULT = {
     }
 }
 
-EXP_DEFS_BY_ASSAY = {
-    "LRNA": LRNA_EXP_COMPOSITE_DEF_DEFAULT,
-    "CHIP": CHIP_EXP_COMPOSITE_DEF_DEFAULT
+VIS_DEFS_BY_ASSAY = {
+    "LRNA": LRNA_COMPOSITE_VIS_DEFS,
+    "CHIP": CHIP_COMPOSITE_VIS_DEFS,
     }
 
 def get_exp_vis_type(exp):
@@ -405,19 +417,15 @@ def get_exp_vis_type(exp):
     elif assay == "ChIP-seq":
         return "CHIP"
 
-    return None
+    return "opaque" # This becomes a dict key later so None is not okay
 
 
-def lookup_exp_defs(exp):
+def lookup_vis_defs(vis_type):
     '''returns the best static composite definition set, based upon exp.'''
-    global EXP_COMPOSITE_DEF_DEFAULT
-    global EXP_DEFS_BY_ASSAY
+    global COMPOSITE_VIS_DEFS_DEFAULT
+    global VIS_DEFS_BY_ASSAY
 
-    vis_type = get_exp_vis_type(exp)
-    if vis_type is None:
-        return EXP_COMPOSITE_DEF_DEFAULT
-    assay = str(exp.get("assay_term_name","unknown"))
-    return EXP_DEFS_BY_ASSAY.get(vis_type, EXP_COMPOSITE_DEF_DEFAULT )
+    return VIS_DEFS_BY_ASSAY.get(vis_type, COMPOSITE_VIS_DEFS_DEFAULT )
 
 SUPPORTED_SUBGROUPS = [
     "Biosample", "Targets", "Replicates", "Views"
@@ -430,7 +438,7 @@ SUPPORTED_TRACK_SETTINGS = [
     ]
 COMPOSITE_SETTINGS = ["longLabel","shortLabel","visibility","pennantIcon","color","altColor","allButtonPair"]
 VIEW_SETTINGS = SUPPORTED_TRACK_SETTINGS
-TRACK_SETTINGS = ["bigDataUrl","longLabel","shortLabel","type"]
+TRACK_SETTINGS = ["bigDataUrl","longLabel","shortLabel","type","color","altColor"]
 
 
 SUPPORTED_MASK_TOKENS = [
@@ -578,20 +586,36 @@ def lookup_color(mask,exp,halfColor=False):
     global BIOSAMPLE_COLOR
     color = None
     if mask == "{biosample_term_name}":
-        biosample = str(exp.get('biosample_term_name', 'Unknown Biosample'))
-        color = BIOSAMPLE_COLOR.get(biosample)
-    if len(mask.split(',')) == 3:
-        color = mask
+        if len(mask.split(',')) == 3:
+            color = mask
+        else:
+            biosample = exp.get('biosample_term_name', 'Unknown Biosample')
+            color = BIOSAMPLE_COLOR.get(biosample)
     if halfColor and color is not None:
-            shades = color.split(',')
-            red = int(shades[0]) / 2
-            green = int(shades[1]) / 2
-            blue = int(shades[2]) / 2
-            color = "%d,%d,%d" % (red,green,blue)
+        shades = color.split(',')
+        red = int(shades[0]) / 2
+        green = int(shades[1]) / 2
+        blue = int(shades[2]) / 2
+        color = "%d,%d,%d" % (red,green,blue)
     return color
 
+def add_living_color(live_settings, defs, exp):
+    '''Adds color and altColor'''
+    if "color" in defs:
+        color = lookup_color(defs["color"],exp)
+        if color is not None:
+            live_settings["color"] = color
+        if "altColor" in defs:
+            if defs["altColor"].startswith("same"):
+                live_settings["altColor"] = color
+            else:
+                color = lookup_color(defs["altColor"],exp)
+                if color is not None:
+                    live_settings["altColor"] = color
+        else:
+            live_settings["altColor"] = lookup_color(defs["color"],exp,halfColor=True)
 
-def htmlize_char(c,exceptions=[ ' ', '_' ]):
+def htmlize_char(c,exceptions=[ '_' ]):
     n = ord(c)
     if n >= 47 and n <= 57: # 0-9
         return c
@@ -601,7 +625,9 @@ def htmlize_char(c,exceptions=[ ' ', '_' ]):
         return c
     if c in exceptions:
         return c
-    return "&#%s;" % n
+    if n >= 32:              # space
+        return '_'
+    return "&#%d;" % n
 
 def tag_char(c):
     n = ord(c)
@@ -613,30 +639,32 @@ def tag_char(c):
         return c
     if n in [ 95 ]: # _
         return c
-    return ""
+    return "%d" % n
 
 def sanitize_label(s):
     '''Encodes the string to swap special characters and leaves spaces alone.'''
-    new_s = ""
+    new_s = ""      # longLabel and shorLabel can have spaces and some special characters
     for c in s:
         new_s += htmlize_char(c,[ ' ', '_','.','-','(',')','+' ])
     return new_s
 
 def sanitize_title(s):
     '''Encodes the string to swap special characters and replace spaces with '_'.'''
-    new_s = ""
+    new_s = ""      # Titles appear in tag=title pairs and cannot have spaces
     for c in s:
-        if c == ' ':
-            new_s += '_'
-        else:
-            new_s += htmlize_char(c)
+        new_s += htmlize_char(c,[ '_','.','-','(',')','+' ])
     return new_s
 
 def sanitize_tag(s):
     '''Encodes the string to swap special characters and remove spaces.'''
     new_s = ""
+    first = True
     for c in s:
         new_s += tag_char(c)
+        if first:
+            if new_s.isdigit(): # tags cannot start with digit.
+                new_s = 'z' + new_s
+            first = False
     return new_s
 
 
@@ -745,7 +773,7 @@ def lookup_token(token,exp,a_file=None):
             return ""
     else:
         log.warn('Untranslated token: "%s"' % token)
-        return "unknown" # should be an error
+        return "unknown"
 
 def convert_mask(mask,exp,a_file=None):
     '''Given a mask with one or more known {term_name}s, replaces with values.'''
@@ -768,22 +796,6 @@ def convert_mask(mask,exp,a_file=None):
 
     return working_on
 
-
-def add_living_color(live_settings, defs, exp):
-    '''Adds color and altColor'''
-    if "color" in defs:
-        color = lookup_color(defs["color"],exp)
-        if color is not None:
-            live_settings["color"] = color
-        if "altColor" in defs:
-            if defs["altColor"].startswith("same"):
-                live_settings["altColor"] = color
-            else:
-                color = lookup_color(defs["altColor"],exp)
-                if color is not None:
-                    live_settings["altColor"] = color
-        else:
-            live_settings["altColor"] = lookup_color(defs["color"],exp,halfColor=True)
 
 def handle_negateValues(live_settings, defs, exp, composite):
     '''If negateValues is set then adjust some settings like color'''
@@ -816,6 +828,8 @@ def generate_live_groups(composite,title,group_defs,exp,rep_tags=[]):
     live_group = deepcopy(group_defs) # makes sure all miscellaneous settings are transferred
     live_group["title"] = title
     live_group["tag"] = tag
+    if "group_order" in live_group:
+        del live_group["group_order"]
 
     if title == "replicate": # transform replicates into unique tags and titles
         if len(rep_tags) == 0:  # Replicates need special work after files are examined, so just stub.
@@ -835,8 +849,7 @@ def generate_live_groups(composite,title,group_defs,exp,rep_tags=[]):
                 else:
                     rep_title = rep_title_mask.replace('{replicate_number}',rep_tag[3:])
             live_group["groups"][rep_tag] = { "title": rep_title, "tag": rep_tag }
-        tag_order = sorted( rep_tags )
-        live_group["group_order"] = tag_order
+        live_group["preferred_order"] = "sorted"
 
     elif title in ["Biosample", "Targets"]: # Single subGroup at experiment level.  No order
         del live_group["groups"] # Make sure there is only a subgroup when the property is found.
@@ -851,6 +864,7 @@ def generate_live_groups(composite,title,group_defs,exp,rep_tags=[]):
                     term_title = term
                     live_group["groups"] = {}
                     live_group["groups"][term_tag] = { "title": term_title, "tag": term_tag }
+        live_group["preferred_order"] = "sorted"
         # No tag order since only one
 
     # simple swapping tag and title and creating subgroups set with order
@@ -860,24 +874,54 @@ def generate_live_groups(composite,title,group_defs,exp,rep_tags=[]):
             live_group["groups"]  = {}
             groups = group_defs["groups"]
             group_order = group_defs.get("group_order")
+            preferred_order = []  # have to create preferred order based upon tags, not titles
             if group_order is None or not isinstance(group_order, list):
                 group_order = sorted( groups.keys() )
+                preferred_order = "sorted"
             tag_order = []
             for subgroup_title in group_order:
                 subgroup = groups.get(subgroup_title,{})
                 (subgroup_tag, subgroup) = generate_live_groups(composite,subgroup_title,subgroup,exp) #recursive
                 subgroup["tag"] = subgroup_tag
+                if isinstance(preferred_order,list):
+                    preferred_order.append(subgroup_tag)
                 if title == "Views":
                     add_living_color(subgroup, subgroup, exp)
                     handle_negateValues(subgroup, subgroup, exp, composite)
                 live_group["groups"][subgroup_tag] = subgroup
                 tag_order.append(subgroup_tag)
             live_group["group_order"] = tag_order
+            live_group["preferred_order"] = preferred_order
 
     return (tag, live_group)
 
+def insert_live_group(live_groups,new_tag,new_group):
+    '''Inserts new group into a set of live groups during composite remodelling.'''
+    old_groups = live_groups.get("groups",{})
+    preferred_order = live_groups.get("preferred_order") # Note: all cases where group is dynamically added should be in sort order!
+    if preferred_order is None or not isinstance(preferred_order,list):
+        old_groups[new_tag] = new_group
+        live_groups["groups"] = old_groups
+        log.warn("Added %s to %s in sort order" % (new_tag,live_groups.get("tag","a group")))
+        return live_groups
 
-def exp_composite_extend_with_tracks(composite, exp_defs, exp, assembly, host=None):
+    # well we are going to have to generate s new order
+    new_order = []
+    old_order = live_groups.get("group_order",[])
+    if old_order is None:
+        old_order = sorted( old_groups.keys() )
+    for preferred_tag in preferred_order:
+        if preferred_tag == new_tag:
+            new_order.append(new_tag)
+        elif preferred_tag in old_order:
+            new_order.append(preferred_tag)
+
+    old_groups[new_tag] = new_group
+    live_groups["groups"] = old_groups
+    log.warn("Added %s to %s in preferred order" % (new_tag,live_groups.get("tag","a group")))
+    return live_groups
+
+def exp_composite_extend_with_tracks(composite, vis_defs, exp, assembly, host=None):
     '''Extends live experiment composite object with track definitions'''
     tracks = []
     rep_techs = {}
@@ -923,7 +967,7 @@ def exp_composite_extend_with_tracks(composite, exp_defs, exp, assembly, host=No
         rep_tags.append(rep_tag)
 
     # Now we can fill in "Replicate" subgroups with with "replicate"
-    other_groups = exp_defs.get("other_groups",[]).get("groups",[])
+    other_groups = vis_defs.get("other_groups",[]).get("groups",[])
     if "Replicates" in other_groups:
         group = other_groups["Replicates"]
         group_tag = group["tag"]
@@ -931,7 +975,7 @@ def exp_composite_extend_with_tracks(composite, exp_defs, exp, assembly, host=No
         if "replicate" in subgroups:
             (repgroup_tag, repgroup) = generate_live_groups(composite,"replicate",subgroups["replicate"],exp,rep_tags)
             # Now to hook them into the composite structure
-            composite_rep_group = composite["subgroups"]["REP"]
+            composite_rep_group = composite["groups"]["REP"]
             composite_rep_group["groups"] = repgroup.get("groups",{})
             composite_rep_group["group_order"] = repgroup.get("group_order",[])
 
@@ -958,10 +1002,11 @@ def exp_composite_extend_with_tracks(composite, exp_defs, exp, assembly, host=No
             if "tracks" not in view:
                 view["tracks"] = []
             track = {}
+            #track["name"] = "%s_%s" % (exp['accession'][3:],a_file['accession'][3:]) # Trimming too cute?
             track["name"] = a_file['accession']
             track["type"] = view["type"]
             track["bigDataUrl"] = "%s?proxy=true" % a_file["href"]
-            longLabel = exp_defs.get('file_defs',{}).get('longLabel')
+            longLabel = vis_defs.get('file_defs',{}).get('longLabel')
             if longLabel is None:
                 longLabel = "{assay_title} of {biosample_term_name} {output_type} {biological_replicate_number} {experiment.accession} - {file.accession}"
             track["longLabel"] = sanitize_label( convert_mask(longLabel,exp,a_file) )
@@ -970,14 +1015,14 @@ def exp_composite_extend_with_tracks(composite, exp_defs, exp, assembly, host=No
             metadata_pairs["experiment"] = '"<a href=\"%s/experiments/%s\" TARGET=\'encode\' title=\'Experiment details from the ENCODE portal\'>%s</a>"' % (host,exp["accession"],exp["accession"])
 
             # Expecting short label to change when making assay based composites
-            shortLabel = exp_defs.get('file_defs',{}).get('shortLabel',"{replicate} {output_type_short_label}")
+            shortLabel = vis_defs.get('file_defs',{}).get('shortLabel',"{replicate} {output_type_short_label}")
             track["shortLabel"] = sanitize_label( convert_mask(shortLabel,exp,a_file) )
 
             # How about subgroups!
             membership = {}
             membership["view"] = view["tag"]
             view["tracks"].append( track )  # <==== This is how we connect them to the views
-            for (group_tag,group) in composite["subgroups"].items():
+            for (group_tag,group) in composite["groups"].items():
                 # "Replicates", "Biosample", "Targets", ... member?
                 group_title = group["title"]
                 subgroups = group["groups"]
@@ -1014,75 +1059,80 @@ def exp_composite_extend_with_tracks(composite, exp_defs, exp, assembly, host=No
 
 def make_exp_composite(exp, assembly, host=None, hide=False):
     '''Converts experiment composite static definitions to live composite object'''
-    exp_defs = lookup_exp_defs(exp)
-    if exp_defs is None:
+    vis_type = get_exp_vis_type(exp)
+    vis_defs = lookup_vis_defs(vis_type)
+    if vis_defs is None:
         return None
     composite = {}
+    composite["vis_type"] = vis_type
     composite["name"] = exp["accession"]
 
-    longLabel = exp_defs.get('longLabel','{assay_term_name} of {biosample_term_name} - {accession}')
+    longLabel = vis_defs.get('longLabel','{assay_term_name} of {biosample_term_name} - {accession}')
     composite['longLabel'] = sanitize_label( convert_mask(longLabel,exp) )
-    shortLabel = exp_defs.get('shortLabel','{accession}')
+    shortLabel = vis_defs.get('shortLabel','{accession}')
     composite['shortLabel'] = sanitize_label( convert_mask(shortLabel,exp) )
     if hide:
         composite["visibility"] = "hide"
     else:
-        composite["visibility"] = exp_defs.get("visibility","full")
-    composite['pennantIcon'] = exp_defs.get("pennantIcon", 'http://genome.cse.ucsc.edu/images/encodeThumbnail.jpg https://www.encodeproject.org/ "ENCODE: Encyclopedia of DNA Elements"')
-    add_living_color(composite, exp_defs, exp)
+        composite["visibility"] = vis_defs.get("visibility","full")
+    composite['pennantIcon'] = vis_defs.get("pennantIcon", 'http://genome.cse.ucsc.edu/images/encodeThumbnail.jpg https://www.encodeproject.org/ "ENCODE: Encyclopedia of DNA Elements"')
+    add_living_color(composite, vis_defs, exp)
     # views are always subGroup1
     composite["view"] = {}
     title_to_tag = {}
-    if "Views" in exp_defs:
-        ( tag, views ) = generate_live_groups(composite,"Views",exp_defs["Views"],exp)
+    if "Views" in vis_defs:
+        ( tag, views ) = generate_live_groups(composite,"Views",vis_defs["Views"],exp)
         composite[tag] = views
         title_to_tag["Views"] = tag
 
     global SUPPORTED_SUBGROUPS
-    if "other_groups" in exp_defs:
-        groups = exp_defs["other_groups"].get("groups",{})
-        subgroup_ix = 2 # views are subgroup 1
+    if "other_groups" in vis_defs:
+        groups = vis_defs["other_groups"].get("groups",{})
         new_dimensions = {}
         new_filters = {}
-        composite["subgroups_order"] = []
-        composite["subgroups"] = {}
-        group_order = exp_defs["other_groups"].get("group_order")
-        if group_order is None:
+        composite["group_order"] = []
+        composite["groups"] = {} # subgroups are defined by groups and group_order directly off of composite
+        group_order = vis_defs["other_groups"].get("group_order")
+        preferred_order = []  # have to create preferred order based upon tags, not titles
+        if group_order is None or not isinstance(group_order,list):
             group_order = sorted( groups.keys() )
+            preferred_order = "sorted"
         for subgroup_title in group_order: # Replicates, Targets, Biosamples
             if subgroup_title not in groups:
                 continue
             assert(subgroup_title in SUPPORTED_SUBGROUPS)
             (subgroup_tag, subgroup) = generate_live_groups(composite,subgroup_title,groups[subgroup_title],exp)
-            if "groups" in subgroup and len(subgroup["groups"]) > 0:
+            if isinstance(preferred_order,list):
+                preferred_order.append(subgroup_tag)  # "Targets" will get in, even if there are no targets in exp
+            if "groups" in subgroup and len(subgroup["groups"]) > 0: # This means "Targets" may not get in
                 title_to_tag[subgroup_title] = subgroup_tag
-                subgroup["subgroup_ix"] = subgroup_ix
-                composite["subgroups"][subgroup_tag] = subgroup
-                composite["subgroups_order"].append(subgroup_tag)
-                subgroup_ix += 1
-                if "dimensions" in exp_defs["other_groups"]:
-                    dimension = exp_defs["other_groups"]["dimensions"].get(subgroup_title)
-                    if dimension is not None:
-                        new_dimensions[dimension] = subgroup_tag
-                        if "filterComposite" in exp_defs["other_groups"]:
-                            filter = exp_defs["other_groups"]["filterComposite"].get(subgroup_title)
-                            if filter is not None:
-                                new_filters[dimension] = filter
+                #subgroup["subgroup_ix"] = subgroup_ix # Only matters when printing out and remodelling requires not setting now
+                composite["groups"][subgroup_tag] = subgroup
+                composite["group_order"].append(subgroup_tag)
+            if "dimensions" in vis_defs["other_groups"]: # "Targets" dimension will be included, whether there is a target group or not
+                dimension = vis_defs["other_groups"]["dimensions"].get(subgroup_title)
+                if dimension is not None:
+                    new_dimensions[dimension] = subgroup_tag
+                    if "filterComposite" in vis_defs["other_groups"]:
+                        filterfish = vis_defs["other_groups"]["filterComposite"].get(subgroup_title)
+                        if filterfish is not None:
+                            new_filters[dimension] = filterfish
+        composite["preferred_order"] = preferred_order
         if len(new_dimensions) > 0:
             composite["dimensions"] = new_dimensions
         if len(new_filters) > 0:
             composite["filterComposite"] = new_filters
-        if "dimensionAchecked" in exp_defs["other_groups"]:
-            composite["dimensionAchecked"] = exp_defs["other_groups"]["dimensionAchecked"]
+        if "dimensionAchecked" in vis_defs["other_groups"]:
+            composite["dimensionAchecked"] = vis_defs["other_groups"]["dimensionAchecked"]
 
-    if "sortOrder" in exp_defs:
+    if "sortOrder" in vis_defs:
         sort_order = []
-        for title in exp_defs["sortOrder"]:
+        for title in vis_defs["sortOrder"]:
             if title in title_to_tag:
                 sort_order.append(title_to_tag[title])
         composite["sortOrder"] = sort_order
 
-    tracks = exp_composite_extend_with_tracks(composite, exp_defs, exp, assembly, host=host)
+    tracks = exp_composite_extend_with_tracks(composite, vis_defs, exp, assembly, host=host)
     if tracks is None or len(tracks) == 0:
         # Already warned about files log.warn("No tracks for %s" % exp["accession"])
         return None
@@ -1091,7 +1141,7 @@ def make_exp_composite(exp, assembly, host=None, hide=False):
 
 def ucsc_trackDb_composite_blob(composite,title):
     '''Given an in-memory composite object, prints a single UCSC trackDb.txt composite structure'''
-    if composite is None:
+    if composite is None or len(composite) == 0:
         return "# Empty composite for %s\n" % title
 
     blob = ""
@@ -1116,10 +1166,12 @@ def ucsc_trackDb_composite_blob(composite,title):
     if dimA_checked == "first": # All will leave dimA_tag and dimA_checked empty, thus defaulting to all on
         dimA_tag = composite.get("dimensions",{}).get("dimA","")
     dimA_checked = None
-    for group_tag in composite["subgroups_order"]:
-        group = composite["subgroups"][group_tag]
-        blob += "subGroup%d %s %s" % (group["subgroup_ix"], group_tag, sanitize_title(group["title"]))
-        subgroup_order = group["group_order"]
+    subgroup_ix = 2
+    for group_tag in composite["group_order"]:
+        group = composite["groups"][group_tag]
+        blob += "subGroup%d %s %s" % (subgroup_ix, group_tag, sanitize_title(group["title"]))
+        subgroup_ix += 1
+        subgroup_order = None # group.get("group_order")
         if subgroup_order is None or not isinstance(subgroup_order,list):
             subgroup_order = sorted( group["groups"].keys() )
         for subgroup_tag in subgroup_order:
@@ -1142,8 +1194,11 @@ def ucsc_trackDb_composite_blob(composite,title):
     if dimensions:
         pairs = ""
         for dim_tag in sorted( dimensions.keys() ):
-            group = composite["subgroups"][dimensions[dim_tag]]
-            #if len(group["groups"]) > 1: # TODO get hui.js line 262 fixed!  If matXY.length == 0 then need to call subCBs.each( function (i) { matSubCBcheckOne(this,state); });
+            group = composite["groups"].get(dimensions[dim_tag])
+            if group is None: # e.g. "Targets" may not exist
+                continue
+            #if len(group.get("groups",{})) <= 1: # TODO get hui.js line 262 fixed!  If matXY.length == 0 then need to call subCBs.each( function (i) { matSubCBcheckOne(this,state); });
+            #    continue
             pairs += " %s=%s" % (dim_tag, dimensions[dim_tag])
             actual_group_tags.append(dimensions[dim_tag])
         if len(pairs) > 0:
@@ -1151,13 +1206,16 @@ def ucsc_trackDb_composite_blob(composite,title):
     # filterComposite
     filter_composite = composite.get("filterComposite")
     if filter_composite:
-        blob += "filterComposite"
+        filterfish = ""
         for filter_tag in sorted( filter_composite.keys() ):
-            blob += " %s" % filter_tag
-            filter_opt = filter_composite[filter_tag]
+            group = composite["groups"].get(filter_composite[filter_tag])
+            if group is None and len(group.get("groups",{})) <= 1: # e.g. "Targets" may not exist
+                continue
+            filterfish += " %s" % filter_tag
             if filter_composite[filter_tag] == "one":
-                blob += "=one"
-        blob += '\n'
+                filterfish += "=one"
+        if len(filterfish) > 0:
+            blob += 'filterComposite%s\n' % filterfish
     elif dimA_checked is not None:
         blob += 'dimensionAchecked %s\n' % dimA_checked
     blob += '\n'
@@ -1184,10 +1242,10 @@ def ucsc_trackDb_composite_blob(composite,title):
             blob += "        track %s\n" % (track["name"])
             blob += "        parent %s_%s_view" % (composite["name"],view["tag"])
             dimA_subgroup = track.get("membership",{}).get(dimA_tag)
-            if dimA_subgroup is None or dimA_subgroup == dimA_checked:
-                blob += " on\n"
-            else:
+            if dimA_subgroup is not None and dimA_subgroup != dimA_checked:
                 blob += " off\n"
+            else:
+                blob += " %s\n" % track.get("checked","on") # Can set individual tracks off. Used when remodelling
             if "type" not in track:
                 blob += "        type %s\n" % (view["type"])
             for var in TRACK_SETTINGS:
@@ -1215,8 +1273,94 @@ def ucsc_trackDb_composite_blob(composite,title):
     blob += '\n'
     return blob
 
-# Time to test test test, then...
-# Next up, how to combine exp_composites
+def remodel_exp_to_assay_composites(exp_composites,hide_after=None):
+    '''Given a set of (search result) exp based composites, remodel them to assay based composites.'''
+    if exp_composites is None or len(exp_composites) == 0:
+        return {}
+
+    assay_composites = {}
+
+    for accession in sorted( exp_composites.keys() ):
+        exp_composite = exp_composites[accession]
+        if exp_composite is None or len(exp_composite) == 0: # wounded composite can be dropped or added for evidence
+            assay_composites[acc] = exp_composite
+
+        # Only show the first n experiments
+        if hide_after != None:
+            if hide_after <= 0:
+                for track in exp_composite.get("tracks",{}):
+                    track["checked"] = "off"
+            else:
+                hide_after -= 1
+
+        # color must move to tracks becuse it is likely biosample based and we are likely mixing biosample exps
+        exp_color = exp_composite.get("color")
+        exp_altColor = exp_composite.get("altColor")
+        exp_view_groups = exp_composite.get("view",{}).get("groups",{})
+        for (view_tag,exp_view) in exp_view_groups.items():
+            exp_view_color = exp_view.get("color",exp_color)
+            exp_view_altColor = exp_view.get("altColor",exp_altColor)
+            if exp_view_color is None and exp_view_altColor is None:
+                continue
+            for track in exp_view.get("tracks",[]):
+                if "color" not in track.keys():
+                    if exp_view_color is not None:
+                        track["color"] = exp_view_color
+                    if exp_view_altColor is not None:
+                        track["altColor"] = exp_view_altColor
+
+        # If assay_composite of this vis_type doesn't exist, create it
+        vis_type = exp_composite["vis_type"]
+        vis_defs = lookup_vis_defs(vis_type)
+        assert(vis_type is not None)
+        if vis_type not in assay_composites.keys():  # First one so just drop in place
+            log.warn("Remodelling %s into %s composite" % (exp_composite.get("name"," a composite"),vis_type))
+            assay_composite = exp_composite # Don't bother with deep copy... we aren't needing the exp_composites any more
+            assay_defs = vis_defs.get("assay_composite",{})
+            assay_composite["name"] = vis_type.lower()  # TODO: something more elegant?
+            for tag in ["longLabel","shortLabel","visibility"]:
+                if tag in assay_defs:
+                    assay_composite[tag] = assay_defs[tag] # Not expecting any token substitutions!!!
+            assay_composites[vis_type] = assay_composite
+
+        else: # Adding an exp_composite to an existing assay_composite
+            log.warn("Adding %s into %s composite" % (exp_composite.get("name"," a composite"),vis_type))
+            assay_composite = assay_composites[vis_type]
+
+            # combine views
+            assay_views = assay_composite.get("view",[])
+            exp_views = exp_composite.get("view",{})
+            for view_tag in exp_views["group_order"]:
+                exp_view = exp_views["groups"][view_tag]
+                if view_tag not in assay_views["groups"].keys():  # Should never happen
+                    log.warn("Surprise: view %s not found before" % view_tag)
+                    insert_live_group(assay_views,view_tag,exp_view)
+                else: # View is already defined but tracks need to be appended.
+                    assay_view = assay_views["groups"][view_tag]
+                    if "tracks" not in assay_view:
+                        assay_view["tracks"] = exp_view.get("tracks",[])
+                    else:
+                        assay_view["tracks"].extend(exp_view.get("tracks",[]))
+
+            # All tracks in one set: not needed.
+
+            # Combine subgroups:
+            for group_tag in exp_composite["group_order"]:
+                exp_group = exp_composite["groups"][group_tag]
+                if group_tag not in assay_composite["groups"].keys(): # Should never happen
+                    log.warn("Surprise: group %s not found before" % group_tag)
+                    insert_live_group(assay_composite,group_tag,exp_group)
+                else: # Need to handle subgroups which definitely may not be there.
+                    assay_group = assay_composite["groups"].get(group_tag,{})
+                    exp_subgroups = exp_group.get("groups",{})
+                    exp_subgroup_order = exp_group.get("group_order")
+                    for subgroup_tag in exp_subgroups.keys():
+                        if subgroup_tag not in assay_group.get("groups",{}).keys():
+                            insert_live_group(assay_group,subgroup_tag,exp_subgroups[subgroup_tag]) # Adding biosamples, targets, and reps
+
+            # dimensions and filterComposite should not need any extra care: they get dynamically scaled down during printing
+
+    return assay_composites
 
 def generate_trackDb(experiment, assembly, host=None, hide=False):
 
@@ -1237,23 +1381,20 @@ def generate_batch_trackDb(results, assembly, host=None):
 
     ### local test: RNA-seq: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/batch_hub/type=Experiment,,assay_title=RNA-seq,,award.rfa=ENCODE3,,status=released,,assembly=GRCh38,,replicates.library.biosample.biosample_type=induced+pluripotent+stem+cell+line/GRCh38/trackDb.txt
 
-    exp_composites = []
+    exp_composites = {}
     for (i, experiment) in enumerate(results):
         if i < 5:
             exp_composite = make_exp_composite(experiment, assembly, host=host)
         else:
             exp_composite = make_exp_composite(experiment, assembly, host=host, hide=True)
         if exp_composite is not None:
-            exp_composites.append( exp_composite )
+            exp_composites[experiment['accession']] = exp_composite
 
-    # TODO: Transform to assay composites
-    assay_composites = exp_composites
-    # TODO: hide some tracks if too many
+    assay_composites = remodel_exp_to_assay_composites(exp_composites,hide_after=5)
 
-    ###return json.dumps(exp_composite,indent=4) + '\n'
     blob = ""
-    for composite in assay_composites:
-        blob += ucsc_trackDb_composite_blob(composite,"search") # TODO: come up with a title
+    for composite_tag in sorted( assay_composites.keys() ):
+        blob += ucsc_trackDb_composite_blob(assay_composites[composite_tag],composite_tag)
 
     return blob
 
