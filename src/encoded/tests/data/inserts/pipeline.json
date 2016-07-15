@@ -12,7 +12,9 @@
         ],
         "lab": "joe-ecker",
         "award": "U54HG006997",
-        "status": "active"
+        "status": "active",
+        "group": "ENCODE-RNA-SEQ",
+        "version" : "v1"
     },
     {
         "accession": "ENCPL000MEG",
@@ -30,7 +32,9 @@
         ],
         "lab": "joe-ecker",
         "award": "U54HG006997",
-        "status": "active"
+        "status": "active",
+        "group": "ENCODE-DNA-SEQ",
+        "version" : "v1"
     },
     {
         "accession": "ENCPL002BIS",
@@ -45,7 +49,9 @@
         ],
         "lab": "joe-ecker",
         "award": "U54HG006997",
-        "status": "active"
+        "status": "active",
+        "group": "ENCODE-RNA-SEQ",
+        "version" : "v1"
     },
     {
         "accession": "ENCPL003RNA",
@@ -66,7 +72,9 @@
             "bam-to-bigwig-tophat",
             "bam-to-bigwig-star"
         ],
-        "status": "active"
+        "status": "active",
+        "group": "ENCODE-RNA-SEQ",
+        "version" : "v1"
     },
     {
         "accession": "ENCPL001GRV",
@@ -83,7 +91,9 @@
         "title": "Graveley RNA-seq Analysis",
         "lab": "brenton-graveley",
         "award": "U54HG007005",
-        "uuid": "ab640a00-50aa-11e4-916c-0800200c9a66"
+        "uuid": "ab640a00-50aa-11e4-916c-0800200c9a66",
+        "group": "ENCODE-RNA-SEQ",
+        "version" : "v1"
     },
     {
         "accession": "ENCPL001CRG",
@@ -101,7 +111,9 @@
         "award": "U54HG007004",
         "lab": "thomas-gingeras",
         "title": "Gene Quantification Pipeline",
-        "uuid": "fbd1b730-5af5-11e4-8ed6-0800200c9a66"
+        "uuid": "fbd1b730-5af5-11e4-8ed6-0800200c9a66",
+        "group": "ENCODE-RNA-SEQ",
+        "version" : "v1"
     },
     {
         "accession": "ENCPL001ENC",
@@ -119,7 +131,9 @@
         "title": "ENCODE2 ChIP-seq pipeline",
         "award": "U54HG007004",
         "lab": "thomas-gingeras",
-        "uuid": "6e191389-b63d-4986-8d61-2ae4716f84d8"
+        "uuid": "6e191389-b63d-4986-8d61-2ae4716f84d8",
+        "group": "ENCODE-CHIP-SEQ",
+        "version" : "v1"
     },
     {
         "accession": "ENCPL001CLP",
@@ -136,7 +150,9 @@
         "lab": "brenton-graveley",
         "award": "U54HG007005",
         "title": "iCLIP-seq Analysis Pipeline",
-        "uuid": "21934150-5e2f-11e4-9803-0800200c9a66"
+        "uuid": "21934150-5e2f-11e4-9803-0800200c9a66",
+        "group": "ENCODE-ECLIP",
+        "version" : "v1"
     },
     {
         "accession": "ENCPL001FVD",
@@ -147,6 +163,8 @@
         "lab": "brenton-graveley",
         "award": "U54HG007005",
         "title": "ENCODE File Validation",
-        "uuid": "f96f9810-a5a3-11e4-bcd8-0800200c9a66"
+        "uuid": "f96f9810-a5a3-11e4-bcd8-0800200c9a66",
+        "group": "ENCODE-DNA-SEQ",
+        "version" : "v1"
     }
 ]

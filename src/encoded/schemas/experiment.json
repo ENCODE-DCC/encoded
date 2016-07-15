@@ -173,7 +173,7 @@
         "replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Biosample treatment"
         },
-        "files.analysis_step_version.analysis_step.pipelines.title": {
+        "files.analysis_step_version.analysis_step.pipelines.group": {
             "title": "Pipeline"
         },
         "files.file_type": {
