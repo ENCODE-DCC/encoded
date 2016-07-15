@@ -124,6 +124,7 @@ write_files:
     network.host: 0.0.0.0
     action.auto_create_index: false
     index.mapper.dynamic: false
+    index.number_of_replicas: 2
 
     node.master: false
     node.data: true
