@@ -652,6 +652,7 @@ var Term = search.Term = React.createClass({
         var barStyle = {
             width:  Math.ceil( (count/this.props.total) * 100) + "%"
         };
+        console.log(field + '--' + term + '--' + count + '--' + this.props.total);
 
         // Get the `remove` href if this term and field is selected, based on the given filters.
         var selected = termSelected(term, field, filters);
@@ -677,7 +678,6 @@ var Term = search.Term = React.createClass({
             // select both a subfacet term and its parent.
             if (parentInfo) {
                 searchBaseObj = queryString.parse(searchBase);
-                console.log('QUERY: %s:%o', searchBase, searchBaseObj);
                 if (searchBaseObj[parentInfo.field]) {
                     if (typeof searchBaseObj[parentInfo.field] === 'string') {
                         // Query string parameter for parent's field is a string. Delete it if it
@@ -686,6 +686,9 @@ var Term = search.Term = React.createClass({
                             delete searchBaseObj[parentInfo.field];
                         }
                     } else {
+                        // Query string parameter for a parent's field is an array. Delete the
+                        // elements that don’t have a colon, which indicates the parent term
+                        // is selected.
                         searchBaseObj[parentInfo.field].forEach((parm, i) => {
                             if (parm && parm.indexOf(':') === -1) {
                                 delete searchBaseObj[parentInfo.field][i];
@@ -714,7 +717,7 @@ var Term = search.Term = React.createClass({
                     </span>
                 </a>
                 {subfacet && this.state.subfacetOpen ?
-                    <Facet {...this.props} facet={subfacet} parentInfo={{term: term, field: field}} subfacetOpen={this.state.subfacetOpen} />
+                    <Facet {...this.props} facet={subfacet} parentInfo={{term: term, field: field}} subfacetOpen={this.state.subfacetOpen} parentTotal={this.props.total} />
                 : null}
             </li>
         );
