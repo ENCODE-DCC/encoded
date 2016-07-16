@@ -15,6 +15,7 @@ addons:
       - bsdtar
       - elasticsearch
       - graphviz
+      - python-html5lib=1.0b8
 env:
   global:
     - secure: |-
