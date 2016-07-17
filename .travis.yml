@@ -43,7 +43,6 @@ before_install:
   - npm config set python /usr/bin/python2.7
 install:
   - python bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.5
-  - pip install --upgrade html5lib==1.0b8
   - bin/buildout -c buildout-travis.cfg || (echo "Retrying buildout" && bin/buildout -c buildout-travis.cfg)
 before_script:
   - >
