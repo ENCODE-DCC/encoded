@@ -640,7 +640,7 @@ var Term = search.Term = React.createClass({
 
     render: function () {
         // We know we're rendering a subfacet if this.props.parentInfo defined
-        var {filters, searchBase, parentInfo, subfacetOpen} = this.props;
+        var {filters, searchBase, parentInfo, subfacetOpen, total} = this.props;
         var term = this.props.term['key'];
         var subfacet = this.props.term.facets && this.props.term.facets.length ? this.props.term.facets[0] : null;
         var count = this.props.term['doc_count'];
@@ -649,10 +649,12 @@ var Term = search.Term = React.createClass({
         var em = field === 'target.organism.scientific_name' ||
                     field === 'organism.scientific_name' ||
                     field === 'replicates.library.biosample.donor.organism.scientific_name';
+        if (parentInfo) {
+            total = parentInfo.total;
+        }
         var barStyle = {
-            width:  Math.ceil( (count/this.props.total) * 100) + "%"
+            width:  Math.ceil( (count/total) * 100) + "%"
         };
-        console.log(field + '--' + term + '--' + count + '--' + this.props.total);
 
         // Get the `remove` href if this term and field is selected, based on the given filters.
         var selected = termSelected(term, field, filters);
@@ -717,7 +719,7 @@ var Term = search.Term = React.createClass({
                     </span>
                 </a>
                 {subfacet && this.state.subfacetOpen ?
-                    <Facet {...this.props} facet={subfacet} parentInfo={{term: term, field: field}} subfacetOpen={this.state.subfacetOpen} parentTotal={this.props.total} />
+                    <Facet {...this.props} facet={subfacet} parentInfo={{term: term, field: field, total: total}} subfacetOpen={this.state.subfacetOpen} />
                 : null}
             </li>
         );
@@ -765,11 +767,8 @@ var Facet = search.Facet = React.createClass({
     },
 
     render: function() {
-        var facet = this.props.facet;
-        var filters = this.props.filters;
-        var title = facet['title'];
-        var field = facet['field'];
-        var total = facet['total'];
+        var {facet, parentInfo, filters} = this.props;
+        var {title, field, total} = facet;
         var termID = title.replace(/\s+/g, '');
         var terms = facet['terms'].filter(function (term) {
             if (term.key) {
@@ -801,7 +800,7 @@ var Facet = search.Facet = React.createClass({
         }
 
         return (
-            <div className="facet" hidden={terms.length === 0} style={{width: this.props.width}}>
+            <div className={'facet' + (parentInfo ? ' subfacet' : '')} hidden={terms.length === 0} style={{width: this.props.width}}>
                 {!this.props.parentInfo ? <h5>{title}</h5> : null}
                 <ul className="facet-list nav">
                     <div>
