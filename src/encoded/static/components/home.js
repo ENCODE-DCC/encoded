@@ -416,9 +416,9 @@ var HomepageChart = React.createClass({
                             this.context.navigate(this.props.data['@id'] + '&award.project=' + term);
                         }
 
-                        //this.myPieChart.clear();
+                        this.myPieChart.clear();
                         this.myPieChart.update();
-                        //this.myPieChart.clear();
+                        this.myPieChart.clear();
                         this.myPieChart.render();
                         this.forceUpdate();
                     }
@@ -854,6 +854,9 @@ var PanelFooter = module.exports.PanelFooter = React.createClass({
 // receive those. <TabPanel> copies the `key` property to an `id` property in any child <TabPanel>
 // components so that <TabPanel> can see it.
 
+
+
+
 var TabPanel = module.exports.TabPanel = React.createClass({
     propTypes: {
         tabs: React.PropTypes.object.isRequired, // Object with tab=>pane specifications
@@ -863,29 +866,13 @@ var TabPanel = module.exports.TabPanel = React.createClass({
     },
 
     getInitialState: function() {
-        console.log("INITIAL STATE BEING CALLED FOR TABS");
-        return {currentTab: [' ']};
+        return {currentTab: ''};
     },
 
     // Handle a click on a tab
     handleClick: function(tab) {
-        if (this.state.currentTab.indexOf(tab) < 0) {
-            console.log("First index in currentTab: " + this.state.currentTab[0]);
-            console.log("All of currentTab: " + this.state.currentTab);
-            if(this.state.currentTab[0] === ' '){
-                console.log("First is blank");
-                this.setState({currentTab: this.state.currentTab.splice(0, 1, tab)});
-                console.log("All of currentTab after splicing first empty index: " + this.state.currentTab);
-            }
-            else{
-                this.setState({currentTab: this.state.currentTab.push(tab)});
-                console.log("All of currentTab after adding to end: " + this.state.currentTab);
-            }
-            var breaker = 0;
-        }
-        else{
-            var indexToRemove = this.state.currentTab.indexOf(tab);
-            this.setState({currentTab: this.state.currentTab.splice(indexToRemove, 1)});
+        if (tab !== this.state.currentTab) {
+            this.setState({currentTab: tab});
         }
     },
 
@@ -905,7 +892,7 @@ var TabPanel = module.exports.TabPanel = React.createClass({
                     firstPaneIndex = firstPaneIndex === -1 ? i : firstPaneIndex;
 
                     // Replace the existing child <TabPanelPane> component
-                    return cloneWithProps(child, {id: child.key, active: this.state.currentTab[0] ? this.state.currentTab[0] === child.key : firstPaneIndex === i});
+                    return cloneWithProps(child, {id: child.key, active: this.state.currentTab ? this.state.currentTab === child.key : firstPaneIndex === i});
                 }
                 return child;
             });
@@ -915,10 +902,10 @@ var TabPanel = module.exports.TabPanel = React.createClass({
             <div>
                 <ul className={'nav nav-tabs' + (addClasses ? (' ' + addClasses) : '')} role="tablist">
                     {Object.keys(tabs).map((tab, i) => {
-                        var currentTab = (i === 0 && this.state.currentTab === []) ? tab : this.state.currentTab[0];
+                        var currentTab = (i === 0 && this.state.currentTab === '') ? tab : this.state.currentTab;
 
                         return (
-                            <li key={tab} role="presentation" aria-controls={tab} className={currentTab[0] === tab ? 'active' : ''}>
+                            <li key={tab} role="presentation" aria-controls={tab} className={currentTab === tab ? 'active' : ''}>
                                 <a href={'#' + tab} ref={tab} onClick={this.handleClick.bind(this, tab)} data-trigger="tab" aria-controls={tab} role="tab" data-toggle="tab">
                                     {tabs[tab]}
                                 </a>
@@ -950,3 +937,102 @@ var TabPanelPane = module.exports.TabPanelPane = React.createClass({
         );
     }
 });
+
+
+
+// var TabPanel = module.exports.TabPanel = React.createClass({
+//     propTypes: {
+//         tabs: React.PropTypes.object.isRequired, // Object with tab=>pane specifications
+//         addClasses: React.PropTypes.string, // Classes to add to navigation <ul>
+//         moreComponents: React.PropTypes.object, // Other components to render in the tab bar
+//         moreComponentsClasses: React.PropTypes.string // Classes to add to moreComponents wrapper <div>
+//     },
+
+//     getInitialState: function() {
+//         console.log("INITIAL STATE BEING CALLED FOR TABS");
+//         return {currentTab: ['']};
+//     },
+
+//     // Handle a click on a tab
+//     handleClick: function(tab) {
+//         if (this.state.currentTab.indexOf(tab) < 0) {
+//             console.log("First index in currentTab: " + this.state.currentTab[0]);
+//             console.log("All of currentTab: " + this.state.currentTab);
+//             // if(this.state.currentTab[0] === ' '){
+//             //     console.log("First is blank");
+//             //     this.setState({currentTab: this.state.currentTab.splice(0, 1, tab)});
+//             //     console.log("All of currentTab after splicing first empty index: " + this.state.currentTab);
+//             // }
+//             //else{
+//                 this.setState({currentTab: this.state.currentTab.push(tab)});
+//                 console.log("All of currentTab after adding to end: " + this.state.currentTab);
+//             //}
+//             var breaker = 0;
+//         }
+//         else{
+//             var indexToRemove = this.state.currentTab.indexOf(tab);
+//             this.setState({currentTab: this.state.currentTab.splice(indexToRemove, 1)});
+//         }
+//     },
+
+//     render: function() {
+//         var children = [];
+//         var {tabs, addClasses, moreComponents, moreComponentsClasses} = this.props;
+//         var firstPaneIndex = -1; // React.Children.map index of first <TabPanelPane> component
+
+//         // We expect to find <TabPanelPane> child elements inside <TabPanel>. For any we find, get
+//         // the React `key` value and copy it to an `id` value that we add to each child component.
+//         // That lets each child get an HTML ID matching `key` without having to pass both a key and
+//         // id with the same value. We also set the `active` property in the TabPanelPane component
+//         // here too so that each pane knows whether it's the active one or not. ### React14
+//         if (this.props.children) {
+//             children = React.Children.map(this.props.children, (child, i) => {
+//                 if (child.type === TabPanelPane.type) {
+//                     firstPaneIndex = firstPaneIndex === -1 ? i : firstPaneIndex;
+
+//                     // Replace the existing child <TabPanelPane> component
+//                     return cloneWithProps(child, {id: child.key, active: this.state.currentTab[0] ? this.state.currentTab[0] === child.key : firstPaneIndex === i});
+//                 }
+//                 return child;
+//             });
+//         }
+
+//         return (
+//             <div>
+//                 <ul className={'nav nav-tabs' + (addClasses ? (' ' + addClasses) : '')} role="tablist">
+//                     {Object.keys(tabs).map((tab, i) => {
+//                         var currentTab = (i === 0 && this.state.currentTab === []) ? tab : this.state.currentTab[0];
+
+//                         return (
+//                             <li key={tab} role="presentation" aria-controls={tab} className={currentTab[0] === tab ? 'active' : ''}>
+//                                 <a href={'#' + tab} ref={tab} onClick={this.handleClick.bind(this, tab)} data-trigger="tab" aria-controls={tab} role="tab" data-toggle="tab">
+//                                     {tabs[tab]}
+//                                 </a>
+//                             </li>
+//                         );
+//                     })}
+//                     {moreComponents ? <div className={moreComponentsClasses}>{moreComponents}</div> : null}
+//                 </ul>
+//                 <div className="tab-content">
+//                     {children}
+//                 </div>
+//             </div>
+//         );
+//     }
+// });
+
+
+// var TabPanelPane = module.exports.TabPanelPane = React.createClass({
+//     propTypes: {
+//         id: React.PropTypes.string.isRequired, // ID of the pane; not passed explicitly -- comes from `key` of <TabPanelPane>
+//         active: React.PropTypes.bool // True if this panel is the active one
+//     },
+
+//     render: function() {
+//         return (
+//             <div role="tabpanel" className={'tab-pane' + (this.props.active ? ' active' : '')} id={this.props.id}>
+//                 {this.props.active ? <div>{this.props.children}</div> : null}
+//             </div>
+//         );
+//     }
+// });
