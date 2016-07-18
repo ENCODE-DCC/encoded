@@ -498,6 +498,7 @@ def search_result_actions(request, doc_types, es_results, position=None):
 
 def format_subfacets(facets, result):
     subfacets = []
+    total = result['doc_count']
     for field, facet in facets.items():
         agg_name = field.replace('.', '-')
         agg = result.pop(agg_name)
@@ -507,6 +508,7 @@ def format_subfacets(facets, result):
                 'field': field,
                 'title': facet.get('title', field),
                 'terms': agg['buckets'],
+                'total': total,
             })
     if subfacets:
         result['facets'] = subfacets
