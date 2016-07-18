@@ -36,7 +36,7 @@ var Home = module.exports.Home = React.createClass({
                             <div>
                                 <div className="col-sm-6">
                                     <div className="title">
-                                        Project: Human
+                                        Project
                                     </div>
                                     <center> <hr width="80%" position="static"></hr> </center>
                                     <HomepageChartLoader searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'} 
@@ -56,7 +56,7 @@ var Home = module.exports.Home = React.createClass({
                             <div>
                                 <div className="col-sm-6">
                                     <div className="title">
-                                        Project: Mouse
+                                        Project
                                     </div>
                                     <center> <hr width="80%" position="static"></hr> </center>
                                     <HomepageChartLoader searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus'} 
@@ -76,7 +76,7 @@ var Home = module.exports.Home = React.createClass({
                             <div>
                                 <div className="col-sm-6">
                                     <div className="title">
-                                        Project: Worm
+                                        Project
                                     </div>
                                     <center> <hr width="80%" position="static"></hr> </center>
                                     <HomepageChartLoader searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Caenorhabditis+elegans'} 
@@ -96,7 +96,7 @@ var Home = module.exports.Home = React.createClass({
                             <div>
                                 <div className="col-sm-6">
                                     <div className="title">
-                                        Project: Fly
+                                        Project
                                     </div>
                                     <center> <hr width="80%" position="static"></hr> </center>
                                     <HomepageChartLoader searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+melanogaster' +
