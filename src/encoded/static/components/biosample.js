@@ -229,8 +229,8 @@ var Biosample = module.exports.Biosample = React.createClass({
 
         // Render tags badges
         var tagBadges;
-        if (context.tags && context.tags.length) {
-            tagBadges = context.tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
         }
 
         return (
@@ -654,8 +654,8 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
 
         // Render tags badges
         var tagBadges;
-        if (context.tags && context.tags.length) {
-            tagBadges = context.tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
         }
 
         return (
@@ -763,8 +763,8 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
 
         // Render tags badges
         var tagBadges;
-        if (context.tags && context.tags.length) {
-            tagBadges = context.tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
         }
 
         return (
@@ -889,8 +889,8 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
 
         // Render tags badges
         var tagBadges;
-        if (context.tags && context.tags.length) {
-            tagBadges = context.tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
         }
 
         return (

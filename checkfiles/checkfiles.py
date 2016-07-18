@@ -160,7 +160,8 @@ def check_format(encValData, job, path):
         ('wig', None): None,
         ('hdf5', None): None,
         ('gff', None): None,
-        ('vcf', None): None
+        ('vcf', None): None,
+        ('btr', None): None
     }
 
     validate_args = validate_map.get((item['file_format'], item.get('file_format_type')))

@@ -380,8 +380,8 @@ var Experiment = module.exports.Experiment = React.createClass({
 
         // Render tags badges
         var tagBadges;
-        if (context.tags && context.tags.length) {
-            tagBadges = context.tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
         }
 
         // XXX This makes no sense.
