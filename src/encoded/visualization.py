@@ -30,35 +30,6 @@ BIGWIG_FILE_TYPES = ['bigWig']
 BIGBED_FILE_TYPES = ['bigBed']
 
 
-def render(data):
-    arr = []
-    for i in range(len(data)):
-        temp = list(data.popitem())
-        str1 = ' '.join(temp)
-        arr.append(str1)
-    return arr
-
-
-def get_genomes_txt(assembly):
-    # UCSC shim
-    ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
-    genome = OrderedDict([
-        ('trackDb', assembly + '/trackDb.txt'),
-        ('genome', ucsc_assembly)
-    ])
-    return render(genome)
-
-
-def get_hub(label):
-    hub = OrderedDict([
-        ('email', 'encode-help@lists.stanford.edu'),
-        ('genomesFile', 'genomes.txt'),
-        ('longLabel', 'ENCODE Data Coordination Center Data Hub'),
-        ('shortLabel', 'Hub (' + label + ')'),
-        ('hub', 'ENCODE_DCC_' + label)
-    ])
-    return render(hub)
-
 # static group defs are keyed by group title (or special token) and consist of
 # tag: (optional) unique terse key for referencing group
 # groups: (optional) { subgroups keyed by subgroup title }
@@ -74,45 +45,30 @@ COMPOSITE_VIS_DEFS_DEFAULT = {
         "longLabel":  "Collection of Miscellaneous ENCODE datasets",
         "shortLabel": "ENCODE Misc.",
     },
-    "longLabel":  "{assay_term_name} of {biosample_term_name} - {accession}",
-    "shortLabel": "{accession}",
+    "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
+    "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
     "color":      "{biosample_term_name}",
     "altColor":   "{biosample_term_name}",
     "pennantIcon": 'encodeThumbnail.jpg https://www.encodeproject.org/ "ENCODE: Encyclopedia of DNA Elements"',
+    #"allButtonPair": "off"
     "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
     "Views":  {
         "tag": "view",
-        "group_order": [ "Peaks", "Plus Signals", "Minus Signals" ],
+        "group_order": [ "Peaks", "Signals" ],
         "groups": {
             "Peaks": {
                 "tag": "PK",
                 "visibility": "dense",
                 "type": "bigBed",
-                "file_format_type": [ "narrowPeak" ],
-                "scoreFilter": "0:1",
                 "spectrum": "on",
-                "output_type": [ "DHS peaks", "optimal idr thresholded peaks" ],
             },
-            "Plus Signals": {
-                "tag": "PSIG",
-                "visibility": "hide",
+            "Signals": {
+                "tag": "SIG",
+                "visibility": "full",
                 "type": "bigWig",
-                "viewLimits": "0:1",
-                "autoScale": "off",
+                "autoScale": "on",
                 "maxHeightPixels": "64:18:8",
                 "windowingFunction": "mean+whiskers",
-                "output_type": [ "plus strand signal of unique reads", "signal of all reads" ],
-            },
-            "Minus Signals": {
-                "tag": "SIGM",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "autoScale": "off",
-                "negateValues": "on",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "minus strand signal of unique reads" ],
             },
         },
     },
@@ -154,12 +110,10 @@ LRNA_COMPOSITE_VIS_DEFS = {
         "longLabel":  "Collection of ENCODE long-RNA-seq experiments",
         "shortLabel": "ENCODE long-RNA-seq",
     },
-    "longLabel": "{assay_title} of {replicates.library.biosample.summary} - {accession}",
-    "shortLabel": "{accession}",
-    #"color": "{biosample_term_name}",
-    #"altColor": "{biosample_term_name}",
-    "color": "86,180,233",
-    "altColor": "153,38,0",
+    "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
+    "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
+    "color":      "{biosample_term_name}",
+    "altColor":   "{biosample_term_name}",
     "pennantIcon": 'encodeThumbnail.jpg https://www.encodeproject.org/ "ENCODE: Encyclopedia of DNA Elements"',
     "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
     "Views": {
@@ -281,7 +235,6 @@ CHIP_COMPOSITE_VIS_DEFS = {
     "altColor":   "{biosample_term_name}",
     "pennantIcon": "encodeThumbnail.jpg https://www.encodeproject.org/ \"ENCODE: Encyclopedia of DNA Elements\"",
     "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
-    #"allButtonPair": "off"
     "Views":  {
         "tag": "view",
         "group_order": [ "Optimal IDR thresholded peaks", "Conservative IDR thresholded peaks", "Replicated peaks", "Peaks",  "Fold change over control", "Signal p-value",  ],
@@ -389,9 +342,74 @@ CHIP_COMPOSITE_VIS_DEFS = {
     }
 }
 
+ECLIP_COMPOSITE_VIS_DEFS = {
+    "longLabel":  "{target} {assay_title} of {replicates.library.biosample.summary} - {accession}",
+    "shortLabel": "{target} {assay_title} of {biosample_term_name} {accession}",
+    "color":      "{biosample_term_name}",
+    "altColor":   "{biosample_term_name}",
+    "pennantIcon": "encodeThumbnail.jpg https://www.encodeproject.org/ \"ENCODE: Encyclopedia of DNA Elements\"",
+    "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
+    "Views":  {
+        "tag": "view",
+        "group_order": [ "Signal", "Peaks" ],
+        "groups": {
+            "Signal": {
+                "tag": "SIG",
+                "visibility": "full",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "autoScale": "off",
+                "maxHeightPixels": "32:16:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "signal" ]
+            },
+            "Peaks": {
+                "tag": "PKS",
+                "visibility": "dense",
+                "type": "bigBed",
+                "spectrum": "on",
+                "output_type": [ "peaks" ]
+            },
+        },
+    },
+    "other_groups":  {
+        "dimensions": { "Biosample": "dimY","Targets": "dimX","Replicates": "dimA" },
+        "dimensionAchecked": "first", # or "all"
+        "groups": {
+            "Replicates": {
+                "tag": "REP",
+                "group_order": "sort",
+                "groups": {
+                    "replicate": {
+                        "title_mask": "Replicate_{replicate_number}",
+                        "combined_title": "Pooled",
+                         #We only want pooled replicates on
+                    }
+                },
+            },
+            "Biosample": {
+                "tag": "BS",
+                "sortable": True,
+                "group_order": "sort",
+                "groups": { "one": { "title_mask": "{biosample_term_name}"} }
+            },
+            "Targets": {
+                "tag": "TARG",
+                "group_order": "sort",
+                "groups": { "one": { "title_mask": "{target.label}"} }
+            }
+        }
+    },
+    "file_defs": {
+        "longLabel": "{target} {assay_title} of {biosample_term_name} {output_type} {replicate} {experiment.accession} - {file.accession}",
+        "shortLabel": "{replicate} {output_type_short_label}",
+    }
+}
+
 VIS_DEFS_BY_ASSAY = {
-    "LRNA": LRNA_COMPOSITE_VIS_DEFS,
-    "CHIP": CHIP_COMPOSITE_VIS_DEFS,
+    "LRNA":  LRNA_COMPOSITE_VIS_DEFS,
+    "CHIP":  CHIP_COMPOSITE_VIS_DEFS,
+    "eCLIP": ECLIP_COMPOSITE_VIS_DEFS
     }
 
 def get_exp_vis_type(exp):
@@ -416,6 +434,8 @@ def get_exp_vis_type(exp):
         return "RAMP"
     elif assay == "ChIP-seq":
         return "CHIP"
+    elif assay == "eCLIP":
+        return assay
 
     return "opaque" # This becomes a dict key later so None is not okay
 
@@ -615,7 +635,8 @@ def add_living_color(live_settings, defs, exp):
         else:
             live_settings["altColor"] = lookup_color(defs["color"],exp,halfColor=True)
 
-def htmlize_char(c,exceptions=[ '_' ]):
+def sanitize_char(c,exceptions=[ '_' ],htmlize=False,numeralize=False):
+    '''Pass through for 0-9,A-Z.a-z,_, but then either html encodes, numeralizes or removes special characters.'''
     n = ord(c)
     if n >= 47 and n <= 57: # 0-9
         return c
@@ -625,34 +646,27 @@ def htmlize_char(c,exceptions=[ '_' ]):
         return c
     if c in exceptions:
         return c
-    if n >= 32:              # space
+    if n == 32:              # space
         return '_'
-    return "&#%d;" % n
+    if htmlize:
+        return "&#%d;" % n
+    if numeralize:
+        return "%d" % n
 
-def tag_char(c):
-    n = ord(c)
-    if n >= 47 and n <= 57: # 0-9
-        return c
-    if n >= 65 and n <= 90: # A-Z
-        return c
-    if n >= 97 and n <= 122: # a-z
-        return c
-    if n in [ 95 ]: # _
-        return c
-    return "%d" % n
+    return ""
 
 def sanitize_label(s):
     '''Encodes the string to swap special characters and leaves spaces alone.'''
     new_s = ""      # longLabel and shorLabel can have spaces and some special characters
     for c in s:
-        new_s += htmlize_char(c,[ ' ', '_','.','-','(',')','+' ])
+        new_s += sanitize_char(c,[ ' ', '_','.','-','(',')','+' ],htmlize=True)
     return new_s
 
 def sanitize_title(s):
     '''Encodes the string to swap special characters and replace spaces with '_'.'''
     new_s = ""      # Titles appear in tag=title pairs and cannot have spaces
     for c in s:
-        new_s += htmlize_char(c,[ '_','.','-','(',')','+' ])
+        new_s += sanitize_char(c,[ '_','.','-','(',')','+' ],htmlize=True)
     return new_s
 
 def sanitize_tag(s):
@@ -660,11 +674,19 @@ def sanitize_tag(s):
     new_s = ""
     first = True
     for c in s:
-        new_s += tag_char(c)
+        new_s += sanitize_char(c,numeralize=True)
         if first:
             if new_s.isdigit(): # tags cannot start with digit.
                 new_s = 'z' + new_s
             first = False
+    return new_s
+
+def sanitize_name(s):
+    '''Encodes the string to remove special characters swap spaces for underscores.'''
+    new_s = ""
+    first = True
+    for c in s:
+        new_s += sanitize_char(c)
     return new_s
 
 
@@ -1399,6 +1421,40 @@ def generate_batch_trackDb(results, assembly, host=None):
     return blob
 
 
+def render(data):
+    arr = []
+    for i in range(len(data)):
+        temp = list(data.popitem())
+        str1 = ' '.join(temp)
+        arr.append(str1)
+    return arr
+
+
+def get_genomes_txt(assembly):
+    # UCSC shim
+    ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
+    genome = OrderedDict([
+        ('trackDb', assembly + '/trackDb.txt'),
+        ('genome', ucsc_assembly)
+    ])
+    return render(genome)
+
+
+def get_hub(label,comment=None,name=None):
+    if name is None:
+        name = sanitize_name( label.split()[0] )
+    if comment is None:
+        comment = "Generated by the ENCODE portal"
+    hub = OrderedDict([
+        ('email', 'encode-help@lists.stanford.edu'),
+        ('genomesFile', 'genomes.txt'),
+        ('longLabel', 'ENCODE Data Coordination Center Data Hub'),
+        ('shortLabel', 'Hub (' + label + ')'),
+        ('hub', 'ENCODE_DCC_' + name ),
+        ('#', comment )
+    ])
+    return render(hub)
+
 def generate_html(context, request):
     ''' Generates and returns HTML for the track hub'''
 
@@ -1481,7 +1537,15 @@ def generate_batch_hubs(context, request):
         return generate_batch_trackDb(results, assembly,host=request.host_url)
 
     elif txt == HUB_TXT:
-        return NEWLINE.join(get_hub('search'))
+        terms = request.matchdict['search_params'].replace(',,', '&')
+        pairs = terms.split('&')
+        label = "search:"
+        for pair in sorted( pairs ):
+            (var,val) = pair.split('=')
+            if var not in ["type","assembly","status","limit"]:
+                label += " %s" % val.replace('+',' ')
+        return NEWLINE.join(get_hub(label,request.url)) # TODO: Decide if this is acceptible
+        #return NEWLINE.join(get_hub('search'))
     elif txt == GENOMES_TXT:
         path = '/%s/?%s' % (view, urlencode(param_list, True))
         results = request.embed(path, as_user=True)
@@ -1516,8 +1580,10 @@ def hub(context, request):
         assemblies = embedded['assembly']
 
     if url_ret[1][1:] == HUB_TXT:
+        label = "%s %s" % (embedded.get("assay_title",""), embedded['accession'])
+        name = sanitize_name( label )
         return Response(
-            NEWLINE.join(get_hub(embedded['accession'])),
+            NEWLINE.join(get_hub(label,request.url, name )),
             content_type='text/plain'
         )
     elif url_ret[1][1:] == GENOMES_TXT:
