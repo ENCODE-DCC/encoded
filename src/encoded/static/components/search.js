@@ -660,6 +660,9 @@ var Term = search.Term = React.createClass({
         var selected = termSelected(term, field, filters);
         var href;
         var searchBaseObj;
+        if (field === 'award.project') {
+            console.log(this.props);
+        }
         if (selected && !this.props.canDeselect) {
             href = null;
         } else if (selected) {
@@ -672,8 +675,20 @@ var Term = search.Term = React.createClass({
             // terms.
             if (subfacet) {
                 searchBaseObj = queryString.parse(searchBase);
-                delete searchBaseObj[field];
-                searchBase = '?' + queryString.stringify(searchBaseObj) + '&';
+                if (searchBaseObj[field] && (typeof searchBaseObj[field] === 'object')) {
+                    // More than one term selected
+                    searchBaseObj[field].forEach((key, i) => {
+                        if (key.indexOf(':') !== -1) {
+                            delete searchBaseObj[field][i];
+                        }
+                    });
+                } else {
+                    // Only one term selected
+                    if (searchBaseObj[field] && searchBaseObj[field].indexOf(':') !== -1) {
+                        delete searchBaseObj[field];
+                        searchBase = '?' + queryString.stringify(searchBaseObj) + '&';
+                    }
+                }
             }
 
             // If this term is in a subfacet, remove its parent term from searchBase. You can't
