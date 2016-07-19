@@ -170,30 +170,19 @@ var AuditGroup = module.exports.AuditGroup = React.createClass({
                 : null}
                 <div className="audit-detail-info">
                     <i className={iconClass}></i>
-                    <span>
-                        {loggedIn ?
-                            <strong className={levelClass}>{auditLevelName.split('_').join(' ').toUpperCase()}&nbsp;&mdash;</strong>
-                        :
-                            <span>&nbsp;&nbsp;&nbsp;</span>
-                        }
-                    </span>
                     <strong>&nbsp;{categoryName}</strong>
-                    {!loggedIn ?
-                        <div className="btn-info-audit">
-                            <a href={'/data-standards/#' + categoryName.toLowerCase().split(' ').join('_')} title={'View description of ' + categoryName + ' in a new tab'} target="_blank"><i className="icon icon-question-circle"></i></a>
-                        </div>
-                    : null}
-                </div>
-                {loggedIn ?
-                    <div className="audit-details-section">
-                        <div className="audit-details-decoration"></div>
-                        {group.map((audit, i) =>
-                            <div className={alertItemClass} key={i} role="alert">
-                                <DetailEmbeddedLink detail={audit.detail} except={context['@id']} forcedEditLink={this.props.forcedEditLink} />
-                            </div>
-                        )}
+                    <div className="btn-info-audit">
+                        <a href={'/data-standards/audits/#' + categoryName.toLowerCase().split(' ').join('_')} title={'View description of ' + categoryName + ' in a new tab'} target="_blank"><i className="icon icon-question-circle"></i></a>
                     </div>
-                : null}
+                </div>
+                <div className="audit-details-section">
+                    <div className="audit-details-decoration"></div>
+                    {group.map((audit, i) =>
+                        <div className={alertItemClass} key={i} role="alert">
+                            <DetailEmbeddedLink detail={audit.detail} except={context['@id']} forcedEditLink={this.props.forcedEditLink} />
+                        </div>
+                    )}
+                </div>
             </div>
         );
     }
@@ -210,7 +199,7 @@ var DetailEmbeddedLink = React.createClass({
         var detail = this.props.detail;
 
         // Get an array of all paths in the detail string, if any.
-        var matches = detail.match(/(\/.+?\/)(?=$|\s+)/g);
+        var matches = detail.match(/(\/.*?\/.*?\/)/g);
         if (matches) {
             // Build React object of text followed by path for all paths in detail string
             var lastStart = 0;

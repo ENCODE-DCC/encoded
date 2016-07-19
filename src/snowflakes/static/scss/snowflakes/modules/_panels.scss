@@ -150,8 +150,188 @@ a[href^="http"]:empty:after {
     }
 }
 
+// Styles for the panel that has documents or characterizations as subpanels
+.panel-docs-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.panel-doc {
+    order: 0;
+    flex: 0 1 auto;
+    align-self: auto;
+    width: 100%;
+    margin: 0 10px 0 0;
+    margin-right: 10px;
+
+    @media screen and (min-width: $screen-md-min) {
+        width: 48.9%;
+    }
+
+    @media screen and (min-width: $screen-lg-min) {
+        width: 32.4%;
+    }
+}
+
 .panel-body-doc {
-    padding-bottom: 0 !important;
+    padding: 10px 0 0 10px;
+}
+
+// Holds documents, but as a panel within a panel
+.panel-body-doc-interior {
+    @extend .panel-body-doc;
+    padding-left: 0;
+    margin-right: -10px;
+}
+
+// Styles for the File Gallery component that displays the file tables and graphs
+.file-gallery-heading {
+    position: relative;
+}
+
+.file-gallery-controls {
+    margin-top: 5px;
+
+    @media screen and (min-width: $screen-sm-min) {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        bottom: 5px;
+        margin-top: 0;
+    }
+}
+
+.file-gallery-control {
+    display: inline-block;
+    position: relative;
+    vertical-align: bottom;
+    margin-right: 5px;
+
+    @media screen and (min-width: $screen-sm-min) {
+        margin-right: 0;
+        margin-left: 5px;
+    }
+
+    select {
+        height: 30px;
+        padding-right: 30px;
+        font-size: 0.9rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+
+    &.file-gallery-control-select:after {
+        content: '\f0dc';
+        font-family: FontAwesome;
+        padding: 8px;
+        position: absolute;
+        right: 10px;
+        top: 5px;
+        z-index: 1;
+        width: 10px;
+        line-height: 50%;
+        font-size: 0.86rem;
+        color: #428bca;
+        pointer-events: none;
+    }
+}
+
+// File gallery title bars that collapse
+.collapsing-title-icon {
+    position: relative;
+    top: 0;
+}
+
+.file-gallery-counts {
+    padding: 2px 10px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #606060;
+    background-color: #d8d8d8;
+    border-top: 1px solid #a0a0a0;
+    border-bottom: 1px solid #a0a0a0;
+}
+
+.file-gallery-graph-header {
+    padding: 10px;
+    background-color: #d8e0e8;
+
+    h4 {
+        margin: 0;
+        padding: 0;
+    }
+}
+
+.file-gallery-graph-footer {
+    padding: 8px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: auto 40%;
+
+    &.hiding {
+        background-image: inline-image('../img/hiding-dots.svg');
+    }
+}
+
+// Collapsing title bar
+.collapsing-title {
+    position: relative;
+    display: block;
+    padding: 10px;
+
+    h4 {
+        margin: 0 0 0 40px;
+    }
+
+    &:focus, &:active {
+        text-decoration: none;
+    }
+}
+
+// Control for collapsing panel title bars
+.collapsing-title-control {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    pointer-events: all;
+
+    a {
+        cursor: pointer;
+    }
+
+    .bg {
+        fill: white;
+        stroke-width: 6px;
+        stroke: #000;
+    }
+
+    .content-line {
+        fill: none;
+        stroke: #000;
+        stroke-miterlimit: 10;
+        stroke-width: 60px;
+    }
+}
+
+.collapsing-title-trigger {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 41px;
+    padding: 10px;
+    border-right: 1px solid #fff;
+
+    &:hover {
+        background-color: darken(#d8e0e8, 10%);
+        text-decoration: none;
+    }
 }
 
 .subpanel {

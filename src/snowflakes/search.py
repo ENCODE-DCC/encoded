@@ -655,9 +655,11 @@ def search(context, request, search_type=None, return_generator=False):
     # Scan large result sets.
     del query['aggs']
     if size is None:
-        hits = scan(es, query=query, index=es_index, preserve_order=has_sort)
+        # preserve_order=True has unexpected results in clustered environment 
+        # https://github.com/elastic/elasticsearch-py/blob/master/elasticsearch/helpers/__init__.py#L257
+        hits = scan(es, query=query, index=es_index, preserve_order=False) 
     else:
-        hits = scan(es, query=query, index=es_index, from_=from_, size=size, preserve_order=has_sort)
+        hits = scan(es, query=query, index=es_index, from_=from_, size=size, preserve_order=False)
     graph = format_results(request, hits)
 
     # Support for request.embed() and `return_generator`
@@ -695,9 +697,24 @@ def collection_view_listing_es(context, request):
 
 @view_config(route_name='report', request_method='GET', permission='search')
 def report(context, request):
-    types = request.params.getall('type')
-    if len(types) != 1:
+    doc_types = request.params.getall('type')
+    if len(doc_types) != 1:
         msg = 'Report view requires specifying a single type.'
+        raise HTTPBadRequest(explanation=msg)
+
+    types = request.registry[TYPES]
+
+    # Get the subtypes of the requested type
+    try:
+        sub_types = types[doc_types[0]].subtypes
+    except KeyError:
+        # Raise an error for an invalid type
+        msg = "Invalid type: " + doc_types[0]
+        raise HTTPBadRequest(explanation=msg)
+
+    # Raise an error if the requested type has subtypes.
+    if len(sub_types) > 1:
+        msg = 'Report view requires a type with no child types.'
         raise HTTPBadRequest(explanation=msg)
 
     # Ignore large limits, which make `search` return a Response

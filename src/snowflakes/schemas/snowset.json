@@ -49,6 +49,21 @@
             ],
             "permission": "import_items"
         },
+        "internal_tags": {
+            "title": "Internal tags",
+            "description": "Some datasets are part of particular data collections",
+            "type": "array",
+            "uniqueItems": true,
+            "default": [],
+            "items": {
+                "type": "string",
+                "enum": [
+                    "DREAM",
+                    "ENCORE",
+                    "ENTEx",
+                    "SESCC"]
+            }
+        },
         "status": {
             "title": "Status",
             "type": "string",
@@ -56,18 +71,13 @@
             "enum" : [
                 "proposed",
                 "started",
-                "in progress",
                 "submitted",
                 "ready for review",
                 "deleted",
                 "released",
                 "revoked",
                 "archived",
-                "replaced",
-                "in review",
-                "release ready",
-                "verified",
-                "preliminary"
+                "replaced"
             ]
         }
     },

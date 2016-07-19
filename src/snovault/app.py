@@ -160,3 +160,90 @@ def app_version(config):
     if diff:
         version += '-patch' + hashlib.sha1(diff).hexdigest()[:7]
     config.registry.settings['snovault.app_version'] = version
+
+
+def main(global_config, **local_config):
+    """ This function returns a Pyramid WSGI application.
+    """
+    settings = global_config
+    settings.update(local_config)
+
+    settings['snovault.jsonld.namespaces'] = json_asset('encoded:schemas/namespaces.json')
+    settings['snovault.jsonld.terms_namespace'] = 'https://www.encodeproject.org/terms/'
+    settings['snovault.jsonld.terms_prefix'] = 'encode'
+    settings['snovault.elasticsearch.index'] = 'encoded'
+    hostname_command = settings.get('hostname_command', '').strip()
+    if hostname_command:
+        hostname = subprocess.check_output(hostname_command, shell=True).strip()
+        settings.setdefault('persona.audiences', '')
+        settings['persona.audiences'] += '\nhttp://%s' % hostname
+        settings['persona.audiences'] += '\nhttp://%s:6543' % hostname
+
+    config = Configurator(settings=settings)
+    from snovault.elasticsearch import APP_FACTORY
+    config.registry[APP_FACTORY] = main  # used by mp_indexer
+    config.include(app_version)
+
+    config.include('pyramid_multiauth')  # must be before calling set_authorization_policy
+    from pyramid_localroles import LocalRolesAuthorizationPolicy
+    # Override default authz policy set by pyramid_multiauth
+    config.set_authorization_policy(LocalRolesAuthorizationPolicy())
+    config.include(session)
+    config.include('.persona')
+
+    config.include(configure_dbsession)
+    config.include('snovault')
+    config.commit()  # commit so search can override listing
+
+    # Render an HTML page to browsers and a JSON document for API clients
+    config.include('.renderers')
+    config.include('.authentication')
+    config.include('.server_defaults')
+    config.include('.types')
+    config.include('.root')
+    config.include('.batch_download')
+    config.include('.visualization')
+
+    if 'elasticsearch.server' in config.registry.settings:
+        config.include('snovault.elasticsearch')
+        config.include('.search')
+
+    if 'snp_search.server' in config.registry.settings:
+        addresses = aslist(config.registry.settings['snp_search.server'])
+        config.registry['snp_search'] = Elasticsearch(
+            addresses,
+            serializer=PyramidJSONSerializer(json_renderer),
+            connection_class=TimedUrllib3HttpConnection,
+            retry_on_timeout=True,
+            timeout=60,
+            maxsize=50
+        )
+        config.include('.region_search')
+        config.include('.peak_indexer')
+    config.include(static_resources)
+    config.include(changelogs)
+
+    config.registry['ontology'] = json_from_path(settings.get('ontology_path'), {})
+    aws_ip_ranges = json_from_path(settings.get('aws_ip_ranges_path'), {'prefixes': []})
+    config.registry['aws_ipset'] = netaddr.IPSet(
+        record['ip_prefix'] for record in aws_ip_ranges['prefixes'] if record['service'] == 'AMAZON')
+
+    if asbool(settings.get('testing', False)):
+        config.include('.tests.testing_views')
+
+    # Load upgrades last so that all views (including testing views) are
+    # registered.
+    config.include('.upgrade')
+    config.include('.audit')
+
+    app = config.make_wsgi_app()
+
+    workbook_filename = settings.get('load_workbook', '')
+    load_test_only = asbool(settings.get('load_test_only', False))
+    docsdir = settings.get('load_docsdir', None)
+    if docsdir is not None:
+        docsdir = [path.strip() for path in docsdir.strip().split('\n')]
+    if workbook_filename:
+        load_workbook(app, workbook_filename, docsdir, test=load_test_only)
+
+    return app

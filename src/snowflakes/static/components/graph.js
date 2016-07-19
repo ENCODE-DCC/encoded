@@ -238,23 +238,33 @@ var Graph = module.exports.Graph = React.createClass({
             // Delay loading dagre for Jest testing compatibility;
             // Both D3 and Jest have their own conflicting JSDOM instances
             require.ensure(['dagre-d3', 'd3'], function(require) {
-                this.d3 = require('d3');
-                this.dagreD3 = require('dagre-d3');
-                var el = this.refs.graphdisplay.getDOMNode();
-                this.dagreLoaded = true;
+                if (this.refs.graphdisplay) {
+                    this.d3 = require('d3');
+                    this.dagreD3 = require('dagre-d3');
+                    var el = this.refs.graphdisplay.getDOMNode();
 
-                // Add SVG element to the graph component, and assign it classes, sizes, and a group
-                var svg = this.d3.select(el).insert('svg', '#graph-node-info')
-                    .attr('preserveAspectRatio', 'xMidYMid')
-                    .attr('version', '1.1');
-                var svgGroup = svg.append("g");
+                    // Add SVG element to the graph component, and assign it classes, sizes, and a group
+                    var svg = this.d3.select(el).insert('svg', '#graph-node-info')
+                        .attr('id', 'pipeline-graph')
+                        .attr('preserveAspectRatio', 'none')
+                        .attr('version', '1.1');
+                    var svgGroup = svg.append("g");
+                    this.cv.savedSvg = svg;
 
-                // Draw the graph into the panel
-                this.drawGraph(el);
+                    // Draw the graph into the panel; get the graph's view box and save it for
+                    // comparisons later
+                    var {viewBoxWidth, viewBoxHeight} = this.drawGraph(el);
+                    this.cv.viewBoxWidth = viewBoxWidth;
+                    this.cv.viewBoxHeight = viewBoxHeight;
 
-                // Bind node/subnode click handlers to parent component handlers
-                this.bindClickHandlers(d3, el);
-            }.bind(this), 'dagre');
+                    // Based on the size of the graph and view box, 
+                    var initialZoomLevel = this.setInitialZoomLevel(el, svg);
+                    this.setState({zoomLevel: initialZoomLevel});
+
+                    // Bind node/subnode click handlers to parent component handlers
+                    this.bindClickHandlers(this.d3, el);
+                }
+            }.bind(this));
         } else {
             // Output text indicating that graphs aren't supported.
             var el = this.refs.graphdisplay.getDOMNode();
@@ -269,7 +279,7 @@ var Graph = module.exports.Graph = React.createClass({
         }
 
         // Disable download button if running on Trident (IE non-Spartan) browsers
-        if (BrowserFeat.getBrowserCaps('uaTrident')) {
+        if (BrowserFeat.getBrowserCaps('uaTrident') || BrowserFeat.getBrowserCaps('uaEdge')) {
             this.setState({dlDisabled: true});
         }
     },
