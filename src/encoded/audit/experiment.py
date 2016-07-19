@@ -1422,6 +1422,19 @@ def scanFilesForPipeline(files_to_scan, pipeline_title_list):
     return False
 
 
+def get_biosamples(experiment):
+    accessions_set = set()
+    biosamples_list = []
+    if 'replicates' in experiment:
+            for rep in experiment['replicates']:
+                if ('library' in rep) and ('biosample' in rep['library']):
+                    biosample = rep['library']['biosample']
+                    if biosample['accession'] not in accessions_set:
+                        accessions_set.add(biosample['accession'])
+                        biosamples_list.append(biosample)
+    return biosamples_list
+
+
 @audit_checker('experiment', frame=['replicates',
                                     'replicates.library',
                                     'replicates.library.biosample'])
@@ -1433,20 +1446,39 @@ def audit_experiment_internal_tag(value, system):
     experimental_tags = []
     if 'internal_tags' in value:
         experimental_tags = value['internal_tags']
-    if 'replicates' in value:
-        for rep in value['replicates']:
-            if ('library' in rep) and ('biosample' in rep['library']):
-                biosample = rep['library']['biosample']
-                if 'internal_tags' in biosample:
-                    for tag in biosample['internal_tags']:
-                        if tag not in experimental_tags:
-                            detail = 'This experiment contains a ' + \
-                                     'biosample {} '.format(biosample['@id']) + \
-                                     'with internal tag {} '.format(tag) + \
-                                     'that is not specified in experimental ' + \
-                                     'list of internal_tags {}.'.format(experimental_tags)
-                            yield AuditFailure('missing internal_tag',
-                                               detail, level='DCC_ACTION')
+
+    biosamples = get_biosamples(value)
+    bio_tags = set()
+
+    for biosample in biosamples:
+        if 'internal_tags' in biosample:
+            for tag in biosample['internal_tags']:
+                bio_tags.add(tag)
+                if tag not in experimental_tags:
+                    detail = 'This experiment contains a ' + \
+                             'biosample {} '.format(biosample['@id']) + \
+                             'with internal tag {} '.format(tag) + \
+                             'that is not specified in experimental ' + \
+                             'list of internal_tags {}.'.format(experimental_tags)
+                    yield AuditFailure('missing internal tag',
+                                       detail, level='DCC_ACTION')
+    for biosample in biosamples:
+        if len(bio_tags) > 0 and 'internal_tags' not in biosample:
+            detail = 'This experiment contains a ' + \
+                     'biosample {} with no internal tags '.format(biosample) + \
+                     'belonging to internal tags {} '.format(list(bio_tags)) + \
+                     'other biosamples are assigned.'
+            yield AuditFailure('inconsistent internal tags',
+                               detail, level='DCC_ACTION')
+        else:
+            for x in bio_tags:
+                if x not in biosample['internal_tags']:
+                    detail = 'This experiment contains a ' + \
+                             'biosample {} with internal tag '.format(biosample) + \
+                             '{} belonging to internal tags {} '.format(x, list(bio_tags)) + \
+                             'other biosamples are assigned.'
+                    yield AuditFailure('inconsistent internal tags',
+                                       detail, level='DCC_ACTION')
 
 
 def is_gtex_experiment(experiment_to_check):
