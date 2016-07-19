@@ -37,19 +37,23 @@
             "type": "string",
             "format": "uri"
         },
-        "tags": {
-            "title": "Tags",
+        "internal_tags": {
+            "title": "Internal tags",
             "description": "Some donors are part of particular data collections",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "type": "string",
                 "enum": [
                     "DREAM",
                     "ENCORE",
-                    "EN-Tex",
+                    "ENTEx",
                     "SESCC"]
             }
         }
+    },
+    "boost_values": {
+        "internal_tags": 1.0
     }
 }

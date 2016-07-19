@@ -29,7 +29,7 @@ If you need to update dependencies::
 
 Step 3: Run buildout::
 
-    $ python3 bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.1
+    $ python3 bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.5
     $ bin/buildout
 
     NOTE:  
@@ -37,7 +37,7 @@ Step 3: Run buildout::
     via homebrew (as above)
     If you have issues with Pillow you may need to install new xcode command line tools:
     - First update Xcode from AppStore (reboot)
-    $ xcode-select install 
+    $ xcode-select --install 
     
 
 
