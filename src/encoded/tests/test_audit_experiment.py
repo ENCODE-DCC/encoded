@@ -1211,6 +1211,21 @@ def test_audit_experiment_mismatched_length_sequencing_files(testapp, file_bam, 
                for error in errors_list)
 
 
+def test_audit_experiment_internal_tag(testapp, base_experiment,
+                                       base_biosample,
+                                       library_1,
+                                       replicate_1_1):
+    testapp.patch_json(base_biosample['@id'], {'internal_tags': ['ENTEx']})
+    testapp.patch_json(library_1['@id'], {'biosample': base_biosample['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing internal_tag' for error in errors_list)
+
+
 def test_audit_experiment_mismatched_inter_paired_sequencing_files(testapp,
                                                                    base_experiment,
                                                                    replicate_1_1,

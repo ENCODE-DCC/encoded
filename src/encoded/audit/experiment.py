@@ -1422,6 +1422,33 @@ def scanFilesForPipeline(files_to_scan, pipeline_title_list):
     return False
 
 
+@audit_checker('experiment', frame=['replicates',
+                                    'replicates.library',
+                                    'replicates.library.biosample'])
+def audit_experiment_internal_tag(value, system):
+
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    experimental_tags = []
+    if 'internal_tags' in value:
+        experimental_tags = value['internal_tags']
+    if 'replicates' in value:
+        for rep in value['replicates']:
+            if ('library' in rep) and ('biosample' in rep['library']):
+                biosample = rep['library']['biosample']
+                if 'internal_tags' in biosample:
+                    for tag in biosample['internal_tags']:
+                        if tag not in experimental_tags:
+                            detail = 'This experiment contains a ' + \
+                                     'biosample {} '.format(biosample['@id']) + \
+                                     'with internal tag {} '.format(tag) + \
+                                     'that is not specified in experimental ' + \
+                                     'list of internal_tags {}.'.format(experimental_tags)
+                            yield AuditFailure('missing internal_tag',
+                                               detail, level='DCC_ACTION')
+
+
 def is_gtex_experiment(experiment_to_check):
     for rep in experiment_to_check['replicates']:
         if ('library' in rep) and ('biosample' in rep['library']) and \
