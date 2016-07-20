@@ -423,10 +423,10 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
 
         if starting_amount is not None and starting_amount_units is not None:
             if starting_amount_units[-1] != 's':
-                dict_of_phrases['sample_type'] = str(starting_amount) + ' ' + \
+                dict_of_phrases['sample_amount'] = str(starting_amount) + ' ' + \
                     str(starting_amount_units) + 's'
             else:
-                dict_of_phrases['sample_type'] = str(starting_amount) + ' ' + \
+                dict_of_phrases['sample_amount'] = str(starting_amount) + ' ' + \
                     str(starting_amount_units)
 
         if depleted_in_term_name is not None and len(depleted_in_term_name) > 0:
@@ -675,3 +675,18 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             return summary_phrase.strip()[:-1]  # , str(dict_of_phrases))
         else:
             return summary_phrase.strip()
+
+
+def construct_biosample_summary(phrases_dictionarys):
+    # if list length == 1 go to step 2.
+    # step 1.
+    # figure out all the keys in all the dictionaries.
+    # go through the list of keys and create a new dictionary with these keys
+    # the values would be:
+    # if all dictionaries have this key and values identical - then for this key it is the valeu
+    # if all dictionaries have the key bt values vary - make a set of unique values, and then make a string with 'ands' between values 
+    # if not all the dictionaries have the value we have to specify in the final dictionary string that some biosamples don't have this value
+    # something like : " not treated AND treated with X, treated with Y for 5 hours"
+
+    # --> liver (Homo sapiens, child 6 year female and child 4 year female)
+    return None
