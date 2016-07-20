@@ -1,7 +1,7 @@
 'use strict';
 var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
-var queryString = require('query-string');
+var querystring = require('../libs/querystring');
 var Modal = require('react-bootstrap/lib/Modal');
 var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var button = require('../libs/bootstrap/button');
@@ -660,61 +660,33 @@ var Term = search.Term = React.createClass({
         var selected = termSelected(term, field, filters);
         var href;
         var searchBaseObj;
-        if (field === 'award.project') {
-            console.log(this.props);
-        }
         if (selected && !this.props.canDeselect) {
             href = null;
         } else if (selected) {
             href = selected;
         } else {
-            // Term not selected, so build its href from searchBase and given field and term.
-
-            // If this term is a parent of a subfacet, and searchBase includes this term's subfacet
-            // term specification, remove it/them. You can't select both a term and its subfacet
-            // terms.
             if (subfacet) {
-                searchBaseObj = queryString.parse(searchBase);
-                if (searchBaseObj[field] && (typeof searchBaseObj[field] === 'object')) {
-                    // More than one term selected
-                    searchBaseObj[field].forEach((key, i) => {
-                        if (key.indexOf(':') !== -1) {
-                            delete searchBaseObj[field][i];
-                        }
-                    });
-                } else {
-                    // Only one term selected
-                    if (searchBaseObj[field] && searchBaseObj[field].indexOf(':') !== -1) {
-                        delete searchBaseObj[field];
-                        searchBase = '?' + queryString.stringify(searchBaseObj) + '&';
+                // This term is a non-selected parent of a subfacet. If any terms in searchBase
+                // contain this term's field, it has to be removed so that we don't select both a
+                // term and its subfacet terms at the same time.
+                searchBaseObj = querystring.parse(searchBase);
+                var searchBaseObjKeys = Object.keys(searchBaseObj);
+                searchBaseObjKeys.forEach(key => {
+                    if (key.indexOf(term) >= 0) {
+                        querystring.deleteKey(searchBaseObj, key);
                     }
+                });
+                searchBase = querystring.stringify(searchBaseObj) + '&';
+            } else if (parentInfo) {
+                // This term is a non-selected subfacet term. Remove any selected parent term if
+                // any.
+                searchBaseObj = querystring.parse(searchBase);
+                if (querystring.keyValueExists(searchBaseObj, parentInfo.field, parentInfo.term)) {
+                    querystring.deleteKey(searchBaseObj, parentInfo.field);
+                    searchBase = querystring.stringify(searchBaseObj) + '&';
                 }
             }
-
-            // If this term is in a subfacet, remove its parent term from searchBase. You can't
-            // select both a subfacet term and its parent.
-            if (parentInfo) {
-                searchBaseObj = queryString.parse(searchBase);
-                if (searchBaseObj[parentInfo.field]) {
-                    if (typeof searchBaseObj[parentInfo.field] === 'string') {
-                        // Query string parameter for parent's field is a string. Delete it if it
-                        // doesn't contain a colon, meaning the parent term is selected
-                        if (searchBaseObj[parentInfo.field].indexOf(':') === -1) {
-                            delete searchBaseObj[parentInfo.field];
-                        }
-                    } else {
-                        // Query string parameter for a parent's field is an array. Delete the
-                        // elements that don’t have a colon, which indicates the parent term
-                        // is selected.
-                        searchBaseObj[parentInfo.field].forEach((parm, i) => {
-                            if (parm && parm.indexOf(':') === -1) {
-                                delete searchBaseObj[parentInfo.field][i];
-                            }
-                        });
-                    }
-                    searchBase = '?' + queryString.stringify(searchBaseObj) + '&';
-                }
-            }
+            // Term not selected, so build its href from searchBase and given field and term.
             href = searchBase + field + '=' + encodeURIComponent(term).replace(/%20/g, '+');
         }
 
@@ -784,6 +756,12 @@ var Facet = search.Facet = React.createClass({
     render: function() {
         var {facet, parentInfo, filters} = this.props;
         var {title, field, total} = facet;
+
+        // If the title has a form like a subfacet selection, don't render the facet.
+        if (title.match(/^.+?=.+?:.+$/)) {
+            return null;
+        }
+
         var termID = title.replace(/\s+/g, '');
         var terms = facet['terms'].filter(function (term) {
             if (term.key) {
@@ -937,7 +915,7 @@ var FacetList = search.FacetList = React.createClass({
         var searchQuery = context && context['@id'] && url.parse(context['@id']).search;
         if (searchQuery) {
             // Convert search query string to a query object for easy parsing
-            var terms = queryString.parse(searchQuery);
+            var terms = querystring.parse(searchQuery);
 
             // See if there are terms in the query string aside from `searchTerm`. We have a Clear
             // Filters button if we do
