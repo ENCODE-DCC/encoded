@@ -169,6 +169,7 @@ module.exports.dbxref_prefix_map = {
     "FlyBase": "http://flybase.org/cgi-bin/quicksearch_solr.cgi?caller=quicksearch&tab=basic_tab&data_class=FBgn&species=Dmel&search_type=all&context=",
     // This WormBase link is strictly for Fly strains
     "FlyBaseStock": "http://flybase.org/reports/",
+    "BDSC": "http://flystocks.bio.indiana.edu/Reports/",
     "WormBaseTargets": "http://www.wormbase.org/species/c_elegans/gene/",
     // This WormBase link is strictly for C. elegans strains
     "WormBase": "http://www.wormbase.org/species/c_elegans/strain/",

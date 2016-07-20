@@ -107,8 +107,8 @@ var Annotation = React.createClass({
 
         // Render tags badges
         var tagBadges;
-        if (context.tags && context.tags.length) {
-            tagBadges = context.tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
         }
 
         return (
@@ -295,8 +295,8 @@ var PublicationData = React.createClass({
 
         // Render tags badges
         var tagBadges;
-        if (context.tags && context.tags.length) {
-            tagBadges = context.tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
         }
 
         return (
@@ -450,8 +450,8 @@ var Reference = React.createClass({
 
         // Render tags badges
         var tagBadges;
-        if (context.tags && context.tags.length) {
-            tagBadges = context.tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
         }
 
         return (
@@ -611,8 +611,8 @@ var Project = React.createClass({
 
         // Render tags badges
         var tagBadges;
-        if (context.tags && context.tags.length) {
-            tagBadges = context.tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
         }
 
         return (
@@ -794,8 +794,8 @@ var UcscBrowserComposite = React.createClass({
 
         // Render tags badges
         var tagBadges;
-        if (context.tags && context.tags.length) {
-            tagBadges = context.tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
         }
 
         return (
@@ -1243,8 +1243,8 @@ var Series = module.exports.Series = React.createClass({
 
         // Render tags badges
         var tagBadges;
-        if (context.tags && context.tags.length) {
-            tagBadges = context.tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
         }
 
         return (
