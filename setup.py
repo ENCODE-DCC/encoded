@@ -40,6 +40,8 @@ requires = [
     'subprocess_middleware',
     'xlrd',
     'zope.sqlalchemy',
+    'bcrypt',
+    'cryptacular',
 ]
 
 if sys.version_info.major == 2:

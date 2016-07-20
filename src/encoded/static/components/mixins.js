@@ -117,11 +117,6 @@ module.exports.Persona = {
         if (!(http_method === 'GET' || http_method === 'HEAD')) {
             var headers = options.headers = _.extend({}, options.headers);
             var session = this.state.session;
-            //var userid = session['auth.userid'];
-            //if (userid) {
-            //    // Server uses this to check user is logged in
-            //    headers['X-If-Match-User'] = userid;
-            //}
             if (session && session._csrft_) {
                 headers['X-CSRF-Token'] = session._csrft_;
             }
@@ -176,7 +171,7 @@ module.exports.Persona = {
         if (this.state) {
             for (key in this.state) {
                 if (this.state[key] !== prevState[key]) {
-                    console.log('changed state: %s', key);
+                    console.log('changed state: %s', key, this.state[key]);
                 }
             }
         }
@@ -215,83 +210,6 @@ module.exports.Persona = {
             this.setState({session_properties: session_properties});
         });
     },
-
-    handlePersonaLogin: function (assertion, retrying) {
-        if (!assertion) return;
-        this.sessionPropertiesRequest = true;
-        this.fetch('/login', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({assertion: assertion})
-        })
-        .then(response => {
-            if (!response.ok) throw response;
-            return response.json();
-        })
-        .then(session_properties => {
-            this.setState({session_properties: session_properties});
-            this.sessionPropertiesRequest = null;
-            var next_url = window.location.href;
-            if (window.location.hash == '#logged-out') {
-                next_url = window.location.pathname + window.location.search;
-            }
-            this.navigate(next_url, {replace: true});
-        }, err => {
-            this.sessionPropertiesRequest = null;
-            parseError(err).then(data => {
-                // Server session creds might have changed.
-                if (data.code === 400 && data.detail.indexOf('CSRF') !== -1) {
-                    if (!retrying) {
-                        window.setTimeout(this.handlePersonaLogin.bind(this, assertion, true));
-                        return;
-                    }
-                }
-                // If there is an error, show the error messages
-                this.setProps({context: data});
-            });
-        });
-    },
-
-    triggerLogin: function (event) {
-        var $script = require('scriptjs');
-        console.log('Logging in (persona) ');
-        if (this.state.session && !this.state.session._csrft_) {
-            this.fetch('/session');
-        }
-        $script.ready('persona', () => {
-            var request_params = {}; // could be site name
-            navigator.id.get(this.handlePersonaLogin, request_params);
-        });
-    },
-
-    triggerLogout: function (event) {
-        console.log('Logging out (persona)');
-        var session = this.state.session;
-        if (!(session && session['auth.userid'])) return;
-        this.fetch('/logout?redirect=false', {
-            headers: {'Accept': 'application/json'}
-        })
-        .then(response => {
-            if (!response.ok) throw response;
-            return response.json();
-        })
-        .then(data => {
-            this.DISABLE_POPSTATE = true;
-            var old_path = window.location.pathname + window.location.search;
-            window.location.assign('/#logged-out');
-            if (old_path == '/') {
-                window.location.reload();
-            }
-        }, err => {
-            parseError(err).then(data => {
-                data.title = 'Logout failure: ' + data.title;
-                this.setProps({context: data});
-            });
-        });
-    }
 };
 
 class UnsavedChangesToken {

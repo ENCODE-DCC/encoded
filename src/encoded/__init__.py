@@ -14,6 +14,7 @@ from pyramid.path import (
     AssetResolver,
     caller_package,
 )
+
 from pyramid.session import SignedCookieSessionFactory
 from pyramid.settings import (
     aslist,
@@ -199,11 +200,10 @@ def main(global_config, **local_config):
     hostname_command = settings.get('hostname_command', '').strip()
     if hostname_command:
         hostname = subprocess.check_output(hostname_command, shell=True).strip()
-        settings.setdefault('persona.audiences', '')
-        settings['persona.audiences'] += '\nhttp://%s' % hostname
-        settings['persona.audiences'] += '\nhttp://%s:6543' % hostname
+
 
     config = Configurator(settings=settings)
+
     from snovault.elasticsearch import APP_FACTORY
     config.registry[APP_FACTORY] = main  # used by mp_indexer
     config.include(app_version)
@@ -213,7 +213,6 @@ def main(global_config, **local_config):
     # Override default authz policy set by pyramid_multiauth
     config.set_authorization_policy(LocalRolesAuthorizationPolicy())
     config.include(session)
-    config.include('.persona')
 
     config.include(configure_dbsession)
     config.include('snovault')
@@ -239,8 +238,7 @@ def main(global_config, **local_config):
             serializer=PyramidJSONSerializer(json_renderer),
             connection_class=TimedUrllib3HttpConnection,
             retry_on_timeout=True,
-            timeout=60,
-            maxsize=50
+            timeout=30,
         )
         config.include('.region_search')
         config.include('.peak_indexer')
