@@ -467,7 +467,7 @@ var RawFileTable = React.createClass({
                                 // the first row of files, spanned to all rows for that replicate and
                                 // library
                                 var spanned = [
-                                    <td key="br" rowSpan={groupFiles.length} className={bottomClass + ' table-raw-merged'}>{groupFiles[0].biological_replicates[0]}</td>,
+                                    <td key="br" rowSpan={groupFiles.length} className={bottomClass + ' table-raw-merged table-raw-biorep'}>{groupFiles[0].biological_replicates[0]}</td>,
                                     <td key="lib" rowSpan={groupFiles.length} className={bottomClass + ' merge-right + table-raw-merged'}>{groupFiles[0].replicate.library.accession}</td>
                                 ];
 
@@ -504,7 +504,11 @@ var RawFileTable = React.createClass({
                                     );
                                 });
                             })}
-                            {nonpairedFiles.sort((a,b) => a.accession > b.accession ? 1 : (a.accession < b.accession ? -1 : 0)).map((file, i) => {
+                            {nonpairedFiles.sort((a,b) => {
+                                var aBiorep = a.biological_replicates ? a.biological_replicates.join() : '';
+                                var bBiorep = b.biological_replicates ? b.biological_replicates.join() : '';
+                                return aBiorep > bBiorep ? 1 : (aBiorep < bBiorep ? -1 : 0);
+                            }).map((file, i) => {
                                 // Prepare for run_type display
                                 var runType;
                                 if (file.run_type === 'single-ended') {
@@ -514,7 +518,7 @@ var RawFileTable = React.createClass({
                                 }
                                 return (
                                     <tr key={i}>
-                                        <td>{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''}</td>
+                                        <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
                                         <td>{file.accession}</td>
                                         <td>{file.file_type}</td>
