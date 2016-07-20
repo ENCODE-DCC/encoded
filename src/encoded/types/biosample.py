@@ -380,6 +380,8 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 subcellular_fraction_term_name=None,
                 post_synchronization_time=None,
                 post_synchronization_time_units=None,
+                post_treatment_time=None,
+                post_treatment_time_units=None,
                 treatments=None,
                 part_of=None,
                 derived_from=None,
@@ -390,7 +392,23 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 model_organism_donor_constructs=None,
                 rnais=None):
 
-        dict_of_phrases = {}
+        dict_of_phrases = {
+            'organism_name': '',
+            'genotype_strain': '',
+            'term_phrase': '',
+            'phase': '',
+            'fractionated': '',
+            'sex_stage_age': '',
+            'synchronization': '',
+            'derived_from': '',
+            'transfection_type': '',
+            'rnais': '',
+            'treatments_phrase': '',
+            'depleted_in': '',
+            'talens': '',
+            'constructs': '',
+            'model_organism_constructs': ''
+        }
 
         if organism is not None:
             organismObject = request.embed(organism, '@@object')
@@ -400,10 +418,12 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 if organismObject['scientific_name'] != 'Homo sapiens':  # model organism
                     if donor is not None:
                         donorObject = request.embed(donor, '@@object')
-                        if 'strain_name' in donorObject:
-                            dict_of_phrases['strain_name'] = donorObject['strain_name']
                         if 'genotype' in donorObject:
-                            dict_of_phrases['genotype'] = donorObject['genotype']
+                            dict_of_phrases['genotype_strain'] = donorObject['genotype']
+                        elif 'strain_name' in donorObject:
+                            dict_of_phrases['genotype_strain'] = donorObject['strain_name']
+                else:
+                    dict_of_phrases['genotype_strain'] = ''
 
         if age is not None and age_units is not None:
             dict_of_phrases['age_display'] = str(age) + ' ' + age_units + 's'
@@ -420,6 +440,34 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         if biosample_type is not None and \
            biosample_type not in ['whole organisms', 'whole organism']:
             dict_of_phrases['sample_type'] = biosample_type
+
+        term_name = ''
+
+        if 'sample_term_name' in dict_of_phrases:
+            if dict_of_phrases['sample_term_name'] == 'multi-cellular organism':
+                term_name += 'whole organisms'
+            else:
+                term_name += dict_of_phrases['sample_term_name']
+
+        term_type = ''
+
+        if 'sample_type' in dict_of_phrases:
+            term_type += dict_of_phrases['sample_type']
+
+        term_dict = {}
+        for w in term_type.split(' '):
+            if w not in term_dict:
+                term_dict[w] = 1
+
+        term_phrase = ''
+        for w in term_name.split(' '):
+            if w not in term_dict and (w+'s') not in term_dict:
+                term_dict[w] = 1
+                term_phrase += ' ' + w
+
+        term_phrase += ' ' + term_type
+        if len(term_phrase) > 0:
+            dict_of_phrases['term_phrase'] = term_phrase[1:]
 
         if starting_amount is not None and starting_amount_units is not None:
             if starting_amount_units[-1] != 's':
@@ -464,6 +512,31 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                                                   ' ' + post_synchronization_time_units +
                                                   's post synchronization')
 
+        if post_treatment_time is not None and post_treatment_time_units is not None:
+            dict_of_phrases['post_treatment'] = (post_treatment_time +
+                                                 ' ' + post_treatment_time_units +
+                                                 's after the sample was')
+
+        if ('sample_type' in dict_of_phrases and
+            dict_of_phrases['sample_type'] != 'immortalized cell line') or \
+           ('sample_type' not in dict_of_phrases):
+            phrase = ''
+            if 'sex' in dict_of_phrases:
+                if dict_of_phrases['sex'] == 'mixed':
+                    phrase += dict_of_phrases['sex'] + ' sex'
+                else:
+                    phrase += dict_of_phrases['sex']
+
+            stage_phrase = ''
+            if 'life_stage' in dict_of_phrases:
+                stage_phrase += ' ' + dict_of_phrases['life_stage']
+
+            phrase += stage_phrase.replace("embryonic", "embryo")
+
+            if 'age_display' in dict_of_phrases:
+                phrase += ' (' + dict_of_phrases['age_display'] + ')'
+            dict_of_phrases['sex_stage_age'] = phrase
+
         if treatments is not None and len(treatments) > 0:
             treatments_list = []
             for t in treatments:
@@ -489,6 +562,19 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             if len(treatments_list) > 0:
                 dict_of_phrases['treatments'] = treatments_list
 
+        if 'treatments' in dict_of_phrases:
+            if 'post_treatment' in dict_of_phrases:
+                dict_of_phrases['treatments_phrase'] = dict_of_phrases['post_treatment']
+
+            if len(dict_of_phrases['treatments']) == 1:
+                dict_of_phrases['treatments_phrase'] += ' treated with ' + \
+                                                        dict_of_phrases['treatments'][0]
+            else:
+                if len(dict_of_phrases['treatments']) > 1:
+                    dict_of_phrases[
+                        'treatments_phrase'] += ' treated with ' + \
+                                                ', '.join(map(str, dict_of_phrases['treatments']))
+
         if part_of is not None:
             part_ofObject = request.embed(part_of, '@@object')
             dict_of_phrases['part_of'] = 'separated from biosample '+part_ofObject['accession']
@@ -500,7 +586,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                                                    derived_fromObject['biosample_term_name'])
 
         if transfection_type is not None:  # stable/transient
-                dict_of_phrases['transfection'] = transfection_type
+                dict_of_phrases['transfection_type'] = transfection_type
 
         if talens is not None and len(talens) > 0:
             talens_list = []
@@ -570,6 +656,9 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
 
             dict_of_phrases['rnais'] = rnais_list
 
+        return construct_biosample_summary([dict_of_phrases])
+        '''
+        ###########################
         summary_phrase = ''
 
         fly_worm_flag = False
@@ -659,6 +748,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                     summary_phrase += ' treated with ' + \
                                       ', '.join(map(str, dict_of_phrases['treatments']))
 
+
         # need to rephrase later on I guess
         if 'depleted_in' in dict_of_phrases:
             summary_phrase += ' ' + dict_of_phrases['depleted_in']
@@ -675,18 +765,63 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             return summary_phrase.strip()[:-1]  # , str(dict_of_phrases))
         else:
             return summary_phrase.strip()
+        '''
+
+
+def generate_sentence(phrases_dict, values_list):
+    sentence = ''
+    for key in values_list:
+        sentence += '->' + phrases_dict[key] + '<-'
+    return sentence
+
+
+def is_identical(list_of_dicts, key):
+    initial_value = list_of_dicts[0][key]
+    for d in list_of_dicts:
+        if d[key] != initial_value:
+            return False
+    return True
 
 
 def construct_biosample_summary(phrases_dictionarys):
-    # if list length == 1 go to step 2.
-    # step 1.
-    # figure out all the keys in all the dictionaries.
-    # go through the list of keys and create a new dictionary with these keys
-    # the values would be:
-    # if all dictionaries have this key and values identical - then for this key it is the valeu
-    # if all dictionaries have the key bt values vary - make a set of unique values, and then make a string with 'ands' between values 
-    # if not all the dictionaries have the value we have to specify in the final dictionary string that some biosamples don't have this value
-    # something like : " not treated AND treated with X, treated with Y for 5 hours"
 
-    # --> liver (Homo sapiens, child 6 year female and child 4 year female)
-    return None
+    sentence_parts = [
+        'organism_name',
+        'genotype_strain',
+        'term_phrase',
+        'phase',
+        'fractionated',
+        'sex_stage_age',
+        'synchronization',
+        'derived_from',
+        'transfection_type',
+        'rnais'
+        'treatments_phrase',
+        'depleted_in',
+        'talens',
+        'constructs',
+        'model_organism_constructs'
+    ]
+
+    if len(phrases_dictionarys) > 1:
+        index = 0
+        min_index = len(sentence_parts)
+        max_index = -1
+        for part in sentence_parts:
+            if is_identical(phrases_dictionarys, part) is False:
+                if min_index > index:
+                    min_index = index
+                if max_index < index:
+                    max_index = index
+            index += 1
+        if max_index == -1:
+            return generate_sentence(phrases_dictionarys[0], sentence_parts)
+        else:
+            prefix = generate_sentence(phrases_dictionarys[0], sentence_parts[0:min_index])
+            suffix = generate_sentence(phrases_dictionarys[0], sentence_parts[max_index:])
+            middle = []
+            for d in phrases_dictionarys:
+                middle.append(generate_sentence(d, sentence_parts[min_index:max_index]))
+            return prefix + middle + suffix
+    else:
+        return generate_sentence(phrases_dictionarys[0], sentence_parts)
