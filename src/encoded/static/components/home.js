@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+var _ = require('underscore');
 var globals = require('./globals');
 var {FetchedData, Param} = require('./fetched');
 var cloneWithProps = require('react/lib/cloneWithProps');
@@ -9,8 +10,40 @@ var cloneWithProps = require('react/lib/cloneWithProps');
 var Home = module.exports.Home = React.createClass({
     getInitialState: function(){
         return {
-            current: "?type=Experiment&status=released"
+            current: "?type=Experiment&status=released",
+            newtabs: []
         };
+    },
+
+     handleTabClick: function(tab){ // pass in string with organism query
+        console.log("AT HANDLETABCLICK HERE IS TAB PASSED IN: " + tab);
+        var tempArray = _.clone(this.state.newtabs); // creates a copy of this.state.newtabs
+
+        if (tempArray.indexOf(tab) < 0) { // if tab isn't already in array, then add it
+            tempArray.push(tab);
+            console.log("this is tab: " + tab);
+            console.log("TEMP ARRAY SHOULD BE PUSHED HERE: " + tempArray);
+        }
+        else{
+            var indexToRemove = tempArray.indexOf(tab); // if it is in array, remove it
+            tempArray = tempArray.splice(indexToRemove, 1);
+        }
+        console.log("TEMP ARRAY SHOULD HAVE HUMAN: " + tempArray);
+        this.setState({ 
+            newtabs: tempArray // update newtabs
+        });
+        console.log("this.state.newtabs: " + this.state.newtabs);
+
+        var organismString = ""; // create empty string with all organisms selected
+        for(var x = 0; x < this.state.newtabs.length; x++){ // add all organisms selected to string
+            organismString = organismString + this.state.newtabs[x];
+        }
+
+        var finalLink = _.clone(this.state.current); // clone current
+        finalLink = finalLink + organismString; // add organism queries to link
+
+        this.callback(finalLink); // updated current, updating charts
+        
     },
 
     callback: function(newUrl){
@@ -30,105 +63,25 @@ var Home = module.exports.Home = React.createClass({
                     </div>
                 </div>
                 <AssayClicking current={this.state.current} callback={this.callback}/>
+                <TabClicking handleTabClick={this.handleTabClick}/>
                 <div className="row">
-                    <TabPanel tabs={{panel1: 'Human', panel2: 'Mouse', panel3: 'Worm', panel4: 'Fly'}}>
-                        <TabPanelPane key="panel1">
-                            <div>
-                                <div className="col-sm-6">
-                                    <div className="title">
-                                        Project
-                                    </div>
-                                    <center> <hr width="80%" position="static"></hr> </center>
-                                    <HomepageChartLoader searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'} 
+                    <div className="col-sm-6">
+                        <div className="title">
+                            Project
+                        </div>
+                        <center> <hr width="80%" position="static"></hr> </center>
+                        <HomepageChartLoader searchBase={this.state.current} 
+                                            callback={this.callback}/>
+                    </div>
+                    <div className="col-sm-6">
+                        <div className="title">
+                            Biosample Type
+                        </div>
+                        <center> <hr width="80%"></hr> </center>
+                        <HomepageChartLoader2 searchBase={this.state.current}
                                          callback={this.callback}/>
-                                </div>
-                                <div className="col-sm-6">
-                                    <div className="title">
-                                        Biosample Type
-                                    </div>
-                                    <center> <hr width="80%"></hr> </center>
-                                    <HomepageChartLoader2 searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens'}
-                                         callback={this.callback}/>
-                                </div>
-                            </div>
-                        </TabPanelPane>
-                        <TabPanelPane key="panel2">
-                            <div>
-                                <div className="col-sm-6">
-                                    <div className="title">
-                                        Project
-                                    </div>
-                                    <center> <hr width="80%" position="static"></hr> </center>
-                                    <HomepageChartLoader searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus'} 
-                                         callback={this.callback}/>
-                                </div>
-                                <div className="col-sm-6">
-                                    <div className="title">
-                                        Biosample Type
-                                    </div>
-                                    <center> <hr width="80%"></hr> </center>
-                                    <HomepageChartLoader2 searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus'}
-                                         callback={this.callback}/>
-                                </div>
-                            </div>
-                        </TabPanelPane>
-                        <TabPanelPane key="panel3">
-                            <div>
-                                <div className="col-sm-6">
-                                    <div className="title">
-                                        Project
-                                    </div>
-                                    <center> <hr width="80%" position="static"></hr> </center>
-                                    <HomepageChartLoader searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Caenorhabditis+elegans'} 
-                                         callback={this.callback}/>
-                                </div>
-                                <div className="col-sm-6">
-                                    <div className="title">
-                                        Biosample Type
-                                    </div>
-                                    <center> <hr width="80%"></hr> </center>
-                                    <HomepageChartLoader2 searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Caenorhabditis+elegans'}
-                                         callback={this.callback}/>
-                                </div>
-                            </div>
-                        </TabPanelPane>
-                        <TabPanelPane key="panel4">
-                            <div>
-                                <div className="col-sm-6">
-                                    <div className="title">
-                                        Project
-                                    </div>
-                                    <center> <hr width="80%" position="static"></hr> </center>
-                                    <HomepageChartLoader searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+melanogaster' +
-                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+pseudoobscura' +
-                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+simulans' +
-                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+mojavensis' +
-                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+ananassae' +
-                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+virilis' +
-                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+yakuba'} 
-                                                        callback={this.callback}/>
-                                </div>
-                                <div className="col-sm-6">
-                                    <div className="title">
-                                        Biosample Type
-                                    </div>
-                                    <center> <hr width="80%"></hr> </center>
-                                    <HomepageChartLoader2 searchBase={this.state.current + '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+melanogaster' +
-                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+pseudoobscura' +
-                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+simulans' +
-                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+mojavensis' +
-                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+ananassae' +
-                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+virilis' +
-                                                                                        '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+yakuba'}
-                                         callback={this.callback}/>
-                                </div>
-                            </div>
-                        </TabPanelPane>
-                    </TabPanel>
-                    
-
-                    
-                
+                    </div>
+                   
                 </div>
                 
             </div>
@@ -285,6 +238,72 @@ var AssayClicking = React.createClass({
     }
 
 });
+
+
+var TabClicking = React.createClass({
+    propTypes: {
+        handleTabClick: React.PropTypes.func
+    },
+
+    getInitialState: function(){
+        return {
+            queryStrings: ['&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens', // human
+                            '&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus', // mouse
+                            '&replicates.library.biosample.donor.organism.scientific_name=Caenorhabditis+elegans', // worm
+
+                            '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+melanogaster' + // fly
+                            '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+pseudoobscura' +
+                            '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+simulans' +
+                            '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+mojavensis' +
+                            '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+ananassae' +
+                            '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+virilis' +
+                            '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+yakuba']
+        };
+    },
+
+   
+
+
+    componentDidMount: function() {
+        // Draw the chart of search results given in this.props.data.facets. Since D3 doesn't work
+        // with the React virtual DOM, we have to load it separately using the webpack .ensure
+        // mechanism. Once the callback is called, it's loaded and can be referenced through
+        // require.
+
+
+
+        var tabBoxes = document.getElementById("tabdisplay");
+
+        // var chromatin = document.getElementById("3D+chromatin+structure");
+        // chromatin.addEventListener("click", AssayChartLoader);
+        // var breaker = 0;
+
+
+
+    },
+
+    render: function() {
+        return (
+            <div ref="tabdisplay"> 
+                <div className="tabTable">
+
+                <table>
+                    <tr>
+                        <td> <a href="#" data-trigger onClick={this.props.handleTabClick.bind(null, this.state.queryStrings[0])}>Human</a></td>
+                        <td>Mouse</td>
+                        <td>Worm</td>
+                        <td>Fly</td>
+                    </tr>
+                </table>
+                    
+
+                </div>
+            </div>
+        );
+    }
+
+});
+
 
 
 
