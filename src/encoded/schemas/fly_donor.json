@@ -66,5 +66,8 @@
                 "pattern": "^(((BDSC|DSSC|Kyoto|VDRC|Harvard|NIG-FLY):.+)|(FlyBase:FBst\\d+)|(GEO:SAMN\\d+))$"
             }
         }
+    },
+    "boost_values": {
+        "internal_tags": 1.0
     }
 }
