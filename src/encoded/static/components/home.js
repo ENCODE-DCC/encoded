@@ -71,7 +71,7 @@ var Home = module.exports.Home = React.createClass({
                     </div>
                 </div>
                 <AssayClicking current={this.state.current} callback={this.callback}/>
-                <TabClicking handleTabClick={this.handleTabClick}/>
+                <TabClicking handleTabClick={this.handleTabClick} newtabs={this.state.newtabs}/>
                 <div className="row">
                     <div className="col-sm-6">
                         <div className="title">
@@ -298,10 +298,10 @@ var TabClicking = React.createClass({
 
                 <table>
                     <tr>
-                        <td> <a href="#" data-trigger onClick={this.props.handleTabClick.bind(null, this.state.queryStrings[0])}>Human</a></td>
-                        <td> <a href="#" data-trigger onClick={this.props.handleTabClick.bind(null, this.state.queryStrings[1])}>Mouse</a></td>
-                        <td> <a href="#" data-trigger onClick={this.props.handleTabClick.bind(null, this.state.queryStrings[2])}>Worm</a></td>
-                        <td> <a href="#" data-trigger onClick={this.props.handleTabClick.bind(null, this.state.queryStrings[3])}>Fly</a></td>
+                        <td> <a className={"single-tab" + (this.props.newtabs.indexOf(this.state.queryStrings[0]) != -1 ? " selected": "")} href="#" data-trigger onClick={this.props.handleTabClick.bind(null, this.state.queryStrings[0])}>Human</a></td>
+                        <td> <a className={"single-tab" + (this.props.newtabs.indexOf(this.state.queryStrings[1]) != -1 ? " selected": "")} href="#" data-trigger onClick={this.props.handleTabClick.bind(null, this.state.queryStrings[1])}>Mouse</a></td>
+                        <td> <a className={"single-tab" + (this.props.newtabs.indexOf(this.state.queryStrings[2]) != -1 ? " selected": "")} href="#" data-trigger onClick={this.props.handleTabClick.bind(null, this.state.queryStrings[2])}>Worm</a></td>
+                        <td> <a className={"single-tab" + (this.props.newtabs.indexOf(this.state.queryStrings[3]) != -1 ? " selected": "")} href="#" data-trigger onClick={this.props.handleTabClick.bind(null, this.state.queryStrings[3])}>Fly</a></td>
                     </tr>
                 </table>
                     
@@ -452,7 +452,7 @@ var HomepageChart = React.createClass({
                     }
                 }
             });
-            document.getElementById("legendDiv").innerHTML = this.myPieChart.generateLegend();
+            //document.getElementById("legendDiv").innerHTML = this.myPieChart.generateLegend();
         }.bind(this));
         
     },
@@ -488,7 +488,7 @@ var HomepageChart = React.createClass({
         return (
             <div>
                 <canvas id="myChart" width="0" height="0"></canvas>
-                <div id="legendDiv"></div>
+                
             </div>
         );
     }

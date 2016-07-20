@@ -31,6 +31,7 @@
 
 .overall-classic {
     position: relative;
+    padding: 0px 0px !important;
 }
 
 .classic-svg {
@@ -41,6 +42,7 @@
     left: 0;
     fill: blue;
     fill-opacity: 0.05;
+
 }
 
 .box:hover {
@@ -90,39 +92,37 @@
 
 .tabTable {
     border-bottom: 1px solid #a0a0a0;
-
+    padding: 0;
        
 
         
 }
 
 .tabTable td{
+    padding-top: 0;
+    
+    padding: 0px 0px !important;
     color: #000;
     border: none;
-    background-color: transparent;
+    a.single-tab {
+        font-size: 20px;
+        font-weight: 100;
+        padding: 10px 11px !important;
+        display: block;
+        text-decoration: none;
+        color: black;
 
-    &:hover {
-        background-color: transparent;
-                color: #428bca;
-                border-radius: 0;
+        &:hover {
+        background-color: #c0c0c0;   
+        }
 
-                svg path {
-                    fill: #428bca;
-                }
+        &.selected {
+            color: white;
+            background-color: #428bca;
+        }
     }
 
-    &.active {
-            > a, > a:hover, > a:focus {
-                background-color: #c0c0c0;
-                border: none;
-                color: #606060;
-                border-radius: 0;
-
-                svg path {
-                    fill: #606060;
-                }
-            }
-        }
+    
 }
 
 hr {
