@@ -30,6 +30,29 @@ BIGWIG_FILE_TYPES = ['bigWig']
 BIGBED_FILE_TYPES = ['bigBed']
 
 
+# Supported tokens are the only tokens the code currently know how to look up and swap into text stings.
+SUPPORTED_MASK_TOKENS = [
+    "{replicate}",         # The replicate that that will be displayed for visualized track: ("rep1", "combined") (AKA rep_tag)
+    "{rep_tech}",          # The rep_tech if desired ("rep1_1", "combined")
+    "{replicate_number}",  # The replicate number displayed for visualized track: ("1", "0")
+    "{biological_replicate_number}",
+    "{technical_replicate_number}",
+    "{assay_title}",
+    "{assay_term_name}",                    # dataset.assay_term_name
+    # TODO "{annotation_type}",             # some datasets have annotation type and not assay (higher end trickery)
+    "{output_type}",                        # files.output_type
+    "{accession}","{experiment.accession}", # "{accession}" is assumed to be experiment.accession
+
+    "{file.accession}",
+    "{target}","{target.label}",            # Either is acceptible
+    "{biosample_term_name}",
+    "{output_type_short_label}",                # hard-coded translation from output_type to very short version Do we want this in schema?
+    "{replicates.library.biosample.summary}",   # Idan and Forrest and I are conspiring to move this to dataset.biosample_summary and make it much shorter
+    "{assembly}",                               # you don't need this in titles, but it is crucial variable and seems to not be being applied correctly in the html generation
+    # TODO "{software? or pipeline?}",          # I am stumbling over the fact that we can't distinguish tophat and star produced files
+    # TODO "{phase}",                           # If we get to the point of being fancy in the replication timing, then we need this, otherwise it bundles up in the biosample summary now
+    ]
+
 # static group defs are keyed by group title (or special token) and consist of
 # tag: (optional) unique terse key for referencing group
 # groups: (optional) { subgroups keyed by subgroup title }
@@ -118,7 +141,9 @@ LRNA_COMPOSITE_VIS_DEFS = {
     "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
     "Views": {
         "tag": "view",
-        "group_order": [ "Signal of unique reads", "Signal of all reads", "Plus signal of unique reads", "Minus signal of unique reads", "Plus signal of all reads", "Minus signal of all reads", ],
+        "group_order": [ "Signal of unique reads", "Signal of all reads",
+                        "Plus signal of unique reads", "Minus signal of unique reads",
+                        "Plus signal of all reads", "Minus signal of all reads" ],
         "groups": {
             "Signal of all reads": {
                 "tag": "SIGA",
@@ -224,6 +249,198 @@ LRNA_COMPOSITE_VIS_DEFS = {
     }
 }
 
+RAMPAGE_COMPOSITE_VIS_DEFS = {
+    "assay_composite": {
+        "longLabel":  "Collection of ENCODE Rampage/CAGE experiments",
+        "shortLabel": "ENCODE Rampage/CAGE",
+    },
+    "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
+    "shortLabel": "{assay_title} of {biosample_term_name} - {accession}",
+    "color":      "{biosample_term_name}",
+    "altColor":   "{biosample_term_name}",
+    "pennantIcon": "encodeThumbnail.jpg https://www.encodeproject.org/ \"ENCODE: Encyclopedia of DNA Elements\"",
+    "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
+    "Views":  {
+        "tag": "view",
+        "group_order": [ "Replicated TSSs", "TSSs",
+                         "Signal of unique reads", "Signal of all reads",
+                         "Plus signal of unique reads", "Minus signal of unique reads",
+                         "Plus signal of all reads", "Minus signal of all reads" ],
+        "groups": {
+          "Replicated TSSs": {
+                "tag": "REPTSS",
+                "visibility": "dense",
+                "spectrum": "on",
+                "type": "bigBed",
+                "file_format_type": ["idr_peak"],
+           },
+          "TSSs": {
+                "tag": "TSS",
+                "visibility": "hide",
+                "spectrum": "on",
+                "type": "bigBed",
+                "file_format_type": ["tss_peak"],
+            },
+            "Signal of all reads": {
+                "tag": "SIGA",
+                "visibility": "hide",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "autoScale": "off",
+                "maxHeightPixels": "32:16:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "signal of all reads" ]
+            },
+            "Signal of unique reads": {
+                "tag": "SIGU",
+                "visibility": "full",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "autoScale": "off",
+                "maxHeightPixels": "32:16:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "signal of unique reads" ]
+            },
+            "Plus signal of all reads": {
+                "tag": "PSIGA",
+                "visibility": "hide",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "autoScale": "off",
+                "maxHeightPixels": "32:16:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "plus strand signal of all reads" ]
+            },
+            "Plus signal of unique reads": {
+                "tag": "PSIGU",
+                "visibility": "full",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "autoScale": "off",
+                "maxHeightPixels": "32:16:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "plus strand signal of unique reads" ]
+            },
+            "Minus signal of all reads": {
+                "tag": "SIGMA",
+                "visibility": "hide",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "autoScale": "off",
+                "negateValues": "on",
+                "maxHeightPixels": "32:16:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "minus strand signal of all reads" ]
+            },
+            "Minus signal of unique reads": {
+                "tag": "SIGMU",
+                "visibility": "full",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "autoScale": "off",
+                "negateValues": "on",
+                "maxHeightPixels": "32:16:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "minus strand signal of unique reads" ]
+            }
+        }
+    },
+    "other_groups":  {
+        "dimensions": { "Biosample": "dimY", "Replicates": "dimA" },
+        "groups": {
+            "Replicates": {
+                "tag": "REP",
+                "group_order": "sort",
+                "groups": {
+                    "replicate": {
+                        "title_mask": "Replicate_{replicate_number}",
+                        "combined_title": "Pooled",
+                    }
+                },
+            },
+            "Biosample": {
+                "tag": "BS",
+                "sortable": True,
+                "group_order": "sort",
+                "groups": { "one": { "title_mask": "{biosample_term_name}"} }
+            },
+        }
+    },
+    "file_defs": {
+        "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate} {experiment.accession} - {file.accession}",
+        "shortLabel": "{replicate} {output_type_short_label}",
+    }
+}
+
+DNASE_COMPOSITE_VIS_DEFS = {
+    "assay_composite": {
+        "longLabel":  "Collection of ENCODE DNase-HS experiments",
+        "shortLabel": "ENCODE ChIP-seq",
+    },
+    "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
+    "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
+    "color":      "{biosample_term_name}",
+    "altColor":   "{biosample_term_name}",
+    "pennantIcon": "encodeThumbnail.jpg https://www.encodeproject.org/ \"ENCODE: Encyclopedia of DNA Elements\"",
+    "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
+    "Views":  {
+        "tag": "view",
+        "group_order": [ "Signal", "Peaks", "Hotspots" ],
+        "groups": {
+            "Signal": {
+                "tag": "SIG",
+                "visibility": "full",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "autoScale": "off",
+                "maxHeightPixels": "32:16:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "signal of unique reads" ]
+            },
+            "Peaks": {
+                "tag": "PKS",
+                "visibility": "hide",
+                "type": "bigBed",
+                "spectrum": "on",
+                "scoreFilter": "100",
+                "output_type": [ "peaks" ]
+            },
+            "Hotspots": {
+                "tag": "HOT",
+                "visibility": "hide",
+                "type": "bigBed",
+                "spectrum": "on",
+                "output_type": [ "hotspots" ]
+            },
+        },
+    },
+    "other_groups":  {
+        "dimensions": { "Biosample": "dimY", "Replicates": "dimA" },
+        "groups": {
+            "Replicates": {
+                "tag": "REP",
+                "group_order": "sort",
+                "groups": {
+                    "replicate": {
+                        "title_mask": "Replicate_{replicate_number}",
+                        "combined_title": "Pooled",
+                    }
+                },
+            },
+            "Biosample": {
+                "tag": "BS",
+                "sortable": True,
+                "group_order": "sort",
+                "groups": { "one": { "title_mask": "{biosample_term_name}"} }
+            },
+        }
+    },
+    "file_defs": {
+        "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate} {experiment.accession} - {file.accession}",
+        "shortLabel": "{replicate} {output_type_short_label}",
+    }
+}
+
 CHIP_COMPOSITE_VIS_DEFS = {
     "assay_composite": {
         "longLabel":  "Collection of ENCODE ChIP-seq experiments",
@@ -237,7 +454,8 @@ CHIP_COMPOSITE_VIS_DEFS = {
     "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
     "Views":  {
         "tag": "view",
-        "group_order": [ "Optimal IDR thresholded peaks", "Conservative IDR thresholded peaks", "Replicated peaks", "Peaks",  "Fold change over control", "Signal p-value",  ],
+        "group_order": [ "Optimal IDR thresholded peaks", "Conservative IDR thresholded peaks",
+                        "Replicated peaks", "Peaks",  "Fold change over control", "Signal p-value", "Signal" ],
         "groups": {
 
             "Fold change over control": {
@@ -284,7 +502,7 @@ CHIP_COMPOSITE_VIS_DEFS = {
                 "visibility": "hide",
                 "type": "bigBed",
                 "file_format_type": [ "narrowPeak" ],
-                "scoreFilter": "0:1000",
+                "scoreFilter": "0",
                 "output_type": [ "peaks" ],
                 # Tim, how complicated would it be to exclude "peaks" if other files are there?
             },
@@ -343,6 +561,10 @@ CHIP_COMPOSITE_VIS_DEFS = {
 }
 
 ECLIP_COMPOSITE_VIS_DEFS = {
+    "assay_composite": {
+        "longLabel":  "Collection of ENCODE eCLIP experiments",
+        "shortLabel": "ENCODE eCLIP",
+    },
     "longLabel":  "{target} {assay_title} of {replicates.library.biosample.summary} - {accession}",
     "shortLabel": "{target} {assay_title} of {biosample_term_name} {accession}",
     "color":      "{biosample_term_name}",
@@ -408,6 +630,8 @@ ECLIP_COMPOSITE_VIS_DEFS = {
 
 VIS_DEFS_BY_ASSAY = {
     "LRNA":  LRNA_COMPOSITE_VIS_DEFS,
+    "RAMP":  RAMPAGE_COMPOSITE_VIS_DEFS,
+    "DNASE": DNASE_COMPOSITE_VIS_DEFS,
     "CHIP":  CHIP_COMPOSITE_VIS_DEFS,
     "eCLIP": ECLIP_COMPOSITE_VIS_DEFS
     }
@@ -436,6 +660,8 @@ def get_exp_vis_type(exp):
         return "CHIP"
     elif assay == "eCLIP":
         return assay
+    elif assay.lower() == "dnase-seq":
+        return "DNASE"
 
     return "opaque" # This becomes a dict key later so None is not okay
 
@@ -461,29 +687,7 @@ VIEW_SETTINGS = SUPPORTED_TRACK_SETTINGS
 TRACK_SETTINGS = ["bigDataUrl","longLabel","shortLabel","type","color","altColor"]
 
 
-SUPPORTED_MASK_TOKENS = [
-    "{replicate}",         # The replicate that that will be displayed for visualized track: ("rep1", "combined") (AKA rep_tag)
-    "{rep_tech}",          # The rep_tech if desired ("rep1_1", "combined")
-    "{replicate_number}",  # The replicate number displayed for visualized track: ("1", "0")
-    "{biological_replicate_number}",
-    "{technical_replicate_number}",
-    "{assay_title}",
-    "{assay_term_name}",                    # dataset.assay_term_name
-    # TODO "{annotation_type}",             # some datasets have annotation type and not assay (higher end trickery)
-    "{output_type}",                        # files.output_type
-    "{accession}","{experiment.accession}", # "{accession}" is assumed to be experiment.accession
-
-    "{file.accession}",
-    "{target}","{target.label}",            # Either is acceptible
-    "{biosample_term_name}",
-    "{output_type_short_label}",                # hard-coded translation from output_type to very short version Do we want this in schema?
-    "{replicates.library.biosample.summary}",   # Idan and Forrest and I are conspiring to move this to dataset.biosample_summary and make it much shorter
-    "{assembly}",                               # you don't need this in titles, but it is crucial variable and seems to not be being applied correctly in the html generation
-    # TODO "{software? or pipeline?}",          # I am stumbling over the fact that we can't distinguish tophat and star produced files
-    # TODO "{phase}",                           # If we get to the point of being fancy in the replication timing, then we need this, otherwise it bundles up in the biosample summary now
-    ]
-
-OUTPUT_TYPE_7CHARS = {
+OUTPUT_TYPE_8CHARS = {
     #"idat green channel": "idat gr",     # raw data
     #"idat red channel": "idat rd",       # raw data
     #"reads":"reads",                     # raw data
@@ -507,16 +711,16 @@ OUTPUT_TYPE_7CHARS = {
     "signal of unique reads":               "unq sig",
     "signal p-value":                       "pval sig",
     "fold change over control":             "foldchg",
-    "exon quantifications":                 "exon qnt",
-    "gene quantifications":                 "gene qnt",
-    "microRNA quantifications":             "miRNA qnt",
-    "transcript quantifications":           "trnscrpt qnt",
+    "exon quantifications":                 "exon qt",
+    "gene quantifications":                 "gene qt",
+    "microRNA quantifications":             "miRNA qt",
+    "transcript quantifications":           "trsct qt",
     "library fraction":                     "lib frac",
     "methylation state at CpG":             "mth CpG",
     "methylation state at CHG":             "mth CHG",
     "methylation state at CHH":             "mth CHH",
     "enrichment":                           "enrich",
-    "replication timing profile":           "repli time",
+    "replication timing profile":           "repli tm",
     "variant calls":                        "vars",
     "filtered SNPs":                        "f SNPs",
     "filtered indels":                      "f indel",
@@ -562,7 +766,8 @@ OUTPUT_TYPE_7CHARS = {
     "semi-automated genome annotation":     "saga"
     }
 
-BIOSAMPLE_COLOR = {
+BIOSAMPLE_COLOR = { #TODO: This needs to be filled out properly
+    "GM12878": { "color":"153,38,0", "altColor": "115,31,0" },
     "brain": "105,105,105",
     #"skin of body": "",
     "heart": "153,38,0",
@@ -601,39 +806,49 @@ BIOSAMPLE_COLOR = {
     "olfactory organ": "105,105,105",
     }
 
-def lookup_color(mask,exp,halfColor=False):
+def lookup_colors(mask,exp):
     '''Using the mask, determine which color table to use.'''
     global BIOSAMPLE_COLOR
     color = None
-    if mask == "{biosample_term_name}":
-        if len(mask.split(',')) == 3:
-            color = mask
+    altColor = None
+    coloring = {}
+    if len(mask.split(',')) == 3:
+        color = mask
+        coloring["color"] = color
+    elif mask == "{biosample_term_name}":
+        biosample = exp.get('biosample_term_name', 'Unknown Biosample')
+        coloring_book = BIOSAMPLE_COLOR.get(biosample,{})
+        if isinstance(coloring_book,str):
+            color = coloring_book
         else:
-            biosample = exp.get('biosample_term_name', 'Unknown Biosample')
-            color = BIOSAMPLE_COLOR.get(biosample)
-    if halfColor and color is not None:
+            color = coloring_book.get("color")
+            altColor = coloring_book.get("altColor")
+            coloring = coloring_book
+    if altColor is None and color is not None:
         shades = color.split(',')
         red = int(shades[0]) / 2
         green = int(shades[1]) / 2
         blue = int(shades[2]) / 2
-        color = "%d,%d,%d" % (red,green,blue)
-    return color
+        altColor = "%d,%d,%d" % (red,green,blue)
+        coloring["altColor"] = altColor
+    return coloring
 
 def add_living_color(live_settings, defs, exp):
-    '''Adds color and altColor'''
+    '''Adds color and altColor.  Note that altColor is only added if color is found.'''
     if "color" in defs:
-        color = lookup_color(defs["color"],exp)
-        if color is not None:
-            live_settings["color"] = color
-        if "altColor" in defs:
-            if defs["altColor"].startswith("same"):
-                live_settings["altColor"] = color
-            else:
-                color = lookup_color(defs["altColor"],exp)
-                if color is not None:
-                    live_settings["altColor"] = color
-        else:
-            live_settings["altColor"] = lookup_color(defs["color"],exp,halfColor=True)
+        colors = lookup_colors(defs["color"],exp)
+        if colors and "altColor" in defs:
+            if defs["altColor"] != defs["color"]:
+                if defs["altColor"].startswith("same"):
+                    colors["altColor"] = colors["color"]
+                else:
+                    altColors = lookup_colors(defs["altColor"],exp)
+                    if altColors:
+                        colors["altColor"] = altColors["color"]
+        if colors and "color" in colors:
+            live_settings["color"] = colors["color"]
+            if "altColor" in colors:
+                live_settings["altColor"] = colors["altColor"]
 
 def sanitize_char(c,exceptions=[ '_' ],htmlize=False,numeralize=False):
     '''Pass through for 0-9,A-Z.a-z,_, but then either html encodes, numeralizes or removes special characters.'''
@@ -734,9 +949,12 @@ def rep_for_file(a_file):
 def lookup_token(token,exp,a_file=None):
     '''Encodes the string to swap special characters and remove spaces.'''
     global SUPPORTED_MASK_TOKENS
-    global OUTPUT_TYPE_7CHARS
+    global OUTPUT_TYPE_8CHARS
 
-    assert(token in SUPPORTED_MASK_TOKENS)
+    if token not in SUPPORTED_MASK_TOKENS:
+        log.warn("Attempting to look up un expected token: '%s'" % token)
+        return "unknown token"
+
     if token in ["{biosample_term_name}","{accession}","{assay_title}","{assay_term_name}"]:
         term = exp.get(token[1:-1])
         if term is None:
@@ -764,7 +982,7 @@ def lookup_token(token,exp,a_file=None):
             return a_file['output_type']
         elif token == "{output_type_short_label}":
             output_type = a_file['output_type']
-            return OUTPUT_TYPE_7CHARS.get(output_type,output_type)
+            return OUTPUT_TYPE_8CHARS.get(output_type,output_type)
         elif token == "{replicate}":
             rep_tag = a_file.get("rep_tag")
             if rep_tag is not None:
@@ -847,11 +1065,11 @@ def generate_live_groups(composite,title,group_defs,exp,rep_tags=[]):
     '''Recursively populates live (in memory) groups from static group definitions'''
     live_group = {}
     tag = group_defs.get("tag",title)
-    live_group = deepcopy(group_defs) # makes sure all miscellaneous settings are transferred
     live_group["title"] = title
     live_group["tag"] = tag
-    if "group_order" in live_group:
-        del live_group["group_order"]
+    for key in group_defs.keys():
+        if key not in ["groups","group_order"]: # leave no trace of subgroups keyed by title
+            live_group[key] = deepcopy(group_defs[key])
 
     if title == "replicate": # transform replicates into unique tags and titles
         if len(rep_tags) == 0:  # Replicates need special work after files are examined, so just stub.
@@ -874,7 +1092,6 @@ def generate_live_groups(composite,title,group_defs,exp,rep_tags=[]):
         live_group["preferred_order"] = "sorted"
 
     elif title in ["Biosample", "Targets"]: # Single subGroup at experiment level.  No order
-        del live_group["groups"] # Make sure there is only a subgroup when the property is found.
         groups = group_defs.get("groups",{})
         assert(len(groups) == 1)
         for (group_key,group) in groups.items():
@@ -908,10 +1125,14 @@ def generate_live_groups(composite,title,group_defs,exp,rep_tags=[]):
                 if isinstance(preferred_order,list):
                     preferred_order.append(subgroup_tag)
                 if title == "Views":
+                    assert(subgroup_title != subgroup_tag)
                     add_living_color(subgroup, subgroup, exp)
                     handle_negateValues(subgroup, subgroup, exp, composite)
                 live_group["groups"][subgroup_tag] = subgroup
                 tag_order.append(subgroup_tag)
+            #assert(len(live_group["groups"]) == len(groups))
+            if len(live_group["groups"]) != len(groups):
+                log.warn(json.dumps(live_group,indent=4))
             live_group["group_order"] = tag_order
             live_group["preferred_order"] = preferred_order
 
@@ -924,7 +1145,7 @@ def insert_live_group(live_groups,new_tag,new_group):
     if preferred_order is None or not isinstance(preferred_order,list):
         old_groups[new_tag] = new_group
         live_groups["groups"] = old_groups
-        log.warn("Added %s to %s in sort order" % (new_tag,live_groups.get("tag","a group")))
+        #log.warn("Added %s to %s in sort order" % (new_tag,live_groups.get("tag","a group"))) # DEBUG: remodelling
         return live_groups
 
     # well we are going to have to generate s new order
@@ -940,7 +1161,7 @@ def insert_live_group(live_groups,new_tag,new_group):
 
     old_groups[new_tag] = new_group
     live_groups["groups"] = old_groups
-    log.warn("Added %s to %s in preferred order" % (new_tag,live_groups.get("tag","a group")))
+    #log.warn("Added %s to %s in preferred order" % (new_tag,live_groups.get("tag","a group"))) # DEBUG: remodelling
     return live_groups
 
 def exp_composite_extend_with_tracks(composite, vis_defs, exp, assembly, host=None):
@@ -955,7 +1176,11 @@ def exp_composite_extend_with_tracks(composite, vis_defs, exp, assembly, host=No
         view = composite["view"]["groups"][view_tag]
         output_types = view.get("output_type",[])
         file_format_types = view.get("file_format_type",[])
+        #if "type" not in view:
+        #    log.warn(json.dumps(composite)) # DEBUG: basics
         file_format = view["type"]
+        if file_format == "bigBed":
+            view["type"] = "bigBed ." # TODO: be more discriminating as to what bigBeds are 6 +
         for a_file in exp["files"]:
             if 'assembly' not in a_file or a_file['assembly'] != assembly:
                 continue
@@ -1008,7 +1233,7 @@ def exp_composite_extend_with_tracks(composite, vis_defs, exp, assembly, host=No
         view = composite["view"]["groups"][view_tag]
         output_types = view.get("output_type",[])
         file_format_types = view.get("file_format_type",[])
-        file_format = view["type"]
+        file_format = view["type"].split()[0]
         for a_file in files:
             #if file_format != a_file['file_format']:
             if a_file['file_format'] not in [ file_format, "bed" ]:
@@ -1154,17 +1379,19 @@ def make_exp_composite(exp, assembly, host=None, hide=False):
                 sort_order.append(title_to_tag[title])
         composite["sortOrder"] = sort_order
 
+    #log.warn(json.dumps(composite)) # DEBUG: basics
     tracks = exp_composite_extend_with_tracks(composite, vis_defs, exp, assembly, host=host)
     if tracks is None or len(tracks) == 0:
         # Already warned about files log.warn("No tracks for %s" % exp["accession"])
         return None
     composite["tracks"] = tracks
+    #log.warn(json.dumps(composite["view"]["groups"]["REPTSS"])) # DEBUG: basics
     return composite
 
 def ucsc_trackDb_composite_blob(composite,title):
     '''Given an in-memory composite object, prints a single UCSC trackDb.txt composite structure'''
     if composite is None or len(composite) == 0:
-        return "# Empty composite for %s\n" % title
+        return "# Empty composite for %s.  It cannot be visualized at this time.\n" % title
 
     blob = ""
     # First the composite structure
@@ -1305,7 +1532,7 @@ def remodel_exp_to_assay_composites(exp_composites,hide_after=None):
     for accession in sorted( exp_composites.keys() ):
         exp_composite = exp_composites[accession]
         if exp_composite is None or len(exp_composite) == 0: # wounded composite can be dropped or added for evidence
-            assay_composites[acc] = exp_composite
+            assay_composites[acc] = {}
 
         # Only show the first n experiments
         if hide_after != None:
@@ -1336,7 +1563,7 @@ def remodel_exp_to_assay_composites(exp_composites,hide_after=None):
         vis_defs = lookup_vis_defs(vis_type)
         assert(vis_type is not None)
         if vis_type not in assay_composites.keys():  # First one so just drop in place
-            log.warn("Remodelling %s into %s composite" % (exp_composite.get("name"," a composite"),vis_type))
+            #log.warn("Remodelling %s into %s composite" % (exp_composite.get("name"," a composite"),vis_type)) # DEBUG: remodelling
             assay_composite = exp_composite # Don't bother with deep copy... we aren't needing the exp_composites any more
             assay_defs = vis_defs.get("assay_composite",{})
             assay_composite["name"] = vis_type.lower()  # TODO: something more elegant?
@@ -1346,7 +1573,7 @@ def remodel_exp_to_assay_composites(exp_composites,hide_after=None):
             assay_composites[vis_type] = assay_composite
 
         else: # Adding an exp_composite to an existing assay_composite
-            log.warn("Adding %s into %s composite" % (exp_composite.get("name"," a composite"),vis_type))
+            #log.warn("Adding %s into %s composite" % (exp_composite.get("name"," a composite"),vis_type)) # DEBUG: remodelling
             assay_composite = assay_composites[vis_type]
 
             # combine views
@@ -1355,7 +1582,7 @@ def remodel_exp_to_assay_composites(exp_composites,hide_after=None):
             for view_tag in exp_views["group_order"]:
                 exp_view = exp_views["groups"][view_tag]
                 if view_tag not in assay_views["groups"].keys():  # Should never happen
-                    log.warn("Surprise: view %s not found before" % view_tag)
+                    #log.warn("Surprise: view %s not found before" % view_tag) # DEBUG: remodelling
                     insert_live_group(assay_views,view_tag,exp_view)
                 else: # View is already defined but tracks need to be appended.
                     assay_view = assay_views["groups"][view_tag]
@@ -1370,7 +1597,7 @@ def remodel_exp_to_assay_composites(exp_composites,hide_after=None):
             for group_tag in exp_composite["group_order"]:
                 exp_group = exp_composite["groups"][group_tag]
                 if group_tag not in assay_composite["groups"].keys(): # Should never happen
-                    log.warn("Surprise: group %s not found before" % group_tag)
+                    #log.warn("Surprise: group %s not found before" % group_tag) # DEBUG: remodelling
                     insert_live_group(assay_composite,group_tag,exp_group)
                 else: # Need to handle subgroups which definitely may not be there.
                     assay_group = assay_composite["groups"].get(group_tag,{})
@@ -1405,14 +1632,9 @@ def generate_batch_trackDb(results, assembly, host=None):
 
     exp_composites = {}
     for (i, experiment) in enumerate(results):
-        if i < 5:
-            exp_composite = make_exp_composite(experiment, assembly, host=host)
-        else:
-            exp_composite = make_exp_composite(experiment, assembly, host=host, hide=True)
-        if exp_composite is not None:
-            exp_composites[experiment['accession']] = exp_composite
+        exp_composites[experiment['accession']] = make_exp_composite(experiment, assembly, host=host)
 
-    assay_composites = remodel_exp_to_assay_composites(exp_composites,hide_after=5)
+    assay_composites = remodel_exp_to_assay_composites(exp_composites) # ,hide_after=5) # TODO: set a reasonable hide_after
 
     blob = ""
     for composite_tag in sorted( assay_composites.keys() ):
@@ -1462,8 +1684,9 @@ def generate_html(context, request):
     embedded = {}
     if url_ret[0] == request.url:
         item = request.root.__getitem__((request.url.split('/')[-1])[:-5])
-        embedded = request.embed(request.resource_path(item))
-    else:
+        if item not in [ "eclip" ]:
+            embedded = request.embed(request.resource_path(item))
+    if not embedded:
         embedded = request.embed(request.resource_path(context))
     link = request.host_url + '/experiments/' + embedded['accession']
     files_json = embedded.get('files', None)
