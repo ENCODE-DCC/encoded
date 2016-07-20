@@ -59,7 +59,7 @@ $audit-types:
     (error, warning, #cc0700),
     (warning, circle, #e0e000),
     (not_compliant, file-text, #ff8000),
-    (dcc_action, ambulance, #a0a0a0),
+    (internal_action, ambulance, #a0a0a0),
     (ok, check, #4C994C);
 
 // Function for an inverse curve; used for saturation and lightness of backgrounds
