@@ -1465,7 +1465,7 @@ def audit_experiment_internal_tag(value, system):
     for biosample in biosamples:
         if len(bio_tags) > 0 and 'internal_tags' not in biosample:
             detail = 'This experiment contains a ' + \
-                     'biosample {} with no internal tags '.format(biosample) + \
+                     'biosample {} with no internal tags '.format(biosample['@id']) + \
                      'belonging to internal tags {} '.format(list(bio_tags)) + \
                      'other biosamples are assigned.'
             yield AuditFailure('inconsistent internal tags',
@@ -1474,7 +1474,7 @@ def audit_experiment_internal_tag(value, system):
             for x in bio_tags:
                 if x not in biosample['internal_tags']:
                     detail = 'This experiment contains a ' + \
-                             'biosample {} with internal tag '.format(biosample) + \
+                             'biosample {} with internal tag '.format(biosample['@id']) + \
                              '{} belonging to internal tags {} '.format(x, list(bio_tags)) + \
                              'other biosamples are assigned.'
                     yield AuditFailure('inconsistent internal tags',
