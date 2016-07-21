@@ -8,11 +8,31 @@ var cloneWithProps = require('react/lib/cloneWithProps');
 
 // Main page component to render the home page
 var Home = module.exports.Home = React.createClass({
+
     getInitialState: function(){
         return {
             current: "?type=Experiment&status=released",
             newtabs: []
         };
+    },
+
+    componentDidMount: function(){
+        window.twttr = (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0],
+            t = window.twttr || {};
+            if (d.getElementById(id)) return t;
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "https://platform.twitter.com/widgets.js";
+            fjs.parentNode.insertBefore(js, fjs);
+ 
+            t._e = [];
+            t.ready = function(f) {
+                t._e.push(f);
+            };
+ 
+            return t;x
+        }(document, "div", "twitter-timeline"));
     },
 
      handleTabClick: function(tab){ // pass in string with organism query
@@ -26,7 +46,7 @@ var Home = module.exports.Home = React.createClass({
             console.log("TEMP ARRAY SHOULD BE PUSHED HERE: " + tempArray);
         }
         else{
-            console.log("SHOULD BE HERE BROSKI");
+            console.log("SHOULD BE HERE ");
             var indexToRemoveArray = tempArray.indexOf(tab); // if it is in array, remove it from array and from link
             tempArray.splice(indexToRemoveArray, 1);
             var indexToRemoveLink = finalLink.indexOf(tab);
@@ -70,8 +90,10 @@ var Home = module.exports.Home = React.createClass({
                         ENCYCLOPEDIA of DNA ELEMENTS
                     </div>
                 </div>
+
                 <AssayClicking current={this.state.current} callback={this.callback}/>
                 <TabClicking handleTabClick={this.handleTabClick} newtabs={this.state.newtabs}/>
+                <div id = "twitter-timeline"> </div>
                 <div className="row">
                     <div className="col-sm-6">
                         <div className="title">
