@@ -393,32 +393,32 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 rnais=None):
 
         return self.summary_object(request,
-                                  organism,
-                                  donor,
-                                  age,
-                                  age_units,
-                                  life_stage,
-                                  sex,
-                                  biosample_term_name,
-                                  biosample_type,
-                                  starting_amount,
-                                  starting_amount_units,
-                                  depleted_in_term_name,
-                                  phase,
-                                  subcellular_fraction_term_name,
-                                  post_synchronization_time,
-                                  post_synchronization_time_units,
-                                  post_treatment_time,
-                                  post_treatment_time_units,
-                                  treatments,
-                                  part_of,
-                                  derived_from,
-                                  transfection_method,
-                                  transfection_type,
-                                  talens,
-                                  constructs,
-                                  model_organism_donor_constructs,
-                                  rnais)['summary_sentence']
+                                   organism,
+                                   donor,
+                                   age,
+                                   age_units,
+                                   life_stage,
+                                   sex,
+                                   biosample_term_name,
+                                   biosample_type,
+                                   starting_amount,
+                                   starting_amount_units,
+                                   depleted_in_term_name,
+                                   phase,
+                                   subcellular_fraction_term_name,
+                                   post_synchronization_time,
+                                   post_synchronization_time_units,
+                                   post_treatment_time,
+                                   post_treatment_time_units,
+                                   treatments,
+                                   part_of,
+                                   derived_from,
+                                   transfection_method,
+                                   transfection_type,
+                                   talens,
+                                   constructs,
+                                   model_organism_donor_constructs,
+                                   rnais)['summary_string']
 
     @calculated_property(schema={
         "title": "Summary object",
@@ -733,8 +733,8 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             'constructs',
             'model_organism_constructs'
         ]
-        dict_of_phrases['summary_sentence'] = construct_biosample_summary([dict_of_phrases],
-                                                                          sentence_parts)
+        dict_of_phrases['summary_string'] = construct_biosample_summary([dict_of_phrases],
+                                                                        sentence_parts)
         return dict_of_phrases
 
 
