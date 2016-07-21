@@ -85,5 +85,8 @@
                 "pattern": "^((GEO:SAMN\\d+)|(MGI.D:[A-Z0-9]+))$"
             }
         }
+    },
+    "boost_values": {
+        "internal_tags": 1.0
     }
 }
