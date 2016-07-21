@@ -224,6 +224,9 @@
         "target.gene_name": {
             "title": "Target gene"
         },
+        "biosample_summary": {
+            "title": "Biosample summary"
+        },
         "biosample_term_name": {
             "title": "Biosample"
         },
