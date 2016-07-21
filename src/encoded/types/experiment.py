@@ -16,6 +16,8 @@ from .shared_calculated_properties import (
     CalculatedAssaySynonyms
 )
 
+# importing biosample function to allow calculation of experiment biosample property
+from .biosample import construct_biosample_summary
 
 @collection(
     name='experiments',
@@ -158,6 +160,54 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
     })
     def replicates(self, request, replicates):
         return paths_filtered_by_status(request, replicates)
+
+
+    @calculated_property(schema={
+        "title": "Biosample summary",
+        "type": "string",
+    })
+    def biosample_summary(self,
+                          request,
+                          replicates=None):
+
+        dictionaries_of_phrases = []
+        biosample_accessions = set()
+        if replicates is not None:
+            for rep in replicates:
+                replicateObject = request.embed(rep, '@@object')
+                if replicateObject['status'] == 'deleted':
+                    continue
+                if 'library' in replicateObject:
+                    libraryObject = request.embed(replicateObject['library'], '@@object')
+                    if libraryObject['status'] == 'deleted':
+                        continue
+                    if 'biosample' in libraryObject:
+                        biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                        if biosampleObject['status'] == 'deleted':
+                            continue
+                        if biosampleObject['accession'] not in biosample_accessions:
+                            biosample_accessions.add(biosampleObject['accession'])
+                            dictionaries_of_phrases.append(biosampleObject['summary_object'])
+
+        sentence_parts = [
+            'genotype_strain',
+            'term_phrase',
+            'phase',
+            'fractionated',
+            'sex_stage_age',
+            'synchronization',
+            'derived_from',
+            'transfection_type',
+            'rnais',
+            'treatments_phrase',
+            'depleted_in',
+            'talens',
+            'constructs',
+            'model_organism_constructs'
+        ]
+        if len(dictionaries_of_phrases) > 0:
+            return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
+
 
     @calculated_property(condition='assay_term_id', schema={
         "title": "Assay type",
