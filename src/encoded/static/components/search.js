@@ -16,7 +16,7 @@ var search = module.exports;
 var dbxref = require('./dbxref');
 var audit = require('./audit');
 var objectutils = require('./objectutils');
-var {BiosampleSummaryString} = require('./biosample');
+var {BiosampleSummaryString} = require('./typeutils');
 
 var DbxrefList = dbxref.DbxrefList;
 var statusOrder = globals.statusOrder;

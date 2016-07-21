@@ -21,7 +21,7 @@ var sortTable = require('./sorttable');
 var objectutils = require('./objectutils');
 var doc = require('./doc');
 var {FileGallery} = require('./filegallery');
-var {BiosampleSummaryString} = require('./biosample');
+var {BiosampleSummaryString} = require('./typeutils');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -614,7 +614,7 @@ var ReplicateTable = React.createClass({
 
                 // Else, display biosample summary if the biosample exists
                 if (replicate.library && replicate.library.biosample) {
-                    return <span>{BiosampleSummaryString(replicate.library.biosample)}</span>;
+                    return <span>{BiosampleSummaryString(replicate.library.biosample, true)}</span>;
                 }
 
                 // Else, display nothing

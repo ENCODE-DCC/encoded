@@ -15,6 +15,7 @@ var reference = require('./reference');
 var objectutils = require('./objectutils');
 var sortTable = require('./sorttable');
 var doc = require('./doc');
+var {BiosampleSummaryString} = require('./typeutils');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -93,14 +94,6 @@ var BiosampleTableFooter = React.createClass({
         );
     }
 });
-
-
-// Construct a biosample summary string from the biosamples summary_object object.
-var BiosampleSummaryString = module.exports.BiosampleSummaryString = function(biosample) {
-    var keys = Object.keys(biosample.summary_object);
-    var elements = keys.map(key => (key !== 'organism_name' && key !== 'term_phrase') ? <span> {biosample.summary_object[key]}</span> : null);
-    return <span><i>{biosample.summary_object.organism_name}</i>{elements}</span>;
-};
 
 
 // Collect up all the documents associated with the given biosample. They get combined all into one array of
