@@ -124,4 +124,4 @@ def test_experiment_biosample_summary(testapp,
     res = testapp.get(base_experiment['@id']+'@@index-data')
     assert res.json['object']['biosample_summary'] == \
         'S2R+ immortalized cell line nuclear fraction and GM12878 ' + \
-        'immortalized cell linetreated with ethanol'
+        'immortalized cell line_treated with ethanol'

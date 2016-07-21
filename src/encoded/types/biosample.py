@@ -1035,6 +1035,9 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
             middle = []
             for d in phrases_dictionarys:
                 middle.append(generate_sentence(d, sentence_parts[min_index:max_index+1]))
-            return prefix.strip() + ' and '.join(map(str, middle)) + suffix
+            if prefix == '':
+                return ' and '.join(map(str, middle)) + '_' + suffix
+            else:
+                return prefix.strip() + '_' + ' and '.join(map(str, middle)) + '_' + suffix
     else:
         return generate_sentence(phrases_dictionarys[0], sentence_parts)
