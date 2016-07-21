@@ -465,7 +465,7 @@ var FileGalleryRenderer = React.createClass({
                 <PanelHeading addClasses="file-gallery-heading">
                     <h4>Files</h4>
                     <div className="file-gallery-controls">
-                        {context.visualize_ucsc  && context.status == "released" ?
+                        {context.visualize_ucsc ?
                             <div className="file-gallery-control">
                                 <DropdownButton title='Visualize Data' label="visualize-data">
                                     <DropdownMenu>
