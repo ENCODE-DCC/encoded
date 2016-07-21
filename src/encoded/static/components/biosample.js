@@ -95,6 +95,14 @@ var BiosampleTableFooter = React.createClass({
 });
 
 
+// Construct a biosample summary string from the biosamples summary_object object.
+var BiosampleSummaryString = module.exports.BiosampleSummaryString = function(biosample) {
+    var keys = Object.keys(biosample.summary_object);
+    var elements = keys.map(key => (key !== 'organism_name' && key !== 'term_phrase') ? <span> {biosample.summary_object[key]}</span> : null);
+    return <span><i>{biosample.summary_object.organism_name}</i>{elements}</span>;
+};
+
+
 // Collect up all the documents associated with the given biosample. They get combined all into one array of
 // documents (with @type of Document or Characterization). If the given biosample has no documdents, this
 // function returns null. Protocol documents, characterizations, construct documents, and RNAi documents
@@ -267,12 +275,10 @@ var Biosample = module.exports.Biosample = React.createClass({
                                         <dd><BiosampleTermId termId={context.biosample_term_id} /></dd>
                                     </div>
 
-                                    {context.summary ?
-                                        <div data-test="summary">
-                                            <dt>Summary</dt>
-                                            <dd>{context.summary}</dd>
-                                        </div>
-                                    : null}
+                                    <div data-test="summary">
+                                        <dt>Summary</dt>
+                                        <dd>{BiosampleSummaryString(context)}</dd>
+                                    </div>
 
                                     {context.description ? 
                                         <div data-test="description">

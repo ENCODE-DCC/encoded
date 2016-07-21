@@ -112,6 +112,13 @@ module.exports.unreleased_files_url = function (context) {
     return '/search/?limit=all&type=file&dataset=' + context['@id'] + file_states;
 };
 
+// Some biosample-specific utilities
+//   Return an array of biosample scientific names from the given array of biosamples.
+module.exports.biosampleOrganismNames = function(biosamples) {
+    return _.uniq(biosamples.map(biosample => biosample.organism.scientific_name));
+};
+
+
 // Make the first character of the given string uppercase. Can be less fiddly than CSS text-transform.
 // http://stackoverflow.com/questions/1026069/capitalize-the-first-letter-of-string-in-javascript#answer-1026087
 String.prototype.uppercaseFirstChar = function(string) {
