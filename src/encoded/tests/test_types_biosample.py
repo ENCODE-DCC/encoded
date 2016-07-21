@@ -185,3 +185,19 @@ def test_undefined_health_status_mouse(testapp, biosample, mouse):
     testapp.patch_json(biosample['@id'], {'organism': mouse['@id']})
     res = testapp.get(biosample['@id'] + '@@index-data')
     assert 'health_status' not in res.json['object']
+
+
+def test_biosample_summary(testapp,
+                           donor_1,
+                           biosample_1, treatment):
+    testapp.patch_json(donor_1['@id'], {'age_units': 'day', 'age': '10'})
+    testapp.patch_json(donor_1['@id'], {'sex': 'male'})
+    testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id'],
+                                            "biosample_term_id": "EFO:0002784",
+                                            "biosample_term_name": "liver",
+                                            "biosample_type": "tissue",
+                                            'treatments': [treatment['@id']]})
+
+    res = testapp.get(biosample_1['@id']+'@@index-data')
+    assert res.json['object']['summary'] == \
+        'Homo sapiens liver tissue male (10 days) treated with ethanol'

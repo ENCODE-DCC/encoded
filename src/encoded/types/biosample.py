@@ -12,7 +12,6 @@ from .shared_calculated_properties import (
     CalculatedBiosampleSynonyms
 )
 
-
 @collection(
     name='biosamples',
     unique_key='accession',
@@ -392,288 +391,33 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 model_organism_donor_constructs=None,
                 rnais=None):
 
-        dict_of_phrases = {
-            'organism_name': '',
-            'genotype_strain': '',
-            'term_phrase': '',
-            'phase': '',
-            'fractionated': '',
-            'sex_stage_age': '',
-            'synchronization': '',
-            'derived_from': '',
-            'transfection_type': '',
-            'rnais': '',
-            'treatments_phrase': '',
-            'depleted_in': '',
-            'talens': '',
-            'constructs': '',
-            'model_organism_constructs': ''
-        }
-
-        if organism is not None:
-            organismObject = request.embed(organism, '@@object')
-            if 'scientific_name' in organismObject:
-                dict_of_phrases['organism_name'] = organismObject['scientific_name']
-
-                if organismObject['scientific_name'] != 'Homo sapiens':  # model organism
-                    if donor is not None:
-                        donorObject = request.embed(donor, '@@object')
-                        if 'genotype' in donorObject:
-                            dict_of_phrases['genotype_strain'] = donorObject['genotype']
-                        elif 'strain_name' in donorObject:
-                            dict_of_phrases['genotype_strain'] = donorObject['strain_name']
-                else:
-                    dict_of_phrases['genotype_strain'] = ''
-
-        if age is not None and age_units is not None:
-            dict_of_phrases['age_display'] = str(age) + ' ' + age_units + 's'
-
-        if life_stage is not None and life_stage != 'unknown':
-            dict_of_phrases['life_stage'] = life_stage
-
-        if sex is not None and sex != 'unknown':
-            dict_of_phrases['sex'] = sex
-
-        if biosample_term_name is not None:
-            dict_of_phrases['sample_term_name'] = biosample_term_name
-
-        if biosample_type is not None and \
-           biosample_type not in ['whole organisms', 'whole organism']:
-            dict_of_phrases['sample_type'] = biosample_type
-
-        term_name = ''
-
-        if 'sample_term_name' in dict_of_phrases:
-            if dict_of_phrases['sample_term_name'] == 'multi-cellular organism':
-                term_name += 'whole organisms'
-            else:
-                term_name += dict_of_phrases['sample_term_name']
-
-        term_type = ''
-
-        if 'sample_type' in dict_of_phrases:
-            term_type += dict_of_phrases['sample_type']
-
-        term_dict = {}
-        for w in term_type.split(' '):
-            if w not in term_dict:
-                term_dict[w] = 1
-
-        term_phrase = ''
-        for w in term_name.split(' '):
-            if w not in term_dict and (w+'s') not in term_dict:
-                term_dict[w] = 1
-                term_phrase += ' ' + w
-
-        term_phrase += ' ' + term_type
-        if len(term_phrase) > 0:
-            dict_of_phrases['term_phrase'] = term_phrase[1:]
-
-        if starting_amount is not None and starting_amount_units is not None:
-            if starting_amount_units[-1] != 's':
-                dict_of_phrases['sample_amount'] = str(starting_amount) + ' ' + \
-                    str(starting_amount_units) + 's'
-            else:
-                dict_of_phrases['sample_amount'] = str(starting_amount) + ' ' + \
-                    str(starting_amount_units)
-
-        if depleted_in_term_name is not None and len(depleted_in_term_name) > 0:
-            dict_of_phrases['depleted_in'] = 'depleted in ' + \
-                                             str(depleted_in_term_name).replace('\'', '')[1:-1]
-
-        if phase is not None:
-            dict_of_phrases['phase'] = phase + ' phase'
-
-        if subcellular_fraction_term_name is not None:
-            if subcellular_fraction_term_name == 'nucleus':
-                dict_of_phrases['fractionated'] = 'nuclear fraction'
-            if subcellular_fraction_term_name == 'cytosol':
-                dict_of_phrases['fractionated'] = 'cytosolic fraction'
-            if subcellular_fraction_term_name == 'chromatin':
-                dict_of_phrases['fractionated'] = 'chromatin fraction'
-            if subcellular_fraction_term_name == 'membrane':
-                dict_of_phrases['fractionated'] = 'membrane fraction'
-            if subcellular_fraction_term_name == 'mitochondria':
-                dict_of_phrases['fractionated'] = 'mitochondrial fraction'
-            if subcellular_fraction_term_name == 'nuclear matrix':
-                dict_of_phrases['fractionated'] = 'nuclear matrix fraction'
-            if subcellular_fraction_term_name == 'nucleolus':
-                dict_of_phrases['fractionated'] = 'nucleolus fraction'
-            if subcellular_fraction_term_name == 'nucleoplasm':
-                dict_of_phrases['fractionated'] = 'nucleoplasmic fraction'
-            if subcellular_fraction_term_name == 'polysome':
-                dict_of_phrases['fractionated'] = 'polysomic fraction'
-            if subcellular_fraction_term_name == 'insoluble cytoplasmic fraction':
-                dict_of_phrases['fractionated'] = 'insoluble cytoplasmic fraction'
-        # relevant only in worms and flys
-
-        if post_synchronization_time is not None and post_synchronization_time_units is not None:
-            dict_of_phrases['synchronization'] = (post_synchronization_time +
-                                                  ' ' + post_synchronization_time_units +
-                                                  's post synchronization')
-
-        if post_treatment_time is not None and post_treatment_time_units is not None:
-            dict_of_phrases['post_treatment'] = (post_treatment_time +
-                                                 ' ' + post_treatment_time_units +
-                                                 's after the sample was')
-
-        if ('sample_type' in dict_of_phrases and
-            dict_of_phrases['sample_type'] != 'immortalized cell line') or \
-           ('sample_type' not in dict_of_phrases):
-            phrase = ''
-            if 'sex' in dict_of_phrases:
-                if dict_of_phrases['sex'] == 'mixed':
-                    phrase += dict_of_phrases['sex'] + ' sex'
-                else:
-                    phrase += dict_of_phrases['sex']
-
-            stage_phrase = ''
-            if 'life_stage' in dict_of_phrases:
-                stage_phrase += ' ' + dict_of_phrases['life_stage']
-
-            phrase += stage_phrase.replace("embryonic", "embryo")
-
-            if 'age_display' in dict_of_phrases:
-                phrase += ' (' + dict_of_phrases['age_display'] + ')'
-            dict_of_phrases['sex_stage_age'] = phrase
-
-        if treatments is not None and len(treatments) > 0:
-            treatments_list = []
-            for t in treatments:
-                treatmentObject = request.embed(t, '@@object')
-                to_add = ''
-                if 'concentration' in treatmentObject and \
-                   'concentration_units' in treatmentObject:
-                    to_add += str(treatmentObject['concentration']) + ' ' + \
-                        treatmentObject['concentration_units'] + ' '
-                if 'treatment_term_name' in treatmentObject:
-                    to_add += treatmentObject['treatment_term_name'] + ' '
-                if 'duration' in treatmentObject and \
-                   'duration_units' in treatmentObject:
-                    if treatmentObject['duration_units'][-1] == 's':
-                        to_add += 'for ' + str(treatmentObject['duration']) + ' ' + \
-                            treatmentObject['duration_units']
-                    else:
-                        to_add += 'for ' + str(treatmentObject['duration']) + ' ' + \
-                            treatmentObject['duration_units'] + 's'
-                if to_add != '':
-                    treatments_list.append(to_add)
-
-            if len(treatments_list) > 0:
-                dict_of_phrases['treatments'] = treatments_list
-
-        if 'treatments' in dict_of_phrases:
-            if 'post_treatment' in dict_of_phrases:
-                dict_of_phrases['treatments_phrase'] = dict_of_phrases['post_treatment']
-
-            if len(dict_of_phrases['treatments']) == 1:
-                dict_of_phrases['treatments_phrase'] += ' treated with ' + \
-                                                        dict_of_phrases['treatments'][0]
-            else:
-                if len(dict_of_phrases['treatments']) > 1:
-                    dict_of_phrases[
-                        'treatments_phrase'] += ' treated with ' + \
-                                                ', '.join(map(str, dict_of_phrases['treatments']))
-
-        if part_of is not None:
-            part_ofObject = request.embed(part_of, '@@object')
-            dict_of_phrases['part_of'] = 'separated from biosample '+part_ofObject['accession']
-
-        if derived_from is not None:
-            derived_fromObject = request.embed(derived_from, '@@object')
-            if 'biosample_term_name' in derived_fromObject:
-                dict_of_phrases['derived_from'] = ('derived from ' +
-                                                   derived_fromObject['biosample_term_name'])
-
-        if transfection_type is not None:  # stable/transient
-                dict_of_phrases['transfection_type'] = transfection_type
-
-        if talens is not None and len(talens) > 0:
-            talens_list = []
-            for t in talens:
-                talenObject = request.embed(t, '@@object')
-                if 'name' in talenObject:
-                    talens_list.append(talenObject['name'])
-            dict_of_phrases['talens'] = 'talens: '+str(talens_list)
-
-        '''* * * *
-        * transfection is true also for constructs !!!!
-        * still have to solve multile similar words problem in bio_type/term for exmple
-        * Homo sapiens endothelial cell of umbilical vein primary cell newborn
-        * * * *'''
-
-        if constructs is not None and len(constructs) > 0:
-            constructs_list = []
-            for c in constructs:
-                constructObject = request.embed(c, '@@object')
-                to_add = ''
-                if 'target' in constructObject:
-                    targetObject = request.embed(constructObject['target'], '@@object')
-                    to_add += targetObject['name']
-                if to_add != '':
-                    constructs_list.append(to_add)
-
-            if len(constructs_list) == 1:
-                dict_of_phrases['constructs'] = 'expressing ' + constructs_list[0]
-            else:
-                if len(constructs_list) > 1:
-                    dict_of_phrases['constructs'] = 'expressing ' + \
-                        ', '.join(map(str, constructs_list))
-
-        if model_organism_donor_constructs is not None and len(model_organism_donor_constructs) > 0:
-            constructs_list = []
-            for c in model_organism_donor_constructs:
-                constructObject = request.embed(c, '@@object')
-                to_add = ''
-                if 'target' in constructObject:
-                    targetObject = request.embed(constructObject['target'], '@@object')
-                    to_add += targetObject['name']
-
-                if to_add != '':
-                    constructs_list.append(to_add)
-
-            if len(constructs_list) == 1:
-                dict_of_phrases['model_organism_constructs'] = 'expressing ' + constructs_list[0]
-            else:
-                if len(constructs_list) > 1:
-                    dict_of_phrases['model_organism_constructs'] = 'expressing ' + \
-                        ', '.join(map(str, constructs_list))
-
-        if rnais is not None and len(rnais) > 0:
-            rnais_list = []
-            for r in rnais:
-                rnaiObject = request.embed(r, '@@object')
-                to_add = ''
-                if 'rnai_type' in rnaiObject:
-                    to_add += rnaiObject['rnai_type'] + ' '
-
-                if 'target' in rnaiObject:
-                    targetObject = request.embed(rnaiObject['target'], '@@object')
-                    to_add += targetObject['name']
-
-                if to_add != '':
-                    rnais_list.append(to_add)
-
-            dict_of_phrases['rnais'] = ', '.join(map(str, rnais_list))
-
-        sentence_parts = [
-            'organism_name',
-            'genotype_strain',
-            'term_phrase',
-            'phase',
-            'fractionated',
-            'sex_stage_age',
-            'synchronization',
-            'derived_from',
-            'transfection_type',
-            'rnais',
-            'treatments_phrase',
-            'depleted_in',
-            'talens',
-            'constructs',
-            'model_organism_constructs'
-        ]
-        return construct_biosample_summary([dict_of_phrases], sentence_parts)
+        return genrate_summary_object(self, request,
+                                      organism,
+                                      donor,
+                                      age,
+                                      age_units,
+                                      life_stage,
+                                      sex,
+                                      biosample_term_name,
+                                      biosample_type,
+                                      starting_amount,
+                                      starting_amount_units,
+                                      depleted_in_term_name,
+                                      phase,
+                                      subcellular_fraction_term_name,
+                                      post_synchronization_time,
+                                      post_synchronization_time_units,
+                                      post_treatment_time,
+                                      post_treatment_time_units,
+                                      treatments,
+                                      part_of,
+                                      derived_from,
+                                      transfection_method,
+                                      transfection_type,
+                                      talens,
+                                      constructs,
+                                      model_organism_donor_constructs,
+                                      rnais)[0]
 
 
     @calculated_property(schema={
@@ -707,6 +451,63 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                        constructs=None,
                        model_organism_donor_constructs=None,
                        rnais=None):
+
+        return genrate_summary_object(self, request,
+                                      organism,
+                                      donor,
+                                      age,
+                                      age_units,
+                                      life_stage,
+                                      sex,
+                                      biosample_term_name,
+                                      biosample_type,
+                                      starting_amount,
+                                      starting_amount_units,
+                                      depleted_in_term_name,
+                                      phase,
+                                      subcellular_fraction_term_name,
+                                      post_synchronization_time,
+                                      post_synchronization_time_units,
+                                      post_treatment_time,
+                                      post_treatment_time_units,
+                                      treatments,
+                                      part_of,
+                                      derived_from,
+                                      transfection_method,
+                                      transfection_type,
+                                      talens,
+                                      constructs,
+                                      model_organism_donor_constructs,
+                                      rnais)[1]
+
+
+def genrate_summary_object(self, request,
+                           organism=None,
+                           donor=None,
+                           age=None,
+                           age_units=None,
+                           life_stage=None,
+                           sex=None,
+                           biosample_term_name=None,
+                           biosample_type=None,
+                           starting_amount=None,
+                           starting_amount_units=None,
+                           depleted_in_term_name=None,
+                           phase=None,
+                           subcellular_fraction_term_name=None,
+                           post_synchronization_time=None,
+                           post_synchronization_time_units=None,
+                           post_treatment_time=None,
+                           post_treatment_time_units=None,
+                           treatments=None,
+                           part_of=None,
+                           derived_from=None,
+                           transfection_method=None,
+                           transfection_type=None,
+                           talens=None,
+                           constructs=None,
+                           model_organism_donor_constructs=None,
+                           rnais=None):
 
         dict_of_phrases = {
             'organism_name': '',
@@ -989,7 +790,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             'constructs',
             'model_organism_constructs'
         ]
-        return dict_of_phrases
+        return (construct_biosample_summary([dict_of_phrases], sentence_parts), dict_of_phrases)
 
 
 def generate_sentence(phrases_dict, values_list):
@@ -1009,6 +810,19 @@ def is_identical(list_of_dicts, key):
 
 
 def construct_biosample_summary(phrases_dictionarys, sentence_parts):
+
+    negations_dict = {
+        'phase': 'unspecified phase',
+        'fractionated': 'unspecified fraction',
+        'synchronization': 'not synchronized',
+        'transfection_type': 'not trasfected',
+        'rnais': 'no RNAis',
+        'treatments_phrase': 'not treated',
+        'depleted_in': 'not depleted',
+        'talens': 'no TALENs',
+        'constructs': 'no constructs',
+        'model_organism_constructs': 'no constructs',
+    }
     if len(phrases_dictionarys) > 1:
         index = 0
         min_index = len(sentence_parts)
@@ -1022,7 +836,7 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
             index += 1
 
         if max_index == -1:
-            return generate_sentence(phrases_dictionarys[0], sentence_parts)
+            sentence_to_return = generate_sentence(phrases_dictionarys[0], sentence_parts)
         else:
             if min_index == 0:
                 prefix = ''
@@ -1034,10 +848,35 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
                 suffix = generate_sentence(phrases_dictionarys[0], sentence_parts[max_index+1:])
             middle = []
             for d in phrases_dictionarys:
-                middle.append(generate_sentence(d, sentence_parts[min_index:max_index+1]))
+                part_to_add = generate_sentence(d, sentence_parts[min_index:max_index+1])
+                if part_to_add != '':
+                    middle.append(part_to_add)
+                else:
+                    constructed_middle = []
+                    for x in range(min_index, max_index+1):
+                        if sentence_parts[x] in negations_dict:
+                            constructed_middle.append(negations_dict[sentence_parts[x]])
+                    if len(constructed_middle) == 0:
+                        middle.append('NONE')
+                    elif len(constructed_middle) == 1:
+                        middle.append(constructed_middle[0])
+                    else:
+                        middle.append(', '.join(map(str, constructed_middle)))
             if prefix == '':
-                return ' and '.join(map(str, middle)) + '_' + suffix
+                sentence_to_return = ' and '.join(map(str, middle))
             else:
-                return prefix.strip() + '_' + ' and '.join(map(str, middle)) + '_' + suffix
+                sentence_to_return = prefix.strip() + ' ' + \
+                    ' and '.join(map(str, middle))
+            if suffix != '':
+                sentence_to_return += ', ' + suffix
     else:
-        return generate_sentence(phrases_dictionarys[0], sentence_parts)
+        sentence_to_return = generate_sentence(phrases_dictionarys[0], sentence_parts)
+
+    sentence_to_return = sentence_to_return.replace(' percent', '%')
+    sentence_to_return = sentence_to_return.replace('1 hours', '1 hour')
+    sentence_to_return = sentence_to_return.replace('1 days', '1 day')
+    sentence_to_return = sentence_to_return.replace('1 minutes', '1 minute')
+    sentence_to_return = sentence_to_return.replace('1 months', '1 month')
+    sentence_to_return = sentence_to_return.replace('1 weeks', '1 week')
+    sentence_to_return = sentence_to_return.replace('1 years', '1 year')
+    return sentence_to_return
