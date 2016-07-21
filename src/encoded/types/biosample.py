@@ -12,6 +12,7 @@ from .shared_calculated_properties import (
     CalculatedBiosampleSynonyms
 )
 
+
 @collection(
     name='biosamples',
     unique_key='accession',
@@ -191,10 +192,10 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         humanFlag = False
         if organism is not None:
             organismObject = request.embed(organism, '@@object')
-            if organismObject['scientific_name']=='Homo sapiens':
+            if organismObject['scientific_name'] == 'Homo sapiens':
                 humanFlag = True
 
-        if humanFlag == True:
+        if humanFlag is True:
             if donor is not None:  # try to get the age from the donor
                 donorObject = request.embed(donor, '@@object')
                 if 'age' in donorObject:
@@ -216,10 +217,10 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         humanFlag = False
         if organism is not None:
             organismObject = request.embed(organism, '@@object')
-            if organismObject['scientific_name']=='Homo sapiens':
+            if organismObject['scientific_name'] == 'Homo sapiens':
                 humanFlag = True
 
-        if humanFlag == True:
+        if humanFlag is True:
             if donor is not None:  # try to get the age_units from the donor
                 donorObject = request.embed(donor, '@@object')
                 if 'age_units' in donorObject:
@@ -391,34 +392,33 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 model_organism_donor_constructs=None,
                 rnais=None):
 
-        return genrate_summary_object(self, request,
-                                      organism,
-                                      donor,
-                                      age,
-                                      age_units,
-                                      life_stage,
-                                      sex,
-                                      biosample_term_name,
-                                      biosample_type,
-                                      starting_amount,
-                                      starting_amount_units,
-                                      depleted_in_term_name,
-                                      phase,
-                                      subcellular_fraction_term_name,
-                                      post_synchronization_time,
-                                      post_synchronization_time_units,
-                                      post_treatment_time,
-                                      post_treatment_time_units,
-                                      treatments,
-                                      part_of,
-                                      derived_from,
-                                      transfection_method,
-                                      transfection_type,
-                                      talens,
-                                      constructs,
-                                      model_organism_donor_constructs,
-                                      rnais)[0]
-
+        return self.summary_object(request,
+                                  organism,
+                                  donor,
+                                  age,
+                                  age_units,
+                                  life_stage,
+                                  sex,
+                                  biosample_term_name,
+                                  biosample_type,
+                                  starting_amount,
+                                  starting_amount_units,
+                                  depleted_in_term_name,
+                                  phase,
+                                  subcellular_fraction_term_name,
+                                  post_synchronization_time,
+                                  post_synchronization_time_units,
+                                  post_treatment_time,
+                                  post_treatment_time_units,
+                                  treatments,
+                                  part_of,
+                                  derived_from,
+                                  transfection_method,
+                                  transfection_type,
+                                  talens,
+                                  constructs,
+                                  model_organism_donor_constructs,
+                                  rnais)['summary_sentence']
 
     @calculated_property(schema={
         "title": "Summary object",
@@ -451,63 +451,6 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                        constructs=None,
                        model_organism_donor_constructs=None,
                        rnais=None):
-
-        return genrate_summary_object(self, request,
-                                      organism,
-                                      donor,
-                                      age,
-                                      age_units,
-                                      life_stage,
-                                      sex,
-                                      biosample_term_name,
-                                      biosample_type,
-                                      starting_amount,
-                                      starting_amount_units,
-                                      depleted_in_term_name,
-                                      phase,
-                                      subcellular_fraction_term_name,
-                                      post_synchronization_time,
-                                      post_synchronization_time_units,
-                                      post_treatment_time,
-                                      post_treatment_time_units,
-                                      treatments,
-                                      part_of,
-                                      derived_from,
-                                      transfection_method,
-                                      transfection_type,
-                                      talens,
-                                      constructs,
-                                      model_organism_donor_constructs,
-                                      rnais)[1]
-
-
-def genrate_summary_object(self, request,
-                           organism=None,
-                           donor=None,
-                           age=None,
-                           age_units=None,
-                           life_stage=None,
-                           sex=None,
-                           biosample_term_name=None,
-                           biosample_type=None,
-                           starting_amount=None,
-                           starting_amount_units=None,
-                           depleted_in_term_name=None,
-                           phase=None,
-                           subcellular_fraction_term_name=None,
-                           post_synchronization_time=None,
-                           post_synchronization_time_units=None,
-                           post_treatment_time=None,
-                           post_treatment_time_units=None,
-                           treatments=None,
-                           part_of=None,
-                           derived_from=None,
-                           transfection_method=None,
-                           transfection_type=None,
-                           talens=None,
-                           constructs=None,
-                           model_organism_donor_constructs=None,
-                           rnais=None):
 
         dict_of_phrases = {
             'organism_name': '',
@@ -790,7 +733,9 @@ def genrate_summary_object(self, request,
             'constructs',
             'model_organism_constructs'
         ]
-        return (construct_biosample_summary([dict_of_phrases], sentence_parts), dict_of_phrases)
+        dict_of_phrases['summary_sentence'] = construct_biosample_summary([dict_of_phrases],
+                                                                          sentence_parts)
+        return dict_of_phrases
 
 
 def generate_sentence(phrases_dict, values_list):
