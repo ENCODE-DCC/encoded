@@ -1447,25 +1447,37 @@ def audit_experiment_internal_tag(value, system):
     if 'internal_tags' in value:
         experimental_tags = value['internal_tags']
 
+    updated_experimental_tags = []
+    for tag in experimental_tags:
+        if tag in ['ENTEx', 'SESCC']:
+            updated_experimental_tags.append(tag)
 
-    if 'DREAM' in experimental_tags:
-        return
-
+    experimental_tags = updated_experimental_tags
     biosamples = get_biosamples(value)
     bio_tags = set()
 
     for biosample in biosamples:
         if 'internal_tags' in biosample:
             for tag in biosample['internal_tags']:
-                bio_tags.add(tag)
-                if tag not in experimental_tags:
-                    detail = 'This experiment contains a ' + \
-                             'biosample {} '.format(biosample['@id']) + \
-                             'with internal tag {} '.format(tag) + \
-                             'that is not specified in experimental ' + \
-                             'list of internal_tags {}.'.format(experimental_tags)
-                    yield AuditFailure('missing internal tag',
-                                       detail, level='DCC_ACTION')
+                if tag in ['ENTEx', 'SESCC']:
+                    bio_tags.add(tag)
+                    if tag not in experimental_tags:
+                        detail = 'This experiment contains a ' + \
+                                 'biosample {} '.format(biosample['@id']) + \
+                                 'with internal tag {} '.format(tag) + \
+                                 'that is not specified in experimental ' + \
+                                 'list of internal_tags {}.'.format(value['internal_tags'])
+                        yield AuditFailure('missing internal tag',
+                                           detail, level='DCC_ACTION')
+
+    if len(bio_tags) == 0 and len(experimental_tags) > 0:
+        for biosample in biosamples:
+            detail = 'This experiment contains a ' + \
+                     'biosample {} without internal tags '.format(biosample['@id']) + \
+                     'belonging to internal tags {} '.format(value['internal_tags']) + \
+                     'of the experiment.'
+            yield AuditFailure('missing internal tags',
+                               detail, level='DCC_ACTION')
 
     for biosample in biosamples:
         if len(bio_tags) > 0 and ('internal_tags' not in biosample or
@@ -1485,15 +1497,6 @@ def audit_experiment_internal_tag(value, system):
                              'other biosamples are assigned.'
                     yield AuditFailure('inconsistent internal tags',
                                        detail, level='DCC_ACTION')
-
-    if len(bio_tags) == 0 and len(experimental_tags) > 0:
-        for biosample in biosamples:
-            detail = 'This experiment contains a ' + \
-                     'biosample {} without internal tags '.format(biosample['@id']) + \
-                     'belonging to internal tags {} '.format(experimental_tags) + \
-                     'of the experiment.'
-            yield AuditFailure('inconsistent internal tags',
-                               detail, level='DCC_ACTION')
 
 
 def is_gtex_experiment(experiment_to_check):
