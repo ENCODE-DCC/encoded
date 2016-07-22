@@ -343,6 +343,13 @@
             "type": "string",
             "linkTo": "Biosample"
         },
+        "host": {
+            "title": "Host biosample",
+            "description": "A biosample that was hosting this biosample.",
+            "comment": "See biosamples.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Biosample"
+        },
         "note": {
             "title": "Note",
             "description": "Additional information pertaining to the biosample.",
