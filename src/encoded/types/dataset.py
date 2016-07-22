@@ -129,10 +129,10 @@ class Dataset(Item):
         },
     })
     def files(self, request, original_files, status):
-        if status in ('release ready', 'released'):
+        if status in ('release ready', 'released', 'archived'):
             return paths_filtered_by_status(
                 request, original_files,
-                include=('released',),
+                include=('released', 'archived'),
             )
         else:
             return paths_filtered_by_status(
