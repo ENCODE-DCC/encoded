@@ -185,6 +185,9 @@
         "files.read_length": {
             "title": "Read length (nt)"
         },
+        "files.mapped_read_length": {
+            "title": "Mapped read length (nt)"
+        },
         "replicates.library.size_range": {
             "title": "Library insert size (nt)"
         },

@@ -251,6 +251,12 @@
             "description": "For high-throughput sequencing, the number of contiguous nucleotides determined by sequencing.",
             "type": "integer"
         },
+        "mapped_read_length": {
+            "title": "Mapped read length",
+            "description": "The length of the reads actually mapped, if the original read length was clipped.",
+            "comment": "This is used when the original sequenced read length needed to be adjusted to match a replicate, or to match experiments and controls.",
+            "type": "integer"
+        },
         "flowcell_details": {
             "title": "Flowcells",
             "description": "For high-throughput sequencing, the flowcells used for the sequencing of the replicate.",
