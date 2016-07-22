@@ -46,7 +46,9 @@ audit_facets = [
     ('audit.ERROR.category', {'title': 'Audit category: ERROR'}),
     ('audit.NOT_COMPLIANT.category', {'title': 'Audit category: NOT COMPLIANT'}),
     ('audit.WARNING.category', {'title': 'Audit category: WARNING'}),
-    ('audit.DCC_ACTION.category', {'title': 'Audit category: DCC ACTION'})
+    ('audit.DCC_ACTION.category', {'title': 'Audit category: DCC ACTION'}),
+    ('audit.ACCEPTABLE.category', {'title': 'Audit category: ACCEPTABLE'}),
+    ('audit.CONCERNING.category', {'title': 'Audit category: CONCERNING'})
 ]
 
 
