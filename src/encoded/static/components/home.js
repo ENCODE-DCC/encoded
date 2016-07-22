@@ -6,6 +6,8 @@ var {FetchedData, Param} = require('./fetched');
 var cloneWithProps = require('react/lib/cloneWithProps');
 
 
+
+
 // Main page component to render the home page
 var Home = module.exports.Home = React.createClass({
 
@@ -16,24 +18,36 @@ var Home = module.exports.Home = React.createClass({
         };
     },
 
-    componentDidMount: function(){
-        window.twttr = (function(d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0],
-            t = window.twttr || {};
-            if (d.getElementById(id)) return t;
-            js = d.createElement(s);
-            js.id = id;
-            js.src = "https://platform.twitter.com/widgets.js";
-            fjs.parentNode.insertBefore(js, fjs);
+    //  componentDidMount: function(){
+   
+
+    // TwitterWidget({
+    //     widget: {
+    //         id: "your-widget-id",
+    //         title: "Your Twitts",
+    //         path: "widget/path"
+    //     }
+    // });
+
+
+
+    //     window.twttr = (function(d, s, id) {
+    //         var js, fjs = d.getElementsByTagName(s)[0],
+    //         t = window.twttr || {};
+    //         if (d.getElementById(id)) return t;
+    //         js = d.createElement(s);
+    //         js.id = id;
+    //         js.src = "https://platform.twitter.com/widgets.js";
+    //         fjs.parentNode.insertBefore(js, fjs);
  
-            t._e = [];
-            t.ready = function(f) {
-                t._e.push(f);
-            };
+    //         t._e = [];
+    //         t.ready = function(f) {
+    //             t._e.push(f);
+    //         };
  
-            return t;x
-        }(document, "div", "twitter-timeline"));
-    },
+    //         return t;x
+    //     }(document, "div", "twitter-timeline"));
+    // },
 
      handleTabClick: function(tab){ // pass in string with organism query
         console.log("AT HANDLETABCLICK HERE IS TAB PASSED IN: " + tab);
@@ -91,11 +105,11 @@ var Home = module.exports.Home = React.createClass({
                     </div>
                 </div>
 
-                <AssayClicking current={this.state.current} callback={this.callback}/>
-                <TabClicking handleTabClick={this.handleTabClick} newtabs={this.state.newtabs}/>
-                <div id = "twitter-timeline"> </div>
                 <div className="row">
-                    <div className="col-sm-6">
+                    <div className="col-md-9">
+                        <AssayClicking current={this.state.current} callback={this.callback}/>
+                        <TabClicking handleTabClick={this.handleTabClick} newtabs={this.state.newtabs}/>
+                        <div className="col-sm-6">
                         <div className="title">
                             Project
                         </div>
@@ -112,8 +126,15 @@ var Home = module.exports.Home = React.createClass({
                         <HomepageChartLoader2 searchBase={this.state.current}
                                          callback={this.callback}/>
                     </div>
-                   
+                    </div>
+                    <TwitterWidget/>
+                    
+                    
                 </div>
+                
+                
+                
+                
                 
             </div>
         );
@@ -121,7 +142,34 @@ var Home = module.exports.Home = React.createClass({
 
 });
 
-
+var TwitterWidget = React.createClass({
+        componentDidMount: function() {
+                var js, link;
+                link = this.refs.link.getDOMNode();
+                if (!this.initialized) {
+                    this.initialized = true;
+                    js = document.createElement("script");
+                    js.id = "twitter-wjs";
+                    js.src = "//platform.twitter.com/widgets.js";
+                    return link.parentNode.appendChild(js);
+                }
+            },
+        render: function() {
+            var content, ref2, title, widget;
+            //ref2 = this.props, title = ref2.title, content = ref2.content, widget = ref2.widget;
+            return (
+                <a
+                ref= "link"
+                className= "twitter-timeline"
+                href= "https://twitter.com/encodedcc"
+                widget-id= "encodedcc" 
+                data-tweet-limit = "6"
+                data-width = "450"
+                //data-height = "600"
+                ></a>
+            );
+        }
+});
 
 
 // Component to display the D3-based chart
