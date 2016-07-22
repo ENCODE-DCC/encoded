@@ -352,6 +352,7 @@
                         "long range chromatin interactions",
                         "chromatin interactions",
                         "topologically associated domains",
+                        "nested topologically associated domains",
                         "genome compartments",
                         "open chromatin regions",
                         "filtered peaks",
