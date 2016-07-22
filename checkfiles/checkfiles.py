@@ -259,7 +259,7 @@ def check_file(config, session, url, job):
                 except ValueError:
                     errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
                 else:
-                    query = '/search/?type=File&content_md5sum=' + result['content_md5sum']
+                    query = '/search/?type=File&status!=replaced&content_md5sum=' + result['content_md5sum']
                     r = session.get(urljoin(url, query))
                     r_graph = r.json().get('@graph')
                     if len(r_graph) > 0:

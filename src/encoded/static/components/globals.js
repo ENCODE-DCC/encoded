@@ -108,7 +108,7 @@ module.exports.unreleased_files_url = function (context) {
         "format check failed",
         "in progress",
         "released"
-    ].map(encodeURIComponent).join('&status=');
+    ].map(encodedURIComponent).join('&status=');
     return '/search/?limit=all&type=file&dataset=' + context['@id'] + file_states;
 };
 
@@ -118,6 +118,13 @@ module.exports.biosampleOrganismNames = function(biosamples) {
     return _.uniq(biosamples.map(biosample => biosample.organism.scientific_name));
 };
 
+// Just like encodeURIComponent, but also encodes parentheses (Redmine #4242). Replace spaces with
+// `space` parameter, or '+' if not provided.
+// http://stackoverflow.com/questions/8143085/passing-and-through-a-uri-causes-a-403-error-how-can-i-encode-them#answer-8143232
+var encodedURIComponent = module.exports.encodedURIComponent = function(str, space) {
+    var spaceReplace = space ? space : '+';
+    return encodeURIComponent(str).replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/%20/g, spaceReplace);
+};
 
 // Make the first character of the given string uppercase. Can be less fiddly than CSS text-transform.
 // http://stackoverflow.com/questions/1026069/capitalize-the-first-letter-of-string-in-javascript#answer-1026087
