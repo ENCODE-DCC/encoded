@@ -9,6 +9,7 @@ from urllib.parse import (
     parse_qs,
     urlencode,
 )
+from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
 
 import logging
 from .search import _ASSEMBLY_MAPPER
@@ -924,6 +925,7 @@ def lookup_vis_defs(vis_type):
 
 PENNANTS = {
     "NHGRI":  "encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the files and metadata found at https://www.encodeproject.org/\"",
+    #"ENCODE": "http://genome.ucsc.edu/images/encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the ENCODE files and metadata found at https://www.encodeproject.org/\"",
     "ENCODE": "encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the ENCODE files and metadata found at https://www.encodeproject.org/\"",
     "modENCODE":"encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the modENCODE files and metadata found at https://www.encodeproject.org/\"",
     "GGR":    "encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the GGR files and metadata found at https://www.encodeproject.org/\"",
@@ -1175,6 +1177,32 @@ def sanitize_name(s):
         new_s += sanitize_char(c)
     return new_s
 
+def add_to_es(request,comp_id,composite):
+    '''Adds a composite json blob to elastic-search'''
+    #return
+    key="vis_composite"
+    es = request.registry.get(ELASTIC_SEARCH, None)
+    if not es.indices.exists(key):
+        es.indices.create(index=key, body={ 'index': { 'number_of_shards': 1 } })
+        #mapping = { 'default': {    "_all" :    { "enabled": False },
+        #                            "_source":  { "enabled": True },
+        #                            "_id":      { "index":  "not_analyzed", "store" : True },
+        #                            "_ttl":     { "enabled": True, "default" : "10m" } } }
+        #es.indices.put_mapping(index=key, doc_type='default', body=mapping )
+    es.index(index=key, doc_type='default', body=composite, id=comp_id)
+
+def get_from_es(request,comp_id):
+    '''Returns composite json blob from elastic-search, or None if not found.'''
+    #return None
+    key="vis_composite"
+    es = request.registry.get(ELASTIC_SEARCH, None)
+    if es.indices.exists(key):
+        try:
+            result = es.get(index=key, doc_type='default', id=comp_id)
+            return result['_source']
+        except:
+            pass
+    return None
 
 def rep_for_file(a_file):
     '''Determines best rep_tech or rep for a file.'''
@@ -1258,7 +1286,7 @@ def lookup_token(token,dataset,a_file=None):
             else:
                 term = "Unknown Biosample"
         return term
-    elif token == "{biosample_term_name}|multiple}":
+    elif token == "{biosample_term_name|multiple}":
         return dataset.get("biosample_term_name","multiple biosamples")
     elif a_file is not None:
         if token == "{file.accession}":
@@ -1936,7 +1964,7 @@ def ucsc_trackDb_composite_blob(composite,title):
     blob += '\n'
     return blob
 
-def generate_trackDb(experiment, assembly, host=None, hide=False):
+def generate_trackDb(request, dataset, assembly, hide=False):
 
     ### local test: bigBed: curl http://localhost:8000/experiments/ENCSR000DZQ/@@hub/hg19/trackDb.txt
     ###             bigWig: curl http://localhost:8000/experiments/ENCSR000ADH/@@hub/mm9/trackDb.txt
@@ -1944,20 +1972,35 @@ def generate_trackDb(experiment, assembly, host=None, hide=False):
     ### LRNA: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR000AAA/@@hub/GRCh38/trackDb.txt
 
     # Find the right defs
-    acc_composite = make_acc_composite(experiment, assembly, host=host, hide=hide)
+    #log.warn( str(get_from_es(request,dataset['accession'])) )
+    acc_composite = get_from_es(request,dataset['accession'])
+    if acc_composite is None:
+        log.warn("making composite " + dataset['accession'])
+        acc_composite = make_acc_composite(dataset, assembly, host=request.host_url, hide=hide)
+        add_to_es(request,dataset['accession'],acc_composite)
+    else:
+        log.warn("found composite " + dataset['accession'])
 
     ###return json.dumps(acc_composite,indent=4) + '\n'
 
-    return ucsc_trackDb_composite_blob(acc_composite,experiment['accession'])
+    return ucsc_trackDb_composite_blob(acc_composite,dataset['accession'])
 
 
-def generate_batch_trackDb(results, assembly, host=None):
+def generate_batch_trackDb(request, results, assembly, hide=False):
 
     ### local test: RNA-seq: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/batch_hub/type=Experiment,,assay_title=RNA-seq,,award.rfa=ENCODE3,,status=released,,assembly=GRCh38,,replicates.library.biosample.biosample_type=induced+pluripotent+stem+cell+line/GRCh38/trackDb.txt
 
     acc_composites = {}
     for (i, dataset) in enumerate(results):
-        acc_composites[dataset['accession']] = make_acc_composite(dataset, assembly, host=host)
+        acc_composite = get_from_es(request,dataset['accession'])
+        if acc_composite is None:
+            log.warn("making composite " + dataset['accession'])
+            acc_composite = make_acc_composite(dataset, assembly, host=request.host_url, hide=hide)
+            add_to_es(request,dataset['accession'],acc_composite)
+        else:
+            log.warn("found composite " + dataset['accession'])
+
+        acc_composites[dataset['accession']] = make_acc_composite(dataset, assembly, host=request.host_url)
 
     set_composites = remodel_acc_to_set_composites(acc_composites) # ,hide_after=5) # TODO: set a reasonable hide_after
 
@@ -2090,7 +2133,7 @@ def generate_batch_hubs(context, request):
         #        )
         #    ]
         #trackdb = ''
-        return generate_batch_trackDb(results, assembly,host=request.host_url)
+        return generate_batch_trackDb(request, results, assembly)
 
     elif txt == HUB_TXT:
         terms = request.matchdict['search_params'].replace(',,', '&')
@@ -2155,7 +2198,7 @@ def hub(context, request):
                 g_text = g_text + 2 * NEWLINE + NEWLINE.join(get_genomes_txt(assembly))
         return Response(g_text, content_type='text/plain')
     elif url_ret[1][1:].endswith(TRACKDB_TXT):
-        parent_track = generate_trackDb(embedded, url_ret[1][1:].split('/')[0],host=request.host_url)
+        parent_track = generate_trackDb(request, embedded, url_ret[1][1:].split('/')[0])
         return Response(parent_track, content_type='text/plain')
     else:
         data_policy = '<br /><a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
