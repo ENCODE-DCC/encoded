@@ -306,6 +306,7 @@
             "description": "Some biosamples are part of particular data collections",
             "type": "array",
             "default": [],
+            "permission": "import_items",
             "uniqueItems": true,
             "items": {
                 "type": "string",
