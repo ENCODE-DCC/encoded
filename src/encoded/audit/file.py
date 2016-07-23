@@ -400,6 +400,7 @@ def audit_file_controlled_by(value, system):
                              ff['@id']) + \
                          'that belongs to an experiment {} that '.format(ff['dataset']['@id']) + \
                          'is not specified in possible_controls list of this experiment.'
+
                 yield AuditFailure('inconsistent control', detail, level='ERROR')
                 return
 

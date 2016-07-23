@@ -4,6 +4,9 @@ cache:
   directories:
     - eggs
     - .npm
+notifications:
+  slack:
+    secure: hlTj34WpuzQmsyxnUnFEwlAJeDcElshGfgw7oHuicAD83LorBFTc9ap6FhZXI5LFnqEl28FZ9YkJJRl0tFZgaApllrMmNCeK2FfRjnF8XGz2JS6Iiyj+hgWrKHHIbcS2g5R6L2/uzIhdMvCb97cReZckjo9lumYAdXGHY8DJbik=
 addons:
   apt:
     sources:
@@ -39,7 +42,7 @@ before_install:
   - node --version
   - npm config set python /usr/bin/python2.7
 install:
-  - python bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.1
+  - python bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.5
   - bin/buildout -c buildout-travis.cfg || (echo "Retrying buildout" && bin/buildout -c buildout-travis.cfg)
 before_script:
   - >

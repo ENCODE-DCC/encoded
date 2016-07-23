@@ -74,8 +74,11 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^((cgc:.+)|(GEO:SAMN\\d+))$"
+                "pattern": "^(((CGC|WormBase|NBP):.+)|(GEO:SAMN\\d+))$"
             }
         }
+    },
+    "boost_values": {
+        "internal_tags": 1.0
     }
 }
