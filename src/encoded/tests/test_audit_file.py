@@ -333,19 +333,6 @@ def test_audit_file_missing_paired_controlled_by(testapp, file1,
                                     error in errors_list)
 
 
-def test_audit_file_mismatched_platform_controlled_by(testapp, file1, file2, file_exp,
-                                                      file_exp2, platform2):
-    testapp.patch_json(file_exp['@id'], {'possible_controls': [file_exp2['@id']],
-                                         'biosample_term_id': 'NTR:000013'})
-    testapp.patch_json(file2['@id'], {'platform': platform2['@id']})
-    res = testapp.get(file1['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent control platform' for error in errors_list)
-
-
 def test_audit_file_replicate_match(testapp, file1, file_rep2):
     testapp.patch_json(file1['@id'], {'replicate': file_rep2['uuid']})
     res = testapp.get(file1['@id'] + '@@index-data')
