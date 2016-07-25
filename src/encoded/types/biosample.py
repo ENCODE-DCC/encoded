@@ -409,65 +409,109 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             'constructs',
             'model_organism_constructs'
         ]
+        organismObject = None
+        donorObject = None
+        if organism is not None:
+            organismObject = request.embed(organism, '@@object')
+        if donor is not None:
+            donorObject = request.embed(donor, '@@object')
 
-        return construct_biosample_summary(
-            [self.summary_object(request,
-                                 organism,
-                                 donor,
-                                 age,
-                                 age_units,
-                                 life_stage,
-                                 sex,
-                                 biosample_term_name,
-                                 biosample_type,
-                                 starting_amount,
-                                 starting_amount_units,
-                                 depleted_in_term_name,
-                                 phase,
-                                 subcellular_fraction_term_name,
-                                 post_synchronization_time,
-                                 post_synchronization_time_units,
-                                 post_treatment_time,
-                                 post_treatment_time_units,
-                                 treatments,
-                                 part_of,
-                                 derived_from,
-                                 transfection_method,
-                                 transfection_type,
-                                 talens,
-                                 constructs,
-                                 model_organism_donor_constructs,
-                                 rnais)],
-            sentence_parts)
+        treatment_objects_list = None
+        if treatments is not None and len(treatments) > 0:
+            treatment_objects_list = []
+            for t in treatments:
+                treatment_objects_list.append(request.embed(t, '@@object'))
 
-    def summary_object(request,
-                       organism=None,
-                       donor=None,
-                       age=None,
-                       age_units=None,
-                       life_stage=None,
-                       sex=None,
-                       biosample_term_name=None,
-                       biosample_type=None,
-                       starting_amount=None,
-                       starting_amount_units=None,
-                       depleted_in_term_name=None,
-                       phase=None,
-                       subcellular_fraction_term_name=None,
-                       post_synchronization_time=None,
-                       post_synchronization_time_units=None,
-                       post_treatment_time=None,
-                       post_treatment_time_units=None,
-                       treatments=None,
-                       part_of=None,
-                       derived_from=None,
-                       transfection_method=None,
-                       transfection_type=None,
-                       talens=None,
-                       constructs=None,
-                       model_organism_donor_constructs=None,
-                       rnais=None):
+        part_of_object = None
+        if part_of is not None:
+            part_of_object = request.embed(part_of, '@@object')
 
+        derived_from_object = None
+        if derived_from is not None:
+            derived_from_object = request.embed(derived_from, '@@object')
+
+        talen_objects_list = None
+        if talens is not None and len(talens) > 0:
+            talen_objects_list = []
+            for t in talens:
+                talen_objects_list.append(request.embed(t, '@@object'))
+
+        construct_objects_list = None
+        if constructs is not None and len(constructs) > 0:
+            construct_objects_list = []
+            for c in constructs:
+                construct_objects_list.append(request.embed(c, '@@object'))
+
+        model_construct_objects_list = None
+        if model_organism_donor_constructs is not None and len(model_organism_donor_constructs) > 0:
+            model_construct_objects_list = []
+            for c in model_organism_donor_constructs:
+                model_construct_objects_list.append(request.embed(c, '@@object'))
+
+        rnai_objects = None
+        if rnais is not None and len(rnais) > 0:
+            rnai_objects = []
+            for r in rnais:
+                rnai_objects.append(request.embed(r, '@@object'))
+
+        biosample_dictionary = generate_summary_dictionary(
+            organismObject,
+            donorObject,
+            age,
+            age_units,
+            life_stage,
+            sex,
+            biosample_term_name,
+            biosample_type,
+            starting_amount,
+            starting_amount_units,
+            depleted_in_term_name,
+            phase,
+            subcellular_fraction_term_name,
+            post_synchronization_time,
+            post_synchronization_time_units,
+            post_treatment_time,
+            post_treatment_time_units,
+            transfection_type,
+            treatment_objects_list,
+            part_of_object,
+            derived_from_object,
+            talen_objects_list,
+            construct_objects_list,
+            model_construct_objects_list,
+            rnai_objects)
+
+        return construct_biosample_summary([biosample_dictionary],
+                                           sentence_parts)
+
+
+def generate_summary_dictionary(
+    organismObject=None,
+    donorObject=None,
+    age=None,
+    age_units=None,
+    life_stage=None,
+    sex=None,
+    biosample_term_name=None,
+    biosample_type=None,
+    starting_amount=None,
+    starting_amount_units=None,
+    depleted_in_term_name=None,
+    phase=None,
+    subcellular_fraction_term_name=None,
+    post_synchronization_time=None,
+    post_synchronization_time_units=None,
+    post_treatment_time=None,
+    post_treatment_time_units=None,
+    transfection_type=None,
+    treatment_objects_list=None,
+    part_of_object=None,
+    derived_from_object=None,
+    talen_objects_list=None,
+    construct_objects_list=None,
+    model_construct_objects_list=None,
+    rnai_objects=None
+):
         dict_of_phrases = {
             'organism_name': '',
             'genotype_strain': '',
@@ -486,14 +530,11 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             'model_organism_constructs': ''
         }
 
-        if organism is not None:
-            organismObject = request.embed(organism, '@@object')
+        if organismObject is not None:
             if 'scientific_name' in organismObject:
                 dict_of_phrases['organism_name'] = organismObject['scientific_name']
-
                 if organismObject['scientific_name'] != 'Homo sapiens':  # model organism
-                    if donor is not None:
-                        donorObject = request.embed(donor, '@@object')
+                    if donorObject is not None:
                         if 'genotype' in donorObject:
                             dict_of_phrases['genotype_strain'] = donorObject['genotype']
                         elif 'strain_name' in donorObject:
@@ -612,10 +653,9 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 phrase += ' (' + dict_of_phrases['age_display'] + ')'
             dict_of_phrases['sex_stage_age'] = phrase
 
-        if treatments is not None and len(treatments) > 0:
+        if treatment_objects_list is not None and len(treatment_objects_list) > 0:
             treatments_list = []
-            for t in treatments:
-                treatmentObject = request.embed(t, '@@object')
+            for treatmentObject in treatment_objects_list:
                 to_add = ''
                 if 'concentration' in treatmentObject and \
                    'concentration_units' in treatmentObject:
@@ -650,35 +690,30 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                         'treatments_phrase'] += 'treated with ' + \
                                                 ', '.join(map(str, dict_of_phrases['treatments']))
 
-        if part_of is not None:
-            part_ofObject = request.embed(part_of, '@@object')
-            dict_of_phrases['part_of'] = 'separated from biosample '+part_ofObject['accession']
+        if part_of_object is not None:
+            dict_of_phrases['part_of'] = 'separated from biosample '+part_of_object['accession']
 
-        if derived_from is not None:
-            derived_fromObject = request.embed(derived_from, '@@object')
-            if 'biosample_term_name' in derived_fromObject:
+        if derived_from_object is not None:
+            if 'biosample_term_name' in derived_from_object:
                 dict_of_phrases['derived_from'] = ('derived from ' +
-                                                   derived_fromObject['biosample_term_name'])
+                                                   derived_from_object['biosample_term_name'])
 
         if transfection_type is not None:  # stable/transient
                 dict_of_phrases['transfection_type'] = transfection_type
 
-        if talens is not None and len(talens) > 0:
+        if talen_objects_list is not None and len(talen_objects_list) > 0:
             talens_list = []
-            for t in talens:
-                talenObject = request.embed(t, '@@object')
+            for talenObject in talen_objects_list:
                 if 'name' in talenObject:
                     talens_list.append(talenObject['name'])
             dict_of_phrases['talens'] = 'talens: '+str(talens_list)
 
-        if constructs is not None and len(constructs) > 0:
+        if construct_objects_list is not None and len(construct_objects_list) > 0:
             constructs_list = []
-            for c in constructs:
-                constructObject = request.embed(c, '@@object')
+            for constructObject in construct_objects_list:
                 to_add = ''
                 if 'target' in constructObject:
-                    targetObject = request.embed(constructObject['target'], '@@object')
-                    to_add += targetObject['name']
+                    to_add = constructObject['target'].split('/')[2]
                 if to_add != '':
                     constructs_list.append(to_add)
 
@@ -689,15 +724,12 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                     dict_of_phrases['constructs'] = 'expressing ' + \
                         ', '.join(map(str, constructs_list))
 
-        if model_organism_donor_constructs is not None and len(model_organism_donor_constructs) > 0:
+        if model_construct_objects_list is not None and len(model_construct_objects_list) > 0:
             constructs_list = []
-            for c in model_organism_donor_constructs:
-                constructObject = request.embed(c, '@@object')
+            for constructObject in model_construct_objects_list:
                 to_add = ''
                 if 'target' in constructObject:
-                    targetObject = request.embed(constructObject['target'], '@@object')
-                    to_add += targetObject['name']
-
+                    to_add = constructObject['target'].split('/')[2]
                 if to_add != '':
                     constructs_list.append(to_add)
 
@@ -708,17 +740,14 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                     dict_of_phrases['model_organism_constructs'] = 'expressing ' + \
                         ', '.join(map(str, constructs_list))
 
-        if rnais is not None and len(rnais) > 0:
+        if rnai_objects is not None and len(rnai_objects) > 0:
             rnais_list = []
-            for r in rnais:
-                rnaiObject = request.embed(r, '@@object')
+            for rnaiObject in rnai_objects:
                 to_add = ''
                 if 'rnai_type' in rnaiObject:
                     to_add += rnaiObject['rnai_type'] + ' '
-
                 if 'target' in rnaiObject:
-                    targetObject = request.embed(rnaiObject['target'], '@@object')
-                    to_add += targetObject['name']
+                    to_add += rnaiObject['target'].split('/')[2]
 
                 if to_add != '':
                     rnais_list.append(to_add)
