@@ -203,8 +203,8 @@ class File(Item):
             "nt"
         ]
     })
-    def read_length_units(self, read_length=None):
-        if read_length is not None:
+    def read_length_units(self, read_length=None, mapped_read_length=None):
+        if read_length is not None or mapped_read_length is not None:
             return "nt"
 
     @calculated_property(schema={

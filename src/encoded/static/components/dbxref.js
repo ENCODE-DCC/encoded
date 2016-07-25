@@ -11,7 +11,7 @@ var Dbxref = module.exports.Dbxref = function (props) {
         local = value;
     } else if (sep != -1) {
         prefix = value.slice(0, sep);
-        local = encodeURIComponent(value.slice(sep + 1)).replace(/%20/g,'_');
+        local = globals.encodedURIComponent(value.slice(sep + 1), '_');
     }
 
     // Handle two different kinds of GEO -- GSM/GSE vs SAMN
