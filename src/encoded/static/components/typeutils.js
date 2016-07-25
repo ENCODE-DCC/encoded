@@ -5,14 +5,14 @@ var _ = require('underscore');
 
 // BIOSAMPLE UTILITIES
 
-// Construct a biosample summary string from the biosample's summary_object object.
+// Construct a biosample summary string from the biosample's organism object.
 module.exports.BiosampleSummaryString = function(biosample, supressOrganism) {
     var organismName = biosample.organism.scientific_name;
     var organismlessSummary = biosample.summary.replace(organismName + ' ', '');
     if (supressOrganism) {
         return <span>{organismlessSummary}</span>;
     }
-    return <span><i>{biosample.summary_object.organism_name}</i> {organismlessSummary}</span>;
+    return <span><i>{biosample.organism.scientific_name}</i> {organismlessSummary}</span>;
 };
 
 // Some biosample-specific utilities
