@@ -392,39 +392,55 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 model_organism_donor_constructs=None,
                 rnais=None):
 
-        return self.summary_object(request,
-                                   organism,
-                                   donor,
-                                   age,
-                                   age_units,
-                                   life_stage,
-                                   sex,
-                                   biosample_term_name,
-                                   biosample_type,
-                                   starting_amount,
-                                   starting_amount_units,
-                                   depleted_in_term_name,
-                                   phase,
-                                   subcellular_fraction_term_name,
-                                   post_synchronization_time,
-                                   post_synchronization_time_units,
-                                   post_treatment_time,
-                                   post_treatment_time_units,
-                                   treatments,
-                                   part_of,
-                                   derived_from,
-                                   transfection_method,
-                                   transfection_type,
-                                   talens,
-                                   constructs,
-                                   model_organism_donor_constructs,
-                                   rnais)['summary_string']
+        sentence_parts = [
+            'organism_name',
+            'genotype_strain',
+            'term_phrase',
+            'phase',
+            'fractionated',
+            'sex_stage_age',
+            'synchronization',
+            'derived_from',
+            'transfection_type',
+            'rnais',
+            'treatments_phrase',
+            'depleted_in',
+            'talens',
+            'constructs',
+            'model_organism_constructs'
+        ]
 
-    @calculated_property(schema={
-        "title": "Summary object",
-        "type": "object",
-    })
-    def summary_object(self, request,
+        return construct_biosample_summary(
+            [self.summary_object(request,
+                                 organism,
+                                 donor,
+                                 age,
+                                 age_units,
+                                 life_stage,
+                                 sex,
+                                 biosample_term_name,
+                                 biosample_type,
+                                 starting_amount,
+                                 starting_amount_units,
+                                 depleted_in_term_name,
+                                 phase,
+                                 subcellular_fraction_term_name,
+                                 post_synchronization_time,
+                                 post_synchronization_time_units,
+                                 post_treatment_time,
+                                 post_treatment_time_units,
+                                 treatments,
+                                 part_of,
+                                 derived_from,
+                                 transfection_method,
+                                 transfection_type,
+                                 talens,
+                                 constructs,
+                                 model_organism_donor_constructs,
+                                 rnais)],
+            sentence_parts)
+
+    def summary_object(request,
                        organism=None,
                        donor=None,
                        age=None,
@@ -565,7 +581,6 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 dict_of_phrases['fractionated'] = 'polysomic fraction'
             if subcellular_fraction_term_name == 'insoluble cytoplasmic fraction':
                 dict_of_phrases['fractionated'] = 'insoluble cytoplasmic fraction'
-        # relevant only in worms and flys
 
         if post_synchronization_time is not None and post_synchronization_time_units is not None:
             dict_of_phrases['synchronization'] = (post_synchronization_time +
@@ -656,12 +671,6 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                     talens_list.append(talenObject['name'])
             dict_of_phrases['talens'] = 'talens: '+str(talens_list)
 
-        '''* * * *
-        * transfection is true also for constructs !!!!
-        * still have to solve multile similar words problem in bio_type/term for exmple
-        * Homo sapiens endothelial cell of umbilical vein primary cell newborn
-        * * * *'''
-
         if constructs is not None and len(constructs) > 0:
             constructs_list = []
             for c in constructs:
@@ -716,25 +725,6 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
 
             dict_of_phrases['rnais'] = ', '.join(map(str, rnais_list))
 
-        sentence_parts = [
-            'organism_name',
-            'genotype_strain',
-            'term_phrase',
-            'phase',
-            'fractionated',
-            'sex_stage_age',
-            'synchronization',
-            'derived_from',
-            'transfection_type',
-            'rnais',
-            'treatments_phrase',
-            'depleted_in',
-            'talens',
-            'constructs',
-            'model_organism_constructs'
-        ]
-        dict_of_phrases['summary_string'] = construct_biosample_summary([dict_of_phrases],
-                                                                        sentence_parts)
         return dict_of_phrases
 
 
