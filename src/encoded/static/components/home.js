@@ -164,7 +164,7 @@ var TwitterWidget = React.createClass({
                 href= "https://twitter.com/encodedcc"
                 widget-id= "encodedcc" 
                 data-tweet-limit = "6"
-                data-width = "450"
+                data-width = "300"
                 //data-height = "600"
                 ></a>
             );
