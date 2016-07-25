@@ -743,6 +743,7 @@
         "long range chromatin interactions": "annotation",
         "chromatin interactions": "annotation",
         "topologically associated domains": "annotation",
+        "nested topologically associated domains": "annotation",
         "genome compartments": "annotation",
         "open chromatin regions":"annotation",
         "filtered peaks":"annotation",
