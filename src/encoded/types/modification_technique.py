@@ -29,3 +29,15 @@ class Crispr(ModificationTechnique):
     item_type = 'crispr'
     schema = load_schema('encoded:schemas/crispr.json')
     embedded = ModificationTechnique.embedded
+
+
+@collection(
+    name='tales',
+    properties={
+        'title': "Transcription activator-like effector genetic modifications",
+        'description': 'Listing of all TALE genetic modifications.'
+    })
+class Tale(ModificationTechnique):
+    item_type = 'tale'
+    schema = load_schema('encoded:schemas/tale.json')
+    embedded = ModificationTechnique.embedded

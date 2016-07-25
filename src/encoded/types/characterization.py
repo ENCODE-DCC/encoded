@@ -92,3 +92,14 @@ class AntibodyCharacterization(Characterization, SharedItem):
     def characterization_method(self, primary_characterization_method=None,
                                 secondary_characterization_method=None):
         return primary_characterization_method or secondary_characterization_method
+
+
+@collection(
+    name='genetic-modification-characterizations',
+    properties={
+        'title': 'Genetic modification characterizations',
+        'description': 'Listing of genetic modifications characterizations',
+    })
+class GeneticModificationCharacterization(Characterization):
+    item_type = 'genetic_modification_characterization'
+    schema = load_schema('encoded:schemas/genetic_modification_characterization.json')
