@@ -16,7 +16,7 @@ var search = module.exports;
 var dbxref = require('./dbxref');
 var audit = require('./audit');
 var objectutils = require('./objectutils');
-var {BiosampleSummaryString} = require('./typeutils');
+var {BiosampleSummaryString, BiosampleOrganismNames} = require('./typeutils');
 
 var DbxrefList = dbxref.DbxrefList;
 var statusOrder = globals.statusOrder;
@@ -355,7 +355,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         }
 
         // Get all biosample organism names
-        var organismNames = biosamples.length ? globals.biosampleOrganismNames(biosamples) : [];
+        var organismNames = biosamples.length ? BiosampleOrganismNames(biosamples) : [];
 
         // Collect synchronizations
         var synchronizations = _.uniq(result.replicates.filter(function(replicate) {

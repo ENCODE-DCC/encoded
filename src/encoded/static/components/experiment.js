@@ -21,7 +21,7 @@ var sortTable = require('./sorttable');
 var objectutils = require('./objectutils');
 var doc = require('./doc');
 var {FileGallery} = require('./filegallery');
-var {BiosampleSummaryString} = require('./typeutils');
+var {BiosampleSummaryString, BiosampleOrganismNames} = require('./typeutils');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -325,7 +325,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         var assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
         var assayName = context[assayTerm];
         var assayQuery = assayTerm + '=' + assayName;
-        var organismNames = globals.biosampleOrganismNames(biosamples);
+        var organismNames = BiosampleOrganismNames(biosamples);
         var nameQuery = '';
         var nameTip = '';
         var names = organismNames.map(function(organismName, i) {
