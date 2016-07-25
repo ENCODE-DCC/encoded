@@ -2,6 +2,14 @@
 Change log for file.json
 =========================
 
+Schema version 8
+----------------
+
+* *technical_replicates* was added as a calculated field.
+
+* *mapped_read_length* was added for alignments when the length of the mapped reads differs from the accessioned fastq.
+
+
 Schema version 6
 ----------------
 

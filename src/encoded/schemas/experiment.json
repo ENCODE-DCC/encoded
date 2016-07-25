@@ -90,6 +90,18 @@
                 "linkTo": "Experiment"
             }
         },
+        "supersedes": {
+            "title": "Supersedes" ,
+            "description": "The experiment(s) that this experiment supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                    "comment": "See experiment.json for a list of available identifiers.",
+                    "type": "string",
+                    "linkTo": "Experiment"
+            }
+        },
         "related_files": {
             "title": "Additional data files",
             "description": "To be removed in a future release after data cleanup.",
@@ -172,6 +184,9 @@
         },
         "files.read_length": {
             "title": "Read length (nt)"
+        },
+        "files.mapped_read_length": {
+            "title": "Mapped read length (nt)"
         },
         "replicates.library.size_range": {
             "title": "Library insert size (nt)"
@@ -343,6 +358,7 @@
         "target.organism.scientific_name": 1.0,
         "references.title": 1.0,
         "replicates.library.biosample.rnais.product_id": 1.0,
-        "notes": 1.0
+        "notes": 1.0,
+        "internal_tags": 1.0
     }
 }

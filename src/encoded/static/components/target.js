@@ -78,7 +78,7 @@ var Target = module.exports.Target = React.createClass({
                             <dt>External resources</dt>
                             <dd>
                                 {context.dbxref.length ?
-                                    <DbxrefList values={context.dbxref} target_gene={context.gene_name} />
+                                    <DbxrefList values={context.dbxref} target_gene={context.gene_name} target_ref />
                                 : <em>None submitted</em> }
                             </dd>
                         </div>

@@ -69,6 +69,21 @@
             ],
             "permission": "import_items"
         },
+        "internal_tags": {
+            "title": "Internal tags",
+            "description": "Some datasets are part of particular data collections",
+            "type": "array",
+            "uniqueItems": true,
+            "default": [],
+            "items": {
+                "type": "string",
+                "enum": [
+                    "DREAM",
+                    "ENCORE",
+                    "ENTEx",
+                    "SESCC"]
+            }
+        },
         "status": {
             "title": "Status",
             "type": "string",
@@ -142,7 +157,8 @@
         "files.file_format": 1.0,
         "files.output_type": 1.0,
         "files.md5sum": 1.0,
-        "references.title": 1.0
+        "references.title": 1.0,
+        "internal_tags": 1.0
     },
     "changelog": "/profiles/changelogs/dataset.md"
 }

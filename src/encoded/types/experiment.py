@@ -111,6 +111,7 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         'possible_controls.lab',
         'target.organism',
         'references',
+        'supersedes',
     ]
     audit_inherit = [
         'original_files',
@@ -144,6 +145,7 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
     rev.update({
         'replicates': ('Replicate', 'experiment'),
         'related_series': ('Series', 'related_datasets'),
+        'superseded_by': ('Experiment', 'supersedes')
     })
 
     @calculated_property(schema={
@@ -247,6 +249,17 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
     })
     def related_series(self, request, related_series):
         return paths_filtered_by_status(request, related_series)
+
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Experiment.supersedes",
+        },
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
 
     @calculated_property(schema={
         "title": "Replication type",

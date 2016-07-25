@@ -105,7 +105,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "7"
+            "default": "8"
         },
         "accession": {
             "accessionType": "FF"
@@ -127,6 +127,7 @@
                         "bed",
                         "bigBed",
                         "bigWig",
+                        "btr",
                         "fasta",
                         "fastq",
                         "gff",
@@ -248,6 +249,12 @@
         "read_length": {
             "title": "Read length",
             "description": "For high-throughput sequencing, the number of contiguous nucleotides determined by sequencing.",
+            "type": "integer"
+        },
+        "mapped_read_length": {
+            "title": "Mapped read length",
+            "description": "The length of the reads actually mapped, if the original read length was clipped.",
+            "comment": "This is used when the original sequenced read length needed to be adjusted to match a replicate, or to match experiments and controls.",
             "type": "integer"
         },
         "flowcell_details": {
@@ -615,6 +622,9 @@
         "dataset": {
             "title": "Dataset"
         },
+        "technical_replicates": {
+            "title": "Technical replicates"
+        },
         "biological_replicates": {
             "title": "Biological replicates"
         },
@@ -805,6 +815,7 @@
         "bed": ".bed.gz",
         "bigBed": ".bigBed",
         "bigWig": ".bigWig",
+        "btr": ".btr",
         "csfasta": ".csfasta.gz",
         "csqual": ".csqual.gz",
         "fasta": ".fasta.gz",

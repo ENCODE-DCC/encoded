@@ -248,6 +248,7 @@ var Antibody = module.exports.Antibody = React.createClass({
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Antibody</p>
                         <p className="type">{' ' + result.accession}</p>
+                        <p className="type meta-status">{' ' + result['status']}</p>
                         <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                     </div>
                     <div className="accession">
@@ -557,7 +558,7 @@ var Target = module.exports.Target = React.createClass({
                     <div className="data-row">
                         <strong>External resources: </strong>
                         {result.dbxref && result.dbxref.length ?
-                            <DbxrefList values={result.dbxref} target_gene={result.gene_name} />
+                            <DbxrefList values={result.dbxref} target_gene={result.gene_name} target_ref />
                         : <em>None submitted</em> }
                     </div>
                 </div>
@@ -638,7 +639,7 @@ var Term = search.Term = React.createClass({
         } else if (selected) {
             href = selected;
         } else {
-            href = this.props.searchBase + field + '=' + encodeURIComponent(term).replace(/%20/g, '+');
+            href = this.props.searchBase + field + '=' + globals.encodedURIComponent(term);
         }
         return (
             <li id={selected ? "selected" : null} key={term}>
