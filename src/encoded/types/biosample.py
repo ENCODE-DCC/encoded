@@ -699,7 +699,10 @@ def generate_summary_dictionary(
                                                    derived_from_object['biosample_term_name'])
 
         if transfection_type is not None:  # stable/transient
-                dict_of_phrases['transfection_type'] = transfection_type + 'ly'
+            if transfection_type == 'stable':
+                dict_of_phrases['transfection_type'] = 'stably'
+            else:
+                dict_of_phrases['transfection_type'] = transfection_type + 'ly'                
 
         if talen_objects_list is not None and len(talen_objects_list) > 0:
             talens_list = []
@@ -779,7 +782,7 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
         'phase': 'unspecified phase',
         'fractionated': 'unspecified fraction',
         'synchronization': 'not synchronized',
-        'transfection_type': 'not trasfected',
+        'transfection_type': 'not transfected',
         'rnais': 'no RNAis',
         'treatments_phrase': 'not treated',
         'depleted_in': 'not depleted',
