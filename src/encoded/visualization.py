@@ -10,6 +10,7 @@ from urllib.parse import (
     urlencode,
 )
 from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
+import time
 
 import logging
 from .search import _ASSEMBLY_MAPPER
@@ -804,9 +805,6 @@ ANNO_COMPOSITE_VIS_DEFS = {
     },
     "longLabel":  "{annotation_type} of {replicates.library.biosample.summary|multiple} - {accession}", #blank means "multiple biosamples"
     "shortLabel": "{annotation_type} of {biosample_term_name|multiple} {accession}", #blank means "multiple biosamples" not unknown
-    "color":      "{biosample_term_name}",
-    "altColor":   "{biosample_term_name}",
-    "pennantIcon": "encodeThumbnail.jpg https://www.encodeproject.org/ \"ENCODE: Encyclopedia of DNA Elements\"",
     "sortOrder": [ "Biosample","Replicates", "Views" ],
     "Views":  {
         "tag": "view",
@@ -925,8 +923,8 @@ def lookup_vis_defs(vis_type):
 
 PENNANTS = {
     "NHGRI":  "encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the files and metadata found at https://www.encodeproject.org/\"",
-    #"ENCODE": "http://genome.ucsc.edu/images/encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the ENCODE files and metadata found at https://www.encodeproject.org/\"",
-    "ENCODE": "encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the ENCODE files and metadata found at https://www.encodeproject.org/\"",
+    "ENCODE": "http://genome.ucsc.edu/images/encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the ENCODE files and metadata found at https://www.encodeproject.org/\"",
+    #"ENCODE": "encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the ENCODE files and metadata found at https://www.encodeproject.org/\"",
     "modENCODE":"encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the modENCODE files and metadata found at https://www.encodeproject.org/\"",
     "GGR":    "encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the GGR files and metadata found at https://www.encodeproject.org/\"",
     #"REMC":   "encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the REMC files and metadata found at https://www.encodeproject.org/\"",
@@ -1184,11 +1182,12 @@ def add_to_es(request,comp_id,composite):
     es = request.registry.get(ELASTIC_SEARCH, None)
     if not es.indices.exists(key):
         es.indices.create(index=key, body={ 'index': { 'number_of_shards': 1 } })
-        #mapping = { 'default': {    "_all" :    { "enabled": False },
-        #                            "_source":  { "enabled": True },
+        mapping = { 'default': {    "_all" :    { "enabled": False },
+                                    "_source":  { "enabled": True },
         #                            "_id":      { "index":  "not_analyzed", "store" : True },
-        #                            "_ttl":     { "enabled": True, "default" : "10m" } } }
-        #es.indices.put_mapping(index=key, doc_type='default', body=mapping )
+                                    "_ttl":     { "enabled": True, "default" : "1d" } } }
+        es.indices.put_mapping(index=key, doc_type='default', body=mapping )
+        log.warn("created %s index" % key)
     es.index(index=key, doc_type='default', body=composite, id=comp_id)
 
 def get_from_es(request,comp_id):
@@ -1947,7 +1946,7 @@ def ucsc_trackDb_composite_blob(composite,title):
             membership = track.get("membership")
             if membership:
                 blob += "        subGroups"
-                for member_tag in membership:
+                for member_tag in sorted( membership ):
                     if member_tag in actual_group_tags: # TODO: remove when it is proved to be not needed.
                         blob += " %s=%s" % (member_tag,membership[member_tag])
                 blob += '\n'
@@ -1955,7 +1954,7 @@ def ucsc_trackDb_composite_blob(composite,title):
             metadata_pairs = track.get("metadata_pairs")
             if metadata_pairs is not None:
                 metadata_line = ""
-                for meta_tag in metadata_pairs.keys():
+                for meta_tag in sorted( metadata_pairs.keys() ):
                     metadata_line += ' %s=%s' % (meta_tag.lower(),metadata_pairs[meta_tag])
                 if len(metadata_line) > 0:
                     blob += "        metadata%s\n" % metadata_line
@@ -1964,25 +1963,38 @@ def ucsc_trackDb_composite_blob(composite,title):
     blob += '\n'
     return blob
 
-def generate_trackDb(request, dataset, assembly, hide=False):
+def generate_acc_composite(request, dataset, assembly, hide=False):
 
     ### local test: bigBed: curl http://localhost:8000/experiments/ENCSR000DZQ/@@hub/hg19/trackDb.txt
     ###             bigWig: curl http://localhost:8000/experiments/ENCSR000ADH/@@hub/mm9/trackDb.txt
     ### CHIP: https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR645BCH/@@hub/GRCh38/trackDb.txt
     ### LRNA: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR000AAA/@@hub/GRCh38/trackDb.txt
 
-    # Find the right defs
-    #log.warn( str(get_from_es(request,dataset['accession'])) )
-    acc_composite = get_from_es(request,dataset['accession'])
+    start_time = time.time()
+    regen_vis = (request.url.find("regenvis") > -1)
+
+    acc_composite = None
+    es_key = dataset['accession']+"_"+assembly
+    if not regen_vis: # Find composite?
+        acc_composite = get_from_es(request,es_key)
+
     if acc_composite is None:
-        log.warn("making composite " + dataset['accession'])
         acc_composite = make_acc_composite(dataset, assembly, host=request.host_url, hide=hide)
-        add_to_es(request,dataset['accession'],acc_composite)
+        #if acc_composite:
+        add_to_es(request,es_key,acc_composite)
+        found_or_made = "generated"
     else:
-        log.warn("found composite " + dataset['accession'])
+        found_or_made = "found"
+    log.warn("%s composite %s %.3f" % (found_or_made,dataset['accession'],(time.time() - start_time)))
 
     ###return json.dumps(acc_composite,indent=4) + '\n'
 
+    return acc_composite
+
+
+def generate_trackDb(request, dataset, assembly, hide=False):
+
+    acc_composite = generate_acc_composite(request, dataset, assembly, hide=hide)
     return ucsc_trackDb_composite_blob(acc_composite,dataset['accession'])
 
 
@@ -1990,19 +2002,31 @@ def generate_batch_trackDb(request, results, assembly, hide=False):
 
     ### local test: RNA-seq: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/batch_hub/type=Experiment,,assay_title=RNA-seq,,award.rfa=ENCODE3,,status=released,,assembly=GRCh38,,replicates.library.biosample.biosample_type=induced+pluripotent+stem+cell+line/GRCh38/trackDb.txt
 
+    regen_vis = request.url.find("regenvis")
     acc_composites = {}
+    start_time = time.time()
+    found = 0
+    made = 0
     for (i, dataset) in enumerate(results):
-        acc_composite = get_from_es(request,dataset['accession'])
+        #acc_composite = generate_acc_composite(request, dataset, assembly, hide=hide)
+        acc_composite = None
+        es_key = dataset['accession']+"_"+assembly
+        if regen_vis == -1: # Find composite?
+            acc_composite = get_from_es(request,es_key)
+
         if acc_composite is None:
-            log.warn("making composite " + dataset['accession'])
+            #log.warn("making composite " + dataset['accession'])
             acc_composite = make_acc_composite(dataset, assembly, host=request.host_url, hide=hide)
-            add_to_es(request,dataset['accession'],acc_composite)
+            #if acc_composite:
+            add_to_es(request,es_key,acc_composite)
+            made += 1
         else:
-            log.warn("found composite " + dataset['accession'])
+            found += 1
 
         acc_composites[dataset['accession']] = make_acc_composite(dataset, assembly, host=request.host_url)
 
     set_composites = remodel_acc_to_set_composites(acc_composites) # ,hide_after=5) # TODO: set a reasonable hide_after
+    log.warn("generated %d, found %d acc_composites %.3f" % (made,found,(time.time() - start_time)))
 
     blob = ""
     for composite_tag in sorted( set_composites.keys() ):
