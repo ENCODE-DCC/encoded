@@ -1,6 +1,26 @@
+.whole-page {
+    background-color: #E8ECEF;
+}
+
+.page-title {
+    margin-bottom: 30px;
+}
+
+h1 {
+    font-size: 2.6 rem;
+    margin-top: 50px;
+    font-family: inherit;
+    font-weight: bold;
+    line-height: 1.1;
+    color: inherit;
+    margin-right: 0px;
+    margin-left: 0px;
+    display: block;
+
+}
 
 // Graphical banner for the home page
-.homepage-banner {
+/*.homepage-banner {
     position: relative;
     height: 250px;
     background-image: url(../img/home-banner.jpg);
@@ -8,10 +28,10 @@
     background-color: black;
     background-repeat: no-repeat;
     background-position: center;
-}
+}*/
 
 // Title that overlays the banner
-.home-page-banner-title {
+/*.home-page-banner-title {
     position: absolute;
     width: 100%;
     padding: 10px 0;
@@ -26,12 +46,12 @@
         letter-spacing: 10px;
         font-size: 2rem;
     }
-}
+}*/
 
 
 .overall-classic {
     position: relative;
-    padding: 0px 0px !important;
+    padding: 20px 20px !important;
 }
 
 .classic-svg {
@@ -42,10 +62,18 @@
     left: 0;
     fill: blue;
     fill-opacity: 0.05;
+    
 
 }
 
-.box:hover {
+.rectangle-box {
+    outline-style: solid;
+    outline-width: 3px;
+    outline-color: #0000EE;
+
+}
+
+.rectangle-box:hover {
     fill-opacity: 0.1;
 }
 
@@ -55,6 +83,7 @@
     max-width: 100%;
     top: 0;
     left: 0;
+    padding: 20px 20px !important;
 }
 
 
@@ -94,16 +123,14 @@
 
 .tabTable {
     border-bottom: 1px solid #a0a0a0;
-    padding: 0;
-       
+    padding: 20px 20px !important;
+    background-color: white;
 
         
 }
 
 .tabTable td{
-    padding-top: 0;
-    
-    padding: 0px 0px !important;
+    padding: 20px 20px !important;
     color: #000;
     border: none;
     a.single-tab {

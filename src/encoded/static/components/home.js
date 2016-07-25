@@ -98,13 +98,12 @@ var Home = module.exports.Home = React.createClass({
 
     render: function() {
         return (
-            <div>
-                <div className="homepage-banner">
-                    <div className="home-page-banner-title">
-                        ENCYCLOPEDIA of DNA ELEMENTS
-                    </div>
+            <div className="whole-page">
+                <div class="row">
+                <h1 className="page-title">
+                    ENCODE: ENCYCLOPEDIA of DNA ELEMENTS
+                </h1>
                 </div>
-
                 <div className="row">
                     <div className="col-md-9">
                         <AssayClicking current={this.state.current} callback={this.callback}/>
@@ -243,13 +242,13 @@ var AssayClicking = React.createClass({
                  if (this.refs.graphdisplay) {
                     this.d3 = require('d3');
                 //     this.dagreD3 = require('dagre-d3');
-                var allRects = this.d3.selectAll("rect.box");
+                var allRects = this.d3.selectAll("rect.rectangle-box");
                 var dataset = [];
                 for(var x = 0; x < allRects[0].length; x++){
                     dataset.push(allRects[0][x].id);
                 }
 
-                    var el = this.d3.selectAll("rect.box")
+                    var el = this.d3.selectAll("rect.rectangle-box")
                         .data(dataset);
                         //.enter();
                     var breakPoint = 0;
@@ -299,13 +298,13 @@ var AssayClicking = React.createClass({
                     <svg id="classic-image-svg-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3840 1440" className="classic-svg" 
                         >
                     
-                    <rect id = "3D+chromatin+structure" x="1025" y="774.1" class="st0" width="240.4" height="213.2" className="box"/>
-                    <rect id = "DNA+accessibility" x="1289.3" y="774.1" class="st0" width="255.6" height="213.2" className="box"/>
-                    <rect id = "DNA+binding" x="1566.7" y="774.1" class="st0" width="219.2" height="213.2" className="box"/>
-                    <rect id = "DNA+methylation" x="1807.8" y="774.1" class="st0" width="272.2" height="213.2" className="box"/>
-                    <rect id = "tbd" x="2104.5" y="774.1" class="st0" width="345" height="213.2" className="box"/>
-                    <rect id = "Transcription" x="2472" y="774.1" class="st0" width="219.2" height="213.2" className="box"/>
-                    <rect id = "RNA+binding" x="2713.8" y="774.1" class="st0" width="209.3" height="214.6" className="box"/>
+                    <rect id = "3D+chromatin+structure" x="1025" y="774.1" class="st0" width="240.4" height="213.2" className="rectangle-box"/>
+                    <rect id = "DNA+accessibility" x="1289.3" y="774.1" class="st0" width="255.6" height="213.2" className="rectangle-box"/>
+                    <rect id = "DNA+binding" x="1566.7" y="774.1" class="st0" width="219.2" height="213.2" className="rectangle-box"/>
+                    <rect id = "DNA+methylation" x="1807.8" y="774.1" class="st0" width="272.2" height="213.2" className="rectangle-box"/>
+                    <rect id = "tbd" x="2104.5" y="774.1" class="st0" width="345" height="213.2" className="rectangle-box"/>
+                    <rect id = "Transcription" x="2472" y="774.1" class="st0" width="219.2" height="213.2" className="rectangle-box"/>
+                    <rect id = "RNA+binding" x="2713.8" y="774.1" class="st0" width="209.3" height="214.6" className="rectangle-box"/>
                     
                     </svg>
 
