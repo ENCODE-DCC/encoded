@@ -699,7 +699,7 @@ def generate_summary_dictionary(
                                                    derived_from_object['biosample_term_name'])
 
         if transfection_type is not None:  # stable/transient
-                dict_of_phrases['transfection_type'] = transfection_type
+                dict_of_phrases['transfection_type'] = transfection_type + 'ly'
 
         if talen_objects_list is not None and len(talen_objects_list) > 0:
             talens_list = []
