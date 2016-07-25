@@ -32,12 +32,15 @@ var columnChoices = function(schema, selected) {
             }
         });
     }
-    // add embedded columns
+    // add embedded columns except those ending in ".length"
     _.each(schemaColumns, (column, path) => {
-        columns[path] = {
-            title: column.title,
-            visible: true
-        };
+        var suffix = '.length';
+        if (path.indexOf(suffix, path.length - suffix.length) === -1) {
+            columns[path] = {
+                title: column.title,
+                visible: true
+            };
+        }
     });
     // add all properties (with a few exceptions)
     _.each(schema.properties, (property, name) => {
@@ -78,6 +81,16 @@ var visibleColumns = function(columns) {
 var lookupColumn = function (result, column) {
     var nodes = [result];
     var names = column.split('.');
+
+    // Get the column's custom display function and call it if it exists
+    var colViewer = globals.report_cell.lookup(result, column);
+    if (colViewer) {
+        var colViewResult = colViewer(result, column);
+        if (colViewResult) {
+            return <div>{colViewResult}</div>;
+        }
+    }
+
     for (var i = 0, len = names.length; i < len && nodes.length; i++) {
         var nextnodes = [];
         _.each(nodes.map(node => node[names[i]]), v => {
@@ -415,3 +428,20 @@ var ReportLoader = React.createClass({
 
 
 globals.content_views.register(ReportLoader, 'Report');
+
+
+// Custom cell-display function example.
+// var CustomCellDisplay = function(item, column property name) {
+//     if (displayCondition) {
+//        return (
+//            <span>{display}</span>
+//        );
+//     }
+// 
+//     // No custom display necessary for the requested column
+//     return null;
+// };
+
+
+// Register cell-display components
+// globals.report_cell.register(CustomCellDisplay, @type[0] in quotes, column property name in quotes);

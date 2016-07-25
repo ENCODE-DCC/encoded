@@ -40,6 +40,8 @@ document_views.file = new Registry();
 document_views.detail = new Registry();
 module.exports.document_views = document_views;
 
+// Report-page cell components
+module.exports.report_cell = new Registry();
 
 var itemClass = module.exports.itemClass = function (context, htmlClass) {
     htmlClass = htmlClass || '';

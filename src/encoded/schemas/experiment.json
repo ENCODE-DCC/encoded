@@ -242,6 +242,12 @@
         "status": {
             "title": "Status"
         },
+        "replicates.biological_replicate_number": {
+            "title": "Biological replicate"
+        },
+        "replicates.technical_replicate_number": {
+            "title": "Technical replicate"
+        },
         "replicates.antibody.accession": {
             "title": "Linked Antibody"
         },
@@ -289,9 +295,6 @@
         },
         "files.length": {
             "title": "Files"
-        },
-        "encode2_dbxrefs": {
-            "title": "Dbxrefs"
         }
     },
     "boost_values": {
