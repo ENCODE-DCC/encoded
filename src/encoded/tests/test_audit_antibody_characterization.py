@@ -126,6 +126,16 @@ def ENCODE3_award(testapp):
     return testapp.post_json('/award', item, status=201).json['@graph'][0]
 
 
+def test_audit_antibody_characterization_caption(testapp, base_antibody_characterization):
+    testapp.patch_json(base_antibody_characterization['@id'], {'caption': 'My sample å caption æ'})
+    res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent caption' for error in errors_list)
+
+
 def test_audit_antibody_mismatched_in_review(testapp, base_antibody_characterization):
     characterization_review_list = base_antibody_characterization.get('characterization_reviews')
     characterization_review_list[0]['biosample_term_name'] = 'qwijibo'
