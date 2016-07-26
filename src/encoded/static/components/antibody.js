@@ -111,6 +111,9 @@ var Lot = module.exports.Lot = React.createClass({
                             }
                         </h3>
                         <div className="status-line">
+                            <div className="characterization-status-labels">
+                                <StatusLabel title="Status" status={context.status} />
+                            </div>
                             <AuditIndicators audits={context.audit} id="antibody-audit" />
                         </div>
                     </div>

@@ -159,7 +159,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                 </th>
                                                 {x_buckets.map(function(xb, i) {
                                                     if (i < x_limit) {
-                                                        var href = search_base + '&' + x_grouping + '=' + encodeURIComponent(xb.key);
+                                                        var href = search_base + '&' + x_grouping + '=' + globals.encodedURIComponent(xb.key);
                                                         return <th key={i} className="rotate30" style={{width: 10}}><div><a title={xb.key} href={href}>{xb.key}</a></div></th>;
                                                     } else if (i == x_limit) {
                                                         var parsed = url.parse(matrix_base, true);
@@ -189,7 +189,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                 var y_limit = matrix.y.limit || group_buckets.length;
                                                 rows.push.apply(rows, group_buckets.map(function(yb, j) {
                                                     if (j < y_limit) {
-                                                        var href = search_base + '&' + secondary_y_grouping + '=' + encodeURIComponent(yb.key);
+                                                        var href = search_base + '&' + secondary_y_grouping + '=' + globals.encodedURIComponent(yb.key);
                                                         return <tr key={yb.key}>
                                                             <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}><a href={href}>{yb.key}</a></th>
                                                             {x_buckets.map(function(xb, i) {
@@ -198,8 +198,8 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                                     var color = seriesColor.clone();
                                                                     // scale color between white and the series color
                                                                     color.lightness(color.lightness() + (1 - value / matrix.max_cell_doc_count) * (100 - color.lightness()));
-                                                                    var href = search_base + '&' + secondary_y_grouping + '=' + encodeURIComponent(yb.key)
-                                                                                           + '&' + x_grouping + '=' + encodeURIComponent(xb.key);
+                                                                    var href = search_base + '&' + secondary_y_grouping + '=' + globals.encodedURIComponent(yb.key)
+                                                                                           + '&' + x_grouping + '=' + globals.encodedURIComponent(xb.key);
                                                                     var title = yb.key + ' / ' + xb.key + ': ' + value;
                                                                     return <td key={xb.key} style={{backgroundColor: color.hexString()}}>
                                                                         {value ? <a href={href} style={{color: '#000'}} title={title}>{value}</a> : ''}
