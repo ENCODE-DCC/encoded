@@ -55,82 +55,6 @@ var FileTable = module.exports.FileTable = React.createClass({
     },
 
     // Configuration for raw file table
-    rawTableColumns: {
-        'accession': {
-            title: 'Accession',
-            display: item =>
-                <span>
-                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
-                </span>
-        },
-        'file_type': {title: 'File type'},
-        'biological_replicates': {
-            title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
-            getValue: item => item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''
-        },
-        'library': {
-            title: 'Library',
-            getValue: item => (item.replicate && item.replicate.library) ? item.replicate.library.accession : null
-        },
-        'run_type': {
-            title: 'Run type',
-            display: item => {
-                var runType;
-
-                if (item.run_type === 'single-ended') {
-                    runType = 'SE';
-                } else if (item.run_type === 'paired-ended') {
-                    runType = 'PE';
-                }
-
-                return (
-                    <span>
-                        <span>{runType ? runType : null}</span>
-                        <span>{item.read_length ? <span>{runType ? <span> </span> : null}{item.read_length + item.read_length_units}</span> : null}</span>
-                    </span>
-                );
-            },
-            objSorter: (a, b) => {
-                // Sort by their combined string values
-                var aStr = (a.run_type ? a.run_type : '') + (a.read_length ? a.read_length : '');
-                var bStr = (b.run_type ? b.run_type : '') + (b.read_length ? b.read_length : '');
-                return (aStr < bStr) ? -1 : (bStr < aStr ? 1 : 0);
-            }
-        },
-        'paired_end': {
-            title: 'Read',
-            display: item => <span>{item.paired_end ? <span>R{item.paired_end}</span> : null}</span>
-        },
-        'title': {
-            title: 'Lab',
-            getValue: item => item.lab && item.lab.title ? item.lab.title : null
-        },
-        'date_created': {
-            title: 'Date added',
-            getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
-            sorter: (a, b) => {
-                if (a && b) {
-                    return Date.parse(a) - Date.parse(b);
-                }
-                return a ? -1 : (b ? 1 : 0);
-            }
-        },
-        'file_size': {
-            title: 'File size',
-            display: item => <span>{humanFileSize(item.file_size)}</span>
-        },
-        'audit': {
-            title: 'Audit status',
-            display: item => <div>{fileAuditStatus(item)}</div>
-        },
-        'status': {
-            title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
-            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
-        }
-    },
-
-    // Configuration for raw file table
     rawArrayTableColumns: {
         'accession': {
             title: 'Accession',
@@ -461,7 +385,7 @@ var RawFileTable = React.createClass({
                             {pairedRepKeys.map((pairedRepKey, j) => {
                                 // groupFiles is an array of files under a bioreplicate/library
                                 var groupFiles = pairedRepGroups[pairedRepKey];
-                                var bottomClass = j <= (pairedRepKeys.length - 1) ? 'merge-bottom' : '';
+                                var bottomClass = j < (pairedRepKeys.length - 1) ? 'merge-bottom' : '';
 
                                 // Render an array of biological replicate and library to display on
                                 // the first row of files, spanned to all rows for that replicate and
@@ -491,7 +415,9 @@ var RawFileTable = React.createClass({
                                     return (
                                         <tr key={i}>
                                             {i === 0 ? {spanned} : null}
-                                            <td className={pairClass}>{file.accession}</td>
+                                            <td className={pairClass}>
+                                                {file.title}&nbsp;<a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                                            </td>
                                             <td className={pairClass}>{file.file_type}</td>
                                             <td className={pairClass}>{runType}{file.read_length ? <span>{runType ? <span> </span> : null}{file.read_length + file.read_length_units}</span> : null}</td>
                                             <td className={pairClass}>{file.paired_end}</td>
