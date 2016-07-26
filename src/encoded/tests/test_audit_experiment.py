@@ -1211,6 +1211,21 @@ def test_audit_experiment_mismatched_length_sequencing_files(testapp, file_bam, 
                for error in errors_list)
 
 
+def test_audit_experiment_mismatched_platforms(testapp, file_fastq,
+                                               base_experiment, file_fastq_2,
+                                               base_replicate, platform1,
+                                               base_library, platform2):
+    testapp.patch_json(file_fastq['@id'], {'platform': platform1['@id']})
+    testapp.patch_json(file_fastq_2['@id'], {'platform': platform2['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent platforms'
+               for error in errors_list)
+
+
 def test_audit_experiment_internal_tag(testapp, base_experiment,
                                        base_biosample,
                                        library_1,

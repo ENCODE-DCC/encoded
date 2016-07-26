@@ -306,6 +306,7 @@
             "description": "Some biosamples are part of particular data collections",
             "type": "array",
             "default": [],
+            "permission": "import_items",
             "uniqueItems": true,
             "items": {
                 "type": "string",
@@ -339,6 +340,13 @@
         "part_of": {
             "title": "Separated from",
             "description": "A biosample from which a discrete component was taken. That component is this biosample.",
+            "comment": "See biosamples.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Biosample"
+        },
+        "host": {
+            "title": "Host biosample",
+            "description": "A biosample that was hosting this biosample.",
             "comment": "See biosamples.json for available identifiers.",
             "type": "string",
             "linkTo": "Biosample"
