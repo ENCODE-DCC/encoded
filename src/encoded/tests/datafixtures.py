@@ -741,3 +741,20 @@ def encode_lab(testapp):
         'status': 'current'
         }
     return testapp.post_json('/lab', item, status=201).json['@graph'][0]
+
+@pytest.fixture
+def platform1(testapp):
+    item = {
+        'term_id': 'OBI:0002001',
+        'term_name': 'HiSeq2000'
+    }
+    return testapp.post_json('/platform', item).json['@graph'][0]
+
+
+@pytest.fixture
+def platform2(testapp):
+    item = {
+        'term_id': 'OBI:0002049',
+        'term_name': 'HiSeq4000'
+    }
+    return testapp.post_json('/platform', item).json['@graph'][0]
