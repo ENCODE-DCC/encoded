@@ -440,19 +440,26 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         if constructs is not None and len(constructs) > 0:
             construct_objects_list = []
             for c in constructs:
-                construct_objects_list.append(request.embed(c, '@@object'))
+                construct_object = request.embed(c, '@@object')
+                construct_objects_list.append(request.embed(construct_object['target'], '@@object'))
 
         model_construct_objects_list = None
         if model_organism_donor_constructs is not None and len(model_organism_donor_constructs) > 0:
             model_construct_objects_list = []
             for c in model_organism_donor_constructs:
-                model_construct_objects_list.append(request.embed(c, '@@object'))
+                construct_object = request.embed(c, '@@object')
+                model_construct_objects_list.append(request.embed(construct_object['target'],
+                                                                  '@@object'))
 
         rnai_objects = None
         if rnais is not None and len(rnais) > 0:
             rnai_objects = []
             for r in rnais:
-                rnai_objects.append(request.embed(r, '@@object'))
+                rnai_object = request.embed(r, '@@object')
+                target_object = request.embed(rnai_object['target'], '@@object')
+                rnai_info = {'rnai_type': rnai_object['rnai_type'],
+                             'target': target_object['name']}
+                rnai_objects.append(rnai_info)
 
         biosample_dictionary = generate_summary_dictionary(
             organismObject,
@@ -702,7 +709,7 @@ def generate_summary_dictionary(
             if transfection_type == 'stable':
                 dict_of_phrases['transfection_type'] = 'stably'
             else:
-                dict_of_phrases['transfection_type'] = transfection_type + 'ly'                
+                dict_of_phrases['transfection_type'] = transfection_type + 'ly'
 
         if talen_objects_list is not None and len(talen_objects_list) > 0:
             talens_list = []
@@ -713,12 +720,8 @@ def generate_summary_dictionary(
 
         if construct_objects_list is not None and len(construct_objects_list) > 0:
             constructs_list = []
-            for constructObject in construct_objects_list:
-                to_add = ''
-                if 'target' in constructObject:
-                    to_add = constructObject['target'].split('/')[2]
-                if to_add != '':
-                    constructs_list.append(to_add)
+            for target in construct_objects_list:
+                constructs_list.append(target['name'])
 
             if len(constructs_list) == 1:
                 dict_of_phrases['constructs'] = 'expressing ' + constructs_list[0]
@@ -729,12 +732,8 @@ def generate_summary_dictionary(
 
         if model_construct_objects_list is not None and len(model_construct_objects_list) > 0:
             constructs_list = []
-            for constructObject in model_construct_objects_list:
-                to_add = ''
-                if 'target' in constructObject:
-                    to_add = constructObject['target'].split('/')[2]
-                if to_add != '':
-                    constructs_list.append(to_add)
+            for target in model_construct_objects_list:
+                constructs_list.append(target['name'])
 
             if len(constructs_list) == 1:
                 dict_of_phrases['model_organism_constructs'] = 'expressing ' + constructs_list[0]
@@ -746,14 +745,7 @@ def generate_summary_dictionary(
         if rnai_objects is not None and len(rnai_objects) > 0:
             rnais_list = []
             for rnaiObject in rnai_objects:
-                to_add = ''
-                if 'rnai_type' in rnaiObject:
-                    to_add += rnaiObject['rnai_type'] + ' '
-                if 'target' in rnaiObject:
-                    to_add += rnaiObject['target'].split('/')[2]
-
-                if to_add != '':
-                    rnais_list.append(to_add)
+                    rnais_list.append(rnaiObject['rnai_type'] + ' ' + rnaiObject['target'])
 
             dict_of_phrases['rnais'] = ', '.join(map(str, rnais_list))
 
