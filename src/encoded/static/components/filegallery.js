@@ -461,7 +461,7 @@ var RawFileTable = React.createClass({
                             {pairedRepKeys.map((pairedRepKey, j) => {
                                 // groupFiles is an array of files under a bioreplicate/library
                                 var groupFiles = pairedRepGroups[pairedRepKey];
-                                var bottomClass = j < (pairedRepKeys.length - 1) ? 'merge-bottom' : '';
+                                var bottomClass = j <= (pairedRepKeys.length - 1) ? 'merge-bottom' : '';
 
                                 // Render an array of biological replicate and library to display on
                                 // the first row of files, spanned to all rows for that replicate and
