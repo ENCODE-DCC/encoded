@@ -106,6 +106,10 @@
             "title": "Read length",
             "type": "string"
         },
+        "files.mapped_read_length": {
+            "title": "Mapped read length",
+            "type": "string"
+        },
         "month_released": {
             "title": "Date released",
             "type": "string"
