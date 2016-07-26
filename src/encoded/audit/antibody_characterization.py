@@ -63,21 +63,24 @@ def audit_antibody_characterization_review(value, system):
                 return
 
 
-def isEnglish(s):
+def is_not_English(s):
     non_english_chars = re.sub('[ -~]', '', s)
     for x in non_english_chars:
-        if x not in ['α', 'β', 'γ', 'δ', 'Σ', 'μ', 'λ', 'ε', 'ρ', 'σ']:
-            return False
-    return True
+        if x not in ['α', 'β', 'γ', 'δ', 'Σ', 'μ', 'λ', 'ε', 'ρ', 'σ', '™']:
+            return x
+    return False
 
 
 @audit_checker('AntibodyCharacterization')
 def audit_antibody_characterization_caption(value, system):
     if 'caption' not in value:
         return
-    if isEnglish(value['caption']) is False:
+    not_English_chars = is_not_English(value['caption'])
+    if not_English_chars is not False:
         detail = 'Antibody characterization caption text \"' + \
-                 '{}\" contains non English characters.'.format(value['caption'])
+                 '{}\" contains non English characters {}.'.format(
+                     value['caption'],
+                     list(set(list(not_English_chars))))
         yield AuditFailure('inconsistent caption', detail, level='DCC_ACTION')
 
 
