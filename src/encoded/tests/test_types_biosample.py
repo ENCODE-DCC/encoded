@@ -201,3 +201,19 @@ def test_biosample_summary(testapp,
     res = testapp.get(biosample_1['@id']+'@@index-data')
     assert res.json['object']['summary'] == \
         'Homo sapiens liver tissue male (10 days) treated with ethanol'
+
+
+def test_biosample_summary_construct(testapp,
+                                     donor_1,
+                                     biosample_1, construct):
+    testapp.patch_json(donor_1['@id'], {'age_units': 'day', 'age': '10'})
+    testapp.patch_json(donor_1['@id'], {'sex': 'male'})
+    testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id'],
+                                            "biosample_term_id": "EFO:0002784",
+                                            "biosample_term_name": "liver",
+                                            "biosample_type": "tissue",
+                                            'constructs': [construct['@id']]})
+
+    res = testapp.get(biosample_1['@id']+'@@index-data')
+    assert res.json['object']['summary'] == \
+        'Homo sapiens liver tissue male (10 days) expressing ATF4-human'

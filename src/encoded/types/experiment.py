@@ -231,7 +231,10 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
                             if constructs is not None and len(constructs) > 0:
                                 construct_objects_list = []
                                 for c in constructs:
-                                    construct_objects_list.append(request.embed(c, '@@object'))
+                                    construct_object = request.embed(c, '@@object')
+                                    target_name = construct_object['target']
+                                    construct_objects_list.append(request.embed(target_name,
+                                                                                '@@object'))
 
                             model_construct_objects_list = None
                             model_organism_donor_constructs = biosampleObject.get(
@@ -240,7 +243,9 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
                                len(model_organism_donor_constructs) > 0:
                                 model_construct_objects_list = []
                                 for c in model_organism_donor_constructs:
-                                    model_construct_objects_list.append(request.embed(c,
+                                    construct_object = request.embed(c, '@@object')
+                                    target_name = construct_object['target']
+                                    model_construct_objects_list.append(request.embed(target_name,
                                                                                       '@@object'))
 
                             rnai_objects = None
@@ -248,7 +253,11 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
                             if rnais is not None and len(rnais) > 0:
                                 rnai_objects = []
                                 for r in rnais:
-                                    rnai_objects.append(request.embed(r, '@@object'))
+                                    rnai_object = request.embed(r, '@@object')
+                                    target_object = request.embed(rnai_object['target'], '@@object')
+                                    rnai_info = {'rnai_type': rnai_object['rnai_type'],
+                                                 'target': target_object['name']}
+                                    rnai_objects.append(rnai_info)
 
                             dictionary_to_add = generate_summary_dictionary(
                                 organismObject,

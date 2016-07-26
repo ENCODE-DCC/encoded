@@ -441,15 +441,16 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             construct_objects_list = []
             for c in constructs:
                 construct_object = request.embed(c, '@@object')
-                construct_objects_list.append(request.embed(construct_object['target'], '@@object'))
+                target_name = construct_object['target']
+                construct_objects_list.append(request.embed(target_name, '@@object'))
 
         model_construct_objects_list = None
         if model_organism_donor_constructs is not None and len(model_organism_donor_constructs) > 0:
             model_construct_objects_list = []
             for c in model_organism_donor_constructs:
                 construct_object = request.embed(c, '@@object')
-                model_construct_objects_list.append(request.embed(construct_object['target'],
-                                                                  '@@object'))
+                target_name = construct_object['target']
+                model_construct_objects_list.append(request.embed(target_name, '@@object'))
 
         rnai_objects = None
         if rnais is not None and len(rnais) > 0:
