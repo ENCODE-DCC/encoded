@@ -108,8 +108,8 @@
                 "Kelvin"
             ]
         },
-         "biosamples": {
-            "title": "Treatment biosamples",
+         "biosample_componenets": {
+            "title": "Treatment biosample components",
             "description": "Biosamples used in this treatment.",
             "type": "array",
             "default": [],
