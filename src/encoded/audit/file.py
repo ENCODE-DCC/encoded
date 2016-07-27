@@ -183,9 +183,10 @@ def audit_file_biological_replicate_number_match(value, system):
                          ', but it was derived from file {} '.format(derived_from_file['@id']) + \
                          'which is associated with a replicate [{},{}].'.format(
                              derived_replicate[0],
-                             derived_replicate[1]),
-                raise AuditFailure('inconsistent replicate',
+                             derived_replicate[1])
+                yield AuditFailure('inconsistent replicate',
                                    detail, level='ERROR')
+                return
 
 
 @audit_checker('file', frame=['replicate', 'dataset', 'replicate.experiment'])
@@ -212,7 +213,8 @@ def audit_file_replicate_match(value, system):
                  '{}, but that replicate is associated with a different '.format(
                      value['replicate']['@id']) + \
                  'experiment {}.'.format(value['replicate']['experiment']['@id'])
-        raise AuditFailure('inconsistent replicate', detail, level='ERROR')
+        yield AuditFailure('inconsistent replicate', detail, level='ERROR')
+        return
 
 
 @audit_checker('file', frame=['award'],
