@@ -116,7 +116,7 @@
 
 
 
-.col-sm-12 {
+/*.col-sm-12 {
     height:50%;
     width:50%;
     
@@ -128,7 +128,7 @@
     width:50%;
     //float:left;
     border: 3px solid #3B6AA0;
-}
+}*/
 
 .title {
     
@@ -141,7 +141,7 @@
     ;
    
     font-size: 30px;
-    font-weight: 100;
+    font-weight: normal;
 }
 
 .legendDiv {
@@ -163,7 +163,7 @@
     border: none;
     a.single-tab {
         font-size: 20px;
-        font-weight: 100;
+        font-weight: normal;
         padding: 10px 11px !important;
         display: block;
         text-decoration: none;
@@ -184,20 +184,26 @@
 
 .graphs {
     background-color: white;
-    
+
 }
 
 .getting-started-image {
-    //position: relative;
+    position: relative;
     padding-top: 20px;
     //padding-bottom: 20px;
     background-color: #E8ECEF;
-    position: absolute;
+    
     height: auto;
     max-width: 100%;
     top: 0;
     left: 0;
+
 }
+
+/*.getting-started {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}*/
 
 hr {
     margin: 20px;

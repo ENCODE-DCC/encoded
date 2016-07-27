@@ -115,30 +115,35 @@ var Home = module.exports.Home = React.createClass({
                             <AssayClicking current={this.state.current} callback={this.callback}/>
                             <TabClicking handleTabClick={this.handleTabClick} newtabs={this.state.newtabs}/>
                             <div className="graphs clearfix" >
-                            <div className="col-sm-6">
-                                <div className="title">
-                                    Project
+                                <div className="row">
+                                    <div className="col-sm-6">
+                                        <div className="title">
+                                            Project
+                                        </div>
+                                        <center> <hr width="80%" position="static"></hr> </center>
+                                        <HomepageChartLoader searchBase={this.state.current} 
+                                                    callback={this.callback}/>
+                                
+                                    </div>
+                                    <div className="col-sm-6">
+                                        <div className="title">
+                                            Biosample Type
+                                        </div>
+                                        <center> <hr width="80%"></hr> </center>
+                                        <HomepageChartLoader2 searchBase={this.state.current}
+                                                 callback={this.callback}/>
+                                    </div>
                                 </div>
-                                <center> <hr width="80%" position="static"></hr> </center>
-                                <HomepageChartLoader searchBase={this.state.current} 
-                                            callback={this.callback}/>
-                        
                             </div>
-                            <div className="col-sm-6">
-                                <div className="title">
-                                    Biosample Type
-                                </div>
-                                <center> <hr width="80%"></hr> </center>
-                                <HomepageChartLoader2 searchBase={this.state.current}
-                                         callback={this.callback}/>
-                            </div>
-                            <div className="col-md-12">
-                                <div className="getting-started">
-                                    <img src="static/img/getting-started.jpg" className="getting-started-image"/>
+                            <div className="row">
+                                <div className="col-md-12">
+                                    <div className="getting-started">
+                                        <img src="static/img/getting-started.jpg" className="getting-started-image"/>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        </div>
+
                     <div className="col-md-3">
                         <TwitterWidget/>
                     </div>
