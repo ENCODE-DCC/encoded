@@ -76,7 +76,8 @@ _tsv_mapping = OrderedDict([
     ('md5sum', ['files.md5sum']),
     ('File download URL', ['files.href']),
     ('Assembly', ['files.assembly']),
-    ('Platform', ['files.platform.title'])
+    ('Platform', ['files.platform.title']),
+    ('Controlled by', ['files.contolled_by'])
 ])
 
 
