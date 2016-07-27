@@ -4,7 +4,7 @@ if sys.version_info < (3,):
     import codecs
 
     def u(x):
-        return codecs.unicode_escape_decode(x)[0]
+        return codecs.decode(x, encoding='utf-8')
 else:
 
     def u(x):
