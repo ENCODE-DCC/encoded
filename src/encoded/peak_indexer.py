@@ -163,11 +163,11 @@ def index_peaks(uuid, request):
             if isinstance(start, int) and isinstance(end, int):
                 if chrom in file_data:
                     file_data[chrom].append({
-                        'start': start - 1,
+                        'start': start + 1,
                         'end': end + 1
                     })
                 else:
-                    file_data[chrom] = [{'start': start - 1, 'end': end + 1}]
+                    file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
             else:
                 log.warn('positions are not integers, will not index file')
 
