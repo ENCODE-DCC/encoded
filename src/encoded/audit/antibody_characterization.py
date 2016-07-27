@@ -63,6 +63,12 @@ def audit_antibody_characterization_review(value, system):
 
 
 def is_not_English(s):
+
+    try:
+        UNICODE_EXISTS = bool(type(unicode))
+    except NameError:
+        unicode = lambda z: str(z)
+
     non_english_chars = re.sub('[ -~]', '', s)
     list_to_return = []
     for x in non_english_chars:
@@ -77,7 +83,7 @@ def is_not_English(s):
                                               u'ρ'.encode('utf-8'),
                                               u'σ'.encode('utf-8'),
                                               u'™'.encode('utf-8')]:
-            list_to_return.append(unicode(x).encode('utf-8'))
+            list_to_return.append(unicode(x))
     if len(list_to_return) > 0:
         return list_to_return
     return False
