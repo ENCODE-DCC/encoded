@@ -98,36 +98,50 @@ var Home = module.exports.Home = React.createClass({
 
     render: function() {
         return (
+            
             <div className="whole-page">
-                <div class="row">
-                <h1 className="page-title">
-                    ENCODE: ENCYCLOPEDIA of DNA ELEMENTS
-                </h1>
-                </div>
+
+                <header class="row">
+                    <div class="col-sm-12">
+                        <h1 className="page-title">
+                            ENCODE: ENCYCLOPEDIA of DNA ELEMENTS
+                        </h1>
+                    </div>
+                </header>
                 <div className="row">
-                    <div className="col-md-9">
-                        <AssayClicking current={this.state.current} callback={this.callback}/>
-                        <TabClicking handleTabClick={this.handleTabClick} newtabs={this.state.newtabs}/>
-                        <div className="col-sm-6">
-                        <div className="title">
-                            Project
-                        </div>
-                        <center> <hr width="80%" position="static"></hr> </center>
-                        <HomepageChartLoader searchBase={this.state.current} 
+                    
+                        <div className="col-md-9">
+                        
+                            <AssayClicking current={this.state.current} callback={this.callback}/>
+                            <TabClicking handleTabClick={this.handleTabClick} newtabs={this.state.newtabs}/>
+                            <div className="graphs">
+                            <div className="col-sm-6">
+                                <div className="title">
+                                    Project
+                                </div>
+                                <center> <hr width="80%" position="static"></hr> </center>
+                                <HomepageChartLoader searchBase={this.state.current} 
                                             callback={this.callback}/>
                         
-                    </div>
-                    <div className="col-sm-6">
-                        <div className="title">
-                            Biosample Type
-                        </div>
-                        <center> <hr width="80%"></hr> </center>
-                        <HomepageChartLoader2 searchBase={this.state.current}
+                            </div>
+                            <div className="col-sm-6">
+                                <div className="title">
+                                    Biosample Type
+                                </div>
+                                <center> <hr width="80%"></hr> </center>
+                                <HomepageChartLoader2 searchBase={this.state.current}
                                          callback={this.callback}/>
+                            </div>
+                            <div className="col-md-12">
+                                <div className="getting-started">
+                                    <img src="static/img/getting-started.jpg" className="getting-started-image"/>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    <div className="col-md-3">
+                        <TwitterWidget/>
                     </div>
-                    </div>
-                    <TwitterWidget/>
-                    
                     
                 </div>
                 
@@ -136,6 +150,7 @@ var Home = module.exports.Home = React.createClass({
                 
                 
             </div>
+            
         );
     }
 
@@ -162,9 +177,9 @@ var TwitterWidget = React.createClass({
                 className= "twitter-timeline"
                 href= "https://twitter.com/encodedcc"
                 widget-id= "encodedcc" 
-                data-tweet-limit = "6"
-                data-width = "300"
-                //data-height = "600"
+                //data-tweet-limit = "4"
+                //data-width = "300"
+                data-height = "1007"
                 ></a>
             );
         }

@@ -1,14 +1,39 @@
+/*.layout {
+    background-color: #E8ECEF;
+}*/
+
+.container-homepage {
+  @include container-fixed();
+
+  @media (min-width: $screen-sm-min) {
+    width: $container-sm;
+  }
+  @media (min-width: $screen-md-min) {
+    width: $container-md;
+  }
+  @media (min-width: $screen-lg-min) {
+    width: $container-lg;
+  }
+}
+
+
+// Fluid container
+//
+// Utilizes the mixin meant for fixed width containers, but without any defined
+// width for fluid, full width layouts.
+
+.container-fluid {
+  @include container-fixed();
+}
+
 .whole-page {
     background-color: #E8ECEF;
 }
 
 .page-title {
     margin-bottom: 30px;
-}
-
-h1 {
     font-size: 2.6 rem;
-    margin-top: 50px;
+    margin-top: 30px;
     font-family: inherit;
     font-weight: bold;
     line-height: 1.1;
@@ -16,6 +41,19 @@ h1 {
     margin-right: 0px;
     margin-left: 0px;
     display: block;
+}
+
+
+h1 {
+    /*font-size: 2.6 rem;
+    //margin-top: 50px;
+    font-family: inherit;
+    font-weight: bold;
+    line-height: 1.1;
+    color: inherit;
+    margin-right: 0px;
+    margin-left: 0px;
+    display: block;*/
 
 }
 
@@ -51,7 +89,9 @@ h1 {
 
 .overall-classic {
     position: relative;
-    padding: 20px 20px !important;
+    padding-bottom: 20px;
+    background-color: #E8ECEF;
+
 }
 
 .classic-svg {
@@ -83,7 +123,7 @@ h1 {
     max-width: 100%;
     top: 0;
     left: 0;
-    padding: 20px 20px !important;
+    //padding: 20px 20px !important;
 }
 
 
@@ -123,14 +163,14 @@ h1 {
 
 .tabTable {
     border-bottom: 1px solid #a0a0a0;
-    padding: 20px 20px !important;
+    //padding: 20px 20px !important;
     background-color: white;
 
         
 }
 
 .tabTable td{
-    padding: 20px 20px !important;
+    //padding: 20px 20px !important;
     color: #000;
     border: none;
     a.single-tab {
@@ -152,6 +192,22 @@ h1 {
     }
 
     
+}
+
+.graphs {
+    background-color: white;
+}
+
+.getting-started-image {
+    //position: relative;
+    padding-top: 20px;
+    //padding-bottom: 20px;
+    background-color: #E8ECEF;
+    position: absolute;
+    height: auto;
+    max-width: 100%;
+    top: 0;
+    left: 0;
 }
 
 hr {
