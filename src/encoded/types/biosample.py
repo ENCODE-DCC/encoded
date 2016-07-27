@@ -543,12 +543,25 @@ def generate_summary_dictionary(
                 dict_of_phrases['organism_name'] = organismObject['scientific_name']
                 if organismObject['scientific_name'] != 'Homo sapiens':  # model organism
                     if donorObject is not None:
+                        if 'strain_name' in donorObject:
+                            dict_of_phrases['genotype_strain'] = 'strain ' + \
+                                                                 donorObject['strain_name']
                         if 'genotype' in donorObject:
-                            dict_of_phrases['genotype_strain'] = donorObject['genotype']
-                        elif 'strain_name' in donorObject:
-                            dict_of_phrases['genotype_strain'] = donorObject['strain_name']
-                else:
-                    dict_of_phrases['genotype_strain'] = ''
+                            d_genotype = donorObject['genotype']
+                            if organismObject['scientific_name'].find('Drosophila') != -1:
+                                if d_genotype[-1] == '.':
+                                    dict_of_phrases['genotype_strain'] += ' ' + \
+                                                                          d_genotype[:-1]
+                                else:
+                                    dict_of_phrases['genotype_strain'] += ' ' + \
+                                                                          d_genotype
+                            else:
+                                if d_genotype[-1] == '.':
+                                    dict_of_phrases['genotype_strain'] += ' (' + \
+                                                                          d_genotype[:-1] + ')'
+                                else:
+                                    dict_of_phrases['genotype_strain'] += ' (' + \
+                                                                          d_genotype + ')'
 
         if age is not None and age_units is not None:
             dict_of_phrases['age_display'] = str(age) + ' ' + age_units + 's'
