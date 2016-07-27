@@ -114,7 +114,7 @@ var Home = module.exports.Home = React.createClass({
                         
                             <AssayClicking current={this.state.current} callback={this.callback}/>
                             <TabClicking handleTabClick={this.handleTabClick} newtabs={this.state.newtabs}/>
-                            <div className="graphs">
+
                             <div className="col-sm-6">
                                 <div className="title">
                                     Project
@@ -138,7 +138,7 @@ var Home = module.exports.Home = React.createClass({
                                 </div>
                             </div>
                         </div>
-                        </div>
+                        
                     <div className="col-md-3">
                         <TwitterWidget/>
                     </div>
