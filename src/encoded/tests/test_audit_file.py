@@ -173,24 +173,6 @@ def file7(file_exp2, award, encode_lab, testapp, analysis_step_run_bam):
 
 
 @pytest.fixture
-def platform1(testapp):
-    item = {
-        'term_id': 'OBI:0002001',
-        'term_name': 'HiSeq2000'
-    }
-    return testapp.post_json('/platform', item).json['@graph'][0]
-
-
-@pytest.fixture
-def platform2(testapp):
-    item = {
-        'term_id': 'OBI:0002049',
-        'term_name': 'HiSeq4000'
-    }
-    return testapp.post_json('/platform', item).json['@graph'][0]
-
-
-@pytest.fixture
 def chipseq_bam_quality_metric(testapp, analysis_step_run_bam, file6, lab, award):
     item = {
         'step_run': analysis_step_run_bam['@id'],
@@ -310,7 +292,7 @@ def test_audit_file_mismatched_controlled_by(testapp, file1):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched control' for error in errors_list)
+    assert any(error['category'] == 'inconsistent control' for error in errors_list)
 
 
 def test_audit_file_inconsistent_controlled_by(testapp, file1,
@@ -349,19 +331,6 @@ def test_audit_file_missing_paired_controlled_by(testapp, file1,
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing paired_with in controlled_by' for
                                     error in errors_list)
-
-
-def test_audit_file_mismatched_platform_controlled_by(testapp, file1, file2, file_exp,
-                                                      file_exp2, platform2):
-    testapp.patch_json(file_exp['@id'], {'possible_controls': [file_exp2['@id']],
-                                         'biosample_term_id': 'NTR:000013'})
-    testapp.patch_json(file2['@id'], {'platform': platform2['@id']})
-    res = testapp.get(file1['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent control platform' for error in errors_list)
 
 
 def test_audit_file_replicate_match(testapp, file1, file_rep2):
@@ -502,7 +471,7 @@ def test_audit_file_biological_replicate_number_match(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'inconsistent biological replicate number'
+    assert all(error['category'] != 'inconsistent replicate'
                for error in errors_list)
 
 
@@ -518,7 +487,7 @@ def test_audit_file_biological_replicate_number_mismatch(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent biological replicate number'
+    assert any(error['category'] == 'inconsistent replicate'
                for error in errors_list)
 
 
@@ -529,7 +498,22 @@ def test_audit_file_fastq_assembly(testapp, file4):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'erroneous property'
+    assert any(error['category'] == 'unexpected property'
+               for error in errors_list)
+
+
+def test_audit_file_rbns_assembly(testapp, file4, file_exp):
+    testapp.patch_json(file_exp['@id'], {'assay_term_id': 'OBI:0002044'})
+    testapp.patch_json(file4['@id'], {'assembly': 'GRCh38',
+                                      'dataset': file_exp['@id'],
+                                      'file_format': 'bam',
+                                      'output_type': 'alignments'})
+    res = testapp.get(file4['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'unexpected property'
                for error in errors_list)
 
 
@@ -542,7 +526,7 @@ def test_audit_file_assembly(testapp, file6, file7):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched assembly'
+    assert any(error['category'] == 'inconsistent assembly'
                for error in errors_list)
 
 
@@ -614,5 +598,5 @@ def test_audit_file_bam_derived_from_different_experiment(testapp, file6, file4,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched derived_from'
+    assert any(error['category'] == 'inconsistent derived_from'
                for error in errors_list)

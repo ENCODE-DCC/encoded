@@ -14,89 +14,9 @@ $qualitymetric-figure-width: 96px;
 $qualitymetric-figure-height: 96px;
 
 
-
-/* clear first in row in ie 8 or lower */
-.multi-columns-row {
-    .first-in-row {
-        clear: left;
-    }
-}
-
-
-/* clear the first in row for any block that has the class "multi-columns-row" */
-@media (min-width: $screen-sm-min) {
-    .multi-columns-row {
-        .col-lg-1:nth-child(12n+1),
-        .col-lg-2:nth-child(6n+1),
-        .col-lg-3:nth-child(4n+1),
-        .col-lg-4:nth-child(3n+1),
-        .col-lg-6:nth-child(2n+1),
-        .col-md-1:nth-child(12n+1),
-        .col-md-2:nth-child(6n+1),
-        .col-md-3:nth-child(4n+1),
-        .col-md-4:nth-child(3n+1),
-        .col-md-6:nth-child(2n+1){
-            clear: none;
-        }
-        .col-sm-1:nth-child(12n+1),
-        .col-sm-2:nth-child(6n+1),
-        .col-sm-3:nth-child(4n+1),
-        .col-sm-4:nth-child(3n+1),
-        .col-sm-6:nth-child(2n+1){
-            clear: left;
-        }
-    }
-}
-@media (min-width: $screen-md-min) {
-    .multi-columns-row {
-        .col-lg-1:nth-child(12n+1),
-        .col-lg-2:nth-child(6n+1),
-        .col-lg-3:nth-child(4n+1),
-        .col-lg-4:nth-child(3n+1),
-        .col-lg-6:nth-child(2n+1),
-        .col-sm-1:nth-child(12n+1),
-        .col-sm-2:nth-child(6n+1),
-        .col-sm-3:nth-child(4n+1),
-        .col-sm-4:nth-child(3n+1),
-        .col-sm-6:nth-child(2n+1){
-            clear: none;
-        }
-        .col-md-1:nth-child(12n+1),
-        .col-md-2:nth-child(6n+1),
-        .col-md-3:nth-child(4n+1),
-        .col-md-4:nth-child(3n+1),
-        .col-md-6:nth-child(2n+1){
-            clear: left;
-        }
-    }
-}
-@media (min-width: $screen-lg-min) {
-    .multi-columns-row {
-        .col-md-1:nth-child(12n+1),
-        .col-md-2:nth-child(6n+1),
-        .col-md-3:nth-child(4n+1),
-        .col-md-4:nth-child(3n+1),
-        .col-md-6:nth-child(2n+1),
-        .col-sm-1:nth-child(12n+1),
-        .col-sm-2:nth-child(6n+1),
-        .col-sm-3:nth-child(4n+1),
-        .col-sm-4:nth-child(3n+1),
-        .col-sm-6:nth-child(2n+1){
-            clear: none;
-        }
-        .col-lg-1:nth-child(12n+1),
-        .col-lg-2:nth-child(6n+1),
-        .col-lg-3:nth-child(4n+1),
-        .col-lg-4:nth-child(3n+1),
-        .col-lg-6:nth-child(2n+1){
-            clear: left;
-        }
-    }
-}
-
-
 .type-Document.view-detail {
     padding: 0;
+    overflow: hidden;
 
     figure {
         margin: 14px;
@@ -807,4 +727,32 @@ $dl-bar-height: 30px;
 
 .journal, .author {
     @include font-size(1);
+}
+
+// Characterization panel biosample terms
+// **********
+
+// area to hold biosample terms
+.characterization-biosample-terms {
+    display: flex;
+    margin-top: -1px;
+    margin-right: -1px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: flex-start;
+    border-bottom: 1px solid #c0c0c0;
+}
+
+// each biosample term
+.characterization-biosample-term {
+    order: 0;
+    padding: 2px 5px;
+    align-self: auto;
+    text-align: center;
+    background-color: #e8e8e8;
+    border-top: 1px solid #fff;
+    border-right: 1px solid #fff;
+    font-size: 0.9rem;
 }

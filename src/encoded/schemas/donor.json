@@ -36,6 +36,25 @@
             "description": "An external resource with additional information about the donor.",
             "type": "string",
             "format": "uri"
+        },
+        "internal_tags": {
+            "title": "Internal tags",
+            "description": "Some donors are part of particular data collections",
+            "type": "array",
+            "default": [],
+            "permission": "import_items",
+            "uniqueItems": true,
+            "items": {
+                "type": "string",
+                "enum": [
+                    "DREAM",
+                    "ENCORE",
+                    "ENTEx",
+                    "SESCC"]
+            }
         }
+    },
+    "boost_values": {
+        "internal_tags": 1.0
     }
 }

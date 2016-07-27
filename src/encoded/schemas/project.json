@@ -106,6 +106,10 @@
             "title": "Read length",
             "type": "string"
         },
+        "files.mapped_read_length": {
+            "title": "Mapped read length",
+            "type": "string"
+        },
         "month_released": {
             "title": "Date released",
             "type": "string"
@@ -183,6 +187,7 @@
         "organism.name": 1.0,
         "organism.scientific_name": 1.0,
         "organism.taxon_id": 1.0,
-        "project_type": 1.0
+        "project_type": 1.0,
+        "internal_tags": 1.0
     }
 }

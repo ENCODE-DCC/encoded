@@ -27,7 +27,7 @@
             "default": "3"
         },
         "genotype": {
-            "description": "The genotype of the strain according to accepted nomenclature conventions: http://flybase.org/static_pages/docs/nomenclature/nomenclature3.html"
+            "description": "The genotype of the strain according to accepted nomenclature conventions: http://flybase.org/wiki/FlyBase:Nomenclature"
         },
         "organism":{ 
             "linkEnum": [
@@ -63,8 +63,11 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^(((bloomington|dssc):.+)|(GEO:SAMN\\d+))$"
+                "pattern": "^(((BDSC|DSSC|Kyoto|VDRC|Harvard|NIG-FLY):.+)|(FlyBase:FBst\\d+)|(GEO:SAMN\\d+))$"
             }
         }
+    },
+    "boost_values": {
+        "internal_tags": 1.0
     }
 }
