@@ -173,24 +173,6 @@ def file7(file_exp2, award, encode_lab, testapp, analysis_step_run_bam):
 
 
 @pytest.fixture
-def platform1(testapp):
-    item = {
-        'term_id': 'OBI:0002001',
-        'term_name': 'HiSeq2000'
-    }
-    return testapp.post_json('/platform', item).json['@graph'][0]
-
-
-@pytest.fixture
-def platform2(testapp):
-    item = {
-        'term_id': 'OBI:0002049',
-        'term_name': 'HiSeq4000'
-    }
-    return testapp.post_json('/platform', item).json['@graph'][0]
-
-
-@pytest.fixture
 def chipseq_bam_quality_metric(testapp, analysis_step_run_bam, file6, lab, award):
     item = {
         'step_run': analysis_step_run_bam['@id'],
@@ -310,7 +292,7 @@ def test_audit_file_mismatched_controlled_by(testapp, file1):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched control' for error in errors_list)
+    assert any(error['category'] == 'inconsistent control' for error in errors_list)
 
 
 def test_audit_file_inconsistent_controlled_by(testapp, file1,
@@ -349,19 +331,6 @@ def test_audit_file_missing_paired_controlled_by(testapp, file1,
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing paired_with in controlled_by' for
                                     error in errors_list)
-
-
-def test_audit_file_mismatched_platform_controlled_by(testapp, file1, file2, file_exp,
-                                                      file_exp2, platform2):
-    testapp.patch_json(file_exp['@id'], {'possible_controls': [file_exp2['@id']],
-                                         'biosample_term_id': 'NTR:000013'})
-    testapp.patch_json(file2['@id'], {'platform': platform2['@id']})
-    res = testapp.get(file1['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent control platform' for error in errors_list)
 
 
 def test_audit_file_replicate_match(testapp, file1, file_rep2):
