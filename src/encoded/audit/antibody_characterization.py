@@ -67,17 +67,17 @@ def is_not_English(s):
     list_to_return = []
     for x in non_english_chars:
         if unicode(x).encode('utf-8') not in [u'α'.encode('utf-8'),
-                                     u'β'.encode('utf-8'),
-                                     u'γ'.encode('utf-8'),
-                                     u'δ'.encode('utf-8'),
-                                     u'Σ'.encode('utf-8'),
-                                     u'μ'.encode('utf-8'),
-                                     u'λ'.encode('utf-8'),
-                                     u'ε'.encode('utf-8'),
-                                     u'ρ'.encode('utf-8'),
-                                     u'σ'.encode('utf-8'),
-                                     u'™'.encode('utf-8')]:
-            list_to_return.append(x)
+                                              u'β'.encode('utf-8'),
+                                              u'γ'.encode('utf-8'),
+                                              u'δ'.encode('utf-8'),
+                                              u'Σ'.encode('utf-8'),
+                                              u'μ'.encode('utf-8'),
+                                              u'λ'.encode('utf-8'),
+                                              u'ε'.encode('utf-8'),
+                                              u'ρ'.encode('utf-8'),
+                                              u'σ'.encode('utf-8'),
+                                              u'™'.encode('utf-8')]:
+            list_to_return.append(unicode(x).encode('utf-8'))
     if len(list_to_return) > 0:
         return list_to_return
     return False
@@ -92,7 +92,7 @@ def audit_antibody_characterization_caption(value, system):
         detail = 'Antibody characterization caption text \"' + \
                  '{}\" contains non English characters {}.'.format(
                      value['caption'],
-                     list(set(not_English_chars)))
+                     not_English_chars)
         yield AuditFailure('inconsistent caption', detail, level='DCC_ACTION')
 
 
