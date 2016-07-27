@@ -5,7 +5,6 @@ from snovault import (
 )
 from .ontology_data import biosampleType_ontologyPrefix
 import re
-from .makeunicode import u
 
 
 @audit_checker('antibody_characterization', frame=['characterization_reviews'])
@@ -63,6 +62,13 @@ def audit_antibody_characterization_review(value, system):
                 return
 
 
+def u(x):
+    if isinstance(x, basestring):
+        if not isinstance(x, unicode):
+            x = unicode(x, 'utf-8')
+    return x
+
+
 def is_not_English(s):
     non_english_chars = re.sub('[ -~]', '', s)
     list_to_return = []
@@ -80,7 +86,7 @@ def is_not_English(s):
                         u('™')]:
             list_to_return.append(u(x))
     if len(list_to_return) > 0:
-        return list_to_return
+        return True
     return False
 
 
@@ -91,9 +97,8 @@ def audit_antibody_characterization_caption(value, system):
     not_English_chars = is_not_English(value['caption'])
     if not_English_chars is not False:
         detail = 'Antibody characterization caption text \"' + \
-                 '{}\" contains non English characters {}.'.format(
-                     value['caption'],
-                     not_English_chars)
+                 '{}\" contains non English characters.'.format(
+                     value['caption'])
         yield AuditFailure('inconsistent caption', detail, level='DCC_ACTION')
 
 
