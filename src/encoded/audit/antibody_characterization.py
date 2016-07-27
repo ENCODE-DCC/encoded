@@ -66,17 +66,17 @@ def is_not_English(s):
     non_english_chars = re.sub('[ -~]', '', s)
     list_to_return = []
     for x in non_english_chars:
-        if x.decode('utf-8') not in [u'α',
-                                     u'β',
-                                     u'γ',
-                                     u'δ',
-                                     u'Σ',
-                                     u'μ',
-                                     u'λ',
-                                     u'ε',
-                                     u'ρ',
-                                     u'σ',
-                                     u'™']:
+        if unicode(x).encode('utf-8') not in [u'α'.encode('utf-8'),
+                                     u'β'.encode('utf-8'),
+                                     u'γ'.encode('utf-8'),
+                                     u'δ'.encode('utf-8'),
+                                     u'Σ'.encode('utf-8'),
+                                     u'μ'.encode('utf-8'),
+                                     u'λ'.encode('utf-8'),
+                                     u'ε'.encode('utf-8'),
+                                     u'ρ'.encode('utf-8'),
+                                     u'σ'.encode('utf-8'),
+                                     u'™'.encode('utf-8')]:
             list_to_return.append(x)
     if len(list_to_return) > 0:
         return list_to_return
