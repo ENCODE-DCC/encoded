@@ -23,6 +23,8 @@ class GeneticModification(Item):
     rev = {
         'biosamples_modified': ('Biosample', 'genetic_modifications'),
         'donors_modified': ('Donor', 'genetic_modifications'),
+        'characterizations': ('BiosampleCharacterization', 'characterizes'),
+
     }
 
     @calculated_property(schema={
@@ -46,3 +48,14 @@ class GeneticModification(Item):
     })
     def donors_modified(self, request, donors_modified):
         return paths_filtered_by_status(request, donors_modified)
+
+    @calculated_property(schema={
+        "title": "Characterizations",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "GeneticModificationCharacterization.characterizes",
+        },
+    })
+    def characterizations(self, request, characterizations):
+        return paths_filtered_by_status(request, characterizations)

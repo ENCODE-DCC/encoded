@@ -23,44 +23,21 @@
         "schema_version": {
             "hidden comment": "Bump the default in the subclasses."
         },
-        "vectors": {
-            "description": "Vector(s) used to perform the genetic modification.",
+        "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "items": {
-                "description": "Vector details.",
-                "type": "object",
-                "additionalProperties": false,
-                "mixinProperties": [
-                    { "$ref": "mixins.json#/aliases" },
-                    { "$ref": "mixins.json#/product_id" },
-                    { "$ref": "mixins.json#/source" },
-                    { "$ref": "mixins.json#/notes" },
-                    { "$ref": "mixins.json#/documents" }
-                ],
-                "properties": {
-                    "vector_backbone_name":{
-                        "title": "Backbone name",
-                        "description": "The name of the vector backbone used for the modification.",
-                        "type": "string"
-                    },
-                    "promoter_used": {
-                        "title": "Promoter used on the vector",
-                        "description": "The name of the gene that the promoter regulates natively.",
-                        "comment": "See target.json for available identifiers.",
-                        "type": "string",
-                        "linkTo": "Target"
-                    },
-                    "url":{
-                        "title": "URL",
-                        "description": "An external resource with additional information about the vector.",
-                        "type": "string",
-                        "format": "uri"
-                    }
-                }
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string",
+                "pattern": "^addgene:\\d+"
             }
-        }              
+        }             
     }
 }
     

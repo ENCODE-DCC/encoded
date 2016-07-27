@@ -1,6 +1,6 @@
  {
-    "title": "Tale",
-    "description": "Schema for submitting an information on Transcription Activator-Like Effector (TALE) genetic modification.",
+    "title": "TALE",
+    "description": "Schema for submitting an information on Transcription Activator-Like Effector (TALE) genetic modification technique.",
     "id": "/profiles/tale.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",

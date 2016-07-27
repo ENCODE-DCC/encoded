@@ -125,24 +125,16 @@
             "description": "The type of the genetic modification.",
             "type": "string",
             "enum": [
-                "monoallelic deletion",
-                "monoallelic insertion",
-                "biallelic deletion",
-                "biallelic insertion",
-                "monoallelic replacement",                
-                "biallelic replacement",
-                "repression",
-                "activation",
-                "overexpression",
-                "random mutagenesis",
-                "epitope tagging",
-                "fluorescence tagging"
+                "deletion",
+                "insertion",
+                "replacement"
             ]
         },
         "modification_techniques": {
             "description": "Genetic modification technique(s)/tool(s) used to perform the modification.",
             "type": "array",
             "default": [],
+            "permission": "import_items",
             "uniqueItems": true,
             "items": {
                 "title": "Modification technique",
@@ -156,6 +148,7 @@
             "description": "Treatment(s) used to perform the genetic modification.",
             "type": "array",
             "default": [],
+            "permission": "import_items",
             "uniqueItems": true,
             "items": {
                 "title": "Treatment",

@@ -1,6 +1,6 @@
  {
-    "title": "Crispr",
-    "description": "Schema for submitting an information on CRISPR genomic editing.",
+    "title": "CRISPR",
+    "description": "Schema for submitting an information on CRISPR genetic modification technique.",
     "id": "/profiles/crispr.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
