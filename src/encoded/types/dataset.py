@@ -285,10 +285,16 @@ class FileSet(Dataset):
             if count < 100:
                 properties = request.embed(path, '@@object')
                 count = count + 1
-                if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak', 'bedRnaElements', 'bedMethyl', 'bedLogR'] and \
-                        properties['status'] in ['released']:
-                    if 'assembly' in properties:
-                        assembly.append(properties['assembly'])
+                if self.status in ['released']:
+                    if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak', 'bedRnaElements', 'bedMethyl', 'bedLogR'] and \
+                            properties['status'] in ['released']:
+                        if 'assembly' in properties:
+                            assembly.append(properties['assembly'])
+                else:
+                    if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak', 'bedRnaElements', 'bedMethyl', 'bedLogR'] and \
+                            properties['status'] in ['released', 'in progress', 'revoked', 'archived']:
+                        if 'assembly' in properties:
+                            assembly.append(properties['assembly'])
         return list(set(assembly))
 
 
