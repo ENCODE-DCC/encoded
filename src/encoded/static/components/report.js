@@ -32,16 +32,14 @@ var columnChoices = function(schema, selected) {
             }
         });
     }
-    // add embedded columns except those ending in ".length"
+    // add embedded columns
     _.each(schemaColumns, (column, path) => {
-        var suffix = '.length';
-        if (path.indexOf(suffix, path.length - suffix.length) === -1) {
-            columns[path] = {
-                title: column.title,
-                visible: true
-            };
-        }
+        columns[path] = {
+            title: column.title,
+            visible: true
+        };
     });
+
     // add all properties (with a few exceptions)
     _.each(schema.properties, (property, name) => {
         if (name == '@id' || name == '@type' || name == 'uuid') return;
@@ -101,7 +99,14 @@ var lookupColumn = function (result, column) {
                 nextnodes.push(v);
             }
         });
-        nodes = nextnodes;
+        if (names[i + 1] === 'length') {
+            // Displaying the length of an array, so we're done.
+            nodes = [nextnodes.length];
+            break;
+        } else {
+            // Moving on to the next node defined by the `names` array.
+            nodes = nextnodes;
+        }
     }
     // if we ended with an embedded object, show the @id
     if (nodes.length && nodes[0]['@id'] !== undefined) {

@@ -290,7 +290,7 @@
         "replicates.library.biosample.post_synchronization_time_units": {
             "title": "Post-synchronization time units"
         },       
-        "replicates.length": {
+        "replicates.@id": {
             "title": "Replicates"
         },
         "files.length": {
