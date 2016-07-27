@@ -265,10 +265,11 @@ def check_file(config, session, url, job):
                     if len(r_graph) > 0:
                         conflicts = []
                         for entry in r_graph:
-                            conflicts.append(
-                                'checked %s is conflicting with content_md5sum of %s' % (
-                                    result['content_md5sum'],
-                                    entry['accession']))
+                            if entry['uuid'] != item['uuid']:
+                                conflicts.append(
+                                    'checked %s is conflicting with content_md5sum of %s' % (
+                                        result['content_md5sum'],
+                                        entry['accession']))
                         errors['content_md5sum'] = str(conflicts)
 
                 if os.path.exists(unzipped_original_bed_path):
@@ -295,16 +296,17 @@ def check_file(config, session, url, job):
                 except ValueError:
                     errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
                 else:
-                    query = '/search/?type=File&content_md5sum=' + result['content_md5sum']
+                    query = '/search/?type=File&status!=replaced&content_md5sum=' + result['content_md5sum']
                     r = session.get(urljoin(url, query))
                     r_graph = r.json().get('@graph')
                     if len(r_graph) > 0:
                         conflicts = []
                         for entry in r_graph:
-                            conflicts.append(
-                                'checked %s is conflicting with content_md5sum of %s' % (
-                                    result['content_md5sum'],
-                                    entry['accession']))
+                            if entry['uuid'] != item['uuid']:
+                                conflicts.append(
+                                    'checked %s is conflicting with content_md5sum of %s' % (
+                                        result['content_md5sum'],
+                                        entry['accession']))
                         errors['content_md5sum'] = str(conflicts)
     if not errors:
         if item['file_format'] == 'bed':
