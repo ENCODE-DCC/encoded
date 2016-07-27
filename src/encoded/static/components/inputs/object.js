@@ -36,7 +36,7 @@ var SearchBlockEdit = React.createClass({
         if (button) {
             button.focus();
         }
-    },
+    }
 });
 
 
@@ -66,7 +66,7 @@ var ObjectPicker = module.exports.ObjectPicker = React.createClass({
     getInitialState: function() {
         return {
             browsing: false,
-            search: '',
+            search: ''
         };
     },
 
@@ -87,7 +87,7 @@ var ObjectPicker = module.exports.ObjectPicker = React.createClass({
         ];
         var searchParams = this.state.searchParams || this.props.searchBase;
         if (this.state.search) {
-            searchParams += '&searchTerm=' + encodeURIComponent(this.state.search);
+            searchParams += '&searchTerm=' + globals.encodedURIComponent(this.state.search);
         }
         return (
             <div className={"item-picker" + (this.props.disabled ? ' disabled' : '')}>

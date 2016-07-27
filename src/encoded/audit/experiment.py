@@ -1422,6 +1422,83 @@ def scanFilesForPipeline(files_to_scan, pipeline_title_list):
     return False
 
 
+def get_biosamples(experiment):
+    accessions_set = set()
+    biosamples_list = []
+    if 'replicates' in experiment:
+            for rep in experiment['replicates']:
+                if ('library' in rep) and ('biosample' in rep['library']):
+                    biosample = rep['library']['biosample']
+                    if biosample['accession'] not in accessions_set:
+                        accessions_set.add(biosample['accession'])
+                        biosamples_list.append(biosample)
+    return biosamples_list
+
+
+@audit_checker('experiment', frame=['replicates',
+                                    'replicates.library',
+                                    'replicates.library.biosample'])
+def audit_experiment_internal_tag(value, system):
+
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    experimental_tags = []
+    if 'internal_tags' in value:
+        experimental_tags = value['internal_tags']
+
+    updated_experimental_tags = []
+    for tag in experimental_tags:
+        if tag in ['ENTEx', 'SESCC']:
+            updated_experimental_tags.append(tag)
+
+    experimental_tags = updated_experimental_tags
+    biosamples = get_biosamples(value)
+    bio_tags = set()
+
+    for biosample in biosamples:
+        if 'internal_tags' in biosample:
+            for tag in biosample['internal_tags']:
+                if tag in ['ENTEx', 'SESCC']:
+                    bio_tags.add(tag)
+                    if tag not in experimental_tags:
+                        detail = 'This experiment contains a ' + \
+                                 'biosample {} '.format(biosample['@id']) + \
+                                 'with internal tag {} '.format(tag) + \
+                                 'that is not specified in experimental ' + \
+                                 'list of internal_tags {}.'.format(value['internal_tags'])
+                        yield AuditFailure('missing internal tag',
+                                           detail, level='DCC_ACTION')
+
+    if len(bio_tags) == 0 and len(experimental_tags) > 0:
+        for biosample in biosamples:
+            detail = 'This experiment contains a ' + \
+                     'biosample {} without internal tags '.format(biosample['@id']) + \
+                     'belonging to internal tags {} '.format(value['internal_tags']) + \
+                     'of the experiment.'
+            yield AuditFailure('missing internal tags',
+                               detail, level='DCC_ACTION')
+
+    for biosample in biosamples:
+        if len(bio_tags) > 0 and ('internal_tags' not in biosample or
+                                  biosample['internal_tags'] == []):
+            detail = 'This experiment contains a ' + \
+                     'biosample {} with no internal tags '.format(biosample['@id']) + \
+                     'belonging to internal tags {} '.format(list(bio_tags)) + \
+                     'other biosamples are assigned.'
+            yield AuditFailure('inconsistent internal tags',
+                               detail, level='DCC_ACTION')
+        elif len(bio_tags) > 0 and biosample['internal_tags'] != []:
+            for x in bio_tags:
+                if x not in biosample['internal_tags']:
+                    detail = 'This experiment contains a ' + \
+                             'biosample {} without internal tag '.format(biosample['@id']) + \
+                             '{} belonging to internal tags {} '.format(x, list(bio_tags)) + \
+                             'other biosamples are assigned.'
+                    yield AuditFailure('inconsistent internal tags',
+                                       detail, level='DCC_ACTION')
+
+
 def is_gtex_experiment(experiment_to_check):
     for rep in experiment_to_check['replicates']:
         if ('library' in rep) and ('biosample' in rep['library']) and \
@@ -2054,6 +2131,72 @@ def audit_experiment_control(value, system):
                 control.get('biosample_term_name')) + \
                 'but this experiment is done on {}.'.format(value['biosample_term_name'])
             raise AuditFailure('inconsistent control', detail, level='ERROR')
+
+
+@audit_checker('experiment', frame=['possible_controls',
+                                    'possible_controls.original_files',
+                                    'possible_controls.original_files.platform',
+                                    'original_files',
+                                    'original_files.platform'])
+def audit_experiment_platforms_mismatches(value, system):
+    if value['status'] in ['deleted', 'replaced']:
+        return
+    if 'original_files' not in value or \
+       value['original_files'] == []:
+        return
+    platforms = get_platforms_used_in_experiment(value)
+    if len(platforms) > 1:
+        platforms_string = str(list(platforms)).replace('\'', '')
+        detail = 'This experiment ' + \
+                 'contains data produced on incompatible ' + \
+                 'platforms {}.'.format(platforms_string)
+        yield AuditFailure('inconsistent platforms', detail, level='WARNING')
+    elif len(platforms) == 1:
+        platform_term_name = list(platforms)[0]
+        if 'possible_controls' in value and \
+           value['possible_controls'] != []:
+            for control in value['possible_controls']:
+                control_platforms = get_platforms_used_in_experiment(control)
+                if len(control_platforms) > 1:
+                    control_platforms_string = str(list(control_platforms)).replace('\'', '')
+                    detail = 'possible_controls is a list of experiment(s) that can serve ' + \
+                             'as analytical controls for a given experiment. ' + \
+                             'Experiment {} found in possible_controls list of this experiment '.format(control['@id']) + \
+                             'contains data produced on platform(s) {} '.format(control_platforms_string) + \
+                             'which are not compatible with platform {} '.format(platform_term_name) + \
+                             'used in this experiment.'
+                    yield AuditFailure('inconsistent platforms', detail, level='WARNING')
+                elif len(control_platforms) == 1 and \
+                        list(control_platforms)[0] != platform_term_name:
+                    detail = 'possible_controls is a list of experiment(s) that can serve ' + \
+                             'as analytical controls for a given experiment. ' + \
+                             'Experiment {} found in possible_controls list of this experiment '.format(control['@id']) + \
+                             'contains data produced on platform {} '.format(list(control_platforms)[0]) + \
+                             'which is not compatible with platform {} '.format(platform_term_name) + \
+                             'used in this experiment.'
+                    yield AuditFailure('inconsistent platforms', detail, level='WARNING')
+    return
+
+
+def get_platforms_used_in_experiment(experiment):
+    platforms = set()
+    if 'original_files' not in experiment or \
+       experiment['original_files'] == []:
+        return platforms
+
+    for f in experiment['original_files']:
+        if f['output_category'] == 'raw data' and \
+           'platform' in f:
+            # collapsing interchangable platforms
+            if f['platform']['term_name'] in ['HiSeq 2000', 'HiSeq 2500']:
+                platforms.add('HiSeq 2000/2500')
+            elif f['platform']['term_name'] in ['Illumina Genome Analyzer IIx',
+                                                'Illumina Genome Analyzer IIe',
+                                                'Illumina Genome Analyzer II']:
+                platforms.add('Illumina Genome Analyzer II/e/x')
+            else:
+                platforms.add(f['platform']['term_name'])
+    return platforms
 
 
 @audit_checker('experiment', frame=['target',

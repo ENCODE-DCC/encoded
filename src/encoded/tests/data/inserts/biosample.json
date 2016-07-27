@@ -12,6 +12,7 @@
         ],
         "lab": "gregory-crawford",
         "organism": "human",
+        "phase": "S",
         "pooled_from": [
             "ENCBS492ENC",
             "ENCBS493ENC"
@@ -41,6 +42,7 @@
         "dbxrefs": [
             "UCSC-ENCODE-cv:MCF-7"
         ],
+        "host": "ENCBS356AAA",
         "lab": "richard-myers",
         "note": "(PMID: 4357757)",
         "organism": "human",
