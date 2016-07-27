@@ -64,9 +64,13 @@ def audit_antibody_characterization_review(value, system):
 
 def is_not_English(s):
     non_english_chars = re.sub('[ -~]', '', s)
+    list_to_return = []
     for x in non_english_chars:
-        if x not in ['α', 'β', 'γ', 'δ', 'Σ', 'μ', 'λ', 'ε', 'ρ', 'σ', '™']:
-            return x
+        if x.encode('utf8', 'replace') not in [u'α', u'β', u'γ', u'δ',
+                     u'Σ', u'μ', u'λ', u'ε', u'ρ', u'σ', u'™']:
+            list_to_return.append(x)
+    if len(list_to_return) > 0:
+        return list_to_return
     return False
 
 
@@ -79,7 +83,7 @@ def audit_antibody_characterization_caption(value, system):
         detail = 'Antibody characterization caption text \"' + \
                  '{}\" contains non English characters {}.'.format(
                      value['caption'],
-                     list(set(list(not_English_chars))))
+                     list(set(not_English_chars)))
         yield AuditFailure('inconsistent caption', detail, level='DCC_ACTION')
 
 
