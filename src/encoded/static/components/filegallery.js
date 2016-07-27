@@ -125,8 +125,7 @@ var FileTable = module.exports.FileTable = React.createClass({
         },
         'status': {
             title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
-            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
+            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>
         }
     },
 
@@ -173,8 +172,7 @@ var FileTable = module.exports.FileTable = React.createClass({
         },
         'status': {
             title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
-            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
+            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>
         }
     },
 
@@ -223,8 +221,7 @@ var FileTable = module.exports.FileTable = React.createClass({
         },
         'status': {
             title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
-            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
+            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>
         }
     },
 
@@ -268,8 +265,7 @@ var FileTable = module.exports.FileTable = React.createClass({
         },
         'status': {
             title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
-            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
+            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>
         }
     },
 
