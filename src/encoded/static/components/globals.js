@@ -107,8 +107,9 @@ module.exports.unreleased_files_url = function (context) {
         "upload failed",
         "format check failed",
         "in progress",
-        "released"
-    ].map(encodedURIComponent).join('&status=');
+        "released",
+        "archived"
+    ].map(encodeURIComponent).join('&status=');
     return '/search/?limit=all&type=file&dataset=' + context['@id'] + file_states;
 };
 
