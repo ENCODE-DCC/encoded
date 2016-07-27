@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 import pytest
 
 RED_DOT = """data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
