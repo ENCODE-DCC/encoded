@@ -107,34 +107,6 @@
                 "Fahrenheit",
                 "Kelvin"
             ]
-        },
-         "biosamples_used": {
-            "title": "Biosamples used in this treatment.",
-            "description": "Biosamples used in this treatment.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Treatment biosample",
-                "description": "Biosample used in this treatment.",
-                "comment": "See biosample.json for available identifiers.",
-                "type":  "string",
-                "linkTo": "Biosample"
-            }
-        },
-         "antibodies": {
-            "title": "Treatment antibodies",
-            "description": "Antibodies used in this treatment.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Treatment antibody",
-                "description": "Antibody used in this treatment.",
-                "comment": "See antibody_lot.json for available identifiers.",
-                "type":  "string",
-                "linkTo": "AntibodyLot"
-            }
         }
     }
 }

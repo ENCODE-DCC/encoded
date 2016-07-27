@@ -10,16 +10,6 @@
         "uuid": "81251aeb-7975-4364-a078-86db3fa526d4"
     },
     {
-        "concentration": 5000000,
-        "concentration_units": "nM",      
-        "lab": "john-stamatoyannopoulos",        
-        "submitted_by": "blandit.orci@conubia.magna",
-        "treatment_term_name": "goat-anti-GFP-UC",
-        "treatment_type": "antibody",
-        "uuid": "10c05ac0-52a2-11e6-bdf4-0800200c9a66",
-        "antibodies": ["ENCAB728YTO" ]
-    },
-    {
         "concentration": 97.2,
         "concentration_units": "nM",
         "duration": 6,
