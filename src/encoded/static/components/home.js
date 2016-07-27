@@ -138,6 +138,13 @@ var Home = module.exports.Home = React.createClass({
                             <div className="row">
                                 <div className="col-md-12">
                                     <div className="getting-started">
+                                    <header >
+                    <div class="col-sm-12">
+                        <h1 className="page-title">
+                            Getting Started 
+                        </h1>
+                    </div>
+                </header>
                                         <img src="static/img/getting-started.jpg" className="getting-started-image"/>
                                     </div>
                                 </div>
