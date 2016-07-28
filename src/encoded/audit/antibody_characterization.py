@@ -96,9 +96,8 @@ def audit_antibody_characterization_caption(value, system):
         return
     not_English_chars = is_not_English(value['caption'])
     if not_English_chars is not False:
-        detail = 'Antibody characterization caption text \"' + \
-                 '{}\" contains non English characters.'.format(
-                     str(value['caption']))
+        detail = 'Antibody characterization caption text ' + \
+                 'contains non English characters.'
         yield AuditFailure('inconsistent caption', detail, level='DCC_ACTION')
 
 
