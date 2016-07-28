@@ -418,7 +418,7 @@ var RawFileTable = React.createClass({
                                 // the first row of files, spanned to all rows for that replicate and
                                 // library
                                 var spanned = [
-                                    <td key="br" rowSpan={groupFiles.length} className={bottomClass + ' table-raw-merged table-raw-biorep'}>{groupFiles[0].biological_replicates[0]}</td>,
+                                    <td key="br" rowSpan={groupFiles.length} className={bottomClass + ' merge-right table-raw-merged table-raw-biorep'}>{groupFiles[0].biological_replicates[0]}</td>,
                                     <td key="lib" rowSpan={groupFiles.length} className={bottomClass + ' merge-right + table-raw-merged'}>{groupFiles[0].replicate.library.accession}</td>
                                 ];
 
@@ -466,7 +466,7 @@ var RawFileTable = React.createClass({
                                     runType = 'PE';
                                 }
                                 return (
-                                    <tr key={i}>
+                                    <tr key={i} className={pairedRepKeys.length ? 'table-raw-separator' : ''}>
                                         <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
                                         <td>{file.title}&nbsp;<a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a></td>
