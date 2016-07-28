@@ -6,7 +6,6 @@ from snovault import (
 from .ontology_data import biosampleType_ontologyPrefix
 import re
 
-
 @audit_checker('antibody_characterization', frame=['characterization_reviews'])
 def audit_antibody_characterization_review(value, system):
     '''
@@ -64,16 +63,12 @@ def audit_antibody_characterization_review(value, system):
 
 def u(x):
     try:
-        unicode = unicode
+        if isinstance(x, basestring):
+            if not isinstance(x, unicode):
+                x = unicode(x, 'utf-8')
+        return x
     except NameError:
-        str = str
-        unicode = str
-        bytes = bytes
-        basestring = (str, bytes)
-    if isinstance(x, basestring):
-        if not isinstance(x, unicode):
-            x = unicode(x, 'utf-8')
-    return x
+        return x
 
 
 def is_not_English(s):
