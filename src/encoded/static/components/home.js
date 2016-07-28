@@ -11,7 +11,7 @@ var cloneWithProps = require('react/lib/cloneWithProps');
 // Main page component to render the home page
 var Home = module.exports.Home = React.createClass({
 
-    getInitialState: function(){
+    getInitialState: function(){ // sets initial state for current and newtabs
         return {
             current: "?type=Experiment&status=released", // show all released experiments
             newtabs: [] // create empty array of selected tabs
@@ -19,41 +19,35 @@ var Home = module.exports.Home = React.createClass({
     },
 
 
-     handleTabClick: function(tab){ // pass in string with organism query
+     handleTabClick: function(tab){ // pass in string with organism query and either adds or removes tab from list of selected tabs
         
         var tempArray = _.clone(this.state.newtabs); // creates a copy of this.state.newtabs
-        var finalLink = _.clone(this.state.current); // clone current
+        var finalLink = _.clone(this.state.current); // clones current
         
         if (tempArray.indexOf(tab) == -1) { // if tab isn't already in array, then add it
             tempArray.push(tab);
-            
         }
-        else{
-            
-            var indexToRemoveArray = tempArray.indexOf(tab); // if it is in array, remove it from array and from link
+        else{ // otherwise if it is in array, remove it from array and from link
+            var indexToRemoveArray = tempArray.indexOf(tab); 
             tempArray.splice(indexToRemoveArray, 1);
             var indexToRemoveLink = finalLink.indexOf(tab);
             finalLink = finalLink.substr(0, indexToRemoveLink) + finalLink.substr(indexToRemoveLink + tab.length)
         }
         
-        
-        
-
-        var organismString = ""; // create empty string with all organisms selected
-        for(var x = 0; x < tempArray.length; x++){ // add all organisms selected to string
-            if(finalLink.indexOf(tempArray[x]) == -1){
-                organismString = organismString + tempArray[x];
+        var organismString = ""; // create empty string to add all organisms selected
+        for(var x = 0; x < tempArray.length; x++){ 
+            if(finalLink.indexOf(tempArray[x]) == -1){ // if organisms were previously not selected
+                organismString = organismString + tempArray[x]; // then add them in
             }
         }
 
-        
-        finalLink = finalLink + organismString; // add organism queries to link
+        finalLink = finalLink + organismString; // add in updated organism queries to link
 
         this.setState({ 
             newtabs: tempArray // update newtabs
         });
 
-        this.callback(finalLink); // updated current, updating charts
+        this.callback(finalLink); // updated current, updating homepage charts
         
     },
 
@@ -65,7 +59,7 @@ var Home = module.exports.Home = React.createClass({
         
     },
 
-    render: function() {
+    render: function() { // renders home page
         return (
             
             <div className="whole-page">
@@ -134,7 +128,8 @@ var Home = module.exports.Home = React.createClass({
 
 });
 
-var TwitterWidget = React.createClass({ // creating twitter widget
+// Creates twitter widget
+var TwitterWidget = React.createClass({ 
         componentDidMount: function() { // twitter script from API
                 var js, link;
                 link = this.refs.link.getDOMNode();
@@ -170,23 +165,26 @@ var AssayClicking = React.createClass({
         callback: React.PropTypes.func
     },
 
+    // Sets value of updatedLink to current to allow easy modification
     getInitialState: function(){
         return {
             updatedLink: this.props.current
         };
     },
 
+    // Properly adds or removes assay category from link
     sortByAssay: function(category) {
         var oldLink = this.props.current; // getting original search
         var startingIndex = oldLink.search("&assay_slims="); // getting index of "&assay_slims=" in original search link if it's there
+        
         if (startingIndex != -1) { // if &assay_slims already is in original search link, then remove it so we can add the correct "&assay_slims="
             var endingIndex = startingIndex + 13; // adding the length of "&assay_slims" to make endingIndex the index of the category
+            
             while (endingIndex < oldLink.length-1 && oldLink.substring(endingIndex, endingIndex + 1) != "&") { // either get to end of string or find next parameter starting with "&"
                 endingIndex++; // increase endingIndex until the end of the "&assay_slims=" parameter
-                console.log("endingIndex: " + endingIndex);
             }
+            
             if(endingIndex != oldLink.length-1){ // if did not reach end of string, "&assay_slims=" is in middle of search
-                console.log("from starting to ending: " + oldLink.substr(startingIndex, endingIndex));
                 oldLink = oldLink.substr(0, startingIndex) + oldLink.substr(endingIndex +1); // assay_slims part is from (startingIndex, endingIndex), so cut that out of oldLink
             }
             else{ // "&assay_slims=" is at end of search
@@ -199,28 +197,27 @@ var AssayClicking = React.createClass({
 
     },
 
+    // Binds clicking to SVG rectangles
     bindClickHandlers: function(d3, el) {
         // Add click event listeners to each rectangle
         var svg = el[0];
         el.on('click', rect => {
-            console.log(rect);
-            //this.props.
             this.sortByAssay(rect); // calls function to properly add in rectangle to link
         });
     },
 
 
     componentDidMount: function() {
-        // Draw the chart of search results given in this.props.data.facets. Since D3 doesn't work
+        // Since D3 doesn't work
         // with the React virtual DOM, we have to load it separately using the webpack .ensure
         // mechanism. Once the callback is called, it's loaded and can be referenced through
         // require.
 
-
+        // Requires d3, selects rectangles, and calls bindClickHandlers
         require.ensure(['d3'], function(require) {
                  if (this.refs.graphdisplay) {
                     this.d3 = require('d3');
-                //     this.dagreD3 = require('dagre-d3');
+                
                 var allRects = this.d3.selectAll("rect.rectangle-box");
                 var dataset = [];
                 for(var x = 0; x < allRects[0].length; x++){
@@ -229,9 +226,8 @@ var AssayClicking = React.createClass({
 
                     var el = this.d3.selectAll("rect.rectangle-box")
                         .data(dataset);
-                        //.enter();
-                    var breakPoint = 0;
-                     this.bindClickHandlers(this.d3, el);
+
+                    this.bindClickHandlers(this.d3, el);
                  }
 
                 
@@ -242,6 +238,7 @@ var AssayClicking = React.createClass({
 
     },
 
+    // Renders classic image and svg rectangles
     render: function() {
         return (
             <div ref="graphdisplay"> 
@@ -271,12 +268,13 @@ var AssayClicking = React.createClass({
 
 });
 
-
+// Passes in tab to handleTabClick
 var TabClicking = React.createClass({
     propTypes: {
         handleTabClick: React.PropTypes.func
     },
 
+    // Gives proper queries to tabs
     getInitialState: function(){
         return {
             queryStrings: ['&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens', // human
@@ -297,16 +295,8 @@ var TabClicking = React.createClass({
 
 
     componentDidMount: function() {
-        // Draw the chart of search results given in this.props.data.facets. Since D3 doesn't work
-        // with the React virtual DOM, we have to load it separately using the webpack .ensure
-        // mechanism. Once the callback is called, it's loaded and can be referenced through
-        // require.
-
-
 
         var tabBoxes = document.getElementById("tabdisplay");
-
-
 
     },
 
@@ -337,7 +327,7 @@ var TabClicking = React.createClass({
 
 
 
-// Component to display the D3-based chart
+// Component to display the D3-based chart for Project
 var HomepageChart = React.createClass({
 
     contextTypes: {
@@ -406,18 +396,17 @@ var HomepageChart = React.createClass({
                     onClick: (e) => {
                         // React to clicks on pie sections
                         var activePoints = this.myPieChart.getElementAtEvent(e);
-                        //colors[0] = "#0000FF"; //changes initial color values
+
                         if (activePoints[0] == null) {
-                            var hi = 0;
+                            var placeholder = 0;
                         }
                         else{
                             var term = assayFacet.terms[activePoints[0]._index].key;
                             this.context.navigate(this.props.data['@id'] + '&award.project=' + term);
                         }
 
-                        this.myPieChart.clear();
+                        
                         this.myPieChart.update();
-                        this.myPieChart.clear();
                         this.myPieChart.render();
                         this.forceUpdate();
                     }
@@ -433,11 +422,12 @@ var HomepageChart = React.createClass({
     },
 
     componentDidUpdate: function(){
+        this.myPieChart.destroy(); // clears old chart before creating new one
         this.drawChart();
     },
 
     render: function() {
-        console.log("RENDERING");
+
         return (
             <div>
                 <canvas id="myChart" width="0" height="0"></canvas>
@@ -473,7 +463,7 @@ var HomepageChartLoader = React.createClass({
 
 });
 
-// Component to display the D3-based chart
+// Component to display the D3-based chart for Biosample
 var HomepageChart2 = React.createClass({
 
     contextTypes: {
@@ -542,6 +532,7 @@ var HomepageChart2 = React.createClass({
     },
 
     componentDidUpdate: function() {
+        this.myPieChart.destroy(); // clears old chart before creating new one
         this.drawChart();
     },
 
