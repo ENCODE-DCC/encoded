@@ -766,6 +766,9 @@
         },
         "summary": {
             "title": "Summary"
+        },
+        "summary_object": {
+            "title": "Summary object"
         }
     },
     "boost_values": {

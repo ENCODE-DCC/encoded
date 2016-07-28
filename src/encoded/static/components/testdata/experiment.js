@@ -6,6 +6,7 @@ module.exports = {
     "assay_term_id": "OBI:0001271",
     "assay_term_name": "RNA-seq",
     "award": require('./award'),
+    "biosample_summary": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
     "biosample_term_id": "EFO:0002067",
     "biosample_term_name": "K562",
     "biosample_type": "immortalized cell line",

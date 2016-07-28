@@ -15,6 +15,7 @@ var reference = require('./reference');
 var objectutils = require('./objectutils');
 var sortTable = require('./sorttable');
 var doc = require('./doc');
+var {BiosampleSummaryString} = require('./typeutils');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -267,12 +268,10 @@ var Biosample = module.exports.Biosample = React.createClass({
                                         <dd><BiosampleTermId termId={context.biosample_term_id} /></dd>
                                     </div>
 
-                                    {context.summary ?
-                                        <div data-test="summary">
-                                            <dt>Summary</dt>
-                                            <dd>{context.summary}</dd>
-                                        </div>
-                                    : null}
+                                    <div data-test="summary">
+                                        <dt>Summary</dt>
+                                        <dd>{BiosampleSummaryString(context)}</dd>
+                                    </div>
 
                                     {context.description ? 
                                         <div data-test="description">
