@@ -393,7 +393,9 @@
                 "chemical",
                 "exposure",
                 "infection",
-                "antibody"
+                "antibody",
+                "transplantation",
+                "injection"
             ]
         },
         "treatment_term_id": {
