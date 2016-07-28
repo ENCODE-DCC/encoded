@@ -292,9 +292,6 @@
         },       
         "replicates.@id": {
             "title": "Replicates"
-        },
-        "files.uuid": {
-            "title": "Files"
         }
     },
     "boost_values": {
