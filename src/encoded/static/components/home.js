@@ -19,7 +19,7 @@ var Home = module.exports.Home = React.createClass({
     },
 
 
-     handleTabClick: function(tab){ // pass in string with organism query and either adds or removes tab from list of selected tabs
+    handleTabClick: function(tab){ // pass in string with organism query and either adds or removes tab from list of selected tabs
         
         var tempArray = _.clone(this.state.newtabs); // creates a copy of this.state.newtabs
         var finalLink = _.clone(this.state.current); // clones current
@@ -31,7 +31,7 @@ var Home = module.exports.Home = React.createClass({
             var indexToRemoveArray = tempArray.indexOf(tab); 
             tempArray.splice(indexToRemoveArray, 1);
             var indexToRemoveLink = finalLink.indexOf(tab);
-            finalLink = finalLink.substr(0, indexToRemoveLink) + finalLink.substr(indexToRemoveLink + tab.length)
+            finalLink = finalLink.substr(0, indexToRemoveLink) + finalLink.substr(indexToRemoveLink + tab.length);
         }
         
         var organismString = ""; // create empty string to add all organisms selected
@@ -130,31 +130,31 @@ var Home = module.exports.Home = React.createClass({
 
 // Creates twitter widget
 var TwitterWidget = React.createClass({ 
-        componentDidMount: function() { // twitter script from API
-                var js, link;
-                link = this.refs.link.getDOMNode();
-                if (!this.initialized) {
-                    this.initialized = true;
-                    js = document.createElement("script");
-                    js.id = "twitter-wjs";
-                    js.src = "//platform.twitter.com/widgets.js";
-                    return link.parentNode.appendChild(js);
-                }
-            },
-        render: function() {
-            var content, ref2, title, widget;
-            return (
-                <a
-                ref= "link"
-                className= "twitter-timeline"
-                href= "https://twitter.com/encodedcc" // from encodedcc twitter
-                widget-id= "encodedcc" 
-                //data-tweet-limit = "4"
-                //data-width = "300"
-                data-height = "1110" // height so it matches with rest of site
-                ></a>
-            );
+    componentDidMount: function() { // twitter script from API
+        var js, link;
+        link = this.refs.link.getDOMNode();
+        if (!this.initialized) {
+            this.initialized = true;
+            js = document.createElement("script");
+            js.id = "twitter-wjs";
+            js.src = "//platform.twitter.com/widgets.js";
+            return link.parentNode.appendChild(js);
         }
+    },
+    render: function() {
+        var content, ref2, title, widget;
+        return (
+            <a
+            ref= "link"
+            className= "twitter-timeline"
+            href= "https://twitter.com/encodedcc" // from encodedcc twitter
+            widget-id= "encodedcc" 
+            //data-tweet-limit = "4"
+            //data-width = "300"
+            data-height = "1110" // height so it matches with rest of site
+            ></a>
+        );
+    }
 });
 
 
@@ -215,23 +215,23 @@ var AssayClicking = React.createClass({
 
         // Requires d3, selects rectangles, and calls bindClickHandlers
         require.ensure(['d3'], function(require) {
-                 if (this.refs.graphdisplay) {
-                    this.d3 = require('d3');
-                
+            if (this.refs.graphdisplay) {
+                this.d3 = require('d3');
+            
                 var allRects = this.d3.selectAll("rect.rectangle-box");
                 var dataset = [];
                 for(var x = 0; x < allRects[0].length; x++){
                     dataset.push(allRects[0][x].id);
                 }
 
-                    var el = this.d3.selectAll("rect.rectangle-box")
-                        .data(dataset);
+                var el = this.d3.selectAll("rect.rectangle-box")
+                    .data(dataset);
 
-                    this.bindClickHandlers(this.d3, el);
-                 }
+                this.bindClickHandlers(this.d3, el);
+            }
 
                 
-            }.bind(this));
+        }.bind(this));
 
 
         var temp = document.getElementById("graphdisplay");
@@ -253,7 +253,7 @@ var AssayClicking = React.createClass({
                     <rect id = "DNA+accessibility" x="1289.3" y="774.1" class="st0" width="255.6" height="213.2" className="rectangle-box"/>
                     <rect id = "DNA+binding" x="1566.7" y="774.1" class="st0" width="219.2" height="213.2" className="rectangle-box"/>
                     <rect id = "DNA+methylation" x="1807.8" y="774.1" class="st0" width="272.2" height="213.2" className="rectangle-box"/>
-                    <rect id = "tbd" x="2104.5" y="774.1" class="st0" width="345" height="213.2" className="rectangle-box"/>
+                    <rect id = "" x="2104.5" y="774.1" class="st0" width="345" height="213.2" className="rectangle-box"/>
                     <rect id = "Transcription" x="2472" y="774.1" class="st0" width="219.2" height="213.2" className="rectangle-box"/>
                     <rect id = "RNA+binding" x="2713.8" y="774.1" class="st0" width="209.3" height="214.6" className="rectangle-box"/>
                     
@@ -379,7 +379,7 @@ var HomepageChart = React.createClass({
             // Pass the assay_title counts to the charting library to render it.
 
             var canvas = document.getElementById("myChart");
-            var ctx = canvas.getContext("2d")
+            var ctx = canvas.getContext("2d");
 
             this.myPieChart = new Chart(ctx, {
                 type: 'doughnut',
