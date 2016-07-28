@@ -314,8 +314,8 @@ def check_file(config, session, url, job):
         else:
             check_format(config['encValData'], job, local_path)
 
-    if item['file_format'] == 'bed':
-        if os.path.exists(unzipped_modified_bed_path):
+    if item['file_format'] == 'bed' and \
+                              os.path.exists(unzipped_modified_bed_path):
             try:
                 os.remove(unzipped_modified_bed_path)
             except OSError as e:
