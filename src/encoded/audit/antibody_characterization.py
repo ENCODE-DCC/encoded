@@ -63,6 +63,13 @@ def audit_antibody_characterization_review(value, system):
 
 
 def u(x):
+    try:
+        unicode = unicode
+    except NameError:
+        str = str
+        unicode = str
+        bytes = bytes
+        basestring = (str, bytes)
     if isinstance(x, basestring):
         if not isinstance(x, unicode):
             x = unicode(x, 'utf-8')
