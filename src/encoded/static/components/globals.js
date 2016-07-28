@@ -115,6 +115,7 @@ module.exports.unreleased_files_url = function (context) {
     return '/search/?limit=all&type=file&dataset=' + context['@id'] + file_states;
 };
 
+
 // Just like encodeURIComponent, but also encodes parentheses (Redmine #4242). Replace spaces with
 // `space` parameter, or '+' if not provided.
 // http://stackoverflow.com/questions/8143085/passing-and-through-a-uri-causes-a-403-error-how-can-i-encode-them#answer-8143232
