@@ -306,6 +306,23 @@
             "type": "string"
         }
     },
+    "genetic_modifications": {
+        "genetic_modifications": {
+            "title": "Genetic modifications",
+            "description": "Genetic modification(s). Any genomic alteration or addition of vectors stably or transiently transfected.",
+            "type": "array",
+            "default": [],
+            "permission": "import_items",
+            "uniqueItems": true,
+            "items": {
+                "title": "Genetic modification",
+                "description": "Genetic modification(s).",
+                "comment": "See genetic_modification.json for available identifiers.",
+                "type":  "string",
+                "linkTo": "GeneticModification"
+            }
+        }
+    },
     "genomic_alterations": {
         "genotype": {
             "title": "Strain genotype",
@@ -407,5 +424,5 @@
                 "linkTo": "Document"
             }
         }
-    }
+    }    
 }
