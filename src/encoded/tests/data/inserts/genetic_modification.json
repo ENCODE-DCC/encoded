@@ -8,7 +8,7 @@
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
         "source":"gregory-crawford",
-        "modification_type": "monoallelic deletion",
+        "modification_type": "replacement",
         "modification_techniques": [
         	"encode:crispr-test-1"
         ],
@@ -23,7 +23,7 @@
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
         "source":"gregory-crawford",
-        "modification_type": "monoallelic deletion",
+        "modification_type": "deletion",
         "modification_techniques": [
             "encode:tale-test-1"
         ],
