@@ -31,6 +31,8 @@ TRACKDB_TXT = 'trackDb.txt'
 BIGWIG_FILE_TYPES = ['bigWig']
 BIGBED_FILE_TYPES = ['bigBed']
 
+INVISIBLE_FILE_STATUSES = ["revoked", "replaced", "deleted", "archived" ]
+
 
 # Supported tokens are the only tokens the code currently know how to look up and swap into text stings.
 SUPPORTED_MASK_TOKENS = [
@@ -803,7 +805,7 @@ ANNO_COMPOSITE_VIS_DEFS = {
         "longLabel":  "Collection of ENCODE annotations",
         "shortLabel": "ENCODE annotations",
     },
-    "longLabel":  "{annotation_type} of {replicates.library.biosample.summary|multiple} - {accession}", #blank means "multiple biosamples"
+    "longLabel":  "Encyclopedia annotation of {annotation_type} for {bisoample_term_name|multiple} - {accession}", #blank means "multiple biosamples"
     "shortLabel": "{annotation_type} of {biosample_term_name|multiple} {accession}", #blank means "multiple biosamples" not unknown
     "sortOrder": [ "Biosample","Replicates", "Views" ],
     "Views":  {
@@ -863,7 +865,7 @@ ANNO_COMPOSITE_VIS_DEFS = {
         }
     },
     "file_defs": {
-        "longLabel": "{target} {assay_title} of {biosample_term_name} {output_type} {replicate} {experiment.accession} - {file.accession}",
+        "longLabel": "Encyclopedia annotation of {biosample_term_name} {output_type} {replicate} {experiment.accession} - {file.accession}",
         "shortLabel": "{replicate} {output_type_short_label}",
     }
 }
@@ -922,12 +924,12 @@ def lookup_vis_defs(vis_type):
     return VIS_DEFS_BY_ASSAY.get(vis_type, COMPOSITE_VIS_DEFS_DEFAULT )
 
 PENNANTS = {
-    "NHGRI":  "encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the files and metadata found at https://www.encodeproject.org/\"",
-    "ENCODE": "http://genome.ucsc.edu/images/encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the ENCODE files and metadata found at https://www.encodeproject.org/\"",
+    "NHGRI":  "https://raw.githubusercontent.com/ENCODE-DCC/encoded/4250-pennants/src/encoded/static/img/pennant-nhgri.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the files and metadata found at https://www.encodeproject.org/\"",
+    "ENCODE": "https://raw.githubusercontent.com/ENCODE-DCC/encoded/4250-pennants/src/encoded/static/img/pennant-encode.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the ENCODE files and metadata found at https://www.encodeproject.org/\"",
     #"ENCODE": "encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the ENCODE files and metadata found at https://www.encodeproject.org/\"",
-    "modENCODE":"encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the modENCODE files and metadata found at https://www.encodeproject.org/\"",
-    "GGR":    "encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the GGR files and metadata found at https://www.encodeproject.org/\"",
-    #"REMC":   "encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the REMC files and metadata found at https://www.encodeproject.org/\"",
+    "modENCODE":"pennant-encode.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the modENCODE files and metadata found at https://www.encodeproject.org/\"",
+    "GGR":    "https://raw.githubusercontent.com/ENCODE-DCC/encoded/4250-pennants/src/encoded/static/img/pennant-ggr.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the GGR files and metadata found at https://www.encodeproject.org/\"",
+    #"REMC":   "https://raw.githubusercontent.com/ENCODE-DCC/encoded/4250-pennants/src/encoded/static/img/pennant-remc.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the REMC files and metadata found at https://www.encodeproject.org/\"",
     #"Roadmap":   "encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the Roadmap files and metadata found at https://www.encodeproject.org/\"",
     #"modERN":   "encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the modERN files and metadata found at https://www.encodeproject.org/\"",
     }
@@ -1516,6 +1518,8 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
         if file_format == "bigBed" and "scoreFilter" in view:
             view["type"] = "bigBed 6 +" # be more discriminating as to what bigBeds are 6 + ?  Just rely on scoreFilter
         for a_file in dataset["files"]:
+            if a_file['status'] in INVISIBLE_FILE_STATUSES:
+                continue
             if 'assembly' not in a_file or a_file['assembly'] != assembly:
                 continue
             if file_format != a_file['file_format']:
@@ -1594,6 +1598,10 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
             metadata_pairs = {}
             metadata_pairs['file&#32;download'] = '"<a href=\"%s%s\" title=\'Download this file from the ENCODE portal\'>%s</a>"' % (host,a_file["href"],a_file["accession"])
             metadata_pairs["experiment"] = '"<a href=\"%s/experiments/%s\" TARGET=\'_blank\' title=\'Experiment details from the ENCODE portal\'>%s</a>"' % (host,dataset["accession"],dataset["accession"])
+            lab_title = a_file.get("lab",dataset.get("lab",{})).get("title")
+            if lab_title is not None:
+                metadata_pairs["source"] = '"%s"' % lab_title
+
 
             # Expecting short label to change when making assay based composites
             shortLabel = vis_defs.get('file_defs',{}).get('shortLabel',"{replicate} {output_type_short_label}")
@@ -1742,7 +1750,9 @@ def remodel_acc_to_set_composites(acc_composites,hide_after=None):
     for acc in sorted( acc_composites.keys() ):
         acc_composite = acc_composites[acc]
         if acc_composite is None or len(acc_composite) == 0: # wounded composite can be dropped or added for evidence
+            #log.warn("Found empty acc_composite for %s" % (acc)) # DEBUG: remodelling
             set_composites[acc] = {}
+            continue
 
         # Only show the first n datasets
         if hide_after != None:
@@ -1826,6 +1836,7 @@ def remodel_acc_to_set_composites(acc_composites,hide_after=None):
                             insert_live_group(set_group,subgroup_tag,acc_subgroups[subgroup_tag]) # Adding biosamples, targets, and reps
 
             # dimensions and filterComposite should not need any extra care: they get dynamically scaled down during printing
+            #log.warn("       Added.") # DEBUG: remodelling
 
     return set_composites
 
@@ -1971,7 +1982,7 @@ def generate_acc_composite(request, dataset, assembly, hide=False):
     ### LRNA: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR000AAA/@@hub/GRCh38/trackDb.txt
 
     start_time = time.time()
-    regen_vis = (request.url.find("regenvis") > -1)
+    regen_vis = (request.url.find("regenvis") > -1) # @@hub/GRCh38/regenvis/trackDb.txt  regenvis/GRCh38 causes and error
 
     acc_composite = None
     es_key = dataset['accession']+"_"+assembly
@@ -1994,28 +2005,34 @@ def generate_acc_composite(request, dataset, assembly, hide=False):
 
 def generate_trackDb(request, dataset, assembly, hide=False):
 
+    acc = dataset['accession']
     acc_composite = generate_acc_composite(request, dataset, assembly, hide=hide)
-    return ucsc_trackDb_composite_blob(acc_composite,dataset['accession'])
+    #del dataset
+    return ucsc_trackDb_composite_blob(acc_composite,acc)
 
 
 def generate_batch_trackDb(request, results, assembly, hide=False):
 
     ### local test: RNA-seq: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/batch_hub/type=Experiment,,assay_title=RNA-seq,,award.rfa=ENCODE3,,status=released,,assembly=GRCh38,,replicates.library.biosample.biosample_type=induced+pluripotent+stem+cell+line/GRCh38/trackDb.txt
 
-    regen_vis = request.url.find("regenvis")
+    regen_vis = request.url.find("regenvis") # ...&assembly=hg19&regenvis/hg19/trackDb.txt  regenvis=1 causes an error
     acc_composites = {}
     start_time = time.time()
     found = 0
     made = 0
-    for (i, dataset) in enumerate(results):
+    log.warn("len(results) = %d" % (len(results)))  # DEBUG: batch trackDb
+    for dataset in results:
+        acc = dataset['accession']
+        # TODO: When log messages are no longer important:
         #acc_composite = generate_acc_composite(request, dataset, assembly, hide=hide)
+
         acc_composite = None
-        es_key = dataset['accession']+"_"+assembly
+        es_key = acc+"_"+assembly
         if regen_vis == -1: # Find composite?
             acc_composite = get_from_es(request,es_key)
 
         if acc_composite is None:
-            #log.warn("making composite " + dataset['accession'])
+            #log.warn("making composite " + acc)
             acc_composite = make_acc_composite(dataset, assembly, host=request.host_url, hide=hide)
             #if acc_composite:
             add_to_es(request,es_key,acc_composite)
@@ -2023,14 +2040,17 @@ def generate_batch_trackDb(request, results, assembly, hide=False):
         else:
             found += 1
 
-        acc_composites[dataset['accession']] = make_acc_composite(dataset, assembly, host=request.host_url)
+        acc_composites[acc] = acc_composite
+        del dataset
 
+    log.warn("len(acc_comosites) =  %d   %.3f secs" % (len(acc_composites),(time.time() - start_time)))  # DEBUG: batch trackDb
     set_composites = remodel_acc_to_set_composites(acc_composites) # ,hide_after=5) # TODO: set a reasonable hide_after
-    log.warn("generated %d, found %d acc_composites %.3f" % (made,found,(time.time() - start_time)))
+    log.warn("generated %d, found %d acc_composites %.3f secs" % (made,found,(time.time() - start_time)))
 
     blob = ""
     for composite_tag in sorted( set_composites.keys() ):
         blob += ucsc_trackDb_composite_blob(set_composites[composite_tag],composite_tag)
+    log.warn("Length of trackDb %d %.3f secs" % (len(blob),(time.time() - start_time)))  # DEBUG: batch trackDb
 
     return blob
 
@@ -2044,14 +2064,27 @@ def render(data):
     return arr
 
 
-def get_genomes_txt(assembly):
+def get_genome_txt(assembly):
     # UCSC shim
     ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
     genome = OrderedDict([
-        ('trackDb', assembly + '/trackDb.txt'),
+        #('trackDb', assembly + '/trackDb.txt'),  # TODO: make a decision on mm10-minimal/trackdDb.txt vs. mm10/trackDb.txt
+        ('trackDb', ucsc_assembly + '/trackDb.txt'),
         ('genome', ucsc_assembly)
     ])
     return render(genome)
+
+def get_genomes_txt(assemblies):
+    blob = ''
+    ucsc_assemblies = set()
+    for assembly in assemblies:
+        ucsc_assemblies.add(_ASSEMBLY_MAPPER.get(assembly, assembly))
+    for ucsc_assembly in ucsc_assemblies:
+        if blob == '':
+            blob = NEWLINE.join(get_genome_txt(ucsc_assembly))
+        else:
+            blob += 2 * NEWLINE + NEWLINE.join(get_genome_txt(ucsc_assembly))
+    return blob
 
 
 def get_hub(label,comment=None,name=None):
@@ -2101,11 +2134,14 @@ def generate_html(context, request):
         page = '<h2>%s</h2>' % longLabel
 
         # TO IMPROVE: limit the search url to this assay only.  Not easy since vis_def is not 1:1 with assay
-        param_list = parse_qs(request.matchdict['search_params'].replace(',,', '&'))
-        search_url = '%s/search/?%s' % (request.host_url,urlencode(param_list, True))
-        #search_url = (request.url).split('@@hub')[0]
-        search_link = '<a href=%s>Original search<a><BR>' % search_url
-        page += search_link
+        try:
+            param_list = parse_qs(request.matchdict['search_params'].replace(',,', '&'))
+            search_url = '%s/search/?%s' % (request.host_url,urlencode(param_list, True))
+            #search_url = (request.url).split('@@hub')[0]
+            search_link = '<a href=%s>Original search<a><BR>' % search_url
+            page += search_link
+        except:
+            pass
 
     # TODO: Extend page with assay specific details
     details = vis_defs.get("html_detail")
@@ -2136,7 +2172,7 @@ def generate_batch_hubs(context, request):
         assembly = str(request.matchdict['assembly'])
         params = {
             'files.file_format': BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES,
-            'status': ['released'],
+            #'status': ['released'], # TODO: Not just released!
         }
         params.update(param_list)
         params.update({
@@ -2174,20 +2210,16 @@ def generate_batch_hubs(context, request):
         results = request.embed(path, as_user=True)
         g_text = ''
         if 'assembly' in param_list:
-            for assembly in param_list.get('assembly'):
-                if g_text == '':
-                    g_text = NEWLINE.join(get_genomes_txt(assembly))
-                else:
-                    g_text = g_text + 2 * NEWLINE + NEWLINE.join(get_genomes_txt(assembly))
+            g_text = get_genomes_txt(param_list.get('assembly'))
         else:
             for facet in results['facets']:
                 if facet['field'] == 'assembly':
+                    assemblies = []
                     for term in facet['terms']:
                         if term['doc_count'] != 0:
-                            if g_text == '':
-                                g_text = NEWLINE.join(get_genomes_txt(term['key']))
-                            else:
-                                g_text = g_text + 2 * NEWLINE + NEWLINE.join(get_genomes_txt(term['key']))
+                            assemblies.append(term['key'])
+                    if len(assemblies) > 0:
+                        g_text = get_genomes_txt(assemblies)
         return g_text
 
 
@@ -2214,12 +2246,7 @@ def hub(context, request):
             content_type='text/plain'
         )
     elif url_ret[1][1:] == GENOMES_TXT:
-        g_text = ''
-        for assembly in assemblies:
-            if g_text == '':
-                g_text = NEWLINE.join(get_genomes_txt(assembly))
-            else:
-                g_text = g_text + 2 * NEWLINE + NEWLINE.join(get_genomes_txt(assembly))
+        g_text = get_genomes_txt(assemblies)
         return Response(g_text, content_type='text/plain')
     elif url_ret[1][1:].endswith(TRACKDB_TXT):
         parent_track = generate_trackDb(request, embedded, url_ret[1][1:].split('/')[0])
