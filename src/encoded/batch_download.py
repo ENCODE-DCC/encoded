@@ -66,6 +66,7 @@ _tsv_mapping = OrderedDict([
     ('Biological replicate(s)', ['files.biological_replicates']),
     ('Technical replicate', ['files.replicate.technical_replicate_number']),
     ('Read length', ['files.read_length']),
+    ('Mapped read length', ['files.mapped_read_length']),
     ('Run type', ['files.run_type']),
     ('Paired end', ['files.paired_end']),
     ('Paired with', ['files.paired_with']),

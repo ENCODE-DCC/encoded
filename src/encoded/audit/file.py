@@ -183,9 +183,10 @@ def audit_file_biological_replicate_number_match(value, system):
                          ', but it was derived from file {} '.format(derived_from_file['@id']) + \
                          'which is associated with a replicate [{},{}].'.format(
                              derived_replicate[0],
-                             derived_replicate[1]),
-                raise AuditFailure('inconsistent replicate',
+                             derived_replicate[1])
+                yield AuditFailure('inconsistent replicate',
                                    detail, level='ERROR')
+                return
 
 
 @audit_checker('file', frame=['replicate', 'dataset', 'replicate.experiment'])
@@ -212,7 +213,8 @@ def audit_file_replicate_match(value, system):
                  '{}, but that replicate is associated with a different '.format(
                      value['replicate']['@id']) + \
                  'experiment {}.'.format(value['replicate']['experiment']['@id'])
-        raise AuditFailure('inconsistent replicate', detail, level='ERROR')
+        yield AuditFailure('inconsistent replicate', detail, level='ERROR')
+        return
 
 
 @audit_checker('file', frame=['award'],
@@ -362,14 +364,12 @@ def audit_file_controlled_by(value, system):
     biosample_term_name = value['dataset'].get('biosample_term_name')
     run_type = value.get('run_type', None)
     read_length = value.get('read_length', None)
-    platform = value.get('platform', None)
 
     if value['controlled_by']:
         for ff in value['controlled_by']:
             control_bs = ff['dataset'].get('biosample_term_id')
             control_run = ff.get('run_type', None)
             control_length = ff.get('read_length', None)
-            control_platform = ff.get('platform', None)
 
             if control_bs != biosample:
                 detail = 'controlled_by is a list of files that are used as controls for a given file. ' + \
@@ -378,7 +378,7 @@ def audit_file_controlled_by(value, system):
                          '{} that belongs to experiment with different biosample {}.'.format(
                              ff['@id'],
                              ff['dataset'].get('biosample_term_name'))
-                yield AuditFailure('mismatched control', detail, level='ERROR')
+                yield AuditFailure('inconsistent control', detail, level='ERROR')
                 return
 
             if ff['file_format'] != value['file_format']:
@@ -389,7 +389,7 @@ def audit_file_controlled_by(value, system):
                          'a file {} with different file_format {}.'.format(
                              ff['@id'],
                              ff['file_format'])
-                yield AuditFailure('mismatched control', detail, level='ERROR')
+                yield AuditFailure('inconsistent control', detail, level='ERROR')
                 return
 
             if (possible_controls is None) or (ff['dataset']['@id'] not in possible_controls):
@@ -402,21 +402,10 @@ def audit_file_controlled_by(value, system):
                              ff['@id']) + \
                          'that belongs to an experiment {} that '.format(ff['dataset']['@id']) + \
                          'is not specified in possible_controls list of this experiment.'
-                yield AuditFailure('mismatched control', detail, level='ERROR')
+
+                yield AuditFailure('inconsistent control', detail, level='ERROR')
                 return
 
-            if control_platform is not None and platform is not None:
-                platform_id = platform.get('term_id')
-                control_platform_id = control_platform.get('term_id')
-                if control_platform_id != platform_id:
-                    detail = 'File {} is on {} but its control file {} is on {}'.format(
-                        value['@id'],
-                        value['platform'].get('term_name'),
-                        ff['@id'],
-                        control_platform.get('term_name')
-                    )
-                    yield AuditFailure('inconsistent control platform',
-                                       detail, level='WARNING')
 
             if (run_type is None) or (control_run is None):
                 continue
