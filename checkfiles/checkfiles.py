@@ -313,14 +313,19 @@ def check_file(config, session, url, job):
             check_format(config['encValData'], job, unzipped_modified_bed_path)
         else:
             check_format(config['encValData'], job, local_path)
-
-    if item['file_format'] == 'bed' and \
-                              os.path.exists(unzipped_modified_bed_path):
+    else:
+        if item['file_format'] == 'bed':
             try:
-                os.remove(unzipped_modified_bed_path)
-            except OSError as e:
-                errors['file_remove_error'] = 'OS could not remove the file ' + \
-                                              unzipped_modified_bed_path
+                unzipped_modified_bed_path = unzipped_modified_bed_path
+            except NameError:
+                errors['file_create_error'] = 'OS could not create the unzipped modified bed file'
+            else:
+                if os.path.exists(unzipped_modified_bed_path):
+                    try:
+                        os.remove(unzipped_modified_bed_path)
+                    except OSError as e:
+                        errors['file_remove_error'] = 'OS could not remove the file ' + \
+                                                      unzipped_modified_bed_path
     if item['status'] != 'uploading':
         errors['status_check'] = \
             "status '{}' is not 'uploading'".format(item['status'])
