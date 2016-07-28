@@ -289,6 +289,36 @@ var RawFileTable = React.createClass({
         this.setState({collapsed: !this.state.collapsed});
     },
 
+    sortBioReps: function(a, b) {
+        // Sorting function for biological replicates of the given files.
+        var result = undefined; // Ends sorting loop once it has a value
+        var i = 0;
+        var repA = (a.biological_replicates && a.biological_replicates.length) ? a.biological_replicates[i] : undefined;
+        var repB = (b.biological_replicates && b.biological_replicates.length) ? b.biological_replicates[i] : undefined;
+        while (result === undefined) {
+            if (repA !== undefined && repB !== undefined) {
+                // Both biological replicates have a value
+                if (repA != repB) {
+                    // We got a real sorting result
+                    result = repA - repB;
+                } else {
+                    // They both have values, but they're equal; go to next
+                    // biosample replicate array elements
+                    i += 1;
+                    repA = a.biological_replicates[i];
+                    repB = b.biological_replicates[i];
+                }
+            } else if (repA !== undefined || repB !== undefined) {
+                // One and only one replicate empty; sort empty one after
+                result = repA ? 1 : -1;
+            } else {
+                // Both empty; sorting result same
+                result = 0;
+            }
+        }
+        return result;
+    },
+
     render: function() {
         var {files, meta} = this.props;
         var loggedIn = meta.session && meta.session['auth.userid'];
@@ -427,34 +457,7 @@ var RawFileTable = React.createClass({
                                     );
                                 });
                             })}
-                            {nonpairedFiles.sort((a,b) => {
-                                var result = undefined; // Ends sorting loop once it has a value
-                                var i = 0;
-                                var repA = (a.biological_replicates && a.biological_replicates.length) ? a.biological_replicates[i] : undefined;
-                                var repB = (b.biological_replicates && b.biological_replicates.length) ? b.biological_replicates[i] : undefined;
-                                while (result === undefined) {
-                                    if (repA !== undefined && repB !== undefined) {
-                                        // Both biological replicates have a value
-                                        if (repA != repB) {
-                                            // We got a real sorting result
-                                            result = repA - repB;
-                                        } else {
-                                            // They both have values, but they're equal; go to next
-                                            // biosample replicate array elements
-                                            i += 1;
-                                            repA = a.biological_replicates[i];
-                                            repB = b.biological_replicates[i];
-                                        }
-                                    } else if (repA !== undefined || repB !== undefined) {
-                                        // One and only one replicate empty; sort empty one after
-                                        result = repA ? 1 : -1;
-                                    } else {
-                                        // Both empty; sorting result same
-                                        result = 0;
-                                    }
-                                }
-                                return result;
-                            }).map((file, i) => {
+                            {nonpairedFiles.sort(this.sortBioReps).map((file, i) => {
                                 // Prepare for run_type display
                                 var runType;
                                 if (file.run_type === 'single-ended') {
@@ -466,7 +469,7 @@ var RawFileTable = React.createClass({
                                     <tr key={i}>
                                         <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
-                                        <td>{file.accession}</td>
+                                        <td>{file.title}&nbsp;<a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a></td>
                                         <td>{file.file_type}</td>
                                         <td>{runType}{file.read_length ? <span>{runType ? <span> </span> : null}{file.read_length + file.read_length_units}</span> : null}</td>
                                         <td>{file.paired_end}</td>
