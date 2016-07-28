@@ -317,15 +317,15 @@ def check_file(config, session, url, job):
         if item['file_format'] == 'bed':
             try:
                 unzipped_modified_bed_path = unzipped_modified_bed_path
-            except NameError:
-                errors['file_create_error'] = 'OS could not create the unzipped modified bed file'
-            else:
                 if os.path.exists(unzipped_modified_bed_path):
                     try:
                         os.remove(unzipped_modified_bed_path)
                     except OSError as e:
                         errors['file_remove_error'] = 'OS could not remove the file ' + \
                                                       unzipped_modified_bed_path
+            except NameError:
+                pass
+
     if item['status'] != 'uploading':
         errors['status_check'] = \
             "status '{}' is not 'uploading'".format(item['status'])
