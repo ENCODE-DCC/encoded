@@ -1,7 +1,4 @@
-/*.layout {
-    background-color: #E8ECEF;
-}*/
-
+// Allows page to be within the proper width in the middle
 .container-homepage {
   @include container-fixed();
 
@@ -26,10 +23,12 @@
   @include container-fixed();
 }
 
+// Makes background color gray
 .whole-page {
     background-color: #E8ECEF;
 }
 
+// Formatting of heading based on original home page
 .page-title {
     margin-bottom: 30px;
     font-size: 2.6 rem;
@@ -44,37 +43,7 @@
 }
 
 
-
-// Graphical banner for the home page
-/*.homepage-banner {
-    position: relative;
-    height: 250px;
-    background-image: url(../img/home-banner.jpg);
-    background-size: auto 90%;
-    background-color: black;
-    background-repeat: no-repeat;
-    background-position: center;
-}*/
-
-// Title that overlays the banner
-/*.home-page-banner-title {
-    position: absolute;
-    width: 100%;
-    padding: 10px 0;
-    bottom: 0;
-    text-align: center;
-    color: #fff;
-    background-color: rgba(188,188,188,0.25);
-    font-size: 1.2rem;
-    font-weight: 100;
-
-    @media screen and (min-width: $screen-sm-min) {
-        letter-spacing: 10px;
-        font-size: 2rem;
-    }
-}*/
-
-
+// Positions overall classic with pic and rectangles
 .overall-classic {
     position: relative;
     padding-bottom: 20px;
@@ -82,6 +51,7 @@
 
 }
 
+// Positions rectangles for classic pic
 .classic-svg {
     position: relative;
     visibility: visible;
@@ -89,11 +59,11 @@
     top: 0;
     left: 0;
     fill: blue;
-    fill-opacity: 0.05;
-    
+    fill-opacity: 0.05;  
 
 }
 
+// Adds blue outline to rectangles 
 .rectangle-box {
     outline-style: solid;
     outline-width: 3px;
@@ -101,35 +71,21 @@
 
 }
 
+// When hover on rectangle, make fill darker
 .rectangle-box:hover {
     fill-opacity: 0.1;
 }
 
+// Positions classic pic
 .classicImage {
     position: absolute;
     height: auto;
     max-width: 100%;
     top: 0;
     left: 0;
-    //padding: 20px 20px !important;
 }
 
-
-
-/*.col-sm-12 {
-    height:50%;
-    width:50%;
-    
-    border: 3px solid #C6E2FF;
-}
-
-.col-sm-3 {
-    height:50%;
-    width:50%;
-    //float:left;
-    border: 3px solid #3B6AA0;
-}*/
-
+// Graph titles
 .title {
     
     width: 100%;
@@ -141,29 +97,25 @@
     ;
    
     font-size: 30px;
-    font-weight: normal;
-}
-
-.legendDiv {
-    position: absolute;
+    font-weight: 100;
 }
 
 
+// Gives tabs white background and border separating from graphs
 .tabTable {
     border-bottom: 1px solid #a0a0a0;
-    //padding: 20px 20px !important;
     background-color: white;
 
         
 }
 
+// Positions tabs with padding, hovering, and changing color if selected
 .tabTable td{
-    //padding: 20px 20px !important;
     color: #000;
     border: none;
     a.single-tab {
         font-size: 20px;
-        font-weight: normal;
+        font-weight: 100;
         padding: 10px 11px !important;
         display: block;
         text-decoration: none;
@@ -182,15 +134,16 @@
     
 }
 
+// Gives graphs white background color
 .graphs {
     background-color: white;
 
 }
 
+// Positions getting started pic
 .getting-started-image {
     position: relative;
     padding-top: 20px;
-    //padding-bottom: 20px;
     background-color: #E8ECEF;
     
     height: auto;
@@ -200,24 +153,4 @@
 
 }
 
-/*.getting-started {
-    margin-top: 20px;
-    margin-bottom: 20px;
-}*/
 
-hr {
-    margin: 20px;
-}
-
-/*
-
-.line-separator{
-margin: 0 0 15px 0;
-border-bottom:1px solid #cccccc;
-padding: 0px 0 0px 0;
-padding: 20px 0 20px 0;
-padding: 20px 0 20px 0;
-
-}
-
-*/
