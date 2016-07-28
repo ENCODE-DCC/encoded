@@ -1468,7 +1468,7 @@ def audit_experiment_internal_tag(value, system):
                                  'that is not specified in experimental ' + \
                                  'list of internal_tags {}.'.format(value['internal_tags'])
                         yield AuditFailure('missing internal tag',
-                                           detail, level='DCC_ACTION')
+                                           detail, level='INTERNAL_ACTION')
 
     if len(bio_tags) == 0 and len(experimental_tags) > 0:
         for biosample in biosamples:
@@ -1477,7 +1477,7 @@ def audit_experiment_internal_tag(value, system):
                      'belonging to internal tags {} '.format(value['internal_tags']) + \
                      'of the experiment.'
             yield AuditFailure('missing internal tags',
-                               detail, level='DCC_ACTION')
+                               detail, level='INTERNAL_ACTION')
 
     for biosample in biosamples:
         if len(bio_tags) > 0 and ('internal_tags' not in biosample or
@@ -1487,7 +1487,7 @@ def audit_experiment_internal_tag(value, system):
                      'belonging to internal tags {} '.format(list(bio_tags)) + \
                      'other biosamples are assigned.'
             yield AuditFailure('inconsistent internal tags',
-                               detail, level='DCC_ACTION')
+                               detail, level='INTERNAL_ACTION')
         elif len(bio_tags) > 0 and biosample['internal_tags'] != []:
             for x in bio_tags:
                 if x not in biosample['internal_tags']:
@@ -1496,7 +1496,7 @@ def audit_experiment_internal_tag(value, system):
                              '{} belonging to internal tags {} '.format(x, list(bio_tags)) + \
                              'other biosamples are assigned.'
                     yield AuditFailure('inconsistent internal tags',
-                                       detail, level='DCC_ACTION')
+                                       detail, level='INTERNAL_ACTION')
 
 
 def is_gtex_experiment(experiment_to_check):
