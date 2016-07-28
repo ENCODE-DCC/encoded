@@ -258,7 +258,7 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
                                     rnai_object = request.embed(r, '@@object')
                                     target_object = request.embed(rnai_object['target'], '@@object')
                                     rnai_info = {'rnai_type': rnai_object['rnai_type'],
-                                                 'target': target_object['name']}
+                                                 'target': target_object['label']}
                                     rnai_objects.append(rnai_info)
 
                             dictionary_to_add = generate_summary_dictionary(
