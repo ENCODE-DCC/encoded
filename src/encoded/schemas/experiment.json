@@ -293,7 +293,7 @@
         "replicates.@id": {
             "title": "Replicates"
         },
-        "files.length": {
+        "files.uuid": {
             "title": "Files"
         }
     },

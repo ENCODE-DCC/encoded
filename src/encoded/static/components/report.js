@@ -99,8 +99,9 @@ var lookupColumn = function (result, column) {
                 nextnodes.push(v);
             }
         });
-        if (names[i + 1] === 'length') {
-            // Displaying the length of an array, so we're done.
+        if (names[i + 1] === 'length' || names[i + 1] === 'uuid') {
+            // Displaying the length of an array. That's not a property of each array element so we
+            // can't get it that way. Just return the length of the array.
             nodes = [nextnodes.length];
             break;
         } else {
