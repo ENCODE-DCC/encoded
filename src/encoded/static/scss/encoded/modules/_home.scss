@@ -90,11 +90,10 @@
     
     width: 100%;
     
-    padding: 10px;
+    padding-top: 10px;
     
     text-align: center;
-    color: black
-    ;
+    color: black;
    
     font-size: 30px;
     font-weight: 100;
@@ -137,13 +136,14 @@
 // Gives graphs white background color
 .graphs {
     background-color: white;
+    padding-bottom: 25px;
 
 }
 
 // Positions getting started pic
 .getting-started-image {
     position: relative;
-    padding-top: 20px;
+    padding-top: 0px;
     background-color: #E8ECEF;
     
     height: auto;

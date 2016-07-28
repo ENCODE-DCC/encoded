@@ -67,7 +67,7 @@ var Home = module.exports.Home = React.createClass({
                 <header class="row">
                     <div class="col-sm-12">
                         <h1 className="page-title">
-                            ENCODE: ENCYCLOPEDIA of DNA ELEMENTS
+                            ENCODE: Encyclopedia of DNA Elements
                         </h1>
                     </div>
                 </header>
