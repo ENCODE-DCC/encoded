@@ -161,4 +161,4 @@ def test_experiment_biosample_summary_2(testapp,
                                                                replicate_2_1['@id']]})
     res = testapp.get(base_experiment['@id']+'@@index-data')
     assert res.json['object']['biosample_summary'] == \
-        'liver tissue male (10 days) treated with ethanol and not treated'
+        'liver tissue male (10 days) not treated and treated with ethanol'

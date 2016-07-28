@@ -216,4 +216,4 @@ def test_biosample_summary_construct(testapp,
 
     res = testapp.get(biosample_1['@id']+'@@index-data')
     assert res.json['object']['summary'] == \
-        'Homo sapiens liver tissue male (10 days) expressing ATF4-human'
+        'Homo sapiens liver tissue male (10 days) expressing ATF4'
