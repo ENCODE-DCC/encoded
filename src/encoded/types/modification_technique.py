@@ -11,7 +11,7 @@ from .base import (
 @abstract_collection(
     name='modification-techniques',
     properties={
-        'title': "Genetic modification techniquess",
+        'title': "Genetic modification techniques",
         'description': 'Listing of all types of genetic modifications.'
     })
 class ModificationTechnique(Item):
