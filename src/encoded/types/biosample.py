@@ -459,7 +459,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 rnai_object = request.embed(r, '@@object')
                 target_object = request.embed(rnai_object['target'], '@@object')
                 rnai_info = {'rnai_type': rnai_object['rnai_type'],
-                             'target': target_object['name']}
+                             'target': target_object['label']}
                 rnai_objects.append(rnai_info)
 
         biosample_dictionary = generate_summary_dictionary(
@@ -730,12 +730,12 @@ def generate_summary_dictionary(
             for talenObject in talen_objects_list:
                 if 'name' in talenObject:
                     talens_list.append(talenObject['name'])
-            dict_of_phrases['talens'] = 'talens: '+str(talens_list)
+            dict_of_phrases['talens'] = 'with talens: '+str(talens_list)
 
         if construct_objects_list is not None and len(construct_objects_list) > 0:
             constructs_list = []
             for target in construct_objects_list:
-                constructs_list.append(target['name'])
+                constructs_list.append(target['label'])
 
             if len(constructs_list) == 1:
                 dict_of_phrases['constructs'] = 'expressing ' + constructs_list[0]
@@ -747,7 +747,7 @@ def generate_summary_dictionary(
         if model_construct_objects_list is not None and len(model_construct_objects_list) > 0:
             constructs_list = []
             for target in model_construct_objects_list:
-                constructs_list.append(target['name'])
+                constructs_list.append(target['label'])
 
             if len(constructs_list) == 1:
                 dict_of_phrases['model_organism_constructs'] = 'expressing ' + constructs_list[0]
@@ -835,11 +835,12 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
                         middle.append(constructed_middle[0])
                     else:
                         middle.append(', '.join(map(str, constructed_middle)))
+            sentence_middle = sorted(list(set(middle)))
             if prefix == '':
-                sentence_to_return = ' and '.join(map(str, middle))
+                sentence_to_return = ' and '.join(map(str, sentence_middle))
             else:
                 sentence_to_return = prefix.strip() + ' ' + \
-                    ' and '.join(map(str, middle))
+                    ' and '.join(map(str, sentence_middle))
             if suffix != '':
                 sentence_to_return += ', ' + suffix
     else:

@@ -173,7 +173,7 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
     def biosample_summary(self,
                           request,
                           replicates=None):
-        stem_cell_flag = False
+        drop_age_sex_flag = False
         dictionaries_of_phrases = []
         biosample_accessions = set()
         if replicates is not None:
@@ -192,8 +192,10 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
                         if biosampleObject['accession'] not in biosample_accessions:
                             biosample_accessions.add(biosampleObject['accession'])
 
-                            if biosampleObject.get('biosample_type') == 'stem cell':
-                                stem_cell_flag = True
+                            if biosampleObject.get('biosample_type') in [
+                               'stem cell',
+                               'in vitro differentiated cells']:
+                                drop_age_sex_flag = True
 
                             organismObject = None
                             if 'organism' in biosampleObject:
@@ -288,7 +290,7 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
 
                             dictionaries_of_phrases.append(dictionary_to_add)
 
-        if stem_cell_flag is True:
+        if drop_age_sex_flag is True:
             sentence_parts = [
                 'genotype_strain',
                 'term_phrase',
