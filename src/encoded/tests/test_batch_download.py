@@ -15,7 +15,7 @@ def test_report_download(testapp, workbook):
         b'Species', b'Life stage', b'Age', b'Age Units', b'Treatment', b'Term ID',
         b'Concentration', b'Concentration units', b'Duration', b'Duration units',
         b'Synchronization', b'Post-synchronization time',
-        b'Post-synchronization time units', b'Replicates', b'Files'
+        b'Post-synchronization time units', b'Replicates',
     ]
     # Sorting for scan and limit=all is disabled currently
     # assert lines[1].split(b'\t') == [
