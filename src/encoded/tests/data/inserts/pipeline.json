@@ -155,8 +155,8 @@
         "award": "U54HG007005",
         "title": "ENCODE File Validation",
         "uuid": "f96f9810-a5a3-11e4-bcd8-0800200c9a66",
-        "version" : "v1",
-        "assay_term_id": "NTR:00014349",
-        "assay_term_name": "aCLIP",
+        "version" : "v4",
+        "assay_term_id": "OBI:0000716",
+        "assay_term_name": "ChIP-seq"
     }
 ]
