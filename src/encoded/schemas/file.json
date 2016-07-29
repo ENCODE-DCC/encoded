@@ -653,6 +653,9 @@
         "paired_end": {
             "title": "Paired End Identifier"
         },
+        "paired_with": {
+            "title": "File pairing"
+        },
         "run_type": {
             "title": "Run type for sequencing files"
         },

@@ -130,6 +130,13 @@ String.prototype.uppercaseFirstChar = function(string) {
     return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
+// Convert the number `n` to a string, zero-filled to `digits` digits. Maximum of four zeroes.
+// http://stackoverflow.com/questions/2998784/how-to-output-integers-with-leading-zeros-in-javascript#answer-2998822
+module.exports.zeroFill = function(n) {
+    var filled = '0000' + n;
+    return filled.substr(filled.length - 4);
+};
+
 // Order that antibody statuses should be displayed
 module.exports.statusOrder = [
     'eligible for new data',
