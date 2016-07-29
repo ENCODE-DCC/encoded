@@ -82,8 +82,9 @@ var Home = module.exports.Home = React.createClass({
                                     <div className="col-sm-6">
                                         <div className="title">
                                             Project
+                                            <center> <hr width="80%" position="static" color="blue"></hr> </center>
                                         </div>
-                                        <center> <hr width="80%" position="static"></hr> </center>
+                                        
                                         <HomepageChartLoader searchBase={this.state.current} 
                                                     callback={this.callback}/>
                                 

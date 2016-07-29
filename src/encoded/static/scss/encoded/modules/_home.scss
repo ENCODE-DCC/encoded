@@ -66,7 +66,7 @@
 // Adds blue outline to rectangles 
 .rectangle-box {
     outline-style: solid;
-    outline-width: 3px;
+    outline-width: 6px;
     outline-color: #0000EE;
 
 }
@@ -74,6 +74,7 @@
 // When hover on rectangle, make fill darker
 .rectangle-box:hover {
     fill-opacity: 0.1;
+    cursor: pointer;
 }
 
 // Positions classic pic
@@ -97,7 +98,14 @@
    
     font-size: 30px;
     font-weight: 100;
+    
+   /* border-bottom-style: solid;
+    border-bottom-color: #A0A0A0;
+    border-bottom-width: 1px;*/
+
 }
+
+
 
 
 // Gives tabs white background and border separating from graphs
@@ -153,4 +161,8 @@
 
 }
 
-
+hr {
+    margin-top: 0px;
+    //border-width: 200px;
+    border-color: #a0a0a0;
+}
