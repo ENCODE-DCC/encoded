@@ -277,7 +277,8 @@ def check_file(config, session, url, job):
                                     'checked %s is conflicting with content_md5sum of %s' % (
                                         result['content_md5sum'],
                                         entry['accession']))
-                        errors['content_md5sum'] = str(conflicts)
+                        if len(conflicts) > 0:
+                            errors['content_md5sum'] = str(conflicts)
 
                 if os.path.exists(unzipped_original_bed_path):
                     try:
@@ -321,7 +322,8 @@ def check_file(config, session, url, job):
                                     'checked %s is conflicting with content_md5sum of %s' % (
                                         result['content_md5sum'],
                                         entry['accession']))
-                        errors['content_md5sum'] = str(conflicts)
+                        if len(conflicts) > 0:
+                            errors['content_md5sum'] = str(conflicts)
     if not errors:
         if item['file_format'] == 'bed':
             check_format(config['encValData'], job, unzipped_modified_bed_path)
