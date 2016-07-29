@@ -81,11 +81,11 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
             var sortedAuditLevels = _(Object.keys(audits)).sortBy(level => -audits[level][0].level);
 
             var indicatorClass = "audit-indicators btn btn-info" + (this.context.auditDetailOpen ? ' active' : '') + (this.props.search ? ' audit-search' : '');
-            if (loggedIn || !(sortedAuditLevels.length === 1 && sortedAuditLevels[0] === 'DCC_ACTION')) {
+            if (loggedIn || !(sortedAuditLevels.length === 1 && sortedAuditLevels[0] === 'INTERNAL_ACTION')) {
                 return (
                     <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.context.auditDetailOpen} aria-controls={this.props.id} onClick={this.context.auditStateToggle}>
                         {sortedAuditLevels.map(level => {
-                            if (loggedIn || level !== 'DCC_ACTION') {
+                            if (loggedIn || level !== 'INTERNAL_ACTION') {
                                 // Calculate the CSS class for the icon
                                 var levelName = level.toLowerCase();
                                 var btnClass = 'btn-audit btn-audit-' + levelName + ' audit-level-' + levelName;
@@ -133,7 +133,7 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
             return (
                 <Panel addClasses="audit-details" id={this.props.id.replace(/\W/g, '')} aria-hidden={!this.context.auditDetailOpen}>
                     {sortedAuditLevelNames.map(auditLevelName => {
-                        if (loggedIn || auditLevelName !== 'DCC_ACTION') {
+                        if (loggedIn || auditLevelName !== 'INTERNAL_ACTION') {
                             var audits = auditLevels[auditLevelName];
                             var level = auditLevelName.toLowerCase();
                             var iconClass = 'icon audit-icon-' + level;
@@ -227,7 +227,7 @@ var DetailEmbeddedLink = React.createClass({
         var detail = this.props.detail;
 
         // Get an array of all paths in the detail string, if any.
-        var matches = detail.match(/(\/.*?\/.*?\/)/g);
+        var matches = detail.match(/(\/.*?\/.*?\/)(?=[\t \n,.]|$)/gmi);
         if (matches) {
             // Build React object of text followed by path for all paths in detail string
             var lastStart = 0;
