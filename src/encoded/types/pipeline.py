@@ -35,8 +35,17 @@ class Pipeline(Item):
         'analysis_steps.versions.software_versions',
         'analysis_steps.versions.software_versions.software',
         'lab',
-        'award.pi.lab',
+        'award.pi.lab'
     ]
+
+    @calculated_property(define=True,
+                         schema={"title": "Group",
+                                 "type": "string"})
+    def group(self, request, award=None,
+              assay_term_name=None):
+        if award is not None and assay_term_name is not None:
+            award_object = request.embed(award, '@@object')
+            return assay_term_name + award_object['rfa']
 
 
 @collection(

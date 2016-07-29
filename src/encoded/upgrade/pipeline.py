@@ -43,37 +43,37 @@ def pipeline_3_4(value, system):
 def pipeline_4_5(value, system):
     # http://redmine.encodedcc.org/issues/4070
     if value.get('accession') in ['ENCPL864JQQ']:
-        value['group'] = 'GGR-CHIP-SEQ'
+        #value['group'] = 'GGR-CHIP-SEQ'
         value['version'] = 'v.tr.1'
 
     if value.get('accession') in ['ENCPL123UMJ']:
-        value['group'] = 'GGR-RNA-SEQ'
+        #value['group'] = 'GGR-RNA-SEQ'
         value['version'] = 'v.tr.1'
 
     if value.get('accession') in ['ENCPL660NQT']:
-        value['group'] = 'GGR-DNASE-SEQ'
+        #value['group'] = 'GGR-DNASE-SEQ'
         value['version'] = 'v.tr.1'
 
     if value.get('accession') in ['ENCPL821FLJ']:
-        value['group'] = 'GGR-RNA-SEQ'
+        #value['group'] = 'GGR-RNA-SEQ'
         value['version'] = 'v.lg.PE.1'
 
     if value.get('accession') in ['ENCPL135QRQ']:
-        value['group'] = 'GGR-RNA-SEQ'
+        #value['group'] = 'GGR-RNA-SEQ'
         value['version'] = 'v.lg.SE.1'
 
     if value.get('accession') in ['ENCPL631XPY']:
-        value['group'] = 'modERN-CHIP-SEQ'
+        #value['group'] = 'modERN-CHIP-SEQ'
         value['version'] = 'v1'
 
     if value.get('accession') in ['ENCPL936TND',
                                   'ENCPL083VXI']:
-        value['group'] = 'ENCODE-WGBS'
+        #value['group'] = 'ENCODE-WGBS'
         value['version'] = 'v1'
 
     if value.get('accession') in ['ENCPL985BLO',
                                   'ENCPL210QWH']:
-        value['group'] = 'ENCODE-WGBS'
+        #value['group'] = 'ENCODE-WGBS'
         value['version'] = 'v2'
 
     if value.get('accession') in ['ENCPL002LPE',
@@ -83,56 +83,56 @@ def pipeline_4_5(value, system):
                                   'ENCPL521QAX',
                                   'ENCPL611KAU',
                                   'ENCPL086BPC']:
-        value['group'] = 'ENCODE-RNA-SEQ'
+        #value['group'] = 'ENCODE-RNA-SEQ'
         value['version'] = 'v1'
 
     if value.get('accession') in ['ENCPL184PTK']:
-        value['group'] = 'ENCODE-RIP-SEQ'
+        #value['group'] = 'ENCODE-RIP-SEQ'
         value['version'] = 'v1'
 
     if value.get('accession') in ['ENCPL450MUC']:
-        value['group'] = 'ENCODE-RAW-MAPPING'
+        #value['group'] = 'ENCODE-RAW-MAPPING'
         value['version'] = 'v1'
 
     if value.get('accession') in ['ENCPL122WIM']:
-        value['group'] = 'ENCODE-RAMPAGE'
+        #value['group'] = 'ENCODE-RAMPAGE'
         value['version'] = 'v1'
 
     if value.get('accession') in ['ENCPL444CYA']:
-        value['group'] = 'ENCODE-MICRO-RNA-SEQ'
+        #value['group'] = 'ENCODE-MICRO-RNA-SEQ'
         value['version'] = 'v1'
 
     if value.get('accession') in ['ENCPL278BTI']:
-        value['group'] = 'ENCODE-MICRO-RNA-COUNTS'
+        #value['group'] = 'ENCODE-MICRO-RNA-COUNTS'
         value['version'] = 'v1'
 
     if value.get('accession') in ['ENCPL357ADL']:
-        value['group'] = 'ENCODE-ECLIP'
+        #value['group'] = 'ENCODE-ECLIP'
         value['version'] = ''
 
     if value.get('accession') in ['ENCPL654QMU',
                                   'ENCPL568PWV']:
-        value['group'] = 'ENCODE-DNASE-SEQ'
+        #value['group'] = 'ENCODE-DNASE-SEQ'
         value['version'] = 'v1'
 
     if value.get('accession') in ['ENCPL002DNS',
                                   'ENCPL001DNS']:
-        value['group'] = 'ENCODE-DNASE-SEQ'
+        #value['group'] = 'ENCODE-DNASE-SEQ'
         value['version'] = 'v2'
 
     if value.get('accession') in ['ENCPL272XAE',
                                   'ENCPL138KID']:
-        value['group'] = 'ENCODE-CHIP-SEQ'
+        #value['group'] = 'ENCODE-CHIP-SEQ'
         value['version'] = 'v1'
 
     if value.get('accession') in ['ENCPL035XIO']:
-        value['group'] = 'ENCODE-ATAC-SEQ'
+        #value['group'] = 'ENCODE-ATAC-SEQ'
         value['version'] = 'v1'
 
     if value.get('accession') in ['ENCPL792NWO']:
-        value['group'] = 'ENCODE-ATAC-SEQ'
+        #value['group'] = 'ENCODE-ATAC-SEQ'
         value['version'] = 'v2'
 
     if value.get('accession') in ['ENCPL915EEO']:
-        value['group'] = 'ENCODE-DNA-SEQ'
+        #value['group'] = 'ENCODE-DNA-SEQ'
         value['version'] = 'v1'

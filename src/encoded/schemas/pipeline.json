@@ -4,7 +4,7 @@
     "id": "/profiles/pipeline.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["title", "lab", "award", "group", "version"],
+    "required": ["title", "lab", "award", "assay_term_name", "assay_term_id", "version"],
     "identifyingProperties": ["uuid", "aliases", "accession"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -26,29 +26,7 @@
         "accession": {
             "accessionType": "PL"
         },
-        "group":{
-            "title": "Group",
-            "type": "string",
-            "description": "Group the pipeline belongs to.",
-            "enum":[
-                "GGR-DNASE-SEQ",
-                "GGR-CHIP-SEQ",
-                "GGR-RNA-SEQ",
-                "ENCODE-ATAC-SEQ",
-                "ENCODE-CHIP-SEQ",
-                "ENCODE-RAW-MAPPING",
-                "ENCODE-DNASE-SEQ",
-                "ENCODE-DNA-SEQ",
-                "ENCODE-RAMPAGE",
-                "ENCODE-RIP-SEQ",
-                "ENCODE-RNA-SEQ",
-                "ENCODE-MICRO-RNA-SEQ",
-                "ENCODE-MICRO-RNA-COUNTS",
-                "ENCODE-WGBS",
-                "ENCODE-ECLIP",
-                "modERN-CHIP-SEQ"
-            ]
-        },
+       
         "status": {
             "title": "Status",
             "type": "string",
