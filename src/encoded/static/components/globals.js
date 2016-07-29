@@ -40,6 +40,8 @@ document_views.file = new Registry();
 document_views.detail = new Registry();
 module.exports.document_views = document_views;
 
+// Report-page cell components
+module.exports.report_cell = new Registry();
 
 var itemClass = module.exports.itemClass = function (context, htmlClass) {
     htmlClass = htmlClass || '';
@@ -112,6 +114,7 @@ module.exports.unreleased_files_url = function (context) {
     ].map(encodeURIComponent).join('&status=');
     return '/search/?limit=all&type=file&dataset=' + context['@id'] + file_states;
 };
+
 
 // Just like encodeURIComponent, but also encodes parentheses (Redmine #4242). Replace spaces with
 // `space` parameter, or '+' if not provided.

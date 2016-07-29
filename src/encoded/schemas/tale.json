@@ -1,0 +1,68 @@
+ {
+    "title": "TALE",
+    "description": "Schema for submitting an information on Transcription Activator-Like Effector (TALE) genetic modification technique.",
+    "id": "/profiles/tale.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["lab", 
+                 "award",
+                 "source",
+                 "talen_platform",
+                 "RVD_sequence"],
+    "identifyingProperties": ["uuid","aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/product_id" },
+        { "$ref": "mixins.json#/source" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "modification_technique.json#/properties" },
+        { "$ref": "mixins.json#/documents" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "RVD_sequence": {
+            "title": "RVD sequence",
+            "description": "The repeat variable diresidue sequence. E.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
+            "type": "string",
+            "pattern": "^([ARNDCQEGHILKMFPSTWYV]{2})($|(,\\1))*"
+        },
+        "talen_platform": {
+            "title": "TALEN platform",
+            "description": "The TALEN platform used to make the construct. E.g. Golden Gate",
+            "type": "string"
+        }
+    },
+    "facets": {
+        "talen_platform": {
+            "title": "TALEN platform",
+            "type": "string"
+        },
+        "status": {
+            "title": "TALEN status",
+            "type": "string"
+        },
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
+        },
+        "award.project": {
+            "title": "Project",
+            "type": "string"
+        }
+    },
+    "columns": {
+        "talen_platform": {
+            "title": "TALEN platform",
+            "description": "The TALEN platform used to make the construct. E.g. Golden Gate"
+        }       
+    }
+}
+        

@@ -16,6 +16,12 @@ from .shared_calculated_properties import (
     CalculatedAssaySynonyms
 )
 
+# importing biosample function to allow calculation of experiment biosample property
+from .biosample import (
+    construct_biosample_summary,
+    generate_summary_dictionary
+)
+
 
 @collection(
     name='experiments',
@@ -158,6 +164,167 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
     })
     def replicates(self, request, replicates):
         return paths_filtered_by_status(request, replicates)
+
+
+    @calculated_property(schema={
+        "title": "Biosample summary",
+        "type": "string",
+    })
+    def biosample_summary(self,
+                          request,
+                          replicates=None):
+        drop_age_sex_flag = False
+        dictionaries_of_phrases = []
+        biosample_accessions = set()
+        if replicates is not None:
+            for rep in replicates:
+                replicateObject = request.embed(rep, '@@object')
+                if replicateObject['status'] == 'deleted':
+                    continue
+                if 'library' in replicateObject:
+                    libraryObject = request.embed(replicateObject['library'], '@@object')
+                    if libraryObject['status'] == 'deleted':
+                        continue
+                    if 'biosample' in libraryObject:
+                        biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                        if biosampleObject['status'] == 'deleted':
+                            continue
+                        if biosampleObject['accession'] not in biosample_accessions:
+                            biosample_accessions.add(biosampleObject['accession'])
+
+                            if biosampleObject.get('biosample_type') in [
+                               'stem cell',
+                               'in vitro differentiated cells']:
+                                drop_age_sex_flag = True
+
+                            organismObject = None
+                            if 'organism' in biosampleObject:
+                                organismObject = request.embed(biosampleObject['organism'],
+                                                               '@@object')
+                            donorObject = None
+                            if 'donor' in biosampleObject:
+                                donorObject = request.embed(biosampleObject['donor'], '@@object')
+
+                            treatment_objects_list = None
+                            treatments = biosampleObject.get('treatments')
+                            if treatments is not None and len(treatments) > 0:
+                                treatment_objects_list = []
+                                for t in treatments:
+                                    treatment_objects_list.append(request.embed(t, '@@object'))
+
+                            part_of_object = None
+                            if 'part_of' in biosampleObject:
+                                part_of_object = request.embed(biosampleObject['part_of'],
+                                                               '@@object')
+                            derived_from_object = None
+                            if 'derived_from' in biosampleObject:
+                                derived_from_object = request.embed(biosampleObject['derived_from'],
+                                                                    '@@object')
+
+                            talen_objects_list = None
+                            talens = biosampleObject.get('talens')
+                            if talens is not None and len(talens) > 0:
+                                talen_objects_list = []
+                                for t in talens:
+                                    talen_objects_list.append(request.embed(t, '@@object'))
+
+                            construct_objects_list = None
+                            constructs = biosampleObject.get('constructs')
+                            if constructs is not None and len(constructs) > 0:
+                                construct_objects_list = []
+                                for c in constructs:
+                                    construct_object = request.embed(c, '@@object')
+                                    target_name = construct_object['target']
+                                    construct_objects_list.append(request.embed(target_name,
+                                                                                '@@object'))
+
+                            model_construct_objects_list = None
+                            model_organism_donor_constructs = biosampleObject.get(
+                                'model_organism_donor_constructs')
+                            if model_organism_donor_constructs is not None and \
+                               len(model_organism_donor_constructs) > 0:
+                                model_construct_objects_list = []
+                                for c in model_organism_donor_constructs:
+                                    construct_object = request.embed(c, '@@object')
+                                    target_name = construct_object['target']
+                                    model_construct_objects_list.append(request.embed(target_name,
+                                                                                      '@@object'))
+
+                            rnai_objects = None
+                            rnais = biosampleObject.get('rnais')
+                            if rnais is not None and len(rnais) > 0:
+                                rnai_objects = []
+                                for r in rnais:
+                                    rnai_object = request.embed(r, '@@object')
+                                    target_object = request.embed(rnai_object['target'], '@@object')
+                                    rnai_info = {'rnai_type': rnai_object['rnai_type'],
+                                                 'target': target_object['label']}
+                                    rnai_objects.append(rnai_info)
+
+                            dictionary_to_add = generate_summary_dictionary(
+                                organismObject,
+                                donorObject,
+                                biosampleObject.get('age'),
+                                biosampleObject.get('age_units'),
+                                biosampleObject.get('life_stage'),
+                                biosampleObject.get('sex'),
+                                biosampleObject.get('biosample_term_name'),
+                                biosampleObject.get('biosample_type'),
+                                biosampleObject.get('starting_amount'),
+                                biosampleObject.get('starting_amount_units'),
+                                biosampleObject.get('depleted_in_term_name'),
+                                biosampleObject.get('phase'),
+                                biosampleObject.get('subcellular_fraction_term_name'),
+                                biosampleObject.get('post_synchronization_time'),
+                                biosampleObject.get('post_synchronization_time_units'),
+                                biosampleObject.get('post_treatment_time'),
+                                biosampleObject.get('post_treatment_time_units'),
+                                biosampleObject.get('transfection_type'),
+                                treatment_objects_list,
+                                part_of_object,
+                                derived_from_object,
+                                talen_objects_list,
+                                construct_objects_list,
+                                model_construct_objects_list,
+                                rnai_objects)
+
+                            dictionaries_of_phrases.append(dictionary_to_add)
+
+        if drop_age_sex_flag is True:
+            sentence_parts = [
+                'genotype_strain',
+                'term_phrase',
+                'phase',
+                'fractionated',
+                'synchronization',
+                'derived_from',
+                'transfection_type',
+                'rnais',
+                'treatments_phrase',
+                'depleted_in',
+                'talens',
+                'constructs',
+                'model_organism_constructs'
+            ]
+        else:
+            sentence_parts = [
+                'genotype_strain',
+                'term_phrase',
+                'phase',
+                'fractionated',
+                'sex_stage_age',
+                'synchronization',
+                'derived_from',
+                'transfection_type',
+                'rnais',
+                'treatments_phrase',
+                'depleted_in',
+                'talens',
+                'constructs',
+                'model_organism_constructs'
+            ]
+        if len(dictionaries_of_phrases) > 0:
+            return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
 
     @calculated_property(condition='assay_term_id', schema={
         "title": "Assay type",

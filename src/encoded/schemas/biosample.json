@@ -21,7 +21,8 @@
         { "$ref": "mixins.json#/source" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/submitter_comment" }
+        { "$ref": "mixins.json#/submitter_comment" },
+        { "$ref": "mixins.json#/genetic_modifications" }
     ],
     "dependencies": {
         "transfection_method": ["transfection_type"],
@@ -765,6 +766,9 @@
         },
         "summary": {
             "title": "Summary"
+        },
+        "summary_object": {
+            "title": "Summary object"
         }
     },
     "boost_values": {
