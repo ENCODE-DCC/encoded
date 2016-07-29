@@ -1,4 +1,3 @@
-
 [
      {
         "accession": "ENCPL001MQC",
@@ -13,7 +12,6 @@
         "lab": "joe-ecker",
         "award": "U54HG006997",
         "status": "active",
-        "group": "ENCODE-RNA-SEQ",
         "version" : "v1"
     },
     {
@@ -33,7 +31,6 @@
         "lab": "joe-ecker",
         "award": "U54HG006997",
         "status": "active",
-        "group": "ENCODE-DNA-SEQ",
         "version" : "v1"
     },
     {
@@ -50,7 +47,6 @@
         "lab": "joe-ecker",
         "award": "U54HG006997",
         "status": "active",
-        "group": "ENCODE-RNA-SEQ",
         "version" : "v1"
     },
     {
@@ -73,7 +69,6 @@
             "bam-to-bigwig-star"
         ],
         "status": "active",
-        "group": "ENCODE-RNA-SEQ",
         "version" : "v1"
     },
     {
@@ -92,7 +87,6 @@
         "lab": "brenton-graveley",
         "award": "U54HG007005",
         "uuid": "ab640a00-50aa-11e4-916c-0800200c9a66",
-        "group": "ENCODE-RNA-SEQ",
         "version" : "v1"
     },
     {
@@ -112,7 +106,6 @@
         "lab": "thomas-gingeras",
         "title": "Gene Quantification Pipeline",
         "uuid": "fbd1b730-5af5-11e4-8ed6-0800200c9a66",
-        "group": "ENCODE-RNA-SEQ",
         "version" : "v1"
     },
     {
@@ -132,7 +125,6 @@
         "award": "U54HG007004",
         "lab": "thomas-gingeras",
         "uuid": "6e191389-b63d-4986-8d61-2ae4716f84d8",
-        "group": "ENCODE-CHIP-SEQ",
         "version" : "v1"
     },
     {
@@ -151,7 +143,6 @@
         "award": "U54HG007005",
         "title": "iCLIP-seq Analysis Pipeline",
         "uuid": "21934150-5e2f-11e4-9803-0800200c9a66",
-        "group": "ENCODE-ECLIP",
         "version" : "v1"
     },
     {
@@ -164,7 +155,8 @@
         "award": "U54HG007005",
         "title": "ENCODE File Validation",
         "uuid": "f96f9810-a5a3-11e4-bcd8-0800200c9a66",
-        "group": "ENCODE-DNA-SEQ",
-        "version" : "v1"
+        "version" : "v1",
+        "assay_term_id": "NTR:00014349",
+        "assay_term_name": "aCLIP",
     }
 ]
