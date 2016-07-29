@@ -91,7 +91,7 @@ def pipeline_4_5(value, system):
         value['version'] = 'v1'
 
     if value.get('accession') in ['ENCPL450MUC']:
-        #value['group'] = 'ENCODE-RAW-MAPPING'
+        #value['group'] = 'ENCODE-RAW-MAPPING' - ChIP-seq
         value['version'] = 'v1'
 
     if value.get('accession') in ['ENCPL122WIM']:
@@ -99,11 +99,11 @@ def pipeline_4_5(value, system):
         value['version'] = 'v1'
 
     if value.get('accession') in ['ENCPL444CYA']:
-        #value['group'] = 'ENCODE-MICRO-RNA-SEQ'
+        #value['group'] = 'ENCODE-MICRO-RNA-SEQ' - RNA-seq
         value['version'] = 'v1'
 
     if value.get('accession') in ['ENCPL278BTI']:
-        #value['group'] = 'ENCODE-MICRO-RNA-COUNTS'
+        #value['group'] = 'ENCODE-MICRO-RNA-COUNTS' - RNA-seq
         value['version'] = 'v1'
 
     if value.get('accession') in ['ENCPL357ADL']:

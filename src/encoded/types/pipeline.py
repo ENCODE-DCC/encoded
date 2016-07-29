@@ -46,8 +46,9 @@ class Pipeline(Item):
         if award is not None and assay_term_name is not None:
             award_object = request.embed(award, '@@object')
             if assay_term_name == 'whole genome bisulfite sequencing':
-                return 'WGBS-' + award_object['rfa']
-            return assay_term_name + '-' + award_object['rfa']
+                return award_object['rfa'] + '-WGBS'
+            return award_object['rfa'] + '-' + assay_term_name
+        return 'undefined'
 
 
 @collection(
