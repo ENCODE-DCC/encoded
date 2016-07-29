@@ -102,15 +102,10 @@ var Home = module.exports.Home = React.createClass({
                             <div className="row">
                                 <div className="col-md-12">
                                     <div className="getting-started">
-                                    <header >
-                                        
-                                            <h1>
-                                                Getting Started 
-                                            </h1>
-                                            <p> For more help click <a href="/help/getting-started"> here. </a></p>
-                                        
-                                    </header>
+                                    
+                                        <a href="/help/getting-started" className="getting-started-button btn btn-info" role="button"> Getting Started </a>
                                         <img src="static/img/getting-started.jpg" className="getting-started-image"/>
+
                                     </div>
                                 </div>
                             </div>
