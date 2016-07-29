@@ -265,7 +265,9 @@ def check_file(config, session, url, job):
                     if len(r_graph) > 0:
                         conflicts = []
                         for entry in r_graph:
-                            if entry['@id'] != item['@id']:
+                            if 'accession' in entry and 'accession' in item:
+                                print ('ACCESSIONS: ' + entry['accession'] + ' ' + item['accession'])
+                            if entry['accession'] != item['accession']:
                                 conflicts.append(
                                     'checked %s is conflicting with content_md5sum of %s' % (
                                         result['content_md5sum'],
@@ -302,7 +304,9 @@ def check_file(config, session, url, job):
                     if len(r_graph) > 0:
                         conflicts = []
                         for entry in r_graph:
-                            if entry['@id'] != item['@id']:
+                            if 'accession' in entry and 'accession' in item:
+                                print ('ACCESSIONS: ' + entry['accession'] + ' ' + item['accession'])
+                            if entry['accession'] != item['accession']:
                                 conflicts.append(
                                     'checked %s is conflicting with content_md5sum of %s' % (
                                         result['content_md5sum'],
