@@ -87,7 +87,7 @@ def is_not_English(s):
                         u('™')]:
             list_to_return.append(u(x))
     if len(list_to_return) > 0:
-        return True
+        return set(list_to_return)
     return False
 
 
@@ -98,9 +98,10 @@ def audit_antibody_characterization_caption(value, system):
     not_English_chars = is_not_English(value['caption'])
     if not_English_chars is not False:
         caption_text = u(value['caption'])
+        problematic_chars = u(', '.join(list(not_English_chars)))
         detail = u'Antibody characterization caption text ' + \
                  u'{} '.format(caption_text) + \
-                 u'contains non English characters.'
+                 u'contains non English characters {}.'.format(problematic_chars)
         yield AuditFailure('inconsistent caption', detail, level='INTERNAL_ACTION')
 
 
