@@ -27,6 +27,8 @@ paired_end_assays = [
 
 @audit_checker('File', frame=['derived_from'])
 def audit_file_md5sum_integrity(value, system):
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
     md5sum = value['md5sum']
     try:
         hexval = int(md5sum, 16)
