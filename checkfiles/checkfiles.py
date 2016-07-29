@@ -259,15 +259,20 @@ def check_file(config, session, url, job):
                 except ValueError:
                     errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
                 else:
-                    query = '/search/?type=File&status!=replaced&content_md5sum=' + result['content_md5sum']
+                    query = '/search/?type=File&status!=replaced&content_md5sum=' + result[
+                        'content_md5sum']
                     r = session.get(urljoin(url, query))
                     r_graph = r.json().get('@graph')
                     if len(r_graph) > 0:
                         conflicts = []
                         for entry in r_graph:
                             if 'accession' in entry and 'accession' in item:
-                                print ('ACCESSIONS: ' + entry['accession'] + ' ' + item['accession'])
-                            if entry['accession'] != item['accession']:
+                                if entry['accession'] != item['accession']:
+                                    conflicts.append(
+                                        'checked %s is conflicting with content_md5sum of %s' % (
+                                            result['content_md5sum'],
+                                            entry['accession']))
+                            else:
                                 conflicts.append(
                                     'checked %s is conflicting with content_md5sum of %s' % (
                                         result['content_md5sum'],
@@ -298,15 +303,20 @@ def check_file(config, session, url, job):
                 except ValueError:
                     errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
                 else:
-                    query = '/search/?type=File&status!=replaced&content_md5sum=' + result['content_md5sum']
+                    query = '/search/?type=File&status!=replaced&content_md5sum=' + result[
+                        'content_md5sum']
                     r = session.get(urljoin(url, query))
                     r_graph = r.json().get('@graph')
                     if len(r_graph) > 0:
                         conflicts = []
                         for entry in r_graph:
                             if 'accession' in entry and 'accession' in item:
-                                print ('ACCESSIONS: ' + entry['accession'] + ' ' + item['accession'])
-                            if entry['accession'] != item['accession']:
+                                if entry['accession'] != item['accession']:
+                                    conflicts.append(
+                                        'checked %s is conflicting with content_md5sum of %s' % (
+                                            result['content_md5sum'],
+                                            entry['accession']))
+                            else:
                                 conflicts.append(
                                     'checked %s is conflicting with content_md5sum of %s' % (
                                         result['content_md5sum'],
