@@ -183,6 +183,35 @@ def check_format(encValData, job, path):
         result['validateFiles'] = output.decode(errors='replace').rstrip('\n')
 
 
+def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url):
+    result['content_md5sum'] = output[:32].decode(errors='replace')
+    try:
+        int(result['content_md5sum'], 16)
+    except ValueError:
+        errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
+    else:
+        query = '/search/?type=File&status!=replaced&content_md5sum=' + result[
+            'content_md5sum']
+        r = session.get(urljoin(url, query))
+        r_graph = r.json().get('@graph')
+        if len(r_graph) > 0:
+            conflicts = []
+            for entry in r_graph:
+                if 'accession' in entry and 'accession' in item:
+                    if entry['accession'] != item['accession']:
+                        conflicts.append(
+                            'checked %s is conflicting with content_md5sum of %s' % (
+                                result['content_md5sum'],
+                                entry['accession']))
+                else:
+                    conflicts.append(
+                        'checked %s is conflicting with content_md5sum of %s' % (
+                            result['content_md5sum'],
+                            entry['accession']))
+            if len(conflicts) > 0:
+                errors['content_md5sum'] = str(conflicts)
+
+
 def check_file(config, session, url, job):
     item = job['item']
     errors = job['errors']
@@ -253,32 +282,7 @@ def check_file(config, session, url, job):
             except subprocess.CalledProcessError as e:
                 errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
             else:
-                result['content_md5sum'] = output[:32].decode(errors='replace')
-                try:
-                    int(result['content_md5sum'], 16)
-                except ValueError:
-                    errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
-                else:
-                    query = '/search/?type=File&status!=replaced&content_md5sum=' + result[
-                        'content_md5sum']
-                    r = session.get(urljoin(url, query))
-                    r_graph = r.json().get('@graph')
-                    if len(r_graph) > 0:
-                        conflicts = []
-                        for entry in r_graph:
-                            if 'accession' in entry and 'accession' in item:
-                                if entry['accession'] != item['accession']:
-                                    conflicts.append(
-                                        'checked %s is conflicting with content_md5sum of %s' % (
-                                            result['content_md5sum'],
-                                            entry['accession']))
-                            else:
-                                conflicts.append(
-                                    'checked %s is conflicting with content_md5sum of %s' % (
-                                        result['content_md5sum'],
-                                        entry['accession']))
-                        if len(conflicts) > 0:
-                            errors['content_md5sum'] = str(conflicts)
+                check_for_contentmd5sum_conflicts(item, result, output, errors, session, url)
 
                 if os.path.exists(unzipped_original_bed_path):
                     try:
@@ -297,33 +301,7 @@ def check_file(config, session, url, job):
             except subprocess.CalledProcessError as e:
                 errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
             else:
-
-                result['content_md5sum'] = output[:32].decode(errors='replace')
-                try:
-                    int(result['content_md5sum'], 16)
-                except ValueError:
-                    errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
-                else:
-                    query = '/search/?type=File&status!=replaced&content_md5sum=' + result[
-                        'content_md5sum']
-                    r = session.get(urljoin(url, query))
-                    r_graph = r.json().get('@graph')
-                    if len(r_graph) > 0:
-                        conflicts = []
-                        for entry in r_graph:
-                            if 'accession' in entry and 'accession' in item:
-                                if entry['accession'] != item['accession']:
-                                    conflicts.append(
-                                        'checked %s is conflicting with content_md5sum of %s' % (
-                                            result['content_md5sum'],
-                                            entry['accession']))
-                            else:
-                                conflicts.append(
-                                    'checked %s is conflicting with content_md5sum of %s' % (
-                                        result['content_md5sum'],
-                                        entry['accession']))
-                        if len(conflicts) > 0:
-                            errors['content_md5sum'] = str(conflicts)
+                check_for_contentmd5sum_conflicts(item, result, output, errors, session, url)
     if not errors:
         if item['file_format'] == 'bed':
             check_format(config['encValData'], job, unzipped_modified_bed_path)
