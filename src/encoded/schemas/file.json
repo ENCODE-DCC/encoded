@@ -251,6 +251,12 @@
             "description": "For high-throughput sequencing, the number of contiguous nucleotides determined by sequencing.",
             "type": "integer"
         },
+        "mapped_read_length": {
+            "title": "Mapped read length",
+            "description": "The length of the reads actually mapped, if the original read length was clipped.",
+            "comment": "This is used when the original sequenced read length needed to be adjusted to match a replicate, or to match experiments and controls.",
+            "type": "integer"
+        },
         "flowcell_details": {
             "title": "Flowcells",
             "description": "For high-throughput sequencing, the flowcells used for the sequencing of the replicate.",
@@ -352,6 +358,7 @@
                         "long range chromatin interactions",
                         "chromatin interactions",
                         "topologically associated domains",
+                        "nested topologically associated domains",
                         "genome compartments",
                         "open chromatin regions",
                         "filtered peaks",
@@ -646,6 +653,9 @@
         "paired_end": {
             "title": "Paired End Identifier"
         },
+        "paired_with": {
+            "title": "File pairing"
+        },
         "run_type": {
             "title": "Run type for sequencing files"
         },
@@ -742,6 +752,7 @@
         "long range chromatin interactions": "annotation",
         "chromatin interactions": "annotation",
         "topologically associated domains": "annotation",
+        "nested topologically associated domains": "annotation",
         "genome compartments": "annotation",
         "open chromatin regions":"annotation",
         "filtered peaks":"annotation",
