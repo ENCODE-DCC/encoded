@@ -246,10 +246,6 @@
         "files.length": {
             "title": "Files",
             "type": "array"
-        },
-        "encode2_dbxrefs": {
-            "title": "Dbxrefs",
-            "type": "array"
         }
     },
     "boost_values": {
