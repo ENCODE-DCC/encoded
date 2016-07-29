@@ -53,6 +53,8 @@ def tsvreader(file):
         yield row
 
 # Mapping should be generated dynamically for each assembly type
+
+
 def get_mapping(assembly_name='hg19'):
     return {
         assembly_name: {
@@ -108,15 +110,13 @@ def index_peaks(uuid, request):
     """
     context = request.embed('/', str(uuid), '@@object')
 
-
-
     if 'File' not in context['@type'] or 'dataset' not in context:
         return
 
     if 'status' not in context or context['status'] != 'released':
         return
 
-    # Index human data for now       
+    # Index human data for now
     if 'assembly' not in context or 'hg19' not in context['assembly']:
         return
 
@@ -124,9 +124,8 @@ def index_peaks(uuid, request):
     if assay_term_name is None or isinstance(assay_term_name, collections.Hashable) is False:
         return
 
-    
     flag = False
-    
+
     for k, v in _INDEXED_DATA.get(assay_term_name, {}).items():
         if k in context and context[k] in v:
             if 'file_format' in context and context['file_format'] == 'bed':
@@ -134,9 +133,6 @@ def index_peaks(uuid, request):
                 break
     if not flag:
         return
-
-
-
 
     urllib3.disable_warnings()
     es = request.registry.get(SNP_SEARCH_ES, None)
@@ -149,7 +145,6 @@ def index_peaks(uuid, request):
     comp.seek(0)
     r.release_conn()
     file_data = dict()
-
 
     with gzip.open(comp, mode='rt') as file:
         for row in tsvreader(file):
@@ -165,8 +160,6 @@ def index_peaks(uuid, request):
             else:
                 log.warn('positions are not integers, will not index file')
 
-
-        
     for key in file_data:
         doc = {
             'uuid': context['uuid'],
@@ -209,7 +202,7 @@ def index_file(request):
         last_xmin = request.json['last_xmin']
     else:
         try:
-            status = es_peaks.get(index='encoded', doc_type='meta', id='peak_indexing')
+            status = es_peaks.get(index='snovault', doc_type='meta', id='peak_indexing')
         except NotFoundError:
             pass
         else:
@@ -219,7 +212,6 @@ def index_file(request):
         'xmin': xmin,
         'last_xmin': last_xmin,
     }
-
 
     if last_xmin is None:
         result['types'] = types = request.json.get('types', None)
@@ -296,7 +288,6 @@ def index_file(request):
         result['errors'] = [err]
         result['indexed'] = len(invalidated)
         if record:
-            es_peaks.index(index='encoded', doc_type='meta', body=result, id='peak_indexing')
-
+            es_peaks.index(index='snovault', doc_type='meta', body=result, id='peak_indexing')
 
     return result

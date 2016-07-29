@@ -21,6 +21,8 @@ module.exports = {
     "starting_amount": 100000.0,
     "starting_amount_units": "cells/ml",
     "submitted_by": require('../submitter'),
+    "summary": "K562 cell line replicate 1 used inENCODE3 RNA-seq evaluation",
+    "summary_object": {temp: "K562"},
     "treatments": [require('../treatment/CHEBI34730')],
     "url": "http://www.atcc.org/Products/All/CCL-243.aspx",
     "uuid": "2ee883ef-b0dd-4305-a69b-d881de132795"
