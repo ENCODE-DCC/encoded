@@ -86,7 +86,8 @@ def is_not_English(s):
                             u('ρ'),
                             u('σ'),
                             u('’'),
-                            u('™')]:
+                            u('™'),
+                            u('°')]:
                 list_to_return.append(u(x))
         if len(list_to_return) > 0:
             return set(list_to_return)
