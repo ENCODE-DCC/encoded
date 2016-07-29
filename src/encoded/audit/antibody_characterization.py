@@ -72,22 +72,24 @@ def u(x):
 
 def is_not_English(s):
     non_english_chars = re.sub('[ -~]', '', s)
-    list_to_return = []
-    for x in non_english_chars:
-        if u(x) not in [u('α'),
-                        u('β'),
-                        u('γ'),
-                        u('δ'),
-                        u('Σ'),
-                        u('μ'),
-                        u('λ'),
-                        u('ε'),
-                        u('ρ'),
-                        u('σ'),
-                        u('™')]:
-            list_to_return.append(u(x))
-    if len(list_to_return) > 0:
-        return set(list_to_return)
+    if non_english_chars != '':
+        list_to_return = []
+        for x in non_english_chars:
+            if u(x) not in [u('α'),
+                            u('β'),
+                            u('γ'),
+                            u('δ'),
+                            u('Σ'),
+                            u('μ'),
+                            u('λ'),
+                            u('ε'),
+                            u('ρ'),
+                            u('σ'),
+                            u('’'),
+                            u('™')]:
+                list_to_return.append(u(x))
+        if len(list_to_return) > 0:
+            return set(list_to_return)
     return False
 
 
