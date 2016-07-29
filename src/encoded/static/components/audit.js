@@ -51,12 +51,14 @@ var AuditMixin = module.exports.AuditMixin = {
 
 var AuditIcon = module.exports.AuditIcon = React.createClass({
     propTypes: {
-        level: React.PropTypes.string // Level name from an audit object
+        level: React.PropTypes.string, // Level name from an audit object
+        addClasses: React.PropTypes.string // CSS classes to add to default
     },
 
     render: function() {
+        var {level, addClasses} = this.props;
         var levelName = this.props.level.toLowerCase();
-        var iconClass = 'icon audit-activeicon-' + levelName;
+        var iconClass = 'icon audit-activeicon-' + levelName + (addClasses ? ' ' + addClasses : '');
 
         return <i className={iconClass}><span className="sr-only">{'Audit'} {levelName}</span></i>;
     }
