@@ -1266,105 +1266,105 @@ var FileDetailView = function(node) {
         }
         var dateString = !!selectedFile.date_created && moment.utc(selectedFile.date_created).format('YYYY-MM-DD');
         return (
-            <dl className="key-value">
-                {selectedFile.file_format ?
-                    <div data-test="format">
-                        <dt>Format</dt>
-                        <dd>{selectedFile.file_type}</dd>
+            <div>
+                <div className="details-view-header">
+                    <div className="details-view-info">
+                        <h4>{selectedFile.file_type} {selectedFile.accession}</h4>
                     </div>
-                : null}
+                </div>
+                <dl className="key-value">
+                    {selectedFile.output_type ?
+                        <div data-test="output">
+                            <dt>Output</dt>
+                            <dd>{selectedFile.output_type}</dd>
+                        </div>
+                    : null}
 
-                {selectedFile.output_type ?
-                    <div data-test="output">
-                        <dt>Output</dt>
-                        <dd>{selectedFile.output_type}</dd>
-                    </div>
-                : null}
+                    {selectedFile.paired_end ?
+                        <div data-test="pairedend">
+                            <dt>Paired end</dt>
+                            <dd>{selectedFile.paired_end}</dd>
+                        </div>
+                    : null}
 
-                {selectedFile.paired_end ?
-                    <div data-test="pairedend">
-                        <dt>Paired end</dt>
-                        <dd>{selectedFile.paired_end}</dd>
-                    </div>
-                : null}
+                    {selectedFile.replicate ?
+                        <div data-test="bioreplicate">
+                            <dt>Biological replicate(s)</dt>
+                            <dd>{'[' + selectedFile.replicate.biological_replicate_number + ']'}</dd>
+                        </div>
+                    : selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
+                        <div data-test="bioreplicate">
+                            <dt>Biological replicate(s)</dt>
+                            <dd>{'[' + selectedFile.biological_replicates.join(', ') + ']'}</dd>
+                        </div>
+                    : null}
 
-                {selectedFile.replicate ?
-                    <div data-test="bioreplicate">
-                        <dt>Biological replicate(s)</dt>
-                        <dd>{'[' + selectedFile.replicate.biological_replicate_number + ']'}</dd>
-                    </div>
-                : selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
-                    <div data-test="bioreplicate">
-                        <dt>Biological replicate(s)</dt>
-                        <dd>{'[' + selectedFile.biological_replicates.join(', ') + ']'}</dd>
-                    </div>
-                : null}
+                    {selectedFile.replicate ?
+                        <div data-test="techreplicate">
+                            <dt>Technical replicate</dt>
+                            <dd>{selectedFile.replicate.technical_replicate_number}</dd>
+                        </div>
+                    : selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
+                        <div data-test="techreplicate">
+                            <dt>Technical replicate</dt>
+                            <dd>{'-'}</dd>
+                        </div>
+                    : null}
 
-                {selectedFile.replicate ?
-                    <div data-test="techreplicate">
-                        <dt>Technical replicate</dt>
-                        <dd>{selectedFile.replicate.technical_replicate_number}</dd>
-                    </div>
-                : selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
-                    <div data-test="techreplicate">
-                        <dt>Technical replicate</dt>
-                        <dd>{'-'}</dd>
-                    </div>
-                : null}
+                    {selectedFile.assembly ?
+                        <div data-test="assembly">
+                            <dt>Mapping assembly</dt>
+                            <dd>{selectedFile.assembly}</dd>
+                        </div>
+                    : null}
 
-                {selectedFile.assembly ?
-                    <div data-test="assembly">
-                        <dt>Mapping assembly</dt>
-                        <dd>{selectedFile.assembly}</dd>
-                    </div>
-                : null}
+                    {selectedFile.genome_annotation ?
+                        <div data-test="annotation">
+                            <dt>Genome annotation</dt>
+                            <dd>{selectedFile.genome_annotation}</dd>
+                        </div>
+                    : null}
 
-                {selectedFile.genome_annotation ?
-                    <div data-test="annotation">
-                        <dt>Genome annotation</dt>
-                        <dd>{selectedFile.genome_annotation}</dd>
-                    </div>
-                : null}
+                    {selectedFile.lab && selectedFile.lab.title ?
+                        <div data-test="submitted">
+                            <dt>Lab</dt>
+                            <dd>{selectedFile.lab.title}</dd>
+                        </div>
+                    : null}
 
-                {selectedFile.lab && selectedFile.lab.title ?
-                    <div data-test="submitted">
-                        <dt>Lab</dt>
-                        <dd>{selectedFile.lab.title}</dd>
-                    </div>
-                : null}
+                    {dateString ?
+                        <div data-test="datecreated">
+                            <dt>Date added</dt>
+                            <dd>{dateString}</dd>
+                        </div>
+                    : null}
 
-                {dateString ?
-                    <div data-test="datecreated">
-                        <dt>Date added</dt>
-                        <dd>{dateString}</dd>
-                    </div>
-                : null}
+                    {selectedFile.analysis_step_version ?
+                        <div data-test="software">
+                            <dt>Software</dt>
+                            <dd>{SoftwareVersionList(selectedFile.analysis_step_version.software_versions)}</dd>
+                        </div>
+                    : null}
 
-                {selectedFile.analysis_step_version ?
-                    <div data-test="software">
-                        <dt>Software</dt>
-                        <dd>{SoftwareVersionList(selectedFile.analysis_step_version.software_versions)}</dd>
-                    </div>
-                : null}
+                    {node.metadata.contributing && selectedFile.dataset ?
+                        <div data-test="contributedfrom">
+                            <dt>Contributed from</dt>
+                            <dd><a href={selectedFile.dataset}>{contributingAccession}</a></dd>
+                        </div>
+                    : null}
 
-                {node.metadata.contributing && selectedFile.dataset ?
-                    <div data-test="contributedfrom">
-                        <dt>Contributed from</dt>
-                        <dd><a href={selectedFile.dataset}>{contributingAccession}</a></dd>
-                    </div>
-                : null}
-
-                {selectedFile.href ?
-                    <div data-test="download">
-                        <dt>File download</dt>
-                        <dd>
-                            <a href={selectedFile.href} download={selectedFile.href.substr(selectedFile.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i>
-                                &nbsp;Download
-                            </a>
-                        </dd>
-                    </div>
-                : null}
-            </dl>
+                    {selectedFile.href ?
+                        <div data-test="download">
+                            <dt>File download</dt>
+                            <dd>
+                                <a href={selectedFile.href} download={selectedFile.href.substr(selectedFile.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i>
+                                    &nbsp;Download
+                                </a>
+                            </dd>
+                        </div>
+                    : null}
+                </dl>
+            </div>
         );
     } else {
         return <p className="browser-error">No information available</p>;
@@ -1451,8 +1451,8 @@ var QcDetailsView = function(metrics) {
 
         return (
             <div>
-                <div className="quality-metrics-header">
-                    <div className="quality-metrics-info">
+                <div className="details-view-header">
+                    <div className="details-view-info">
                         <h4>{qcName} of {metrics.parent.accession}</h4>
                         {filesOfMetric.length ? <h5>Shared with {filesOfMetric.join(', ')}</h5> : null}
                     </div>
