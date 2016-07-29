@@ -1,58 +1,29 @@
 [
     {
-        "developmental_slims": [],
-        "uuid": "1f7dece6-e914-4524-a8a5-1aa758c8c837",
-        "description": "Initial insoluble fractions on D17 Long Poly-A+ from Lecuyer",
-        "schema_version": "9",
-        "biosample_type": "immortalized cell line",
-        "references": [],
-        "alternate_accessions": [],
-        "dbxrefs": [],
-        "donor": "ENCDO242AAA",
+        "_test": "pooled biosample",
+        "accession": "ENCBS356AAA",
         "award": "ENCODE2",
-        "lab": "richard-myers",
-        "status": "released",
-        "source": "atcc",
-        "organism": "dmelanogaster",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        
-        "biosample_term_name": "ML-DmD17-c3",
-        "accession": "ENCSR622ROQ",
-        "biosample_term_id": "EFO:0005826"
-    },
-    {
-        "alternate_accessions": [],
-        "protocol_documents": [],
-        "uuid": "147be5d5-7c9d-4b58-a40b-f0787a2746c5",
-        
-        "characterizations": [],
-        "description": "Initial insoluble fractions on D17 Long Total from Lecuyer",
-        "biosample_term_name": "ML-DmD17-c3",
-        "constructs": [],
-        "developmental_slims": [],
-        "rnais": [],
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "lab": "richard-myers",
-        "organism": "dmelanogaster",
-        
-        "pooled_from": [],
-        "treatments": [],
-        "subcellular_fraction_term_name": "insoluble cytoplasmic fraction",
-        "schema_version": "12",
-        "biosample_type": "immortalized cell line",
-        "subcellular_fraction_term_id": "NTR:0002594",
-        "parent_of": [],
-        "donor": "ENCDO242AAA",
-        "source": "atcc",
-        
-        "dbxrefs": [],
-        "model_organism_donor_constructs": [],
-        
-        "accession": "ENCBS468KEQ",
-        "status": "released",
-        "references": [],
-        "biosample_term_id": "EFO:0005826",
-        "award": "ENCODE2"
+        "biosample_term_id": "UBERON:0000006",
+        "biosample_term_name": "islet of Langerhans",
+        "biosample_type": "tissue",
+        "description": "dedifferentiated human pancreatic islets from the National Disease Research Interchange (NDRI), same source as PanIslets",
+        "dbxrefs": [
+            "UCSC-ENCODE-cv:PanIsletD"
+        ],
+        "lab": "gregory-crawford",
+        "organism": "human",
+        "phase": "S",
+        "pooled_from": [
+            "ENCBS492ENC",
+            "ENCBS493ENC"
+        ],
+        "protocol_documents": [
+            "ENCODE:PanIsletD_Crawford_protocol"
+        ],
+        "source": "ndri",
+        "submitted_by": "metus.donec@nisl.montes",
+        "url": "http://www.ndriresource.org/NDRI_Initiatives/Pancreatic_Islets/31/",
+        "uuid": "467c7505-5039-4935-8da1-6ad22d813310"
     },
     {
         "_test": "has references",
@@ -71,6 +42,7 @@
         "dbxrefs": [
             "UCSC-ENCODE-cv:MCF-7"
         ],
+        "host": "ENCBS356AAA",
         "lab": "richard-myers",
         "note": "(PMID: 4357757)",
         "organism": "human",
