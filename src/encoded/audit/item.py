@@ -29,7 +29,7 @@ def audit_item_schema(value, system):
             raise
         except Exception as e:
             detail = '%r upgrading from %r to %r' % (e, current_version, target_version)
-            yield AuditFailure('upgrade failure', detail, level='DCC_ACTION')
+            yield AuditFailure('upgrade failure', detail, level='INTERNAL_ACTION')
             return
 
         properties['schema_version'] = target_version
@@ -42,7 +42,7 @@ def audit_item_schema(value, system):
         if path:
             category += ': ' + '/'.join(str(elem) for elem in path)
         detail = 'Object {} has schema error {}'.format(value['@id'], error.message)
-        yield AuditFailure(category, detail, level='DCC_ACTION')
+        yield AuditFailure(category, detail, level='INTERNAL_ACTION')
 
 
 STATUS_LEVEL = {
@@ -112,8 +112,8 @@ def audit_item_status(value, system):
         if linked_level == 0:
             detail = '{} {} has {} subobject {}'.format(
                 value['status'], value['@id'], linked_value['status'], linked_value['@id'])
-            yield AuditFailure('mismatched status', detail, level='DCC_ACTION')
+            yield AuditFailure('mismatched status', detail, level='INTERNAL_ACTION')
         elif linked_level < level:
             detail = '{} {} has {} subobject {}'.format(
                 value['status'], value['@id'], linked_value['status'], linked_value['@id'])
-            yield AuditFailure('mismatched status', detail, level='DCC_ACTION')
+            yield AuditFailure('mismatched status', detail, level='INTERNAL_ACTION')
