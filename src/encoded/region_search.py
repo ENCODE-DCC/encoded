@@ -317,7 +317,7 @@ def region_search(context, request):
         query['aggs'] = set_facets(_FACETS, used_filters, principals, ['Experiment'])
         schemas = (types[item_type].schema for item_type in ['Experiment'])
         es_results = es.search(
-            body=query, index='encoded', doc_type='experiment', size=size
+            body=query, index='snovault', doc_type='experiment', size=size
         )
 
         result['@graph'] = list(format_results(request, es_results['hits']['hits']))
