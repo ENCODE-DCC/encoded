@@ -22,6 +22,7 @@ def includeme(config):
     config.add_route('batch_hub:trackdb', '/batch_hub/{search_params}/{assembly}/{txt}')
     config.scan(__name__)
 
+PROFILE_START_TIME = 0  # For profiling within this module
 
 TAB = '\t'
 NEWLINE = '\n'
@@ -32,6 +33,23 @@ BIGWIG_FILE_TYPES = ['bigWig']
 BIGBED_FILE_TYPES = ['bigBed']
 
 INVISIBLE_FILE_STATUSES = ["revoked", "replaced", "deleted", "archived" ]
+
+# TODO: should be moved to search.py
+ASSEMBLY_GROUPS = {
+    # Every term:       [ set of encoded terms used ]
+    "GRCh38":           [ "GRCh38", "GRCh38-minimal" ],
+    "GRCh38-minimal":   [ "GRCh38", "GRCh38-minimal" ],
+    "hg38":             [ "GRCh38", "GRCh38-minimal" ],
+    "GRCh37":           [ "hg19" ],
+    #"hg19":             [ "hg19" ], # default
+    "GRCm38":           [ "mm10", "mm10-minimal" ],
+    "mm10":             [ "mm10", "mm10-minimal" ],
+    "mm10-minimal":     [ "mm10", "mm10-minimal" ],
+    "GRCm37":           [ "mm9" ],
+    "BDGP6":            [ "dm4" ],
+    "BDGP5":            [ "dm3" ],
+    "WBcel235":         [ "WBcel235" ],
+    }
 
 
 # Supported tokens are the only tokens the code currently know how to look up and swap into text stings.
@@ -107,7 +125,6 @@ COMPOSITE_VIS_DEFS_DEFAULT = {
         "groups": {
             "Replicates": {
                 "tag": "REP",
-                "group_order": "sort",
                 "groups": {
                     "replicate": {
                         "title_mask": "Replicate_{replicate_number}",
@@ -117,13 +134,10 @@ COMPOSITE_VIS_DEFS_DEFAULT = {
             },
             "Biosample": {
                 "tag": "BS",
-                "sortable": True,
-                "group_order": "sort",
                 "groups": { "one": { "title_mask": "{biosample_term_name}" } },
             },
             "Targets": {
                 "tag": "TARG",
-                "group_order": "sort",
                 "groups": { "one": { "title_mask": "{target.label}", "url_mask": "targets/{target.name}" } },
             },
         }
@@ -224,7 +238,6 @@ LRNA_COMPOSITE_VIS_DEFS = {
         "groups": {
             "Replicates": {
                 "tag": "REP",
-                "group_order": "sort",
                 "groups": {
                 "replicate": {
                     "title_mask": "Replicate_{replicate_number}",
@@ -234,13 +247,10 @@ LRNA_COMPOSITE_VIS_DEFS = {
             },
             "Biosample": {
                 "tag": "BS",
-                "sortable": True,
-                "group_order": "sort",
                 "groups": { "one": { "title_mask": "{biosample_term_name}"} }
             },
             "Targets": {
                 "tag": "TARG",
-                "group_order": "sort",
                 "groups": { "one": { "title_mask": "{target.label}", "url_mask": "targets/{target.name}" } },
             },
         }
@@ -317,7 +327,6 @@ SRNA_COMPOSITE_VIS_DEFS = {
         "groups": {
             "Replicates": {
                 "tag": "REP",
-                "group_order": "sort",
                 "groups": {
                 "replicate": {
                     "title_mask": "Replicate_{replicate_number}", # Optional
@@ -327,8 +336,6 @@ SRNA_COMPOSITE_VIS_DEFS = {
             },
             "Biosample": {
                 "tag": "BS",
-                "sortable": True,
-                "group_order": "sort",
                 "groups": { "one": { "title_mask": "{biosample_term_name}"} }
             },
         }
@@ -437,7 +444,6 @@ RAMPAGE_COMPOSITE_VIS_DEFS = {
         "groups": {
             "Replicates": {
                 "tag": "REP",
-                "group_order": "sort",
                 "groups": {
                     "replicate": {
                         "title_mask": "Replicate_{replicate_number}",
@@ -447,9 +453,104 @@ RAMPAGE_COMPOSITE_VIS_DEFS = {
             },
             "Biosample": {
                 "tag": "BS",
-                "sortable": True,
-                "group_order": "sort",
                 "groups": { "one": { "title_mask": "{biosample_term_name}"} }
+            },
+        }
+    },
+    "file_defs": {
+        "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate} {experiment.accession} - {file.accession}",
+        "shortLabel": "{replicate} {output_type_short_label}",
+    }
+}
+
+MICRORNA_COMPOSITE_VIS_DEFS = {
+    "assay_composite": {
+        "longLabel":  "Collection of ENCODE microRNA experiments",
+        "shortLabel": "ENCODE microRNA",
+    },
+    "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
+    "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
+    "sortOrder": [ "Biosample", "Assay", "Replicates", "Views" ],
+    "Views": {
+        "tag": "view",
+        "group_order": [ "microRNA quantifications", "Plus signal of unique reads", "Minus signal of unique reads", "Plus signal of all reads" ,  "Minus signal of all reads"],
+        "groups": {
+            "microRNA quantifications": {
+                "tag": "SIGA",
+                "visibility": "hide",
+                "type": "bigBed",
+                "useScore": "0",
+                "output_type": [ "microRNA quantifications" ]
+            },
+            "Plus signal of all reads": {
+                "tag": "PSIGA",
+                "visibility": "hide",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "transformFunc": "LOG",
+                "autoScale": "off",
+                "maxHeightPixels": "64:18:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "plus strand signal of all reads" ]
+            },
+            "Plus signal of unique reads": {
+                "tag": "PSIGU",
+                "visibility": "full",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "transformFunc": "LOG",
+                "autoScale": "off",
+                "maxHeightPixels": "64:18:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "plus strand signal of unique reads" ]
+            },
+            "Minus signal of all reads": {
+                "tag": "SIGMA",
+                "visibility": "hide",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "transformFunc": "LOG",
+                "autoScale": "off",
+                "negateValues": "on",
+                "maxHeightPixels": "64:18:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "minus strand signal of all reads" ]
+            },
+            "Minus signal of unique reads": {
+                "tag": "SIGMU",
+                "visibility": "full",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "transformFunc": "LOG",
+                "autoScale": "off",
+                "negateValues": "on",
+                "maxHeightPixels": "64:18:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "minus strand signal of unique reads" ]
+            },
+        },
+    },
+    "other_groups": {
+        "dimensions": { "Biosample": "dimY", "Assay": "dimX", "Replicates": "dimA" },
+        "dimensionAchecked": "first", # or "all"
+        "groups": {
+            "Replicates": {
+                "tag": "REP",
+                "groups": {
+                "replicate": {
+                    "title_mask": "Replicate_{replicate_number}", # Optional
+                    #"tag_mask": "{replicate}", # Implicit
+                    "combined_title": "Pooled", # "Combined"
+                    }
+                },
+            },
+            "Biosample": {
+                "tag": "BS",
+                "groups": { "one": { "title_mask": "{biosample_term_name}"} }
+            },
+            "Assay": {
+                "tag": "ASSAY",
+                "groups": { "one": { "title_mask": "{assay_term_name}" } },
             },
         }
     },
@@ -503,7 +604,6 @@ DNASE_COMPOSITE_VIS_DEFS = {
         "groups": {
             "Replicates": {
                 "tag": "REP",
-                "group_order": "sort",
                 "groups": {
                     "replicate": {
                         "title_mask": "Replicate_{replicate_number}",
@@ -513,8 +613,6 @@ DNASE_COMPOSITE_VIS_DEFS = {
             },
             "Biosample": {
                 "tag": "BS",
-                "sortable": True,
-                "group_order": "sort",
                 "groups": { "one": { "title_mask": "{biosample_term_name}"} }
             },
         }
@@ -591,7 +689,6 @@ WGBS_COMPOSITE_VIS_DEFS = {
         "groups": {
             "Replicates": {
                 "tag": "REP",
-                "group_order": "sort",
                 "groups": {
                     "replicate": {
                         "title_mask": "Replicate_{replicate_number}",
@@ -601,13 +698,10 @@ WGBS_COMPOSITE_VIS_DEFS = {
             },
             "Biosample": {
                 "tag": "BS",
-                "sortable": True,
-                "group_order": "sort",
                 "groups": { "one": { "title_mask": "{biosample_term_name}"} }
             },
             "Targets": {
                 "tag": "TARG",
-                "group_order": "sort",
                 "groups": { "one": { "title_mask": "{target.label}"} }
             }
         }
@@ -706,7 +800,6 @@ CHIP_COMPOSITE_VIS_DEFS = {
         "groups": {
             "Replicates": {
                 "tag": "REP",
-                "group_order": "sort",
                 "groups": {
                     "replicate": {
                         "title_mask": "Replicate_{replicate_number}", # Optional
@@ -717,13 +810,10 @@ CHIP_COMPOSITE_VIS_DEFS = {
             },
             "Biosample": {
                 "tag": "BS",
-                "sortable": True,
-                "group_order": "sort",
                 "groups": { "one": { "title_mask": "{biosample_term_name}"} }
             },
             "Targets": {
                 "tag": "TARG",
-                "group_order": "sort",
                 "groups": { "one": { "title_mask": "{target.label}", "url_mask": "targets/{target.name}"} }
             }
         }
@@ -772,7 +862,6 @@ ECLIP_COMPOSITE_VIS_DEFS = {
         "groups": {
             "Replicates": {
                 "tag": "REP",
-                "group_order": "sort",
                 "groups": {
                     "replicate": {
                         "title_mask": "Replicate_{replicate_number}",
@@ -783,13 +872,10 @@ ECLIP_COMPOSITE_VIS_DEFS = {
             },
             "Biosample": {
                 "tag": "BS",
-                "sortable": True,
-                "group_order": "sort",
                 "groups": { "one": { "title_mask": "{biosample_term_name}"} }
             },
             "Targets": {
                 "tag": "TARG",
-                "group_order": "sort",
                 "groups": { "one": { "title_mask": "{target.label}", "url_mask": "targets/{target.name}" } }
             }
         }
@@ -847,7 +933,6 @@ ANNO_COMPOSITE_VIS_DEFS = {
         "groups": {
             "Replicates": {
                 "tag": "REP",
-                "group_order": "sort",
                 "groups": {
                     "replicate": {
                         "title_mask": "Replicate_{replicate_number}", # Optional
@@ -858,8 +943,6 @@ ANNO_COMPOSITE_VIS_DEFS = {
             },
             "Biosample": {
                 "tag": "BS",
-                "sortable": True,
-                "group_order": "sort",
                 "groups": { "one": { "title_mask": "{biosample_term_name}"} }
             },
         }
@@ -871,14 +954,15 @@ ANNO_COMPOSITE_VIS_DEFS = {
 }
 
 VIS_DEFS_BY_ASSAY = {
-    "LRNA":  LRNA_COMPOSITE_VIS_DEFS,
-    "SRNA":  SRNA_COMPOSITE_VIS_DEFS,
-    "RAMP":  RAMPAGE_COMPOSITE_VIS_DEFS,
-    "DNASE": DNASE_COMPOSITE_VIS_DEFS,
-    "WGBS":  WGBS_COMPOSITE_VIS_DEFS,
-    "CHIP":  CHIP_COMPOSITE_VIS_DEFS,
-    "eCLIP": ECLIP_COMPOSITE_VIS_DEFS,
-    "ANNO":  ANNO_COMPOSITE_VIS_DEFS
+    "LRNA":     LRNA_COMPOSITE_VIS_DEFS,
+    "SRNA":     SRNA_COMPOSITE_VIS_DEFS,
+    "RAMPAGE":  RAMPAGE_COMPOSITE_VIS_DEFS,
+    "MICRORNA": MICRORNA_COMPOSITE_VIS_DEFS,
+    "DNASE":    DNASE_COMPOSITE_VIS_DEFS,
+    "WGBS":     WGBS_COMPOSITE_VIS_DEFS,
+    "CHIP":     CHIP_COMPOSITE_VIS_DEFS,
+    "eCLIP":    ECLIP_COMPOSITE_VIS_DEFS,
+    "ANNO":     ANNO_COMPOSITE_VIS_DEFS
     }
 
 def get_vis_type(dataset):
@@ -902,10 +986,12 @@ def get_vis_type(dataset):
             return "LRNA"
         else:
             return "SRNA"
+    elif assay in ["microRNA-seq","microRNA counts"]:
+        return "MICRORNA"
     elif assay in ["whole-genome shotgun bisulfite sequencing","shotgun bisulfite-seq assay"]:
         return "WGBS"
     elif assay.lower() in ["rampage","cage"]:
-        return "RAMP"
+        return "RAMPAGE"
     elif assay == "ChIP-seq":
         return "CHIP"
     elif assay == "eCLIP":
@@ -935,13 +1021,23 @@ PENNANTS = {
     }
 def find_pennent(dataset):
     '''Returns an appropriate pennantIcon given dataset's award'''
+    # ZZZ3, ZNF592, ZNF384, ZNF318, ZNF274, ZNF263
+    # rabbit-IgG-control, mouse-IgG-control
+    # eGFP-ZNF83, eGFP-ZNF766, eGFP-ZNF740, eGFP-ZNF644, eGFP-ZNF639, eGFP-ZNF589, eGFP-ZNF584, eGFP-ZNF24, eGFP-ZNF197, eGFP-ZNF175, eGFP-ZKSCAN8
+    # eGFP-ZFX, eGFP-ZBTB11, eGFP-USF2, eGFP-TSC22D4, eGFP-TFDP1, eGFP-TEAD2, eGFP-TAF7, eGFP-RELA, eGFP-PYGO2, eGFP-PTTG1, eGFP-PTRF, eGFP-NR4A1,
+    # eGFP-NR2C2, eGFP-NFE2L1, eGFP-MAFG, eGFP-KLF9, eGFP-KLF4, eGFP-KLF13, eGFP-KLF1, eGFP-JUND, eGFP-JUNB, eGFP-IRF9, eGFP-IRF1, eGFP-ILK,
+    # eGFP-ID3, eGFP-HINFP, eGFP-HDAC8, eGFP-GTF2E2, eGFP-GATA2, eGFP-GABPA, eGFP-FOXJ2, eGFP-FOSL2, eGFP-FOSL1, eGFP-FOS, eGFP-ETV1, eGFP-ELK1,
+    # eGFP-ELF1, eGFP-E2F5, eGFP-E2F5, eGFP-E2F4, eGFP-DIDO1, eGFP-E2F4, eGFP-DDX20, eGFP-CUX1, eGFP-CREB3, eGFP-CEBPG, eGFP-CEBPB, eGFP-BACH1,
+    # eGFP-ATF1, eGFP-ADNP
+
+    #ZNF263=ZNF263 ZNF274=ZNF274 ZNF318=ZNF318 ZNF384=ZNF384 ZNF592=ZNF592 ZZZ3=ZZZ3
+    # eGFP45ADNP=eGFP-ADNP eGFP45ATF1=eGFP-ATF1 eGFP45BACH1=eGFP-BACH1 eGFP45CEBPB=eGFP-CEBPB eGFP45CEBPG=eGFP-CEBPG eGFP45CREB3=eGFP-CREB3 eGFP45CUX1=eGFP-CUX1 eGFP45DDX20=eGFP-DDX20 eGFP45DIDO1=eGFP-DIDO1 eGFP45E2F4=eGFP-E2F4 eGFP45E2F5=eGFP-E2F5 eGFP45ELF1=eGFP-ELF1 eGFP45ELK1=eGFP-ELK1 eGFP45ETV1=eGFP-ETV1 eGFP45FOS=eGFP-FOS eGFP45FOSL1=eGFP-FOSL1 eGFP45FOSL2=eGFP-FOSL2 eGFP45FOXJ2=eGFP-FOXJ2 eGFP45GABPA=eGFP-GABPA eGFP45GATA2=eGFP-GATA2 eGFP45GTF2E2=eGFP-GTF2E2 eGFP45HDAC8=eGFP-HDAC8 eGFP45HINFP=eGFP-HINFP eGFP45ID3=eGFP-ID3 eGFP45ILK=eGFP-ILK eGFP45IRF1=eGFP-IRF1 eGFP45IRF9=eGFP-IRF9 eGFP45JUNB=eGFP-JUNB eGFP45JUND=eGFP-JUND eGFP45KLF1=eGFP-KLF1 eGFP45KLF13=eGFP-KLF13 eGFP45KLF4=eGFP-KLF4 eGFP45KLF9=eGFP-KLF9 eGFP45MAFG=eGFP-MAFG eGFP45NFE2L1=eGFP-NFE2L1 eGFP45NR2C2=eGFP-NR2C2 eGFP45NR4A1=eGFP-NR4A1 eGFP45PTRF=eGFP-PTRF eGFP45PTTG1=eGFP-PTTG1 eGFP45PYGO2=eGFP-PYGO2 eGFP45RELA=eGFP-RELA eGFP45TAF7=eGFP-TAF7 eGFP45TEAD2=eGFP-TEAD2 eGFP45TFDP1=eGFP-TFDP1 eGFP45TSC22D4=eGFP-TSC22D4 eGFP45USF2=eGFP-USF2 eGFP45ZBTB11=eGFP-ZBTB11 eGFP45ZFX=eGFP-ZFX eGFP45ZKSCAN8=eGFP-ZKSCAN8 eGFP45ZNF175=eGFP-ZNF175 eGFP45ZNF197=eGFP-ZNF197 eGFP45ZNF24=eGFP-ZNF24 eGFP45ZNF584=eGFP-ZNF584 eGFP45ZNF589=eGFP-ZNF589 eGFP45ZNF639=eGFP-ZNF639 eGFP45ZNF644=eGFP-ZNF644 eGFP45ZNF740=eGFP-ZNF740 eGFP45ZNF766=eGFP-ZNF766 eGFP45ZNF83=eGFP-ZNF83
+    # goat45IgG45control=goat-IgG-control mouse45IgG45control=mouse-IgG-control rabbit45IgG45control=rabbit-IgG-control
     project = dataset.get("award",{}).get("project","NHGRI")
     return PENNANTS.get(project,PENNANTS.get("NHGRI"))
 
 
-SUPPORTED_SUBGROUPS = [
-    "Biosample", "Targets", "Replicates", "Views"
-    ]
+SUPPORTED_SUBGROUPS = [ "Biosample", "Targets", "Assay", "Replicates", "Views" ]
 
 SUPPORTED_TRACK_SETTINGS = [
     "type","visibility","longLabel","shortLabel","color","altColor","allButtonPair","html"
@@ -1405,7 +1501,7 @@ def generate_live_groups(composite,title,group_defs,dataset,rep_tags=[]):
             live_group["groups"][rep_tag] = { "title": rep_title, "tag": rep_tag }
         live_group["preferred_order"] = "sorted"
 
-    elif title in ["Biosample", "Targets"]: # Single subGroup at experiment level.  No order
+    elif title in ["Biosample", "Targets", "Assay" ]: # Single subGroup at experiment level.  No order
         groups = group_defs.get("groups",{})
         assert(len(groups) == 1)
         for (group_key,group) in groups.items():
@@ -1505,6 +1601,7 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
     tracks = []
     rep_techs = {}
     files = []
+    ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
 
     # first time through just to get rep_tech
     group_order = composite["view"].get("group_order",[])
@@ -1520,7 +1617,7 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
         for a_file in dataset["files"]:
             if a_file['status'] in INVISIBLE_FILE_STATUSES:
                 continue
-            if 'assembly' not in a_file or a_file['assembly'] != assembly:
+            if 'assembly' not in a_file or _ASSEMBLY_MAPPER.get(a_file['assembly'], a_file['assembly']) != ucsc_assembly:
                 continue
             if file_format != a_file['file_format']:
                 continue
@@ -1546,7 +1643,7 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
         if rep_tech == "combined":
             rep_tag = "pool"
         else:
-            rep_tag = "rep%d" % rep_ix
+            rep_tag = "rep%02d" % rep_ix
             rep_ix += 1
         rep_techs[rep_tech] = rep_tag
         rep_tags.append(rep_tag)
@@ -1612,7 +1709,7 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
             membership["view"] = view["tag"]
             view["tracks"].append( track )  # <==== This is how we connect them to the views
             for (group_tag,group) in composite["groups"].items():
-                # "Replicates", "Biosample", "Targets", ... member?
+                # "Replicates", "Biosample", "Targets", "Assay", ... member?
                 group_title = group["title"]
                 subgroups = group["groups"]
                 if group_title == "Replicates":
@@ -1627,7 +1724,7 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
                         if "tracks" not in subgroup:
                             subgroup["tracks"] = []
                         subgroup["tracks"].append( track )  # <==== also connected to replicate
-                elif group_title in ["Biosample", "Targets"]:
+                elif group_title in ["Biosample", "Targets", "Assay"]:
                     assert(len(subgroups) == 1)
                     #if len(subgroups) == 1:
                     for (subgroup_tag,subgroup) in subgroups.items():
@@ -1981,7 +2078,7 @@ def generate_acc_composite(request, dataset, assembly, hide=False):
     ### CHIP: https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR645BCH/@@hub/GRCh38/trackDb.txt
     ### LRNA: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR000AAA/@@hub/GRCh38/trackDb.txt
 
-    start_time = time.time()
+    global PROFILE_START_TIME
     regen_vis = (request.url.find("regenvis") > -1) # @@hub/GRCh38/regenvis/trackDb.txt  regenvis/GRCh38 causes and error
 
     acc_composite = None
@@ -1996,7 +2093,7 @@ def generate_acc_composite(request, dataset, assembly, hide=False):
         found_or_made = "generated"
     else:
         found_or_made = "found"
-    log.warn("%s composite %s %.3f" % (found_or_made,dataset['accession'],(time.time() - start_time)))
+    log.warn("%s composite %s %.3f" % (found_or_made,dataset['accession'],(time.time() - PROFILE_START_TIME)))
 
     ###return json.dumps(acc_composite,indent=4) + '\n'
 
@@ -2011,46 +2108,98 @@ def generate_trackDb(request, dataset, assembly, hide=False):
     return ucsc_trackDb_composite_blob(acc_composite,acc)
 
 
-def generate_batch_trackDb(request, results, assembly, hide=False):
+def generate_batch_trackDb(request, param_list, hide=False):
 
     ### local test: RNA-seq: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/batch_hub/type=Experiment,,assay_title=RNA-seq,,award.rfa=ENCODE3,,status=released,,assembly=GRCh38,,replicates.library.biosample.biosample_type=induced+pluripotent+stem+cell+line/GRCh38/trackDb.txt
 
+    global PROFILE_START_TIME
+
+    # Special logic to force remaking of trackDb
     regen_vis = request.url.find("regenvis") # ...&assembly=hg19&regenvis/hg19/trackDb.txt  regenvis=1 causes an error
-    acc_composites = {}
-    start_time = time.time()
-    found = 0
-    made = 0
-    log.warn("len(results) = %d" % (len(results)))  # DEBUG: batch trackDb
-    for dataset in results:
-        acc = dataset['accession']
-        # TODO: When log messages are no longer important:
-        #acc_composite = generate_acc_composite(request, dataset, assembly, hide=hide)
+    find_or_make = "find or make"
+    if regen_vis > -1: # Find composite?
+        find_or_make = "make"
 
-        acc_composite = None
-        es_key = acc+"_"+assembly
-        if regen_vis == -1: # Find composite?
-            acc_composite = get_from_es(request,es_key)
+    assembly = str(request.matchdict['assembly'])
+    log.warn("Request for %s trackDb begins   %.3f secs" % (assembly,(time.time() - PROFILE_START_TIME)))  # DEBUG: batch trackDb
 
-        if acc_composite is None:
-            #log.warn("making composite " + acc)
-            acc_composite = make_acc_composite(dataset, assembly, host=request.host_url, hide=hide)
-            #if acc_composite:
-            add_to_es(request,es_key,acc_composite)
-            made += 1
-        else:
-            found += 1
+    # Create an appropriate cache key
+    pairs = request.matchdict['search_params'].replace('=','_').split(',,')
 
-        acc_composites[acc] = acc_composite
-        del dataset
+    pairs.append("assembly_%s" % assembly)
+    es_set_key = '_'.join( sorted( pairs ) )  # Most important to sort, to ensure 2 identical (but different order) searches) resolve
 
-    log.warn("len(acc_comosites) =  %d   %.3f secs" % (len(acc_composites),(time.time() - start_time)))  # DEBUG: batch trackDb
-    set_composites = remodel_acc_to_set_composites(acc_composites) # ,hide_after=5) # TODO: set a reasonable hide_after
-    log.warn("generated %d, found %d acc_composites %.3f secs" % (made,found,(time.time() - start_time)))
+    # Find it?
+    set_composites = get_from_es(request,es_set_key)
+    if set_composites is None:
+
+        # Have to make it.
+        assemblies = ASSEMBLY_GROUPS.get(assembly,[assembly])
+        params = {
+            'files.file_format': BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES,
+            #'status': ['released'], # TODO: Not just released!
+        }
+        params.update(param_list)
+        params.update({
+            'assembly': assemblies,
+            'limit': ['all'],
+            'frame': ['embedded'],
+        })
+        view = 'search'
+        if 'region' in param_list:
+            view = 'region-search'
+        path = '/%s/?%s' % (view, urlencode(params, True))
+        results = request.embed(path, as_user=True)['@graph']
+        # if files.file_format is a input param
+        #if 'files.file_format' in param_list:
+        #    results = [
+        #        result
+        #        for result in results
+        #        if any(
+        #            f['file_format'] in BIGWIG_FILE_TYPES + BIGBED_FILE_TYPES
+        #            for f in result.get('files', [])
+        #        )
+        #    ]
+        #trackdb = ''
+
+        acc_composites = {}
+        found = 0
+        made = 0
+        log.warn("len(results) = %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))  # DEBUG: batch trackDb
+        for dataset in results:
+            acc = dataset['accession']
+            # TODO: When log messages are no longer important:
+            #acc_composite = generate_acc_composite(request, dataset, assembly, hide=hide)
+
+            acc_composite = None
+            es_key = acc+"_"+assembly
+            if regen_vis == -1: # Find composite?
+                acc_composite = get_from_es(request,es_key)
+
+            if acc_composite is None:
+                #log.warn("making composite " + acc)
+                acc_composite = make_acc_composite(dataset, assembly, host=request.host_url, hide=hide)
+                #if acc_composite:
+                add_to_es(request,es_key,acc_composite)
+                made += 1
+            else:
+                found += 1
+
+            acc_composites[acc] = acc_composite
+            del dataset
+
+        log.warn("len(acc_comosites) =  %d   %.3f secs" % (len(acc_composites),(time.time() - PROFILE_START_TIME)))  # DEBUG: batch trackDb
+        set_composites = remodel_acc_to_set_composites(acc_composites) # ,hide_after=5) # TODO: set a reasonable hide_after
+        add_to_es(request,es_set_key,set_composites)
+        log.warn("generated %d, found %d acc_composites   %.3f secs" % (made,found,(time.time() - PROFILE_START_TIME)))
+
+    else:
+        log.warn("Found with key %s   %.3f secs" % (es_set_key,(time.time() - PROFILE_START_TIME)))
 
     blob = ""
     for composite_tag in sorted( set_composites.keys() ):
         blob += ucsc_trackDb_composite_blob(set_composites[composite_tag],composite_tag)
-    log.warn("Length of trackDb %d %.3f secs" % (len(blob),(time.time() - start_time)))  # DEBUG: batch trackDb
+    log.warn("Length of trackDb %d   %.3f secs" % (len(blob),(time.time() - PROFILE_START_TIME)))  # DEBUG: batch trackDb
 
     return blob
 
@@ -2153,6 +2302,8 @@ def generate_html(context, request):
 
 def generate_batch_hubs(context, request):
     '''search for the input params and return the trackhub'''
+    global PROFILE_START_TIME
+    PROFILE_START_TIME = time.time()
 
     results = {}
     txt = request.matchdict['txt']
@@ -2169,31 +2320,7 @@ def generate_batch_hubs(context, request):
             data_policy = '<br /><a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
             return generate_html(context, request) + data_policy
 
-        assembly = str(request.matchdict['assembly'])
-        params = {
-            'files.file_format': BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES,
-            #'status': ['released'], # TODO: Not just released!
-        }
-        params.update(param_list)
-        params.update({
-            'assembly': [assembly],
-            'limit': ['all'],
-            'frame': ['embedded'],
-        })
-        path = '/%s/?%s' % (view, urlencode(params, True))
-        results = request.embed(path, as_user=True)['@graph']
-        # if files.file_format is a input param
-        #if 'files.file_format' in param_list:
-        #    results = [
-        #        result
-        #        for result in results
-        #        if any(
-        #            f['file_format'] in BIGWIG_FILE_TYPES + BIGBED_FILE_TYPES
-        #            for f in result.get('files', [])
-        #        )
-        #    ]
-        #trackdb = ''
-        return generate_batch_trackDb(request, results, assembly)
+        return generate_batch_trackDb(request,param_list)
 
     elif txt == HUB_TXT:
         terms = request.matchdict['search_params'].replace(',,', '&')
@@ -2226,6 +2353,8 @@ def generate_batch_hubs(context, request):
 @view_config(name='hub', context=Item, request_method='GET', permission='view')
 def hub(context, request):
     ''' Creates trackhub on fly for a given experiment '''
+    global PROFILE_START_TIME
+    PROFILE_START_TIME = time.time()
 
     url_ret = (request.url).split('@@hub')
     embedded = request.embed(request.resource_path(context))
