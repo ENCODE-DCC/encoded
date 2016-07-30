@@ -460,7 +460,9 @@ def pipeline(testapp, lab, award):
         'award': award['uuid'],
         'lab': lab['uuid'],
         'title': "Test pipeline",
-        'version': "v8"
+        'version': "v8",
+        "assay_term_id": "OBI:0000716",
+        "assay_term_name": "ChIP-seq"
     }
     return testapp.post_json('/pipeline', item).json['@graph'][0]
 
@@ -730,7 +732,9 @@ def pipeline_bam(testapp, lab, award, analysis_step_bam):
         'lab': lab['uuid'],
         'title': "Histone ChIP-seq",
         'analysis_steps': [analysis_step_bam['@id']],
-        'version': "v8"
+        'version': "v8",
+        "assay_term_id": "OBI:0000716",
+        "assay_term_name": "ChIP-seq"
     }
     return testapp.post_json('/pipeline', item).json['@graph'][0]
 
