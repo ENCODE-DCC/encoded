@@ -71,7 +71,7 @@ def u(x):
 
 
 def is_not_English(s):
-    non_english_chars = re.sub('[ -~]', '', s)
+    non_english_chars = re.sub('[\x00-\x7f]', '', s)
     if non_english_chars != '':
         list_to_return = []
         for x in non_english_chars:
