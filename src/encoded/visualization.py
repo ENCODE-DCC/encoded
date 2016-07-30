@@ -34,21 +34,25 @@ BIGBED_FILE_TYPES = ['bigBed']
 
 INVISIBLE_FILE_STATUSES = ["revoked", "replaced", "deleted", "archived" ]
 
-# TODO: should be moved to search.py
-ASSEMBLY_GROUPS = {
-    # Every term:       [ set of encoded terms used ]
+# ASSEMBLY_MAPPINGS is needed to ensure that mm10 and mm10-minimal will get combined into the same trackHub.txt
+# This is necessary because mm10 and mm10-minimal are only mm10 at UCSC, so the 2 must be collapsed into one.
+ASSEMBLY_MAPPINGS = {
+    # any term:       [ set of encoded terms used ]
     "GRCh38":           [ "GRCh38", "GRCh38-minimal" ],
     "GRCh38-minimal":   [ "GRCh38", "GRCh38-minimal" ],
     "hg38":             [ "GRCh38", "GRCh38-minimal" ],
-    "GRCh37":           [ "hg19" ],
-    #"hg19":             [ "hg19" ], # default
-    "GRCm38":           [ "mm10", "mm10-minimal" ],
-    "mm10":             [ "mm10", "mm10-minimal" ],
-    "mm10-minimal":     [ "mm10", "mm10-minimal" ],
-    "GRCm37":           [ "mm9" ],
-    "BDGP6":            [ "dm4" ],
-    "BDGP5":            [ "dm3" ],
-    "WBcel235":         [ "WBcel235" ],
+    "GRCh37":           [ "hg19", "GRCh37" ],  # Is GRCh37 ever in encoded?
+    "hg19":             [ "hg19", "GRCh37" ],
+    "GRCm38":           [ "mm10", "mm10-minimal", "GRCm38" ],  # Is GRCm38 ever in encoded?
+    "mm10":             [ "mm10", "mm10-minimal", "GRCm38" ],
+    "mm10-minimal":     [ "mm10", "mm10-minimal", "GRCm38" ],
+    "GRCm37":           [ "mm9", "GRCm37" ],  # Is GRCm37 ever in encoded?
+    "mm9":              [ "mm9", "GRCm37" ],
+    "BDGP6":            [ "dm4", "BDGP6" ],
+    "dm4":              [ "dm4", "BDGP6" ],
+    "BDGP5":            [ "dm3", "BDGP5" ],
+    "dm3":              [ "dm3", "BDGP5" ],
+    #"WBcel235":         [ "WBcel235" ], # defaults to term: [ term ]
     }
 
 
@@ -64,7 +68,6 @@ SUPPORTED_MASK_TOKENS = [
     "{annotation_type}",                    # some datasets have annotation type and not assay (higher end trickery)
     "{output_type}",                        # files.output_type
     "{accession}","{experiment.accession}", # "{accession}" is assumed to be experiment.accession
-
     "{file.accession}",
     "{target}","{target.label}",            # Either is acceptible
     "{target.name}",                        # Used in metadata URLs
@@ -73,8 +76,8 @@ SUPPORTED_MASK_TOKENS = [
     "{replicates.library.biosample.summary}",   # Idan and Forrest and Cricket are conspiring to move this to dataset.biosample_summary and make it much shorter
     "{replicates.library.biosample.summary|multiple}",   # "|multiple": none means multiple
     "{assembly}",                               # you don't need this in titles, but it is crucial variable and seems to not be being applied correctly in the html generation
-    # TODO "{software? or pipeline?}",          # I am stumbling over the fact that we can't distinguish tophat and star produced files
-    # TODO "{phase}",                           # If we get to the point of being fancy in the replication timing, then we need this, otherwise it bundles up in the biosample summary now
+    # TODO "{software? or pipeline?}",          # Cricket: "I am stumbling over the fact that we can't distinguish tophat and star produced files"
+    # TODO "{phase}",                           # Cricket: "If we get to the point of being fancy in the replication timing, then we need this, otherwise it bundles up in the biosample summary now"
     ]
 
 # Simple tokens are a straight lookup, no questions asked
@@ -1004,9 +1007,6 @@ def get_vis_type(dataset):
 
 def lookup_vis_defs(vis_type):
     '''returns the best static composite definition set, based upon dataset.'''
-    global COMPOSITE_VIS_DEFS_DEFAULT
-    global VIS_DEFS_BY_ASSAY
-
     return VIS_DEFS_BY_ASSAY.get(vis_type, COMPOSITE_VIS_DEFS_DEFAULT )
 
 PENNANTS = {
@@ -1183,7 +1183,6 @@ BIOSAMPLE_COLOR = {
 
 def lookup_colors(dataset):
     '''Using the mask, determine which color table to use.'''
-    global BIOSAMPLE_COLOR
     color = None
     altColor = None
     coloring = {}
@@ -1344,8 +1343,6 @@ def rep_for_file(a_file):
 
 def lookup_token(token,dataset,a_file=None):
     '''Encodes the string to swap special characters and remove spaces.'''
-    global SUPPORTED_MASK_TOKENS
-    global OUTPUT_TYPE_8CHARS
 
     if token not in SUPPORTED_MASK_TOKENS:
         log.warn("Attempting to look up un expected token: '%s'" % token)
@@ -1781,7 +1778,6 @@ def make_acc_composite(dataset, assembly, host=None, hide=False):
         composite[tag] = views
         title_to_tag["Views"] = tag
 
-    global SUPPORTED_SUBGROUPS
     if "other_groups" in vis_defs:
         groups = vis_defs["other_groups"].get("groups",{})
         new_dimensions = {}
@@ -1883,7 +1879,7 @@ def remodel_acc_to_set_composites(acc_composites,hide_after=None):
             #log.warn("Remodelling %s into %s composite" % (acc_composite.get("name"," a composite"),vis_type)) # DEBUG: remodelling
             set_composite = acc_composite # Don't bother with deep copy... we aren't needing the acc_composites any more
             set_defs = vis_defs.get("assay_composite",{})
-            set_composite["name"] = vis_type.lower()  # TODO: something more elegant?
+            set_composite["name"] = vis_type.lower()  # is there something more elegant?
             for tag in ["longLabel","shortLabel","visibility"]:
                 if tag in set_defs:
                     set_composite[tag] = set_defs[tag] # Not expecting any token substitutions!!!
@@ -1947,7 +1943,6 @@ def ucsc_trackDb_composite_blob(composite,title):
     blob += "track %s\n" % composite["name"]
     blob += "compositeTrack on\n"
     blob += "type bed 3\n"
-    global COMPOSITE_SETTINGS
     for var in COMPOSITE_SETTINGS:
         val = composite.get(var)
         if val:
@@ -2019,8 +2014,6 @@ def ucsc_trackDb_composite_blob(composite,title):
     blob += '\n'
 
     # Now cycle through views
-    global VIEW_SETTINGS
-    global TRACK_SETTINGS
     for view_tag in views["group_order"]:
         view = views["groups"][view_tag]
         tracks = view.get("tracks",[])
@@ -2055,8 +2048,8 @@ def ucsc_trackDb_composite_blob(composite,title):
             if membership:
                 blob += "        subGroups"
                 for member_tag in sorted( membership ):
-                    if member_tag in actual_group_tags: # TODO: remove when it is proved to be not needed.
-                        blob += " %s=%s" % (member_tag,membership[member_tag])
+                    #if member_tag in actual_group_tags: # TODO: remove when it is proved to be not needed.
+                    blob += " %s=%s" % (member_tag,membership[member_tag])
                 blob += '\n'
             # metadata line?
             metadata_pairs = track.get("metadata_pairs")
@@ -2071,70 +2064,105 @@ def ucsc_trackDb_composite_blob(composite,title):
     blob += '\n'
     return blob
 
-def generate_acc_composite(request, dataset, assembly, hide=False):
+def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False):
 
     ### local test: bigBed: curl http://localhost:8000/experiments/ENCSR000DZQ/@@hub/hg19/trackDb.txt
     ###             bigWig: curl http://localhost:8000/experiments/ENCSR000ADH/@@hub/mm9/trackDb.txt
     ### CHIP: https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR645BCH/@@hub/GRCh38/trackDb.txt
     ### LRNA: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR000AAA/@@hub/GRCh38/trackDb.txt
 
-    global PROFILE_START_TIME
     regen_vis = (request.url.find("regenvis") > -1) # @@hub/GRCh38/regenvis/trackDb.txt  regenvis/GRCh38 causes and error
 
     acc_composite = None
-    es_key = dataset['accession']+"_"+assembly
+    es_key = acc + "_" + assembly
     if not regen_vis: # Find composite?
         acc_composite = get_from_es(request,es_key)
 
     if acc_composite is None:
-        acc_composite = make_acc_composite(dataset, assembly, host=request.host_url, hide=hide)
-        #if acc_composite:
+        if dataset is None:
+            dataset = request.embed("/datasets/" + acc + '/', as_user=True)  # TODO: lower but better memory usage
+            #log.warn("find_or_make_acc_composite len(results) = %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))  # DEBUG
+
+        acc_composite = make_acc_composite(dataset, assembly, host=request.host_url, hide=hide)  # DEBUG: batch trackDb
+        #if acc_composite: # TODO: force retrying empty composites
         add_to_es(request,es_key,acc_composite)
-        found_or_made = "generated"
+        found_or_made = "made"
     else:
         found_or_made = "found"
-    log.warn("%s composite %s %.3f" % (found_or_made,dataset['accession'],(time.time() - PROFILE_START_TIME)))
 
-    ###return json.dumps(acc_composite,indent=4) + '\n'
+    ###log.warn(json.dumps(acc_composite,indent=4))
 
-    return acc_composite
+    return (found_or_made, acc_composite)
 
 
 def generate_trackDb(request, dataset, assembly, hide=False):
 
     acc = dataset['accession']
-    acc_composite = generate_acc_composite(request, dataset, assembly, hide=hide)
+    (found_or_made, acc_composite) = find_or_make_acc_composite(request, assembly, dataset["accession"], dataset, hide=hide)
+    log.warn("%s composite %s %.3f" % (found_or_made,dataset['accession'],(time.time() - PROFILE_START_TIME)))
     #del dataset
     return ucsc_trackDb_composite_blob(acc_composite,acc)
 
+def make_set_key(param_list,assembly):
+    '''Returns a key for es cache for a set of search parameters'''
+    es_set_key = "assembly=%s" % assembly
+    for param_key in sorted( param_list.keys() ):  # Most important to sort, to ensure 2 identical (but different order) searches) resolve
+        params = sorted( param_list[param_key] )
+        es_set_key += ',,' + param_key + '=' + params[0]
+        if len(params) > 1:
+            for param in params[1:]:
+                es_set_key += '|' + str(param)
+    return es_set_key
 
-def generate_batch_trackDb(request, param_list, hide=False):
+#def reduce_results(results,param_list):
+    # NOTE: Not worth doing...
+    # Handle file_type selections
+    #if 'files.file_type' in param_list:
+    #    file_types_requested = param_list['files.file_type']
+    #    log.warn("Requesting file types: " + str(file_types_requested))
+    #    if not isinstance(file_types_requested,list):
+    #        file_types_requested = [ file_types_requested ]
+    #    file_formats_requested = []
+    #    for file_type in file_types_requested:
+    #        file_formats_requested.append( file_type.split()[0] )
+    #    log.warn("Requesting file formats: " + str(file_formats_requested))
+    #    results = [
+    #        result
+    #        for result in results
+    #        if any(
+    #            f['file_format'] in file_formats_requested
+    #            for f in result.get('files', [])
+    #        )
+    #    ]
+    #return results
+
+
+def generate_batch_trackDb(request, hide=False):
 
     ### local test: RNA-seq: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/batch_hub/type=Experiment,,assay_title=RNA-seq,,award.rfa=ENCODE3,,status=released,,assembly=GRCh38,,replicates.library.biosample.biosample_type=induced+pluripotent+stem+cell+line/GRCh38/trackDb.txt
-
-    global PROFILE_START_TIME
 
     # Special logic to force remaking of trackDb
     regen_vis = request.url.find("regenvis") # ...&assembly=hg19&regenvis/hg19/trackDb.txt  regenvis=1 causes an error
     find_or_make = "find or make"
+    #regen_vis = 5 # DEBUG
     if regen_vis > -1: # Find composite?
         find_or_make = "make"
 
     assembly = str(request.matchdict['assembly'])
     log.warn("Request for %s trackDb begins   %.3f secs" % (assembly,(time.time() - PROFILE_START_TIME)))  # DEBUG: batch trackDb
+    param_list = parse_qs(request.matchdict['search_params'].replace(',,', '&'))
 
     # Create an appropriate cache key
-    pairs = request.matchdict['search_params'].replace('=','_').split(',,')
-
-    pairs.append("assembly_%s" % assembly)
-    es_set_key = '_'.join( sorted( pairs ) )  # Most important to sort, to ensure 2 identical (but different order) searches) resolve
+    es_set_key = make_set_key(param_list,assembly)
 
     # Find it?
-    set_composites = get_from_es(request,es_set_key)
+    set_composites = None
+    if regen_vis == -1: # Force regeneration?
+        set_composites = get_from_es(request,es_set_key)
     if set_composites is None:
 
         # Have to make it.
-        assemblies = ASSEMBLY_GROUPS.get(assembly,[assembly])
+        assemblies = ASSEMBLY_MAPPINGS.get(assembly,[assembly])
         params = {
             'files.file_format': BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES,
             #'status': ['released'], # TODO: Not just released!
@@ -2143,50 +2171,39 @@ def generate_batch_trackDb(request, param_list, hide=False):
         params.update({
             'assembly': assemblies,
             'limit': ['all'],
-            'frame': ['embedded'],
+            #'frame': ['embedded'], # TODO: better memory usage, but slower for acc_composites not in es (220.632secs/4.563GB for 990 exps, 73.655secs/8.210GB 1 request, 0.285 secs cache)
         })
         view = 'search'
         if 'region' in param_list:
             view = 'region-search'
         path = '/%s/?%s' % (view, urlencode(params, True))
         results = request.embed(path, as_user=True)['@graph']
-        # if files.file_format is a input param
-        #if 'files.file_format' in param_list:
-        #    results = [
-        #        result
-        #        for result in results
-        #        if any(
-        #            f['file_format'] in BIGWIG_FILE_TYPES + BIGBED_FILE_TYPES
-        #            for f in result.get('files', [])
-        #        )
-        #    ]
-        #trackdb = ''
+        #results = reduce_results(results,param_list) # Not worth doing
+
+        log.warn("len(results) = %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))  # DEBUG: batch trackDb
+
+        accs = [result['accession'] for result in results] # TODO: better memory usage, but slower if acc_composite not in es
+        del results                                        # TODO: better memory usage, but slower if acc_composite not in es
 
         acc_composites = {}
         found = 0
         made = 0
-        log.warn("len(results) = %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))  # DEBUG: batch trackDb
-        for dataset in results:
-            acc = dataset['accession']
-            # TODO: When log messages are no longer important:
-            #acc_composite = generate_acc_composite(request, dataset, assembly, hide=hide)
+        #for dataset in results:
+        #    acc = dataset['accession']
+        for acc in accs:   # TODO: better memory usage, but slower if acc_composite not in es
+            dataset = None # TODO: better memory usage, but slower if acc_composite not in es
 
-            acc_composite = None
-            es_key = acc+"_"+assembly
-            if regen_vis == -1: # Find composite?
-                acc_composite = get_from_es(request,es_key)
-
-            if acc_composite is None:
-                #log.warn("making composite " + acc)
-                acc_composite = make_acc_composite(dataset, assembly, host=request.host_url, hide=hide)
-                #if acc_composite:
-                add_to_es(request,es_key,acc_composite)
+            (found_or_made, acc_composite) = find_or_make_acc_composite(request, assembly, acc, dataset, hide=hide)
+            if found_or_made == "made":
                 made += 1
+                #log.warn("%s composite %s" % (found_or_made,acc))
             else:
                 found += 1
 
             acc_composites[acc] = acc_composite
-            del dataset
+
+            if dataset is not None:
+                del dataset
 
         log.warn("len(acc_comosites) =  %d   %.3f secs" % (len(acc_composites),(time.time() - PROFILE_START_TIME)))  # DEBUG: batch trackDb
         set_composites = remodel_acc_to_set_composites(acc_composites) # ,hide_after=5) # TODO: set a reasonable hide_after
@@ -2260,6 +2277,7 @@ def generate_html(context, request):
     html_requested = request.url.split('/')[-1].split('.')[0]
     if html_requested.startswith('ENCSR'):
         embedded = request.embed(request.resource_path(context))
+        log.warn("generate_html len(results) = %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))  # DEBUG
         acc = embedded['accession']
         assert( html_requested == acc)
 
@@ -2307,11 +2325,6 @@ def generate_batch_hubs(context, request):
 
     results = {}
     txt = request.matchdict['txt']
-    param_list = parse_qs(request.matchdict['search_params'].replace(',,', '&'))
-
-    view = 'search'
-    if 'region' in param_list:
-        view = 'region-search'
 
     if len(request.matchdict) == 3:
 
@@ -2320,7 +2333,7 @@ def generate_batch_hubs(context, request):
             data_policy = '<br /><a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
             return generate_html(context, request) + data_policy
 
-        return generate_batch_trackDb(request,param_list)
+        return generate_batch_trackDb(request)
 
     elif txt == HUB_TXT:
         terms = request.matchdict['search_params'].replace(',,', '&')
@@ -2330,11 +2343,16 @@ def generate_batch_hubs(context, request):
             (var,val) = pair.split('=')
             if var not in ["type","assembly","status","limit"]:
                 label += " %s" % val.replace('+',' ')
-        return NEWLINE.join(get_hub(label,request.url)) # TODO: Decide if this is acceptible
-        #return NEWLINE.join(get_hub('search'))
+        return NEWLINE.join(get_hub(label,request.url))
     elif txt == GENOMES_TXT:
+        param_list = parse_qs(request.matchdict['search_params'].replace(',,', '&'))
+
+        view = 'search'
+        if 'region' in param_list:
+            view = 'region-search'
         path = '/%s/?%s' % (view, urlencode(param_list, True))
         results = request.embed(path, as_user=True)
+        log.warn("generate_batch(genomes) len(results) = %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))  # DEBUG
         g_text = ''
         if 'assembly' in param_list:
             g_text = get_genomes_txt(param_list.get('assembly'))
@@ -2377,6 +2395,7 @@ def hub(context, request):
     elif url_ret[1][1:] == GENOMES_TXT:
         g_text = get_genomes_txt(assemblies)
         return Response(g_text, content_type='text/plain')
+
     elif url_ret[1][1:].endswith(TRACKDB_TXT):
         parent_track = generate_trackDb(request, embedded, url_ret[1][1:].split('/')[0])
         return Response(parent_track, content_type='text/plain')
