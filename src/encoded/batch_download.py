@@ -16,6 +16,8 @@ import csv
 import io
 import json
 
+from pprint import pprint as pp
+import pdb
 import logging
 
 
@@ -59,7 +61,6 @@ _tsv_mapping = OrderedDict([
     ('Library crosslinking method', ['replicates.library.crosslinking_method']),
     ('Experiment date released', ['date_released']),
     ('Project', ['award.project']),
-    ('Audit warning', ['audit.WARNING.detail']),
     ('RBNS protein concentration', ['files.replicate.rbns_protein_concentration', 'files.replicate.rbns_protein_concentration_units']),
     ('Library fragmentation method', ['files.replicate.library.fragmentation_method']),
     ('Library size range', ['files.replicate.library.size_range']),
@@ -178,6 +179,7 @@ def metadata_tsv(context, request):
         search_path = '/{}/'.format(param_list.pop('referrer')[0])
     else:
         search_path = '/search/'
+    pdb.set_trace()
     param_list['field'] = []
     header = []
     file_attributes = []
