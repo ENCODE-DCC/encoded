@@ -1238,7 +1238,7 @@ def test_audit_experiment_internal_tag(testapp, base_experiment,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing internal tag' for error in errors_list)
+    assert any(error['category'] == 'inconsistent internal tags' for error in errors_list)
 
 
 def test_audit_experiment_internal_tags(testapp, base_experiment,
