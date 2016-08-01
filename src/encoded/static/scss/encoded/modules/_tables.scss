@@ -169,6 +169,14 @@ form.table-filter {
             }
         }
     }
+
+    tbody {
+        tr {
+            td {
+                height: 4em;
+            }
+        }
+    }
 }
 
 .table-section {
@@ -230,4 +238,47 @@ form.table-filter {
     &.hiding {
         background-image: inline-image('../img/hiding-dots.svg');
     }
+}
+
+// Table style for Raw file tables
+table.table-raw {
+    background-color: #fff;
+
+    >tbody>tr>td {
+        vertical-align: middle;
+    }
+
+    >tbody>tr>td.align-pair1 {
+        vertical-align: bottom;
+    }
+
+    >tbody>tr>td.align-pair2 {
+        vertical-align: top;
+    }
+}
+
+.table-raw-separator {
+    border-top: 2px solid #606060;
+}
+
+.table-raw-biorep {
+    text-align: center;
+    font-weight: bold;
+}
+
+.merge-bottom {
+    border-bottom: 2px solid #606060;
+}
+
+.pair-bottom {
+    border-bottom: 2px solid #606060;
+}
+
+.merge-right {
+    border-right: 1px solid #ddd;
+}
+
+.file-audit-status {
+    height: 13px !important;
+    line-height: 13px !important;
 }

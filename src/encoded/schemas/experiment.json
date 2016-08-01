@@ -227,6 +227,9 @@
         "target.gene_name": {
             "title": "Target gene"
         },
+        "biosample_summary": {
+            "title": "Biosample summary"
+        },
         "biosample_term_name": {
             "title": "Biosample"
         },
@@ -241,6 +244,12 @@
         },
         "status": {
             "title": "Status"
+        },
+        "replicates.biological_replicate_number": {
+            "title": "Biological replicate"
+        },
+        "replicates.technical_replicate_number": {
+            "title": "Technical replicate"
         },
         "replicates.antibody.accession": {
             "title": "Linked Antibody"
@@ -284,14 +293,8 @@
         "replicates.library.biosample.post_synchronization_time_units": {
             "title": "Post-synchronization time units"
         },       
-        "replicates.length": {
+        "replicates.@id": {
             "title": "Replicates"
-        },
-        "files.length": {
-            "title": "Files"
-        },
-        "encode2_dbxrefs": {
-            "title": "Dbxrefs"
         }
     },
     "boost_values": {
