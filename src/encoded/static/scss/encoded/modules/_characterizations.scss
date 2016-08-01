@@ -338,7 +338,7 @@ $qualitymetric-figure-height: 96px;
     .#{$item}.status-audit-default        { background-color: $brand-success; }
     .#{$item}.status-audit-default[href]   { background-color: darken($brand-success, 10%); }
 
-    // DCC_ACTION, other (gray)
+    // INTERNAL_ACTION, other (gray)
     .#{$item}.status-audit-dcc_action        { background-color: #999; }
     .#{$item}.status-audit-dcc_action[href]   { background-color: darken(#999, 10%); }
 

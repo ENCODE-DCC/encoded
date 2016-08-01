@@ -8,7 +8,7 @@ from pyramid.path import (
     DottedNameResolver,
     caller_package,
 )
-from snovault import ROOT
+from snovault import COLLECTIONS
 
 CRYPT_CONTEXT = __name__ + ':crypt_context'
 
@@ -92,7 +92,7 @@ class BasicAuthAuthenticationPolicy(_BasicAuthAuthenticationPolicy):
 
 def basic_auth_check(username, password, request):
     # We may get called before the context is found and the root set
-    root = request.registry[ROOT]
+    root = request.registry[COLLECTIONS]
     collection = root['access-keys']
     try:
         access_key = collection[username]

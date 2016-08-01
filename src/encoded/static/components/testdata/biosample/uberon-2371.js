@@ -17,6 +17,8 @@ module.exports = {
     "organism": require('../organism/mouse'),
     "source": require('../source'),
     "submitted_by": require('../submitter'),
+    "summary": "K562 cell line replicate 1 used inENCODE3 RNA-seq evaluation",
+    "summary_object": {temp: "K562"},
     "treatments": [],
     "uuid": "b98b8f7f-999b-4671-a5e2-1ddb7ec5aecf"
 };
