@@ -14,8 +14,72 @@ var Home = module.exports.Home = React.createClass({
     getInitialState: function(){ // sets initial state for current and newtabs
         return {
             current: "?type=Experiment&status=released", // show all released experiments
-            newtabs: [] // create empty array of selected tabs
+            newtabs: [], // create empty array of selected tabs
+            assayCategory: ""
         };
+    },
+
+    handleAssayCategoryClick: function(assay){
+        var oldLink = this.state.current; // getting original search
+        var tempAssay = assay;
+
+        if(tempAssay == '?type=Annotation&encyclopedia_version=3'){
+            if(oldLink.indexOf('?type=Annotation&encyclopedia_version=3') != -1){
+                oldLink = "?type=Experiment&status=released";
+            }
+            else{
+                oldLink = '?type=Annotation&encyclopedia_version=3';
+            }
+
+        }
+        else {
+            console.log("SHOULD BE CHROMATIN: " + assay);
+        
+            if(this.state.assayCategory == assay){
+                tempAssay = "";
+                console.log("NOT IN FIRST TIME, ONLY WHEN CLICKED");
+            }
+
+            this.setState({
+                assayCategory: tempAssay
+            });
+
+            var indexOfExperiment = oldLink.indexOf("?type=Experiment&status=released");
+            if (indexOfExperiment == -1){
+                oldLink = oldLink.substring(39);
+                oldLink = "?type=Experiment&status=released" + oldLink;
+            }
+
+            
+            var startingIndex = oldLink.search("&assay_slims="); // getting index of "&assay_slims=" in original search link if it's there
+            
+            if (startingIndex != -1) { // if &assay_slims already is in original search link, then remove it so we can add the correct "&assay_slims="
+                var endingIndex = startingIndex + 13; // adding the length of "&assay_slims" to make endingIndex the index of the category
+                
+                while (endingIndex < oldLink.length-1 && oldLink.substring(endingIndex, endingIndex + 1) != "&") { // either get to end of string or find next parameter starting with "&"
+                    endingIndex++; // increase endingIndex until the end of the "&assay_slims=" parameter
+                }
+                
+                if(endingIndex != oldLink.length-1){ // if did not reach end of string, "&assay_slims=" is in middle of search
+                    oldLink = oldLink.substr(0, startingIndex) + oldLink.substr(endingIndex +1); // assay_slims part is from (startingIndex, endingIndex), so cut that out of oldLink
+                }
+                else{ // "&assay_slims=" is at end of search
+                    oldLink = oldLink.substr(0, startingIndex); // assay_slims is from (startingIndex, oldLink.length, so cut that out
+                }
+                console.log("oldLink should be completely empty of all assay cateogry: " + oldLink);
+            }
+            if (tempAssay != "") {
+                console.log("WHEN NOT CLEARED");
+                oldLink = oldLink + '&assay_slims=' + tempAssay;
+            }
+            console.log("TEMPASSAY SHOULD BE CHROMATIN AGAIN: " + tempAssay);
+            
+            console.log("CLEARED " + oldLink);
+
+        }
+        
+        this.callback(oldLink); // updating current through callback
+
     },
 
 
@@ -75,7 +139,7 @@ var Home = module.exports.Home = React.createClass({
                     
                         <div className="col-md-9">
                         
-                            <AssayClicking current={this.state.current} callback={this.callback}/>
+                            <AssayClicking current={this.state.current} callback={this.callback} assayCategory={this.state.assayCategory} handleAssayCategoryClick={this.handleAssayCategoryClick}/>
                             <TabClicking handleTabClick={this.handleTabClick} newtabs={this.state.newtabs}/>
                             <div className="graphs clearfix" >
                                 <div className="row">
@@ -158,38 +222,44 @@ var TwitterWidget = React.createClass({
 var AssayClicking = React.createClass({
     propTypes: {
         current: React.PropTypes.string,
-        callback: React.PropTypes.func
+        callback: React.PropTypes.func,
+        assayCategory: React.PropTypes.string
     },
 
     // Sets value of updatedLink to current to allow easy modification
     getInitialState: function(){
         return {
-            updatedLink: this.props.current
+            updatedLink: this.props.current,
+            currentAssay: this.props.assayCategory
         };
     },
 
     // Properly adds or removes assay category from link
     sortByAssay: function(category) {
-        var oldLink = this.props.current; // getting original search
-        var startingIndex = oldLink.search("&assay_slims="); // getting index of "&assay_slims=" in original search link if it's there
+        // var oldLink = this.props.current; // getting original search
+        // var startingIndex = oldLink.search("&assay_slims="); // getting index of "&assay_slims=" in original search link if it's there
         
-        if (startingIndex != -1) { // if &assay_slims already is in original search link, then remove it so we can add the correct "&assay_slims="
-            var endingIndex = startingIndex + 13; // adding the length of "&assay_slims" to make endingIndex the index of the category
+        // if (startingIndex != -1) { // if &assay_slims already is in original search link, then remove it so we can add the correct "&assay_slims="
+        //     var endingIndex = startingIndex + 13; // adding the length of "&assay_slims" to make endingIndex the index of the category
             
-            while (endingIndex < oldLink.length-1 && oldLink.substring(endingIndex, endingIndex + 1) != "&") { // either get to end of string or find next parameter starting with "&"
-                endingIndex++; // increase endingIndex until the end of the "&assay_slims=" parameter
-            }
+        //     while (endingIndex < oldLink.length-1 && oldLink.substring(endingIndex, endingIndex + 1) != "&") { // either get to end of string or find next parameter starting with "&"
+        //         endingIndex++; // increase endingIndex until the end of the "&assay_slims=" parameter
+        //     }
             
-            if(endingIndex != oldLink.length-1){ // if did not reach end of string, "&assay_slims=" is in middle of search
-                oldLink = oldLink.substr(0, startingIndex) + oldLink.substr(endingIndex +1); // assay_slims part is from (startingIndex, endingIndex), so cut that out of oldLink
-            }
-            else{ // "&assay_slims=" is at end of search
-                oldLink = oldLink.substr(0, startingIndex); // assay_slims is from (startingIndex, oldLink.length, so cut that out
-            }
-        }
+        //     if(endingIndex != oldLink.length-1){ // if did not reach end of string, "&assay_slims=" is in middle of search
+        //         oldLink = oldLink.substr(0, startingIndex) + oldLink.substr(endingIndex +1); // assay_slims part is from (startingIndex, endingIndex), so cut that out of oldLink
+        //     }
+        //     else{ // "&assay_slims=" is at end of search
+        //         oldLink = oldLink.substr(0, startingIndex); // assay_slims is from (startingIndex, oldLink.length, so cut that out
+        //     }
+        // }
         
-        this.props.callback(oldLink + '&assay_slims=' + category); // updating current through callback
-        this.setState({updatedLink: oldLink + '&assay_slims=' + category}); // updating updatedLink
+        this.props.handleAssayCategoryClick(category); // updates assay category
+        console.log("should be empty: " + this.state.currentAssay);
+        this.setState({currentAssay: category});
+        console.log("should be dna somethign: " + this.state.currentAssay);
+        //this.props.callback(oldLink + '&assay_slims=' + category); // updating current through callback
+        //this.setState({updatedLink: oldLink + '&assay_slims=' + category}); // updating updatedLink
 
     },
 
@@ -242,16 +312,15 @@ var AssayClicking = React.createClass({
 
                     <img src="static/img/classic-image.jpg" className="classicImage"/>
                     
-                    <svg id="classic-image-svg-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3840 1440" className="classic-svg" 
-                        >
+                    <svg id="classic-image-svg-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3840 1440" className="classic-svg">
                     
-                    <rect id = "3D+chromatin+structure" x="1025" y="774.1" class="st0" width="240.4" height="213.2" className="rectangle-box"/>
-                    <rect id = "DNA+accessibility" x="1289.3" y="774.1" class="st0" width="255.6" height="213.2" className="rectangle-box"/>
-                    <rect id = "DNA+binding" x="1566.7" y="774.1" class="st0" width="219.2" height="213.2" className="rectangle-box"/>
-                    <rect id = "DNA+methylation" x="1807.8" y="774.1" class="st0" width="272.2" height="213.2" className="rectangle-box"/>
-                    <rect id = "" x="2104.5" y="774.1" class="st0" width="345" height="213.2" className="rectangle-box"/>
-                    <rect id = "Transcription" x="2472" y="774.1" class="st0" width="219.2" height="213.2" className="rectangle-box"/>
-                    <rect id = "RNA+binding" x="2713.8" y="774.1" class="st0" width="209.3" height="214.6" className="rectangle-box"/>
+                    <rect id = "3D+chromatin+structure" x="1025" y="774.1" class="st0" width="240.4" height="213.2" className={"rectangle-box" + (this.props.assayCategory == "3D+chromatin+structure" ? " selected": "")}/>
+                    <rect id = "DNA+accessibility" x="1289.3" y="774.1" class="st0" width="255.6" height="213.2" className={"rectangle-box" + (this.props.assayCategory == "DNA+accessibility" ? " selected": "")}/>
+                    <rect id = "DNA+binding" x="1566.7" y="774.1" class="st0" width="219.2" height="213.2" className={"rectangle-box" + (this.props.assayCategory == "DNA+binding" ? " selected": "")}/>
+                    <rect id = "DNA+methylation" x="1807.8" y="774.1" class="st0" width="272.2" height="213.2" className={"rectangle-box" + (this.props.assayCategory == "DNA+methylation" ? " selected": "")}/>
+                    <rect id = "" x="2104.5" y="774.1" class="st0" width="345" height="213.2" onClick={this.props.handleAssayCategoryClick.bind(null, '?type=Annotation&encyclopedia_version=3')} className={"rectangle-box" + (this.props.current.indexOf('?type=Annotation&encyclopedia_version=3') != -1 ? " selected": "")}/>
+                    <rect id = "Transcription" x="2472" y="774.1" class="st0" width="219.2" height="213.2" className={"rectangle-box" + (this.props.assayCategory == "Transcription" ? " selected": "")}/>
+                    <rect id = "RNA+binding" x="2713.8" y="774.1" class="st0" width="209.3" height="214.6" className={"rectangle-box" + (this.props.assayCategory == "RNA+binding" ? " selected": "")}/>
                     
                     </svg>
 

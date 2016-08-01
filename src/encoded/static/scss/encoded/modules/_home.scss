@@ -69,12 +69,19 @@
     outline-width: 6px;
     outline-color: #0000EE;
 
+    
+
 }
 
 // When hover on rectangle, make fill darker
 .rectangle-box:hover {
     fill-opacity: 0.1;
     cursor: pointer;
+}
+
+.rectangle-box.selected {
+    fill-opacity: 0.5;
+    
 }
 
 // Positions classic pic
@@ -128,7 +135,7 @@
         text-decoration: none;
         color: black;
         border: solid;
-        border-color: black;
+        border-color: #c0c0c0;
         border-width: 1px;
 
         &:hover {
