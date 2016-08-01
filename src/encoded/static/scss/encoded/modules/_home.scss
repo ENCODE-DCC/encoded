@@ -127,6 +127,7 @@
 .tabTable td{
     color: #000;
     //border: none;
+    padding: 0px !important;
     a.single-tab {
         font-size: 20px;
         font-weight: 100;
@@ -134,12 +135,13 @@
         display: block;
         text-decoration: none;
         color: black;
-        border: solid;
-        border-color: #c0c0c0;
-        border-width: 1px;
+        border-right: solid;
+        border-right-color: #c0c0c0;
+        border-right-width: 1px;
 
         &:hover {
-        background-color: #c0c0c0;   
+        background-color: #c0c0c0;
+        cursor: pointer;
         }
 
         &.selected {
@@ -176,6 +178,19 @@
     position: absolute;
     top: 50px;
     left: 50px;
+    background-color: transparent;
+    z-index: 1;
+}
+
+.view-all {
+    text-align: center;
+}
+
+.view-all-button {
+    
+    display: inline-block;
+   /* top: 50px;
+    left: 50px;*/
     background-color: transparent;
     z-index: 1;
 }

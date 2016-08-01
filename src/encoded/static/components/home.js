@@ -4,8 +4,8 @@ var _ = require('underscore');
 var globals = require('./globals');
 var {FetchedData, Param} = require('./fetched');
 var cloneWithProps = require('react/lib/cloneWithProps');
-
-
+var panel = require('../libs/bootstrap/panel');
+var {Panel, PanelBody, PanelHeading} = panel;
 
 
 // Main page component to render the home page
@@ -162,6 +162,9 @@ var Home = module.exports.Home = React.createClass({
                                                  callback={this.callback}/>
                                     </div>
                                 </div>
+                                <div className="view-all">
+                                        <a href={"/matrix/" + this.state.current} className="view-all-button btn btn-info" role="button"> View All </a>
+                                </div>
                             </div>
                             <div className="row">
                                 <div className="col-md-12">
@@ -317,7 +320,7 @@ var AssayClicking = React.createClass({
             <div ref="graphdisplay"> 
              <div className="overall-classic">
 
-                    <img src="static/img/classic-image.jpg" className="classicImage"/>
+                    <img src="static/img/classic-image.jpg" className="classicImage"/> 
                     
                     <svg id="classic-image-svg-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3840 1440" className="classic-svg">
                     
