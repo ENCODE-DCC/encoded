@@ -28,6 +28,11 @@
     background-color: #E8ECEF;
 }
 
+.encode-logo {
+
+}
+
+
 // Formatting of heading based on original home page
 .page-title {
     margin-bottom: 30px;
@@ -46,7 +51,7 @@
 // Positions overall classic with pic and rectangles
 .overall-classic {
     position: relative;
-    padding-bottom: 20px;
+    padding-bottom: 0px;
     background-color: #E8ECEF;
 
 }
@@ -55,6 +60,7 @@
 .classic-svg {
     position: relative;
     visibility: visible;
+    padding-bottom: 0px;
     max-width: 100%;
     top: 0;
     left: 0;
@@ -163,7 +169,7 @@
 // Positions getting started pic
 .getting-started-image {
     position: relative;
-    padding-top: 30px;
+    padding-top: 0px;
     background-color: #E8ECEF;
     
     height: auto;

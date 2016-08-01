@@ -131,6 +131,7 @@ var Home = module.exports.Home = React.createClass({
                 <header class="row">
                     <div class="col-sm-12">
                         <h1 className="page-title">
+                            <img src="static/img/encode-logo-small-2x.png" className="encode-logo"/>
                             ENCODE: Encyclopedia of DNA Elements
                         </h1>
                     </div>
@@ -138,8 +139,10 @@ var Home = module.exports.Home = React.createClass({
                 <div className="row">
                     
                         <div className="col-md-9">
-                        
+                            
                             <AssayClicking current={this.state.current} callback={this.callback} assayCategory={this.state.assayCategory} handleAssayCategoryClick={this.handleAssayCategoryClick}/>
+                            
+                            <Panel>
                             <TabClicking handleTabClick={this.handleTabClick} newtabs={this.state.newtabs}/>
                             <div className="graphs clearfix" >
                                 <div className="row">
@@ -166,20 +169,24 @@ var Home = module.exports.Home = React.createClass({
                                         <a href={"/matrix/" + this.state.current} className="view-all-button btn btn-info" role="button"> View All </a>
                                 </div>
                             </div>
+                            </Panel>
                             <div className="row">
                                 <div className="col-md-12">
-                                    <div className="getting-started">
+                                    <Panel className="getting-started">
                                     
                                         <a href="/help/getting-started" className="getting-started-button btn btn-info" role="button"> Getting Started </a>
                                         <img src="static/img/getting-started.jpg" className="getting-started-image"/>
 
-                                    </div>
+                                    </Panel>
                                 </div>
                             </div>
                         </div>
 
+
                     <div className="col-md-3">
+                        <Panel>
                         <TwitterWidget/>
+                        </Panel>
                     </div>
                     
                 </div>
@@ -317,7 +324,7 @@ var AssayClicking = React.createClass({
     // Renders classic image and svg rectangles
     render: function() {
         return (
-            <div ref="graphdisplay"> 
+            <Panel ref="graphdisplay"> 
              <div className="overall-classic">
 
                     <img src="static/img/classic-image.jpg" className="classicImage"/> 
@@ -333,11 +340,11 @@ var AssayClicking = React.createClass({
                     <rect id = {this.state.assayList[6]} x="2713.8" y="774.1" class="st0" width="209.3" height="214.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[6] ? " selected": "")}/>
                     
                     </svg>
-
+                    
                     
 
                 </div>
-            </div>
+            </Panel>
         );
     }
 
