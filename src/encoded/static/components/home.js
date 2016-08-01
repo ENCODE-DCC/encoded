@@ -166,7 +166,7 @@ var Home = module.exports.Home = React.createClass({
                                     </div>
                                 </div>
                                 <div className="view-all">
-                                        <a href={"/matrix/" + this.state.current} className="view-all-button btn btn-info" role="button"> View All </a>
+                                        <a href={"/matrix/" + this.state.current} className="view-all-button btn btn-info btn-lg" role="button"> View All </a>
                                 </div>
                             </div>
                             </Panel>
@@ -174,7 +174,7 @@ var Home = module.exports.Home = React.createClass({
                                 <div className="col-md-12">
                                     <Panel className="getting-started">
                                     
-                                        <a href="/help/getting-started" className="getting-started-button btn btn-info" role="button"> Getting Started </a>
+                                        <a href="/help/getting-started" className="getting-started-button btn btn-info btn-lg" role="button"> Getting Started </a>
                                         <img src="static/img/getting-started.jpg" className="getting-started-image"/>
 
                                     </Panel>

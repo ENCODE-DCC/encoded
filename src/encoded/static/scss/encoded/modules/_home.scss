@@ -47,6 +47,20 @@
     display: block;
 }
 
+.page-title {
+    margin-bottom: 30px;
+    font-size: 2.6 rem;
+    margin-top: 30px;
+    font-family: inherit;
+    font-weight: bold;
+    line-height: 1.1;
+    color: inherit;
+    margin-right: 0px;
+    margin-left: 100px;
+    display: block;
+}
+
+
 
 // Positions overall classic with pic and rectangles
 .overall-classic {
@@ -60,6 +74,7 @@
 .classic-svg {
     position: relative;
     visibility: visible;
+    display: block;
     padding-bottom: 0px;
     max-width: 100%;
     top: 0;
