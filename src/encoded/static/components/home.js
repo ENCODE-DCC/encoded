@@ -230,7 +230,14 @@ var AssayClicking = React.createClass({
     getInitialState: function(){
         return {
             updatedLink: this.props.current,
-            currentAssay: this.props.assayCategory
+            currentAssay: this.props.assayCategory,
+            assayList: ["3D+chromatin+structure", 
+                        "DNA+accessibility",
+                        "DNA+binding",
+                        "DNA+methylation",
+                        "",
+                        "Transcription",
+                        "RNA+binding"]
         };
     },
 
@@ -314,13 +321,13 @@ var AssayClicking = React.createClass({
                     
                     <svg id="classic-image-svg-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3840 1440" className="classic-svg">
                     
-                    <rect id = "3D+chromatin+structure" x="1025" y="774.1" class="st0" width="240.4" height="213.2" className={"rectangle-box" + (this.props.assayCategory == "3D+chromatin+structure" ? " selected": "")}/>
-                    <rect id = "DNA+accessibility" x="1289.3" y="774.1" class="st0" width="255.6" height="213.2" className={"rectangle-box" + (this.props.assayCategory == "DNA+accessibility" ? " selected": "")}/>
-                    <rect id = "DNA+binding" x="1566.7" y="774.1" class="st0" width="219.2" height="213.2" className={"rectangle-box" + (this.props.assayCategory == "DNA+binding" ? " selected": "")}/>
-                    <rect id = "DNA+methylation" x="1807.8" y="774.1" class="st0" width="272.2" height="213.2" className={"rectangle-box" + (this.props.assayCategory == "DNA+methylation" ? " selected": "")}/>
-                    <rect id = "" x="2104.5" y="774.1" class="st0" width="345" height="213.2" onClick={this.props.handleAssayCategoryClick.bind(null, '?type=Annotation&encyclopedia_version=3')} className={"rectangle-box" + (this.props.current.indexOf('?type=Annotation&encyclopedia_version=3') != -1 ? " selected": "")}/>
-                    <rect id = "Transcription" x="2472" y="774.1" class="st0" width="219.2" height="213.2" className={"rectangle-box" + (this.props.assayCategory == "Transcription" ? " selected": "")}/>
-                    <rect id = "RNA+binding" x="2713.8" y="774.1" class="st0" width="209.3" height="214.6" className={"rectangle-box" + (this.props.assayCategory == "RNA+binding" ? " selected": "")}/>
+                    <rect id = {this.state.assayList[0]} x="1025" y="774.1" class="st0" width="240.4" height="213.2" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[0] ? " selected": "")}/>
+                    <rect id = {this.state.assayList[1]} x="1289.3" y="774.1" class="st0" width="255.6" height="213.2" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[1] ? " selected": "")}/>
+                    <rect id = {this.state.assayList[2]} x="1566.7" y="774.1" class="st0" width="219.2" height="213.2" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[2] ? " selected": "")}/>
+                    <rect id = {this.state.assayList[3]} x="1807.8" y="774.1" class="st0" width="272.2" height="213.2" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[3] ? " selected": "")}/>
+                    <rect id = {this.state.assayList[4]} x="2104.5" y="774.1" class="st0" width="345" height="213.2" onClick={this.props.handleAssayCategoryClick.bind(null, '?type=Annotation&encyclopedia_version=3')} className={"rectangle-box" + (this.props.current.indexOf('?type=Annotation&encyclopedia_version=3') != -1 ? " selected": "")}/>
+                    <rect id = {this.state.assayList[5]} x="2472" y="774.1" class="st0" width="219.2" height="213.2" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[5] ? " selected": "")}/>
+                    <rect id = {this.state.assayList[6]} x="2713.8" y="774.1" class="st0" width="209.3" height="214.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[6] ? " selected": "")}/>
                     
                     </svg>
 
