@@ -211,7 +211,7 @@ var TwitterWidget = React.createClass({
             widget-id= "encodedcc" 
             //data-tweet-limit = "4"
             //data-width = "300"
-            data-height = "1110" // height so it matches with rest of site
+            data-height = "1020" // height so it matches with rest of site
             ></a>
         );
     }
