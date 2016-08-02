@@ -742,7 +742,7 @@ def generate_summary_dictionary(
             else:
                 if len(constructs_list) > 1:
                     dict_of_phrases['constructs'] = 'expressing ' + \
-                        ', '.join(map(str, constructs_list))
+                        ', '.join(map(str, list(set(constructs_list))))
 
         if model_construct_objects_list is not None and len(model_construct_objects_list) > 0:
             constructs_list = []
@@ -754,14 +754,14 @@ def generate_summary_dictionary(
             else:
                 if len(constructs_list) > 1:
                     dict_of_phrases['model_organism_constructs'] = 'expressing ' + \
-                        ', '.join(map(str, constructs_list))
+                        ', '.join(map(str, list(set(constructs_list))))
 
         if rnai_objects is not None and len(rnai_objects) > 0:
             rnais_list = []
             for rnaiObject in rnai_objects:
                     rnais_list.append(rnaiObject['rnai_type'] + ' ' + rnaiObject['target'])
 
-            dict_of_phrases['rnais'] = ', '.join(map(str, rnais_list))
+            dict_of_phrases['rnais'] = ', '.join(map(str, list(set(rnais_list))))
 
         return dict_of_phrases
 
