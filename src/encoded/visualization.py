@@ -1282,7 +1282,8 @@ def add_to_es(request,comp_id,composite):
         mapping = { 'default': {    "_all" :    { "enabled": False },
                                     "_source":  { "enabled": True },
         #                            "_id":      { "index":  "not_analyzed", "store" : True },
-                                    "_ttl":     { "enabled": True, "default" : "1d" } } }
+        #                            "_ttl":     { "enabled": True, "default" : "1d" },
+                               } }
         es.indices.put_mapping(index=key, doc_type='default', body=mapping )
         log.warn("created %s index" % key)
     es.index(index=key, doc_type='default', body=composite, id=comp_id)
