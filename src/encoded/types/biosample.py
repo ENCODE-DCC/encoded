@@ -548,14 +548,7 @@ def generate_summary_dictionary(
                                                                  donorObject['strain_name']
                         if 'genotype' in donorObject:
                             d_genotype = donorObject['genotype']
-                            if organismObject['scientific_name'].find('Drosophila') != -1:
-                                if d_genotype[-1] == '.':
-                                    dict_of_phrases['genotype_strain'] += ' ' + \
-                                                                          d_genotype[:-1]
-                                else:
-                                    dict_of_phrases['genotype_strain'] += ' ' + \
-                                                                          d_genotype
-                            else:
+                            if organismObject['scientific_name'].find('Drosophila') == -1:
                                 if d_genotype[-1] == '.':
                                     dict_of_phrases['genotype_strain'] += ' (' + \
                                                                           d_genotype[:-1] + ')'
