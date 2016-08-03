@@ -11,7 +11,7 @@ from .shared_calculated_properties import (
     CalculatedBiosampleSlims,
     CalculatedBiosampleSynonyms
 )
-
+import re
 
 @collection(
     name='biosamples',
@@ -846,11 +846,20 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
     else:
         sentence_to_return = generate_sentence(phrases_dictionarys[0], sentence_parts)
 
-    sentence_to_return = sentence_to_return.replace(' percent', '%')
-    sentence_to_return = sentence_to_return.replace('1 hours', '1 hour')
-    sentence_to_return = sentence_to_return.replace('1 days', '1 day')
-    sentence_to_return = sentence_to_return.replace('1 minutes', '1 minute')
-    sentence_to_return = sentence_to_return.replace('1 months', '1 month')
-    sentence_to_return = sentence_to_return.replace('1 weeks', '1 week')
-    sentence_to_return = sentence_to_return.replace('1 years', '1 year')
-    return sentence_to_return
+    words = sentence_to_return.split(' ')
+    if words[-1] in ['transiently', 'stably']:
+        sentence_to_return = ' '.join(words[:-1])
+
+    rep = {
+        ' percent': '%',
+        '1 hours': '1 hour',
+        '1 days': '1 day',
+        '1 minutes': '1 minute',
+        '1 months': '1 month',
+        '1 weeks': '1 week',
+        '1 years': '1 year',
+        '.0': '',
+    }
+    rep = dict((re.escape(k), v) for k, v in rep.items())
+    pattern = re.compile("|".join(rep.keys()))
+    return pattern.sub(lambda m: rep[re.escape(m.group(0))], sentence_to_return)
