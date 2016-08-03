@@ -34,6 +34,7 @@ def includeme(config):
 
 # includes concatenated properties
 _tsv_mapping = OrderedDict([
+    ('Audit', ['audit.WARNING.category']),
     ('File accession', ['files.title']),
     ('File format', ['files.file_type']),
     ('Output type', ['files.output_type']),
