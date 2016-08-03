@@ -82,6 +82,8 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'part_of.rnais.documents.award',
         'part_of.rnais.documents.lab',
         'part_of.rnais.documents.submitted_by',
+        'part_of.treatments.protocols',
+        'part_of.talens.documents',
         'parent_of',
         'pooled_from',
         'characterizations.submitted_by',
