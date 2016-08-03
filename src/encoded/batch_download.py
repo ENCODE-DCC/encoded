@@ -117,6 +117,22 @@ def get_peak_metadata_links(request):
     )
     return [peak_metadata_tsv_link, peak_metadata_json_link]
 
+def make_cell_for_row(header_column, row, exp_data_row):
+    temp = []
+    for c in _tsv_mapping[header_column]:
+        c_value = []
+        for value in simple_path_ids(row, c):
+            if str(value) not in c_value:
+                c_value.append(str(value))
+        if c == 'replicates.library.biosample.post_synchronization_time' and len(temp):
+            if len(c_value):
+                temp[0] = temp[0] + ' + ' + c_value[0]
+        elif len(temp):
+            if len(c_value):
+                temp = [x + ' ' + c_value[0] for x in temp]
+        else:
+            temp = c_value
+    exp_data_row.append(', '.join(list(set(temp))))
 
 
 
@@ -179,7 +195,6 @@ def metadata_tsv(context, request):
         search_path = '/{}/'.format(param_list.pop('referrer')[0])
     else:
         search_path = '/search/'
-    pdb.set_trace()
     param_list['field'] = []
     header = []
     file_attributes = []
@@ -197,23 +212,11 @@ def metadata_tsv(context, request):
             exp_data_row = []
             for column in header:
                 if not _tsv_mapping[column][0].startswith('files'):
-                    temp = []
-                    for c in _tsv_mapping[column]:
-                        c_value = []
-                        for value in simple_path_ids(row, c):
-                            if str(value) not in c_value:
-                                c_value.append(str(value))
-                        if c == 'replicates.library.biosample.post_synchronization_time' and len(temp):
-                            if len(c_value):
-                                temp[0] = temp[0] + ' + ' + c_value[0]
-                        elif len(temp):
-                            if len(c_value):
-                                temp = [x + ' ' + c_value[0] for x in temp]
-                        else:
-                            temp = c_value
-                    exp_data_row.append(', '.join(list(set(temp))))
+                    make_cell_for_row(column, row, exp_data_row)
+
             f_attributes = ['files.title', 'files.file_type',
                             'files.output_type']
+
             for f in row['files']:
                 if 'files.file_type' in param_list:
                     if f['file_type'] not in param_list['files.file_type']:
