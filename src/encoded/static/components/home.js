@@ -184,6 +184,9 @@ var Home = module.exports.Home = React.createClass({
 
 
                     <div className="col-md-3">
+                            <p className="description">
+                            The ENCODE (Encyclopedia of DNA Elements) Consortium is an international collaboration of research groups funded by the National Human Genome Research Institute (NHGRI). The goal of ENCODE is to build a comprehensive parts list of functional elements in the human genome, including elements that act at the protein and RNA levels, and regulatory elements that control cells and circumstances in which a gene is active.
+                            </p>
                         <Panel>
                         <TwitterWidget/>
                         </Panel>
@@ -221,7 +224,7 @@ var TwitterWidget = React.createClass({
             widget-id= "encodedcc" 
             //data-tweet-limit = "4"
             //data-width = "300"
-            data-height = "1020" // height so it matches with rest of site
+            data-height = "606" // height so it matches with rest of site
             ></a>
         );
     }
@@ -329,15 +332,15 @@ var AssayClicking = React.createClass({
 
                     <img src="static/img/classic-image.jpg" className="classicImage"/> 
                     
-                    <svg id="classic-image-svg-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3840 1440" className="classic-svg">
+                    <svg id="classic-image-svg-overlay-test" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3840 1440" className="classic-svg">
                     
-                    <rect id = {this.state.assayList[0]} x="1025" y="774.1" class="st0" width="240.4" height="213.2" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[0] ? " selected": "")}/>
-                    <rect id = {this.state.assayList[1]} x="1289.3" y="774.1" class="st0" width="255.6" height="213.2" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[1] ? " selected": "")}/>
-                    <rect id = {this.state.assayList[2]} x="1566.7" y="774.1" class="st0" width="219.2" height="213.2" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[2] ? " selected": "")}/>
-                    <rect id = {this.state.assayList[3]} x="1807.8" y="774.1" class="st0" width="272.2" height="213.2" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[3] ? " selected": "")}/>
-                    <rect id = {this.state.assayList[4]} x="2104.5" y="774.1" class="st0" width="345" height="213.2" onClick={this.props.handleAssayCategoryClick.bind(null, '?type=Annotation&encyclopedia_version=3')} className={"rectangle-box" + (this.props.current.indexOf('?type=Annotation&encyclopedia_version=3') != -1 ? " selected": "")}/>
-                    <rect id = {this.state.assayList[5]} x="2472" y="774.1" class="st0" width="219.2" height="213.2" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[5] ? " selected": "")}/>
-                    <rect id = {this.state.assayList[6]} x="2713.8" y="774.1" class="st0" width="209.3" height="214.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[6] ? " selected": "")}/>
+                    <rect id = {this.state.assayList[0]} x="1096.8" y="768.1" class="st0" width="219.9" height="200.2" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[0] ? " selected": "")}/>
+                    <rect id = {this.state.assayList[1]} x="1341.3" y="768.1" class="st0" width="233" height="200.2" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[1] ? " selected": "")}/>
+                    <rect id = {this.state.assayList[2]} x="1595.6" y="768.1" class="st0" width="200.2" height="200.2" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[2] ? " selected": "")}/>
+                    <rect id = {this.state.assayList[3]} x="1817.1" y="768.1" class="st0" width="249.4" height="200.2" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[3] ? " selected": "")}/>
+                    <rect id = {this.state.assayList[4]} x="2087.9" y="768.1" class="st0" width="320" height="200.2" onClick={this.props.handleAssayCategoryClick.bind(null, '?type=Annotation&encyclopedia_version=3')} className={"rectangle-box" + (this.props.current.indexOf('?type=Annotation&encyclopedia_version=3') != -1 ? " selected": "")}/>
+                    <rect id = {this.state.assayList[5]} x="2425.9" y="768.1" class="st0" width="200.2" height="200.2"className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[5] ? " selected": "")}/>
+                    <rect id = {this.state.assayList[6]} x="2652.3" y="768.1" class="st0" width="188.7" height="198.5" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[6] ? " selected": "")}/>
                     
                     </svg>
                     
@@ -600,7 +603,7 @@ var HomepageChart2 = React.createClass({
                         // React to clicks on pie sections
                         var activePoints = this.myPieChart.getElementAtEvent(e);
                         var term = assayFacet.terms[activePoints[0]._index].key;
-                        this.context.navigate(this.props.data['@id'] + '&replicates.library.biosample.biosample_type=' + term);
+                        this.context.navigate(this.props.data['@id'] + '&y.limit=&replicates.library.biosample.biosample_type=' + term);
                     }
                 }
             });
