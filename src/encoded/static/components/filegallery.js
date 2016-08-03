@@ -21,6 +21,7 @@ var assemblyPriority = [
     'GRCh38',
     'hg19',
     'mm10',
+    'mm10-minimal',
     'mm9',
     'ce11',
     'ce10',
