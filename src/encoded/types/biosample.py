@@ -645,7 +645,7 @@ def generate_summary_dictionary(
         if post_treatment_time is not None and post_treatment_time_units is not None:
             dict_of_phrases['post_treatment'] = (post_treatment_time +
                                                  ' ' + post_treatment_time_units +
-                                                 's after the sample was')
+                                                 's after the sample was ')
 
         if ('sample_type' in dict_of_phrases and
             dict_of_phrases['sample_type'] != 'immortalized cell line') or \
