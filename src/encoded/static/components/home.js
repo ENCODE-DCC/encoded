@@ -172,11 +172,12 @@ var Home = module.exports.Home = React.createClass({
                             </Panel>
                             <div className="row">
                                 <div className="col-md-12">
-                                    <Panel className="getting-started">
+                                    <Panel>
+                                        <div className="getting-started-hi">
                                     
-                                        <a href="/help/getting-started" className="getting-started-button btn btn-info btn-lg" role="button"> Getting Started </a>
-                                        <img src="static/img/getting-started.jpg" className="getting-started-image"/>
-
+                                            <a href="/help/getting-started" className="getting-started-button btn btn-info btn-lg" role="button"> Getting Started </a>
+                                            <img src="static/img/getting-started.jpg" className="getting-started-image"/>
+                                        </div>
                                     </Panel>
                                 </div>
                             </div>
@@ -222,9 +223,11 @@ var TwitterWidget = React.createClass({
             className= "twitter-timeline"
             href= "https://twitter.com/encodedcc" // from encodedcc twitter
             widget-id= "encodedcc" 
+            
+            data-screen-name="EncodeDCC"
             //data-tweet-limit = "4"
             //data-width = "300"
-            data-height = "606" // height so it matches with rest of site
+            data-height = "720" // height so it matches with rest of site
             ></a>
         );
     }
