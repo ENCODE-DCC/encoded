@@ -649,7 +649,7 @@ def search(context, request, search_type=None, return_generator=False):
 
 
     # Set sort order
-    has_sort = set_sort_order(request, search_term, types, doc_types, query, result)
+    set_sort_order(request, search_term, types, doc_types, query, result)
 
     # Setting filters
     used_filters = set_filters(request, query, result)
