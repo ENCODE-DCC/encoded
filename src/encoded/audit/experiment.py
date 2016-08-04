@@ -18,6 +18,7 @@ targetBasedAssayList = [
     'iCLIP',
     'eCLIP',
     'shRNA knockdown followed by RNA-seq',
+    'siRNA knockdown followed by RNA-seq'
     'CRISPR genome editing followed by RNA-seq',
     ]
 
@@ -30,6 +31,7 @@ controlRequiredAssayList = [
     'eCLIP',
     'single cell isolation followed by RNA-seq',
     'shRNA knockdown followed by RNA-seq',
+    'siRNA knockdown followed by RNA-seq'
     'CRISPR genome editing followed by RNA-seq',
     ]
 
@@ -212,6 +214,7 @@ def audit_experiment_standards_dispatcher(value, system):
     if 'assay_term_name' not in value or \
        value['assay_term_name'] not in ['RAMPAGE', 'RNA-seq', 'ChIP-seq',
                                         'shRNA knockdown followed by RNA-seq',
+                                        'siRNA knockdown followed by RNA-seq',
                                         'CRISPR genome editing followed by RNA-seq',
                                         'single cell isolation followed by RNA-seq',
                                         'whole-genome shotgun bisulfite sequencing']:
@@ -247,6 +250,7 @@ def audit_experiment_standards_dispatcher(value, system):
 
     if value['assay_term_name'] in ['RAMPAGE', 'RNA-seq',
                                     'shRNA knockdown followed by RNA-seq',
+                                    'siRNA knockdown followed by RNA-seq',
                                     'CRISPR genome editing followed by RNA-seq',
                                     'single cell isolation followed by RNA-seq']:
         gene_quantifications = scanFilesForOutputType(value['original_files'],
@@ -519,6 +523,7 @@ def check_experiement_long_rna_encode3_standards(experiment,
                                                             'long RNA')
 
             if experiment['assay_term_name'] in ['shRNA knockdown followed by RNA-seq',
+                                                 'siRNA knockdown followed by RNA-seq',
                                                  'CRISPR genome editing followed by RNA-seq']:
                 for failure in check_file_read_depth(f, read_depth, 10000000, 0,
                                                      experiment['assay_term_name'],
@@ -1291,6 +1296,7 @@ def audit_experiment_needs_pipeline(value, system):
                                         'ChIP-seq',
                                         'RNA-seq',
                                         'shRNA knockdown followed by RNA-seq',
+                                        'siRNA knockdown followed by RNA-seq',
                                         'RAMPAGE']:
         return
 
@@ -1351,7 +1357,8 @@ def audit_experiment_needs_pipeline(value, system):
         else:
             return
 
-    if value['assay_term_name'] in ['RNA-seq', 'shRNA knockdown followed by RNA-seq'] and \
+    if value['assay_term_name'] in ['RNA-seq', 'shRNA knockdown followed by RNA-seq',
+                                    'siRNA knockdown followed by RNA-seq'] and \
        run_type == 'single-ended' and \
        file_size_range == '>200':
         if scanFilesForPipeline(value['original_files'],
@@ -1363,7 +1370,8 @@ def audit_experiment_needs_pipeline(value, system):
         else:
             return
 
-    if value['assay_term_name'] in ['RNA-seq', 'shRNA knockdown followed by RNA-seq'] and \
+    if value['assay_term_name'] in ['RNA-seq', 'shRNA knockdown followed by RNA-seq'
+                                    'siRNA knockdown followed by RNA-seq'] and \
        run_type == 'paired-ended' and \
        file_size_range == '>200':
         if scanFilesForPipeline(value['original_files'],
@@ -2047,6 +2055,7 @@ def audit_experiment_target(value, system):
     # Some assays don't need antibodies
     if value['assay_term_name'] in ['RNA Bind-n-Seq',
                                     'shRNA knockdown followed by RNA-seq',
+                                    'siRNA knockdown followed by RNA-seq',
                                     'CRISPR genome editing followed by RNA-seq']:
         return
 
@@ -2421,7 +2430,8 @@ def audit_experiment_antibody_eligible(value, system):
     if 'control' in target['investigated_as']:
         return
 
-    if value['assay_term_name'] in ['RNA Bind-n-Seq', 'shRNA knockdown followed by RNA-seq']:
+    if value['assay_term_name'] in ['RNA Bind-n-Seq', 'shRNA knockdown followed by RNA-seq',
+                                    'siRNA knockdown followed by RNA-seq']:
         return
 
     for rep in value['replicates']:
