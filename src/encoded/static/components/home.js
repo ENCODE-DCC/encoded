@@ -131,14 +131,13 @@ var Home = module.exports.Home = React.createClass({
                 <header class="row">
                     <div class="col-sm-12">
                         <h1 className="page-title">
-                            <img src="static/img/encode-logo-small-2x.png" className="encode-logo"/>
-                            ENCODE: Encyclopedia of DNA Elements
+                            
                         </h1>
                     </div>
                 </header>
                 <div className="row">
                     
-                        <div className="col-md-9">
+                        <div className="col-xs-12">
                             
                             <AssayClicking current={this.state.current} callback={this.callback} assayCategory={this.state.assayCategory} handleAssayCategoryClick={this.handleAssayCategoryClick}/>
                             
@@ -170,31 +169,32 @@ var Home = module.exports.Home = React.createClass({
                                         <a href={"/matrix/" + this.state.current} className="view-all-button btn btn-info btn-lg" role="button"> View All </a>
                                 </div>
                             </div>
+
                             </Panel>
-                            <div className="row">
-                                <div className="col-md-12">
-                                    <Panel>
-                                        <div className="getting-started">
-                                            <PanelBody addClasses="description"> 
-                                                
-                                                    The ENCODE (Encyclopedia of DNA Elements) Consortium is an international collaboration of research groups funded by the National Human Genome Research Institute (NHGRI). The goal of ENCODE is to build a comprehensive parts list of functional elements in the human genome, including elements that act at the protein and RNA levels, and regulatory elements that control cells and circumstances in which a gene is active.
-                                                
-                                            </PanelBody>
-                                            <a href="/help/getting-started" className="getting-started-button btn btn-info btn-lg" role="button"> Getting Started </a>
-                                            <img src="static/img/getting-started.jpg" className="getting-started-image"/>
-                                        </div>
-                                    </Panel>
-                                </div>
-                            </div>
                         </div>
-
-
-                    <div className="col-md-3">
-                            
-                        <Panel>
-                        <TwitterWidget/>
-                        </Panel>
                     </div>
+                    <div className="row">
+                        <div className="col-md-9">
+                            <Panel>
+                                <div className="getting-started">
+                                    <PanelBody addClasses="description"> 
+                                                
+                                        The ENCODE (Encyclopedia of DNA Elements) Consortium is an international collaboration of research groups funded by the National Human Genome Research Institute (NHGRI). The goal of ENCODE is to build a comprehensive parts list of functional elements in the human genome, including elements that act at the protein and RNA levels, and regulatory elements that control cells and circumstances in which a gene is active.
+                                                
+                                    </PanelBody>
+                                    <a href="/help/getting-started" className="getting-started-button btn btn-info btn-lg" role="button"> Getting Started </a>
+                                    <img src="static/img/getting-started.jpg" className="getting-started-image"/>
+                                </div>
+                            </Panel>
+                        </div>
+                    
+                        
+                        <div className="col-md-3">
+                                
+                            <Panel>
+                            <TwitterWidget/>
+                            </Panel>
+                        </div>
                     
                 </div>
                 
