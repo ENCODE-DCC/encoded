@@ -13,6 +13,7 @@ from urllib.parse import urlencode
 from collections import OrderedDict
 
 
+
 _ASSEMBLY_MAPPER = {
     'GRCh38-minimal': 'hg38',
     'GRCh38': 'hg38',
@@ -255,6 +256,11 @@ def list_result_fields(request, doc_types):
         schemas = [types[doc_type].schema for doc_type in doc_types]
         columns = list_visible_columns_for_schemas(request, schemas)
         fields.update('embedded.' + column for column in columns)
+
+    # Ensure that 'audit' field is requested with _source in the ES query
+    if '/metadata/' in request.__parent__.url and request.has_permission('search_audit'):
+        fields.add('audit.*')
+
     return fields
 
 
@@ -400,6 +406,11 @@ def format_results(request, hits):
         frame = 'embedded'
     else:
         frame = request.params.get('frame')
+
+    # Request originating from metadata generation will skip to
+    # partion of the code that adds audit  object to result items
+    if '/metadata/' in request.__parent__.url:
+        frame = ''
 
     if frame in ['embedded', 'object']:
         for hit in hits:
@@ -659,8 +670,8 @@ def search(context, request, search_type=None, return_generator=False):
 
     # Decide whether to use scan for results.
     do_scan = size is None or size > 1000
-
     # Execute the query
+    pp(query)
     if do_scan:
         es_results = es.search(body=query, index=es_index, search_type='count')
     else:
@@ -689,7 +700,6 @@ def search(context, request, search_type=None, return_generator=False):
         return result if not return_generator else []
 
     result['notification'] = 'Success'
-
     # Format results for JSON-LD
     if not do_scan:
         graph = format_results(request, es_results['hits']['hits'])

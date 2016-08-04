@@ -34,7 +34,6 @@ def includeme(config):
 
 # includes concatenated properties
 _tsv_mapping = OrderedDict([
-    ('Audit', ['audit.WARNING.category']),
     ('File accession', ['files.title']),
     ('File format', ['files.file_type']),
     ('Output type', ['files.output_type']),
@@ -62,6 +61,7 @@ _tsv_mapping = OrderedDict([
     ('Library crosslinking method', ['replicates.library.crosslinking_method']),
     ('Experiment date released', ['date_released']),
     ('Project', ['award.project']),
+    ('Audit', ['audit.WARNING.category']),
     ('RBNS protein concentration', ['files.replicate.rbns_protein_concentration', 'files.replicate.rbns_protein_concentration_units']),
     ('Library fragmentation method', ['files.replicate.library.fragmentation_method']),
     ('Library size range', ['files.replicate.library.size_range']),
