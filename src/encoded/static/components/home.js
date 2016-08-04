@@ -29,6 +29,7 @@ var Home = module.exports.Home = React.createClass({
             }
             else{
                 oldLink = '?type=Annotation&encyclopedia_version=3';
+                console.log("hi");
             }
 
         }
