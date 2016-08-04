@@ -145,7 +145,7 @@ var Home = module.exports.Home = React.createClass({
                             <TabClicking handleTabClick={this.handleTabClick} newtabs={this.state.newtabs}/>
                             <div className="graphs clearfix" >
                                 <div className="row">
-                                    <div className="col-sm-6">
+                                    <div className="col-sm-4">
                                         <div className="title">
                                             Project
                                             <center> <hr width="80%" position="static" color="blue"></hr> </center>
@@ -156,12 +156,20 @@ var Home = module.exports.Home = React.createClass({
                                         <div id="chart-legend" class="chart-legend"></div>
                                 
                                     </div>
-                                    <div className="col-sm-6">
+                                    <div className="col-sm-4">
                                         <div className="title">
                                             Biosample Type
                                         </div>
                                         <center> <hr width="80%"></hr> </center>
                                         <HomepageChartLoader2 searchBase={this.state.current}
+                                                 callback={this.callback}/>
+                                    </div>
+                                    <div className="col-sm-4">
+                                        <div className="title">
+                                            Data Released
+                                        </div>
+                                        <center> <hr width="80%"></hr> </center>
+                                        <HomepageChartLoader3 searchBase={this.state.current}
                                                  callback={this.callback}/>
                                     </div>
                                 </div>
@@ -434,11 +442,14 @@ var HomepageChart = React.createClass({
         require.ensure(['chart.js'], function(require) {
             var Chart = require('chart.js');
             var colorList = [
-                '#871F78',
-                '#FFB90F',
-                '#003F87',
-                '#3D9140',
-                '#E5E4E2'
+                '#FF4F4D',
+                '#10A0F6',
+                '#FFBC01',
+                '#6A71E5',
+                '#4EB266',
+                'A3A4A8',
+                '61D1FD',
+                'FFFFFF'
             ];
             var colorList2 = [
                 '#9C008A',
@@ -516,7 +527,7 @@ var HomepageChart = React.createClass({
 
     componentDidMount: function() {
         this.drawChart();
-        document.getElementById('chart-legend').innerHTML = this.myPieChart.generateLegend();
+        //document.getElementById('chart-legend').innerHTML = this.myPieChart.generateLegend();
     },
 
     componentDidUpdate: function(){
@@ -577,11 +588,14 @@ var HomepageChart2 = React.createClass({
         require.ensure(['chart.js'], function(require) {
             var Chart = require('chart.js');
             var colorList = [
-                '#871F78',
-                '#FFB90F',
-                '#003F87',
-                '#3D9140',
-                '#E5E4E2'
+                '#FF4F4D',
+                '#10A0F6',
+                '#FFBC01',
+                '#6A71E5',
+                '#4EB266',
+                'A3A4A8',
+                '61D1FD',
+                'FFFFFF'
             ];
             var data = [];
             var labels = [];
@@ -659,7 +673,151 @@ var HomepageChartLoader2 = React.createClass({
 
 });
 
+// Component to display the D3-based chart for Biosample
+var HomepageChart3 = React.createClass({
 
+    contextTypes: {
+        navigate: React.PropTypes.func
+    },
+
+    drawChart: function() {
+
+        // Draw the chart of search results given in this.props.data.facets. Since D3 doesn't work
+        // with the React virtual DOM, we have to load it separately using the webpack .ensure
+        // mechanism. Once the callback is called, it's loaded and can be referenced through
+        // require.
+        require.ensure(['chart.js'], function(require) {
+            var Chart = require('chart.js');
+            var colorList = [
+                '#871F78',
+                '#FFB90F',
+                '#003F87',
+                '#3D9140',
+                '#E5E4E2'
+            ];
+            var data = [];
+            var labels = [];
+            var colors = [];
+
+            // Get the assay_title counts from the facets
+            var facets = this.props.data.facets;
+            var assayFacet = facets.find(facet => facet.field === 'month_released');
+            var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+            // Collect up the experiment assay_title counts to our local arrays to prepare for
+            // the charts.
+
+
+
+
+            while(data.length < 6){
+                var firstValues = assayFacet.terms[0].key.split(", ");
+                var maxIndex = 0;
+                var maxMonth = months.indexOf(firstValues[0]);
+                if (maxMonth < 10){
+                    var maxMonthString = "0" + maxMonth.toString();
+                    maxMonth = maxMonthString;
+                }
+                var maxYear = firstValues[1];
+                var maxYearMonthCombo = maxYear + maxMonth;
+
+
+                for(var x = 0; x < assayFacet.terms.length; x++){
+                    var tempDate = assayFacet.terms[x].key.split(", ");
+                    var tempMonth = months.indexOf(tempDate[0]);
+                    if (tempMonth < 10){
+                        var tempMonthString = "0" + tempMonth.toString();
+                        tempMonth = tempMonthString;
+                    }
+                    var tempYear = tempDate[1];
+                    var tempYearMonthCombo = tempYear + tempMonth;
+                    //console.log("Year: " + tempYear + " Month: " + tempMonth);
+
+                    if(tempYearMonthCombo > maxYearMonthCombo){
+
+                        maxYearMonthCombo = tempYearMonthCombo;
+                        maxIndex = x;
+                    }
+                }
+                data.push(assayFacet.terms[maxIndex].doc_count);
+                labels.push(assayFacet.terms[maxIndex].key);
+                assayFacet.terms.splice(maxIndex, 1);
+            }
+
+            data.reverse();
+            labels.reverse();
+            colors = ['#939393', '#939393', '#939393', '#939393', '#939393', '#939393'];
+
+            
+            // assayFacet.terms.forEach(function(term, i) {
+            //     data[i] = term.doc_count;
+            //     labels[i] = term.key;
+            //     colors[i] = colorList[i % colorList.length];
+            // });
+
+            // Pass the assay_title counts to the charting library to render it.
+            var canvas = document.getElementById("myChart3");
+            var ctx = canvas.getContext("2d");
+            this.myBarChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors,
+                        label: "Number of Released Experiments"
+                    }]
+                },
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    onClick: (e) => {
+                        // React to clicks on pie sections
+                        var activePoints = this.myBarChart.getElementAtEvent(e);
+                        var term = assayFacet.terms[activePoints[0]._index].key;
+                        this.context.navigate(this.props.data['@id'] + '&month_released=' + term);
+                    }
+                }
+            });
+
+        }.bind(this));
+
+    },
+
+    componentDidMount: function() {
+        this.drawChart();
+    },
+
+    componentDidUpdate: function() {
+        this.myBarChart.destroy(); // clears old chart before creating new one
+        this.drawChart();
+    },
+
+    render: function() {
+        return (
+            <canvas id="myChart3" width="0" height="0"></canvas>
+        );
+    }
+
+});
+
+var HomepageChartLoader3 = React.createClass({
+    propTypes: {
+        
+        callback: React.PropTypes.func
+    },
+
+    render: function() {
+        return (
+            <FetchedData>
+                <Param name="data" url={'/matrix/' + this.props.searchBase} />
+                <HomepageChart3 searchBase={this.props.searchBase + '&'} />
+            </FetchedData>
+        );
+    }
+
+});
 
 
 
