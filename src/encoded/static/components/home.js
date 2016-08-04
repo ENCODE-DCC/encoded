@@ -175,10 +175,10 @@ var Home = module.exports.Home = React.createClass({
                                 <div className="col-md-12">
                                     <Panel>
                                         <div className="getting-started">
-                                            <PanelBody> 
-                                                <div className="description">
+                                            <PanelBody addClasses="description"> 
+                                                
                                                     The ENCODE (Encyclopedia of DNA Elements) Consortium is an international collaboration of research groups funded by the National Human Genome Research Institute (NHGRI). The goal of ENCODE is to build a comprehensive parts list of functional elements in the human genome, including elements that act at the protein and RNA levels, and regulatory elements that control cells and circumstances in which a gene is active.
-                                                </div>
+                                                
                                             </PanelBody>
                                             <a href="/help/getting-started" className="getting-started-button btn btn-info btn-lg" role="button"> Getting Started </a>
                                             <img src="static/img/getting-started.jpg" className="getting-started-image"/>
