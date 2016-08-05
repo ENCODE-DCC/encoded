@@ -780,10 +780,20 @@ var HomepageChart3 = React.createClass({
                     legend: {
                         display: false
                     },
+                    // scales: {
+                    //     yAxes: [{
+                    //         scaleLabel: "Number of Released Experiments",
+                    //         ticks: {
+                    //             maxRotation: 90,
+                    //             minRotation: 0
+                    //         }
+                    //     }]
+                    // },
+                    // http://www.chartjs.org/docs/ tick configuration
                     onClick: (e) => {
                         // React to clicks on pie sections
                         var activePoints = this.myBarChart.getElementAtEvent(e);
-                        var term = assayFacet.terms[activePoints[0]._index].key;
+                        var term = labels[activePoints[0]._index];
                         this.context.navigate(this.props.data['@id'] + '&month_released=' + term);
                     }
                 }
