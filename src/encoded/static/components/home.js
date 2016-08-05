@@ -61,7 +61,7 @@ var Home = module.exports.Home = React.createClass({
                 }
                 
                 if(endingIndex != oldLink.length-1){ // if did not reach end of string, "&assay_slims=" is in middle of search
-                    oldLink = oldLink.substr(0, startingIndex) + oldLink.substr(endingIndex +1); // assay_slims part is from (startingIndex, endingIndex), so cut that out of oldLink
+                    oldLink = oldLink.substr(0, startingIndex) + oldLink.substr(endingIndex); // assay_slims part is from (startingIndex, endingIndex), so cut that out of oldLink
                 }
                 else{ // "&assay_slims=" is at end of search
                     oldLink = oldLink.substr(0, startingIndex); // assay_slims is from (startingIndex, oldLink.length, so cut that out
@@ -239,7 +239,7 @@ var TwitterWidget = React.createClass({
             data-screen-name="EncodeDCC"
             //data-tweet-limit = "4"
             //data-width = "300"
-            data-height = "437" // height so it matches with rest of site
+            data-height = "452" // height so it matches with rest of site
             ></a>
         );
     }
