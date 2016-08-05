@@ -153,7 +153,7 @@ var Home = module.exports.Home = React.createClass({
                                         
                                         <HomepageChartLoader searchBase={this.state.current} 
                                                     callback={this.callback}/>
-                                        <div id="chart-legend" class="chart-legend"></div>
+                                        <div id="chart-legend" className="chart-legend"></div>
                                 
                                     </div>
                                     <div className="col-sm-4">
@@ -513,6 +513,7 @@ var HomepageChart = React.createClass({
                         this.myPieChart.update();
                         this.myPieChart.render();
                         this.forceUpdate();
+                        var test = document.getElementById('chart-legend').innerHTML = this.myPieChart.generateLegend();
                     }
                 }
             });
