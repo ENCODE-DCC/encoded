@@ -11,7 +11,7 @@ from .shared_calculated_properties import (
     CalculatedBiosampleSlims,
     CalculatedBiosampleSynonyms
 )
-
+import re
 
 @collection(
     name='biosamples',
@@ -82,6 +82,8 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'part_of.rnais.documents.award',
         'part_of.rnais.documents.lab',
         'part_of.rnais.documents.submitted_by',
+        'part_of.treatments.protocols',
+        'part_of.talens.documents',
         'parent_of',
         'pooled_from',
         'characterizations.submitted_by',
@@ -548,14 +550,7 @@ def generate_summary_dictionary(
                                                                  donorObject['strain_name']
                         if 'genotype' in donorObject:
                             d_genotype = donorObject['genotype']
-                            if organismObject['scientific_name'].find('Drosophila') != -1:
-                                if d_genotype[-1] == '.':
-                                    dict_of_phrases['genotype_strain'] += ' ' + \
-                                                                          d_genotype[:-1]
-                                else:
-                                    dict_of_phrases['genotype_strain'] += ' ' + \
-                                                                          d_genotype
-                            else:
+                            if organismObject['scientific_name'].find('Drosophila') == -1:
                                 if d_genotype[-1] == '.':
                                     dict_of_phrases['genotype_strain'] += ' (' + \
                                                                           d_genotype[:-1] + ')'
@@ -652,7 +647,7 @@ def generate_summary_dictionary(
         if post_treatment_time is not None and post_treatment_time_units is not None:
             dict_of_phrases['post_treatment'] = (post_treatment_time +
                                                  ' ' + post_treatment_time_units +
-                                                 's after the sample was')
+                                                 's after the sample was ')
 
         if ('sample_type' in dict_of_phrases and
             dict_of_phrases['sample_type'] != 'immortalized cell line') or \
@@ -742,7 +737,7 @@ def generate_summary_dictionary(
             else:
                 if len(constructs_list) > 1:
                     dict_of_phrases['constructs'] = 'expressing ' + \
-                        ', '.join(map(str, constructs_list))
+                        ', '.join(map(str, list(set(constructs_list))))
 
         if model_construct_objects_list is not None and len(model_construct_objects_list) > 0:
             constructs_list = []
@@ -754,14 +749,14 @@ def generate_summary_dictionary(
             else:
                 if len(constructs_list) > 1:
                     dict_of_phrases['model_organism_constructs'] = 'expressing ' + \
-                        ', '.join(map(str, constructs_list))
+                        ', '.join(map(str, list(set(constructs_list))))
 
         if rnai_objects is not None and len(rnai_objects) > 0:
             rnais_list = []
             for rnaiObject in rnai_objects:
                     rnais_list.append(rnaiObject['rnai_type'] + ' ' + rnaiObject['target'])
 
-            dict_of_phrases['rnais'] = ', '.join(map(str, rnais_list))
+            dict_of_phrases['rnais'] = ', '.join(map(str, list(set(rnais_list))))
 
         return dict_of_phrases
 
@@ -846,11 +841,20 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
     else:
         sentence_to_return = generate_sentence(phrases_dictionarys[0], sentence_parts)
 
-    sentence_to_return = sentence_to_return.replace(' percent', '%')
-    sentence_to_return = sentence_to_return.replace('1 hours', '1 hour')
-    sentence_to_return = sentence_to_return.replace('1 days', '1 day')
-    sentence_to_return = sentence_to_return.replace('1 minutes', '1 minute')
-    sentence_to_return = sentence_to_return.replace('1 months', '1 month')
-    sentence_to_return = sentence_to_return.replace('1 weeks', '1 week')
-    sentence_to_return = sentence_to_return.replace('1 years', '1 year')
-    return sentence_to_return
+    words = sentence_to_return.split(' ')
+    if words[-1] in ['transiently', 'stably']:
+        sentence_to_return = ' '.join(words[:-1])
+
+    rep = {
+        ' percent': '%',
+        '1 hours': '1 hour',
+        '1 days': '1 day',
+        '1 minutes': '1 minute',
+        '1 months': '1 month',
+        '1 weeks': '1 week',
+        '1 years': '1 year',
+        '.0': '',
+    }
+    rep = dict((re.escape(k), v) for k, v in rep.items())
+    pattern = re.compile("|".join(rep.keys()))
+    return pattern.sub(lambda m: rep[re.escape(m.group(0))], sentence_to_return)

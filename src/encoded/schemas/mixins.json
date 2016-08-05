@@ -265,18 +265,7 @@
             "title": "Notes",
             "description": "DCC internal notes.",
             "type": "string",
-            "permission": "import_items",
-            "elasticsearch_mapping_index_type": {
-                "title": "Field mapping index type",
-                "description": "Defines one of three types of indexing available",
-                "type": "string",
-                "default": "analyzed",
-                "enum": [
-                    "analyzed",
-                    "not_analyzed",
-                    "no"
-                ]
-            }
+            "permission": "import_items"
         }
     },
     "submitter_comment": {

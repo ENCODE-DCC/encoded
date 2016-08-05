@@ -215,7 +215,7 @@ def index_file(request):
 
     if last_xmin is None:
         result['types'] = types = request.json.get('types', None)
-        invalidated = list(all_uuids(request.root, types))
+        invalidated = list(all_uuids(request.registry, types))
     else:
         txns = session.query(TransactionRecord).filter(
             TransactionRecord.xid >= last_xmin,
