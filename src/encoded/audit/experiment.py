@@ -59,7 +59,7 @@ non_seq_assays = [
     ]
 
 
-@audit_checker('experiment', frame=['replicates',
+@audit_checker('Experiment', frame=['replicates',
                                     'replicates.library'])
 def audit_experiment_mixed_libraries(value, system):
     '''

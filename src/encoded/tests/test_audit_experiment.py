@@ -1211,6 +1211,19 @@ def test_audit_experiment_mismatched_length_sequencing_files(testapp, file_bam, 
                for error in errors_list)
 
 
+def test_audit_experiment_description(testapp, base_experiment):
+    testapp.patch_json(base_experiment['@id'],
+                       {'description':
+                        'ontains ER-Src by treating with 1 \\u03bcM tamoxifen for 36 '})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent description'
+               for error in errors_list)
+
+
 def test_audit_experiment_mismatched_platforms(testapp, file_fastq,
                                                base_experiment, file_fastq_2,
                                                base_replicate, platform1,
