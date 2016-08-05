@@ -194,6 +194,8 @@
 
 
 .chart-legend {
+    float: center;
+    margin-top: 20px;
     /*float: left;
     width: 200px;
     height: 200px;*/
@@ -208,6 +210,7 @@
     width: 32px;
     height: 12px;
     margin-right: 5px;
+
 }
 
 
@@ -235,8 +238,8 @@
 .getting-started-button {
 
     position: absolute;
-    top: 220px;
-    left: 50px;
+    top: 245px;
+    left: 45px;
     background-color: transparent;
     z-index: 1;
 }
@@ -248,8 +251,10 @@
 .view-all-button {
     
     display: inline-block;
-   /* top: 50px;
-    left: 50px;*/
+    position: absolute;
+    float: right;
+    bottom: 50px;
+    left: 750px;
     background-color: transparent;
     z-index: 1;
 }

@@ -163,6 +163,7 @@ var Home = module.exports.Home = React.createClass({
                                         <center> <hr width="80%"></hr> </center>
                                         <HomepageChartLoader2 searchBase={this.state.current}
                                                  callback={this.callback}/>
+                                        <div id="chart-legend-2" className="chart-legend"></div>
                                     </div>
                                     <div className="col-sm-4">
                                         <div className="title">
@@ -238,7 +239,7 @@ var TwitterWidget = React.createClass({
             data-screen-name="EncodeDCC"
             //data-tweet-limit = "4"
             //data-width = "300"
-            data-height = "720" // height so it matches with rest of site
+            data-height = "437" // height so it matches with rest of site
             ></a>
         );
     }
@@ -517,6 +518,7 @@ var HomepageChart = React.createClass({
                     }
                 }
             });
+            document.getElementById('chart-legend').innerHTML = this.myPieChart.generateLegend();
 
         }.bind(this));
 
@@ -627,6 +629,9 @@ var HomepageChart2 = React.createClass({
                     }]
                 },
                 options: {
+                    legend: {
+                        display: false
+                    },
                     onClick: (e) => {
                         // React to clicks on pie sections
                         var activePoints = this.myPieChart.getElementAtEvent(e);
@@ -635,6 +640,8 @@ var HomepageChart2 = React.createClass({
                     }
                 }
             });
+
+            document.getElementById('chart-legend-2').innerHTML = this.myPieChart.generateLegend();
 
         }.bind(this));
 
@@ -747,7 +754,7 @@ var HomepageChart3 = React.createClass({
 
             data.reverse();
             labels.reverse();
-            colors = ['#939393', '#939393', '#939393', '#939393', '#939393', '#939393'];
+            colors = ['#4cd964', '#4cd964', '#4cd964', '#4cd964', '#4cd964', '#4cd964'];
 
             
             // assayFacet.terms.forEach(function(term, i) {
