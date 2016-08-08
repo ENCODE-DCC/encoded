@@ -34,13 +34,13 @@ def audit_file_md5sum_integrity(value, system):
         hexval = int(md5sum, 16)
         if len(md5sum) != 32:
             detail = 'File {} '.format(value['@id']) + \
-                     'has md5sum value of {}, '.format(md5sum) + \
+                     'has an md5sum value of {}, '.format(md5sum) + \
                      'which is not 32 characters long.'
             yield AuditFailure('inconsistent md5sum',
                                detail, level='INTERNAL_ACTION')
     except ValueError:
         detail = 'File {} '.format(value['@id']) + \
-                 'has md5sum value of {}, '.format(md5sum) + \
+                 'has an md5sum value of {}, '.format(md5sum) + \
                  'which is not a valid hexadecimal number.'
         yield AuditFailure('inconsistent md5sum',
                            detail, level='INTERNAL_ACTION')
