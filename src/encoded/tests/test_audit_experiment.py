@@ -1214,7 +1214,7 @@ def test_audit_experiment_mismatched_length_sequencing_files(testapp, file_bam, 
 def test_audit_experiment_description(testapp, base_experiment):
     testapp.patch_json(base_experiment['@id'],
                        {'description':
-                        'ontains ER-Src by treating with 1 \\\\u03bcM tamoxifen for 36 '})
+                        'ontains ER-Src by treating with 1 \\\\\\\\u03bcM tamoxifen for 36 '})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
