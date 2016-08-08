@@ -51,14 +51,14 @@ def audit_file_bam_derived_from(value, system):
                          'from a different experiment {} '.format(f['dataset']) + \
                          'in its derived_from list.'
                 yield AuditFailure('inconsistent derived_from',
-                                   detail, level='DCC_ACTION')
+                                   detail, level='INTERNAL_ACTION')
     if raw_data_counter == 0:
         detail = 'derived_from is a list of files that were used to create a given file; ' + \
                  'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
                  'Alignments file {} '.format(value['@id']) + \
                  'is missing the requisite file specification in its derived_from list.'
         yield AuditFailure('missing derived_from',
-                           detail, level='DCC_ACTION')
+                           detail, level='INTERNAL_ACTION')
 
 
 @audit_checker('File', frame=['object'],
@@ -79,7 +79,7 @@ def audit_file_processed_empty_derived_from(value, system):
                      'Processed file {} '.format(value['@id']) + \
                      'is missing the requisite file specification in its derived_from list.'
             yield AuditFailure('missing derived_from',
-                               detail, level='DCC_ACTION')
+                               detail, level='INTERNAL_ACTION')
             return
 
 
@@ -95,7 +95,7 @@ def audit_file_derived_from_revoked(value, system):
                          'was derived from file {} '.format(f['@id']) + \
                          'that has a status \'revoked\'.'
                 yield AuditFailure('mismatched file status',
-                                   detail, level='DCC_ACTION')
+                                   detail, level='INTERNAL_ACTION')
                 return
 
 
@@ -110,7 +110,7 @@ def audit_file_assembly(value, system):
             detail = 'Raw data file {} '.format(value['@id']) + \
                      'has improperly specified assembly value.'
             yield AuditFailure('unexpected property',
-                               detail, level='DCC_ACTION')
+                               detail, level='INTERNAL_ACTION')
         return
     else:  # not row data file
         # special treatment of RNA-Bind-n-Seq
@@ -120,7 +120,7 @@ def audit_file_assembly(value, system):
                 detail = 'RNA Bind-n-Seq file {} '.format(value['@id']) + \
                          'has improperly specified assembly value.'
                 yield AuditFailure('unexpected property',
-                                   detail, level='DCC_ACTION')
+                                   detail, level='INTERNAL_ACTION')
                 return
         #  any other asssay processed file
         else:
@@ -128,7 +128,7 @@ def audit_file_assembly(value, system):
                 detail = 'Processed file {} '.format(value['@id']) + \
                          'does not have assembly specified.'
                 yield AuditFailure('missing assembly',
-                                   detail, level='DCC_ACTION')
+                                   detail, level='INTERNAL_ACTION')
                 return
             if 'derived_from' not in value:
                 return
@@ -142,7 +142,7 @@ def audit_file_assembly(value, system):
                                  f['@id']) + \
                             'it was derived from.'
                         yield AuditFailure('inconsistent assembly',
-                                           detail, level='DCC_ACTION')
+                                           detail, level='INTERNAL_ACTION')
                         return
 
 
@@ -183,9 +183,10 @@ def audit_file_biological_replicate_number_match(value, system):
                          ', but it was derived from file {} '.format(derived_from_file['@id']) + \
                          'which is associated with a replicate [{},{}].'.format(
                              derived_replicate[0],
-                             derived_replicate[1]),
-                raise AuditFailure('inconsistent replicate',
+                             derived_replicate[1])
+                yield AuditFailure('inconsistent replicate',
                                    detail, level='ERROR')
+                return
 
 
 @audit_checker('file', frame=['replicate', 'dataset', 'replicate.experiment'])
@@ -212,7 +213,8 @@ def audit_file_replicate_match(value, system):
                  '{}, but that replicate is associated with a different '.format(
                      value['replicate']['@id']) + \
                  'experiment {}.'.format(value['replicate']['experiment']['@id'])
-        raise AuditFailure('inconsistent replicate', detail, level='ERROR')
+        yield AuditFailure('inconsistent replicate', detail, level='ERROR')
+        return
 
 
 @audit_checker('file', frame=['award'],
@@ -255,12 +257,12 @@ def audit_file_read_length(value, system):
 
     if 'read_length' not in value:
         detail = 'Reads file {} missing read_length'.format(value['@id'])
-        yield AuditFailure('missing read_length', detail, level='DCC_ACTION')
+        yield AuditFailure('missing read_length', detail, level='INTERNAL_ACTION')
         return
 
     if value['read_length'] == 0:
         detail = 'Reads file {} has read_length of 0'.format(value['@id'])
-        yield AuditFailure('missing read_length', detail, level='DCC_ACTION')
+        yield AuditFailure('missing read_length', detail, level='INTERNAL_ACTION')
         return
 
 
@@ -348,7 +350,7 @@ def audit_file_controlled_by(value, system):
                                                                    pe_file['paired_with']['@id']) + \
                          'that is not included in the controlled_by list'
                 yield AuditFailure('missing paired_with in controlled_by', detail,
-                                   level='DCC_ACTION')
+                                   level='INTERNAL_ACTION')
 
         if len(bio_rep_numbers) > 1:
             detail = 'Fastq file {} '.format(value['@id']) + \
@@ -362,14 +364,12 @@ def audit_file_controlled_by(value, system):
     biosample_term_name = value['dataset'].get('biosample_term_name')
     run_type = value.get('run_type', None)
     read_length = value.get('read_length', None)
-    platform = value.get('platform', None)
 
     if value['controlled_by']:
         for ff in value['controlled_by']:
             control_bs = ff['dataset'].get('biosample_term_id')
             control_run = ff.get('run_type', None)
             control_length = ff.get('read_length', None)
-            control_platform = ff.get('platform', None)
 
             if control_bs != biosample:
                 detail = 'controlled_by is a list of files that are used as controls for a given file. ' + \
@@ -378,7 +378,7 @@ def audit_file_controlled_by(value, system):
                          '{} that belongs to experiment with different biosample {}.'.format(
                              ff['@id'],
                              ff['dataset'].get('biosample_term_name'))
-                yield AuditFailure('mismatched control', detail, level='ERROR')
+                yield AuditFailure('inconsistent control', detail, level='ERROR')
                 return
 
             if ff['file_format'] != value['file_format']:
@@ -389,7 +389,7 @@ def audit_file_controlled_by(value, system):
                          'a file {} with different file_format {}.'.format(
                              ff['@id'],
                              ff['file_format'])
-                yield AuditFailure('mismatched control', detail, level='ERROR')
+                yield AuditFailure('inconsistent control', detail, level='ERROR')
                 return
 
             if (possible_controls is None) or (ff['dataset']['@id'] not in possible_controls):
@@ -402,21 +402,10 @@ def audit_file_controlled_by(value, system):
                              ff['@id']) + \
                          'that belongs to an experiment {} that '.format(ff['dataset']['@id']) + \
                          'is not specified in possible_controls list of this experiment.'
-                yield AuditFailure('mismatched control', detail, level='ERROR')
+
+                yield AuditFailure('inconsistent control', detail, level='ERROR')
                 return
 
-            if control_platform is not None and platform is not None:
-                platform_id = platform.get('term_id')
-                control_platform_id = control_platform.get('term_id')
-                if control_platform_id != platform_id:
-                    detail = 'File {} is on {} but its control file {} is on {}'.format(
-                        value['@id'],
-                        value['platform'].get('term_name'),
-                        ff['@id'],
-                        control_platform.get('term_name')
-                    )
-                    yield AuditFailure('inconsistent control platform',
-                                       detail, level='WARNING')
 
             if (run_type is None) or (control_run is None):
                 continue
@@ -520,7 +509,7 @@ def audit_paired_with(value, system):
         detail = 'File {} has paired_end = {}. It requires a replicate'.format(
             value['@id'],
             value['paired_end'])
-        raise AuditFailure('missing replicate', detail, level='DCC_ACTION')
+        raise AuditFailure('missing replicate', detail, level='INTERNAL_ACTION')
 
     if value['replicate'] != value['paired_with']['replicate']:
         detail = 'File {} has replicate {}. It is paired_with file {} with replicate {}'.format(
@@ -611,7 +600,7 @@ def audit_file_size(value, system):
 
     if 'file_size' not in value:
         detail = 'File {} requires a value for file_size'.format(value['@id'])
-        raise AuditFailure('missing file_size', detail, level='DCC_ACTION')
+        raise AuditFailure('missing file_size', detail, level='INTERNAL_ACTION')
 
 
 @audit_checker('file', frame=['file_format_specifications'],)
@@ -798,32 +787,32 @@ def audit_file_chip_seq_control_read_depth(value, system):
     if 'analysis_step_version' not in value:
         detail = 'ENCODE Processed alignment file {} has '.format(value['@id']) + \
                  'no analysis step version'
-        yield AuditFailure('missing analysis step version', detail, level='DCC_ACTION')
+        yield AuditFailure('missing analysis step version', detail, level='INTERNAL_ACTION')
         return
 
     if 'analysis_step' not in value['analysis_step_version']:
         detail = 'ENCODE Processed alignment file {} has '.format(value['@id']) + \
                  'no analysis step in {}'.format(value['analysis_step_version']['@id'])
-        yield AuditFailure('missing analysis step', detail, level='DCC_ACTION')
+        yield AuditFailure('missing analysis step', detail, level='INTERNAL_ACTION')
         return
 
     if 'pipelines' not in value['analysis_step_version']['analysis_step']:
         detail = 'ENCODE Processed alignment file {} has '.format(value['@id']) + \
                  'no pipelines in {}'.format(value['analysis_step_version']['analysis_step']['@id'])
-        yield AuditFailure('missing pipelines in analysis step', detail, level='DCC_ACTION')
+        yield AuditFailure('missing pipelines in analysis step', detail, level='INTERNAL_ACTION')
         return
 
     if 'software_versions' not in value['analysis_step_version']:
         detail = 'ENCODE Processed alignment file {} has '.format(value['@id']) + \
                  'no software_versions in {}'.format(value['analysis_step_version']['@id'])
-        yield AuditFailure('missing software versions', detail, level='DCC_ACTION')
+        yield AuditFailure('missing software versions', detail, level='INTERNAL_ACTION')
         return
 
     if value['analysis_step_version']['software_versions'] == []:
         detail = 'ENCODE Processed alignment file {} has no '.format(value['@id']) + \
                  'softwares listed in software_versions,' + \
                  ' under {}'.format(value['analysis_step_version']['@id'])
-        yield AuditFailure('missing software', detail, level='DCC_ACTION')
+        yield AuditFailure('missing software', detail, level='INTERNAL_ACTION')
         return
 
     chip_flag = False

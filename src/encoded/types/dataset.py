@@ -129,10 +129,10 @@ class Dataset(Item):
         },
     })
     def files(self, request, original_files, status):
-        if status in ('release ready', 'released'):
+        if status in ('release ready', 'released', 'archived'):
             return paths_filtered_by_status(
                 request, original_files,
-                include=('released',),
+                include=('released', 'archived'),
             )
         else:
             return paths_filtered_by_status(
@@ -330,6 +330,7 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms)
         'files.quality_metrics',
         'files.quality_metrics.step_run',
         'files.quality_metrics.step_run.analysis_step_version.analysis_step',
+        'files.replicate.library',
         'supersedes'
     ]
     rev = Dataset.rev.copy()
@@ -345,6 +346,7 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms)
                 'organ_slims',
                 'award.project',
                 'assembly',
+                'encyclopedia_version'
             ],
             'group_by': ['biosample_type', 'biosample_term_name'],
             'label': 'Biosample',
@@ -383,7 +385,12 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms)
 class PublicationData(FileSet, CalculatedFileSetBiosample, CalculatedFileSetAssay, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms, CalculatedAssaySynonyms):
     item_type = 'publication_data'
     schema = load_schema('encoded:schemas/publication_data.json')
-    embedded = FileSet.embedded + ['files.dataset', 'files.replicate.experiment.target', 'organism']
+    embedded = FileSet.embedded + [
+        'files.dataset',
+        'files.replicate.library',
+        'files.replicate.experiment.target',
+        'organism'
+    ]
 
 
 @collection(
@@ -409,7 +416,11 @@ class Reference(FileSet):
 class UcscBrowserComposite(FileSet, CalculatedFileSetAssay, CalculatedAssaySynonyms):
     item_type = 'ucsc_browser_composite'
     schema = load_schema('encoded:schemas/ucsc_browser_composite.json')
-    embedded = FileSet.embedded + ['organism', 'files.dataset']
+    embedded = FileSet.embedded + [
+        'organism',
+        'files.dataset',
+        'files.replicate.library'
+    ]
 
     @calculated_property(condition='files', schema={
         "title": "Organism",
@@ -450,7 +461,12 @@ class UcscBrowserComposite(FileSet, CalculatedFileSetAssay, CalculatedAssaySynon
 class Project(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms, CalculatedAssaySynonyms):
     item_type = 'project'
     schema = load_schema('encoded:schemas/project.json')
-    embedded = FileSet.embedded + ['files.dataset', 'files.replicate.experiment.target', 'organism']
+    embedded = FileSet.embedded + [
+        'files.dataset',
+        'files.replicate.library',
+        'files.replicate.experiment.target',
+        'organism'
+    ]
 
 
 @abstract_collection(

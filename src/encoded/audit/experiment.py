@@ -83,7 +83,7 @@ def audit_experiment_mixed_libraries(value, system):
     if len(nucleic_acids) > 1:
         detail = 'Experiment {} '.format(value['@id']) + \
                  'contains libraries with mixed nucleic acids {} '.format(nucleic_acids)
-        yield AuditFailure('mixed libraries', detail, level='DCC_ACTION')
+        yield AuditFailure('mixed libraries', detail, level='INTERNAL_ACTION')
     return
 
 
@@ -101,7 +101,7 @@ def audit_experiment_released_with_unreleased_files(value, system):
             detail = 'Released experiment {} '.format(value['@id']) + \
                      'contains file  {} '.format(f['@id']) + \
                      'that has not been released.'
-            yield AuditFailure('mismatched file status', detail, level='DCC_ACTION')
+            yield AuditFailure('mismatched file status', detail, level='INTERNAL_ACTION')
     return
 
 
@@ -156,13 +156,13 @@ def audit_experiment_out_of_date_analysis(value, system):
                  'biological replicates {} '.format(orfan_bio_reps) + \
                  'contain FASTQ files {} '.format(orfan_fastqs) + \
                  ' that have not been processed.'
-        yield AuditFailure('out of date analysis', detail, level='DCC_ACTION')
+        yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
 
     if len(lost_fastqs) > 0:
         detail = 'Experiment {} '.format(value['@id']) + \
                  'processed files contain in derived_from list FASTQ files {} '.format(lost_fastqs) + \
                  ' that are no longer eligible for analysis.'
-        yield AuditFailure('out of date analysis', detail, level='DCC_ACTION')
+        yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
 
 
 def get_file_accessions(list_of_files):
@@ -367,7 +367,7 @@ def check_experiemnt_rna_seq_encode3_standards(value,
                      'of {} assay'.format(value['assay_term_name']) + \
                      ', processed by {} pipeline '.format(pipeline_title) + \
                      ' has no read depth containig quality metric associated with it.'
-            yield AuditFailure('missing read depth', detail, level='DCC_ACTION')
+            yield AuditFailure('missing read depth', detail, level='INTERNAL_ACTION')
 
     alignment_files = get_non_tophat_alignment_files(alignment_files)
 
@@ -1017,7 +1017,7 @@ def check_wgbs_coverage(samtools_metrics,
                     detail = 'UNKNOWN replicate insufficient coverage'
                     yield AuditFailure('insufficient coverage',
                                        detail,
-                                       level='DCC_ACTION')
+                                       level='INTERNAL_ACTION')
     return
 
 
@@ -1071,7 +1071,7 @@ def check_file_chip_seq_read_depth(file_to_check,
     if read_depth is False:
         detail = 'ENCODE Processed alignment file {} has no read depth information.'.format(
             file_to_check['@id'])
-        yield AuditFailure('missing read depth', detail, level='DCC_ACTION')
+        yield AuditFailure('missing read depth', detail, level='INTERNAL_ACTION')
         return
 
     if target is not False and 'name' in target:
@@ -1101,7 +1101,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                      'according to ENCODE3 standards require > 45 million usable fragments. ' + \
                      'According to ENCODE2 standards > 20 million ' + \
                      'usable fragments is acceptable.'
-            yield AuditFailure('low read depth', detail, level='DCC_ACTION')
+            yield AuditFailure('low read depth', detail, level='INTERNAL_ACTION')
         if read_depth >= 10000000 and read_depth < marks['narrow']:
             detail = 'ENCODE processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                          read_depth) + \
@@ -1239,7 +1239,7 @@ def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_thre
     if read_depth is False:
         detail = 'ENCODE Processed alignment file {} has no read depth information.'.format(
             file_to_check['@id'])
-        yield AuditFailure('missing read depth', detail, level='DCC_ACTION')
+        yield AuditFailure('missing read depth', detail, level='INTERNAL_ACTION')
         return
 
     if read_depth is not False and assay_term_name in ['RAMPAGE',
@@ -1421,7 +1421,7 @@ def audit_experiment_needs_pipeline(value, system):
         if scanFilesForPipeline(value['original_files'], pipelines_dict['WGBS']) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
                      ' needs to be processed by WGBS pipeline.'
-            raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+            raise AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
         else:
             return
 
@@ -1458,7 +1458,7 @@ def audit_experiment_needs_pipeline(value, system):
         if scanFilesForPipeline(value['original_files'], pipelines_dict['RAMPAGE']) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by pipeline {}.'.format(pipelines_dict['RAMPAGE'][0])
-            raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+            raise AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
         else:
             return
 
@@ -1470,7 +1470,7 @@ def audit_experiment_needs_pipeline(value, system):
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by ' + \
                      'pipeline {}.'.format(pipelines_dict['RNA-seq-long-single'][0])
-            raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+            raise AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
         else:
             return
 
@@ -1482,7 +1482,7 @@ def audit_experiment_needs_pipeline(value, system):
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by ' + \
                      'pipeline {}.'.format(pipelines_dict['RNA-seq-long-paired'][0])
-            raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+            raise AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
         else:
             return
 
@@ -1494,7 +1494,7 @@ def audit_experiment_needs_pipeline(value, system):
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by ' + \
                      'pipeline {}.'.format(pipelines_dict['RNA-seq-short'][0])
-            raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+            raise AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
         else:
             return
 
@@ -1509,7 +1509,7 @@ def audit_experiment_needs_pipeline(value, system):
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by ' + \
                      'pipeline {}.'.format(pipelines_dict['ChIP'])
-            raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+            raise AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
         else:
             return
     return
@@ -1531,6 +1531,91 @@ def scanFilesForPipeline(files_to_scan, pipeline_title_list):
                         if p['title'] in pipeline_title_list:
                             return True
     return False
+
+
+def get_biosamples(experiment):
+    accessions_set = set()
+    biosamples_list = []
+    if 'replicates' in experiment:
+            for rep in experiment['replicates']:
+                if ('library' in rep) and ('biosample' in rep['library']):
+                    biosample = rep['library']['biosample']
+                    if biosample['accession'] not in accessions_set:
+                        accessions_set.add(biosample['accession'])
+                        biosamples_list.append(biosample)
+    return biosamples_list
+
+
+@audit_checker('experiment', frame=['replicates',
+                                    'replicates.library',
+                                    'replicates.library.biosample'])
+def audit_experiment_internal_tag(value, system):
+
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    experimental_tags = []
+    if 'internal_tags' in value:
+        experimental_tags = value['internal_tags']
+
+    updated_experimental_tags = []
+    for tag in experimental_tags:
+        if tag in ['ENTEx', 'SESCC']:
+            updated_experimental_tags.append(tag)
+
+    experimental_tags = updated_experimental_tags
+    biosamples = get_biosamples(value)
+    bio_tags = set()
+
+    for biosample in biosamples:
+        if 'internal_tags' in biosample:
+            for tag in biosample['internal_tags']:
+                if tag in ['ENTEx', 'SESCC']:
+                    bio_tags.add(tag)
+                    if experimental_tags == []:
+                        detail = 'This experiment contains a ' + \
+                                 'biosample {} '.format(biosample['@id']) + \
+                                 'with internal tag {}, '.format(tag) + \
+                                 'while the experiment has  ' + \
+                                 'no internal_tags specified.'
+                        yield AuditFailure('inconsistent internal tags',
+                                           detail, level='INTERNAL_ACTION')
+                    elif experimental_tags != [] and tag not in experimental_tags:
+                        detail = 'This experiment contains a ' + \
+                                 'biosample {} '.format(biosample['@id']) + \
+                                 'with internal tag {} '.format(tag) + \
+                                 'that is not specified in experimental ' + \
+                                 'list of internal_tags {}.'.format(experimental_tags)
+                        yield AuditFailure('inconsistent internal tags',
+                                           detail, level='INTERNAL_ACTION')
+
+    if len(bio_tags) == 0 and len(experimental_tags) > 0:
+        for biosample in biosamples:
+            detail = 'This experiment contains a ' + \
+                     'biosample {} without internal tags '.format(biosample['@id']) + \
+                     'belonging to internal tags {} '.format(experimental_tags) + \
+                     'of the experiment.'
+            yield AuditFailure('inconsistent internal tags',
+                               detail, level='INTERNAL_ACTION')
+
+    for biosample in biosamples:
+        if len(bio_tags) > 0 and ('internal_tags' not in biosample or
+                                  biosample['internal_tags'] == []):
+            detail = 'This experiment contains a ' + \
+                     'biosample {} with no internal tags '.format(biosample['@id']) + \
+                     'belonging to internal tags {} '.format(list(bio_tags)) + \
+                     'other biosamples are assigned.'
+            yield AuditFailure('inconsistent internal tags',
+                               detail, level='INTERNAL_ACTION')
+        elif len(bio_tags) > 0 and biosample['internal_tags'] != []:
+            for x in bio_tags:
+                if x not in biosample['internal_tags']:
+                    detail = 'This experiment contains a ' + \
+                             'biosample {} without internal tag '.format(biosample['@id']) + \
+                             '{} belonging to internal tags {} '.format(x, list(bio_tags)) + \
+                             'other biosamples are assigned.'
+                    yield AuditFailure('inconsistent internal tags',
+                                       detail, level='INTERNAL_ACTION')
 
 
 def is_gtex_experiment(experiment_to_check):
@@ -1574,14 +1659,14 @@ def audit_experiment_gtex_biosample(value, system):
         detail = 'GTEx experiment {} '.format(value['@id']) + \
                  'contains {} '.format(len(donors_set)) + \
                  'donors, while according to HRWG decision it should have a single donor.'
-        yield AuditFailure('invalid modelling of GTEx experiment ', detail, level='DCC_ACTION')
+        yield AuditFailure('invalid modelling of GTEx experiment ', detail, level='INTERNAL_ACTION')
 
     if len(tissues_set) > 1:
         detail = 'GTEx experiment {} '.format(value['@id']) + \
                  'was performed using  {} '.format(len(tissues_set)) + \
                  'tissue types, while according to HRWG decision it should have ' + \
                  'been perfomed using a single tissue type.'
-        yield AuditFailure('invalid modelling of GTEx experiment ', detail, level='DCC_ACTION')
+        yield AuditFailure('invalid modelling of GTEx experiment ', detail, level='INTERNAL_ACTION')
 
     return
 
@@ -1598,11 +1683,11 @@ def audit_experiment_biosample_term_id(value, system):
         if 'biosample_term_id' not in value:
             detail = 'Experiment {} '.format(value['@id']) + \
                      'has no biosample_term_id'
-            yield AuditFailure('experiment missing biosample_term_id', detail, level='DCC_ACTION')
+            yield AuditFailure('experiment missing biosample_term_id', detail, level='INTERNAL_ACTION')
         if 'biosample_type' not in value:
             detail = 'Experiment {} '.format(value['@id']) + \
                      'has no biosample_type'
-            yield AuditFailure('experiment missing biosample_type', detail, level='DCC_ACTION')
+            yield AuditFailure('experiment missing biosample_type', detail, level='INTERNAL_ACTION')
     return
 
 
@@ -1753,7 +1838,7 @@ def audit_experiment_replicate_with_no_files(value, system):
     audit_level = 'ERROR'
     if value['award']['rfa'] in ["ENCODE2", "Roadmap",
                                  "modENCODE", "MODENCODE", "ENCODE2-Mouse"]:
-        audit_level = 'DCC_ACTION'
+        audit_level = 'INTERNAL_ACTION'
 
     for key in rep_dictionary.keys():
 
@@ -1786,7 +1871,7 @@ def audit_experiment_release_date(value, system):
     '''
     if value['status'] in ['released', 'revoked'] and 'date_released' not in value:
         detail = 'Experiment {} is released or revoked and requires a value in date_released'.format(value['@id'])
-        raise AuditFailure('missing date_released', detail, level='DCC_ACTION')
+        raise AuditFailure('missing date_released', detail, level='INTERNAL_ACTION')
 
 
 @audit_checker('experiment',
@@ -1861,7 +1946,7 @@ def audit_experiment_isogeneity(value, system):
 
     if value.get('replication_type') is None:
         detail = 'In experiment {} the replication_type cannot be determined'.format(value['@id'])
-        yield AuditFailure('undetermined replication_type', detail, level='DCC_ACTION')
+        yield AuditFailure('undetermined replication_type', detail, level='INTERNAL_ACTION')
 
     biosample_dict = {}
     biosample_age_set = set()
@@ -1928,7 +2013,7 @@ def audit_experiment_technical_replicates_same_library(value, system):
                 detail = 'Experiment {} has '.format(value['@id']) + \
                          'different technical replicates associated with the same library'
                 raise AuditFailure('sequencing runs labeled as technical replicates', detail,
-                                   level='DCC_ACTION')
+                                   level='INTERNAL_ACTION')
             else:
                 biological_replicates_dict[bio_rep_num].append(library['accession'])
 
@@ -1957,7 +2042,7 @@ def audit_experiment_replicates_biosample(value, system):
                         value['@id'],
                         biosample['@id'])
                     raise AuditFailure('biological replicates with identical biosample',
-                                       detail, level='DCC_ACTION')
+                                       detail, level='INTERNAL_ACTION')
                 else:
                     biosamples_list.append(biosample['accession'])
 
@@ -2027,12 +2112,12 @@ def audit_experiment_assay(value, system):
 
     if term_id.startswith('NTR:'):
         detail = 'Assay_term_id is a New Term Request ({} - {})'.format(term_id, term_name)
-        yield AuditFailure('NTR assay', detail, level='DCC_ACTION')
+        yield AuditFailure('NTR assay', detail, level='INTERNAL_ACTION')
         return
 
     if term_id not in ontology:
         detail = 'Assay_term_id {} is not found in cached version of ontology'.format(term_id)
-        yield AuditFailure('assay_term_id not in ontology', term_id, level='DCC_ACTION')
+        yield AuditFailure('assay_term_id not in ontology', term_id, level='INTERNAL_ACTION')
         return
 
     ontology_term_name = ontology[term_id]['name']
@@ -2044,7 +2129,7 @@ def audit_experiment_assay(value, system):
             term_name,
             term_id,
             )
-        yield AuditFailure('mismatched assay_term_name', detail, level='DCC_ACTION')
+        yield AuditFailure('mismatched assay_term_name', detail, level='INTERNAL_ACTION')
         return
 
 
@@ -2167,6 +2252,72 @@ def audit_experiment_control(value, system):
             raise AuditFailure('inconsistent control', detail, level='ERROR')
 
 
+@audit_checker('experiment', frame=['possible_controls',
+                                    'possible_controls.original_files',
+                                    'possible_controls.original_files.platform',
+                                    'original_files',
+                                    'original_files.platform'])
+def audit_experiment_platforms_mismatches(value, system):
+    if value['status'] in ['deleted', 'replaced']:
+        return
+    if 'original_files' not in value or \
+       value['original_files'] == []:
+        return
+    platforms = get_platforms_used_in_experiment(value)
+    if len(platforms) > 1:
+        platforms_string = str(list(platforms)).replace('\'', '')
+        detail = 'This experiment ' + \
+                 'contains data produced on incompatible ' + \
+                 'platforms {}.'.format(platforms_string)
+        yield AuditFailure('inconsistent platforms', detail, level='WARNING')
+    elif len(platforms) == 1:
+        platform_term_name = list(platforms)[0]
+        if 'possible_controls' in value and \
+           value['possible_controls'] != []:
+            for control in value['possible_controls']:
+                control_platforms = get_platforms_used_in_experiment(control)
+                if len(control_platforms) > 1:
+                    control_platforms_string = str(list(control_platforms)).replace('\'', '')
+                    detail = 'possible_controls is a list of experiment(s) that can serve ' + \
+                             'as analytical controls for a given experiment. ' + \
+                             'Experiment {} found in possible_controls list of this experiment '.format(control['@id']) + \
+                             'contains data produced on platform(s) {} '.format(control_platforms_string) + \
+                             'which are not compatible with platform {} '.format(platform_term_name) + \
+                             'used in this experiment.'
+                    yield AuditFailure('inconsistent platforms', detail, level='WARNING')
+                elif len(control_platforms) == 1 and \
+                        list(control_platforms)[0] != platform_term_name:
+                    detail = 'possible_controls is a list of experiment(s) that can serve ' + \
+                             'as analytical controls for a given experiment. ' + \
+                             'Experiment {} found in possible_controls list of this experiment '.format(control['@id']) + \
+                             'contains data produced on platform {} '.format(list(control_platforms)[0]) + \
+                             'which is not compatible with platform {} '.format(platform_term_name) + \
+                             'used in this experiment.'
+                    yield AuditFailure('inconsistent platforms', detail, level='WARNING')
+    return
+
+
+def get_platforms_used_in_experiment(experiment):
+    platforms = set()
+    if 'original_files' not in experiment or \
+       experiment['original_files'] == []:
+        return platforms
+
+    for f in experiment['original_files']:
+        if f['output_category'] == 'raw data' and \
+           'platform' in f:
+            # collapsing interchangable platforms
+            if f['platform']['term_name'] in ['HiSeq 2000', 'HiSeq 2500']:
+                platforms.add('HiSeq 2000/2500')
+            elif f['platform']['term_name'] in ['Illumina Genome Analyzer IIx',
+                                                'Illumina Genome Analyzer IIe',
+                                                'Illumina Genome Analyzer II']:
+                platforms.add('Illumina Genome Analyzer II/e/x')
+            else:
+                platforms.add(f['platform']['term_name'])
+    return platforms
+
+
 @audit_checker('experiment', frame=['target',
                                     'possible_controls',
                                     'replicates', 'replicates.antibody',
@@ -2283,7 +2434,7 @@ def audit_experiment_biosample_term(value, system):
 
     if term_id.startswith('NTR:'):
         detail = '{} has an NTR biosample {} - {}'.format(value['@id'], term_id, term_name)
-        yield AuditFailure('NTR biosample', detail, level='DCC_ACTION')
+        yield AuditFailure('NTR biosample', detail, level='INTERNAL_ACTION')
     else:
         biosample_prefix = term_id.split(':')[0]
         if 'biosample_type' in value and \
@@ -2294,11 +2445,11 @@ def audit_experiment_biosample_term(value, system):
                      'that is not one of ' + \
                      '{}'.format(biosampleType_ontologyPrefix[term_type])
             yield AuditFailure('experiment with biosample term-type mismatch', detail,
-                               level='DCC_ACTION')
+                               level='INTERNAL_ACTION')
 
         elif term_id not in ontology:
             detail = '{} has term_id {} which is not in ontology'.format(value['@id'], term_id)
-            yield AuditFailure('term_id not in ontology', term_id, level='DCC_ACTION')
+            yield AuditFailure('term_id not in ontology', term_id, level='INTERNAL_ACTION')
         else:
             ontology_name = ontology[term_id]['name']
             if ontology_name != term_name and term_name not in ontology[term_id]['synonyms']:

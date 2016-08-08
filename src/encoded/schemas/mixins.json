@@ -265,18 +265,7 @@
             "title": "Notes",
             "description": "DCC internal notes.",
             "type": "string",
-            "permission": "import_items",
-            "elasticsearch_mapping_index_type": {
-                "title": "Field mapping index type",
-                "description": "Defines one of three types of indexing available",
-                "type": "string",
-                "default": "analyzed",
-                "enum": [
-                    "analyzed",
-                    "not_analyzed",
-                    "no"
-                ]
-            }
+            "permission": "import_items"
         }
     },
     "submitter_comment": {
@@ -304,6 +293,23 @@
             "title": "Strain name",
             "description": "The specific strain designation of a non-human donor.",
             "type": "string"
+        }
+    },
+    "genetic_modifications": {
+        "genetic_modifications": {
+            "title": "Genetic modifications",
+            "description": "Genetic modification(s). Any genomic alteration or addition of vectors stably or transiently transfected.",
+            "type": "array",
+            "default": [],
+            "permission": "import_items",
+            "uniqueItems": true,
+            "items": {
+                "title": "Genetic modification",
+                "description": "Genetic modification(s).",
+                "comment": "See genetic_modification.json for available identifiers.",
+                "type":  "string",
+                "linkTo": "GeneticModification"
+            }
         }
     },
     "genomic_alterations": {
@@ -376,7 +382,9 @@
                 "chemical",
                 "exposure",
                 "infection",
-                "antibody"
+                "antibody",
+                "transplantation",
+                "injection"
             ]
         },
         "treatment_term_id": {
@@ -407,5 +415,5 @@
                 "linkTo": "Document"
             }
         }
-    }
+    }    
 }

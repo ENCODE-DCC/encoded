@@ -42,18 +42,6 @@ describe('Experiment Page', function() {
             defDescs = summary[0].getDOMNode().getElementsByTagName('dd');
         });
 
-        it('has correct summary panel and key-value elements counts within it', function() {
-            expect(summary.length).toEqual(1);
-            expect(defTerms.length).toEqual(9);
-            expect(defDescs.length).toEqual(9);
-        });
-
-        it('has proper biosample summary for no-biosample case (code adds space always)', function() {
-            var item = summary[0].getDOMNode().querySelector('[data-test="biosample-summary"]');
-            var desc = item.getElementsByTagName('dd')[0];
-            expect(desc.textContent).toEqual('K562 ');
-        });
-
         it('has proper links in dbxrefs key-value', function() {
             var item = summary[0].getDOMNode().querySelector('[data-test="external-resources"]');
             var desc = item.getElementsByTagName('dd')[0];
@@ -162,16 +150,6 @@ describe('Experiment Page', function() {
                 );
             });
             summary = TestUtils.scryRenderedDOMComponentsWithClass(experiment, 'data-display');
-        });
-
-        it('has proper biosample summary ', function() {
-            var item = summary[0].getDOMNode().querySelector('[data-test="biosample-summary"]');
-            var desc = item.getElementsByTagName('dd')[0];
-            expect(desc.textContent).toEqual('K562 (Homo sapiens and Mus musculus)');
-            var italics = desc.getElementsByTagName('em');
-            expect(italics.length).toEqual(2);
-            expect(italics[0].textContent).toEqual('Homo sapiens');
-            expect(italics[1].textContent).toEqual('Mus musculus');
         });
 
         it('has proper treatment', function() {

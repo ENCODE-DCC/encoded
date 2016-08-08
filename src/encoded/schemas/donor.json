@@ -15,7 +15,9 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/documents" },
-        { "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/genetic_modifications" }
+
     ],
     "properties": {
         "schema_version": {
@@ -42,6 +44,7 @@
             "description": "Some donors are part of particular data collections",
             "type": "array",
             "default": [],
+            "permission": "import_items",
             "uniqueItems": true,
             "items": {
                 "type": "string",
