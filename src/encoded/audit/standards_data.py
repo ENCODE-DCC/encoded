@@ -40,7 +40,7 @@ pipelines_with_read_depth = {
         'narrow': 20000000,
         'broad': 45000000
         },
-    'Transcription factor ChIP-seq pipeline (modERN)': 5000000
+    'Transcription factor ChIP-seq pipeline (modERN)': 3000000
     }
 
 special_assays_with_read_depth = {
