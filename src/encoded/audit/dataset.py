@@ -21,7 +21,7 @@ def audit_dataset_description(value, system):
     if 'description' not in value:
         return
     print ('Description = ' + value['description'])
-    if value['description'].find('\\\\\\\\') != -1:
+    if value['description'].find('\\\\u') != -1:
         detail = 'Dataset description text ' + \
                  'contains double backslashes.'
         yield AuditFailure('inconsistent description',
