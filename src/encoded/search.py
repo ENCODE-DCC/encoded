@@ -258,7 +258,7 @@ def list_result_fields(request, doc_types):
         fields.update('embedded.' + column for column in columns)
 
     # Ensure that 'audit' field is requested with _source in the ES query
-    if '/metadata/' in request.__parent__.url and request.has_permission('search_audit'):
+    if request.__parent__ and '/metadata/' in request.__parent__.url and request.has_permission('search_audit'):
         fields.add('audit.*')
 
     return fields
@@ -409,7 +409,7 @@ def format_results(request, hits):
 
     # Request originating from metadata generation will skip to
     # partion of the code that adds audit  object to result items
-    if '/metadata/' in request.__parent__.url:
+    if request.__parent__ and '/metadata/' in request.__parent__.url:
         frame = ''
 
     if frame in ['embedded', 'object']:

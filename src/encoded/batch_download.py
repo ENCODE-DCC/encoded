@@ -61,7 +61,8 @@ _tsv_mapping = OrderedDict([
     ('Library crosslinking method', ['replicates.library.crosslinking_method']),
     ('Experiment date released', ['date_released']),
     ('Project', ['award.project']),
-    ('Audit', ['audit.WARNING.category']),
+    ('Audit WARNING', ['audit.WARNING.category',
+               'audit.WARNING.detail']),
     ('RBNS protein concentration', ['files.replicate.rbns_protein_concentration', 'files.replicate.rbns_protein_concentration_units']),
     ('Library fragmentation method', ['files.replicate.library.fragmentation_method']),
     ('Library size range', ['files.replicate.library.size_range']),
@@ -120,12 +121,12 @@ def get_peak_metadata_links(request):
 
 def make_cell_for_row(header_column, row, exp_data_row):
     temp = []
-    for c in _tsv_mapping[header_column]:
+    for column in _tsv_mapping[header_column]:
         c_value = []
-        for value in simple_path_ids(row, c):
+        for value in simple_path_ids(row, column):
             if str(value) not in c_value:
                 c_value.append(str(value))
-        if c == 'replicates.library.biosample.post_synchronization_time' and len(temp):
+        if column == 'replicates.library.biosample.post_synchronization_time' and len(temp):
             if len(c_value):
                 temp[0] = temp[0] + ' + ' + c_value[0]
         elif len(temp):
@@ -135,6 +136,12 @@ def make_cell_for_row(header_column, row, exp_data_row):
             temp = c_value
     exp_data_row.append(', '.join(list(set(temp))))
 
+
+def make_audit_cell_for_row(header_column, experiment_json, exp_data_row):
+    categories = []
+    details = []
+    for column in _tsv_mapping[header_column]:
+        for value in simple_path_ids(experiment_json, column):
 
 
 @view_config(route_name='peak_metadata', request_method='GET')
@@ -208,17 +215,17 @@ def metadata_tsv(context, request):
     path = '{}?{}'.format(search_path, urlencode(param_list, True))
     results = request.embed(path, as_user=True)
     rows = []
-    for row in results['@graph']:
-        if row['files']:
+    for experiment_json in results['@graph']:
+        if experiment_json['files']:
             exp_data_row = []
             for column in header:
                 if not _tsv_mapping[column][0].startswith('files'):
-                    make_cell_for_row(column, row, exp_data_row)
+                    make_cell_for_row(column, experiment_json, exp_data_row)
 
             f_attributes = ['files.title', 'files.file_type',
                             'files.output_type']
 
-            for f in row['files']:
+            for f in experiment_json['files']:
                 if 'files.file_type' in param_list:
                     if f['file_type'] not in param_list['files.file_type']:
                         continue
