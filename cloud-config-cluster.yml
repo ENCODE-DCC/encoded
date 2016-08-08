@@ -148,6 +148,7 @@ packages:
 - unattended-upgrades
 - update-notifier-common
 - zlib1g-dev
+- libffi-dev
 
 power_state:
   mode: reboot
