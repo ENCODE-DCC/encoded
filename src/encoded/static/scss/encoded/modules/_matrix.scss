@@ -16,7 +16,7 @@ th.rotate30 {
         position: relative;
         z-index: 1;
         top: 0;
-        left: $rotated-th-height * tan($rotated-th-angle) / 2;
+        left: ($rotated-th-height * tan($rotated-th-angle) / 2) + px;
         height: 100%;
         -webkit-transform: skew(-$rotated-th-angle, 0deg);
         transform: skew(-$rotated-th-angle, 0deg);
@@ -30,7 +30,7 @@ th.rotate30 {
             bottom: 59px;
             left: -57px;
             display: inline-block;
-            width: $rotated-th-height / cos($rotated-th-angle) - $rotated-th-width * cos($rotated-th-angle);
+            width: ($rotated-th-height / cos($rotated-th-angle) - $rotated-th-width * cos($rotated-th-angle)) + px;
             text-align: left;
             line-height: 1.2;
             white-space: nowrap;

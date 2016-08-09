@@ -1,4 +1,5 @@
 /*global process, __dirname */
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 var path = require('path');
 var webpack = require('webpack');
@@ -72,7 +73,8 @@ module.exports = [
     // for server-side rendering
     {
         entry: {
-            renderer: './src/encoded/static/server.js'
+            renderer: './src/encoded/static/server.js',
+            style: './src/encoded/static/scss/style.scss'
         },
         target: 'node',
         // make sure compiled modules can use original __dirname
@@ -96,10 +98,28 @@ module.exports = [
         },
         module: {
             preLoaders: preLoaders,
-            loaders: loaders
+            loaders: loaders.concat({
+                test: /\.scss$/,
+                loader: ExtractTextPlugin.extract('css!sass')
+            })
         },
         devtool: 'source-map',
-        plugins: plugins,
+        plugins: plugins.concat(
+            new ExtractTextPlugin("./src/encoded/static/css/[name].[chunkhash].css", {
+                disable: false,
+                allChunks: true
+            }),
+
+            // Add plugin executed when webpack is done with all transforms.
+            function() {
+                this.plugin('done', function(stats) {
+                    // Write hash stats to stats.json so we can extract the CSS hashed file name.
+                    require('fs').writeFileSync(
+                        path.join(__dirname, 'stats.json'),
+                        JSON.stringify(stats.toJson({hash: true}, 'none')));
+                });
+            }
+        ),
         debug: true
     }
 ];
