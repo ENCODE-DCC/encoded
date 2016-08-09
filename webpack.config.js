@@ -7,7 +7,9 @@ var env = process.env.NODE_ENV;
 
 var PATHS = {
     static: path.resolve(__dirname, 'src/encoded/static'),
-    build: path.resolve(__dirname, 'src/encoded/static/build')
+    build: path.resolve(__dirname, 'src/encoded/static/build'),
+    fonts: path.resolve(__dirname, 'src/encoded/static/font'),
+    images: path.resolve(__dirname, 'src/encoded/static/img')
 };
 
 var plugins = [];
@@ -48,6 +50,30 @@ var loaders = [
     {
         test: /\.json$/,
         loader: 'json'
+    },
+    {
+        test: /\.(jpg|png|gif)$/,
+        loader: 'url?limit=25000',
+        include: PATHS.images
+    },
+    {
+        test: /\.woff(\?[a-z0-9=&.]+)?$/,
+        // Inline small woff files and output them below font/.
+        loader: 'url',
+        query: {
+            name: 'font/[hash].[ext]',
+            limit: 5000,
+            mimetype: 'application/font-woff'
+        },
+        include: PATHS.fonts
+    },
+    {
+        test: /\.(ttf|eot|svg|otf)(\?[a-z0-9=&.]+)?$/,
+        loader: 'file',
+        query: {
+            name: 'font/[hash].[ext]'
+        },
+        include: PATHS.fonts
     }
 ];
 
@@ -105,7 +131,7 @@ module.exports = [
         },
         devtool: 'source-map',
         plugins: plugins.concat(
-            new ExtractTextPlugin("./src/encoded/static/css/[name].[chunkhash].css", {
+            new ExtractTextPlugin("./css/[name].[chunkhash].css", {
                 disable: false,
                 allChunks: true
             }),
