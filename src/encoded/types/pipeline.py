@@ -47,7 +47,14 @@ class Pipeline(Item):
             award_object = request.embed(award, '@@object')
             if assay_term_name == 'whole genome bisulfite sequencing':
                 return award_object['rfa'] + '-WGBS'
-            return award_object['rfa'] + '-' + assay_term_name
+            elif assay_term_name == 'shRNA knockdown followed by RNA-seq':
+                return award_object['rfa'] + '-RNA-seq'
+            elif assay_term_name == 'genotyping by high throughput sequencing assay':
+                return award_object['rfa'] + '-DNA-seq'
+            elif assay_term_name == 'microRNA profiling by array assay':
+                return award_object['rfa'] + '-microRNA-counts'
+            else:
+                return award_object['rfa'] + '-' + assay_term_name
         return 'undefined'
 
 
