@@ -141,7 +141,7 @@ module.exports = [
                 this.plugin('done', function(stats) {
                     // Write hash stats to stats.json so we can extract the CSS hashed file name.
                     require('fs').writeFileSync(
-                        path.join(__dirname, 'stats.json'),
+                        path.join(PATHS.build, 'stats.json'),
                         JSON.stringify(stats.toJson({hash: true}, 'none')));
                 });
             }

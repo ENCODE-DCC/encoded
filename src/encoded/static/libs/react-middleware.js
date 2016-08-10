@@ -4,14 +4,20 @@ var doctype = '<!DOCTYPE html>\n';
 var transformResponse = require('subprocess-middleware').transformResponse;
 var fs = require('fs');
 var inline = fs.readFileSync(__dirname + '/../build/inline.js').toString();
+var buildFiles = JSON.parse(fs.readFileSync(__dirname + '/../build/stats.json')).assetsByChunkName.style;
 
 var render = function (Component, body, res) {
     //var start = process.hrtime();
+    // Search for the CSS file name in the buildFiles list
+    var cssFile = buildFiles.find(function(file) {
+        return !!file.match(/^\.\/css\/style\.[0-9a-z]+\.css$/);
+    });
     var context = JSON.parse(body);
     var props = {
         context: context,
         href: res.getHeader('X-Request-URL') || context['@id'],
-        inline: inline
+        inline: inline,
+        styles: '/static/build/' + cssFile
     };
     var markup;
     try {
