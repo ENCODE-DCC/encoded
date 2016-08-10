@@ -728,6 +728,7 @@ var HomepageChart3 = React.createClass({
                 }
                 var maxYear = firstValues[1];
                 var maxYearMonthCombo = maxYear + maxMonth;
+                var maxMonthAbbrev = firstValues[0].substring(0,3);
 
 
                 for(var x = 0; x < assayFacet.terms.length; x++){
@@ -739,16 +740,20 @@ var HomepageChart3 = React.createClass({
                     }
                     var tempYear = tempDate[1];
                     var tempYearMonthCombo = tempYear + tempMonth;
+                    var tempMonthAbbrev = tempDate[0].substring(0,3);
                     //console.log("Year: " + tempYear + " Month: " + tempMonth);
 
                     if(tempYearMonthCombo > maxYearMonthCombo){
 
+                        maxYear = tempYear;
                         maxYearMonthCombo = tempYearMonthCombo;
+                        maxMonthAbbrev = tempMonthAbbrev;
                         maxIndex = x;
+
                     }
                 }
                 data.push(assayFacet.terms[maxIndex].doc_count);
-                labels.push(assayFacet.terms[maxIndex].key);
+                labels.push(maxMonthAbbrev + " " + maxYear);
                 assayFacet.terms.splice(maxIndex, 1);
             }
 
@@ -780,15 +785,15 @@ var HomepageChart3 = React.createClass({
                     legend: {
                         display: false
                     },
-                    // scales: {
-                    //     yAxes: [{
-                    //         scaleLabel: "Number of Released Experiments",
-                    //         ticks: {
-                    //             maxRotation: 90,
-                    //             minRotation: 0
-                    //         }
-                    //     }]
-                    // },
+                    scales: {
+                        xAxes: [{
+                            //scaleLabel: "Number of Released Experiments",
+                            ticks: {
+                                maxRotation: 30,
+                                // minRotation: 0
+                            }
+                        }]
+                    },
                     // http://www.chartjs.org/docs/ tick configuration
                     onClick: (e) => {
                         // React to clicks on pie sections
