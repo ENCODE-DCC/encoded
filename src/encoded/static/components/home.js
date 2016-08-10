@@ -852,6 +852,12 @@ var HomepageChart3 = React.createClass({
                                 maxRotation: 30,
                                 // minRotation: 0
                             }
+                        }],
+                        yAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Released Experiments'
+                            }
                         }]
                     },
                     // http://www.chartjs.org/docs/ tick configuration
