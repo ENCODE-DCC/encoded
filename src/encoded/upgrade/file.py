@@ -458,3 +458,8 @@ def file_6_7(value, system):
 @upgrade_step('file', '7', '8')
 def file_7_8(value, system):
     return
+
+
+@upgrade_step('file', '8', '9')
+def file_8_9(value, system):
+    return
