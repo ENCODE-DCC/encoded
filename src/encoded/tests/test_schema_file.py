@@ -8,6 +8,7 @@ def file_no_replicate(testapp, experiment, award, lab):
         'lab': lab['@id'],
         'award': award['@id'],
         'file_format': 'bam',
+        'assembly': 'hg19',
         'md5sum': 'e002cd204df36d93dd070ef0712b8eed',
         'output_type': 'alignments',
         'status': 'in progress',  # avoid s3 upload codepath
@@ -23,6 +24,7 @@ def file_with_replicate(testapp, experiment, award, lab, replicate):
         'lab': lab['@id'],
         'award': award['@id'],
         'file_format': 'bam',
+        'assembly': 'hg19',
         'md5sum': 'e003cd204df36d93dd070ef0712b8eed',
         'output_type': 'alignments',
         'status': 'in progress',  # avoid s3 upload codepath
@@ -37,6 +39,7 @@ def file_with_derived(testapp, experiment, award, lab, file_with_replicate):
         'lab': lab['@id'],
         'award': award['@id'],
         'file_format': 'bam',
+        'assembly': 'hg19',
         'md5sum': 'e004cd204df36d93dd070ef0712b8eed',
         'output_type': 'alignments',
         'status': 'in progress',  # avoid s3 upload codepath
