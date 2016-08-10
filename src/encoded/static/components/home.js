@@ -479,10 +479,41 @@ var HomepageChart = React.createClass({
             });
 
 
+
+
+            Chart.pluginService.register({
+                beforeDraw: function(chart) {
+                    if(chart.chart.canvas.id == 'myChart'){
+                        var width = chart.chart.width,
+                            height = chart.chart.height,
+                            ctx = chart.chart.ctx;
+
+                        ctx.fillStyle = '#000000';    
+                        ctx.restore();
+                        var fontSize = (height / 114).toFixed(2);
+                        ctx.font = fontSize + "em sans-serif";
+                        ctx.textBaseline = "middle";
+
+                        var text = totalDocCount,
+                            textX = Math.round((width - ctx.measureText(text).width) / 2),
+                            textY = height / 2;
+
+                        ctx.clearRect(0, 0, width, height);
+                        ctx.fillText(text, textX, textY);
+                        ctx.save();
+                    }
+                }
+            });
+
+
+
+
             // Pass the assay_title counts to the charting library to render it.
 
             var canvas = document.getElementById("myChart");
             var ctx = canvas.getContext("2d");
+
+
 
             this.myPieChart = new Chart(ctx, {
                 type: 'doughnut',
@@ -543,7 +574,6 @@ var HomepageChart = React.createClass({
         return (
             <div>
                 <canvas id="myChart" width="0" height="0"></canvas>
-                
             </div>
         );
     }
@@ -610,11 +640,41 @@ var HomepageChart2 = React.createClass({
 
             // Collect up the experiment assay_title counts to our local arrays to prepare for
             // the charts.
+            var totalDocCount = 0;
             assayFacet.terms.forEach(function(term, i) {
                 data[i] = term.doc_count;
+                totalDocCount += term.doc_count;
                 labels[i] = term.key;
                 colors[i] = colorList[i % colorList.length];
             });
+
+
+
+            Chart.pluginService.register({
+                beforeDraw: function(chart) {
+                    if(chart.chart.canvas.id == 'myChart2'){
+                        var width = chart.chart.width,
+                            height = chart.chart.height,
+                            ctx = chart.chart.ctx;
+
+                        ctx.fillStyle = '#000000';    
+                        ctx.restore();
+                        var fontSize = (height / 114).toFixed(2);
+                        ctx.font = fontSize + "em sans-serif";
+                        ctx.textBaseline = "middle";
+
+                        var text = totalDocCount,
+                            textX = Math.round((width - ctx.measureText(text).width) / 2),
+                            textY = height / 2;
+
+                        ctx.clearRect(0, 0, width, height);
+                        ctx.fillText(text, textX, textY);
+                        ctx.save();
+                    }
+                    
+                }
+            });
+
 
             // Pass the assay_title counts to the charting library to render it.
             var canvas = document.getElementById("myChart2");
