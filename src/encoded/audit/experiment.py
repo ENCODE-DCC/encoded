@@ -217,7 +217,7 @@ def check_structures(replicate_structures, control_flag, experiment):
                          'biological replicate {} contains '.format(bio_rep_num) + \
                          'multiple processed files associated with the same fastq ' + \
                          'files for {} assembly.'.format(assembly)
-                yield AuditFailure('mismatched pipeline files', detail, level='INTERNAL_ACTION')
+                yield AuditFailure('inconsistent pipeline files', detail, level='INTERNAL_ACTION')
 
     if pooled_quantity < (len(assemblies)) and control_flag is False:
         detail = 'Experiment {} '.format(experiment['@id']) + \
