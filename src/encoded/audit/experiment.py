@@ -158,7 +158,7 @@ def audit_experiment_missing_processed_files(value, system):
                                                               'modERN')
             for failure in check_structures(replicate_structures, False, value):
                 yield failure
-
+    '''
     elif 'Histone ChIP-seq' in pipelines or \
          'Transcription factor ChIP-seq' in pipelines or \
          'Raw mapping with no filtration' in pipelines:
@@ -182,13 +182,14 @@ def audit_experiment_missing_processed_files(value, system):
                                                               'encode_chip_histone')
             for failure in check_structures(replicate_structures, False, value):
                 yield failure
-    '''
+
     elif 'RAMPAGE (paired-end, stranded)' in pipelines:
         replicate_structures = create_pipeline_structures(value['original_files'],
                                                           'rampage')
         for failure in check_structures(replicate_structures, False, value):
                 yield failure
     '''
+
 
 def check_structures(replicate_structures, control_flag, experiment):
     bio_reps = get_bio_replicates(experiment)
@@ -214,7 +215,7 @@ def check_structures(replicate_structures, control_flag, experiment):
                      '{} '.format(replicate_structures[(bio_rep_num, assembly)].get_orphan_files()) + \
                      'files, genomic assembly {} '.format(assembly) + \
                      ' that are not associated with any replicate'
-            yield AuditFailure('orphan pipeline files', detail, level='DCC_ACTION')
+            yield AuditFailure('orphan pipeline files', detail, level='INTERNAL_ACTION')
         else:
             if replicate_structures[(bio_rep_num, assembly)].has_unexpected_files() is True:
                 for unexpected_file in \
@@ -223,7 +224,7 @@ def check_structures(replicate_structures, control_flag, experiment):
                              'unexpected file {} '.format(unexpected_file) + \
                              'that is associated with ' + \
                              'biological replicates {}.'.format(bio_rep_num)
-                    yield AuditFailure('unexpected pipeline files', detail, level='DCC_ACTION')
+                    yield AuditFailure('unexpected pipeline files', detail, level='INTERNAL_ACTION')
 
             if replicate_structures[(bio_rep_num, assembly)].is_complete() is False:
                 for missing_tuple in \
@@ -233,20 +234,20 @@ def check_structures(replicate_structures, control_flag, experiment):
                                  'biological replicate {}, '.format(bio_rep_num[1:-1]) + \
                                  'genomic assembly {} '.format(assembly) + \
                                  'the file {} is missing.'.format(missing_tuple)
-                        yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
+                        yield AuditFailure('missing pipeline files', detail, level='INTERNAL_ACTION')
                     else:
                         detail = 'In experiment {}, '.format(experiment['@id']) + \
                                  'biological replicates {}, '.format(bio_rep_num) + \
                                  'genomic assembly {}, '.format(assembly) + \
                                  'the file {} is missing.'.format(missing_tuple)
-                        yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
+                        yield AuditFailure('missing pipeline files', detail, level='INTERNAL_ACTION')
 
             if replicate_structures[(bio_rep_num, assembly)].is_analyzed_more_than_once() is True:
                 detail = 'In experiment {}, '.format(experiment['@id']) + \
                          'biological replicate {} contains '.format(bio_rep_num) + \
                          'multiple processed files associated with the same fastq ' + \
                          'files for {} assembly.'.format(assembly)
-                yield AuditFailure('mismatched pipeline files', detail, level='DCC_ACTION')
+                yield AuditFailure('mismatched pipeline files', detail, level='INTERNAL_ACTION')
 
     if pooled_quantity < (len(assemblies)) and control_flag is False:
         detail = 'Experiment {} '.format(experiment['@id']) + \
@@ -254,13 +255,13 @@ def check_structures(replicate_structures, control_flag, experiment):
                  'Analysis was performed using {} assemblies, '.format(assemblies) + \
                  'while inter-replicate comparison anlaysis was performed only using ' + \
                  '{} assemblies.'.format(present_assemblies)
-        yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
+        yield AuditFailure('missing pipeline files', detail, level='INTERNAL_ACTION')
     for (rep_num, assembly) in replicates_dict:
         if replicates_dict[(rep_num, assembly)] == 0:
             detail = 'Experiment {} '.format(experiment['@id']) + \
                      'contains biological replicate {}, '.format(rep_num) + \
                      'without any processed files associated with {} assembly.'.format(assembly)
-            yield AuditFailure('missing pipeline files', detail, level='DCC_ACTION')
+            yield AuditFailure('missing pipeline files', detail, level='INTERNAL_ACTION')
     return
 
 
