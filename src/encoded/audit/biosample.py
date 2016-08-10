@@ -76,14 +76,14 @@ def audit_biosample_constructs(value, system):
                          'contains constructs {} and '.format(constructs_ids) + \
                          'does not contain any model_organism_donor_constructs.'
                 yield AuditFailure('mismatched constructs', detail,
-                                   level='DCC_ACTION')
+                                   level='INTERNAL_ACTION')
                 return
 
         if len(constructs_ids) > 0:
             for c in constructs_ids:
                 if c not in model_constructs_ids:
                     yield AuditFailure('mismatched constructs', detail,
-                                       level='DCC_ACTION')
+                                       level='INTERNAL_ACTION')
                     return
 
 
@@ -132,18 +132,18 @@ def audit_biosample_gtex_children(value, system):
         if 'source' not in value:
             detail = 'GTEX biosample {} has no source'.format(
                 value['@id'])
-            yield AuditFailure('GTEX biosample missing source', detail, level='DCC_ACTION')
+            yield AuditFailure('GTEX biosample missing source', detail, level='INTERNAL_ACTION')
         else:
             if (value['source']['uuid'] != 'f85ecd67-abf2-4a26-89c8-53a7273c8b0c'):
                 detail = 'GTEX biosample {} has incorrect source {}'.format(
                     value['@id'],
                     value['source']['title'])
-                yield AuditFailure('GTEX biosample incorrect source', detail, level='DCC_ACTION')
+                yield AuditFailure('GTEX biosample incorrect source', detail, level='INTERNAL_ACTION')
         if 'part_of' not in value:
             detail = 'GTEX child biosample {} is not asociated with any parent biosample'.format(
                 value['@id'])
             yield AuditFailure('GTEX biosample missing part_of property', detail,
-                               level='DCC_ACTION')
+                               level='INTERNAL_ACTION')
         else:
             partOfBiosample = value['part_of']
             if (partOfBiosample['accession'] not in gtexParentsList):
@@ -151,17 +151,17 @@ def audit_biosample_gtex_children(value, system):
                          'with biosample {} which is '.format(partOfBiosample['@id']) + \
                          'not a part of parent biosamples list'
                 yield AuditFailure('GTEX biosample invalid part_of property', detail,
-                                   level='DCC_ACTION')
+                                   level='INTERNAL_ACTION')
             else:
                 if value['biosample_term_id'] != partOfBiosample['biosample_term_id']:
                     detail = 'GTEX child biosample {} is associated with '.format(value['@id']) + \
                              'biosample {} that has a different '.format(partOfBiosample['@id']) + \
                              'biosample_term_id {}'.format(partOfBiosample['biosample_term_id'])
                     yield AuditFailure('GTEX biosample invalid part_of property', detail,
-                                       level='DCC_ACTION')
+                                       level='INTERNAL_ACTION')
         if ('aliases' not in value):
             detail = 'GTEX biosample {} has no aliases'.format(value['@id'])
-            yield AuditFailure('GTEX biosample missing aliases', detail, level='DCC_ACTION')
+            yield AuditFailure('GTEX biosample missing aliases', detail, level='INTERNAL_ACTION')
         else:
             donorAliases = value['donor']['aliases']
             repDonorAlias = ''
@@ -178,7 +178,7 @@ def audit_biosample_gtex_children(value, system):
                                                                 childAliases) + \
                          'do not include an alias based on plate-map, column A identifier'
                 yield AuditFailure('GTEX biosample missing aliases', detail,
-                                   level='DCC_ACTION')
+                                   level='INTERNAL_ACTION')
     return
 
 
@@ -207,7 +207,7 @@ def audit_biosample_term(value, system):
             value['@id'],
             term_id,
             term_name)
-        yield AuditFailure('NTR biosample', detail, level='DCC_ACTION')
+        yield AuditFailure('NTR biosample', detail, level='INTERNAL_ACTION')
         return
 
     biosample_prefix = term_id.split(':')[0]
@@ -217,14 +217,14 @@ def audit_biosample_term(value, system):
                  'has biosample_term_id {} '.format(value['biosample_term_id']) + \
                  'that is not one of ' + \
                  '{}'.format(biosampleType_ontologyPrefix[value['biosample_type']])
-        yield AuditFailure('biosample term-type mismatch', detail, level='DCC_ACTION')
+        yield AuditFailure('biosample term-type mismatch', detail, level='INTERNAL_ACTION')
         return
 
     if term_id not in ontology:
         detail = 'Biosample {} has biosample_term_id of {} which is not in ontology'.format(
             value['@id'],
             term_id)
-        yield AuditFailure('term_id not in ontology', term_id, level='DCC_ACTION')
+        yield AuditFailure('term_id not in ontology', term_id, level='INTERNAL_ACTION')
         return
 
     ontology_term_name = ontology[term_id]['name']
@@ -335,7 +335,7 @@ def audit_biosample_depleted_term_match(value, system):
     if len(value['depleted_in_term_name']) != len(value['depleted_in_term_id']):
         detail = 'Biosample {} has a depleted_in_term_name array and depleted_in_term_id array of differing lengths'.format(
             value['@id'])
-        raise AuditFailure('inconsistent depleted_in_term length', detail, level='DCC_ACTION')
+        raise AuditFailure('inconsistent depleted_in_term length', detail, level='INTERNAL_ACTION')
         return
 
     for i, dep_term in enumerate(value['depleted_in_term_name']):
@@ -410,5 +410,5 @@ def audit_biosample_part_of_consistency(value, system):
                  'The {} '.format(term_id) + \
                  'ontology does not note that part_of relationship.'
         yield AuditFailure('inconsistent biosample_term_id', detail,
-                           level='DCC_ACTION')
+                           level='INTERNAL_ACTION')
         return
