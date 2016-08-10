@@ -21,6 +21,7 @@ var assemblyPriority = [
     'GRCh38',
     'hg19',
     'mm10',
+    'mm10-minimal',
     'mm9',
     'ce11',
     'ce10',
@@ -608,12 +609,15 @@ var FileGalleryRenderer = React.createClass({
             selectedAnnotation = filterOptions[this.state.selectedFilterValue].annotation;
         }
 
+        // Get a list of files for the graph (filters out archived files)
+        var graphFiles = _(files).filter(file => file.status !== 'archived');
+
         return (
             <Panel>
                 <PanelHeading addClasses="file-gallery-heading">
                     <h4>Files</h4>
                     <div className="file-gallery-controls">
-                        {context.visualize_ucsc  && context.status == "released" ?
+                        {context.visualize_ucsc && context.status == "released" ?
                             <div className="file-gallery-control">
                                 <DropdownButton title='Visualize Data' label="visualize-data">
                                     <DropdownMenu>
@@ -635,7 +639,7 @@ var FileGalleryRenderer = React.createClass({
                 </PanelHeading>
 
                 {!this.props.hideGraph ?
-                    <FileGraph context={context} items={files} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
+                    <FileGraph context={context} items={graphFiles} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
                 : null}
 
                 {/* If logged in and dataset is released, need to combine search of files that reference
