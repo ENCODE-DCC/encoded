@@ -124,7 +124,8 @@ def audit_experiment_released_with_unreleased_files(value, system):
                                     'original_files.analysis_step_version.analysis_step',
                                     'original_files.analysis_step_version.analysis_step.pipelines',
                                     'target',
-                                    'replicates'])
+                                    'replicates'],
+               condition=rfa('modERN'))
 def audit_experiment_missing_processed_files(value, system):
     alignment_files = scan_files_for_file_format_output_type(value['original_files'],
                                                              'bam', 'alignments')
@@ -158,37 +159,6 @@ def audit_experiment_missing_processed_files(value, system):
                                                               'modERN')
             for failure in check_structures(replicate_structures, False, value):
                 yield failure
-    '''
-    elif 'Histone ChIP-seq' in pipelines or \
-         'Transcription factor ChIP-seq' in pipelines or \
-         'Raw mapping with no filtration' in pipelines:
-        # check if control
-        target = value.get('target')
-        if target is None:
-            return
-        if 'control' in target.get('investigated_as'):
-            replicate_structures = create_pipeline_structures(value['original_files'],
-                                                              'encode_chip_control')
-            for failure in check_structures(replicate_structures, False, value):
-                yield failure
-
-        elif 'transcription factor' in target.get('investigated_as'):
-            replicate_structures = create_pipeline_structures(value['original_files'],
-                                                              'encode_chip_tf')
-            for failure in check_structures(replicate_structures, False, value):
-                yield failure
-        elif 'histone' in target.get('investigated_as'):
-            replicate_structures = create_pipeline_structures(value['original_files'],
-                                                              'encode_chip_histone')
-            for failure in check_structures(replicate_structures, False, value):
-                yield failure
-
-    elif 'RAMPAGE (paired-end, stranded)' in pipelines:
-        replicate_structures = create_pipeline_structures(value['original_files'],
-                                                          'rampage')
-        for failure in check_structures(replicate_structures, False, value):
-                yield failure
-    '''
 
 
 def check_structures(replicate_structures, control_flag, experiment):
@@ -275,14 +245,7 @@ def create_pipeline_structures(files_to_scan, structure_type):
     structures_mapping = {
         'modERN_control': modERN_TF_control,
         'modERN_pooled': modERN_TF_pooled,
-        'modERN_replicate': modERN_TF_replicate,
-        'encode_chip_control': encode_chip_control,
-        'encode_chip_histone_pooled': encode_chip_histone_experiment_pooled,
-        'encode_chip_tf_pooled': encode_chip_tf_experiment_pooled,
-        'encode_chip_replicate': encode_chip_experiment_replicate,
-        'encode_rampage_experiment_replicate': encode_rampage_experiment_replicate,
-        'encode_rampage_experiment_pooled': encode_rampage_experiment_pooled
-
+        'modERN_replicate': modERN_TF_replicate
     }
     structures_to_return = {}
     replicates_set = set()
@@ -294,7 +257,7 @@ def create_pipeline_structures(files_to_scan, structure_type):
 
             if (bio_rep_num, assembly) not in replicates_set:
                 replicates_set.add((bio_rep_num, assembly))
-                if structure_type in ['encode_chip_control', 'modERN_control']:
+                if structure_type in ['modERN_control']:
                     structures_to_return[(bio_rep_num, assembly)] = \
                         structures_mapping[structure_type]()
                 else:
@@ -305,27 +268,6 @@ def create_pipeline_structures(files_to_scan, structure_type):
                         else:
                             structures_to_return[(bio_rep_num, assembly)] = \
                                 structures_mapping['modERN_pooled']()
-                    elif structure_type == 'encode_chip_histone':
-                        if is_single_replicate(str(bio_rep_num)) is True:
-                            structures_to_return[(bio_rep_num, assembly)] = \
-                                structures_mapping['encode_chip_replicate']()
-                        else:
-                            structures_to_return[(bio_rep_num, assembly)] = \
-                                structures_mapping['encode_chip_histone_pooled']()
-                    elif structure_type == 'encode_chip_tf':
-                        if is_single_replicate(str(bio_rep_num)) is True:
-                            structures_to_return[(bio_rep_num, assembly)] = \
-                                structures_mapping['encode_chip_replicate']()
-                        else:
-                            structures_to_return[(bio_rep_num, assembly)] = \
-                                structures_mapping['encode_chip_tf_pooled']()
-                    elif structure_type == 'rampage':
-                        if is_single_replicate(str(bio_rep_num)) is True:
-                            structures_to_return[(bio_rep_num, assembly)] = \
-                                structures_mapping['encode_rampage_experiment_replicate']()
-                        else:
-                            structures_to_return[(bio_rep_num, assembly)] = \
-                                structures_mapping['encode_rampage_experiment_pooled']()
 
                 structures_to_return[(bio_rep_num, assembly)].update_fields(f)
             else:
