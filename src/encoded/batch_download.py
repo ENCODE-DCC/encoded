@@ -61,8 +61,9 @@ _tsv_mapping = OrderedDict([
     ('Library crosslinking method', ['replicates.library.crosslinking_method']),
     ('Experiment date released', ['date_released']),
     ('Project', ['award.project']),
-    ('Audit WARNING', ['audit.WARNING.category',
-               'audit.WARNING.detail']),
+    ('Audit WARNING', ['audit.WARNING.path',
+                       'audit.WARNING.category',
+                       'audit.WARNING.detail']),
     ('RBNS protein concentration', ['files.replicate.rbns_protein_concentration', 'files.replicate.rbns_protein_concentration_units']),
     ('Library fragmentation method', ['files.replicate.library.fragmentation_method']),
     ('Library size range', ['files.replicate.library.size_range']),
@@ -140,8 +141,10 @@ def make_cell_for_row(header_column, row, exp_data_row):
 def make_audit_cell_for_row(header_column, experiment_json, exp_data_row):
     categories = []
     details = []
+    paths = []
     for column in _tsv_mapping[header_column]:
         for value in simple_path_ids(experiment_json, column):
+            if 'path' in column and 
 
 
 @view_config(route_name='peak_metadata', request_method='GET')
@@ -252,6 +255,7 @@ def metadata_tsv(context, request):
                     data = list(set(temp))
                     data.sort()
                     data_row.append(', '.join(data))
+                # audit columns go here
                 rows.append(data_row)
     fout = io.StringIO()
     writer = csv.writer(fout, delimiter='\t')
