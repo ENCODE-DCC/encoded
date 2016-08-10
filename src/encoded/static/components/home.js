@@ -175,7 +175,7 @@ var Home = module.exports.Home = React.createClass({
                                     </div>
                                 </div>
                                 <div className="view-all">
-                                        <a href={"/matrix/" + this.state.current} className="view-all-button btn btn-info btn-lg" role="button"> View All </a>
+                                        <a href={"/matrix/" + this.state.current} className="view-all-button btn btn-info btn-lg" role="button"> View Selected </a>
                                 </div>
                             </div>
 
@@ -448,9 +448,9 @@ var HomepageChart = React.createClass({
                 '#FFBC01',
                 '#6A71E5',
                 '#4EB266',
-                'A3A4A8',
-                '61D1FD',
-                'FFFFFF'
+                '#A3A4A8',
+                '#61D1FD',
+                '#FFFFFF'
             ];
             var colorList2 = [
                 '#9C008A',
@@ -626,9 +626,9 @@ var HomepageChart2 = React.createClass({
                 '#FFBC01',
                 '#6A71E5',
                 '#4EB266',
-                'A3A4A8',
-                '61D1FD',
-                'FFFFFF'
+                '#A3A4A8',
+                '#61D1FD',
+                '#FFFFFF'
             ];
             var data = [];
             var labels = [];
