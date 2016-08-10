@@ -76,12 +76,26 @@
         "file_format":{
             "oneOf": [
                 {
-                    "required": ["replicate"],
-                    "properties": {
-                        "file_format": {
-                            "enum": ["fastq"]
+                    "allOf": [
+                        {
+                            "required": ["replicate"],
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq"]
+                                }
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["assembly"],
+                                "properties": {
+                                    "file_format": {
+                                        "enum": ["fastq"]
+                                    }
+                                }
+                            }
                         }
-                    }
+                    ]
                 },
                 {
                     "required": ["file_format_type"],
@@ -92,10 +106,18 @@
                     }
                 },
                 {
+                    "required": ["assembly"],
+                    "properties": {
+                        "file_format": {
+                            "enum": ["bam", "sam"]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "file_format": {
-                                "enum": ["fastq", "gff", "bed", "bigBed"]
+                                "enum": ["fastq", "gff", "bed", "bigBed", "bam", "sam"]
                             }
                         }
                     }
