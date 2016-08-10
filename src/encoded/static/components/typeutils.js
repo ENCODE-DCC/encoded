@@ -95,7 +95,7 @@ module.exports.CollectBiosampleDocs = function(biosample) {
         donorConstructs,
         talenDocuments,
         treatmentDocuments
-    )).uniq(doc => doc.uuid);
+    )).chain().uniq(doc => doc ? doc.uuid : null).compact().value();
 
     return combinedDocuments;
 }

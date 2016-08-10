@@ -293,7 +293,7 @@ var Experiment = module.exports.Experiment = React.createClass({
             biosampleDocs,
             pipelineDocs,
             analysisStepDocs
-        )).uniq(doc => doc.uuid);
+        )).chain().uniq(doc => doc ? doc.uuid : null).compact().value();
 
         var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
 
@@ -511,7 +511,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} ignoreErrors />
 
-                <DocumentsPanel documentSpecs={[{documents: combinedDocuments}]} />
+                {combinedDocuments.length ? <DocumentsPanel documentSpecs={[{documents: combinedDocuments}]} /> : null}
             </div>
         );
     }
