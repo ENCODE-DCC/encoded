@@ -2022,6 +2022,7 @@ def test_audit_experiment_no_out_of_date_analysis(testapp,
 
 
 def test_audit_experiment_modERN_control_missing_files(testapp,
+                                                       award,
                                                        base_experiment,
                                                        replicate_1_1,
                                                        library_1,
@@ -2041,9 +2042,9 @@ def test_audit_experiment_modERN_control_missing_files(testapp,
     testapp.patch_json(base_experiment['@id'], {'target': target_control['@id'],
                                                 'status': 'released',
                                                 'date_released': '2016-01-01',
-                                                'assay_term_id': 'OBI:0001864',
-                                                'assay_term_name': 'ChIP-seq'})
-
+                                                "assay_term_id": "OBI:0001271",
+                                                "assay_term_name": "ChIP-seq"})
+    testapp.patch_json(award['@id'], {'rfa': 'modERN'})
     testapp.patch_json(file_fastq_4['@id'], {'replicate': replicate_1_1['@id']})
     testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
                                              'assembly': 'mm10',
@@ -2070,6 +2071,7 @@ def test_audit_experiment_modERN_control_missing_files(testapp,
 
 
 def test_audit_experiment_modERN_experiment_missing_files(testapp,
+                                                          award,
                                                           base_experiment,
                                                           replicate_1_1,
                                                           library_1,
@@ -2087,6 +2089,7 @@ def test_audit_experiment_modERN_experiment_missing_files(testapp,
 
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'Transcription factor ChIP-seq pipeline (modERN)'})
+    testapp.patch_json(award['@id'], {'rfa': 'modERN'})
     testapp.patch_json(base_experiment['@id'], {'target': target_H3K9me3['@id'],
                                                 'status': 'released',
                                                 'date_released': '2016-01-01',
