@@ -162,6 +162,56 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'talens.documents.submitted_by'
     ]
 
+    @calculated_property(schema={
+        "title": "Progenitors",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "Biosample",
+        },
+    })
+    def progenitors(self, request,
+                    treatments=None,
+                    part_of=None,
+                    host=None,
+                    derived_from=None,
+                    pooled_from=None):
+        to_return = []
+
+        if treatments is not None:
+            for t in treatments:
+                t_o = request.embed(t, '@@object')
+                if 'biosamples_used' in t_o:
+                    for b in t_o['biosamples_used']:
+                        b_o = request.embed(b, '@@object')
+                        if 'progenitors' in b_o:
+                            to_return.extend(b_o['progenitors'])
+                        to_return.append(b)
+        if part_of is not None:
+            to_return.append(part_of)
+            p_o = request.embed(part_of, '@@object')
+            if 'progenitors' in p_o:
+                to_return.extend(p_o['progenitors'])
+        if derived_from is not None:
+            to_return.append(derived_from)
+            d_o = request.embed(derived_from, '@@object')
+            if 'progenitors' in d_o:
+                to_return.extend(d_o['progenitors'])
+        if pooled_from is not None:
+            for p in pooled_from:
+                to_return.append(p)
+                p_o = request.embed(p, '@@object')
+                if 'progenitors' in p_o:
+                    to_return.extend(p_o['progenitors'])
+        if host is not None:
+            to_return.append(host)
+            h_o = request.embed(host, '@@object')
+            if 'progenitors' in h_o:
+                to_return.extend(h_o['progenitors'])
+        if len(to_return) > 0:
+            return to_return
+        return None
+
     @calculated_property(define=True,
                          schema={"title": "Sex",
                                  "type": "string"})
