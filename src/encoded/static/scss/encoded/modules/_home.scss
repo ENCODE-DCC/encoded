@@ -214,7 +214,15 @@
 }
 
 
-
+.empty-chart {
+    width: 100%;
+    height: 183px;
+    text-align: center;
+    color: black;
+    padding-top: 60px;
+    font-size: 30px;
+    font-weight: 100;
+}
 
 
 
@@ -253,8 +261,8 @@
     display: inline-block;
     position: absolute;
     float: right;
-    bottom: 90px;
-    left: 910px;
+    bottom: 50px;
+    left: 900px;
     background-color: transparent;
     z-index: 1;
 }

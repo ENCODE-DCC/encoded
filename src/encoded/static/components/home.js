@@ -153,7 +153,9 @@ var Home = module.exports.Home = React.createClass({
                                         
                                         <HomepageChartLoader searchBase={this.state.current} 
                                                     callback={this.callback}/>
-                                        <div id="chart-legend" className="chart-legend"></div>
+                                        <div id="chart-legend" className="chart-legend">
+
+                                        </div>
                                 
                                     </div>
                                     <div className="col-sm-4">
@@ -468,91 +470,135 @@ var HomepageChart = React.createClass({
             var facets = this.props.data.facets;
             var assayFacet = facets.find(facet => facet.field === 'award.project');
 
-            // Collect up the experiment assay_title counts to our local arrays to prepare for
-            // the charts.
-            var totalDocCount = 0;
-            assayFacet.terms.forEach(function(term, i) {
-                data[i] = term.doc_count;
-                totalDocCount += term.doc_count;
-                labels[i] = term.key;
-                colors[i] = colorList[i % colorList.length];
-            });
 
+            if(assayFacet != undefined){
+                document.getElementById('MyEmptyChart').innerHTML = "";
+                document.getElementById('MyEmptyChart').removeAttribute("class");
 
+                var totalDocCount = 0;
+                assayFacet.terms.forEach(function(term, i) {
+                    data[i] = term.doc_count;
+                    totalDocCount += term.doc_count;
+                    labels[i] = term.key;
+                    colors[i] = colorList[i % colorList.length];
+                });
 
+                Chart.pluginService.register({
+                    beforeDraw: function(chart) {
+                        if(chart.chart.canvas.id == 'myChart'){
+                            var width = chart.chart.width,
+                                height = chart.chart.height,
+                                ctx = chart.chart.ctx;
 
-            Chart.pluginService.register({
-                beforeDraw: function(chart) {
-                    if(chart.chart.canvas.id == 'myChart'){
-                        var width = chart.chart.width,
-                            height = chart.chart.height,
-                            ctx = chart.chart.ctx;
+                            ctx.fillStyle = '#000000';    
+                            ctx.restore();
+                            var fontSize = (height / 114).toFixed(2);
+                            ctx.font = fontSize + "em sans-serif";
+                            ctx.textBaseline = "middle";
 
-                        ctx.fillStyle = '#000000';    
-                        ctx.restore();
-                        var fontSize = (height / 114).toFixed(2);
-                        ctx.font = fontSize + "em sans-serif";
-                        ctx.textBaseline = "middle";
+                            var text = totalDocCount,
+                                textX = Math.round((width - ctx.measureText(text).width) / 2),
+                                textY = height / 2;
 
-                        var text = totalDocCount,
-                            textX = Math.round((width - ctx.measureText(text).width) / 2),
-                            textY = height / 2;
-
-                        ctx.clearRect(0, 0, width, height);
-                        ctx.fillText(text, textX, textY);
-                        ctx.save();
+                            ctx.clearRect(0, 0, width, height);
+                            ctx.fillText(text, textX, textY);
+                            ctx.save();
+                        }
                     }
-                }
-            });
-
-
+                });
 
 
             // Pass the assay_title counts to the charting library to render it.
 
-            var canvas = document.getElementById("myChart");
-            var ctx = canvas.getContext("2d");
+                var canvas = document.getElementById("myChart");
+                var ctx = canvas.getContext("2d");
 
 
 
-            this.myPieChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: colors
-                    }]
-                },
-
-                options: {
-                    legend: {
-                        display: false
+                this.myPieChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: colors
+                        }]
                     },
-                    onClick: (e) => {
-                        // React to clicks on pie sections
-                        var activePoints = this.myPieChart.getElementAtEvent(e);
 
-                        if (activePoints[0] == null) {
-                            var placeholder = 0;
-                        }
-                        else{
-                            var term = assayFacet.terms[activePoints[0]._index].key;
-                            this.context.navigate(this.props.data['@id'] + '&award.project=' + term);
-                        }
+                    options: {
+                        legend: {
+                            display: false
+                        },
+                        legendCallback: (chart) => {
+                            console.log('LEGEND: %o', chart);
+                            var text = [];
+                            text.push('<ul>');
+                            for (var i = 0; i < assayFacet.terms.length; i++) {
+                                text.push('<li>');
+                                text.push('<a href="' + this.props.data['@id'] + '&award.project=' + assayFacet.terms[i].key  + '">');
+                                text.push('<span style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
+                                if (chart.data.labels[i]) {
+                                    text.push(chart.data.labels[i]);
+                                }
+                                text.push('</a></li>');
+                            }
+                            text.push('</ul>');
+                            return text.join('');
+                        },
+                        onClick: (e) => {
+                            // React to clicks on pie sections
+                            var activePoints = this.myPieChart.getElementAtEvent(e);
 
-                        
-                        this.myPieChart.update();
-                        this.myPieChart.render();
-                        this.forceUpdate();
-                        var test = document.getElementById('chart-legend').innerHTML = this.myPieChart.generateLegend();
+                            if (activePoints[0] == null) {
+                                var placeholder = 0;
+                            }
+                            else{
+                                var term = assayFacet.terms[activePoints[0]._index].key;
+                                this.context.navigate(this.props.data['@id'] + '&award.project=' + term);
+                            }
+
+                            
+                            this.myPieChart.update();
+                            this.myPieChart.render();
+                            this.forceUpdate();
+                            
+                        }
                     }
+                });
+                document.getElementById('chart-legend').innerHTML = this.myPieChart.generateLegend();
+                
+
+            }
+
+            // Collect up the experiment assay_title counts to our local arrays to prepare for
+            // the charts.
+             
+
+            else{
+                
+                var element = document.getElementById('MyEmptyChart');
+                var chart = document.getElementById('myChart');
+                var existingText = document.getElementById('p1');
+                if(existingText){
+                    element.removeChild(existingText);
                 }
-            });
-            document.getElementById('chart-legend').innerHTML = this.myPieChart.generateLegend();
+
+                var para = document.createElement("p");
+                para.setAttribute('id', 'p1');
+                var node = document.createTextNode("There is no data to display.");
+                para.appendChild(node);
+
+                element.appendChild(para);
+                element.setAttribute('class', 'empty-chart');
+
+                chart.setAttribute('height', '0');
+                // else get id by myempty chart, add class by inserting html (look it up), and add error message
+            }
+
 
         }.bind(this));
 
+        
     
         
     },
@@ -571,9 +617,12 @@ var HomepageChart = React.createClass({
 
     render: function() {
 
+
         return (
+
             <div>
                 <canvas id="myChart" width="0" height="0"></canvas>
+                <div id="MyEmptyChart"> </div>
             </div>
         );
     }
@@ -638,70 +687,96 @@ var HomepageChart2 = React.createClass({
             var facets = this.props.data.facets;
             var assayFacet = facets.find(facet => facet.field === 'replicates.library.biosample.biosample_type');
 
+
+            if(assayFacet != undefined){
+                document.getElementById('MyEmptyChart2').innerHTML = "";
+                document.getElementById('MyEmptyChart2').removeAttribute("class");
             // Collect up the experiment assay_title counts to our local arrays to prepare for
             // the charts.
-            var totalDocCount = 0;
-            assayFacet.terms.forEach(function(term, i) {
-                data[i] = term.doc_count;
-                totalDocCount += term.doc_count;
-                labels[i] = term.key;
-                colors[i] = colorList[i % colorList.length];
-            });
+                var totalDocCount = 0;
+                assayFacet.terms.forEach(function(term, i) {
+                    data[i] = term.doc_count;
+                    totalDocCount += term.doc_count;
+                    labels[i] = term.key;
+                    colors[i] = colorList[i % colorList.length];
+                });
 
 
 
-            Chart.pluginService.register({
-                beforeDraw: function(chart) {
-                    if(chart.chart.canvas.id == 'myChart2'){
-                        var width = chart.chart.width,
-                            height = chart.chart.height,
-                            ctx = chart.chart.ctx;
+                Chart.pluginService.register({
+                    beforeDraw: function(chart) {
+                        if(chart.chart.canvas.id == 'myChart2'){
+                            var width = chart.chart.width,
+                                height = chart.chart.height,
+                                ctx = chart.chart.ctx;
 
-                        ctx.fillStyle = '#000000';    
-                        ctx.restore();
-                        var fontSize = (height / 114).toFixed(2);
-                        ctx.font = fontSize + "em sans-serif";
-                        ctx.textBaseline = "middle";
+                            ctx.fillStyle = '#000000';    
+                            ctx.restore();
+                            var fontSize = (height / 114).toFixed(2);
+                            ctx.font = fontSize + "em sans-serif";
+                            ctx.textBaseline = "middle";
 
-                        var text = totalDocCount,
-                            textX = Math.round((width - ctx.measureText(text).width) / 2),
-                            textY = height / 2;
+                            var text = totalDocCount,
+                                textX = Math.round((width - ctx.measureText(text).width) / 2),
+                                textY = height / 2;
 
-                        ctx.clearRect(0, 0, width, height);
-                        ctx.fillText(text, textX, textY);
-                        ctx.save();
+                            ctx.clearRect(0, 0, width, height);
+                            ctx.fillText(text, textX, textY);
+                            ctx.save();
+                        }
+                        
                     }
-                    
-                }
-            });
+                });
 
 
-            // Pass the assay_title counts to the charting library to render it.
-            var canvas = document.getElementById("myChart2");
-            var ctx = canvas.getContext("2d");
-            this.myPieChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: colors
-                    }]
-                },
-                options: {
-                    legend: {
-                        display: false
+                // Pass the assay_title counts to the charting library to render it.
+                var canvas = document.getElementById("myChart2");
+                var ctx = canvas.getContext("2d");
+                this.myPieChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: colors
+                        }]
                     },
-                    onClick: (e) => {
-                        // React to clicks on pie sections
-                        var activePoints = this.myPieChart.getElementAtEvent(e);
-                        var term = assayFacet.terms[activePoints[0]._index].key;
-                        this.context.navigate(this.props.data['@id'] + '&y.limit=&replicates.library.biosample.biosample_type=' + term);
+                    options: {
+                        legend: {
+                            display: false
+                        },
+                        onClick: (e) => {
+                            // React to clicks on pie sections
+                            var activePoints = this.myPieChart.getElementAtEvent(e);
+                            var term = assayFacet.terms[activePoints[0]._index].key;
+                            this.context.navigate(this.props.data['@id'] + '&y.limit=&replicates.library.biosample.biosample_type=' + term);
+                        }
                     }
-                }
-            });
+                });
 
-            document.getElementById('chart-legend-2').innerHTML = this.myPieChart.generateLegend();
+                document.getElementById('chart-legend-2').innerHTML = this.myPieChart.generateLegend();
+            }
+
+            else{
+                
+                var element = document.getElementById('MyEmptyChart2');
+                var chart = document.getElementById('myChart2');
+                var existingText = document.getElementById('p2');
+                if(existingText){
+                    element.removeChild(existingText);
+                }
+
+                var para = document.createElement("p");
+                para.setAttribute('id', 'p2');
+                var node = document.createTextNode("There is no data to display.");
+                para.appendChild(node);
+
+                element.appendChild(para);
+                element.setAttribute('class', 'empty-chart');
+
+                chart.setAttribute('height', '0');
+                // else get id by myempty chart, add class by inserting html (look it up), and add error message
+            }
 
         }.bind(this));
 
@@ -718,7 +793,10 @@ var HomepageChart2 = React.createClass({
 
     render: function() {
         return (
-            <canvas id="myChart2" width="0" height="0"></canvas>
+            <div>
+                <canvas id="myChart2" width="0" height="0"></canvas>
+                <div id="MyEmptyChart2"> </div>
+            </div>
         );
     }
 
@@ -764,6 +842,7 @@ var HomepageChart3 = React.createClass({
                 '#E5E4E2'
             ];
             var data = [];
+            var xlabels = [];
             var labels = [];
             var colors = [];
 
@@ -774,101 +853,136 @@ var HomepageChart3 = React.createClass({
 
             // Collect up the experiment assay_title counts to our local arrays to prepare for
             // the charts.
+            if(assayFacet != undefined){
+                document.getElementById('MyEmptyChart3').innerHTML = "";
+                document.getElementById('MyEmptyChart3').removeAttribute("class");
 
 
 
-
-            while(data.length < 6){
-                var firstValues = assayFacet.terms[0].key.split(", ");
-                var maxIndex = 0;
-                var maxMonth = months.indexOf(firstValues[0]);
-                if (maxMonth < 10){
-                    var maxMonthString = "0" + maxMonth.toString();
-                    maxMonth = maxMonthString;
-                }
-                var maxYear = firstValues[1];
-                var maxYearMonthCombo = maxYear + maxMonth;
-                var maxMonthAbbrev = firstValues[0].substring(0,3);
-
-
-                for(var x = 0; x < assayFacet.terms.length; x++){
-                    var tempDate = assayFacet.terms[x].key.split(", ");
-                    var tempMonth = months.indexOf(tempDate[0]);
-                    if (tempMonth < 10){
-                        var tempMonthString = "0" + tempMonth.toString();
-                        tempMonth = tempMonthString;
+                while(data.length < 6){
+                    var firstValues = assayFacet.terms[0].key.split(", ");
+                    var maxIndex = 0;
+                    var maxMonth = months.indexOf(firstValues[0]);
+                    if (maxMonth < 10){
+                        var maxMonthString = "0" + maxMonth.toString();
+                        maxMonth = maxMonthString;
                     }
-                    var tempYear = tempDate[1];
-                    var tempYearMonthCombo = tempYear + tempMonth;
-                    var tempMonthAbbrev = tempDate[0].substring(0,3);
-                    //console.log("Year: " + tempYear + " Month: " + tempMonth);
+                    var maxYear = firstValues[1];
+                    var maxYearMonthCombo = maxYear + maxMonth;
+                    var maxMonthAbbrev = firstValues[0].substring(0,3);
 
-                    if(tempYearMonthCombo > maxYearMonthCombo){
 
-                        maxYear = tempYear;
-                        maxYearMonthCombo = tempYearMonthCombo;
-                        maxMonthAbbrev = tempMonthAbbrev;
-                        maxIndex = x;
+                    for(var x = 0; x < assayFacet.terms.length; x++){
+                        var tempDate = assayFacet.terms[x].key.split(", ");
+                        var tempMonth = months.indexOf(tempDate[0]);
+                        if (tempMonth < 10){
+                            var tempMonthString = "0" + tempMonth.toString();
+                            tempMonth = tempMonthString;
+                        }
+                        var tempYear = tempDate[1];
+                        var tempYearMonthCombo = tempYear + tempMonth;
+                        var tempMonthAbbrev = tempDate[0].substring(0,3);
+                        //console.log("Year: " + tempYear + " Month: " + tempMonth);
 
+                        if(tempYearMonthCombo > maxYearMonthCombo){
+
+                            maxYear = tempYear;
+                            maxYearMonthCombo = tempYearMonthCombo;
+                            maxMonthAbbrev = tempMonthAbbrev;
+                            maxIndex = x;
+
+                        }
                     }
+                    data.push(assayFacet.terms[maxIndex].doc_count);
+                    xlabels.push(maxMonthAbbrev);
+                    labels.push(assayFacet.terms[maxIndex].key);
+                    assayFacet.terms.splice(maxIndex, 1);
                 }
-                data.push(assayFacet.terms[maxIndex].doc_count);
-                labels.push(maxMonthAbbrev + " " + maxYear);
-                assayFacet.terms.splice(maxIndex, 1);
-            }
 
-            data.reverse();
-            labels.reverse();
-            colors = ['#4cd964', '#4cd964', '#4cd964', '#4cd964', '#4cd964', '#4cd964'];
+                data.reverse();
+                xlabels.reverse();
+                labels.reverse();
+                colors = ['#4cd964', '#4cd964', '#4cd964', '#4cd964', '#4cd964', '#4cd964'];
 
-            
-            // assayFacet.terms.forEach(function(term, i) {
-            //     data[i] = term.doc_count;
-            //     labels[i] = term.key;
-            //     colors[i] = colorList[i % colorList.length];
-            // });
+                
+                // assayFacet.terms.forEach(function(term, i) {
+                //     data[i] = term.doc_count;
+                //     labels[i] = term.key;
+                //     colors[i] = colorList[i % colorList.length];
+                // });
 
-            // Pass the assay_title counts to the charting library to render it.
-            var canvas = document.getElementById("myChart3");
-            var ctx = canvas.getContext("2d");
-            this.myBarChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: colors,
-                        label: "Number of Released Experiments"
-                    }]
-                },
-                options: {
-                    legend: {
-                        display: false
-                    },
-                    scales: {
-                        xAxes: [{
-                            //scaleLabel: "Number of Released Experiments",
-                            ticks: {
-                                maxRotation: 30,
-                                // minRotation: 0
-                            }
-                        }],
-                        yAxes: [{
-                            scaleLabel: {
-                                display: true,
-                                labelString: 'Released Experiments'
-                            }
+                // Pass the assay_title counts to the charting library to render it.
+                var canvas = document.getElementById("myChart3");
+                var ctx = canvas.getContext("2d");
+                this.myBarChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        xLabels: xlabels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: colors,
+                            label: "Number of Released Experiments"
                         }]
                     },
-                    // http://www.chartjs.org/docs/ tick configuration
-                    onClick: (e) => {
-                        // React to clicks on pie sections
-                        var activePoints = this.myBarChart.getElementAtEvent(e);
-                        var term = labels[activePoints[0]._index];
-                        this.context.navigate(this.props.data['@id'] + '&month_released=' + term);
+                    options: {
+                        tooltips: {
+                            callbacks: {
+                                title: function(tooltipItems, data){
+                                    return data.labels[tooltipItems[0].index];
+                                }
+                            }
+                        },
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            xAxes: [{
+                                //scaleLabel: "Number of Released Experiments",
+                                ticks: {
+                                    maxRotation: 30,
+                                    // minRotation: 0
+                                }
+                            }],
+                            yAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Experiments'
+                                }
+                            }]
+                        },
+                        // http://www.chartjs.org/docs/ tick configuration
+                        onClick: (e) => {
+                            // React to clicks on pie sections
+                            var activePoints = this.myBarChart.getElementAtEvent(e);
+                            var term = labels[activePoints[0]._index];
+                            this.context.navigate(this.props.data['@id'] + '&month_released=' + term);
+                        }
                     }
+                });
+
+            }
+
+            else{
+                
+                var element = document.getElementById('MyEmptyChart3');
+                var chart = document.getElementById('myChart3');
+                var existingText = document.getElementById('p3');
+                if(existingText){
+                    element.removeChild(existingText);
                 }
-            });
+
+                var para = document.createElement("p");
+                para.setAttribute('id', 'p3');
+                var node = document.createTextNode("There is no data to display.");
+                para.appendChild(node);
+
+                element.appendChild(para);
+                element.setAttribute('class', 'empty-chart');
+
+                chart.setAttribute('height', '0');
+                // else get id by myempty chart, add class by inserting html (look it up), and add error message
+            }
 
         }.bind(this));
 
@@ -885,7 +999,10 @@ var HomepageChart3 = React.createClass({
 
     render: function() {
         return (
-            <canvas id="myChart3" width="0" height="0"></canvas>
+            <div>
+                <canvas id="myChart3" width="0" height="0"></canvas>
+                <div id="MyEmptyChart3"> </div>
+            </div>
         );
     }
 
