@@ -55,25 +55,6 @@ var loaders = [
         test: /\.(jpg|png|gif)$/,
         loader: 'url?limit=25000',
         include: PATHS.images
-    },
-    {
-        test: /\.woff(\?[a-z0-9=&.]+)?$/,
-        // Inline small woff files and output them below font/.
-        loader: 'url',
-        query: {
-            name: 'font/[hash].[ext]',
-            limit: 5000,
-            mimetype: 'application/font-woff'
-        },
-        include: PATHS.fonts
-    },
-    {
-        test: /\.(ttf|eot|svg|otf)(\?[a-z0-9=&.]+)?$/,
-        loader: 'file',
-        query: {
-            name: 'font/[hash].[ext]'
-        },
-        include: PATHS.fonts
     }
 ];
 
