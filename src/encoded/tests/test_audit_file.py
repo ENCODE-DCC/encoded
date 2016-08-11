@@ -575,6 +575,44 @@ def test_audit_file_derived_from_empty(testapp, file7):
                for error in errors_list)
 
 
+def test_audit_file_derived_from_archived(testapp, file7, file6):
+    testapp.patch_json(file6['@id'], {'derived_from': [file7['@id']],
+                                      'status': 'released'})
+    testapp.patch_json(file7['@id'], {'status': 'archived'})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'derived from archived'
+               for error in errors_list)
+
+
+def test_audit_file_supercedes_archived(testapp, file7, file6):
+    testapp.patch_json(file6['@id'], {'supercedes': [file7['@id']],
+                                      'status': 'released'})
+    testapp.patch_json(file7['@id'], {'status': 'archived'})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'supercedes archived'
+               for error in errors_list)
+
+
+def test_audit_file_controlled_by_archived(testapp, file7, file6):
+    testapp.patch_json(file6['@id'], {'controlled_by': [file7['@id']],
+                                      'status': 'released'})
+    testapp.patch_json(file7['@id'], {'status': 'archived'})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'controlled by archived'
+               for error in errors_list)
+
 def test_audit_file_bam_derived_from_no_fastq(testapp, file7, file6):
     testapp.patch_json(file6['@id'], {'derived_from': [file7['@id']],
                                       'status': 'released',
