@@ -322,6 +322,7 @@ class File(Item):
 
     @calculated_property(schema={
         "title": "Superseded by",
+        "description": "The file(s) that supersede this file (i.e. are more preferable to use).",
         "type": "array",
         "items": {
             "type": ['string', 'object'],
