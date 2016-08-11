@@ -213,6 +213,14 @@
 
 }
 
+.chart-legend a {
+    color: black;
+    text-decoration: none;
+    &:hover {
+        background-color: #c0c0c0;
+    }
+}
+
 
 .empty-chart {
     width: 100%;

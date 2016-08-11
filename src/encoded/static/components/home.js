@@ -745,6 +745,22 @@ var HomepageChart2 = React.createClass({
                         legend: {
                             display: false
                         },
+                        legendCallback: (chart) => {
+                            console.log('LEGEND: %o', chart);
+                            var text = [];
+                            text.push('<ul>');
+                            for (var i = 0; i < assayFacet.terms.length; i++) {
+                                text.push('<li>');
+                                text.push('<a href="' + this.props.data['@id'] + '&y.limit=&replicates.library.biosample.biosample_type=' + assayFacet.terms[i].key  + '">');
+                                text.push('<span style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
+                                if (chart.data.labels[i]) {
+                                    text.push(chart.data.labels[i]);
+                                }
+                                text.push('</a></li>');
+                            }
+                            text.push('</ul>');
+                            return text.join('');
+                        },
                         onClick: (e) => {
                             // React to clicks on pie sections
                             var activePoints = this.myPieChart.getElementAtEvent(e);
