@@ -590,8 +590,8 @@ def test_audit_file_derived_from_archived(testapp, file7, file6):
 
 def test_audit_file_supercedes_archived(testapp, file7, file6):
     testapp.patch_json(file6['@id'], {'supercedes': [file7['@id']],
-                                      'status': 'released'})
-    testapp.patch_json(file7['@id'], {'status': 'archived'})
+                                      'status': 'archived'})
+    testapp.patch_json(file7['@id'], {'status': 'released'})
     res = testapp.get(file6['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
