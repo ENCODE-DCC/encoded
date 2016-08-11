@@ -364,6 +364,7 @@
                         "filtered peaks",
                         "filtered regions",
                         "DHS peaks",
+                        "input normalized peaks",
                         "peaks",
                         "replicated peaks",
                         "RNA-binding protein associated mRNAs",           
@@ -397,7 +398,10 @@
                         "conservative idr thresholded peaks",
 
                         "enhancer validation",
-                        "semi-automated genome annotation"
+                        "semi-automated genome annotation",
+
+                        "blacklisted regions",
+                        "mitochondria blacklisted regions"
 
                     ]
                 },
@@ -431,7 +435,7 @@
                         "valleys",
                         "sequence alignability",
                         "sequence uniqueness",
-                        "blacklisted regions",
+                        
 
                         "primer sequence",
                         "reference",
@@ -758,6 +762,7 @@
         "filtered peaks":"annotation",
         "filtered regions":"annotation",
         "DHS peaks": "annotation",
+        "input normalized peaks": "annotation",
         "peaks": "annotation",
         "replicated peaks": "annotation",
         "RNA-binding protein associated mRNAs": "annotation",
@@ -771,6 +776,7 @@
         "sequence alignability": "annotation",
         "sequence uniqueness": "annotation",
         "blacklisted regions": "annotation",
+        "mitochondria blacklisted regions": "annotation",
         "distal peaks": "annotation",
         "proximal peaks": "annotation",
         "optimal idr thresholded peaks": "annotation",
