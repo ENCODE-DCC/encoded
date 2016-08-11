@@ -28,13 +28,9 @@
     background-color: #E8ECEF;
 }
 
-.encode-logo {
 
-}
-
-
-// Formatting of heading based on original home page
-.page-title {
+// Formatting of heading based on original home page (currently no heading)
+/*.page-title {
     margin-bottom: 30px;
     font-size: 2.6 rem;
     margin-top: 30px;
@@ -58,12 +54,10 @@
     margin-right: 0px;
     margin-left: 100px;
     display: block;
-}
+}*/
 
 .description {
     line-height: 1.7;
-    //background-color: #E8ECEF;
-    //padding-top: 20px;
     border-bottom: 1px solid #a0a0a0;
     border-radius: 3px;
     padding: 20px;
@@ -99,9 +93,6 @@
     outline-style: solid;
     outline-width: 6px;
     outline-color: #0000EE;
-
-    
-
 }
 
 // When hover on rectangle, make fill darker
@@ -114,6 +105,7 @@
     fill-opacity: 0.5;
     
 }
+
 
 // Positions classic pic
 .classicImage {
@@ -128,21 +120,13 @@
 .title {
     
     width: 100%;
-    
     padding-top: 10px;
-    
     text-align: center;
     color: black;
-   
     font-size: 30px;
     font-weight: 100;
-    
-   /* border-bottom-style: solid;
-    border-bottom-color: #A0A0A0;
-    border-bottom-width: 1px;*/
 
 }
-
 
 
 
@@ -150,9 +134,9 @@
 .tabTable {
     border-bottom: 1px solid #a0a0a0;
     background-color: white;
-
-        
+   
 }
+
 
 // Positions tabs with padding, hovering, and changing color if selected
 .tabTable td{
@@ -180,7 +164,6 @@
             background-color: #428bca;
         }
     }
-
     
 }
 
@@ -190,29 +173,26 @@
     padding-bottom: 25px;
 }
 
-
-
-
+// Positions legends
 .chart-legend {
     float: center;
     margin-top: 20px;
-    /*float: left;
-    width: 200px;
-    height: 200px;*/
 }
 
+// Positions legends
 .chart-legend ul {
     list-style: none;
 }
 
+// Positions legends
 .chart-legend li span {
     display: inline-block;
     width: 32px;
     height: 12px;
     margin-right: 5px;
-
 }
 
+// Styles words of legends and adds hovering
 .chart-legend a {
     color: black;
     text-decoration: none;
@@ -221,7 +201,7 @@
     }
 }
 
-
+// Positions error message when charts empty
 .empty-chart {
     width: 100%;
     height: 183px;
@@ -232,11 +212,11 @@
     font-weight: 100;
 }
 
-
-
+// Makes sure no extra padding in between panels 
 .panel {
     margin-top: 0px !important;
 }
+
 
 // Positions getting started pic
 .getting-started-image {
@@ -251,8 +231,8 @@
 
 }
 
+// Positions getting started buttonn
 .getting-started-button {
-
     position: absolute;
     top: 225px;
     left: 50px;
@@ -260,10 +240,12 @@
     z-index: 1;
 }
 
+// Positions View All
 .view-all {
     text-align: center;
 }
 
+// Positions view all buttonn
 .view-all-button {
     
     display: inline-block;

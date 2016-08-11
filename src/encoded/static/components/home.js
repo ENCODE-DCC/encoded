@@ -23,58 +23,72 @@ var Home = module.exports.Home = React.createClass({
         var oldLink = this.state.current; // getting original search
         var tempAssay = assay;
 
-        if(tempAssay == '?type=Annotation&encyclopedia_version=3'){
-            if(oldLink.indexOf('?type=Annotation&encyclopedia_version=3') != -1){
-                oldLink = "?type=Experiment&status=released";
+        // if it is computational predictions
+        if(tempAssay == '?type=Annotation&encyclopedia_version=3'){ 
+            // if unclicking computational predictions
+            if(oldLink.indexOf('?type=Annotation&encyclopedia_version=3') != -1){ 
+                oldLink = "?type=Experiment&status=released"; // then go back to normal searchBase
             }
-            else{
-                oldLink = '?type=Annotation&encyclopedia_version=3';
+            else{ // if clicking compuational predictions, change to proper searchBase
+                oldLink = '?type=Annotation&encyclopedia_version=3'; 
             }
 
         }
-        else {
-            console.log("SHOULD BE CHROMATIN: " + assay);
-        
-            if(this.state.assayCategory == assay){
+        else { // if anything other than computational predictions
+            // if assay category already clicked then clear tempAssay essentially unclicking it
+            if(this.state.assayCategory == assay){ 
                 tempAssay = "";
-                console.log("NOT IN FIRST TIME, ONLY WHEN CLICKED");
             }
 
             this.setState({
-                assayCategory: tempAssay
+                assayCategory: tempAssay // set assayCategory to tempAssay
             });
 
-            var indexOfExperiment = oldLink.indexOf("?type=Experiment&status=released");
-            if (indexOfExperiment == -1){
-                oldLink = oldLink.substring(39);
-                oldLink = "?type=Experiment&status=released" + oldLink;
+            // checking to see if it is currently computational predictions
+            var indexOfExperiment = oldLink.indexOf("?type=Experiment&status=released"); 
+            if (indexOfExperiment == -1){ // if computational predictions
+                oldLink = oldLink.substring(39); // takes out computational predictions
+
+                // keeps any organism parameters and puts back normal searchbase
+                oldLink = "?type=Experiment&status=released" + oldLink; 
             }
 
+            // getting index of "&assay_slims=" in original search link if it's there
+            var startingIndex = oldLink.search("&assay_slims="); 
             
-            var startingIndex = oldLink.search("&assay_slims="); // getting index of "&assay_slims=" in original search link if it's there
-            
-            if (startingIndex != -1) { // if &assay_slims already is in original search link, then remove it so we can add the correct "&assay_slims="
-                var endingIndex = startingIndex + 13; // adding the length of "&assay_slims" to make endingIndex the index of the category
+            // if &assay_slims already is in original search link, then remove it so we can add 
+            // the correct "&assay_slims="
+            if (startingIndex != -1) { 
+
+                // adding the length of "&assay_slims" to make endingIndex the index of the 
+                // category
+                var endingIndex = startingIndex + 13; 
                 
-                while (endingIndex < oldLink.length-1 && oldLink.substring(endingIndex, endingIndex + 1) != "&") { // either get to end of string or find next parameter starting with "&"
-                    endingIndex++; // increase endingIndex until the end of the "&assay_slims=" parameter
+                // either get to end of string or find next parameter starting with "&"
+                while (endingIndex < oldLink.length-1 && oldLink.substring(endingIndex, endingIndex + 1) != "&") { 
+
+                    // increase endingIndex until the end of the "&assay_slims=" parameter
+                    endingIndex++; 
                 }
                 
-                if(endingIndex != oldLink.length-1){ // if did not reach end of string, "&assay_slims=" is in middle of search
-                    oldLink = oldLink.substr(0, startingIndex) + oldLink.substr(endingIndex); // assay_slims part is from (startingIndex, endingIndex), so cut that out of oldLink
+                // if did not reach end of string, "&assay_slims=" is in middle of search
+                if(endingIndex != oldLink.length-1){ 
+
+                    // assay_slims part is from (startingIndex, endingIndex), so cut that out 
+                    // of oldLink
+                    oldLink = oldLink.substr(0, startingIndex) + oldLink.substr(endingIndex); 
                 }
                 else{ // "&assay_slims=" is at end of search
-                    oldLink = oldLink.substr(0, startingIndex); // assay_slims is from (startingIndex, oldLink.length, so cut that out
+
+                    // assay_slims is from (startingIndex, oldLink.length, so cut that out
+                    oldLink = oldLink.substr(0, startingIndex); 
                 }
-                console.log("oldLink should be completely empty of all assay cateogry: " + oldLink);
             }
-            if (tempAssay != "") {
-                console.log("WHEN NOT CLEARED");
-                oldLink = oldLink + '&assay_slims=' + tempAssay;
+            if (tempAssay != "") { // if not unclicking
+
+                // add in assay category parameter to search
+                oldLink = oldLink + '&assay_slims=' + tempAssay; 
             }
-            console.log("TEMPASSAY SHOULD BE CHROMATIN AGAIN: " + tempAssay);
-            
-            console.log("CLEARED " + oldLink);
 
         }
         
@@ -83,7 +97,8 @@ var Home = module.exports.Home = React.createClass({
     },
 
 
-    handleTabClick: function(tab){ // pass in string with organism query and either adds or removes tab from list of selected tabs
+    // pass in string with organism query and either adds or removes tab from list of selected tabs
+    handleTabClick: function(tab){ 
         
         var tempArray = _.clone(this.state.newtabs); // creates a copy of this.state.newtabs
         var finalLink = _.clone(this.state.current); // clones current
@@ -237,7 +252,6 @@ var TwitterWidget = React.createClass({
             className= "twitter-timeline"
             href= "https://twitter.com/encodedcc" // from encodedcc twitter
             widget-id= "encodedcc" 
-            
             data-screen-name="EncodeDCC"
             //data-tweet-limit = "4"
             //data-width = "300"
@@ -256,7 +270,8 @@ var AssayClicking = React.createClass({
         assayCategory: React.PropTypes.string
     },
 
-    // Sets value of updatedLink to current to allow easy modification
+    // Sets value of updatedLink to current to allow easy modification, sets value of currentAssay 
+    // to assayCategory, creates assayList with ids of assay categories for rectangles in SVG
     getInitialState: function(){
         return {
             updatedLink: this.props.current,
@@ -273,30 +288,9 @@ var AssayClicking = React.createClass({
 
     // Properly adds or removes assay category from link
     sortByAssay: function(category) {
-        // var oldLink = this.props.current; // getting original search
-        // var startingIndex = oldLink.search("&assay_slims="); // getting index of "&assay_slims=" in original search link if it's there
         
-        // if (startingIndex != -1) { // if &assay_slims already is in original search link, then remove it so we can add the correct "&assay_slims="
-        //     var endingIndex = startingIndex + 13; // adding the length of "&assay_slims" to make endingIndex the index of the category
-            
-        //     while (endingIndex < oldLink.length-1 && oldLink.substring(endingIndex, endingIndex + 1) != "&") { // either get to end of string or find next parameter starting with "&"
-        //         endingIndex++; // increase endingIndex until the end of the "&assay_slims=" parameter
-        //     }
-            
-        //     if(endingIndex != oldLink.length-1){ // if did not reach end of string, "&assay_slims=" is in middle of search
-        //         oldLink = oldLink.substr(0, startingIndex) + oldLink.substr(endingIndex +1); // assay_slims part is from (startingIndex, endingIndex), so cut that out of oldLink
-        //     }
-        //     else{ // "&assay_slims=" is at end of search
-        //         oldLink = oldLink.substr(0, startingIndex); // assay_slims is from (startingIndex, oldLink.length, so cut that out
-        //     }
-        // }
-        
-        this.props.handleAssayCategoryClick(category); // updates assay category
-        console.log("should be empty: " + this.state.currentAssay);
-        this.setState({currentAssay: category});
-        console.log("should be dna somethign: " + this.state.currentAssay);
-        //this.props.callback(oldLink + '&assay_slims=' + category); // updating current through callback
-        //this.setState({updatedLink: oldLink + '&assay_slims=' + category}); // updating updatedLink
+        this.props.handleAssayCategoryClick(category); // handles assay category click
+        this.setState({currentAssay: category}); // updates current assay
 
     },
 
@@ -393,9 +387,6 @@ var TabClicking = React.createClass({
         };
     },
 
-   
-
-
     componentDidMount: function() {
 
         var tabBoxes = document.getElementById("tabdisplay");
@@ -426,9 +417,6 @@ var TabClicking = React.createClass({
 
 
 
-
-
-
 // Component to display the D3-based chart for Project
 var HomepageChart = React.createClass({
 
@@ -444,7 +432,7 @@ var HomepageChart = React.createClass({
         // require.
         require.ensure(['chart.js'], function(require) {
             var Chart = require('chart.js');
-            var colorList = [
+            var colorList = [ // iOS colors
                 '#FF4F4D',
                 '#10A0F6',
                 '#FFBC01',
@@ -454,7 +442,7 @@ var HomepageChart = React.createClass({
                 '#61D1FD',
                 '#FFFFFF'
             ];
-            var colorList2 = [
+            var colorList2 = [ // ENCODE colors
                 '#9C008A',
                 '#FDC325',
                 '#33298C',
@@ -464,26 +452,29 @@ var HomepageChart = React.createClass({
             var data = [];
             var labels = [];
             var colors = [];
-            var tempColors = ['0000FF'];
 
-            // Get the assay_title counts from the facets
+            // Get the project from the facets
             var facets = this.props.data.facets;
             var assayFacet = facets.find(facet => facet.field === 'award.project');
 
 
-            if(assayFacet != undefined){
-                document.getElementById('MyEmptyChart').innerHTML = "";
-                document.getElementById('MyEmptyChart').removeAttribute("class");
+            if(assayFacet != undefined){ // if there is data 
+                document.getElementById('MyEmptyChart').innerHTML = ""; 
+                document.getElementById('MyEmptyChart').removeAttribute("class"); // clear out empty chart div
 
-                var totalDocCount = 0;
-                assayFacet.terms.forEach(function(term, i) {
+                var totalDocCount = 0; 
+
+                // for each item, set doc count, add to total doc count, add proper label, and assign color
+                assayFacet.terms.forEach(function(term, i) { 
                     data[i] = term.doc_count;
                     totalDocCount += term.doc_count;
                     labels[i] = term.key;
                     colors[i] = colorList[i % colorList.length];
                 });
 
-                Chart.pluginService.register({
+                // adding total doc count to middle of donut 
+                // http://stackoverflow.com/questions/20966817/how-to-add-text-inside-the-doughnut-chart-using-chart-js/24671908
+                Chart.pluginService.register({ 
                     beforeDraw: function(chart) {
                         if(chart.chart.canvas.id == 'myChart'){
                             var width = chart.chart.width,
@@ -508,12 +499,9 @@ var HomepageChart = React.createClass({
                 });
 
 
-            // Pass the assay_title counts to the charting library to render it.
-
+                // Pass the assay_title counts to the charting library to render it.
                 var canvas = document.getElementById("myChart");
                 var ctx = canvas.getContext("2d");
-
-
 
                 this.myPieChart = new Chart(ctx, {
                     type: 'doughnut',
@@ -527,15 +515,14 @@ var HomepageChart = React.createClass({
 
                     options: {
                         legend: {
-                            display: false
+                            display: false // hiding automatically generated legend
                         },
-                        legendCallback: (chart) => {
-                            console.log('LEGEND: %o', chart);
+                        legendCallback: (chart) => { // allows for legend clicking
                             var text = [];
                             text.push('<ul>');
                             for (var i = 0; i < assayFacet.terms.length; i++) {
                                 text.push('<li>');
-                                text.push('<a href="' + this.props.data['@id'] + '&award.project=' + assayFacet.terms[i].key  + '">');
+                                text.push('<a href="' + this.props.data['@id'] + '&award.project=' + assayFacet.terms[i].key  + '">'); // go to matrix view when clicked
                                 text.push('<span style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
                                 if (chart.data.labels[i]) {
                                     text.push(chart.data.labels[i]);
@@ -549,14 +536,13 @@ var HomepageChart = React.createClass({
                             // React to clicks on pie sections
                             var activePoints = this.myPieChart.getElementAtEvent(e);
 
-                            if (activePoints[0] == null) {
+                            if (activePoints[0] == null) { // if click on wrong area, do nothing
                                 var placeholder = 0;
                             }
-                            else{
+                            else{ // otherwise go to matrix view 
                                 var term = assayFacet.terms[activePoints[0]._index].key;
                                 this.context.navigate(this.props.data['@id'] + '&award.project=' + term);
                             }
-
                             
                             this.myPieChart.update();
                             this.myPieChart.render();
@@ -565,18 +551,14 @@ var HomepageChart = React.createClass({
                         }
                     }
                 });
-                document.getElementById('chart-legend').innerHTML = this.myPieChart.generateLegend();
+                document.getElementById('chart-legend').innerHTML = this.myPieChart.generateLegend(); // generates legend
                 
-
             }
-
-            // Collect up the experiment assay_title counts to our local arrays to prepare for
-            // the charts.
              
 
-            else{
+            else{ //if no data
                 
-                var element = document.getElementById('MyEmptyChart');
+                var element = document.getElementById('MyEmptyChart'); 
                 var chart = document.getElementById('myChart');
                 var existingText = document.getElementById('p1');
                 if(existingText){
@@ -585,21 +567,17 @@ var HomepageChart = React.createClass({
 
                 var para = document.createElement("p");
                 para.setAttribute('id', 'p1');
-                var node = document.createTextNode("There is no data to display.");
-                para.appendChild(node);
+                var node = document.createTextNode("There is no data to display."); 
+                para.appendChild(node); // display no data error message
 
                 element.appendChild(para);
-                element.setAttribute('class', 'empty-chart');
+                element.setAttribute('class', 'empty-chart'); // add class to empty-chart div
 
-                chart.setAttribute('height', '0');
-                // else get id by myempty chart, add class by inserting html (look it up), and add error message
+                chart.setAttribute('height', '0'); // clear chart canvas so it won't display
             }
 
 
         }.bind(this));
-
-        
-    
         
     },
 
@@ -607,7 +585,6 @@ var HomepageChart = React.createClass({
 
     componentDidMount: function() {
         this.drawChart();
-        //document.getElementById('chart-legend').innerHTML = this.myPieChart.generateLegend();
     },
 
     componentDidUpdate: function(){
@@ -616,7 +593,6 @@ var HomepageChart = React.createClass({
     },
 
     render: function() {
-
 
         return (
 
@@ -642,7 +618,6 @@ var HomepageChartLoader = React.createClass({
 
 
     render: function() {
-        console.log("searchBase: " + this.props.searchBase);
         return (
             <FetchedData>
                 <Param name="data" url={'/matrix/' + this.props.searchBase} />
@@ -683,27 +658,28 @@ var HomepageChart2 = React.createClass({
             var labels = [];
             var colors = [];
 
-            // Get the assay_title counts from the facets
+            // Get the biosample from the facets
             var facets = this.props.data.facets;
             var assayFacet = facets.find(facet => facet.field === 'replicates.library.biosample.biosample_type');
 
 
-            if(assayFacet != undefined){
-                document.getElementById('MyEmptyChart2').innerHTML = "";
-                document.getElementById('MyEmptyChart2').removeAttribute("class");
-            // Collect up the experiment assay_title counts to our local arrays to prepare for
-            // the charts.
+            if(assayFacet != undefined){ // if there is data 
+                document.getElementById('MyEmptyChart2').innerHTML = ""; 
+                document.getElementById('MyEmptyChart2').removeAttribute("class"); // clear out empty chart div
+
                 var totalDocCount = 0;
-                assayFacet.terms.forEach(function(term, i) {
+
+                // for each item, set doc count, add to total doc count, add proper label, and assign color
+                assayFacet.terms.forEach(function(term, i) { 
                     data[i] = term.doc_count;
                     totalDocCount += term.doc_count;
                     labels[i] = term.key;
                     colors[i] = colorList[i % colorList.length];
                 });
 
-
-
-                Chart.pluginService.register({
+                // adding total doc count to middle of donut 
+                // http://stackoverflow.com/questions/20966817/how-to-add-text-inside-the-doughnut-chart-using-chart-js/24671908
+                Chart.pluginService.register({ 
                     beforeDraw: function(chart) {
                         if(chart.chart.canvas.id == 'myChart2'){
                             var width = chart.chart.width,
@@ -743,15 +719,14 @@ var HomepageChart2 = React.createClass({
                     },
                     options: {
                         legend: {
-                            display: false
+                            display: false // hiding automatically generated legend
                         },
-                        legendCallback: (chart) => {
-                            console.log('LEGEND: %o', chart);
+                        legendCallback: (chart) => { // allows for legend clicking
                             var text = [];
                             text.push('<ul>');
                             for (var i = 0; i < assayFacet.terms.length; i++) {
                                 text.push('<li>');
-                                text.push('<a href="' + this.props.data['@id'] + '&y.limit=&replicates.library.biosample.biosample_type=' + assayFacet.terms[i].key  + '">');
+                                text.push('<a href="' + this.props.data['@id'] + '&y.limit=&replicates.library.biosample.biosample_type=' + assayFacet.terms[i].key  + '">'); // go to matrix view when clicked
                                 text.push('<span style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
                                 if (chart.data.labels[i]) {
                                     text.push(chart.data.labels[i]);
@@ -765,15 +740,15 @@ var HomepageChart2 = React.createClass({
                             // React to clicks on pie sections
                             var activePoints = this.myPieChart.getElementAtEvent(e);
                             var term = assayFacet.terms[activePoints[0]._index].key;
-                            this.context.navigate(this.props.data['@id'] + '&y.limit=&replicates.library.biosample.biosample_type=' + term);
+                            this.context.navigate(this.props.data['@id'] + '&y.limit=&replicates.library.biosample.biosample_type=' + term); // go to matrix view 
                         }
                     }
                 });
 
-                document.getElementById('chart-legend-2').innerHTML = this.myPieChart.generateLegend();
+                document.getElementById('chart-legend-2').innerHTML = this.myPieChart.generateLegend(); // generates legend
             }
 
-            else{
+            else{ // if no data 
                 
                 var element = document.getElementById('MyEmptyChart2');
                 var chart = document.getElementById('myChart2');
@@ -785,13 +760,13 @@ var HomepageChart2 = React.createClass({
                 var para = document.createElement("p");
                 para.setAttribute('id', 'p2');
                 var node = document.createTextNode("There is no data to display.");
-                para.appendChild(node);
+                para.appendChild(node); // display no data error message
 
                 element.appendChild(para);
-                element.setAttribute('class', 'empty-chart');
+                element.setAttribute('class', 'empty-chart'); // add class to empty-chart div
 
-                chart.setAttribute('height', '0');
-                // else get id by myempty chart, add class by inserting html (look it up), and add error message
+                chart.setAttribute('height', '0'); // clear chart canvas so it won't display
+
             }
 
         }.bind(this));
@@ -858,8 +833,8 @@ var HomepageChart3 = React.createClass({
                 '#E5E4E2'
             ];
             var data = [];
-            var xlabels = [];
-            var labels = [];
+            var xlabels = []; // abbreviated months
+            var labels = []; // full labels for hovering
             var colors = [];
 
             // Get the assay_title counts from the facets
@@ -869,27 +844,31 @@ var HomepageChart3 = React.createClass({
 
             // Collect up the experiment assay_title counts to our local arrays to prepare for
             // the charts.
-            if(assayFacet != undefined){
+            if(assayFacet != undefined){ // if there is data
+                // clear empty chart div
                 document.getElementById('MyEmptyChart3').innerHTML = "";
-                document.getElementById('MyEmptyChart3').removeAttribute("class");
+                document.getElementById('MyEmptyChart3').removeAttribute("class"); 
 
+                while(data.length < 6){ // getting past 6 months
 
-
-                while(data.length < 6){
-                    var firstValues = assayFacet.terms[0].key.split(", ");
+                    // split up into month and year (of 0 index as starting pt)
+                    var firstValues = assayFacet.terms[0].key.split(", "); 
                     var maxIndex = 0;
-                    var maxMonth = months.indexOf(firstValues[0]);
-                    if (maxMonth < 10){
+                    var maxMonth = months.indexOf(firstValues[0]); // get month value
+
+                    // if less than 10, add 0 to beginning so it's a 2 digit number; for comparing later on
+                    if (maxMonth < 10){ 
                         var maxMonthString = "0" + maxMonth.toString();
                         maxMonth = maxMonthString;
                     }
-                    var maxYear = firstValues[1];
-                    var maxYearMonthCombo = maxYear + maxMonth;
-                    var maxMonthAbbrev = firstValues[0].substring(0,3);
+                    var maxYear = firstValues[1]; // get year value 
+                    var maxYearMonthCombo = maxYear + maxMonth; // get combo as a 4 digit number
+                    var maxMonthAbbrev = firstValues[0].substring(0,3); // get month as abbreviation
 
 
-                    for(var x = 0; x < assayFacet.terms.length; x++){
-                        var tempDate = assayFacet.terms[x].key.split(", ");
+                    for(var x = 0; x < assayFacet.terms.length; x++){ // finding max month year combo
+                        // same process above of getting 4 digit number of month year combo
+                        var tempDate = assayFacet.terms[x].key.split(", "); 
                         var tempMonth = months.indexOf(tempDate[0]);
                         if (tempMonth < 10){
                             var tempMonthString = "0" + tempMonth.toString();
@@ -898,10 +877,10 @@ var HomepageChart3 = React.createClass({
                         var tempYear = tempDate[1];
                         var tempYearMonthCombo = tempYear + tempMonth;
                         var tempMonthAbbrev = tempDate[0].substring(0,3);
-                        //console.log("Year: " + tempYear + " Month: " + tempMonth);
 
-                        if(tempYearMonthCombo > maxYearMonthCombo){
 
+                        if(tempYearMonthCombo > maxYearMonthCombo){ // if temp greater than max
+                            // set all max values to temp values
                             maxYear = tempYear;
                             maxYearMonthCombo = tempYearMonthCombo;
                             maxMonthAbbrev = tempMonthAbbrev;
@@ -909,32 +888,29 @@ var HomepageChart3 = React.createClass({
 
                         }
                     }
-                    data.push(assayFacet.terms[maxIndex].doc_count);
-                    xlabels.push(maxMonthAbbrev);
-                    labels.push(assayFacet.terms[maxIndex].key);
-                    assayFacet.terms.splice(maxIndex, 1);
+                    // after getting max
+                    data.push(assayFacet.terms[maxIndex].doc_count); // add count to data
+                    xlabels.push(maxMonthAbbrev); // add abbreviated month 
+                    labels.push(assayFacet.terms[maxIndex].key); // add full month and year
+                    assayFacet.terms.splice(maxIndex, 1); // take out max to find next max
                 }
 
-                data.reverse();
-                xlabels.reverse();
-                labels.reverse();
-                colors = ['#4cd964', '#4cd964', '#4cd964', '#4cd964', '#4cd964', '#4cd964'];
+                data.reverse(); // in ascending order
+                xlabels.reverse(); // in ascending order
+                labels.reverse(); // in ascending order
 
-                
-                // assayFacet.terms.forEach(function(term, i) {
-                //     data[i] = term.doc_count;
-                //     labels[i] = term.key;
-                //     colors[i] = colorList[i % colorList.length];
-                // });
+                // gives bar graph a constant green color
+                colors = ['#4cd964', '#4cd964', '#4cd964', '#4cd964', '#4cd964', '#4cd964']; 
 
-                // Pass the assay_title counts to the charting library to render it.
+
+                // Pass the counts to the charting library to render it.
                 var canvas = document.getElementById("myChart3");
                 var ctx = canvas.getContext("2d");
                 this.myBarChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: labels,
-                        xLabels: xlabels,
+                        labels: labels, // full labels
+                        xLabels: xlabels, // abbreviated labels
                         datasets: [{
                             data: data,
                             backgroundColor: colors,
@@ -944,20 +920,18 @@ var HomepageChart3 = React.createClass({
                     options: {
                         tooltips: {
                             callbacks: {
-                                title: function(tooltipItems, data){
-                                    return data.labels[tooltipItems[0].index];
+                                title: function(tooltipItems, data){ // show full label in hovering
+                                    return data.labels[tooltipItems[0].index]; 
                                 }
                             }
                         },
                         legend: {
-                            display: false
+                            display: false // hiding legend
                         },
                         scales: {
                             xAxes: [{
-                                //scaleLabel: "Number of Released Experiments",
-                                ticks: {
-                                    maxRotation: 30,
-                                    // minRotation: 0
+                                ticks: { // http://www.chartjs.org/docs/ tick configuration
+                                    maxRotation: 30, // max rotation of 30 degrees
                                 }
                             }],
                             yAxes: [{
@@ -967,19 +941,19 @@ var HomepageChart3 = React.createClass({
                                 }
                             }]
                         },
-                        // http://www.chartjs.org/docs/ tick configuration
+                        
                         onClick: (e) => {
                             // React to clicks on pie sections
                             var activePoints = this.myBarChart.getElementAtEvent(e);
                             var term = labels[activePoints[0]._index];
-                            this.context.navigate(this.props.data['@id'] + '&month_released=' + term);
+                            this.context.navigate(this.props.data['@id'] + '&month_released=' + term); // goes to matrix view
                         }
                     }
                 });
 
             }
 
-            else{
+            else{ // if no data
                 
                 var element = document.getElementById('MyEmptyChart3');
                 var chart = document.getElementById('myChart3');
@@ -991,13 +965,13 @@ var HomepageChart3 = React.createClass({
                 var para = document.createElement("p");
                 para.setAttribute('id', 'p3');
                 var node = document.createTextNode("There is no data to display.");
-                para.appendChild(node);
+                para.appendChild(node); // display no data error message
 
                 element.appendChild(para);
-                element.setAttribute('class', 'empty-chart');
+                element.setAttribute('class', 'empty-chart'); // add class to empty-chart div
 
-                chart.setAttribute('height', '0');
-                // else get id by myempty chart, add class by inserting html (look it up), and add error message
+                chart.setAttribute('height', '0'); // clear chart canvas so it won't display
+
             }
 
         }.bind(this));
@@ -1040,6 +1014,4 @@ var HomepageChartLoader3 = React.createClass({
     }
 
 });
-
-
 
