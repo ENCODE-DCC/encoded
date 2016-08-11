@@ -21,7 +21,8 @@
         { "$ref": "mixins.json#/source" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/submitter_comment" }
+        { "$ref": "mixins.json#/submitter_comment" },
+        { "$ref": "mixins.json#/genetic_modifications" }
     ],
     "dependencies": {
         "transfection_method": ["transfection_type"],
@@ -301,6 +302,22 @@
                 "mixed"
             ]
         },
+        "internal_tags": {
+            "title": "Internal tags",
+            "description": "Some biosamples are part of particular data collections",
+            "type": "array",
+            "default": [],
+            "permission": "import_items",
+            "uniqueItems": true,
+            "items": {
+                "type": "string",
+                "enum": [
+                    "DREAM",
+                    "ENCORE",
+                    "ENTEx",
+                    "SESCC"]
+            }
+        },
         "derived_from": {
             "title": "Derived from",
             "description": "A biosample that the sample derives from via a construct or treatment.",
@@ -324,6 +341,13 @@
         "part_of": {
             "title": "Separated from",
             "description": "A biosample from which a discrete component was taken. That component is this biosample.",
+            "comment": "See biosamples.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Biosample"
+        },
+        "host": {
+            "title": "Host biosample",
+            "description": "A biosample that was hosting this biosample.",
             "comment": "See biosamples.json for available identifiers.",
             "type": "string",
             "linkTo": "Biosample"
@@ -377,6 +401,7 @@
                 "G1",
                 "G1b",
                 "G2",
+                "S",
                 "S1",
                 "S2",
                 "S3",
@@ -741,6 +766,9 @@
         },
         "summary": {
             "title": "Summary"
+        },
+        "summary_object": {
+            "title": "Summary object"
         }
     },
     "boost_values": {
@@ -809,6 +837,7 @@
         "constructs.target.aliases": 1.0,
         "constructs.target.gene_name": 1.0,
         "award.pi.title": 1.0,
-        "notes": 1.0
+        "notes": 1.0,
+        "internal_tags": 1.0
     }
 }

@@ -10,12 +10,13 @@ def test_report_download(testapp, workbook):
     lines = res.body.splitlines()
     assert lines[0].split(b'\t') == [
         b'ID', b'Accession', b'Assay Type', b'Assay Nickname', b'Target label',
-        b'Target gene', b'Biosample', b'Description', b'Lab', b'Project', b'Status',
+        b'Target gene', b'Biosample summary', b'Biosample', b'Description', b'Lab',
+        b'Project', b'Status', b'Biological replicate', b'Technical replicate',
         b'Linked Antibody', b'Species', b'Life stage', b'Age', b'Age Units',
         b'Treatment', b'Term ID', b'Concentration', b'Concentration units',
         b'Duration', b'Duration units', b'Synchronization',
         b'Post-synchronization time', b'Post-synchronization time units',
-        b'Replicates', b'Files', b'Dbxrefs'
+        b'Replicates',
     ]
     # Sorting for scan and limit=all is disabled currently
     # assert lines[1].split(b'\t') == [

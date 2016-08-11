@@ -15,6 +15,7 @@ var reference = require('./reference');
 var objectutils = require('./objectutils');
 var sortTable = require('./sorttable');
 var doc = require('./doc');
+var {BiosampleSummaryString} = require('./typeutils');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -227,6 +228,12 @@ var Biosample = module.exports.Biosample = React.createClass({
         // Get a list of reference links, if any
         var references = PubReferenceList(context.references);
 
+        // Render tags badges
+        var tagBadges;
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
+
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -261,12 +268,10 @@ var Biosample = module.exports.Biosample = React.createClass({
                                         <dd><BiosampleTermId termId={context.biosample_term_id} /></dd>
                                     </div>
 
-                                    {context.summary ?
-                                        <div data-test="summary">
-                                            <dt>Summary</dt>
-                                            <dd>{context.summary}</dd>
-                                        </div>
-                                    : null}
+                                    <div data-test="summary">
+                                        <dt>Summary</dt>
+                                        <dd>{BiosampleSummaryString(context)}</dd>
+                                    </div>
 
                                     {context.description ? 
                                         <div data-test="description">
@@ -480,6 +485,13 @@ var Biosample = module.exports.Biosample = React.createClass({
                                             <dd>{aliasList}</dd>
                                         </div>
                                     : null}
+
+                                    {tagBadges ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd>{tagBadges}</dd>
+                                        </div>
+                                    : null}
                                 </dl>
                             </div>
                         </div>
@@ -639,6 +651,12 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
         var biosample = this.props.biosample;
         var references = PubReferenceList(context.references);
 
+        // Render tags badges
+        var tagBadges;
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
+
         return (
             <div>
                 <Panel>
@@ -711,6 +729,13 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                                     <dd>{references}</dd>
                                 </div>
                             : null}
+
+                            {tagBadges ?
+                                <div className="tag-badges" data-test="tags">
+                                    <dt>Tags</dt>
+                                    <dd>{tagBadges}</dd>
+                                </div>
+                            : null}
                         </dl>
                     </PanelBody>
                 </Panel>
@@ -733,6 +758,12 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
         if (biosample && biosample.donor && biosample.donor.url) {
             var donorUrl = url.parse(biosample.donor.url);
             donorUrlDomain = donorUrl.hostname || '';
+        }
+
+        // Render tags badges
+        var tagBadges;
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
         }
 
         return (
@@ -821,6 +852,13 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                                     <dd>{PubReferenceList(context.references)}</dd>
                                 </div>
                             : null}
+
+                            {tagBadges ?
+                                <div className="tag-badges" data-test="tags">
+                                    <dt>Tags</dt>
+                                    <dd>{tagBadges}</dd>
+                                </div>
+                            : null}
                         </dl>
 
                         {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
@@ -847,6 +885,12 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
         var context = this.props.context;
         var biosample = this.props.biosample;
         var donorUrlDomain;
+
+        // Render tags badges
+        var tagBadges;
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
 
         return (
             <div>
@@ -925,6 +969,13 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                                 <div data-test="external-resources">
                                     <dt>External resources</dt>
                                     <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                </div>
+                            : null}
+
+                            {tagBadges ?
+                                <div className="tag-badges" data-test="tags">
+                                    <dt>Tags</dt>
+                                    <dd>{tagBadges}</dd>
                                 </div>
                             : null}
                         </dl>

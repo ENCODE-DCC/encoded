@@ -20,7 +20,8 @@
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/documents" },
-        { "$ref": "mixins.json#/strains"}
+        { "$ref": "mixins.json#/strains"},
+        { "$ref": "mixins.json#/genetic_modifications" }
     ],
     "properties": {
         "schema_version": {
@@ -84,5 +85,8 @@
                 "pattern": "^((GEO:SAMN\\d+)|(MGI.D:[A-Z0-9]+))$"
             }
         }
+    },
+    "boost_values": {
+        "internal_tags": 1.0
     }
 }

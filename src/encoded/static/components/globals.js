@@ -40,6 +40,8 @@ document_views.file = new Registry();
 document_views.detail = new Registry();
 module.exports.document_views = document_views;
 
+// Report-page cell components
+module.exports.report_cell = new Registry();
 
 var itemClass = module.exports.itemClass = function (context, htmlClass) {
     htmlClass = htmlClass || '';
@@ -107,15 +109,32 @@ module.exports.unreleased_files_url = function (context) {
         "upload failed",
         "format check failed",
         "in progress",
-        "released"
+        "released",
+        "archived"
     ].map(encodeURIComponent).join('&status=');
     return '/search/?limit=all&type=file&dataset=' + context['@id'] + file_states;
+};
+
+
+// Just like encodeURIComponent, but also encodes parentheses (Redmine #4242). Replace spaces with
+// `space` parameter, or '+' if not provided.
+// http://stackoverflow.com/questions/8143085/passing-and-through-a-uri-causes-a-403-error-how-can-i-encode-them#answer-8143232
+var encodedURIComponent = module.exports.encodedURIComponent = function(str, space) {
+    var spaceReplace = space ? space : '+';
+    return encodeURIComponent(str).replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/%20/g, spaceReplace);
 };
 
 // Make the first character of the given string uppercase. Can be less fiddly than CSS text-transform.
 // http://stackoverflow.com/questions/1026069/capitalize-the-first-letter-of-string-in-javascript#answer-1026087
 String.prototype.uppercaseFirstChar = function(string) {
     return this.charAt(0).toUpperCase() + this.slice(1);
+};
+
+// Convert the number `n` to a string, zero-filled to `digits` digits. Maximum of four zeroes.
+// http://stackoverflow.com/questions/2998784/how-to-output-integers-with-leading-zeros-in-javascript#answer-2998822
+module.exports.zeroFill = function(n) {
+    var filled = '0000' + n;
+    return filled.substr(filled.length - 4);
 };
 
 // Order that antibody statuses should be displayed
@@ -161,9 +180,11 @@ module.exports.dbxref_prefix_map = {
     "FlyBase": "http://flybase.org/cgi-bin/quicksearch_solr.cgi?caller=quicksearch&tab=basic_tab&data_class=FBgn&species=Dmel&search_type=all&context=",
     // This WormBase link is strictly for Fly strains
     "FlyBaseStock": "http://flybase.org/reports/",
+    "BDSC": "http://flystocks.bio.indiana.edu/Reports/",
     "WormBaseTargets": "http://www.wormbase.org/species/c_elegans/gene/",
     // This WormBase link is strictly for C. elegans strains
     "WormBase": "http://www.wormbase.org/species/c_elegans/strain/",
+    "NBP": "http://shigen.nig.ac.jp/c.elegans/mutants/DetailsSearch?lang=english&seq=",
     "CGC": "http://www.cgc.cbs.umn.edu/search.php?st=",
     "DSSC": "https://stockcenter.ucsd.edu/index.php?action=view&q=",
     "MGI": "http://www.informatics.jax.org/marker/",
@@ -178,5 +199,7 @@ module.exports.dbxref_prefix_map = {
     // Dataset, experiment, and document references
     "PMID": "http://www.ncbi.nlm.nih.gov/pubmed/?term=",
     "PMCID": "http://www.ncbi.nlm.nih.gov/pmc/articles/",
-    "doi": "http://dx.doi.org/doi:"
+    "doi": "http://dx.doi.org/doi:",
+    // Antibody RRids
+    "AR": "http://antibodyregistry.org/search.php?q="
 };
