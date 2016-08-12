@@ -292,8 +292,8 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
 
         if drop_age_sex_flag is True:
             sentence_parts = [
-                'genotype_strain',
-                'term_phrase',
+                'strain_background',
+                'experiment_term_phrase',
                 'phase',
                 'fractionated',
                 'synchronization',
@@ -308,8 +308,8 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
             ]
         else:
             sentence_parts = [
-                'genotype_strain',
-                'term_phrase',
+                'strain_background',
+                'experiment_term_phrase',
                 'phase',
                 'fractionated',
                 'sex_stage_age',

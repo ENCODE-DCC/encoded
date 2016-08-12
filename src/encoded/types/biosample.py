@@ -537,7 +537,9 @@ def generate_summary_dictionary(
             'depleted_in': '',
             'talens': '',
             'constructs': '',
-            'model_organism_constructs': ''
+            'model_organism_constructs': '',
+            'strain_background': '',
+            'experiment_term_phrase': ''
         }
 
         if organismObject is not None:
@@ -557,7 +559,10 @@ def generate_summary_dictionary(
                                 else:
                                     dict_of_phrases['genotype_strain'] += ' (' + \
                                                                           d_genotype + ')'
-
+                        if 'strain_background' in donorObject:
+                            dict_of_phrases['strain_background'] = donorObject['strain_background']
+                        else:
+                            dict_of_phrases['strain_background'] = dict_of_phrases['genotype_strain']
         if age is not None and age_units is not None:
             dict_of_phrases['age_display'] = str(age) + ' ' + age_units + 's'
 
@@ -581,6 +586,8 @@ def generate_summary_dictionary(
                 term_name += 'whole organisms'
             else:
                 term_name += dict_of_phrases['sample_term_name']
+
+        dict_of_phrases['experiment_term_phrase'] = term_name
 
         term_type = ''
 
