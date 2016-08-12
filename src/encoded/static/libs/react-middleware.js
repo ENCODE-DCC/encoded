@@ -4,13 +4,17 @@ var doctype = '<!DOCTYPE html>\n';
 var transformResponse = require('subprocess-middleware').transformResponse;
 var fs = require('fs');
 var inline = fs.readFileSync(__dirname + '/../build/inline.js').toString();
+
+// Retrieve the file containing webpack build statistics and get the generated CSS hashed file
+// names so we can later write it to the <link rel="stylesheet"> tag.
 var buildFiles = JSON.parse(fs.readFileSync(__dirname + '/../build/stats.json')).assetsByChunkName.style;
 
 var render = function (Component, body, res) {
     //var start = process.hrtime();
-    // Search for the CSS file name in the buildFiles list
+
+    // Search for the hashed CSS file name in the buildFiles list
     var cssFile = buildFiles.find(function(file) {
-        return !!file.match(/^\.\/css\/style\.[0-9a-z]+\.css$/);
+        return !!file.match(/^\.\/css\/style(\.[0-9a-z]+){0,1}\.css$/);
     });
     var context = JSON.parse(body);
     var props = {

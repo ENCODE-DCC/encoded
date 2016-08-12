@@ -16,12 +16,14 @@ var plugins = [];
 // don't include momentjs locales (large)
 plugins.push(new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/]));
 var chunkFilename = '[name].js';
+var styleFilename = "./css/[name].css";
 
 if (env === 'production') {
     // uglify code for production
     plugins.push(new webpack.optimize.UglifyJsPlugin({minimize: true}));
     // add chunkhash to chunk names for production only (it's slower)
     chunkFilename = '[name].[chunkhash].js';
+    styleFilename = "./css/[name].[chunkhash].css";
 }
 
 var preLoaders = [
@@ -105,6 +107,9 @@ module.exports = [
         },
         module: {
             preLoaders: preLoaders,
+
+            // Add SCSS -> css loader to the list of loaders on the server, and extract the styles
+            // from the generated .js file to a monolithic external "style.[hash].css" file.
             loaders: loaders.concat({
                 test: /\.scss$/,
                 loader: ExtractTextPlugin.extract('css!sass')
@@ -112,12 +117,16 @@ module.exports = [
         },
         devtool: 'source-map',
         plugins: plugins.concat(
-            new ExtractTextPlugin("./css/[name].[chunkhash].css", {
+            // Add a server-only plugin to extract Sass-compiled styles and place them into an
+            // external CSS file
+            new ExtractTextPlugin(styleFilename, {
                 disable: false,
                 allChunks: true
             }),
 
-            // Add plugin executed when webpack is done with all transforms.
+            // Add a server-only plugin executed when webpack is done with all transforms. it
+            // writes minimal build statistics to the "build" directory that contains the hashed
+            // CSS file names that the server can render into the <link rel="stylesheet"> tag.
             function() {
                 this.plugin('done', function(stats) {
                     // Write hash stats to stats.json so we can extract the CSS hashed file name.
