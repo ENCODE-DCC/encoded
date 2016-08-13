@@ -35,7 +35,7 @@ def audit_file_archived_derivation(value, system):
                 if entry['status'] != 'archived':
                     detail = 'File {} '.format(value['@id']) + \
                              'with the status {} '.format(value['status']) + \
-                             'supercedes file {} '.format(entry['@id']) + \
+                             'supersedes file {} '.format(entry['@id']) + \
                              'with the status {}.'.format(entry['status'])
                     yield AuditFailure('supercedes archived',
                                        detail, level='INTERNAL_ACTION')
@@ -55,7 +55,7 @@ def audit_file_archived_derivation(value, system):
                 if entry['status'] == 'archived':
                     detail = 'File {} '.format(value['@id']) + \
                              'with the status {} '.format(value['status']) + \
-                             'controlled by file {} '.format(entry['@id']) + \
+                             'is controlled by file {} '.format(entry['@id']) + \
                              'with the status {}.'.format(entry['status'])
                     yield AuditFailure('controlled by archived',
                                        detail, level='INTERNAL_ACTION')
