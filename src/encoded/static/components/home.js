@@ -618,6 +618,7 @@ var HomepageChartLoader = React.createClass({
 
 
     render: function() {
+        console.log('EXP: %o', this.props);
         return (
             <FetchedData>
                 <Param name="data" url={'/matrix/' + this.props.searchBase} />
@@ -783,6 +784,7 @@ var HomepageChart2 = React.createClass({
     },
 
     render: function() {
+        console.log('BIO: %o', this.props);
         return (
             <div>
                 <canvas id="myChart2" width="0" height="0"></canvas>
@@ -800,6 +802,7 @@ var HomepageChartLoader2 = React.createClass({
     },
 
     render: function() {
+        console.log('DATA: %o', this.props);
         return (
             <FetchedData>
                 <Param name="data" url={'/matrix/' + this.props.searchBase} />
@@ -844,10 +847,16 @@ var HomepageChart3 = React.createClass({
 
             // Collect up the experiment assay_title counts to our local arrays to prepare for
             // the charts.
-            if(assayFacet != undefined){ // if there is data
+            if (assayFacet && assayFacet.terms.length ) { // if there is data
                 // clear empty chart div
                 document.getElementById('MyEmptyChart3').innerHTML = "";
                 document.getElementById('MyEmptyChart3').removeAttribute("class"); 
+
+                // Sort assayFacet terms array by year/month
+//                var sortedReleases = assayFacet.terms.sort((a, b) => {
+//                    var sortDataA = a.key.split(', ');
+//                    return a.key
+//                });
 
                 while(data.length < 6){ // getting past 6 months
 
