@@ -20,101 +20,89 @@ var Home = module.exports.Home = React.createClass({
     },
 
     handleAssayCategoryClick: function(assay){
+        console.log('HANDLEASSAYCATEGORYCLICK: ' + assay + ':' + this.state.current);
         var oldLink = this.state.current; // getting original search
         var tempAssay = assay;
 
-        // if it is computational predictions
-        if(tempAssay == '?type=Annotation&encyclopedia_version=3'){ 
-            // if unclicking computational predictions
-            if(oldLink.indexOf('?type=Annotation&encyclopedia_version=3') != -1){ 
-                oldLink = "?type=Experiment&status=released"; // then go back to normal searchBase
-            }
-            else{ // if clicking compuational predictions, change to proper searchBase
-                oldLink = '?type=Annotation&encyclopedia_version=3'; 
-            }
-
+        // if assay category already clicked then clear tempAssay essentially unclicking it
+        if(this.state.assayCategory == assay){
+            tempAssay = "";
         }
-        else { // if anything other than computational predictions
-            // if assay category already clicked then clear tempAssay essentially unclicking it
-            if(this.state.assayCategory == assay){ 
-                tempAssay = "";
-            }
 
-            this.setState({
-                assayCategory: tempAssay // set assayCategory to tempAssay
-            });
+        this.setState({
+            assayCategory: tempAssay // set assayCategory to tempAssay
+        });
 
-            // checking to see if it is currently computational predictions
-            var indexOfExperiment = oldLink.indexOf("?type=Experiment&status=released"); 
-            if (indexOfExperiment == -1){ // if computational predictions
-                oldLink = oldLink.substring(39); // takes out computational predictions
-
-                // keeps any organism parameters and puts back normal searchbase
-                oldLink = "?type=Experiment&status=released" + oldLink; 
-            }
-
-            // getting index of "&assay_slims=" in original search link if it's there
-            var startingIndex = oldLink.search("&assay_slims="); 
-            
-            // if &assay_slims already is in original search link, then remove it so we can add 
-            // the correct "&assay_slims="
-            if (startingIndex != -1) { 
-
-                // adding the length of "&assay_slims" to make endingIndex the index of the 
-                // category
-                var endingIndex = startingIndex + 13; 
-                
-                // either get to end of string or find next parameter starting with "&"
-                while (endingIndex < oldLink.length-1 && oldLink.substring(endingIndex, endingIndex + 1) != "&") { 
-
-                    // increase endingIndex until the end of the "&assay_slims=" parameter
-                    endingIndex++; 
-                }
-                
-                // if did not reach end of string, "&assay_slims=" is in middle of search
-                if(endingIndex != oldLink.length-1){ 
-
-                    // assay_slims part is from (startingIndex, endingIndex), so cut that out 
-                    // of oldLink
-                    oldLink = oldLink.substr(0, startingIndex) + oldLink.substr(endingIndex); 
-                }
-                else{ // "&assay_slims=" is at end of search
-
-                    // assay_slims is from (startingIndex, oldLink.length, so cut that out
-                    oldLink = oldLink.substr(0, startingIndex); 
-                }
-            }
-            if (tempAssay != "") { // if not unclicking
-
-                // add in assay category parameter to search
-                oldLink = oldLink + '&assay_slims=' + tempAssay; 
-            }
-
+        // checking to see if it is currently computational predictions
+        var indexOfExperiment = oldLink.indexOf("?type=Experiment&status=released");
+        if (assay === 'COMPPRED'){ // if computational predictions
+            // keeps any organism parameters and puts back normal searchbase
+            oldLink = "?type=Experiment&status=released";
         }
-        
+
+        // getting index of "&assay_slims=" in original search link if it's there
+        var startingIndex = oldLink.search("&assay_slims=");
+
+        // if &assay_slims already is in original search link, then remove it so we can add
+        // the correct "&assay_slims="
+        if (startingIndex != -1) {
+
+            // adding the length of "&assay_slims" to make endingIndex the index of the
+            // category
+            var endingIndex = startingIndex + 13;
+
+            // either get to end of string or find next parameter starting with "&"
+            while (endingIndex < oldLink.length-1 && oldLink.substring(endingIndex, endingIndex + 1) != "&") {
+
+                // increase endingIndex until the end of the "&assay_slims=" parameter
+                endingIndex++;
+            }
+
+            // if did not reach end of string, "&assay_slims=" is in middle of search
+            if(endingIndex != oldLink.length-1){
+
+                // assay_slims part is from (startingIndex, endingIndex), so cut that out
+                // of oldLink
+                oldLink = oldLink.substr(0, startingIndex) + oldLink.substr(endingIndex);
+            }
+            else{ // "&assay_slims=" is at end of search
+
+                // assay_slims is from (startingIndex, oldLink.length, so cut that out
+                oldLink = oldLink.substr(0, startingIndex);
+            }
+        }
+        if (tempAssay != "") { // if not unclicking
+            // add in assay category parameter to search
+            if (assay === 'COMPPRED') {
+                oldLink = '?type=Annotation&encyclopedia_version=3';
+            } else {
+                oldLink = oldLink + '&assay_slims=' + tempAssay;
+            }
+        }
+
         this.callback(oldLink); // updating current through callback
 
     },
 
 
     // pass in string with organism query and either adds or removes tab from list of selected tabs
-    handleTabClick: function(tab){ 
-        
+    handleTabClick: function(tab){
+
         var tempArray = _.clone(this.state.newtabs); // creates a copy of this.state.newtabs
         var finalLink = _.clone(this.state.current); // clones current
-        
+
         if (tempArray.indexOf(tab) == -1) { // if tab isn't already in array, then add it
             tempArray.push(tab);
         }
         else{ // otherwise if it is in array, remove it from array and from link
-            var indexToRemoveArray = tempArray.indexOf(tab); 
+            var indexToRemoveArray = tempArray.indexOf(tab);
             tempArray.splice(indexToRemoveArray, 1);
             var indexToRemoveLink = finalLink.indexOf(tab);
             finalLink = finalLink.substr(0, indexToRemoveLink) + finalLink.substr(indexToRemoveLink + tab.length);
         }
-        
+
         var organismString = ""; // create empty string to add all organisms selected
-        for(var x = 0; x < tempArray.length; x++){ 
+        for(var x = 0; x < tempArray.length; x++){
             if(finalLink.indexOf(tempArray[x]) == -1){ // if organisms were previously not selected
                 organismString = organismString + tempArray[x]; // then add them in
             }
@@ -122,12 +110,12 @@ var Home = module.exports.Home = React.createClass({
 
         finalLink = finalLink + organismString; // add in updated organism queries to link
 
-        this.setState({ 
+        this.setState({
             newtabs: tempArray // update newtabs
         });
 
         this.callback(finalLink); // updated current, updating homepage charts
-        
+
     },
 
     callback: function(newUrl){ // updates current when it changes
@@ -135,27 +123,27 @@ var Home = module.exports.Home = React.createClass({
             current: newUrl
 
         });
-        
+
     },
 
     render: function() { // renders home page
         return (
-            
+
             <div className="whole-page">
 
-                <header class="row">
-                    <div class="col-sm-12">
+                <header className="row">
+                    <div className="col-sm-12">
                         <h1 className="page-title">
-                            
+
                         </h1>
                     </div>
                 </header>
                 <div className="row">
-                    
+
                         <div className="col-xs-12">
-                            
+
                             <AssayClicking current={this.state.current} callback={this.callback} assayCategory={this.state.assayCategory} handleAssayCategoryClick={this.handleAssayCategoryClick}/>
-                            
+
                             <Panel>
                             <TabClicking handleTabClick={this.handleTabClick} newtabs={this.state.newtabs}/>
                             <div className="graphs clearfix" >
@@ -165,13 +153,13 @@ var Home = module.exports.Home = React.createClass({
                                             Project
                                             <center> <hr width="80%" position="static" color="blue"></hr> </center>
                                         </div>
-                                        
-                                        <HomepageChartLoader searchBase={this.state.current} 
+
+                                        <HomepageChartLoader searchBase={this.state.current}
                                                     callback={this.callback}/>
                                         <div id="chart-legend" className="chart-legend">
 
                                         </div>
-                                
+
                                     </div>
                                     <div className="col-sm-4">
                                         <div className="title">
@@ -203,36 +191,36 @@ var Home = module.exports.Home = React.createClass({
                         <div className="col-md-9">
                             <Panel>
                                 <div className="getting-started">
-                                    <PanelBody addClasses="description"> 
-                                                
+                                    <PanelBody addClasses="description">
+
                                         The ENCODE (Encyclopedia of DNA Elements) Consortium is an international collaboration of research groups funded by the National Human Genome Research Institute (NHGRI). The goal of ENCODE is to build a comprehensive parts list of functional elements in the human genome, including elements that act at the protein and RNA levels, and regulatory elements that control cells and circumstances in which a gene is active.
-                                                
+
                                     </PanelBody>
                                     <a href="/help/getting-started" className="getting-started-button btn btn-info btn-lg" role="button"> Getting Started </a>
                                     <img src="static/img/getting-started.jpg" className="getting-started-image"/>
                                 </div>
                             </Panel>
                         </div>
-                    
-                        
+
+
                         <div className="col-md-3">
-                                
+
                             <Panel>
                             <TwitterWidget/>
                             </Panel>
                         </div>
-                    
+
                 </div>
-                
+
             </div>
-            
+
         );
     }
 
 });
 
 // Creates twitter widget
-var TwitterWidget = React.createClass({ 
+var TwitterWidget = React.createClass({
     componentDidMount: function() { // twitter script from API
         var js, link;
         link = this.refs.link.getDOMNode();
@@ -251,7 +239,7 @@ var TwitterWidget = React.createClass({
             ref= "link"
             className= "twitter-timeline"
             href= "https://twitter.com/encodedcc" // from encodedcc twitter
-            widget-id= "encodedcc" 
+            widget-id= "encodedcc"
             data-screen-name="EncodeDCC"
             //data-tweet-limit = "4"
             //data-width = "300"
@@ -270,17 +258,17 @@ var AssayClicking = React.createClass({
         assayCategory: React.PropTypes.string
     },
 
-    // Sets value of updatedLink to current to allow easy modification, sets value of currentAssay 
+    // Sets value of updatedLink to current to allow easy modification, sets value of currentAssay
     // to assayCategory, creates assayList with ids of assay categories for rectangles in SVG
     getInitialState: function(){
         return {
             updatedLink: this.props.current,
             currentAssay: this.props.assayCategory,
-            assayList: ["3D+chromatin+structure", 
+            assayList: ["3D+chromatin+structure",
                         "DNA+accessibility",
                         "DNA+binding",
                         "DNA+methylation",
-                        "",
+                        "COMPPRED",
                         "Transcription",
                         "RNA+binding"]
         };
@@ -288,7 +276,7 @@ var AssayClicking = React.createClass({
 
     // Properly adds or removes assay category from link
     sortByAssay: function(category) {
-        
+        console.log('SORTBYASSAY: ' + category);
         this.props.handleAssayCategoryClick(category); // handles assay category click
         this.setState({currentAssay: category}); // updates current assay
 
@@ -314,7 +302,7 @@ var AssayClicking = React.createClass({
         require.ensure(['d3'], function(require) {
             if (this.refs.graphdisplay) {
                 this.d3 = require('d3');
-            
+
                 var allRects = this.d3.selectAll("rect.rectangle-box");
                 var dataset = [];
                 for(var x = 0; x < allRects[0].length; x++){
@@ -327,7 +315,7 @@ var AssayClicking = React.createClass({
                 this.bindClickHandlers(this.d3, el);
             }
 
-                
+
         }.bind(this));
 
 
@@ -338,24 +326,24 @@ var AssayClicking = React.createClass({
     // Renders classic image and svg rectangles
     render: function() {
         return (
-            <Panel ref="graphdisplay"> 
+            <Panel ref="graphdisplay">
              <div className="overall-classic">
 
-                    <img src="static/img/classic-image.jpg" className="classicImage"/> 
-                    
+                    <img src="static/img/classic-image.jpg" className="classicImage"/>
+
                     <svg id="classic-image-svg-overlay" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3253 1440" className="classic-svg">
-                    
-                    <rect id = {this.state.assayList[0]} x="928.1" y="859.1" class="st0" width="190.2" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[0] ? " selected": "")}/>
-                    <rect id = {this.state.assayList[1]} x="1132.8" y="859.1" class="st0" width="202.6" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[1] ? " selected": "")}/>
-                    <rect id = {this.state.assayList[2]} x="1354.1" y="859.1" class="st0" width="171.6" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[2] ? " selected": "")}/>
-                    <rect id = {this.state.assayList[3]} x="1538.1" y="859.1" class="st0" width="213" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[3] ? " selected": "")}/>
-                    <rect id = {this.state.assayList[4]} x="1771.7" y="859.1" class="st0" width="266.7" height="171.6" onClick={this.props.handleAssayCategoryClick.bind(null, '?type=Annotation&encyclopedia_version=3')} className={"rectangle-box" + (this.props.current.indexOf('?type=Annotation&encyclopedia_version=3') != -1 ? " selected": "")}/>
-                    <rect id = {this.state.assayList[5]} x="2057.1" y="859.1" class="st0" width="171.6" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[5] ? " selected": "")}/>
-                    <rect id = {this.state.assayList[6]} x="2247.3" y="859.1" class="st0" width="163.3" height="175.8" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[6] ? " selected": "")}/>
-                    
+
+                    <rect id = {this.state.assayList[0]} x="928.1" y="859.1" className="st0" width="190.2" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[0] ? " selected": "")}/>
+                    <rect id = {this.state.assayList[1]} x="1132.8" y="859.1" className="st0" width="202.6" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[1] ? " selected": "")}/>
+                    <rect id = {this.state.assayList[2]} x="1354.1" y="859.1" className="st0" width="171.6" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[2] ? " selected": "")}/>
+                    <rect id = {this.state.assayList[3]} x="1538.1" y="859.1" className="st0" width="213" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[3] ? " selected": "")}/>
+                    <rect id = {this.state.assayList[4]} x="1771.7" y="859.1" className="st0" width="266.7" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[4] ? " selected": "")}/>
+                    <rect id = {this.state.assayList[5]} x="2057.1" y="859.1" className="st0" width="171.6" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[5] ? " selected": "")}/>
+                    <rect id = {this.state.assayList[6]} x="2247.3" y="859.1" className="st0" width="163.3" height="175.8" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[6] ? " selected": "")}/>
+
                     </svg>
-                    
-                    
+
+
 
                 </div>
             </Panel>
@@ -395,7 +383,7 @@ var TabClicking = React.createClass({
 
     render: function() {
         return (
-            <div ref="tabdisplay"> 
+            <div ref="tabdisplay">
                 <div className="tabTable">
 
                 <table>
@@ -406,7 +394,7 @@ var TabClicking = React.createClass({
                         <td> <a className={"single-tab" + (this.props.newtabs.indexOf(this.state.queryStrings[3]) != -1 ? " selected": "")} href="#" data-trigger onClick={this.props.handleTabClick.bind(null, this.state.queryStrings[3])}>Fly</a></td>
                     </tr>
                 </table>
-                    
+
 
                 </div>
             </div>
@@ -458,30 +446,30 @@ var HomepageChart = React.createClass({
             var assayFacet = facets.find(facet => facet.field === 'award.project');
 
 
-            if(assayFacet != undefined){ // if there is data 
-                document.getElementById('MyEmptyChart').innerHTML = ""; 
+            if(assayFacet != undefined){ // if there is data
+                document.getElementById('MyEmptyChart').innerHTML = "";
                 document.getElementById('MyEmptyChart').removeAttribute("class"); // clear out empty chart div
 
-                var totalDocCount = 0; 
+                var totalDocCount = 0;
 
                 // for each item, set doc count, add to total doc count, add proper label, and assign color
-                assayFacet.terms.forEach(function(term, i) { 
+                assayFacet.terms.forEach(function(term, i) {
                     data[i] = term.doc_count;
                     totalDocCount += term.doc_count;
                     labels[i] = term.key;
                     colors[i] = colorList[i % colorList.length];
                 });
 
-                // adding total doc count to middle of donut 
+                // adding total doc count to middle of donut
                 // http://stackoverflow.com/questions/20966817/how-to-add-text-inside-the-doughnut-chart-using-chart-js/24671908
-                Chart.pluginService.register({ 
+                Chart.pluginService.register({
                     beforeDraw: function(chart) {
                         if(chart.chart.canvas.id == 'myChart'){
                             var width = chart.chart.width,
                                 height = chart.chart.height,
                                 ctx = chart.chart.ctx;
 
-                            ctx.fillStyle = '#000000';    
+                            ctx.fillStyle = '#000000';
                             ctx.restore();
                             var fontSize = (height / 114).toFixed(2);
                             ctx.font = fontSize + "em sans-serif";
@@ -539,26 +527,26 @@ var HomepageChart = React.createClass({
                             if (activePoints[0] == null) { // if click on wrong area, do nothing
                                 var placeholder = 0;
                             }
-                            else{ // otherwise go to matrix view 
+                            else{ // otherwise go to matrix view
                                 var term = assayFacet.terms[activePoints[0]._index].key;
                                 this.context.navigate(this.props.data['@id'] + '&award.project=' + term);
                             }
-                            
+
                             this.myPieChart.update();
                             this.myPieChart.render();
                             this.forceUpdate();
-                            
+
                         }
                     }
                 });
                 document.getElementById('chart-legend').innerHTML = this.myPieChart.generateLegend(); // generates legend
-                
+
             }
-             
+
 
             else{ //if no data
-                
-                var element = document.getElementById('MyEmptyChart'); 
+
+                var element = document.getElementById('MyEmptyChart');
                 var chart = document.getElementById('myChart');
                 var existingText = document.getElementById('p1');
                 if(existingText){
@@ -567,7 +555,7 @@ var HomepageChart = React.createClass({
 
                 var para = document.createElement("p");
                 para.setAttribute('id', 'p1');
-                var node = document.createTextNode("There is no data to display."); 
+                var node = document.createTextNode("There is no data to display.");
                 para.appendChild(node); // display no data error message
 
                 element.appendChild(para);
@@ -578,10 +566,10 @@ var HomepageChart = React.createClass({
 
 
         }.bind(this));
-        
+
     },
 
-    
+
 
     componentDidMount: function() {
         this.drawChart();
@@ -612,18 +600,17 @@ var HomepageChart = React.createClass({
 // component to draw the resulting chart.
 var HomepageChartLoader = React.createClass({
     propTypes: {
-        
+
         callback: React.PropTypes.func
     },
 
 
     render: function() {
-        console.log('EXP: %o', this.props);
         return (
             <FetchedData>
                 <Param name="data" url={'/matrix/' + this.props.searchBase} />
                 <HomepageChart searchBase={this.props.searchBase + '&'} />
-                
+
             </FetchedData>
         );
     }
@@ -664,30 +651,30 @@ var HomepageChart2 = React.createClass({
             var assayFacet = facets.find(facet => facet.field === 'replicates.library.biosample.biosample_type');
 
 
-            if(assayFacet != undefined){ // if there is data 
-                document.getElementById('MyEmptyChart2').innerHTML = ""; 
+            if(assayFacet != undefined){ // if there is data
+                document.getElementById('MyEmptyChart2').innerHTML = "";
                 document.getElementById('MyEmptyChart2').removeAttribute("class"); // clear out empty chart div
 
                 var totalDocCount = 0;
 
                 // for each item, set doc count, add to total doc count, add proper label, and assign color
-                assayFacet.terms.forEach(function(term, i) { 
+                assayFacet.terms.forEach(function(term, i) {
                     data[i] = term.doc_count;
                     totalDocCount += term.doc_count;
                     labels[i] = term.key;
                     colors[i] = colorList[i % colorList.length];
                 });
 
-                // adding total doc count to middle of donut 
+                // adding total doc count to middle of donut
                 // http://stackoverflow.com/questions/20966817/how-to-add-text-inside-the-doughnut-chart-using-chart-js/24671908
-                Chart.pluginService.register({ 
+                Chart.pluginService.register({
                     beforeDraw: function(chart) {
                         if(chart.chart.canvas.id == 'myChart2'){
                             var width = chart.chart.width,
                                 height = chart.chart.height,
                                 ctx = chart.chart.ctx;
 
-                            ctx.fillStyle = '#000000';    
+                            ctx.fillStyle = '#000000';
                             ctx.restore();
                             var fontSize = (height / 114).toFixed(2);
                             ctx.font = fontSize + "em sans-serif";
@@ -701,7 +688,7 @@ var HomepageChart2 = React.createClass({
                             ctx.fillText(text, textX, textY);
                             ctx.save();
                         }
-                        
+
                     }
                 });
 
@@ -741,7 +728,7 @@ var HomepageChart2 = React.createClass({
                             // React to clicks on pie sections
                             var activePoints = this.myPieChart.getElementAtEvent(e);
                             var term = assayFacet.terms[activePoints[0]._index].key;
-                            this.context.navigate(this.props.data['@id'] + '&y.limit=&replicates.library.biosample.biosample_type=' + term); // go to matrix view 
+                            this.context.navigate(this.props.data['@id'] + '&y.limit=&replicates.library.biosample.biosample_type=' + term); // go to matrix view
                         }
                     }
                 });
@@ -749,8 +736,8 @@ var HomepageChart2 = React.createClass({
                 document.getElementById('chart-legend-2').innerHTML = this.myPieChart.generateLegend(); // generates legend
             }
 
-            else{ // if no data 
-                
+            else{ // if no data
+
                 var element = document.getElementById('MyEmptyChart2');
                 var chart = document.getElementById('myChart2');
                 var existingText = document.getElementById('p2');
@@ -784,7 +771,6 @@ var HomepageChart2 = React.createClass({
     },
 
     render: function() {
-        console.log('BIO: %o', this.props);
         return (
             <div>
                 <canvas id="myChart2" width="0" height="0"></canvas>
@@ -797,12 +783,11 @@ var HomepageChart2 = React.createClass({
 
 var HomepageChartLoader2 = React.createClass({
     propTypes: {
-        
+
         callback: React.PropTypes.func
     },
 
     render: function() {
-        console.log('DATA: %o', this.props);
         return (
             <FetchedData>
                 <Param name="data" url={'/matrix/' + this.props.searchBase} />
@@ -847,7 +832,7 @@ var HomepageChart3 = React.createClass({
             if (assayFacet && assayFacet.terms.length ) {
                 // clear empty chart div
                 document.getElementById('MyEmptyChart3').innerHTML = "";
-                document.getElementById('MyEmptyChart3').removeAttribute("class"); 
+                document.getElementById('MyEmptyChart3').removeAttribute("class");
 
                 // Sort assayFacet terms array by year/month, and get most recent six entries
                 var terms = assayFacet.terms.sort((a, b) => {
@@ -875,7 +860,7 @@ var HomepageChart3 = React.createClass({
                 });
 
                 // gives bar graph a constant green color
-                colors = ['#4cd964', '#4cd964', '#4cd964', '#4cd964', '#4cd964', '#4cd964']; 
+                colors = ['#4cd964', '#4cd964', '#4cd964', '#4cd964', '#4cd964', '#4cd964'];
 
 
                 // Pass the counts to the charting library to render it.
@@ -896,7 +881,7 @@ var HomepageChart3 = React.createClass({
                         tooltips: {
                             callbacks: {
                                 title: function(tooltipItems, data){ // show full label in hovering
-                                    return data.labels[tooltipItems[0].index]; 
+                                    return data.labels[tooltipItems[0].index];
                                 }
                             }
                         },
@@ -916,7 +901,7 @@ var HomepageChart3 = React.createClass({
                                 }
                             }]
                         },
-                        
+
                         onClick: (e) => {
                             // React to clicks on pie sections
                             var activePoints = this.myBarChart.getElementAtEvent(e);
@@ -929,7 +914,7 @@ var HomepageChart3 = React.createClass({
             }
 
             else{ // if no data
-                
+
                 var element = document.getElementById('MyEmptyChart3');
                 var chart = document.getElementById('myChart3');
                 var existingText = document.getElementById('p3');
@@ -975,7 +960,7 @@ var HomepageChart3 = React.createClass({
 
 var HomepageChartLoader3 = React.createClass({
     propTypes: {
-        
+
         callback: React.PropTypes.func
     },
 
