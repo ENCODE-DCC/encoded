@@ -462,4 +462,17 @@ def file_7_8(value, system):
 
 @upgrade_step('file', '8', '9')
 def file_8_9(value, system):
+    # http://redmine.encodedcc.org/issues/4183
+    if value.get('file_format') == 'fastq' and 'assembly' in value:
+        value.pop('assembly')
+    if value.get('file_format') in ['fastq', 'bam', 'sam', 'bed', 'bigBed', 'gtf', 'gff']:
+        if 'assembly' not in value:
+            if 'derived_from' in value:
+                derived_from_files = value['derived_from']
+                for f in derived_from_files:
+                    if 'assembly' in f:
+                        value['assembly'] = f['assembly']
+                    break
+            # Some files could still be without assembly values at this point
+            # Let's evaluate how many and we'll fix those in the metadata first.
     return

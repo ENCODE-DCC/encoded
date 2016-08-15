@@ -77,6 +77,17 @@ def file_7(file_base):
     return item
 
 
+@pytest.fixture
+def file_8(file_base):
+    item = file_base.copy()
+    item.update({
+        'file_format': 'fastq',
+        'assembly': 'hg19',
+        'schema_version': '8'
+    })
+    return item
+
+
 def test_file_upgrade(upgrader, file_1):
     value = upgrader.upgrade('file', file_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -129,3 +140,9 @@ def test_file_upgrade5(root, upgrader, registry, file_5, file, threadlocals, dum
 def test_file_upgrade7(upgrader, file_7):
     value = upgrader.upgrade('file', file_7, current_version='7', target_version='8')
     assert value['schema_version'] == '8'
+
+
+def test_file_upgrade8(upgrader, file_8):
+    value = upgrader.upgrade('file', file_8, current_version='8', target_version='9')
+    assert value['schema_version'] == '9'
+    assert 'assembly' not in value
