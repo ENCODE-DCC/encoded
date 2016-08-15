@@ -7,3 +7,15 @@ biosampleType_ontologyPrefix = {
     'in vitro differentiated cells': ['CL', 'EFO'],
     'induced pluripotent stem cell line': ['EFO']
 }
+
+NTR_assay_lookup = {
+    'NTR:0003027': 'eCLIP',
+    'NTR:0000762': 'shRNA knockdown followed by RNA-seq',
+    'NTR:0000763': 'siRNA knockdown followed by RNA-seq',
+    'NTR:0003082': 'single cell isolation followed by RNA-seq',
+    'NTR:0003660': 'microRNA counts',
+    'NTR:0003814': 'CRISPR genome editing followed by RNA-seq',
+    'NTR:0002490': 'TAB-seq',
+    'NTR:0000612': 'Switchgear',
+    'NTR:0001684': '5\' RLM RACE'
+}

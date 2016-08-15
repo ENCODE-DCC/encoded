@@ -3,7 +3,7 @@ from snovault import (
     audit_checker,
 )
 from .conditions import rfa
-from .ontology_data import biosampleType_ontologyPrefix
+from .ontology_data import (biosampleType_ontologyPrefix, NTR_assay_lookup)
 from .gtex_data import gtexDonorsList
 from .standards_data import pipelines_with_read_depth
 
@@ -1989,20 +1989,20 @@ def audit_experiment_assay(value, system):
         return
         # This should be a dependancy
 
-    if 'assay_term_name' not in value:
-        detail = 'Experiment {} is missing assay_term_name'.format(value['@id'])
-        yield AuditFailure('missing assay information', detail, level='ERROR')
-        return
-        # This should be a dependancy
-
     ontology = system['registry']['ontology']
     term_id = value.get('assay_term_id')
     term_name = value.get('assay_term_name')
 
     if term_id.startswith('NTR:'):
-        detail = 'Assay_term_id is a New Term Request ({} - {})'.format(term_id, term_name)
-        yield AuditFailure('NTR assay', detail, level='INTERNAL_ACTION')
-        return
+        if term_id not in NTR_assay_lookup:
+            detail = 'Assay_term_id is a New Term Request ({} - {}) that is invalid'.format(
+                term_id, term_name)
+            yield AuditFailure('invalid NTR assay', detail, level='INTERNAL_ACTION')
+            return
+        else:
+            detail = 'Assay_term_id is a New Term Request ({} - {})'.format(term_id, term_name)
+            yield AuditFailure('NTR assay', detail, level='INTERNAL_ACTION')
+            return
 
     if term_id not in ontology:
         detail = 'Assay_term_id {} is not found in cached version of ontology'.format(term_id)
