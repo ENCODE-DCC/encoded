@@ -445,8 +445,16 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             for c in constructs:
                 construct_object = request.embed(c, '@@object')
                 target_name = construct_object['target']
-                construct_objects_list.append((construct_object,
-                                               request.embed(target_name, '@@object')))
+                if 'promoter_used' in construct_object and \
+                   construct_object['promoter_used'] is not None:
+                    promo = construct_object['promoter_used']
+                    construct_objects_list.append((construct_object,
+                                                  request.embed(target_name, '@@object'),
+                                                  request.embed(promo, '@object')))
+                else:
+                    construct_objects_list.append((construct_object,
+                                                   request.embed(target_name, '@@object'),
+                                                   None))
 
         model_construct_objects_list = None
         if model_organism_donor_constructs is not None and len(model_organism_donor_constructs) > 0:
@@ -454,8 +462,16 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             for c in model_organism_donor_constructs:
                 construct_object = request.embed(c, '@@object')
                 target_name = construct_object['target']
-                model_construct_objects_list.append((construct_object,
-                                                    request.embed(target_name, '@@object')))
+                if 'promoter_used' in construct_object and \
+                   construct_object['promoter_used'] is not None:
+                    promo = construct_object['promoter_used']
+                    model_construct_objects_list.append((construct_object,
+                                                        request.embed(target_name, '@@object'),
+                                                        request.embed(promo, '@object')))
+                else:
+                    model_construct_objects_list.append((construct_object,
+                                                        request.embed(target_name, '@@object'),
+                                                        None))
 
         rnai_objects = None
         if rnais is not None and len(rnais) > 0:
@@ -751,12 +767,19 @@ def generate_summary_dictionary(
 
         if construct_objects_list is not None and len(construct_objects_list) > 0:
             constructs_list = []
-            for cons, tar in construct_objects_list:
+            for cons, tar, promoter in construct_objects_list:
                 if 'tags' in cons:
                     for tag in cons['tags']:
-                        constructs_list.append(tag['location'] + ' ' +
-                                               tar['label'] + ' ' +
-                                               cons['construct_type'])
+                        if promoter is not None:
+                            constructs_list.append(tag['location'] + ' ' +
+                                                   tar['label'] + ' ' +
+                                                   cons['construct_type'] +
+                                                   ' under ' + promoter['label'] +
+                                                   ' promoter')
+                        else:
+                            constructs_list.append(tag['location'] + ' ' +
+                                                   tar['label'] + ' ' +
+                                                   cons['construct_type'])
                 else:
                     constructs_list.append(tar['label'])
 
@@ -768,12 +791,20 @@ def generate_summary_dictionary(
 
         if model_construct_objects_list is not None and len(model_construct_objects_list) > 0:
             constructs_list = []
-            for cons, tar in model_construct_objects_list:
+            for cons, tar, promoter in model_construct_objects_list:
                 if 'tags' in cons:
                     for tag in cons['tags']:
-                        constructs_list.append(tag['location'] + ' ' +
-                                               tar['label'] + ' ' +
-                                               cons['construct_type'])
+                        if promoter is not None:
+                            constructs_list.append(tag['location'] + ' ' +
+                                                   tar['label'] + ' ' +
+                                                   cons['construct_type'] +
+                                                   ' under ' + promoter['label'] +
+                                                   ' promoter')
+                        else:
+                            constructs_list.append(tag['location'] + ' ' +
+                                                   tar['label'] + ' ' +
+                                                   cons['construct_type'])
+
                 else:
                     constructs_list.append(tar['label'])
 
