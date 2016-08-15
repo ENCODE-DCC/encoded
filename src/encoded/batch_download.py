@@ -16,12 +16,6 @@ import csv
 import io
 import json
 
-from pprint import pprint as pp
-import pdb
-import logging
-
-
-log = logging.getLogger(__name__)
 
 
 def includeme(config):
@@ -278,9 +272,8 @@ def metadata_tsv(context, request):
                             temp = new_values
                     data = list(set(temp))
                     data.sort()
-                data_row.append(', '.join(data))
+                    data_row.append(', '.join(data))
                 audit_info = [make_audit_cell(audit_type, experiment_json, f) for audit_type in _audit_mapping]
-                print(audit_info)
                 data_row.extend(audit_info)
                 rows.append(data_row)
     fout = io.StringIO()
