@@ -481,6 +481,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             depleted_in_term_name,
             phase,
             subcellular_fraction_term_name,
+            synchronization,
             post_synchronization_time,
             post_synchronization_time_units,
             post_treatment_time,
@@ -663,7 +664,8 @@ def generate_summary_dictionary(
             else:
                 dict_of_phrases['synchronization'] += ' at ' + synchronization + ' stage'
 
-        if post_treatment_time is not None and post_treatment_time_units is not None:
+        if post_treatment_time is not None and \
+           post_treatment_time_units is not None:
             dict_of_phrases['post_treatment'] = (post_treatment_time +
                                                  ' ' + post_treatment_time_units +
                                                  's after the sample was ')
