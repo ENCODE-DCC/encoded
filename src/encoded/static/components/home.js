@@ -835,9 +835,6 @@ var HomepageChart3 = React.createClass({
                 '#3D9140',
                 '#E5E4E2'
             ];
-            var data = [];
-            var xlabels = []; // abbreviated months
-            var labels = []; // full labels for hovering
             var colors = [];
 
             // Get the assay_title counts from the facets
@@ -847,66 +844,35 @@ var HomepageChart3 = React.createClass({
 
             // Collect up the experiment assay_title counts to our local arrays to prepare for
             // the charts.
-            if (assayFacet && assayFacet.terms.length ) { // if there is data
+            if (assayFacet && assayFacet.terms.length ) {
                 // clear empty chart div
                 document.getElementById('MyEmptyChart3').innerHTML = "";
                 document.getElementById('MyEmptyChart3').removeAttribute("class"); 
 
-                // Sort assayFacet terms array by year/month
-//                var sortedReleases = assayFacet.terms.sort((a, b) => {
-//                    var sortDataA = a.key.split(', ');
-//                    return a.key
-//                });
+                // Sort assayFacet terms array by year/month, and get most recent six entries
+                var terms = assayFacet.terms.sort((a, b) => {
+                    // Split "Month, YEAR" into array ["Month", "YEAR"];
+                    var sortDataA = a.key.split(', ');
+                    var sortDataB = b.key.split(', ');
 
-                while(data.length < 6){ // getting past 6 months
+                    // Convert arrays to "YYYYMM" format
+                    var normalizedDateA = sortDataA[1] + globals.zeroFill(sortDataA[0].indexOf(months), 2);
+                    var normalizedDateB = sortDataB[1] + globals.zeroFill(sortDataB[0].indexOf(months), 2);
+                    return (normalizedDateA < normalizedDateB) ? -1 : ((normalizedDateA > normalizedDateB) ? 1 : 0);
+                }).slice(-6);
 
-                    // split up into month and year (of 0 index as starting pt)
-                    var firstValues = assayFacet.terms[0].key.split(", "); 
-                    var maxIndex = 0;
-                    var maxMonth = months.indexOf(firstValues[0]); // get month value
-
-                    // if less than 10, add 0 to beginning so it's a 2 digit number; for comparing later on
-                    if (maxMonth < 10){ 
-                        var maxMonthString = "0" + maxMonth.toString();
-                        maxMonth = maxMonthString;
-                    }
-                    var maxYear = firstValues[1]; // get year value 
-                    var maxYearMonthCombo = maxYear + maxMonth; // get combo as a 4 digit number
-                    var maxMonthAbbrev = firstValues[0].substring(0,3); // get month as abbreviation
-
-
-                    for(var x = 0; x < assayFacet.terms.length; x++){ // finding max month year combo
-                        // same process above of getting 4 digit number of month year combo
-                        var tempDate = assayFacet.terms[x].key.split(", "); 
-                        var tempMonth = months.indexOf(tempDate[0]);
-                        if (tempMonth < 10){
-                            var tempMonthString = "0" + tempMonth.toString();
-                            tempMonth = tempMonthString;
-                        }
-                        var tempYear = tempDate[1];
-                        var tempYearMonthCombo = tempYear + tempMonth;
-                        var tempMonthAbbrev = tempDate[0].substring(0,3);
-
-
-                        if(tempYearMonthCombo > maxYearMonthCombo){ // if temp greater than max
-                            // set all max values to temp values
-                            maxYear = tempYear;
-                            maxYearMonthCombo = tempYearMonthCombo;
-                            maxMonthAbbrev = tempMonthAbbrev;
-                            maxIndex = x;
-
-                        }
-                    }
-                    // after getting max
-                    data.push(assayFacet.terms[maxIndex].doc_count); // add count to data
-                    xlabels.push(maxMonthAbbrev); // add abbreviated month 
-                    labels.push(assayFacet.terms[maxIndex].key); // add full month and year
-                    assayFacet.terms.splice(maxIndex, 1); // take out max to find next max
-                }
-
-                data.reverse(); // in ascending order
-                xlabels.reverse(); // in ascending order
-                labels.reverse(); // in ascending order
+                // Extract counts and abbreviated months from sortedReleases, so we can pass these
+                // to the charting code.
+                var xlabels = [];
+                var labels = [];
+                var data = terms.map(term => {
+                    // Collect abbreviated and full month names corresponding to term month names;
+                    // needed to create the chart.
+                    var month = term.key.split(', ')[0];
+                    labels.push(term.key);
+                    xlabels.push(month.substring(0, 3));
+                    return term.doc_count;
+                });
 
                 // gives bar graph a constant green color
                 colors = ['#4cd964', '#4cd964', '#4cd964', '#4cd964', '#4cd964', '#4cd964']; 
