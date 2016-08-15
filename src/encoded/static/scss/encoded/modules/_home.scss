@@ -212,12 +212,6 @@
     font-weight: 100;
 }
 
-// Makes sure no extra padding in between panels 
-.panel {
-    margin-top: 0px !important;
-}
-
-
 // Positions getting started pic
 .getting-started-image {
     position: relative;
@@ -255,10 +249,4 @@
     left: 900px;
     background-color: transparent;
     z-index: 1;
-}
-
-hr {
-    margin-top: 0px;
-    //border-width: 200px;
-    border-color: #a0a0a0;
 }
