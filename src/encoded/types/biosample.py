@@ -444,7 +444,8 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             for c in constructs:
                 construct_object = request.embed(c, '@@object')
                 target_name = construct_object['target']
-                construct_objects_list.append(request.embed(target_name, '@@object'))
+                construct_objects_list.append((construct_object,
+                                               request.embed(target_name, '@@object')))
 
         model_construct_objects_list = None
         if model_organism_donor_constructs is not None and len(model_organism_donor_constructs) > 0:
@@ -452,7 +453,8 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             for c in model_organism_donor_constructs:
                 construct_object = request.embed(c, '@@object')
                 target_name = construct_object['target']
-                model_construct_objects_list.append(request.embed(target_name, '@@object'))
+                model_construct_objects_list.append((construct_object,
+                                                    request.embed(target_name, '@@object')))
 
         rnai_objects = None
         if rnais is not None and len(rnais) > 0:
@@ -746,8 +748,14 @@ def generate_summary_dictionary(
 
         if construct_objects_list is not None and len(construct_objects_list) > 0:
             constructs_list = []
-            for target in construct_objects_list:
-                constructs_list.append(target['label'])
+            for (cons, target) in construct_objects_list:
+                if 'tags' in cons:
+                    for tag in cons['tags']:
+                        constructs_list.append(tag['location'] + ' ' +
+                                               target['label'] + ' ' +
+                                               cons['construct_type'])
+                else:
+                    constructs_list.append(target['label'])
 
             if len(constructs_list) == 1:
                 dict_of_phrases['constructs'] = 'expressing ' + constructs_list[0]
@@ -758,8 +766,14 @@ def generate_summary_dictionary(
 
         if model_construct_objects_list is not None and len(model_construct_objects_list) > 0:
             constructs_list = []
-            for target in model_construct_objects_list:
-                constructs_list.append(target['label'])
+            for (cons, target) in model_construct_objects_list:
+                if 'tags' in cons:
+                    for tag in cons['tags']:
+                        constructs_list.append(tag['location'] + ' ' +
+                                               target['label'] + ' ' +
+                                               cons['construct_type'])
+                else:
+                    constructs_list.append(target['label'])
 
             if len(constructs_list) == 1:
                 dict_of_phrases['model_organism_constructs'] = 'expressing ' + constructs_list[0]
