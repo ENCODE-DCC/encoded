@@ -761,7 +761,8 @@ def generate_summary_dictionary(
         if rnai_objects is not None and len(rnai_objects) > 0:
             rnais_list = []
             for rnaiObject in rnai_objects:
-                    rnais_list.append(rnaiObject['rnai_type'] + ' ' + rnaiObject['target'])
+                    rnais_list.append('expressing ' + rnaiObject['rnai_type'] +
+                                      ' targeting ' + rnaiObject['target'])
 
             dict_of_phrases['rnais'] = ', '.join(map(str, list(set(rnais_list))))
 
