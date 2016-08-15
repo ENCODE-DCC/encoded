@@ -509,6 +509,7 @@ def generate_summary_dictionary(
     depleted_in_term_name=None,
     phase=None,
     subcellular_fraction_term_name=None,
+    synchronization=None,
     post_synchronization_time=None,
     post_synchronization_time_units=None,
     post_treatment_time=None,
@@ -646,10 +647,18 @@ def generate_summary_dictionary(
             if subcellular_fraction_term_name == 'insoluble cytoplasmic fraction':
                 dict_of_phrases['fractionated'] = 'insoluble cytoplasmic fraction'
 
-        if post_synchronization_time is not None and post_synchronization_time_units is not None:
+        if post_synchronization_time is not None and \
+           post_synchronization_time_units is not None:
             dict_of_phrases['synchronization'] = (post_synchronization_time +
                                                   ' ' + post_synchronization_time_units +
                                                   's post synchronization')
+        if synchronization is not None:
+            if synchronization.startswith('puff'):
+                dict_of_phrases['synchronization'] += ' at ' + synchronization
+            elif synchronization == 'egg bleaching':
+                dict_of_phrases['synchronization'] += ' using ' + synchronization
+            else:
+                dict_of_phrases['synchronization'] += ' at ' + synchronization + ' stage'
 
         if post_treatment_time is not None and post_treatment_time_units is not None:
             dict_of_phrases['post_treatment'] = (post_treatment_time +
@@ -660,6 +669,7 @@ def generate_summary_dictionary(
             dict_of_phrases['sample_type'] != 'immortalized cell line') or \
            ('sample_type' not in dict_of_phrases):
             phrase = ''
+
             if 'sex' in dict_of_phrases:
                 if dict_of_phrases['sex'] == 'mixed':
                     phrase += dict_of_phrases['sex'] + ' sex'
