@@ -77,8 +77,8 @@ _tsv_mapping = OrderedDict([
 
 _audit_mapping = OrderedDict([
     ('Audit WARNING', ['audit.WARNING.path',
-                   'audit.WARNING.category',
-                   'audit.WARNING.detail']),
+                       'audit.WARNING.category',
+                       'audit.WARNING.detail']),
     ('Audit INTERNAL_ACTION', ['audit.INTERNAL_ACTION.path',
                                'audit.INTERNAL_ACTION.category',
                                'audit.INTERNAL_ACTION.detail']),
@@ -159,6 +159,7 @@ def make_audit_cell(header_column, experiment_json, file_json):
     data = []
     for i, path in enumerate(paths):
         if '/files/' in path and file_json.get('title', '') not in path:
+            # Skip file audits that does't belong to the file
             continue
         else:
             data.append('{}: {}'.format(categories[i], details[i]))
