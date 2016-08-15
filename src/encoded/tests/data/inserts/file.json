@@ -1360,6 +1360,7 @@
         "submitted_file_name": "test_matched_set_original_file.bed",
         "file_format": "bed",
         "file_format_type": "bed9",
+        "assembly": "hg19",
         "output_type": "hotspots",
         "accession": "ENCFF000PAR",
         "award": "U54HG007010",
