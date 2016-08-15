@@ -98,7 +98,7 @@
                     ]
                 },
                 {
-                    "required": ["file_format_type"],
+                    "required": ["file_format_type", "assembly"],
                     "properties": {
                         "file_format": {
                             "enum": ["gff","bed","bigBed"]
@@ -109,7 +109,7 @@
                     "required": ["assembly"],
                     "properties": {
                         "file_format": {
-                            "enum": ["bam", "sam"]
+                            "enum": ["bam", "sam", "gtf"]
                         }
                     }
                 },
@@ -117,7 +117,7 @@
                     "not": {
                         "properties": {
                             "file_format": {
-                                "enum": ["fastq", "gff", "bed", "bigBed", "bam", "sam"]
+                                "enum": ["fastq", "gff", "gtf", "bed", "bigBed", "bam", "sam"]
                             }
                         }
                     }
