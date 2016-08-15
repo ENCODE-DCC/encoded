@@ -441,7 +441,10 @@ def test_audit_modERN_missing_derived_from(testapp, file_exp, file3, award, anal
 def test_audit_modERN_wrong_step_run(testapp, file_exp, file3, file4, award, analysis_step_version_bam, analysis_step_bam, analysis_step_run_bam):
     testapp.patch_json(award['@id'], {'rfa': 'modERN'})
     testapp.patch_json(file_exp['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq'})
-    testapp.patch_json(file3['@id'], {'dataset': file_exp['@id'], 'file_format': 'bed', 'file_format_type': 'narrowPeak', 'output_type': 'peaks', 'step_run': analysis_step_run_bam['@id'], 'derived_from': [file4['@id']]})
+    testapp.patch_json(file3['@id'], {'dataset': file_exp['@id'], 'file_format': 'bed',
+                                      'file_format_type': 'narrowPeak', 'output_type': 'peaks',
+                                      'step_run': analysis_step_run_bam['@id'], 'assembly': 'ce11',
+                                      'derived_from': [file4['@id']]})
     res = testapp.get(file3['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
