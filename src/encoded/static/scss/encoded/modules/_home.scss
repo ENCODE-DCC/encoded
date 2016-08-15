@@ -1,16 +1,16 @@
 // Allows page to be within the proper width in the middle
 .container-homepage {
-  @include container-fixed();
+    @include container-fixed();
 
-  @media (min-width: $screen-sm-min) {
-    width: $container-sm;
-  }
-  @media (min-width: $screen-md-min) {
-    width: $container-md;
-  }
-  @media (min-width: $screen-lg-min) {
-    width: $container-lg;
-  }
+    @media (min-width: $screen-sm-min) {
+        width: $container-sm;
+    }
+    @media (min-width: $screen-md-min) {
+        width: $container-md;
+    }
+    @media (min-width: $screen-lg-min) {
+        width: $container-lg;
+    }
 }
 
 
@@ -20,7 +20,7 @@
 // width for fluid, full width layouts.
 
 .container-fluid {
-  @include container-fixed();
+    @include container-fixed();
 }
 
 // Makes background color gray
@@ -28,33 +28,6 @@
     background-color: #E8ECEF;
 }
 
-
-// Formatting of heading based on original home page (currently no heading)
-/*.page-title {
-    margin-bottom: 30px;
-    font-size: 2.6 rem;
-    margin-top: 30px;
-    font-family: inherit;
-    font-weight: bold;
-    line-height: 1.1;
-    color: inherit;
-    margin-right: 0px;
-    margin-left: 0px;
-    display: block;
-}
-
-.page-title {
-    margin-bottom: 30px;
-    font-size: 2.6 rem;
-    margin-top: 30px;
-    font-family: inherit;
-    font-weight: bold;
-    line-height: 1.1;
-    color: inherit;
-    margin-right: 0px;
-    margin-left: 100px;
-    display: block;
-}*/
 
 .description {
     line-height: 1.7;
@@ -212,15 +185,16 @@
     font-weight: 100;
 }
 
+.getting-started-image-wrapper {
+    position: relative;
+}
+
 // Positions getting started pic
 .getting-started-image {
-    position: relative;
     padding-top: 0px;
     background-color: #E8ECEF;
     height: auto;
     max-width: 100%;
-    top: 0;
-    left: 0;
     z-index: 0;
 
 }
@@ -236,6 +210,7 @@
 
 // Positions View All
 .view-all {
+    margin-top: 20px;
     text-align: center;
 }
 
@@ -243,8 +218,6 @@
 .view-all-button {
     
     display: inline-block;
-    position: absolute;
-    float: right;
     bottom: 50px;
     left: 900px;
     background-color: transparent;

@@ -177,10 +177,10 @@ var Home = module.exports.Home = React.createClass({
                                         <center> <hr width="80%"></hr> </center>
                                         <HomepageChartLoader3 searchBase={this.state.current}
                                                  callback={this.callback}/>
+                                        <div className="view-all">
+                                                <a href={"/matrix/" + this.state.current} className="view-all-button btn btn-info btn-lg" role="button"> View Selected </a>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="view-all">
-                                        <a href={"/matrix/" + this.state.current} className="view-all-button btn btn-info btn-lg" role="button"> View Selected </a>
                                 </div>
                             </div>
 
@@ -196,8 +196,10 @@ var Home = module.exports.Home = React.createClass({
                                         The ENCODE (Encyclopedia of DNA Elements) Consortium is an international collaboration of research groups funded by the National Human Genome Research Institute (NHGRI). The goal of ENCODE is to build a comprehensive parts list of functional elements in the human genome, including elements that act at the protein and RNA levels, and regulatory elements that control cells and circumstances in which a gene is active.
 
                                     </PanelBody>
-                                    <a href="/help/getting-started" className="getting-started-button btn btn-info btn-lg" role="button"> Getting Started </a>
-                                    <img src="static/img/getting-started.jpg" className="getting-started-image"/>
+                                    <div className="getting-started-image-wrapper">
+                                        <img src="static/img/getting-started.jpg" className="getting-started-image"/>
+                                        <a href="/help/getting-started" className="getting-started-button btn btn-info btn-lg" role="button"> Getting Started </a>
+                                    </div>
                                 </div>
                             </Panel>
                         </div>
@@ -841,8 +843,8 @@ var HomepageChart3 = React.createClass({
                     var sortDataB = b.key.split(', ');
 
                     // Convert arrays to "YYYYMM" format
-                    var normalizedDateA = sortDataA[1] + globals.zeroFill(sortDataA[0].indexOf(months), 2);
-                    var normalizedDateB = sortDataB[1] + globals.zeroFill(sortDataB[0].indexOf(months), 2);
+                    var normalizedDateA = sortDataA[1] + globals.zeroFill(months.indexOf(sortDataA[0]), 2);
+                    var normalizedDateB = sortDataB[1] + globals.zeroFill(months.indexOf(sortDataB[0]), 2);
                     return (normalizedDateA < normalizedDateB) ? -1 : ((normalizedDateA > normalizedDateB) ? 1 : 0);
                 }).slice(-6);
 
