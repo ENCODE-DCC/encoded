@@ -61,9 +61,6 @@ _tsv_mapping = OrderedDict([
     ('Library crosslinking method', ['replicates.library.crosslinking_method']),
     ('Experiment date released', ['date_released']),
     ('Project', ['award.project']),
-    ('Audit WARNING', ['audit.WARNING.path',
-                       'audit.WARNING.category',
-                       'audit.WARNING.detail']),
     ('RBNS protein concentration', ['files.replicate.rbns_protein_concentration', 'files.replicate.rbns_protein_concentration_units']),
     ('Library fragmentation method', ['files.replicate.library.fragmentation_method']),
     ('Library size range', ['files.replicate.library.size_range']),
@@ -82,6 +79,21 @@ _tsv_mapping = OrderedDict([
     ('File download URL', ['files.href']),
     ('Assembly', ['files.assembly']),
     ('Platform', ['files.platform.title'])
+])
+
+_audit_mapping = OrderedDict([
+    ('Audit WARNING', ['audit.WARNING.path',
+                   'audit.WARNING.category',
+                   'audit.WARNING.detail']),
+    ('Audit INTERNAL_ACTION', ['audit.INTERNAL_ACTION.path',
+                               'audit.INTERNAL_ACTION.category',
+                               'audit.INTERNAL_ACTION.detail']),
+    ('Audit NOT_COMPLIANT', ['audit.NOT_COMPLIANT.path',
+                             'audit.NOT_COMPLIANT.category',
+                             'audit.NOT_COMPLIANT.detail']),
+    ('Audit ERROR', ['audit.ERROR.path',
+                     'audit.ERROR.category',
+                     'audit.ERROR.detail'])
 ])
 
 
@@ -120,7 +132,7 @@ def get_peak_metadata_links(request):
     )
     return [peak_metadata_tsv_link, peak_metadata_json_link]
 
-def make_cell_for_row(header_column, row, exp_data_row):
+def make_cell(header_column, row, exp_data_row):
     temp = []
     for column in _tsv_mapping[header_column]:
         c_value = []
@@ -138,13 +150,25 @@ def make_cell_for_row(header_column, row, exp_data_row):
     exp_data_row.append(', '.join(list(set(temp))))
 
 
-def make_audit_cell_for_row(header_column, experiment_json, exp_data_row):
+def make_audit_cell(header_column, experiment_json, file_json):
     categories = []
     details = []
     paths = []
-    for column in _tsv_mapping[header_column]:
+    for column in _audit_mapping[header_column]:
         for value in simple_path_ids(experiment_json, column):
-            if 'path' in column and 
+            if 'path' in column:
+                paths.append(value)
+            elif 'category' in column:
+                categories.append(value)
+            elif 'detail' in column:
+                details.append(value)
+    data = []
+    for i, path in enumerate(paths):
+        if '/files/' in path and file_json.get('title', '') not in path:
+            continue
+        else:
+            data.append('{}: {}'.format(categories[i], details[i]))
+    return '| '.join(data)
 
 
 @view_config(route_name='peak_metadata', request_method='GET')
@@ -223,7 +247,7 @@ def metadata_tsv(context, request):
             exp_data_row = []
             for column in header:
                 if not _tsv_mapping[column][0].startswith('files'):
-                    make_cell_for_row(column, experiment_json, exp_data_row)
+                    make_cell(column, experiment_json, exp_data_row)
 
             f_attributes = ['files.title', 'files.file_type',
                             'files.output_type']
@@ -254,11 +278,14 @@ def metadata_tsv(context, request):
                             temp = new_values
                     data = list(set(temp))
                     data.sort()
-                    data_row.append(', '.join(data))
-                # audit columns go here
+                data_row.append(', '.join(data))
+                audit_info = [make_audit_cell(audit_type, experiment_json, f) for audit_type in _audit_mapping]
+                print(audit_info)
+                data_row.extend(audit_info)
                 rows.append(data_row)
     fout = io.StringIO()
     writer = csv.writer(fout, delimiter='\t')
+    header.extend([prop for prop in _audit_mapping])
     writer.writerow(header)
     writer.writerows(rows)
     return Response(
