@@ -379,6 +379,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 starting_amount_units=None,
                 depleted_in_term_name=None,
                 phase=None,
+                synchronization=None,
                 subcellular_fraction_term_name=None,
                 post_synchronization_time=None,
                 post_synchronization_time_units=None,
@@ -748,39 +749,37 @@ def generate_summary_dictionary(
 
         if construct_objects_list is not None and len(construct_objects_list) > 0:
             constructs_list = []
-            for (cons, target) in construct_objects_list:
+            for cons, tar in construct_objects_list:
                 if 'tags' in cons:
                     for tag in cons['tags']:
                         constructs_list.append(tag['location'] + ' ' +
-                                               target['label'] + ' ' +
+                                               tar['label'] + ' ' +
                                                cons['construct_type'])
                 else:
-                    constructs_list.append(target['label'])
+                    constructs_list.append(tar['label'])
 
             if len(constructs_list) == 1:
                 dict_of_phrases['constructs'] = 'expressing ' + constructs_list[0]
-            else:
-                if len(constructs_list) > 1:
-                    dict_of_phrases['constructs'] = 'expressing ' + \
-                        ', '.join(map(str, list(set(constructs_list))))
+            elif len(constructs_list) > 1:
+                dict_of_phrases['constructs'] = 'expressing ' + \
+                    ', '.join(map(str, list(set(constructs_list))))
 
         if model_construct_objects_list is not None and len(model_construct_objects_list) > 0:
             constructs_list = []
-            for (cons, target) in model_construct_objects_list:
+            for cons, tar in model_construct_objects_list:
                 if 'tags' in cons:
                     for tag in cons['tags']:
                         constructs_list.append(tag['location'] + ' ' +
-                                               target['label'] + ' ' +
+                                               tar['label'] + ' ' +
                                                cons['construct_type'])
                 else:
-                    constructs_list.append(target['label'])
+                    constructs_list.append(tar['label'])
 
             if len(constructs_list) == 1:
                 dict_of_phrases['model_organism_constructs'] = 'expressing ' + constructs_list[0]
-            else:
-                if len(constructs_list) > 1:
-                    dict_of_phrases['model_organism_constructs'] = 'expressing ' + \
-                        ', '.join(map(str, list(set(constructs_list))))
+            elif len(constructs_list) > 1:
+                dict_of_phrases['model_organism_constructs'] = 'expressing ' + \
+                    ', '.join(map(str, list(set(constructs_list))))
 
         if rnai_objects is not None and len(rnai_objects) > 0:
             rnais_list = []
