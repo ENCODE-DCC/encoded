@@ -599,7 +599,7 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^\\S+:\\S+"
+                "pattern": "^(SRA:(SRR|SRX)\\d+)$"
             }
         },
         "step_run": {
