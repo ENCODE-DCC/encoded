@@ -206,7 +206,11 @@ def test_biosample_summary_construct(testapp,
                                      fly,
                                      fly_donor,
                                      biosample_1,
-                                     construct):
+                                     construct,
+                                     target_promoter):
+
+    testapp.patch_json(construct['@id'],
+                       {'promoter_used': target_promoter['@id']})
     testapp.patch_json(biosample_1['@id'], {'donor': fly_donor['@id'],
                                             'biosample_term_id': 'EFO:0002784',
                                             'biosample_term_name': 'liver',
@@ -220,4 +224,4 @@ def test_biosample_summary_construct(testapp,
     res = testapp.get(biosample_1['@id']+'@@index-data')
     assert res.json['object']['summary'] == \
         'Drosophila melanogaster liver tissue ' + \
-        'female (10 days) expressing C-terminal ATF4 fusion protein'
+        'female (10 days) expressing C-terminal ATF4 fusion protein under daf-2 promoter'

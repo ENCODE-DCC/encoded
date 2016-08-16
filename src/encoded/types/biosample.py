@@ -43,6 +43,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'donor.references',
         'model_organism_donor_constructs',
         'model_organism_donor_constructs.submitted_by',
+        'model_organism_donor_constructs.promoter_used',
         'model_organism_donor_constructs.target',
         'model_organism_donor_constructs.documents',
         'model_organism_donor_constructs.documents.award',
@@ -62,6 +63,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'constructs.documents.award',
         'constructs.documents.lab',
         'constructs.target',
+        'cnstructs.promoter_used',
         'protocol_documents.lab',
         'protocol_documents.award',
         'protocol_documents.submitted_by',
@@ -450,7 +452,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                     promo = construct_object['promoter_used']
                     construct_objects_list.append((construct_object,
                                                   request.embed(target_name, '@@object'),
-                                                  request.embed(promo, '@object')))
+                                                  request.embed(promo, '@@object')))
                 else:
                     construct_objects_list.append((construct_object,
                                                    request.embed(target_name, '@@object'),
@@ -467,7 +469,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                     promo = construct_object['promoter_used']
                     model_construct_objects_list.append((construct_object,
                                                         request.embed(target_name, '@@object'),
-                                                        request.embed(promo, '@object')))
+                                                        request.embed(promo, '@@object')))
                 else:
                     model_construct_objects_list.append((construct_object,
                                                         request.embed(target_name, '@@object'),

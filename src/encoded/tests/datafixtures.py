@@ -351,6 +351,15 @@ def target_control(testapp, organism):
     return testapp.post_json('/target', item).json['@graph'][0]
 
 
+@pytest.fixture
+def target_promoter(testapp, fly):
+    item = {
+        'label': 'daf-2',
+        'organism': fly['@id'],
+        'investigated_as': ['other context']
+    }
+    return testapp.post_json('/target', item).json['@graph'][0]
+
 RED_DOT = """data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
 AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
 9TXL0Y4OHwAAAABJRU5ErkJggg=="""
@@ -409,7 +418,7 @@ def rnai(testapp, lab, award, target):
 
 
 @pytest.fixture
-def construct(testapp, lab, award, target, source):
+def construct(testapp, lab, award, target, source, target_control):
     item = {
         'target': target['@id'],
         'award': award['@id'],
