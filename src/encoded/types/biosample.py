@@ -63,7 +63,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'constructs.documents.award',
         'constructs.documents.lab',
         'constructs.target',
-        'cnstructs.promoter_used',
+        'constructs.promoter_used',
         'protocol_documents.lab',
         'protocol_documents.award',
         'protocol_documents.submitted_by',
