@@ -78,27 +78,14 @@ def file_7(file_base):
 
 
 @pytest.fixture
-def file_8a(file_base):
+def file_8(file_base):
     item = file_base.copy()
     item.update({
-        'file_format': 'bam',
+        'file_format': 'fastq',
         'assembly': 'hg19',
         'schema_version': '8'
     })
     return item
-
-
-@pytest.fixture
-def file_8b(file_base, file_8a):
-    item = file_base.copy()
-    item.update({
-        'file_format': 'bed',
-        'file_format_type': 'narrowPeak',
-        'schema_version': '8',
-        'derived_from': [file_8a]
-    })
-    return item
-
 
 
 def test_file_upgrade(upgrader, file_1):
@@ -155,7 +142,7 @@ def test_file_upgrade7(upgrader, file_7):
     assert value['schema_version'] == '8'
 
 
-def test_file_upgrade8(upgrader, file_8a, file_8b):
-    value = upgrader.upgrade('file', file_8b, current_version='8', target_version='9')
+def test_file_upgrade8(upgrader, file_8):
+    value = upgrader.upgrade('file', file_8, current_version='8', target_version='9')
     assert value['schema_version'] == '9'
-    assert 'assembly' in value
+    assert 'assembly' not in value
