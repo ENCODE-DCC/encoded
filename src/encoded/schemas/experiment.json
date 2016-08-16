@@ -206,6 +206,9 @@
         "lab.title": {
             "title": "Lab"
         },
+        "internal_status": {
+            "title": "Status"
+        },
         "replication_type": {
             "title": "Replication type"
         }

@@ -471,6 +471,8 @@ def format_facets(es_results, facets, used_filters, schemas, total):
         terms = aggregations[agg_name][agg_name]['buckets']
         if len(terms) < 2:
             continue
+        import pdb
+        pdb.set_trace()
         result.append({
             'field': field,
             'title': facet.get('title', field),
