@@ -278,24 +278,26 @@ class FileSet(Dataset):
         },
     })
     def assembly(self, request, original_files, related_files):
-        assembly = []
-        count = 1
-        for path in chain(original_files, related_files):
+        assembly = set()
+        viewable_file_formats = ['bigWig',
+                                 'bigBed',
+                                 'narrowPeak',
+                                 'broadPeak',
+                                 'bedRnaElements',
+                                 'bedMethyl',
+                                 'bedLogR']
+        viewable_file_status = ['released']
+        if self.status not in ['released']:
+            viewable_file_status.extend(['in progress', 'revoked', 'archived'])
+
+        for path in chain(original_files, related_files)[:101]:
             # Need to cap this due to the large numbers of files in related_files
-            if count < 100:
                 properties = request.embed(path, '@@object')
-                count = count + 1
-                if self.status in ['released']:
-                    if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak', 'bedRnaElements', 'bedMethyl', 'bedLogR'] and \
-                            properties['status'] in ['released']:
-                        if 'assembly' in properties:
-                            assembly.append(properties['assembly'])
-                else:
-                    if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak', 'bedRnaElements', 'bedMethyl', 'bedLogR'] and \
-                            properties['status'] in ['released', 'in progress', 'revoked', 'archived']:
-                        if 'assembly' in properties:
-                            assembly.append(properties['assembly'])
-        return list(set(assembly))
+                if properties['file_format'] in viewable_file_formats and \
+                        properties['status'] in viewable_file_status:
+                    if 'assembly' in properties:
+                        assembly.add(properties['assembly'])
+        return list(assembly)
 
 
 @collection(
