@@ -450,13 +450,14 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 if 'promoter_used' in construct_object and \
                    construct_object['promoter_used'] is not None:
                     promo = construct_object['promoter_used']
-                    construct_objects_list.append((construct_object,
-                                                  request.embed(target_name, '@@object'),
-                                                  request.embed(promo, '@@object')))
+                    item_to_add = (construct_object,
+                                   request.embed(target_name, '@@object'),
+                                   request.embed(promo, '@@object'))
                 else:
-                    construct_objects_list.append((construct_object,
-                                                   request.embed(target_name, '@@object'),
-                                                   None))
+                    item_to_add = (construct_object,
+                                   request.embed(target_name, '@@object'),
+                                   None)
+                construct_objects_list.append(item_to_add)
 
         model_construct_objects_list = None
         if model_organism_donor_constructs is not None and len(model_organism_donor_constructs) > 0:
@@ -467,13 +468,14 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 if 'promoter_used' in construct_object and \
                    construct_object['promoter_used'] is not None:
                     promo = construct_object['promoter_used']
-                    model_construct_objects_list.append((construct_object,
-                                                        request.embed(target_name, '@@object'),
-                                                        request.embed(promo, '@@object')))
+                    item_to_add = (construct_object,
+                                   request.embed(target_name, '@@object'),
+                                   request.embed(promo, '@@object'))
                 else:
-                    model_construct_objects_list.append((construct_object,
-                                                        request.embed(target_name, '@@object'),
-                                                        None))
+                    item_to_add = (construct_object,
+                                   request.embed(target_name, '@@object'),
+                                   None)
+                model_construct_objects_list.append(item_to_add)
 
         rnai_objects = None
         if rnais is not None and len(rnais) > 0:

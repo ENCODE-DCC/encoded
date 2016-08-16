@@ -235,8 +235,17 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
                                 for c in constructs:
                                     construct_object = request.embed(c, '@@object')
                                     target_name = construct_object['target']
-                                    construct_objects_list.append(request.embed(target_name,
-                                                                                '@@object'))
+                                    if 'promoter_used' in construct_object and \
+                                       construct_object['promoter_used'] is not None:
+                                        promo = construct_object['promoter_used']
+                                        item_to_add = (construct_object,
+                                                       request.embed(target_name, '@@object'),
+                                                       request.embed(promo, '@@object'))
+                                    else:
+                                        item_to_add = (construct_object,
+                                                       request.embed(target_name, '@@object'),
+                                                       None)
+                                    construct_objects_list.append(item_to_add)
 
                             model_construct_objects_list = None
                             model_organism_donor_constructs = biosampleObject.get(
@@ -247,8 +256,17 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
                                 for c in model_organism_donor_constructs:
                                     construct_object = request.embed(c, '@@object')
                                     target_name = construct_object['target']
-                                    model_construct_objects_list.append(request.embed(target_name,
-                                                                                      '@@object'))
+                                    if 'promoter_used' in construct_object and \
+                                       construct_object['promoter_used'] is not None:
+                                        promo = construct_object['promoter_used']
+                                        item_to_add = (construct_object,
+                                                       request.embed(target_name, '@@object'),
+                                                       request.embed(promo, '@@object'))
+                                    else:
+                                        item_to_add = (construct_object,
+                                                       request.embed(target_name, '@@object'),
+                                                       None)
+                                    model_construct_objects_list.append(item_to_add)
 
                             rnai_objects = None
                             rnais = biosampleObject.get('rnais')
