@@ -455,7 +455,7 @@ def search_result_actions(request, doc_types, es_results, position=None):
     return actions
 
 
-def format_facets(es_results, facets, used_filters, schemas, total):
+def format_facets(es_results, facets, used_filters, schemas, total, principals):
     result = []
     # Loading facets in to the results
     if 'aggregations' not in es_results:
@@ -471,8 +471,9 @@ def format_facets(es_results, facets, used_filters, schemas, total):
         terms = aggregations[agg_name][agg_name]['buckets']
         if len(terms) < 2:
             continue
-        import pdb
-        pdb.set_trace()
+        # internal_status exception. Only display for admin users
+        if field == 'internal_status' and 'group.admin' not in principals:
+            continue
         result.append({
             'field': field,
             'title': facet.get('title', field),
@@ -672,7 +673,7 @@ def search(context, request, search_type=None, return_generator=False):
 
     schemas = (types[item_type].schema for item_type in doc_types)
     result['facets'] = format_facets(
-        es_results, facets, used_filters, schemas, total)
+        es_results, facets, used_filters, schemas, total, principals)
 
     # Add batch actions
     result.update(search_result_actions(request, doc_types, es_results))
@@ -920,7 +921,7 @@ def matrix(context, request):
 
     # Format facets for results
     result['facets'] = format_facets(
-        es_results, facets, used_filters, (schema,), total)
+        es_results, facets, used_filters, (schema,), total, principals)
 
     def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
         group_by = grouping_fields[0]
