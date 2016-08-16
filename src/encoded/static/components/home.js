@@ -20,7 +20,6 @@ var Home = module.exports.Home = React.createClass({
     },
 
     handleAssayCategoryClick: function(assay){
-        console.log('HANDLEASSAYCATEGORYCLICK: ' + assay + ':' + this.state.current);
         var oldLink = this.state.current; // getting original search
         var tempAssay = assay;
 
@@ -35,7 +34,7 @@ var Home = module.exports.Home = React.createClass({
 
         // checking to see if it is currently computational predictions
         var indexOfExperiment = oldLink.indexOf("?type=Experiment&status=released");
-        if (assay === 'COMPPRED'){ // if computational predictions
+        if (indexOfExperiment === -1){ // if computational predictions
             // keeps any organism parameters and puts back normal searchbase
             oldLink = "?type=Experiment&status=released";
         }
