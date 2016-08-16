@@ -172,7 +172,7 @@ var Home = module.exports.Home = React.createClass({
                                     </div>
                                     <div className="col-sm-4">
                                         <div className="title">
-                                            Data Released
+                                            Recent Releases
                                         </div>
                                         <center> <hr width="80%"></hr> </center>
                                         <HomepageChartLoader3 searchBase={this.state.current}
@@ -192,9 +192,7 @@ var Home = module.exports.Home = React.createClass({
                             <Panel>
                                 <div className="getting-started">
                                     <PanelBody addClasses="description">
-
-                                        The ENCODE (Encyclopedia of DNA Elements) Consortium is an international collaboration of research groups funded by the National Human Genome Research Institute (NHGRI). The goal of ENCODE is to build a comprehensive parts list of functional elements in the human genome, including elements that act at the protein and RNA levels, and regulatory elements that control cells and circumstances in which a gene is active.
-
+                                        The <a href="/about/contributors/" title="Details about the ENCODE consortium">ENCODE (Encyclopedia of DNA Elements) Consortium</a> is an international collaboration of research groups funded by the National Human Genome Research Institute (<a href="https://www.genome.gov/10005107/" title="National Human Genome Research Institute ENCODE information">NHGRI</a>). The goal of ENCODE is to build a comprehensive parts list of functional elements in the human genome, including elements that act at the protein and RNA levels, and regulatory elements that control cells and circumstances in which a gene is active.
                                     </PanelBody>
                                     <div className="getting-started-image-wrapper">
                                         <img src="static/img/getting-started.jpg" className="getting-started-image"/>
