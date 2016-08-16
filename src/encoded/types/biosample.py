@@ -769,7 +769,7 @@ def generate_summary_dictionary(
 
         if construct_objects_list is not None and len(construct_objects_list) > 0:
             constructs_list = []
-            for cons, tar, promoter in construct_objects_list:
+            for (cons, tar, promoter) in construct_objects_list:
                 if 'tags' in cons:
                     for tag in cons['tags']:
                         if promoter is not None:
@@ -793,7 +793,7 @@ def generate_summary_dictionary(
 
         if model_construct_objects_list is not None and len(model_construct_objects_list) > 0:
             constructs_list = []
-            for cons, tar, promoter in model_construct_objects_list:
+            for (cons, tar, promoter) in model_construct_objects_list:
                 if 'tags' in cons:
                     for tag in cons['tags']:
                         if promoter is not None:
