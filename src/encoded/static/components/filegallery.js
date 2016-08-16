@@ -21,6 +21,7 @@ var assemblyPriority = [
     'GRCh38',
     'hg19',
     'mm10',
+    'mm10-minimal',
     'mm9',
     'ce11',
     'ce10',
@@ -52,81 +53,6 @@ var FileTable = module.exports.FileTable = React.createClass({
     cv: {
         maxWidthRef: '', // ref key of table with this.state.maxWidth width
         maxWidthNode: null // DOM node of table with this.state.maxWidth width 
-    },
-
-    // Configuration for raw file table
-    rawTableColumns: {
-        'accession': {
-            title: 'Accession',
-            display: item =>
-                <span>
-                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
-                </span>
-        },
-        'file_type': {title: 'File type'},
-        'biological_replicates': {
-            title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
-            getValue: item => item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''
-        },
-        'library': {
-            title: 'Library',
-            getValue: item => (item.replicate && item.replicate.library) ? item.replicate.library.accession : null
-        },
-        'run_type': {
-            title: 'Run type',
-            display: item => {
-                var runType;
-
-                if (item.run_type === 'single-ended') {
-                    runType = 'SE';
-                } else if (item.run_type === 'paired-ended') {
-                    runType = 'PE';
-                }
-
-                return (
-                    <span>
-                        <span>{runType ? runType : null}</span>
-                        <span>{item.read_length ? <span>{runType ? <span> </span> : null}{item.read_length + item.read_length_units}</span> : null}</span>
-                    </span>
-                );
-            },
-            objSorter: (a, b) => {
-                // Sort by their combined string values
-                var aStr = (a.run_type ? a.run_type : '') + (a.read_length ? a.read_length : '');
-                var bStr = (b.run_type ? b.run_type : '') + (b.read_length ? b.read_length : '');
-                return (aStr < bStr) ? -1 : (bStr < aStr ? 1 : 0);
-            }
-        },
-        'paired_end': {
-            title: 'Read',
-            display: item => <span>{item.paired_end ? <span>R{item.paired_end}</span> : null}</span>
-        },
-        'title': {
-            title: 'Lab',
-            getValue: item => item.lab && item.lab.title ? item.lab.title : null
-        },
-        'date_created': {
-            title: 'Date added',
-            getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
-            sorter: (a, b) => {
-                if (a && b) {
-                    return Date.parse(a) - Date.parse(b);
-                }
-                return a ? -1 : (b ? 1 : 0);
-            }
-        },
-        'file_size': {
-            title: 'File size',
-            display: item => <span>{humanFileSize(item.file_size)}</span>
-        },
-        'audit': {
-            title: 'Audit status',
-            display: item => <div>{fileAuditStatus(item)}</div>
-        },
-        'status': {
-            title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>
-        }
     },
 
     // Configuration for raw file table
@@ -330,8 +256,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                 <div>
                     {showFileCount ? <div className="file-gallery-counts">Displaying {filteredCount} of {unfilteredCount} files</div> : null}
                     <SortTablePanel header={filePanelHeader} noDefaultClasses={this.props.noDefaultClasses}>
-                        <SortTable title={<CollapsingTitle title="Raw data" collapsed={this.state.collapsed.raw} handleCollapse={this.handleCollapse.bind(null, 'raw')} />} collapsed={this.state.collapsed.raw}
-                            list={files.raw} columns={this.rawTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
+                        <RawFileTable files={files.raw} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} />
                         <SortTable title={<CollapsingTitle title="Raw data" collapsed={this.state.collapsed.rawArray} handleCollapse={this.handleCollapse.bind(null, 'rawArray')} />} collapsed={this.state.collapsed.rawArray}
                             list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
                         <SortTable title={<CollapsingTitle title="Processed data" collapsed={this.state.collapsed.proc} handleCollapse={this.handleCollapse.bind(null, 'proc')}
@@ -343,6 +268,234 @@ var FileTable = module.exports.FileTable = React.createClass({
                 </div>
             );
         }
+        return null;
+    }
+});
+
+
+var RawFileTable = React.createClass({
+    propTypes: {
+        files: React.PropTypes.array, // Raw files to display
+        meta: React.PropTypes.object // Extra metadata in the same format passed to SortTable
+    },
+
+    getInitialState: function() {
+        return {
+            collapsed: false // Raw 
+        };
+    },
+
+    handleCollapse: function(table) {
+        // Handle a click on a collapse button by toggling the corresponding tableCollapse state var
+        this.setState({collapsed: !this.state.collapsed});
+    },
+
+    sortBioReps: function(a, b) {
+        // Sorting function for biological replicates of the given files.
+        var result = undefined; // Ends sorting loop once it has a value
+        var i = 0;
+        var repA = (a.biological_replicates && a.biological_replicates.length) ? a.biological_replicates[i] : undefined;
+        var repB = (b.biological_replicates && b.biological_replicates.length) ? b.biological_replicates[i] : undefined;
+        while (result === undefined) {
+            if (repA !== undefined && repB !== undefined) {
+                // Both biological replicates have a value
+                if (repA != repB) {
+                    // We got a real sorting result
+                    result = repA - repB;
+                } else {
+                    // They both have values, but they're equal; go to next
+                    // biosample replicate array elements
+                    i += 1;
+                    repA = a.biological_replicates[i];
+                    repB = b.biological_replicates[i];
+                }
+            } else if (repA !== undefined || repB !== undefined) {
+                // One and only one replicate empty; sort empty one after
+                result = repA ? 1 : -1;
+            } else {
+                // Both empty; sorting result same
+                result = 0;
+            }
+        }
+        return result;
+    },
+
+    render: function() {
+        var {files, meta} = this.props;
+        var loggedIn = meta.session && meta.session['auth.userid'];
+
+        if (files && files.length) {
+            // Make object keyed by all files' @ids to make searching easy. Each key's value
+            // points to the corresponding file object.
+            var filesKeyed = {};
+            files.forEach(file => {
+                filesKeyed[file['@id']] = file;
+            });
+
+            // Make lists of files that are and aren't paired. Paired files with missing partners
+            // count as not paired. Files with more than one biological replicate don't count as
+            // paired.
+            var nonpairedFiles = [];
+            var pairedFiles = _(files).filter(file => {
+                if (file.pairSortKey) {
+                    // If we already know this file is part of a good pair from before, just let it
+                    // pass the filter
+                    return true;
+                }
+
+                // See if the file qualifies as a pair element
+                if (file.paired_with &&
+                    file.biological_replicates && file.biological_replicates.length === 1 &&
+                    file.replicate && file.replicate.library) {
+                    // File is paired and has exactly one biological replicate. Now make sure its
+                    // partner exists and also qualifies.
+                    var partner = filesKeyed[file.paired_with];
+                    if (partner && partner.paired_with === file['@id'] &&
+                        partner.biological_replicates && partner.biological_replicates.length === 1 &&
+                        partner.replicate && partner.replicate.library &&
+                        partner.biological_replicates[0] === file.biological_replicates[0]) {
+                        // Both the file and its partner qualify as good pairs of each other. Let
+                        // them pass the filter, and record set their sort keys to the lower of
+                        // the two accessions -- that's how pairs will sort within a biological
+                        // replicate
+                        file.pairSortKey = partner.pairSortKey = file.accession < partner.accession ? file.accession : partner.accession;
+                        file.pairSortKey += file.paired_end;
+                        partner.pairSortKey += partner.paired_end;
+                        return true;
+                    }
+                }
+
+                // File not part of a pair; add to non-paired list and filter it out
+                nonpairedFiles.push(file);
+                return false;
+            });
+
+            // Group paired files by biological replicate and library -- four-digit biological
+            // replicate concatenated with library accession becomes the group key, and all files
+            // with that biological replicate and library form an array under that key.
+            var pairedRepGroups = {};
+            var pairedRepKeys = [];
+            if (pairedFiles.length) {
+                pairedRepGroups = _(pairedFiles).groupBy(file => globals.zeroFill(file.biological_replicates[0]) + file.replicate.library.accession);
+
+                // Make a sorted list of keys
+                pairedRepKeys = Object.keys(pairedRepGroups).sort();
+            }
+
+            return (
+                <table className="table table-sortable table-raw">
+                    <thead>
+                        <tr className="table-section">
+                            <th colSpan={loggedIn ? '11' : '10'}>
+                                <CollapsingTitle title="Raw data" collapsed={this.state.collapsed} handleCollapse={this.handleCollapse} />
+                            </th>
+                        </tr>
+
+                        {!this.state.collapsed ?
+                            <tr key="header">
+                                <th>Biological replicate</th>
+                                <th>Library</th>
+                                <th>Accession</th>
+                                <th>File type</th>
+                                <th>Run type</th>
+                                <th>Read</th>
+                                <th>Lab</th>
+                                <th>Date added</th>
+                                <th>File size</th>
+                                <th>Audit status</th>
+                                {loggedIn ? <th>File status</th> : null}
+                            </tr>
+                        : null}
+                    </thead>
+
+                    {!this.state.collapsed ?
+                        <tbody>
+                            {pairedRepKeys.map((pairedRepKey, j) => {
+                                // groupFiles is an array of files under a bioreplicate/library
+                                var groupFiles = pairedRepGroups[pairedRepKey];
+                                var bottomClass = j < (pairedRepKeys.length - 1) ? 'merge-bottom' : '';
+
+                                // Render an array of biological replicate and library to display on
+                                // the first row of files, spanned to all rows for that replicate and
+                                // library
+                                var spanned = [
+                                    <td key="br" rowSpan={groupFiles.length} className={bottomClass + ' merge-right table-raw-merged table-raw-biorep'}>{groupFiles[0].biological_replicates[0]}</td>,
+                                    <td key="lib" rowSpan={groupFiles.length} className={bottomClass + ' merge-right + table-raw-merged'}>{groupFiles[0].replicate.library.accession}</td>
+                                ];
+
+                                // Render each file's row, with the biological replicate and library
+                                // cells only on the first row.
+                                return groupFiles.sort((a, b) => a.pairSortKey < b.pairSortKey ? -1 : 1).map((file, i) => {
+                                    var pairClass = (file.paired_end === "2") ? 'align-pair2' : 'align-pair1';
+                                    if (file.paired_end === "2") {
+                                        pairClass = 'align-pair2' + ((i === groupFiles.length - 1) && (j === pairedRepKeys.length - 1) ? '' : ' pair-bottom');
+                                    } else {
+                                        pairClass = 'align-pair1';
+                                    }
+
+                                    // Prepare for run_type display
+                                    var runType;
+                                    if (file.run_type === 'single-ended') {
+                                        runType = 'SE';
+                                    } else if (file.run_type === 'paired-ended') {
+                                        runType = 'PE';
+                                    }
+                                    return (
+                                        <tr key={i}>
+                                            {i === 0 ? {spanned} : null}
+                                            <td className={pairClass}>
+                                                {file.title}&nbsp;<a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                                            </td>
+                                            <td className={pairClass}>{file.file_type}</td>
+                                            <td className={pairClass}>{runType}{file.read_length ? <span>{runType ? <span> </span> : null}{file.read_length + file.read_length_units}</span> : null}</td>
+                                            <td className={pairClass}>{file.paired_end}</td>
+                                            <td className={pairClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
+                                            <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
+                                            <td className={pairClass}>{humanFileSize(file.file_size)}</td>
+                                            <td className={pairClass}>{fileAuditStatus(file)}</td>
+                                            {loggedIn ? <td className={pairClass + ' characterization-meta-data'}><StatusLabel status={file.status} /></td> : null}
+                                        </tr>
+                                    );
+                                });
+                            })}
+                            {nonpairedFiles.sort(this.sortBioReps).map((file, i) => {
+                                // Prepare for run_type display
+                                var runType;
+                                if (file.run_type === 'single-ended') {
+                                    runType = 'SE';
+                                } else if (file.run_type === 'paired-ended') {
+                                    runType = 'PE';
+                                }
+                                return (
+                                    <tr key={i} className={pairedRepKeys.length && i === 0 ? 'table-raw-separator' : ''}>
+                                        <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''}</td>
+                                        <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
+                                        <td>{file.title}&nbsp;<a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a></td>
+                                        <td>{file.file_type}</td>
+                                        <td>{runType}{file.read_length ? <span>{runType ? <span> </span> : null}{file.read_length + file.read_length_units}</span> : null}</td>
+                                        <td>{file.paired_end}</td>
+                                        <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
+                                        <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
+                                        <td>{humanFileSize(file.file_size)}</td>
+                                        <td>{fileAuditStatus(file)}</td>
+                                        {loggedIn ? <td className="characterization-meta-data"><StatusLabel status={file.status} /></td> : null}
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    : null}
+
+                    <tfoot>
+                        <tr>
+                            <td className={'file-table-footer' + (this.state.collapsed ? ' hiding' : '')} colSpan={loggedIn ? '11' : '10'}>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            );
+        }
+
+        // No files to display
         return null;
     }
 });
@@ -456,12 +609,15 @@ var FileGalleryRenderer = React.createClass({
             selectedAnnotation = filterOptions[this.state.selectedFilterValue].annotation;
         }
 
+        // Get a list of files for the graph (filters out archived files)
+        var graphFiles = _(files).filter(file => file.status !== 'archived');
+
         return (
             <Panel>
                 <PanelHeading addClasses="file-gallery-heading">
                     <h4>Files</h4>
                     <div className="file-gallery-controls">
-                        {context.visualize_ucsc  && context.status == "released" ?
+                        {context.visualize_ucsc && context.status == "released" ?
                             <div className="file-gallery-control">
                                 <DropdownButton title='Visualize Data' label="visualize-data">
                                     <DropdownMenu>
@@ -483,7 +639,7 @@ var FileGalleryRenderer = React.createClass({
                 </PanelHeading>
 
                 {!this.props.hideGraph ?
-                    <FileGraph context={context} items={files} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
+                    <FileGraph context={context} items={graphFiles} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
                 : null}
 
                 {/* If logged in and dataset is released, need to combine search of files that reference
@@ -1400,7 +1556,7 @@ var fileAuditStatus = function(file) {
         highestAuditStatus = 'default';
         highestAuditLevel = 'OK';
     }
-    return <AuditIcon level={highestAuditLevel} />;
+    return <AuditIcon level={highestAuditLevel} addClasses="file-audit-status" />;
 };
 
 function humanFileSize(size) {

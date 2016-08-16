@@ -1238,7 +1238,7 @@ def test_audit_experiment_internal_tag(testapp, base_experiment,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing internal tag' for error in errors_list)
+    assert any(error['category'] == 'inconsistent internal tags' for error in errors_list)
 
 
 def test_audit_experiment_internal_tags(testapp, base_experiment,
@@ -1261,6 +1261,26 @@ def test_audit_experiment_internal_tags(testapp, base_experiment,
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent internal tags' for error in errors_list)
 
+
+def test_audit_experiment_internal_tags2(testapp, base_experiment,
+                                         biosample_1,
+                                         biosample_2,
+                                         library_1,
+                                         library_2,
+                                         replicate_1_1,
+                                         replicate_1_2):
+    testapp.patch_json(biosample_1['@id'], {'internal_tags': ['ENTEx']})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    #testapp.patch_json(biosample_2['@id'], {'internal_tags': ['ENTEx', 'SESCC']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(replicate_1_2['@id'], {'library': library_2['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent internal tags' for error in errors_list)
 
 def test_audit_experiment_mismatched_inter_paired_sequencing_files(testapp,
                                                                    base_experiment,

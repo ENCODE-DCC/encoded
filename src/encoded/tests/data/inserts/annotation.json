@@ -3,7 +3,7 @@
         "_test": "enhancer annotation dataset",
         "accession": "ENCSR356VQT",
         "award": "U54HG007004",
-        "annotation_type": "enhancer predictions",
+        "annotation_type": "long-range chromatin interactions",
         "description": "Enhancer prediction dataset for Mouse E11.5 heart (whole genome) based on histone, DNase HS, k-mer and GC content (Method 4)",
         "status": "released",
         "lab": "j-michael-cherry",
