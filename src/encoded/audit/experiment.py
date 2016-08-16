@@ -2078,7 +2078,9 @@ def audit_experiment_target(value, system):
                     yield AuditFailure('inconsistent target', detail, level='ERROR')
 
 
-@audit_checker('experiment', frame=['award', 'target', 'possible_controls'])
+@audit_checker('experiment', frame=['award', 'target', 'possible_controls'],
+               condition=rfa("ENCODE3", "modERN", "ENCODE2", "modENCODE",
+                             "ENCODE", "ENCODE2-Mouse", "Roadmap"))
 def audit_experiment_control(value, system):
     '''
     Certain assay types (ChIP-seq, ...) require possible controls with a matching biosample.
@@ -2102,7 +2104,6 @@ def audit_experiment_control(value, system):
        value['award']['rfa'] in ["ENCODE2",
                                  "Roadmap",
                                  "modENCODE",
-                                 "MODENCODE",
                                  "ENCODE2-Mouse"]:
         audit_level = 'NOT_COMPLIANT'
     if value['possible_controls'] == []:
@@ -2237,8 +2238,11 @@ def audit_experiment_ChIP_control(value, system):
 
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'],
-               condition=rfa("ENCODE3", "modERN", "GGR",
-                             "ENCODE", "ENCODE2-Mouse", "Roadmap"))
+               condition=rfa("ENCODE3",
+                             "modERN",
+                             "ENCODE",
+                             "ENCODE2-Mouse",
+                             "Roadmap"))
 def audit_experiment_spikeins(value, system):
     '''
     All ENCODE 3 long (>200) RNA-seq experiments should specify their spikeins.
@@ -2264,7 +2268,9 @@ def audit_experiment_spikeins(value, system):
 
         spikes = lib.get('spikeins_used')
         if (spikes is None) or (spikes == []):
-            detail = 'Library {} is in an RNA-seq experiment and has size_range >200. It requires a value for spikeins_used'.format(lib['@id'])
+            detail = 'Library {} is in '.format(lib['@id']) + \
+                     'an RNA-seq experiment and has size_range >200. ' +\
+                     'It requires a value for spikeins_used'
             yield AuditFailure('missing spikeins', detail, level='NOT_COMPLIANT')
             # Informattional if ENCODE2 and release error if ENCODE3
 
