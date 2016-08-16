@@ -473,31 +473,20 @@ MICRORNA_COMPOSITE_VIS_DEFS = {
     },
     "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
     "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
-    "sortOrder": [ "Biosample", "Assay", "Replicates", "Views" ],
+    "sortOrder": [ "Biosample", "Replicates", "Views", "Assay" ],
     "Views": {
         "tag": "view",
         "group_order": [ "microRNA quantifications", "Plus signal of unique reads", "Minus signal of unique reads", "Plus signal of all reads" ,  "Minus signal of all reads"],
         "groups": {
             "microRNA quantifications": {
-                "tag": "SIGA",
-                "visibility": "hide",
+                "tag": "QUANT",
+                "visibility": "dense",
                 "type": "bigBed",
                 "useScore": "0",
                 "output_type": [ "microRNA quantifications" ]
             },
-            "Plus signal of all reads": {
-                "tag": "PSIGA",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "plus strand signal of all reads" ]
-            },
             "Plus signal of unique reads": {
-                "tag": "PSIGU",
+                "tag": "SIGLF",
                 "visibility": "full",
                 "type": "bigWig",
                 "viewLimits": "0:1",
@@ -507,20 +496,8 @@ MICRORNA_COMPOSITE_VIS_DEFS = {
                 "windowingFunction": "mean+whiskers",
                 "output_type": [ "plus strand signal of unique reads" ]
             },
-            "Minus signal of all reads": {
-                "tag": "SIGMA",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "negateValues": "on",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "minus strand signal of all reads" ]
-            },
             "Minus signal of unique reads": {
-                "tag": "SIGMU",
+                "tag": "SIGLR",
                 "visibility": "full",
                 "type": "bigWig",
                 "viewLimits": "0:1",
@@ -531,6 +508,29 @@ MICRORNA_COMPOSITE_VIS_DEFS = {
                 "windowingFunction": "mean+whiskers",
                 "output_type": [ "minus strand signal of unique reads" ]
             },
+            "Plus signal of all reads": {
+                "tag": "SIGMF",
+                "visibility": "hide",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "transformFunc": "LOG",
+                "autoScale": "off",
+                "maxHeightPixels": "64:18:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "plus strand signal of all reads" ]
+            },
+            "Minus signal of all reads": {
+                "tag": "SIGMR",
+                "visibility": "hide",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "transformFunc": "LOG",
+                "autoScale": "off",
+                "negateValues": "on",
+                "maxHeightPixels": "64:18:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "minus strand signal of all reads" ]
+            },
         },
     },
     "other_groups": {
@@ -539,6 +539,7 @@ MICRORNA_COMPOSITE_VIS_DEFS = {
         "groups": {
             "Replicates": {
                 "tag": "REP",
+                "group_order": "sort",
                 "groups": {
                 "replicate": {
                     "title_mask": "Replicate_{replicate_number}", # Optional
@@ -549,10 +550,13 @@ MICRORNA_COMPOSITE_VIS_DEFS = {
             },
             "Biosample": {
                 "tag": "BS",
+                "sortable": True,
+                "group_order": "sort",
                 "groups": { "one": { "title_mask": "{biosample_term_name}"} }
             },
             "Assay": {
                 "tag": "ASSAY",
+                "group_order": {"microRNA counts", "microRNA-seq"},
                 "groups": { "one": { "title_mask": "{assay_term_name}" } },
             },
         }
@@ -956,16 +960,147 @@ ANNO_COMPOSITE_VIS_DEFS = {
     }
 }
 
+CHIA_COMPOSITE_VIS_DEFS = {
+    "assay_composite": {
+        "longLabel":  "Collection of ENCODE ChIA-PET experiments",
+        "shortLabel": "ENCODE ChIA-PET",
+    },
+    "longLabel":  "{target} {assay_title} of {replicates.library.biosample.summary} - {accession}",
+    "shortLabel": "{target} {assay_title} of {biosample_term_name} {accession}",
+    "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
+    "Views": {
+        "tag": "view",
+        "group_order": [ "Signal of unique reads", "Signal of all reads", "Plus signal of unique reads", "Minus signal of unique reads", "Plus signal of all reads", "Minus signal of all reads", ],
+        "groups": {
+            "Signal of all reads": {
+                "tag": "SIGA",
+                "visibility": "hide",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "transformFunc": "LOG",
+                "autoScale": "off",
+                "maxHeightPixels": "64:18:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "signal of all reads" ]
+            },
+            "Signal of unique reads": {
+                "tag": "SIGU",
+                "visibility": "full",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "transformFunc": "LOG",
+                "autoScale": "off",
+                "maxHeightPixels": "64:18:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "signal of unique reads" ]
+            },
+        },
+    },
+    "other_groups": {
+        "dimensions": { "Biosample": "dimY", "Targets": "dimX", "Replicates": "dimA" },
+        "dimensionAchecked": "first", # or "all"
+        "groups": {
+            "Replicates": {
+                "tag": "REP",
+                "group_order": "sort",
+                "groups": {
+                "replicate": {
+                    "title_mask": "Replicate_{replicate_number}", # Optional
+                    "combined_title": "Pooled", # "Combined"
+                    }
+                },
+            },
+            "Biosample": {
+                "tag": "BS",
+                "groups": { "one": { "title_mask": "{biosample_term_name}"} }
+            },
+            "Targets": {
+                "tag": "TARG",
+                "groups": { "one": { "title_mask": "{target.label}" } },
+            },
+        }
+    },
+    "file_defs": {
+        "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate} {experiment.accession} - {file.accession}",
+        "shortLabel": "{replicate} {output_type_short_label}",
+    }
+}
+
+HIC_COMPOSITE_VIS_DEFS = {
+    "assay_composite": {
+        "longLabel":  "Collection of ENCODE Hi-C experiments",
+        "shortLabel": "ENCODE HI-C",
+    },
+    "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
+    "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
+    "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
+    "Views": {
+        "tag": "view",
+        "group_order": [ "Topologically associated domains", "Nested TADs", "Genome compartments" ],
+        "groups": {
+            "Genome compartments": {
+                "tag": "COMPART",
+                "visibility": "hide",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "transformFunc": "LOG",
+                "autoScale": "off",
+                "maxHeightPixels": "64:18:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "genome compartments" ]
+            },
+            "Topologically associated domains": {
+                "tag": "TADS",
+                "visibility": "dense",
+                "type": "bigBed 3+",
+                "output_type": [ "topologically associated domains" ]
+            },
+            "Nested TADs": {
+                "tag": "TADS",
+                "visibility": "hide",
+                "type": "bigBed 3+",
+                "output_type": [ "nested topologically associated domains" ]
+            },
+        },
+    },
+    "other_groups": {
+        "dimensions": { "Biosample": "dimY", "Replicates": "dimA" },
+        "dimensionAchecked": "first", # or "all"
+        "groups": {
+            "Replicates": {
+                "tag": "REP",
+                "group_order": "sort",
+                "groups": {
+                "replicate": {
+                    "title_mask": "Replicate_{replicate_number}", # Optional
+                    "combined_title": "Pooled", # "Combined"
+                    }
+                },
+            },
+            "Biosample": {
+                "tag": "BS",
+                "groups": { "one": { "title_mask": "{biosample_term_name}"} }
+            },
+        }
+    },
+    "file_defs": {
+        "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate} {experiment.accession} - {file.accession}",
+        "shortLabel": "{replicate} {output_type_short_label}",
+    }
+}
+
 VIS_DEFS_BY_ASSAY = {
     "LRNA":     LRNA_COMPOSITE_VIS_DEFS,
     "SRNA":     SRNA_COMPOSITE_VIS_DEFS,
-    "RAMPAGE":  RAMPAGE_COMPOSITE_VIS_DEFS,
-    "MICRORNA": MICRORNA_COMPOSITE_VIS_DEFS,
-    "DNASE":    DNASE_COMPOSITE_VIS_DEFS,
+    "TSS":      RAMPAGE_COMPOSITE_VIS_DEFS,
+    "miRNA":    MICRORNA_COMPOSITE_VIS_DEFS,
+    "DNAse":    DNASE_COMPOSITE_VIS_DEFS,
     "WGBS":     WGBS_COMPOSITE_VIS_DEFS,
-    "CHIP":     CHIP_COMPOSITE_VIS_DEFS,
+    "ChIP":     CHIP_COMPOSITE_VIS_DEFS,
     "eCLIP":    ECLIP_COMPOSITE_VIS_DEFS,
-    "ANNO":     ANNO_COMPOSITE_VIS_DEFS
+    "ANNO":     ANNO_COMPOSITE_VIS_DEFS,
+    "ChIA":     CHIA_COMPOSITE_VIS_DEFS, # TODO: get_vis_type
+    "HiC":      HIC_COMPOSITE_VIS_DEFS,  # TODO: get_vis_type
     }
 
 def get_vis_type(dataset):
@@ -982,25 +1117,36 @@ def get_vis_type(dataset):
         if size_range.startswith('>'):
             size_range = size_range[1:]
         try:
-            min_size = int(size_range.split('-')[0])
+            sizes = size_range.split('-')
+            min_size = int(sizes[0])
+            max_size = int(sizes[1])
         except:
-            min_size = 0
-        if min_size >= 149:
+            log.warn("Could not distinguish between long and short RNA for %s.  Defaulting to short." % (dataset.get("accession")))
+            return "SRNA"  # this will be more noticed if there is a mistake
+        if max_size <= 200:
+            return "SRNA"
+        elif min_size >= 150:
+            return "LRNA"
+        elif (min_size + max_size)/2 >= 235: # This is some wicked voodoo (SRNA:108-347=227; LRNA:155-315=235)
             return "LRNA"
         else:
             return "SRNA"
     elif assay in ["microRNA-seq","microRNA counts"]:
-        return "MICRORNA"
+        return "miRNA"
     elif assay in ["whole-genome shotgun bisulfite sequencing","shotgun bisulfite-seq assay"]:
         return "WGBS"
     elif assay.lower() in ["rampage","cage"]:
-        return "RAMPAGE"
+        return "TSS"
     elif assay == "ChIP-seq":
-        return "CHIP"
+        return "ChIP"
     elif assay == "eCLIP":
         return assay
     elif assay.lower() == "dnase-seq":
         return "DNASE"
+    elif assay == "ChIA-PET":
+        return "ChIA"
+    elif assay == "HiC":
+        return "HiC"
 
     return "opaque" # This becomes a dict key later so None is not okay
 
@@ -1010,12 +1156,11 @@ def lookup_vis_defs(vis_type):
     return VIS_DEFS_BY_ASSAY.get(vis_type, COMPOSITE_VIS_DEFS_DEFAULT )
 
 PENNANTS = {
-    "NHGRI":  "https://raw.githubusercontent.com/ENCODE-DCC/encoded/4250-pennants/src/encoded/static/img/pennant-nhgri.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the files and metadata found at https://www.encodeproject.org/\"",
-    "ENCODE": "https://raw.githubusercontent.com/ENCODE-DCC/encoded/4250-pennants/src/encoded/static/img/pennant-encode.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the ENCODE files and metadata found at https://www.encodeproject.org/\"",
-    #"ENCODE": "encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the ENCODE files and metadata found at https://www.encodeproject.org/\"",
-    "modENCODE":"pennant-encode.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the modENCODE files and metadata found at https://www.encodeproject.org/\"",
-    "GGR":    "https://raw.githubusercontent.com/ENCODE-DCC/encoded/4250-pennants/src/encoded/static/img/pennant-ggr.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the GGR files and metadata found at https://www.encodeproject.org/\"",
-    #"REMC":   "https://raw.githubusercontent.com/ENCODE-DCC/encoded/4250-pennants/src/encoded/static/img/pennant-remc.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the REMC files and metadata found at https://www.encodeproject.org/\"",
+    "NHGRI":  "https://www.encodeproject.org/static/img/pennant-nhgri.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the files and metadata found at https://www.encodeproject.org/\"",
+    "ENCODE": "https://www.encodeproject.org/static/img/pennant-encode.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the ENCODE files and metadata found at https://www.encodeproject.org/\"",
+    "modENCODE":"https://www.encodeproject.org/static/img/pennant-encode.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the modENCODE files and metadata found at https://www.encodeproject.org/\"",
+    "GGR":    "https://www.encodeproject.org/static/img/pennant-ggr.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the GGR files and metadata found at https://www.encodeproject.org/\"",
+    "REMC":   "https://www.encodeproject.org/static/img/pennant-remc.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the REMC files and metadata found at https://www.encodeproject.org/\"",
     #"Roadmap":   "encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the Roadmap files and metadata found at https://www.encodeproject.org/\"",
     #"modERN":   "encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the modERN files and metadata found at https://www.encodeproject.org/\"",
     }
@@ -2065,18 +2210,19 @@ def ucsc_trackDb_composite_blob(composite,title):
     blob += '\n'
     return blob
 
-def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False):
+def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False, regen=False):
 
     ### local test: bigBed: curl http://localhost:8000/experiments/ENCSR000DZQ/@@hub/hg19/trackDb.txt
     ###             bigWig: curl http://localhost:8000/experiments/ENCSR000ADH/@@hub/mm9/trackDb.txt
     ### CHIP: https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR645BCH/@@hub/GRCh38/trackDb.txt
     ### LRNA: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR000AAA/@@hub/GRCh38/trackDb.txt
 
-    regen_vis = (request.url.find("regenvis") > -1) # @@hub/GRCh38/regenvis/trackDb.txt  regenvis/GRCh38 causes and error
+    if not regen:
+        regen = (request.url.find("regenvis") > -1) # @@hub/GRCh38/regenvis/trackDb.txt  regenvis/GRCh38 causes and error
 
     acc_composite = None
     es_key = acc + "_" + assembly
-    if not regen_vis: # Find composite?
+    if not regen: # Find composite?
         acc_composite = get_from_es(request,es_key)
 
     if acc_composite is None:
@@ -2096,10 +2242,10 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False)
     return (found_or_made, acc_composite)
 
 
-def generate_trackDb(request, dataset, assembly, hide=False):
+def generate_trackDb(request, dataset, assembly, hide=False, regen=False):
 
     acc = dataset['accession']
-    (found_or_made, acc_composite) = find_or_make_acc_composite(request, assembly, dataset["accession"], dataset, hide=hide)
+    (found_or_made, acc_composite) = find_or_make_acc_composite(request, assembly, dataset["accession"], dataset, hide=hide, regen=regen)
     log.warn("%s composite %s %.3f" % (found_or_made,dataset['accession'],(time.time() - PROFILE_START_TIME)))
     #del dataset
     return ucsc_trackDb_composite_blob(acc_composite,acc)
@@ -2138,15 +2284,16 @@ def make_set_key(param_list,assembly):
     #return results
 
 
-def generate_batch_trackDb(request, hide=False):
+def generate_batch_trackDb(request, hide=False, regen=False):
 
     ### local test: RNA-seq: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/batch_hub/type=Experiment,,assay_title=RNA-seq,,award.rfa=ENCODE3,,status=released,,assembly=GRCh38,,replicates.library.biosample.biosample_type=induced+pluripotent+stem+cell+line/GRCh38/trackDb.txt
 
     # Special logic to force remaking of trackDb
-    regen_vis = request.url.find("regenvis") # ...&assembly=hg19&regenvis/hg19/trackDb.txt  regenvis=1 causes an error
+    if not regen:
+        regen = (request.url.find("regenvis") > -1) # ...&assembly=hg19&regenvis/hg19/trackDb.txt  regenvis=1 causes an error
     find_or_make = "find or make"
-    #regen_vis = 5 # DEBUG
-    if regen_vis > -1: # Find composite?
+    #regen = 5 # DEBUG
+    if not regen: # Find composite?
         find_or_make = "make"
 
     assembly = str(request.matchdict['assembly'])
@@ -2158,7 +2305,7 @@ def generate_batch_trackDb(request, hide=False):
 
     # Find it?
     set_composites = None
-    if regen_vis == -1: # Force regeneration?
+    if not regen: # Force regeneration?
         set_composites = get_from_es(request,es_set_key)
     if set_composites is None:
 
@@ -2194,7 +2341,7 @@ def generate_batch_trackDb(request, hide=False):
         for acc in accs:   # TODO: better memory usage, but slower if acc_composite not in es
             dataset = None # TODO: better memory usage, but slower if acc_composite not in es
 
-            (found_or_made, acc_composite) = find_or_make_acc_composite(request, assembly, acc, dataset, hide=hide)
+            (found_or_made, acc_composite) = find_or_make_acc_composite(request, assembly, acc, dataset, hide=hide, regen=regen)
             if found_or_made == "made":
                 made += 1
                 #log.warn("%s composite %s" % (found_or_made,acc))
@@ -2278,8 +2425,8 @@ def generate_html(context, request):
     html_requested = request.url.split('/')[-1].split('.')[0]
     if html_requested.startswith('ENCSR'):
         embedded = request.embed(request.resource_path(context))
-        log.warn("generate_html len(results) = %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))  # DEBUG
         acc = embedded['accession']
+        log.warn("generate_html for %s   %.3f secs" % (acc,(time.time() - PROFILE_START_TIME)))  # DEBUG
         assert( html_requested == acc)
 
         vis_type = get_vis_type(embedded)
