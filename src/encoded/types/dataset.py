@@ -277,7 +277,7 @@ class FileSet(Dataset):
             "type": "string",
         },
     })
-    def assembly(self, request, original_files, related_files):
+    def assembly(self, request, original_files, related_files, status):
         assembly = set()
         viewable_file_formats = ['bigWig',
                                  'bigBed',
@@ -287,10 +287,10 @@ class FileSet(Dataset):
                                  'bedMethyl',
                                  'bedLogR']
         viewable_file_status = ['released']
-        if self.status not in ['released']:
+        if status not in ['released']:
             viewable_file_status.extend(['in progress', 'revoked', 'archived'])
 
-        for path in chain(original_files, related_files)[:101]:
+        for path in list(chain(original_files, related_files))[:101]:
             # Need to cap this due to the large numbers of files in related_files
                 properties = request.embed(path, '@@object')
                 if properties['file_format'] in viewable_file_formats and \
