@@ -45,7 +45,7 @@
         "file_format": "bam",
         "lab":"j-michael-cherry",
         "md5sum": "0e030c2a38ce317817a6067cea669923",
-        "output_type": "input normalized peaks",
+        "output_type": "signal of all reads",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "replicate": "cc236116-825a-465f-ae0c-5ab21f01a6b3",
         "status": "released",
