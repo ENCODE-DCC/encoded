@@ -70,6 +70,7 @@ SUPPORTED_MASK_TOKENS = [
     "{accession}","{experiment.accession}", # "{accession}" is assumed to be experiment.accession
     "{file.accession}",
     "{target}","{target.label}",            # Either is acceptible
+    "{target.title}",
     "{target.name}",                        # Used in metadata URLs
     "{biosample_term_name}","{biosample_term_name|multiple}",  # "|multiple": none means multiple
     "{output_type_short_label}",                # hard-coded translation from output_type to very short version Do we want this in schema?
@@ -165,19 +166,8 @@ LRNA_COMPOSITE_VIS_DEFS = {
                         "Plus signal of unique reads", "Minus signal of unique reads",
                         "Plus signal of all reads", "Minus signal of all reads" ],
         "groups": {
-            "Signal of all reads": {
-                "tag": "SIGA",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "signal of all reads" ]
-            },
             "Signal of unique reads": {
-                "tag": "SIGU",
+                "tag": "SIGBL",
                 "visibility": "full",
                 "type": "bigWig",
                 "viewLimits": "0:1",
@@ -187,8 +177,8 @@ LRNA_COMPOSITE_VIS_DEFS = {
                 "windowingFunction": "mean+whiskers",
                 "output_type": [ "signal of unique reads" ]
             },
-            "Plus signal of all reads": {
-                "tag": "PSIGA",
+            "Signal of all reads": {
+                "tag": "SIGBM",
                 "visibility": "hide",
                 "type": "bigWig",
                 "viewLimits": "0:1",
@@ -196,33 +186,10 @@ LRNA_COMPOSITE_VIS_DEFS = {
                 "autoScale": "off",
                 "maxHeightPixels": "64:18:8",
                 "windowingFunction": "mean+whiskers",
-                "output_type": [ "plus strand signal of all reads" ]
-            },
-            "Plus signal of unique reads": {
-                "tag": "PSIGU",
-                "visibility": "full",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "plus strand signal of unique reads" ]
-            },
-            "Minus signal of all reads": {
-                "tag": "SIGMA",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "negateValues": "on",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "minus strand signal of all reads" ]
+                "output_type": [ "signal of all reads" ]
             },
             "Minus signal of unique reads": {
-                "tag": "SIGMU",
+                "tag": "SIGLR",
                 "visibility": "full",
                 "type": "bigWig",
                 "viewLimits": "0:1",
@@ -232,6 +199,40 @@ LRNA_COMPOSITE_VIS_DEFS = {
                 "maxHeightPixels": "64:18:8",
                 "windowingFunction": "mean+whiskers",
                 "output_type": [ "minus strand signal of unique reads" ]
+            },
+            "Plus signal of unique reads": {
+                "tag": "SIGLF",
+                "visibility": "full",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "transformFunc": "LOG",
+                "autoScale": "off",
+                "maxHeightPixels": "64:18:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "plus strand signal of unique reads" ]
+            },
+            "Plus signal of all reads": {
+                "tag": "SIGMF",
+                "visibility": "hide",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "transformFunc": "LOG",
+                "autoScale": "off",
+                "maxHeightPixels": "64:18:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "plus strand signal of all reads" ]
+            },
+            "Minus signal of all reads": {
+                "tag": "SIGMR",
+                "visibility": "hide",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "transformFunc": "LOG",
+                "autoScale": "off",
+                "negateValues": "on",
+                "maxHeightPixels": "64:18:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "minus strand signal of all reads" ]
             },
         },
     },
@@ -264,6 +265,122 @@ LRNA_COMPOSITE_VIS_DEFS = {
     }
 }
 
+TKRNA_COMPOSITE_VIS_DEFS = {
+    "assay_composite": {
+        "longLabel":  "Collection of ENCODE targeted knockdowns RNA-seq experiments",
+        "shortLabel": "ENCODE knockdown RNA-seq",
+    },
+    "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
+    "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
+    "sortOrder": [ "Biosample", "Targets", "Replicates",  "Assay", "Views" ],
+    "Views": {
+        "tag": "view",
+        "group_order": [ "Signal of unique reads", "Signal of all reads", "Plus signal of unique reads", "Minus signal of unique reads", "Plus signal of all reads", "Minus signal of all reads", ],
+        "groups": {
+            "Signal of unique reads": {
+                "tag": "SIGBL",
+                "visibility": "full",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "transformFunc": "LOG",
+                "autoScale": "off",
+                "maxHeightPixels": "64:18:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "signal of unique reads" ]
+            },
+            "Signal of all reads": {
+                "tag": "SIGBM",
+                "visibility": "hide",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "transformFunc": "LOG",
+                "autoScale": "off",
+                "maxHeightPixels": "64:18:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "signal of all reads" ]
+            },
+            "Plus signal of unique reads": {
+                "tag": "SIGLF",
+                "visibility": "full",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "transformFunc": "LOG",
+                "autoScale": "off",
+                "maxHeightPixels": "64:18:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "plus strand signal of unique reads" ]
+            },
+            "Minus signal of unique reads": {
+                "tag": "SIGLR",
+                "visibility": "full",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "transformFunc": "LOG",
+                "autoScale": "off",
+                "negateValues": "on",
+                "maxHeightPixels": "64:18:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "minus strand signal of unique reads" ]
+            },
+            "Plus signal of all reads": {
+                "tag": "SIGMF",
+                "visibility": "hide",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "transformFunc": "LOG",
+                "autoScale": "off",
+                "maxHeightPixels": "64:18:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "plus strand signal of all reads" ]
+            },
+            "Minus signal of all reads": {
+                "tag": "SIGMR",
+                "visibility": "hide",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "transformFunc": "LOG",
+                "autoScale": "off",
+                "negateValues": "on",
+                "maxHeightPixels": "64:18:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "minus strand signal of all reads" ]
+            },
+        },
+    },
+    "other_groups": {
+        "dimensions": { "Biosample": "dimY", "Targets": "dimX", "Replicates": "dimA" },
+        "dimensionAchecked": "first", # or "all"
+        "groups": {
+            "Replicates": {
+                "tag": "REP",
+                "group_order": "sort",
+                "groups": {
+                "replicate": {
+                    "title_mask": "Replicate_{replicate_number}", # Optional
+                    "combined_title": "Pooled", # "Combined"
+                    }
+                },
+            },
+            "Biosample": {
+                "tag": "BS",
+                "groups": { "one": { "title_mask": "{biosample_term_name}"} }
+            },
+            "Targets": {
+                "tag": "TARG",
+                "groups": { "one": { "title_mask": "{target.label}" } },
+            },
+            "Assay": {
+                "tag": "Assay",
+                "groups": { "one": { "title_mask": "{target.title}" } },
+            },
+        }
+    },
+    "file_defs": {
+        "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate} {experiment.accession} - {file.accession}",
+        "shortLabel": "{replicate} {output_type_short_label}",
+    }
+}
+
 SRNA_COMPOSITE_VIS_DEFS = {
     "assay_composite": {
         "longLabel":  "Collection of ENCODE small-RNA-seq experiments",
@@ -276,42 +393,8 @@ SRNA_COMPOSITE_VIS_DEFS = {
         "tag": "view",
         "group_order": [ "Plus signal of unique reads", "Minus signal of unique reads", "Plus signal of all reads", "Minus signal of all reads", ],
         "groups": {
-            "Plus signal of all reads": {
-                "tag": "PSIGA",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "plus strand signal of all reads" ]
-            },
-            "Plus signal of unique reads": {
-                "tag": "PSIGU",
-                "visibility": "full",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "plus strand signal of unique reads" ]
-            },
-            "Minus signal of all reads": {
-                "tag": "SIGMA",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "negateValues": "on",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "minus strand signal of all reads" ]
-            },
             "Minus signal of unique reads": {
-                "tag": "SIGMU",
+                "tag": "SIGLR",
                 "visibility": "full",
                 "type": "bigWig",
                 "viewLimits": "0:1",
@@ -321,6 +404,40 @@ SRNA_COMPOSITE_VIS_DEFS = {
                 "maxHeightPixels": "64:18:8",
                 "windowingFunction": "mean+whiskers",
                 "output_type": [ "minus strand signal of unique reads" ]
+            },
+            "Plus signal of unique reads": {
+                "tag": "SIGLF",
+                "visibility": "full",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "transformFunc": "LOG",
+                "autoScale": "off",
+                "maxHeightPixels": "64:18:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "plus strand signal of unique reads" ]
+            },
+            "Plus signal of all reads": {
+                "tag": "SIGMF",
+                "visibility": "hide",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "transformFunc": "LOG",
+                "autoScale": "off",
+                "maxHeightPixels": "64:18:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "plus strand signal of all reads" ]
+            },
+            "Minus signal of all reads": {
+                "tag": "SIGMR",
+                "visibility": "hide",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "transformFunc": "LOG",
+                "autoScale": "off",
+                "negateValues": "on",
+                "maxHeightPixels": "64:18:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "minus strand signal of all reads" ]
             },
         },
     },
@@ -365,31 +482,21 @@ RAMPAGE_COMPOSITE_VIS_DEFS = {
                          "Plus signal of all reads", "Minus signal of all reads" ],
         "groups": {
           "Replicated TSSs": {
-                "tag": "REPTSS",
+                "tag": "ARTSS",
                 "visibility": "dense",
                 "spectrum": "on",
                 "type": "bigBed",
                 "file_format_type": ["idr_peak"],
            },
           "TSSs": {
-                "tag": "TSS",
+                "tag": "AZTSS",
                 "visibility": "hide",
                 "spectrum": "on",
                 "type": "bigBed",
                 "file_format_type": ["tss_peak"],
             },
-            "Signal of all reads": {
-                "tag": "SIGA",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "autoScale": "off",
-                "maxHeightPixels": "32:16:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "signal of all reads" ]
-            },
             "Signal of unique reads": {
-                "tag": "SIGU",
+                "tag": "SIGBL",
                 "visibility": "full",
                 "type": "bigWig",
                 "viewLimits": "0:1",
@@ -398,18 +505,18 @@ RAMPAGE_COMPOSITE_VIS_DEFS = {
                 "windowingFunction": "mean+whiskers",
                 "output_type": [ "signal of unique reads" ]
             },
-            "Plus signal of all reads": {
-                "tag": "PSIGA",
+            "Signal of all reads": {
+                "tag": "SIGBM",
                 "visibility": "hide",
                 "type": "bigWig",
                 "viewLimits": "0:1",
                 "autoScale": "off",
                 "maxHeightPixels": "32:16:8",
                 "windowingFunction": "mean+whiskers",
-                "output_type": [ "plus strand signal of all reads" ]
+                "output_type": [ "signal of all reads" ]
             },
             "Plus signal of unique reads": {
-                "tag": "PSIGU",
+                "tag": "SIGLF",
                 "visibility": "full",
                 "type": "bigWig",
                 "viewLimits": "0:1",
@@ -418,8 +525,29 @@ RAMPAGE_COMPOSITE_VIS_DEFS = {
                 "windowingFunction": "mean+whiskers",
                 "output_type": [ "plus strand signal of unique reads" ]
             },
+            "Minus signal of unique reads": {
+                "tag": "SIGLR",
+                "visibility": "full",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "autoScale": "off",
+                "negateValues": "on",
+                "maxHeightPixels": "32:16:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "minus strand signal of unique reads" ]
+            },
+            "Plus signal of all reads": {
+                "tag": "SIGMF",
+                "visibility": "hide",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "autoScale": "off",
+                "maxHeightPixels": "32:16:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "plus strand signal of all reads" ]
+            },
             "Minus signal of all reads": {
-                "tag": "SIGMA",
+                "tag": "SIGMR",
                 "visibility": "hide",
                 "type": "bigWig",
                 "viewLimits": "0:1",
@@ -429,17 +557,6 @@ RAMPAGE_COMPOSITE_VIS_DEFS = {
                 "windowingFunction": "mean+whiskers",
                 "output_type": [ "minus strand signal of all reads" ]
             },
-            "Minus signal of unique reads": {
-                "tag": "SIGMU",
-                "visibility": "full",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "autoScale": "off",
-                "negateValues": "on",
-                "maxHeightPixels": "32:16:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "minus strand signal of unique reads" ]
-            }
         }
     },
     "other_groups":  {
@@ -550,8 +667,6 @@ MICRORNA_COMPOSITE_VIS_DEFS = {
             },
             "Biosample": {
                 "tag": "BS",
-                "sortable": True,
-                "group_order": "sort",
                 "groups": { "one": { "title_mask": "{biosample_term_name}"} }
             },
             "Assay": {
@@ -580,7 +695,7 @@ DNASE_COMPOSITE_VIS_DEFS = {
         "group_order": [ "Signal", "Peaks", "Hotspots" ],
         "groups": {
             "Signal": {
-                "tag": "SIG",
+                "tag": "aSIG",
                 "visibility": "full",
                 "type": "bigWig",
                 "viewLimits": "0:1",
@@ -590,7 +705,7 @@ DNASE_COMPOSITE_VIS_DEFS = {
                 "output_type": [ "signal of unique reads" ]
             },
             "Peaks": {
-                "tag": "PKS",
+                "tag": "bPKS",
                 "visibility": "hide",
                 "type": "bigBed",
                 "spectrum": "on",
@@ -598,7 +713,7 @@ DNASE_COMPOSITE_VIS_DEFS = {
                 "output_type": [ "peaks" ]
             },
             "Hotspots": {
-                "tag": "HOT",
+                "tag": "cHOT",
                 "visibility": "hide",
                 "type": "bigBed",
                 "spectrum": "on",
@@ -643,18 +758,26 @@ WGBS_COMPOSITE_VIS_DEFS = {
         "group_order": [ "Optimal IDR thresholded peaks", "Conservative IDR thresholded peaks",
                         "Replicated peaks", "Peaks",  "Signal" ],
         "groups": {
-            "Signal": {
-                "tag": "SIG",
+            "Optimal IDR thresholded peaks": {
+                "tag": "aOIDR",
+                "visibility": "dense",
+                "type": "bigBed",
+                "file_format_type": [ "narrowPeak" ],
+                "spectrum":"on",
+                "scoreFilter":"0:1000",
+                "output_type": [ "optimal idr thresholded peaks" ]
+            },
+            "Conservative IDR thresholded peaks": {
+                "tag": "bCIDR",
                 "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "signal" ]
+                "type": "bigBed",
+                "file_format_type": [ "narrowPeak" ],
+                "spectrum":"on",
+                "scoreFilter": "0:1000",
+                "output_type": [ "conservative idr thresholded peaks" ]
             },
             "Replicated peaks": {
-                "tag": "RPKS",
+                "tag": "cRPKS",
                 "visibility": "dense",
                 "type": "bigBed",
                 "file_format_type": [ "narrowPeak" ],
@@ -663,30 +786,22 @@ WGBS_COMPOSITE_VIS_DEFS = {
                 "output_type": [ "replicated peaks" ]
             },
             "Peaks": {
-                "tag": "PKS",
+                "tag": "dPKS",
                 "visibility": "hide",
                 "type": "bigBed",
                 "file_format_type": [ "narrowPeak" ],
                 "scoreFilter": "0:1000",
                 "output_type": [ "peaks" ],
             },
-            "Conservative IDR thresholded peaks": {
-                "tag": "CONSIDR",
+            "Signal": {
+                "tag": "eSIG",
                 "visibility": "hide",
-                "type": "bigBed",
-                "file_format_type": [ "narrowPeak" ],
-                "spectrum":"on",
-                "scoreFilter": "0:1000",
-                "output_type": [ "conservative idr thresholded peaks" ]
-            },
-            "Optimal IDR thresholded peaks": {
-                "tag": "OPTIDR",
-                "visibility": "dense",
-                "type": "bigBed",
-                "file_format_type": [ "narrowPeak" ],
-                "spectrum":"on",
-                "scoreFilter":"0:1000",
-                "output_type": [ "optimal idr thresholded peaks" ]
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "autoScale": "off",
+                "maxHeightPixels": "64:18:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "signal" ]
             },
         },
     },
@@ -732,9 +847,44 @@ CHIP_COMPOSITE_VIS_DEFS = {
         "group_order": [ "Optimal IDR thresholded peaks", "Conservative IDR thresholded peaks",
                         "Replicated peaks", "Peaks",  "Fold change over control", "Signal p-value", "Signal" ],
         "groups": {
-
+            "Optimal IDR thresholded peaks": {
+                "tag": "aOIDR",
+                "visibility": "dense",
+                "type": "bigBed",
+                "file_format_type": [ "narrowPeak" ],
+                "spectrum":"on",
+                "scoreFilter": "100:1000",
+                "output_type": [ "optimal idr thresholded peaks" ]
+            },
+            "Conservative IDR thresholded peaks": {
+                "tag": "bCIDR",
+                "visibility": "hide",
+                "type": "bigBed",
+                "file_format_type": [ "narrowPeak" ],
+                "spectrum":"on",
+                "scoreFilter": "0:1000",
+                "output_type": [ "conservative idr thresholded peaks" ]
+            },
+            "Replicated peaks": {
+                "tag": "cRPKS",
+                "visibility": "dense",
+                "type": "bigBed",
+                "file_format_type": [ "narrowPeak" ],
+                "spectrum":"on",
+                "scoreFilter": "0:1000",
+                "output_type": [ "replicated peaks" ]
+            },
+            "Peaks": {
+                "tag": "dPKS",
+                "visibility": "hide",
+                "type": "bigBed",
+                "file_format_type": [ "narrowPeak" ],
+                "scoreFilter": "0",
+                "output_type": [ "peaks" ],
+                # Tim, how complicated would it be to exclude "peaks" if other files are there?
+            },
             "Fold change over control": {
-                "tag": "FCOC",
+                "tag": "eFCOC",
                 "visibility": "full",
                 "type": "bigWig",
                 "viewLimits": "0:1",
@@ -744,7 +894,7 @@ CHIP_COMPOSITE_VIS_DEFS = {
                 "output_type": [ "fold change over control" ]
             },
             "Signal p-value": {
-                "tag": "SPV",
+                "tag": "fSPV",
                 "visibility": "hide",
                 "type": "bigWig",
                 "viewLimits": "0:1",
@@ -754,7 +904,7 @@ CHIP_COMPOSITE_VIS_DEFS = {
                 "output_type": [ "signal p-value" ]
             },
             "Signal": {
-                "tag": "SIG",
+                "tag": "gSIG",
                 "visibility": "hide",
                 "type": "bigWig",
                 "viewLimits": "0:1",
@@ -762,42 +912,6 @@ CHIP_COMPOSITE_VIS_DEFS = {
                 "maxHeightPixels": "64:18:8",
                 "windowingFunction": "mean+whiskers",
                 "output_type": [ "signal" ]
-            },
-            "Replicated peaks": {
-                "tag": "RPKS",
-                "visibility": "dense",
-                "type": "bigBed",
-                "file_format_type": [ "narrowPeak" ],
-                "spectrum":"on",
-                "scoreFilter": "0:1000",
-                "output_type": [ "replicated peaks" ]
-            },
-            "Peaks": {
-                "tag": "PKS",
-                "visibility": "hide",
-                "type": "bigBed",
-                "file_format_type": [ "narrowPeak" ],
-                "scoreFilter": "0",
-                "output_type": [ "peaks" ],
-                # Tim, how complicated would it be to exclude "peaks" if other files are there?
-            },
-            "Conservative IDR thresholded peaks": {
-                "tag": "CONSIDR",
-                "visibility": "hide",
-                "type": "bigBed",
-                "file_format_type": [ "narrowPeak" ],
-                "spectrum":"on",
-                "scoreFilter": "0:1000",
-                "output_type": [ "conservative idr thresholded peaks" ]
-            },
-            "Optimal IDR thresholded peaks": {
-                "tag": "OPTIDR",
-                "visibility": "dense",
-                "type": "bigBed",
-                "file_format_type": [ "narrowPeak" ],
-                "spectrum":"on",
-                "scoreFilter": "100:1000",
-                "output_type": [ "optimal idr thresholded peaks" ]
             },
         },
     },
@@ -844,7 +958,7 @@ ECLIP_COMPOSITE_VIS_DEFS = {
         "group_order": [ "Signal", "Peaks" ],
         "groups": {
             "Signal": {
-                "tag": "SIG",
+                "tag": "aSIG",
                 "visibility": "full",
                 "type": "bigWig",
                 "viewLimits": "0:1",
@@ -854,7 +968,7 @@ ECLIP_COMPOSITE_VIS_DEFS = {
                 "output_type": [ "signal" ]
             },
             "Peaks": {
-                "tag": "PKS",
+                "tag": "bPKS",
                 "visibility": "dense",
                 "type": "bigBed",
                 "spectrum": "on",
@@ -907,25 +1021,25 @@ ANNO_COMPOSITE_VIS_DEFS = {
         "groups": {
 
             "Candidate enhancers": {
-                "tag": "ENHAN",
+                "tag": "aENHAN",
                 "type": "bigBed",
                 "visibility": "dense",
                 "output_type": [ "candidate enhancers" ]
             },
             "Candidate promoters": {
-                "tag": "PROMO",
+                "tag": "bPROMO",
                 "type": "bigBed",
                 "visibility": "dense",
                 "output_type": [ "candidate promoters" ]
             },
             "Chromatin state": {
-                "tag": "STATE",
+                "tag": "cSTATE",
                 "type": "bigBed",
                 "visibility": "dense",
                 "output_type": [ "semi-automated genome annotation" ]
             },
             "Peaks": {
-                "tag": "PKS",
+                "tag": "sPKS",
                 "visibility": "hide",
                 "type": "bigBed",
                 "file_format_type": [ "narrowPeak" ],
@@ -972,19 +1086,8 @@ CHIA_COMPOSITE_VIS_DEFS = {
         "tag": "view",
         "group_order": [ "Signal of unique reads", "Signal of all reads", "Plus signal of unique reads", "Minus signal of unique reads", "Plus signal of all reads", "Minus signal of all reads", ],
         "groups": {
-            "Signal of all reads": {
-                "tag": "SIGA",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "signal of all reads" ]
-            },
             "Signal of unique reads": {
-                "tag": "SIGU",
+                "tag": "SIGBL",
                 "visibility": "full",
                 "type": "bigWig",
                 "viewLimits": "0:1",
@@ -993,6 +1096,17 @@ CHIA_COMPOSITE_VIS_DEFS = {
                 "maxHeightPixels": "64:18:8",
                 "windowingFunction": "mean+whiskers",
                 "output_type": [ "signal of unique reads" ]
+            },
+            "Signal of all reads": {
+                "tag": "SIGBM",
+                "visibility": "hide",
+                "type": "bigWig",
+                "viewLimits": "0:1",
+                "transformFunc": "LOG",
+                "autoScale": "off",
+                "maxHeightPixels": "64:18:8",
+                "windowingFunction": "mean+whiskers",
+                "output_type": [ "signal of all reads" ]
             },
         },
     },
@@ -1038,8 +1152,20 @@ HIC_COMPOSITE_VIS_DEFS = {
         "tag": "view",
         "group_order": [ "Topologically associated domains", "Nested TADs", "Genome compartments" ],
         "groups": {
+            "Topologically associated domains": {
+                "tag": "aTADS",
+                "visibility": "dense",
+                "type": "bigBed 3+",
+                "output_type": [ "topologically associated domains" ]
+            },
+            "Nested TADs": {
+                "tag": "bTADS",
+                "visibility": "hide",
+                "type": "bigBed 3+",
+                "output_type": [ "nested topologically associated domains" ]
+            },
             "Genome compartments": {
-                "tag": "COMPART",
+                "tag": "cCOMPART",
                 "visibility": "hide",
                 "type": "bigWig",
                 "viewLimits": "0:1",
@@ -1048,18 +1174,6 @@ HIC_COMPOSITE_VIS_DEFS = {
                 "maxHeightPixels": "64:18:8",
                 "windowingFunction": "mean+whiskers",
                 "output_type": [ "genome compartments" ]
-            },
-            "Topologically associated domains": {
-                "tag": "TADS",
-                "visibility": "dense",
-                "type": "bigBed 3+",
-                "output_type": [ "topologically associated domains" ]
-            },
-            "Nested TADs": {
-                "tag": "TADS",
-                "visibility": "hide",
-                "type": "bigBed 3+",
-                "output_type": [ "nested topologically associated domains" ]
             },
         },
     },
@@ -1091,6 +1205,7 @@ HIC_COMPOSITE_VIS_DEFS = {
 
 VIS_DEFS_BY_ASSAY = {
     "LRNA":     LRNA_COMPOSITE_VIS_DEFS,
+    "tkRNA":    TKRNA_COMPOSITE_VIS_DEFS,
     "SRNA":     SRNA_COMPOSITE_VIS_DEFS,
     "TSS":      RAMPAGE_COMPOSITE_VIS_DEFS,
     "miRNA":    MICRORNA_COMPOSITE_VIS_DEFS,
@@ -1112,7 +1227,9 @@ def get_vis_type(dataset):
             return "ANNO"
 
     # This will be long AND small
-    elif assay in ["RNA-seq","shRNA knockdown followed by RNA-seq","CRISPR genome editing followed by RNA-seq","single cell isolation followed by RNA-seq"]:
+    elif assay in ["shRNA knockdown followed by RNA-seq","siRNA knockdown followed by RNA-seq","CRISPR genome editing followed by RNA-seq"]:
+        return "tkRNA"
+    elif assay in ["RNA-seq","single cell isolation followed by RNA-seq"]:
         size_range = dataset["replicates"][0]["library"]["size_range"]
         if size_range.startswith('>'):
             size_range = size_range[1:]
@@ -1491,7 +1608,7 @@ def lookup_token(token,dataset,a_file=None):
     '''Encodes the string to swap special characters and remove spaces.'''
 
     if token not in SUPPORTED_MASK_TOKENS:
-        log.warn("Attempting to look up un expected token: '%s'" % token)
+        log.warn("Attempting to look up unexpected token: '%s'" % token)
         return "unknown token"
 
     if token in SIMPLE_DATASET_TOKENS:
@@ -1501,13 +1618,18 @@ def lookup_token(token,dataset,a_file=None):
         return term
     elif token == "{experiment.accession}":
         return dataset['accession']
-    elif token in ["{target}","{target.label}","{target.name}"]:
+    elif token in ["{target}","{target.label}","{target.name}","{target.title}"]:
         target = dataset.get('target',{})
         if isinstance(target,list):
             target = target[0]
-        if token == "{target.name}":
-            return target.get('name',"Unknown Target")
-        return target.get('label',"Unknown Target")
+        if token.find('.') > -1:
+            sub_token = token.strip('{}').split('.')[0]
+        else:
+            sub_token = "label"
+        return target.get(sub_token,"Unknown Target")
+        #if token == "{target.name}":
+        #    return target.get('name',"Unknown Target")
+        #return target.get('label',"Unknown Target")
     elif token in ["{target.name}"]:
         target = dataset.get('target',{})
         if isinstance(target,list):
@@ -1640,7 +1762,8 @@ def generate_live_groups(composite,title,group_defs,dataset,rep_tags=[]):
                 if rep_tag in ["pool","combined"]:
                     rep_title = rep_title_mask.replace('{replicate_number}',"0")
                 else:
-                    rep_title = rep_title_mask.replace('{replicate_number}',rep_tag[3:])
+                    rep_no = int(rep_tag[3:]) # tag might be rep01 but we want replicate 1
+                    rep_title = rep_title_mask.replace('{replicate_number}',str(rep_no))
             live_group["groups"][rep_tag] = { "title": rep_title, "tag": rep_tag }
         live_group["preferred_order"] = "sorted"
 
@@ -2354,7 +2477,7 @@ def generate_batch_trackDb(request, hide=False, regen=False):
                 del dataset
 
         log.warn("len(acc_comosites) =  %d   %.3f secs" % (len(acc_composites),(time.time() - PROFILE_START_TIME)))  # DEBUG: batch trackDb
-        set_composites = remodel_acc_to_set_composites(acc_composites) # ,hide_after=5) # TODO: set a reasonable hide_after
+        set_composites = remodel_acc_to_set_composites(acc_composites, hide_after=100) # TODO: set a reasonable hide_after
         add_to_es(request,es_set_key,set_composites)
         log.warn("generated %d, found %d acc_composites   %.3f secs" % (made,found,(time.time() - PROFILE_START_TIME)))
 
