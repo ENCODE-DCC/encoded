@@ -2086,3 +2086,14 @@ def test_audit_experiment_wgbs_standards(testapp,
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'high lambda C methylation ratio' for error in errors_list)
+
+
+def test_audit_experiment_ntr_term_id_mismatch(testapp, base_experiment):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'NTR:0000763',
+                                                'assay_term_name': 'ChIP-seq'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched assay_term_name' for error in errors_list)

@@ -1994,10 +1994,12 @@ def audit_experiment_assay(value, system):
     term_name = value.get('assay_term_name')
 
     if term_id.startswith('NTR:'):
-        if term_id not in NTR_assay_lookup:
-            detail = 'Assay_term_id is a New Term Request ({} - {}) that is invalid'.format(
-                term_id, term_name)
-            yield AuditFailure('invalid NTR assay', detail, level='INTERNAL_ACTION')
+        if term_name != NTR_assay_lookup[term_id]:
+            detail = 'Experiment has a mismatch between assay_term_name "{}" and assay_term_id "{}"'.format(
+                term_name,
+                term_id,
+            )
+            yield AuditFailure('mismatched assay_term_name', detail, level='INTERNAL_ACTION')
             return
         else:
             detail = 'Assay_term_id is a New Term Request ({} - {})'.format(term_id, term_name)
