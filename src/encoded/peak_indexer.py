@@ -5,6 +5,7 @@ import csv
 import logging
 import collections
 from pyramid.view import view_config
+from sqlalchemy.sql import text
 from elasticsearch.exceptions import (
     NotFoundError
 )
@@ -102,6 +103,14 @@ def get_assay_term_name(accession, request):
     if 'assay_term_name' in context:
         return context['assay_term_name']
     return None
+
+def all_bed_file_uuids(request):
+    file_uuids = []
+    stmt = text("select distinct(resources.rid) from resources, propsheets where resources.rid = propsheets.rid and resources.item_type='file' and propsheets.properties->>'file_format' = 'bed' and properties->>'status' = 'released';")
+    connection = request.registry[DBSESSION].connection()
+    uuids = connection.execute(stmt)
+    file_uuids = [str(item[0]) for item in uuids]
+    return file_uuids
 
 
 def index_peaks(uuid, request):
@@ -214,9 +223,11 @@ def index_file(request):
     }
 
     if last_xmin is None:
-        result['types'] = types = request.json.get('types', None)
-        invalidated = list(all_uuids(request.registry, types))
+        result['types'] = request.json.get('types', None)
+        invalidated = all_bed_file_uuids(request)
+        initial_index = True
     else:
+        initial_index = False
         txns = session.query(TransactionRecord).filter(
             TransactionRecord.xid >= last_xmin,
         )
@@ -278,6 +289,8 @@ def index_file(request):
     if not dry_run:
         err = None
         uuid_current = None
+        if not initial_index:
+            invalidated = list(set(invalidated).intersection(set(all_bed_file_uuids(request))))
         try:
             for uuid in invalidated:
                 uuid_current = uuid
