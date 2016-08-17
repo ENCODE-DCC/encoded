@@ -1,4 +1,6 @@
 module.exports = {
+    "@id": "/treatments/3280b708-0f05-40fa-bff2-54e2b6505c13/",
+    "@type": ["Treatment", "Item"],
     "concentration": 97.2,
     "concentration_units": "nM",
     "duration": 6,
@@ -7,9 +9,6 @@ module.exports = {
         "UCSC-ENCODE-cv:diffProtB_6hr"
     ],
     "lab": "john-stamatoyannopoulos",
-    "protocols": [
-        "ENCODE:diffProtB_6hr_protocol"
-    ],
     "submitted_by": "blandit.orci@conubia.magna",
     "treatment_term_id": "CHEBI:34730",
     "treatment_term_name": "doxycycline hyclate",

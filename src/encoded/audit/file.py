@@ -26,6 +26,27 @@ paired_end_assays = [
 
 
 @audit_checker('File', frame=['derived_from'])
+def audit_file_md5sum_integrity(value, system):
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+    md5sum = value['md5sum']
+    try:
+        hexval = int(md5sum, 16)
+        if len(md5sum) != 32:
+            detail = 'File {} '.format(value['@id']) + \
+                     'has an md5sum value of {}, '.format(md5sum) + \
+                     'which is not 32 characters long.'
+            yield AuditFailure('inconsistent md5sum',
+                               detail, level='INTERNAL_ACTION')
+    except ValueError:
+        detail = 'File {} '.format(value['@id']) + \
+                 'has an md5sum value of {}, '.format(md5sum) + \
+                 'which is not a valid hexadecimal number.'
+        yield AuditFailure('inconsistent md5sum',
+                           detail, level='INTERNAL_ACTION')
+
+
+@audit_checker('File', frame=['derived_from'])
 def audit_file_bam_derived_from(value, system):
     if value['file_format'] != 'bam':
         return
@@ -424,9 +445,11 @@ def audit_file_controlled_by(value, system):
                                    detail, level='WARNING')
 
             if read_length != control_length and \
+               abs(read_length - control_length) > 2 and \
                value['dataset'].get('assay_term_name') not in \
                     ['shRNA knockdown followed by RNA-seq',
                      'CRISPR genome editing followed by RNA-seq']:
+
                 detail = 'File {} is {} but its control file {} is {}'.format(
                     value['@id'],
                     value['read_length'],
