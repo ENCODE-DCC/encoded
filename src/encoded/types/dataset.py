@@ -288,7 +288,7 @@ class FileSet(Dataset):
                                  'bedLogR']
         viewable_file_status = ['released']
         if status not in ['released']:
-            viewable_file_status.extend(['in progress', 'revoked', 'archived'])
+            viewable_file_status.extend(['in progress'])
 
         for path in list(chain(original_files, related_files))[:101]:
             # Need to cap this due to the large numbers of files in related_files
