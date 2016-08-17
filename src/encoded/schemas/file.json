@@ -397,7 +397,10 @@
                         "conservative idr thresholded peaks",
 
                         "enhancer validation",
-                        "semi-automated genome annotation"
+                        "semi-automated genome annotation",
+
+                        "blacklisted regions",
+                        "mitochondria blacklisted regions"
 
                     ]
                 },
@@ -431,7 +434,7 @@
                         "valleys",
                         "sequence alignability",
                         "sequence uniqueness",
-                        "blacklisted regions",
+                        
 
                         "primer sequence",
                         "reference",
@@ -771,6 +774,7 @@
         "sequence alignability": "annotation",
         "sequence uniqueness": "annotation",
         "blacklisted regions": "annotation",
+        "mitochondria blacklisted regions": "annotation",
         "distal peaks": "annotation",
         "proximal peaks": "annotation",
         "optimal idr thresholded peaks": "annotation",

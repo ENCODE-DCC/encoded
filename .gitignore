@@ -16,9 +16,7 @@
 /parts/
 /production.ini
 /session-secret.b64
-/src/encoded/static/css/bootstrap.css
-/src/encoded/static/css/responsive.css
-/src/encoded/static/css/style.css
+/src/encoded/static/css/
 /src/encoded/static/scss/_variables.original.scss
 
 *.DS_Store
