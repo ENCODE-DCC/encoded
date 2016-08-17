@@ -528,6 +528,7 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
                 'organ_slims',
                 'award.project',
                 'assembly',
+                'internal_status'
             ],
             'group_by': ['replicates.library.biosample.biosample_type', 'biosample_term_name'],
             'label': 'Biosample',
