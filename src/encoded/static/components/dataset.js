@@ -928,7 +928,7 @@ var FilePanelHeader = module.exports.FilePanelHeader = React.createClass({
 
         return (
             <div>
-                {context.visualize_ucsc  && context.status == "released" ?
+                {context.visualize_ucsc ?
                     <span className="pull-right">
                         <DropdownButton title='Visualize Data' label="filepaneheader">
                             <DropdownMenu>
