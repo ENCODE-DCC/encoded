@@ -777,16 +777,18 @@ def generate_summary_dictionary(
                 promoter = construct_data[2]
                 if 'tags' in cons:
                     for tag in cons['tags']:
+                        addition = ''
+                        if tag['location'] in ['N-terminal', 'C-terminal']:
+                            addition += tag['location'] + ' '
                         if promoter is not None:
-                            constructs_list.append(tag['location'] + ' ' +
-                                                   tar['label'] + ' ' +
-                                                   cons['construct_type'] +
-                                                   ' under ' + promoter['label'] +
-                                                   ' promoter')
+                            addition += tar['label'] + ' ' + \
+                                cons['construct_type'] + \
+                                ' under ' + promoter['label'] + \
+                                ' promoter'
                         else:
-                            constructs_list.append(tag['location'] + ' ' +
-                                                   tar['label'] + ' ' +
-                                                   cons['construct_type'])
+                            addition += tar['label'] + ' ' + \
+                                cons['construct_type']
+                        constructs_list.append(addition)
                 else:
                     constructs_list.append(tar['label'])
 
@@ -804,17 +806,18 @@ def generate_summary_dictionary(
                 promoter = construct_data[2]
                 if 'tags' in cons:
                     for tag in cons['tags']:
+                        addition = ''
+                        if tag['location'] in ['N-terminal', 'C-terminal']:
+                            addition += tag['location'] + ' '
                         if promoter is not None:
-                            constructs_list.append(tag['location'] + ' ' +
-                                                   tar['label'] + ' ' +
-                                                   cons['construct_type'] +
-                                                   ' under ' + promoter['label'] +
-                                                   ' promoter')
+                            addition += tar['label'] + ' ' + \
+                                cons['construct_type'] + \
+                                ' under ' + promoter['label'] + \
+                                ' promoter'
                         else:
-                            constructs_list.append(tag['location'] + ' ' +
-                                                   tar['label'] + ' ' +
-                                                   cons['construct_type'])
-
+                            addition += tar['label'] + ' ' + \
+                                cons['construct_type']
+                        constructs_list.append(addition)
                 else:
                     constructs_list.append(tar['label'])
 
