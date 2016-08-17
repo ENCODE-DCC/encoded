@@ -11,7 +11,7 @@ $form-bg: #f3f3f3;
     padding-top: 2px;
     padding-bottom: 2px;
     background-color: $form-bg;
-    @include box-shadow(none);
+    box-shadow: none;
     line-height: 20px;
     border: 1px solid #ccc;
 
@@ -85,7 +85,7 @@ $form-bg: #f3f3f3;
     background-color: #fff;
     border: 1px solid #c0c0c0;
     list-style: none;
-    @include box-shadow(0 2px 4px 0 rgba(0,0,0,.5));
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,.5);
 
     li {
         margin: 0;
