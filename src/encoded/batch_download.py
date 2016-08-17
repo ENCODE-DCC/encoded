@@ -146,7 +146,6 @@ def make_cell(header_column, row, exp_data_row):
 
 def make_audit_cell(header_column, experiment_json, file_json):
     categories = []
-    details = []
     paths = []
     for column in _audit_mapping[header_column]:
         for value in simple_path_ids(experiment_json, column):
@@ -154,16 +153,14 @@ def make_audit_cell(header_column, experiment_json, file_json):
                 paths.append(value)
             elif 'category' in column:
                 categories.append(value)
-            elif 'detail' in column:
-                details.append(value)
     data = []
     for i, path in enumerate(paths):
         if '/files/' in path and file_json.get('title', '') not in path:
             # Skip file audits that does't belong to the file
             continue
         else:
-            data.append('{}: {}'.format(categories[i], details[i]))
-    return '| '.join(data)
+            data.append(categories[i])
+    return ', '.join(list(set(data)))
 
 
 @view_config(route_name='peak_metadata', request_method='GET')
