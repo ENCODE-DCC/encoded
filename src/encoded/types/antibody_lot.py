@@ -132,7 +132,7 @@ class AntibodyLot(SharedItem):
                     "awaiting characterization",
                     "pending dcc review",
                     "characterized to standards",
-                    "characterized to standards (via exemption)",
+                    "characterized to standards with exemption",
                     "not characterized to standards",
                     "not pursued"
                 ]
@@ -163,7 +163,7 @@ def lot_reviews(characterizations, targets, request):
             'biosample_term_id': 'NTR:99999999',
             'organisms': sorted(target_organisms['all']),
             'targets': sorted(targets),  # Copy to prevent modification of original data
-            'status': 'characterized to standards (via exemption)' if is_control else 'awaiting characterization',
+            'status': 'characterized to standards with exemption' if is_control else 'awaiting characterization',
             'detail': 'IgG does not require further characterization.' if is_control else 'No characterizations submitted for this antibody lot yet.'
         }]
 
@@ -329,7 +329,7 @@ def lot_reviews(characterizations, targets, request):
             elif lane_review['lane_status'] == 'exempt from standards':
                 if not histone_mod_target:
                     if compliant_secondary or exempted_secondary:
-                        new_review['status'] = 'characterized to standards (via exemption)'
+                        new_review['status'] = 'characterized to standards with exemption'
                         new_review['detail'] = 'Fully characterized.'
                     if not secondary_chars or (not_reviewed_secondary == len(secondary_chars)):
                         new_review['detail'] = 'Awaiting submission of secondary characterization(s).'
@@ -342,7 +342,7 @@ def lot_reviews(characterizations, targets, request):
                     if lane_organism in target_organisms:
                         new_review['targets'] = [target_organisms[lane_organism]]
                         if compliant_secondary or exempted_secondary:
-                            new_review['status'] = 'characterized to standards (via exemption)'
+                            new_review['status'] = 'characterized to standards with exemption'
                             new_review['detail'] = 'Fully characterized.'
                     else:
                         new_review['detail'] = 'Characterized organism not in antibody target list.'
@@ -353,7 +353,7 @@ def lot_reviews(characterizations, targets, request):
                         new_review['status'] = 'characterized to standards'
                         new_review['detail'] = 'Fully characterized.'
                     elif exempted_secondary:
-                        new_review['status'] = 'characterized to standards (via exemption)'
+                        new_review['status'] = 'characterized to standards with exemption'
                         new_review['detail'] = 'Fully characterized.'
                     else:
                         new_review['detail'] = 'Awaiting a compliant secondary characterization.'
@@ -370,7 +370,7 @@ def lot_reviews(characterizations, targets, request):
                             new_review['status'] = 'characterized to standards'
                             new_review['detail'] = 'Fully characterized.'
                         elif exempted_secondary:
-                            new_review['status'] = 'characterized to standards (via exemption)'
+                            new_review['status'] = 'characterized to standards with exemption'
                             new_review['detail'] = 'Fully characterized.'
                         else:
                             new_review['detail'] = 'Awaiting a compliant secondary characterization.'
@@ -397,7 +397,7 @@ def lot_reviews(characterizations, targets, request):
 
             status_ranking = {
                 'characterized to standards': 6,
-                'characterized to standards (via exemption)': 5,
+                'characterized to standards with exemption': 5,
                 'compliant': 4,
                 'exempt from standards': 3,
                 'pending dcc review': 2,
