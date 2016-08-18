@@ -911,7 +911,7 @@ CHIP_COMPOSITE_VIS_DEFS = {
                 "autoScale": "off",
                 "maxHeightPixels": "64:18:8",
                 "windowingFunction": "mean+whiskers",
-                "output_type": [ "signal" ]
+                "output_type": [ "signal","signal of unique reads" ]
             },
         },
     },
@@ -1911,16 +1911,24 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
         file_format = view["type"].split()[0]
         if file_format == "bigBed" and "scoreFilter" in view:
             view["type"] = "bigBed 6 +" # be more discriminating as to what bigBeds are 6 + ?  Just rely on scoreFilter
+        log.warn("%d files looking for type %s" % (len(dataset["files"]),view["type"]))
         for a_file in dataset["files"]:
             if a_file['status'] in INVISIBLE_FILE_STATUSES:
                 continue
-            if 'assembly' not in a_file or _ASSEMBLY_MAPPER.get(a_file['assembly'], a_file['assembly']) != ucsc_assembly:
-                continue
             if file_format != a_file['file_format']:
+                #log.warn("- file_format %s does not match %s" % (a_file['file_format'],file_format))
                 continue
             if len(output_types) > 0 and a_file.get('output_type','unknown') not in output_types:
+                #log.warn("- wrong output_type: %s != %s" % (a_file.get('output_type','unknown'),str(output_types)))
                 continue
             if len(file_format_types) > 0 and a_file.get('file_format_type','unknown') not in file_format_types:
+                #log.warn("- wrong file_format_type: %s != %s" % (a_file.get('file_format_type','unknown'),str(file_format_types)))
+                continue
+            if 'assembly' not in a_file or _ASSEMBLY_MAPPER.get(a_file['assembly'], a_file['assembly']) != ucsc_assembly:
+                #if 'assembly' not in a_file:
+                #    log.warn("- no assembly")
+                #else:
+                #    log.warn("- wrong assembly %s != %s" % (_ASSEMBLY_MAPPER.get(a_file['assembly'], a_file['assembly']), ucsc_assembly))
                 continue
             if "rep_tech" not in a_file:
                 rep_tech = rep_for_file(a_file)
