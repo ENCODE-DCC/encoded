@@ -1409,12 +1409,6 @@ def test_audit_experiment_rampage_standards(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-        '''print (error_type)
-        for e in errors[error_type]:
-            print (e['category'])
-            if (e['category'].startswith('RAMPAGE')):
-                print (e)
-        '''
 
     assert any(error['category'] == 'insufficient read depth' for error in errors_list)
 
@@ -1786,12 +1780,6 @@ def test_audit_experiment_chip_seq_standards(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-        '''print (error_type)
-        for e in errors[error_type]:
-            print (e['category'])
-            if (e['category'].startswith('ChIP-seq')):
-                print (e)
-        '''
     assert any(error['category'] == 'insufficient read depth' for error in errors_list)
 
 
@@ -2033,6 +2021,105 @@ def test_audit_experiment_no_out_of_date_analysis(testapp,
     assert all(error['category'] != 'out of date analysis' for error in errors_list)
 
 
+def test_audit_experiment_modERN_control_missing_files(testapp,
+                                                       award,
+                                                       base_experiment,
+                                                       replicate_1_1,
+                                                       library_1,
+                                                       biosample_1,
+                                                       file_fastq_3,
+                                                       file_fastq_4,
+                                                       file_bam_1_1,
+                                                       file_bam_2_1,
+                                                       file_tsv_1_2,
+                                                       analysis_step_run_bam,
+                                                       analysis_step_version_bam,
+                                                       analysis_step_bam,
+                                                       pipeline_bam,
+                                                       target_control):
+    testapp.patch_json(pipeline_bam['@id'], {'title':
+                                             'Transcription factor ChIP-seq pipeline (modERN)'})
+    testapp.patch_json(base_experiment['@id'], {'target': target_control['@id'],
+                                                'status': 'released',
+                                                'date_released': '2016-01-01',
+                                                "assay_term_id": "OBI:0001271",
+                                                "assay_term_name": "ChIP-seq"})
+    testapp.patch_json(award['@id'], {'rfa': 'modERN'})
+    testapp.patch_json(file_fastq_4['@id'], {'replicate': replicate_1_1['@id']})
+    testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'assembly': 'mm10',
+                                             'output_type': 'alignments',
+                                             'file_format': 'bam',
+                                             'derived_from': [file_fastq_3['@id']]})
+    testapp.patch_json(file_bam_2_1['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'assembly': 'mm10',
+                                             'output_type': 'signal of unique reads',
+                                             'file_format': 'bigWig',
+                                             'derived_from': [file_fastq_4['@id']]})
+    testapp.patch_json(file_tsv_1_2['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'assembly': 'mm9',
+                                             'output_type': 'read-depth normalized signal',
+                                             'file_format': 'bigWig',
+                                             'status': 'released',
+                                             'derived_from': [file_fastq_4['@id']]})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing pipeline files' for error in errors_list)
+
+
+def test_audit_experiment_modERN_experiment_missing_files(testapp,
+                                                          award,
+                                                          base_experiment,
+                                                          replicate_1_1,
+                                                          library_1,
+                                                          biosample_1,
+                                                          file_fastq_3,
+                                                          file_fastq_4,
+                                                          file_bam_1_1,
+                                                          file_bam_2_1,
+                                                          file_tsv_1_2,
+                                                          analysis_step_run_bam,
+                                                          analysis_step_version_bam,
+                                                          analysis_step_bam,
+                                                          pipeline_bam,
+                                                          target_H3K9me3):
+
+    testapp.patch_json(pipeline_bam['@id'], {'title':
+                                             'Transcription factor ChIP-seq pipeline (modERN)'})
+    testapp.patch_json(award['@id'], {'rfa': 'modERN'})
+    testapp.patch_json(base_experiment['@id'], {'target': target_H3K9me3['@id'],
+                                                'status': 'released',
+                                                'date_released': '2016-01-01',
+                                                'assay_term_id': 'OBI:0001864',
+                                                'assay_term_name': 'ChIP-seq'})
+
+    testapp.patch_json(file_fastq_4['@id'], {'replicate': replicate_1_1['@id']})
+    testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'assembly': 'mm10',
+                                             'output_type': 'alignments',
+                                             'file_format': 'bam',
+                                             'derived_from': [file_fastq_3['@id']]})
+    testapp.patch_json(file_bam_2_1['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'assembly': 'mm10',
+                                             'output_type': 'signal of unique reads',
+                                             'file_format': 'bigWig',
+                                             'derived_from': [file_fastq_4['@id']]})
+    testapp.patch_json(file_tsv_1_2['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'assembly': 'mm10',
+                                             'output_type': 'read-depth normalized signal',
+                                             'file_format': 'bigWig',
+                                             'derived_from': [file_fastq_4['@id']]})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing pipeline files' for error in errors_list)
+
+
 def test_audit_experiment_wgbs_standards(testapp,
                                          base_experiment,
                                          replicate_1_1,
@@ -2086,3 +2173,74 @@ def test_audit_experiment_wgbs_standards(testapp,
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'high lambda C methylation ratio' for error in errors_list)
+
+def test_audit_experiment_modern_chip_seq_standards(testapp,
+                                             base_experiment,
+                                             replicate_1_1,
+                                             replicate_2_1,
+                                             library_1,
+                                             library_2,
+                                             biosample_1,
+                                             biosample_2,
+                                             mouse_donor_1,
+                                             file_fastq_3,
+                                             file_fastq_4,
+                                             file_bam_1_1,
+                                             file_bam_2_1,
+                                             file_tsv_1_2,
+                                             mad_quality_metric_1_2,
+                                             chip_seq_quality_metric,
+                                             analysis_step_run_bam,
+                                             analysis_step_version_bam,
+                                             analysis_step_bam,
+                                             pipeline_bam,
+                                             target_H3K9me3,
+                                             award_modERN):
+
+    testapp.patch_json(chip_seq_quality_metric['@id'], {'quality_metric_of': [file_bam_1_1['@id']],
+                                                        'processing_stage': 'unfiltered',
+                                                        'total': 100000,
+                                                        'mapped': 100000,
+                                                        'read1': 100, 'read2': 100})
+    testapp.patch_json(file_fastq_3['@id'], {'read_length': 100})
+    testapp.patch_json(file_fastq_4['@id'], {'read_length': 100})
+
+    testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'assembly': 'mm10',
+                                             'derived_from': [file_fastq_3['@id']]})
+    testapp.patch_json(file_bam_2_1['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'assembly': 'mm10',
+                                             'derived_from': [file_fastq_4['@id']]})
+    testapp.patch_json(pipeline_bam['@id'], {'title':
+                                             'Transcription factor ChIP-seq pipeline (modERN)'})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
+    testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
+    testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
+    testapp.patch_json(biosample_2['@id'], {'model_organism_sex': 'mixed'})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(base_experiment['@id'], {'target': target_H3K9me3['@id'],
+                                                'status': 'released',
+                                                'date_released': '2016-01-01',
+                                                'assay_term_id': 'OBI:0001864',
+                                                'assay_term_name': 'ChIP-seq',
+                                                'award': award_modERN['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+        
+        '''print (error_type)
+        for e in errors[error_type]:
+            print (e)
+            print (e['category'])
+            #if (e['category'].startswith('ChIP-seq')):
+            print (e)
+        '''
+    assert any(error['category'] == 'insufficient read depth' for error in errors_list)
