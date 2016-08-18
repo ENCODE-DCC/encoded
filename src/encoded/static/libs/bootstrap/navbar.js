@@ -28,7 +28,8 @@ var {DropdownMenu} = require('./dropdown-menu');
 //                  ...
 //              </Nav>
 //          </Navbar>
-//     }
+//     );
+// }
 
 var Navbars = module.exports.Navbars = {
     childContextTypes: {
