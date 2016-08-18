@@ -24,6 +24,37 @@ BDM = [
     },
 ]
 
+def spot_instances(price, count, image_id, key_pair, instance_type, zone_group, security_groups)
+    responce = client.request_spot_instances(
+    SpotPrice=price,
+    InstanceCount=count,
+    Type='one-time',
+    LaunchGroup='string',
+    AvailabilityZoneGroup=zone_group,
+    LaunchSpecification={
+        
+        'ImageId': image_id,
+        'KeyName': key_pair,
+        'SecurityGroups': [
+            security_groups,
+        ],
+        'UserData': 'string',
+        'InstanceType': 'c4.4xlarge',
+        'Placement': {
+            'AvailabilityZone': 'string',
+            'GroupName': 'string'
+        },
+        'SubnetId': 'string',
+        'IamInstanceProfile': {
+            'Arn': 'string'
+        },
+        'SecurityGroupIds': [
+            'string',
+        ]
+    }
+
+        )
+
 
 def nameify(s):
     name = ''.join(c if c.isalnum() else '-' for c in s.lower()).strip('-')
@@ -108,7 +139,6 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size, cl
         user_data = user_data % data_insert
         security_groups = ['ssh-http-https']
         iam_role = 'encoded-instance'
-        key_pair = 'cherry-lab-power-users'
         count = 1
     else:
         if not cluster_name:
@@ -121,7 +151,6 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size, cl
         }
         security_groups = ['ssh-http-https']
         iam_role = 'elasticsearch-instance'
-        key_pair = 'cherry-lab-power-users'
         count = int(cluster_size)
 
     instances = create_ec2_instances(ec2, image_id, count, instance_type, security_groups, key_pair, user_data, BDM, iam_role)
@@ -156,6 +185,7 @@ def main():
     parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
     parser.add_argument('-n', '--name', type=hostname, help="Instance name")
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')
+    parser.add_argument('--spot', type=spot_instances)
     parser.add_argument(
         '--candidate', action='store_const', default='demo', const='candidate', dest='role',
         help="Deploy candidate instance")
