@@ -25,7 +25,10 @@ from .shared_calculated_properties import (
 
 from itertools import chain
 import datetime
+
+from copy import deepcopy
 from ..search import _ASSEMBLY_MAPPER
+from ..visualization import find_or_make_acc_composite
 
 
 def item_is_revoked(request, path):
@@ -182,16 +185,35 @@ class Dataset(Item):
         "title": "Visualize at UCSC",
         "type": "string",
     })
-    def visualize_ucsc(self, request, hub, assembly):
+    def visualize_ucsc(self, request, hub, assembly, accession, files, lab, award, target=None, replicates=None):
+        # Overrides dataset calculated property
         hub_url = urljoin(request.resource_url(request.root), hub)
         viz = {}
+        embedded_dataset = deepcopy(self.properties)
+        #import pdb;pdb.set_trace()
+        embedded_dataset['files'] = files
+        embedded_dataset['lab'] = lab
+        embedded_dataset['award'] = award
+        if target is not None:
+            embedded_dataset['target'] = target
+        if replicates is not None:
+            embedded_dataset['replicates'] = replicates
+        if '@id' not in embedded_dataset:
+            embedded_dataset['@id'] = '/experiments/' + accession + '/'
+        #pdb.set_trace()
+
         for assembly_hub in assembly:
             ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly_hub, assembly_hub)
-            ucsc_url = (
-                'http://genome.ucsc.edu/cgi-bin/hgTracks'
-                '?hubClear='
-            ) + quote_plus(hub_url, ':/@') + '&db=' + ucsc_assembly
-            viz[assembly_hub] = ucsc_url
+            # Force regeneration of visualization settings, so that they are set in cache
+            (found, vis_blob) = find_or_make_acc_composite(request, assembly_hub, accession, embedded_dataset, regen=True)
+            if len(vis_blob) > 0:
+                ucsc_url = (
+                    'http://genome.ucsc.edu/cgi-bin/hgTracks'
+                    '?hubClear='
+                ) + quote_plus(hub_url, ':/@') + '&db=' + ucsc_assembly
+                viz[assembly_hub] = ucsc_url
+        if len(viz) == 0:
+            return None
         return viz
 
     @calculated_property(condition='date_released', schema={

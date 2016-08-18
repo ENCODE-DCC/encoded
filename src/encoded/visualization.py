@@ -497,7 +497,7 @@ RAMPAGE_COMPOSITE_VIS_DEFS = {
             },
             "Signal of unique reads": {
                 "tag": "SIGBL",
-                "visibility": "full",
+                "visibility": "hide",
                 "type": "bigWig",
                 "viewLimits": "0:1",
                 "autoScale": "off",
@@ -517,7 +517,7 @@ RAMPAGE_COMPOSITE_VIS_DEFS = {
             },
             "Plus signal of unique reads": {
                 "tag": "SIGLF",
-                "visibility": "full",
+                "visibility": "hide",
                 "type": "bigWig",
                 "viewLimits": "0:1",
                 "autoScale": "off",
@@ -527,7 +527,7 @@ RAMPAGE_COMPOSITE_VIS_DEFS = {
             },
             "Minus signal of unique reads": {
                 "tag": "SIGLR",
-                "visibility": "full",
+                "visibility": "hide",
                 "type": "bigWig",
                 "viewLimits": "0:1",
                 "autoScale": "off",
@@ -1003,7 +1003,7 @@ ECLIP_COMPOSITE_VIS_DEFS = {
     },
     "file_defs": {
         "longLabel": "{target} {assay_title} of {biosample_term_name} {output_type} {replicate} {experiment.accession} - {file.accession}",
-        "shortLabel": "{replicate} {output_type_short_label}",
+        "shortLabel": "{target} {replicate}",
     }
 }
 
@@ -1012,7 +1012,7 @@ ANNO_COMPOSITE_VIS_DEFS = {
         "longLabel":  "Collection of ENCODE annotations",
         "shortLabel": "ENCODE annotations",
     },
-    "longLabel":  "Encyclopedia annotation of {annotation_type} for {bisoample_term_name|multiple} - {accession}", #blank means "multiple biosamples"
+    "longLabel":  "Encyclopedia annotation of {annotation_type} for {biosample_term_name|multiple} - {accession}", #blank means "multiple biosamples"
     "shortLabel": "{annotation_type} of {biosample_term_name|multiple} {accession}", #blank means "multiple biosamples" not unknown
     "sortOrder": [ "Biosample","Replicates", "Views" ],
     "Views":  {
@@ -1232,15 +1232,21 @@ def get_vis_type(dataset):
     elif assay in ["RNA-seq","single cell isolation followed by RNA-seq"]:
         size_range = dataset["replicates"][0]["library"]["size_range"]
         if size_range.startswith('>'):
-            size_range = size_range[1:]
-        try:
-            sizes = size_range.split('-')
-            min_size = int(sizes[0])
-            max_size = int(sizes[1])
-        except:
-            log.warn("Could not distinguish between long and short RNA for %s.  Defaulting to short." % (dataset.get("accession")))
-            return "SRNA"  # this will be more noticed if there is a mistake
-        if max_size <= 200:
+            try:
+                min_size = int(size_range[1:])
+                max_size = min_size
+            except:
+                log.warn("Could not distinguish between long and short RNA for %s.  Defaulting to short." % (dataset.get("accession")))
+                return "SRNA"  # this will be more noticed if there is a mistake
+        else:
+            try:
+                sizes = size_range.split('-')
+                min_size = int(sizes[0])
+                max_size = int(sizes[1])
+            except:
+                log.warn("Could not distinguish between long and short RNA for %s.  Defaulting to short." % (dataset.get("accession")))
+                return "SRNA"  # this will be more noticed if there is a mistake
+        if max_size <= 200 and max_size != min_size:
             return "SRNA"
         elif min_size >= 150:
             return "LRNA"
@@ -1250,7 +1256,7 @@ def get_vis_type(dataset):
             return "SRNA"
     elif assay in ["microRNA-seq","microRNA counts"]:
         return "miRNA"
-    elif assay in ["whole-genome shotgun bisulfite sequencing","shotgun bisulfite-seq assay"]:
+    elif assay in ["whole-genome shotgun bisulfite sequencing","shotgun bisulfite-seq assay","RRBS"]:
         return "WGBS"
     elif assay.lower() in ["rampage","cage"]:
         return "TSS"
@@ -1273,11 +1279,11 @@ def lookup_vis_defs(vis_type):
     return VIS_DEFS_BY_ASSAY.get(vis_type, COMPOSITE_VIS_DEFS_DEFAULT )
 
 PENNANTS = {
-    "NHGRI":  "https://www.encodeproject.org/static/img/pennant-nhgri.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the files and metadata found at https://www.encodeproject.org/\"",
-    "ENCODE": "https://www.encodeproject.org/static/img/pennant-encode.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the ENCODE files and metadata found at https://www.encodeproject.org/\"",
-    "modENCODE":"https://www.encodeproject.org/static/img/pennant-encode.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the modENCODE files and metadata found at https://www.encodeproject.org/\"",
-    "GGR":    "https://www.encodeproject.org/static/img/pennant-ggr.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the GGR files and metadata found at https://www.encodeproject.org/\"",
-    "REMC":   "https://www.encodeproject.org/static/img/pennant-remc.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the REMC files and metadata found at https://www.encodeproject.org/\"",
+    "NHGRI":  "https://www.encodeproject.org/static/img/pennant-nhgri.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the files and metadata found at the ENCODE portal\"",
+    "ENCODE": "https://www.encodeproject.org/static/img/pennant-encode.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the ENCODE files and metadata found at the ENCODE portal\"",
+    "modENCODE":"https://www.encodeproject.org/static/img/pennant-encode.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the modENCODE files and metadata found at the ENCODE portal\"",
+    "GGR":    "https://www.encodeproject.org/static/img/pennant-ggr.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the Genomics of Gene Regulation files files and metadata found at the ENCODE portal\"",
+    "REMC":   "https://www.encodeproject.org/static/img/pennant-remc.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the Roadmap Epigentics files and metadata found at the ENCODE portal\"",
     #"Roadmap":   "encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the Roadmap files and metadata found at https://www.encodeproject.org/\"",
     #"modERN":   "encodeThumbnail.jpg https://www.encodeproject.org/ \"This trackhub was automatically generated from the modERN files and metadata found at https://www.encodeproject.org/\"",
     }
@@ -1536,7 +1542,6 @@ def sanitize_name(s):
 
 def add_to_es(request,comp_id,composite):
     '''Adds a composite json blob to elastic-search'''
-    #return
     key="vis_composite"
     es = request.registry.get(ELASTIC_SEARCH, None)
     if not es.indices.exists(key):
@@ -1552,7 +1557,6 @@ def add_to_es(request,comp_id,composite):
 
 def get_from_es(request,comp_id):
     '''Returns composite json blob from elastic-search, or None if not found.'''
-    #return None
     key="vis_composite"
     es = request.registry.get(ELASTIC_SEARCH, None)
     if es.indices.exists(key):
@@ -1562,6 +1566,24 @@ def get_from_es(request,comp_id):
         except:
             pass
     return None
+
+def search_es(request,ids):
+    '''Returns a list of composites from elastic-search, or None if not found.'''
+    key="vis_composite"
+    es = request.registry.get(ELASTIC_SEARCH, None)
+    if es.indices.exists(key):
+        try:
+            query = { "query": { "ids" : { "values" : ids } } }
+            res = es.search(body=query, index=key, doc_type='default',size=99999) # Consider size=200
+            hits = res.get("hits",{}).get("hits",[])
+            results = {}
+            for hit in hits:
+                results[hit["_id"]] = hit["_source"]
+            log.warn("ids found: %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))  # DEBUG: batch trackDb
+            return results
+        except:
+            pass
+    return {}
 
 def rep_for_file(a_file):
     '''Determines best rep_tech or rep for a file.'''
@@ -1650,6 +1672,15 @@ def lookup_token(token,dataset,a_file=None):
         return term
     elif token == "{biosample_term_name|multiple}":
         return dataset.get("biosample_term_name","multiple biosamples")
+    # TODO: rna_species
+    #elif token == "{rna_species}":
+    #    if replicates.library.nucleic_acid = polyadenylated mRNA
+    #       rna_species = polyA RNA
+    #    elseif replicates.library.nucleic_acid = RNA
+    #       if polyadenylated mRNA in replicates.library.depleted_in_term_name
+    #               rna_species = polyA depleted RNA
+    #       else
+    #               rna_species = total RNA
     elif a_file is not None:
         if token == "{file.accession}":
             return a_file['accession']
@@ -2349,18 +2380,19 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False,
         acc_composite = get_from_es(request,es_key)
 
     if acc_composite is None:
-        if dataset is None:
-            dataset = request.embed("/datasets/" + acc + '/', as_user=True)  # TODO: lower but better memory usage
+        request_dataset = (dataset is None)
+        if request_dataset:
+            dataset = request.embed("/datasets/" + acc + '/', as_user=True)
             #log.warn("find_or_make_acc_composite len(results) = %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))  # DEBUG
 
         acc_composite = make_acc_composite(dataset, assembly, host=request.host_url, hide=hide)  # DEBUG: batch trackDb
-        #if acc_composite: # TODO: force retrying empty composites
         add_to_es(request,es_key,acc_composite)
         found_or_made = "made"
+        log.warn("made acc_composite %s" % (dataset['accession']))
+        if request_dataset:
+            del dataset
     else:
         found_or_made = "found"
-
-    ###log.warn(json.dumps(acc_composite,indent=4))
 
     return (found_or_made, acc_composite)
 
@@ -2384,32 +2416,14 @@ def make_set_key(param_list,assembly):
                 es_set_key += '|' + str(param)
     return es_set_key
 
-#def reduce_results(results,param_list):
-    # NOTE: Not worth doing...
-    # Handle file_type selections
-    #if 'files.file_type' in param_list:
-    #    file_types_requested = param_list['files.file_type']
-    #    log.warn("Requesting file types: " + str(file_types_requested))
-    #    if not isinstance(file_types_requested,list):
-    #        file_types_requested = [ file_types_requested ]
-    #    file_formats_requested = []
-    #    for file_type in file_types_requested:
-    #        file_formats_requested.append( file_type.split()[0] )
-    #    log.warn("Requesting file formats: " + str(file_formats_requested))
-    #    results = [
-    #        result
-    #        for result in results
-    #        if any(
-    #            f['file_format'] in file_formats_requested
-    #            for f in result.get('files', [])
-    #        )
-    #    ]
-    #return results
-
-
 def generate_batch_trackDb(request, hide=False, regen=False):
 
     ### local test: RNA-seq: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/batch_hub/type=Experiment,,assay_title=RNA-seq,,award.rfa=ENCODE3,,status=released,,assembly=GRCh38,,replicates.library.biosample.biosample_type=induced+pluripotent+stem+cell+line/GRCh38/trackDb.txt
+
+    # NO CACHING OF set_composites!!!
+    cache_sets = False
+    # USE ES CACHE SEARCH EXCLUSIVELY
+    use_search = True
 
     # Special logic to force remaking of trackDb
     if not regen:
@@ -2423,66 +2437,68 @@ def generate_batch_trackDb(request, hide=False, regen=False):
     log.warn("Request for %s trackDb begins   %.3f secs" % (assembly,(time.time() - PROFILE_START_TIME)))  # DEBUG: batch trackDb
     param_list = parse_qs(request.matchdict['search_params'].replace(',,', '&'))
 
-    # Create an appropriate cache key
-    es_set_key = make_set_key(param_list,assembly)
-
-    # Find it?
     set_composites = None
-    if not regen: # Force regeneration?
-        set_composites = get_from_es(request,es_set_key)
+    # Create an appropriate cache key
+    if cache_sets:
+        set_composites = None
+        es_set_key = make_set_key(param_list,assembly)
+
+        # Find it?
+        if not regen: # Force regeneration?
+            set_composites = get_from_es(request,es_set_key)
+            if set_composites is not None:
+                log.warn("Found with key %s   %.3f secs" % (es_set_key,(time.time() - PROFILE_START_TIME)))
+
     if set_composites is None:
 
         # Have to make it.
         assemblies = ASSEMBLY_MAPPINGS.get(assembly,[assembly])
         params = {
             'files.file_format': BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES,
-            #'status': ['released'], # TODO: Not just released!
         }
         params.update(param_list)
         params.update({
             'assembly': assemblies,
             'limit': ['all'],
-            #'frame': ['embedded'], # TODO: better memory usage, but slower for acc_composites not in es (220.632secs/4.563GB for 990 exps, 73.655secs/8.210GB 1 request, 0.285 secs cache)
+            #'frame': ['embedded'], # Note: Poor memory usage, since acc_composites should all be in cache
         })
         view = 'search'
         if 'region' in param_list:
             view = 'region-search'
         path = '/%s/?%s' % (view, urlencode(params, True))
         results = request.embed(path, as_user=True)['@graph']
-        #results = reduce_results(results,param_list) # Not worth doing
+        #log.warn("len(results) = %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))  # DEBUG: batch trackDb
 
-        log.warn("len(results) = %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))  # DEBUG: batch trackDb
+        # Note: better memory usage to get acc array from non-embedded results, since acc_composites should be in cache
+        accs = [result['accession'] for result in results]
+        del results
 
-        accs = [result['accession'] for result in results] # TODO: better memory usage, but slower if acc_composite not in es
-        del results                                        # TODO: better memory usage, but slower if acc_composite not in es
-
-        acc_composites = {}
         found = 0
         made = 0
-        #for dataset in results:
-        #    acc = dataset['accession']
-        for acc in accs:   # TODO: better memory usage, but slower if acc_composite not in es
-            dataset = None # TODO: better memory usage, but slower if acc_composite not in es
-
-            (found_or_made, acc_composite) = find_or_make_acc_composite(request, assembly, acc, dataset, hide=hide, regen=regen)
-            if found_or_made == "made":
-                made += 1
-                #log.warn("%s composite %s" % (found_or_made,acc))
-            else:
-                found += 1
+        if use_search and not regen:
+            # Rely upon es cache only
+            es_keys = [acc + "_" + assembly for acc in accs]
+            acc_composites = search_es(request, es_keys)
+            found = len(acc_composites)
+        else:
+            acc_composites = {}
+            #for dataset in results:          # Note: Poor memory usage, since acc_composites should all be in cache
+            #    acc = dataset['accession']
+            for acc in accs:
+                (found_or_made, acc_composite) = find_or_make_acc_composite(request, assembly, acc, None, hide=hide, regen=regen)
+                if found_or_made == "made":
+                    made += 1
+                    #log.warn("%s composite %s" % (found_or_made,acc))
+                else:
+                    found += 1
 
             acc_composites[acc] = acc_composite
 
-            if dataset is not None:
-                del dataset
-
-        log.warn("len(acc_comosites) =  %d   %.3f secs" % (len(acc_composites),(time.time() - PROFILE_START_TIME)))  # DEBUG: batch trackDb
         set_composites = remodel_acc_to_set_composites(acc_composites, hide_after=100) # TODO: set a reasonable hide_after
-        add_to_es(request,es_set_key,set_composites)
-        log.warn("generated %d, found %d acc_composites   %.3f secs" % (made,found,(time.time() - PROFILE_START_TIME)))
-
-    else:
-        log.warn("Found with key %s   %.3f secs" % (es_set_key,(time.time() - PROFILE_START_TIME)))
+        if cache_sets:
+            add_to_es(request,es_set_key,set_composites)
+        log.warn("%d acc_composites => %d set_composites (%s generated, %d found)   %.3f secs" % \
+            ((made + found),len(set_composites),made,found,(time.time() - PROFILE_START_TIME)))
 
     blob = ""
     for composite_tag in sorted( set_composites.keys() ):
