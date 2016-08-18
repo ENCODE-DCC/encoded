@@ -310,7 +310,11 @@ var Report = React.createClass({
 
         var type = parsed_url.query.type;
         var schema = this.props.schemas[type];
-        var columns = columnChoices(schema, parsed_url.query.field);
+        var query_fields = parsed_url.query.field;
+        if (typeof query_fields === 'string') {
+            query_fields = [query_fields];
+        }
+        var columns = columnChoices(schema, query_fields);
 
         // Map view icons to svg icons
         var view2svg = {

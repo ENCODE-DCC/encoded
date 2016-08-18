@@ -96,6 +96,7 @@ class File(Item):
     rev = {
         'paired_with': ('File', 'paired_with'),
         'quality_metrics': ('QualityMetric', 'quality_metric_of'),
+        'superseded_by': ('File', 'supersedes')
     }
 
     embedded = [
@@ -318,6 +319,18 @@ class File(Item):
             return file_format
         else:
             return file_format + ' ' + file_format_type
+
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "description": "The file(s) that supersede this file (i.e. are more preferable to use).",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "File.supersedes",
+        },
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
 
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):
