@@ -58,7 +58,7 @@ $audit-group-height: 40px;
 $audit-types:
     (error, warning, #cc0700),
     (warning, circle, #e0e000),
-    (not_compliant, file-text, #ff8000),
+    ("not_compliant", file-text, #ff8000),
     (internal_action, ambulance, #a0a0a0),
     (ok, check, #4C994C);
 
@@ -93,7 +93,7 @@ $audit-types:
 
 
 %audit-detail-trigger {
-    display: inline-block;
+    display: block;
     height: $audit-group-height;
     width: $audit-group-height;
     float: left;
