@@ -225,6 +225,7 @@ def experiment(testapp, lab, award):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
+        'assay_term_name': 'RNA-seq'
     }
     return testapp.post_json('/experiment', item).json['@graph'][0]
 
@@ -233,6 +234,7 @@ def base_experiment(testapp, lab, award):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
+        'assay_term_name': 'RNA-seq',
         'status': 'started'
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]

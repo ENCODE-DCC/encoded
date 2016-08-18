@@ -2175,28 +2175,40 @@ def test_audit_experiment_wgbs_standards(testapp,
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'high lambda C methylation ratio' for error in errors_list)
 
+
+def test_audit_experiment_ntr_term_id_mismatch(testapp, base_experiment):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'NTR:0000763',
+                                                'assay_term_name': 'ChIP-seq'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched assay_term_name' for error in errors_list)
+
+
 def test_audit_experiment_modern_chip_seq_standards(testapp,
-                                             base_experiment,
-                                             replicate_1_1,
-                                             replicate_2_1,
-                                             library_1,
-                                             library_2,
-                                             biosample_1,
-                                             biosample_2,
-                                             mouse_donor_1,
-                                             file_fastq_3,
-                                             file_fastq_4,
-                                             file_bam_1_1,
-                                             file_bam_2_1,
-                                             file_tsv_1_2,
-                                             mad_quality_metric_1_2,
-                                             chip_seq_quality_metric,
-                                             analysis_step_run_bam,
-                                             analysis_step_version_bam,
-                                             analysis_step_bam,
-                                             pipeline_bam,
-                                             target_H3K9me3,
-                                             award_modERN):
+                                                    base_experiment,
+                                                    replicate_1_1,
+                                                    replicate_2_1,
+                                                    library_1,
+                                                    library_2,
+                                                    biosample_1,
+                                                    biosample_2,
+                                                    mouse_donor_1,
+                                                    file_fastq_3,
+                                                    file_fastq_4,
+                                                    file_bam_1_1,
+                                                    file_bam_2_1,
+                                                    file_tsv_1_2,
+                                                    mad_quality_metric_1_2,
+                                                    chip_seq_quality_metric,
+                                                    analysis_step_run_bam,
+                                                    analysis_step_version_bam,
+                                                    analysis_step_bam,
+                                                    pipeline_bam,
+                                                    target_H3K9me3,
+                                                    award_modERN):
 
     testapp.patch_json(chip_seq_quality_metric['@id'], {'quality_metric_of': [file_bam_1_1['@id']],
                                                         'processing_stage': 'unfiltered',
