@@ -572,10 +572,10 @@ def generate_summary_dictionary(
                 dict_of_phrases['organism_name'] = organismObject['scientific_name']
                 if organismObject['scientific_name'] != 'Homo sapiens':  # model organism
                     if donorObject is not None:
-                        if 'strain_name' in donorObject:
+                        if 'strain_name' in donorObject and donorObject['strain_name'] != 'unknown':
                             dict_of_phrases['genotype_strain'] = 'strain ' + \
                                                                  donorObject['strain_name']
-                        if 'genotype' in donorObject:
+                        if 'genotype' in donorObject and donorObject['genotype'] != 'unknown':
                             d_genotype = donorObject['genotype']
                             if organismObject['scientific_name'].find('Drosophila') == -1:
                                 if d_genotype[-1] == '.':
@@ -584,7 +584,8 @@ def generate_summary_dictionary(
                                 else:
                                     dict_of_phrases['genotype_strain'] += ' (' + \
                                                                           d_genotype + ')'
-                        if 'strain_background' in donorObject:
+                        if 'strain_background' in donorObject and \
+                           donorObject['strain_background'] != 'unknown':
                             dict_of_phrases['strain_background'] = donorObject['strain_background']
                         else:
                             dict_of_phrases['strain_background'] = dict_of_phrases['genotype_strain']
