@@ -248,7 +248,7 @@ var App = React.createClass({
                     <link rel="canonical" href={canonical} />
                     <script async src='//www.google-analytics.com/analytics.js'></script>
                     <script data-prop-name="inline" dangerouslySetInnerHTML={{__html: this.props.inline}}></script>
-                    <link rel="stylesheet" href="/static/css/style.css" />
+                    <link rel="stylesheet" href={this.props.styles} />
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
                     <script data-prop-name="context" type="application/ld+json" dangerouslySetInnerHTML={{
@@ -280,6 +280,7 @@ var App = React.createClass({
             var props = {};
             // Ensure the initial render is exactly the same
             props.href = document.querySelector('link[rel="canonical"]').getAttribute('href');
+            props.styles = document.querySelector('link[rel="stylesheet"]').getAttribute('href');
             var script_props = document.querySelectorAll('script[data-prop-name]');
             for (var i = 0; i < script_props.length; i++) {
                 var elem = script_props[i];
