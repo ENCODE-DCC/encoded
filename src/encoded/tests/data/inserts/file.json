@@ -274,6 +274,7 @@
         "dataset": "ENCSR001ADI",
         "date_created": "2013-04-18",
         "file_format": "fastq",
+        "run_type": "single-ended",
         "flowcell_details":
         [{
             "flowcell": "C1WA6ACXX",
@@ -344,6 +345,7 @@
         "dataset": "ENCSR001ADI",
         "date_created": "2013-06-13",
         "file_format": "fastq",
+        "run_type": "single-ended",
         "flowcell_details":
         [{
             "flowcell": "C1WA6ACXX",
@@ -818,6 +820,7 @@
         "dataset": "ENCSR000AES",
         "date_created": "2013-06-13",
         "file_format": "fastq",
+        "run_type": "single-ended",
         "flowcell_details":
         [{
             "flowcell": "C1WA6ACXX",

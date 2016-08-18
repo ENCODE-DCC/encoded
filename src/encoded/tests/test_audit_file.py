@@ -70,6 +70,7 @@ def file1_2(file_exp, award, lab, file_rep1_2, testapp):
         'file_format': 'fastq',
         'md5sum': '100d8c998f00b204e9r800998ecf8427e',
         'output_type': 'raw data',
+        'run_type': 'single-ended',
         'award': award['uuid'],
         'lab': lab['uuid'],
         'status': 'released'
@@ -85,6 +86,7 @@ def file2(file_exp2, award, lab, file_rep2, platform1, testapp):
         'file_format': 'fastq',
         'md5sum': '100d8c998f00b204e9800998ecf8427e',
         'output_type': 'raw data',
+        'run_type': 'single-ended',
         'platform': platform1['uuid'],
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -101,6 +103,7 @@ def file1(file_exp, award, lab, file_rep, file2, platform1, testapp):
         'file_format': 'fastq',
         'md5sum': '100d8cd98f00b204e9800998ecf8427e',
         'output_type': 'reads',
+        'run_type': 'single-ended',
         'platform': platform1['uuid'],
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -118,6 +121,7 @@ def file3(file_exp, award, lab, file_rep, testapp):
         'file_format': 'fastq',
         'md5sum': '100d8c998f11b204e9800998ecf8427e',
         'output_type': 'reads',
+        'run_type': 'single-ended',
         'award': award['uuid'],
         'lab': lab['uuid'],
         'status': 'released'
@@ -133,6 +137,7 @@ def file4(file_exp2, award, lab, file_rep2, testapp):
         'file_format': 'fastq',
         'md5sum': '100d8c998f00b204e9800908ecf8428c',
         'output_type': 'reads',
+        'run_type': 'single-ended',
         'award': award['uuid'],
         'lab': lab['uuid'],
         'status': 'released'
@@ -267,15 +272,6 @@ def test_audit_read_length_zero(testapp, file1):
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing read_length' for error in errors_list)
-
-
-def test_audit_run_type(testapp, file1):
-    res = testapp.get(file1['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing run_type' for error in errors_list)
 
 
 def test_audit_file_missing_controlled_by(testapp, file3):
