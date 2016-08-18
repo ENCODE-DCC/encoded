@@ -296,6 +296,46 @@ def test_audit_file_mismatched_controlled_by(testapp, file1):
     assert any(error['category'] == 'inconsistent control' for error in errors_list)
 
 
+def test_audit_file_read_length_controlled_by(testapp, file1_2,
+                                              file2, file_exp,
+                                              file_exp2):
+    testapp.patch_json(file1_2['@id'], {'read_length': 50,
+                                        'run_type': 'single-ended'})
+    testapp.patch_json(file2['@id'], {'read_length': 150,
+                                      'run_type': 'single-ended'})
+    testapp.patch_json(file1_2['@id'], {'controlled_by': [file2['@id']]})
+    testapp.patch_json(file_exp['@id'], {'possible_controls': [file_exp2['@id']]})
+    testapp.patch_json(file_exp2['@id'], {'assay_term_id': 'OBI:0001864',
+                                          'biosample_term_id': 'NTR:000012',
+                                          'biosample_term_name': 'Some body part'})
+    res = testapp.get(file1_2['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent control read length' for error in errors_list)
+
+
+def test_audit_file_read_length_controlled_by_exclusion(testapp, file1_2,
+                                                        file2, file_exp,
+                                                        file_exp2):
+    testapp.patch_json(file1_2['@id'], {'read_length': 50,
+                                        'run_type': 'single-ended'})
+    testapp.patch_json(file2['@id'], {'read_length': 52,
+                                      'run_type': 'single-ended'})
+    testapp.patch_json(file1_2['@id'], {'controlled_by': [file2['@id']]})
+    testapp.patch_json(file_exp['@id'], {'possible_controls': [file_exp2['@id']]})
+    testapp.patch_json(file_exp2['@id'], {'assay_term_id': 'OBI:0001864',
+                                          'biosample_term_id': 'NTR:000012',
+                                          'biosample_term_name': 'Some body part'})
+    res = testapp.get(file1_2['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] != 'inconsistent control read length' for error in errors_list)
+
+
 def test_audit_file_inconsistent_controlled_by(testapp, file1,
                                                file2, file3,
                                                file_rep1_2,
@@ -608,4 +648,15 @@ def test_audit_file_bam_derived_from_different_experiment(testapp, file6, file4,
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent derived_from'
+               for error in errors_list)
+
+
+def test_audit_file_md5sum(testapp, file1):
+    testapp.patch_json(file1['@id'], {'md5sum': 'some_random_text'})
+    res = testapp.get(file1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent md5sum'
                for error in errors_list)

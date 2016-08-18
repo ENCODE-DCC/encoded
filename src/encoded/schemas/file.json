@@ -78,7 +78,7 @@
                 {
                     "allOf": [
                         {
-                            "required": ["replicate"],
+                            "required": ["replicate", "run_type"],
                             "properties": {
                                 "file_format": {
                                     "enum": ["fastq"]
@@ -419,7 +419,10 @@
                         "conservative idr thresholded peaks",
 
                         "enhancer validation",
-                        "semi-automated genome annotation"
+                        "semi-automated genome annotation",
+
+                        "blacklisted regions",
+                        "mitochondria blacklisted regions"
 
                     ]
                 },
@@ -453,7 +456,7 @@
                         "valleys",
                         "sequence alignability",
                         "sequence uniqueness",
-                        "blacklisted regions",
+                        
 
                         "primer sequence",
                         "reference",
@@ -513,8 +516,8 @@
                     "linkTo": "File"
             }
         },
-        "supercedes": {
-            "title": "Supercedes" ,
+        "supersedes": {
+            "title": "Supersedes" ,
             "description": "The files that this file replaces.",
             "type": "array",
             "uniqueItems": true,
@@ -621,7 +624,7 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^\\S+:\\S+"
+                "pattern": "^(SRA:(SRR|SRX)\\d+)$"
             }
         },
         "step_run": {
@@ -793,6 +796,7 @@
         "sequence alignability": "annotation",
         "sequence uniqueness": "annotation",
         "blacklisted regions": "annotation",
+        "mitochondria blacklisted regions": "annotation",
         "distal peaks": "annotation",
         "proximal peaks": "annotation",
         "optimal idr thresholded peaks": "annotation",

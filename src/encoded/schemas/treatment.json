@@ -78,7 +78,10 @@
                 "percent",
                 "units",
                 "U/mL",
-                "pfu"
+                "pfu",
+                "rad",
+                "μg",
+                "mg"
             ]
         },
         "duration": {
