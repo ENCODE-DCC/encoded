@@ -344,6 +344,7 @@ def file_bam(testapp, lab, award, base_experiment, base_replicate):
         'file_format': 'bam',
         'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
         'output_type': 'alignments',
+        'assembly': 'mm10',
         'lab': lab['@id'],
         'award': award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath

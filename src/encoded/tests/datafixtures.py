@@ -270,6 +270,7 @@ def fastq_file(testapp, lab, award, experiment, replicate):
         'md5sum': 'd41d8cd9f00b204e9800998ecf8427e',
         'replicate': replicate['@id'],
         'output_type': 'reads',
+        'run_type': 'single-ended',
         'lab': lab['@id'],
         'award': award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath
@@ -284,6 +285,7 @@ def bam_file(testapp, lab, award, experiment):
         'file_format': 'bam',
         'md5sum': 'd41d8cd9f00b204e9800998ecf86674427e',
         'output_type': 'alignments',
+        'assembly': 'hg19',
         'lab': lab['@id'],
         'award': award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath
