@@ -384,7 +384,8 @@
                 "infection",
                 "antibody",
                 "transplantation",
-                "injection"
+                "injection",
+                "irradiation"
             ]
         },
         "treatment_term_id": {

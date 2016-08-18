@@ -105,7 +105,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "8"
+            "default": "9"
         },
         "accession": {
             "accessionType": "FF"
@@ -494,8 +494,8 @@
                     "linkTo": "File"
             }
         },
-        "supercedes": {
-            "title": "Supercedes" ,
+        "supersedes": {
+            "title": "Supersedes" ,
             "description": "The files that this file replaces.",
             "type": "array",
             "uniqueItems": true,
@@ -602,7 +602,7 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^\\S+:\\S+"
+                "pattern": "^(SRA:(SRR|SRX)\\d+)$"
             }
         },
         "step_run": {
