@@ -111,6 +111,18 @@ def award(testapp):
     }
     return testapp.post_json('/award', item).json['@graph'][0]
 
+
+@pytest.fixture
+def award_modERN(testapp):
+    item = {
+        'name': 'modERN-award',
+        'rfa': 'modERN',
+        'project': 'modERN',
+        'viewing_group': 'ENCODE',
+    }
+    return testapp.post_json('/award', item).json['@graph'][0]
+
+
 @pytest.fixture
 def remc_award(testapp):
     item = {
