@@ -173,24 +173,6 @@ def file7(file_exp2, award, encode_lab, testapp, analysis_step_run_bam):
 
 
 @pytest.fixture
-def platform1(testapp):
-    item = {
-        'term_id': 'OBI:0002001',
-        'term_name': 'HiSeq2000'
-    }
-    return testapp.post_json('/platform', item).json['@graph'][0]
-
-
-@pytest.fixture
-def platform2(testapp):
-    item = {
-        'term_id': 'OBI:0002049',
-        'term_name': 'HiSeq4000'
-    }
-    return testapp.post_json('/platform', item).json['@graph'][0]
-
-
-@pytest.fixture
 def chipseq_bam_quality_metric(testapp, analysis_step_run_bam, file6, lab, award):
     item = {
         'step_run': analysis_step_run_bam['@id'],
@@ -310,7 +292,47 @@ def test_audit_file_mismatched_controlled_by(testapp, file1):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched control' for error in errors_list)
+    assert any(error['category'] == 'inconsistent control' for error in errors_list)
+
+
+def test_audit_file_read_length_controlled_by(testapp, file1_2,
+                                              file2, file_exp,
+                                              file_exp2):
+    testapp.patch_json(file1_2['@id'], {'read_length': 50,
+                                        'run_type': 'single-ended'})
+    testapp.patch_json(file2['@id'], {'read_length': 150,
+                                      'run_type': 'single-ended'})
+    testapp.patch_json(file1_2['@id'], {'controlled_by': [file2['@id']]})
+    testapp.patch_json(file_exp['@id'], {'possible_controls': [file_exp2['@id']]})
+    testapp.patch_json(file_exp2['@id'], {'assay_term_id': 'OBI:0001864',
+                                          'biosample_term_id': 'NTR:000012',
+                                          'biosample_term_name': 'Some body part'})
+    res = testapp.get(file1_2['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent control read length' for error in errors_list)
+
+
+def test_audit_file_read_length_controlled_by_exclusion(testapp, file1_2,
+                                                        file2, file_exp,
+                                                        file_exp2):
+    testapp.patch_json(file1_2['@id'], {'read_length': 50,
+                                        'run_type': 'single-ended'})
+    testapp.patch_json(file2['@id'], {'read_length': 52,
+                                      'run_type': 'single-ended'})
+    testapp.patch_json(file1_2['@id'], {'controlled_by': [file2['@id']]})
+    testapp.patch_json(file_exp['@id'], {'possible_controls': [file_exp2['@id']]})
+    testapp.patch_json(file_exp2['@id'], {'assay_term_id': 'OBI:0001864',
+                                          'biosample_term_id': 'NTR:000012',
+                                          'biosample_term_name': 'Some body part'})
+    res = testapp.get(file1_2['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] != 'inconsistent control read length' for error in errors_list)
 
 
 def test_audit_file_inconsistent_controlled_by(testapp, file1,
@@ -349,19 +371,6 @@ def test_audit_file_missing_paired_controlled_by(testapp, file1,
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing paired_with in controlled_by' for
                                     error in errors_list)
-
-
-def test_audit_file_mismatched_platform_controlled_by(testapp, file1, file2, file_exp,
-                                                      file_exp2, platform2):
-    testapp.patch_json(file_exp['@id'], {'possible_controls': [file_exp2['@id']],
-                                         'biosample_term_id': 'NTR:000013'})
-    testapp.patch_json(file2['@id'], {'platform': platform2['@id']})
-    res = testapp.get(file1['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent control platform' for error in errors_list)
 
 
 def test_audit_file_replicate_match(testapp, file1, file_rep2):
@@ -502,7 +511,7 @@ def test_audit_file_biological_replicate_number_match(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'inconsistent biological replicate number'
+    assert all(error['category'] != 'inconsistent replicate'
                for error in errors_list)
 
 
@@ -518,7 +527,7 @@ def test_audit_file_biological_replicate_number_mismatch(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent biological replicate number'
+    assert any(error['category'] == 'inconsistent replicate'
                for error in errors_list)
 
 
@@ -630,4 +639,15 @@ def test_audit_file_bam_derived_from_different_experiment(testapp, file6, file4,
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent derived_from'
+               for error in errors_list)
+
+
+def test_audit_file_md5sum(testapp, file1):
+    testapp.patch_json(file1['@id'], {'md5sum': 'some_random_text'})
+    res = testapp.get(file1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent md5sum'
                for error in errors_list)

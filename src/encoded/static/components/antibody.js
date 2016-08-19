@@ -111,6 +111,9 @@ var Lot = module.exports.Lot = React.createClass({
                             }
                         </h3>
                         <div className="status-line">
+                            <div className="characterization-status-labels">
+                                <StatusLabel title="Status" status={context.status} />
+                            </div>
                             <AuditIndicators audits={context.audit} id="antibody-audit" />
                         </div>
                     </div>
@@ -344,8 +347,20 @@ var CharacterizationHeader = React.createClass({
         var doc = this.props.doc;
 
         return (
-            <div className="panel-header document-title">
-                {doc.target.label} {doc.target.organism.scientific_name ? <span>{' ('}<i>{doc.target.organism.scientific_name}</i>{')'}</span> : ''}
+            <div className="panel-header">
+                <div className="document-title">
+                    {doc.target.label} {doc.target.organism.scientific_name ? <span>{' ('}<i>{doc.target.organism.scientific_name}</i>{')'}</span> : ''}
+                </div>
+                {doc.characterization_reviews && doc.characterization_reviews.length ?
+                    <div className="characterization-biosample-terms">
+                        {doc.characterization_reviews.map(review => {
+                            var flexItem = {
+                                flex: review.biosample_term_name.length + ' 1 auto'
+                            };
+                            return <span className="characterization-biosample-term" style={flexItem}>{review.biosample_term_name}</span>;
+                        })}
+                    </div>
+                : null}
             </div>
         );
     }

@@ -5,7 +5,7 @@
         "lab": "j-michael-cherry",
         "organism": "celegans",
         "uuid": "08460bf0-d474-11e3-9c1a-0800200c9a66",
-        "dbxrefs": ["cgc:N5"]
+        "dbxrefs": ["CGC:N5"]
     },
     {
         "accession": "ENCDO183YYY",
@@ -44,6 +44,7 @@
         "status": "in progress",
         "notes": "Description: C25A1.2. Homozygous. Outer Left Sequence: ATTGAACCCCCTGAATTTCC. Outer Right Sequence: CAGGGCATCAAAAACTGACA. Inner Left Sequence: ATCTGTGTGCAGATGCTTGC. Inner Right Sequence: GGGAAAATGTTTTCAGCCAA. Inner primer WT PCR product: 2131. This strain was provided by the C. elegans Gene Knockout Project at OMRF, which is part of the International C. elegans Gene Knockout Consortium, which should be acknowledged in any publications resulting from its use. URL: http:www.celeganskoconsortium.omrf.org. Made by:OMRF Knockout Group Received:030603 from Barstead R, Oklahoma Med Research Foundation, Oklahoma City, OK",
         "url": "http://www.cgc.cbs.umn.edu/search.php?st=RB884&field=all&exst=&exfield=all",
-        "strain_name": "RB884"
+        "strain_name": "RB884",
+        "dbxrefs": ["CGC:RB884", "WormBase:RB884"]
     }
 ]

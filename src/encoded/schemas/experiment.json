@@ -90,6 +90,18 @@
                 "linkTo": "Experiment"
             }
         },
+        "supersedes": {
+            "title": "Supersedes" ,
+            "description": "The experiment(s) that this experiment supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                    "comment": "See experiment.json for a list of available identifiers.",
+                    "type": "string",
+                    "linkTo": "Experiment"
+            }
+        },
         "related_files": {
             "title": "Additional data files",
             "description": "To be removed in a future release after data cleanup.",
@@ -109,7 +121,7 @@
             "comment":"unreviewed:wrangler has not evaluated, unrunable:experiment requires more metadata to run, pipeline ready:experiment is ready for the pipeline, processing:pipeline is running, pipeline completed: pipeline has run through completion, requires lab review:there are QC concerns about this data, release ready:DCC feels that this is ready for release",
             "default": "unreviewed",
             "permission": "import_items",
-            "title": "Status",
+            "title": "Internal status",
             "enum": [
                 "unreviewed",
                 "no available pipeline",
@@ -173,6 +185,9 @@
         "files.read_length": {
             "title": "Read length (nt)"
         },
+        "files.mapped_read_length": {
+            "title": "Mapped read length (nt)"
+        },
         "replicates.library.size_range": {
             "title": "Library insert size (nt)"
         },
@@ -190,6 +205,9 @@
         },
         "lab.title": {
             "title": "Lab"
+        },
+        "internal_status": {
+            "title": "Internal status"
         },
         "replication_type": {
             "title": "Replication type"
@@ -212,6 +230,9 @@
         "target.gene_name": {
             "title": "Target gene"
         },
+        "biosample_summary": {
+            "title": "Biosample summary"
+        },
         "biosample_term_name": {
             "title": "Biosample"
         },
@@ -226,6 +247,12 @@
         },
         "status": {
             "title": "Status"
+        },
+        "replicates.biological_replicate_number": {
+            "title": "Biological replicate"
+        },
+        "replicates.technical_replicate_number": {
+            "title": "Technical replicate"
         },
         "replicates.antibody.accession": {
             "title": "Linked Antibody"
@@ -269,14 +296,8 @@
         "replicates.library.biosample.post_synchronization_time_units": {
             "title": "Post-synchronization time units"
         },       
-        "replicates.length": {
+        "replicates.@id": {
             "title": "Replicates"
-        },
-        "files.length": {
-            "title": "Files"
-        },
-        "encode2_dbxrefs": {
-            "title": "Dbxrefs"
         }
     },
     "boost_values": {
@@ -324,6 +345,7 @@
         "replicates.library.biosample.donor.organism.name": 1.0,
         "replicates.library.biosample.donor.organism.scientific_name": 1.0,
         "replicates.library.biosample.donor.organism.taxon_id": 1.0,
+        "replicates.library.notes": 1.0,
         "replicates.library.nucleic_acid_term_name": 1.0,
         "award.title": 1.0,
         "award.project": 1.0,
@@ -343,6 +365,7 @@
         "target.organism.scientific_name": 1.0,
         "references.title": 1.0,
         "replicates.library.biosample.rnais.product_id": 1.0,
-        "notes": 1.0
+        "notes": 1.0,
+        "internal_tags": 1.0
     }
 }
