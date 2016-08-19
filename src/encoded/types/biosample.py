@@ -784,21 +784,20 @@ def generate_summary_dictionary(
         if modifications_list is not None and len(modifications_list) > 0:
             result_set = set()
             talen_flag = False
-            for gm in modifications_list:
-                gm_type = gm[0]
-                gm_technique = gm[1]
-                if 'TALE' in gm_technique['@type']:
-                    result_set.add((gm_type, 'TALE'))
+            for (gm_type, gm_technique) in modifications_list:
+                if 'Tale' in gm_technique['@type']:
+                    result_set.add(gm_type)
                     talen_flag = True
             if experiment_flag is True:
                 if talen_flag is True:
                     dict_of_phrases['modifications_list'] = 'genetically modified using TALEs '
             else:
-                tale_string = ''
-                for (x, y) in sorted(list(result_set)):
-                    tale_string += x + ', '
-                dict_of_phrases['modifications_list'] = 'genetically modified using TALEs for ' + \
-                                                        tale_string[:-2] + ' '
+                if talen_flag is True:
+                    tale_string = ''
+                    for x in sorted(list(result_set)):
+                        tale_string += str(x) + ', '
+                    dict_of_phrases['modifications_list'] = 'genetically modified (' + \
+                                                            tale_string[:-2] + ') using TALEs '
 
         if construct_objects_list is not None and len(construct_objects_list) > 0:
             constructs_list = []
