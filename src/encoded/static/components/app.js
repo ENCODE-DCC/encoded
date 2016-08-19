@@ -24,6 +24,8 @@ var portal = {
         {id: 'materialsmethods', title: 'Materials & Methods', children: [
             {id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot&status=released'},
             {id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample&status=released'},
+            {id: 'references', title: 'Genome References', url: '/data-standards/reference-sequences/'},
+            {id: 'sep-mm-1'},
             {id: 'datastandards', title: 'Standards and guidelines', url: '/data-standards/'},
             {id: 'ontologies', title: 'Ontologies', url: '/help/getting-started/#Ontologies'},
             {id: 'fileformats', title: 'File formats', url: '/help/file-formats/'},

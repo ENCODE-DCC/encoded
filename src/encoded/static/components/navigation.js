@@ -2,7 +2,7 @@
 var React = require('react');
 var url = require('url');
 var {Navbars, Navbar, Nav, NavItem} = require('../libs/bootstrap/navbar');
-var {DropdownMenu} = require('../libs/bootstrap/dropdown-menu');
+var {DropdownMenu, DropdownMenuSep} = require('../libs/bootstrap/dropdown-menu');
 var productionHost = require('./globals').productionHost;
 var _ = require('underscore');
 
@@ -80,6 +80,11 @@ var GlobalSections = React.createClass({
                     {action.children ?
                         <DropdownMenu label={action.id}>
                             {action.children.map(action => {
+                                // Render any separators in the dropdown
+                                if (action.id.substring(0, 4) === 'sep-') {
+                                    return <DropdownMenuSep key={action.id} />;
+                                }
+
                                 var url = action.url || '';
                                 if (loggedIn) {
                                     url = url.replace('&status=released', '');
