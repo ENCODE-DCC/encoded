@@ -156,12 +156,11 @@ var Search = React.createClass({
         return (
             <form className="navbar-form navbar-right" action="/search/">
                 <div className="search-wrapper">
+                    {!loggedIn ? 
+                        <input type="hidden" name="status" value="released" />
+                    : ''}
                     <input className="form-control search-query" id="navbar-search" type="text" placeholder="Search..." 
                         ref="searchTerm" name="searchTerm" defaultValue={searchTerm} key={searchTerm} />
-                    {!loggedIn ? 
-                        <div>
-                            <input type="hidden" name="status" value="released" />
-                        </div> : ''}
                 </div>
             </form>
         );  
