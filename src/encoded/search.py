@@ -582,6 +582,8 @@ def search(context, request, search_type=None, return_generator=False):
     else:
         # Possibly type(s) in query string
         clear_qs = urlencode([("type", typ) for typ in doc_types])
+    if clear_qs and 'group.submitter' not in principals:
+        clear_qs += '&status=released'
     result['clear_filters'] = request.route_path('search', slash='/') + (('?' + clear_qs) if clear_qs else '')
 
     # Building query for filters

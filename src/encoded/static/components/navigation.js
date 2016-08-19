@@ -156,7 +156,6 @@ var Search = React.createClass({
                     {!loggedIn ? 
                         <div>
                             <input type="hidden" name="status" value="released" />
-                            <input type="hidden" name="status" value="published" />
                         </div> : ''}
                 </div>
             </form>
