@@ -1,7 +1,7 @@
 /*  TABLES    */
 
 table {
-    @include font-size(0.9);
+    font-size: 0.9rem;
 }
 
 thead, tfoot {
@@ -39,11 +39,11 @@ thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td
     border-collapse: separate;
 
     tr:last-child td:first-child {
-        @include border-bottom-left-radius($border-radius-base);
+        border-bottom-left-radius: $border-radius-base;
     }
 
     tr:last-child td:last-child {
-        @include border-bottom-right-radius($border-radius-base);
+        border-bottom-right-radius: $border-radius-base;
     }
 }
 
@@ -94,11 +94,11 @@ form.table-filter {
 #table-filter {
     display: inline-block;
     width: 265px;
-    @include font-size(1.2);
+    font-size: 1.2rem;
 }
 
 .table-count {
-    @include font-size(1, true);
+    font-size: 1rem;
     display: inline-block !important;
     padding: 0.5em 2em !important;
     margin-right: 1em;
@@ -180,7 +180,7 @@ form.table-filter {
 }
 
 .table-section {
-    @include font-size(1.3);
+    font-size: 1.3rem;
     font-weight: bold;
     background-color: #d8e0e8;
 

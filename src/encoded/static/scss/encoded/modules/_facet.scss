@@ -75,7 +75,7 @@
     margin-bottom: 1px;
     border-radius: 5px;
     position: relative;
-    @include font-size(0.9);
+    font-size: 0.9rem;
     line-height: 1;
 
     i {
@@ -115,13 +115,13 @@
 .facet-list button.btn.collapsed:before {
     content:'+ See more...' ;
     text-decoration: none;
-    @include font-size(0.85);
+    font-size: 0.85rem;
 }
 
 .facet-list button.btn:before {
     content:'- See fewer';
     text-decoration: none;
-    @include font-size(0.85);
+    font-size: 0.85rem;
 }
 
 .facet-list label {
@@ -130,7 +130,7 @@
 
 .accession {
     position: relative;
-    @include font-size(1.2);
+    font-size: 1.2rem;
     font-weight: bold;
     z-index: 0;
 
@@ -142,16 +142,16 @@
 }
 
 .accession-note {
-    @include font-size(0.9);
+    font-size: 0.9rem;
     font-weight: normal;
 
     a[href^="http"]:after {
-        @include font-size(0.9);
+        font-size: 0.9rem;
     }
 }
 
 .type {
-    @include font-size(0.9);
+    font-size: 0.9rem;
     font-weight: normal;
     color: #808080;
 }
@@ -176,7 +176,7 @@
                 padding: 0;
                 border: none;
                 background-color: transparent;
-                @include font-size(1.3);
+                font-size: 1.3rem;
             }
         }
     }
@@ -184,7 +184,7 @@
 
 .meta-title {
     margin-bottom: 7px !important;
-    @include font-size(1.1);
+    font-size: 1.1rem;
     color: #606060 !important;
 }
 
@@ -243,13 +243,13 @@ div.meta-status {
         margin-top: 10px;
         border-bottom: 1px solid #E8E8E8;
         margin-bottom: 10px;
-        @include font-size(0.9);
+        font-size: 0.9rem;
 
         &:first {
             margin-top: 0px;
             border-bottom: 1px solid #ccc;
             margin-bottom: 10px;
-            @include font-size(0.9);
+            font-size: 0.9rem;
         }
 
     }
@@ -294,18 +294,18 @@ span.bar {
 
 .list-author {
     margin: 0;
-    @include font-size(1.1);
+    font-size: 1.1rem;
 }
 
 .list-citation {
     margin: 0;
-    @include font-size(0.9);
+    font-size: 0.9rem;
 }
 
 .list-reference {
     display: inline;
     margin: 0 !important;
-    @include font-size(0.9);
+    font-size: 0.9rem;
 }
 
 .list-supplementary {

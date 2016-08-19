@@ -3,7 +3,7 @@
 // Override bootstrap3 header classes
 dt.h3, dt.h4, dd.h3, dd.h4 {
     margin-top: 0;
-    @include font-size(1);
+    font-size: 1rem;
 }
 
 dd.h3, dd.h4 {
@@ -211,10 +211,10 @@ dd ul, .multi-value {
     display: inline-block;
     padding: 0;
     margin-right: 5px;
-    @include border-radius(2px);
+    border-radius: 2px;
     border: 1px solid #c0c0c0;
     color: #333;
-    @include font-size(0.9);
+    font-size: 0.9rem;
     text-decoration: none;
 
     &:hover {

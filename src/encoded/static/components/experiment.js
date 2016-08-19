@@ -21,12 +21,11 @@ var sortTable = require('./sorttable');
 var objectutils = require('./objectutils');
 var doc = require('./doc');
 var {FileGallery} = require('./filegallery');
-var {BiosampleSummaryString, BiosampleOrganismNames} = require('./typeutils');
+var {BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs} = require('./typeutils');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var FetchedItems = fetched.FetchedItems;
-var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
 var StatusLabel = statuslabel.StatusLabel;
 var {AuditMixin, AuditIndicators, AuditDetail} = audit;
@@ -203,68 +202,13 @@ var Experiment = module.exports.Experiment = React.createClass({
         }
 
         // Collect biosample docs
-        var biosampleCharacterizationDocs = [];
         var biosampleDocs = [];
-        var biosampleTalenDocs = [];
-        var biosampleRnaiDocs = [];
-        var biosampleConstructDocs = [];
-        var biosampleDonorDocs = [];
-        var biosampleDonorCharacterizations = [];
         biosamples.forEach(biosample => {
-            // Collect biosample characterizations
-            if (biosample.characterizations && biosample.characterizations.length) {
-                biosampleCharacterizationDocs = biosampleCharacterizationDocs.concat(biosample.characterizations);
-            }
-
-            // Collect biosample protocol documents
-            if (biosample.protocol_documents && biosample.protocol_documents.length) {
-                biosampleDocs = biosampleDocs.concat(biosample.protocol_documents);
-            }
-
-            // Collect TALEN documents
-            if (biosample.talens && biosample.talens.length) {
-                biosample.talens.forEach(talen => {
-                    if (talen.documents && talen.documents.length) {
-                        Array.prototype.push.apply(biosampleTalenDocs, talen.documents);
-                    }
-                });
-            }
-
-            // Collect RNAi documents
-            if (biosample.rnais && biosample.rnais.length) {
-                biosample.rnais.forEach(rnai => {
-                    if (rnai.documents && rnai.documents.length) {
-                        Array.prototype.push.apply(biosampleRnaiDocs, rnai.documents);
-                    }
-                });
-            }
-
-            // Collect RNAi documents
-            if (biosample.constructs && biosample.constructs.length) {
-                biosample.constructs.forEach(construct => {
-                    if (construct.documents && construct.documents.length) {
-                        Array.prototype.push.apply(biosampleConstructDocs, construct.documents);
-                    }
-                });
-            }
-
-            // Collect donor documents
-            if (biosample.donor && biosample.donor.documents && biosample.donor.documents.length) {
-                Array.prototype.push.apply(biosampleDonorDocs, biosample.donor.documents);
-            }
-
-            // Collect donor characterizations
-            if (biosample.donor && biosample.donor.characterizations && biosample.donor.characterizations.length) {
-                Array.prototype.push.apply(biosampleDonorCharacterizations, biosample.donor.characterizations);
+            biosampleDocs = biosampleDocs.concat(CollectBiosampleDocs(biosample));
+            if (biosample.part_of) {
+                biosampleDocs = biosampleDocs.concat(CollectBiosampleDocs(biosample.part_of));
             }
         });
-        biosampleCharacterizationDocs = biosampleCharacterizationDocs.length ? globals.uniqueObjectsArray(biosampleCharacterizationDocs) : [];
-        biosampleDocs = biosampleDocs.length ? globals.uniqueObjectsArray(biosampleDocs) : [];
-        biosampleTalenDocs = biosampleTalenDocs.length ? globals.uniqueObjectsArray(biosampleTalenDocs) : [];
-        biosampleRnaiDocs = biosampleRnaiDocs.length ? globals.uniqueObjectsArray(biosampleRnaiDocs) : [];
-        biosampleConstructDocs = biosampleConstructDocs.length ? globals.uniqueObjectsArray(biosampleConstructDocs) : [];
-        biosampleDonorDocs = biosampleDonorDocs.length ? globals.uniqueObjectsArray(biosampleDonorDocs) : [];
-        biosampleDonorCharacterizations = biosampleDonorCharacterizations.length ? globals.uniqueObjectsArray(biosampleDonorCharacterizations) : [];
 
         // Collect pipeline-related documents
         var analysisStepDocs = [];
@@ -344,17 +288,12 @@ var Experiment = module.exports.Experiment = React.createClass({
 
         // Compile the document list
         var combinedDocuments = _(documents.concat(
-            biosampleCharacterizationDocs,
+            biosampleDocs,
             libraryDocs,
             biosampleDocs,
-            biosampleTalenDocs,
-            biosampleRnaiDocs,
-            biosampleConstructDocs,
-            biosampleDonorDocs,
-            biosampleDonorCharacterizations,
             pipelineDocs,
             analysisStepDocs
-        )).uniq(doc => doc.uuid);
+        )).chain().uniq(doc => doc ? doc.uuid : null).compact().value();
 
         var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
 
@@ -572,7 +511,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} ignoreErrors />
 
-                <DocumentsPanel documentSpecs={[{documents: combinedDocuments}]} />
+                {combinedDocuments.length ? <DocumentsPanel documentSpecs={[{documents: combinedDocuments}]} /> : null}
             </div>
         );
     }
