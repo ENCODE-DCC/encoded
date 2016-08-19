@@ -24,50 +24,38 @@ BDM = [
     },
 ]
 
-def spot_instances(price, count, image_id, key_pair, instance_type, zone_group, security_groups)
+def spot_instances(client, spot_price, count, image_id, instance_type, spot_security_groups):
     responce = client.request_spot_instances(
-    SpotPrice=price,
-    InstanceCount=count,
+    DryRun=False,
+    SpotPrice=spot_price,
+    InstanceCount=1,
     Type='one-time',
-    LaunchGroup='string',
-    AvailabilityZoneGroup=zone_group,
     LaunchSpecification={
-        
         'ImageId': image_id,
-        'KeyName': key_pair,
-        'SecurityGroups': [
-            security_groups,
-        ],
-        'UserData': 'string',
-        'InstanceType': 'c4.4xlarge',
+        'SecurityGroups': [spot_security_groups],
+        'InstanceType': instance_type,
         'Placement': {
-            'AvailabilityZone': 'string',
-            'GroupName': 'string'
+            'AvailabilityZone': 'us-west-2c'
         },
-        'SubnetId': 'string',
         'IamInstanceProfile': {
-            'Arn': 'string'
-        },
-        'SecurityGroupIds': [
-            'string',
-        ]
-    }
+            'Arn': 'arn:aws:iam::618537831167:instance-profile/demo-instance'
+        }
+        }
+    )
 
-        )
-
+    return responce
 
 def nameify(s):
     name = ''.join(c if c.isalnum() else '-' for c in s.lower()).strip('-')
     return re.subn(r'\-+', '-', name)[0]
 
-def create_ec2_instances(client, image_id, count, instance_type, security_groups, key_pair, user_data, bdm, iam_role):
+def create_ec2_instances(client, image_id, count, instance_type, security_groups, user_data, bdm, iam_role):
     reservations = client.create_instances(
         ImageId=image_id,
         MinCount=count,
         MaxCount=count,
         InstanceType=instance_type,
         SecurityGroups=security_groups,
-        KeyName=key_pair,
         UserData=user_data,
         BlockDeviceMappings=bdm,
         InstanceInitiatedShutdownBehavior='terminate',
@@ -90,7 +78,7 @@ def tag_ec2_instance(instance, name, branch, commit, username, elasticsearch):
     return instance
 
 
-def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size, cluster_name,
+def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, spot_price, cluster_size, cluster_name,
         branch=None, name=None, role='demo', profile_name=None, teardown_cluster=None):
     
     if branch is None:
@@ -152,9 +140,17 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size, cl
         security_groups = ['ssh-http-https']
         iam_role = 'elasticsearch-instance'
         count = int(cluster_size)
+    
+    
+    if (spot_instance == 'yes'):
+        spot_security_groups = 'sg-022ea667'
+        ec2_spot = boto3.client('ec2')
+        instances = spot_instances(ec2_spot, spot_price, count, image_id, instance_type, spot_security_groups)
+        print("spot_instance check worked")
+    else:
+        instances = create_ec2_instances(ec2, image_id, count, instance_type, security_groups, user_data, BDM, iam_role)
 
-    instances = create_ec2_instances(ec2, image_id, count, instance_type, security_groups, key_pair, user_data, BDM, iam_role)
-
+    
     for i, instance in enumerate(instances):
         if elasticsearch == 'yes' and count > 1:
             print('Creating Elasticsearch cluster')
@@ -185,7 +181,8 @@ def main():
     parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
     parser.add_argument('-n', '--name', type=hostname, help="Instance name")
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')
-    parser.add_argument('--spot', type=spot_instances)
+    parser.add_argument('--spot_instance', default=None, help="Launch as spot instance")
+    parser.add_argument('--spot_price', default='0.70')
     parser.add_argument(
         '--candidate', action='store_const', default='demo', const='candidate', dest='role',
         help="Deploy candidate instance")
