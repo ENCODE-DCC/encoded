@@ -127,7 +127,29 @@
             "enum": [
                 "deletion",
                 "insertion",
-                "replacement"
+                "replacement",
+                "mutagenesis"
+            ]
+        },
+        "modification_purpose":{
+            "title": "Modification purpose",
+            "description": "The purpose of the genetic modification.",
+            "type": "string",
+            "enum": [
+                "repression",
+                "activation",
+                "overexpression",
+                "tagging",
+                "interference"
+            ]
+        },
+        "modification_zygocity":{
+            "title": "Modification zygocity",
+            "description": "The zygocity of the genetic modification.",
+            "type": "string",
+            "enum": [
+                "homozygous",
+                "heterozygous"
             ]
         },
         "modification_techniques": {
