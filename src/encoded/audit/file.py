@@ -26,6 +26,27 @@ paired_end_assays = [
 
 
 @audit_checker('File', frame=['derived_from'])
+def audit_file_md5sum_integrity(value, system):
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+    md5sum = value['md5sum']
+    try:
+        hexval = int(md5sum, 16)
+        if len(md5sum) != 32:
+            detail = 'File {} '.format(value['@id']) + \
+                     'has an md5sum value of {}, '.format(md5sum) + \
+                     'which is not 32 characters long.'
+            yield AuditFailure('inconsistent md5sum',
+                               detail, level='INTERNAL_ACTION')
+    except ValueError:
+        detail = 'File {} '.format(value['@id']) + \
+                 'has an md5sum value of {}, '.format(md5sum) + \
+                 'which is not a valid hexadecimal number.'
+        yield AuditFailure('inconsistent md5sum',
+                           detail, level='INTERNAL_ACTION')
+
+
+@audit_checker('File', frame=['derived_from'])
 def audit_file_bam_derived_from(value, system):
     if value['file_format'] != 'bam':
         return
@@ -425,10 +446,12 @@ def audit_file_controlled_by(value, system):
                                    detail, level='WARNING')
 
             if read_length != control_length and \
+               abs(read_length - control_length) > 2 and \
                value['dataset'].get('assay_term_name') not in \
                     ['shRNA knockdown followed by RNA-seq',
                      'siRNA knockdown followed by RNA-seq',
                      'CRISPR genome editing followed by RNA-seq']:
+
                 detail = 'File {} is {} but its control file {} is {}'.format(
                     value['@id'],
                     value['read_length'],
@@ -456,26 +479,6 @@ def audit_file_flowcells(value, system):
     if 'flowcell_details' not in value or (value['flowcell_details'] == []):
         detail = 'Fastq file {} is missing flowcell_details'.format(value['@id'])
         raise AuditFailure('missing flowcell_details', detail, level='WARNING')
-
-
-@audit_checker('file', frame='object',)
-def audit_run_type(value, system):
-    '''
-    A fastq file or a fasta file need to specify run_type.
-    This was attempted to be a dependancy and didn't happen.
-    '''
-
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
-        return
-
-    if value['file_format'] not in ['fastq']:
-        return
-
-    if 'run_type' not in value:
-        detail = 'File {} has file_format {}. It requires a value for run_type'.format(
-            value['@id'],
-            value['file_format'])
-        raise AuditFailure('missing run_type', detail, level='WARNING')
 
 
 @audit_checker('file', frame=['paired_with'],)
@@ -541,6 +544,9 @@ def audit_modERN_ChIP_pipeline_steps(value, system):
         return
 
     if expt['assay_term_id'] != 'OBI:0000716':
+        return
+
+    if value['status'] in ['archived', 'revoked', 'deleted', 'replaced']:
         return
 
     if value['file_format'] == 'fastq':
@@ -648,7 +654,8 @@ def get_chip_seq_bam_read_depth(bam_file):
     if bam_file['file_format'] != 'bam' or bam_file['output_type'] != 'alignments':
         return False
 
-    if bam_file['lab'] != '/labs/encode-processing-pipeline/':
+    # Check to see if bam is from ENCODE or modERN pipelines
+    if bam_file['lab'] not in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/']:
         return False
 
     if has_pipelines(bam_file) is False:
@@ -782,7 +789,7 @@ def audit_file_chip_seq_control_read_depth(value, system):
     if value['output_type'] in ['transcriptome alignments', 'unfiltered alignments']:
         return
 
-    if value['lab'] != '/labs/encode-processing-pipeline/':
+    if value['lab'] not in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/']:
         return
 
     if 'analysis_step_version' not in value:
@@ -860,6 +867,7 @@ def audit_file_chip_seq_control_read_depth(value, system):
 
 def check_control_read_depth_standards(value, read_depth, target_name, is_control_file, control_to_target, target_investigated_as):
     marks = pipelines_with_read_depth['Histone ChIP-seq']
+    modERN_cutoff = pipelines_with_read_depth['Transcription factor ChIP-seq pipeline (modERN)']
 
     if is_control_file is True:  # treat this file as control_bam -
         # raising insufficient control read depth
@@ -883,6 +891,7 @@ def check_control_read_depth_standards(value, read_depth, target_name, is_contro
                 'number of usable fragments is > 45 million. ' + \
                 'According to ENCODE2 standards > 20 million ' + \
                 'usable fragments is acceptable.'
+
             if read_depth >= marks['narrow'] and read_depth < marks['broad']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
             elif read_depth < marks['narrow']:
@@ -901,7 +910,18 @@ def check_control_read_depth_standards(value, read_depth, target_name, is_contro
                 yield AuditFailure('control low read depth', detail, level='WARNING')
             elif read_depth < 10000000:
                 yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
-        elif 'transcription factor' in target_investigated_as:  # was absent previusly, was merged with narrow marks
+
+        elif 'transcription factor' in target_investigated_as:
+            if value['lab'] == '/labs/kevin-white/':
+                if read_depth < modERN_cutoff:
+                    detail = 'Control modERN processed alignment file {} has {} '.format(
+                        value['@id'], read_depth) + 'usable fragments. Control for ChIP-seq ' + \
+                        'assays and target {} '.format(control_to_target) + \
+                        'investigated as transcription factor requires ' + \
+                        '{} usable fragments, according to '.format(modERN_cutoff) + \
+                        'the standards defined by the modERN project.'
+                yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
+
             detail = 'ENCODE processed alignment file {} has {} '.format(
                 value['@id'],
                 read_depth) + \
@@ -911,6 +931,7 @@ def check_control_read_depth_standards(value, read_depth, target_name, is_contro
                 'number of usable fragments is > 20 million. ' + \
                 'According to ENCODE2 standards > 10 million ' + \
                 'usable fragments is acceptable.'
+
             if read_depth >= 10000000 and read_depth < marks['narrow']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
             elif read_depth < 10000000:

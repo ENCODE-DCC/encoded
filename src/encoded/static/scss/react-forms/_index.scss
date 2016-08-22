@@ -46,11 +46,11 @@
   input[type="color"],
   .item-picker {
     border-color: $border-color;
-    @include box-shadow(inset 0 1px 1px rgba(0,0,0,.075)); // Redeclare so transitions work
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075); // Redeclare so transitions work
     &:focus {
       border-color: darken($border-color, 10%);
       $shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 6px lighten($border-color, 20%);
-      @include box-shadow($shadow);
+      box-shadow: $shadow;
     }
   }
 
@@ -65,7 +65,7 @@
 .rf-Fieldset {
   @extend .form-group;
   border: 1px solid #ccc;
-  @include border-radius($border-radius-base);
+  border-radius: $border-radius-base;
   padding: 5px 10px;
   margin-bottom: 10px;
 }
@@ -90,14 +90,14 @@
   background: lighten($gray-lighter, 5%);
   position: relative;
   border: 1px solid #ccc;
-  @include border-radius($border-radius-base);
+  border-radius: $border-radius-base;
   padding: 5px 30px 5px 10px;
   margin-bottom: 10px;
 
   > .rf-Fieldset {
     padding: 0;
     border: none;
-    @include border-radius(none);
+    border-radius: none;
     margin-bottom: 0;
   }
 }

@@ -853,7 +853,7 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
         '1 months': '1 month',
         '1 weeks': '1 week',
         '1 years': '1 year',
-        '.0': '',
+        '.0 ': ' ',
     }
     rep = dict((re.escape(k), v) for k, v in rep.items())
     pattern = re.compile("|".join(rep.keys()))
