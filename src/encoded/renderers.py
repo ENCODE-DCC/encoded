@@ -269,7 +269,7 @@ page_or_json = SubprocessTween(
     should_transform=should_transform,
     after_transform=after_transform,
     reload_process=reload_process,
-    args=['node', resource_filename(__name__, 'static/build/renderer.js')],
+    args=['node', resource_filename(__name__, 'static/build-server/renderer.js')],
     env=node_env,
 )
 
