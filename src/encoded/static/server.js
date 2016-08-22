@@ -1,6 +1,7 @@
 // Entry point for server rendering subprocess
 
 /* jshint strict: false */
+require('./scss/style.scss');
 
 if (process.env.NODE_ENV === undefined) {
     require("babel-core/register")({

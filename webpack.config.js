@@ -8,6 +8,7 @@ var env = process.env.NODE_ENV;
 var PATHS = {
     static: path.resolve(__dirname, 'src/encoded/static'),
     build: path.resolve(__dirname, 'src/encoded/static/build'),
+    serverbuild: path.resolve(__dirname, 'src/encoded/static/build-server'),
     fonts: path.resolve(__dirname, 'src/encoded/static/font'),
     images: path.resolve(__dirname, 'src/encoded/static/img')
 };
@@ -83,7 +84,7 @@ module.exports = [
     {
         entry: {
             renderer: './src/encoded/static/server.js',
-            style: './src/encoded/static/scss/style.scss'
+            //style: './src/encoded/static/scss/style.scss'
         },
         target: 'node',
         // make sure compiled modules can use original __dirname
@@ -100,7 +101,8 @@ module.exports = [
             'babel-core/register'
         ],
         output: {
-            path: PATHS.build,
+            path: PATHS.serverbuild,
+            publicPath: '/static/build-server',
             filename: '[name].js',
             libraryTarget: 'commonjs2',
             chunkFilename: chunkFilename
@@ -131,7 +133,7 @@ module.exports = [
                 this.plugin('done', function(stats) {
                     // Write hash stats to stats.json so we can extract the CSS hashed file name.
                     require('fs').writeFileSync(
-                        path.join(PATHS.build, 'stats.json'),
+                        path.join(PATHS.serverbuild, 'stats.json'),
                         JSON.stringify(stats.toJson({hash: true}, 'none')));
                 });
             }
