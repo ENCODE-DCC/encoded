@@ -699,8 +699,12 @@ var Facet = search.Facet = React.createClass({
         if (field.substr(0, 6) === 'audit.') {
             var titleParts = title.split(': ');
             var fieldParts = field.match(/^audit.(.+).category$/i);
-            var iconClass = 'icon audit-activeicon-' + fieldParts[1].toLowerCase();
-            title = <span>{titleParts[0]}: <i className={iconClass}></i></span>;
+            if (fieldParts && fieldParts.length === 2 && titleParts) {
+                var iconClass = 'icon audit-activeicon-' + fieldParts[1].toLowerCase();
+                title = <span>{titleParts[0]}: <i className={iconClass}></i></span>;
+            } else {
+                title = <span>{title}</span>;
+            }
         }
 
         return (
