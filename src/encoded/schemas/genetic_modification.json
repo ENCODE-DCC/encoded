@@ -59,7 +59,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "url": {
             "title": "URL",
@@ -115,7 +115,7 @@
                 }
             }
         },
-        "modifiction_description": {
+        "modification_description": {
             "title": "Description",
             "description": "A plain text description of the genetic modification.",
             "type": "string"
