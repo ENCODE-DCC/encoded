@@ -248,7 +248,7 @@ var App = React.createClass({
                     <link rel="canonical" href={canonical} />
                     <script async src='//www.google-analytics.com/analytics.js'></script>
                     <script data-prop-name="inline" dangerouslySetInnerHTML={{__html: this.props.inline}}></script>
-                    <link rel="stylesheet" href="styles.css" /> //href={this.props.styles} />
+                    <link rel="stylesheet" href={this.props.styles} />
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
                     <script data-prop-name="context" type="application/ld+json" dangerouslySetInnerHTML={{

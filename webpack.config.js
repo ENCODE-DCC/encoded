@@ -58,14 +58,21 @@ var loaders = [
         test: /\.(jpg|png|gif)$/,
         loader: 'url?limit=25000',
         include: PATHS.images
-    }
+    },
+    {
+        test: /\.scss$/,
+        loader: ExtractTextPlugin.extract('css!sass')
+    }    
 ];
 
 module.exports = [
     // for browser
     {
         context: PATHS.static,
-        entry: {inline: './inline'},
+        entry: {
+            inline: './inline',
+            style: './scss/style.scss'
+        },
         output: {
             path: PATHS.build,
             publicPath: '/static/build/',
@@ -77,14 +84,32 @@ module.exports = [
             loaders: loaders
         },
         devtool: 'source-map',
-        plugins: plugins,
+        plugins: plugins.concat(
+            // Add a browser-only plugin to extract Sass-compiled styles and place them into an
+            // external CSS file
+            new ExtractTextPlugin(styleFilename, {
+                disable: false,
+                allChunks: true
+            }),
+
+            // Add a browser-only plugin executed when webpack is done with all transforms. it
+            // writes minimal build statistics to the "build" directory that contains the hashed
+            // CSS file names that the server can render into the <link rel="stylesheet"> tag.
+            function() {
+                this.plugin('done', function(stats) {
+                    // Write hash stats to stats.json so we can extract the CSS hashed file name.
+                    require('fs').writeFileSync(
+                        path.join(PATHS.build, 'stats.json'),
+                        JSON.stringify(stats.toJson({hash: true}, 'none')));
+                });
+            }
+        ),
         debug: true
     },
     // for server-side rendering
     {
         entry: {
-            renderer: './src/encoded/static/server.js',
-            //style: './src/encoded/static/scss/style.scss'
+            renderer: './src/encoded/static/server.js'
         },
         target: 'node',
         // make sure compiled modules can use original __dirname
@@ -109,35 +134,10 @@ module.exports = [
         },
         module: {
             preLoaders: preLoaders,
-
-            // Add SCSS -> css loader to the list of loaders on the server, and extract the styles
-            // from the generated .js file to a monolithic external "style.[hash].css" file.
-            loaders: loaders.concat({
-                test: /\.scss$/,
-                loader: ExtractTextPlugin.extract('css!sass')
-            })
+            loaders: loaders
         },
         devtool: 'source-map',
-        plugins: plugins.concat(
-            // Add a server-only plugin to extract Sass-compiled styles and place them into an
-            // external CSS file
-            new ExtractTextPlugin(styleFilename, {
-                disable: false,
-                allChunks: true
-            }),
-
-            // Add a server-only plugin executed when webpack is done with all transforms. it
-            // writes minimal build statistics to the "build" directory that contains the hashed
-            // CSS file names that the server can render into the <link rel="stylesheet"> tag.
-            function() {
-                this.plugin('done', function(stats) {
-                    // Write hash stats to stats.json so we can extract the CSS hashed file name.
-                    require('fs').writeFileSync(
-                        path.join(PATHS.serverbuild, 'stats.json'),
-                        JSON.stringify(stats.toJson({hash: true}, 'none')));
-                });
-            }
-        ),
+        plugins: plugins,
         debug: true
     }
 ];

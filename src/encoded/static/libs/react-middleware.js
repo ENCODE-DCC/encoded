@@ -8,22 +8,21 @@ var inline = fs.readFileSync(__dirname + '/../build/inline.js').toString();
 
 // Retrieve the file containing webpack build statistics and get the generated CSS hashed file
 // names so we can later write it to the <link rel="stylesheet"> tag.
-//var buildFiles = JSON.parse(fs.readFileSync(__dirname + '../build-server/stats.json')).assetsByChunkName.renderer;
+var buildFiles = JSON.parse(fs.readFileSync(__dirname + '/../build/stats.json')).assetsByChunkName.style;
 
 var render = function (Component, body, res) {
     //var start = process.hrtime();
 
     // Search for the hashed CSS file name in the buildFiles list
-//    var cssFile = buildFiles.find(function(file) {
-//        return !!file.match(/^\.\/css\/renderer(\.[0-9a-z]+){0,1}\.css$/);
-//    });
+   var cssFile = buildFiles.find(function(file) {
+       return !!file.match(/^\.\/css\/style(\.[0-9a-z]+){0,1}\.css$/);
+   });
     var context = JSON.parse(body);
     var props = {
         context: context,
         href: res.getHeader('X-Request-URL') || context['@id'],
         inline: inline,
-        styles: __dirname + '../build-server/stats.json'
-        //styles: '/static/build/' + cssFile
+        styles: '/static/build/' + cssFile
     };
     var markup;
     try {
