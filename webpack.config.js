@@ -64,14 +64,46 @@ module.exports = [
     // for browser
     {
         context: PATHS.static,
-        entry: {
-            inline: './inline',
-            style: './src/encoded/static/scss/style.scss'
-        },
+        entry: {inline: './inline'},
         output: {
             path: PATHS.build,
             publicPath: '/static/build/',
             filename: '[name].js',
+            chunkFilename: chunkFilename
+        },
+        module: {
+            preLoaders: preLoaders,
+            loaders: loaders
+        },
+        devtool: 'source-map',
+        plugins: plugins,
+        debug: true
+    },
+    // for server-side rendering
+    {
+        entry: {
+            renderer: './src/encoded/static/server.js',
+            style: './src/encoded/static/scss/style.scss'
+        },
+        target: 'node',
+        // make sure compiled modules can use original __dirname
+        node: {
+            __dirname: true
+        },
+        externals: [
+            'brace',
+            'brace/mode/json',
+            'brace/theme/solarized_light',
+            'd3',
+            'dagre-d3',
+            'chart.js',
+            // avoid bundling babel transpiler, which is not used at runtime
+            'babel-core/register'
+        ],
+        output: {
+            path: PATHS.build,
+            filename: '[name].js',
+            libraryTarget: 'commonjs2',
             chunkFilename: chunkFilename
         },
         module: {
@@ -105,39 +137,6 @@ module.exports = [
                 });
             }
         ),
-        debug: true
-    },
-    // for server-side rendering
-    {
-        entry: {
-            renderer: './src/encoded/static/server.js'
-        },
-        target: 'node',
-        // make sure compiled modules can use original __dirname
-        node: {
-            __dirname: true
-        },
-        externals: [
-            'brace',
-            'brace/mode/json',
-            'brace/theme/solarized_light',
-            'd3',
-            'dagre-d3',
-            'chart.js',
-            // avoid bundling babel transpiler, which is not used at runtime
-            'babel-core/register'
-        ],
-        output: {
-            path: PATHS.build,
-            filename: '[name].js',
-            libraryTarget: 'commonjs2',
-            chunkFilename: chunkFilename
-        },
-        module: {
-            preLoaders: preLoaders
-        },
-        devtool: 'source-map',
-        plugins: plugins,
         debug: true
     }
 ];
