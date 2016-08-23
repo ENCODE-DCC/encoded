@@ -144,44 +144,46 @@ var Home = module.exports.Home = React.createClass({
                             <AssayClicking current={this.state.current} callback={this.callback} assayCategory={this.state.assayCategory} handleAssayCategoryClick={this.handleAssayCategoryClick}/>
 
                             <Panel>
-                            <TabClicking handleTabClick={this.handleTabClick} newtabs={this.state.newtabs}/>
-                            <div className="graphs clearfix" >
-                                <div className="row">
-                                    <div className="col-sm-4">
-                                        <div className="title">
-                                            Project
-                                            <center> <hr width="80%" position="static" color="blue"></hr> </center>
-                                        </div>
+                                <PanelHeading addClasses="tab-table-header">
+                                    <TabClicking handleTabClick={this.handleTabClick} newtabs={this.state.newtabs}/>
+                                </PanelHeading>
+                                <div className="graphs clearfix" >
+                                    <div className="row">
+                                        <div className="col-sm-4">
+                                            <div className="title">
+                                                Project
+                                                <center> <hr width="80%" position="static" color="blue"></hr> </center>
+                                            </div>
 
-                                        <HomepageChartLoader searchBase={this.state.current}
+                                            <HomepageChartLoader searchBase={this.state.current}
+                                                        callback={this.callback}/>
+                                            <div id="chart-legend" className="chart-legend">
+
+                                            </div>
+
+                                        </div>
+                                        <div className="col-sm-4">
+                                            <div className="title">
+                                                Biosample Type
+                                            </div>
+                                            <center> <hr width="80%"></hr> </center>
+                                            <HomepageChartLoader2 searchBase={this.state.current}
                                                     callback={this.callback}/>
-                                        <div id="chart-legend" className="chart-legend">
-
+                                            <div id="chart-legend-2" className="chart-legend"></div>
                                         </div>
-
-                                    </div>
-                                    <div className="col-sm-4">
-                                        <div className="title">
-                                            Biosample Type
-                                        </div>
-                                        <center> <hr width="80%"></hr> </center>
-                                        <HomepageChartLoader2 searchBase={this.state.current}
-                                                 callback={this.callback}/>
-                                        <div id="chart-legend-2" className="chart-legend"></div>
-                                    </div>
-                                    <div className="col-sm-4">
-                                        <div className="title">
-                                            Recent Releases
-                                        </div>
-                                        <center> <hr width="80%"></hr> </center>
-                                        <HomepageChartLoader3 searchBase={this.state.current}
-                                                 callback={this.callback}/>
-                                        <div className="view-all">
-                                                <a href={"/matrix/" + this.state.current} className="view-all-button btn btn-info btn-lg" role="button"> View Selected </a>
+                                        <div className="col-sm-4">
+                                            <div className="title">
+                                                Recent Releases
+                                            </div>
+                                            <center> <hr width="80%"></hr> </center>
+                                            <HomepageChartLoader3 searchBase={this.state.current}
+                                                    callback={this.callback}/>
+                                            <div className="view-all">
+                                                    <a href={"/matrix/" + this.state.current} className="view-all-button btn btn-info btn-lg" role="button"> View Selected </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
                             </Panel>
                         </div>
@@ -382,18 +384,15 @@ var TabClicking = React.createClass({
     render: function() {
         return (
             <div ref="tabdisplay">
-                <div className="tabTable">
-
-                <table>
-                    <tr>
-                        <td> <a className={"single-tab" + (this.props.newtabs.indexOf(this.state.queryStrings[0]) != -1 ? " selected": "")} href="#" data-trigger onClick={this.props.handleTabClick.bind(null, this.state.queryStrings[0])}>Human</a></td>
-                        <td> <a className={"single-tab" + (this.props.newtabs.indexOf(this.state.queryStrings[1]) != -1 ? " selected": "")} href="#" data-trigger onClick={this.props.handleTabClick.bind(null, this.state.queryStrings[1])}>Mouse</a></td>
-                        <td> <a className={"single-tab" + (this.props.newtabs.indexOf(this.state.queryStrings[2]) != -1 ? " selected": "")} href="#" data-trigger onClick={this.props.handleTabClick.bind(null, this.state.queryStrings[2])}>Worm</a></td>
-                        <td> <a className={"single-tab" + (this.props.newtabs.indexOf(this.state.queryStrings[3]) != -1 ? " selected": "")} href="#" data-trigger onClick={this.props.handleTabClick.bind(null, this.state.queryStrings[3])}>Fly</a></td>
-                    </tr>
-                </table>
-
-
+                <div className="tab-table">
+                    <table>
+                        <tr>
+                            <td> <a className={"single-tab" + (this.props.newtabs.indexOf(this.state.queryStrings[0]) != -1 ? " selected": "")} href="#" data-trigger onClick={this.props.handleTabClick.bind(null, this.state.queryStrings[0])}>Human</a></td>
+                            <td> <a className={"single-tab" + (this.props.newtabs.indexOf(this.state.queryStrings[1]) != -1 ? " selected": "")} href="#" data-trigger onClick={this.props.handleTabClick.bind(null, this.state.queryStrings[1])}>Mouse</a></td>
+                            <td> <a className={"single-tab" + (this.props.newtabs.indexOf(this.state.queryStrings[2]) != -1 ? " selected": "")} href="#" data-trigger onClick={this.props.handleTabClick.bind(null, this.state.queryStrings[2])}>Worm</a></td>
+                            <td> <a className={"single-tab" + (this.props.newtabs.indexOf(this.state.queryStrings[3]) != -1 ? " selected": "")} href="#" data-trigger onClick={this.props.handleTabClick.bind(null, this.state.queryStrings[3])}>Fly</a></td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         );

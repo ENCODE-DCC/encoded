@@ -104,21 +104,20 @@
 
 
 // Gives tabs white background and border separating from graphs
-.tabTable {
-    border-bottom: 1px solid #a0a0a0;
-    background-color: white;
-   
+.tab-table {
 }
 
+.tab-table-header {
+    padding: 0;
+}
 
 // Positions tabs with padding, hovering, and changing color if selected
-.tabTable td{
+.tab-table td {
     color: #000;
     //border: none;
     padding: 0px !important;
     a.single-tab {
-        font-size: 20px;
-        font-weight: 100;
+        font-size: 16px;
         padding: 10px 11px !important;
         display: block;
         text-decoration: none;
