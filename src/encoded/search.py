@@ -224,6 +224,10 @@ def list_visible_columns_for_schemas(request, schemas):
             if field in columns:
                 limited_columns[field] = columns[field]
             else:
+                # We don't currently traverse to other schemas for embedded
+                # objects to find property titles. In this case we'll just
+                # show the field's dotted path for now.
+                limited_columns[field] = {'title': field}
                 for schema in schemas:
                     if field in schema['properties']:
                         limited_columns[field] = {
