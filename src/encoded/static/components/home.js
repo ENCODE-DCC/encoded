@@ -178,13 +178,13 @@ var ChartGallery = React.createClass({
         return (
             <div>
                 <div className="col-md-4">
-                    <HomepageChart {...this.props} searchBase={this.props.searchBase + '&'} />
+                    <HomepageChart {...this.props} searchBase={this.props.searchBase} />
                 </div>
                 <div className="col-md-4">
-                    <HomepageChart2 {...this.props} searchBase={this.props.searchBase + '&'} />
+                    <HomepageChart2 {...this.props} searchBase={this.props.searchBase} />
                 </div>
                 <div className="col-md-4">
-                    <HomepageChart3 {...this.props} searchBase={this.props.searchBase + '&'} />
+                    <HomepageChart3 {...this.props} searchBase={this.props.searchBase} />
                 </div>
             </div>
         );
@@ -412,7 +412,7 @@ var HomepageChart = React.createClass({
             var facetData = [];
 
             // Our data source will be different for computational predictions
-            var computationalPredictions = this.props.searchBase === '?type=Annotation&encyclopedia_version=3&';
+            var computationalPredictions = this.props.searchBase === '?type=Annotation&encyclopedia_version=3';
 
             // Get the project from the facets
             if (computationalPredictions) {
@@ -590,7 +590,7 @@ var HomepageChartLoader = React.createClass({
         return (
             <FetchedData ignoreErrors>
                 <Param name="data" url={'/matrix/' + this.props.searchBase} />
-                <ChartGallery searchBase={this.props.searchBase + '&'} />
+                <ChartGallery searchBase={this.props.searchBase} />
             </FetchedData>
         );
     }
@@ -628,7 +628,7 @@ var HomepageChart2 = React.createClass({
             var assayFacet;
 
             // Our data source will be different for computational predictions
-            var computationalPredictions = this.props.searchBase === '?type=Annotation&encyclopedia_version=3&';
+            var computationalPredictions = this.props.searchBase === '?type=Annotation&encyclopedia_version=3';
 
             var facets = this.props.data.facets;
             if (computationalPredictions) {
@@ -698,10 +698,11 @@ var HomepageChart2 = React.createClass({
                         },
                         legendCallback: (chart) => { // allows for legend clicking
                             var text = [];
+                            var query = computationalPredictions ? 'biosample_type=' : 'replicates.library.biosample.biosample_type=';
                             text.push('<ul>');
                             for (var i = 0; i < assayFacet.terms.length; i++) {
                                 text.push('<li>');
-                                text.push('<a href="' + this.props.data['@id'] + '&y.limit=&replicates.library.biosample.biosample_type=' + assayFacet.terms[i].key  + '">'); // go to matrix view when clicked
+                                text.push('<a href="' + this.props.data['@id'] + '&' + query + assayFacet.terms[i].key  + '">'); // go to matrix view when clicked
                                 text.push('<span style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
                                 if (chart.data.labels[i]) {
                                     text.push(chart.data.labels[i]);
@@ -713,9 +714,10 @@ var HomepageChart2 = React.createClass({
                         },
                         onClick: (e) => {
                             // React to clicks on pie sections
+                            var query = computationalPredictions ? 'biosample_type=' : 'replicates.library.biosample.biosample_type=';
                             var activePoints = this.myPieChart.getElementAtEvent(e);
                             var term = assayFacet.terms[activePoints[0]._index].key;
-                            this.context.navigate(this.props.data['@id'] + '&y.limit=&replicates.library.biosample.biosample_type=' + term); // go to matrix view
+                            this.context.navigate(this.props.data['@id'] + '&' + query + term); // go to matrix view
                         }
                     }
                 });
@@ -765,12 +767,11 @@ var HomepageChart2 = React.createClass({
                     <center> <hr width="80%" position="static" color="blue"></hr> </center>
                 </div>
                 <canvas id="myChart2"></canvas>
-                <div id="chart-legend-2" className="chart-legend"></div>
                 <div id="MyEmptyChart2"> </div>
+                <div id="chart-legend-2" className="chart-legend"></div>
             </div>
         );
     }
-
 });
 
 
