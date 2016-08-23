@@ -582,6 +582,8 @@ def search(context, request, search_type=None, return_generator=False):
     else:
         # Possibly type(s) in query string
         clear_qs = urlencode([("type", typ) for typ in doc_types])
+    if clear_qs and 'group.submitter' not in principals:
+        clear_qs += '&status=released'
     result['clear_filters'] = request.route_path('search', slash='/') + (('?' + clear_qs) if clear_qs else '')
 
     # Building query for filters
@@ -803,6 +805,7 @@ def matrix(context, request):
         'filters': [],
         'notification': '',
     }
+    principals = effective_principals(request)
     search_audit = request.has_permission('search_audit')
 
     doc_types = request.params.getall('type')
@@ -824,11 +827,18 @@ def matrix(context, request):
     else:
         result['title'] = type_info.name + ' Matrix'
 
+    # Determine if "searchTerm" in URL
+    searchterm_specs = request.params.getall('searchTerm')
+    searchterm_only = urlencode([("searchTerm", searchterm) for searchterm in searchterm_specs])
+    if searchterm_only:
+        clear_qs = searchterm_only + '&type=' + item_type
+    else:
+        clear_qs = 'type=' + item_type
     matrix = result['matrix'] = type_info.factory.matrix.copy()
     matrix['x']['limit'] = request.params.get('x.limit', 20)
     matrix['y']['limit'] = request.params.get('y.limit', 5)
     matrix['search_base'] = request.route_path('search', slash='/') + search_base
-    matrix['clear_matrix'] = request.route_path('matrix', slash='/') + '?type=' + item_type
+    matrix['clear_matrix'] = request.route_path('matrix', slash='/') + '?' + clear_qs + ('&status=released' if 'group.submitter' not in principals else '')
 
     result['views'] = [
         {
@@ -843,7 +853,6 @@ def matrix(context, request):
         }
     ]
 
-    principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
     es_index = request.registry.settings['snovault.elasticsearch.index']
 

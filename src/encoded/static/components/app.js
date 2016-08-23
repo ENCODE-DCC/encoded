@@ -11,19 +11,19 @@ var portal = {
     portal_title: 'ENCODE',
     global_sections: [
         {id: 'data', title: 'Data', children: [
-            {id: 'assaymatrix', title: 'Matrix', url: '/matrix/?type=Experiment'},
-            {id: 'assaysearch', title: 'Search', url: '/search/?type=Experiment'},
+            {id: 'assaymatrix', title: 'Matrix', url: '/matrix/?type=Experiment&status=released'},
+            {id: 'assaysearch', title: 'Search', url: '/search/?type=Experiment&status=released'},
             {id: 'region-search', title: 'Search by region', url: '/region-search/'},
             {id: 'publications', title: 'Publications', url: '/publications/'}
         ]},
         {id: 'encyclopedia', title: 'Encyclopedia', children: [
             {id: 'aboutannotations', title: 'About', url: '/data/annotations/'},
-            {id: 'annotationmatrix', title: 'Matrix', url: '/matrix/?type=Annotation&encyclopedia_version=3'},
-            {id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation&encyclopedia_version=3'}
+            {id: 'annotationmatrix', title: 'Matrix', url: '/matrix/?type=Annotation&encyclopedia_version=3&status=released'},
+            {id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation&encyclopedia_version=3&status=released'}
         ]},
         {id: 'materialsmethods', title: 'Materials & Methods', children: [
-            {id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot'},
-            {id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample'},
+            {id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot&status=released'},
+            {id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample&status=released'},
             {id: 'references', title: 'Genome References', url: '/data-standards/reference-sequences/'},
             {id: 'sep-mm-1'},
             {id: 'datastandards', title: 'Standards and guidelines', url: '/data-standards/'},
