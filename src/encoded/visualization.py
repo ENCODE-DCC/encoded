@@ -1214,8 +1214,8 @@ VIS_DEFS_BY_ASSAY = {
     "ChIP":     CHIP_COMPOSITE_VIS_DEFS,
     "eCLIP":    ECLIP_COMPOSITE_VIS_DEFS,
     "ANNO":     ANNO_COMPOSITE_VIS_DEFS,
-    "ChIA":     CHIA_COMPOSITE_VIS_DEFS, # TODO: get_vis_type
-    "HiC":      HIC_COMPOSITE_VIS_DEFS,  # TODO: get_vis_type
+    "ChIA":     CHIA_COMPOSITE_VIS_DEFS,
+    "HiC":      HIC_COMPOSITE_VIS_DEFS,
     }
 
 def get_vis_type(dataset):
@@ -1225,16 +1225,34 @@ def get_vis_type(dataset):
         type = dataset["@id"].split('/')[1]
         if type == "annotations":
             return "ANNO"
+        else:
+            log.warn("assay_term_name not found for %s" % dataset['accession'])
+            return "opaque" # This becomes a dict key later so None is not okay
+
+    if isinstance(assay,list):
+        log.warn("assay_term_name for %s is unexpectedly a list %s" % (dataset['accession'],str(assay)))
+        assay = assay[0]
 
     # This will be long AND small
-    elif assay in ["shRNA knockdown followed by RNA-seq","siRNA knockdown followed by RNA-seq","CRISPR genome editing followed by RNA-seq"]:
+    if assay in ["shRNA knockdown followed by RNA-seq","siRNA knockdown followed by RNA-seq","CRISPR genome editing followed by RNA-seq"]:
         return "tkRNA"
     elif assay in ["RNA-seq","single cell isolation followed by RNA-seq"]:
-        size_range = dataset["replicates"][0]["library"]["size_range"]
+        reps = dataset.get("replicates",[]) # NOTE: overly cautious due to test failures with incomplete test data
+        if len(reps) < 1:
+            log.warn("Could not distinguish between long and short RNA for %s because there are no replicates.  Defaulting to short." % (dataset.get("accession")))
+            return "SRNA"  # this will be more noticed if there is a mistake
+        size_range = reps[0].get("library",{}).get("size_range","")
         if size_range.startswith('>'):
             try:
                 min_size = int(size_range[1:])
                 max_size = min_size
+            except:
+                log.warn("Could not distinguish between long and short RNA for %s.  Defaulting to short." % (dataset.get("accession")))
+                return "SRNA"  # this will be more noticed if there is a mistake
+        elif size_range.startswith('<'):
+            try:
+                max_size = int(size_range[1:]) - 1
+                min_size = 0
             except:
                 log.warn("Could not distinguish between long and short RNA for %s.  Defaulting to short." % (dataset.get("accession")))
                 return "SRNA"  # this will be more noticed if there is a mistake
@@ -1258,7 +1276,7 @@ def get_vis_type(dataset):
         return "miRNA"
     elif assay in ["whole-genome shotgun bisulfite sequencing","shotgun bisulfite-seq assay","RRBS"]:
         return "WGBS"
-    elif assay.lower() in ["rampage","cage"]:
+    elif assay in ["RAMPAGE","CAGE"]:
         return "TSS"
     elif assay == "ChIP-seq":
         return "ChIP"
@@ -1271,6 +1289,7 @@ def get_vis_type(dataset):
     elif assay == "HiC":
         return "HiC"
 
+    log.warn("%s has unvisualizable assay '%s'" % (dataset['accession'],assay)) # DEBUG
     return "opaque" # This becomes a dict key later so None is not okay
 
 
@@ -1456,10 +1475,16 @@ def lookup_colors(dataset):
     coloring = {}
     biosample_term = dataset.get('biosample_type')
     if biosample_term is not None:
+        if isinstance(biosample_term,list):
+            log.warn("%s has biosample_type %s that is unexpectedly a list" % (dataset['accession'],str(biosample_term)))
+            biosample_term = biosample_term[0]
         coloring = BIOSAMPLE_COLOR.get(biosample_term,{})
     if not coloring:
         biosample_term = dataset.get('biosample_term_name')
         if biosample_term is not None:
+            if isinstance(biosample_term,list):
+                log.warn("%s has biosample_term_name %s that is unexpectedly a list" % (dataset['accession'],str(biosample_term)))
+                biosample_term = biosample_term[0]
             coloring = BIOSAMPLE_COLOR.get(biosample_term,{})
     if not coloring:
         organ_slims = dataset.get('organ_slims',[])
@@ -1544,6 +1569,8 @@ def add_to_es(request,comp_id,composite):
     '''Adds a composite json blob to elastic-search'''
     key="vis_composite"
     es = request.registry.get(ELASTIC_SEARCH, None)
+    if not es:
+        return
     if not es.indices.exists(key):
         es.indices.create(index=key, body={ 'index': { 'number_of_shards': 1 } })
         mapping = { 'default': {    "_all" :    { "enabled": False },
@@ -1559,7 +1586,7 @@ def get_from_es(request,comp_id):
     '''Returns composite json blob from elastic-search, or None if not found.'''
     key="vis_composite"
     es = request.registry.get(ELASTIC_SEARCH, None)
-    if es.indices.exists(key):
+    if es and es.indices.exists(key):
         try:
             result = es.get(index=key, doc_type='default', id=comp_id)
             return result['_source']
@@ -1571,7 +1598,7 @@ def search_es(request,ids):
     '''Returns a list of composites from elastic-search, or None if not found.'''
     key="vis_composite"
     es = request.registry.get(ELASTIC_SEARCH, None)
-    if es.indices.exists(key):
+    if es and es.indices.exists(key):
         try:
             query = { "query": { "ids" : { "values" : ids } } }
             res = es.search(body=query, index=key, doc_type='default',size=99999) # Consider size=200
@@ -1601,13 +1628,13 @@ def rep_for_file(a_file):
             tech_reps = tech_reps[0][2:]
             if len(tech_reps) == 1:
                 tech_rep = int(tech_reps)
-        if len(tech_reps) > 1:
+        elif len(tech_reps) > 1:
             bio = 0
             for tech in tech_reps:
                 if bio == 0:
                     bio = int(tech.split('_')[0])
                 elif bio != int(tech.split('_')[0]):
-                    bio = -1
+                    bio = 0
                     break
             if bio > 0:
                 bio_rep = bio
@@ -1692,6 +1719,10 @@ def lookup_token(token,dataset,a_file=None):
         elif token == "{replicate}":
             rep_tag = a_file.get("rep_tag")
             if rep_tag is not None:
+                while len(rep_tag) > 4:
+                    if rep_tag[3] != '0':
+                        break
+                    rep_tag = rep_tag[0:3] + rep_tag[4:]
                 return rep_tag
             rep_tech = a_file.get("rep_tech")
             if rep_tech is not None:
@@ -1911,7 +1942,7 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
         file_format = view["type"].split()[0]
         if file_format == "bigBed" and "scoreFilter" in view:
             view["type"] = "bigBed 6 +" # be more discriminating as to what bigBeds are 6 + ?  Just rely on scoreFilter
-        log.warn("%d files looking for type %s" % (len(dataset["files"]),view["type"]))
+        #log.warn("%d files looking for type %s" % (len(dataset["files"]),view["type"]))
         for a_file in dataset["files"]:
             if a_file['status'] in INVISIBLE_FILE_STATUSES:
                 continue
@@ -1998,12 +2029,21 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
                 longLabel = "{assay_title} of {biosample_term_name} {output_type} {biological_replicate_number} {experiment.accession} - {file.accession}"
             track["longLabel"] = sanitize_label( convert_mask(longLabel,dataset,a_file) )
             metadata_pairs = {}
-            metadata_pairs['file&#32;download'] = '"<a href=\"%s%s\" title=\'Download this file from the ENCODE portal\'>%s</a>"' % (host,a_file["href"],a_file["accession"])
-            metadata_pairs["experiment"] = '"<a href=\"%s/experiments/%s\" TARGET=\'_blank\' title=\'Experiment details from the ENCODE portal\'>%s</a>"' % (host,dataset["accession"],dataset["accession"])
+            metadata_pairs['file&#32;download'] = '"<a href=\'%s%s\' title=\'Download this file from the ENCODE portal\'>%s</a>"' % (host,a_file["href"],a_file["accession"])
+            metadata_pairs["experiment"] = '"<a href=\'%s/experiments/%s\' TARGET=\'_blank\' title=\'Experiment details from the ENCODE portal\'>%s</a>"' % (host,dataset["accession"],dataset["accession"])
             lab_title = a_file.get("lab",dataset.get("lab",{})).get("title")
-            if lab_title is not None:
-                metadata_pairs["source"] = '"%s"' % lab_title
-
+            if "replicate" in a_file:
+                bio_rep = a_file["replicate"]["biological_replicate_number"]
+                tech_rep = a_file["replicate"]["technical_replicate_number"]
+                metadata_pairs['biological&#32;replicate'] = str(bio_rep)
+                metadata_pairs['technical&#32;replicate'] = str(tech_rep)
+            else:
+                bio_rep = a_file.get('biological_replicates')
+                if bio_rep and len(bio_rep) == 1:
+                    metadata_pairs['biological&#32;replicate'] = str(bio_rep[0])
+                tech_rep = a_file.get('technical_replicates')
+                if tech_rep and len(tech_rep) == 1:
+                    metadata_pairs['technical&#32;replicate'] = tech_rep[0].split('_')[1]
 
             # Expecting short label to change when making assay based composites
             shortLabel = vis_defs.get('file_defs',{}).get('shortLabel',"{replicate} {output_type_short_label}")
@@ -2035,13 +2075,13 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
                     for (subgroup_tag,subgroup) in subgroups.items():
                         membership[group_tag] = subgroup["tag"]
                         if "url" in subgroup:
-                            metadata_pairs[group_title] = '"<a href=\"%s/%s/\" TARGET=\'_blank\' title=\'%s details\'>%s</a>"' % (host,subgroup["url"],group_title,subgroup["title"])
+                            metadata_pairs[group_title] = '"<a href=\'%s/%s/\' TARGET=\'_blank\' title=\'%s details\'>%s</a>"' % (host,subgroup["url"],group_title,subgroup["title"])
                         elif group_title == "Biosample":
                             bs_value = subgroup["title"]
                             biosamples = biosamples_for_file(a_file,dataset)
                             if len(biosamples) > 0:
                                 for bs_acc in sorted( biosamples.keys() ):
-                                    bs_value += " <a href=\"%s%s\" TARGET=\'_blank\' title=\'%s details\'>%s</a>" % (host,biosamples[bs_acc]["@id"],group_title,bs_acc)
+                                    bs_value += " <a href=\'%s%s\' TARGET=\'_blank\' title=\'%s details\'>%s</a>" % (host,biosamples[bs_acc]["@id"],group_title,bs_acc)
                             metadata_pairs[group_title] = '"%s"' % (bs_value)
                         else:
                             metadata_pairs[group_title] = '"%s"' % (subgroup["title"])
@@ -2298,8 +2338,8 @@ def ucsc_trackDb_composite_blob(composite,title):
             group = composite["groups"].get(dimensions[dim_tag])
             if group is None: # e.g. "Targets" may not exist
                 continue
-            #if len(group.get("groups",{})) <= 1: # TODO get hui.js line 262 fixed!  If matXY.length == 0 then need to call subCBs.each( function (i) { matSubCBcheckOne(this,state); });
-            #    continue
+            if len(group.get("groups",{})) <= 1: # NOTE get hui.js line 262 is now fixed!  If matXY.length == 0 then need to call subCBs.each( function (i) { matSubCBcheckOne(this,state); });
+                continue
             pairs += " %s=%s" % (dim_tag, dimensions[dim_tag])
             actual_group_tags.append(dimensions[dim_tag])
         if len(pairs) > 0:
@@ -2396,7 +2436,7 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False,
         acc_composite = make_acc_composite(dataset, assembly, host=request.host_url, hide=hide)  # DEBUG: batch trackDb
         add_to_es(request,es_key,acc_composite)
         found_or_made = "made"
-        log.warn("made acc_composite %s" % (dataset['accession']))
+        log.warn("made acc_composite %s" % es_key)
         if request_dataset:
             del dataset
     else:
@@ -2408,8 +2448,9 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False,
 def generate_trackDb(request, dataset, assembly, hide=False, regen=False):
 
     acc = dataset['accession']
-    (found_or_made, acc_composite) = find_or_make_acc_composite(request, assembly, dataset["accession"], dataset, hide=hide, regen=regen)
-    log.warn("%s composite %s %.3f" % (found_or_made,dataset['accession'],(time.time() - PROFILE_START_TIME)))
+    ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
+    (found_or_made, acc_composite) = find_or_make_acc_composite(request, ucsc_assembly, dataset["accession"], dataset, hide=hide, regen=regen)
+    log.warn("%s composite %s_%s %.3f" % (found_or_made,dataset['accession'],ucsc_assembly,(time.time() - PROFILE_START_TIME)))
     #del dataset
     return ucsc_trackDb_composite_blob(acc_composite,acc)
 
@@ -2647,7 +2688,7 @@ def generate_batch_hubs(context, request):
             view = 'region-search'
         path = '/%s/?%s' % (view, urlencode(param_list, True))
         results = request.embed(path, as_user=True)
-        log.warn("generate_batch(genomes) len(results) = %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))  # DEBUG
+        #log.warn("generate_batch(genomes) len(results) = %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))  # DEBUG
         g_text = ''
         if 'assembly' in param_list:
             g_text = get_genomes_txt(param_list.get('assembly'))
@@ -2672,10 +2713,6 @@ def hub(context, request):
     url_ret = (request.url).split('@@hub')
     embedded = request.embed(request.resource_path(context))
 
-    assemblies = ''
-    if 'assembly' in embedded:
-        assemblies = embedded['assembly']
-
     if url_ret[1][1:] == HUB_TXT:
         typeof = embedded.get("assay_title")
         if typeof is None:
@@ -2688,12 +2725,16 @@ def hub(context, request):
             content_type='text/plain'
         )
     elif url_ret[1][1:] == GENOMES_TXT:
+        assemblies = ''
+        if 'assembly' in embedded:
+            assemblies = embedded['assembly']
+
         g_text = get_genomes_txt(assemblies)
         return Response(g_text, content_type='text/plain')
 
     elif url_ret[1][1:].endswith(TRACKDB_TXT):
-        parent_track = generate_trackDb(request, embedded, url_ret[1][1:].split('/')[0])
-        return Response(parent_track, content_type='text/plain')
+        trackDb = generate_trackDb(request, embedded, url_ret[1][1:].split('/')[0])
+        return Response(trackDb, content_type='text/plain')
     else:
         data_policy = '<br /><a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
         return Response(generate_html(context, request) + data_policy, content_type='text/html')
