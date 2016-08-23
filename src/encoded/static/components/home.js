@@ -132,89 +132,69 @@ var Home = module.exports.Home = React.createClass({
 
                 <header className="row">
                     <div className="col-sm-12">
-                        <h1 className="page-title">
-
-                        </h1>
+                        <h1 className="page-title"></h1>
                     </div>
                 </header>
                 <div className="row">
-
-                        <div className="col-xs-12">
-
-                            <AssayClicking current={this.state.current} callback={this.callback} assayCategory={this.state.assayCategory} handleAssayCategoryClick={this.handleAssayCategoryClick}/>
-
-                            <Panel>
-                                <PanelHeading addClasses="tab-table-header">
-                                    <TabClicking handleTabClick={this.handleTabClick} newtabs={this.state.newtabs}/>
-                                </PanelHeading>
-                                <div className="graphs clearfix" >
-                                    <div className="row">
-                                        <div className="col-sm-4">
-                                            <div className="title">
-                                                Project
-                                                <center> <hr width="80%" position="static" color="blue"></hr> </center>
-                                            </div>
-
-                                            <HomepageChartLoader searchBase={this.state.current}
-                                                        callback={this.callback}/>
-                                            <div id="chart-legend" className="chart-legend">
-
-                                            </div>
-
+                    <div className="col-xs-12">
+                        <AssayClicking current={this.state.current} callback={this.callback} assayCategory={this.state.assayCategory} handleAssayCategoryClick={this.handleAssayCategoryClick}/>
+                        <Panel>
+                            <PanelHeading addClasses="tab-table-header">
+                                <TabClicking handleTabClick={this.handleTabClick} newtabs={this.state.newtabs}/>
+                            </PanelHeading>
+                            <div className="graphs clearfix" >
+                                <div className="row">
+                                    <div className="col-sm-4">
+                                        <div className="title">
+                                            Project
+                                            <center> <hr width="80%" position="static" color="blue"></hr> </center>
                                         </div>
-                                        <div className="col-sm-4">
-                                            <div className="title">
-                                                Biosample Type
-                                            </div>
-                                            <center> <hr width="80%"></hr> </center>
-                                            <HomepageChartLoader2 searchBase={this.state.current}
+
+                                        <HomepageChartLoader searchBase={this.state.current}
                                                     callback={this.callback}/>
-                                            <div id="chart-legend-2" className="chart-legend"></div>
+                                        <div id="chart-legend" className="chart-legend"></div>
+                                    </div>
+                                    <div className="col-sm-4">
+                                        <div className="title">
+                                            Biosample Type
                                         </div>
-                                        <div className="col-sm-4">
-                                            <div className="title">
-                                                Recent Releases
-                                            </div>
-                                            <center> <hr width="80%"></hr> </center>
-                                            <HomepageChartLoader3 searchBase={this.state.current}
-                                                    callback={this.callback}/>
-                                            <div className="view-all">
-                                                    <a href={"/matrix/" + this.state.current} className="view-all-button btn btn-info btn-lg" role="button"> View Selected </a>
-                                            </div>
+                                        <center> <hr width="80%"></hr> </center>
+                                        <HomepageChartLoader2 searchBase={this.state.current}
+                                                callback={this.callback}/>
+                                        <div id="chart-legend-2" className="chart-legend"></div>
+                                    </div>
+                                    <div className="col-sm-4">
+                                        <div className="title">
+                                            Recent Releases
+                                        </div>
+                                        <center> <hr width="80%"></hr> </center>
+                                        <HomepageChartLoader3 searchBase={this.state.current}
+                                                callback={this.callback}/>
+                                        <div className="view-all">
+                                                <a href={"/matrix/" + this.state.current} className="view-all-button btn btn-info btn-lg" role="button"> View Selected </a>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                            </Panel>
-                        </div>
+                        </Panel>
                     </div>
-                    <div className="row">
-                        <div className="col-md-9">
-                            <Panel>
-                                <div className="getting-started">
-                                    <PanelBody addClasses="description">
-                                        The <a href="/about/contributors/" title="Details about the ENCODE consortium">ENCODE (Encyclopedia of DNA Elements) Consortium</a> is an international collaboration of research groups funded by the National Human Genome Research Institute (<a href="https://www.genome.gov/10005107/" title="National Human Genome Research Institute ENCODE information">NHGRI</a>). The goal of ENCODE is to build a comprehensive parts list of functional elements in the human genome, including elements that act at the protein and RNA levels, and regulatory elements that control cells and circumstances in which a gene is active.
-                                    </PanelBody>
-                                    <div className="getting-started-image-wrapper">
-                                        <img src="static/img/getting-started.jpg" className="getting-started-image"/>
-                                        <a href="/help/getting-started" className="getting-started-button btn btn-info btn-lg" role="button"> Getting Started </a>
-                                    </div>
-                                </div>
-                            </Panel>
-                        </div>
-
-
-                        <div className="col-md-3">
-
-                            <Panel>
-                            <TwitterWidget/>
-                            </Panel>
-                        </div>
-
                 </div>
 
+                <div className="row">
+                    <div className="col-md-9">
+                        <Panel addClasses="getting-started-image-wrapper">
+                            <img src="static/img/getting-started.jpg" className="getting-started-image"/>
+                            <a href="/help/getting-started" className="getting-started-button btn btn-info btn-lg" role="button"> Getting Started </a>
+                        </Panel>
+                    </div>
+                    <div className="col-md-3">
+                        <Panel>
+                            <TwitterWidget/>
+                        </Panel>
+                    </div>
+                </div>
             </div>
-
         );
     }
 
@@ -327,25 +307,25 @@ var AssayClicking = React.createClass({
     render: function() {
         return (
             <Panel ref="graphdisplay">
-             <div className="overall-classic">
+                <div className="overall-classic">
 
                     <img src="static/img/classic-image.jpg" className="classicImage"/>
 
                     <svg id="classic-image-svg-overlay" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3253 1440" className="classic-svg">
 
-                    <rect id = {this.state.assayList[0]} x="928.1" y="859.1" className="st0" width="190.2" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[0] ? " selected": "")}/>
-                    <rect id = {this.state.assayList[1]} x="1132.8" y="859.1" className="st0" width="202.6" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[1] ? " selected": "")}/>
-                    <rect id = {this.state.assayList[2]} x="1354.1" y="859.1" className="st0" width="171.6" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[2] ? " selected": "")}/>
-                    <rect id = {this.state.assayList[3]} x="1538.1" y="859.1" className="st0" width="213" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[3] ? " selected": "")}/>
-                    <rect id = {this.state.assayList[4]} x="1771.7" y="859.1" className="st0" width="266.7" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[4] ? " selected": "")}/>
-                    <rect id = {this.state.assayList[5]} x="2057.1" y="859.1" className="st0" width="171.6" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[5] ? " selected": "")}/>
-                    <rect id = {this.state.assayList[6]} x="2247.3" y="859.1" className="st0" width="163.3" height="175.8" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[6] ? " selected": "")}/>
+                        <rect id = {this.state.assayList[0]} x="928.1" y="859.1" className="st0" width="190.2" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[0] ? " selected": "")}/>
+                        <rect id = {this.state.assayList[1]} x="1132.8" y="859.1" className="st0" width="202.6" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[1] ? " selected": "")}/>
+                        <rect id = {this.state.assayList[2]} x="1354.1" y="859.1" className="st0" width="171.6" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[2] ? " selected": "")}/>
+                        <rect id = {this.state.assayList[3]} x="1538.1" y="859.1" className="st0" width="213" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[3] ? " selected": "")}/>
+                        <rect id = {this.state.assayList[4]} x="1771.7" y="859.1" className="st0" width="266.7" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[4] ? " selected": "")}/>
+                        <rect id = {this.state.assayList[5]} x="2057.1" y="859.1" className="st0" width="171.6" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[5] ? " selected": "")}/>
+                        <rect id = {this.state.assayList[6]} x="2247.3" y="859.1" className="st0" width="163.3" height="175.8" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[6] ? " selected": "")}/>
 
                     </svg>
-
-
-
                 </div>
+                <PanelBody addClasses="description">
+                    The <a href="/about/contributors/" title="Details about the ENCODE consortium">ENCODE (Encyclopedia of DNA Elements) Consortium</a> is an international collaboration of research groups funded by the National Human Genome Research Institute (<a href="https://www.genome.gov/10005107/" title="National Human Genome Research Institute ENCODE information">NHGRI</a>). The goal of ENCODE is to build a comprehensive parts list of functional elements in the human genome, including elements that act at the protein and RNA levels,and regulatory elements that control cells and circumstances in which a gene is active.
+                </PanelBody>
             </Panel>
         );
     }

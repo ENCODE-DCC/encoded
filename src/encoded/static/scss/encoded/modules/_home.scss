@@ -35,7 +35,10 @@
     border-radius: 3px;
     padding: 20px;
     font-size: 18px;
-    
+
+    @media screen and (min-width: $screen-md-min) {
+        column-count: 2;
+    }
 }
 
 
