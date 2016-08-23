@@ -309,7 +309,7 @@ var AssayClicking = React.createClass({
             <Panel ref="graphdisplay">
                 <div className="overall-classic">
 
-                    <img src="static/img/classic-image.jpg" className="classicImage"/>
+                    <img src="static/img/classic-image.jpg" className="classic-image"/>
 
                     <svg id="classic-image-svg-overlay" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3253 1440" className="classic-svg">
 

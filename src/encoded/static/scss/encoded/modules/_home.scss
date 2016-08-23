@@ -38,6 +38,7 @@
 
     @media screen and (min-width: $screen-md-min) {
         column-count: 2;
+        -moz-column-count: 2;
     }
 }
 
@@ -52,23 +53,23 @@
 
 // Positions rectangles for classic pic
 .classic-svg {
-    position: relative;
+    position: absolute;
     visibility: visible;
     display: block;
     padding-bottom: 0px;
     max-width: 100%;
     top: 0;
     left: 0;
-    fill: blue;
-    fill-opacity: 0.05;  
-
+    bottom: 0;
+    right: 0;
 }
 
 // Adds blue outline to rectangles 
 .rectangle-box {
-    outline-style: solid;
-    outline-width: 6px;
-    outline-color: #0000EE;
+    stroke-width: 6px;
+    stroke: #0000EE;
+    fill: #0000EE;
+    fill-opacity: 0.05;
 }
 
 // When hover on rectangle, make fill darker
@@ -79,31 +80,25 @@
 
 .rectangle-box.selected {
     fill-opacity: 0.5;
-    
 }
 
 
 // Positions classic pic
-.classicImage {
-    position: absolute;
+.classic-image {
+    position: relative;
     height: auto;
     max-width: 100%;
-    top: 0;
-    left: 0;
 }
 
 // Graph titles
 .title {
-    
     width: 100%;
     padding-top: 10px;
     text-align: center;
     color: black;
     font-size: 30px;
     font-weight: 100;
-
 }
-
 
 
 // Gives tabs white background and border separating from graphs
@@ -113,6 +108,7 @@
 .tab-table-header {
     padding: 0;
 }
+
 
 // Positions tabs with padding, hovering, and changing color if selected
 .tab-table td {
