@@ -699,8 +699,12 @@ var Facet = search.Facet = React.createClass({
         if (field.substr(0, 6) === 'audit.') {
             var titleParts = title.split(': ');
             var fieldParts = field.match(/^audit.(.+).category$/i);
-            var iconClass = 'icon audit-activeicon-' + fieldParts[1].toLowerCase();
-            title = <span>{titleParts[0]}: <i className={iconClass}></i></span>;
+            if (fieldParts && fieldParts.length === 2 && titleParts) {
+                var iconClass = 'icon audit-activeicon-' + fieldParts[1].toLowerCase();
+                title = <span>{titleParts[0]}: <i className={iconClass}></i></span>;
+            } else {
+                title = <span>{title}</span>;
+            }
         }
 
         return (
@@ -815,18 +819,18 @@ var FacetList = search.FacetList = React.createClass({
         var clearButton; // JSX for the clear button
         var searchQuery = context && context['@id'] && url.parse(context['@id']).search;
         if (searchQuery) {
-            // Convert search query string to a query object for easy parsing
-            var terms = queryString.parse(searchQuery);
+            // Convert search query string to a query object for easy parsing. clear_filters has
+            // the whole URI, so have to remove "/search/" from the beginning.
+            var searchTerms = queryString.parse(searchQuery);
+            var clearTerms = queryString.parse(context.clear_filters.replace(/^\/search\//, ''));
 
-            // See if there are terms in the query string aside from `searchTerm`. We have a Clear
-            // Filters button if we do
-            var nonPersistentTerms = _(Object.keys(terms)).any(term => term !== 'searchTerm');
-            clearButton = nonPersistentTerms && terms['searchTerm'];
+            // We have a Clear Filters button if the number of terms in the query string and
+            // clear_filters link are different.
+            clearButton = Object.keys(searchTerms).length !== Object.keys(clearTerms).length;
 
-            // If no Clear Filters button yet, do the same check with `type` in the query string
+            // We have a Clear Filters button if searchQuery and clear_filters have the same terms and values
             if (!clearButton) {
-                nonPersistentTerms = _(Object.keys(terms)).any(term => term !== 'type');
-                clearButton = nonPersistentTerms && terms['type'];
+                clearButton = !_(searchTerms).every((value, key) => clearTerms[key] && clearTerms[key] === value);
             }
         }
 
