@@ -438,43 +438,33 @@ var HomepageChart = React.createClass({
             var data = [];
             var labels = [];
             var colors = [];
-            var assayFacet = [];
-            var buckets = [];
-            var facets;
+            var facetData = [];
 
             // Our data source will be different for computational predictions
             var computationalPredictions = this.props.searchBase === '?type=Annotation&encyclopedia_version=3&';
 
             // Get the project from the facets
             if (computationalPredictions) {
-                buckets = this.props.data.matrix.y.biosample_type ? this.props.data.matrix.y.biosample_type.buckets : [];
+                facetData = this.props.data.matrix.y.biosample_type ? this.props.data.matrix.y.biosample_type.buckets : [];
             } else {
-                facets = this.props.data.facets;
-                assayFacet = facets.find(facet => facet.field === 'award.project');
+                var facets = this.props.data.facets;
+                var assayFacet = facets.find(facet => facet.field === 'award.project');
+                facetData = assayFacet.terms;
             }
 
-            if(assayFacet.length || buckets.length){ // if there is data
+            if(facetData.length){ // if there is data
                 document.getElementById('MyEmptyChart').innerHTML = "";
                 document.getElementById('MyEmptyChart').removeAttribute("class"); // clear out empty chart div
 
                 var totalDocCount = 0;
 
                 // for each item, set doc count, add to total doc count, add proper label, and assign color
-                if (computationalPredictions) {
-                    buckets.forEach((bucket, i) => {
-                        data[i] = bucket.doc_count;
-                        totalDocCount += bucket.doc_count;
-                        labels[i] = bucket.key;
-                        colors[i] = colorList[i % colorList.length];
-                    });
-                } else {
-                    assayFacet.terms.forEach(function(term, i) {
-                        data[i] = term.doc_count;
-                        totalDocCount += term.doc_count;
-                        labels[i] = term.key;
-                        colors[i] = colorList[i % colorList.length];
-                    });
-                }
+                facetData.forEach(function(term, i) {
+                    data[i] = term.doc_count;
+                    totalDocCount += term.doc_count;
+                    labels[i] = term.key;
+                    colors[i] = colorList[i % colorList.length];
+                });
 
                 // adding total doc count to middle of donut
                 // http://stackoverflow.com/questions/20966817/how-to-add-text-inside-the-doughnut-chart-using-chart-js/24671908
@@ -524,9 +514,9 @@ var HomepageChart = React.createClass({
                         legendCallback: (chart) => { // allows for legend clicking
                             var text = [];
                             text.push('<ul>');
-                            for (var i = 0; i < assayFacet.terms.length; i++) {
+                            for (var i = 0; i < facetData.length; i++) {
                                 text.push('<li>');
-                                text.push('<a href="' + this.props.data['@id'] + '&award.project=' + assayFacet.terms[i].key  + '">'); // go to matrix view when clicked
+                                text.push('<a href="' + this.props.data['@id'] + '&award.project=' + facetData[i].key  + '">'); // go to matrix view when clicked
                                 text.push('<span style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
                                 if (chart.data.labels[i]) {
                                     text.push(chart.data.labels[i]);
@@ -544,7 +534,7 @@ var HomepageChart = React.createClass({
                                 var placeholder = 0;
                             }
                             else{ // otherwise go to matrix view
-                                var term = assayFacet.terms[activePoints[0]._index].key;
+                                var term = facetData[activePoints[0]._index].key;
                                 this.context.navigate(this.props.data['@id'] + '&award.project=' + term);
                             }
 
@@ -663,13 +653,20 @@ var HomepageChart2 = React.createClass({
             var data = [];
             var labels = [];
             var colors = [];
+            var assayFacet;
 
-            // Get the biosample from the facets
+            // Our data source will be different for computational predictions
+            var computationalPredictions = this.props.searchBase === '?type=Annotation&encyclopedia_version=3&';
+
             var facets = this.props.data.facets;
-            var assayFacet = facets.find(facet => facet.field === 'replicates.library.biosample.biosample_type');
+            if (computationalPredictions) {
+                assayFacet = facets.find(facet => facet.field === 'biosample_type');
+            } else {
+                assayFacet = facets.find(facet => facet.field === 'replicates.library.biosample.biosample_type');
+            }
 
-
-            if(assayFacet != undefined){ // if there is data
+            if(assayFacet) {
+                // if there is data
                 document.getElementById('MyEmptyChart2').innerHTML = "";
                 document.getElementById('MyEmptyChart2').removeAttribute("class"); // clear out empty chart div
 
