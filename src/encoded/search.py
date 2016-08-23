@@ -13,6 +13,7 @@ from urllib.parse import urlencode
 from collections import OrderedDict
 
 
+
 _ASSEMBLY_MAPPER = {
     'GRCh38-minimal': 'hg38',
     'GRCh38': 'hg38',
@@ -255,6 +256,11 @@ def list_result_fields(request, doc_types):
         schemas = [types[doc_type].schema for doc_type in doc_types]
         columns = list_visible_columns_for_schemas(request, schemas)
         fields.update('embedded.' + column for column in columns)
+
+    # Ensure that 'audit' field is requested with _source in the ES query
+    if request.__parent__ and '/metadata/' in request.__parent__.url and request.has_permission('search_audit'):
+        fields.add('audit.*')
+
     return fields
 
 
@@ -400,6 +406,11 @@ def format_results(request, hits):
         frame = 'embedded'
     else:
         frame = request.params.get('frame')
+
+    # Request originating from metadata generation will skip to
+    # partion of the code that adds audit  object to result items
+    if request.__parent__ and '/metadata/' in request.__parent__.url:
+        frame = ''
 
     if frame in ['embedded', 'object']:
         for hit in hits:
@@ -582,6 +593,8 @@ def search(context, request, search_type=None, return_generator=False):
     else:
         # Possibly type(s) in query string
         clear_qs = urlencode([("type", typ) for typ in doc_types])
+    if clear_qs and 'group.submitter' not in principals:
+        clear_qs += '&status=released'
     result['clear_filters'] = request.route_path('search', slash='/') + (('?' + clear_qs) if clear_qs else '')
 
     # Building query for filters
@@ -641,7 +654,7 @@ def search(context, request, search_type=None, return_generator=False):
 
 
     # Set sort order
-    has_sort = set_sort_order(request, search_term, types, doc_types, query, result)
+    set_sort_order(request, search_term, types, doc_types, query, result)
 
     # Setting filters
     used_filters = set_filters(request, query, result)
@@ -662,7 +675,6 @@ def search(context, request, search_type=None, return_generator=False):
 
     # Decide whether to use scan for results.
     do_scan = size is None or size > 1000
-
     # Execute the query
     if do_scan:
         es_results = es.search(body=query, index=es_index, search_type='count')
@@ -692,7 +704,6 @@ def search(context, request, search_type=None, return_generator=False):
         return result if not return_generator else []
 
     result['notification'] = 'Success'
-
     # Format results for JSON-LD
     if not do_scan:
         graph = format_results(request, es_results['hits']['hits'])
@@ -803,6 +814,7 @@ def matrix(context, request):
         'filters': [],
         'notification': '',
     }
+    principals = effective_principals(request)
     search_audit = request.has_permission('search_audit')
 
     doc_types = request.params.getall('type')
@@ -824,11 +836,18 @@ def matrix(context, request):
     else:
         result['title'] = type_info.name + ' Matrix'
 
+    # Determine if "searchTerm" in URL
+    searchterm_specs = request.params.getall('searchTerm')
+    searchterm_only = urlencode([("searchTerm", searchterm) for searchterm in searchterm_specs])
+    if searchterm_only:
+        clear_qs = searchterm_only + '&type=' + item_type
+    else:
+        clear_qs = 'type=' + item_type
     matrix = result['matrix'] = type_info.factory.matrix.copy()
     matrix['x']['limit'] = request.params.get('x.limit', 20)
     matrix['y']['limit'] = request.params.get('y.limit', 5)
     matrix['search_base'] = request.route_path('search', slash='/') + search_base
-    matrix['clear_matrix'] = request.route_path('matrix', slash='/') + '?type=' + item_type
+    matrix['clear_matrix'] = request.route_path('matrix', slash='/') + '?' + clear_qs + ('&status=released' if 'group.submitter' not in principals else '')
 
     result['views'] = [
         {
@@ -843,7 +862,6 @@ def matrix(context, request):
         }
     ]
 
-    principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
     es_index = request.registry.settings['snovault.elasticsearch.index']
 

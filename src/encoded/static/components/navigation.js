@@ -68,10 +68,12 @@ var Navigation = module.exports = React.createClass({
 // Main navigation menus
 var GlobalSections = React.createClass({
     contextTypes: {
-        listActionsFor: React.PropTypes.func
+        listActionsFor: React.PropTypes.func,
+        session: React.PropTypes.object
     },
 
     render: function() {
+        var loggedIn = this.context.session && this.context.session['auth.userid'] !== undefined;
         var actions = this.context.listActionsFor('global_sections').map(action => {
             return (
                 <NavItem key={action.id} dropdownId={action.id} dropdownTitle={action.title}>
@@ -83,9 +85,12 @@ var GlobalSections = React.createClass({
                                     return <DropdownMenuSep key={action.id} />;
                                 }
 
-                                // Render any regular linked items in the dropdown
+                                var url = action.url || '';
+                                if (loggedIn) {
+                                    url = url.replace('&status=released', '');
+                                }
                                 return (
-                                    <a href={action.url || ''} key={action.id}>
+                                    <a href={url} key={action.id}>
                                         {action.title}
                                     </a>
                                 );
@@ -140,15 +145,20 @@ var ContextActions = React.createClass({
 
 var Search = React.createClass({
     contextTypes: {
-        location_href: React.PropTypes.string
+        location_href: React.PropTypes.string,
+        session: React.PropTypes.object
     },
 
     render: function() {
         var id = url.parse(this.context.location_href, true);
         var searchTerm = id.query['searchTerm'] || '';
+        var loggedIn = this.context.session && this.context.session['auth.userid'] !== undefined;
         return (
             <form className="navbar-form navbar-right" action="/search/">
                 <div className="search-wrapper">
+                    {!loggedIn ? 
+                        <input type="hidden" name="status" value="released" />
+                    : ''}
                     <input className="form-control search-query" id="navbar-search" type="text" placeholder="Search..." 
                         ref="searchTerm" name="searchTerm" defaultValue={searchTerm} key={searchTerm} />
                 </div>
