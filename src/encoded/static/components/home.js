@@ -275,7 +275,6 @@ var AssayClicking = React.createClass({
 
     // Properly adds or removes assay category from link
     sortByAssay: function(category) {
-        console.log('SORTBYASSAY: ' + category);
         this.props.handleAssayCategoryClick(category); // handles assay category click
         this.setState({currentAssay: category}); // updates current assay
 
@@ -439,25 +438,43 @@ var HomepageChart = React.createClass({
             var data = [];
             var labels = [];
             var colors = [];
+            var assayFacet = [];
+            var buckets = [];
+            var facets;
+
+            // Our data source will be different for computational predictions
+            var computationalPredictions = this.props.searchBase === '?type=Annotation&encyclopedia_version=3&';
 
             // Get the project from the facets
-            var facets = this.props.data.facets;
-            var assayFacet = facets.find(facet => facet.field === 'award.project');
+            if (computationalPredictions) {
+                buckets = this.props.data.matrix.y.biosample_type ? this.props.data.matrix.y.biosample_type.buckets : [];
+            } else {
+                facets = this.props.data.facets;
+                assayFacet = facets.find(facet => facet.field === 'award.project');
+            }
 
-
-            if(assayFacet != undefined){ // if there is data
+            if(assayFacet.length || buckets.length){ // if there is data
                 document.getElementById('MyEmptyChart').innerHTML = "";
                 document.getElementById('MyEmptyChart').removeAttribute("class"); // clear out empty chart div
 
                 var totalDocCount = 0;
 
                 // for each item, set doc count, add to total doc count, add proper label, and assign color
-                assayFacet.terms.forEach(function(term, i) {
-                    data[i] = term.doc_count;
-                    totalDocCount += term.doc_count;
-                    labels[i] = term.key;
-                    colors[i] = colorList[i % colorList.length];
-                });
+                if (computationalPredictions) {
+                    buckets.forEach((bucket, i) => {
+                        data[i] = bucket.doc_count;
+                        totalDocCount += bucket.doc_count;
+                        labels[i] = bucket.key;
+                        colors[i] = colorList[i % colorList.length];
+                    });
+                } else {
+                    assayFacet.terms.forEach(function(term, i) {
+                        data[i] = term.doc_count;
+                        totalDocCount += term.doc_count;
+                        labels[i] = term.key;
+                        colors[i] = colorList[i % colorList.length];
+                    });
+                }
 
                 // adding total doc count to middle of donut
                 // http://stackoverflow.com/questions/20966817/how-to-add-text-inside-the-doughnut-chart-using-chart-js/24671908
@@ -554,7 +571,7 @@ var HomepageChart = React.createClass({
 
                 var para = document.createElement("p");
                 para.setAttribute('id', 'p1');
-                var node = document.createTextNode("There is no data to display.");
+                var node = document.createTextNode("No data to display.");
                 para.appendChild(node); // display no data error message
 
                 element.appendChild(para);
@@ -575,8 +592,10 @@ var HomepageChart = React.createClass({
     },
 
     componentDidUpdate: function(){
-        this.myPieChart.destroy(); // clears old chart before creating new one
-        this.drawChart();
+        if (this.myPieChart) {
+            this.myPieChart.destroy(); // clears old chart before creating new one
+            this.drawChart();
+        }
     },
 
     render: function() {
