@@ -110,6 +110,10 @@
             "title": "Read length",
             "type": "string"
         },
+        "related_datasets.files.mapped_read_length": {
+            "title": "Mapped read length",
+            "type": "string"
+        },
         "related_datasets.replicates.library.size_range": {
             "title": "Library insert size (nt)",
             "type": "string"
@@ -241,10 +245,6 @@
         },
         "files.length": {
             "title": "Files",
-            "type": "array"
-        },
-        "encode2_dbxrefs": {
-            "title": "Dbxrefs",
             "type": "array"
         }
     },

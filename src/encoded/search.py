@@ -46,7 +46,7 @@ audit_facets = [
     ('audit.ERROR.category', {'title': 'Audit category: ERROR'}),
     ('audit.NOT_COMPLIANT.category', {'title': 'Audit category: NOT COMPLIANT'}),
     ('audit.WARNING.category', {'title': 'Audit category: WARNING'}),
-    ('audit.DCC_ACTION.category', {'title': 'Audit category: DCC ACTION'})
+    ('audit.INTERNAL_ACTION.category', {'title': 'Audit category: DCC ACTION'})
 ]
 
 
@@ -455,7 +455,7 @@ def search_result_actions(request, doc_types, es_results, position=None):
     return actions
 
 
-def format_facets(es_results, facets, used_filters, schemas, total):
+def format_facets(es_results, facets, used_filters, schemas, total, principals):
     result = []
     # Loading facets in to the results
     if 'aggregations' not in es_results:
@@ -470,6 +470,9 @@ def format_facets(es_results, facets, used_filters, schemas, total):
             continue
         terms = aggregations[agg_name][agg_name]['buckets']
         if len(terms) < 2:
+            continue
+        # internal_status exception. Only display for admin users
+        if field == 'internal_status' and 'group.admin' not in principals:
             continue
         result.append({
             'field': field,
@@ -650,9 +653,9 @@ def search(context, request, search_type=None, return_generator=False):
     if len(doc_types) == 1 and 'facets' in types[doc_types[0]].schema:
         facets.extend(types[doc_types[0]].schema['facets'].items())
 
-    # Display all audits if logged in, or all but DCC_ACTION if logged out
+    # Display all audits if logged in, or all but INTERNAL_ACTION if logged out
     for audit_facet in audit_facets:
-        if search_audit and 'group.submitter' in principals or 'DCC_ACTION' not in audit_facet[0]:
+        if search_audit and 'group.submitter' in principals or 'INTERNAL_ACTION' not in audit_facet[0]:
             facets.append(audit_facet)
 
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
@@ -670,7 +673,7 @@ def search(context, request, search_type=None, return_generator=False):
 
     schemas = (types[item_type].schema for item_type in doc_types)
     result['facets'] = format_facets(
-        es_results, facets, used_filters, schemas, total)
+        es_results, facets, used_filters, schemas, total, principals)
 
     # Add batch actions
     result.update(search_result_actions(request, doc_types, es_results))
@@ -871,9 +874,9 @@ def matrix(context, request):
     facets = [(field, facet) for field, facet in schema['facets'].items() if
               field in matrix['x']['facets'] or field in matrix['y']['facets']]
 
-    # Display all audits if logged in, or all but DCC_ACTION if logged out
+    # Display all audits if logged in, or all but INTERNAL_ACTION if logged out
     for audit_facet in audit_facets:
-        if search_audit and 'group.submitter' in principals or 'DCC_ACTION' not in audit_facet[0]:
+        if search_audit and 'group.submitter' in principals or 'INTERNAL_ACTION' not in audit_facet[0]:
             facets.append(audit_facet)
 
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
@@ -918,7 +921,7 @@ def matrix(context, request):
 
     # Format facets for results
     result['facets'] = format_facets(
-        es_results, facets, used_filters, (schema,), total)
+        es_results, facets, used_filters, (schema,), total, principals)
 
     def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
         group_by = grouping_fields[0]
