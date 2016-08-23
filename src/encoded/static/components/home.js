@@ -144,36 +144,7 @@ var Home = module.exports.Home = React.createClass({
                             </PanelHeading>
                             <div className="graphs clearfix" >
                                 <div className="row">
-                                    <div className="col-sm-4">
-                                        <div className="title">
-                                            Project
-                                            <center> <hr width="80%" position="static" color="blue"></hr> </center>
-                                        </div>
-
-                                        <HomepageChartLoader searchBase={this.state.current}
-                                                    callback={this.callback}/>
-                                        <div id="chart-legend" className="chart-legend"></div>
-                                    </div>
-                                    <div className="col-sm-4">
-                                        <div className="title">
-                                            Biosample Type
-                                        </div>
-                                        <center> <hr width="80%"></hr> </center>
-                                        <HomepageChartLoader2 searchBase={this.state.current}
-                                                callback={this.callback}/>
-                                        <div id="chart-legend-2" className="chart-legend"></div>
-                                    </div>
-                                    <div className="col-sm-4">
-                                        <div className="title">
-                                            Recent Releases
-                                        </div>
-                                        <center> <hr width="80%"></hr> </center>
-                                        <HomepageChartLoader3 searchBase={this.state.current}
-                                                callback={this.callback}/>
-                                        <div className="view-all">
-                                                <a href={"/matrix/" + this.state.current} className="view-all-button btn btn-info btn-lg" role="button"> View Selected </a>
-                                        </div>
-                                    </div>
+                                    <HomepageChartLoader searchBase={this.state.current} callback={this.callback} />
                                 </div>
                             </div>
 
@@ -199,6 +170,27 @@ var Home = module.exports.Home = React.createClass({
     }
 
 });
+
+
+// Given retrieved data, draw all home-page charts.
+var ChartGallery = React.createClass({
+    render: function() {
+        return (
+            <div>
+                <div className="col-md-4">
+                    <HomepageChart {...this.props} searchBase={this.props.searchBase + '&'} />
+                </div>
+                <div className="col-md-4">
+                    <HomepageChart2 {...this.props} searchBase={this.props.searchBase + '&'} />
+                </div>
+                <div className="col-md-4">
+                    <HomepageChart3 {...this.props} searchBase={this.props.searchBase + '&'} />
+                </div>
+            </div>
+        );
+    }
+});
+
 
 // Creates twitter widget
 var TwitterWidget = React.createClass({
@@ -570,10 +562,14 @@ var HomepageChart = React.createClass({
     render: function() {
 
         return (
-
             <div>
-                <canvas id="myChart" width="0" height="0"></canvas>
+                <div className="title">
+                    Project
+                    <center> <hr width="80%" position="static" color="blue"></hr> </center>
+                </div>
+                <canvas id="myChart"></canvas>
                 <div id="MyEmptyChart"> </div>
+                <div id="chart-legend" className="chart-legend"></div>
             </div>
         );
     }
@@ -587,17 +583,14 @@ var HomepageChart = React.createClass({
 // component to draw the resulting chart.
 var HomepageChartLoader = React.createClass({
     propTypes: {
-
         callback: React.PropTypes.func
     },
 
-
     render: function() {
         return (
-            <FetchedData>
+            <FetchedData ignoreErrors>
                 <Param name="data" url={'/matrix/' + this.props.searchBase} />
-                <HomepageChart searchBase={this.props.searchBase + '&'} />
-
+                <ChartGallery searchBase={this.props.searchBase + '&'} />
             </FetchedData>
         );
     }
@@ -767,7 +760,12 @@ var HomepageChart2 = React.createClass({
     render: function() {
         return (
             <div>
-                <canvas id="myChart2" width="0" height="0"></canvas>
+                <div className="title">
+                    Biosample Type
+                    <center> <hr width="80%" position="static" color="blue"></hr> </center>
+                </div>
+                <canvas id="myChart2"></canvas>
+                <div id="chart-legend-2" className="chart-legend"></div>
                 <div id="MyEmptyChart2"> </div>
             </div>
         );
@@ -775,22 +773,6 @@ var HomepageChart2 = React.createClass({
 
 });
 
-var HomepageChartLoader2 = React.createClass({
-    propTypes: {
-
-        callback: React.PropTypes.func
-    },
-
-    render: function() {
-        return (
-            <FetchedData>
-                <Param name="data" url={'/matrix/' + this.props.searchBase} />
-                <HomepageChart2 searchBase={this.props.searchBase + '&'} />
-            </FetchedData>
-        );
-    }
-
-});
 
 // Component to display the D3-based chart for Biosample
 var HomepageChart3 = React.createClass({
@@ -944,28 +926,14 @@ var HomepageChart3 = React.createClass({
     render: function() {
         return (
             <div>
-                <canvas id="myChart3" width="0" height="0"></canvas>
+                <div className="title">
+                    Recent Releases
+                </div>
+                <center> <hr width="80%"></hr> </center>
+                <canvas id="myChart3"></canvas>
                 <div id="MyEmptyChart3"> </div>
             </div>
         );
     }
 
 });
-
-var HomepageChartLoader3 = React.createClass({
-    propTypes: {
-
-        callback: React.PropTypes.func
-    },
-
-    render: function() {
-        return (
-            <FetchedData>
-                <Param name="data" url={'/matrix/' + this.props.searchBase} />
-                <HomepageChart3 searchBase={this.props.searchBase + '&'} />
-            </FetchedData>
-        );
-    }
-
-});
-
