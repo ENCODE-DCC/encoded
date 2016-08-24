@@ -383,7 +383,7 @@ var HomepageChart = React.createClass({
     },
 
     drawChart: function() {
-          // Draw the chart of search results given in this.props.data.facets. Since D3 doesn't work
+        // Draw the chart of search results given in this.props.data.facets. Since D3 doesn't work
         // with the React virtual DOM, we have to load it separately using the webpack .ensure
         // mechanism. Once the callback is called, it's loaded and can be referenced through
         // require.
@@ -398,13 +398,6 @@ var HomepageChart = React.createClass({
                 '#A3A4A8',
                 '#61D1FD',
                 '#FFFFFF'
-            ];
-            var colorList2 = [ // ENCODE colors
-                '#9C008A',
-                '#FDC325',
-                '#33298C',
-                '#179A53',
-                '#E5E4E2'
             ];
             var data = [];
             var labels = [];
