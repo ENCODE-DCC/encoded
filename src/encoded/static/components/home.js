@@ -392,19 +392,14 @@ var HomepageChart = React.createClass({
             var Chart = require('chart.js');
             var data = [];
             var labels = [];
-            var facetData = [];
+            var facetData;
 
             // Our data source will be different for computational predictions
             var computationalPredictions = this.props.searchBase === '?type=Annotation&encyclopedia_version=3';
 
-            // Get the project from the facets
-            if (computationalPredictions) {
-                facetData = this.props.data.matrix.y.biosample_type ? this.props.data.matrix.y.biosample_type.buckets : [];
-            } else {
-                var facets = this.props.data.facets;
-                var assayFacet = facets.find(facet => facet.field === 'award.project');
-                facetData = assayFacet.terms;
-            }
+            var facets = this.props.data.facets;
+            var assayFacet = facets.find(facet => facet.field === 'award.project');
+            facetData = assayFacet ? assayFacet.terms : [];
 
             if(facetData.length){ // if there is data
                 document.getElementById('MyEmptyChart').innerHTML = "";
@@ -465,6 +460,7 @@ var HomepageChart = React.createClass({
                             display: false // hiding automatically generated legend
                         },
                         legendCallback: (chart) => { // allows for legend clicking
+                            facetData = _(facetData).filter(term => term.doc_count > 0);
                             var text = [];
                             text.push('<ul>');
                             for (var i = 0; i < facetData.length; i++) {
@@ -521,6 +517,7 @@ var HomepageChart = React.createClass({
                 element.setAttribute('class', 'empty-chart'); // add class to empty-chart div
 
                 chart.setAttribute('height', '0'); // clear chart canvas so it won't display
+                document.getElementById('chart-legend').innerHTML = ''; // Clear legend
             }
 
 
@@ -669,12 +666,13 @@ var HomepageChart2 = React.createClass({
                             display: false // hiding automatically generated legend
                         },
                         legendCallback: (chart) => { // allows for legend clicking
+                            var facetTerms = _(assayFacet.terms).filter(term => term.doc_count > 0);
                             var text = [];
                             var query = computationalPredictions ? 'biosample_type=' : 'replicates.library.biosample.biosample_type=';
                             text.push('<ul>');
-                            for (var i = 0; i < assayFacet.terms.length; i++) {
+                            for (var i = 0; i < facetTerms.length; i++) {
                                 text.push('<li>');
-                                text.push('<a href="' + this.props.data['@id'] + '&' + query + assayFacet.terms[i].key  + '">'); // go to matrix view when clicked
+                                text.push('<a href="' + this.props.data['@id'] + '&' + query + facetTerms[i].key  + '">'); // go to matrix view when clicked
                                 text.push('<span style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
                                 if (chart.data.labels[i]) {
                                     text.push(chart.data.labels[i]);
@@ -708,14 +706,14 @@ var HomepageChart2 = React.createClass({
 
                 var para = document.createElement("p");
                 para.setAttribute('id', 'p2');
-                var node = document.createTextNode("There is no data to display.");
+                var node = document.createTextNode("No data to display.");
                 para.appendChild(node); // display no data error message
 
                 element.appendChild(para);
                 element.setAttribute('class', 'empty-chart'); // add class to empty-chart div
 
                 chart.setAttribute('height', '0'); // clear chart canvas so it won't display
-
+                document.getElementById('chart-legend-2').innerHTML = ''; // Clear legend
             }
 
         }.bind(this));
@@ -873,7 +871,7 @@ var HomepageChart3 = React.createClass({
 
                 var para = document.createElement("p");
                 para.setAttribute('id', 'p3');
-                var node = document.createTextNode("There is no data to display.");
+                var node = document.createTextNode("No data to display.");
                 para.appendChild(node); // display no data error message
 
                 element.appendChild(para);
