@@ -143,10 +143,10 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
     
     
     if (spot_instance == 'yes'):
-        spot_security_groups = 'sg-022ea667'
+        print("spot_instance check worked")
+        spot_security_groups = 'ssh-http-https'
         ec2_spot = boto3.client('ec2')
         instances = spot_instances(ec2_spot, spot_price, count, image_id, instance_type, spot_security_groups)
-        print("spot_instance check worked")
     else:
         instances = create_ec2_instances(ec2, image_id, count, instance_type, security_groups, user_data, BDM, iam_role)
 
