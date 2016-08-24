@@ -221,7 +221,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                                     var href = search_base + '&' + secondary_y_grouping + '=' + globals.encodedURIComponent(yb.key)
                                                                                            + '&' + x_grouping + '=' + globals.encodedURIComponent(xb.key);
                                                                     var title = yb.key + ' / ' + xb.key + ': ' + value;
-                                                                    return <td key={xb.key}>
+                                                                    return <td key={xb.key} style={{backgroundColor: color.hexString()}}>
                                                                         {value ? <a href={href} style={{color: '#000'}} title={title}>{value}</a> : ''}
                                                                     </td>;
                                                                 } else {
