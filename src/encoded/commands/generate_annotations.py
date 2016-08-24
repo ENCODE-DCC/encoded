@@ -6,7 +6,7 @@ import multiprocessing as mp
 
 EPILOG = __doc__
 
-_HGNC_FILE = 'https://www.encodeproject.org/files/ENCFF176FRY/@@download/ENCFF176FRY.tsv'
+_HGNC_FILE = 'https://www.encodeproject.org/files/ENCFF277WZC/@@download/ENCFF277WZC.tsv'
 _MOUSE_FILE = 'https://www.encodeproject.org/files/ENCFF097CIT/@@download/ENCFF097CIT.tsv'
 _DM_FILE = 'https://www.encodeproject.org/files/ENCFF311QAL/@@download/ENCFF311QAL.tsv'
 _CE_FILE = 'https://www.encodeproject.org/files/ENCFF324UJT/@@download/ENCFF324UJT.tsv'
