@@ -45,7 +45,7 @@ var Navigation = module.exports = React.createClass({
                     <Navbar brand={portal.portal_title} brandlink="/" label="main" navClasses="navbar-main">
                         <GlobalSections />
                         <UserActions />
-                        <ContextActions />
+                        {this.props.defaultPage ? null : <ContextActions />}
                         <Search />
                     </Navbar>
                 </div>
