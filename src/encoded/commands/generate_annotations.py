@@ -2,6 +2,7 @@ import requests
 import json
 import re
 import time
+import pdb
 import multiprocessing as mp
 
 EPILOG = __doc__
@@ -122,6 +123,7 @@ def human_single_annotation(r):
             }
         })
         annotations.append(doc)
+        print('human {}'.format(time.time()))
         return annotations
 
 
@@ -179,12 +181,14 @@ def mouse_single_annotation(r):
         }
     })
     annotations.append(doc)
+    print('mouse {}'.format(time.time()))
     return annotations
 
 
-def get_rows_from_file(file_name):
+def get_rows_from_file(file_name, row_delimiter):
     response = requests.get(file_name)
-    rows = response.content.decode('utf-8').split('\n')
+    rows = response.content.decode('utf-8').split(row_delimiter)
+    pdb.set_trace()
     header = rows[0].split('\t')
     zipped_rows = [dict(zip(header, row.split('\t'))) for row in rows[1:]]
     return zipped_rows
@@ -204,7 +208,7 @@ def human_annotations(human_file):
     """
     Generates JSON from TSV files
     """
-    zipped_rows = get_rows_from_file(human_file)
+    zipped_rows = get_rows_from_file(human_file, '\r')
     pool = mp.Pool()
     annotations = pool.map(human_single_annotation, zipped_rows)
     return prepare_for_bulk_indexing(annotations)
@@ -215,7 +219,7 @@ def mouse_annotations(mouse_file):
     """
     Updates and get JSON file for mouse annotations
     """
-    zipped_rows = get_rows_from_file(mouse_file)
+    zipped_rows = get_rows_from_file(mouse_file, '\n')
     pool = mp.Pool()
     annotations = pool.map(mouse_single_annotation, zipped_rows)
     return prepare_for_bulk_indexing(annotations)
@@ -275,9 +279,9 @@ def main():
         epilog=EPILOG, formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     # annotations = human_annotations(_HGNC_FILE) + mouse_annotations(_MOUSE_FILE)
-    human = human_annotations(_HGNC_FILE)
+    # human = human_annotations(_HGNC_FILE)
     mouse = mouse_annotations(_MOUSE_FILE)
-    annotations = human + mouse
+    # annotations = human
 
     # Create annotations JSON file
     with open('annotations.json', 'w') as outfile:
