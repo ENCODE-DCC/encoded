@@ -379,7 +379,8 @@ var HomepageChart = React.createClass({
 
     contextTypes: {
         location_href: React.PropTypes.string,
-        navigate: React.PropTypes.func
+        navigate: React.PropTypes.func,
+        projectColors: React.PropTypes.object // DataColor instance for experiment project
     },
 
     drawChart: function() {
@@ -389,19 +390,8 @@ var HomepageChart = React.createClass({
         // require.
         require.ensure(['chart.js'], function(require) {
             var Chart = require('chart.js');
-            var colorList = [ // iOS colors
-                '#FF4F4D',
-                '#10A0F6',
-                '#FFBC01',
-                '#6A71E5',
-                '#4EB266',
-                '#A3A4A8',
-                '#61D1FD',
-                '#FFFFFF'
-            ];
             var data = [];
             var labels = [];
-            var colors = [];
             var facetData = [];
 
             // Our data source will be different for computational predictions
@@ -423,11 +413,11 @@ var HomepageChart = React.createClass({
                 var totalDocCount = 0;
 
                 // for each item, set doc count, add to total doc count, add proper label, and assign color
+                var colors = this.context.projectColors.colorList(facetData.map(term => term.key), {shade: 10});
                 facetData.forEach(function(term, i) {
                     data[i] = term.doc_count;
                     totalDocCount += term.doc_count;
                     labels[i] = term.key;
-                    colors[i] = colorList[i % colorList.length];
                 });
 
                 // adding total doc count to middle of donut
@@ -455,7 +445,6 @@ var HomepageChart = React.createClass({
                         }
                     }
                 });
-
 
                 // Pass the assay_title counts to the charting library to render it.
                 var canvas = document.getElementById("myChart");
@@ -594,7 +583,8 @@ var HomepageChartLoader = React.createClass({
 var HomepageChart2 = React.createClass({
 
     contextTypes: {
-        navigate: React.PropTypes.func
+        navigate: React.PropTypes.func,
+        biosampleTypeColors: React.PropTypes.object // DataColor instance for experiment project
     },
 
     drawChart: function() {
@@ -605,19 +595,8 @@ var HomepageChart2 = React.createClass({
         // require.
         require.ensure(['chart.js'], function(require) {
             var Chart = require('chart.js');
-            var colorList = [
-                '#FF4F4D',
-                '#10A0F6',
-                '#FFBC01',
-                '#6A71E5',
-                '#4EB266',
-                '#A3A4A8',
-                '#61D1FD',
-                '#FFFFFF'
-            ];
             var data = [];
             var labels = [];
-            var colors = [];
             var assayFacet;
 
             // Our data source will be different for computational predictions
@@ -638,11 +617,11 @@ var HomepageChart2 = React.createClass({
                 var totalDocCount = 0;
 
                 // for each item, set doc count, add to total doc count, add proper label, and assign color
+                var colors = this.context.biosampleTypeColors.colorList(assayFacet.terms.map(term => term.key), {shade: 10});
                 assayFacet.terms.forEach(function(term, i) {
                     data[i] = term.doc_count;
                     totalDocCount += term.doc_count;
                     labels[i] = term.key;
-                    colors[i] = colorList[i % colorList.length];
                 });
 
                 // adding total doc count to middle of donut
@@ -830,7 +809,7 @@ var HomepageChart3 = React.createClass({
                 });
 
                 // gives bar graph a constant green color
-                colors = ['#4cd964', '#4cd964', '#4cd964', '#4cd964', '#4cd964', '#4cd964'];
+                colors = ['#a0a0a0', '#a0a0a0', '#a0a0a0', '#a0a0a0', '#a0a0a0', '#a0a0a0'];
 
 
                 // Pass the counts to the charting library to render it.

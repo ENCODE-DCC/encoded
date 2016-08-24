@@ -26,14 +26,19 @@ describe('DataColor Module', function() {
             expect(testColors[1]).toEqual('#730173');
         });
 
-        it('Returns white for a non-existent key', function() {
+        it('Returns medium gray for a non-existent key', function() {
             let testColors = dataColorsInstance.colorList(['stem DNA']);
-            expect(testColors[0]).toEqual('#ffffff');
+            expect(testColors[0]).toEqual('#808080');
         });
 
         it('Wraps around the used color if more keys than colors', function() {
             let testColors = dataColorsInstance.colorList(['secondary cell']);
             expect(testColors[0]).toEqual('#fcbf3a');
+        });
+
+        it('Wraps around the used color if more keys than colors', function() {
+            let testColors = dataColorsInstance.colorList(['primary cell'], {shade: 10});
+            expect(testColors[0]).toEqual('#8d1b8d');
         });
     });
 });
