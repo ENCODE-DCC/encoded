@@ -72,12 +72,35 @@ def includeme(config):
     config.scan(__name__)
 
 
+def get_bool_query(start, end):
+    must_clause = {
+        'bool': {
+            'must': [
+                {
+                    'range': {
+                        'positions.start': {
+                            'lte': start,
+                        }
+                    }
+                },
+                {
+                    'range': {
+                        'positions.end': {
+                            'gte': end,
+                        }
+                    }
+                }
+            ]
+        }
+    }
+    return must_clause
+
+
+
 def get_peak_query(start, end, with_inner_hits=False, within_peaks=False):
     """
     return peak query
     """
-    if within_peaks:
-        start, end = end, start
     query = {
         'query': {
             'filtered': {
@@ -86,22 +109,7 @@ def get_peak_query(start, end, with_inner_hits=False, within_peaks=False):
                         'path': 'positions',
                         'filter': {
                             'bool': {
-                                'must': [
-                                    {
-                                        'range': {
-                                            'positions.start': {
-                                                'lte': end,
-                                            }
-                                        }
-                                    },
-                                    {
-                                        'range': {
-                                            'positions.end': {
-                                                'gte': start,
-                                            }
-                                        }
-                                    }
-                                ]
+                                'should': []
                             }
                         }
                     }
@@ -111,6 +119,26 @@ def get_peak_query(start, end, with_inner_hits=False, within_peaks=False):
         },
         '_source': False,
     }
+    search_ranges = {
+        'peaks_inside_range': {
+            'start': start,
+            'end': end
+        },
+        'range_inside_peaks': {
+            'start': end,
+            'end': start
+        },
+        'peaks_overlap_start_range': {
+            'start': start,
+            'end': start
+        },
+        'peaks_overlap_end_range': {
+            'start': end,
+            'end': end
+        }
+    }
+    for key, value in search_ranges.items():
+        query['query']['filtered']['filter']['nested']['filter']['bool']['should'].append(get_bool_query(value['start'], value['end']))
     if with_inner_hits:
         query['query']['filtered']['filter']['nested']['inner_hits'] = {'size': 99999}
     return query
