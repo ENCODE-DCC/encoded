@@ -5,6 +5,7 @@ import csv
 import logging
 import collections
 from pyramid.view import view_config
+from sqlalchemy.sql import text
 from elasticsearch.exceptions import (
     NotFoundError
 )
@@ -17,7 +18,6 @@ from snovault.elasticsearch.interfaces import (
     ELASTIC_SEARCH,
     SNP_SEARCH_ES,
 )
-from random import shuffle
 
 
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
@@ -37,8 +37,10 @@ _INDEXED_DATA = {
     }
 }
 
-
-_ASSEMBLIES = ['hg19', 'mm10', 'mm9', 'GRCh38']
+# Species and references being indexed
+_SPECIES = {
+    'Homo sapiens': ['hg19']
+}
 
 
 def includeme(config):
@@ -102,6 +104,14 @@ def get_assay_term_name(accession, request):
         return context['assay_term_name']
     return None
 
+def all_bed_file_uuids(request):
+    file_uuids = []
+    stmt = text("select distinct(resources.rid) from resources, propsheets where resources.rid = propsheets.rid and resources.item_type='file' and propsheets.properties->>'file_format' = 'bed' and properties->>'status' = 'released';")
+    connection = request.registry[DBSESSION].connection()
+    uuids = connection.execute(stmt)
+    file_uuids = [str(item[0]) for item in uuids]
+    return file_uuids
+
 
 def index_peaks(uuid, request):
     """
@@ -109,23 +119,14 @@ def index_peaks(uuid, request):
     """
     context = request.embed('/', str(uuid), '@@object')
 
-    if 'assembly' not in context:
-        return
-        
-    assembly = context['assembly']
-
-    # Treat mm10-minimal as mm1
-    if assembly == 'mm10-minimal':
-        assembly = 'mm10'
-
-
     if 'File' not in context['@type'] or 'dataset' not in context:
         return
 
     if 'status' not in context or context['status'] != 'released':
         return
 
-    if assembly not in _ASSEMBLIES:
+    # Index human data for now
+    if 'assembly' not in context or 'hg19' not in context['assembly']:
         return
 
     assay_term_name = get_assay_term_name(context['dataset'], request)
@@ -173,14 +174,11 @@ def index_peaks(uuid, request):
             'uuid': context['uuid'],
             'positions': file_data[key]
         }
-
         if not es.indices.exists(key):
             es.indices.create(index=key, body=index_settings())
-
-        if not es.indices.exists_type(index=key, doc_type=assembly):
-            es.indices.put_mapping(index=key, doc_type=assembly, body=get_mapping(assembly))
-
-        es.index(index=key, doc_type=assembly, body=doc, id=context['uuid'])
+            es.indices.put_mapping(index=key, doc_type=context['assembly'],
+                                   body=get_mapping(context['assembly']))
+        es.index(index=key, doc_type=context['assembly'], body=doc, id=context['uuid'])
 
 
 @view_config(route_name='index_file', request_method='POST', permission="index")
@@ -225,9 +223,11 @@ def index_file(request):
     }
 
     if last_xmin is None:
-        result['types'] = types = request.json.get('types', None)
-        invalidated = list(all_uuids(request.registry, types))
+        result['types'] = request.json.get('types', None)
+        invalidated = all_bed_file_uuids(request)
+        initial_index = True
     else:
+        initial_index = False
         txns = session.query(TransactionRecord).filter(
             TransactionRecord.xid >= last_xmin,
         )
@@ -274,7 +274,7 @@ def index_file(request):
         if res['hits']['total'] > SEARCH_MAX:
             invalidated = list(all_uuids(request.root))
         else:
-            referencing = {hit['_id'] for hit in res['hits']['hits']} 
+            referencing = {hit['_id'] for hit in res['hits']['hits']}
             invalidated = referencing | updated
             result.update(
                 max_xid=max_xid,
@@ -289,8 +289,9 @@ def index_file(request):
     if not dry_run:
         err = None
         uuid_current = None
+        if not initial_index:
+            invalidated = list(set(invalidated).intersection(set(all_bed_file_uuids(request))))
         try:
-            shuffle(invalidated)
             for uuid in invalidated:
                 uuid_current = uuid
                 index_peaks(uuid, request)
