@@ -20,9 +20,6 @@ from urllib.parse import urlencode
 import logging
 import re
 
-import pdb
-from pprint import pprint as pp
-
 
 log = logging.getLogger(__name__)
 
