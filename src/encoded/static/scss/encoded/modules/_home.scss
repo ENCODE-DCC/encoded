@@ -193,6 +193,11 @@
     position: relative;
 }
 
+.getting-started {
+    position: relative;
+    padding: 15px;
+}
+
 // Positions getting started pic
 .getting-started-image {
     padding-top: 0px;
@@ -207,7 +212,7 @@
 .getting-started-button {
     position: absolute;
     top: 10px;
-    left: 10px;
+    left: 20px;
     background-color: transparent;
     z-index: 1;
 }
