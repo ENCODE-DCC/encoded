@@ -680,10 +680,11 @@ def search(context, request, search_type=None, return_generator=False):
     # Decide whether to use scan for results.
     do_scan = size is None or size > 1000
     # Execute the query
+    custom_str = request.remote_addr
     if do_scan:
         es_results = es.search(body=query, index=es_index, search_type='count')
     else:
-        es_results = es.search(body=query, index=es_index, from_=from_, size=size)
+        es_results = es.search(body=query, index=es_index, from_=from_, size=size, preference=custom_str)
 
     result['total'] = total = es_results['hits']['total']
 
