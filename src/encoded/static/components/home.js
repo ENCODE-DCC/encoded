@@ -142,7 +142,7 @@ var Home = module.exports.Home = React.createClass({
                             <PanelHeading addClasses="tab-table-header">
                                 <TabClicking handleTabClick={this.handleTabClick} newtabs={this.state.newtabs}/>
                             </PanelHeading>
-                            <div className="graphs clearfix" >
+                            <div className="graphs clearfix">
                                 <div className="row">
                                     <HomepageChartLoader searchBase={this.state.current} callback={this.callback} />
                                 </div>
@@ -390,6 +390,11 @@ var HomepageChart = React.createClass({
 
             // Our data source will be different for computational predictions
             var computationalPredictions = this.props.searchBase === '?type=Annotation&encyclopedia_version=3';
+
+            // Handle cancelled GET request. We'll have made another GET request.
+            if (this.props.data.status === 'error') {
+                return;
+            }
 
             var facets = this.props.data.facets;
             var assayFacet = facets.find(facet => facet.field === 'award.project');

@@ -65,8 +65,7 @@ const biosampleTypeList = [
     'whole organisms',
     'stem cell',
     'in vitro differentiated cells',
-    'induced pluripotent stem cell line',
-    'secondary cell'
+    'induced pluripotent stem cell line'
 ];
 
 
