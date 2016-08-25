@@ -2,7 +2,6 @@ import requests
 import json
 import re
 import time
-import pdb
 import multiprocessing as mp
 
 EPILOG = __doc__
