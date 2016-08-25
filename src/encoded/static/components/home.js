@@ -595,6 +595,11 @@ var HomepageChart2 = React.createClass({
             var labels = [];
             var assayFacet;
 
+            // Handle cancelled GET request. We'll have made another GET request.
+            if (this.props.data.status === 'error') {
+                return;
+            }
+
             // Our data source will be different for computational predictions
             var computationalPredictions = this.props.searchBase === '?type=Annotation&encyclopedia_version=3';
 
@@ -767,6 +772,11 @@ var HomepageChart3 = React.createClass({
                 '#E5E4E2'
             ];
             var colors = [];
+
+            // Handle cancelled GET request. We'll have made another GET request.
+            if (this.props.data.status === 'error') {
+                return;
+            }
 
             // Get the assay_title counts from the facets
             var facets = this.props.data.facets;
