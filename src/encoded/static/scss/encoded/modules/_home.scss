@@ -31,8 +31,8 @@
 
 .description {
     line-height: 1.7;
+    border-top: 1px solid #a0a0a0;
     border-bottom: 1px solid #a0a0a0;
-    border-radius: 3px;
     padding: 20px;
     font-size: 18px;
 
@@ -42,6 +42,10 @@
     }
 }
 
+
+.twitter-widget {
+    border-left: 1px solid #a0a0a0;
+}
 
 // Positions overall classic with pic and rectangles
 .overall-classic {
@@ -107,6 +111,8 @@
 
 .tab-table-header {
     padding: 0;
+    border-top: 1px solid #a0a0a0 !important;
+    border-radius: 0;
 }
 
 
