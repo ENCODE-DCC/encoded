@@ -3,6 +3,7 @@ import getpass
 import re
 import subprocess
 import sys
+import datetime
 
 
 BDM = [
@@ -23,6 +24,33 @@ BDM = [
         'NoDevice': "",
     },
 ]
+
+def spot_instance_price_check(client, instance_type):
+    todaysDate = datetime.datetime.now()
+    response = client.describe_spot_price_history(
+    DryRun=False,
+    StartTime=todaysDate,
+    EndTime=todaysDate,
+    InstanceTypes=[
+        instance_type
+    ],
+    Filters=[
+        {
+            'Name': 'product-description',
+            'Values': [
+                'Linux/UNIX'
+            ],
+            'Name': 'availability-zone',
+            'Values': [
+                'us-west-2a',
+                'us-west-2b',
+                'us-west-2c'
+            ]
+        },
+    ]
+    )
+    for key, value in response.items() :
+        print("Key: %s" % key, "Value: %s" % value)
 
 def spot_instances(client, spot_price, count, image_id, instance_type, spot_security_groups):
     responce = client.request_spot_instances(
@@ -146,7 +174,8 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         print("spot_instance check worked")
         spot_security_groups = 'ssh-http-https'
         ec2_spot = boto3.client('ec2')
-        instances = spot_instances(ec2_spot, spot_price, count, image_id, instance_type, spot_security_groups)
+        avg_spot_price = spot_instance_price_check(ec2_spot, instance_type)
+        #instances = spot_instances(ec2_spot, spot_price, count, image_id, instance_type, spot_security_groups)
     else:
         instances = create_ec2_instances(ec2, image_id, count, instance_type, security_groups, user_data, BDM, iam_role)
 
