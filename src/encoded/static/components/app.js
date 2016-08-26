@@ -233,10 +233,15 @@ var App = React.createClass({
             context = context.default_page;
             content = <Home context={context} />;
             containerClass = 'container-homepage';
-        } else if (context) {
-            var ContentView = globals.content_views.lookup(context, current_action);
-            content = <ContentView context={context} />;
-            containerClass = 'container';
+        } else {
+            if (!current_action && context.default_page) {
+                context = context.default_page;
+            }
+            if (context) {
+                var ContentView = globals.content_views.lookup(context, current_action);
+                content = <ContentView context={context} />;
+                containerClass = 'container';
+            }
         }
         var errors = this.state.errors.map(function (error) {
             return <div className="alert alert-error"></div>;
