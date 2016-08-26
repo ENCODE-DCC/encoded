@@ -228,8 +228,8 @@ var App = React.createClass({
         // Switching between collections may leave component in place
         var key = context && context['@id'] && context['@id'].split('?')[0];
         var current_action = this.currentAction();
-        var isDefaultPage = !!context.default_page;
-        if (!current_action && isDefaultPage) {
+        var isHomePage = context.default_page && context.default_page.name === 'homepage';
+        if (isHomePage) {
             context = context.default_page;
             content = <Home context={context} />;
             containerClass = 'container-homepage';
@@ -293,7 +293,7 @@ var App = React.createClass({
                         <div className="loading-spinner"></div>
 
                             <div id="layout" onClick={this.handleLayoutClick} onKeyPress={this.handleKey}>
-                                <Navigation defaultPage={isDefaultPage} />
+                                <Navigation isHomePage={isHomePage} />
                                 <div id="content" className={containerClass} key={key}>
                                     {content}
                                 </div>
