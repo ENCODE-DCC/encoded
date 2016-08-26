@@ -182,6 +182,9 @@ var ChartGallery = React.createClass({
                 </div>
                 <div className="col-md-4">
                     <HomepageChart3 {...this.props} searchBase={this.props.searchBase} />
+                    <div className="view-all">
+                        <a href={"/matrix/" + this.props.searchBase} className="view-all-button btn btn-info btn-lg" role="button"> View Selected </a>
+                    </div>
                 </div>
             </div>
         );
@@ -561,6 +564,7 @@ var HomepageChart = React.createClass({
 // component to draw the resulting chart.
 var HomepageChartLoader = React.createClass({
     propTypes: {
+        searchBase: React.PropTypes.string,
         callback: React.PropTypes.func
     },
 
