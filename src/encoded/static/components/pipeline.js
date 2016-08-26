@@ -238,6 +238,13 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                                     <dd>{context.award.pi.lab.title}</dd>
                                 </div>
                             : null}
+
+                            {context.source_url ?
+                                <div data-test="sourceurl">
+                                    <dt>Source</dt>
+                                    <dd><a href={context.source_url}>{context.source_url}</a></dd>
+                                </div>
+                            : null}
                         </dl>
                     </PanelBody>
                 </Panel>
