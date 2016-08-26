@@ -4,6 +4,8 @@ import re
 import subprocess
 import sys
 import datetime
+import pdb
+from pprint import pprint as pp
 
 
 BDM = [
@@ -50,7 +52,12 @@ def spot_instance_price_check(client, instance_type):
     ]
     )
     for key, value in response.items() :
+        #pdb.set_trace()
         print("Key: %s" % key, "Value: %s" % value)
+        if value == 'SpotPriceHistory':
+            for item in value:
+                print("Item: %s" % item)
+        break
 
 def spot_instances(client, spot_price, count, image_id, instance_type, spot_security_groups):
     responce = client.request_spot_instances(
