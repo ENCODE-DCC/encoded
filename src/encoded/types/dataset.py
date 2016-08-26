@@ -206,56 +206,62 @@ class Dataset(Item):
         # Overrides dataset calculated property
         hub_url = urljoin(request.resource_url(request.root), hub)
         viz = {}
-        embedded_dataset = deepcopy(self.properties)
-        #import pdb;pdb.set_trace()
-        embedded_dataset['files'] = files
-        embedded_dataset['lab'] = lab
-        embedded_dataset['award'] = award
-        #embedded_dataset {
-        #    'biosample_term_id': 'CL:2000066',
-        #    'assay_term_name': 'RAMPAGE',
-        #    'schema_version': '9',
-        #    'related_files': [],
-        #    'assay_term_id': 'OBI:0001864',
-        #    'date_created': '2015-05-15T19:02:51.016080+00:00',
-        #    'submitted_by': '0abbd494-b852-433c-b360-93996f679dae',
-        #    'date_released': '2015-08-18',
-        #    'aliases': [],
-        #    'biosample_term_name': 'cardiac ventricle fibroblast',
-        #    'award': '90be62e4-0757-4097-b5cf-2e6a20240a6f',
-        #    'possible_controls': ['6bdea1a2-6813-4292-b6f8-e36635febca1'],
-        #    'biosample_type': 'primary cell',
-        #    'status': 'released',
-        #    'references': [],
-        #    'documents': ['28a9fcd3-1a6a-4c88-9e30-bd4e43afce42'],
-        #    'description': 'The libraries contained in this experiment come from cardiac ventricle fibroblast cells (HCF-av). They are stranded PE101 Illumina Hi-Seq RAMPAGE libraries from rRNA-depleted Total RNA > 200 nucleotides in size.',
-        #    'accession': 'ENCSR177YJM',
-        #    'internal_status': 'pipeline completed',
-        #    'alternate_accessions': [],
-        #    'lab': 'dfc72c8c-d45c-4acd-979b-49fc93cf3c62',
-        #    'dbxrefs': []
-        #}
-        if target is not None:
-            embedded_dataset['target'] = target
-        if replicates is not None:
-            embedded_dataset['replicates'] = replicates
-        if assay_title is not None:
-            embedded_dataset['assay_title'] = assay_title
-        if '@id' not in embedded_dataset:
-            embedded_dataset['@id'] = '/experiments/' + accession + '/'
-        #pdb.set_trace()
+        if self.properties.get("status","nope") != "released":
+            return None
+        # USE ES CACHE
+        PRIME_CACHE = False
+        if PRIME_CACHE:
+            embedded_dataset = deepcopy(self.properties)
+            #import pdb;pdb.set_trace()
+            embedded_dataset['files'] = files
+            embedded_dataset['lab'] = lab
+            embedded_dataset['award'] = award
+            #embedded_dataset {
+            #    'biosample_term_id': 'CL:2000066',
+            #    'assay_term_name': 'RAMPAGE',
+            #    'schema_version': '9',
+            #    'related_files': [],
+            #    'assay_term_id': 'OBI:0001864',
+            #    'date_created': '2015-05-15T19:02:51.016080+00:00',
+            #    'submitted_by': '0abbd494-b852-433c-b360-93996f679dae',
+            #    'date_released': '2015-08-18',
+            #    'aliases': [],
+            #    'biosample_term_name': 'cardiac ventricle fibroblast',
+            #    'award': '90be62e4-0757-4097-b5cf-2e6a20240a6f',
+            #    'possible_controls': ['6bdea1a2-6813-4292-b6f8-e36635febca1'],
+            #    'biosample_type': 'primary cell',
+            #    'status': 'released',
+            #    'references': [],
+            #    'documents': ['28a9fcd3-1a6a-4c88-9e30-bd4e43afce42'],
+            #    'description': 'The libraries contained in this experiment come from cardiac ventricle fibroblast cells (HCF-av). They are stranded PE101 Illumina Hi-Seq RAMPAGE libraries from rRNA-depleted Total RNA > 200 nucleotides in size.',
+            #    'accession': 'ENCSR177YJM',
+            #    'internal_status': 'pipeline completed',
+            #    'alternate_accessions': [],
+            #    'lab': 'dfc72c8c-d45c-4acd-979b-49fc93cf3c62',
+            #    'dbxrefs': []
+            #}
+            if target is not None:
+                embedded_dataset['target'] = target
+            if replicates is not None:
+                embedded_dataset['replicates'] = replicates
+            if assay_title is not None:
+                embedded_dataset['assay_title'] = assay_title
+            if '@id' not in embedded_dataset:
+                embedded_dataset['@id'] = '/experiments/' + accession + '/'
+            #pdb.set_trace()
 
         for assembly_hub in assembly:
             ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly_hub, assembly_hub)
-            # Force regeneration of visualization settings, so that they are set in cache
-            log.warn("calculating %s_%s" % (accession,ucsc_assembly))
-            (found, vis_blob) = find_or_make_acc_composite(request, ucsc_assembly, accession, embedded_dataset, regen=True)
-            if len(vis_blob) > 0:
-                ucsc_url = (
-                    'http://genome.ucsc.edu/cgi-bin/hgTracks'
-                    '?hubClear='
-                ) + quote_plus(hub_url, ':/@') + '&db=' + ucsc_assembly
-                viz[assembly_hub] = ucsc_url
+            if PRIME_CACHE:
+                # Force regeneration of visualization settings, so that they are set in cache
+                log.warn("calculating %s_%s" % (accession,ucsc_assembly))
+                (found, vis_blob) = find_or_make_acc_composite(request, ucsc_assembly, accession, embedded_dataset, regen=True)
+                #if len(vis_blob) > 0:
+            ucsc_url = (
+                'http://genome.ucsc.edu/cgi-bin/hgTracks'
+                '?hubClear='
+            ) + quote_plus(hub_url, ':/@') + '&db=' + ucsc_assembly
+            viz[assembly_hub] = ucsc_url
         if len(viz) == 0:
             return None
         return viz

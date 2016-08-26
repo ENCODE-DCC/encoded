@@ -1292,6 +1292,16 @@ def get_vis_type(dataset):
     log.warn("%s has unvisualizable assay '%s'" % (dataset['accession'],assay)) # DEBUG
     return "opaque" # This becomes a dict key later so None is not okay
 
+# TODO:
+# ENCSR000BBI has unvisualizable assay 'comparative genomic hybridization by array'
+# ENCSR000DBZ has unvisualizable assay 'FAIRE-seq'
+# ENCSR901QEL has unvisualizable assay 'protein sequencing by tandem mass spectrometry assay'
+# ENCSR000AWN has unvisualizable assay 'transcription profiling by array assay'
+# ENCSR066KKK has unvisualizable assay 'Repli-chip'
+# ENCSR935ULX has unvisualizable assay 'Repli-seq'
+# ENCSR000AYD has unvisualizable assay 'RIP-chip'
+# ENCSR000CWU has unvisualizable assay 'RIP-seq'
+# ENCSR000BCM has unvisualizable assay 'RNA-PET'
 
 def lookup_vis_defs(vis_type):
     '''returns the best static composite definition set, based upon dataset.'''
@@ -2338,7 +2348,7 @@ def ucsc_trackDb_composite_blob(composite,title):
             group = composite["groups"].get(dimensions[dim_tag])
             if group is None: # e.g. "Targets" may not exist
                 continue
-            if len(group.get("groups",{})) <= 1: # NOTE get hui.js line 262 is now fixed!  If matXY.length == 0 then need to call subCBs.each( function (i) { matSubCBcheckOne(this,state); });
+            if len(group.get("groups",{})) <= 1: # NOTE get hui.js line 262 is now fixed!
                 continue
             pairs += " %s=%s" % (dim_tag, dimensions[dim_tag])
             actual_group_tags.append(dimensions[dim_tag])
@@ -2419,13 +2429,17 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False,
     ### CHIP: https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR645BCH/@@hub/GRCh38/trackDb.txt
     ### LRNA: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR000AAA/@@hub/GRCh38/trackDb.txt
 
-    if not regen:
-        regen = (request.url.find("regenvis") > -1) # @@hub/GRCh38/regenvis/trackDb.txt  regenvis/GRCh38 causes and error
+    # USE ES CACHE
+    USE_CACHE = False
 
     acc_composite = None
-    es_key = acc + "_" + assembly
-    if not regen: # Find composite?
-        acc_composite = get_from_es(request,es_key)
+    if USE_CACHE:
+        es_key = acc + "_" + assembly
+        if not regen:
+            regen = (request.url.find("regenvis") > -1) # @@hub/GRCh38/regenvis/trackDb.txt  regenvis/GRCh38 causes and error
+
+        if not regen: # Find composite?
+            acc_composite = get_from_es(request,es_key)
 
     if acc_composite is None:
         request_dataset = (dataset is None)
@@ -2434,10 +2448,12 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False,
             #log.warn("find_or_make_acc_composite len(results) = %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))  # DEBUG
 
         acc_composite = make_acc_composite(dataset, assembly, host=request.host_url, hide=hide)  # DEBUG: batch trackDb
-        add_to_es(request,es_key,acc_composite)
+        if USE_CACHE:
+            add_to_es(request,es_key,acc_composite)
+        log.warn("made acc_composite %s_%s" % (acc, assembly))
         found_or_made = "made"
-        log.warn("made acc_composite %s" % es_key)
-        if request_dataset:
+
+        if request_dataset: # Manage meomory
             del dataset
     else:
         found_or_made = "found"
@@ -2469,10 +2485,10 @@ def generate_batch_trackDb(request, hide=False, regen=False):
 
     ### local test: RNA-seq: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/batch_hub/type=Experiment,,assay_title=RNA-seq,,award.rfa=ENCODE3,,status=released,,assembly=GRCh38,,replicates.library.biosample.biosample_type=induced+pluripotent+stem+cell+line/GRCh38/trackDb.txt
 
-    # NO CACHING OF set_composites!!!
-    cache_sets = False
-    # USE ES CACHE SEARCH EXCLUSIVELY
-    use_search = True
+    USE_CACHE = False   # USE ES CACHE
+    CACHE_SETS = False  # NO CACHING OF set_composites!!!
+    USE_SEARCH = False  # USE ES CACHE SEARCH EXCLUSIVELY
+    # TODO: consider using vew=all to decide on cache usage.
 
     # Special logic to force remaking of trackDb
     if not regen:
@@ -2488,7 +2504,7 @@ def generate_batch_trackDb(request, hide=False, regen=False):
 
     set_composites = None
     # Create an appropriate cache key
-    if cache_sets:
+    if USE_CACHE and CACHE_SETS:
         set_composites = None
         es_set_key = make_set_key(param_list,assembly)
 
@@ -2509,45 +2525,74 @@ def generate_batch_trackDb(request, hide=False, regen=False):
         params.update({
             'assembly': assemblies,
             'limit': ['all'],
-            #'frame': ['embedded'], # Note: Poor memory usage, since acc_composites should all be in cache
         })
+        if not USE_CACHE:
+            params['frame'] = ['embedded'] # Note: Poor memory usage, since acc_composites should all be in cache
+
         view = 'search'
         if 'region' in param_list:
             view = 'region-search'
         path = '/%s/?%s' % (view, urlencode(params, True))
         results = request.embed(path, as_user=True)['@graph']
-        #log.warn("len(results) = %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))  # DEBUG: batch trackDb
-
-        # Note: better memory usage to get acc array from non-embedded results, since acc_composites should be in cache
-        accs = [result['accession'] for result in results]
-        del results
+        if not USE_CACHE:
+            log.warn("len(results) = %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))  # DEBUG: batch trackDb
+        else:
+            # Note: better memory usage to get acc array from non-embedded results, since acc_composites should be in cache
+            accs = [result['accession'] for result in results]
+            del results
 
         found = 0
         made = 0
-        if use_search and not regen:
+        if USE_CACHE and USE_SEARCH and not regen:
             # Rely upon es cache only
             es_keys = [acc + "_" + assembly for acc in accs]
             acc_composites = search_es(request, es_keys)
             found = len(acc_composites)
         else:
             acc_composites = {}
-            #for dataset in results:          # Note: Poor memory usage, since acc_composites should all be in cache
-            #    acc = dataset['accession']
-            for acc in accs:
-                (found_or_made, acc_composite) = find_or_make_acc_composite(request, assembly, acc, None, hide=hide, regen=regen)
-                if found_or_made == "made":
+            if not USE_CACHE:
+                for dataset in results:          # Note: Poor memory usage, since acc_composites should all be in cache
+                    acc = dataset['accession']
+                    (found_or_made, acc_composite) = find_or_make_acc_composite(request, assembly, acc, dataset, hide=hide, regen=True)
                     made += 1
-                    #log.warn("%s composite %s" % (found_or_made,acc))
-                else:
-                    found += 1
+                    acc_composites[acc] = acc_composite
+            else:
+                for acc in accs:
+                    (found_or_made, acc_composite) = find_or_make_acc_composite(request, assembly, acc, None, hide=hide, regen=regen)
+                    if found_or_made == "made":
+                        made += 1
+                        #log.warn("%s composite %s" % (found_or_made,acc))
+                    else:
+                        found += 1
+                    acc_composites[acc] = acc_composite
 
-            acc_composites[acc] = acc_composite
-
-        set_composites = remodel_acc_to_set_composites(acc_composites, hide_after=100) # TODO: set a reasonable hide_after
-        if cache_sets:
+        set_composites = remodel_acc_to_set_composites(acc_composites, hide_after=100)
+        if USE_CACHE and CACHE_SETS:
             add_to_es(request,es_set_key,set_composites)
         log.warn("%d acc_composites => %d set_composites (%s generated, %d found)   %.3f secs" % \
             ((made + found),len(set_composites),made,found,(time.time() - PROFILE_START_TIME)))
+        # TODO:
+        # 1) Either find good way to prime cache or decide to not.
+        # 2) If mm10 and mm10-minimal exist all files get folded into mm10.  Is this what is wanted?
+        # 3) Generating reps can be fooled by multiple tech_reps (LRNA rep1_1 and rep1_2 = "rep1" as opposed to "pooled"
+        # 4) assays without vis_defs...
+        # m4.large:
+        #  20 acc_composites => 1 set_composites (20 generated, 0 found)    0.619 secs - len(results) =  20    0.599 secs
+        #  41 acc_composites => 1 set_composites (41 generated, 0 found)    3.241 secs - len(results) =  41    3.177 secs
+        #  88 acc_composites => 1 set_composites (88 generated, 0 found)   10.397 secs - len(results) =  88   10.184 secs
+        # 198 acc_composites => 1 set_composites (198 generated, 0 found)  27.517 secs - len(results) = 198   26.658 secs
+        # 474 acc_composites => 1 set_composites (474 generated, 0 found) 360.696 secs - len(results) = 474  338.761 secs
+        # t4.x4large:
+        #  20 acc_composites => 1 set_composites (20 generated, 0 found)    1.820 secs - len(results) =  20    1.800 secs
+        #  20 acc_composites => 1 set_composites (20 generated, 0 found)    0.200 secs - len(results) =  20    0.184 secs
+        #  41 acc_composites => 1 set_composites (41 generated, 0 found)    2.232 secs - len(results) =  41    2.176 secs
+        #  41 acc_composites => 1 set_composites (41 generated, 0 found)    3.740 secs - len(results) =  41    3.667 secs
+        #  88 acc_composites => 1 set_composites (88 generated, 0 found)   12.528 secs - len(results) =  88   12.314 secs
+        #  88 acc_composites => 1 set_composites (88 generated, 0 found)   10.657 secs - len(results) =  88   10.459 secs
+        # 198 acc_composites => 1 set_composites (198 generated, 0 found)  25.008 secs - len(results) = 198   24.468 secs
+        # 198 acc_composites => 1 set_composites (198 generated, 0 found)  28.590 secs - len(results) = 198   27.667 secs
+        # 474 acc_composites => 1 set_composites (474 generated, 0 found)  63.715 secs - len(results) = 474   62.148 secs
+        # 474 acc_composites => 1 set_composites (474 generated, 0 found)  63.494 secs - len(results) = 474   61.706 secs
 
     blob = ""
     for composite_tag in sorted( set_composites.keys() ):
