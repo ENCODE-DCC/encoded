@@ -153,6 +153,7 @@
             ]
         },
         "modification_techniques": {
+            "title": "Modification techniques",
             "description": "Genetic modification technique(s)/tool(s) used to perform the modification.",
             "type": "array",
             "default": [],
@@ -167,6 +168,7 @@
             }
         },
         "modification_treatments": {
+            "title": "Modification treatments",
             "description": "Treatment(s) used to perform the genetic modification.",
             "type": "array",
             "default": [],
