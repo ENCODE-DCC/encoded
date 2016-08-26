@@ -228,7 +228,7 @@ var App = React.createClass({
         // Switching between collections may leave component in place
         var key = context && context['@id'] && context['@id'].split('?')[0];
         var current_action = this.currentAction();
-        var isHomePage = context.default_page && context.default_page.name === 'homepage' && !href_url.hash;
+        var isHomePage = context.default_page && context.default_page.name === 'homepage' && (!href_url.hash || href_url.hash === '#logged-out');
         if (isHomePage) {
             context = context.default_page;
             content = <Home context={context} />;
