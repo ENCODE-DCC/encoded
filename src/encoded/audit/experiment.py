@@ -2297,7 +2297,7 @@ def audit_experiment_assay(value, system):
             yield AuditFailure('mismatched assay_term_name', detail, level='INTERNAL_ACTION')
             return
 
-    if term_id not in ontology:
+    elif term_id not in ontology:
         detail = 'Assay_term_id {} is not found in cached version of ontology'.format(term_id)
         yield AuditFailure('assay_term_id not in ontology', term_id, level='INTERNAL_ACTION')
         return
