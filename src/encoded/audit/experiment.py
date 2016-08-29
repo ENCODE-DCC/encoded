@@ -1594,7 +1594,7 @@ def get_pipeline_objects(files):
             for p in inspected_file['analysis_step_version']['analysis_step']['pipelines']:
                 if p['title'] not in added_pipelines:
                     added_pipelines.append(p['title'])
-                    pipelines_to_return.add(p)
+                    pipelines_to_return.append(p)
     return pipelines_to_return
 
 
