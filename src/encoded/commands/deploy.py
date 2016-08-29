@@ -61,7 +61,7 @@ def spot_instance_price_check(client, instance_type):
                     if i == 'SpotPrice':
                         print("SpotPrice: %s" % item[i])
 
-        break
+    
 
 def spot_instances(client, spot_price, count, image_id, instance_type, spot_security_groups):
     responce = client.request_spot_instances(
