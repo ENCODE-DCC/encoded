@@ -53,10 +53,14 @@ def spot_instance_price_check(client, instance_type):
     )
     for key, value in response.items() :
         #pdb.set_trace()
-        print("Key: %s" % key, "Value: %s" % value)
-        if value == 'SpotPriceHistory':
+        #print("Key: %s" % key, "Value: %s" % value)
+        if key == 'SpotPriceHistory':
             for item in value:
-                print("Item: %s" % item)
+                #print("Item: %s" % item)
+                for i in item:
+                    if i == 'SpotPrice':
+                        print("SpotPrice: %s" % item[i])
+
         break
 
 def spot_instances(client, spot_price, count, image_id, instance_type, spot_security_groups):
