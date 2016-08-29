@@ -1012,7 +1012,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
 
     // No files exist outside replicates, and all replicates are removed
     var replicateIds = Object.keys(allReplicates);
-    if (fileOutsideReplicate && replicateIds.length && _(replicateIds).all(function(replicateNum) {
+    if (!fileOutsideReplicate && replicateIds.length && _(replicateIds).all(function(replicateNum) {
         return !allReplicates[replicateNum].length;
     })) {
         throw new graphException('No graph: All replicates removed and no files outside replicates exist');
