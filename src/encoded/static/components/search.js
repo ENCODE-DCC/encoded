@@ -834,18 +834,18 @@ var FacetList = search.FacetList = React.createClass({
         var clearButton; // JSX for the clear button
         var searchQuery = context && context['@id'] && url.parse(context['@id']).search;
         if (searchQuery) {
-            // Convert search query string to a query object for easy parsing. clear_filters has
-            // the whole URI, so have to remove "/search/" from the beginning.
-            var searchTerms = queryString.parse(searchQuery);
-            var clearTerms = queryString.parse(context.clear_filters.replace(/^\/search\//, ''));
+            // Convert search query string to a query object for easy parsing
+            var terms = queryString.parse(searchQuery);
 
-            // We have a Clear Filters button if the number of terms in the query string and
-            // clear_filters link are different.
-            clearButton = Object.keys(searchTerms).length !== Object.keys(clearTerms).length;
+            // See if there are terms in the query string aside from `searchTerm`. We have a Clear
+            // Filters button if we do
+            var nonPersistentTerms = _(Object.keys(terms)).any(term => term !== 'searchTerm');
+            clearButton = nonPersistentTerms && terms['searchTerm'];
 
-            // We have a Clear Filters button if searchQuery and clear_filters have the same terms and values
+            // If no Clear Filters button yet, do the same check with `type` in the query string
             if (!clearButton) {
-                clearButton = !_(searchTerms).every((value, key) => clearTerms[key] && clearTerms[key] === value);
+                nonPersistentTerms = _(Object.keys(terms)).any(term => term !== 'type');
+                clearButton = nonPersistentTerms && terms['type'];
             }
         }
 

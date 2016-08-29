@@ -1,7 +1,6 @@
 'use strict';
 var React = require('react');
 var color = require('color');
-var queryString = require('query-string');
 var SvgIcon = require('../libs/svg-icons').SvgIcon;
 var globals = require('./globals');
 var search = require('./search');
@@ -100,20 +99,6 @@ var Matrix = module.exports.Matrix = React.createClass({
                 'table': 'table'
             };
 
-            // Determine if we should display a Clear Filters button
-            var searchQuery = context && context['@id'] && url.parse(context['@id']).search;
-            var searchTerms = queryString.parse(searchQuery);
-            var clearTerms = queryString.parse(context.matrix.clear_matrix.replace(/^\/matrix\//, ''));
-
-            // We have a Clear Filters button if the number of terms in the query string and
-            // clear_filters link are different.
-            var clearButton = Object.keys(searchTerms).length !== Object.keys(clearTerms).length;
-
-            // We have a Clear Filters button if searchQuery and clear_filters have the same terms and values
-            if (!clearButton) {
-                clearButton = !_(searchTerms).every((value, key) => clearTerms[key] && clearTerms[key] === value);
-            }
-
             // Make an array of colors corresponding to the ordering of biosample_type
             var biosampleTypeColors = this.context.biosampleTypeColors.colorList(y_groups.map(y_group => y_group.key), {shade: 40});
 
@@ -170,7 +155,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                     <div className="btn-attached">
                                                         {matrix.doc_count && context.views ? context.views.map(view => <a href={view.href} key={view.icon} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{SvgIcon(view2svg[view.icon])}</a>) : ''}
                                                     </div>
-                                                    {clearButton ?
+                                                    {context.filters.length ?
                                                         <div className="clear-filters-control-matrix">
                                                             <a href={context.matrix.clear_matrix}>Clear Filters <i className="icon icon-times-circle"></i></a>
                                                         </div>
