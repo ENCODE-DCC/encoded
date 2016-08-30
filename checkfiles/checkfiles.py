@@ -13,6 +13,7 @@ import sys
 from shlex import quote
 import subprocess
 from urllib.parse import urljoin
+import re
 
 EPILOG = __doc__
 
@@ -208,14 +209,27 @@ def process_fastq_file(job, unzipped_fastq_path):
         with open(unzipped_fastq_path, 'r') as f:
             line_counter = 0
             for line in f:
+                line_counter += 1
                 first_colon = line.find(":")
                 if line_counter == 1 and \
                    line[0] == '@' and \
-                    first_colon != -1:
+                   first_colon != -1:
+                    sub_line = line[first_colon:]
+                    sub_line_array = re.split(r'[\s_]', sub_line.strip())
+                    if len(sub_line_array) == 2:  # assuming new format
+                        line_array = re.split(r'[:\s_]', line.strip())
+                        flowcell = line_array[2]
+                        lane_number = line_array[3]
+                        read_number = line_array[-4]
+                        barcode_index = line_array[-1]
+                    # else:  # either old or unknown read name convention
+                        # count reads at least
+                if line_counter == 2:  # sequence
+                    read_count += 1
+                    read_lengths.add(len(line.strip()))
 
-                    line_array = line.strip().split()
-                    if len(line_array) == 2: # assuming new format
-                print (l)
+                print (line)
+                line_counter = line_counter % 4
 
         # read_lengths
         if len(read_lengths) > 1:
