@@ -202,12 +202,19 @@ def process_fastq_file(job, unzipped_fastq_path):
     read_count = 0
     read_lengths = set()
     flowcells = set()
-
     unique_ids = set()
 
     try:
         with open(unzipped_fastq_path, 'r') as f:
-            for l in f:
+            line_counter = 0
+            for line in f:
+                first_colon = line.find(":")
+                if line_counter == 1 and \
+                   line[0] == '@' and \
+                    first_colon != -1:
+
+                    line_array = line.strip().split()
+                    if len(line_array) == 2: # assuming new format
                 print (l)
 
         # read_lengths
@@ -361,6 +368,7 @@ def check_file(config, session, url, job):
             check_format(config['encValData'], job, unzipped_modified_bed_path)
         else:
             check_format(config['encValData'], job, local_path)
+
         if item['file_format'] == 'fastq':
             process_fastq_file(job, unzipped_fastq_path)
     else:

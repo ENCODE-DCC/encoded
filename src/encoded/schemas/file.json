@@ -5,7 +5,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["dataset", "file_format", "md5sum", "output_type", "award", "lab"],
-    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "identifyingProperties": ["uuid", "accession", "aliases", "unique_identifiers"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -152,7 +152,7 @@
                 "description": "Fastq file unique identifier to reference a file.",
                 "comment": "Current convention is based on the Illumina unique sequence identifier, colon separated flowcell, lane, read_end(1/2) and barcode.",
                 "type":  "string",
-                "pattern": "^[a-zA-Z0-9]*:[0-9]*:[12]:([ACTG]*|[0-9]*)$",
+                "pattern": "^[a-zA-Z0-9]*:[0-9]*:[12]:([ACTG]*|[0-9]*)$"
             }
         },
         "file_format": {
