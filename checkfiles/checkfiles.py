@@ -196,8 +196,39 @@ def process_fastq_file(job, unzipped_fastq_path):
 
     5) For the fastqs we should try to figure out if there is duplication.
     '''
+    item = job['item']
+    errors = job['errors']
 
-    return True
+    read_count = 0
+    read_lengths = set()
+    flowcells = set()
+
+    unique_ids = set()
+
+    try:
+        with open(unzipped_fastq_path, 'r') as f:
+            for l in f:
+                print (l)
+
+        # read_lengths
+        if len(read_lengths) > 1:
+            errors['read_length'] = 'multiple read lengths in uploaded {} file'
+        if 'read_length' in item != read_lengths:
+            errors['read_length'] = 'uploaded {} does not match item {}'
+            '''
+            It is more complicated due to 100 and 101 reads that are either 100 or 101
+            we should tolerate +- 2bp readlengths 
+            '''
+        # number_reads
+
+        # flowcells validation
+
+        # validation of uniquencess
+
+
+    except IOError:
+        errors['file_open_error'] = 'OS could not open the file ' + \
+                                    unzipped_fastq_path
 
 
 def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url):
