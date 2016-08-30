@@ -249,6 +249,7 @@ var ColumnSelector = React.createClass({
     },
 
     render: function() {
+        console.log('COLS: %o', this.props.columns);
         return (
             <div style={{display: 'inline-block', position: 'relative'}}>
                 <a className={'btn btn-info btn-sm' + (this.state.open ? ' active' : '')} href="#" onClick={this.toggle} title="Choose columns"><i className="icon icon-columns"></i> Columns</a>
