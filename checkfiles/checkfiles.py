@@ -183,6 +183,23 @@ def check_format(encValData, job, path):
         result['validateFiles'] = output.decode(errors='replace').rstrip('\n')
 
 
+def process_fastq_file(job, unzipped_fastq_path):
+    '''
+    1) for fastqs, we should calculate the read length
+
+    2) for fastqs, we should calculate the read count, possibly even run fastqc
+
+    3) For the fastqs we should try to figure out the flow cell details
+
+    4) For the fastqs we should try to figure out if it is read 1 or read
+    2 and error if it is both or if it does not match the submitted
+
+    5) For the fastqs we should try to figure out if there is duplication.
+    '''
+
+    return True
+
+
 def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url):
     result['content_md5sum'] = output[:32].decode(errors='replace')
     try:
@@ -264,40 +281,46 @@ def check_file(config, session, url, job):
     else:
         if item['file_format'] == 'bed':
             try:
-                unzipped_original_bed_path = local_path[-18:-7] + '_original.bed'
-                output = subprocess.check_output(
-                    'gunzip --stdout {} > {}'.format(local_path,
-                                                     unzipped_original_bed_path),
-                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                # unzipped_original_bed_path = local_path[-18:-7] + '_original.bed'
                 unzipped_modified_bed_path = local_path[-18:-7] + '_modified.bed'
-                subprocess.check_output(
-                    'grep -v \'^#\' {} > {}'.format(unzipped_original_bed_path,
-                                                    unzipped_modified_bed_path),
-                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
 
+                output = subprocess.check_output(
+                    'set -o pipefail; gunzip --stdout | ' +
+                    'tee >(grep -v \'^#\' > {}) | md5sum'.format(
+                        unzipped_modified_bed_path),
+                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                ''' CAN BE REMOVED THANKS TO PIPING
                 output = subprocess.check_output(
                     'set -o pipefail; md5sum {}'.format(unzipped_original_bed_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
-
+                '''
             except subprocess.CalledProcessError as e:
                 errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
             else:
                 check_for_contentmd5sum_conflicts(item, result, output, errors, session, url)
-
+                ''' CAN BE REMOVED THANKS TO PIPING
                 if os.path.exists(unzipped_original_bed_path):
                     try:
                         os.remove(unzipped_original_bed_path)
                     except OSError as e:
                         errors['file_remove_error'] = 'OS could not remove the file ' + \
                                                       unzipped_original_bed_path
+                '''
         else:
             # May want to replace this with something like:
             # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
             # or http://stackoverflow.com/a/15343686/199100
             try:
-                output = subprocess.check_output(
-                    'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
-                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                if item['file_format'] == 'fastq':
+                    unzipped_fastq_path = local_path[-18:-7] + '_original.fastq'
+                    output = subprocess.check_output(
+                        'set -o pipefail; gunzip --stdout {} | tee {} | md5sum'.format(
+                            local_path, unzipped_fastq_path),
+                        shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                else:
+                    output = subprocess.check_output(
+                        'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
+                        shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
             except subprocess.CalledProcessError as e:
                 errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
             else:
@@ -307,6 +330,8 @@ def check_file(config, session, url, job):
             check_format(config['encValData'], job, unzipped_modified_bed_path)
         else:
             check_format(config['encValData'], job, local_path)
+        if item['file_format'] == 'fastq':
+            process_fastq_file(job, unzipped_fastq_path)
     else:
         if item['file_format'] == 'bed':
             try:
@@ -317,6 +342,17 @@ def check_file(config, session, url, job):
                     except OSError as e:
                         errors['file_remove_error'] = 'OS could not remove the file ' + \
                                                       unzipped_modified_bed_path
+            except NameError:
+                pass
+        elif item['file_format'] == 'fastq':
+            try:
+                unzipped_fastq_path = unzipped_fastq_path
+                if os.path.exists(unzipped_fastq_path):
+                    try:
+                        os.remove(unzipped_fastq_path)
+                    except OSError as e:
+                        errors['file_remove_error'] = 'OS could not remove the file ' + \
+                                                      unzipped_fastq_path
             except NameError:
                 pass
 
