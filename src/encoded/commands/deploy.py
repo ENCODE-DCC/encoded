@@ -28,7 +28,8 @@ BDM = [
 ]
 
 def spot_instance_price_check(client, instance_type):
-    sum = 0
+    val = 0
+    highest = 0
     todaysDate = datetime.datetime.now()
     response = client.describe_spot_price_history(
     DryRun=False,
@@ -63,11 +64,18 @@ def spot_instance_price_check(client, instance_type):
                 for i in item:
                     if i == 'SpotPrice':
                         print("SpotPrice: %s" % item[i])
-                        avg = sum(item.values())
 
-                        print("Average: %f" % avg)
+                        if float(item[i]) > highest :
+                            highest = float(item[i])
 
-def spot_instances(client, spot_price, count, image_id, instance_type, spot_security_groups):
+    print("Highest val: %f" % highest)
+    return highest
+
+def spot_instances(client, spot_price, count, image_id, instance_type, spot_security_groups, highest):
+   
+    if spot_price < highest:
+        spot_price=highest
+
     responce = client.request_spot_instances(
     DryRun=False,
     SpotPrice=spot_price,
@@ -190,7 +198,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         spot_security_groups = 'ssh-http-https'
         ec2_spot = boto3.client('ec2')
         avg_spot_price = spot_instance_price_check(ec2_spot, instance_type)
-        #instances = spot_instances(ec2_spot, spot_price, count, image_id, instance_type, spot_security_groups)
+        instances = spot_instances(ec2_spot, spot_price, count, image_id, instance_type, spot_security_groups, highest)
     else:
         instances = create_ec2_instances(ec2, image_id, count, instance_type, security_groups, user_data, BDM, iam_role)
 
