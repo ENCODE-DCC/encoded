@@ -37,7 +37,8 @@ var Matrix = module.exports.Matrix = React.createClass({
 
     contextTypes: {
         location_href: React.PropTypes.string,
-        navigate: React.PropTypes.func
+        navigate: React.PropTypes.func,
+        biosampleTypeColors: React.PropTypes.object // DataColor instance for experiment project
     },
 
     // Called when the Visualize button dropdown menu gets opened or closed. `dropdownEl` is the DOM node for the dropdown menu.
@@ -97,6 +98,9 @@ var Matrix = module.exports.Matrix = React.createClass({
                 'list-alt': 'search',
                 'table': 'table'
             };
+
+            // Make an array of colors corresponding to the ordering of biosample_type
+            var biosampleTypeColors = this.context.biosampleTypeColors.colorList(y_groups.map(y_group => y_group.key), {shade: 40});
 
             return (
                 <div>
@@ -172,16 +176,17 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                     }
                                                 })}
                                             </tr>
-                                            {y_groups.map(function(group) {
+                                            {y_groups.map(function(group, i) {
                                                 var seriesIndex = y_group_options.indexOf(group.key);
-                                                var seriesColor = color(COLORS[seriesIndex % COLORS.length]);
+                                                var groupColor = biosampleTypeColors[i];
+                                                var seriesColor = color(groupColor);
                                                 var parsed = url.parse(matrix_base, true);
                                                 parsed.query[primary_y_grouping] = group.key;
                                                 parsed.query['y.limit'] = null;
                                                 delete parsed.search; // this makes format compose the search string out of the query object
                                                 var group_href = url.format(parsed);
                                                 var rows = [<tr key={group.key}>
-                                                    <th colSpan={colCount + 1} style={{textAlign: 'left', backgroundColor: seriesColor.hexString()}}>
+                                                    <th colSpan={colCount + 1} style={{textAlign: 'left', backgroundColor: groupColor}}>
                                                         <a href={group_href} style={{color: '#000'}}>{group.key}</a>
                                                     </th>
                                                 </tr>];

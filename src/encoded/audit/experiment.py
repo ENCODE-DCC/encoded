@@ -1306,7 +1306,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                          'in experiments studying broad histone marks, which ' + \
                          'require {} usable fragments, according to '.format(marks['broad']) + \
                          'June 2015 standards.'
-                yield AuditFailure('low read depth', detail, level='DCC_ACTION')
+                yield AuditFailure('low read depth', detail, level='INTERNAL_ACTION')
             if read_depth >= 10000000 and read_depth < marks['narrow']:
                 detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                              read_depth) + \
@@ -2305,7 +2305,7 @@ def audit_experiment_assay(value, system):
             yield AuditFailure('mismatched assay_term_name', detail, level='INTERNAL_ACTION')
             return
 
-    if term_id not in ontology:
+    elif term_id not in ontology:
         detail = 'Assay_term_id {} is not found in cached version of ontology'.format(term_id)
         yield AuditFailure('assay_term_id not in ontology', term_id, level='INTERNAL_ACTION')
         return

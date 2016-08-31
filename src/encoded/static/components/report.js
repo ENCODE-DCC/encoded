@@ -36,7 +36,7 @@ var columnChoices = function(schema, selected) {
     _.each(schemaColumns, (column, path) => {
         columns[path] = {
             title: column.title,
-            visible: true
+            visible: !selected
         };
     });
 
@@ -53,8 +53,15 @@ var columnChoices = function(schema, selected) {
 
     // if selected fields are specified, update visibility
     if (selected) {
-        _.each(columns, (column, path) => {
-            column.visible = _.contains(selected, path);
+        _.each(selected, (path) => {
+            if (columns[path] === undefined) {
+                columns[path] = {
+                    title: path,
+                    visible: true
+                };
+            } else {
+                columns[path].visible = true;
+            }
         });
     }
 

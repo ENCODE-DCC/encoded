@@ -10,11 +10,6 @@ var Page = module.exports.Page = React.createClass({
         var context = this.props.context;
         return (
             <div>
-                <header className="row">
-                    <div className="col-sm-12">
-                        <h1 className="page-title">{context.title}</h1>
-                    </div>
-                </header>
                 <Layout value={context.layout} />
             </div>
         );

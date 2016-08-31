@@ -52,6 +52,11 @@ We define an `__acl__` method on the EncodedRoot object (root.py_), Collection a
 The `__acl__` method for an Item returns a different ACL list depending on the object's 'status'.
 This way we allow lab submitters to edit their own 'in progress' objects but not 'released' objects.
 
+Schema-Based Restrictions
+=========================
+
+If you specify in the JSON schema for a property of an an object:  "permissions": "import-items" then only admins may change these values independend of submitter.
+
 
 .. _base.py: ../src/encoded/types/base.py
 .. _root.py: ../src/encoded/root.py
