@@ -295,57 +295,57 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
             # for unique_tuple in unique_tuples_list:
             #    detected_flowcell_details.append((unique_tuple[0],
             #                                      unique_tuple[1]))
-        if 'flowcell_details' in item and len(item['flowcell_details']) > 0:
-            uniqueness_flag = True
-            submitted_flowcell_information = item['flowcell_details']
-            if len(unique_tuples_list) > 0:
-                # validation
-                submitted_flowcell_details = []
-                for entry in submitted_flowcell_information:
-                    if 'flowcell' in entry and \
-                       'lane' in entry:
-                        submitted_flowcell = (entry['flowcell'],
-                                              entry['lane'])
-                        submitted_flowcell_details.append(submitted_flowcell)
-                difference = sorted(list(set(detected_flowcell_details) -
-                                    set(submitted_flowcell_details)))
-                if len(difference) > 0:
-                    errors['flowcell_details'] = \
-                        'specified in the metadata flowcell_details {} does mot match '.format(
-                            submitted_flowcell_details) + \
-                        'flowcell details {} '.format(detected_flowcell_details) + \
-                        'extracted from the read names.'
+            if 'flowcell_details' in item and len(item['flowcell_details']) > 0:
+                uniqueness_flag = True
+                submitted_flowcell_information = item['flowcell_details']
+                if len(unique_tuples_list) > 0:
+                    # validation
+                    submitted_flowcell_details = []
+                    for entry in submitted_flowcell_information:
+                        if 'flowcell' in entry and \
+                           'lane' in entry:
+                            submitted_flowcell = (entry['flowcell'],
+                                                  entry['lane'])
+                            submitted_flowcell_details.append(submitted_flowcell)
+                    difference = sorted(list(set(detected_flowcell_details) -
+                                        set(submitted_flowcell_details)))
+                    if len(difference) > 0:
+                        errors['flowcell_details'] = \
+                            'specified in the metadata flowcell_details {} does mot match '.format(
+                                submitted_flowcell_details) + \
+                            'flowcell details {} '.format(detected_flowcell_details) + \
+                            'extracted from the read names.'
 
-                # check for uniqueness
-                conflicts = []
-                for unique_string_id in unique_string_ids_set:
-                    query = '/'+unique_string_id
-                    r = session.get(urljoin(url, query))
-                    r_graph = r.json().get('@graph')
-                    if r_graph is not None and len(r_graph) > 0:
-                        uniqueness_flag = False
+                    # check for uniqueness
+                    conflicts = []
+                    for unique_string_id in unique_string_ids_set:
+                        query = '/'+unique_string_id
+                        r = session.get(urljoin(url, query))
+                        r_graph = r.json().get('@graph')
+                        if r_graph is not None and len(r_graph) > 0:
+                            uniqueness_flag = False
 
-                        conflicts = [
-                            'specified unique identifier {} '.format(unique_string_id) +
-                            'is conflicting with identifier of reads from ' +
-                            'file {}.'.format(x['accession']) for x in r_graph]
-                        # for entry in r_graph:
-                        #    conflicts += \
-                        #        'specified unique identifier {} '.format(unique_string_id) + \
-                        #        'is conflicting with identifier of reads from ' + \
-                        #        'file {}.'.format(entry['accession'])
-            if uniqueness_flag is True:
-                # fill in the properties
+                            conflicts = [
+                                'specified unique identifier {} '.format(unique_string_id) +
+                                'is conflicting with identifier of reads from ' +
+                                'file {}.'.format(x['accession']) for x in r_graph]
+                            # for entry in r_graph:
+                            #    conflicts += \
+                            #        'specified unique identifier {} '.format(unique_string_id) + \
+                            #        'is conflicting with identifier of reads from ' + \
+                            #        'file {}.'.format(entry['accession'])
+                if uniqueness_flag is True:
+                    # fill in the properties
 
-                print ('UNIQUE IDENTIFIERS ARE ' + str(unique_string_ids_set))
-                # result['unique_identifiers'] = sorted(list(unique_string_ids_set))
-            else:
-                errors['not_unique_flowcell_details'] = conflicts
+                    print ('UNIQUE IDENTIFIERS ARE ' + str(unique_string_ids_set))
+                    # result['unique_identifiers'] = sorted(list(unique_string_ids_set))
+                else:
+                    errors['not_unique_flowcell_details'] = conflicts
 
-        elif detected_flowcell_details != []:
-            errors['flowcell_details'] = 'no specified flowcell_details in a fastq file ' + \
-                                         ' containing reads with following flowcell ' + \
-                                         'identifiers {}.'.format(detected_flowcell_details)
+            elif detected_flowcell_details != []:
+                errors['flowcell_details'] = 'no specified flowcell_details in a fastq file ' + \
+                                             ' containing reads with following flowcell ' + \
+                                             'identifiers {}.'.format(detected_flowcell_details)
     except IOError:
         errors['file_open_error'] = 'OS could not open the file ' + \
                                     unzipped_fastq_path
