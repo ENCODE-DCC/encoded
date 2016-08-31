@@ -184,7 +184,7 @@ def check_format(encValData, job, path):
         result['validateFiles'] = output.decode(errors='replace').rstrip('\n')
 
 
-def process_fastq_file(job, unzipped_fastq_path):
+def process_fastq_file(job, unzipped_fastq_path, session, url):
     '''
     1) for fastqs, we should calculate the read length
 
@@ -205,7 +205,7 @@ def process_fastq_file(job, unzipped_fastq_path):
     read_lengths = set()
     flowcells = set()
     unique_ids = set()
-
+    unique_id_strings = set()
     try:
         with open(unzipped_fastq_path, 'r') as f:
             line_counter = 0
@@ -230,6 +230,8 @@ def process_fastq_file(job, unzipped_fastq_path):
                             read_number,
                             barcode_index
                             ))
+                        unique_id_strings.add(
+                            flowcell+':'+lane_number+':'+read_number+':'+barcode_index)
                     # else:  # either old or unknown read name convention
                         # count reads at least
                 if line_counter == 2:  # sequence
@@ -271,6 +273,7 @@ def process_fastq_file(job, unzipped_fastq_path):
                 flowcells.append((id_flowcell[0],
                                   id_flowcell[1]))
         if 'flowcell_details' in item and len(item['flowcell_details']) > 0:
+            uniqueness_flag = True
             reported_flowcell_details = item['flowcell_details']
             if len(id_tuples) > 0:
                 # validation
@@ -286,8 +289,25 @@ def process_fastq_file(job, unzipped_fastq_path):
                                 'flowcell details {} '.format(flowcells) + \
                                 'extracted from the read names.'
 
-                # check uniqueness
+                # check for uniqueness
+                conflicts = []
+                for unique_string in unique_id_strings:
+                    query = '/'+unique_string
+                    r = session.get(urljoin(url, query))
+                    r_graph = r.json().get('@graph')
+                    if len(r_graph) > 0:
+                        uniqueness_flag = False
 
+                        for entry in r_graph:
+                            conflicts += \
+                                'specified unique identifier {} '.format(unique_string) + \
+                                'is conflicting with identifier of reads from ' + \
+                                'file {}.'.format(entry['accession'])
+            if uniqueness_flag is True:
+                # fill in the properties
+                result['unique_identifiers'] = sorted(list(unique_id_strings))
+            else:
+                errors['not_unique_flowcell_details'] = conflicts
 
         elif flowcells != []:
             errors['flowcell_details'] = 'no specified flowcell_details in a fastq file ' + \
@@ -430,7 +450,7 @@ def check_file(config, session, url, job):
             check_format(config['encValData'], job, local_path)
 
         if item['file_format'] == 'fastq':
-            process_fastq_file(job, unzipped_fastq_path)
+            process_fastq_file(job, unzipped_fastq_path, session, url)
     else:
         if item['file_format'] == 'bed':
             try:
