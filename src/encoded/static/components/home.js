@@ -303,17 +303,16 @@ var AssayClicking = React.createClass({
 
                     <img src="static/img/classic-image.jpg" className="classic-image"/>
 
-                    <svg id="classic-image-svg-overlay" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3253 1440" className="classic-svg">
-
-                        <rect id = {this.state.assayList[0]} x="928.1" y="859.1" className="st0" width="190.2" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[0] ? " selected": "")}/>
-                        <rect id = {this.state.assayList[1]} x="1132.8" y="859.1" className="st0" width="202.6" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[1] ? " selected": "")}/>
-                        <rect id = {this.state.assayList[2]} x="1354.1" y="859.1" className="st0" width="171.6" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[2] ? " selected": "")}/>
-                        <rect id = {this.state.assayList[3]} x="1538.1" y="859.1" className="st0" width="213" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[3] ? " selected": "")}/>
-                        <rect id = {this.state.assayList[4]} x="1771.7" y="859.1" className="st0" width="266.7" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[4] ? " selected": "")}/>
-                        <rect id = {this.state.assayList[5]} x="2057.1" y="859.1" className="st0" width="171.6" height="171.6" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[5] ? " selected": "")}/>
-                        <rect id = {this.state.assayList[6]} x="2247.3" y="859.1" className="st0" width="163.3" height="175.8" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[6] ? " selected": "")}/>
-
+                    <svg id="classic-image-svg-overlay" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3840 1700" className="classic-svg">
+                        <rect id={this.state.assayList[0]} className="st0" x="1052" y="944.81" width="219.3" height="205.63" rx="46.01" ry="46.01"     className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[0] ? " selected": "")} />
+                        <rect id={this.state.assayList[1]} className="st0" x="1295.54" y="944.81" width="247.87" height="205.63" rx="46.01" ry="46.01" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[1] ? " selected": "")} />
+                        <rect id={this.state.assayList[2]} className="st0" x="1567.63" y="944.81" width="240.25" height="205.63" rx="46.01" ry="46.01" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[2] ? " selected": "")} />
+                        <rect id={this.state.assayList[3]} className="st0" x="1839.75" y="944.81" width="280.75" height="205.63" rx="46.01" ry="46.01" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[3] ? " selected": "")} />
+                        <rect id={this.state.assayList[4]} className="st0" x="2138" y="944.81" width="349.64" height="205.63" rx="46.01" ry="46.01"    className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[4] ? " selected": "")} />
+                        <rect id={this.state.assayList[5]} className="st0" x="2505.01" y="944.81" width="218.74" height="205.63" rx="46.01" ry="46.01" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[5] ? " selected": "")} />
+                        <rect id={this.state.assayList[6]} className="st0" x="2749.26" y="944.81" width="218.74" height="205.63" rx="46.01" ry="46.01" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[6] ? " selected": "")} />
                     </svg>
+
                 </div>
             </div>
         );
