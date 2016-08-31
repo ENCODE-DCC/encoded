@@ -199,6 +199,7 @@ def process_fastq_file(job, unzipped_fastq_path):
     '''
     item = job['item']
     errors = job['errors']
+    result = job['result']
 
     read_count = 0
     read_lengths = set()
@@ -218,10 +219,17 @@ def process_fastq_file(job, unzipped_fastq_path):
                     sub_line_array = re.split(r'[\s_]', sub_line.strip())
                     if len(sub_line_array) == 2:  # assuming new format
                         line_array = re.split(r'[:\s_]', line.strip())
+
                         flowcell = line_array[2]
                         lane_number = line_array[3]
                         read_number = line_array[-4]
                         barcode_index = line_array[-1]
+                        unique_ids.add((
+                            flowcell,
+                            lane_number,
+                            read_number,
+                            barcode_index
+                            ))
                     # else:  # either old or unknown read name convention
                         # count reads at least
                 if line_counter == 2:  # sequence
@@ -230,23 +238,61 @@ def process_fastq_file(job, unzipped_fastq_path):
 
                 print (line)
                 line_counter = line_counter % 4
-
+        #################
         # read_lengths
-        if len(read_lengths) > 1:
-            errors['read_length'] = 'multiple read lengths in uploaded {} file'
-        if 'read_length' in item != read_lengths:
-            errors['read_length'] = 'uploaded {} does not match item {}'
-            '''
-            It is more complicated due to 100 and 101 reads that are either 100 or 101
-            we should tolerate +- 2bp readlengths 
-            '''
+        #################
+        read_lengths_list = list(read_lengths)
+        max_length = max(read_lengths_list)
+        min_length = min(read_lengths_list)
+        if 'read_length' in item:
+            reported_read_length = item['read_length']
+            if abs(reported_read_length - min_length) > 2 and \
+               abs(reported_read_length - max_length) > 2:
+                errors['read_length'] = 'read length {} in the uploaded file '.format(
+                    reported_read_length) + \
+                    'doesn\'t match read length(s) found in the file {}.'.format(
+                    read_lengths_list)
+        else:
+            errors['read_length'] = 'no specified read length in the uploaded fastq file, ' + \
+                                    'while read length(s) found in the file were {}.'.format(
+                                    read_lengths_list)
+        #################
         # number_reads
+        #################
+        result['reads_quantity'] = read_count
 
-        # flowcells validation
+        ######################################
+        # uniqueness / flowcells validation
+        ######################################
+        id_tuples = sorted(list(unique_ids))
+        flowcells = []
+        if len(id_tuples) > 0:
+            for id_flowcell in id_tuples:
+                flowcells.append((id_flowcell[0],
+                                  id_flowcell[1]))
+        if 'flowcell_details' in item and len(item['flowcell_details']) > 0:
+            reported_flowcell_details = item['flowcell_details']
+            if len(id_tuples) > 0:
+                # validation
+                for entry in reported_flowcell_details:
+                    if 'flowcell' in entry and \
+                       'lane' in entry:
+                        reported_info = (entry['flowcell'],
+                                         entry['lane'])
+                        if reported_info not in flowcells:
+                            errors['flowcell_details'] = \
+                                'specified flowcell_details {} does mot match '.format(
+                                    reported_info) + \
+                                'flowcell details {} '.format(flowcells) + \
+                                'extracted from the read names.'
 
-        # validation of uniquencess
+                # check uniqueness
 
 
+        elif flowcells != []:
+            errors['flowcell_details'] = 'no specified flowcell_details in a fastq file ' + \
+                                         ' containing reads with following flowcell ' + \
+                                         'identifiers {}.'.format(flowcells)
     except IOError:
         errors['file_open_error'] = 'OS could not open the file ' + \
                                     unzipped_fastq_path
