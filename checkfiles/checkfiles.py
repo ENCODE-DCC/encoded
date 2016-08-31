@@ -259,10 +259,14 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
         #################
         # read_lengths
         #################
+
+        print ('READ LENGTHS FOUND : ' + str(read_lengths))
+
         read_lengths_list = list(read_lengths)
         max_length = max(read_lengths_list)
         min_length = min(read_lengths_list)
         if 'read_length' in item:
+            print ('READ LENGTHS SUBMITTED : ' + str(item['read_length']))
             reported_read_length = item['read_length']
             if abs(reported_read_length - min_length) > 2 and \
                abs(reported_read_length - max_length) > 2:
@@ -277,7 +281,9 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
         #################
         # number_reads
         #################
-        result['reads_quantity'] = read_count
+
+        print ('COUNTED ' + str(read_count) + ' READS')
+        # result['reads_quantity'] = read_count
 
         ######################################
         # uniqueness / detected_flowcell_details validation
@@ -316,7 +322,7 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
                     query = '/'+unique_string_id
                     r = session.get(urljoin(url, query))
                     r_graph = r.json().get('@graph')
-                    if len(r_graph) > 0:
+                    if r_graph is not None and len(r_graph) > 0:
                         uniqueness_flag = False
 
                         conflicts = [
@@ -330,7 +336,9 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
                         #        'file {}.'.format(entry['accession'])
             if uniqueness_flag is True:
                 # fill in the properties
-                result['unique_identifiers'] = sorted(list(unique_string_ids_set))
+
+                print ('UNIQUE IDENTIFIERS ARE ' + str(unique_string_ids_set))
+                # result['unique_identifiers'] = sorted(list(unique_string_ids_set))
             else:
                 errors['not_unique_flowcell_details'] = conflicts
 
@@ -476,29 +484,29 @@ def check_file(config, session, url, job):
 
         if item['file_format'] == 'fastq':
             process_fastq_file(job, unzipped_fastq_path, session, url)
-    else:
-        if item['file_format'] == 'bed':
-            try:
-                unzipped_modified_bed_path = unzipped_modified_bed_path
-                if os.path.exists(unzipped_modified_bed_path):
-                    try:
-                        os.remove(unzipped_modified_bed_path)
-                    except OSError as e:
-                        errors['file_remove_error'] = 'OS could not remove the file ' + \
-                                                      unzipped_modified_bed_path
-            except NameError:
-                pass
-        elif item['file_format'] == 'fastq':
-            try:
-                unzipped_fastq_path = unzipped_fastq_path
-                if os.path.exists(unzipped_fastq_path):
-                    try:
-                        os.remove(unzipped_fastq_path)
-                    except OSError as e:
-                        errors['file_remove_error'] = 'OS could not remove the file ' + \
-                                                      unzipped_fastq_path
-            except NameError:
-                pass
+
+    if item['file_format'] == 'bed':
+        try:
+            unzipped_modified_bed_path = unzipped_modified_bed_path
+            if os.path.exists(unzipped_modified_bed_path):
+                try:
+                    os.remove(unzipped_modified_bed_path)
+                except OSError as e:
+                    errors['file_remove_error'] = 'OS could not remove the file ' + \
+                                                  unzipped_modified_bed_path
+        except NameError:
+            pass
+    elif item['file_format'] == 'fastq':
+        try:
+            unzipped_fastq_path = unzipped_fastq_path
+            if os.path.exists(unzipped_fastq_path):
+                try:
+                    os.remove(unzipped_fastq_path)
+                except OSError as e:
+                    errors['file_remove_error'] = 'OS could not remove the file ' + \
+                                                  unzipped_fastq_path
+        except NameError:
+            pass
 
     if item['status'] != 'uploading':
         errors['status_check'] = \
