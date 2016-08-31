@@ -53,6 +53,10 @@ var columnChoices = function(schema, selected) {
 
     // if selected fields are specified, update visibility
     if (selected) {
+        // Reset @id to not visible if not in selected
+        if (!selected['@id'] && columns['@id']) {
+            columns['@id'].visible = false;
+        }
         _.each(selected, (path) => {
             if (columns[path] === undefined) {
                 columns[path] = {
@@ -249,7 +253,6 @@ var ColumnSelector = React.createClass({
     },
 
     render: function() {
-        console.log('COLS: %o', this.props.columns);
         return (
             <div style={{display: 'inline-block', position: 'relative'}}>
                 <a className={'btn btn-info btn-sm' + (this.state.open ? ' active' : '')} href="#" onClick={this.toggle} title="Choose columns"><i className="icon icon-columns"></i> Columns</a>
