@@ -48,6 +48,20 @@ _FACETS = [
     ('files.file_type', {'title': 'Available data'})
 ]
 
+_GENOME_TO_SPECIES = {
+    'GRCh37': 'homo_sapiens',
+    'GRCh38': 'homo_sapiens',
+    'GRCm37': 'mus_musculus',
+    'GRCm38': 'mus_musculus'
+}
+
+_GENOME_TO_ALIAS = {
+    'GRCh37': 'hg19',
+    'GRCh38': 'GRCh38',
+    'GRCm37': 'mm9',
+    'GRCm38': 'mm10'
+}
+
 
 def includeme(config):
     config.add_route('region-search', '/region-search{slash:/?}')
@@ -55,12 +69,35 @@ def includeme(config):
     config.scan(__name__)
 
 
+def get_bool_query(start, end):
+    must_clause = {
+        'bool': {
+            'must': [
+                {
+                    'range': {
+                        'positions.start': {
+                            'lte': start,
+                        }
+                    }
+                },
+                {
+                    'range': {
+                        'positions.end': {
+                            'gte': end,
+                        }
+                    }
+                }
+            ]
+        }
+    }
+    return must_clause
+
+
+
 def get_peak_query(start, end, with_inner_hits=False, within_peaks=False):
     """
     return peak query
     """
-    if within_peaks:
-        start, end = end, start
     query = {
         'query': {
             'filtered': {
@@ -69,22 +106,7 @@ def get_peak_query(start, end, with_inner_hits=False, within_peaks=False):
                         'path': 'positions',
                         'filter': {
                             'bool': {
-                                'must': [
-                                    {
-                                        'range': {
-                                            'positions.start': {
-                                                'lte': end,
-                                            }
-                                        }
-                                    },
-                                    {
-                                        'range': {
-                                            'positions.end': {
-                                                'gte': start,
-                                            }
-                                        }
-                                    }
-                                ]
+                                'should': []
                             }
                         }
                     }
@@ -94,6 +116,26 @@ def get_peak_query(start, end, with_inner_hits=False, within_peaks=False):
         },
         '_source': False,
     }
+    search_ranges = {
+        'peaks_inside_range': {
+            'start': start,
+            'end': end
+        },
+        'range_inside_peaks': {
+            'start': end,
+            'end': start
+        },
+        'peaks_overlap_start_range': {
+            'start': start,
+            'end': start
+        },
+        'peaks_overlap_end_range': {
+            'start': end,
+            'end': end
+        }
+    }
+    for key, value in search_ranges.items():
+        query['query']['filtered']['filter']['nested']['filter']['bool']['should'].append(get_bool_query(value['start'], value['end']))
     if with_inner_hits:
         query['query']['filtered']['filter']['nested']['inner_hits'] = {'size': 99999}
     return query
@@ -120,10 +162,8 @@ def sanitize_rsid(rsid):
     return 'rs' + ''.join([a for a in filter(str.isdigit, rsid)])
 
 
-
 def get_annotation_coordinates(es, id, assembly):
     ''' Gets annotation coordinates from annotation index in ES '''
-
     chromosome, start, end = '', '', ''
     try:
         es_results = es.get(index='annotations', doc_type='default', id=id)
@@ -136,15 +176,8 @@ def get_annotation_coordinates(es, id, assembly):
                 return ('chr' + annotation['chromosome'],
                         annotation['start'],
                         annotation['end'])
-            else:
-                location = '{chr}:{start}-{end}'.format(
-                    chr=annotation['chromosome'],
-                    start=annotation['start'],
-                    end=annotation['end']
-                )
-        return assembly_mapper(location, 'human',
-                               annotations[0]['assembly_name'], assembly)
-
+        else:
+            return (chromosome, start, end)
 
 def assembly_mapper(location, species, input_assembly, output_assembly):
     # All others
@@ -156,7 +189,7 @@ def assembly_mapper(location, species, input_assembly, output_assembly):
     except:
         return('', '', '')
     else:
-        if not len(new_response['mappings']):
+        if 'mappings' not in new_response or len(new_response['mappings']) < 1:
             return('', '', '')
         data = new_response['mappings'][0]['mapped']
         chromosome = 'chr' + data['seq_region_name']
@@ -165,9 +198,11 @@ def assembly_mapper(location, species, input_assembly, output_assembly):
         return(chromosome, start, end)
 
 
-def get_rsid_coordinates(id):
-    url = '{ensembl}variation/human/{id}?content-type=application/json'.format(
+def get_rsid_coordinates(id, assembly):
+    species = _GENOME_TO_SPECIES[assembly]
+    url = '{ensembl}variation/{species}/{id}?content-type=application/json'.format(
         ensembl=_ENSEMBL_URL,
+        species=species,
         id=id
     )
     try:
@@ -178,12 +213,20 @@ def get_rsid_coordinates(id):
         if 'mappings' not in response:
             return('', '', '')
         for mapping in response['mappings']:
-            if mapping['assembly_name'] == 'GRCh38':
+            if 'PATCH' not in mapping['location']:
                 location = mapping['location']
-        return assembly_mapper(location, 'human', 'GRCh38', 'GRCh37')
+                if mapping['assembly_name'] == assembly:
+                    chromosome, start, end = re.split(':|-', mapping['location'])
+                    return('chr' + chromosome, start, end)
+                elif assembly == 'GRCh37':
+                    return assembly_mapper(location, species, 'GRCh38', assembly)
+                elif assembly == 'GRCm37':
+                    return assembly_mapper(location, species, 'GRCm38', 'NCBIM37')
+        return ('', '', '',)
 
 
-def get_ensemblid_coordinates(id):
+def get_ensemblid_coordinates(id, assembly):
+    species = _GENOME_TO_SPECIES[assembly]
     url = '{ensembl}lookup/id/{id}?content-type=application/json'.format(
         ensembl=_ENSEMBL_URL,
         id=id
@@ -193,15 +236,20 @@ def get_ensemblid_coordinates(id):
     except:
         return('', '', '')
     else:
-        if response['assembly_name'] == 'GRCh38':
-            location = '{chr}:{start}-{end}'.format(
-                chr=response['seq_region_name'],
-                start=response['start'],
-                end=response['end']
-            )
+        location = '{chr}:{start}-{end}'.format(
+            chr=response['seq_region_name'],
+            start=response['start'],
+            end=response['end']
+        )
+        if response['assembly_name'] == assembly:
+            chromosome, start, end = re.split(':|-', location)
+            return('chr' + chromosome, start, end)
+        elif assembly == 'GRCh37':
+            return assembly_mapper(location, species, 'GRCh38', assembly)
+        elif assembly == 'GRCm37':
+            return assembly_mapper(location, species, 'GRCm38', 'NCBIM37')
         else:
-            return('', '', '')
-        return assembly_mapper(location, 'human', 'GRCh38', 'GRCh37')
+            return ('', '', '')
 
 def format_position(position, resolution):
     chromosome, start, end = re.split(':|-', position)
@@ -231,7 +279,6 @@ def region_search(context, request):
     region = request.params.get('region', '*')
     region_inside_peak_status = False
 
-    
 
     # handling limit
     size = request.params.get('limit', 25)
@@ -246,32 +293,29 @@ def region_search(context, request):
         region = '*'
 
     assembly = request.params.get('genome', '*')
-    reference = ''
-    for regular_name, ucsc_name in _ASSEMBLY_MAPPER.items():
-        if ucsc_name == assembly:
-            reference = regular_name
     annotation = request.params.get('annotation', '*')
+    chromosome, start, end = ('', '', '')
+    
     if annotation != '*':
-        chromosome, start, end = get_annotation_coordinates(es, annotation, reference)
+        if annotation.lower().startswith('ens'):
+            chromosome, start, end = get_ensemblid_coordinates(annotation, assembly)
+        else:
+            chromosome, start, end = get_annotation_coordinates(es, annotation, assembly)
     elif region != '*':
         region = region.lower()
         if region.startswith('rs'):
             sanitized_region = sanitize_rsid(region)
-            chromosome, start, end = get_rsid_coordinates(sanitized_region)
+            chromosome, start, end = get_rsid_coordinates(sanitized_region, assembly)
             region_inside_peak_status = True
         elif region.startswith('ens'):
-            chromosome, start, end = get_ensemblid_coordinates(region)
+            chromosome, start, end = get_ensemblid_coordinates(region, assembly)
         elif region.startswith('chr'):
             chromosome, start, end = sanitize_coordinates(region)
-        else:
-            result['notification'] = 'Please select valid annotation or enter coordinates'
-            return result
     else:
-        result['notification'] = 'Please enter valid coordinates'
-        return result
-
+        chromosome, start, end = ('', '', '')
+    
     # Check if there are valid coordinates
-    if chromosome == '' or start == '' or end == '':
+    if not chromosome or not start or not end:
         result['notification'] = 'No annotations found'
         return result
     else:
@@ -290,10 +334,10 @@ def region_search(context, request):
 
         peak_results = snp_es.search(body=peak_query,
                                      index=chromosome.lower(),
-                                     doc_type=assembly,
+                                     doc_type=_GENOME_TO_ALIAS[assembly],
                                      size=99999)
     except Exception:
-        result['notification'] = 'Please enter valid coordinates'
+        result['notification'] = 'Error during search'
         return result
     file_uuids = []
     for hit in peak_results['hits']['hits']:
@@ -322,7 +366,7 @@ def region_search(context, request):
 
         result['@graph'] = list(format_results(request, es_results['hits']['hits']))
         result['total'] = total = es_results['hits']['total']
-        result['facets'] = format_facets(es_results, _FACETS, used_filters, schemas, total)
+        result['facets'] = format_facets(es_results, _FACETS, used_filters, schemas, total, principals)
         result['peaks'] = list(peak_results['hits']['hits'])
         result['download_elements'] = get_peak_metadata_links(request)
         if result['total'] > 0:
@@ -336,34 +380,37 @@ def region_search(context, request):
 @view_config(route_name='suggest', request_method='GET', permission='search')
 def suggest(context, request):
     text = ''
+    requested_genome = ''
+    if 'q' in request.params:
+        text = request.params.get('q', '')
+        requested_genome = request.params.get('genome', '')
+        # print(requested_genome)
+
     result = {
-        '@id': '/suggest/?' + urlencode({'q': text}),
+        '@id': '/suggest/?' + urlencode({'genome': requested_genome, 'q': text}, ['q', 'genome']),
         '@type': ['suggest'],
         'title': 'Suggest',
         '@graph': [],
     }
-    if 'q' in request.params:
-        text = request.params.get('q', '')
-    else:
-        return []
     es = request.registry[ELASTIC_SEARCH]
     query = {
         "suggester": {
             "text": text,
             "completion": {
                 "field": "name_suggest",
-                "size": 10
+                "size": 100
             }
         }
     }
     try:
         results = es.suggest(index='annotations', body=query)
     except:
-        return {}
+        return result
     else:
-        result['@id'] = '/suggest/?' + urlencode({'q': text})
+        result['@id'] = '/suggest/?' + urlencode({'genome': requested_genome, 'q': text}, ['q','genome'])
         result['@graph'] = []
         for item in results['suggester'][0]['options']:
-            if not any(x in item['text'] for x in ['(C. elegans)','(mus musculus)','(D. melanogaster)']):
+            if _GENOME_TO_SPECIES[requested_genome].replace('_', ' ') == item['payload']['species']:
                 result['@graph'].append(item)
+        result['@graph'] = result['@graph'][:10]
         return result

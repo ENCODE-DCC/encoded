@@ -1,7 +1,6 @@
 'use strict';
 var React = require('react');
 var color = require('color');
-var queryString = require('query-string');
 var SvgIcon = require('../libs/svg-icons').SvgIcon;
 var globals = require('./globals');
 var search = require('./search');
@@ -38,7 +37,8 @@ var Matrix = module.exports.Matrix = React.createClass({
 
     contextTypes: {
         location_href: React.PropTypes.string,
-        navigate: React.PropTypes.func
+        navigate: React.PropTypes.func,
+        biosampleTypeColors: React.PropTypes.object // DataColor instance for experiment project
     },
 
     // Called when the Visualize button dropdown menu gets opened or closed. `dropdownEl` is the DOM node for the dropdown menu.
@@ -99,19 +99,8 @@ var Matrix = module.exports.Matrix = React.createClass({
                 'table': 'table'
             };
 
-            // Determine if we should display a Clear Filters button
-            var searchQuery = context && context['@id'] && url.parse(context['@id']).search;
-            var searchTerms = queryString.parse(searchQuery);
-            var clearTerms = queryString.parse(context.matrix.clear_matrix.replace(/^\/matrix\//, ''));
-
-            // We have a Clear Filters button if the number of terms in the query string and
-            // clear_filters link are different.
-            var clearButton = Object.keys(searchTerms).length !== Object.keys(clearTerms).length;
-
-            // We have a Clear Filters button if searchQuery and clear_filters have the same terms and values
-            if (!clearButton) {
-                clearButton = !_(searchTerms).every((value, key) => clearTerms[key] && clearTerms[key] === value);
-            }
+            // Make an array of colors corresponding to the ordering of biosample_type
+            var biosampleTypeColors = this.context.biosampleTypeColors.colorList(y_groups.map(y_group => y_group.key), {shade: 40});
 
             return (
                 <div>
@@ -166,7 +155,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                     <div className="btn-attached">
                                                         {matrix.doc_count && context.views ? context.views.map(view => <a href={view.href} key={view.icon} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{SvgIcon(view2svg[view.icon])}</a>) : ''}
                                                     </div>
-                                                    {clearButton ?
+                                                    {context.filters.length ?
                                                         <div className="clear-filters-control-matrix">
                                                             <a href={context.matrix.clear_matrix}>Clear Filters <i className="icon icon-times-circle"></i></a>
                                                         </div>
@@ -187,16 +176,17 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                     }
                                                 })}
                                             </tr>
-                                            {y_groups.map(function(group) {
+                                            {y_groups.map(function(group, i) {
                                                 var seriesIndex = y_group_options.indexOf(group.key);
-                                                var seriesColor = color(COLORS[seriesIndex % COLORS.length]);
+                                                var groupColor = biosampleTypeColors[i];
+                                                var seriesColor = color(groupColor);
                                                 var parsed = url.parse(matrix_base, true);
                                                 parsed.query[primary_y_grouping] = group.key;
                                                 parsed.query['y.limit'] = null;
                                                 delete parsed.search; // this makes format compose the search string out of the query object
                                                 var group_href = url.format(parsed);
                                                 var rows = [<tr key={group.key}>
-                                                    <th colSpan={colCount + 1} style={{textAlign: 'left', backgroundColor: seriesColor.hexString()}}>
+                                                    <th colSpan={colCount + 1} style={{textAlign: 'left', backgroundColor: groupColor}}>
                                                         <a href={group_href} style={{color: '#000'}}>{group.key}</a>
                                                     </th>
                                                 </tr>];

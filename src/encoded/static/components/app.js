@@ -6,24 +6,26 @@ var mixins = require('./mixins');
 var Navigation = require('./navigation');
 var Footer = require('./footer');
 var url = require('url');
+var Home = require('./home').Home;
+var DataColors = require('./datacolors');
 
 var portal = {
     portal_title: 'ENCODE',
     global_sections: [
         {id: 'data', title: 'Data', children: [
-            {id: 'assaymatrix', title: 'Matrix', url: '/matrix/?type=Experiment&status=released'},
-            {id: 'assaysearch', title: 'Search', url: '/search/?type=Experiment&status=released'},
+            {id: 'assaymatrix', title: 'Matrix', url: '/matrix/?type=Experiment'},
+            {id: 'assaysearch', title: 'Search', url: '/search/?type=Experiment'},
             {id: 'region-search', title: 'Search by region', url: '/region-search/'},
             {id: 'publications', title: 'Publications', url: '/publications/'}
         ]},
         {id: 'encyclopedia', title: 'Encyclopedia', children: [
             {id: 'aboutannotations', title: 'About', url: '/data/annotations/'},
-            {id: 'annotationmatrix', title: 'Matrix', url: '/matrix/?type=Annotation&encyclopedia_version=3&status=released'},
-            {id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation&encyclopedia_version=3&status=released'}
+            {id: 'annotationmatrix', title: 'Matrix', url: '/matrix/?type=Annotation&encyclopedia_version=3'},
+            {id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation&encyclopedia_version=3'}
         ]},
         {id: 'materialsmethods', title: 'Materials & Methods', children: [
-            {id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot&status=released'},
-            {id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample&status=released'},
+            {id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot'},
+            {id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample'},
             {id: 'references', title: 'Genome References', url: '/data-standards/reference-sequences/'},
             {id: 'sep-mm-1'},
             {id: 'datastandards', title: 'Standards and guidelines', url: '/data-standards/'},
@@ -45,6 +47,26 @@ var portal = {
         ]}
     ]
 };
+
+
+// Keep lists of currently known project and biosample_type. As new project and biosample_type
+// enter the system, these lists must be updated.
+const projectList = [
+    'ENCODE',
+    'Roadmap',
+    'modENCODE',
+    'modERN',
+    'GGR'
+];
+const biosampleTypeList = [
+    'immortalized cell line',
+    'tissue',
+    'primary cell',
+    'whole organisms',
+    'stem cell',
+    'in vitro differentiated cells',
+    'induced pluripotent stem cell line'
+];
 
 
 // See https://github.com/facebook/react/issues/2323
@@ -87,11 +109,17 @@ var App = React.createClass({
         location_href: React.PropTypes.string,
         onDropdownChange: React.PropTypes.func,
         portal: React.PropTypes.object,
-        hidePublicAudits: React.PropTypes.bool
+        hidePublicAudits: React.PropTypes.bool,
+        projectColors: React.PropTypes.object,
+        biosampleTypeColors: React.PropTypes.object
     },
 
     // Retrieve current React context
     getChildContext: function() {
+        // Make `project` and `biosample_type` color mappings for downstream modules to use.
+        let projectColors = new DataColors(projectList);
+        let biosampleTypeColors = new DataColors(biosampleTypeList);
+
         return {
             dropdownComponent: this.state.dropdownComponent, // ID of component with visible dropdown
             listActionsFor: this.listActionsFor,
@@ -99,7 +127,9 @@ var App = React.createClass({
             location_href: this.props.href,
             onDropdownChange: this.handleDropdownChange, // Function to process dropdown state change
             portal: portal,
-            hidePublicAudits: false // True if audits should be hidden on the UI while logged out
+            hidePublicAudits: false, // True if audits should be hidden on the UI while logged out
+            projectColors: projectColors,
+            biosampleTypeColors: biosampleTypeColors
         };
     },
 
@@ -192,18 +222,26 @@ var App = React.createClass({
 
     render: function() {
         console.log('render app');
-        var content;
+        var content, containerClass;
         var context = this.props.context;
         var href_url = url.parse(this.props.href);
         // Switching between collections may leave component in place
         var key = context && context['@id'] && context['@id'].split('?')[0];
         var current_action = this.currentAction();
-        if (!current_action && context.default_page) {
+        var isHomePage = context.default_page && context.default_page.name === 'homepage' && (!href_url.hash || href_url.hash === '#logged-out');
+        if (isHomePage) {
             context = context.default_page;
-        }
-        if (context) {
-            var ContentView = globals.content_views.lookup(context, current_action);
-            content = <ContentView context={context} />;
+            content = <Home context={context} />;
+            containerClass = 'container-homepage';
+        } else {
+            if (!current_action && context.default_page) {
+                context = context.default_page;
+            }
+            if (context) {
+                var ContentView = globals.content_views.lookup(context, current_action);
+                content = <ContentView context={context} />;
+                containerClass = 'container';
+            }
         }
         var errors = this.state.errors.map(function (error) {
             return <div className="alert alert-error"></div>;
@@ -260,8 +298,8 @@ var App = React.createClass({
                         <div className="loading-spinner"></div>
 
                             <div id="layout" onClick={this.handleLayoutClick} onKeyPress={this.handleKey}>
-                                <Navigation />
-                                <div id="content" className="container" key={key}>
+                                <Navigation isHomePage={isHomePage} />
+                                <div id="content" className={containerClass} key={key}>
                                     {content}
                                 </div>
                                 {errors}
