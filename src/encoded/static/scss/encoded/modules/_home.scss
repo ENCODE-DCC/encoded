@@ -1,0 +1,234 @@
+// Allows page to be within the proper width in the middle
+.container-homepage {
+    @include container-fixed();
+
+    @media (min-width: $screen-sm-min) {
+        width: $container-sm;
+    }
+    @media (min-width: $screen-md-min) {
+        width: $container-md;
+    }
+    @media (min-width: $screen-lg-min) {
+        width: $container-lg;
+    }
+}
+
+
+// Fluid container
+//
+// Utilizes the mixin meant for fixed width containers, but without any defined
+// width for fluid, full width layouts.
+
+.container-fluid {
+    @include container-fixed();
+}
+
+// Makes background color gray
+.whole-page {
+    background-color: #E8ECEF;
+}
+
+
+.description {
+    line-height: 1.7;
+    border-top: 1px solid #a0a0a0;
+    border-bottom: 1px solid #a0a0a0;
+    padding: 20px;
+    font-size: 18px;
+
+    @media screen and (min-width: $screen-md-min) {
+        column-count: 2;
+        -moz-column-count: 2;
+    }
+}
+
+
+.twitter-widget {
+    padding-right: 20px;
+    border-left: 1px solid #a0a0a0;
+}
+
+// Positions overall classic with pic and rectangles
+.overall-classic {
+    position: relative;
+    padding-bottom: 0px;
+    background-color: #E8ECEF;
+
+}
+
+// Positions rectangles for classic pic
+.classic-svg {
+    position: absolute;
+    visibility: visible;
+    display: block;
+    padding-bottom: 0px;
+    max-width: 100%;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+// Adds blue outline to rectangles 
+.rectangle-box {
+    stroke-width: 6px;
+    stroke: #0000EE;
+    fill: #0000EE;
+    fill-opacity: 0.05;
+}
+
+// When hover on rectangle, make fill darker
+.rectangle-box:hover {
+    fill-opacity: 0.1;
+    cursor: pointer;
+}
+
+.rectangle-box.selected {
+    fill-opacity: 0.5;
+}
+
+
+// Positions classic pic
+.classic-image {
+    position: relative;
+    height: auto;
+    max-width: 100%;
+}
+
+// Graph titles
+.title {
+    width: 100%;
+    padding-top: 10px;
+    text-align: center;
+    color: black;
+    font-size: 30px;
+    font-weight: 100;
+}
+
+
+// Gives tabs white background and border separating from graphs
+.tab-table {
+}
+
+.tab-table-header {
+    padding: 0;
+    border-top: 1px solid #a0a0a0 !important;
+    border-radius: 0;
+}
+
+
+// Positions tabs with padding, hovering, and changing color if selected
+.tab-table td {
+    color: #000;
+    //border: none;
+    padding: 0px !important;
+    a.single-tab {
+        font-size: 16px;
+        padding: 10px 11px !important;
+        display: block;
+        text-decoration: none;
+        color: black;
+        border-right: solid;
+        border-right-color: #c0c0c0;
+        border-right-width: 1px;
+
+        &:hover {
+        background-color: #c0c0c0;
+        cursor: pointer;
+        }
+
+        &.selected {
+            color: white;
+            background-color: #428bca;
+        }
+    }
+    
+}
+
+// Gives graphs white background color
+.graphs {
+    background-color: white;
+    padding-bottom: 25px;
+}
+
+// Positions legends
+.chart-legend {
+    float: center;
+    margin-top: 20px;
+}
+
+// Positions legends
+.chart-legend ul {
+    list-style: none;
+}
+
+// Positions legends
+.chart-legend li span {
+    display: inline-block;
+    width: 32px;
+    height: 12px;
+    margin-right: 5px;
+}
+
+// Styles words of legends and adds hovering
+.chart-legend a {
+    color: black;
+    text-decoration: none;
+    &:hover {
+        background-color: #c0c0c0;
+    }
+}
+
+// Positions error message when charts empty
+.empty-chart {
+    width: 100%;
+    height: 183px;
+    text-align: center;
+    color: black;
+    padding-top: 60px;
+    font-size: 30px;
+    font-weight: 100;
+}
+
+.getting-started-image-wrapper {
+    position: relative;
+}
+
+.getting-started {
+    position: relative;
+    padding: 15px;
+}
+
+// Positions getting started pic
+.getting-started-image {
+    padding-top: 0px;
+    background-color: #E8ECEF;
+    height: auto;
+    max-width: 100%;
+    z-index: 0;
+
+}
+
+// Positions getting started buttonn
+.getting-started-button {
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    background-color: transparent;
+    z-index: 1;
+}
+
+// Positions View All
+.view-all {
+    margin-top: 20px;
+    text-align: center;
+}
+
+// Positions view all buttonn
+.view-all-button {
+    display: inline-block;
+    bottom: 50px;
+    left: 900px;
+    background-color: transparent;
+    z-index: 1;
+}
