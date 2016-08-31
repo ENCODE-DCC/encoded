@@ -186,60 +186,76 @@ def check_format(encValData, job, path):
 
 def process_fastq_file(job, unzipped_fastq_path, session, url):
     '''
-    1) for fastqs, we should calculate the read length
+    1) for fastqs, we should calculate the read length (V)
 
-    2) for fastqs, we should calculate the read count, possibly even run fastqc
+    2) for fastqs, we should calculate the read count (V) -> possibly even run fastqc (X)
 
-    3) For the fastqs we should try to figure out the flow cell details
+    3) For the fastqs we should try to figure out the flow cell details (V)
 
     4) For the fastqs we should try to figure out if it is read 1 or read
-    2 and error if it is both or if it does not match the submitted
+    2 and error if it is both or if it does not match the submitted (X)
 
-    5) For the fastqs we should try to figure out if there is duplication.
+    5) For the fastqs we should try to figure out if there is duplication. (V)
     '''
+
     item = job['item']
     errors = job['errors']
     result = job['result']
 
+    sequence_pattern = re.compile('[ACTGN]+')
     read_count = 0
     read_lengths = set()
-    flowcells = set()
-    unique_ids = set()
-    unique_id_strings = set()
+    unique_tuples_set = set()
+    unique_string_ids_set = set()
+
     try:
         with open(unzipped_fastq_path, 'r') as f:
             line_counter = 0
             for line in f:
                 line_counter += 1
                 first_colon = line.find(":")
-                if line_counter == 1 and \
-                   line[0] == '@' and \
-                   first_colon != -1:
-                    sub_line = line[first_colon:]
-                    sub_line_array = re.split(r'[\s_]', sub_line.strip())
-                    if len(sub_line_array) == 2:  # assuming new format
-                        line_array = re.split(r'[:\s_]', line.strip())
+                if line_counter == 1:
+                    '''
+                    MAY BE HERE INTRODUCE REGEX ILLUMINA TO ENSURE NEW FORMAT?
+                    '''
+                    if line[0] != '@' or first_colon == -1:
+                        errors['fastq_format_readname'] = 'submitted fastq file does not ' + \
+                                                          'comply with illumina fastq read name format, ' + \
+                                                          'read name was : {}'.format(line.strip())
+                        break
+                    else:
+                        sub_line = line[first_colon:].strip()
+                        sub_line_array = re.split(r'[\s_]', sub_line)
+                        if len(sub_line_array) == 2:  # assuming new illumina format
+                            line_array = re.split(r'[:\s_]', line.strip())
 
-                        flowcell = line_array[2]
-                        lane_number = line_array[3]
-                        read_number = line_array[-4]
-                        barcode_index = line_array[-1]
-                        unique_ids.add((
-                            flowcell,
-                            lane_number,
-                            read_number,
-                            barcode_index
-                            ))
-                        unique_id_strings.add(
-                            flowcell+':'+lane_number+':'+read_number+':'+barcode_index)
-                    # else:  # either old or unknown read name convention
-                        # count reads at least
+                            flowcell = line_array[2]
+                            lane_number = line_array[3]
+                            read_number = line_array[-4]
+                            barcode_index = line_array[-1]
+                            unique_tuples_set.add((
+                                flowcell,
+                                lane_number,
+                                read_number,
+                                barcode_index
+                                ))
+                            unique_string_ids_set.add(
+                                flowcell+':'+lane_number+':'+read_number+':'+barcode_index)
+                        # else:  # either old or unknown read name convention
+                            # count reads at least
                 if line_counter == 2:  # sequence
-                    read_count += 1
-                    read_lengths.add(len(line.strip()))
-
-                print (line)
+                    sequence = line.strip()
+                    if sequence_pattern.match(sequence):
+                        read_count += 1
+                        read_lengths.add(len(sequence))
+                    else:
+                        errors['fastq_format_sequence'] = 'submitted fastq file does not ' + \
+                                                          'comply with illumina sequence fastq format, ' + \
+                                                          'sequence was : {}'.format(sequence)
+                        break
+                # print (line)
                 line_counter = line_counter % 4
+
         #################
         # read_lengths
         #################
@@ -257,62 +273,71 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
         else:
             errors['read_length'] = 'no specified read length in the uploaded fastq file, ' + \
                                     'while read length(s) found in the file were {}.'.format(
-                                    read_lengths_list)
+                                    ', '.join(read_lengths_list))
         #################
         # number_reads
         #################
         result['reads_quantity'] = read_count
 
         ######################################
-        # uniqueness / flowcells validation
+        # uniqueness / detected_flowcell_details validation
         ######################################
-        id_tuples = sorted(list(unique_ids))
-        flowcells = []
-        if len(id_tuples) > 0:
-            for id_flowcell in id_tuples:
-                flowcells.append((id_flowcell[0],
-                                  id_flowcell[1]))
+        unique_tuples_list = sorted(list(unique_tuples_set))
+        # detected_flowcell_details = []
+        if len(unique_tuples_list) > 0:
+            detected_flowcell_details = [(x[0], x[1]) for x in unique_tuples_list]
+            # for unique_tuple in unique_tuples_list:
+            #    detected_flowcell_details.append((unique_tuple[0],
+            #                                      unique_tuple[1]))
         if 'flowcell_details' in item and len(item['flowcell_details']) > 0:
             uniqueness_flag = True
-            reported_flowcell_details = item['flowcell_details']
-            if len(id_tuples) > 0:
+            submitted_flowcell_information = item['flowcell_details']
+            if len(unique_tuples_list) > 0:
                 # validation
-                for entry in reported_flowcell_details:
+                submitted_flowcell_details = []
+                for entry in submitted_flowcell_information:
                     if 'flowcell' in entry and \
                        'lane' in entry:
-                        reported_info = (entry['flowcell'],
-                                         entry['lane'])
-                        if reported_info not in flowcells:
-                            errors['flowcell_details'] = \
-                                'specified flowcell_details {} does mot match '.format(
-                                    reported_info) + \
-                                'flowcell details {} '.format(flowcells) + \
-                                'extracted from the read names.'
+                        submitted_flowcell = (entry['flowcell'],
+                                              entry['lane'])
+                        submitted_flowcell_details.append(submitted_flowcell)
+                difference = sorted(list(set(detected_flowcell_details) -
+                                    set(submitted_flowcell_details)))
+                if len(difference) > 0:
+                    errors['flowcell_details'] = \
+                        'specified in the metadata flowcell_details {} does mot match '.format(
+                            submitted_flowcell_details) + \
+                        'flowcell details {} '.format(detected_flowcell_details) + \
+                        'extracted from the read names.'
 
                 # check for uniqueness
                 conflicts = []
-                for unique_string in unique_id_strings:
-                    query = '/'+unique_string
+                for unique_string_id in unique_string_ids_set:
+                    query = '/'+unique_string_id
                     r = session.get(urljoin(url, query))
                     r_graph = r.json().get('@graph')
                     if len(r_graph) > 0:
                         uniqueness_flag = False
 
-                        for entry in r_graph:
-                            conflicts += \
-                                'specified unique identifier {} '.format(unique_string) + \
-                                'is conflicting with identifier of reads from ' + \
-                                'file {}.'.format(entry['accession'])
+                        conflicts = [
+                            'specified unique identifier {} '.format(unique_string_id) +
+                            'is conflicting with identifier of reads from ' +
+                            'file {}.'.format(x['accession']) for x in r_graph]
+                        # for entry in r_graph:
+                        #    conflicts += \
+                        #        'specified unique identifier {} '.format(unique_string_id) + \
+                        #        'is conflicting with identifier of reads from ' + \
+                        #        'file {}.'.format(entry['accession'])
             if uniqueness_flag is True:
                 # fill in the properties
-                result['unique_identifiers'] = sorted(list(unique_id_strings))
+                result['unique_identifiers'] = sorted(list(unique_string_ids_set))
             else:
                 errors['not_unique_flowcell_details'] = conflicts
 
-        elif flowcells != []:
+        elif detected_flowcell_details != []:
             errors['flowcell_details'] = 'no specified flowcell_details in a fastq file ' + \
                                          ' containing reads with following flowcell ' + \
-                                         'identifiers {}.'.format(flowcells)
+                                         'identifiers {}.'.format(detected_flowcell_details)
     except IOError:
         errors['file_open_error'] = 'OS could not open the file ' + \
                                     unzipped_fastq_path
