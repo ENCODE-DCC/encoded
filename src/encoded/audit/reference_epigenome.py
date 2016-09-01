@@ -60,7 +60,8 @@ def audit_reference_epigenome_donor_biosample(value, system):
     return
 
 
-@audit_checker('ReferenceEpigenome', frame=['related_datasets',
+@audit_checker('ReferenceEpigenome', frame=['award',
+                                            'related_datasets',
                                             'related_datasets.target'])
 def audit_reference_epigenome_assay_types_requirments(value, system):
     if 'related_datasets' not in value:
@@ -69,15 +70,35 @@ def audit_reference_epigenome_assay_types_requirments(value, system):
                  'assays.'
         yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
         return
-    required_assays = {('ChIP-seq', 'Control'): 0,
-                       ('ChIP-seq', 'H3K27me3'): 0,
-                       ('ChIP-seq', 'H3K36me3'): 0,
-                       ('ChIP-seq', 'H3K4me1'): 0,
-                       ('ChIP-seq', 'H3K4me3'): 0,
-                       ('ChIP-seq', 'H3K27ac'): 0,
-                       ('ChIP-seq', 'H3K9me3'): 0,
-                       'whole-genome shotgun bisulfite sequencing': 0,
-                       'RNA-seq': 0}
+    # 'transcription profiling by array assay' : OBI:0001463
+    # MeDIP-seq (OBI:0000693)
+    # MRE-seq (OBI:0001861)
+    # RRBS (OBI:0001862)
+    # MethylCap-seq 
+
+
+    if 'award' in value and \
+       value['award']['rfa'] == 'Roadmap':
+        required_assays = {('ChIP-seq', 'Control'): 0,
+                           ('ChIP-seq', 'H3K27me3'): 0,
+                           ('ChIP-seq', 'H3K36me3'): 0,
+                           ('ChIP-seq', 'H3K4me1'): 0,
+                           ('ChIP-seq', 'H3K4me3'): 0,
+                           ('ChIP-seq', 'H3K9me3'): 0,
+                           'RNA-seq': 0}
+        project_detail = 'required according to standards of NIH ' + \
+                         'Roadmap Minimal Reference Epigenome'
+    else:
+        required_assays = {('ChIP-seq', 'Control'): 0,
+                           ('ChIP-seq', 'H3K27me3'): 0,
+                           ('ChIP-seq', 'H3K36me3'): 0,
+                           ('ChIP-seq', 'H3K4me1'): 0,
+                           ('ChIP-seq', 'H3K4me3'): 0,
+                           ('ChIP-seq', 'H3K27ac'): 0,
+                           ('ChIP-seq', 'H3K9me3'): 0,
+                           'whole-genome shotgun bisulfite sequencing': 0,
+                           'RNA-seq': 0}
+        project_detail = 'required according to standards of Minimal IHEC Reference Epigenome.'
 
     for assay in value['related_datasets']:
         assay_name = assay['assay_term_name']
@@ -89,40 +110,50 @@ def audit_reference_epigenome_assay_types_requirments(value, system):
                     required_assays[key] = 1
         elif assay_name in required_assays:
                 required_assays[assay_name] = 1
+
     if required_assays[('ChIP-seq', 'Control')] == 0:
         detail = 'Reference Epigenome {} '.format(value['@id']) + \
-                 'missing IHEC required control ChIP-seq assay.'
+                 'is missing control ChIP-seq assay, ' + \
+                 project_detail
         yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
     if required_assays[('ChIP-seq', 'H3K27me3')] == 0:
         detail = 'Reference Epigenome {} '.format(value['@id']) + \
-                 'missing IHEC required H3K27me3 ChIP-seq assay.'
+                 'is missing H3K27me3 ChIP-seq assay, ' + \
+                 project_detail
         yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
     if required_assays[('ChIP-seq', 'H3K36me3')] == 0:
         detail = 'Reference Epigenome {} '.format(value['@id']) + \
-                 'missing IHEC required H3K36me3 ChIP-seq assay.'
+                 'is missing H3K36me3 ChIP-seq assay, ' + \
+                 project_detail
         yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
     if required_assays[('ChIP-seq', 'H3K4me1')] == 0:
         detail = 'Reference Epigenome {} '.format(value['@id']) + \
-                 'missing IHEC required H3K4me1 ChIP-seq assay.'
+                 'is missing H3K4me1 ChIP-seq assay, ' + \
+                 project_detail
         yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
     if required_assays[('ChIP-seq', 'H3K4me3')] == 0:
         detail = 'Reference Epigenome {} '.format(value['@id']) + \
-                 'missing IHEC required H3K4me3 ChIP-seq assay.'
+                 'is missing H3K4me3 ChIP-seq assay, ' + \
+                 project_detail
         yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
     if required_assays[('ChIP-seq', 'H3K27ac')] == 0:
         detail = 'Reference Epigenome {} '.format(value['@id']) + \
-                 'missing IHEC required H3K27ac ChIP-seq assay.'
+                 'is missing H3K27ac ChIP-seq assay, ' + \
+                 project_detail
         yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
     if required_assays[('ChIP-seq', 'H3K9me3')] == 0:
         detail = 'Reference Epigenome {} '.format(value['@id']) + \
-                 'missing IHEC required H3K9me3 ChIP-seq assay.'
+                 'is missing H3K9me3 ChIP-seq assay, ' + \
+                 project_detail
         yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
     if required_assays['whole-genome shotgun bisulfite sequencing'] == 0:
         detail = 'Reference Epigenome {} '.format(value['@id']) + \
-                 'missing IHEC required WGBS assay.'
+                 'is missing WGBS assay, ' + \
+                 project_detail
         yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
     if required_assays['RNA-seq'] == 0:
         detail = 'Reference Epigenome {} '.format(value['@id']) + \
-                 'missing IHEC required RNA-seq assay.'
+                 'is missing RNA-seq assay, ' + \
+                 project_detail
         yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
     return
