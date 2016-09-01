@@ -307,7 +307,7 @@ def index_file(request):
         uuid_current = None
         invalidated_files = list(set(invalidated).intersection(set(all_bed_file_uuids(request))))
         try:
-            for uuid in invalidated_files:
+            for uuid in invalidated_files[:12]:
                 uuid_current = uuid
                 index_peaks(uuid, request)
         except Exception as e:
