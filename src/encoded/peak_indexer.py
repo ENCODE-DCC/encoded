@@ -5,6 +5,7 @@ import csv
 import logging
 import collections
 from pyramid.view import view_config
+from sqlalchemy.sql import text
 from elasticsearch.exceptions import (
     NotFoundError
 )
@@ -37,14 +38,13 @@ _INDEXED_DATA = {
 }
 
 # Species and references being indexed
-_SPECIES = {
-    'Homo sapiens': ['hg19']
-}
+_ASSEMBLIES = ['hg19', 'mm10', 'mm9', 'GRCh38']
 
 
 def includeme(config):
     config.add_route('index_file', '/index_file')
     config.scan(__name__)
+
 
 
 def tsvreader(file):
@@ -103,12 +103,31 @@ def get_assay_term_name(accession, request):
         return context['assay_term_name']
     return None
 
+def all_bed_file_uuids(request):
+    file_uuids = []
+    stmt = text("select distinct(resources.rid) from resources, propsheets where resources.rid = propsheets.rid and resources.item_type='file' and propsheets.properties->>'file_format' = 'bed' and properties->>'status' = 'released';")
+    connection = request.registry[DBSESSION].connection()
+    uuids = connection.execute(stmt)
+    file_uuids = [str(item[0]) for item in uuids]
+    return file_uuids
+
 
 def index_peaks(uuid, request):
     """
     Indexes bed files in elasticsearch index
     """
     context = request.embed('/', str(uuid), '@@object')
+
+    if 'assembly' not in context:
+        return
+        
+    assembly = context['assembly']
+
+    # Treat mm10-minimal as mm1
+    if assembly == 'mm10-minimal':
+        assembly = 'mm10'
+
+
 
     if 'File' not in context['@type'] or 'dataset' not in context:
         return
@@ -117,7 +136,7 @@ def index_peaks(uuid, request):
         return
 
     # Index human data for now
-    if 'assembly' not in context or 'hg19' not in context['assembly']:
+    if assembly not in _ASSEMBLIES:
         return
 
     assay_term_name = get_assay_term_name(context['dataset'], request)
@@ -167,9 +186,12 @@ def index_peaks(uuid, request):
         }
         if not es.indices.exists(key):
             es.indices.create(index=key, body=index_settings())
-            es.indices.put_mapping(index=key, doc_type=context['assembly'],
-                                   body=get_mapping(context['assembly']))
-        es.index(index=key, doc_type=context['assembly'], body=doc, id=context['uuid'])
+            
+        if not es.indices.exists_type(index=key, doc_type=assembly):
+            es.indices.put_mapping(index=key, doc_type=assembly, body=get_mapping(assembly))
+
+        es.index(index=key, doc_type=assembly, body=doc, id=context['uuid'])
+
 
 
 @view_config(route_name='index_file', request_method='POST', permission="index")
@@ -214,9 +236,11 @@ def index_file(request):
     }
 
     if last_xmin is None:
-        result['types'] = types = request.json.get('types', None)
-        invalidated = list(all_uuids(request.registry, types))
+        result['types'] = request.json.get('types', None)
+        invalidated = all_bed_file_uuids(request)
+        initial_index = True
     else:
+        initial_index = False
         txns = session.query(TransactionRecord).filter(
             TransactionRecord.xid >= last_xmin,
         )
@@ -278,6 +302,8 @@ def index_file(request):
     if not dry_run:
         err = None
         uuid_current = None
+        if not initial_index:
+            invalidated = list(set(invalidated).intersection(set(all_bed_file_uuids(request))))
         try:
             for uuid in invalidated:
                 uuid_current = uuid
