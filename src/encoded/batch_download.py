@@ -16,10 +16,6 @@ import csv
 import io
 import json
 
-import logging
-
-
-log = logging.getLogger(__name__)
 
 
 def includeme(config):
@@ -76,7 +72,24 @@ _tsv_mapping = OrderedDict([
     ('md5sum', ['files.md5sum']),
     ('File download URL', ['files.href']),
     ('Assembly', ['files.assembly']),
-    ('Platform', ['files.platform.title'])
+    ('Platform', ['files.platform.title']),
+    ('Controlled by', ['files.controlled_by']),
+    ('File Status', ['files.status'])
+])
+
+_audit_mapping = OrderedDict([
+    ('Audit WARNING', ['audit.WARNING.path',
+                       'audit.WARNING.category',
+                       'audit.WARNING.detail']),
+    ('Audit INTERNAL_ACTION', ['audit.INTERNAL_ACTION.path',
+                               'audit.INTERNAL_ACTION.category',
+                               'audit.INTERNAL_ACTION.detail']),
+    ('Audit NOT_COMPLIANT', ['audit.NOT_COMPLIANT.path',
+                             'audit.NOT_COMPLIANT.category',
+                             'audit.NOT_COMPLIANT.detail']),
+    ('Audit ERROR', ['audit.ERROR.path',
+                     'audit.ERROR.category',
+                     'audit.ERROR.detail'])
 ])
 
 
@@ -115,7 +128,41 @@ def get_peak_metadata_links(request):
     )
     return [peak_metadata_tsv_link, peak_metadata_json_link]
 
+def make_cell(header_column, row, exp_data_row):
+    temp = []
+    for column in _tsv_mapping[header_column]:
+        c_value = []
+        for value in simple_path_ids(row, column):
+            if str(value) not in c_value:
+                c_value.append(str(value))
+        if column == 'replicates.library.biosample.post_synchronization_time' and len(temp):
+            if len(c_value):
+                temp[0] = temp[0] + ' + ' + c_value[0]
+        elif len(temp):
+            if len(c_value):
+                temp = [x + ' ' + c_value[0] for x in temp]
+        else:
+            temp = c_value
+    exp_data_row.append(', '.join(list(set(temp))))
 
+
+def make_audit_cell(header_column, experiment_json, file_json):
+    categories = []
+    paths = []
+    for column in _audit_mapping[header_column]:
+        for value in simple_path_ids(experiment_json, column):
+            if 'path' in column:
+                paths.append(value)
+            elif 'category' in column:
+                categories.append(value)
+    data = []
+    for i, path in enumerate(paths):
+        if '/files/' in path and file_json.get('title', '') not in path:
+            # Skip file audits that does't belong to the file
+            continue
+        else:
+            data.append(categories[i])
+    return ', '.join(list(set(data)))
 
 
 @view_config(route_name='peak_metadata', request_method='GET')
@@ -189,29 +236,17 @@ def metadata_tsv(context, request):
     path = '{}?{}'.format(search_path, urlencode(param_list, True))
     results = request.embed(path, as_user=True)
     rows = []
-    for row in results['@graph']:
-        if row['files']:
+    for experiment_json in results['@graph']:
+        if experiment_json['files']:
             exp_data_row = []
             for column in header:
                 if not _tsv_mapping[column][0].startswith('files'):
-                    temp = []
-                    for c in _tsv_mapping[column]:
-                        c_value = []
-                        for value in simple_path_ids(row, c):
-                            if str(value) not in c_value:
-                                c_value.append(str(value))
-                        if c == 'replicates.library.biosample.post_synchronization_time' and len(temp):
-                            if len(c_value):
-                                temp[0] = temp[0] + ' + ' + c_value[0]
-                        elif len(temp):
-                            if len(c_value):
-                                temp = [x + ' ' + c_value[0] for x in temp]
-                        else:
-                            temp = c_value
-                    exp_data_row.append(', '.join(list(set(temp))))
+                    make_cell(column, experiment_json, exp_data_row)
+
             f_attributes = ['files.title', 'files.file_type',
                             'files.output_type']
-            for f in row['files']:
+
+            for f in experiment_json['files']:
                 if 'files.file_type' in param_list:
                     if f['file_type'] not in param_list['files.file_type']:
                         continue
@@ -238,9 +273,12 @@ def metadata_tsv(context, request):
                     data = list(set(temp))
                     data.sort()
                     data_row.append(', '.join(data))
+                audit_info = [make_audit_cell(audit_type, experiment_json, f) for audit_type in _audit_mapping]
+                data_row.extend(audit_info)
                 rows.append(data_row)
     fout = io.StringIO()
     writer = csv.writer(fout, delimiter='\t')
+    header.extend([prop for prop in _audit_mapping])
     writer.writerow(header)
     writer.writerows(rows)
     return Response(

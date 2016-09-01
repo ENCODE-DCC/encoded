@@ -76,15 +76,29 @@
         "file_format":{
             "oneOf": [
                 {
-                    "required": ["replicate"],
-                    "properties": {
-                        "file_format": {
-                            "enum": ["fastq"]
+                    "allOf": [
+                        {
+                            "required": ["replicate", "run_type"],
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq"]
+                                }
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["assembly"],
+                                "properties": {
+                                    "file_format": {
+                                        "enum": ["fastq"]
+                                    }
+                                }
+                            }
                         }
-                    }
+                    ]
                 },
                 {
-                    "required": ["file_format_type"],
+                    "required": ["file_format_type", "assembly"],
                     "properties": {
                         "file_format": {
                             "enum": ["gff","bed","bigBed"]
@@ -92,10 +106,18 @@
                     }
                 },
                 {
+                    "required": ["assembly"],
+                    "properties": {
+                        "file_format": {
+                            "enum": ["bam", "sam", "gtf"]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "file_format": {
-                                "enum": ["fastq", "gff", "bed", "bigBed"]
+                                "enum": ["fastq", "gff", "gtf", "bed", "bigBed", "bam", "sam"]
                             }
                         }
                     }

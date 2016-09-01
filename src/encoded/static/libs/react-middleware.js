@@ -1,3 +1,4 @@
+/*global __dirname */
 'use strict';
 var React = require('react');
 var doctype = '<!DOCTYPE html>\n';
@@ -13,9 +14,9 @@ var render = function (Component, body, res) {
     //var start = process.hrtime();
 
     // Search for the hashed CSS file name in the buildFiles list
-    var cssFile = buildFiles.find(function(file) {
-        return !!file.match(/^\.\/css\/style(\.[0-9a-z]+){0,1}\.css$/);
-    });
+   var cssFile = buildFiles.find(function(file) {
+       return !!file.match(/^\.\/css\/style(\.[0-9a-z]+){0,1}\.css$/);
+   });
     var context = JSON.parse(body);
     var props = {
         context: context,

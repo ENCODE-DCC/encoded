@@ -3,7 +3,7 @@ from snovault import (
     audit_checker,
 )
 from .conditions import rfa
-from .ontology_data import biosampleType_ontologyPrefix
+from .ontology_data import (biosampleType_ontologyPrefix, NTR_assay_lookup)
 from .gtex_data import gtexDonorsList
 from .standards_data import pipelines_with_read_depth
 
@@ -1301,7 +1301,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                          'in experiments studying broad histone marks, which ' + \
                          'require {} usable fragments, according to '.format(marks['broad']) + \
                          'June 2015 standards.'
-                yield AuditFailure('low read depth', detail, level='DCC_ACTION')
+                yield AuditFailure('low read depth', detail, level='INTERNAL_ACTION')
             if read_depth >= 10000000 and read_depth < marks['narrow']:
                 detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                              read_depth) + \
@@ -2281,12 +2281,6 @@ def audit_experiment_assay(value, system):
         return
         # This should be a dependancy
 
-    if 'assay_term_name' not in value:
-        detail = 'Experiment {} is missing assay_term_name'.format(value['@id'])
-        yield AuditFailure('missing assay information', detail, level='ERROR')
-        return
-        # This should be a dependancy
-
     ontology = system['registry']['ontology']
     term_id = value.get('assay_term_id')
     term_name = value.get('assay_term_name')
@@ -2294,9 +2288,16 @@ def audit_experiment_assay(value, system):
     if term_id.startswith('NTR:'):
         detail = 'Assay_term_id is a New Term Request ({} - {})'.format(term_id, term_name)
         yield AuditFailure('NTR assay', detail, level='INTERNAL_ACTION')
-        return
 
-    if term_id not in ontology:
+        if term_name != NTR_assay_lookup[term_id]:
+            detail = 'Experiment has a mismatch between assay_term_name "{}" and assay_term_id "{}"'.format(
+                term_name,
+                term_id,
+            )
+            yield AuditFailure('mismatched assay_term_name', detail, level='INTERNAL_ACTION')
+            return
+
+    elif term_id not in ontology:
         detail = 'Assay_term_id {} is not found in cached version of ontology'.format(term_id)
         yield AuditFailure('assay_term_id not in ontology', term_id, level='INTERNAL_ACTION')
         return
