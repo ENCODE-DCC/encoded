@@ -43,7 +43,7 @@ var columnChoices = function(schema, selected) {
     // add all properties (with a few exceptions)
     _.each(schema.properties, (property, name) => {
         if (name == '@id' || name == '@type' || name == 'uuid' || name == 'replicates') return;
-        if (!columns.hasOwnProperty(name)) {
+        if (!columns.hasOwnProperty(name) && property.title) {
             columns[name] = {
                 title: property.title,
                 visible: false
