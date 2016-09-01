@@ -380,7 +380,8 @@ var Report = React.createClass({
         var parsed_url = url.parse(this.context.location_href, true);
         var type = parsed_url.query.type;
         var schema = this.props.schemas[type];
-        var columns = columnChoices(schema, parsed_url.query.field);
+        var query_fields = parsed_url.query.field ? (typeof parsed_url.query.field === 'object' ? parsed_url.query.field : [parsed_url.query.field]) : undefined;
+        var columns = columnChoices(schema, query_fields);
 
         var fields = [];
         _.mapObject(columns, (column, path) => {
