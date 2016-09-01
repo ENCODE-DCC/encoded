@@ -338,7 +338,7 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
                     # fill in the properties
 
                     print ('UNIQUE IDENTIFIERS ARE ' + str(unique_string_ids_set))
-                    # result['unique_identifiers'] = sorted(list(unique_string_ids_set))
+                    # result['fastq_identifiers'] = sorted(list(unique_string_ids_set))
                 else:
                     errors['not_unique_flowcell_details'] = conflicts
 
