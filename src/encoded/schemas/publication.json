@@ -224,6 +224,9 @@
         },
         "published_by": {
             "title": "Published by"
+        },
+        "datasets.accession": {
+            "title": "Associated Datasets"
         }
     },
     "columns": {
