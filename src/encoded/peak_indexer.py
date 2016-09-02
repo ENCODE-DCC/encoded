@@ -6,7 +6,6 @@ import logging
 import collections
 from pyramid.view import view_config
 from sqlalchemy.sql import text
-from pyramid.events import subscriber
 from elasticsearch.exceptions import (
     NotFoundError
 )
@@ -117,7 +116,6 @@ def all_dataset_uuids(request):
 
 def all_experiment_uuids(request):
     return list(all_uuids(request.registry, types='experiment'))
-
 
 
 def index_peaks(uuid, request):
