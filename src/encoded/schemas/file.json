@@ -139,17 +139,17 @@
             "permission": "import_items",
             "uniqueKey": "accession"
         }, 
-        "unique_identifiers": {
-            "title": "Fastq file flowcell based unique identifiers",
-            "description": "Fastq file unique identifiers to reference a file.",
+        "fastq_signature": {
+            "title": "Fastq file flowcell based signature",
+            "description": "Fastq file flowcell based unique signature to reference a file.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "permission": "import_items",
             "items": {
-                "uniqueKey": "unique_id",
-                "title": "Flowcell identifier",
-                "description": "Fastq file unique identifier to reference a file.",
+                "uniqueKey": "fastq_signature_part",
+                "title": "Flowcell based fastq siganture part",
+                "description": "Fastq file flowcell based unique signature to reference a file.",
                 "comment": "Current convention is based on the Illumina unique sequence identifier, colon separated flowcell, lane, read_end(1/2) and barcode.",
                 "type":  "string",
                 "pattern": "^[a-zA-Z0-9]*:[0-9]*:[12]:([ACTG]*|[0-9]*)$"
