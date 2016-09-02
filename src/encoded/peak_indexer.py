@@ -111,9 +111,13 @@ def all_bed_file_uuids(request):
     return [str(item[0]) for item in uuids]
 
 
-def all_datasets_uuids(request):
+def all_dataset_uuids(request):
     datasets = request.registry[COLLECTIONS]['datasets']
     return [uuid for uuid in datasets]
+
+def all_experiment_uuids(request):
+    return list(all_uuids(request.registry, types='experiment'))
+
 
 
 def index_peaks(uuid, request):
@@ -317,15 +321,15 @@ def index_file(request):
         result['indexed'] = len(invalidated)
         if record:
             es_peaks.index(index='snovault', doc_type='meta', body=result, id='peak_indexing')
-        invalidated_datasets = list(set(invalidated).intersection(set(all_datasets_uuids(request))))
-        registry.notify(AfterIndexed(invalidated_datasets, request))
+        invalidated_datasets_and_experiments = list(set(invalidated).intersection(set(all_dataset_uuids(request) + all_experiment_uuids(request))))
+        registry.notify(AfterIndexed(invalidated_datasets_and_experiments, request))
     return result
 
-class AfterIndexed(object):
+class AfterIndexedExperimentsAndDatasets(object):
     def __init__(self, object, request):
         self.object = object
         self.request = request
 
-@subscriber(AfterIndexed)
+@subscriber(AfterIndexedExperimentsAndDatasets)
 def log_indexed_event(event):
     log.warn("{} objects indexed".format(len(event.object)))
