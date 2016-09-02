@@ -19,6 +19,7 @@ from .base import (
 class GeneticModification(Item):
     item_type = 'genetic_modification'
     schema = load_schema('encoded:schemas/genetic_modification.json')
+    embedded = ['target']
 
     rev = {
         'biosamples_modified': ('Biosample', 'genetic_modifications'),

@@ -103,6 +103,9 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'talens.documents.award',
         'talens.documents.lab',
         'talens.documents.submitted_by',
+        'genetic_modifications',
+        'genetic_modifications.award',
+        'genetic_modifications.lab',
     ]
     audit_inherit = [
         'donor',
