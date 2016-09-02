@@ -20,8 +20,15 @@ class GeneticModification(Item):
     item_type = 'genetic_modification'
     schema = load_schema('encoded:schemas/genetic_modification.json')
     embedded = [
-        'characterizations',
-        'target'
+        'target',
+        'documents',
+        'documents.award',
+        'documents.lab',
+        'documents.submitted_by',
+        'characterizations.documents',
+        'characterizations.documents.award',
+        'characterizations.documents.lab',
+        'characterizations.documents.submitted_by'
     ]
 
     rev = {

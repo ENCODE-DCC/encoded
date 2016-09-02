@@ -7,12 +7,16 @@
         "status": "released",
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
+        "documents": [
+            "ENCODE:Antibody_characterization_standards_February_2014"
+        ],
         "source":"gregory-crawford",
         "modification_type": "replacement",
         "modification_techniques": [
         	"encode:crispr-test-1"
         ],
-        "modification_treatments": []
+        "modification_treatments": [],
+        "target": "/targets/H3K4me3-human"
     },
     {
         "aliases": [

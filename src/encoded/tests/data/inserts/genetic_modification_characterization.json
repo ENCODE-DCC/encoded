@@ -8,8 +8,13 @@
         "caption": "This is an example genetic modification characterization",
         "characterization_method": "Sanger sequencing",
         "characterizes": "encode:modification-test-1",
+        "documents": [
+            "kevin-white:K562_BAC_transfection_White_protocol",
+            "kevin-white:pBACGK1.1_BAC_vector"
+        ],
         "lab": "/labs/robert-waterston/",
         "notes": "This is just an example.",
-        "uuid": "39ac4822-4265-42b8-9d21-e6b699beabf3"
+        "uuid": "39ac4822-4265-42b8-9d21-e6b699beabf3",
+        "status": "released"
     }
 ]
