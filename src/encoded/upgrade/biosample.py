@@ -144,7 +144,6 @@ def biosample_8_9(value, system):
             value['model_organism_age'] = new_age
 
 
-
 @upgrade_step('biosample', '9', '10')
 def biosample_9_10(value, system):
     # http://redmine.encodedcc.org/issues/2591
@@ -199,3 +198,12 @@ def biosample_11_12(value, system):
 
     if 'references' in value:
         value['references'] = list(set(value['references']))
+
+
+@upgrade_step('biosample', '12', '13')
+def biosample_12_13(value, system):
+    # http://redmine.encodedcc.org/issues/3921
+    if 'note' in value:
+        if value['note'] != value['submitter_comment']:
+            value['submitter_comment'] = value['submitter_comment'] + ' ' + value['note']
+        del value['note']

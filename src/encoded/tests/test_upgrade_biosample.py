@@ -126,6 +126,17 @@ def biosample_11(root, biosample):
     return properties
 
 
+@pytest.fixture
+def biosample_12(biosample_0):
+    item = biosample_0.copy()
+    item.update({
+        'schema_version': '12',
+        'note': 'Value in note.',
+        'submitter_comment': 'Different value in submitter_comment.'
+    })
+    return item
+
+
 def test_biosample_upgrade(upgrader, biosample_1):
     value = upgrader.upgrade('biosample', biosample_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -324,3 +335,11 @@ def test_biosample_unique_array(root, upgrader, biosample, biosample_11, dummy_r
     assert value['schema_version'] == '12'
     assert len(value['dbxrefs']) == len(set(value['dbxrefs']))
     assert len(value['aliases']) == len(set(value['aliases']))
+
+
+def test_biosample_remove_note(root, upgrader, biosample, biosample_12, dummy_request):
+    context = root.get_by_uuid(biosample['uuid'])
+    dummy_request.context = context
+    value = upgrader.upgrade('biosample', biosample_12, target_version='13', context=context)
+    assert value['schema_version'] == '13'
+    assert 'note' not in value
