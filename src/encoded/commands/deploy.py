@@ -68,13 +68,14 @@ def spot_instance_price_check(client, instance_type):
                         if float(item[i]) > highest :
                             highest = float(item[i])
 
-    print("Highest val: %f" % highest)
+    print("Highest price: %f" % highest)
+
     return highest
 
-def spot_instances(client, spot_price, count, image_id, instance_type, spot_security_groups, highest):
-   
-    if spot_price < highest:
-        spot_price=highest
+def spot_instances(client, spot_price, count, image_id, instance_type, spot_security_groups):
+    #highest=avg_spot_price
+    #if float(spot_price < highest:
+        #spot_price=highest
 
     responce = client.request_spot_instances(
     DryRun=False,
@@ -129,7 +130,7 @@ def tag_ec2_instance(instance, name, branch, commit, username, elasticsearch):
     return instance
 
 
-def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, spot_price, cluster_size, cluster_name,
+def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, spot_price, cluster_size, cluster_name, check_price,
         branch=None, name=None, role='demo', profile_name=None, teardown_cluster=None):
     
     if branch is None:
@@ -192,13 +193,17 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         iam_role = 'elasticsearch-instance'
         count = int(cluster_size)
     
-    
-    if (spot_instance == 'yes'):
+    if not check_price == False :
+        ec2_spot = boto3.client('ec2')
+        get_spot_price = spot_instance_price_check(ec2_spot, instance_type)
+        exit()
+
+    if not spot_instance == False :
         print("spot_instance check worked")
         spot_security_groups = 'ssh-http-https'
         ec2_spot = boto3.client('ec2')
-        avg_spot_price = spot_instance_price_check(ec2_spot, instance_type)
-        instances = spot_instances(ec2_spot, spot_price, count, image_id, instance_type, spot_security_groups, highest)
+        #avg_spot_price = spot_instance_price_check(ec2_spot, instance_type)
+        instances = spot_instances(ec2_spot, spot_price, count, image_id, instance_type, spot_security_groups)
     else:
         instances = create_ec2_instances(ec2, image_id, count, instance_type, security_groups, user_data, BDM, iam_role)
 
@@ -233,8 +238,9 @@ def main():
     parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
     parser.add_argument('-n', '--name', type=hostname, help="Instance name")
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')
-    parser.add_argument('--spot_instance', default=None, help="Launch as spot instance")
-    parser.add_argument('--spot_price', default='0.70')
+    parser.add_argument('--spot_instance', default=False, help="Launch as spot instance")
+    parser.add_argument('--spot_price', default='0.70', help="set price or keep default price of 0.70")
+    parser.add_argument('--check_price', default=True, help="Check price on spot instances")
     parser.add_argument(
         '--candidate', action='store_const', default='demo', const='candidate', dest='role',
         help="Deploy candidate instance")
