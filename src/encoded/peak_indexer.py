@@ -311,7 +311,7 @@ def index_file(request):
         uuid_current = None
         invalidated_files = list(set(invalidated).intersection(set(all_bed_file_uuids(request))))
         try:
-            for uuid in invalidated_files[:12]:
+            for uuid in invalidated_files:
                 uuid_current = uuid
                 index_peaks(uuid, request)
         except Exception as e:
@@ -329,7 +329,3 @@ class AfterIndexedExperimentsAndDatasets(object):
     def __init__(self, object, request):
         self.object = object
         self.request = request
-
-@subscriber(AfterIndexedExperimentsAndDatasets)
-def log_indexed_event(event):
-    log.warn("{} objects indexed".format(len(event.object)))
