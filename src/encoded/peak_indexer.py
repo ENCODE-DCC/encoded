@@ -322,7 +322,7 @@ def index_file(request):
         if record:
             es_peaks.index(index='snovault', doc_type='meta', body=result, id='peak_indexing')
         invalidated_datasets_and_experiments = list(set(invalidated).intersection(set(all_dataset_uuids(request) + all_experiment_uuids(request))))
-        registry.notify(AfterIndexed(invalidated_datasets_and_experiments, request))
+        registry.notify(AfterIndexedExperimentsAndDatasets(invalidated_datasets_and_experiments, request))
     return result
 
 class AfterIndexedExperimentsAndDatasets(object):
