@@ -283,7 +283,7 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
         #################
 
         print ('COUNTED ' + str(read_count) + ' READS')
-        # result['reads_quantity'] = read_count
+        # result['read_count'] = read_count
 
         ######################################
         # uniqueness / detected_flowcell_details validation
