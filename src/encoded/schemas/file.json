@@ -139,6 +139,13 @@
             "permission": "import_items",
             "uniqueKey": "accession"
         }, 
+        "read_count": {
+            "title": "Read count",
+            "description": "Number of reads in fastq file.",
+            "comment": "Only admins are allowed to set or update this value.",
+            "permission": "import_items",
+            "type": "integer"
+        },
         "fastq_signature": {
             "title": "Fastq file flowcell based signature",
             "description": "Fastq file flowcell based unique signature to reference a file.",
