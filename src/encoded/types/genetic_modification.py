@@ -28,7 +28,8 @@ class GeneticModification(Item):
         'characterizations.documents',
         'characterizations.documents.award',
         'characterizations.documents.lab',
-        'characterizations.documents.submitted_by'
+        'characterizations.documents.submitted_by',
+        'modification_techniques'
     ]
 
     rev = {

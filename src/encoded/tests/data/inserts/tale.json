@@ -7,7 +7,8 @@
         "status": "released",
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
-        "source":"gregory-crawford",
+        "source": "gregory-crawford",
+        "dbxrefs": ["addgene:234235", "addgene:12345"],
         "talen_platform":"Golden road",
         "RVD_sequence":"NN"
 
@@ -20,7 +21,8 @@
         "status": "in progress",
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
-        "source":"gregory-crawford",
+        "source": "gregory-crawford",
+        "dbxrefs": ["addgene:234235"],
         "talen_platform":"Silver gate",
         "RVD_sequence":"NN"
     }
