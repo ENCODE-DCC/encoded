@@ -38,14 +38,13 @@ _INDEXED_DATA = {
 }
 
 # Species and references being indexed
-_SPECIES = {
-    'Homo sapiens': ['hg19']
-}
+_ASSEMBLIES = ['hg19', 'mm10', 'mm9', 'GRCh38']
 
 
 def includeme(config):
     config.add_route('index_file', '/index_file')
     config.scan(__name__)
+
 
 
 def tsvreader(file):
@@ -119,6 +118,17 @@ def index_peaks(uuid, request):
     """
     context = request.embed('/', str(uuid), '@@object')
 
+    if 'assembly' not in context:
+        return
+        
+    assembly = context['assembly']
+
+    # Treat mm10-minimal as mm1
+    if assembly == 'mm10-minimal':
+        assembly = 'mm10'
+
+
+
     if 'File' not in context['@type'] or 'dataset' not in context:
         return
 
@@ -126,7 +136,7 @@ def index_peaks(uuid, request):
         return
 
     # Index human data for now
-    if 'assembly' not in context or 'hg19' not in context['assembly']:
+    if assembly not in _ASSEMBLIES:
         return
 
     assay_term_name = get_assay_term_name(context['dataset'], request)
@@ -176,9 +186,12 @@ def index_peaks(uuid, request):
         }
         if not es.indices.exists(key):
             es.indices.create(index=key, body=index_settings())
-            es.indices.put_mapping(index=key, doc_type=context['assembly'],
-                                   body=get_mapping(context['assembly']))
-        es.index(index=key, doc_type=context['assembly'], body=doc, id=context['uuid'])
+            
+        if not es.indices.exists_type(index=key, doc_type=assembly):
+            es.indices.put_mapping(index=key, doc_type=assembly, body=get_mapping(assembly))
+
+        es.index(index=key, doc_type=assembly, body=doc, id=context['uuid'])
+
 
 
 @view_config(route_name='index_file', request_method='POST', permission="index")
