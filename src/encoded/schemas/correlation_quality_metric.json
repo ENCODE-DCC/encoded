@@ -1,6 +1,6 @@
 {
-    "description": "Schema for reporting hotspot 'spot.out' as a quality metric",
-    "id": "/profiles/hotspot_quality_metric.json",
+    "description": "Schema for reporting correlation as a quality metric",
+    "id": "/profiles/correlation_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["step_run","quality_metric_of", "award", "lab"],
