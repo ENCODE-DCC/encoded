@@ -294,13 +294,13 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
         unique_tuples_list = sorted(list(unique_tuples_set))
         # detected_flowcell_details = []
         if len(unique_tuples_list) > 0:
-            detected_flowcell_details = [(x[0], x[1]) for x in unique_tuples_list]
+            detected_flowcell_details = sorted(list(set([(x[0], x[1]) for x in unique_tuples_list])))
             read_numbers = [x[2] for x in unique_tuples_list]
             read_numbers_set = set(read_numbers)
             if len(read_numbers_set) > 1:
                 errors['inconsistent_read_numbers'] = \
                     'fastq file contains mixed read numbers ' + \
-                    '{}.'.format(', '.join(list(read_numbers_set)))
+                    '{}.'.format(', '.join(sorted(list(read_numbers_set))))
 
             # for unique_tuple in unique_tuples_list:
             #    detected_flowcell_details.append((unique_tuple[0],
