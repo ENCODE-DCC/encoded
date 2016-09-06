@@ -9,14 +9,14 @@
     background-color: rgba(255,255,255,.8);
     opacity: 0;
     z-index: 1100;
-    @include transition(all 200ms);
+    transition: all 200ms;
     text-align: center;
     cursor: pointer;
 
     &.active {
         visibility: visible;
         opacity: 1;
-        @include transition(all 200ms);
+        transition: all 200ms;
     }
 
     img {
@@ -36,7 +36,6 @@
     a {
         position: relative;
         display: block;
-        vertical-align: middle;
         margin: 0 auto;
         text-align: left;
 

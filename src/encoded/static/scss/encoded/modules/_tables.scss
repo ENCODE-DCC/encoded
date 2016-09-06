@@ -1,7 +1,7 @@
 /*  TABLES    */
 
 table {
-    @include font-size(0.9);
+    font-size: 0.9rem;
 }
 
 thead, tfoot {
@@ -39,11 +39,11 @@ thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td
     border-collapse: separate;
 
     tr:last-child td:first-child {
-        @include border-bottom-left-radius($border-radius-base);
+        border-bottom-left-radius: $border-radius-base;
     }
 
     tr:last-child td:last-child {
-        @include border-bottom-right-radius($border-radius-base);
+        border-bottom-right-radius: $border-radius-base;
     }
 }
 
@@ -79,8 +79,6 @@ thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td
 .table-responsive {
     position: relative;
     overflow-x: auto;
-    background-image: inline-image("../img/checker.svg");
-    background-size: 16px 16px;
 }
 
 table thead tr th button {
@@ -96,11 +94,11 @@ form.table-filter {
 #table-filter {
     display: inline-block;
     width: 265px;
-    @include font-size(1.2);
+    font-size: 1.2rem;
 }
 
 .table-count {
-    @include font-size(1, true);
+    font-size: 1rem;
     display: inline-block !important;
     padding: 0.5em 2em !important;
     margin-right: 1em;
@@ -146,6 +144,11 @@ form.table-filter {
     .table {
         margin-bottom: 0;
     }
+
+    .table-responsive {
+        background-image: inline-image("../img/checker.svg");
+        background-size: 16px 16px;
+    }
 }
 
 .table-sortable {
@@ -166,10 +169,18 @@ form.table-filter {
             }
         }
     }
+
+    tbody {
+        tr {
+            td {
+                height: 4em;
+            }
+        }
+    }
 }
 
 .table-section {
-    @include font-size(1.3);
+    font-size: 1.3rem;
     font-weight: bold;
     background-color: #d8e0e8;
 
@@ -227,4 +238,47 @@ form.table-filter {
     &.hiding {
         background-image: inline-image('../img/hiding-dots.svg');
     }
+}
+
+// Table style for Raw file tables
+table.table-raw {
+    background-color: #fff;
+
+    >tbody>tr>td {
+        vertical-align: middle;
+    }
+
+    >tbody>tr>td.align-pair1 {
+        vertical-align: bottom;
+    }
+
+    >tbody>tr>td.align-pair2 {
+        vertical-align: top;
+    }
+}
+
+.table-raw-separator {
+    border-top: 2px solid #606060;
+}
+
+.table-raw-biorep {
+    text-align: center;
+    font-weight: bold;
+}
+
+.merge-bottom {
+    border-bottom: 2px solid #606060;
+}
+
+.pair-bottom {
+    border-bottom: 2px solid #606060;
+}
+
+.merge-right {
+    border-right: 1px solid #ddd;
+}
+
+.file-audit-status {
+    height: 13px !important;
+    line-height: 13px !important;
 }

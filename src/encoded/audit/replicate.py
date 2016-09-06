@@ -30,4 +30,4 @@ def audit_status_replicate(value, system):
             value['@id'],
             exp_status
             )
-        raise AuditFailure('mismatched status', detail, level='DCC_ACTION')
+        raise AuditFailure('mismatched status', detail, level='INTERNAL_ACTION')

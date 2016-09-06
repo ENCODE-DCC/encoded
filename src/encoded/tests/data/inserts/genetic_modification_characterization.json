@@ -1,0 +1,15 @@
+[
+    {
+        "aliases": [
+            "encode:modification_characterization_1"
+        ],
+        "attachment": "diffProtB_6hr_protocol.txt",
+        "award": "U54HG006996",
+        "caption": "This is an example genetic modification characterization",
+        "characterization_method": "Sanger sequencing",
+        "characterizes": "encode:modification-test-1",
+        "lab": "/labs/robert-waterston/",
+        "notes": "This is just an example.",
+        "uuid": "39ac4822-4265-42b8-9d21-e6b699beabf3"
+    }
+]

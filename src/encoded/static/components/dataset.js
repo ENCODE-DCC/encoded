@@ -105,6 +105,12 @@ var Annotation = React.createClass({
         // Get a list of reference links, if any
         var references = PubReferenceList(context.references);
 
+        // Render tags badges
+        var tagBadges;
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
+
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -229,6 +235,13 @@ var Annotation = React.createClass({
                                             <dd>{references}</dd>
                                         </div>
                                     : null}
+
+                                    {tagBadges ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd>{tagBadges}</dd>
+                                        </div>
+                                    : null}
                                 </dl>
                             </div>
                         </div>
@@ -279,6 +292,12 @@ var PublicationData = React.createClass({
 
         // Render the publication links
         var referenceList = PubReferenceList(context.references);
+
+        // Render tags badges
+        var tagBadges;
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
 
         return (
             <div className={itemClass}>
@@ -372,20 +391,21 @@ var PublicationData = React.createClass({
                                             <dd>{referenceList}</dd>
                                         </div>
                                     : null}
+
+                                    {tagBadges ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd>{tagBadges}</dd>
+                                        </div>
+                                    : null}
                                 </dl>
                             </div>
                         </div>
                     </PanelBody>
                 </Panel>
 
-                {/* If logged in and dataset is released, need to combine search of files that reference
-                    this dataset to get released and unreleased ones. If not logged in, then just get
-                    files from dataset.files */}
-                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
-                    <FetchedItems {...this.props} url={globals.unreleased_files_url(context)} Component={DatasetFiles} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
-                :
-                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} />
-                }
+                {/* Display the file widget with the facet, graph, and tables */}
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -427,6 +447,12 @@ var Reference = React.createClass({
 
         // Get a list of reference links, if any
         var references = PubReferenceList(context.references);
+
+        // Render tags badges
+        var tagBadges;
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
 
         return (
             <div className={itemClass}>
@@ -520,20 +546,21 @@ var Reference = React.createClass({
                                             <dd>{references}</dd>
                                         </div>
                                     : null}
+
+                                    {tagBadges ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd>{tagBadges}</dd>
+                                        </div>
+                                    : null}
                                 </dl>
                             </div>
                         </div>
                     </PanelBody>
                 </Panel>
 
-                {/* If logged in and dataset is released, need to combine search of files that reference
-                    this dataset to get released and unreleased ones. If not logged in, then just get
-                    files from dataset.files */}
-                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
-                    <FetchedItems {...this.props} url={globals.unreleased_files_url(context)} Component={DatasetFiles} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
-                :
-                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} />
-                }
+                {/* Display the file widget with the facet, graph, and tables */}
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph altFilterDefault />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -581,6 +608,12 @@ var Project = React.createClass({
 
         // Get a list of reference links
         var references = PubReferenceList(context.references);
+
+        // Render tags badges
+        var tagBadges;
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
 
         return (
             <div className={itemClass}>
@@ -695,20 +728,21 @@ var Project = React.createClass({
                                             <dd>{references}</dd>
                                         </div>
                                     : null}
+
+                                    {tagBadges ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd>{tagBadges}</dd>
+                                        </div>
+                                    : null}
                                 </dl>
                             </div>
                         </div>
                     </PanelBody>
                 </Panel>
 
-                {/* If logged in and dataset is released, need to combine search of files that reference
-                    this dataset to get released and unreleased ones. If not logged in, then just get
-                    files from dataset.files */}
-                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
-                    <FetchedItems {...this.props} url={globals.unreleased_files_url(context)} Component={DatasetFiles} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
-                :
-                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} />
-                }
+                {/* Display the file widget with the facet, graph, and tables */}
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -757,6 +791,12 @@ var UcscBrowserComposite = React.createClass({
 
         // Get a list of reference links, if any
         var references = PubReferenceList(context.references);
+
+        // Render tags badges
+        var tagBadges;
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
 
         return (
             <div className={itemClass}>
@@ -857,20 +897,21 @@ var UcscBrowserComposite = React.createClass({
                                             <dd>{references}</dd>
                                         </div>
                                     : null}
+
+                                    {tagBadges ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd>{tagBadges}</dd>
+                                        </div>
+                                    : null}
                                 </dl>
                             </div>
                         </div>
                     </PanelBody>
                 </Panel>
 
-                {/* If logged in and dataset is released, need to combine search of files that reference
-                    this dataset to get released and unreleased ones. If not logged in, then just get
-                    files from dataset.files */}
-                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
-                    <FetchedItems {...this.props} url={globals.unreleased_files_url(context)} Component={DatasetFiles} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
-                :
-                    <FileTable {...this.props} items={context.files} encodevers={globals.encodeVersion(context)} session={this.context.session} />
-                }
+                {/* Display the file widget with the facet, graph, and tables */}
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
@@ -1200,6 +1241,12 @@ var Series = module.exports.Series = React.createClass({
         }
         var terms = (context.biosample_term_name && context.biosample_term_name.length) ? _.uniq(context.biosample_term_name) : [];
 
+        // Render tags badges
+        var tagBadges;
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
+
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -1291,6 +1338,13 @@ var Series = module.exports.Series = React.createClass({
                                         <div data-test="submittercomment">
                                             <dt>Submitter comment</dt>
                                             <dd>{context.submitter_comment}</dd>
+                                        </div>
+                                    : null}
+
+                                    {tagBadges ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd>{tagBadges}</dd>
                                         </div>
                                     : null}
                                 </dl>

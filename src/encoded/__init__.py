@@ -25,7 +25,6 @@ from snovault.elasticsearch import (
     PyramidJSONSerializer,
     TimedUrllib3HttpConnection,
 )
-from snovault.elasticsearch.interfaces import SNP_SEARCH_ES
 from snovault.json_renderer import json_renderer
 from elasticsearch import Elasticsearch
 STATIC_MAX_AGE = 0
@@ -195,7 +194,7 @@ def main(global_config, **local_config):
     settings['snovault.jsonld.namespaces'] = json_asset('encoded:schemas/namespaces.json')
     settings['snovault.jsonld.terms_namespace'] = 'https://www.encodeproject.org/terms/'
     settings['snovault.jsonld.terms_prefix'] = 'encode'
-    settings['snovault.elasticsearch.index'] = 'encoded'
+    settings['snovault.elasticsearch.index'] = 'snovault'
     hostname_command = settings.get('hostname_command', '').strip()
     if hostname_command:
         hostname = subprocess.check_output(hostname_command, shell=True).strip()
@@ -239,7 +238,8 @@ def main(global_config, **local_config):
             serializer=PyramidJSONSerializer(json_renderer),
             connection_class=TimedUrllib3HttpConnection,
             retry_on_timeout=True,
-            timeout=30,
+            timeout=60,
+            maxsize=50
         )
         config.include('.region_search')
         config.include('.peak_indexer')

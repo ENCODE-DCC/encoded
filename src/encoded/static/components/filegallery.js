@@ -21,6 +21,7 @@ var assemblyPriority = [
     'GRCh38',
     'hg19',
     'mm10',
+    'mm10-minimal',
     'mm9',
     'ce11',
     'ce10',
@@ -55,83 +56,6 @@ var FileTable = module.exports.FileTable = React.createClass({
     },
 
     // Configuration for raw file table
-    rawTableColumns: {
-        'accession': {
-            title: 'Accession',
-            display: item =>
-                <span>
-                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
-                </span>
-        },
-        'file_type': {title: 'File type'},
-        'biological_replicates': {
-            title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
-            getValue: item => item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''
-        },
-        'library': {
-            title: 'Library',
-            getValue: item => (item.replicate && item.replicate.library) ? item.replicate.library.accession : null
-        },
-        'run_type': {
-            title: 'Run type',
-            display: item => {
-                var runType;
-
-                if (item.run_type === 'single-ended') {
-                    runType = 'SE';
-                } else if (item.run_type === 'paired-ended') {
-                    runType = 'PE';
-                }
-
-                return (
-                    <span>
-                        <span>{runType ? runType : null}</span>
-                        <span>{item.read_length ? <span>{runType ? <span> </span> : null}{item.read_length + item.read_length_units}</span> : null}</span>
-                    </span>
-                );
-            },
-            objSorter: (a, b) => {
-                // Sort by their combined string values
-                var aStr = (a.run_type ? a.run_type : '') + (a.read_length ? a.read_length : '');
-                var bStr = (b.run_type ? b.run_type : '') + (b.read_length ? b.read_length : '');
-                return (aStr < bStr) ? -1 : (bStr < aStr ? 1 : 0);
-            }
-        },
-        'paired_end': {
-            title: 'Read',
-            display: item => <span>{item.paired_end ? <span>R{item.paired_end}</span> : null}</span>
-        },
-        'title': {
-            title: 'Lab',
-            getValue: item => item.lab && item.lab.title ? item.lab.title : null
-        },
-        'date_created': {
-            title: 'Date added',
-            getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
-            objSorter: (a, b) => {
-                if (a.date_created && b.date_created) {
-                    return Date.parse(a.date_created) - Date.parse(b.date_created);
-                }
-                return a.date_created ? -1 : (b.date_created ? 1 : 0);
-            }
-        },
-        'file_size': {
-            title: 'File size',
-            display: item => <span>{humanFileSize(item.file_size)}</span>
-        },
-        'audit': {
-            title: 'Audit status',
-            display: item => <div>{fileAuditStatus(item)}</div>,
-            hide: (list, columns, meta) => meta.noAudits || !(meta.session && meta.session['auth.userid'])
-        },
-        'status': {
-            title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
-            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
-        }
-    },
-
-    // Configuration for raw file table
     rawArrayTableColumns: {
         'accession': {
             title: 'Accession',
@@ -157,11 +81,11 @@ var FileTable = module.exports.FileTable = React.createClass({
         'date_created': {
             title: 'Date added',
             getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
-            objSorter: (a, b) => {
-                if (a.date_created && b.date_created) {
-                    return Date.parse(a.date_created) - Date.parse(b.date_created);
+            sorter: (a, b) => {
+                if (a && b) {
+                    return Date.parse(a) - Date.parse(b);
                 }
-                return a.date_created ? -1 : (b.date_created ? 1 : 0);
+                return a ? -1 : (b ? 1 : 0);
             }
         },
         'file_size': {
@@ -170,13 +94,11 @@ var FileTable = module.exports.FileTable = React.createClass({
         },
         'audit': {
             title: 'Audit status',
-            display: item => <div>{fileAuditStatus(item)}</div>,
-            hide: (list, columns, meta) => meta.noAudits || !(meta.session && meta.session['auth.userid'])
+            display: item => <div>{fileAuditStatus(item)}</div>
         },
         'status': {
             title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
-            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
+            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>
         }
     },
 
@@ -209,10 +131,10 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: 'Date added',
             getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
             sorter: (a, b) => {
-                if (a.date_created && b.date_created) {
-                    return Date.parse(a.date_created) - Date.parse(b.date_created);
+                if (a && b) {
+                    return Date.parse(a) - Date.parse(b);
                 }
-                return a.date_created ? -1 : (b.date_created ? 1 : 0);
+                return a ? -1 : (b ? 1 : 0);
             }
         },
         'file_size': {
@@ -221,13 +143,11 @@ var FileTable = module.exports.FileTable = React.createClass({
         },
         'audit': {
             title: 'Audit status',
-            display: item => <div>{fileAuditStatus(item)}</div>,
-            hide: (list, columns, meta) => { return meta.noAudits || !(meta.session && meta.session['auth.userid']); }
+            display: item => <div>{fileAuditStatus(item)}</div>
         },
         'status': {
             title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
-            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
+            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>
         }
     },
 
@@ -255,10 +175,10 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: 'Date added',
             getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
             sorter: (a, b) => {
-                if (a.date_created && b.date_created) {
-                    return Date.parse(a.date_created) - Date.parse(b.date_created);
+                if (a && b) {
+                    return Date.parse(a) - Date.parse(b);
                 }
-                return a.date_created ? -1 : (b.date_created ? 1 : 0);
+                return a ? -1 : (b ? 1 : 0);
             }
         },
         'file_size': {
@@ -267,13 +187,11 @@ var FileTable = module.exports.FileTable = React.createClass({
         },
         'audit': {
             title: 'Audit status',
-            display: item => <div>{fileAuditStatus(item)}</div>,
-            hide: (list, columns, meta) => { return (meta.noAudits || !(meta.session && meta.session['auth.userid'])); }
+            display: item => <div>{fileAuditStatus(item)}</div>
         },
         'status': {
             title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
-            hide: (list, columns, meta) => !(meta.session && meta.session['auth.userid'])
+            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>
         }
     },
 
@@ -285,10 +203,28 @@ var FileTable = module.exports.FileTable = React.createClass({
     },
 
     render: function() {
-        var {context, items, filePanelHeader, encodevers, selectedAssembly, selectedAnnotation, anisogenic, noAudits, showFileCount, session} = this.props;
+        var {
+            context,
+            items,
+            filePanelHeader,
+            encodevers,
+            selectedFilterValue,
+            filterOptions,
+            handleFilterChange,
+            anisogenic,
+            showFileCount,
+            session
+        } = this.props;
+        var selectedAssembly, selectedAnnotation;
+
         var datasetFiles = _((items && items.length) ? items : []).uniq(file => file['@id']);
         if (datasetFiles.length) {
             var unfilteredCount = datasetFiles.length;
+
+            if (selectedFilterValue && filterOptions[selectedFilterValue]) {
+                selectedAssembly = filterOptions[selectedFilterValue].assembly;
+                selectedAnnotation = filterOptions[selectedFilterValue].annotation;
+            }
 
             // Filter all the files according to the given filters, and remove duplicates
             datasetFiles = _(datasetFiles).filter(file => {
@@ -320,18 +256,246 @@ var FileTable = module.exports.FileTable = React.createClass({
                 <div>
                     {showFileCount ? <div className="file-gallery-counts">Displaying {filteredCount} of {unfilteredCount} files</div> : null}
                     <SortTablePanel header={filePanelHeader} noDefaultClasses={this.props.noDefaultClasses}>
-                        <SortTable title={<CollapsingTitle title="Raw data" collapsed={this.state.collapsed.raw} handleCollapse={this.handleCollapse.bind(null, 'raw')} />} collapsed={this.state.collapsed.raw}
-                            list={files.raw} columns={this.rawTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
+                        <RawFileTable files={files.raw} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} />
                         <SortTable title={<CollapsingTitle title="Raw data" collapsed={this.state.collapsed.rawArray} handleCollapse={this.handleCollapse.bind(null, 'rawArray')} />} collapsed={this.state.collapsed.rawArray}
-                            list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
-                        <SortTable title={<CollapsingTitle title="Processed data" collapsed={this.state.collapsed.proc} handleCollapse={this.handleCollapse.bind(null, 'proc')} />} collapsed={this.state.collapsed.proc}
-                            list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} sortColumn="biological_replicates" />
+                            list={files.rawArray} columns={this.rawArrayTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
+                        <SortTable title={<CollapsingTitle title="Processed data" collapsed={this.state.collapsed.proc} handleCollapse={this.handleCollapse.bind(null, 'proc')}
+                            selectedFilterValue={selectedFilterValue} filterOptions={filterOptions} handleFilterChange={handleFilterChange} />}
+                            collapsed={this.state.collapsed.proc} list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
                         <SortTable title={<CollapsingTitle title="Reference data" collapsed={this.state.collapsed.ref} handleCollapse={this.handleCollapse.bind(null, 'ref')} />} collapsed={this.state.collapsed.ref}
-                            list={files.ref} columns={this.refTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session, noAudits: noAudits}} />
+                            list={files.ref} columns={this.refTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} />
                     </SortTablePanel>
                 </div>
             );
         }
+        return null;
+    }
+});
+
+
+var RawFileTable = React.createClass({
+    propTypes: {
+        files: React.PropTypes.array, // Raw files to display
+        meta: React.PropTypes.object // Extra metadata in the same format passed to SortTable
+    },
+
+    getInitialState: function() {
+        return {
+            collapsed: false // Raw 
+        };
+    },
+
+    handleCollapse: function(table) {
+        // Handle a click on a collapse button by toggling the corresponding tableCollapse state var
+        this.setState({collapsed: !this.state.collapsed});
+    },
+
+    sortBioReps: function(a, b) {
+        // Sorting function for biological replicates of the given files.
+        var result = undefined; // Ends sorting loop once it has a value
+        var i = 0;
+        var repA = (a.biological_replicates && a.biological_replicates.length) ? a.biological_replicates[i] : undefined;
+        var repB = (b.biological_replicates && b.biological_replicates.length) ? b.biological_replicates[i] : undefined;
+        while (result === undefined) {
+            if (repA !== undefined && repB !== undefined) {
+                // Both biological replicates have a value
+                if (repA != repB) {
+                    // We got a real sorting result
+                    result = repA - repB;
+                } else {
+                    // They both have values, but they're equal; go to next
+                    // biosample replicate array elements
+                    i += 1;
+                    repA = a.biological_replicates[i];
+                    repB = b.biological_replicates[i];
+                }
+            } else if (repA !== undefined || repB !== undefined) {
+                // One and only one replicate empty; sort empty one after
+                result = repA ? 1 : -1;
+            } else {
+                // Both empty; sorting result same
+                result = 0;
+            }
+        }
+        return result;
+    },
+
+    render: function() {
+        var {files, meta} = this.props;
+        var loggedIn = meta.session && meta.session['auth.userid'];
+
+        if (files && files.length) {
+            // Make object keyed by all files' @ids to make searching easy. Each key's value
+            // points to the corresponding file object.
+            var filesKeyed = {};
+            files.forEach(file => {
+                filesKeyed[file['@id']] = file;
+            });
+
+            // Make lists of files that are and aren't paired. Paired files with missing partners
+            // count as not paired. Files with more than one biological replicate don't count as
+            // paired.
+            var nonpairedFiles = [];
+            var pairedFiles = _(files).filter(file => {
+                if (file.pairSortKey) {
+                    // If we already know this file is part of a good pair from before, just let it
+                    // pass the filter
+                    return true;
+                }
+
+                // See if the file qualifies as a pair element
+                if (file.paired_with &&
+                    file.biological_replicates && file.biological_replicates.length === 1 &&
+                    file.replicate && file.replicate.library) {
+                    // File is paired and has exactly one biological replicate. Now make sure its
+                    // partner exists and also qualifies.
+                    var partner = filesKeyed[file.paired_with];
+                    if (partner && partner.paired_with === file['@id'] &&
+                        partner.biological_replicates && partner.biological_replicates.length === 1 &&
+                        partner.replicate && partner.replicate.library &&
+                        partner.biological_replicates[0] === file.biological_replicates[0]) {
+                        // Both the file and its partner qualify as good pairs of each other. Let
+                        // them pass the filter, and record set their sort keys to the lower of
+                        // the two accessions -- that's how pairs will sort within a biological
+                        // replicate
+                        file.pairSortKey = partner.pairSortKey = file.accession < partner.accession ? file.accession : partner.accession;
+                        file.pairSortKey += file.paired_end;
+                        partner.pairSortKey += partner.paired_end;
+                        return true;
+                    }
+                }
+
+                // File not part of a pair; add to non-paired list and filter it out
+                nonpairedFiles.push(file);
+                return false;
+            });
+
+            // Group paired files by biological replicate and library -- four-digit biological
+            // replicate concatenated with library accession becomes the group key, and all files
+            // with that biological replicate and library form an array under that key.
+            var pairedRepGroups = {};
+            var pairedRepKeys = [];
+            if (pairedFiles.length) {
+                pairedRepGroups = _(pairedFiles).groupBy(file => globals.zeroFill(file.biological_replicates[0]) + file.replicate.library.accession);
+
+                // Make a sorted list of keys
+                pairedRepKeys = Object.keys(pairedRepGroups).sort();
+            }
+
+            return (
+                <table className="table table-sortable table-raw">
+                    <thead>
+                        <tr className="table-section">
+                            <th colSpan={loggedIn ? '11' : '10'}>
+                                <CollapsingTitle title="Raw data" collapsed={this.state.collapsed} handleCollapse={this.handleCollapse} />
+                            </th>
+                        </tr>
+
+                        {!this.state.collapsed ?
+                            <tr key="header">
+                                <th>Biological replicate</th>
+                                <th>Library</th>
+                                <th>Accession</th>
+                                <th>File type</th>
+                                <th>Run type</th>
+                                <th>Read</th>
+                                <th>Lab</th>
+                                <th>Date added</th>
+                                <th>File size</th>
+                                <th>Audit status</th>
+                                {loggedIn ? <th>File status</th> : null}
+                            </tr>
+                        : null}
+                    </thead>
+
+                    {!this.state.collapsed ?
+                        <tbody>
+                            {pairedRepKeys.map((pairedRepKey, j) => {
+                                // groupFiles is an array of files under a bioreplicate/library
+                                var groupFiles = pairedRepGroups[pairedRepKey];
+                                var bottomClass = j < (pairedRepKeys.length - 1) ? 'merge-bottom' : '';
+
+                                // Render an array of biological replicate and library to display on
+                                // the first row of files, spanned to all rows for that replicate and
+                                // library
+                                var spanned = [
+                                    <td key="br" rowSpan={groupFiles.length} className={bottomClass + ' merge-right table-raw-merged table-raw-biorep'}>{groupFiles[0].biological_replicates[0]}</td>,
+                                    <td key="lib" rowSpan={groupFiles.length} className={bottomClass + ' merge-right + table-raw-merged'}>{groupFiles[0].replicate.library.accession}</td>
+                                ];
+
+                                // Render each file's row, with the biological replicate and library
+                                // cells only on the first row.
+                                return groupFiles.sort((a, b) => a.pairSortKey < b.pairSortKey ? -1 : 1).map((file, i) => {
+                                    var pairClass = (file.paired_end === "2") ? 'align-pair2' : 'align-pair1';
+                                    if (file.paired_end === "2") {
+                                        pairClass = 'align-pair2' + ((i === groupFiles.length - 1) && (j === pairedRepKeys.length - 1) ? '' : ' pair-bottom');
+                                    } else {
+                                        pairClass = 'align-pair1';
+                                    }
+
+                                    // Prepare for run_type display
+                                    var runType;
+                                    if (file.run_type === 'single-ended') {
+                                        runType = 'SE';
+                                    } else if (file.run_type === 'paired-ended') {
+                                        runType = 'PE';
+                                    }
+                                    return (
+                                        <tr key={i}>
+                                            {i === 0 ? {spanned} : null}
+                                            <td className={pairClass}>
+                                                {file.title}&nbsp;<a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                                            </td>
+                                            <td className={pairClass}>{file.file_type}</td>
+                                            <td className={pairClass}>{runType}{file.read_length ? <span>{runType ? <span> </span> : null}{file.read_length + file.read_length_units}</span> : null}</td>
+                                            <td className={pairClass}>{file.paired_end}</td>
+                                            <td className={pairClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
+                                            <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
+                                            <td className={pairClass}>{humanFileSize(file.file_size)}</td>
+                                            <td className={pairClass}>{fileAuditStatus(file)}</td>
+                                            {loggedIn ? <td className={pairClass + ' characterization-meta-data'}><StatusLabel status={file.status} /></td> : null}
+                                        </tr>
+                                    );
+                                });
+                            })}
+                            {nonpairedFiles.sort(this.sortBioReps).map((file, i) => {
+                                // Prepare for run_type display
+                                var runType;
+                                if (file.run_type === 'single-ended') {
+                                    runType = 'SE';
+                                } else if (file.run_type === 'paired-ended') {
+                                    runType = 'PE';
+                                }
+                                return (
+                                    <tr key={i} className={pairedRepKeys.length && i === 0 ? 'table-raw-separator' : ''}>
+                                        <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''}</td>
+                                        <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
+                                        <td>{file.title}&nbsp;<a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a></td>
+                                        <td>{file.file_type}</td>
+                                        <td>{runType}{file.read_length ? <span>{runType ? <span> </span> : null}{file.read_length + file.read_length_units}</span> : null}</td>
+                                        <td>{file.paired_end}</td>
+                                        <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
+                                        <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
+                                        <td>{humanFileSize(file.file_size)}</td>
+                                        <td>{fileAuditStatus(file)}</td>
+                                        {loggedIn ? <td className="characterization-meta-data"><StatusLabel status={file.status} /></td> : null}
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    : null}
+
+                    <tfoot>
+                        <tr>
+                            <td className={'file-table-footer' + (this.state.collapsed ? ' hiding' : '')} colSpan={loggedIn ? '11' : '10'}>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            );
+        }
+
+        // No files to display
         return null;
     }
 });
@@ -358,11 +522,12 @@ var DatasetFiles = module.exports.DatasetFiles = React.createClass({
 // This component only triggers the data retrieval, which is done with a search for files associated
 // with the given experiment (in this.props.context). An odd thing is we specify query-string parameters
 // to the experiment URL, but they apply to the file search -- not the experiment itself.
-
 var FileGallery = module.exports.FileGallery = React.createClass({
     propTypes: {
         encodevers: React.PropTypes.string, // ENCODE version number
-        anisogenic: React.PropTypes.bool // True if anisogenic experiment
+        anisogenic: React.PropTypes.bool, // True if anisogenic experiment
+        hideGraph: React.PropTypes.bool, // T to hide graph display
+        altFilterDefault: React.PropTypes.bool // T to default to All Assemblies and Annotations
     },
 
     contextTypes: {
@@ -371,12 +536,12 @@ var FileGallery = module.exports.FileGallery = React.createClass({
     },
 
     render: function() {
-        var {context, encodevers, anisogenic} = this.props;
+        var {context, encodevers, anisogenic, hideGraph, altFilterDefault} = this.props;
 
         return (
             <FetchedData ignoreErrors>
                 <Param name="data" url={globals.unreleased_files_url(context)} />
-                <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} />
+                <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} hideGraph={hideGraph} altFilterDefault={altFilterDefault} />
             </FetchedData>
         );
     }
@@ -388,7 +553,9 @@ var FileGallery = module.exports.FileGallery = React.createClass({
 var FileGalleryRenderer = React.createClass({
     propTypes: {
         encodevers: React.PropTypes.string, // ENCODE version number
-        anisogenic: React.PropTypes.bool // True if anisogenic experiment
+        anisogenic: React.PropTypes.bool, // True if anisogenic experiment
+        hideGraph: React.PropTypes.bool, // T to hide graph display
+        altFilterDefault: React.PropTypes.bool // T to default to All Assemblies and Annotations
     },
 
     contextTypes: {
@@ -417,7 +584,9 @@ var FileGalleryRenderer = React.createClass({
 
     // Set the default filter after the graph has been analayzed once.
     componentDidMount: function() {
-        this.setFilter('0');
+        if (!this.props.altFilterDefault) {
+            this.setFilter('0');
+        }
     },
 
     render: function() {
@@ -435,29 +604,20 @@ var FileGalleryRenderer = React.createClass({
         var filterOptions = files.length ? collectAssembliesAnnotations(files) : [];
         var loggedIn = this.context.session && this.context.session['auth.userid'];
 
-        // Build the graph; place resulting graph in this.jsonGraph
         if (this.state.selectedFilterValue && filterOptions[this.state.selectedFilterValue]) {
             selectedAssembly = filterOptions[this.state.selectedFilterValue].assembly;
             selectedAnnotation = filterOptions[this.state.selectedFilterValue].annotation;
         }
 
-        // Rendering the filtering menu
-        var filterMenu = filterOptions.length ?
-            <select className="form-control" defaultValue="0" onChange={this.handleFilterChange}>
-                <option value="default" key="title">All Assemblies and Annotations</option>
-                <option disabled="disabled"></option>
-                {filterOptions.map((option, i) =>
-                    <option key={i} value={i}>{option.assembly + (option.annotation ? ' ' + option.annotation : '')}</option>
-                )}
-            </select>
-        : null;
+        // Get a list of files for the graph (filters out archived files)
+        var graphFiles = _(files).filter(file => file.status !== 'archived');
 
         return (
             <Panel>
                 <PanelHeading addClasses="file-gallery-heading">
                     <h4>Files</h4>
                     <div className="file-gallery-controls">
-                        {context.visualize_ucsc  && context.status == "released" ?
+                        {context.visualize_ucsc && context.status == "released" ?
                             <div className="file-gallery-control">
                                 <DropdownButton title='Visualize Data' label="visualize-data">
                                     <DropdownMenu>
@@ -470,19 +630,29 @@ var FileGalleryRenderer = React.createClass({
                                 </DropdownButton>
                             </div>
                         : null}
-                        <div className="file-gallery-control">{filterMenu}</div>
+                        {filterOptions.length ?
+                            <div className="file-gallery-control file-gallery-control-select">
+                                <FilterMenu selectedFilterValue={this.state.selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleFilterChange} />
+                            </div>
+                        : null}
                     </div>
                 </PanelHeading>
 
-                <FileGraph context={context} items={files} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
+                {!this.props.hideGraph ?
+                    <FileGraph context={context} items={graphFiles} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
+                : null}
 
                 {/* If logged in and dataset is released, need to combine search of files that reference
                     this dataset to get released and unreleased ones. If not logged in, then just get
                     files from dataset.files */}
                 {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
-                    <FetchedItems {...this.props} url={globals.unreleased_files_url(context)} Component={DatasetFiles} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} encodevers={globals.encodeVersion(context)} session={this.context.session} showFileCount ignoreErrors noDefaultClasses />
+                    <FetchedItems {...this.props} url={globals.unreleased_files_url(context)} Component={DatasetFiles}
+                        selectedFilterValue={this.state.selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleFilterChange}
+                        encodevers={globals.encodeVersion(context)} session={this.context.session} showFileCount ignoreErrors noDefaultClasses />
                 :
-                    <FileTable {...this.props} items={context.files} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} encodevers={globals.encodeVersion(context)} session={this.context.session} showFileCount noDefaultClasses />
+                    <FileTable {...this.props} items={context.files} selectedFilterValue={this.state.selectedFilterValue}
+                        filterOptions={filterOptions} handleFilterChange={this.handleFilterChange}
+                        encodevers={globals.encodeVersion(context)} session={this.context.session} showFileCount noDefaultClasses />
                 }
             </Panel>
         );
@@ -494,18 +664,52 @@ var CollapsingTitle = React.createClass({
     propTypes: {
         title: React.PropTypes.string.isRequired, // Title to display in the title bar
         handleCollapse: React.PropTypes.func.isRequired, // Function to call to handle click in collapse button
+        selectedFilterValue: React.PropTypes.string, // Currently selected filter
+        filterOptions: React.PropTypes.array, // Array of filtering options
+        handleFilterChange: React.PropTypes.func, // Function to call when filter menu item is chosen
         collapsed: React.PropTypes.bool // T if the panel this is over has been collapsed
     },
 
     render: function() {
-        var {title, handleCollapse, collapsed} = this.props;
+        var {title, handleCollapse, collapsed, filterOptions, selectedFilterValue, handleFilterChange} = this.props;
         return (
-            <a href="#" data-trigger onClick={handleCollapse} className="collapsing-title">
-                <h4>
-                    {CollapseIcon(collapsed, 'collapsing-title-icon')}
-                    {title}
-                </h4>
-            </a>
+            <div className="collapsing-title">
+                <a href="#" className="collapsing-title-trigger pull-left" data-trigger onClick={handleCollapse}>{CollapseIcon(collapsed, 'collapsing-title-icon')}</a>
+                <h4>{title}</h4>
+                {filterOptions && filterOptions.length && handleFilterChange ?
+                    <div className="file-gallery-controls ">
+                        <div className="file-gallery-control file-gallery-control-select">
+                            <FilterMenu filterOptions={filterOptions} selectedFilterValue={selectedFilterValue} handleFilterChange={handleFilterChange} />
+                        </div>
+                    </div>
+                : null}
+            </div>
+        );
+    }
+});
+
+
+// Display a filtering <select>. `filterOptions` is an array of objects with two properties:
+// `assembly` and `annotation`. Both are strings that get concatenated to form each menu item. The
+// value of each <option> is its zero-based index.
+var FilterMenu = React.createClass({
+    propTypes: {
+        selectedFilterValue: React.PropTypes.string, // Currently selected filter
+        filterOptions: React.PropTypes.array.isRequired, // Contents of the filtering menu
+        handleFilterChange: React.PropTypes.func.isRequired // Call when a filtering option changes
+    },
+
+    render: function() {
+        var {selectedFilterValue, filterOptions, handleFilterChange} = this.props;
+        selectedFilterValue = selectedFilterValue ? selectedFilterValue : 'default';
+        return (
+            <select className="form-control" defaultValue="0" value={selectedFilterValue} onChange={handleFilterChange}>
+                <option value="default" key="title">All Assemblies and Annotations</option>
+                <option disabled="disabled"></option>
+                {filterOptions.map((option, i) =>
+                    <option key={i} value={i}>{option.assembly + (option.annotation ? ' ' + option.annotation : '')}</option>
+                )}
+            </select>
         );
     }
 });
@@ -616,6 +820,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
     // to de-dup the file array since there can be repeated files in it.
     files.forEach(function(file) {
         if (!allFiles[file['@id']]) {
+            file.removed = false;
             allFiles[file['@id']] = file;
         }
     });
@@ -713,11 +918,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
             allFiles[contributingFileId] = allContributing[contributingFileId];
         }
     });
-
-    // Don't draw anything if no files have an analysis_step
-    if (!stepExists) {
-        throw new graphException('No graph: no files have step runs');
-    }
 
     // Now that we know at least some files derive from each other through analysis steps, mark file objects that
     // don't derive from other files — and that no files derive from them — as removed from the graph.
@@ -1017,34 +1217,34 @@ var FileGraph = React.createClass({
             var goodGraph = this.jsonGraph && Object.keys(this.jsonGraph).length;
 
             // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
-            if (goodGraph || selectedAssembly || selectedAnnotation) {
-                var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
-                return (
-                    <div>
-                        <div className="file-gallery-graph-header">
-                            <a href="#" data-trigger onClick={this.handleCollapse} className="collapsing-title">
-                                <h4>
-                                    {CollapseIcon(this.state.collapsed, 'collapsing-title-icon')}
-                                    Association graph
-                                </h4>
-                            </a>
-                        </div>
-                        {!this.state.collapsed ?
-                            <div>
-                                {goodGraph ?
-                                    <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw>
-                                        <div id="graph-node-info">
-                                            {meta ? <PanelBody>{meta}</PanelBody> : null}
-                                        </div>
-                                    </Graph>
-                                :
-                                    <p className="browser-error">Currently selected assembly and genomic annotation hides the graph</p>
-                                }
+            if (goodGraph) {
+                if (selectedAssembly || selectedAnnotation) {
+                    var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
+                    return (
+                        <div>
+                            <div className="file-gallery-graph-header collapsing-title">
+                                <a href="#" className="collapsing-title-trigger" data-trigger onClick={this.handleCollapse}>{CollapseIcon(this.state.collapsed, 'collapsing-title-icon')}</a>
+                                <h4>Association graph</h4>
                             </div>
-                        : null}
-                        <div className={'file-gallery-graph-footer' + (this.state.collapsed ? ' hiding' : '')}></div>
-                    </div>
-                );
+                            {!this.state.collapsed ?
+                                <div>
+                                    {goodGraph ?
+                                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw>
+                                            <div id="graph-node-info">
+                                                {meta ? <PanelBody>{meta}</PanelBody> : null}
+                                            </div>
+                                        </Graph>
+                                    :
+                                        <p className="browser-error">Currently selected assembly and genomic annotation hides the graph</p>
+                                    }
+                                </div>
+                            : null}
+                            <div className={'file-gallery-graph-footer' + (this.state.collapsed ? ' hiding' : '')}></div>
+                        </div>
+                    );
+                } else {
+                    return <p className="browser-error">Choose an assembly to see file association graph</p>;
+                }
             } else {
                 return <p className="browser-error">Graph not applicable to this experiment’s files.</p>;
             }
@@ -1070,105 +1270,105 @@ var FileDetailView = function(node) {
         }
         var dateString = !!selectedFile.date_created && moment.utc(selectedFile.date_created).format('YYYY-MM-DD');
         return (
-            <dl className="key-value">
-                {selectedFile.file_format ?
-                    <div data-test="format">
-                        <dt>Format</dt>
-                        <dd>{selectedFile.file_type}</dd>
+            <div>
+                <div className="details-view-header">
+                    <div className="details-view-info">
+                        <h4>{selectedFile.file_type} {selectedFile.accession}</h4>
                     </div>
-                : null}
+                </div>
+                <dl className="key-value">
+                    {selectedFile.output_type ?
+                        <div data-test="output">
+                            <dt>Output</dt>
+                            <dd>{selectedFile.output_type}</dd>
+                        </div>
+                    : null}
 
-                {selectedFile.output_type ?
-                    <div data-test="output">
-                        <dt>Output</dt>
-                        <dd>{selectedFile.output_type}</dd>
-                    </div>
-                : null}
+                    {selectedFile.paired_end ?
+                        <div data-test="pairedend">
+                            <dt>Paired end</dt>
+                            <dd>{selectedFile.paired_end}</dd>
+                        </div>
+                    : null}
 
-                {selectedFile.paired_end ?
-                    <div data-test="pairedend">
-                        <dt>Paired end</dt>
-                        <dd>{selectedFile.paired_end}</dd>
-                    </div>
-                : null}
+                    {selectedFile.replicate ?
+                        <div data-test="bioreplicate">
+                            <dt>Biological replicate(s)</dt>
+                            <dd>{'[' + selectedFile.replicate.biological_replicate_number + ']'}</dd>
+                        </div>
+                    : selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
+                        <div data-test="bioreplicate">
+                            <dt>Biological replicate(s)</dt>
+                            <dd>{'[' + selectedFile.biological_replicates.join(', ') + ']'}</dd>
+                        </div>
+                    : null}
 
-                {selectedFile.replicate ?
-                    <div data-test="bioreplicate">
-                        <dt>Biological replicate(s)</dt>
-                        <dd>{'[' + selectedFile.replicate.biological_replicate_number + ']'}</dd>
-                    </div>
-                : selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
-                    <div data-test="bioreplicate">
-                        <dt>Biological replicate(s)</dt>
-                        <dd>{'[' + selectedFile.biological_replicates.join(', ') + ']'}</dd>
-                    </div>
-                : null}
+                    {selectedFile.replicate ?
+                        <div data-test="techreplicate">
+                            <dt>Technical replicate</dt>
+                            <dd>{selectedFile.replicate.technical_replicate_number}</dd>
+                        </div>
+                    : selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
+                        <div data-test="techreplicate">
+                            <dt>Technical replicate</dt>
+                            <dd>{'-'}</dd>
+                        </div>
+                    : null}
 
-                {selectedFile.replicate ?
-                    <div data-test="techreplicate">
-                        <dt>Technical replicate</dt>
-                        <dd>{selectedFile.replicate.technical_replicate_number}</dd>
-                    </div>
-                : selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
-                    <div data-test="techreplicate">
-                        <dt>Technical replicate</dt>
-                        <dd>{'-'}</dd>
-                    </div>
-                : null}
+                    {selectedFile.assembly ?
+                        <div data-test="assembly">
+                            <dt>Mapping assembly</dt>
+                            <dd>{selectedFile.assembly}</dd>
+                        </div>
+                    : null}
 
-                {selectedFile.assembly ?
-                    <div data-test="assembly">
-                        <dt>Mapping assembly</dt>
-                        <dd>{selectedFile.assembly}</dd>
-                    </div>
-                : null}
+                    {selectedFile.genome_annotation ?
+                        <div data-test="annotation">
+                            <dt>Genome annotation</dt>
+                            <dd>{selectedFile.genome_annotation}</dd>
+                        </div>
+                    : null}
 
-                {selectedFile.genome_annotation ?
-                    <div data-test="annotation">
-                        <dt>Genome annotation</dt>
-                        <dd>{selectedFile.genome_annotation}</dd>
-                    </div>
-                : null}
+                    {selectedFile.lab && selectedFile.lab.title ?
+                        <div data-test="submitted">
+                            <dt>Lab</dt>
+                            <dd>{selectedFile.lab.title}</dd>
+                        </div>
+                    : null}
 
-                {selectedFile.lab && selectedFile.lab.title ?
-                    <div data-test="submitted">
-                        <dt>Lab</dt>
-                        <dd>{selectedFile.lab.title}</dd>
-                    </div>
-                : null}
+                    {dateString ?
+                        <div data-test="datecreated">
+                            <dt>Date added</dt>
+                            <dd>{dateString}</dd>
+                        </div>
+                    : null}
 
-                {dateString ?
-                    <div data-test="datecreated">
-                        <dt>Date added</dt>
-                        <dd>{dateString}</dd>
-                    </div>
-                : null}
+                    {selectedFile.analysis_step_version ?
+                        <div data-test="software">
+                            <dt>Software</dt>
+                            <dd>{SoftwareVersionList(selectedFile.analysis_step_version.software_versions)}</dd>
+                        </div>
+                    : null}
 
-                {selectedFile.analysis_step_version ?
-                    <div data-test="software">
-                        <dt>Software</dt>
-                        <dd>{SoftwareVersionList(selectedFile.analysis_step_version.software_versions)}</dd>
-                    </div>
-                : null}
+                    {node.metadata.contributing && selectedFile.dataset ?
+                        <div data-test="contributedfrom">
+                            <dt>Contributed from</dt>
+                            <dd><a href={selectedFile.dataset}>{contributingAccession}</a></dd>
+                        </div>
+                    : null}
 
-                {node.metadata.contributing && selectedFile.dataset ?
-                    <div data-test="contributedfrom">
-                        <dt>Contributed from</dt>
-                        <dd><a href={selectedFile.dataset}>{contributingAccession}</a></dd>
-                    </div>
-                : null}
-
-                {selectedFile.href ?
-                    <div data-test="download">
-                        <dt>File download</dt>
-                        <dd>
-                            <a href={selectedFile.href} download={selectedFile.href.substr(selectedFile.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i>
-                                &nbsp;Download
-                            </a>
-                        </dd>
-                    </div>
-                : null}
-            </dl>
+                    {selectedFile.href ?
+                        <div data-test="download">
+                            <dt>File download</dt>
+                            <dd>
+                                <a href={selectedFile.href} download={selectedFile.href.substr(selectedFile.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i>
+                                    &nbsp;Download
+                                </a>
+                            </dd>
+                        </div>
+                    : null}
+                </dl>
+            </div>
         );
     } else {
         return <p className="browser-error">No information available</p>;
@@ -1233,33 +1433,33 @@ var QcDetailsView = function(metrics) {
         // property as a key to retrieve the list of properties appropriate for that QC type.
         var qcAttachmentPropertyList = qcAttachmentProperties[metrics.ref['@type'][0]];
         if (qcAttachmentPropertyList) {
-            qcPanels = qcAttachmentPropertyList.map(attachmentPropertyInfo => {
+            qcPanels = _(qcAttachmentPropertyList.map(attachmentPropertyInfo => {
                 // Each object in the list has only one key (the metric attachment property name), so get it here.
                 var attachmentPropertyName = Object.keys(attachmentPropertyInfo)[0];
+                var attachment = metrics.ref[attachmentPropertyName];
 
                 // Generate the JSX for the panel. Use the property name as the key to get the corresponding human-readable description for the title
-                return <AttachmentPanel key={attachmentPropertyName} context={metrics.ref} attachment={metrics.ref[attachmentPropertyName]} title={attachmentPropertyInfo[attachmentPropertyName]} />;
-            });
+                if (attachment) {
+                    return <AttachmentPanel context={metrics.ref} attachment={metrics.ref[attachmentPropertyName]} title={attachmentPropertyInfo[attachmentPropertyName]} />;
+                }
+                return null;
+            })).compact();
         }
 
         // Convert the QC metric object @id to a displayable string
         var qcName = metrics.ref['@id'].match(/^\/([a-z0-9-]*)\/.*$/i);
         if (qcName && qcName[1]) {
             qcName = qcName[1].replace(/-/g, ' ');
+            qcName = qcName[0].toUpperCase() + qcName.substring(1);
         }
 
         return (
             <div>
-                <div className="quality-metrics-header">
-                    <div className="quality-metrics-info">
-                        <h4>Quality metric of {metrics.parent.accession}</h4>
+                <div className="details-view-header">
+                    <div className="details-view-info">
+                        <h4>{qcName} of {metrics.parent.accession}</h4>
                         {filesOfMetric.length ? <h5>Shared with {filesOfMetric.join(', ')}</h5> : null}
                     </div>
-                    {qcName ?
-                        <div className="quality-metrics-type">
-                            {qcName}
-                        </div>
-                    : null}
                 </div>
                 <div className="row">
                     <div className="col-md-4 col-sm-6 col-xs-12">
@@ -1275,17 +1475,19 @@ var QcDetailsView = function(metrics) {
                         </dl>
                     </div>
 
-                    <div className="col-md-8 col-sm-12 quality-metrics-attachments">
-                        <h5>Quality metric attachments</h5>
-                        <div className="row">
-                            {/* If the metrics object has an `attachment` property, display that first, then display the properties
-                                not named `attachment` but which have their own schema attribute, `attachment`, set to true */}
-                            {metrics.ref.attachment ?
-                                <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} />
-                            : null}
-                            {qcPanels}
+                    {(qcPanels && qcPanels.length) || metrics.ref.attachment ?
+                        <div className="col-md-8 col-sm-12 quality-metrics-attachments">
+                            <h5>Quality metric attachments</h5>
+                            <div className="row">
+                                {/* If the metrics object has an `attachment` property, display that first, then display the properties
+                                    not named `attachment` but which have their own schema attribute, `attachment`, set to true */}
+                                {metrics.ref.attachment ?
+                                    <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} />
+                                : null}
+                                {qcPanels}
+                            </div>
                         </div>
-                    </div>
+                    : null}
                 </div>
             </div>
         );
@@ -1354,7 +1556,7 @@ var fileAuditStatus = function(file) {
         highestAuditStatus = 'default';
         highestAuditLevel = 'OK';
     }
-    return <AuditIcon level={highestAuditLevel} />;
+    return <AuditIcon level={highestAuditLevel} addClasses="file-audit-status" />;
 };
 
 function humanFileSize(size) {

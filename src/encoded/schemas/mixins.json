@@ -265,18 +265,7 @@
             "title": "Notes",
             "description": "DCC internal notes.",
             "type": "string",
-            "permission": "import_items",
-            "elasticsearch_mapping_index_type": {
-                "title": "Field mapping index type",
-                "description": "Defines one of three types of indexing available",
-                "type": "string",
-                "default": "analyzed",
-                "enum": [
-                    "analyzed",
-                    "not_analyzed",
-                    "no"
-                ]
-            }
+            "permission": "import_items"
         }
     },
     "submitter_comment": {
@@ -304,6 +293,23 @@
             "title": "Strain name",
             "description": "The specific strain designation of a non-human donor.",
             "type": "string"
+        }
+    },
+    "genetic_modifications": {
+        "genetic_modifications": {
+            "title": "Genetic modifications",
+            "description": "Genetic modification(s). Any genomic alteration or addition of vectors stably or transiently transfected.",
+            "type": "array",
+            "default": [],
+            "permission": "import_items",
+            "uniqueItems": true,
+            "items": {
+                "title": "Genetic modification",
+                "description": "Genetic modification(s).",
+                "comment": "See genetic_modification.json for available identifiers.",
+                "type":  "string",
+                "linkTo": "GeneticModification"
+            }
         }
     },
     "genomic_alterations": {
@@ -354,15 +360,96 @@
         "assay_term_name": {
             "title": "Assay name",
             "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
-            "default": "",
-            "type": "string"
+            "type": "string",
+            "enum": [
+                "ChIP-seq",
+                "RNA-seq",
+                "DNase-seq",
+                "eCLIP",
+                "shRNA knockdown followed by RNA-seq",
+                "RNA Bind-n-Seq",
+                "transcription profiling by array assay",
+                "DNA methylation profiling by array assay",
+                "whole-genome shotgun bisulfite sequencing",
+                "RRBS",
+                "siRNA knockdown followed by RNA-seq",
+                "RAMPAGE",
+                "comparative genomic hybridization by array",
+                "CAGE",
+                "single cell isolation followed by RNA-seq",
+                "Repli-seq",
+                "microRNA-seq",
+                "microRNA counts",
+                "MRE-seq",
+                "RIP-seq",
+                "Repli-chip",
+                "MeDIP-seq",
+                "ChIA-PET",
+                "FAIRE-seq",
+                "ATAC-seq",
+                "PAS-seq",
+                "RIP-chip",
+                "RNA-PET",
+                "genotyping by high throughput sequencing assay",
+                "CRISPR genome editing followed by RNA-seq",
+                "protein sequencing by tandem mass spectrometry assay",
+                "5C",
+                "HiC",
+                "TAB-seq",
+                "iCLIP",
+                "DNA-PET",
+                "Switchgear",
+                "5' RLM RACE",
+                "MNase-seq"
+            ]
         },
         "assay_term_id": {
             "@type": "@id",
             "title": "Assay ID",
             "description": "OBI (Ontology for Biomedical Investigations) ontology identifier for the assay.",
             "type": "string",
-            "pattern": "^(OBI|NTR):[0-9]{7}$"
+            "comment": "Based on the choice in assay_term_name use the corresponding identifier",
+            "enum": [
+                "OBI:0000716",
+                "OBI:0001271",
+                "OBI:0001853",
+                "NTR:0003027",
+                "NTR:0000762",
+                "OBI:0002044",
+                "OBI:0001463",
+                "OBI:0001332",
+                "OBI:0001863",
+                "OBI:0001862",
+                "NTR:0000763",
+                "OBI:0001864",
+                "OBI:0001393",
+                "OBI:0001674",
+                "NTR:0003082",
+                "OBI:0001920",
+                "OBI:0001922",
+                "NTR:0003660",
+                "OBI:0001861",
+                "OBI:0001857",
+                "OBI:0001915",
+                "OBI:0000693",
+                "OBI:0001848",
+                "OBI:0001859",
+                "OBI:0002039",
+                "OBI:0002045",
+                "OBI:0001918",
+                "OBI:0001850",
+                "OBI:0001247",
+                "NTR:0003814",
+                "OBI:0001923",
+                "OBI:0001919",
+                "OBI:0002042",
+                "NTR:0002490",
+                "OBI:0002043",
+                "OBI:0001849",
+                "NTR:0000612",
+                "NTR:0001684",
+                "OBI:0001924"
+            ]
         }
     },
     "treatment_classification": {
@@ -376,7 +463,10 @@
                 "chemical",
                 "exposure",
                 "infection",
-                "antibody"
+                "antibody",
+                "transplantation",
+                "injection",
+                "irradiation"
             ]
         },
         "treatment_term_id": {
@@ -407,5 +497,5 @@
                 "linkTo": "Document"
             }
         }
-    }
+    }    
 }

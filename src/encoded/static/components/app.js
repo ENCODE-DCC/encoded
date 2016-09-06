@@ -18,12 +18,14 @@ var portal = {
         ]},
         {id: 'encyclopedia', title: 'Encyclopedia', children: [
             {id: 'aboutannotations', title: 'About', url: '/data/annotations/'},
-            {id: 'annotationmatrix', title: 'Matrix', url: '/matrix/?type=Annotation'},
-            {id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation'}
+            {id: 'annotationmatrix', title: 'Matrix', url: '/matrix/?type=Annotation&encyclopedia_version=3'},
+            {id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation&encyclopedia_version=3'}
         ]},
         {id: 'materialsmethods', title: 'Materials & Methods', children: [
             {id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot'},
             {id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample'},
+            {id: 'references', title: 'Genome References', url: '/data-standards/reference-sequences/'},
+            {id: 'sep-mm-1'},
             {id: 'datastandards', title: 'Standards and guidelines', url: '/data-standards/'},
             {id: 'ontologies', title: 'Ontologies', url: '/help/getting-started/#Ontologies'},
             {id: 'fileformats', title: 'File formats', url: '/help/file-formats/'},
@@ -97,7 +99,7 @@ var App = React.createClass({
             location_href: this.props.href,
             onDropdownChange: this.handleDropdownChange, // Function to process dropdown state change
             portal: portal,
-            hidePublicAudits: true // True if audits should be hidden on the UI while logged out
+            hidePublicAudits: false // True if audits should be hidden on the UI while logged out
         };
     },
 
@@ -246,7 +248,7 @@ var App = React.createClass({
                     <link rel="canonical" href={canonical} />
                     <script async src='//www.google-analytics.com/analytics.js'></script>
                     <script data-prop-name="inline" dangerouslySetInnerHTML={{__html: this.props.inline}}></script>
-                    <link rel="stylesheet" href="/static/css/style.css" />
+                    <link rel="stylesheet" href={this.props.styles} />
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
                     <script data-prop-name="context" type="application/ld+json" dangerouslySetInnerHTML={{
@@ -278,6 +280,7 @@ var App = React.createClass({
             var props = {};
             // Ensure the initial render is exactly the same
             props.href = document.querySelector('link[rel="canonical"]').getAttribute('href');
+            props.styles = document.querySelector('link[rel="stylesheet"]').getAttribute('href');
             var script_props = document.querySelectorAll('script[data-prop-name]');
             for (var i = 0; i < script_props.length; i++) {
                 var elem = script_props[i];

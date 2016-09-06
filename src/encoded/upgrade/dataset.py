@@ -181,3 +181,41 @@ def dataset_7_8(value, system):
 
     if 'related_files' in value:
         value['related_files'] = list(set(value['related_files']))
+
+
+@upgrade_step('experiment', '8', '9')
+@upgrade_step('annotation', '8', '9')
+@upgrade_step('reference', '8', '9')
+@upgrade_step('project', '8', '9')
+@upgrade_step('publication_data', '8', '9')
+@upgrade_step('ucsc_browser_composite', '8', '9')
+@upgrade_step('organism_development_series', '8', '9')
+@upgrade_step('reference_epigenome', '8', '9')
+@upgrade_step('replication_timing_series', '8', '9')
+@upgrade_step('treatment_time_series', '8', '9')
+@upgrade_step('treatment_concentration_series', '8', '9')
+def dataset_8_9(value, system):
+    if value['status'] == "in progress":
+        value['status'] = "started"
+    elif value['status'] == "in review":
+        value['status'] = "revoked"
+    elif value['status'] == "release ready":
+        value['status'] = "ready for review"
+    elif value['status'] == "verified":
+        value['status'] = "submitted"
+    elif value['status'] == "preliminary":
+        value['status'] = "proposed"
+
+    if 'annotation_type' in value:
+        if value['annotation_type'] == 'segmentation':
+            value['annotation_type'] = 'chromatin state'
+        elif value['annotation_type'] == 'SAGA':
+            value['annotation_type'] = 'chromatin state'
+        elif value['annotation_type'] == 'enhancer prediction':
+            value['annotation_type'] = 'enhancer predictions'
+        elif value['annotation_type'] == 'encyclopedia':
+            value['annotation_type'] = 'other'
+        elif value['annotation_type'] == 'candidate enhancers':
+            value['annotation_type'] = 'enhancer-like regions'
+        elif value['annotation_type'] == 'candidate promoters':
+            value['annotation_type'] = 'promoter-like regions'
