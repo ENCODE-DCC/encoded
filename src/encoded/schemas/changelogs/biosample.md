@@ -6,6 +6,9 @@ Schema version 13
 -----------------
 
 * *note* was removed and values were copied over to *submitter_comment*
+* *starting_amount* requires *starting_amount_units* and vice versa
+* *model_organism_age* requires *model_organism_age_units* and vice versa
+* *model_organism_age*, *model_organism_age_units*, *model_organism_sex*, *model_organism_mating_status* and *model_organism_health_status* properties all are restricted from use in human biosamples.
 
 Schema version 12
 ----------------
