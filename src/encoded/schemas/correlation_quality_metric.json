@@ -20,17 +20,21 @@
         "schema_version": {
             "default": "3"
         },
-        "SPOT score": {
+        "Pearson correlation": {
             "type": "number",
-            "description": "SPOT score as calculated by hotspot2"
+            "description": "Pearson's R correlation"
         },
-        "hotspot count": {
+        "Spearman correlation": {
             "type": "number",
-            "description": "Count of hotspots discovered by hotspot2"
+            "description": "Spearman's rank correlation"
         },
-        "peaks count": {
+        "Items": {
             "type": "number",
-            "description": "Count of peaks discovered by hotspot2"
+            "description": "Count of items from two different datasets that are being correlated"
+        },
+        "Details": {
+            "type": "string",
+            "description": "Details of correlation"
         }
     }
 }
