@@ -3,9 +3,6 @@ import getpass
 import re
 import subprocess
 import sys
-import datetime
-import pdb
-from pprint import pprint as pp
 
 
 BDM = [
@@ -27,83 +24,19 @@ BDM = [
     },
 ]
 
-def spot_instance_price_check(client, instance_type):
-    val = 0
-    highest = 0
-    todaysDate = datetime.datetime.now()
-    response = client.describe_spot_price_history(
-    DryRun=False,
-    StartTime=todaysDate,
-    EndTime=todaysDate,
-    InstanceTypes=[
-        instance_type
-    ],
-    Filters=[
-        {
-            'Name': 'availability-zone',
-            'Values': [
-                'us-west-2a',
-                'us-west-2b',
-                'us-west-2c'
-            ],
-
-            'Name': 'product-description',
-            'Values': [
-                'Linux/UNIX'
-            ]
-        },
-    ]
-    )
-    # dragons teeth lie below
-
-    for key, value in response.items() :
-
-        if key == 'SpotPriceHistory':
-            for item in value:
-                
-                for i in item:
-                    if i == 'SpotPrice':
-                        print("SpotPrice: %s" % item[i])
-
-                        if float(item[i]) > highest :
-                            highest = float(item[i])
-
-    print("Highest price: %f" % highest)
-
-    return highest
-
-def spot_instances(client, spot_price, count, image_id, instance_type, spot_security_groups, user_data):
-    responce = client.request_spot_instances(
-    DryRun=False,
-    SpotPrice=spot_price,
-    InstanceCount=1,
-    Type='one-time',
-    LaunchSpecification={
-        'ImageId': image_id,
-        'SecurityGroups': [spot_security_groups],
-        'InstanceType': instance_type,
-        'Placement': {
-            'AvailabilityZone': 'us-west-2c'
-        },
-        'IamInstanceProfile': {
-            'Arn': 'arn:aws:iam::618537831167:instance-profile/demo-instance'
-        }
-        }
-    )
-
-    return responce
 
 def nameify(s):
     name = ''.join(c if c.isalnum() else '-' for c in s.lower()).strip('-')
     return re.subn(r'\-+', '-', name)[0]
 
-def create_ec2_instances(client, image_id, count, instance_type, security_groups, user_data, bdm, iam_role):
+def create_ec2_instances(client, image_id, count, instance_type, security_groups, key_pair, user_data, bdm, iam_role):
     reservations = client.create_instances(
         ImageId=image_id,
         MinCount=count,
         MaxCount=count,
         InstanceType=instance_type,
         SecurityGroups=security_groups,
+        KeyName=key_pair,
         UserData=user_data,
         BlockDeviceMappings=bdm,
         InstanceInitiatedShutdownBehavior='terminate',
@@ -126,7 +59,7 @@ def tag_ec2_instance(instance, name, branch, commit, username, elasticsearch):
     return instance
 
 
-def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, spot_price, cluster_size, cluster_name, check_price,
+def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size, cluster_name,
         branch=None, name=None, role='demo', profile_name=None, teardown_cluster=None):
     
     if branch is None:
@@ -175,6 +108,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         user_data = user_data % data_insert
         security_groups = ['ssh-http-https']
         iam_role = 'encoded-instance'
+        key_pair = 'cherry-lab-power-users'
         count = 1
     else:
         if not cluster_name:
@@ -187,40 +121,23 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         }
         security_groups = ['ssh-http-https']
         iam_role = 'elasticsearch-instance'
+        key_pair = 'cherry-lab-power-users'
         count = int(cluster_size)
-    
-    if not check_price == False :
-        ec2_spot = boto3.client('ec2')
-        get_spot_price = spot_instance_price_check(ec2_spot, instance_type)
-        exit()
 
-    if not spot_instance == False :
-        print("spot_instance check worked")
-        spot_security_groups = 'ssh-http-https'
-        ec2_spot = boto3.client('ec2')
-        #avg_spot_price = spot_instance_price_check(ec2_spot, instance_type)
-        instances = spot_instances(ec2_spot, spot_price, count, image_id, instance_type, spot_security_groups, user_data)
-    else:
-        instances = create_ec2_instances(ec2, image_id, count, instance_type, security_groups, user_data, BDM, iam_role)
+    instances = create_ec2_instances(ec2, image_id, count, instance_type, security_groups, key_pair, user_data, BDM, iam_role)
 
-    
     for i, instance in enumerate(instances):
         if elasticsearch == 'yes' and count > 1:
             print('Creating Elasticsearch cluster')
             tmp_name = "{}{}".format(name,i)
         else:
             tmp_name = name
-
-        if spot_instance == False :    
-            print('%s.%s.encodedcc.org' % (instance.id, domain))  # Instance:i-34edd56f
-            instance.wait_until_exists()
-            tag_ec2_instance(instance, tmp_name, branch, commit, username, elasticsearch)
-            print('ssh %s.%s.encodedcc.org' % (tmp_name, domain))
-            if domain == 'instance':
-                print('https://%s.demo.encodedcc.org' % tmp_name)
-        else:    
-            print("Spot instance request had been completed, please check to be sure it was fufilled")
-
+        print('%s.%s.encodedcc.org' % (instance.id, domain))  # Instance:i-34edd56f
+        instance.wait_until_exists()
+        tag_ec2_instance(instance, tmp_name, branch, commit, username, elasticsearch)
+        print('ssh %s.%s.encodedcc.org' % (tmp_name, domain))
+        if domain == 'instance':
+            print('https://%s.demo.encodedcc.org' % tmp_name)
 
 
 
@@ -239,9 +156,6 @@ def main():
     parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
     parser.add_argument('-n', '--name', type=hostname, help="Instance name")
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')
-    parser.add_argument('--spot_instance', default=False, help="Launch as spot instance")
-    parser.add_argument('--spot_price', default='0.70', help="Set price or keep default price of 0.70")
-    parser.add_argument('--check_price', default=False, help="Check price on spot instances")
     parser.add_argument(
         '--candidate', action='store_const', default='demo', const='candidate', dest='role',
         help="Deploy candidate instance")
