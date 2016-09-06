@@ -2,6 +2,11 @@
 Change log for biosample.json
 =========================
 
+Schema version 13
+-----------------
+
+* *note* was removed and values were copied over to *submitter_comment*
+
 Schema version 12
 ----------------
 
