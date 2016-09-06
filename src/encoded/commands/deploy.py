@@ -72,11 +72,7 @@ def spot_instance_price_check(client, instance_type):
 
     return highest
 
-def spot_instances(client, spot_price, count, image_id, instance_type, spot_security_groups):
-    #highest=avg_spot_price
-    #if float(spot_price < highest:
-        #spot_price=highest
-
+def spot_instances(client, spot_price, count, image_id, instance_type, spot_security_groups, user_data):
     responce = client.request_spot_instances(
     DryRun=False,
     SpotPrice=spot_price,
@@ -203,7 +199,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         spot_security_groups = 'ssh-http-https'
         ec2_spot = boto3.client('ec2')
         #avg_spot_price = spot_instance_price_check(ec2_spot, instance_type)
-        instances = spot_instances(ec2_spot, spot_price, count, image_id, instance_type, spot_security_groups)
+        instances = spot_instances(ec2_spot, spot_price, count, image_id, instance_type, spot_security_groups, user_data)
     else:
         instances = create_ec2_instances(ec2, image_id, count, instance_type, security_groups, user_data, BDM, iam_role)
 
@@ -214,12 +210,17 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
             tmp_name = "{}{}".format(name,i)
         else:
             tmp_name = name
-        print('%s.%s.encodedcc.org' % (instance.id, domain))  # Instance:i-34edd56f
-        instance.wait_until_exists()
-        tag_ec2_instance(instance, tmp_name, branch, commit, username, elasticsearch)
-        print('ssh %s.%s.encodedcc.org' % (tmp_name, domain))
-        if domain == 'instance':
-            print('https://%s.demo.encodedcc.org' % tmp_name)
+
+        if spot_instance == False :    
+            print('%s.%s.encodedcc.org' % (instance.id, domain))  # Instance:i-34edd56f
+            instance.wait_until_exists()
+            tag_ec2_instance(instance, tmp_name, branch, commit, username, elasticsearch)
+            print('ssh %s.%s.encodedcc.org' % (tmp_name, domain))
+            if domain == 'instance':
+                print('https://%s.demo.encodedcc.org' % tmp_name)
+        else:    
+            print("Spot instance request had been completed, please check to be sure it was fufilled")
+
 
 
 
@@ -239,8 +240,8 @@ def main():
     parser.add_argument('-n', '--name', type=hostname, help="Instance name")
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')
     parser.add_argument('--spot_instance', default=False, help="Launch as spot instance")
-    parser.add_argument('--spot_price', default='0.70', help="set price or keep default price of 0.70")
-    parser.add_argument('--check_price', default=True, help="Check price on spot instances")
+    parser.add_argument('--spot_price', default='0.70', help="Set price or keep default price of 0.70")
+    parser.add_argument('--check_price', default=False, help="Check price on spot instances")
     parser.add_argument(
         '--candidate', action='store_const', default='demo', const='candidate', dest='role',
         help="Deploy candidate instance")
