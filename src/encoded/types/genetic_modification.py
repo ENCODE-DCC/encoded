@@ -20,6 +20,12 @@ class GeneticModification(Item):
     item_type = 'genetic_modification'
     schema = load_schema('encoded:schemas/genetic_modification.json')
     embedded = [
+        'award',
+        'award.pi',
+        'award.pi.lab',
+        'lab',
+        'source',
+        'submitted_by',
         'target',
         'documents',
         'documents.award',
@@ -29,14 +35,14 @@ class GeneticModification(Item):
         'characterizations.documents.award',
         'characterizations.documents.lab',
         'characterizations.documents.submitted_by',
-        'modification_techniques'
+        'modification_techniques',
+        'modification_treatments'
     ]
 
     rev = {
         'biosamples_modified': ('Biosample', 'genetic_modifications'),
         'donors_modified': ('Donor', 'genetic_modifications'),
-        'characterizations': ('GeneticModificationCharacterization', 'characterizes'),
-
+        'characterizations': ('GeneticModificationCharacterization', 'characterizes')
     }
 
     @calculated_property(schema={

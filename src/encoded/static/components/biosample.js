@@ -12,7 +12,7 @@ var audit = require('./audit');
 var image = require('./image');
 var item = require('./item');
 var reference = require('./reference');
-var objectutils = require('./objectutils');
+var {TreatmentDisplay} = require('./objectutils');
 var sortTable = require('./sorttable');
 var doc = require('./doc');
 var {BiosampleSummaryString, CollectBiosampleDocs} = require('./typeutils');
@@ -27,7 +27,6 @@ var {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile
 var ExperimentTable = dataset.ExperimentTable;
 var PubReferenceList = reference.PubReferenceList;
 var RelatedItems = item.RelatedItems;
-var SingleTreatment = objectutils.SingleTreatment;
 var SortTablePanel = sortTable.SortTablePanel;
 var SortTable = sortTable.SortTable;
 var ProjectBadge = image.ProjectBadge;
@@ -437,7 +436,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                             <section>
                                 <hr />
                                 <h4>Treatment details</h4>
-                                {context.treatments.map(PanelLookup)}
+                                {context.treatments.map(treatment => TreatmentDisplay(treatment))}
                             </section>
                         : null}
 

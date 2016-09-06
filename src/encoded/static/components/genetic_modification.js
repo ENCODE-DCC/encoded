@@ -3,11 +3,26 @@ var React = require('react');
 var _ = require('underscore');
 var {Panel, PanelHeading, PanelBody} = require('../libs/bootstrap/panel');
 var globals = require('./globals');
+var {StatusLabel} = require('./statuslabel');
+var {ProjectBadge} = require('./image');
 var {AuditIndicators, AuditDetail, AuditMixin} = require('./audit');
 var {DbxrefList} = require('./dbxref');
 var {FetchedItems} = require('./fetched');
 var {Breadcrumbs} = require('./navigation');
+var {TreatmentDisplay} = require('./objectutils');
 var {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile, AttachmentPanel} = require('./doc');
+
+
+var PanelLookup = function (props) {
+    // XXX not all panels have the same markup
+    var context;
+    if (props['@id']) {
+        context = props;
+        props = {context: context, key: context['@id']};
+    }
+    var PanelView = globals.panel_views.lookup(props.context);
+    return <PanelView key={props.context.uuid} {...props} />;
+};
 
 
 var GeneticModification = module.exports.GeneticModification = React.createClass({
@@ -16,6 +31,7 @@ var GeneticModification = module.exports.GeneticModification = React.createClass
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-detail key-value');
+        var coords = context.modification_genome_coordinates;
 
         // Configure breadcrumbs for the page.
         var crumbs = [
@@ -45,39 +61,144 @@ var GeneticModification = module.exports.GeneticModification = React.createClass
                         <Breadcrumbs root='/search/?type=GeneticModification' crumbs={crumbs} />
                         <h2>{context.modification_type}</h2>
                         <div className="status-line">
-                            <AuditIndicators audits={context.audit} id="biosample-audit" />
+                            <div className="characterization-status-labels">
+                                <StatusLabel title="Status" status={context.status} />
+                            </div>
+                            <AuditIndicators audits={context.audit} id="genetic-modification-audit" />
                         </div>
                     </div>
                 </header>
+                <AuditDetail context={context} id="genetic-modification-audit" />
+                <Panel addClasses="data-display">
+                    <PanelBody addClasses="panel-body-with-header">
+                        <div className="flexrow">
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
+                                <dl className={itemClass}>
+                                    {context.modification_description ?
+                                        <div data-test="description">
+                                            <dt>Description</dt>
+                                            <dd>{context.modification_description}</dd>
+                                        </div>
+                                    : null}
 
-                <Panel>
-                    <PanelBody>
-                        <dl className={itemClass}>
-                            {context.modification_description ?
-                                <div data-test="description">
-                                    <dt>Description</dt>
-                                    <dd>{context.modification_description}</dd>
+                                    {context.modification_purpose ?
+                                        <div data-test="purpose">
+                                            <dt>Modification purpose</dt>
+                                            <dd>{context.modification_purpose}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.modification_zygocity ?
+                                        <div data-test="zygocity">
+                                            <dt>Modification zygocity</dt>
+                                            <dd>{context.modification_zygocity}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.url ?
+                                        <div data-test="url">
+                                            <dt>Product ID</dt>
+                                            <dd><a href={context.url}>{context.product_id ? context.product_id : context.url}</a></dd>
+                                        </div>
+                                    : null}
+
+                                    {context.target ?
+                                        <div data-test="target">
+                                            <dt>Target</dt>
+                                            <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
+                                        </div>
+                                    : null}
+
+                                    {coords && coords.assembly ?
+                                        <div data-test="coordsassembly">
+                                            <dt>Mapping assembly</dt>
+                                            <dd>{context.modification_genome_coordinates.assembly}</dd>
+                                        </div>
+                                    : null}
+
+                                    {coords && coords.chromosome && coords.start && coords.end ?
+                                        <div data-test="coordssequence">
+                                            <dt>Genomic coordinates</dt>
+                                            <dd>chr{coords.chromosome}:{coords.start}-{coords.end}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+
+                                {context.modification_treatments && context.modification_treatments.length ?
+                                    <section>
+                                        <hr />
+                                        <h4>Treatment details</h4>
+                                        {context.modification_treatments.map(treatment => TreatmentDisplay(treatment))}
+                                    </section>
+                                : null}
+
+                                {context.modification_techniques && context.modification_techniques.length ?
+                                    <section>
+                                        <hr />
+                                        <h4>Modification techniques</h4>
+                                        {GeneticModificationTechniques(context.modification_techniques)}
+                                    </section>
+                                : null}
+                            </div>
+
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading">
+                                    <h4>Attribution</h4>
+                                    <ProjectBadge award={context.award} addClasses="badge-heading" />
                                 </div>
-                            : null}
+                                <dl className="key-value">
+                                    <div data-test="lab">
+                                        <dt>Lab</dt>
+                                        <dd>{context.lab.title}</dd>
+                                    </div>
 
-                            {context.modification_purpose ?
-                                <div data-test="purpose">
-                                    <dt>Modification purpose</dt>
-                                    <dd>{context.modification_purpose}</dd>
-                                </div>
-                            : null}
+                                    {context.award.pi && context.award.pi.lab ?
+                                        <div data-test="awardpi">
+                                            <dt>Award PI</dt>
+                                            <dd>{context.award.pi.lab.title}</dd>
+                                        </div>
+                                    : null}
 
-                            {context.target ?
-                                <div data-test="target">
-                                    <dt>Target</dt>
-                                    <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
-                                </div>
-                            : null}
-                        </dl>
+                                    <div data-test="submittedby">
+                                        <dt>Submitted by</dt>
+                                        <dd>{context.submitted_by.title}</dd>
+                                    </div>
 
-                        {context.modification_techniques && context.modification_techniques.length ?
-                            <GeneticModificationTechniques techniques={context.modification_techniques} />
-                        : null}
+                                    {context.source.title ?
+                                        <div data-test="sourcetitle">
+                                            <dt>Source</dt>
+                                            <dd>
+                                                {context.source.url ?
+                                                    <a href={context.source.url}>{context.source.title}</a>
+                                                :
+                                                    <span>{context.source.title}</span>
+                                                }
+                                            </dd>
+                                        </div>
+                                    : null}
+
+                                    <div data-test="project">
+                                        <dt>Project</dt>
+                                        <dd>{context.award.project}</dd>
+                                    </div>
+
+                                    {context.dbxrefs && context.dbxrefs.length ?
+                                        <div data-test="externalresources">
+                                            <dt>External resources</dt>
+                                            <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                        </div>
+                                    : null}
+
+                                    {context.aliases.length ?
+                                        <div data-test="aliases">
+                                            <dt>Aliases</dt>
+                                            <dd>{context.aliases.join(", ")}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
+                        </div>
                     </PanelBody>
                 </Panel>
 
@@ -120,23 +241,17 @@ var GeneticModificationCharacterizations = React.createClass({
     }
 });
 
-var GeneticModificationTechniques = React.createClass({
-    propTypes: {
-        techniques: React.PropTypes.array // Genetic modificiation technique to display
-    },
 
-    render: function() {
-        var {techniques} = this.props;
-        return (
-            <div>
-                {techniques.map(technique => {
-                    var ModificationTechniqueView = globals.panel_views.lookup(technique);
-                    return <ModificationTechniqueView context={technique} />;
-                })}
-            </div>
-        );
+// Returns array of genetic modification technique components.
+var GeneticModificationTechniques = function(techniques) {
+    if (techniques && techniques.length) {
+        return techniques.map(technique => {
+            var ModificationTechniqueView = globals.panel_views.lookup(technique);
+            return <ModificationTechniqueView context={technique} />;
+        });
     }
-});
+    return null;
+};
 
 
 var TechniqueCrispr = React.createClass({
