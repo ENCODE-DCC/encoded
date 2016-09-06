@@ -17,11 +17,15 @@
     ],
     "dependencies": {
         "temperature": ["temperature_units"],
-        "temperature_units": ["temperature"]
+        "temperature_units": ["temperature"],
+        "cocentration": ["concentration_units"],
+        "concentration_units": ["concentration"],
+        "duration": ["duration_units"],
+        "duration_units": ["duration"]
     },
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "lab": {
             "title": "Lab",
