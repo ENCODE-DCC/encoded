@@ -203,6 +203,10 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
     result = job['result']
 
     sequence_pattern = re.compile('[ACTGN]+')
+    read_name_pattern = re.compile(
+        '^@[a-zA-Z0-9_]+:[0-9]+:[a-zA-Z0-9]+:[0-9]+:[0-9]+:' +
+        '[0-9]+:[0-9]+:[\s_][12]:[YN]:[0-9]+:([ACTG]+|[0-9]+)$'
+        )
     read_count = 0
     read_lengths = set()
     unique_tuples_set = set()
@@ -215,13 +219,12 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
                 line_counter += 1
                 first_colon = line.find(":")
                 if line_counter == 1:
-                    '''
-                    MAY BE HERE INTRODUCE REGEX ILLUMINA TO ENSURE NEW FORMAT?
-                    '''
-                    if line[0] != '@' or first_colon == -1:
+                    read_name = line.strip()
+                    if read_name_pattern.match(read_name) is False:
+
                         errors['fastq_format_readname'] = 'submitted fastq file does not ' + \
                                                           'comply with illumina fastq read name format, ' + \
-                                                          'read name was : {}'.format(line.strip())
+                                                          'read name was : {}'.format(read_name)
                         break
                     else:
                         sub_line = line[first_colon:].strip()
@@ -292,6 +295,13 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
         # detected_flowcell_details = []
         if len(unique_tuples_list) > 0:
             detected_flowcell_details = [(x[0], x[1]) for x in unique_tuples_list]
+            read_numbers = [x[2] for x in unique_tuples_list]
+            read_numbers_set = set(read_numbers)
+            if len(read_numbers_set) > 1:
+                errors['inconsistent_read_numbers'] = \
+                    'fastq file contains mixed read numbers ' + \
+                    '{}.'.format(', '.join(list(read_numbers_set)))
+
             # for unique_tuple in unique_tuples_list:
             #    detected_flowcell_details.append((unique_tuple[0],
             #                                      unique_tuple[1]))
