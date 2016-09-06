@@ -37,7 +37,12 @@ def biosample_starting_amount(biosample):
 def mouse_biosample(biosample, mouse):
     item = biosample.copy()
     item.update({
-        'organism': mouse['uuid']
+        'organism': mouse['uuid'],
+        'model_organism_age': '8',
+        'model_organism_age_units': 'day',
+        'model_organism_sex': 'female',
+        'model_organism_health_status': 'apparently healthy',
+        'model_organism_mating_status': 'virgin'
     })
     return item
 
@@ -57,7 +62,7 @@ def test_biosample_depleted_in_type_whole_organism(testapp, biosample_depleted_i
 
 
 def test_biosample_starting_amount(testapp, biosample_starting_amount):
-    testapp.post_json('/biosample', biosample_starting_amount)
+    testapp.post_json('/biosample', biosample_starting_amount, status=422)
 
 
 def test_biosample_transfection_method(testapp, biosample):
@@ -73,3 +78,8 @@ def test_biosample_mouse_life_stage(testapp, mouse_biosample):
 def test_biosample_mouse_life_stage_fail(testapp, biosample):
     biosample['mouse_life_stage'] = 'adult'
     testapp.post_json('/biosample', biosample, status=422)
+
+
+def test_biosample_model_organism_props_fail(testapp, mouse_biosample, human):
+    mouse_biosample['organism'] = human['uuid']
+    testapp.post_json('/biosample', mouse_biosample, status=422)
