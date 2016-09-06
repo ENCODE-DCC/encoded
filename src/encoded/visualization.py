@@ -2430,11 +2430,12 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False,
     ### LRNA: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR000AAA/@@hub/GRCh38/trackDb.txt
 
     # USE ES CACHE
-    USE_CACHE = False
+    USE_CACHE = True
 
     acc_composite = None
+    es_key = acc + "_" + assembly
+    found_or_made = "found"
     if USE_CACHE:
-        es_key = acc + "_" + assembly
         if not regen:
             regen = (request.url.find("regenvis") > -1) # @@hub/GRCh38/regenvis/trackDb.txt  regenvis/GRCh38 causes and error
 
@@ -2450,13 +2451,12 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False,
         acc_composite = make_acc_composite(dataset, assembly, host=request.host_url, hide=hide)  # DEBUG: batch trackDb
         if USE_CACHE:
             add_to_es(request,es_key,acc_composite)
-        log.warn("made acc_composite %s_%s" % (acc, assembly))
+        if not regen:
+            log.warn("made acc_composite %s_%s" % (acc, assembly))
         found_or_made = "made"
 
         if request_dataset: # Manage meomory
             del dataset
-    else:
-        found_or_made = "found"
 
     return (found_or_made, acc_composite)
 
@@ -2485,7 +2485,7 @@ def generate_batch_trackDb(request, hide=False, regen=False):
 
     ### local test: RNA-seq: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/batch_hub/type=Experiment,,assay_title=RNA-seq,,award.rfa=ENCODE3,,status=released,,assembly=GRCh38,,replicates.library.biosample.biosample_type=induced+pluripotent+stem+cell+line/GRCh38/trackDb.txt
 
-    USE_CACHE = False   # USE ES CACHE
+    USE_CACHE = True   # USE ES CACHE
     CACHE_SETS = False  # NO CACHING OF set_composites!!!
     USE_SEARCH = False  # USE ES CACHE SEARCH EXCLUSIVELY
     # TODO: consider using vew=all to decide on cache usage.
