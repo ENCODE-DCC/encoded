@@ -218,8 +218,8 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
             print('ssh %s.%s.encodedcc.org' % (tmp_name, domain))
             if domain == 'instance':
                 print('https://%s.demo.encodedcc.org' % tmp_name)
-        else:    
-            print("Spot instance request had been completed, please check to be sure it was fufilled")
+    if not spot_instance == False:        
+        print("Spot instance request had been completed, please check to be sure it was fufilled")
 
 
 
