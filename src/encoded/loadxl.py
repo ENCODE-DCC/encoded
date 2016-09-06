@@ -66,7 +66,7 @@ ORDER = [
     'samtools_flagstats_quality_metric',
     'mad_quality_metric',
     'bigwigcorrelate_quality_metric',
-    'dnase_peak_quality_metric',
+    'correlation_quality_metric',
     'edwbamstats_quality_metric',
     'edwcomparepeaks_quality_metric',
     'hotspot_quality_metric',

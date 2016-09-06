@@ -98,14 +98,14 @@ class BigwigcorrelateQualityMetric(QualityMetric):
 
 
 @collection(
-    name='dnase-peak-quality-metrics',
+    name='correlation-quality-metrics',
     properties={
-        'title': "Counts of DNase Regions and Hotspots",
-        'description': 'A set of peak QC metrics for regions and hotspots',
+        'title': "Correlation of two replicate datasets",
+        'description': 'Correlation QC metrics for two replicate sets of items',
     })
-class DnasePeakQualityMetric(QualityMetric):
-    item_type = 'dnase_peak_quality_metric'
-    schema = load_schema('encoded:schemas/dnase_peak_quality_metric.json')
+class CorrelationQualityMetric(QualityMetric):
+    item_type = 'correlation_quality_metric'
+    schema = load_schema('encoded:schemas/correlation_quality_metric.json')
 
 
 @collection(
