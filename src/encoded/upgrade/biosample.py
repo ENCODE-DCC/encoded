@@ -205,5 +205,5 @@ def biosample_12_13(value, system):
     # http://redmine.encodedcc.org/issues/3921
     if 'note' in value:
         if value['note'] != value['submitter_comment']:
-            value['submitter_comment'] = value['submitter_comment'] + ' ' + value['note']
+            value['submitter_comment'] = value['submitter_comment'] + '. ' + value['note']
         del value['note']
