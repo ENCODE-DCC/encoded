@@ -182,5 +182,16 @@
                 "linkTo": "Treatment"
             }
         }
+    },
+    "facets": {
+        "modification_type": {
+            "title": "Modification type"
+        },
+        "target.label": {
+            "title": "Target"
+        },
+        "status": {
+            "title": "Genetic modification status"
+        }
     }
 }

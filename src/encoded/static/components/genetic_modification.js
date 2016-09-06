@@ -23,7 +23,9 @@ var GeneticModification = module.exports.GeneticModification = React.createClass
 
         // Configure breadcrumbs for the page.
         var crumbs = [
-            {id: 'Genetic Modifications'}
+            {id: 'Genetic Modifications'},
+            {id: context.target && context.target.label, query: 'target.label=' + (context.target && context.target.label), tip: context.target && context.target.label},
+            {id: context.modification_type, query: 'modification_type=' + context.modification_type, tip: context.modification_type}
         ];
 
         // Collect and combine documents, including from genetic modification characterizations.
@@ -255,6 +257,11 @@ var TechniqueCrispr = React.createClass({
 
         return (
             <dl className={itemClass}>
+                <div data-test="techniquetype">
+                    <dt>Technique type</dt>
+                    <dd>CRISPR</dd>
+                </div>
+
                 {context.insert_sequence ?
                     <div data-test="insertsequence">
                         <dt>Insert sequence</dt>
@@ -313,6 +320,11 @@ var TechniqueTale = React.createClass({
 
         return (
             <dl className={itemClass}>
+                <div data-test="techniquetype">
+                    <dt>Technique type</dt>
+                    <dd>TALE</dd>
+                </div>
+
                 <div data-test="rvdsequence">
                     <dt>RVD sequence</dt>
                     <dd>{context.RVD_sequence}</dd>
