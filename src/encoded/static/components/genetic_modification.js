@@ -1,16 +1,17 @@
 'use strict';
 var React = require('react');
 var _ = require('underscore');
+var url = require('url');
 var {Panel, PanelHeading, PanelBody} = require('../libs/bootstrap/panel');
 var globals = require('./globals');
 var {StatusLabel} = require('./statuslabel');
-var {ProjectBadge} = require('./image');
+var {ProjectBadge, Attachment} = require('./image');
 var {AuditIndicators, AuditDetail, AuditMixin} = require('./audit');
 var {DbxrefList} = require('./dbxref');
 var {FetchedItems} = require('./fetched');
 var {Breadcrumbs} = require('./navigation');
 var {TreatmentDisplay} = require('./objectutils');
-var {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile, AttachmentPanel} = require('./doc');
+var {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile} = require('./doc');
 
 
 var GeneticModification = module.exports.GeneticModification = React.createClass({
@@ -219,12 +220,14 @@ var GeneticModificationCharacterizations = React.createClass({
         return (
             <Panel>
                 <PanelHeading>
-                    <h4>Characterizations</h4>
+                    <h4>Characterization attachments</h4>
                 </PanelHeading>
-                <PanelBody>
-                    {characterizations.map(characterization => {
-                        return <AttachmentPanel context={characterization} attachment={characterization.attachment} title={characterization.characterization_method} />;
-                    })}
+                <PanelBody addClasses="attachment-panel-outer">
+                    <section className="flexrow attachment-panel-inner">
+                        {characterizations.map(characterization => {
+                            return <AttachmentPanel context={characterization} attachment={characterization.attachment} title={characterization.characterization_method} />;
+                        })}
+                    </section>
                 </PanelBody>
             </Panel>
         );
@@ -372,3 +375,52 @@ var TechniqueTale = React.createClass({
 });
 
 globals.panel_views.register(TechniqueTale, 'Tale');
+
+
+// Display a panel for attachments that aren't a part of an associated document
+var AttachmentPanel = module.exports.AttachmentPanel = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object.isRequired, // Object that owns the attachment; needed for attachment path
+        attachment: React.PropTypes.object.isRequired, // Attachment being rendered
+        title: React.PropTypes.string // Title to display in the caption area
+    },
+
+    render: function() {
+        var {context, attachment, title} = this.props;
+
+        // Make the download link
+        var download, attachmentHref;
+        if (attachment.href && attachment.download) {
+            attachmentHref = url.resolve(context['@id'], attachment.href);
+            download = (
+                <div className="dl-link">
+                    <i className="icon icon-download"></i>&nbsp;
+                    <a data-bypass="true" href={attachmentHref} download={attachment.download}>
+                        Download
+                    </a>
+                </div>
+            );
+        } else {
+            download = <em>Attachment not available to download</em>;
+        }
+
+        return (
+            <div className="flexcol panel-attachment">
+                <Panel addClasses={globals.itemClass(context, 'view-detail')}>
+                    <figure>
+                        <Attachment context={context} attachment={attachment} className="characterization" />
+                    </figure>
+                    <div className="document-intro document-meta-data">
+                        {title ?
+                            <div data-test="attachments">
+                                <strong>Method: </strong>
+                                {title}
+                            </div>
+                        : null}
+                        {download}
+                    </div>
+                </Panel>
+            </div>
+        );
+    }
+});

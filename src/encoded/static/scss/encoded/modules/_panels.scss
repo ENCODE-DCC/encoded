@@ -4,8 +4,8 @@
     border: 1px solid #a0a0a0;
     border-radius: $border-radius-base;
     box-shadow: 0 0 6px rgba(195, 202, 211, 0.5);
-    margin-top: 15px;
-    margin-bottom: 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     padding: 15px 20px;
     overflow: visible;
 
@@ -79,14 +79,11 @@
 
     /* sprites.less reset */
     display: inline;
-    width: auto;
-    height: auto;
     line-height: normal;
     vertical-align: baseline;
     background-image: none;
     background-position: 0% 0%;
     background-repeat: repeat;
-    margin-top: 0;
 }
 /* remove external-link icon if there is no text in link <a></a>
 Note does not work in =<IE8, oh well */
@@ -185,6 +182,18 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
 .panel-body-doc {
     padding: 10px 0 0 10px;
+}
+
+.panel-attachment {
+    padding: 0 5px;
+}
+
+.attachment-panel-outer {
+    padding-bottom: 0;
+}
+
+.attachment-panel-inner {
+    padding: 0 5px;
 }
 
 // Holds documents, but as a panel within a panel
