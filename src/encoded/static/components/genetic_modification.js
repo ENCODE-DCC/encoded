@@ -13,18 +13,6 @@ var {TreatmentDisplay} = require('./objectutils');
 var {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile, AttachmentPanel} = require('./doc');
 
 
-var PanelLookup = function (props) {
-    // XXX not all panels have the same markup
-    var context;
-    if (props['@id']) {
-        context = props;
-        props = {context: context, key: context['@id']};
-    }
-    var PanelView = globals.panel_views.lookup(props.context);
-    return <PanelView key={props.context.uuid} {...props} />;
-};
-
-
 var GeneticModification = module.exports.GeneticModification = React.createClass({
     mixins: [AuditMixin],
 
@@ -126,7 +114,7 @@ var GeneticModification = module.exports.GeneticModification = React.createClass
                                 </dl>
 
                                 {context.modification_treatments && context.modification_treatments.length ?
-                                    <section>
+                                    <section className="data-display-array">
                                         <hr />
                                         <h4>Treatment details</h4>
                                         {context.modification_treatments.map(treatment => TreatmentDisplay(treatment))}
@@ -134,7 +122,7 @@ var GeneticModification = module.exports.GeneticModification = React.createClass
                                 : null}
 
                                 {context.modification_techniques && context.modification_techniques.length ?
-                                    <section>
+                                    <section className="data-display-array">
                                         <hr />
                                         <h4>Modification techniques</h4>
                                         {GeneticModificationTechniques(context.modification_techniques)}
@@ -242,7 +230,8 @@ var GeneticModificationCharacterizations = React.createClass({
 });
 
 
-// Returns array of genetic modification technique components.
+// Returns array of genetic modification technique components. The type of each technique can vary,
+// so we need to look up the display component based on the @type of each technique.
 var GeneticModificationTechniques = function(techniques) {
     if (techniques && techniques.length) {
         return techniques.map(technique => {
@@ -254,6 +243,7 @@ var GeneticModificationTechniques = function(techniques) {
 };
 
 
+// Display modification technique specific to the CRISPR type.
 var TechniqueCrispr = React.createClass({
     propTypes: {
         context: React.PropTypes.object // CRISPR genetic modificiation technique to display
@@ -265,17 +255,42 @@ var TechniqueCrispr = React.createClass({
 
         return (
             <dl className={itemClass}>
-                {context.dbxrefs && context.dbxrefs.length ?
-                    <div data-test="externalresources">
-                        <dt>External resources</dt>
-                        <dd><DbxrefList values={context.dbxrefs} /></dd>
-                    </div>
-                : null}
-
                 {context.insert_sequence ?
                     <div data-test="insertsequence">
                         <dt>Insert sequence</dt>
                         <dd>{context.insert_sequence}</dd>
+                    </div>
+                : null}
+
+                <div data-test="lab">
+                    <dt>Lab</dt>
+                    <dd>{context.lab.title}</dd>
+                </div>
+
+                {context.award.pi && context.award.pi.lab ?
+                    <div data-test="awardpi">
+                        <dt>Award PI</dt>
+                        <dd>{context.award.pi.lab.title}</dd>
+                    </div>
+                : null}
+
+                {context.source.title ?
+                    <div data-test="sourcetitle">
+                        <dt>Source</dt>
+                        <dd>
+                            {context.source.url ?
+                                <a href={context.source.url}>{context.source.title}</a>
+                            :
+                                <span>{context.source.title}</span>
+                            }
+                        </dd>
+                    </div>
+                : null}
+
+                {context.dbxrefs && context.dbxrefs.length ?
+                    <div data-test="externalresources">
+                        <dt>External resources</dt>
+                        <dd><DbxrefList values={context.dbxrefs} /></dd>
                     </div>
                 : null}
             </dl>
@@ -286,6 +301,7 @@ var TechniqueCrispr = React.createClass({
 globals.panel_views.register(TechniqueCrispr, 'Crispr');
 
 
+// Display modification technique specific to the TALE type.
 var TechniqueTale = React.createClass({
     propTypes: {
         context: React.PropTypes.object // TALE genetic modificiation technique to display
@@ -297,13 +313,6 @@ var TechniqueTale = React.createClass({
 
         return (
             <dl className={itemClass}>
-                {context.dbxrefs && context.dbxrefs.length ?
-                    <div data-test="externalresources">
-                        <dt>External resources</dt>
-                        <dd><DbxrefList values={context.dbxrefs} /></dd>
-                    </div>
-                : null}
-
                 <div data-test="rvdsequence">
                     <dt>RVD sequence</dt>
                     <dd>{context.RVD_sequence}</dd>
@@ -313,6 +322,38 @@ var TechniqueTale = React.createClass({
                     <dt>TALEN platform</dt>
                     <dd>{context.talen_platform}</dd>
                 </div>
+
+                <div data-test="lab">
+                    <dt>Lab</dt>
+                    <dd>{context.lab.title}</dd>
+                </div>
+
+                {context.award.pi && context.award.pi.lab ?
+                    <div data-test="awardpi">
+                        <dt>Award PI</dt>
+                        <dd>{context.award.pi.lab.title}</dd>
+                    </div>
+                : null}
+
+                {context.source.title ?
+                    <div data-test="sourcetitle">
+                        <dt>Source</dt>
+                        <dd>
+                            {context.source.url ?
+                                <a href={context.source.url}>{context.source.title}</a>
+                            :
+                                <span>{context.source.title}</span>
+                            }
+                        </dd>
+                    </div>
+                : null}
+
+                {context.dbxrefs && context.dbxrefs.length ?
+                    <div data-test="externalresources">
+                        <dt>External resources</dt>
+                        <dd><DbxrefList values={context.dbxrefs} /></dd>
+                    </div>
+                : null}
             </dl>
         );
     }

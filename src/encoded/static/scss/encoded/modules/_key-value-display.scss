@@ -238,3 +238,10 @@ dd ul, .multi-value {
     }
 }
 
+.data-display-array dl {
+    margin-top: 10px;
+
+    &:first-child {
+        margin-top: 0;
+    }
+}
