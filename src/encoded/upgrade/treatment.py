@@ -41,3 +41,8 @@ def treatment_3_4(value, system):
 
     if 'protocols' in value:
         value['protocols'] = list(set(value['protocols']))
+
+
+@upgrade_step('treatment', '4', '5')
+def treatment_4_5(value, system):
+    return
