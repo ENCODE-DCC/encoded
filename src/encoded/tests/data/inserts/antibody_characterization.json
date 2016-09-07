@@ -428,6 +428,7 @@
         "target": "TAF1-human",
         "uuid": "c105221e-2c2f-449d-9942-4f4b5f2f36fe",
         "documents": ["ENCODE:Antibody_characterization_standards_February_2014"],
+        "attachment": "human_E2F1_HA-E2F1_validation_Farnham-1_1.jpg",
         "comment": "The TF was ranked #21, can you just let this one slide?",
         "notes": "The lab baked me a delicious pie, so I turned a blind eye."
     },
