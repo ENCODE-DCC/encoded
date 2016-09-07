@@ -83,3 +83,21 @@ def test_biosample_mouse_life_stage_fail(testapp, biosample):
 def test_biosample_model_organism_props_fail(testapp, mouse_biosample, human):
     mouse_biosample['organism'] = human['uuid']
     testapp.post_json('/biosample', mouse_biosample, status=422)
+
+
+def test_biosample_human_post_synchronization_fail(testapp, biosample):
+    biosample['post_synchronization_time'] = '10'
+    biosample['post_synchronization_time_units'] = 'hour'
+    testapp.post_json('/biosample', biosample, status=422)
+
+
+def test_biosample_mouse_post_synchronization_fail(testapp, mouse_biosample):
+    mouse_biosample['post_synchronization_time'] = '10'
+    mouse_biosample['post_synchronization_time_units'] = 'hour'
+    testapp.post_json('/biosample', mouse_biosample, status=422)
+
+
+def test_biosample_mating_status_no_sex_fail(testapp, mouse_biosample):
+    del mouse_biosample['model_organism_sex']
+    mouse_biosample['model_organism_mating_status'] = 'mated'
+    testapp.post_json('/biosample', mouse_biosample, status=422)
