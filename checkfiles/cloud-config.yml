@@ -65,7 +65,6 @@ users:
   system: true
 
 mounts:
-- [ /dev/xvdb, /home/ubuntu/volume ]
 - [ "goofys-ulimit#encode-files", "/s3/encode-files", "fuse", "_netdev,allow_other,--file-mode=0444,--dir-mode=0555,--stat-cache-ttl=0", "0", "0" ]
 - [ "goofys-ulimit#encoded-files-dev", "/s3/encoded-files-dev", "fuse", "_netdev,allow_other,--file-mode=0444,--dir-mode=0555,--stat-cache-ttl=0", "0", "0" ]
 
