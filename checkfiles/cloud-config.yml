@@ -5,7 +5,6 @@
 
 bootcmd:
 - cloud-init-per once ssh-users-ca echo "TrustedUserCAKeys /etc/ssh/users_ca.pub" >> /etc/ssh/sshd_config
-- sudo mkfs -t ext4 /dev/xvdb
 
 output:
   all: '| tee -a /var/log/cloud-init-output.log'
@@ -29,7 +28,6 @@ runcmd:
 - systemctl daemon-reload  # See https://bugs.launchpad.net/cloud-init/+bug/1449318
 - mkdir -p /s3/encode-files
 - mkdir -p /s3/encoded-files-dev
-- sudo mkdir -p /home/ubuntu/volume
 - curl -sS -L -o /usr/local/bin/goofys https://github.com/kahing/goofys/releases/download/v0.0.5/goofys
 - chmod +x /usr/local/bin/goofys
 
@@ -58,8 +56,6 @@ runcmd:
 
 - cd /home/ubuntu
 - sudo -iu ubuntu /opt/encoded/checkfiles/bin/python /opt/encoded/checkfiles/checkfiles.py $(cat /opt/checkfiles_args.txt)
-
-- sudo chmod -R 777 /home/ubuntu/volume
 
 users:
 - default
