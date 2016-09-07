@@ -30,7 +30,7 @@ runcmd:
 - mkdir -p /s3/encode-files
 - mkdir -p /s3/encoded-files-dev
 - sudo mkdir -p /mnt/volume 
-- sudo chmod -R 755 /mnt/
+- sudo chmod -R 777 /mnt/volume
 - curl -sS -L -o /usr/local/bin/goofys https://github.com/kahing/goofys/releases/download/v0.0.5/goofys
 - chmod +x /usr/local/bin/goofys
 
