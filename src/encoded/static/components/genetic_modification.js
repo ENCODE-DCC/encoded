@@ -14,6 +14,7 @@ var {Breadcrumbs} = require('./navigation');
 var {TreatmentDisplay} = require('./objectutils');
 var {BiosampleTable} = require('./typeutils');
 var {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile} = require('./doc');
+var {PickerActionsMixin} = require('./search');
 
 
 var GeneticModification = module.exports.GeneticModification = React.createClass({
@@ -447,3 +448,45 @@ var AttachmentPanel = module.exports.AttachmentPanel = React.createClass({
         );
     }
 });
+
+
+var Listing = React.createClass({
+    mixins: [PickerActionsMixin, AuditMixin],
+
+    render: function() {
+        var result = this.props.context;
+
+        var techniques = [];
+        if (result.modification_techniques && result.modification_techniques.length) {
+            techniques = _.uniq(result.modification_techniques.map(technique => {
+                if (technique['@type'][0] === 'Crispr') {
+                    return 'CRISPR';
+                }
+                if (technique['@type'][0] === 'Tale') {
+                    return 'TALE';
+                }
+                return technique['@type'][0];
+            }));
+        }
+
+        return (
+            <li>
+                <div className="clearfix">
+                    {this.renderActions()}
+                    <div className="pull-right search-meta">
+                        <p className="type meta-title">Genetic modifications</p>
+                        <p className="type meta-status">{' ' + result.status}</p>
+                        <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
+                    </div>
+                    <div className="accession"><a href={result['@id']}>{result.modification_type}</a></div>
+                    <div className="data-row">
+                        {techniques.length ? <div><strong>Modification techniques: </strong>{techniques.join(', ')}</div> : null}
+                    </div>
+                </div>
+                <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
+            </li>
+        );
+    }
+});
+
+globals.listing_views.register(Listing, 'GeneticModification');

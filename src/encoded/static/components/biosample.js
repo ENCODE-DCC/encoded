@@ -15,7 +15,7 @@ var reference = require('./reference');
 var {TreatmentDisplay, SingleTreatment} = require('./objectutils');
 var {SortTablePanel, SortTable} = require('./sorttable');
 var doc = require('./doc');
-var {BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable} = require('./typeutils');
+var {BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable, GeneticModificationTable} = require('./typeutils');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -1098,58 +1098,6 @@ var RNAi = module.exports.RNAi = React.createClass({
 });
 
 globals.panel_views.register(RNAi, 'RNAi');
-
-
-// Display the table of genetic modifications
-var GeneticModificationTable = React.createClass({
-    propTypes: {
-        geneticModifications: React.PropTypes.array.isRequired // Array of genetic modifications
-    },
-
-    columns: {
-        'modification_type': {
-            title: 'Type',
-            display: modification => <a href={modification['@id']} title="View this modification">{modification.modification_type}</a>
-        },
-        'techniques': {
-            title: 'Techniques',
-            getValue: modification => {
-                if (modification.modification_techniques && modification.modification_techniques.length) {
-                    return (
-                        modification.modification_techniques.map(technique => {
-                            if (technique['@type'][0] === 'Crispr') {
-                                return 'CRISPR';
-                            } else if (technique['@type'][0] === 'Tale') {
-                                return 'TALE';
-                            }
-                            return technique['@type'][0];
-                        }).sort().join(', ')
-                    );
-                }
-                return null;
-            }
-        },
-        'target': {
-            title: 'Target',
-            display: modification => {
-                if (modification.target) {
-                    return <a href={modification.target['@id']} title={'View target ' + modification.target.label}>{modification.target.label}</a>;
-                }
-                return null;
-            },
-        }
-    },
-
-    render: function() {
-        var {geneticModifications} = this.props;
-
-        return (
-            <SortTablePanel title="Genetic modifications">
-                <SortTable list={geneticModifications} columns={this.columns} />
-            </SortTablePanel>
-        );
-    }
-});
 
 
 //**********************************************************************

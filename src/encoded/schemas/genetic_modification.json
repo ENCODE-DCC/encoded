@@ -183,6 +183,20 @@
             }
         }
     },
+    "columns": {
+        "aliases": {
+            "title": "Lab aliases"
+        },
+        "modification_type": {
+            "title": "Modification type"
+        },
+        "modification_techniques": {
+            "title": "Modification techniques"
+        },
+        "status": {
+            "title": "Genetic modification status"
+        }
+    },
     "facets": {
         "modification_type": {
             "title": "Modification type"

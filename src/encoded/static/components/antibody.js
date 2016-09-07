@@ -353,11 +353,11 @@ var CharacterizationHeader = React.createClass({
                 </div>
                 {doc.characterization_reviews && doc.characterization_reviews.length ?
                     <div className="characterization-biosample-terms">
-                        {doc.characterization_reviews.map(review => {
+                        {doc.characterization_reviews.map((review, i) => {
                             var flexItem = {
                                 flex: review.biosample_term_name.length + ' 1 auto'
                             };
-                            return <span className="characterization-biosample-term" style={flexItem}>{review.biosample_term_name}</span>;
+                            return <span key={i} className="characterization-biosample-term" style={flexItem}>{review.biosample_term_name}</span>;
                         })}
                     </div>
                 : null}
