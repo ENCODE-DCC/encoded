@@ -472,7 +472,7 @@ def check_file(config, session, url, job):
             # or http://stackoverflow.com/a/15343686/199100
             try:
                 if item['file_format'] == 'fastq':
-                    unzipped_fastq_path = '/mnt/volume/' + local_path[-20:-9] + '_original.fastq'
+                    unzipped_fastq_path = '/home/ubuntu/volume/' + local_path[-20:-9] + '_original.fastq'
                     output = subprocess.check_output(
                         'set -o pipefail; gunzip --stdout {} | tee {} | md5sum'.format(
                             local_path, unzipped_fastq_path),

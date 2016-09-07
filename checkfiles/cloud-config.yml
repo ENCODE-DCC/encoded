@@ -29,8 +29,7 @@ runcmd:
 - systemctl daemon-reload  # See https://bugs.launchpad.net/cloud-init/+bug/1449318
 - mkdir -p /s3/encode-files
 - mkdir -p /s3/encoded-files-dev
-- sudo mkdir -p /mnt/volume 
-- sudo chmod -R 777 /mnt/volume
+- sudo mkdir -p /home/ubuntu/volume
 - curl -sS -L -o /usr/local/bin/goofys https://github.com/kahing/goofys/releases/download/v0.0.5/goofys
 - chmod +x /usr/local/bin/goofys
 
@@ -60,6 +59,7 @@ runcmd:
 - cd /home/ubuntu
 - sudo -iu ubuntu /opt/encoded/checkfiles/bin/python /opt/encoded/checkfiles/checkfiles.py $(cat /opt/checkfiles_args.txt)
 
+- sudo chmod -R 777 /home/ubuntu/volume
 
 users:
 - default
@@ -69,7 +69,7 @@ users:
   system: true
 
 mounts:
-- [ /dev/xvdb, /mnt/volume ]
+- [ /dev/xvdb, /home/ubuntu/volume ]
 - [ "goofys-ulimit#encode-files", "/s3/encode-files", "fuse", "_netdev,allow_other,--file-mode=0444,--dir-mode=0555,--stat-cache-ttl=0", "0", "0" ]
 - [ "goofys-ulimit#encoded-files-dev", "/s3/encoded-files-dev", "fuse", "_netdev,allow_other,--file-mode=0444,--dir-mode=0555,--stat-cache-ttl=0", "0", "0" ]
 
