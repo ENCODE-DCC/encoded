@@ -104,6 +104,19 @@
                 }
             }
         },
+        "post_synchronization_time": {
+            "not": {
+                "properties": {
+                    "organism": {
+                        "linkTo": "Organism",
+                        "linkEnum": [
+                            "7745b647-ff15-4ff3-9ced-b897d4e2983c",
+                            "3413218c-3d86-498b-a0a2-9a406638e786"
+                        ]
+                    }
+                }
+            }
+        },
         "model_organism_age_units": ["model_organism_age"],
         "fly_life_stage": {
             "properties": {
