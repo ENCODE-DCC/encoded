@@ -30,19 +30,23 @@ var GeneticModification = module.exports.GeneticModification = React.createClass
         ];
 
         // Collect and combine documents, including from genetic modification characterizations.
-        var documents = [];
+        var modDocs = [];
+        var charDocs = [];
         if (context.documents && context.documents.length) {
-            documents = context.documents;
+            modDocs = context.documents;
         }
         if (context.characterizations && context.characterizations.length) {
             context.characterizations.forEach(characterization => {
                 if (characterization.documents && characterization.documents.length) {
-                    documents = documents.concat(characterization.documents);
+                    charDocs = charDocs.concat(characterization.documents);
                 }
             });
         }
-        if (documents.length) {
-            documents = globals.uniqueObjectsArray(documents);
+        if (modDocs.length) {
+            modDocs = globals.uniqueObjectsArray(modDocs);
+        }
+        if (charDocs.length) {
+            charDocs = globals.uniqueObjectsArray(charDocs);
         }
 
         return (
@@ -197,9 +201,7 @@ var GeneticModification = module.exports.GeneticModification = React.createClass
                     <GeneticModificationCharacterizations characterizations={context.characterizations} />
                 : null}
 
-                {documents.length ?
-                    <DocumentsPanel documentSpecs={[{documents: documents}]} />
-                : null}
+                <DocumentsPanel documentSpecs={[{label: 'Modification', documents: modDocs}, {label: 'Characterization', documents: charDocs}]} />
             </div>
         );
     }

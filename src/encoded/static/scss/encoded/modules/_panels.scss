@@ -167,21 +167,20 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     order: 0;
     flex: 0 1 auto;
     align-self: auto;
-    width: 100%;
-    margin: 0 10px 0 0;
-    margin-right: 10px;
-
-    @media screen and (min-width: $screen-md-min) {
-        width: 48.9%;
-    }
-
-    @media screen and (min-width: $screen-lg-min) {
-        width: 32.4%;
-    }
+    margin: 0;
+    padding: 0 5px;
 }
 
 .panel-body-doc {
-    padding: 10px 0 0 10px;
+    padding: 10px;
+}
+
+.doc-panel-outer {
+    padding-bottom: 0;
+}
+
+.doc-panel-inner {
+    padding: 0 5px;
 }
 
 .panel-attachment {

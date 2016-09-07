@@ -6,7 +6,7 @@ var panel = require('../libs/bootstrap/panel');
 var {SvgIcon, CollapseIcon} = require('../libs/svg-icons');
 var globals = require('./globals');
 var image = require('./image');
-
+var {StatusLabel} = require('./statuslabel');
 var {Panel, PanelHeading, PanelBody} = panel;
 var Attachment = image.Attachment;
 
@@ -22,13 +22,13 @@ const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
 // <DocumentsPanel> property: documentsList
 //
 // This object is mostly an array of arrays. The inner arrays holds the list of documents of one type,
-// while the outer array holds all the types of arrays along with their section titles. Literally though,
-// documentList is an array of objects, including the array of documents and the title to display above
+// while the outer array holds all the types of arrays along with their section label. Literally though,
+// documentList is an array of objects, including the array of documents and the label to display above
 // those documents within the panel.
 //
 // [
 //     {
-//         title: 'Section title',
+//         label: 'document label',
 //         documents: array of document objects
 //     },
 //     {
@@ -43,9 +43,20 @@ var DocumentsPanel = module.exports.DocumentsPanel = React.createClass({
     },
 
     render: function() {
+        // Filter documentSpecs to just those that have actual documents in them.
         var documentSpecs = this.props.documentSpecs.length && _.compact(this.props.documentSpecs.map(documentSpecs => {
             return documentSpecs.documents.length ? documentSpecs : null;
         }));
+
+        // Concatenate all documents, and map their UUIDs to corresponding labels
+        var allDocs = [];
+        var docLabelMap = {};
+        documentSpecs.forEach(spec => {
+            spec.documents.forEach(doc => {
+                docLabelMap[doc.uuid] = spec.label;
+            });
+            allDocs = allDocs.concat(spec.documents);
+        });
 
         if (documentSpecs.length) {
             return (
@@ -54,16 +65,14 @@ var DocumentsPanel = module.exports.DocumentsPanel = React.createClass({
                         <PanelHeading>
                             <h4>{this.props.title ? <span>{this.props.title}</span> : <span>Documents</span>}</h4>
                         </PanelHeading>
-                        {documentSpecs.map((documentSpec, i) => {
-                            if (documentSpec.documents.length) {
-                                return (
-                                    <PanelBody key={i} addClasses="panel-body-doc">
-                                        <DocumentsSubpanels documentSpec={documentSpec} />
-                                    </PanelBody>
-                                );
-                            }
-                            return null;
-                        })}
+                        <PanelBody addClasses="panel-body-doc doc-panel-outer">
+                            <section className="flexrow doc-panel-inner">
+                                {allDocs.map((doc, i) => {
+                                    var PanelView = globals.panel_views.lookup(doc);
+                                    return <PanelView key={doc['@id']} label={docLabelMap[doc.uuid]} context={doc} />;
+                                })}
+                            </section>
+                        </PanelBody>
                     </Panel>
                 </div>
             );
@@ -83,11 +92,10 @@ var DocumentsSubpanels = module.exports.DocumentsSubpanels = React.createClass({
 
         return (
             <div>
-                {documentSpec.title ? <h4>{documentSpec.title}</h4> : null}
                 <div className="panel-docs-list">
                     {documentSpec.documents.map(doc => {
                         var PanelView = globals.panel_views.lookup(doc);
-                        return <PanelView key={doc['@id']} context={doc} />;
+                        return <PanelView key={doc['@id']} label={documentSpec.label} context={doc} />;
                     })}
                 </div>
             </div>
@@ -124,9 +132,9 @@ var Document = module.exports.Document = React.createClass({
         var DocumentDetailView = globals.document_views.detail.lookup(context);
 
         return (
-            <section className="panel-doc">
+            <section className="flexcol panel-doc">
                 <Panel addClasses={globals.itemClass(context, 'view-detail')}>
-                    <DocumentHeaderView doc={context} />
+                    <DocumentHeaderView doc={context} label={this.props.label} />
                     <PanelBody>
                         <div className="document-header">
                             <DocumentPreviewView doc={context} />
@@ -149,11 +157,11 @@ var DocumentHeader = module.exports.DocumentHeader = React.createClass({
     },
 
     render: function() {
-        var doc = this.props.doc;
+        var {doc, label} = this.props;
 
         return (
             <div className="panel-header document-title sentence-case">
-                {doc.document_type}
+                {doc.document_type} {label ? <span className="document-label">{label}</span> : null}
             </div>
         );
     }

@@ -72,6 +72,14 @@ $qualitymetric-figure-height: 96px;
     font-size: 1rem;
 }
 
+.document-label {
+    display: inline-block;
+    padding: 0 5px;
+    font-size: 0.9rem;
+    color: #fff;
+    background-color: #808080;
+    border-radius: 4px;
+}
 
 .characterization-title {
     @extend .document-title;
