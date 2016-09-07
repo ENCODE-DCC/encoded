@@ -1010,7 +1010,8 @@
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6",
         "uuid": "9e9f3352-ed7f-426e-961f-3b43feed715b",
         "genetic_modifications": [
-            "encode:modification-test-1"
+            "encode:modification-test-1",
+            "encode:modification-test-2"
         ]
     }
 ]

@@ -13,7 +13,7 @@ var image = require('./image');
 var item = require('./item');
 var reference = require('./reference');
 var {TreatmentDisplay, SingleTreatment} = require('./objectutils');
-var sortTable = require('./sorttable');
+var {SortTablePanel, SortTable} = require('./sorttable');
 var doc = require('./doc');
 var {BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable} = require('./typeutils');
 
@@ -27,8 +27,6 @@ var {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile
 var ExperimentTable = dataset.ExperimentTable;
 var PubReferenceList = reference.PubReferenceList;
 var RelatedItems = item.RelatedItems;
-var SortTablePanel = sortTable.SortTablePanel;
-var SortTable = sortTable.SortTable;
 var ProjectBadge = image.ProjectBadge;
 var {Panel, PanelBody, PanelHeading} = panel;
 
@@ -453,6 +451,10 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                 {combinedDocs.length ?
                     <DocumentsPanel documentSpecs={[{documents: combinedDocs}]} />
+                : null}
+
+                {context.genetic_modifications.length ?
+                    <GeneticModificationTable geneticModifications={context.genetic_modifications} />
                 : null}
             </div>
         );
@@ -1096,6 +1098,58 @@ var RNAi = module.exports.RNAi = React.createClass({
 });
 
 globals.panel_views.register(RNAi, 'RNAi');
+
+
+// Display the table of genetic modifications
+var GeneticModificationTable = React.createClass({
+    propTypes: {
+        geneticModifications: React.PropTypes.array.isRequired // Array of genetic modifications
+    },
+
+    columns: {
+        'modification_type': {
+            title: 'Type',
+            display: modification => <a href={modification['@id']} title="View this modification">{modification.modification_type}</a>
+        },
+        'techniques': {
+            title: 'Techniques',
+            getValue: modification => {
+                if (modification.modification_techniques && modification.modification_techniques.length) {
+                    return (
+                        modification.modification_techniques.map(technique => {
+                            if (technique['@type'][0] === 'Crispr') {
+                                return 'CRISPR';
+                            } else if (technique['@type'][0] === 'Tale') {
+                                return 'TALE';
+                            }
+                            return technique['@type'][0];
+                        }).sort().join(', ')
+                    );
+                }
+                return null;
+            }
+        },
+        'target': {
+            title: 'Target',
+            display: modification => {
+                if (modification.target) {
+                    return <a href={modification.target['@id']} title={'View target ' + modification.target.label}>{modification.target.label}</a>;
+                }
+                return null;
+            },
+        }
+    },
+
+    render: function() {
+        var {geneticModifications} = this.props;
+
+        return (
+            <SortTablePanel title="Genetic modifications">
+                <SortTable list={geneticModifications} columns={this.columns} />
+            </SortTablePanel>
+        );
+    }
+});
 
 
 //**********************************************************************
