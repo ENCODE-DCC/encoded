@@ -39,6 +39,10 @@ class GeneticModification(Item):
         'modification_techniques.award.pi.lab',
         'modification_techniques.lab',
         'modification_techniques.source',
+        'modification_techniques.documents',
+        'modification_techniques.documents.award',
+        'modification_techniques.documents.lab',
+        'modification_techniques.documents.submitted_by',
         'modification_treatments'
     ]
 

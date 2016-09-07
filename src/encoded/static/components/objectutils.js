@@ -19,7 +19,7 @@ var SingleTreatment = module.exports.SingleTreatment = function(treatment) {
 var TreatmentDisplay = module.exports.TreatmentDisplay = function(treatment) {
     var treatmentText = SingleTreatment(treatment);
     return (
-        <dl className="key-value">
+        <dl key={treatment.uuid} className="key-value">
             <div data-test="treatment">
                 <dt>Treatment</dt>
                 <dd>{treatmentText}</dd>

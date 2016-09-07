@@ -141,7 +141,7 @@ var Document = module.exports.Document = React.createClass({
                             <DocumentCaptionView doc={context} />
                         </div>
                         <DocumentFileView doc={context} detailOpen={this.state.panelOpen} detailSwitch={this.handleClick} />
-                        <DocumentDetailView doc={context} detailOpen={this.state.panelOpen} key={this.props.key} />
+                        <DocumentDetailView doc={context} detailOpen={this.state.panelOpen} id={context['@id']} />
                     </PanelBody>
                 </Panel>
             </section>
@@ -265,7 +265,7 @@ var DocumentDetail = module.exports.DocumentDetail = React.createClass({
 
         return (
             <div className={keyClass}>
-                <dl className='key-value-doc' id={'panel' + this.props.key} aria-labeledby={'tab' + this.props.key} role="tabpanel">
+                <dl className='key-value-doc' id={'panel-' + this.props.id} aria-labeledby={'tab-' + this.props.id} role="tabpanel">
                     {excerpt ?
                         <div data-test="caption">
                             <dt>Description</dt>

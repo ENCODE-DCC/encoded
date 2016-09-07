@@ -34,6 +34,7 @@ var GeneticModification = module.exports.GeneticModification = React.createClass
         // Collect and combine documents, including from genetic modification characterizations.
         var modDocs = [];
         var charDocs = [];
+        var techDocs = [];
         if (context.documents && context.documents.length) {
             modDocs = context.documents;
         }
@@ -44,11 +45,21 @@ var GeneticModification = module.exports.GeneticModification = React.createClass
                 }
             });
         }
+        if (context.modification_techniques && context.modification_techniques.length) {
+            context.modification_techniques.forEach(technique => {
+                if (technique.documents && technique.documents.length) {
+                    techDocs = techDocs.concat(technique.documents);
+                }
+            });
+        }
         if (modDocs.length) {
             modDocs = globals.uniqueObjectsArray(modDocs);
         }
         if (charDocs.length) {
             charDocs = globals.uniqueObjectsArray(charDocs);
+        }
+        if (techDocs.length) {
+            techDocs = globals.uniqueObjectsArray(techDocs);
         }
 
         return (
@@ -203,7 +214,10 @@ var GeneticModification = module.exports.GeneticModification = React.createClass
                     <GeneticModificationCharacterizations characterizations={context.characterizations} />
                 : null}
 
-                <DocumentsPanel documentSpecs={[{label: 'Modification', documents: modDocs}, {label: 'Characterization', documents: charDocs}]} />
+                <DocumentsPanel documentSpecs={[
+                    {label: 'Modification', documents: modDocs},
+                    {label: 'Characterization', documents: charDocs},
+                    {label: 'Techniques', documents: techDocs}]} />
 
                 <RelatedItems
                     title="Biosamples using this genetic modification"
@@ -234,7 +248,7 @@ var GeneticModificationCharacterizations = React.createClass({
                 <PanelBody addClasses="attachment-panel-outer">
                     <section className="flexrow attachment-panel-inner">
                         {characterizations.map(characterization => {
-                            return <AttachmentPanel context={characterization} attachment={characterization.attachment} title={characterization.characterization_method} />;
+                            return <AttachmentPanel key={characterization.uuid} context={characterization} attachment={characterization.attachment} title={characterization.characterization_method} />;
                         })}
                     </section>
                 </PanelBody>
@@ -250,7 +264,7 @@ var GeneticModificationTechniques = function(techniques) {
     if (techniques && techniques.length) {
         return techniques.map(technique => {
             var ModificationTechniqueView = globals.panel_views.lookup(technique);
-            return <ModificationTechniqueView context={technique} />;
+            return <ModificationTechniqueView key={technique.uuid} context={technique} />;
         });
     }
     return null;

@@ -448,7 +448,7 @@ var CharacterizationDetail = React.createClass({
 
         return (
             <div className={keyClass}>
-                <dl className='key-value-doc' id={'panel' + this.props.key} aria-labeledby={'tab' + this.props.key} role="tabpanel">
+                <dl className='key-value-doc' id={'panel' + this.props.id} aria-labeledby={'tab' + this.props.id} role="tabpanel">
                     {excerpt ?
                         <div data-test="caption">
                             <dt>Caption</dt>
