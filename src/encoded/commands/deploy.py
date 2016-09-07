@@ -4,6 +4,7 @@ import re
 import subprocess
 import sys
 import datetime
+import base64
 import pdb
 from pprint import pprint as pp
 
@@ -72,7 +73,8 @@ def spot_instance_price_check(client, instance_type):
 
     return highest
 
-def spot_instances(client, spot_price, count, image_id, instance_type, spot_security_groups, user_data):
+def spot_instances(client, spot_price, count, image_id, instance_type, spot_security_groups, user_data, iam_role):
+    
     responce = client.request_spot_instances(
     DryRun=False,
     SpotPrice=spot_price,
@@ -81,16 +83,16 @@ def spot_instances(client, spot_price, count, image_id, instance_type, spot_secu
     LaunchSpecification={
         'ImageId': image_id,
         'SecurityGroups': [spot_security_groups],
+        'UserData': user_data,
         'InstanceType': instance_type,
         'Placement': {
             'AvailabilityZone': 'us-west-2c'
         },
         'IamInstanceProfile': {
-            'Arn': 'arn:aws:iam::618537831167:instance-profile/demo-instance'
+            "Name": iam_role,
         }
         }
     )
-
     return responce
 
 def nameify(s):
@@ -194,16 +196,35 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         get_spot_price = spot_instance_price_check(ec2_spot, instance_type)
         exit()
 
+
+
+
+
+
+
     if not spot_instance == False :
         print("spot_instance check worked")
         spot_security_groups = 'ssh-http-https'
         ec2_spot = boto3.client('ec2')
+        # issue with base64 encoding so no decoding in utc-8 and recoding in base64 then decoding in base 64.
+        config_file = ':cloud-config.yml'
+        user_d = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml'])
+        user_data_b64 = base64.b64encode(user_d)
+        user_data = user_data_b64.decode()
         #avg_spot_price = spot_instance_price_check(ec2_spot, instance_type)
-        instances = spot_instances(ec2_spot, spot_price, count, image_id, instance_type, spot_security_groups, user_data)
+        instances = spot_instances(ec2_spot, spot_price, count, image_id, instance_type, spot_security_groups, user_data, iam_role)
     else:
         instances = create_ec2_instances(ec2, image_id, count, instance_type, security_groups, user_data, BDM, iam_role)
 
-    
+   
+
+
+
+
+
+
+
+
     for i, instance in enumerate(instances):
         if elasticsearch == 'yes' and count > 1:
             print('Creating Elasticsearch cluster')
