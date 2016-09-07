@@ -5,6 +5,25 @@ import shlex
 import subprocess
 import sys
 
+BDM = [
+    {
+        'DeviceName': '/dev/sda1',
+        'Ebs': {
+            'VolumeSize': 8,
+            'VolumeType': 'gp2',
+            'DeleteOnTermination': True
+        }
+    },
+    {
+        'DeviceName': '/dev/sdb',
+        'Ebs': {
+            'VolumeSize': 500,
+            'VolumeType': 'st1',
+            'DeleteOnTermination': True
+        }
+    }
+]
+
 
 def nameify(s):
     name = ''.join(c if c.isalnum() else '-' for c in s.lower()).strip('-')
@@ -60,6 +79,7 @@ def run(image_id, instance_type,
         InstanceType=instance_type,
         SecurityGroups=['ssh-http-https'],
         UserData=user_data,
+        BlockDeviceMappings=BDM,
         InstanceInitiatedShutdownBehavior='terminate',
         IamInstanceProfile={'Name': 'encoded-instance'},
     )

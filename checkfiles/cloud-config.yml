@@ -5,6 +5,7 @@
 
 bootcmd:
 - cloud-init-per once ssh-users-ca echo "TrustedUserCAKeys /etc/ssh/users_ca.pub" >> /etc/ssh/sshd_config
+- sudo mkfs -t ext4 /dev/xvdb
 
 output:
   all: '| tee -a /var/log/cloud-init-output.log'
@@ -28,7 +29,7 @@ runcmd:
 - systemctl daemon-reload  # See https://bugs.launchpad.net/cloud-init/+bug/1449318
 - mkdir -p /s3/encode-files
 - mkdir -p /s3/encoded-files-dev
-
+- sudo mkdir -p /mnt/volume 
 - curl -sS -L -o /usr/local/bin/goofys https://github.com/kahing/goofys/releases/download/v0.0.5/goofys
 - chmod +x /usr/local/bin/goofys
 
@@ -36,6 +37,9 @@ runcmd:
 ## - chown -R build:build /opt/goofys
 ## - sudo -u build GOPATH=/opt/goofys go get github.com/kahing/goofys
 ## - mv /opt/goofys/bin/goofys /usr/local/bin/
+## - sudo mkdir -p /home/ubuntu/tmp_dir
+## - sudo mkfs -t ext4 /dev/xvdb
+## - sudo mount -t ext4 /dev/xvdb /home/ubuntu/tmp_dir
 
 - mount -a
 
@@ -67,6 +71,7 @@ users:
   system: true
 
 mounts:
+- [ /dev/xvdb, /mnt/volume ]
 - [ "goofys-ulimit#encode-files", "/s3/encode-files", "fuse", "_netdev,allow_other,--file-mode=0444,--dir-mode=0555,--stat-cache-ttl=0", "0", "0" ]
 - [ "goofys-ulimit#encoded-files-dev", "/s3/encoded-files-dev", "fuse", "_netdev,allow_other,--file-mode=0444,--dir-mode=0555,--stat-cache-ttl=0", "0", "0" ]
 
