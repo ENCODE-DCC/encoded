@@ -38,7 +38,7 @@ runcmd:
 ## - sudo -u build GOPATH=/opt/goofys go get github.com/kahing/goofys
 ## - mv /opt/goofys/bin/goofys /usr/local/bin/
 
-- mount -a
+- sudo mount -a
 
 - mkdir /opt/encValData
 - chown build:build /opt/encValData
