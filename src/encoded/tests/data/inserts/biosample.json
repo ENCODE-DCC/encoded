@@ -176,6 +176,7 @@
         ],
         "lab": "sherman-weissman",
         "model_organism_age": "unknown",
+        "model_organism_age_units": "day",
         "model_organism_health_status": "unknown",
         "mouse_life_stage": "unknown",
         "model_organism_sex": "unknown",
