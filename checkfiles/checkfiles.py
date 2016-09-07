@@ -204,8 +204,7 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
 
     sequence_pattern = re.compile('[ACTGN]+')
     read_name_pattern = re.compile(
-        '^@[a-zA-Z0-9_]+:[0-9]+:[a-zA-Z0-9]+:[0-9]+:[0-9]+:' +
-        '[0-9]+:[0-9]+:[\s_][12]:[YN]:[0-9]+:([ACTG]+|[0-9]+)$'
+        '^(@[a-zA-Z\d]+[a-zA-Z\d_-]*:\d+:[a-zA-Z\d]+:\d+:\d+:\d+:\d+[\s_][12]:[YN]:[0-9]+:([ACTG]+|[0-9]+))$'
         )
     read_count = 0
     read_lengths = set()
@@ -213,6 +212,7 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
     unique_string_ids_set = set()
 
     try:
+        print ('checking file ' + unzipped_fastq_path)
         with open(unzipped_fastq_path, 'r') as f:
             line_counter = 0
             for line in f:
@@ -220,8 +220,7 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
                 first_colon = line.find(":")
                 if line_counter == 1:
                     read_name = line.strip()
-                    if read_name_pattern.match(read_name) is False:
-
+                    if read_name_pattern.match(read_name) is None:
                         errors['fastq_format_readname'] = 'submitted fastq file does not ' + \
                                                           'comply with illumina fastq read name format, ' + \
                                                           'read name was : {}'.format(read_name)
@@ -248,7 +247,7 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
                             # count reads at least
                 if line_counter == 2:  # sequence
                     sequence = line.strip()
-                    if sequence_pattern.match(sequence):
+                    if sequence_pattern.match(sequence) is not None:
                         read_count += 1
                         read_lengths.add(len(sequence))
                     else:
@@ -258,104 +257,104 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
                         break
                 # print (line)
                 line_counter = line_counter % 4
+        if not errors:
+            #################
+            # read_lengths
+            #################
 
-        #################
-        # read_lengths
-        #################
+            print ('READ LENGTHS FOUND : ' + str(read_lengths))
 
-        print ('READ LENGTHS FOUND : ' + str(read_lengths))
+            read_lengths_list = list(read_lengths)
+            max_length = max(read_lengths_list)
+            min_length = min(read_lengths_list)
+            if 'read_length' in item:
+                print ('READ LENGTHS SUBMITTED : ' + str(item['read_length']))
+                reported_read_length = item['read_length']
+                if abs(reported_read_length - min_length) > 2 and \
+                   abs(reported_read_length - max_length) > 2:
+                    errors['read_length'] = 'read length {} in the uploaded file '.format(
+                        reported_read_length) + \
+                        'doesn\'t match read length(s) found in the file {}.'.format(
+                        read_lengths_list)
+            else:
+                errors['read_length'] = 'no specified read length in the uploaded fastq file, ' + \
+                                        'while read length(s) found in the file were {}.'.format(
+                                        ', '.join(read_lengths_list))
+            #################
+            # number_reads
+            #################
 
-        read_lengths_list = list(read_lengths)
-        max_length = max(read_lengths_list)
-        min_length = min(read_lengths_list)
-        if 'read_length' in item:
-            print ('READ LENGTHS SUBMITTED : ' + str(item['read_length']))
-            reported_read_length = item['read_length']
-            if abs(reported_read_length - min_length) > 2 and \
-               abs(reported_read_length - max_length) > 2:
-                errors['read_length'] = 'read length {} in the uploaded file '.format(
-                    reported_read_length) + \
-                    'doesn\'t match read length(s) found in the file {}.'.format(
-                    read_lengths_list)
-        else:
-            errors['read_length'] = 'no specified read length in the uploaded fastq file, ' + \
-                                    'while read length(s) found in the file were {}.'.format(
-                                    ', '.join(read_lengths_list))
-        #################
-        # number_reads
-        #################
+            print ('COUNTED ' + str(read_count) + ' READS')
+            # result['read_count'] = read_count
 
-        print ('COUNTED ' + str(read_count) + ' READS')
-        # result['read_count'] = read_count
+            ######################################
+            # uniqueness / detected_flowcell_details validation
+            ######################################
+            unique_tuples_list = sorted(list(unique_tuples_set))
+            # detected_flowcell_details = []
+            if len(unique_tuples_list) > 0:
+                detected_flowcell_details = sorted(list(set([(x[0], x[1]) for x in unique_tuples_list])))
+                read_numbers = [x[2] for x in unique_tuples_list]
+                read_numbers_set = set(read_numbers)
+                if len(read_numbers_set) > 1:
+                    errors['inconsistent_read_numbers'] = \
+                        'fastq file contains mixed read numbers ' + \
+                        '{}.'.format(', '.join(sorted(list(read_numbers_set))))
 
-        ######################################
-        # uniqueness / detected_flowcell_details validation
-        ######################################
-        unique_tuples_list = sorted(list(unique_tuples_set))
-        # detected_flowcell_details = []
-        if len(unique_tuples_list) > 0:
-            detected_flowcell_details = sorted(list(set([(x[0], x[1]) for x in unique_tuples_list])))
-            read_numbers = [x[2] for x in unique_tuples_list]
-            read_numbers_set = set(read_numbers)
-            if len(read_numbers_set) > 1:
-                errors['inconsistent_read_numbers'] = \
-                    'fastq file contains mixed read numbers ' + \
-                    '{}.'.format(', '.join(sorted(list(read_numbers_set))))
+                # for unique_tuple in unique_tuples_list:
+                #    detected_flowcell_details.append((unique_tuple[0],
+                #                                      unique_tuple[1]))
+                if 'flowcell_details' in item and len(item['flowcell_details']) > 0:
+                    uniqueness_flag = True
+                    submitted_flowcell_information = item['flowcell_details']
+                    if len(unique_tuples_list) > 0:
+                        # validation
+                        submitted_flowcell_details = []
+                        for entry in submitted_flowcell_information:
+                            if 'flowcell' in entry and \
+                               'lane' in entry:
+                                submitted_flowcell = (entry['flowcell'],
+                                                      entry['lane'])
+                                submitted_flowcell_details.append(submitted_flowcell)
+                        difference = sorted(list(set(detected_flowcell_details) -
+                                            set(submitted_flowcell_details)))
+                        if len(difference) > 0:
+                            errors['flowcell_details'] = \
+                                'specified in the metadata flowcell_details {} does mot match '.format(
+                                    submitted_flowcell_details) + \
+                                'flowcell details {} '.format(detected_flowcell_details) + \
+                                'extracted from the read names.'
 
-            # for unique_tuple in unique_tuples_list:
-            #    detected_flowcell_details.append((unique_tuple[0],
-            #                                      unique_tuple[1]))
-            if 'flowcell_details' in item and len(item['flowcell_details']) > 0:
-                uniqueness_flag = True
-                submitted_flowcell_information = item['flowcell_details']
-                if len(unique_tuples_list) > 0:
-                    # validation
-                    submitted_flowcell_details = []
-                    for entry in submitted_flowcell_information:
-                        if 'flowcell' in entry and \
-                           'lane' in entry:
-                            submitted_flowcell = (entry['flowcell'],
-                                                  entry['lane'])
-                            submitted_flowcell_details.append(submitted_flowcell)
-                    difference = sorted(list(set(detected_flowcell_details) -
-                                        set(submitted_flowcell_details)))
-                    if len(difference) > 0:
-                        errors['flowcell_details'] = \
-                            'specified in the metadata flowcell_details {} does mot match '.format(
-                                submitted_flowcell_details) + \
-                            'flowcell details {} '.format(detected_flowcell_details) + \
-                            'extracted from the read names.'
+                        # check for uniqueness
+                        conflicts = []
+                        for unique_string_id in unique_string_ids_set:
+                            query = '/'+unique_string_id
+                            r = session.get(urljoin(url, query))
+                            r_graph = r.json().get('@graph')
+                            if r_graph is not None and len(r_graph) > 0:
+                                uniqueness_flag = False
 
-                    # check for uniqueness
-                    conflicts = []
-                    for unique_string_id in unique_string_ids_set:
-                        query = '/'+unique_string_id
-                        r = session.get(urljoin(url, query))
-                        r_graph = r.json().get('@graph')
-                        if r_graph is not None and len(r_graph) > 0:
-                            uniqueness_flag = False
+                                conflicts = [
+                                    'specified unique identifier {} '.format(unique_string_id) +
+                                    'is conflicting with identifier of reads from ' +
+                                    'file {}.'.format(x['accession']) for x in r_graph]
+                                # for entry in r_graph:
+                                #    conflicts += \
+                                #        'specified unique identifier {} '.format(unique_string_id) + \
+                                #        'is conflicting with identifier of reads from ' + \
+                                #        'file {}.'.format(entry['accession'])
+                    if uniqueness_flag is True:
+                        # fill in the properties
 
-                            conflicts = [
-                                'specified unique identifier {} '.format(unique_string_id) +
-                                'is conflicting with identifier of reads from ' +
-                                'file {}.'.format(x['accession']) for x in r_graph]
-                            # for entry in r_graph:
-                            #    conflicts += \
-                            #        'specified unique identifier {} '.format(unique_string_id) + \
-                            #        'is conflicting with identifier of reads from ' + \
-                            #        'file {}.'.format(entry['accession'])
-                if uniqueness_flag is True:
-                    # fill in the properties
+                        print ('UNIQUE IDENTIFIERS ARE ' + str(unique_string_ids_set))
+                        # result['fastq_signature'] = sorted(list(unique_string_ids_set))
+                    else:
+                        errors['not_unique_flowcell_details'] = conflicts
 
-                    print ('UNIQUE IDENTIFIERS ARE ' + str(unique_string_ids_set))
-                    # result['fastq_signature'] = sorted(list(unique_string_ids_set))
-                else:
-                    errors['not_unique_flowcell_details'] = conflicts
-
-            elif detected_flowcell_details != []:
-                errors['flowcell_details'] = 'no specified flowcell_details in a fastq file ' + \
-                                             ' containing reads with following flowcell ' + \
-                                             'identifiers {}.'.format(detected_flowcell_details)
+                elif detected_flowcell_details != []:
+                    errors['flowcell_details'] = 'no specified flowcell_details in a fastq file ' + \
+                                                 ' containing reads with following flowcell ' + \
+                                                 'identifiers {}.'.format(detected_flowcell_details)
     except IOError:
         errors['file_open_error'] = 'OS could not open the file ' + \
                                     unzipped_fastq_path
@@ -473,7 +472,7 @@ def check_file(config, session, url, job):
             # or http://stackoverflow.com/a/15343686/199100
             try:
                 if item['file_format'] == 'fastq':
-                    unzipped_fastq_path = local_path[-18:-7] + '_original.fastq'
+                    unzipped_fastq_path = local_path[-20:-9] + '_original.fastq'
                     output = subprocess.check_output(
                         'set -o pipefail; gunzip --stdout {} | tee {} | md5sum'.format(
                             local_path, unzipped_fastq_path),
