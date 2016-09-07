@@ -30,6 +30,7 @@ runcmd:
 - mkdir -p /s3/encode-files
 - mkdir -p /s3/encoded-files-dev
 - sudo mkdir -p /mnt/volume 
+- sudo chmod +w /mnt/volume 
 - curl -sS -L -o /usr/local/bin/goofys https://github.com/kahing/goofys/releases/download/v0.0.5/goofys
 - chmod +x /usr/local/bin/goofys
 
@@ -37,9 +38,6 @@ runcmd:
 ## - chown -R build:build /opt/goofys
 ## - sudo -u build GOPATH=/opt/goofys go get github.com/kahing/goofys
 ## - mv /opt/goofys/bin/goofys /usr/local/bin/
-## - sudo mkdir -p /home/ubuntu/tmp_dir
-## - sudo mkfs -t ext4 /dev/xvdb
-## - sudo mount -t ext4 /dev/xvdb /home/ubuntu/tmp_dir
 
 - mount -a
 
