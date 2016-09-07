@@ -7,10 +7,12 @@ var globals = require('./globals');
 var {StatusLabel} = require('./statuslabel');
 var {ProjectBadge, Attachment} = require('./image');
 var {AuditIndicators, AuditDetail, AuditMixin} = require('./audit');
+var {RelatedItems} = require('./item');
 var {DbxrefList} = require('./dbxref');
 var {FetchedItems} = require('./fetched');
 var {Breadcrumbs} = require('./navigation');
 var {TreatmentDisplay} = require('./objectutils');
+var {BiosampleTable} = require('./typeutils');
 var {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile} = require('./doc');
 
 
@@ -202,6 +204,11 @@ var GeneticModification = module.exports.GeneticModification = React.createClass
                 : null}
 
                 <DocumentsPanel documentSpecs={[{label: 'Modification', documents: modDocs}, {label: 'Characterization', documents: charDocs}]} />
+
+                <RelatedItems
+                    title="Biosamples using this genetic modification"
+                    url={'/search/?type=Biosample&genetic_modifications.uuid=' + context.uuid}
+                    Component={BiosampleTable} />
             </div>
         );
     }

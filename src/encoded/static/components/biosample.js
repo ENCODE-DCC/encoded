@@ -15,7 +15,7 @@ var reference = require('./reference');
 var {TreatmentDisplay, SingleTreatment} = require('./objectutils');
 var sortTable = require('./sorttable');
 var doc = require('./doc');
-var {BiosampleSummaryString, CollectBiosampleDocs} = require('./typeutils');
+var {BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable} = require('./typeutils');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -43,56 +43,6 @@ var PanelLookup = function (props) {
     var PanelView = globals.panel_views.lookup(props.context);
     return <PanelView key={props.context.uuid} {...props} />;
 };
-
-
-// Display a table of retrieved biosamples related to the displayed biosample
-var BiosampleTable = React.createClass({
-    columns: {
-        'accession': {
-            title: 'Accession',
-            display: function(biosample) {
-                return <a href={biosample['@id']}>{biosample.accession}</a>;
-            }
-        },
-        'biosample_type': {title: 'Type'},
-        'biosample_term_name': {title: 'Term'},
-        'summary': {title: 'Summary', sorter: false}
-    },
-
-    render: function() {
-        var biosamples;
-
-        // If there's a limit on entries to display and the array is greater than that
-        // limit, then clone the array with just that specified number of elements
-        if (this.props.limit && (this.props.limit < this.props.items.length)) {
-            // Limit the experiment list by cloning first {limit} elements
-            biosamples = this.props.items.slice(0, this.props.limit);
-        } else {
-            // No limiting; just reference the original array
-            biosamples = this.props.items;
-        }
-
-        return (
-            <SortTablePanel title={this.props.title}>
-                <SortTable list={this.props.items} columns={this.columns} footer={<BiosampleTableFooter items={biosamples} total={this.props.total} url={this.props.url} />} />
-            </SortTablePanel>
-        );
-    }
-});
-
-// Display a count of biosamples in the footer, with a link to the corresponding search if needed
-var BiosampleTableFooter = React.createClass({
-    render: function() {
-        var {items, total, url} = this.props;
-
-        return (
-            <div>
-                <span>Displaying {items.length} of {total} </span>
-                {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
-            </div>
-        );
-    }
-});
 
 
 var Biosample = module.exports.Biosample = React.createClass({
