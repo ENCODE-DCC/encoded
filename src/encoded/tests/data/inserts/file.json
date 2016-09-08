@@ -1856,5 +1856,37 @@
         "md5sum": "497283c78f5c553a72174f850468b688",
         "replicate": "/replicates/d52a3aaf-5fa7-4bea-ac08-a5e70c6e7dbd/",
         "output_type": "reporter code counts"
+    },
+    {
+        "accession": "ENCFF000DAT",
+        "dataset": "/experiments/ENCSR000AAL/",
+        "uuid": "0266ceba-32ee-44ba-8ed9-009baae28ed3",
+        "lab": "/labs/michael-snyder/",
+        "status": "released",
+        "platform": "/platforms/OBI:0000696/",
+        "award": "/awards/U54HG006996/",
+        "file_size": 37300,
+        "submitted_by": "/users/0d48e8c4-5954-4bf5-8c75-1e386eb27e31/",
+        "submitted_file_name": "20130418_2013-04-18_01_03_K562_BR1.RCC",
+        "file_format": "idat",
+        "md5sum": "4b7283c78f5c553a72174f850468b688",
+        "replicate": "/replicates/0f427e79-556e-4125-8102-f6723471807e/",
+        "output_type": "reporter code counts"
+    },
+    {
+        "accession": "ENCFF001DAT",
+        "dataset": "/experiments/ENCSR000AAL/",
+        "uuid": "685113e7-182b-4ef1-8a5a-78df5007f8d0",
+        "lab": "/labs/michael-snyder/",
+        "status": "released",
+        "platform": "/platforms/OBI:0000696/",
+        "award": "/awards/U54HG006996/",
+        "file_size": 37300,
+        "submitted_by": "/users/0d48e8c4-5954-4bf5-8c75-1e386eb27e31/",
+        "submitted_file_name": "20130418_2013-04-18_01_03_K562_BR1.RCC",
+        "file_format": "idat",
+        "md5sum": "4a7283c78f5c553a72174f850468b688",
+        "replicate": "/replicates/0f427e79-556e-4125-8102-f6723471807e/",
+        "output_type": "reporter code counts"
     }
 ]
