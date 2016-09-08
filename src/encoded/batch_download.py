@@ -364,6 +364,11 @@ def report_download(context, request):
 
     schemas = [request.registry[TYPES][types[0]].schema]
     columns = list_visible_columns_for_schemas(request, schemas)
+
+    # Work around Excel bug; can't open single column TSV with 'ID' header
+    if len(columns) == 1 and '@id' in columns:
+        columns['@id']['title'] = 'id'
+
     header = [column.get('title') or field for field, column in columns.items()]
 
     def generate_rows():
