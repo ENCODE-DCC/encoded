@@ -206,4 +206,4 @@ def biosample_12_13(value, system):
     if 'note' in value:
         if value['note'] != value['submitter_comment']:
             value['submitter_comment'] = value['submitter_comment'] + '. ' + value['note']
-        del value['note']
+        value.pop('note')
