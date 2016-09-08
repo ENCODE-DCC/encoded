@@ -24,7 +24,7 @@
             "anyOf":[
                 {
                     "properties": {
-                        "modification_treatments": {
+                        "treatments": {
                             "minItems": 0
                         },
                         "modification_techniques": {
@@ -34,7 +34,7 @@
                 },
                 {
                     "properties": {
-                        "modification_treatments": {
+                        "treatments": {
                             "minItems": 1
                         },
                         "modification_techniques": {
@@ -45,7 +45,7 @@
                 {                 
 
                     "properties": {
-                        "modification_treatments": {
+                        "treatments": {
                             "minItems": 1
                         },
                         "modification_techniques": {
@@ -59,7 +59,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "url": {
             "title": "URL",
@@ -74,8 +74,8 @@
             "type": "string",
             "linkTo": "Target"
         },
-        "modification_genome_coordinates": {
-            "title": "Modification genome coordinates",
+        "modified_site": {
+            "title": "Modified site",
             "description": "Genomic coordinates of the modification.",
             "type": "object",
             "additionalProperties": false,
@@ -115,7 +115,7 @@
                 }
             }
         },
-        "modification_description": {
+        "description": {
             "title": "Description",
             "description": "A plain text description of the genetic modification.",
             "type": "string"
@@ -131,8 +131,8 @@
                 "mutagenesis"
             ]
         },
-        "modification_purpose":{
-            "title": "Modification purpose",
+        "purpose":{
+            "title": "Purpose",
             "description": "The purpose of the genetic modification.",
             "type": "string",
             "enum": [
@@ -143,9 +143,9 @@
                 "interference"
             ]
         },
-        "modification_zygocity":{
-            "title": "Modification zygocity",
-            "description": "The zygocity of the genetic modification.",
+        "zygosity":{
+            "title": "Modification zygosity",
+            "description": "The zygosity of the genetic modification.",
             "type": "string",
             "enum": [
                 "homozygous",
@@ -167,8 +167,8 @@
                 "linkTo": "ModificationTechnique"
             }
         },
-        "modification_treatments": {
-            "title": "Modification treatments",
+        "treatments": {
+            "title": "Treatments",
             "description": "Treatment(s) used to perform the genetic modification.",
             "type": "array",
             "default": [],
