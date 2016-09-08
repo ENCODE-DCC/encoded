@@ -43,7 +43,7 @@ var columnChoices = function(schema, selected) {
     // add all properties (with a few exceptions)
     _.each(schema.properties, (property, name) => {
         if (name == '@id' || name == '@type' || name == 'uuid' || name == 'replicates') return;
-        if (!columns.hasOwnProperty(name)) {
+        if (!columns.hasOwnProperty(name) && property.title) {
             columns[name] = {
                 title: property.title,
                 visible: false
@@ -53,6 +53,10 @@ var columnChoices = function(schema, selected) {
 
     // if selected fields are specified, update visibility
     if (selected) {
+        // Reset @id to not visible if not in selected
+        if (!selected['@id'] && columns['@id']) {
+            columns['@id'].visible = false;
+        }
         _.each(selected, (path) => {
             if (columns[path] === undefined) {
                 columns[path] = {
@@ -376,7 +380,8 @@ var Report = React.createClass({
         var parsed_url = url.parse(this.context.location_href, true);
         var type = parsed_url.query.type;
         var schema = this.props.schemas[type];
-        var columns = columnChoices(schema, parsed_url.query.field);
+        var query_fields = parsed_url.query.field ? (typeof parsed_url.query.field === 'object' ? parsed_url.query.field : [parsed_url.query.field]) : undefined;
+        var columns = columnChoices(schema, query_fields);
 
         var fields = [];
         _.mapObject(columns, (column, path) => {
