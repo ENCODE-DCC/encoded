@@ -19,6 +19,7 @@ def biosample_1(biosample_0):
     item.update({
         'schema_version': '1',
         'starting_amount': '1000',
+        'starting_amount_units': 'g'
     })
     return item
 
@@ -282,7 +283,8 @@ def test_biosample_upgrade_inline(testapp, biosample_1):
 def test_biosample_upgrade_inline_unknown(testapp, biosample_1):
     from snovault.schema_utils import load_schema
     schema = load_schema('encoded:schemas/biosample.json')
-    biosample_1['starting_amount'] = 'Unknown'
+    biosample_1['starting_amount'] = 'unknown'
+    biosample_1['starting_amount_units'] = 'g'
     res = testapp.post_json('/biosample?validate=false&render=uuid', biosample_1)
     location = res.location
     res = testapp.patch_json(location, {})
