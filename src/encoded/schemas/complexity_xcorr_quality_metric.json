@@ -1,6 +1,6 @@
 {
-    "description": "Schema for reporting 'PCR bottleneck coefficient' (PBC) and 'phantumpeakqualtools run_spp.R' quality metric",
-    "id": "/profiles/pbc_spp_quality_metric.json",
+    "description": "Schema for reporting library complexity and cross-correlation ('PCR bottleneck coefficient' and 'phantumpeakqualtools run_spp.R') quality metric",
+    "id": "/profiles/complexity_xcorr_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["step_run", "award", "lab"],
@@ -32,6 +32,10 @@
             "type": "number",
             "description": "Read length"
         },
+         "fragment length": {
+            "type": "number",
+            "description": "Fragment length/strandshift. This is the estimated fragment length/strand shift for each dataset as estimated by strand cross-correlation analysis"
+        },
         "NRF": {
             "type": "number",
             "description": "Non redundant fraction (indicates library complexity).  Distinct Locations Mapped / Sampled Reads"
@@ -41,7 +45,7 @@
             "description": "PCR Bottlenecking coefficient 1 = Single-read Locations / Distinct Locations"
         },
         "PBC2": {
-            "type": "number",
+            "type": ["number", "string"],
             "minimum":0,
             "pattern": "^Infinity$",
             "description": "PCR Bottlenecking coefficient 2 (indicates library complexity) = Single-read Locations / Multi-read Locations"
@@ -53,6 +57,40 @@
         "RSC": {
             "type": "number",
             "description": "Relative cross correlation coefficient. Ratio of strand cross-correlation at fragment length and at read length"
+        }
+        "cross_correlation_plot": {
+            "description": "Cross-correlation plot",
+            "title": "QC metric document metadata",
+            "type": "object",
+            "additionalProperties": false,
+            "attachment": true,
+            "formInput": "file",
+            "properties": {
+                "download": {
+                    "title": "File Name",
+                    "type": "string"
+                },
+                "href": {
+                    "comment": "Internal webapp URL for document file",
+                    "type": "string"
+                },
+                "type": {
+                    "title": "MIME type",
+                    "type": "string",
+                    "enum": [
+                        "application/pdf"
+                    ]
+                },
+                "size": {
+                    "title": "File size",
+                    "type": "integer"
+                },
+                "md5sum": {
+                    "format": "md5sum",
+                    "type": "string",
+                    "title": "MD5sum"
+                }
+            }
         }
     }
 }

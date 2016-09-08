@@ -165,14 +165,14 @@ class MadQualityMetric(QualityMetric):
 
 
 @collection(
-    name='pbc-spp-quality-metrics',
+    name='complexity-xcorr-quality-metrics',
     properties={
-        'title': "Quality Metrics for 'PCR Bottleneck Coefficient' (PBC1, PBC2 and NRF), and SPP (NSC and RSC) of Mapping Sample",
+        'title': "Quality Metrics for library complexity and cross-correlation of Mapping Sample",
         'description': 'A set of sampled mapping QC metrics',
     })
-class PbcSppQualityMetric(QualityMetric):
-    item_type = 'pbc_spp_quality_metric'
-    schema = load_schema('encoded:schemas/pbc_spp_quality_metric.json')
+class ComplexityXcorrQualityMetric(QualityMetric):
+    item_type = 'complexity_xcorr_quality_metric'
+    schema = load_schema('encoded:schemas/complexity_xcorr_quality_metric.json')
 
 
 @collection(

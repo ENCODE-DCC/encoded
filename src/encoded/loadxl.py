@@ -75,7 +75,7 @@ ORDER = [
     'edwcomparepeaks_quality_metric',
     'hotspot_quality_metric',
     'idr_summary_quality_metric',
-    'pbc_spp_quality_metric',
+    'complexity_xcorr_quality_metric',
     'duplicates_quality_metric',
     'filtering_quality_metric',
     'trimming_quality_metric',

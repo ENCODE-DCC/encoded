@@ -32,9 +32,17 @@
             "type": "number",
             "description": "Count of items from two different datasets that are being correlated"
         },
+        "Standard deviation": {
+            "type": "number",
+            "description": "Standard deviation of difference"
+        },
+        "Replicate log-ratio SD": {
+            "type": "number",
+            "description": "Replicate log-ratio standard deviation, formerly mis-labelled as Mean-Average-Deviation (MAD)."
+        }
         "Details": {
             "type": "string",
-            "description": "Details of correlation"
+            "description": "Description of methods"
         }
     }
 }
