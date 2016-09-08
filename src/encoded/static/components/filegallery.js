@@ -272,6 +272,38 @@ var FileTable = module.exports.FileTable = React.createClass({
 });
 
 
+function sortBioReps(a, b) {
+    // Sorting function for biological replicates of the given files.
+    var result = undefined; // Ends sorting loop once it has a value
+    var i = 0;
+    var repA = (a.biological_replicates && a.biological_replicates.length) ? a.biological_replicates[i] : undefined;
+    var repB = (b.biological_replicates && b.biological_replicates.length) ? b.biological_replicates[i] : undefined;
+    while (result === undefined) {
+        if (repA !== undefined && repB !== undefined) {
+            // Both biological replicates have a value
+            if (repA != repB) {
+                // We got a real sorting result
+                result = repA - repB;
+            } else {
+                // They both have values, but they're equal; go to next
+                // biosample replicate array elements
+                i += 1;
+                repA = a.biological_replicates[i];
+                repB = b.biological_replicates[i];
+            }
+        } else if (repA !== undefined || repB !== undefined) {
+            // One and only one replicate empty; sort empty one after
+            result = repA ? 1 : -1;
+        } else {
+            // Both empty; sorting result same
+            result = 0;
+        }
+    }
+    return result;
+}
+
+
+
 var RawFileTable = React.createClass({
     propTypes: {
         files: React.PropTypes.array, // Raw files to display
@@ -287,36 +319,6 @@ var RawFileTable = React.createClass({
     handleCollapse: function(table) {
         // Handle a click on a collapse button by toggling the corresponding tableCollapse state var
         this.setState({collapsed: !this.state.collapsed});
-    },
-
-    sortBioReps: function(a, b) {
-        // Sorting function for biological replicates of the given files.
-        var result = undefined; // Ends sorting loop once it has a value
-        var i = 0;
-        var repA = (a.biological_replicates && a.biological_replicates.length) ? a.biological_replicates[i] : undefined;
-        var repB = (b.biological_replicates && b.biological_replicates.length) ? b.biological_replicates[i] : undefined;
-        while (result === undefined) {
-            if (repA !== undefined && repB !== undefined) {
-                // Both biological replicates have a value
-                if (repA != repB) {
-                    // We got a real sorting result
-                    result = repA - repB;
-                } else {
-                    // They both have values, but they're equal; go to next
-                    // biosample replicate array elements
-                    i += 1;
-                    repA = a.biological_replicates[i];
-                    repB = b.biological_replicates[i];
-                }
-            } else if (repA !== undefined || repB !== undefined) {
-                // One and only one replicate empty; sort empty one after
-                result = repA ? 1 : -1;
-            } else {
-                // Both empty; sorting result same
-                result = 0;
-            }
-        }
-        return result;
     },
 
     render: function() {
@@ -457,7 +459,7 @@ var RawFileTable = React.createClass({
                                     );
                                 });
                             })}
-                            {nonpairedFiles.sort(this.sortBioReps).map((file, i) => {
+                            {nonpairedFiles.sort(sortBioReps).map((file, i) => {
                                 // Prepare for run_type display
                                 var runType;
                                 if (file.run_type === 'single-ended') {
@@ -524,13 +526,24 @@ var RawSequencingTable = React.createClass({
         if (files && files.length) {
             // Group all files by their library accessions. Any files without replicates or
             // libraries get grouped under library 'Z' so they get sorted at the end.
-            var pairedRepGroups = _(files).groupBy(file => {
+            var libGroups = _(files).groupBy(file => {
                 // Groups have a 4-digit zero-filled biological replicate number concatenated with
                 // the library accession, e.g. 0002ENCLB158ZZZ.
                 var bioRep = globals.zeroFill(file.biological_replicates[0], 4);
                 return bioRep + (file.replicate && file.replicate.library && file.replicate.library.accession ? file.replicate.library.accession : 'Z');
             });
-            var pairedRepKeys = Object.keys(pairedRepGroups).sort();
+
+            // Split library/file groups into paired and non-paired library/file groups.
+            var pairedGroups = {};
+            var nonpairedFiles = [];
+            Object.keys(libGroups).forEach(libGroupKey => {
+                if (libGroups[libGroupKey].length > 1) {
+                    pairedGroups[libGroupKey] = libGroups[libGroupKey];
+                } else {
+                    nonpairedFiles.push(libGroups[libGroupKey][0]);
+                }
+            });
+            var pairedKeys = Object.keys(pairedGroups).sort();
 
             return (
                 <table className="table table-sortable table-raw">
@@ -559,10 +572,10 @@ var RawSequencingTable = React.createClass({
 
                     {!this.state.collapsed ?
                         <tbody>
-                            {pairedRepKeys.map((pairedRepKey, j) => {
+                            {pairedKeys.map((pairedKey, j) => {
                                 // groupFiles is an array of files under a bioreplicate/library
-                                var groupFiles = pairedRepGroups[pairedRepKey];
-                                var bottomClass = j < (pairedRepKeys.length - 1) ? 'merge-bottom' : '';
+                                var groupFiles = pairedGroups[pairedKey];
+                                var bottomClass = j < (pairedKeys.length - 1) ? 'merge-bottom' : '';
 
                                 // Render an array of biological replicate and library to display on
                                 // the first row of files, spanned to all rows for that replicate and
@@ -577,7 +590,7 @@ var RawSequencingTable = React.createClass({
                                 return groupFiles.sort((a, b) => a.accession < b.accession ? -1 : 1).map((file, i) => {
                                     var pairClass;
                                     if (i === 1) {
-                                        pairClass = 'align-pair2' + ((i === groupFiles.length - 1) && (j === pairedRepKeys.length - 1) ? '' : ' pair-bottom');
+                                        pairClass = 'align-pair2' + ((i === groupFiles.length - 1) && (j === pairedKeys.length - 1) ? '' : ' pair-bottom');
                                     } else {
                                         pairClass = 'align-pair1';
                                     }
@@ -599,6 +612,23 @@ var RawSequencingTable = React.createClass({
                                         </tr>
                                     );
                                 });
+                            })}
+                            {nonpairedFiles.sort(sortBioReps).map((file, i) => {
+                                // Prepare for run_type display
+                                return (
+                                    <tr key={i} className={pairedKeys.length && i === 0 ? 'table-raw-separator' : ''}>
+                                        <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''}</td>
+                                        <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
+                                        <td>{file.title}&nbsp;<a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a></td>
+                                        <td>{file.file_type}</td>
+                                        <td>{file.output_type}</td>
+                                        <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
+                                        <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
+                                        <td>{humanFileSize(file.file_size)}</td>
+                                        <td>{fileAuditStatus(file)}</td>
+                                        {loggedIn ? <td className="characterization-meta-data"><StatusLabel status={file.status} /></td> : null}
+                                    </tr>
+                                );
                             })}
                         </tbody>
                     : null}
