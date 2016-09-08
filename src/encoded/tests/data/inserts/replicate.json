@@ -534,5 +534,25 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "library": "ENCLB003REP",
         "uuid": "3ed9da01-3ca5-4102-89d9-4933fa49f7e4"
+    },
+    {
+        "_test": "replication for RCC",
+        "experiment": "/experiments/ENCSR000AAL/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB000RCC",
+        "uuid": "2911ca44-d783-4d76-9d22-f9a4d0a8b5de"
+    },
+    {
+        "_test": "replication for RCC",
+        "experiment": "/experiments/ENCSR000AAL/",
+        "technical_replicate_number": 2,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB001RCC",
+        "uuid": "d52a3aaf-5fa7-4bea-ac08-a5e70c6e7dbd"
     }
 ]
