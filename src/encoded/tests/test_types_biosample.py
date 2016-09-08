@@ -53,9 +53,9 @@ def test_undefined_age_human(testapp, biosample, human):
 
 
 def test_undefined_age_mouse_with_model_organism_age_field(testapp, biosample, mouse):
-    testapp.patch_json(biosample['@id'], {'organism': mouse['@id']})
-    testapp.patch_json(biosample['@id'], {'model_organism_age': '120'})
-    testapp.patch_json(biosample['@id'], {'model_organism_age_units': 'day'})
+    testapp.patch_json(biosample['@id'], {'organism': mouse['@id'],
+                                          'model_organism_age': '120',
+                                          'model_organism_age_units': 'day'})
     res = testapp.get(biosample['@id'] + '@@index-data')
     assert res.json['object']['age'] == '120'
 
@@ -73,11 +73,11 @@ def test_undefined_age_units_human(testapp, biosample, human):
 
 
 def test_undefined_age_units_mouse_with_model_organism_age_field(testapp, biosample, mouse):
-    testapp.patch_json(biosample['@id'], {'organism': mouse['@id']})
-    testapp.patch_json(biosample['@id'], {'model_organism_age': '120'})
-    testapp.patch_json(biosample['@id'], {'model_organism_age_units': 'day'})
+    testapp.patch_json(biosample['@id'], {'organism': mouse['@id'],
+                                          'model_organism_age': '120',
+                                          'model_organism_age_units': 'day'})
     res = testapp.get(biosample['@id'] + '@@index-data')
-    assert 'age_units' not in res.json['object']
+    assert res.json['object']['age_units'] == 'day'
 
 
 def test_defined_life_stage_human(testapp, biosample, human, human_donor):
