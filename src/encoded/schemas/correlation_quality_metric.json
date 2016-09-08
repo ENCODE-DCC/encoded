@@ -39,7 +39,7 @@
         "Replicate log-ratio SD": {
             "type": "number",
             "description": "Replicate log-ratio standard deviation, formerly mis-labelled as Mean-Average-Deviation (MAD)."
-        }
+        },
         "Details": {
             "type": "string",
             "description": "Description of methods"

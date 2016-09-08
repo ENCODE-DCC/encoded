@@ -57,7 +57,7 @@
         "RSC": {
             "type": "number",
             "description": "Relative cross correlation coefficient. Ratio of strand cross-correlation at fragment length and at read length"
-        }
+        },
         "cross_correlation_plot": {
             "description": "Cross-correlation plot",
             "title": "QC metric document metadata",
