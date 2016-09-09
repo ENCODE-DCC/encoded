@@ -54,7 +54,7 @@ def audit_biosample_description(value, system):
     if 'description' not in value:
         return
     if value['description'].find('\\\\u') != -1:
-        detail = 'Dataset description text ' + \
+        detail = 'Biosample description text ' + \
                  'contains double backslashes.'
         yield AuditFailure('inconsistent description',
                            detail,
