@@ -57,17 +57,35 @@ def test_biosample_depleted_in_name_required(testapp, biosample_depleted_in):
 
 
 def test_biosample_depleted_in_type_whole_organism(testapp, biosample_depleted_in):
-    biosample_depleted_in['biosample_type'] = 'immortalized cell line'
+    biosample_depleted_in['biosample_type'] = 'whole organism'
     testapp.post_json('/biosample', biosample_depleted_in,  status=422)
 
 
-def test_biosample_starting_amount(testapp, biosample_starting_amount):
+def test_biosample_starting_amount_fail(testapp, biosample_starting_amount):
     testapp.post_json('/biosample', biosample_starting_amount, status=422)
+
+
+def test_biosample_starting_amount_unknown_dep(testapp, biosample_starting_amount):
+    biosample_starting_amount['starting_amount_units'] = 'cells'
+    testapp.post_json('/biosample', biosample_starting_amount)
+
+
+def test_biosample_starting_amount_dep(testapp, biosample_starting_amount):
+    biosample_starting_amount['starting_amount'] = 40
+    biosample_starting_amount['starting_amount_units'] = 'cells'
+    testapp.post_json('/biosample', biosample_starting_amount)
+
+
+def test_biosample_transfection_method_fail(testapp, biosample):
+    # no dependency
+    biosample['transfection_method'] = 'transduction'
+    testapp.post_json('/biosample', biosample, status=422)
 
 
 def test_biosample_transfection_method(testapp, biosample):
     biosample['transfection_method'] = 'transduction'
-    testapp.post_json('/biosample', biosample, status=422)
+    biosample['transfection_type'] = 'stable'
+    testapp.post_json('/biosample', biosample)
 
 
 def test_biosample_mouse_life_stage(testapp, mouse_biosample):
