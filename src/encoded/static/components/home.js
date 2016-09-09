@@ -139,24 +139,12 @@ var Home = module.exports.Home = React.createClass({
                     <div className="col-xs-12">
                         <Panel>
                             <AssayClicking current={this.state.current} callback={this.callback} assayCategory={this.state.assayCategory} handleAssayCategoryClick={this.handleAssayCategoryClick}/>
-                            <PanelHeading addClasses="tab-table-header">
+                            <div className="organism-tabs">
                                 <TabClicking handleTabClick={this.handleTabClick} newtabs={this.state.newtabs}/>
-                            </PanelHeading>
-                            <div className="graphs clearfix">
+                            </div>
+                            <div className="graphs">
                                 <div className="row">
                                     <HomepageChartLoader searchBase={this.state.current} callback={this.callback} />
-                                </div>
-                            </div>
-                            <PanelBody addClasses="description">
-                                The <a href="/about/contributors/" title="Details about the ENCODE consortium">ENCODE (Encyclopedia of DNA Elements) Consortium</a> is an international collaboration of research groups funded by the National Human Genome Research Institute (<a href="https://www.genome.gov/10005107/" title="National Human Genome Research Institute ENCODE information">NHGRI</a>). The goal of ENCODE is to build a comprehensive parts list of functional elements in the human genome, including elements that act at the protein and RNA levels,and regulatory elements that control cells and circumstances in which a gene is active.
-                            </PanelBody>
-                            <div className="row">
-                                <div className="col-md-9 getting-started">
-                                    <img src="static/img/getting-started.jpg" className="getting-started-image"/>
-                                    <a href="/help/getting-started" className="getting-started-button btn btn-info btn-lg" role="button"> Getting Started </a>
-                                </div>
-                                <div className="col-md-3 twitter-widget">
-                                    <TwitterWidget/>
                                 </div>
                             </div>
                         </Panel>
@@ -187,37 +175,6 @@ var ChartGallery = React.createClass({
                     </div>
                 </div>
             </div>
-        );
-    }
-});
-
-
-// Creates twitter widget
-var TwitterWidget = React.createClass({
-    componentDidMount: function() { // twitter script from API
-        var js, link;
-        link = this.refs.link.getDOMNode();
-        if (!this.initialized) {
-            this.initialized = true;
-            js = document.createElement("script");
-            js.id = "twitter-wjs";
-            js.src = "//platform.twitter.com/widgets.js";
-            return link.parentNode.appendChild(js);
-        }
-    },
-    render: function() {
-        var content, ref2, title, widget;
-        return (
-            <a
-            ref= "link"
-            className= "twitter-timeline"
-            href= "https://twitter.com/encodedcc" // from encodedcc twitter
-            widget-id= "encodedcc"
-            data-screen-name="EncodeDCC"
-            //data-tweet-limit = "4"
-            //data-width = "300"
-            data-height = "452" // height so it matches with rest of site
-            ></a>
         );
     }
 });
@@ -301,18 +258,32 @@ var AssayClicking = React.createClass({
             <div ref="graphdisplay">
                 <div className="overall-classic">
 
-                    <img src="static/img/classic-image.jpg" className="classic-image"/>
+                    <h1>ENCODE: Encyclopedia of DNA Elements</h1>
 
-                    <svg id="classic-image-svg-overlay" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3840 1700" className="classic-svg">
-                        <rect id={this.state.assayList[0]} className="st0" x="1052" y="944.81" width="219.3" height="205.63" rx="46.01" ry="46.01"     className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[0] ? " selected": "")} />
-                        <rect id={this.state.assayList[1]} className="st0" x="1295.54" y="944.81" width="247.87" height="205.63" rx="46.01" ry="46.01" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[1] ? " selected": "")} />
-                        <rect id={this.state.assayList[2]} className="st0" x="1567.63" y="944.81" width="240.25" height="205.63" rx="46.01" ry="46.01" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[2] ? " selected": "")} />
-                        <rect id={this.state.assayList[3]} className="st0" x="1839.75" y="944.81" width="280.75" height="205.63" rx="46.01" ry="46.01" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[3] ? " selected": "")} />
-                        <rect id={this.state.assayList[4]} className="st0" x="2138" y="944.81" width="349.64" height="205.63" rx="46.01" ry="46.01"    className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[4] ? " selected": "")} />
-                        <rect id={this.state.assayList[5]} className="st0" x="2505.01" y="944.81" width="218.74" height="205.63" rx="46.01" ry="46.01" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[5] ? " selected": "")} />
-                        <rect id={this.state.assayList[6]} className="st0" x="2749.26" y="944.81" width="218.74" height="205.63" rx="46.01" ry="46.01" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[6] ? " selected": "")} />
-                    </svg>
+                    <div className="site-banner">
+                        <div className="site-banner-img">
+                            <img src="static/img/classic-image.jpg" />
 
+                            <svg id="site-banner-overlay" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2260 1450" className="classic-svg">
+                                <rect id={this.state.assayList[0]} className="st0" class="a" x="101.03" y="645.8" width="257.47" height="230.95"  className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[0] ? " selected": "")} />
+                                <rect id={this.state.assayList[1]} className="st0" class="a" x="386.6" y="645.8" width="276.06" height="230.95"   className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[1] ? " selected": "")} />
+                                <rect id={this.state.assayList[2]} className="st0" class="a" x="688.7" y="645.8" width="237.33" height="230.95"   className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[2] ? " selected": "")} />
+                                <rect id={this.state.assayList[3]} className="st0" class="a" x="950.83" y="645.8" width="294.65" height="230.95"  className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[3] ? " selected": "")} />
+                                <rect id={this.state.assayList[4]} className="st0" class="a" x="1273.07" y="645.8" width="373.37" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[4] ? " selected": "")} />
+                                <rect id={this.state.assayList[5]} className="st0" class="a" x="1674.06" y="645.8" width="236.05" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[5] ? " selected": "")} />
+                                <rect id={this.state.assayList[6]} className="st0" class="a" x="1937.74" y="645.8" width="227.38" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[6] ? " selected": "")} />
+                            </svg>
+                        </div>
+
+                        <div className="site-banner-intro">
+                            <div className="site-banner-intro-content">
+                                <p>The ENCODE (Encyclopedia of DNA Elements) Consortium is an international collaboration of research groups funded by the National Human Genome Research Institute (NHGRI). The goal of ENCODE is to build a comprehensive parts list of functional elements in the human genome, including elements that act at the protein and RNA levels, and regulatory elements that control cells and circumstances in which a gene is active.</p>
+                                <div className="getting-started-button">
+                                    <a href="/help/getting-started" className="btn btn-info btn-lg" role="button">Getting Started</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         );

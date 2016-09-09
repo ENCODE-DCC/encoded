@@ -28,21 +28,6 @@
     background-color: #E8ECEF;
 }
 
-
-.description {
-    line-height: 1.7;
-    border-top: 1px solid #a0a0a0;
-    border-bottom: 1px solid #a0a0a0;
-    padding: 20px;
-    font-size: 18px;
-
-    @media screen and (min-width: $screen-md-min) {
-        column-count: 2;
-        -moz-column-count: 2;
-    }
-}
-
-
 .twitter-widget {
     padding-right: 20px;
     border-left: 1px solid #a0a0a0;
@@ -52,8 +37,98 @@
 .overall-classic {
     position: relative;
     padding-bottom: 0px;
-    background-color: #E8ECEF;
 
+    h1 {
+        margin: 0;
+        padding: 20px 10px;
+        text-align: center;
+        font-weight: normal;
+        font-size: 1.6rem;
+        border-bottom: 1px solid #e0e0e0;
+
+        @media screen and (min-width: $screen-md-min) {
+            padding: 10px;
+            font-size: 2.5rem;
+        }
+    }
+}
+
+.site-banner {
+    display: block;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-items: stretch;
+        align-content: stretch;
+    }
+}
+
+.site-banner-img {
+    position: relative;
+
+    @media screen and (min-width: $screen-md-min) {
+        flex: 0 1 70%;
+    }
+
+    @media screen and (min-width: $screen-lg-min) {
+        flex: 0 1 60%;
+    }
+
+    img {
+        height: auto;
+        max-width: 100%;
+    }
+}
+
+.site-banner-intro {
+    padding: 10px 20px;
+    line-height: 1.8;
+    font-size: 1.2rem;
+    line-height: 1.8;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+        flex: 0 1 30%;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        border-left: 1px solid #e0e0e0;
+    }
+
+    @media screen and (min-width: $screen-lg-min) {
+        flex: 0 1 40%;
+        font-size: 1.2rem;
+        line-height: 1.8;
+    }
+}
+
+.site-banner-intro-content {
+    position: static;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: flex-start;
+        align-content: stretch;
+
+        p {
+            flex: 0 1 100%;
+            align-self: auto;
+        }
+    }
+}
+
+.getting-started-button {
+    text-align: center;
+
+    @media screen and (min-width: $screen-md-min) {
+        flex: 0 1 auto;
+        align-self: flex-end;
+    }
 }
 
 // Positions rectangles for classic pic
@@ -74,25 +149,16 @@
     stroke-width: 6px;
     stroke: #0000EE;
     fill: #0000EE;
-    fill-opacity: 0.05;
-}
+    fill-opacity: 0;
 
-// When hover on rectangle, make fill darker
-.rectangle-box:hover {
-    fill-opacity: 0.1;
-    cursor: pointer;
-}
+    &:hover {
+        fill-opacity: 0.1;
+        cursor: pointer;
+    }
 
-.rectangle-box.selected {
-    fill-opacity: 0.5;
-}
-
-
-// Positions classic pic
-.classic-image {
-    position: relative;
-    height: auto;
-    max-width: 100%;
+    &.selected {
+        fill-opacity: 0.4;
+    }
 }
 
 // Graph titles
@@ -105,10 +171,6 @@
     font-weight: 100;
 }
 
-
-// Gives tabs white background and border separating from graphs
-.tab-table {
-}
 
 .tab-table-header {
     padding: 0;
@@ -209,14 +271,6 @@
 
 }
 
-// Positions getting started buttonn
-.getting-started-button {
-    position: absolute;
-    top: 10px;
-    left: 20px;
-    background-color: transparent;
-    z-index: 1;
-}
 
 // Positions View All
 .view-all {
