@@ -66,6 +66,7 @@ def test_biosample_starting_amount_fail(testapp, biosample_starting_amount):
 
 
 def test_biosample_starting_amount_unknown_dep(testapp, biosample_starting_amount):
+    # note starting_amount is 'unknown'
     biosample_starting_amount['starting_amount_units'] = 'cells'
     testapp.post_json('/biosample', biosample_starting_amount)
 

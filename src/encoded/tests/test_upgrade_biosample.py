@@ -280,19 +280,82 @@ def test_biosample_upgrade_inline(testapp, biosample_1):
     assert res.json['schema_version'] == schema['properties']['schema_version']['default']
 
 
-def test_biosample_upgrade_inline_unknown(testapp, biosample_1):
+def test_biosample_upgrade_starting_amount_dep(testapp, biosample_1):
     from snovault.schema_utils import load_schema
     schema = load_schema('encoded:schemas/biosample.json')
-    biosample_1['starting_amount'] = 'Unknown'
+    biosample_1['starting_amount'] = 666
     biosample_1['starting_amount_units'] = 'g'
     res = testapp.post_json('/biosample?validate=false&render=uuid', biosample_1)
     location = res.location
-    #res = testapp.patch_json(location, {})
-    res = testapp.patch_json(location+'/?validate=false', {})
+
+    # The properties are stored un-upgraded.
+    res = testapp.get(location + '?frame=raw&upgrade=false').maybe_follow()
+    assert res.json['schema_version'] == '1'
+
+    # When the item is fetched, it is upgraded automatically.
+    res = testapp.get(location).maybe_follow()
+    assert res.json['schema_version'] == schema['properties']['schema_version']['default']
+
+    res = testapp.patch_json(location, {})
+
+    # The stored properties are now upgraded.
     res = testapp.get(location + '?frame=raw&upgrade=false').maybe_follow()
     assert res.json['schema_version'] == schema['properties']['schema_version']['default']
+
+    assert res.json['starting_amount'] == 666
+    assert res.json['starting_amount_units'] == 'g'
+
+
+def test_biosample_upgrade_starting_amount_unknown_explicit_patch(testapp, biosample_1):
+    from snovault.schema_utils import load_schema
+    schema = load_schema('encoded:schemas/biosample.json')
+    biosample_1['starting_amount'] = 'unknown'
+    biosample_1['starting_amount_units'] = 'g'
+    res = testapp.post_json('/biosample?validate=false&render=uuid', biosample_1)
+    location = res.location
+
+    # The properties are stored un-upgraded.
+    res = testapp.get(location + '?frame=raw&upgrade=false').maybe_follow()
+    assert res.json['schema_version'] == '1'
+
+    # When the item is fetched, it is upgraded automatically.
+    res = testapp.get(location).maybe_follow()
+    assert res.json['schema_version'] == schema['properties']['schema_version']['default']
+
+    res = testapp.patch_json(location, {'starting_amount': 'unknown'})
+
+    # The stored properties are now upgraded.
+    res = testapp.get(location + '?frame=raw&upgrade=false').maybe_follow()
+    assert res.json['schema_version'] == schema['properties']['schema_version']['default']
+
     assert res.json['starting_amount'] == 'unknown'
-    assert 'starting_amount_units' in res.json
+    assert res.json['starting_amount_units'] == 'g'
+
+
+def test_biosample_upgrade_starting_amount_unknown(testapp, biosample_1):
+    from snovault.schema_utils import load_schema
+    schema = load_schema('encoded:schemas/biosample.json')
+    biosample_1['starting_amount'] = 'unknown'
+    biosample_1['starting_amount_units'] = 'g'
+    res = testapp.post_json('/biosample?validate=false&render=uuid', biosample_1)
+    location = res.location
+
+    # The properties are stored un-upgraded.
+    res = testapp.get(location + '?frame=raw&upgrade=false').maybe_follow()
+    assert res.json['schema_version'] == '1'
+
+    # When the item is fetched, it is upgraded automatically.
+    res = testapp.get(location).maybe_follow()
+    assert res.json['schema_version'] == schema['properties']['schema_version']['default']
+
+    res = testapp.patch_json(location, {})
+
+    # The stored properties are now upgraded.
+    res = testapp.get(location + '?frame=raw&upgrade=false').maybe_follow()
+    assert res.json['schema_version'] == schema['properties']['schema_version']['default']
+
+    assert res.json['starting_amount'] == 'unknown'
+    assert res.json['starting_amount_units'] == 'g'
 
 
 def test_biosample_worm_life_stage(upgrader, biosample_7):
