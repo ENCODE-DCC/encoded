@@ -202,9 +202,9 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
     errors = job['errors']
     result = job['result']
 
-    sequence_pattern = re.compile('[ACTGN]+')
+    sequence_pattern = re.compile('[ACTGN.]+')
     read_name_pattern = re.compile(
-        '^(@[a-zA-Z\d]+[a-zA-Z\d_-]*:\d+:[a-zA-Z\d]+:\d+:\d+:\d+:\d+[\s_][12]:[YN]:[0-9]+:([ACTG]+|[0-9]+))$'
+        '^(@[a-zA-Z\d]+[a-zA-Z\d_-]*:\d+:[a-zA-Z\d]+:\d+:\d+:\d+:\d+[\s_][12]:[YN]:[0-9]+:([ACNTG]+|[0-9]+))$'
         )
     read_count = 0
     read_lengths = set()
