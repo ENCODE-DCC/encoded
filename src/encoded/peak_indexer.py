@@ -34,6 +34,9 @@ _INDEXED_DATA = {
     },
     'eCLIP': {
         'file_type': ['bed narrowPeak']
+    },
+    'RNA-seq': {
+        'output_type': ['gene quantifications']
     }
 }
 
@@ -46,7 +49,6 @@ def includeme(config):
     config.scan(__name__)
 
 
-
 def tsvreader(file):
     reader = csv.reader(file, delimiter='\t')
     for row in reader:
@@ -55,7 +57,8 @@ def tsvreader(file):
 # Mapping should be generated dynamically for each assembly type
 
 
-def get_mapping(assembly_name='hg19'):
+def get_peak_mapping(assembly_name='hg19'):
+    ''' mapping for bed/peak interval '''
     return {
         assembly_name: {
             '_all': {
@@ -85,6 +88,43 @@ def get_mapping(assembly_name='hg19'):
     }
 
 
+def get_tnx_mapping(assembly_name='hg19'):
+    ''' Mapping for transcription level by gene '''
+    return {
+        assembly_name: {
+            '_all': {
+                'enabled': False
+            },
+            '_source': {
+                'enabled': True
+            },
+            'properties': {
+                'uuid': {
+                    'type': 'string',
+                    'index': 'not_analyzed'
+                },
+                'expression': {
+                    'type': 'nested',
+                    'properties': {
+                        'transcript_id': {
+                            'type': 'string'
+                        },
+                        'gene_id': {
+                            'type': 'string'
+                        },
+                        'tpm': {
+                            'type': 'long'
+                        },
+                        'fpkm': {
+                            'type': 'long'
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
 def index_settings():
     return {
         'index': {
@@ -93,18 +133,17 @@ def index_settings():
     }
 
 
-def get_assay_term_name(accession, request):
+def get_assay_name(accession, request):
     '''
-    Input file accession and returns assay_term_name of the experiment the file
+    Input file accession and returns assay_term_name and assay_title of the experiment the file
     belongs to
     '''
     context = request.embed(accession)
-    if 'assay_term_name' in context:
-        return context['assay_term_name']
-    return None
+    return (context.get('assay_term_name', None), context.get('assay_title', None))
 
-def all_bed_file_uuids(request):
-    stmt = text("select distinct(resources.rid) from resources, propsheets where resources.rid = propsheets.rid and resources.item_type='file' and propsheets.properties->>'file_format' = 'bed' and properties->>'status' = 'released';")
+
+def all_file_uuids_by_type(request, type='bed'):
+    stmt = text("select distinct(resources.rid) from resources, propsheets where resources.rid = propsheets.rid and resources.item_type='file' and propsheets.properties->>'file_format' = '%s' and properties->>'status' = 'released';" % type)
     connection = request.registry[DBSESSION].connection()
     uuids = connection.execute(stmt)
     return [str(item[0]) for item in uuids]
@@ -114,19 +153,20 @@ def all_dataset_uuids(request):
     datasets = request.registry[COLLECTIONS]['datasets']
     return [uuid for uuid in datasets]
 
+
 def all_experiment_uuids(request):
     return list(all_uuids(request.registry, types='experiment'))
 
 
-def index_peaks(uuid, request):
+def index_peaks(uuid, request, ftype='bed'):
     """
-    Indexes bed files in elasticsearch index
+    Indexes bed or tsv files in elasticsearch index
     """
     context = request.embed('/', str(uuid), '@@object')
 
     if 'assembly' not in context:
         return
-        
+
     assembly = context['assembly']
 
     # Treat mm10-minimal as mm1
@@ -145,7 +185,7 @@ def index_peaks(uuid, request):
     if assembly not in _ASSEMBLIES:
         return
 
-    assay_term_name = get_assay_term_name(context['dataset'], request)
+    (assay_term_name, assay_title) = get_assay_name(context['dataset'], request)
     if assay_term_name is None or isinstance(assay_term_name, collections.Hashable) is False:
         return
 
@@ -153,23 +193,68 @@ def index_peaks(uuid, request):
 
     for k, v in _INDEXED_DATA.get(assay_term_name, {}).items():
         if k in context and context[k] in v:
-            if 'file_format' in context and context['file_format'] == 'bed':
+            if 'file_format' in context and context['file_format'] == ftype:
                 flag = True
                 break
     if not flag:
         return
 
     urllib3.disable_warnings()
-    es = request.registry.get(SNP_SEARCH_ES, None)
     http = urllib3.PoolManager()
     r = http.request('GET', request.host_url + context['href'])
     if r.status != 200:
-        return
+        # Note horrible hack here for test data
+        r = http.request('GET', request.host_url + context['submitted_file_name'])
+        if r.status != 200:
+            return
     comp = io.BytesIO()
     comp.write(r.data)
     comp.seek(0)
     r.release_conn()
+
+    if ftype == 'bed':
+        index_bed(comp, request, context, assembly)
+    elif ftype == 'tsv':
+        index_tsv(comp, request, context, assembly)
+
+
+def index_tsv(comp, request, context, assembly):
     file_data = dict()
+    es = request.registry.get(SNP_SEARCH_ES, None)
+    annotation = context['genome_annotation']
+
+    with open(comp, mode='rt') as file:
+        for row in tsvreader(file):
+            transcript_id, gene_id, tpm, fpkm = row[0], row[1], float(row[5]), float(row([6]))
+            if tpm > 0.0 or fpkm > 0.0:
+                payload = {
+                    'transcript_id': transcript_id,
+                    'gene_id': gene_id,
+                    'tpm': tpm,
+                    'fpkm': fpkm
+                }
+                if annotation in file_data:
+                    file_data[annotation].append(payload)
+                else:
+                    file_data[annotation] = [payload]
+
+    for key in file_data:
+        doc = {
+            'uuid': context['uuid'],
+            'expression': file_data[key]
+        }
+        if not es.indices.exists(key):
+            es.indices.create(index=key, body=index_settings())
+
+        if not es.indices.exists_type(index=key, doc_type=assembly):
+            es.indices.put_mapping(index=key, doc_type=assembly, body=get_tnx_mapping(assembly))
+
+        es.index(index=key, doc_type=assembly, body=doc, id=context['uuid'])
+
+
+def index_bed(comp, request, context, assembly):
+    file_data = dict()
+    es = request.registry.get(SNP_SEARCH_ES, None)
 
     with gzip.open(comp, mode='rt') as file:
         for row in tsvreader(file):
@@ -192,12 +277,11 @@ def index_peaks(uuid, request):
         }
         if not es.indices.exists(key):
             es.indices.create(index=key, body=index_settings())
-            
+
         if not es.indices.exists_type(index=key, doc_type=assembly):
-            es.indices.put_mapping(index=key, doc_type=assembly, body=get_mapping(assembly))
+            es.indices.put_mapping(index=key, doc_type=assembly, body=get_peak_mapping(assembly))
 
         es.index(index=key, doc_type=assembly, body=doc, id=context['uuid'])
-
 
 
 @view_config(route_name='index_file', request_method='POST', permission="index")
@@ -307,16 +391,17 @@ def index_file(request):
     if not dry_run:
         err = None
         uuid_current = None
-        invalidated_files = list(set(invalidated).intersection(set(all_bed_file_uuids(request))))
-        try:
-            for uuid in invalidated_files:
-                uuid_current = uuid
-                index_peaks(uuid, request)
-        except Exception as e:
-            log.error('Error indexing %s', uuid_current, exc_info=True)
-            err = repr(e)
-        result['errors'] = [err]
-        result['indexed'] = len(invalidated)
+        for ftype in ('bed', 'tsv'):
+            invalidated_files = list(set(invalidated).intersection(set(all_file_uuids_by_type(request, ftype))))
+            try:
+                for uuid in invalidated_files:
+                    uuid_current = uuid
+                    index_peaks(uuid, request, ftype)
+            except Exception as e:
+                log.error('Error indexing %s', uuid_current, exc_info=True)
+                err = repr(e)
+            result['errors'] = [err]
+            result['indexed'] = len(invalidated)
         if record:
             es_peaks.index(index='snovault', doc_type='meta', body=result, id='peak_indexing')
         invalidated_datasets_and_experiments = list(set(invalidated).intersection(set(all_dataset_uuids(request) + all_experiment_uuids(request))))

@@ -1218,7 +1218,7 @@
         "notes": "{\"dx-createdBy\": {\"job\": \"job-BX3pPz00F1G03f7Zx1JZF143\", \"executable\": \"applet-BX3jXk00F1G79Gbb68P630vj\", \"user\": \"user-tdreszer\"}, \"software_versions\": [{\"version\": \"v1.2.19\", \"software\": \"RSEM\"}], \"dx-id\": \"file-BX3zzv80jFJX2bJYQJpf7b76\"}",
         "accession": "ENCFF946MFS",
         "schema_version": "4",
-        "submitted_file_name": "/lrna/hg19/ENCSR000AEV/rep2_1/ENCFF001ROX-ENCFF001ROW_star_anno_rsem.genes.results",
+        "submitted_file_name": "/static/test/peak_indexer/ENCFF647DYV.tsv",
         "submitted_by": "amet.fusce@est.fermentum",
         "file_format": "tsv",
         "dataset": "ENCSR000AEM"
