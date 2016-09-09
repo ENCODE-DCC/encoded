@@ -175,14 +175,6 @@ def check_format(encValData, job, path):
 
     result['validateFiles_args'] = ' '.join(validate_args)
 
-    try:
-        output = subprocess.check_output(
-            ['validateFiles'] + validate_args + [path], stderr=subprocess.STDOUT)
-    except subprocess.CalledProcessError as e:
-        errors['validateFiles'] = e.output.decode(errors='replace').rstrip('\n')
-    else:
-        result['validateFiles'] = output.decode(errors='replace').rstrip('\n')
-
 
 def process_fastq_file(job, unzipped_fastq_path, session, url):
     '''
@@ -202,9 +194,9 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
     errors = job['errors']
     result = job['result']
 
-    sequence_pattern = re.compile('[ACTGN]+')
+    sequence_pattern = re.compile('[ACTGN.]+')
     read_name_pattern = re.compile(
-        '^(@[a-zA-Z\d]+[a-zA-Z\d_-]*:\d+:[a-zA-Z\d]+:\d+:\d+:\d+:\d+[\s_][12]:[YN]:[0-9]+:([ACTG]+|[0-9]+))$'
+        '^(@[a-zA-Z\d]+[a-zA-Z\d_-]*:\d+:[a-zA-Z\d]+:\d+:\d+:\d+:\d+[\s_][12]:[YN]:[0-9]+:([ACNTG]+|[0-9]+))$'
         )
     read_count = 0
     read_lengths = set()
@@ -432,22 +424,6 @@ def check_file(config, session, url, job):
     result["last_modified"] = datetime.datetime.utcfromtimestamp(
         file_stat.st_mtime).isoformat() + 'Z'
 
-    # Faster than doing it in Python.
-    try:
-        output = subprocess.check_output(
-            ['md5sum', local_path], stderr=subprocess.STDOUT)
-    except subprocess.CalledProcessError as e:
-        errors['md5sum'] = e.output.decode(errors='replace').rstrip('\n')
-    else:
-        result['md5sum'] = output[:32].decode(errors='replace')
-        try:
-            int(result['md5sum'], 16)
-        except ValueError:
-            errors['md5sum'] = output.decode(errors='replace').rstrip('\n')
-        if result['md5sum'] != item['md5sum']:
-            errors['md5sum'] = \
-                'checked %s does not match item %s' % (result['md5sum'], item['md5sum'])
-
     is_gzipped = is_path_gzipped(local_path)
     if item['file_format'] not in GZIP_TYPES:
         if is_gzipped:
@@ -488,19 +464,18 @@ def check_file(config, session, url, job):
             # or http://stackoverflow.com/a/15343686/199100
             try:
                 if item['file_format'] == 'fastq':
-                    unzipped_fastq_path = local_path[-20:-9] + '_original.fastq'
-                    output = subprocess.check_output(
-                        'set -o pipefail; gunzip --stdout {} | tee {} | md5sum'.format(
-                            local_path, unzipped_fastq_path),
-                        shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                    if file_stat.st_size < 20000000000:
+                        unzipped_fastq_path = local_path[-20:-9] + '_original.fastq'                    
+                        output = subprocess.check_output(
+                            'set -o pipefail; gunzip --stdout {} > {}'.format(
+                                local_path, unzipped_fastq_path),
+                            shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
                 else:
                     output = subprocess.check_output(
                         'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
                         shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
             except subprocess.CalledProcessError as e:
                 errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
-            else:
-                check_for_contentmd5sum_conflicts(item, result, output, errors, session, url)
     if not errors:
         if item['file_format'] == 'bed':
             check_format(config['encValData'], job, unzipped_modified_bed_path)
@@ -508,7 +483,8 @@ def check_file(config, session, url, job):
             check_format(config['encValData'], job, local_path)
 
         if item['file_format'] == 'fastq':
-            process_fastq_file(job, unzipped_fastq_path, session, url)
+            if file_stat.st_size < 20000000000:
+                process_fastq_file(job, unzipped_fastq_path, session, url)
 
     if item['file_format'] == 'bed':
         try:
