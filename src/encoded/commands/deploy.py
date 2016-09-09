@@ -8,6 +8,7 @@ import base64
 import pdb
 from pprint import pprint as pp
 
+SpotInstanceRequestId=None
 
 BDM = [
     {
@@ -29,7 +30,6 @@ BDM = [
 ]
 
 def spot_instance_price_check(client, instance_type):
-    val = 0
     highest = 0
     todaysDate = datetime.datetime.now()
     response = client.describe_spot_price_history(
@@ -73,7 +73,7 @@ def spot_instance_price_check(client, instance_type):
 
     return highest
 
-def spot_instances(client, spot_price, count, image_id, instance_type, spot_security_groups, user_data, iam_role):
+def spot_instances(client, spot_price, count, image_id, instance_type, spot_security_groups, user_data, iam_role, bdm):
     
     responce = client.request_spot_instances(
     DryRun=False,
@@ -88,11 +88,26 @@ def spot_instances(client, spot_price, count, image_id, instance_type, spot_secu
         'Placement': {
             'AvailabilityZone': 'us-west-2c'
         },
+        'BlockDeviceMappings': bdm,
         'IamInstanceProfile': {
             "Name": iam_role,
         }
         }
     )
+    #subprocess.check_call(['./spot-instance.sh', arg1 ])
+
+    for key, value in responce.items() :
+        #print("Key: %s" % key)
+        #print("Value: %s" % value)
+        if key == 'SpotInstanceRequests':
+            for item in value:
+                
+                for i in item:
+                    if i == 'SpotInstanceRequestId':
+                        SpotInstanceRequestId=item[i]
+                        print("SpotInstanceRequestId: %s" % item[i])
+
+    #print("Responce: %s" % responce)
     return responce
 
 def nameify(s):
@@ -125,6 +140,22 @@ def tag_ec2_instance(instance, name, branch, commit, username, elasticsearch):
     if elasticsearch == 'yes':
         tags.append({'Key': 'elasticsearch', 'Value': elasticsearch})
     instance.create_tags(Tags=tags)
+    return instance
+
+def tag_spot_instance(instance, name, branch, commit, username, elasticsearch):
+    tags=[
+        {'Key': 'Name', 'Value': name},
+        {'Key': 'branch', 'Value': branch},
+        {'Key': 'commit', 'Value': commit},
+        {'Key': 'started_by', 'Value': username},
+    ]
+    if elasticsearch == 'yes':
+        tags.append({'Key': 'elasticsearch', 'Value': elasticsearch})
+
+    conn = boto3.ec2.connect_to_region('us-west-2')
+    reservations = conn.create_tags(SpotInstanceRequestId, config['tags'])
+    #Instance = reservation[0].instances[0]
+    #Instance.create_tags(Tags=tags)
     return instance
 
 
@@ -200,25 +231,18 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
 
 
 
-
-
     if not spot_instance == False :
         print("spot_instance check worked")
         spot_security_groups = 'ssh-http-https'
         ec2_spot = boto3.client('ec2')
         # issue with base64 encoding so no decoding in utc-8 and recoding in base64 then decoding in base 64.
         config_file = ':cloud-config.yml'
-        user_d = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml'])
-        user_data_b64 = base64.b64encode(user_d)
+        user_config = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml'])
+        user_data_b64 = base64.b64encode(user_config)
         user_data = user_data_b64.decode()
-        #avg_spot_price = spot_instance_price_check(ec2_spot, instance_type)
-        instances = spot_instances(ec2_spot, spot_price, count, image_id, instance_type, spot_security_groups, user_data, iam_role)
+        instances = spot_instances(ec2_spot, spot_price, count, image_id, instance_type, spot_security_groups, user_data, iam_role, BDM)
     else:
         instances = create_ec2_instances(ec2, image_id, count, instance_type, security_groups, user_data, BDM, iam_role)
-
-   
-
-
 
 
 
@@ -239,11 +263,9 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
             print('ssh %s.%s.encodedcc.org' % (tmp_name, domain))
             if domain == 'instance':
                 print('https://%s.demo.encodedcc.org' % tmp_name)
-        else:
-            instance.wait_until_exists()
-            tag_ec2_instance(instance, tmp_name, branch, commit, username, elasticsearch)
-    if not spot_instance == False:     
 
+    if not spot_instance == False:
+        tag_spot_instance(instance, name, branch, commit, username, elasticsearch)
         print("Spot instance request had been completed, please check to be sure it was fufilled")
 
 
