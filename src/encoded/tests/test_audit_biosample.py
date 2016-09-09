@@ -47,6 +47,19 @@ def base_chipmunk(testapp):
     return testapp.post_json('/organism', item, status=201).json['@graph'][0]
 
 
+def test_audit_biosample_description(testapp, base_biosample):
+    testapp.patch_json(base_biosample['@id'],
+                       {'description':
+                        'contains ER-Src by treating with 1 \\\\u03bcM tamoxifen for 36 '})
+    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent description'
+               for error in errors_list)
+
+
 def test_audit_biosample_constructs_whole_organism(testapp, base_biosample,
                                                    fly_donor, fly, construct):
     testapp.patch_json(base_biosample['@id'], {'biosample_type': 'whole organisms',

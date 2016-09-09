@@ -49,6 +49,18 @@ model_organism_terms = ['model_organism_mating_status',
                         'model_organism_donor_constructs']
 
 
+@audit_checker('Biosample', frame='object')
+def audit_biosample_description(value, system):
+    if 'description' not in value:
+        return
+    if value['description'].find('\\\\u') != -1:
+        detail = 'Dataset description text ' + \
+                 'contains double backslashes.'
+        yield AuditFailure('inconsistent description',
+                           detail,
+                           level='INTERNAL_ACTION')
+
+
 @audit_checker('biosample', frame=['constructs', 'model_organism_donor_constructs'])
 def audit_biosample_constructs(value, system):
 
