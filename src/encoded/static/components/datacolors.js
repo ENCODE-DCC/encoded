@@ -12,13 +12,13 @@
 
 // List of colors. Those wishing to modify the colors used by this module need to modify this list.
 const rootColorList = [
-    '#fcbf3a',
-    '#1a207b',
-    '#730173',
-    '#7c7b82',
-    '#007d26',
-    '#f46036',
-    '#d7263d'
+    '#2f62cf',
+    '#de3700',
+    '#ff9a00',
+    '#009802',
+    '#9b009b',
+    '#0098c8',
+    '#df4076'
 ];
 
 

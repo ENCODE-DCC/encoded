@@ -314,12 +314,6 @@ var TabClicking = React.createClass({
         };
     },
 
-    componentDidMount: function() {
-
-        var tabBoxes = document.getElementById("tabdisplay");
-
-    },
-
     render: function() {
         return (
             <div ref="tabdisplay">
@@ -790,7 +784,7 @@ var HomepageChart3 = React.createClass({
                 });
 
                 // gives bar graph a constant green color
-                colors = ['#a0a0a0', '#a0a0a0', '#a0a0a0', '#a0a0a0', '#a0a0a0', '#a0a0a0'];
+                colors = ['#96e528', '#96e528', '#96e528', '#96e528', '#96e528', '#96e528'];
 
 
                 // Pass the counts to the charting library to render it.
