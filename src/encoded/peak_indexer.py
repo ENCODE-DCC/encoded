@@ -386,7 +386,6 @@ def index_file(request):
                 first_txn_timestamp=first_txn.isoformat(),
             )
 
-    import pdb; pdb.set_trace()
     if not dry_run:
         err = None
         uuid_current = None
