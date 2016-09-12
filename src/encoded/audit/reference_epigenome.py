@@ -157,13 +157,13 @@ def audit_reference_epigenome_assay_types_requirments(value, system):
 
         if methylation_assays == 0:
             detail = detail_prefix + \
-                'is missing MeDIP-seq, MRE-seq, RRBS, or MethylCap-seq assays,' + \
-                'at least one of which is ' + project_detail
+                'is missing MeDIP-seq, MRE-seq, RRBS, or MethylCap-seq assays. ' + \
+                'At least one is ' + project_detail
             yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
         if rna_assays == 0:
             detail = detail_prefix + \
-                'is missing RNA-seq or array based transcription assays,' + \
-                'at least one of which is ' + project_detail
+                'is missing RNA-seq or array based transcription assays. ' + \
+                'At least one is ' + project_detail
             yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
     else:
         if required_assays[('OBI:0000716', 'H3K27ac')] == 0:
