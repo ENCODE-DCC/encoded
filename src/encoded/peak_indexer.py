@@ -173,8 +173,6 @@ def index_peaks(uuid, request, ftype='bed'):
     if assembly == 'mm10-minimal':
         assembly = 'mm10'
 
-
-
     if 'File' not in context['@type'] or 'dataset' not in context:
         return
 
@@ -388,6 +386,7 @@ def index_file(request):
                 first_txn_timestamp=first_txn.isoformat(),
             )
 
+    import pdb; pdb.set_trace()
     if not dry_run:
         err = None
         uuid_current = None
@@ -407,6 +406,7 @@ def index_file(request):
         invalidated_datasets_and_experiments = list(set(invalidated).intersection(set(all_dataset_uuids(request) + all_experiment_uuids(request))))
         registry.notify(AfterIndexedExperimentsAndDatasets(invalidated_datasets_and_experiments, request))
     return result
+
 
 class AfterIndexedExperimentsAndDatasets(object):
     def __init__(self, object, request):
