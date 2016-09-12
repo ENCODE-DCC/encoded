@@ -256,8 +256,8 @@ var FileTable = module.exports.FileTable = React.createClass({
                 <div>
                     {showFileCount ? <div className="file-gallery-counts">Displaying {filteredCount} of {unfilteredCount} files</div> : null}
                     <SortTablePanel header={filePanelHeader} noDefaultClasses={this.props.noDefaultClasses}>
-                        <RawFileTable files={files.raw} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} />
-                        <RawSequencingTable files={files.rawArray} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} />
+                        <RawSequencingTable files={files.raw} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} />
+                        <RawFileTable files={files.rawArray} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} />
                         <SortTable title={<CollapsingTitle title="Processed data" collapsed={this.state.collapsed.proc} handleCollapse={this.handleCollapse.bind(null, 'proc')}
                             selectedFilterValue={selectedFilterValue} filterOptions={filterOptions} handleFilterChange={handleFilterChange} />}
                             collapsed={this.state.collapsed.proc} list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
@@ -304,7 +304,7 @@ function sortBioReps(a, b) {
 
 
 
-var RawFileTable = React.createClass({
+var RawSequencingTable = React.createClass({
     propTypes: {
         files: React.PropTypes.array, // Raw files to display
         meta: React.PropTypes.object // Extra metadata in the same format passed to SortTable
@@ -388,7 +388,7 @@ var RawFileTable = React.createClass({
                     <thead>
                         <tr className="table-section">
                             <th colSpan={loggedIn ? '11' : '10'}>
-                                <CollapsingTitle title="Raw data" collapsed={this.state.collapsed} handleCollapse={this.handleCollapse} />
+                                <CollapsingTitle title="Raw sequencing data" collapsed={this.state.collapsed} handleCollapse={this.handleCollapse} />
                             </th>
                         </tr>
 
@@ -502,7 +502,7 @@ var RawFileTable = React.createClass({
 });
 
 
-var RawSequencingTable = React.createClass({
+var RawFileTable = React.createClass({
     propTypes: {
         files: React.PropTypes.array, // Raw sequencing files to display
         meta: React.PropTypes.object // Extra metadata in the same format passed to SortTable
@@ -550,7 +550,7 @@ var RawSequencingTable = React.createClass({
                     <thead>
                         <tr className="table-section">
                             <th colSpan={loggedIn ? '11' : '10'}>
-                                <CollapsingTitle title="Raw sequencing data" collapsed={this.state.collapsed} handleCollapse={this.handleCollapse} />
+                                <CollapsingTitle title="Raw data" collapsed={this.state.collapsed} handleCollapse={this.handleCollapse} />
                             </th>
                         </tr>
 
