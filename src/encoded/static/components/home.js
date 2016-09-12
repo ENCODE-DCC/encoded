@@ -126,7 +126,7 @@ var Home = module.exports.Home = React.createClass({
 
     blogLoaded: function() {
         // Called once the blog content gets loaded
-        var blogEl = this.refs.socialblog.getDOMNode();
+        var blogEl = this.refs.bloglisting.getDOMNode();
         var twitterEl = document.getElementById('twitter-widget-0');
         if (twitterEl && twitterEl.style) {
             twitterEl.style.height = blogEl.clientHeight + 'px';
@@ -156,8 +156,11 @@ var Home = module.exports.Home = React.createClass({
                                 </div>
                             </div>
                             <div className="social">
-                                <div ref="socialblog" className="social-blog">
-                                    <BlogLoader blogLoaded={this.blogLoaded} />
+                                <div className="social-blog">
+                                    <div className="blog-header">
+                                        <h2>News</h2>
+                                    </div>
+                                    <BlogLoader ref="bloglisting" blogLoaded={this.blogLoaded} />
                                 </div>
                                 <div className="social-twitter">
                                     <TwitterWidget height="500" />
@@ -906,7 +909,7 @@ var BlogLoader = React.createClass({
     },
 
     render: function() {
-        return <FetchedItems {...this.props} url="/search/?type=Page&blog=true&limit=5" Component={Blog} ignoreErrors blogLoaded={this.props.blogLoaded} />
+        return <FetchedItems {...this.props} url="/search/?type=Page&blog=true&limit=5" Component={Blog} ignoreErrors blogLoaded={this.props.blogLoaded} />;
     }
 });
 
@@ -939,8 +942,8 @@ var Blog = React.createClass({
                     {items.map(item => {
                         return (
                             <a href={item['@id']} title={'View blog post for ' + item.title} key={item['@id']}>
-                                <h2>{item.title}</h2>
-                                <h3>{moment.utc(item.date_created).format('MMMM D, YYYY')}</h3>
+                                <h3>{item.title}</h3>
+                                <h4>{moment.utc(item.date_created).format('MMMM D, YYYY')}</h4>
                                 <div className="blog-excerpt">{item.blog_excerpt}</div>
                             </a>
                         );
@@ -973,16 +976,22 @@ var TwitterWidget = React.createClass({
     render: function() {
         var content, ref2, title, widget;
         return (
-            <a
-            ref= "link"
-            className= "twitter-timeline"
-            href= "https://twitter.com/encodedcc" // from encodedcc twitter
-            widget-id= "encodedcc"
-            data-screen-name="EncodeDCC"
-            //data-tweet-limit = "4"
-            //data-width = "300"
-            data-height={this.props.height} // height so it matches with rest of site
-            ></a>
+            <div>
+                <div className="twitter-header">
+                    <h2>Twitter <a href="https://twitter.com/EncodeDCC" title="ENCODE DCC Twitter page in a new window or tab" target="_blank" className="twitter-ref">@EncodeDCC</a></h2>
+                </div>
+                <a
+                ref="link"
+                className="twitter-timeline"
+                href="https://twitter.com/encodedcc" // from encodedcc twitter
+                widget-id= "encodedcc"
+                data-chrome="noheader"
+                data-screen-name="EncodeDCC"
+                //data-tweet-limit = "4"
+                //data-width = "300"
+                data-height={this.props.height} // height so it matches with rest of site
+                ></a>
+            </div>
         );
     }
 });
