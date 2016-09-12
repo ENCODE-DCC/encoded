@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 var _ = require('underscore');
+var moment = require('moment');
 var globals = require('./globals');
 var {FetchedData, FetchedItems, Param} = require('./fetched');
 var cloneWithProps = require('react/lib/cloneWithProps');
@@ -15,7 +16,7 @@ var Home = module.exports.Home = React.createClass({
         return {
             current: "?type=Experiment&status=released", // show all released experiments
             newtabs: [], // create empty array of selected tabs
-            assayCategory: ""
+            assayCategory: "",
         };
     },
 
@@ -120,9 +121,16 @@ var Home = module.exports.Home = React.createClass({
     callback: function(newUrl){ // updates current when it changes
         this.setState({
             current: newUrl
-
         });
+    },
 
+    blogLoaded: function() {
+        // Called once the blog content gets loaded
+        var blogEl = this.refs.socialblog.getDOMNode();
+        var twitterEl = document.getElementById('twitter-widget-0');
+        if (twitterEl && twitterEl.style) {
+            twitterEl.style.height = blogEl.clientHeight + 'px';
+        }
     },
 
     render: function() { // renders home page
@@ -148,7 +156,12 @@ var Home = module.exports.Home = React.createClass({
                                 </div>
                             </div>
                             <div className="social">
-                                <BlogLoader />
+                                <div ref="socialblog" className="social-blog">
+                                    <BlogLoader blogLoaded={this.blogLoaded} />
+                                </div>
+                                <div className="social-twitter">
+                                    <TwitterWidget height="500" />
+                                </div>
                             </div>
                         </Panel>
                     </div>
@@ -268,13 +281,13 @@ var AssayClicking = React.createClass({
                             <img src="static/img/classic-image.jpg" />
 
                             <svg id="site-banner-overlay" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2260 1450" className="classic-svg">
-                                <rect id={this.state.assayList[0]} className="st0" class="a" x="101.03" y="645.8" width="257.47" height="230.95"  className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[0] ? " selected": "")} />
-                                <rect id={this.state.assayList[1]} className="st0" class="a" x="386.6" y="645.8" width="276.06" height="230.95"   className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[1] ? " selected": "")} />
-                                <rect id={this.state.assayList[2]} className="st0" class="a" x="688.7" y="645.8" width="237.33" height="230.95"   className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[2] ? " selected": "")} />
-                                <rect id={this.state.assayList[3]} className="st0" class="a" x="950.83" y="645.8" width="294.65" height="230.95"  className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[3] ? " selected": "")} />
-                                <rect id={this.state.assayList[4]} className="st0" class="a" x="1273.07" y="645.8" width="373.37" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[4] ? " selected": "")} />
-                                <rect id={this.state.assayList[5]} className="st0" class="a" x="1674.06" y="645.8" width="236.05" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[5] ? " selected": "")} />
-                                <rect id={this.state.assayList[6]} className="st0" class="a" x="1937.74" y="645.8" width="227.38" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[6] ? " selected": "")} />
+                                <rect id={this.state.assayList[0]} className="st0" className="a" x="101.03" y="645.8" width="257.47" height="230.95"  className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[0] ? " selected": "")} />
+                                <rect id={this.state.assayList[1]} className="st0" className="a" x="386.6" y="645.8" width="276.06" height="230.95"   className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[1] ? " selected": "")} />
+                                <rect id={this.state.assayList[2]} className="st0" className="a" x="688.7" y="645.8" width="237.33" height="230.95"   className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[2] ? " selected": "")} />
+                                <rect id={this.state.assayList[3]} className="st0" className="a" x="950.83" y="645.8" width="294.65" height="230.95"  className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[3] ? " selected": "")} />
+                                <rect id={this.state.assayList[4]} className="st0" className="a" x="1273.07" y="645.8" width="373.37" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[4] ? " selected": "")} />
+                                <rect id={this.state.assayList[5]} className="st0" className="a" x="1674.06" y="645.8" width="236.05" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[5] ? " selected": "")} />
+                                <rect id={this.state.assayList[6]} className="st0" className="a" x="1937.74" y="645.8" width="227.38" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[6] ? " selected": "")} />
                             </svg>
                         </div>
 
@@ -886,16 +899,91 @@ var HomepageChart3 = React.createClass({
 });
 
 
+// Send a GET request for the most recent five blog posts.
 var BlogLoader = React.createClass({
+    propTypes: {
+        blogLoaded: React.PropTypes.func.isRequired // Called parent once the blog is loaded
+    },
+
     render: function() {
-        return <FetchedItems {...this.props} url="/search/?type=Page&blog=true&limit=5" Component={Blog} ignoreErrors />
+        return <FetchedItems {...this.props} url="/search/?type=Page&blog=true&limit=5" Component={Blog} ignoreErrors blogLoaded={this.props.blogLoaded} />
     }
 });
 
 
+// Render the most recent five blog posts
 var Blog = React.createClass({
+    propTypes: {
+        blogLoaded: React.PropTypes.func.isRequired // Called parent once the blog is loaded
+    },
+
+    componentDidMount: function() {
+        // Once the blog content comes in, tell the parent component what height the blog panel
+        // now is.
+        var items = this.props.items;
+        this.props.blogLoaded();
+    },
+
+    componentDidUpdate: function() {
+        // Once the blog content comes in, tell the parent component what height the blog panel
+        // now is.
+        var items = this.props.items;
+        this.props.blogLoaded();
+    },
+
     render: function() {
-        console.log('BLOG: %o', this.props);
+        var items = this.props.items;
+        if (items && items.length) {
+            return (
+                <div className="blog-listing">
+                    {items.map(item => {
+                        return (
+                            <a href={item['@id']} title={'View blog post for ' + item.title} key={item['@id']}>
+                                <h2>{item.title}</h2>
+                                <h3>{moment.utc(item.date_created).format('MMMM D, YYYY')}</h3>
+                                <div className="blog-excerpt">{item.blog_excerpt}</div>
+                            </a>
+                        );
+                    })}
+                </div>
+            );
+        }
         return null;
     }
 });
+
+
+var TwitterWidget = React.createClass({
+    propTypes: {
+        height: React.PropTypes.string.isRequired // Number of pixels tall to make widget
+    },
+
+    componentDidMount: function() { // twitter script from API
+        var js, link;
+        link = this.refs.link.getDOMNode();
+        if (!this.initialized) {
+            this.initialized = true;
+            js = document.createElement("script");
+            js.id = "twitter-wjs";
+            js.src = "//platform.twitter.com/widgets.js";
+            return link.parentNode.appendChild(js);
+        }
+    },
+
+    render: function() {
+        var content, ref2, title, widget;
+        return (
+            <a
+            ref= "link"
+            className= "twitter-timeline"
+            href= "https://twitter.com/encodedcc" // from encodedcc twitter
+            widget-id= "encodedcc"
+            data-screen-name="EncodeDCC"
+            //data-tweet-limit = "4"
+            //data-width = "300"
+            data-height={this.props.height} // height so it matches with rest of site
+            ></a>
+        );
+    }
+});
+

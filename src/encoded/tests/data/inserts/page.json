@@ -57,6 +57,8 @@
         "layout": {
             "blocks": [
                 {
+                    "@id": "#block1",
+                    "@type": "richtextblock",
                     "body": "<p>Data release: 367 modERN datasets</p>\n\n<p>We are pleased to announced that a whopping <a href=\"/search/?type=Experiment&amp;status=released&amp;award.project=modERN&amp;month_released=July%2C+2016\">367 modERN datasets</a> have just been released in the ENCODE portal.</p>"
                 }
             ],
@@ -204,6 +206,8 @@
         "layout": {
             "blocks": [
                 {
+                    "@id": "#block1",
+                    "@type": "richtextblock",
                     "body": "<p><a href=\"https://www.encodeproject.org/search/?type=Annotation&amp;encyclopedia_version=3&date_released=2016-08-25\">111 Annotation File Sets</a>&nbsp;of promoter-like and enhancer-like regions have been released! More information on how the DAC called these enhancer-like&nbsp;and promoter-like regions can be found under <a href=\"/data/annotations/#middle\">Encyclopedia, about page</a>. You can also go directly to the DAC websites: <a href=\"http://zlab-annotations.umassmed.edu/enhancers/methods\">Methods for calling Enhancer-like Regions</a> and <a href=\"http://zlab-annotations.umassmed.edu/promoters/methods\">Methods for calling Promoter-like Regions</a>.<br />\n<br />\n",
                     "@id": "#block1"
                 }
@@ -240,6 +244,8 @@
         "layout": {
             "blocks": [
                 {
+                    "@id": "#block1",
+                    "@type": "richtextblock",
                     "body": "<p>With collaborations from the DAC (Data Analysis Center), a total of&nbsp;<a href=\"https://www.encodeproject.org/search/?type=Annotation&amp;encyclopedia_version=3&amp;month_released=August%2C+2016\">336 Annotation File Sets</a>&nbsp;of promoter-like and enhancer-like regions have been released! More information on how the DAC called these enhancer-like&nbsp;and promoter-like regions can be found under <a href=\"/data/annotations/#middle\">Encyclopedia, about page</a>. You can also go directly to the DAC websites: <a href=\"http://zlab-annotations.umassmed.edu/enhancers/methods\">Methods for calling Enhancer-like Regions</a> and <a href=\"http://zlab-annotations.umassmed.edu/promoters/methods\">Methods for calling Promoter-like Regions</a>.</p>\n\n<p>The DAC&#39;s code repository for promoter-like and enhancer-like regions are found <a href=\"https://github.com/weng-lab/encyclopedia_v3/tree/master/pipeline\">here</a>. Huge thank you to Michael Purcaro and Jill Moore for the help.</p>\n"
                 }
             ],
@@ -268,6 +274,8 @@
         "layout": {
             "blocks": [
                 {
+                    "@id": "#block1",
+                    "@type": "richtextblock",
                     "body": "<p>Mouse e10.5&nbsp;histone ChIP-seq dataset&nbsp;from from the Ren lab available on the portal&nbsp;<a href=\"http://bit.ly/29Uma1K\">here</a>.</p>\n"
                 }
             ],
@@ -296,6 +304,8 @@
         "layout": {
             "blocks": [
                 {
+                    "@id": "#block1",
+                    "@type": "richtextblock",
                     "body": "<p>191 new ENCODE experiments released in July! Check them all out <a href=\"http://bit.ly/2apudlh\" title=\"Listing of ENCODE3 experiments released during July 2016\">here</a>."
                 }
             ],
@@ -324,6 +334,8 @@
         "layout": {
             "blocks": [
                 {
+                    "@id": "#block1",
+                    "@type": "richtextblock",
                     "body": "<p>Check out the latest GGR release from the Reddy lab, <a href=\"http://bit.ly/2adtFmF\" title=\"Listing of GGR experiments from Reddy lab\">here</a> on the portal, 84 ChIP-seq expts in A549 +/- dex treatment.</p>"
                 }
             ],

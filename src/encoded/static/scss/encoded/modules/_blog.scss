@@ -1,0 +1,38 @@
+.blog-listing {
+    padding: 10px;
+
+    a {
+        display: block;
+        padding: 20px 10px;
+        border-top: 1px solid #e0e0e0;
+
+        h2 {
+            margin: 0 0 5px;
+            color: #000;
+            font-weight: normal;
+            font-size: 1.6rem;
+        }
+
+        h3 {
+            margin-top: 0;
+            color: #808080;
+            font-style: italic;
+            font-weight: normal;
+            font-size: 0.9rem;
+        }
+
+        &:hover, &:active {
+            text-decoration: none;
+            background-color: #e0e0e0;
+        }
+
+        &:first-child {
+            border-top: none;
+        }
+    }
+}
+
+.blog-excerpt {
+    color: #000;
+    font-size: 1rem;
+}

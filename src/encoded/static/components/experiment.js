@@ -5,7 +5,6 @@ var button = require('../libs/bootstrap/button');
 var {SvgIcon, CollapseIcon} = require('../libs/svg-icons');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var _ = require('underscore');
-var moment = require('moment');
 var navigation = require('./navigation');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
@@ -128,7 +127,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
             // For any library properties that aren't simple values, put functions to process them into simple values in this object,
             // keyed by their library property name. Returned JS undefined if no complex value exists so that we can reliably test it
-            // momentarily. We have a couple properties too complex even for this, so they'll get added separately at the end.
+            // arily. We have a couple properties too complex even for this, so they'll get added separately at the end.
             var librarySpecials = {
                 treatments: function(library) {
                     var treatments = []; // Array of treatment_term_name
