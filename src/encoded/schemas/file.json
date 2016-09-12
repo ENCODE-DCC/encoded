@@ -398,6 +398,7 @@
                         "predicted heart enhancers",
                         "predicted whole brain enhancers",
                         "candidate regulatory elements",
+                        "sequence alignability",
                         
                         "genome reference",
                         "transcriptome reference",
@@ -414,8 +415,6 @@
                         "male genome reference",
                         "male genome index",
                         "spike-in sequence",
-                        "mappability targets",
-                        "mappable regions",
 
                         "optimal idr thresholded peaks",
                         "conservative idr thresholded peaks",
@@ -456,9 +455,7 @@
                         "transcribed fragments",
                         "filtered transcribed fragments",
                         "valleys",
-                        "sequence alignability",
                         "sequence uniqueness",
-                        
 
                         "primer sequence",
                         "reference",
@@ -795,8 +792,6 @@
         "transcribed fragments": "annotation",
         "filtered transcribed fragments": "annotation",
         "valleys": "annotation",
-        "sequence alignability": "annotation",
-        "sequence uniqueness": "annotation",
         "blacklisted regions": "annotation",
         "mitochondria blacklisted regions": "annotation",
         "distal peaks": "annotation",
@@ -833,8 +828,8 @@
         "primer sequence": "reference",
         "spike-in sequence": "reference",
         "reference": "reference",
-        "mappability targets": "reference",
-        "mappable regions": "reference",
+        "sequence alignability": "reference",
+        "sequence uniqueness": "reference",
 
         "enhancer validation": "validation",
         "validation": "validation",
