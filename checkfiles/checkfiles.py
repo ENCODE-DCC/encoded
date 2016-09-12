@@ -196,13 +196,13 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
 
     sequence_pattern = re.compile('[ACTGN.]+')
     read_name_pattern = re.compile(
-        '^(@[a-zA-Z\d]+[a-zA-Z\d_-]*:\d+:[a-zA-Z\d]+:\d+:\d+:\d+:\d+[\s_][12]:[YN]:[0-9]+:([ACNTG]+|[0-9]+))$'
+        '^(@[a-zA-Z\d]+[a-zA-Z\d_-]*:\d+:[a-zA-Z\d]+:\d+:\d+:\d+:\d+[\s_][12]:[YN]:[0-9]+:([ACNTG\+]*|[0-9]*))$'
         )
     read_count = 0
     read_lengths = set()
     unique_tuples_set = set()
     unique_string_ids_set = set()
-
+    old_read_numbers = set()
     fastq_data_file = unzipped_fastq_path.split('_')[0] + '.info'
 
     try:
@@ -236,6 +236,13 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
                                 ))
                             unique_string_ids_set.add(
                                 flowcell+':'+lane_number+':'+read_number+':'+barcode_index)
+                        else:
+                            sub_line = line[first_colon:].strip()
+                            sub_line_array = re.split(r'[\s_]', sub_line)
+                            if len(sub_line_array) == 1:  # assuming old readname format
+                                if sub_line_array[0][-2:] in ['/1', '/2']:
+                                    read_number = sub_line_array[0][-1]
+                                    old_read_numbers.add(read_number)
                         # else:  # either old or unknown read name convention
                             # count reads at least
                 if line_counter == 2:  # sequence
@@ -295,6 +302,12 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
                 ######################################
                 # uniqueness / detected_flowcell_details validation
                 ######################################
+
+                if len(old_read_numbers) > 1:
+                    errors['inconsistent_read_numbers'] = \
+                        'fastq file contains mixed read numbers ' + \
+                        '{}.'.format(', '.join(sorted(list(old_read_numbers))))
+
                 unique_tuples_list = sorted(list(unique_tuples_set))
                 # detected_flowcell_details = []
                 if len(unique_tuples_list) > 0:
