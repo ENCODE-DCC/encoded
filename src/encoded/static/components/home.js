@@ -2,7 +2,7 @@
 var React = require('react');
 var _ = require('underscore');
 var globals = require('./globals');
-var {FetchedData, Param} = require('./fetched');
+var {FetchedData, FetchedItems, Param} = require('./fetched');
 var cloneWithProps = require('react/lib/cloneWithProps');
 var panel = require('../libs/bootstrap/panel');
 var {Panel, PanelBody, PanelHeading} = panel;
@@ -146,6 +146,9 @@ var Home = module.exports.Home = React.createClass({
                                 <div className="row">
                                     <HomepageChartLoader searchBase={this.state.current} callback={this.callback} />
                                 </div>
+                            </div>
+                            <div className="social">
+                                <BlogLoader />
                             </div>
                         </Panel>
                     </div>
@@ -880,4 +883,19 @@ var HomepageChart3 = React.createClass({
         );
     }
 
+});
+
+
+var BlogLoader = React.createClass({
+    render: function() {
+        return <FetchedItems {...this.props} url="/search/?type=Page&blog=true&limit=5" Component={Blog} ignoreErrors />
+    }
+});
+
+
+var Blog = React.createClass({
+    render: function() {
+        console.log('BLOG: %o', this.props);
+        return null;
+    }
 });

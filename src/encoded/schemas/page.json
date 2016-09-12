@@ -137,6 +137,9 @@
         "title": {
             "title": "Title"
         },
+        "blog_excerpt": {
+            "title": "Blog excerpt"
+        },
         "date_created": {
             "title": "Created"
         },

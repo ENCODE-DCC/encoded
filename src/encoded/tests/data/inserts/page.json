@@ -46,6 +46,34 @@
         }
     },
     {
+        "uuid": "c70c9785-b20b-4730-8180-4d0be681d5d7",
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "name": "367-modern-datasets-released",
+        "blog": true,
+        "blog_excerpt": "367 modERN datasets released",
+        "title": "367 modERN Datasets Released",
+        "status": "released",
+        "date_created": "2016-07-06T16:48:27.199407+00:00",
+        "layout": {
+            "blocks": [
+                {
+                    "body": "<p>Data release: 367 modERN datasets</p>\n\n<p>We are pleased to announced that a whopping <a href=\"/search/?type=Experiment&amp;status=released&amp;award.project=modERN&amp;month_released=July%2C+2016\">367 modERN datasets</a> have just been released in the ENCODE portal.</p>"
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    {
         "name": "test-section",
         "title": "Test Section",
         "lab": "thomas-gingeras",
@@ -167,6 +195,147 @@
                     "@id": "#block1",
                     "@type": "richtextblock",
                     "body": "<h1>Image Collection Landing Page</h1>"
+                }
+            ]
+        }
+    },
+    {
+        "uuid": "d5a19f2d-5279-44c9-a58d-c4557a19cac7",
+        "layout": {
+            "blocks": [
+                {
+                    "body": "<p><a href=\"https://www.encodeproject.org/search/?type=Annotation&amp;encyclopedia_version=3&date_released=2016-08-25\">111 Annotation File Sets</a>&nbsp;of promoter-like and enhancer-like regions have been released! More information on how the DAC called these enhancer-like&nbsp;and promoter-like regions can be found under <a href=\"/data/annotations/#middle\">Encyclopedia, about page</a>. You can also go directly to the DAC websites: <a href=\"http://zlab-annotations.umassmed.edu/enhancers/methods\">Methods for calling Enhancer-like Regions</a> and <a href=\"http://zlab-annotations.umassmed.edu/promoters/methods\">Methods for calling Promoter-like Regions</a>.<br />\n<br />\n",
+                    "@id": "#block1"
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "name": "release-annotation-file-sets",
+        "blog": true,
+        "title": "Release of Annotation File Sets",
+        "status": "released",
+        "blog_excerpt": "111 Annotation File Sets of promoter-like and enhancer-like regions have been released!",
+        "date_created": "2016-08-26T16:14:06.471431+00:00"
+    },
+    {
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "uuid": "17ac540c-ef0a-4f99-940c-daf03cd04fd8",
+        "title": "336 Annotation File Sets Released",
+        "blog": true,
+        "status": "released",
+        "name": "336-annotation-file-sets-released",
+        "blog_excerpt": "With collaborations from the DAC (Data Analysis Center), a total of 336 Annotation File Sets of promoter-like and enhancer-like regions have been released!",
+        "date_created": "2016-08-03T16:28:11.258613+00:00",
+        "layout": {
+            "blocks": [
+                {
+                    "body": "<p>With collaborations from the DAC (Data Analysis Center), a total of&nbsp;<a href=\"https://www.encodeproject.org/search/?type=Annotation&amp;encyclopedia_version=3&amp;month_released=August%2C+2016\">336 Annotation File Sets</a>&nbsp;of promoter-like and enhancer-like regions have been released! More information on how the DAC called these enhancer-like&nbsp;and promoter-like regions can be found under <a href=\"/data/annotations/#middle\">Encyclopedia, about page</a>. You can also go directly to the DAC websites: <a href=\"http://zlab-annotations.umassmed.edu/enhancers/methods\">Methods for calling Enhancer-like Regions</a> and <a href=\"http://zlab-annotations.umassmed.edu/promoters/methods\">Methods for calling Promoter-like Regions</a>.</p>\n\n<p>The DAC&#39;s code repository for promoter-like and enhancer-like regions are found <a href=\"https://github.com/weng-lab/encyclopedia_v3/tree/master/pipeline\">here</a>. Huge thank you to Michael Purcaro and Jill Moore for the help.</p>\n"
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "uuid": "6f4fa374-7867-4db3-a39e-8343e5e799a9",
+        "title": "Mouse e10.5 Histone ChIP-seq Dataset",
+        "blog": true,
+        "status": "released",
+        "name": "mouse-histone-chip-seq-dataset",
+        "blog_excerpt": "Mouse e10.5\u00a0histone ChIP-seq dataset\u00a0from from the Ren lab available.",
+        "date_created": "2016-07-20T16:44:05.457718+00:00",
+        "layout": {
+            "blocks": [
+                {
+                    "body": "<p>Mouse e10.5&nbsp;histone ChIP-seq dataset&nbsp;from from the Ren lab available on the portal&nbsp;<a href=\"http://bit.ly/29Uma1K\">here</a>.</p>\n"
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "uuid": "10fef431-d687-47cc-bda7-520de881fca4",
+        "title": "191 ENCODE Experiments Released",
+        "blog": true,
+        "status": "released",
+        "name": "191-encode-experiments-released",
+        "blog_excerpt": "191 new ENCODE experiments released in July!",
+        "date_created": "2016-08-01T16:33:38.726440+00:00",
+        "layout": {
+            "blocks": [
+                {
+                    "body": "<p>191 new ENCODE experiments released in July! Check them all out <a href=\"http://bit.ly/2apudlh\" title=\"Listing of ENCODE3 experiments released during July 2016\">here</a>."
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "uuid": "4677b033-b52b-4a46-a8b8-38a60dc9cd84",
+        "title": "Latest GGR release from the Reddy Lab",
+        "blog": true,
+        "status": "released",
+        "name": "latest-ggr-release-reddy-lab",
+        "blog_excerpt": "Check out the latest GGR release from the Reddy lab.",
+        "date_created": "2016-07-21T16:37:40.681507+00:00",
+        "layout": {
+            "blocks": [
+                {
+                    "body": "<p>Check out the latest GGR release from the Reddy lab, <a href=\"http://bit.ly/2adtFmF\" title=\"Listing of GGR experiments from Reddy lab\">here</a> on the portal, 84 ChIP-seq expts in A549 +/- dex treatment.</p>"
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
                 }
             ]
         }
