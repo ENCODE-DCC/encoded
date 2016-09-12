@@ -485,7 +485,7 @@ def check_file(config, session, url, job):
         else:
             check_format(config['encValData'], job, local_path)
 
-        if item['file_format'] == 'fastq':
+        if item['file_format'] == 'fastq' and item['accession'] not in checked_list:
             if file_stat.st_size < 20000000000:
                 process_fastq_file(job, unzipped_fastq_path, session, url)
 
@@ -520,45 +520,42 @@ def check_file(config, session, url, job):
 
 
 def fetch_files(session, url, search_query, out, include_unexpired_upload=False):
-    r = session.get(
-        urljoin(url, '/search/?field=@id&limit=all&type=File&' + search_query))
-    r.raise_for_status()
-    out.write("PROCESSING: %d files in query: %s\n" % (len(r.json()['@graph']), search_query))
-    for result in r.json()['@graph']:
-        job = {
-            '@id': result['@id'],
-            'errors': {},
-            'run': datetime.datetime.utcnow().isoformat() + 'Z',
-        }
-        errors = job['errors']
-        item_url = urljoin(url, job['@id'])
+    with open('files.list', 'r') as ids_ist:
+        for result in ids_ist:
+            job = {
+                '@id': result.strip(),
+                'errors': {},
+                'run': datetime.datetime.utcnow().isoformat() + 'Z',
+            }
+            errors = job['errors']
+            item_url = urljoin(url, job['@id'])
 
-        r = session.get(item_url + '@@upload?datastore=database')
-        if r.ok:
-            upload_credentials = r.json()['@graph'][0]['upload_credentials']
-            job['upload_url'] = upload_credentials['upload_url']
-            # Files grandfathered from EDW have no upload expiration.
-            job['upload_expiration'] = upload_credentials.get('expiration', '')
-            # Only check files that will not be changed during the check.
-            if job['run'] < job['upload_expiration']:
-                if not include_unexpired_upload:
-                    continue
-        else:
-            job['errors']['get_upload_url_request'] = \
-                '{} {}\n{}'.format(r.status_code, r.reason, r.text)
+            r = session.get(item_url + '@@upload?datastore=database')
+            if r.ok:
+                upload_credentials = r.json()['@graph'][0]['upload_credentials']
+                job['upload_url'] = upload_credentials['upload_url']
+                # Files grandfathered from EDW have no upload expiration.
+                job['upload_expiration'] = upload_credentials.get('expiration', '')
+                # Only check files that will not be changed during the check.
+                if job['run'] < job['upload_expiration']:
+                    if not include_unexpired_upload:
+                        continue
+            else:
+                job['errors']['get_upload_url_request'] = \
+                    '{} {}\n{}'.format(r.status_code, r.reason, r.text)
 
-        r = session.get(item_url + '?frame=edit&datastore=database')
-        if r.ok:
-            item = job['item'] = r.json()
-            job['etag'] = r.headers['etag']
-        else:
-            errors['get_edit_request'] = \
-                '{} {}\n{}'.format(r.status_code, r.reason, r.text)
+            r = session.get(item_url + '?frame=edit&datastore=database')
+            if r.ok:
+                item = job['item'] = r.json()
+                job['etag'] = r.headers['etag']
+            else:
+                errors['get_edit_request'] = \
+                    '{} {}\n{}'.format(r.status_code, r.reason, r.text)
 
-        if errors:
-            job['skip'] = True  # Probably a transient error
+            if errors:
+                job['skip'] = True  # Probably a transient error
 
-        yield job
+            yield job
 
 
 def patch_file(session, url, job):
