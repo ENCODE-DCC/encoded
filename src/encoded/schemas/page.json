@@ -15,7 +15,28 @@
         { "$ref": "mixins.json#/attribution" }
     ],
     "dependencies": {
-        "blog": ["blog_excerpt"]
+        "blog": {
+            "oneOf": [
+                {
+                    "required": ["blog_excerpt"],
+                    "properties": {
+                        "blog": {
+                            "enum": [true]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "required": ["blog_excerpt"]
+                    },
+                    "properties": {
+                        "blog": {
+                            "enum": [false]
+                        }
+                    }
+                }
+            ]
+        }
     },
     "properties": {
         "schema_version": {
@@ -39,7 +60,7 @@
             "type": "string"
         },
         "blog": {
-            "title": "Object is a blog post",
+            "title": "Blog post",
             "type": "boolean",
             "description": "Page is a blog post"
         },
