@@ -47,7 +47,7 @@
         border-bottom: 1px solid #e0e0e0;
 
         @media screen and (min-width: $screen-md-min) {
-            padding: 10px;
+            padding: 30px 10px;
             font-size: 2.5rem;
         }
     }
@@ -172,31 +172,31 @@
 }
 
 
-.tab-table-header {
-    padding: 0;
-    border-top: 1px solid #a0a0a0 !important;
-    border-radius: 0;
-}
-
-
 // Positions tabs with padding, hovering, and changing color if selected
-.tab-table td {
-    color: #000;
-    //border: none;
-    padding: 0px !important;
+.organism-selector {
+    display: flex;
+    flex-wrap: nonwrap;
+    padding: 5px 0;
+    justify-content: flex-start;
+    align-items: flex-start;
+    border-top: 1px solid #a0a0a0;
+    background-color: #f0f0f0;
+
     a.single-tab {
-        font-size: 16px;
-        padding: 10px 11px !important;
         display: block;
+        margin-left: 5px;
+        padding: 5px 20px !important;
+        flex: 0 1 auto;
+        font-size: 0.9rem;
+        font-weight: bold;
         text-decoration: none;
-        color: black;
-        border-right: solid;
-        border-right-color: #c0c0c0;
-        border-right-width: 1px;
+        color: #a0a0a0;
+        background-color: #fff;
+        border: 1px solid #c0c0c0;
+        text-transform: uppercase;
 
         &:hover {
-        background-color: #c0c0c0;
-        cursor: pointer;
+            background-color: #e0e0e0;
         }
 
         &.selected {
