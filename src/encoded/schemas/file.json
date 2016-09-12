@@ -414,8 +414,6 @@
                         "male genome reference",
                         "male genome index",
                         "spike-in sequence",
-                        "mappability targets",
-                        "mappable regions",
 
                         "optimal idr thresholded peaks",
                         "conservative idr thresholded peaks",
@@ -833,8 +831,6 @@
         "primer sequence": "reference",
         "spike-in sequence": "reference",
         "reference": "reference",
-        "mappability targets": "reference",
-        "mappable regions": "reference",
 
         "enhancer validation": "validation",
         "validation": "validation",
