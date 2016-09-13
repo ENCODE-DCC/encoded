@@ -297,7 +297,7 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
                 else:
                     errors['read_length'] = 'no specified read length in the uploaded fastq file, ' + \
                                             'while read length(s) found in the file were {}.'.format(
-                                            ', '.join(read_lengths_list))
+                                            ', '.join(str(x) for x in read_lengths_list))
                 #################
                 # number_reads
                 #################
