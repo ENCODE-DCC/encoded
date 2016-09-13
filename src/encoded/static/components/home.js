@@ -17,6 +17,7 @@ var Home = module.exports.Home = React.createClass({
             current: "?type=Experiment&status=released", // show all released experiments
             newtabs: [], // create empty array of selected tabs
             assayCategory: "",
+            socialHeight: 500
         };
     },
 
@@ -127,10 +128,7 @@ var Home = module.exports.Home = React.createClass({
     blogLoaded: function() {
         // Called once the blog content gets loaded
         var blogEl = this.refs.bloglisting.getDOMNode();
-        var twitterEl = document.getElementById('twitter-widget-0');
-        if (twitterEl && twitterEl.style) {
-            twitterEl.style.height = blogEl.clientHeight + 'px';
-        }
+        this.setState({socialHeight: blogEl.clientHeight});
     },
 
     render: function() { // renders home page
@@ -163,7 +161,7 @@ var Home = module.exports.Home = React.createClass({
                                     <BlogLoader ref="bloglisting" blogLoaded={this.blogLoaded} />
                                 </div>
                                 <div className="social-twitter">
-                                    <TwitterWidget height="500" />
+                                    <TwitterWidget height={this.state.socialHeight} />
                                 </div>
                             </div>
                         </Panel>
@@ -227,48 +225,6 @@ var AssayClicking = React.createClass({
     sortByAssay: function(category) {
         this.props.handleAssayCategoryClick(category); // handles assay category click
         this.setState({currentAssay: category}); // updates current assay
-
-    },
-
-    // Binds clicking to SVG rectangles
-    bindClickHandlers: function(d3, el) {
-        // Add click event listeners to each rectangle
-        var svg = el[0];
-        el.on('click', rect => {
-            this.sortByAssay(rect); // calls function to properly add in rectangle to link
-        });
-    },
-
-
-    componentDidMount: function() {
-        // Since D3 doesn't work
-        // with the React virtual DOM, we have to load it separately using the webpack .ensure
-        // mechanism. Once the callback is called, it's loaded and can be referenced through
-        // require.
-
-        // Requires d3, selects rectangles, and calls bindClickHandlers
-        require.ensure(['d3'], function(require) {
-            if (this.refs.graphdisplay) {
-                this.d3 = require('d3');
-
-                var allRects = this.d3.selectAll("rect.rectangle-box");
-                var dataset = [];
-                for(var x = 0; x < allRects[0].length; x++){
-                    dataset.push(allRects[0][x].id);
-                }
-
-                var el = this.d3.selectAll("rect.rectangle-box")
-                    .data(dataset);
-
-                this.bindClickHandlers(this.d3, el);
-            }
-
-
-        }.bind(this));
-
-
-        var temp = document.getElementById("graphdisplay");
-
     },
 
     // Renders classic image and svg rectangles
@@ -284,13 +240,13 @@ var AssayClicking = React.createClass({
                             <img src="static/img/classic-image.jpg" />
 
                             <svg id="site-banner-overlay" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2260 1450" className="classic-svg">
-                                <rect id={this.state.assayList[0]} className="st0" className="a" x="101.03" y="645.8" width="257.47" height="230.95"  className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[0] ? " selected": "")} />
-                                <rect id={this.state.assayList[1]} className="st0" className="a" x="386.6" y="645.8" width="276.06" height="230.95"   className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[1] ? " selected": "")} />
-                                <rect id={this.state.assayList[2]} className="st0" className="a" x="688.7" y="645.8" width="237.33" height="230.95"   className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[2] ? " selected": "")} />
-                                <rect id={this.state.assayList[3]} className="st0" className="a" x="950.83" y="645.8" width="294.65" height="230.95"  className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[3] ? " selected": "")} />
-                                <rect id={this.state.assayList[4]} className="st0" className="a" x="1273.07" y="645.8" width="373.37" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[4] ? " selected": "")} />
-                                <rect id={this.state.assayList[5]} className="st0" className="a" x="1674.06" y="645.8" width="236.05" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[5] ? " selected": "")} />
-                                <rect id={this.state.assayList[6]} className="st0" className="a" x="1937.74" y="645.8" width="227.38" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[6] ? " selected": "")} />
+                                <rect id={this.state.assayList[0]} x="101.03" y="645.8" width="257.47" height="230.95"  className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[0] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[0])} />
+                                <rect id={this.state.assayList[1]} x="386.6" y="645.8" width="276.06" height="230.95"   className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[1] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[1])} />
+                                <rect id={this.state.assayList[2]} x="688.7" y="645.8" width="237.33" height="230.95"   className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[2] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[2])} />
+                                <rect id={this.state.assayList[3]} x="950.83" y="645.8" width="294.65" height="230.95"  className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[3] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[3])} />
+                                <rect id={this.state.assayList[4]} x="1273.07" y="645.8" width="373.37" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[4] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[4])} />
+                                <rect id={this.state.assayList[5]} x="1674.06" y="645.8" width="236.05" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[5] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[5])} />
+                                <rect id={this.state.assayList[6]} x="1937.74" y="645.8" width="227.38" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[6] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[6])} />
                             </svg>
                         </div>
 
@@ -712,8 +668,10 @@ var HomepageChart2 = React.createClass({
     },
 
     componentDidUpdate: function() {
-        this.myPieChart.destroy(); // clears old chart before creating new one
-        this.drawChart();
+        if (this.myPieChart) {
+            this.myPieChart.destroy(); // clears old chart before creating new one
+            this.drawChart();
+        }
     },
 
     render: function() {
@@ -882,8 +840,10 @@ var HomepageChart3 = React.createClass({
     },
 
     componentDidUpdate: function() {
-        this.myBarChart.destroy(); // clears old chart before creating new one
-        this.drawChart();
+        if (this.myBarChart) {
+            this.myBarChart.destroy(); // clears old chart before creating new one
+            this.drawChart();
+        }
     },
 
     render: function() {
@@ -921,16 +881,6 @@ var Blog = React.createClass({
     },
 
     componentDidMount: function() {
-        // Once the blog content comes in, tell the parent component what height the blog panel
-        // now is.
-        var items = this.props.items;
-        this.props.blogLoaded();
-    },
-
-    componentDidUpdate: function() {
-        // Once the blog content comes in, tell the parent component what height the blog panel
-        // now is.
-        var items = this.props.items;
         this.props.blogLoaded();
     },
 
@@ -941,7 +891,7 @@ var Blog = React.createClass({
                 <div className="blog-listing">
                     {items.map(item => {
                         return (
-                            <a href={item['@id']} title={'View blog post for ' + item.title} key={item['@id']}>
+                            <a href={item['@id']} title={'View news post for ' + item.title} key={item['@id']}>
                                 <h3>{item.title}</h3>
                                 <h4>{moment.utc(item.date_created).format('MMMM D, YYYY')}</h4>
                                 <div className="blog-excerpt">{item.blog_excerpt}</div>
@@ -950,15 +900,16 @@ var Blog = React.createClass({
                     })}
                 </div>
             );
+        } else {
+            return <div className="blog-empty">No news available at this time</div>
         }
-        return null;
     }
 });
 
 
 var TwitterWidget = React.createClass({
     propTypes: {
-        height: React.PropTypes.string.isRequired // Number of pixels tall to make widget
+        height: React.PropTypes.number.isRequired // Number of pixels tall to make widget
     },
 
     componentDidMount: function() { // twitter script from API
@@ -973,10 +924,19 @@ var TwitterWidget = React.createClass({
         }
     },
 
+    componentWillReceiveProps: function() {
+        var twitterEl = this.refs.twitterwidget.getDOMNode();
+        var twitterIframe = twitterEl.getElementsByTagName('iframe');
+        if (twitterIframe.length) {
+            twitterEl.removechild(twitterIframe);
+        }
+        console.log('TWITTEREL: %o', twitterEl);
+    },
+
     render: function() {
         var content, ref2, title, widget;
         return (
-            <div>
+            <div ref="twitterwidget">
                 <div className="twitter-header">
                     <h2>Twitter <a href="https://twitter.com/EncodeDCC" title="ENCODE DCC Twitter page in a new window or tab" target="_blank" className="twitter-ref">@EncodeDCC</a></h2>
                 </div>
@@ -989,7 +949,7 @@ var TwitterWidget = React.createClass({
                 data-screen-name="EncodeDCC"
                 //data-tweet-limit = "4"
                 //data-width = "300"
-                data-height={this.props.height} // height so it matches with rest of site
+                data-height={this.props.height + ''} // height so it matches with rest of site
                 ></a>
             </div>
         );
