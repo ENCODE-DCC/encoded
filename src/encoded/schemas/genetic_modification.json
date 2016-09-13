@@ -59,7 +59,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "url": {
             "title": "URL",
@@ -115,7 +115,7 @@
                 }
             }
         },
-        "modifiction_description": {
+        "modification_description": {
             "title": "Description",
             "description": "A plain text description of the genetic modification.",
             "type": "string"
@@ -127,10 +127,33 @@
             "enum": [
                 "deletion",
                 "insertion",
-                "replacement"
+                "replacement",
+                "mutagenesis"
+            ]
+        },
+        "modification_purpose":{
+            "title": "Modification purpose",
+            "description": "The purpose of the genetic modification.",
+            "type": "string",
+            "enum": [
+                "repression",
+                "activation",
+                "overexpression",
+                "tagging",
+                "interference"
+            ]
+        },
+        "modification_zygocity":{
+            "title": "Modification zygocity",
+            "description": "The zygocity of the genetic modification.",
+            "type": "string",
+            "enum": [
+                "homozygous",
+                "heterozygous"
             ]
         },
         "modification_techniques": {
+            "title": "Modification techniques",
             "description": "Genetic modification technique(s)/tool(s) used to perform the modification.",
             "type": "array",
             "default": [],
@@ -145,6 +168,7 @@
             }
         },
         "modification_treatments": {
+            "title": "Modification treatments",
             "description": "Treatment(s) used to perform the genetic modification.",
             "type": "array",
             "default": [],

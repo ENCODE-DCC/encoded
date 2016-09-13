@@ -18,6 +18,7 @@ def fastq_no_replicate(award, experiment, lab):
         'dataset': experiment['@id'],
         'lab': lab['@id'],
         'file_format': 'fastq',
+        'run_type': 'paired-ended',
         'md5sum': '0123456789abcdef0123456789abcdef',
         'output_type': 'raw data',
         'status': 'in progress',
