@@ -1624,6 +1624,13 @@ def search_es(request,ids):
 
 def rep_for_file(a_file):
     '''Determines best rep_tech or rep for a file.'''
+
+    # Starting with a little cheat for rare cases where techreps are compared instead of bioreps
+    if a_file.get("file_format_type","none") in ["idr_peak"]:
+        return "combined"
+    if a_file['output_type'].endswith("idr thresholded peaks"):
+        return "combined"
+
     bio_rep = 0
     tech_rep = 0
     if "replicate" in a_file:
@@ -2038,6 +2045,9 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
             if longLabel is None:
                 longLabel = "{assay_title} of {biosample_term_name} {output_type} {biological_replicate_number} {experiment.accession} - {file.accession}"
             track["longLabel"] = sanitize_label( convert_mask(longLabel,dataset,a_file) )
+            if a_file.get('assembly',assembly) == 'mm10-minimal':
+                track["longLabel"] = track["longLabel"] + " (mm10-minimal)" # add mm10-minimal into the longLabel
+
             metadata_pairs = {}
             metadata_pairs['file&#32;download'] = '"<a href=\'%s%s\' title=\'Download this file from the ENCODE portal\'>%s</a>"' % (host,a_file["href"],a_file["accession"])
             metadata_pairs["experiment"] = '"<a href=\'%s/experiments/%s\' TARGET=\'_blank\' title=\'Experiment details from the ENCODE portal\'>%s</a>"' % (host,dataset["accession"],dataset["accession"])
@@ -2430,7 +2440,7 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False,
     ### LRNA: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR000AAA/@@hub/GRCh38/trackDb.txt
 
     # USE ES CACHE
-    USE_CACHE = True
+    USE_CACHE = False
 
     acc_composite = None
     es_key = acc + "_" + assembly
@@ -2485,9 +2495,9 @@ def generate_batch_trackDb(request, hide=False, regen=False):
 
     ### local test: RNA-seq: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/batch_hub/type=Experiment,,assay_title=RNA-seq,,award.rfa=ENCODE3,,status=released,,assembly=GRCh38,,replicates.library.biosample.biosample_type=induced+pluripotent+stem+cell+line/GRCh38/trackDb.txt
 
-    USE_CACHE = True   # USE ES CACHE
+    USE_CACHE = False   # USE ES CACHE
     CACHE_SETS = False  # NO CACHING OF set_composites!!!
-    USE_SEARCH = False  # USE ES CACHE SEARCH EXCLUSIVELY
+    USE_SEARCH = False  # USE ES CACHE SEARCH EXCLUSIVELY to find batch trackhub acc_composites
     # TODO: consider using vew=all to decide on cache usage.
 
     # Special logic to force remaking of trackDb
