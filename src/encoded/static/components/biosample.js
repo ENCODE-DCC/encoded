@@ -78,14 +78,6 @@ var Biosample = module.exports.Biosample = React.createClass({
         }
         combinedDocs = globals.uniqueObjectsArray(combinedDocs);
 
-        // Set up TALENs panel for multiple TALENs
-        var talens = null;
-        if (context.talens && context.talens.length) {
-            talens = context.talens.map(talen => {
-                return PanelLookup({context: talen});
-            });
-        }
-
         // Collect up biosample and model organism donor constructs
         var constructs = ((context.constructs && context.constructs.length) ? context.constructs : [])
             .concat((context.model_organism_donor_constructs && context.model_organism_donor_constructs.length) ? context.model_organism_donor_constructs : []);
@@ -100,6 +92,12 @@ var Biosample = module.exports.Biosample = React.createClass({
         var tagBadges;
         if (context.internal_tags && context.internal_tags.length) {
             tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
+
+        // Make the donor panel (if any) title
+        var donorPanelTitle;
+        if (context.donor) {
+            donorPanelTitle = (context.donor.organism.name === 'human' ? 'Donor' : 'Strain') + ' information';
         }
 
         return (
@@ -414,21 +412,7 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                 {context.donor ?
                     <div>
-                        <h3>{context.donor.organism.name === 'human' ? 'Donor' : 'Strain'} information</h3>
-                        <div className="data-display">
-                            {PanelLookup({context: context.donor, biosample: context})}
-                        </div>
-                    </div>
-                : null}
-
-                {talens ?
-                    <div>
-                        <h3>TALENs</h3>
-                        <Panel>
-                            <div className="data-display">
-                                {talens}
-                            </div>
-                        </Panel>
+                        {PanelLookup({context: context.donor, biosample: context, panelTitle: donorPanelTitle})}
                     </div>
                 : null}
 
@@ -519,8 +503,7 @@ var BiosampleTermId = React.createClass({
 
 var HumanDonor = module.exports.HumanDonor = React.createClass({
     render: function() {
-        var context = this.props.context;
-        var biosample = this.props.biosample;
+        var {context, biosample, panelTitle} = this.props;
         var references = PubReferenceList(context.references);
 
         // Render tags badges
@@ -532,6 +515,9 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
         return (
             <div>
                 <Panel>
+                    <PanelHeading>
+                        <h4>{panelTitle}</h4>
+                    </PanelHeading>
                     <PanelBody>
                         <dl className="key-value">
                             <div data-test="accession">

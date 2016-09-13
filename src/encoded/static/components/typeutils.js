@@ -183,6 +183,10 @@ var GeneticModificationTable = module.exports.GeneticModificationTable = React.c
                 return null;
             }
         },
+        'assembly': {
+            title: 'Mapping assembly',
+            getValue: modification => modification.modification_genome_coordinates && modification.modification_genome_coordinates.assembly ? modification.modification_genome_coordinates.assembly : ''
+        },
         'target': {
             title: 'Target',
             display: modification => {
