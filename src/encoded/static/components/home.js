@@ -17,7 +17,7 @@ var Home = module.exports.Home = React.createClass({
             current: "?type=Experiment&status=released", // show all released experiments
             newtabs: [], // create empty array of selected tabs
             assayCategory: "",
-            socialHeight: 500
+            socialHeight: 0
         };
     },
 
@@ -912,10 +912,10 @@ var TwitterWidget = React.createClass({
         height: React.PropTypes.number.isRequired // Number of pixels tall to make widget
     },
 
-    componentDidMount: function() { // twitter script from API
+    injectTwitter: function() {
         var js, link;
-        link = this.refs.link.getDOMNode();
         if (!this.initialized) {
+            link = this.refs.link.getDOMNode();
             this.initialized = true;
             js = document.createElement("script");
             js.id = "twitter-wjs";
@@ -924,13 +924,16 @@ var TwitterWidget = React.createClass({
         }
     },
 
-    componentWillReceiveProps: function() {
-        var twitterEl = this.refs.twitterwidget.getDOMNode();
-        var twitterIframe = twitterEl.getElementsByTagName('iframe');
-        if (twitterIframe.length) {
-            twitterEl.removechild(twitterIframe);
+    componentDidMount: function() { // twitter script from API
+        if (!this.initialized && this.props.height) {
+            this.injectTwitter();
         }
-        console.log('TWITTEREL: %o', twitterEl);
+    },
+
+    componentDidUpdate: function() {
+        if (!this.initialized && this.props.height) {
+            this.injectTwitter();
+        }
     },
 
     render: function() {
@@ -940,17 +943,19 @@ var TwitterWidget = React.createClass({
                 <div className="twitter-header">
                     <h2>Twitter <a href="https://twitter.com/EncodeDCC" title="ENCODE DCC Twitter page in a new window or tab" target="_blank" className="twitter-ref">@EncodeDCC</a></h2>
                 </div>
-                <a
-                ref="link"
-                className="twitter-timeline"
-                href="https://twitter.com/encodedcc" // from encodedcc twitter
-                widget-id= "encodedcc"
-                data-chrome="noheader"
-                data-screen-name="EncodeDCC"
-                //data-tweet-limit = "4"
-                //data-width = "300"
-                data-height={this.props.height + ''} // height so it matches with rest of site
-                ></a>
+                {this.props.height ?
+                    <a
+                    ref="link"
+                    className="twitter-timeline"
+                    href="https://twitter.com/encodedcc" // from encodedcc twitter
+                    widget-id= "encodedcc"
+                    data-chrome="noheader"
+                    data-screen-name="EncodeDCC"
+                    //data-tweet-limit = "4"
+                    //data-width = "300"
+                    data-height={this.props.height + ''} // height so it matches with rest of site
+                    ></a>
+                : null}
             </div>
         );
     }
