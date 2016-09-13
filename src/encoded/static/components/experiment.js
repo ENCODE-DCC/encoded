@@ -310,7 +310,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         // Render tags badges
         var tagBadges;
         if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+            tagBadges = context.internal_tags.map(tag => <img key={tag} src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
         }
         
         return (
@@ -359,7 +359,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                                                 {organismNames.length ?
                                                     <span>
                                                         {organismNames.map((organismName, i) =>
-                                                            <span key={i}>
+                                                            <span key={organismName}>
                                                                 {i > 0 ? <span> and </span> : null}
                                                                 <i>{organismName}</i>
                                                             </span>
