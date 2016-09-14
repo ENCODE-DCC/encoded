@@ -208,8 +208,7 @@
                 {
                     "@id": "#block1",
                     "@type": "richtextblock",
-                    "body": "<p><a href=\"https://www.encodeproject.org/search/?type=Annotation&amp;encyclopedia_version=3&date_released=2016-08-25\">111 Annotation File Sets</a>&nbsp;of promoter-like and enhancer-like regions have been released! More information on how the DAC called these enhancer-like&nbsp;and promoter-like regions can be found under <a href=\"/data/annotations/#middle\">Encyclopedia, about page</a>. You can also go directly to the DAC websites: <a href=\"http://zlab-annotations.umassmed.edu/enhancers/methods\">Methods for calling Enhancer-like Regions</a> and <a href=\"http://zlab-annotations.umassmed.edu/promoters/methods\">Methods for calling Promoter-like Regions</a>.<br />\n<br />\n",
-                    "@id": "#block1"
+                    "body": "<p><a href=\"https://www.encodeproject.org/search/?type=Annotation&amp;encyclopedia_version=3&date_released=2016-08-25\">111 Annotation File Sets</a>&nbsp;of promoter-like and enhancer-like regions have been released! More information on how the DAC called these enhancer-like&nbsp;and promoter-like regions can be found under <a href=\"/data/annotations/#middle\">Encyclopedia, about page</a>. You can also go directly to the DAC websites: <a href=\"http://zlab-annotations.umassmed.edu/enhancers/methods\">Methods for calling Enhancer-like Regions</a> and <a href=\"http://zlab-annotations.umassmed.edu/promoters/methods\">Methods for calling Promoter-like Regions</a>.<br />\n<br />\n"
                 }
             ],
             "rows": [
@@ -230,6 +229,7 @@
         "title": "Release of Annotation File Sets",
         "status": "released",
         "blog_excerpt": "111 Annotation File Sets of promoter-like and enhancer-like regions have been released!",
+        "blog_keywords": ["Annotation file set", "Promoters", "Enhancers", "Data release"],
         "date_created": "2016-08-26T16:14:06.471431+00:00"
     },
     {
@@ -240,6 +240,7 @@
         "status": "released",
         "name": "336-annotation-file-sets-released",
         "blog_excerpt": "With collaborations from the DAC (Data Analysis Center), a total of 336 Annotation File Sets of promoter-like and enhancer-like regions have been released!",
+        "blog_keywords": ["Annotation file set", "Promoters", "Enhancers", "Data release"],
         "date_created": "2016-08-03T16:28:11.258613+00:00",
         "layout": {
             "blocks": [
@@ -270,6 +271,7 @@
         "status": "released",
         "name": "mouse-histone-chip-seq-dataset",
         "blog_excerpt": "Mouse e10.5\u00a0histone ChIP-seq dataset\u00a0from from the Ren lab available.",
+        "blog_keywords": ["Mouse", "ChIP-seq", "Data release"],
         "date_created": "2016-07-20T16:44:05.457718+00:00",
         "layout": {
             "blocks": [
@@ -300,6 +302,7 @@
         "status": "released",
         "name": "191-encode-experiments-released",
         "blog_excerpt": "191 new ENCODE experiments released in July!",
+        "blog_keywords": ["Experiment", "Data release"],
         "date_created": "2016-08-01T16:33:38.726440+00:00",
         "layout": {
             "blocks": [
@@ -330,6 +333,7 @@
         "status": "released",
         "name": "latest-ggr-release-reddy-lab",
         "blog_excerpt": "Check out the latest GGR release from the Reddy lab.",
+        "blog_keywords": ["GGR", "Data release"],
         "date_created": "2016-07-21T16:37:40.681507+00:00",
         "layout": {
             "blocks": [
@@ -337,6 +341,68 @@
                     "@id": "#block1",
                     "@type": "richtextblock",
                     "body": "<p>Check out the latest GGR release from the Reddy lab, <a href=\"http://bit.ly/2adtFmF\" title=\"Listing of GGR experiments from Reddy lab\">here</a> on the portal, 84 ChIP-seq expts in A549 +/- dex treatment.</p>"
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "uuid": "c2d1cf13-b415-4630-8113-ca0aad0846ff",
+        "title": "Abstract Deadline for ENCODE Users Meeting",
+        "blog": true,
+        "status": "released",
+        "name": "abstract-deadline-encode-users-meeting",
+        "blog_excerpt": "Don’t miss the abstract deadline for ENCODE Users Meeting.",
+        "blog_keywords": ["Conference", "ENCODE Users Meeting", "Abstract"],
+        "date_created": "2016-04-15T16:37:40.681507+00:00",
+        "layout": {
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": "richtextblock",
+                    "body": "<p>Abstract deadline for talk consideration at the 2016 ENCODE Users Meeting is May 16, 2016. Register and submit abstract <a href=\"http://www.encode2016.org/\">here</a>!</p>"
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "uuid": "50629a51-0209-4a20-8712-6ab3cb039d01",
+        "title": "2016 ENCODE Users Meeting",
+        "blog": true,
+        "status": "released",
+        "name": "2016-encode-users-meeting",
+        "blog_excerpt": "We’re happy to announce the second annual ENCODE Users Meeting.",
+        "blog_keywords": ["Conference", "ENCODE Users Meeting"],
+        "date_created": "2016-04-15T16:37:40.681507+00:00",
+        "layout": {
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": "richtextblock",
+                    "body": "<p>We are happy to announce that the second annual ENCODE Users Meeting will be held at Stanford University on June 8th-10th, 2016.</p><p>More details at <a href=\"http://www.encode2016.org/\">www.encode2016.org</a></p>"
                 }
             ],
             "rows": [

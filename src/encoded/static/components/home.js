@@ -156,7 +156,7 @@ var Home = module.exports.Home = React.createClass({
                             <div className="social">
                                 <div className="social-blog">
                                     <div className="blog-header">
-                                        <h2>News</h2>
+                                        <h2>News <a href="/search/?type=Page&blog=true" title="All ENCODE news" className="twitter-ref">All news</a></h2>
                                     </div>
                                     <BlogLoader ref="bloglisting" blogLoaded={this.blogLoaded} />
                                 </div>

@@ -19,6 +19,9 @@ var Page = module.exports.Page = React.createClass({
                         <h2>{moment.utc(context.date_created).format('MMMM D, YYYY')}</h2>
                     </div>
                     <Layout value={context.layout} />
+                    <div className="blog-keyword-section">
+                        <BlogKeywordList post={context} />
+                    </div>
                 </Panel>
             )
         }
@@ -61,3 +64,22 @@ var Listing = React.createClass({
 });
 
 globals.listing_views.register(Listing, 'Page');
+
+
+var BlogKeywordList = React.createClass({
+    propTypes: {
+        post: React.PropTypes.object // Blog post Page object
+    },
+
+    render: function() {
+        var post = this.props.post;
+        if (post.blog_keywords && post.blog_keywords.length) {
+            return (
+                <div className="blog-keyword-list">
+                    {post.blog_keywords.map(keyword => <a key={keyword} className="blog-keyword" href={'/search/?type=Page&blog=true&blog_keywords=' + keyword}>{keyword}</a>)}
+                </div>
+            )
+        }
+        return null;
+    }
+});

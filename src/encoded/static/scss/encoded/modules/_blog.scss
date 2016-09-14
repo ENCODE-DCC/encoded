@@ -43,6 +43,7 @@
     @media screen and (min-width: $screen-md-min) {
         padding: 20px 10%;
     }
+
     h1 {
         font-weight: normal;
         font-size: 2.5rem;
@@ -68,4 +69,21 @@
     text-align: center;
     color: #808080;
     font-style: italic;
+}
+
+.blog-keyword-section {
+    padding: 20px;
+
+    @media screen and (min-width: $screen-md-min) {
+        padding: 20px 10%;
+    }
+}
+
+.blog-keyword {
+    @extend .btn;
+    @extend .btn-sm;
+    @extend .btn-info;
+    margin-right: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
