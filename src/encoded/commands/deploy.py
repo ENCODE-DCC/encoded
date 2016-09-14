@@ -208,8 +208,8 @@ def tag_spot_instance(instance, name, branch, commit, username, elasticsearch, c
     if elasticsearch == 'yes':
         tags.append({'Key': 'elasticsearch', 'Value': elasticsearch})
     #get_instance = 
-    instance =instance_id.create_tags([get_instance_id(instance, client)], Tags=tags)
-    return instance
+    instance_id = client.create_tags(Resources=[get_instance_id(instance, client)], Tags=tags)
+    return instance_id
 
 def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, spot_price, cluster_size, cluster_name, check_price,
         branch=None, name=None, role='demo', profile_name=None, teardown_cluster=None):
