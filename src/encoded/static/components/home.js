@@ -326,9 +326,6 @@ var HomepageChart = React.createClass({
             var labels = [];
             var facetData;
 
-            // Our data source will be different for computational predictions
-            var computationalPredictions = this.props.searchBase === '?type=Annotation&encyclopedia_version=3';
-
             // Handle cancelled GET request. We'll have made another GET request.
             if (this.props.data.status === 'error') {
                 return;
@@ -421,7 +418,7 @@ var HomepageChart = React.createClass({
                             }
                             else{ // otherwise go to matrix view
                                 var term = facetData[activePoints[0]._index].key;
-                                this.context.navigate(this.props.data['@id'] + '&award.project=' + term);
+                                this.context.navigate('/matrix/' + this.props.searchBase + '&award.project=' + term);
                             }
 
                             this.myPieChart.update();
@@ -506,7 +503,7 @@ var HomepageChartLoader = React.createClass({
     render: function() {
         return (
             <FetchedData ignoreErrors>
-                <Param name="data" url={'/matrix/' + this.props.searchBase} />
+                <Param name="data" url={'/search/' + this.props.searchBase} />
                 <ChartGallery searchBase={this.props.searchBase} />
             </FetchedData>
         );
@@ -625,13 +622,13 @@ var HomepageChart2 = React.createClass({
                             text.push('</ul>');
                             return text.join('');
                         },
-                        onClick: (e) => {
+                        onClick: function(e) {
                             // React to clicks on pie sections
                             var query = computationalPredictions ? 'biosample_type=' : 'replicates.library.biosample.biosample_type=';
                             var activePoints = this.myPieChart.getElementAtEvent(e);
                             var term = assayFacet.terms[activePoints[0]._index].key;
-                            this.context.navigate(this.props.data['@id'] + '&' + query + term); // go to matrix view
-                        }
+                            this.context.navigate('/matrix/' + this.props.searchBase + '&' + query + term); // go to matrix view
+                        }.bind(this)
                     }
                 });
 
@@ -803,7 +800,7 @@ var HomepageChart3 = React.createClass({
                             // React to clicks on pie sections
                             var activePoints = this.myBarChart.getElementAtEvent(e);
                             var term = labels[activePoints[0]._index];
-                            this.context.navigate(this.props.data['@id'] + '&month_released=' + term); // goes to matrix view
+                            this.context.navigate('/matrix' + this.props.searchBase + '&month_released=' + term); // goes to matrix view
                         }
                     }
                 });
