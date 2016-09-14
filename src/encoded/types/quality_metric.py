@@ -98,14 +98,14 @@ class BigwigcorrelateQualityMetric(QualityMetric):
 
 
 @collection(
-    name='dnase-peak-quality-metrics',
+    name='correlation-quality-metrics',
     properties={
-        'title': "Counts of DNase Regions and Hotspots",
-        'description': 'A set of peak QC metrics for regions and hotspots',
+        'title': "Correlation of two replicate datasets",
+        'description': 'Correlation QC metrics for two replicate sets of items',
     })
-class DnasePeakQualityMetric(QualityMetric):
-    item_type = 'dnase_peak_quality_metric'
-    schema = load_schema('encoded:schemas/dnase_peak_quality_metric.json')
+class CorrelationQualityMetric(QualityMetric):
+    item_type = 'correlation_quality_metric'
+    schema = load_schema('encoded:schemas/correlation_quality_metric.json')
 
 
 @collection(
@@ -165,25 +165,47 @@ class MadQualityMetric(QualityMetric):
 
 
 @collection(
-    name='pbc-quality-metrics',
+    name='complexity-xcorr-quality-metrics',
     properties={
-        'title': "Quality Metrics 'PCR Bottleneck Coefficient' (PBC) of Mapping Sample",
+        'title': "Quality Metrics for library complexity and cross-correlation of Mapping Sample",
         'description': 'A set of sampled mapping QC metrics',
     })
-class PbcQualityMetric(QualityMetric):
-    item_type = 'pbc_quality_metric'
-    schema = load_schema('encoded:schemas/pbc_quality_metric.json')
+class ComplexityXcorrQualityMetric(QualityMetric):
+    item_type = 'complexity_xcorr_quality_metric'
+    schema = load_schema('encoded:schemas/complexity_xcorr_quality_metric.json')
 
 
 @collection(
-    name='phantompeaktooks-spp-quality-metrics',
+    name='duplicates-quality-metrics',
     properties={
-        'title': "Mapping quality metrics from 'phantompeakqualtools run_spp.R'",
-        'description': "A set of sampled mapping QC metrics from 'phantompeakqualtools run_spp.R'",
+        'title': "Quality Metrics for duplicates as counted by Picard (non-UMI) or stampipes (UMI).",
+        'description': "A set of duplicate read QC metrics as detected by 'picard mark_duplicates' or 'stampipes mark_umi_dups'",
     })
-class PhantompeaktoolsSppQualityMetric(QualityMetric):
-    item_type = 'phantompeaktools_spp_quality_metric'
-    schema = load_schema('encoded:schemas/phantompeaktools_spp_quality_metric.json')
+class DuplicatesQualityMetric(QualityMetric):
+    item_type = 'duplicates_quality_metric'
+    schema = load_schema('encoded:schemas/duplicates_quality_metric.json')
+
+
+@collection(
+    name='filtering-quality-metrics',
+    properties={
+        'title': "Read Filtering Quality Metrics",
+        'description': 'QC metrics documenting bam file read filtering',
+    })
+class FilteringQualityMetric(QualityMetric):
+    item_type = 'filtering_quality_metric'
+    schema = load_schema('encoded:schemas/filtering_quality_metric.json')
+
+
+@collection(
+    name='trimming-quality-metrics',
+    properties={
+        'title': "Read Trimming Quality Metrics",
+        'description': 'QC metrics for documenting fastq file read trimming',
+    })
+class TrimmingQualityMetric(QualityMetric):
+    item_type = 'trimming_quality_metric'
+    schema = load_schema('encoded:schemas/trimming_quality_metric.json')
 
 
 @collection(

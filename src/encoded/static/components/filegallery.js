@@ -864,6 +864,10 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
         // Note whether any files have an analysis step
         var fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
         stepExists = stepExists || fileAnalysisStep;
+        if (fileAnalysisStep && !(file.derived_from && file.derived_from.length)) {
+            // File has an analysis step but no derived_from. We can't include the file in the graph
+            file.removed = true;
+        }
 
         // Save the pipeline array used for each step used by the file.
         if (fileAnalysisStep) {
@@ -926,7 +930,8 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
         var file = allFiles[fileId];
 
         // File gets removed if doesn’t derive from other files AND no files derive from it.
-        var islandFile = file.removed = !(file.derived_from && file.derived_from.length) && !derivedFromFiles[fileId];
+        var islandFile = !(file.derived_from && file.derived_from.length) && !derivedFromFiles[fileId];
+        file.removed = file.removed || islandFile;
 
         // Add to the filtering options to generate a <select>; don't include island files
         if (!islandFile && file.output_category !== 'raw data' && file.assembly) {
@@ -1012,7 +1017,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
 
     // No files exist outside replicates, and all replicates are removed
     var replicateIds = Object.keys(allReplicates);
-    if (fileOutsideReplicate && replicateIds.length && _(replicateIds).all(function(replicateNum) {
+    if (!fileOutsideReplicate && replicateIds.length && _(replicateIds).all(function(replicateNum) {
         return !allReplicates[replicateNum].length;
     })) {
         throw new graphException('No graph: All replicates removed and no files outside replicates exist');
