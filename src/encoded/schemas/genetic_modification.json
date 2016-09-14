@@ -79,6 +79,7 @@
             "description": "Genomic coordinates of the modification.",
             "type": "object",
             "additionalProperties": false,
+            "required":["assembly", "chromosome", "start", "end"],
             "properties": {
                 "assembly": {
                     "title": "Mapping assembly",
