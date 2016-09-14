@@ -30,7 +30,7 @@ targetBasedAssayList = [
     'iCLIP',
     'eCLIP',
     'shRNA knockdown followed by RNA-seq',
-    'siRNA knockdown followed by RNA-seq'
+    'siRNA knockdown followed by RNA-seq',
     'CRISPR genome editing followed by RNA-seq',
     ]
 
