@@ -99,7 +99,7 @@ def test_biosample_mouse_life_stage_fail(testapp, biosample):
     testapp.post_json('/biosample', biosample, status=422)
 
 
-def test_biosample_model_organism_props_fail(testapp, mouse_biosample, human):
+def test_biosample_model_organism_props_on_human_fail(testapp, mouse_biosample, human):
     mouse_biosample['organism'] = human['uuid']
     testapp.post_json('/biosample', mouse_biosample, status=422)
 
