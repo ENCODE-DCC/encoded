@@ -205,5 +205,11 @@ def biosample_12_13(value, system):
     # http://redmine.encodedcc.org/issues/3921
     if 'note' in value:
         if value['note'] != value['submitter_comment']:
-            value['submitter_comment'] = value['submitter_comment'] + '. ' + value['note']
+            value['submitter_comment'] = value['submitter_comment'] + '; ' + value['note']
         value.pop('note')
+    # Update #3263 to state the problem of mixed types and then put ticket link here
+    if 'starting_amount' in value and value['starting_amount'] == 'unknown':
+            value.pop('starting_amount')
+            value.pop('starting_amount_units')
+    if 'starting_amount_units' in value and 'starting_amount' not in value:
+        value.pop('starting_amount_units')
