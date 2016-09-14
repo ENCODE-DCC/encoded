@@ -1231,7 +1231,10 @@ def get_vis_type(dataset):
 
     if isinstance(assay,list):
         log.warn("assay_term_name for %s is unexpectedly a list %s" % (dataset['accession'],str(assay)))
-        assay = assay[0]
+        if len(assay) > 0:
+            assay = assay[0]
+        else:
+            return "opaque"
 
     # This will be long AND small
     if assay in ["shRNA knockdown followed by RNA-seq","siRNA knockdown followed by RNA-seq","CRISPR genome editing followed by RNA-seq"]:
@@ -1487,14 +1490,20 @@ def lookup_colors(dataset):
     if biosample_term is not None:
         if isinstance(biosample_term,list):
             log.warn("%s has biosample_type %s that is unexpectedly a list" % (dataset['accession'],str(biosample_term)))
-            biosample_term = biosample_term[0]
+            if len(biosample_term) > 0:
+                biosample_term = biosample_term[0]
+            else:
+                biosample_term = "unknown"  # really only seen in test data!
         coloring = BIOSAMPLE_COLOR.get(biosample_term,{})
     if not coloring:
         biosample_term = dataset.get('biosample_term_name')
         if biosample_term is not None:
             if isinstance(biosample_term,list):
                 log.warn("%s has biosample_term_name %s that is unexpectedly a list" % (dataset['accession'],str(biosample_term)))
-                biosample_term = biosample_term[0]
+                if len(biosample_term) > 0:
+                    biosample_term = biosample_term[0]
+                else:
+                    biosample_term = "unknown"  # really only seen in test data!
             coloring = BIOSAMPLE_COLOR.get(biosample_term,{})
     if not coloring:
         organ_slims = dataset.get('organ_slims',[])
@@ -1687,7 +1696,10 @@ def lookup_token(token,dataset,a_file=None):
     elif token in ["{target}","{target.label}","{target.name}","{target.title}"]:
         target = dataset.get('target',{})
         if isinstance(target,list):
-            target = target[0]
+            if len(target) > 0:
+                target = target[0]
+            else:
+                target = {}
         if token.find('.') > -1:
             sub_token = token.strip('{}').split('.')[0]
         else:
@@ -1699,7 +1711,10 @@ def lookup_token(token,dataset,a_file=None):
     elif token in ["{target.name}"]:
         target = dataset.get('target',{})
         if isinstance(target,list):
-            target = target[0]
+            if len(target) > 0:
+                target = target[0]
+            else:
+                target = {}
         return target.get('label',"Unknown Target")
     elif token in ["{replicates.library.biosample.summary}","{replicates.library.biosample.summary|multiple}"]:
         term = None
