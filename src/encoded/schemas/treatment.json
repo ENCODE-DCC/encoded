@@ -18,7 +18,7 @@
     "dependencies": {
         "temperature": ["temperature_units"],
         "temperature_units": ["temperature"],
-        "cocentration": ["concentration_units"],
+        "concentration": ["concentration_units"],
         "concentration_units": ["concentration"],
         "duration": ["duration_units"],
         "duration_units": ["duration"]
@@ -29,7 +29,7 @@
         },
         "lab": {
             "title": "Lab",
-             "description": "Lab associated with the submission.",
+            "description": "Lab associated with the submission.",
             "comment": "See lab.json for list of available identifiers.",
             "type": "string",
             "linkTo": "Lab"
