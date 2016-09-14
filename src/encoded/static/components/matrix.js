@@ -100,7 +100,7 @@ var Matrix = module.exports.Matrix = React.createClass({
             };
 
             // Make an array of colors corresponding to the ordering of biosample_type
-            var biosampleTypeColors = this.context.biosampleTypeColors.colorList(y_groups.map(y_group => y_group.key), {shade: 40});
+            var biosampleTypeColors = this.context.biosampleTypeColors.colorList(y_groups.map(y_group => y_group.key), {shade: 55});
 
             return (
                 <div>
