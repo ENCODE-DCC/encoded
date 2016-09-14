@@ -69,6 +69,17 @@
             "type": "string",
             "description": "Blog post excerpt"
         },
+        "blog_keywords": {
+            "title": "Blog keywords",
+            "type": "array",
+            "description": "Keywords to filter blog posts.",
+            "default": [],
+            "items": {
+                "title": "Blog keyword",
+                "description": "A keyword for blog post filtering.",
+                "type":  "string"
+            }
+        },
         "layout": {
             "title": "Page Layout",
             "description": "Hierarchical description of the page layout.",
@@ -130,12 +141,20 @@
             }
         }
     },
+    "facets": {
+        "blog_keywords": {
+            "title": "Topics"
+        }
+    },
     "columns": {
         "@id": {
             "title": "Path"
         },
         "title": {
             "title": "Title"
+        },
+        "blog": {
+            "title": "Blog post"
         },
         "blog_excerpt": {
             "title": "Blog excerpt"

@@ -2,6 +2,7 @@
 var React = require('react');
 var moment = require('moment');
 var {Panel} = require('../libs/bootstrap/panel');
+var {PickerActionsMixin} = require('./search');
 var Layout = require('./layout').Layout;
 var globals = require('./globals');
 var _ = require('underscore');
@@ -36,5 +37,27 @@ var Page = module.exports.Page = React.createClass({
     }
 });
 
-
 globals.content_views.register(Page, 'Page');
+
+
+var Listing = React.createClass({
+    mixins: [PickerActionsMixin],
+    render: function() {
+        var result = this.props.context;
+        return (
+            <li>
+                <div className="clearfix">
+                    {this.renderActions()}
+                    <div className="accession">
+                        <a href={result['@id']}>{result.title}</a> <span className="page-listing-date">{moment.utc(result.date_created).format('MMMM D, YYYY')}</span>
+                    </div>
+                    <div className="data-row">
+                        {result.blog ? result.blog_excerpt : null}
+                    </div>
+                </div>
+            </li>
+        );
+    }
+});
+
+globals.listing_views.register(Listing, 'Page');
