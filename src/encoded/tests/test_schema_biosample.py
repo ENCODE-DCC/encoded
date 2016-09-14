@@ -28,7 +28,7 @@ def biosample_depleted_in(mouse_biosample):
 def biosample_starting_amount(biosample):
     item = biosample.copy()
     item.update({
-        'starting_amount': 'unknown'
+        'starting_amount': 20
     })
     return item
 
@@ -63,12 +63,6 @@ def test_biosample_depleted_in_type_whole_organism(testapp, biosample_depleted_i
 
 def test_biosample_starting_amount_fail(testapp, biosample_starting_amount):
     testapp.post_json('/biosample', biosample_starting_amount, status=422)
-
-
-def test_biosample_starting_amount_unknown_dep(testapp, biosample_starting_amount):
-    # note starting_amount is 'unknown'
-    biosample_starting_amount['starting_amount_units'] = 'cells'
-    testapp.post_json('/biosample', biosample_starting_amount)
 
 
 def test_biosample_starting_amount_dep(testapp, biosample_starting_amount):
