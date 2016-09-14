@@ -777,5 +777,20 @@
         "accession": "ENCSR751YPU",
         "uuid": "c62d6a59-a444-49d1-b9f8-c4502c7cc4b2",
         "assay_term_id": "OBI:0001853"
+    },
+    {
+        "_test": "possible_controls linked to a dataset",
+        "accession": "ENCSR001DTA",
+        "assay_term_id": "OBI:0000716",
+        "assay_term_name": "ChIP-seq",
+        "possible_controls": ["ENCSR834QRI"],
+        "biosample_term_name": "K562",
+        "biosample_term_id": "EFO:0002067",
+        "biosample_type": "immortalized cell line",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "lab": "/labs/j-michael-cherry/",
+        "award": "U41HG006992",
+        "status": "submitted",
+        "uuid": "d6c76807-f955-423a-b99d-4f6af8b20da6"
     }
 ]
