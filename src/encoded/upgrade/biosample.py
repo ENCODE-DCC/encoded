@@ -216,3 +216,7 @@ def biosample_12_13(value, system):
             value.pop('starting_amount_units')
     if 'starting_amount_units' in value and 'starting_amount' not in value:
         value.pop('starting_amount_units')
+    # http://redmine.encodedcc.org/issues/4448
+    if 'protocol_documents' in value:
+        value['documents'] = value['protocol_documents']
+        value.pop('protocol_documents')

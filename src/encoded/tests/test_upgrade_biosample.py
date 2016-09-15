@@ -128,14 +128,15 @@ def biosample_11(root, biosample):
 
 
 @pytest.fixture
-def biosample_12(biosample_0):
+def biosample_12(biosample_0, document):
     item = biosample_0.copy()
     item.update({
         'schema_version': '12',
         'starting_amount': 'unknown',
         'starting_amount_units': 'g',
         'note': 'Value in note.',
-        'submitter_comment': 'Different value in submitter_comment.'
+        'submitter_comment': 'Different value in submitter_comment.',
+        'protocol_documents': list(document)
     })
     return item
 
@@ -415,3 +416,5 @@ def test_upgrade_biosample_12_to_13(root, upgrader, biosample, biosample_12, dum
     assert value['submitter_comment'] == 'Different value in submitter_comment.; Value in note.'
     assert 'starting_amount_units' not in value
     assert 'starting_amount' not in value
+    assert 'protocol_documents' not in value
+    assert 'documents' in value
