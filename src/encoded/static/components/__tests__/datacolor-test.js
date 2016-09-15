@@ -22,8 +22,8 @@ describe('DataColor Module', function() {
 
         it('Returns correct colors for small array', function() {
             let testColors = dataColorsInstance.colorList(['stem cell', 'primary cell']);
-            expect(testColors[0]).toEqual('#007d26');
-            expect(testColors[1]).toEqual('#730173');
+            expect(testColors[0]).toEqual('#9b009b');
+            expect(testColors[1]).toEqual('#ff9a00');
         });
 
         it('Returns medium gray for a non-existent key', function() {
@@ -33,12 +33,12 @@ describe('DataColor Module', function() {
 
         it('Wraps around the used color if more keys than colors', function() {
             let testColors = dataColorsInstance.colorList(['secondary cell']);
-            expect(testColors[0]).toEqual('#fcbf3a');
+            expect(testColors[0]).toEqual('#2f62cf');
         });
 
         it('Wraps around the used color if more keys than colors', function() {
             let testColors = dataColorsInstance.colorList(['primary cell'], {shade: 10});
-            expect(testColors[0]).toEqual('#8d1b8d');
+            expect(testColors[0]).toEqual('#ffb41a');
         });
     });
 });
