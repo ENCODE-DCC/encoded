@@ -11,7 +11,7 @@ $form-bg: #f3f3f3;
     padding-top: 2px;
     padding-bottom: 2px;
     background-color: $form-bg;
-    @include box-shadow(none);
+    box-shadow: none;
     line-height: 20px;
     border: 1px solid #ccc;
 
@@ -33,59 +33,45 @@ $form-bg: #f3f3f3;
 }
 
 .adv-search-form {
+    margin-bottom: 0 !important;
+
+    .form-inline.pull-right {
+        input, select {
+            margin-left: 5px;
+        }
+
+        select {
+            height: 30px;
+        }
+    }
+}
+
+.input-group-region-input {
     position: relative;
-    margin: 20px 0;
-    z-index: 20;
+}
 
-    @media screen and (min-width: $screen-sm-min) {
-        margin: 0;
-    }
-
-    .form-control {
-        height: $form-element-height !important;
-        z-index: 0;
-    }
-
-    form {
-        position: relative;
-        top: -1px;
-        padding: 15px 15px 0;
-        background-color: $form-bg;
-        border: 1px solid #ccc;
-    }
-
-    label[for=spacing] {
-        display: none;
-
-        @media screen and (min-width: $screen-md-min) {
-            display: inline-block;
-        }
-    }
-
-    .adv-search-submit {
-        padding: 0 15px;
-        height: $form-element-height;
-        line-height: $form-element-height - 2;
-
-        @media screen and (min-width: $screen-md-min) {
-            padding: 0;
-            width: 100%;
-        }
-    }
+.input-region-error {
+    position: absolute;
+    top: 36px;
+    left: 0;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #808080;
 }
 
 .adv-search-autocomplete {
     position: absolute;
     z-index: 10;
-    right: 10px;
-    left: 10px;
+    top: 33px;
+    left: 0;
     padding: 0;
     max-height: 300px;
     overflow-y: scroll;
-    background-color: #fff;
-    border: 1px solid #c0c0c0;
+    color: #fff;
+    background-color: $nav-color-bg;
+    border: 1px solid #ccc;
     list-style: none;
-    @include box-shadow(0 2px 4px 0 rgba(0,0,0,.5));
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,.5);
 
     li {
         margin: 0;
@@ -94,8 +80,17 @@ $form-bg: #f3f3f3;
         cursor: pointer;
 
         &:hover {
+            color: #404040;
             background-color: #e0e0e0;
         }
+    }
+}
+
+.input-group-select-addon {
+    padding: 0;
+
+    select {
+        height: 100%;
     }
 }
 

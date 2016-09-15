@@ -13,6 +13,7 @@ from urllib.parse import urlencode
 from collections import OrderedDict
 
 
+
 _ASSEMBLY_MAPPER = {
     'GRCh38-minimal': 'hg38',
     'GRCh38': 'hg38',
@@ -224,6 +225,10 @@ def list_visible_columns_for_schemas(request, schemas):
             if field in columns:
                 limited_columns[field] = columns[field]
             else:
+                # We don't currently traverse to other schemas for embedded
+                # objects to find property titles. In this case we'll just
+                # show the field's dotted path for now.
+                limited_columns[field] = {'title': field}
                 for schema in schemas:
                     if field in schema['properties']:
                         limited_columns[field] = {
@@ -255,6 +260,11 @@ def list_result_fields(request, doc_types):
         schemas = [types[doc_type].schema for doc_type in doc_types]
         columns = list_visible_columns_for_schemas(request, schemas)
         fields.update('embedded.' + column for column in columns)
+
+    # Ensure that 'audit' field is requested with _source in the ES query
+    if request.__parent__ and '/metadata/' in request.__parent__.url and request.has_permission('search_audit'):
+        fields.add('audit.*')
+
     return fields
 
 
@@ -401,6 +411,11 @@ def format_results(request, hits):
     else:
         frame = request.params.get('frame')
 
+    # Request originating from metadata generation will skip to
+    # partion of the code that adds audit  object to result items
+    if request.__parent__ and '/metadata/' in request.__parent__.url:
+        frame = ''
+
     if frame in ['embedded', 'object']:
         for hit in hits:
             yield hit['_source'][frame]
@@ -455,7 +470,7 @@ def search_result_actions(request, doc_types, es_results, position=None):
     return actions
 
 
-def format_facets(es_results, facets, used_filters, schemas, total):
+def format_facets(es_results, facets, used_filters, schemas, total, principals):
     result = []
     # Loading facets in to the results
     if 'aggregations' not in es_results:
@@ -470,6 +485,9 @@ def format_facets(es_results, facets, used_filters, schemas, total):
             continue
         terms = aggregations[agg_name][agg_name]['buckets']
         if len(terms) < 2:
+            continue
+        # internal_status exception. Only display for admin users
+        if field == 'internal_status' and 'group.admin' not in principals:
             continue
         result.append({
             'field': field,
@@ -638,7 +656,7 @@ def search(context, request, search_type=None, return_generator=False):
 
 
     # Set sort order
-    has_sort = set_sort_order(request, search_term, types, doc_types, query, result)
+    set_sort_order(request, search_term, types, doc_types, query, result)
 
     # Setting filters
     used_filters = set_filters(request, query, result)
@@ -659,7 +677,6 @@ def search(context, request, search_type=None, return_generator=False):
 
     # Decide whether to use scan for results.
     do_scan = size is None or size > 1000
-
     # Execute the query
     if do_scan:
         es_results = es.search(body=query, index=es_index, search_type='count')
@@ -670,7 +687,7 @@ def search(context, request, search_type=None, return_generator=False):
 
     schemas = (types[item_type].schema for item_type in doc_types)
     result['facets'] = format_facets(
-        es_results, facets, used_filters, schemas, total)
+        es_results, facets, used_filters, schemas, total, principals)
 
     # Add batch actions
     result.update(search_result_actions(request, doc_types, es_results))
@@ -689,7 +706,6 @@ def search(context, request, search_type=None, return_generator=False):
         return result if not return_generator else []
 
     result['notification'] = 'Success'
-
     # Format results for JSON-LD
     if not do_scan:
         graph = format_results(request, es_results['hits']['hits'])
@@ -918,7 +934,7 @@ def matrix(context, request):
 
     # Format facets for results
     result['facets'] = format_facets(
-        es_results, facets, used_filters, (schema,), total)
+        es_results, facets, used_filters, (schema,), total, principals)
 
     def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
         group_by = grouping_fields[0]

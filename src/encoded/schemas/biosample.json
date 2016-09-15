@@ -355,7 +355,9 @@
         "note": {
             "title": "Note",
             "description": "Additional information pertaining to the biosample.",
-            "type": "string"
+            "comment": "Please use the submitter_comment property instead.",
+            "type": "string",
+            "permission": "import_items"
         },
         "subcellular_fraction_term_name": {
             "title": "Subcellular fraction name",

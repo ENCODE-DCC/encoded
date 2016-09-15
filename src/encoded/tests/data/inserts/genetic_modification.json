@@ -27,6 +27,7 @@
         "modification_techniques": [
             "encode:tale-test-1"
         ],
-        "modification_treatments": []
+        "modification_treatments": [],
+        "modification_description": "Very important description"
     }
 ]
