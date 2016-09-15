@@ -22,6 +22,9 @@ var Page = module.exports.Page = React.createClass({
                     <div className="blog-keyword-section">
                         <BlogKeywordList post={context} />
                     </div>
+                    <div className="blog-share-section">
+                        <BlogShareList post={context} />
+                    </div>
                 </Panel>
             )
         }
@@ -81,5 +84,42 @@ var BlogKeywordList = React.createClass({
             )
         }
         return null;
+    }
+});
+
+
+var BlogShareList = React.createClass({
+    propTypes: {
+        post: React.PropTypes.object // Blog post Page object
+    },
+
+    injectTwitter: function() {
+        var js;
+        if (!this.initialized) {
+            let sharetwitter = this.refs.sharetwitter.getDOMNode();
+            this.initialized = true;
+            js = document.createElement("script");
+            js.id = "share-twitter";
+            js.src = "//platform.twitter.com/widgets.js";
+            return sharetwitter.parentNode.appendChild(js);
+        }
+    },
+
+    //componentDidMount: function() { // twitter script from API
+    //    if (!this.initialized) {
+    //        this.injectTwitter();
+    //    }
+    //},
+//
+    //componentDidUpdate: function() { // twitter script from API
+    //    if (!this.initialized) {
+    //        this.injectTwitter();
+    //    }
+    //},
+
+    render: function() {
+        var post = this.props.post;
+        return <a href={'http://twitter.com/intent/tweet?url=http://alistapart.com/blog/post/moving-forward-with-css-shapes&text=' + post.title + '&via=EncodeDCC'}>Tweet</a>;
+        //return <a ref="sharetwitter" href="https://twitter.com/share" class="twitter-share-button" data-text={post.title} data-via="EncodeDCC" data-show-count="false" target="_blank">Tweet</a>;
     }
 });
