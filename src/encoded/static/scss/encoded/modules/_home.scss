@@ -305,7 +305,7 @@
     }
 }
 
-.social-blog {
+.social-news {
     @media screen and (min-width: $screen-md-min) {
         flex: 0 1 70%;
         border-right: 1px solid #a0a0a0;
@@ -327,7 +327,7 @@
     font-size: 1rem;
 }
 
-.blog-header {
+.news-header {
     @extend .twitter-header;
     border-bottom: 1px solid #e0e0e0;
 }

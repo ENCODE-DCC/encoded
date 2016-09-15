@@ -11,25 +11,25 @@ var _ = require('underscore');
 var Page = module.exports.Page = React.createClass({
     render: function() {
         var context = this.props.context;
-        if (context.blog) {
+        if (context.news) {
             return (
-                <Panel addClasses="blog-post">
-                    <div className="blog-post-header">
+                <Panel addClasses="news-post">
+                    <div className="news-post-header">
                         <h1>{context.title}</h1>
                         <h2>{moment.utc(context.date_created).format('MMMM D, YYYY')}</h2>
                     </div>
                     <Layout value={context.layout} />
-                    <div className="blog-keyword-section">
-                        <BlogKeywordList post={context} />
+                    <div className="news-keyword-section">
+                        <NewsKeywordList post={context} />
                     </div>
-                    <div className="blog-share-section">
-                        <BlogShareList post={context} />
+                    <div className="news-share-section">
+                        <NewsShareList post={context} />
                     </div>
                 </Panel>
             )
         }
 
-        // Non-blog page; render as title, then content box
+        // Non-news page; render as title, then content box
         return (
             <div>
                 <header className="row">
@@ -58,7 +58,7 @@ var Listing = React.createClass({
                         <a href={result['@id']}>{result.title}</a> <span className="page-listing-date">{moment.utc(result.date_created).format('MMMM D, YYYY')}</span>
                     </div>
                     <div className="data-row">
-                        {result.blog ? result.blog_excerpt : null}
+                        {result.news ? result.news_excerpt : null}
                     </div>
                 </div>
             </li>
@@ -69,17 +69,17 @@ var Listing = React.createClass({
 globals.listing_views.register(Listing, 'Page');
 
 
-var BlogKeywordList = React.createClass({
+var NewsKeywordList = React.createClass({
     propTypes: {
-        post: React.PropTypes.object // Blog post Page object
+        post: React.PropTypes.object // News post Page object
     },
 
     render: function() {
         var post = this.props.post;
-        if (post.blog_keywords && post.blog_keywords.length) {
+        if (post.news_keywords && post.news_keywords.length) {
             return (
-                <div className="blog-keyword-list">
-                    {post.blog_keywords.map(keyword => <a key={keyword} className="blog-keyword" href={'/search/?type=Page&blog=true&blog_keywords=' + keyword}>{keyword}</a>)}
+                <div className="news-keyword-list">
+                    {post.news_keywords.map(keyword => <a key={keyword} className="news-keyword" href={'/search/?type=Page&news=true&news_keywords=' + keyword}>{keyword}</a>)}
                 </div>
             )
         }
@@ -88,9 +88,9 @@ var BlogKeywordList = React.createClass({
 });
 
 
-var BlogShareList = React.createClass({
+var NewsShareList = React.createClass({
     propTypes: {
-        post: React.PropTypes.object // Blog post Page object
+        post: React.PropTypes.object // News post Page object
     },
 
     contextTypes: {

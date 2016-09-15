@@ -125,10 +125,10 @@ var Home = module.exports.Home = React.createClass({
         });
     },
 
-    blogLoaded: function() {
-        // Called once the blog content gets loaded
-        var blogEl = this.refs.bloglisting.getDOMNode();
-        this.setState({socialHeight: blogEl.clientHeight});
+    newsLoaded: function() {
+        // Called once the news content gets loaded
+        var newsEl = this.refs.newslisting.getDOMNode();
+        this.setState({socialHeight: newsEl.clientHeight});
     },
 
     render: function() { // renders home page
@@ -154,11 +154,11 @@ var Home = module.exports.Home = React.createClass({
                                 </div>
                             </div>
                             <div className="social">
-                                <div className="social-blog">
-                                    <div className="blog-header">
-                                        <h2>News <a href="/search/?type=Page&blog=true" title="All ENCODE news" className="twitter-ref">All news</a></h2>
+                                <div className="social-news">
+                                    <div className="news-header">
+                                        <h2>News <a href="/search/?type=Page&news=true" title="All ENCODE news" className="twitter-ref">All news</a></h2>
                                     </div>
-                                    <BlogLoader ref="bloglisting" blogLoaded={this.blogLoaded} />
+                                    <NewsLoader ref="newslisting" newsLoaded={this.newsLoaded} />
                                 </div>
                                 <div className="social-twitter">
                                     <TwitterWidget height={this.state.socialHeight} />
@@ -859,46 +859,46 @@ var HomepageChart3 = React.createClass({
 });
 
 
-// Send a GET request for the most recent five blog posts.
-var BlogLoader = React.createClass({
+// Send a GET request for the most recent five news posts.
+var NewsLoader = React.createClass({
     propTypes: {
-        blogLoaded: React.PropTypes.func.isRequired // Called parent once the blog is loaded
+        newsLoaded: React.PropTypes.func.isRequired // Called parent once the news is loaded
     },
 
     render: function() {
-        return <FetchedItems {...this.props} url="/search/?type=Page&blog=true&limit=5" Component={Blog} ignoreErrors blogLoaded={this.props.blogLoaded} />;
+        return <FetchedItems {...this.props} url="/search/?type=Page&news=true&limit=5" Component={News} ignoreErrors newsLoaded={this.props.newsLoaded} />;
     }
 });
 
 
-// Render the most recent five blog posts
-var Blog = React.createClass({
+// Render the most recent five news posts
+var News = React.createClass({
     propTypes: {
-        blogLoaded: React.PropTypes.func.isRequired // Called parent once the blog is loaded
+        newsLoaded: React.PropTypes.func.isRequired // Called parent once the news is loaded
     },
 
     componentDidMount: function() {
-        this.props.blogLoaded();
+        this.props.newsLoaded();
     },
 
     render: function() {
         var items = this.props.items;
         if (items && items.length) {
             return (
-                <div className="blog-listing">
+                <div className="news-listing">
                     {items.map(item => {
                         return (
                             <a href={item['@id']} title={'View news post for ' + item.title} key={item['@id']}>
                                 <h3>{item.title}</h3>
                                 <h4>{moment.utc(item.date_created).format('MMMM D, YYYY')}</h4>
-                                <div className="blog-excerpt">{item.blog_excerpt}</div>
+                                <div className="news-excerpt">{item.news_excerpt}</div>
                             </a>
                         );
                     })}
                 </div>
             );
         } else {
-            return <div className="blog-empty">No news available at this time</div>
+            return <div className="news-empty">No news available at this time</div>
         }
     }
 });

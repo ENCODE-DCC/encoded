@@ -1,4 +1,4 @@
-.blog-listing {
+.news-listing {
     padding: 0;
 
     a {
@@ -32,12 +32,12 @@
     }
 }
 
-.blog-excerpt {
+.news-excerpt {
     color: #000;
     font-size: 1rem;
 }
 
-.blog-post-header {
+.news-post-header {
     padding: 20px;
 
     @media screen and (min-width: $screen-md-min) {
@@ -58,20 +58,20 @@
     }
 }
 
-.blog-post {
+.news-post {
     .block {
         box-shadow: none;
     }
 }
 
-.blog-empty {
+.news-empty {
     padding: 50px 10px;
     text-align: center;
     color: #808080;
     font-style: italic;
 }
 
-.blog-keyword-section {
+.news-keyword-section {
     padding: 20px;
 
     @media screen and (min-width: $screen-md-min) {
@@ -79,7 +79,7 @@
     }
 }
 
-.blog-keyword {
+.news-keyword {
     @extend .btn;
     @extend .btn-sm;
     @extend .btn-info;
