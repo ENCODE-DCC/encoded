@@ -27,6 +27,12 @@
         "modification_techniques": [
             "encode:tale-test-1"
         ],
+        "modified_site": {
+            "chromosome": "X",
+            "assembly": "hg19",
+            "start": 48560532,
+            "end": 48560547
+        },
         "treatments": [],
         "description": "Very important description"
     }
