@@ -17,7 +17,7 @@
             "ENCBS492ENC",
             "ENCBS493ENC"
         ],
-        "protocol_documents": [
+        "documents": [
             "ENCODE:PanIsletD_Crawford_protocol"
         ],
         "source": "ndri",
@@ -52,7 +52,7 @@
         ],
         "passage_number": 5,
         "product_id": "HTB-22",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:MCF-7_Farnham_growth_protocol"
         ],
         "source": "atcc",
@@ -81,7 +81,7 @@
         "organism": "human",
         "passage_number": 5,
         "product_id": "HTB-22",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:MCF-7_Farnham_growth_protocol"
         ],
         "source": "atcc",
@@ -134,7 +134,7 @@
         "mouse_life_stage": "embryonic",
         "model_organism_sex": "male",
         "organism": "mouse",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:EPC_Stam_protocol"
         ],
         "source": "michael-bender",
@@ -155,7 +155,7 @@
         "lab": "encode2-project",
         "organism": "human",
         "product_id": "CCL-243",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:K562_protocol"
         ],
         "source": "atcc",
@@ -331,7 +331,7 @@
         "lab": "gregory-crawford",
         "organism": "human",
         "product_id": "86012803",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:MCF-7_Crawford_growth_protocol"
         ],
         "rnais": [
@@ -360,7 +360,7 @@
         "lab": "peggy-farnham",
         "organism": "human",
         "product_id": "HTB-22",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:MCF-7_Farnham_growth_protocol"
         ],
         "source": "atcc",
@@ -387,7 +387,7 @@
         "mouse_life_stage": "unknown",
         "model_organism_sex": "unknown",
         "organism": "mouse",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:C2C12_Wold_growth_protocol"
         ],
         "source": "barbara-wold",
@@ -409,7 +409,7 @@
         "mouse_life_stage": "unknown",
         "model_organism_sex": "unknown",
         "organism": "mouse",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:C2C12_Wold_differentiation_protocol"
         ],
         "source": "barbara-wold",
@@ -428,7 +428,7 @@
         "model_organism_health_status": "unknown",
         "mouse_life_stage": "embryonic",
         "organism": "mouse",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:ZhBTc4_Stam_protocol"
         ],
         "source": "dana-levasseur",
@@ -454,7 +454,7 @@
         "organism": "human",
         "phase": "S4",
         "product_id": "GM06990",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:Stam_15_protocols"
         ],
         "source": "coriell",
@@ -476,7 +476,7 @@
         "lab": "john-stamatoyannopoulos",
         "organism": "human",
         "product_id": "CC-2547",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:SAEC_Stam_protocol"
         ],
         "source": "lonza",
@@ -556,7 +556,7 @@
         "organism": "human",
         "passage_number": 2,
         "product_id": "C-14053",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:HAoSMC_PC_8121902.2P_certificate_of_analysis",
             "ENCODE:HAoSMC_PC_8121902.2P_general_protocol"
         ],
@@ -586,7 +586,7 @@
 
         "lab": "thomas-gingeras",
         "organism": "human",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:Heart_STL003_excision_protocol",
             "ENCODE:Heart_STL003_general_protocol"
         ],
@@ -700,7 +700,7 @@
         "donor": "ENCDO568ESC",
         "lab": "thomas-gingeras",
         "organism": "human",
-        "protocol_documents": [],
+        "documents": [],
         "source": "michael-snyder",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "51ddff9b-a477-41bb-91ad-7f6c97380cbe"
