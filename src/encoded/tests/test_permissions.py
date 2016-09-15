@@ -115,7 +115,7 @@ def test_submitter_post_non_lab_collection(submitter_testapp):
 
 
 def test_submitter_post_update_experiment(submitter_testapp, lab, award):
-    experiment = {'lab': lab['@id'], 'award': award['@id']}
+    experiment = {'lab': lab['@id'], 'award': award['@id'], 'assay_term_name': 'RNA-seq'}
     res = submitter_testapp.post_json('/experiment', experiment, status=201)
     location = res.location
     res = submitter_testapp.get(location + '@@testing-allowed?permission=edit', status=200)
@@ -125,13 +125,13 @@ def test_submitter_post_update_experiment(submitter_testapp, lab, award):
 
 
 def test_submitter_post_other_lab(submitter_testapp, other_lab, award):
-    experiment = {'lab': other_lab['@id'], 'award': award['@id']}
+    experiment = {'lab': other_lab['@id'], 'award': award['@id'], 'assay_term_name': 'RNA-seq'}
     res = submitter_testapp.post_json('/experiment', experiment, status=422)
     assert "not in user submits_for" in res.json['errors'][0]['description']
 
 
 def test_wrangler_post_other_lab(wrangler_testapp, other_lab, award):
-    experiment = {'lab': other_lab['@id'], 'award': award['@id']}
+    experiment = {'lab': other_lab['@id'], 'award': award['@id'], 'assay_term_name': 'RNA-seq'}
     wrangler_testapp.post_json('/experiment', experiment, status=201)
 
 
@@ -237,7 +237,7 @@ def test_submitter_patch_viewing_groups_disallowed(submitter, other_lab, submitt
     submitter_testapp.patch_json(res.json['@id'], vgroups, status=422)
 
 
-def test_wrangler_patch_viewing_groups_disallowed(submitter, other_lab, wrangler_testapp):
+def test_wrangler_patch_viewing_groups_allowed(submitter, other_lab, wrangler_testapp):
     res = wrangler_testapp.get(submitter['@id'])
     vgroups = {'viewing_groups': res.json['viewing_groups'] + ['GGR']}
     wrangler_testapp.patch_json(res.json['@id'], vgroups, status=200)

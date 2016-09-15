@@ -36,13 +36,14 @@ var columnChoices = function(schema, selected) {
     _.each(schemaColumns, (column, path) => {
         columns[path] = {
             title: column.title,
-            visible: true
+            visible: !selected
         };
     });
+
     // add all properties (with a few exceptions)
     _.each(schema.properties, (property, name) => {
-        if (name == '@id' || name == '@type' || name == 'uuid') return;
-        if (!columns.hasOwnProperty(name)) {
+        if (name == '@id' || name == '@type' || name == 'uuid' || name == 'replicates') return;
+        if (!columns.hasOwnProperty(name) && property.title) {
             columns[name] = {
                 title: property.title,
                 visible: false
@@ -52,8 +53,19 @@ var columnChoices = function(schema, selected) {
 
     // if selected fields are specified, update visibility
     if (selected) {
-        _.each(columns, (column, path) => {
-            column.visible = _.contains(selected, path);
+        // Reset @id to not visible if not in selected
+        if (!selected['@id'] && columns['@id']) {
+            columns['@id'].visible = false;
+        }
+        _.each(selected, (path) => {
+            if (columns[path] === undefined) {
+                columns[path] = {
+                    title: path,
+                    visible: true
+                };
+            } else {
+                columns[path].visible = true;
+            }
         });
     }
 
@@ -78,6 +90,16 @@ var visibleColumns = function(columns) {
 var lookupColumn = function (result, column) {
     var nodes = [result];
     var names = column.split('.');
+
+    // Get the column's custom display function and call it if it exists
+    var colViewer = globals.report_cell.lookup(result, column);
+    if (colViewer) {
+        var colViewResult = colViewer(result, column);
+        if (colViewResult) {
+            return <div>{colViewResult}</div>;
+        }
+    }
+
     for (var i = 0, len = names.length; i < len && nodes.length; i++) {
         var nextnodes = [];
         _.each(nodes.map(node => node[names[i]]), v => {
@@ -88,7 +110,15 @@ var lookupColumn = function (result, column) {
                 nextnodes.push(v);
             }
         });
-        nodes = nextnodes;
+        if (names[i + 1] === 'length' || names[i + 1] === 'uuid') {
+            // Displaying the length of an array. That's not a property of each array element so we
+            // can't get it that way. Just return the length of the array.
+            nodes = [nextnodes.length];
+            break;
+        } else {
+            // Moving on to the next node defined by the `names` array.
+            nodes = nextnodes;
+        }
     }
     // if we ended with an embedded object, show the @id
     if (nodes.length && nodes[0]['@id'] !== undefined) {
@@ -291,7 +321,11 @@ var Report = React.createClass({
 
         var type = parsed_url.query.type;
         var schema = this.props.schemas[type];
-        var columns = columnChoices(schema, parsed_url.query.field);
+        var query_fields = parsed_url.query.field;
+        if (typeof query_fields === 'string') {
+            query_fields = [query_fields];
+        }
+        var columns = columnChoices(schema, query_fields);
 
         // Map view icons to svg icons
         var view2svg = {
@@ -312,14 +346,14 @@ var Report = React.createClass({
                             </h4>
                             <div className="results-table-control">
                                 <div className="btn-attached">
-                                    {context.views && context.views.map(view => {
+                                    {context.views && context.views.map((view, i) => {
                                         // Strip any `field` properties out of the view's href as
                                         // they don't apply to search or matrix
                                         var parsedUrl = url.parse(view.href, true);
                                         delete parsedUrl.query.field;
                                         delete parsedUrl.search;
                                         var href = url.format(parsedUrl);
-                                        return <a href={href} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{SvgIcon(view2svg[view.icon])}</a>;
+                                        return <a href={href} className="btn btn-info btn-sm btn-svgicon" title={view.title} key={i}>{SvgIcon(view2svg[view.icon])}</a>;
                                     })}
                                 </div>
                                 <ColumnSelector columns={columns} toggleColumn={this.toggleColumn} />
@@ -346,7 +380,8 @@ var Report = React.createClass({
         var parsed_url = url.parse(this.context.location_href, true);
         var type = parsed_url.query.type;
         var schema = this.props.schemas[type];
-        var columns = columnChoices(schema, parsed_url.query.field);
+        var query_fields = parsed_url.query.field ? (typeof parsed_url.query.field === 'object' ? parsed_url.query.field : [parsed_url.query.field]) : undefined;
+        var columns = columnChoices(schema, query_fields);
 
         var fields = [];
         _.mapObject(columns, (column, path) => {
@@ -415,3 +450,20 @@ var ReportLoader = React.createClass({
 
 
 globals.content_views.register(ReportLoader, 'Report');
+
+
+// Custom cell-display function example.
+// var CustomCellDisplay = function(item, column property name) {
+//     if (displayCondition) {
+//        return (
+//            <span>{display}</span>
+//        );
+//     }
+// 
+//     // No custom display necessary for the requested column
+//     return null;
+// };
+
+
+// Register cell-display components
+// globals.report_cell.register(CustomCellDisplay, @type[0] in quotes, column property name in quotes);

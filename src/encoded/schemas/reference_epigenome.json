@@ -46,7 +46,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "8"
+            "default": "9"
         }
     },
     "facets": {
@@ -100,6 +100,10 @@
         },
         "related_datasets.files.read_length": {
             "title": "Read length",
+            "type": "string"
+        },
+        "related_datasets.files.mapped_read_length": {
+            "title": "Mapped read length",
             "type": "string"
         },
         "related_datasets.replicates.library.size_range": {
@@ -290,6 +294,7 @@
         "target.organism.name": 1.0,
         "target.organism.scientific_name": 1.0,
         "references.title": 1.0,
-        "related_datasets.replicates.library.biosample.rnais.product_id": 1.0
+        "related_datasets.replicates.library.biosample.rnais.product_id": 1.0,
+        "internal_tags": 1.0
     }
 }

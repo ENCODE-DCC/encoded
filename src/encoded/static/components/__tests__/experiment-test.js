@@ -42,18 +42,6 @@ describe('Experiment Page', function() {
             defDescs = summary[0].getDOMNode().getElementsByTagName('dd');
         });
 
-        it('has correct summary panel and key-value elements counts within it', function() {
-            expect(summary.length).toEqual(1);
-            expect(defTerms.length).toEqual(9);
-            expect(defDescs.length).toEqual(9);
-        });
-
-        it('has proper biosample summary for no-biosample case (code adds space always)', function() {
-            var item = summary[0].getDOMNode().querySelector('[data-test="biosample-summary"]');
-            var desc = item.getElementsByTagName('dd')[0];
-            expect(desc.textContent).toEqual('K562 ');
-        });
-
         it('has proper links in dbxrefs key-value', function() {
             var item = summary[0].getDOMNode().querySelector('[data-test="external-resources"]');
             var desc = item.getElementsByTagName('dd')[0];
@@ -148,28 +136,38 @@ describe('Experiment Page', function() {
     });
 
     describe('Replicate Panels', function() {
-        var experiment, replicates;
+        var experiment, replicates, summary;
 
         beforeEach(function() {
             var context_rep = _.clone(context);
             context_rep.replicates = [require('../testdata/replicate/human'), require('../testdata/replicate/mouse')];
+            context_rep.replicates[0].library = require('../testdata/library/sid38806');
+            context_rep.replicates[1].library = require('../testdata/library/sid38807');
             context_rep.files = [require('../testdata/file/fastq')];
             experiment = React.withContext(FetchContext, function() {
                 return TestUtils.renderIntoDocument(
                     <Experiment context={context_rep} />
                 );
             });
+            summary = TestUtils.scryRenderedDOMComponentsWithClass(experiment, 'data-display');
         });
 
-        it('has proper biosample summary ', function() {
-            var summary = TestUtils.scryRenderedDOMComponentsWithClass(experiment, 'data-display');
-            var item = summary[0].getDOMNode().querySelector('[data-test="biosample-summary"]');
+        it('has proper treatment', function() {
+            var item = summary[0].getDOMNode().querySelector('[data-test="treatments"]');
             var desc = item.getElementsByTagName('dd')[0];
-            expect(desc.textContent).toEqual('K562 (Homo sapiens and Mus musculus)');
-            var italics = desc.getElementsByTagName('em');
-            expect(italics.length).toEqual(2);
-            expect(italics[0].textContent).toEqual('Homo sapiens');
-            expect(italics[1].textContent).toEqual('Mus musculus');
+            expect(desc.textContent).toEqual('97.2 nM doxycycline hyclate (CHEBI:34730) for 6 hour [1-1]');
+        });
+
+        it('has proper strand specificity', function() {
+            var item = summary[0].getDOMNode().querySelector('[data-test="strandspecificity"]');
+            var desc = item.getElementsByTagName('dd')[0];
+            expect(desc.textContent).toEqual('Strand-specific');
+        });
+
+        it('has proper spikeins', function() {
+            var item = summary[0].getDOMNode().querySelector('[data-test="spikeins"]');
+            var desc = item.getElementsByTagName('dd')[0];
+            expect(desc.textContent).toEqual('ENCSR000AJW [1-1]');
         });
     });
 

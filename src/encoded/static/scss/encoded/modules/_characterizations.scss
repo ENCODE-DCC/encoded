@@ -14,89 +14,9 @@ $qualitymetric-figure-width: 96px;
 $qualitymetric-figure-height: 96px;
 
 
-
-/* clear first in row in ie 8 or lower */
-.multi-columns-row {
-    .first-in-row {
-        clear: left;
-    }
-}
-
-
-/* clear the first in row for any block that has the class "multi-columns-row" */
-@media (min-width: $screen-sm-min) {
-    .multi-columns-row {
-        .col-lg-1:nth-child(12n+1),
-        .col-lg-2:nth-child(6n+1),
-        .col-lg-3:nth-child(4n+1),
-        .col-lg-4:nth-child(3n+1),
-        .col-lg-6:nth-child(2n+1),
-        .col-md-1:nth-child(12n+1),
-        .col-md-2:nth-child(6n+1),
-        .col-md-3:nth-child(4n+1),
-        .col-md-4:nth-child(3n+1),
-        .col-md-6:nth-child(2n+1){
-            clear: none;
-        }
-        .col-sm-1:nth-child(12n+1),
-        .col-sm-2:nth-child(6n+1),
-        .col-sm-3:nth-child(4n+1),
-        .col-sm-4:nth-child(3n+1),
-        .col-sm-6:nth-child(2n+1){
-            clear: left;
-        }
-    }
-}
-@media (min-width: $screen-md-min) {
-    .multi-columns-row {
-        .col-lg-1:nth-child(12n+1),
-        .col-lg-2:nth-child(6n+1),
-        .col-lg-3:nth-child(4n+1),
-        .col-lg-4:nth-child(3n+1),
-        .col-lg-6:nth-child(2n+1),
-        .col-sm-1:nth-child(12n+1),
-        .col-sm-2:nth-child(6n+1),
-        .col-sm-3:nth-child(4n+1),
-        .col-sm-4:nth-child(3n+1),
-        .col-sm-6:nth-child(2n+1){
-            clear: none;
-        }
-        .col-md-1:nth-child(12n+1),
-        .col-md-2:nth-child(6n+1),
-        .col-md-3:nth-child(4n+1),
-        .col-md-4:nth-child(3n+1),
-        .col-md-6:nth-child(2n+1){
-            clear: left;
-        }
-    }
-}
-@media (min-width: $screen-lg-min) {
-    .multi-columns-row {
-        .col-md-1:nth-child(12n+1),
-        .col-md-2:nth-child(6n+1),
-        .col-md-3:nth-child(4n+1),
-        .col-md-4:nth-child(3n+1),
-        .col-md-6:nth-child(2n+1),
-        .col-sm-1:nth-child(12n+1),
-        .col-sm-2:nth-child(6n+1),
-        .col-sm-3:nth-child(4n+1),
-        .col-sm-4:nth-child(3n+1),
-        .col-sm-6:nth-child(2n+1){
-            clear: none;
-        }
-        .col-lg-1:nth-child(12n+1),
-        .col-lg-2:nth-child(6n+1),
-        .col-lg-3:nth-child(4n+1),
-        .col-lg-4:nth-child(3n+1),
-        .col-lg-6:nth-child(2n+1){
-            clear: left;
-        }
-    }
-}
-
-
 .type-Document.view-detail {
     padding: 0;
+    overflow: hidden;
 
     figure {
         margin: 14px;
@@ -149,7 +69,7 @@ $qualitymetric-figure-height: 96px;
     border-bottom: 1px solid #c0c0c0;
     font-weight: bold;
     text-align: left;
-    @include font-size(1);
+    font-size: 1rem;
 }
 
 
@@ -200,7 +120,7 @@ $qualitymetric-figure-height: 96px;
         padding: 5px 20px 8px;
         background-color: desaturate(lighten(#0a253d,30%),30%);
         color: #fff;
-        @include font-size(0.8);
+        font-size: 0.8rem;
         font-weight: bold;
     }
 
@@ -225,7 +145,7 @@ $qualitymetric-figure-height: 96px;
 
     .label {
         display: inline-block;
-        @include font-size(0.8);
+        font-size: 0.8rem;
     }
 }
 
@@ -237,7 +157,7 @@ $qualitymetric-figure-height: 96px;
 .characterization-status {
     margin-bottom: 8px;
     font-weight: bold;
-    @include font-size(1.5);
+    font-size: 1.5rem;
 
     %status-pos {
         top: -5px;
@@ -288,13 +208,13 @@ $qualitymetric-figure-height: 96px;
     text-shadow: 0 -1px 0 rgba(0,0,0,.3);
     text-align: left;
     padding: .3em .5em .4em;
-    @include font-size(1);
+    font-size: 1rem;
     line-height: 1.1;
     background-color: $gray-light;
 
     @media screen and (min-width: $screen-sm-min) {
         display: inline-block;
-        @include font-size(1.1);
+        font-size: 1.1rem;
     }
 }
 
@@ -311,7 +231,7 @@ $qualitymetric-figure-height: 96px;
 
     li {
         display: table-cell;
-        @include border-radius(0);
+        border-radius: 0;
         vertical-align: bottom;
         border-left: 1px solid #606060;
 
@@ -320,27 +240,27 @@ $qualitymetric-figure-height: 96px;
         }
 
         &:first-child {
-            @include border-top-left-radius(4px);
-            @include border-bottom-left-radius(4px);
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
             border-left: none;
         }
 
         &:last-child {
-            @include border-top-right-radius(4px);
-            @include border-bottom-right-radius(4px);
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
         }
     }
 }
 
 .status-list-title {
     display: block;
-    @include font-size(0.7);
+    font-size: 0.7rem;
     font-weight: normal;
     text-align: left;
 
     @media screen and (min-width: $screen-sm-min) {
         display: inline;
-        @include font-size(1.2);
+        font-size: 1.2rem;
     }
 }
 
@@ -418,7 +338,7 @@ $qualitymetric-figure-height: 96px;
     .#{$item}.status-audit-default        { background-color: $brand-success; }
     .#{$item}.status-audit-default[href]   { background-color: darken($brand-success, 10%); }
 
-    // DCC_ACTION, other (gray)
+    // INTERNAL_ACTION, other (gray)
     .#{$item}.status-audit-dcc_action        { background-color: #999; }
     .#{$item}.status-audit-dcc_action[href]   { background-color: darken(#999, 10%); }
 
@@ -489,7 +409,7 @@ $qualitymetric-figure-height: 96px;
 
 .facet-term-key {
     margin-right: 5px;
-    @include font-size(1.1);
+    font-size: 1.1rem;
 }
 
 
@@ -585,7 +505,7 @@ $qualitymetric-figure-height: 96px;
             width: 100%;
             padding: 0 17px 0 10px;
             text-align: center;
-            @include font-size(0.85);
+            font-size: 0.85rem;
             line-height: 24px;
         }
     }
@@ -652,12 +572,12 @@ $qualitymetric-figure-height: 96px;
 
     h3 {
         margin: 0;
-        @include font-size(1.2);
+        font-size: 1.2rem;
     }
 
     p {
         margin: 2px 0 0 0;
-        @include font-size(1);
+        font-size: 1rem;
         word-wrap: break-word;
     }
 }
@@ -732,7 +652,7 @@ $dl-bar-height: 30px;
     margin: 0;
     background-color: $mainThemeColor;
     text-align: center;
-    @include background-image(linear-gradient(top, lighten($mainThemeColor,5%) 0%, $mainThemeColor 100%));
+    background-image: linear-gradient(top, lighten($mainThemeColor,5%) 0%, $mainThemeColor 100%);
     background-image: -ms-linear-gradient(top, lighten($mainThemeColor,5%) 0%, $mainThemeColor 100%);
     border-top: 1px solid #808080 !important;
     border-bottom: none;
@@ -743,13 +663,12 @@ $dl-bar-height: 30px;
     color: #333333;
 
     &:hover {
-        @include background-image(linear-gradient(top, $mainThemeColor 0%, darken($mainThemeColor,5%) 100%));
-        background-image: -ms-linear-gradient(top, $mainThemeColor 0%, darken($mainThemeColor,5%) 100%);
+        background-image: linear-gradient(top, $mainThemeColor 0%, darken($mainThemeColor,5%) 100%);
     }
 
     &:focus {
         outline: none;
-        @include box-shadow(0 0 3px 2px #94bfe7 inset);
+        box-shadow: 0 0 3px 2px #94bfe7 inset;
     }
 
     &.panel-footer {
@@ -794,7 +713,7 @@ $dl-bar-height: 30px;
     left: 0;
     width: 100%;
     height: 40px;
-    @include background-image(linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.3) 100%));
+    background-image: linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.3) 100%);
 
     &.active {
         display: none;
@@ -806,5 +725,33 @@ $dl-bar-height: 30px;
 }
 
 .journal, .author {
-    @include font-size(1);
+   font-size: 1rem;
+}
+
+// Characterization panel biosample terms
+// **********
+
+// area to hold biosample terms
+.characterization-biosample-terms {
+    display: flex;
+    margin-top: -1px;
+    margin-right: -1px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: flex-start;
+    border-bottom: 1px solid #c0c0c0;
+}
+
+// each biosample term
+.characterization-biosample-term {
+    order: 0;
+    padding: 2px 5px;
+    align-self: auto;
+    text-align: center;
+    background-color: #e8e8e8;
+    border-top: 1px solid #fff;
+    border-right: 1px solid #fff;
+    font-size: 0.9rem;
 }

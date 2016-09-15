@@ -111,7 +111,7 @@ def test_audit_biosample_donor_organism(testapp, base_biosample, base_human_dono
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched organism' for error in errors_list)
+    assert any(error['category'] == 'inconsistent organism' for error in errors_list)
 
 
 def test_audit_subcellular(testapp, base_biosample):
@@ -121,7 +121,7 @@ def test_audit_subcellular(testapp, base_biosample):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched subcellular_fraction_term' for error in errors_list)
+    assert any(error['category'] == 'inconsistent subcellular_fraction_term' for error in errors_list)
 
 
 def test_audit_depleted_in(testapp, base_mouse_biosample):
@@ -131,7 +131,7 @@ def test_audit_depleted_in(testapp, base_mouse_biosample):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched depleted_in_term' for error in errors_list)
+    assert any(error['category'] == 'inconsistent depleted_in_term' for error in errors_list)
 
 
 def test_audit_depleted_in_length(testapp, base_mouse_biosample):
@@ -141,7 +141,7 @@ def test_audit_depleted_in_length(testapp, base_mouse_biosample):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched depleted_in_term length' for error in errors_list)
+    assert any(error['category'] == 'inconsistent depleted_in_term length' for error in errors_list)
 
 
 def test_audit_rnai_transfection(testapp, base_biosample, rnai):

@@ -20,7 +20,8 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/strains"},
         { "$ref": "mixins.json#/documents" },
-        { "$ref": "mixins.json#/genomic_alterations"}
+        { "$ref": "mixins.json#/genomic_alterations"},
+        { "$ref": "mixins.json#/genetic_modifications" }
     ],
     "properties": {
         "schema_version": {
@@ -74,8 +75,11 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^((cgc:.+)|(GEO:SAMN\\d+))$"
+                "pattern": "^(((CGC|WormBase|NBP):.+)|(GEO:SAMN\\d+))$"
             }
         }
+    },
+    "boost_values": {
+        "internal_tags": 1.0
     }
 }

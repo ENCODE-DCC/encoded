@@ -15,8 +15,9 @@ def reference_experiment_RNA_seq(testapp, lab, award):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
-        'assay_term_name': 'RNA-seq'
+        'status': 'started',
+        'assay_term_name': 'RNA-seq',
+        'assay_term_id': 'OBI:0001271'
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -27,8 +28,9 @@ def reference_experiment_RRBS(testapp, lab, award):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
-        'assay_term_name': 'RRBS'
+        'status': 'started',
+        'assay_term_name': 'RRBS',
+        'assay_term_id': 'OBI:0001862'
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -39,8 +41,9 @@ def reference_experiment_WGBS(testapp, lab, award):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
-        'assay_term_name': 'whole-genome shotgun bisulfite sequencing'
+        'status': 'started',
+        'assay_term_name': 'whole-genome shotgun bisulfite sequencing',
+        'assay_term_id': 'OBI:0001863'
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -51,9 +54,10 @@ def reference_experiment_chip_seq_control(testapp, lab, award, target_control):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'started',
         'assay_term_name': 'ChIP-seq',
-        'target': target_control['uuid']
+        'target': target_control['uuid'],
+        'assay_term_id': 'OBI:0000716'
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -64,9 +68,10 @@ def reference_experiment_chip_seq_H3K27me3(testapp, lab, award, target_H3K27me3)
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'started',
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K27me3['uuid']
+        'target': target_H3K27me3['uuid'],
+        'assay_term_id': 'OBI:0000716'
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -77,9 +82,10 @@ def reference_experiment_chip_seq_H3K36me3(testapp, lab, award, target_H3K36me3)
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'started',
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K36me3['uuid']
+        'target': target_H3K36me3['uuid'],
+        'assay_term_id': 'OBI:0000716'
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -90,9 +96,10 @@ def reference_experiment_chip_seq_H3K4me1(testapp, lab, award, target_H3K4me1):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'started',
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K4me1['uuid']
+        'target': target_H3K4me1['uuid'],
+        'assay_term_id': 'OBI:0000716'
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -103,9 +110,10 @@ def reference_experiment_chip_seq_H3K4me3(testapp, lab, award, target_H3K4me3):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'started',
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K4me3['uuid']
+        'target': target_H3K4me3['uuid'],
+        'assay_term_id': 'OBI:0000716'
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -116,9 +124,10 @@ def reference_experiment_chip_seq_H3K27ac(testapp, lab, award, target_H3K27ac):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'started',
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K27ac['uuid']
+        'target': target_H3K27ac['uuid'],
+        'assay_term_id': 'OBI:0000716'
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -129,9 +138,10 @@ def reference_experiment_chip_seq_H3K9me3(testapp, lab, award, target_H3K9me3):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'started',
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K9me3['uuid']
+        'target': target_H3K9me3['uuid'],
+        'assay_term_id': 'OBI:0000716'
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]

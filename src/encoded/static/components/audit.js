@@ -51,12 +51,14 @@ var AuditMixin = module.exports.AuditMixin = {
 
 var AuditIcon = module.exports.AuditIcon = React.createClass({
     propTypes: {
-        level: React.PropTypes.string // Level name from an audit object
+        level: React.PropTypes.string, // Level name from an audit object
+        addClasses: React.PropTypes.string // CSS classes to add to default
     },
 
     render: function() {
+        var {level, addClasses} = this.props;
         var levelName = this.props.level.toLowerCase();
-        var iconClass = 'icon audit-activeicon-' + levelName;
+        var iconClass = 'icon audit-activeicon-' + levelName + (addClasses ? ' ' + addClasses : '');
 
         return <i className={iconClass}><span className="sr-only">{'Audit'} {levelName}</span></i>;
     }
@@ -81,11 +83,11 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
             var sortedAuditLevels = _(Object.keys(audits)).sortBy(level => -audits[level][0].level);
 
             var indicatorClass = "audit-indicators btn btn-info" + (this.context.auditDetailOpen ? ' active' : '') + (this.props.search ? ' audit-search' : '');
-            if (loggedIn || !(sortedAuditLevels.length === 1 && sortedAuditLevels[0] === 'DCC_ACTION')) {
+            if (loggedIn || !(sortedAuditLevels.length === 1 && sortedAuditLevels[0] === 'INTERNAL_ACTION')) {
                 return (
                     <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.context.auditDetailOpen} aria-controls={this.props.id} onClick={this.context.auditStateToggle}>
                         {sortedAuditLevels.map(level => {
-                            if (loggedIn || level !== 'DCC_ACTION') {
+                            if (loggedIn || level !== 'INTERNAL_ACTION') {
                                 // Calculate the CSS class for the icon
                                 var levelName = level.toLowerCase();
                                 var btnClass = 'btn-audit btn-audit-' + levelName + ' audit-level-' + levelName;
@@ -133,7 +135,7 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
             return (
                 <Panel addClasses="audit-details" id={this.props.id.replace(/\W/g, '')} aria-hidden={!this.context.auditDetailOpen}>
                     {sortedAuditLevelNames.map(auditLevelName => {
-                        if (loggedIn || auditLevelName !== 'DCC_ACTION') {
+                        if (loggedIn || auditLevelName !== 'INTERNAL_ACTION') {
                             var audits = auditLevels[auditLevelName];
                             var level = auditLevelName.toLowerCase();
                             var iconClass = 'icon audit-icon-' + level;
@@ -191,39 +193,26 @@ var AuditGroup = module.exports.AuditGroup = React.createClass({
 
         return (
             <div className={alertClass}>
-                {loggedIn ?
-                    <div className={'icon audit-detail-trigger-' + auditLevelName}>
-                        <a href="#" data-trigger onClick={this.detailSwitch} className="collapsing-title">
-                            {CollapseIcon(!detailOpen)}
-                        </a>
-                    </div>
-                : null}
+                <div className={'icon audit-detail-trigger-' + auditLevelName}>
+                    <a href="#" data-trigger onClick={this.detailSwitch} className="collapsing-title">
+                        {CollapseIcon(!detailOpen)}
+                    </a>
+                </div>
                 <div className="audit-detail-info">
                     <i className={iconClass}></i>
-                    <span>
-                        {loggedIn ?
-                            <strong className={levelClass}>{auditLevelName.split('_').join(' ').toUpperCase()}&nbsp;&mdash;</strong>
-                        :
-                            <span>&nbsp;&nbsp;&nbsp;</span>
-                        }
-                    </span>
                     <strong>&nbsp;{categoryName}</strong>
-                    {!loggedIn ?
-                        <div className="btn-info-audit">
-                            <a href={'/data-standards/#' + categoryName.toLowerCase().split(' ').join('_')} title={'View description of ' + categoryName + ' in a new tab'} target="_blank"><i className="icon icon-question-circle"></i></a>
-                        </div>
-                    : null}
-                </div>
-                {loggedIn ?
-                    <div className="audit-details-section">
-                        <div className="audit-details-decoration"></div>
-                        {group.map((audit, i) =>
-                            <div className={alertItemClass} key={i} role="alert">
-                                <DetailEmbeddedLink detail={audit.detail} except={context['@id']} forcedEditLink={this.props.forcedEditLink} />
-                            </div>
-                        )}
+                    <div className="btn-info-audit">
+                        <a href={'/data-standards/audits/#' + categoryName.toLowerCase().split(' ').join('_')} title={'View description of ' + categoryName + ' in a new tab'} target="_blank"><i className="icon icon-question-circle"></i></a>
                     </div>
-                : null}
+                </div>
+                <div className="audit-details-section">
+                    <div className="audit-details-decoration"></div>
+                    {group.map((audit, i) =>
+                        <div className={alertItemClass} key={i} role="alert">
+                            <DetailEmbeddedLink detail={audit.detail} except={context['@id']} forcedEditLink={this.props.forcedEditLink} />
+                        </div>
+                    )}
+                </div>
             </div>
         );
     }
@@ -240,7 +229,7 @@ var DetailEmbeddedLink = React.createClass({
         var detail = this.props.detail;
 
         // Get an array of all paths in the detail string, if any.
-        var matches = detail.match(/(\/.+?\/)(?=$|\s+)/g);
+        var matches = detail.match(/(\/.*?\/.*?\/)(?=[\t \n,.]|$)/gmi);
         if (matches) {
             // Build React object of text followed by path for all paths in detail string
             var lastStart = 0;

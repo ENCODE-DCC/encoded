@@ -15,6 +15,7 @@ var reference = require('./reference');
 var objectutils = require('./objectutils');
 var sortTable = require('./sorttable');
 var doc = require('./doc');
+var {BiosampleSummaryString, CollectBiosampleDocs} = require('./typeutils');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -95,85 +96,6 @@ var BiosampleTableFooter = React.createClass({
 });
 
 
-// Collect up all the documents associated with the given biosample. They get combined all into one array of
-// documents (with @type of Document or Characterization). If the given biosample has no documdents, this
-// function returns null. Protocol documents, characterizations, construct documents, and RNAi documents
-// all get included.
-function collectBiosampleDocs(biosample) {
-    // Collect up the various biosample documents
-    var protocolDocuments = [];
-    if (biosample.protocol_documents && biosample.protocol_documents.length) {
-        protocolDocuments = globals.uniqueObjectsArray(biosample.protocol_documents);
-    }
-    var characterizations = [];
-    if (biosample.characterizations && biosample.characterizations.length) {
-        characterizations = globals.uniqueObjectsArray(biosample.characterizations);
-    }
-    var constructDocuments = [];
-    if (biosample.constructs && biosample.constructs.length) {
-        biosample.constructs.forEach(construct => {
-            if (construct.documents && construct.documents.length) {
-                constructDocuments = constructDocuments.concat(construct.documents);
-            }
-        });
-    }
-    var rnaiDocuments = [];
-    if (biosample.rnais && biosample.rnais.length) {
-        biosample.rnais.forEach(rnai => {
-            if (rnai.documents && rnai.documents.length) {
-                rnaiDocuments = rnaiDocuments.concat(rnai.documents);
-            }
-        });
-    }
-    var donorDocuments = [];
-    var donorCharacterizations = [];
-    if (biosample.donor) {
-        if (biosample.donor.characterizations && biosample.donor.characterizations.length) {
-            donorCharacterizations = biosample.donor.characterizations;
-        }
-        if (biosample.donor.documents && biosample.donor.documents.length) {
-            donorDocuments = biosample.donor.documents;
-        }
-    }
-    var donorConstructs = [];
-    if (biosample.model_organism_donor_constructs && biosample.model_organism_donor_constructs.length) {
-        biosample.model_organism_donor_constructs.forEach(construct => {
-            if (construct.documents && construct.documents.length) {
-                donorConstructs = donorConstructs.concat(construct.documents);
-            }
-        });
-    }
-    var talenDocuments = [];
-    if (biosample.talens && biosample.talens.length) {
-        biosample.talens.forEach(talen => {
-            talenDocuments = talenDocuments.concat(talen.documents);
-        });
-    }
-    var treatmentDocuments = [];
-    if (biosample.treatments && biosample.treatments.length) {
-        biosample.treatments.forEach(treatment => {
-            treatmentDocuments = treatmentDocuments.concat(treatment.protocols);
-        });
-    }
-
-    // Put together the document list for rendering
-    // Compile the document list
-    var combinedDocuments = _([].concat(
-        protocolDocuments,
-        characterizations,
-        constructDocuments,
-        rnaiDocuments,
-        donorDocuments,
-        donorCharacterizations,
-        donorConstructs,
-        talenDocuments,
-        treatmentDocuments
-    )).uniq(doc => doc.uuid);
-
-    return combinedDocuments;
-}
-
-
 var Biosample = module.exports.Biosample = React.createClass({
     mixins: [AuditMixin],
     render: function() {
@@ -199,12 +121,12 @@ var Biosample = module.exports.Biosample = React.createClass({
         }
 
         // Collect all documents in this biosample
-        var combinedDocs = collectBiosampleDocs(context);
+        var combinedDocs = CollectBiosampleDocs(context);
 
         // If this biosample is part of another, collect those documents too, then remove
         // any duplicate documents in the combinedDocs array.
         if (context.part_of) {
-            var parentCombinedDocs = collectBiosampleDocs(context.part_of);
+            var parentCombinedDocs = CollectBiosampleDocs(context.part_of);
             combinedDocs = combinedDocs.concat(parentCombinedDocs);
         }
         combinedDocs = globals.uniqueObjectsArray(combinedDocs);
@@ -226,6 +148,12 @@ var Biosample = module.exports.Biosample = React.createClass({
 
         // Get a list of reference links, if any
         var references = PubReferenceList(context.references);
+
+        // Render tags badges
+        var tagBadges;
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
 
         return (
             <div className={itemClass}>
@@ -258,15 +186,13 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                                     <div data-test="term-id">
                                         <dt>Term ID</dt>
-                                        <dd>{context.biosample_term_id}</dd>
+                                        <dd><BiosampleTermId termId={context.biosample_term_id} /></dd>
                                     </div>
 
-                                    {context.summary ?
-                                        <div data-test="summary">
-                                            <dt>Summary</dt>
-                                            <dd>{context.summary}</dd>
-                                        </div>
-                                    : null}
+                                    <div data-test="summary">
+                                        <dt>Summary</dt>
+                                        <dd>{BiosampleSummaryString(context)}</dd>
+                                    </div>
 
                                     {context.description ? 
                                         <div data-test="description">
@@ -480,6 +406,13 @@ var Biosample = module.exports.Biosample = React.createClass({
                                             <dd>{aliasList}</dd>
                                         </div>
                                     : null}
+
+                                    {tagBadges ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd>{tagBadges}</dd>
+                                        </div>
+                                    : null}
                                 </dl>
                             </div>
                         </div>
@@ -593,11 +526,57 @@ var MaybeLink = React.createClass({
 });
 
 
+// Display the biosample term ID given in `termId`, and link to a corresponding site if the prefix
+// of the term ID needs it. Any term IDs with prefixes not maching any in the `urlMap` property
+// simply display without a link.
+var BiosampleTermId = React.createClass({
+    propTypes: {
+        termId: React.PropTypes.string // Biosample whose term is being displayed.
+    },
+
+    // Map from prefixes to corresponding URL bases. Not all term ID prefixes covered here.
+    // Specific term IDs are appended to these after converting ':' to '_'.
+    urlMap: {
+        'EFO': 'http://www.ebi.ac.uk/efo/',
+        'UBERON': 'http://www.ontobee.org/ontology/UBERON?iri=http://purl.obolibrary.org/obo/',
+        'CL': 'http://www.ontobee.org/ontology/CL?iri=http://purl.obolibrary.org/obo/'
+    },
+
+    render: function() {
+        var termId = this.props.termId;
+
+        if (termId) {
+            // All are of the form XXX:nnnnnnn...
+            var idPieces = termId.split(':');
+            if (idPieces.length === 2) {
+                var urlBase = this.urlMap[idPieces[0]];
+                if (urlBase) {
+                    return <a href={urlBase + termId.replace(':', '_')}>{termId}</a>;
+                }
+            }
+
+            // Either term ID not in specified form (schema should disallow) or not one of the ones
+            // we link to. Just display the term ID without linking out.
+            return <span>{termId}</span>;
+        }
+
+        // biosample_term_id is a required property, but just in case...
+        return null;
+    }
+});
+
+
 var HumanDonor = module.exports.HumanDonor = React.createClass({
     render: function() {
         var context = this.props.context;
         var biosample = this.props.biosample;
         var references = PubReferenceList(context.references);
+
+        // Render tags badges
+        var tagBadges;
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
 
         return (
             <div>
@@ -671,6 +650,13 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                                     <dd>{references}</dd>
                                 </div>
                             : null}
+
+                            {tagBadges ?
+                                <div className="tag-badges" data-test="tags">
+                                    <dt>Tags</dt>
+                                    <dd>{tagBadges}</dd>
+                                </div>
+                            : null}
                         </dl>
                     </PanelBody>
                 </Panel>
@@ -693,6 +679,12 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
         if (biosample && biosample.donor && biosample.donor.url) {
             var donorUrl = url.parse(biosample.donor.url);
             donorUrlDomain = donorUrl.hostname || '';
+        }
+
+        // Render tags badges
+        var tagBadges;
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
         }
 
         return (
@@ -768,16 +760,6 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                                 </div>
                             : null}
 
-                            {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
-                                <section className="multi-columns-row">
-                                    <hr />
-                                    <h4>Characterizations</h4>
-                                    <div className="row multi-columns-row">
-                                        {biosample.donor.characterizations.map(PanelLookup)}
-                                    </div>
-                                </section>
-                            : null}
-
                             {context.dbxrefs && context.dbxrefs.length ?
                                 <div data-test="external-resources">
                                     <dt>External resources</dt>
@@ -791,7 +773,24 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                                     <dd>{PubReferenceList(context.references)}</dd>
                                 </div>
                             : null}
+
+                            {tagBadges ?
+                                <div className="tag-badges" data-test="tags">
+                                    <dt>Tags</dt>
+                                    <dd>{tagBadges}</dd>
+                                </div>
+                            : null}
                         </dl>
+
+                        {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
+                            <div>
+                                <hr />
+                                <h4>Characterizations</h4>
+                                <PanelBody addClasses="panel-body-doc-interior">
+                                    <DocumentsSubpanels documentSpec={{documents: biosample.donor.characterizations}} />
+                                </PanelBody>
+                            </div>
+                        : null}
                     </PanelBody>
                 </Panel>
             </div>
@@ -807,6 +806,12 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
         var context = this.props.context;
         var biosample = this.props.biosample;
         var donorUrlDomain;
+
+        // Render tags badges
+        var tagBadges;
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
 
         return (
             <div>
@@ -885,6 +890,13 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                                 <div data-test="external-resources">
                                     <dt>External resources</dt>
                                     <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                </div>
+                            : null}
+
+                            {tagBadges ?
+                                <div className="tag-badges" data-test="tags">
+                                    <dt>Tags</dt>
+                                    <dd>{tagBadges}</dd>
                                 </div>
                             : null}
                         </dl>
