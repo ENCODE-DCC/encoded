@@ -183,10 +183,6 @@ var GeneticModificationTable = module.exports.GeneticModificationTable = React.c
                 return null;
             }
         },
-        'assembly': {
-            title: 'Mapping assembly',
-            getValue: modification => modification.modification_genome_coordinates && modification.modification_genome_coordinates.assembly ? modification.modification_genome_coordinates.assembly : ''
-        },
         'target': {
             title: 'Target',
             display: modification => {
@@ -195,6 +191,29 @@ var GeneticModificationTable = module.exports.GeneticModificationTable = React.c
                 }
                 return null;
             },
+        },
+        'modification_purpose': {
+            title: 'Purpose'
+        },
+        'modification_zygocity': {
+            title: 'Zygocity'
+        },
+        'assembly': {
+            title: 'Mapping assembly',
+            getValue: modification => modification.modification_genome_coordinates && modification.modification_genome_coordinates.assembly ? modification.modification_genome_coordinates.assembly : ''
+        },
+        'coordinates': {
+            title: 'Coordinates',
+            display: modification => {
+                var coords = modification.modification_genome_coordinates;
+                if (coords && coords.chromosome) {
+                    return <span>chr{coords.chromosome}:{coords.start}-{coords.end}</span>;
+                }
+                return null;
+            } 
+        },
+        'notes': {
+            title: 'Notes'
         }
     },
 
