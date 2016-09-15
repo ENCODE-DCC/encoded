@@ -11,6 +11,7 @@ Schema version 13
 * *model_organism_age* requires *model_organism_age_units* and vice versa
 * *model_organism_age*, *model_organism_age_units*, *model_organism_sex*, *model_organism_mating_status* and *model_organism_health_status* properties all are restricted from use in human biosamples.
 * *post_synchronization_time* and *post_synchronization_time_units* are restricted from use in human and mouse biosamples.
+* *protocol_documents* was renamed to *documents*
 
 Schema version 12
 ----------------

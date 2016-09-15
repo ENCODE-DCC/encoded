@@ -22,7 +22,8 @@
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/submitter_comment" },
-        { "$ref": "mixins.json#/genetic_modifications" }
+        { "$ref": "mixins.json#/genetic_modifications" },
+        { "$ref": "mixins.json#/documents"}
     ],
     "dependencies": {
         "transfection_method": ["transfection_type"],
@@ -280,19 +281,8 @@
                 "pattern": "^((UCSC-ENCODE-cv:[\\S\\s\\d\\-\\(\\)\\+]+)|(GTEx:[a-zA-Z0-9\\-_]+)|(GEO:SAMN\\d+)|(Cellosaurus:CVCL_\\w{4}))$"
             }
         },
-        "protocol_documents": {
-            "title": "Protocol documents",
-            "description": "Documents that describe the biosample preparation.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Protocol document",
-                "description": "A document that describes the biosample preparation.",
-                "comment": "See document.json for available identifiers.",
-                "type": "string",
-                "linkTo": "Document"
-            }
+        "documents": {
+            "description": "Documents that describe the biosample preparation."
         },
         "donor": {
             "title": "Donor",
