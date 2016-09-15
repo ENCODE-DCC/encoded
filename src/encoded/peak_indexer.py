@@ -199,16 +199,24 @@ def index_peaks(uuid, request, ftype='bed'):
 
     urllib3.disable_warnings()
     http = urllib3.PoolManager()
-    r = http.request('GET', request.host_url + context['href'])
-    if r.status != 200:
+    if request.host_url == 'http://localhost':
+        host_url = request.host_url + ':8000'
+        # assume we are running in dev-servers
+    else:
+        host_url = request.host_url
+
+    req = http.request('GET', host_url + context['href'])
+    if req.status != 200:
         # Note horrible hack here for test data
-        r = http.request('GET', request.host_url + context['submitted_file_name'])
-        if r.status != 200:
-            return
+        req = http.request('GET', host_url + context['submitted_file_name'])
+        import pdb;pdb.set_trace()
+
+    if not req or req.status != 200:
+        return
     comp = io.BytesIO()
-    comp.write(r.data)
+    comp.write(req.data)
     comp.seek(0)
-    r.release_conn()
+    req.release_conn()
 
     if ftype == 'bed':
         index_bed(comp, request, context, assembly)
