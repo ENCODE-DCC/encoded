@@ -6,8 +6,9 @@ var mixins = require('./mixins');
 var Navigation = require('./navigation');
 var Footer = require('./footer');
 var url = require('url');
-var Home = require('./home').Home;
+var {Home} = require('./home');
 var DataColors = require('./datacolors');
+var {NewsHead} = require('./page');
 
 var portal = {
     portal_title: 'ENCODE',
@@ -288,6 +289,7 @@ var App = React.createClass({
                     <script async src='//www.google-analytics.com/analytics.js'></script>
                     <script data-prop-name="inline" dangerouslySetInnerHTML={{__html: this.props.inline}}></script>
                     <link rel="stylesheet" href={this.props.styles} />
+                    {NewsHead(this.props, href_url.protocol + '//' + href_url.host)}
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
                     <script data-prop-name="context" type="application/ld+json" dangerouslySetInnerHTML={{

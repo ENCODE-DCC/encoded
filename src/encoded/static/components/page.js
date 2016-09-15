@@ -16,17 +16,14 @@ var Page = module.exports.Page = React.createClass({
                 <Panel addClasses="news-post">
                     <div className="news-post-header">
                         <h1>{context.title}</h1>
-                        <h2>{moment.utc(context.date_created).format('MMMM D, YYYY')}</h2>
+                        <h2>{moment.utc(context.date_created).format('MMMM D, YYYY')} — <NewsShareList post={context} /></h2>
                     </div>
                     <Layout value={context.layout} />
                     <div className="news-keyword-section">
                         <NewsKeywordList post={context} />
                     </div>
-                    <div className="news-share-section">
-                        <NewsShareList post={context} />
-                    </div>
                 </Panel>
-            )
+            );
         }
 
         // Non-news page; render as title, then content box
@@ -69,6 +66,7 @@ var Listing = React.createClass({
 globals.listing_views.register(Listing, 'Page');
 
 
+// Display a list of keywords for the news article in the `post` prop.
 var NewsKeywordList = React.createClass({
     propTypes: {
         post: React.PropTypes.object // News post Page object
@@ -79,15 +77,17 @@ var NewsKeywordList = React.createClass({
         if (post.news_keywords && post.news_keywords.length) {
             return (
                 <div className="news-keyword-list">
-                    {post.news_keywords.map(keyword => <a key={keyword} className="news-keyword" href={'/search/?type=Page&news=true&news_keywords=' + keyword}>{keyword}</a>)}
+                    <a className="news-keyword" href={'/search/?type=Page&news=true'} title="Show all news posts">All news</a>
+                    {post.news_keywords.map(keyword => <a key={keyword} className="news-keyword" href={'/search/?type=Page&news=true&news_keywords=' + keyword} title={'Show all news posts tagged with ' + keyword}>{keyword}</a>)}
                 </div>
-            )
+            );
         }
         return null;
     }
 });
 
 
+// Display a list of news sharing links/buttons for the news article in the `post` prop.
 var NewsShareList = React.createClass({
     propTypes: {
         post: React.PropTypes.object // News post Page object
@@ -99,6 +99,35 @@ var NewsShareList = React.createClass({
 
     render: function() {
         var post = this.props.post;
-        return <a href={'http://twitter.com/intent/tweet?url=' + this.context.location_href + '&text=' + post.title + '&via=EncodeDCC'} target="_blank" title="Share this page on twitter in a new window">Tweet</a>;
+        return (
+            <div className="news-share-list">
+                <a className="share-twitter" href={'http://twitter.com/intent/tweet?url=' + this.context.location_href + '&text=' + post.title + '&via=EncodeDCC'} target="_blank" title="Share this page on Twitter in a new window" aria-label="Share on Twitter">
+                    <span className="sr-only">Twitter</span>
+                </a>
+                <a className="share-facebook" href={'https://www.facebook.com/sharer/sharer.php?u=' + this.context.location_href + '&t=' + post.title} target="_blank" title="Share this page on Facebook in a new window" aria-label="Share on Facebook">
+                    <span className="sr-only">Facebook</span>
+                </a>
+                <a className="share-googleplus" href={'https://plus.google.com/share?url=' + this.context.location_href} target="_blank" title="Share this page on Google Plus in a new window" aria-label="Share on Google+">
+                    <span className="sr-only">Google+</span>
+                </a>
+            </div>
+        );
     }
 });
+
+
+// Write Facebook meta tags to the site header.
+var NewsHead = module.exports.NewsHead = function(props, siteUrl) {
+    var context = props.context;
+
+    if (context.news) {
+        return [
+            <meta property="og:url" content={props.href} />,
+            <meta property="og:type" content="article" />,
+            <meta property="og:title" content={context.title} />,
+            <meta property="og:description" content={context.news_excerpt} />,
+            <meta property="og:image" content={siteUrl + '/static/img/encode-logo-small-2x.png'} />
+        ];
+    }
+    return null;
+};
