@@ -1,7 +1,7 @@
 [
      {
-        "concentration": 5000000,
-        "concentration_units": "pfu",      
+        "amount": 5000000,
+        "amount_units": "pfu",      
         "lab": "john-stamatoyannopoulos",        
         "submitted_by": "blandit.orci@conubia.magna",
         "treatment_term_id": "Taxon:11623",
@@ -10,15 +10,15 @@
         "uuid": "81251aeb-7975-4364-a078-86db3fa526d4"
     },
     {
-        "concentration": 97.2,
-        "concentration_units": "nM",
+        "amount": 97.2,
+        "amount_units": "nM",
         "duration": 6,
         "duration_units": "hour",
         "dbxrefs": [
             "UCSC-ENCODE-cv:diffProtB_6hr"
         ],
         "lab": "john-stamatoyannopoulos",
-        "protocols": [
+        "documents": [
             "ENCODE:diffProtB_6hr_protocol"
         ],
         "submitted_by": "blandit.orci@conubia.magna",
@@ -28,25 +28,25 @@
         "uuid": "3280b708-0f05-40fa-bff2-54e2b6505c13"
     },
     {
-         "concentration": 5000000,
-         "concentration_units": "nM",      
+         "amount": 5000000,
+         "amount_units": "nM",      
          "lab": "john-stamatoyannopoulos",        
          "submitted_by": "blandit.orci@conubia.magna",
          "treatment_term_name": "goat-anti-GFP-UC",
          "treatment_type": "antibody",
          "uuid": "10c05ac0-52a2-11e6-bdf4-0800200c9a66",
-         "antibodies": ["ENCAB728YTO" ]
+         "antibodies_used": ["ENCAB728YTO"]
     },
     {
-        "concentration": 600,
-        "concentration_units": "nM",
+        "amount": 600,
+        "amount_units": "nM",
         "duration": 30,
         "duration_units": "minute",
         "dbxrefs": [
             "UCSC-ENCODE-cv:4OHTAM_100nM_30m"
         ],
         "lab": "gregory-crawford",
-        "protocols": [
+        "documents": [
             "ENCODE:MCF-7_Farnham_treatment_protocol"
         ],
         "submitted_by": "metus.donec@nisl.montes",
@@ -76,9 +76,9 @@
         "treatment_term_id": "Taxon:273526",
         "treatment_type": "infection",
         "lab": "robert-waterston",
+        "duration": 48,
         "duration_units": "hour",
-        "treatment_term_name": "Serratia marcescens subsp. marcescens Db11",
-        "duration": 48
+        "treatment_term_name": "Serratia marcescens subsp. marcescens Db11"
     },
     {
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
@@ -86,11 +86,11 @@
         "treatment_term_id": "CHEBI:41879",
         "treatment_type": "chemical",
         "lab": "robert-waterston",
-        "duration_units": "hour",
         "treatment_term_name": "dexamethasone",
         "duration": 8,
-        "concentration": 100,
-        "concentration_units": "nM",
+        "duration_units": "hour",
+        "amount": 100,
+        "amount_units": "nM",
         "aliases": ["robert-waterston:100mM_dex_8hr"]
     },
     {
@@ -99,11 +99,11 @@
         "treatment_term_id": "CHEBI:41879",
         "treatment_type": "chemical",
         "lab": "robert-waterston",
-        "duration_units": "hour",
         "treatment_term_name": "dexamethasone",
         "duration": 10,
-        "concentration": 100,
-        "concentration_units": "nM",
+        "duration_units": "hour",
+        "amount": 100,
+        "amount_units": "nM",
         "aliases": ["robert-waterston:100mM_dex_10hr"]
     },
     {
@@ -112,11 +112,11 @@
         "treatment_term_id": "CHEBI:41879",
         "treatment_type": "chemical",
         "lab": "robert-waterston",
-        "duration_units": "hour",
         "treatment_term_name": "dexamethasone",
         "duration": 12,
-        "concentration": 100,
-        "concentration_units": "nM",
+        "duration_units": "hour",
+        "amount": 100,
+        "amount_units": "nM",
         "aliases": ["robert-waterston:100mM_dex_12hr"]
     },
     {
@@ -125,11 +125,11 @@
         "treatment_term_id": "CHEBI:41879",
         "treatment_type": "chemical",
         "lab": "robert-waterston",
-        "duration_units": "hour",
         "treatment_term_name": "dexamethasone",
         "duration": 8,
-        "concentration": 80,
-        "concentration_units": "nM",
+        "duration_units": "hour",
+        "amount": 80,
+        "amount_units": "nM",
         "aliases": ["robert-waterston:80mM_dex_8hr"]
     },
     {
@@ -138,11 +138,11 @@
         "treatment_term_id": "CHEBI:41879",
         "treatment_type": "chemical",
         "lab": "robert-waterston",
-        "duration_units": "hour",
         "treatment_term_name": "dexamethasone",
         "duration": 8,
-        "concentration": 60,
-        "concentration_units": "nM",
+        "duration_units": "hour",
+        "amount": 60,
+        "amount_units": "nM",
         "aliases": ["robert-waterston:60mM_dex_8hr"]
     }
 ]
