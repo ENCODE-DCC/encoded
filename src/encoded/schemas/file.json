@@ -76,15 +76,29 @@
         "file_format":{
             "oneOf": [
                 {
-                    "required": ["replicate"],
-                    "properties": {
-                        "file_format": {
-                            "enum": ["fastq"]
+                    "allOf": [
+                        {
+                            "required": ["replicate", "run_type"],
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq"]
+                                }
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["assembly"],
+                                "properties": {
+                                    "file_format": {
+                                        "enum": ["fastq"]
+                                    }
+                                }
+                            }
                         }
-                    }
+                    ]
                 },
                 {
-                    "required": ["file_format_type"],
+                    "required": ["file_format_type", "assembly"],
                     "properties": {
                         "file_format": {
                             "enum": ["gff","bed","bigBed"]
@@ -92,10 +106,18 @@
                     }
                 },
                 {
+                    "required": ["assembly"],
+                    "properties": {
+                        "file_format": {
+                            "enum": ["bam", "sam", "gtf"]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "file_format": {
-                                "enum": ["fastq", "gff", "bed", "bigBed"]
+                                "enum": ["fastq", "gff", "gtf", "bed", "bigBed", "bam", "sam"]
                             }
                         }
                     }
@@ -105,7 +127,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "7"
+            "default": "9"
         },
         "accession": {
             "accessionType": "FF"
@@ -127,6 +149,7 @@
                         "bed",
                         "bigBed",
                         "bigWig",
+                        "btr",
                         "fasta",
                         "fastq",
                         "gff",
@@ -250,6 +273,12 @@
             "description": "For high-throughput sequencing, the number of contiguous nucleotides determined by sequencing.",
             "type": "integer"
         },
+        "mapped_read_length": {
+            "title": "Mapped read length",
+            "description": "The length of the reads actually mapped, if the original read length was clipped.",
+            "comment": "This is used when the original sequenced read length needed to be adjusted to match a replicate, or to match experiments and controls.",
+            "type": "integer"
+        },
         "flowcell_details": {
             "title": "Flowcells",
             "description": "For high-throughput sequencing, the flowcells used for the sequencing of the replicate.",
@@ -351,6 +380,7 @@
                         "long range chromatin interactions",
                         "chromatin interactions",
                         "topologically associated domains",
+                        "nested topologically associated domains",
                         "genome compartments",
                         "open chromatin regions",
                         "filtered peaks",
@@ -389,7 +419,10 @@
                         "conservative idr thresholded peaks",
 
                         "enhancer validation",
-                        "semi-automated genome annotation"
+                        "semi-automated genome annotation",
+
+                        "blacklisted regions",
+                        "mitochondria blacklisted regions"
 
                     ]
                 },
@@ -423,7 +456,7 @@
                         "valleys",
                         "sequence alignability",
                         "sequence uniqueness",
-                        "blacklisted regions",
+                        
 
                         "primer sequence",
                         "reference",
@@ -483,8 +516,8 @@
                     "linkTo": "File"
             }
         },
-        "supercedes": {
-            "title": "Supercedes" ,
+        "supersedes": {
+            "title": "Supersedes" ,
             "description": "The files that this file replaces.",
             "type": "array",
             "uniqueItems": true,
@@ -591,7 +624,7 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^\\S+:\\S+"
+                "pattern": "^(SRA:(SRR|SRX)\\d+)$"
             }
         },
         "step_run": {
@@ -614,6 +647,9 @@
         },
         "dataset": {
             "title": "Dataset"
+        },
+        "technical_replicates": {
+            "title": "Technical replicates"
         },
         "biological_replicates": {
             "title": "Biological replicates"
@@ -641,6 +677,9 @@
         },
         "paired_end": {
             "title": "Paired End Identifier"
+        },
+        "paired_with": {
+            "title": "File pairing"
         },
         "run_type": {
             "title": "Run type for sequencing files"
@@ -738,6 +777,7 @@
         "long range chromatin interactions": "annotation",
         "chromatin interactions": "annotation",
         "topologically associated domains": "annotation",
+        "nested topologically associated domains": "annotation",
         "genome compartments": "annotation",
         "open chromatin regions":"annotation",
         "filtered peaks":"annotation",
@@ -756,6 +796,7 @@
         "sequence alignability": "annotation",
         "sequence uniqueness": "annotation",
         "blacklisted regions": "annotation",
+        "mitochondria blacklisted regions": "annotation",
         "distal peaks": "annotation",
         "proximal peaks": "annotation",
         "optimal idr thresholded peaks": "annotation",
@@ -805,6 +846,7 @@
         "bed": ".bed.gz",
         "bigBed": ".bigBed",
         "bigWig": ".bigWig",
+        "btr": ".btr",
         "csfasta": ".csfasta.gz",
         "csqual": ".csqual.gz",
         "fasta": ".fasta.gz",

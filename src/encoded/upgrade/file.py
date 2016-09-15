@@ -453,3 +453,21 @@ def file_6_7(value, system):
 
     if 'aliases' in value:
         value['aliases'] = list(set(value['aliases']))
+
+
+@upgrade_step('file', '7', '8')
+def file_7_8(value, system):
+    return
+
+
+@upgrade_step('file', '8', '9')
+def file_8_9(value, system):
+
+    # http://redmine.encodedcc.org/issues/4183
+    if (value['file_format'] == 'fastq') and ('assembly' in value):
+        value.pop('assembly')
+
+    # http://redmine.encodedcc.org/issues/1859
+    if 'supercedes' in value:
+        value['supersedes'] = value['supercedes']
+        value.pop('supercedes', None)

@@ -31,13 +31,13 @@ def audit_antibody_characterization_review(value, system):
                     term_id,
                     term_name
                     )
-                yield AuditFailure('NTR biosample', detail, level='DCC_ACTION')
+                yield AuditFailure('NTR biosample', detail, level='INTERNAL_ACTION')
                 return
             if term_id not in ontology:
                 detail = 'Antibody characterization {} contains '.format(value['@id']) + \
                          'a biosample_term_id {} that is not in the ontology'.format(term_id)
 
-                yield AuditFailure('term_id not in ontology', term_id, level='DCC_ACTION')
+                yield AuditFailure('term_id not in ontology', term_id, level='INTERNAL_ACTION')
                 return
             ontology_term_name = ontology[term_id]['name']
             if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
@@ -46,7 +46,7 @@ def audit_antibody_characterization_review(value, system):
                                                                             term_name,
                                                                             ontology_term_name)
 
-                yield AuditFailure('mismatched ontology term', detail, level='ERROR')
+                yield AuditFailure('inconsistent ontology term', detail, level='ERROR')
                 return
             biosample_prefix = term_id.split(':')[0]
             if biosample_prefix not in biosampleType_ontologyPrefix[review['biosample_type']]:
@@ -56,7 +56,7 @@ def audit_antibody_characterization_review(value, system):
                          'that is not one of ' + \
                          '{}'.format(biosampleType_ontologyPrefix[term_type])
                 yield AuditFailure('characterization review with biosample term-type mismatch', detail,
-                                   level='DCC_ACTION')
+                                   level='INTERNAL_ACTION')
                 return
 
 @audit_checker('antibody_characterization', frame=[
@@ -89,7 +89,7 @@ def audit_antibody_characterization_unique_reviews(value, system):
                 term_id,
                 organism
                 )
-            raise AuditFailure('duplicate lane review', detail, level='DCC_ACTION')
+            raise AuditFailure('duplicate lane review', detail, level='INTERNAL_ACTION')
 
 
 @audit_checker('antibody_characterization', frame=[
@@ -130,16 +130,19 @@ def audit_antibody_characterization_target(value, system):
                 raise AuditFailure('mismatched tag target', detail, level='ERROR')
     else:
         target_matches = False
+        antibody_targets = []
         for antibody_target in antibody['targets']:
+            antibody_targets.append(antibody_target.get('name'))
             if target['name'] == antibody_target.get('name'):
                 target_matches = True
         if not target_matches:
-            detail = 'Target {} in {} is not found in target list for antibody {}'.format(
-                target['name'],
+            antibody_targets_string = str(antibody_targets).replace('\'', '')
+            detail = 'Antibody characterization {} target is {}, '.format(
                 value['@id'],
-                antibody['@id']
-                )
-            raise AuditFailure('mismatched target', detail, level='ERROR')
+                target['name']) + \
+                'but it could not be found in antibody\'s {} '.format(antibody['@id']) + \
+                'target list {}.'.format(antibody_targets_string)
+            raise AuditFailure('inconsistent target', detail, level='ERROR')
 
 
 @audit_checker('antibody_characterization', frame=[
@@ -170,7 +173,7 @@ def audit_antibody_characterization_status(value, system):
                 value['@id'],
                 value['status']
                 )
-            raise AuditFailure('mismatched lane status', detail, level='DCC_ACTION')
+            raise AuditFailure('mismatched lane status', detail, level='INTERNAL_ACTION')
             continue
 
         if lane['lane_status'] == 'compliant':
@@ -182,4 +185,4 @@ def audit_antibody_characterization_status(value, system):
             value['@id'],
             value['status']
             )
-        raise AuditFailure('mismatched lane status', detail, level='DCC_ACTION')
+        raise AuditFailure('mismatched lane status', detail, level='INTERNAL_ACTION')

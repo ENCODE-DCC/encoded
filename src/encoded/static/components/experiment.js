@@ -21,11 +21,11 @@ var sortTable = require('./sorttable');
 var objectutils = require('./objectutils');
 var doc = require('./doc');
 var {FileGallery} = require('./filegallery');
+var {BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs} = require('./typeutils');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var FetchedItems = fetched.FetchedItems;
-var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
 var StatusLabel = statuslabel.StatusLabel;
 var {AuditMixin, AuditIndicators, AuditDetail} = audit;
@@ -74,7 +74,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         var itemClass = globals.itemClass(context, 'view-item');
         var replicates = context.replicates;
         if (replicates) {
-            var condensedReplicatesKeyed = _(replicates).groupBy(replicate => replicate.library && replicate.library['@id']);
+            var condensedReplicatesKeyed = _(replicates).groupBy(replicate => replicate.library ? replicate.library['@id'] : replicate.uuid);
             if (Object.keys(condensedReplicatesKeyed).length) {
                 condensedReplicates = _.toArray(condensedReplicatesKeyed);
             }
@@ -85,8 +85,9 @@ var Experiment = module.exports.Experiment = React.createClass({
 
         // Make array of all replicate biosamples, not including biosample-less replicates. Also collect up library documents.
         var libraryDocs = [];
+        var biosamples = [];
         if (replicates) {
-            var biosamples = _.compact(replicates.map(replicate => {
+            biosamples = _.compact(replicates.map(replicate => {
                 if (replicate.library) {
                     if (replicate.library.documents && replicate.library.documents.length){
                         Array.prototype.push.apply(libraryDocs, replicate.library.documents);
@@ -121,6 +122,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 extraction_method:              {values: {}, value: undefined, component: {}, title: 'Extraction method',         test: 'extractionmethod'},
                 fragmentation_method:           {values: {}, value: undefined, component: {}, title: 'Fragmentation method',      test: 'fragmentationmethod'},
                 library_size_selection_method:  {values: {}, value: undefined, component: {}, title: 'Size selection method',     test: 'sizeselectionmethod'},
+                strand_specificity:             {values: {}, value: undefined, component: {}, title: 'Strand specificity',        test: 'strandspecificity'},
                 spikeins_used:                  {values: {}, value: undefined, component: {}, title: 'Spike-ins datasets',        test: 'spikeins'}
             };
 
@@ -171,13 +173,14 @@ var Experiment = module.exports.Experiment = React.createClass({
                 }
             };
             var libraryComponents = {
-                nucleic_acid_starting_quantity: function(library) {
+                nucleic_acid_starting_quantity: library => {
                     if (library.nucleic_acid_starting_quantity && library.nucleic_acid_starting_quantity_units) {
                         return <span>{library.nucleic_acid_starting_quantity}<span className="unit">{library.nucleic_acid_starting_quantity_units}</span></span>;
                     }
                     return null;
                 },
-                spikeins_used: function(library) {
+                strand_specificity: library => <span>{library.strand_specificity ? 'Strand-specific' : 'Non-strand-specific'}</span>,
+                spikeins_used: library => {
                     var spikeins = library.spikeins_used;
                     if (spikeins && spikeins.length) {
                         return (
@@ -198,83 +201,14 @@ var Experiment = module.exports.Experiment = React.createClass({
             };
         }
 
-        // Build the text of the Treatment, synchronization, and mutatedGene string arrays; collect biosample docs
-        var treatments;
-        var synchText = [];
-        var biosampleCharacterizationDocs = [];
+        // Collect biosample docs
         var biosampleDocs = [];
-        var biosampleTalenDocs = [];
-        var biosampleRnaiDocs = [];
-        var biosampleConstructDocs = [];
-        var biosampleDonorDocs = [];
-        var biosampleDonorCharacterizations = [];
         biosamples.forEach(biosample => {
-            // Collect treatments
-            treatments = treatments || !!(biosample.treatments && biosample.treatments.length);
-
-            // Collect synchronizations
-            if (biosample.synchronization) {
-                synchText.push(biosample.synchronization +
-                    (biosample.post_synchronization_time ?
-                        ' + ' + biosample.post_synchronization_time + (biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : '')
-                    : ''));
-            }
-
-            // Collect biosample characterizations
-            if (biosample.characterizations && biosample.characterizations.length) {
-                biosampleCharacterizationDocs = biosampleCharacterizationDocs.concat(biosample.characterizations);
-            }
-
-            // Collect biosample protocol documents
-            if (biosample.protocol_documents && biosample.protocol_documents.length) {
-                biosampleDocs = biosampleDocs.concat(biosample.protocol_documents);
-            }
-
-            // Collect TALEN documents
-            if (biosample.talens && biosample.talens.length) {
-                biosample.talens.forEach(talen => {
-                    if (talen.documents && talen.documents.length) {
-                        Array.prototype.push.apply(biosampleTalenDocs, talen.documents);
-                    }
-                });
-            }
-
-            // Collect RNAi documents
-            if (biosample.rnais && biosample.rnais.length) {
-                biosample.rnais.forEach(rnai => {
-                    if (rnai.documents && rnai.documents.length) {
-                        Array.prototype.push.apply(biosampleRnaiDocs, rnai.documents);
-                    }
-                });
-            }
-
-            // Collect RNAi documents
-            if (biosample.constructs && biosample.constructs.length) {
-                biosample.constructs.forEach(construct => {
-                    if (construct.documents && construct.documents.length) {
-                        Array.prototype.push.apply(biosampleConstructDocs, construct.documents);
-                    }
-                });
-            }
-
-            // Collect donor documents
-            if (biosample.donor && biosample.donor.documents && biosample.donor.documents.length) {
-                Array.prototype.push.apply(biosampleDonorDocs, biosample.donor.documents);
-            }
-
-            // Collect donor characterizations
-            if (biosample.donor && biosample.donor.characterizations && biosample.donor.characterizations.length) {
-                Array.prototype.push.apply(biosampleDonorCharacterizations, biosample.donor.characterizations);
+            biosampleDocs = biosampleDocs.concat(CollectBiosampleDocs(biosample));
+            if (biosample.part_of) {
+                biosampleDocs = biosampleDocs.concat(CollectBiosampleDocs(biosample.part_of));
             }
         });
-        synchText = synchText && _.uniq(synchText);
-        biosampleCharacterizationDocs = biosampleCharacterizationDocs.length ? globals.uniqueObjectsArray(biosampleCharacterizationDocs) : [];
-        biosampleDocs = biosampleDocs.length ? globals.uniqueObjectsArray(biosampleDocs) : [];
-        biosampleTalenDocs = biosampleTalenDocs.length ? globals.uniqueObjectsArray(biosampleTalenDocs) : [];
-        biosampleRnaiDocs = biosampleRnaiDocs.length ? globals.uniqueObjectsArray(biosampleRnaiDocs) : [];
-        biosampleConstructDocs = biosampleConstructDocs.length ? globals.uniqueObjectsArray(biosampleConstructDocs) : [];
-        biosampleDonorDocs = biosampleDonorDocs.length ? globals.uniqueObjectsArray(biosampleDonorDocs) : [];
-        biosampleDonorCharacterizations = biosampleDonorCharacterizations.length ? globals.uniqueObjectsArray(biosampleDonorCharacterizations) : [];
 
         // Collect pipeline-related documents
         var analysisStepDocs = [];
@@ -304,9 +238,6 @@ var Experiment = module.exports.Experiment = React.createClass({
         }
         analysisStepDocs = analysisStepDocs.length ? globals.uniqueObjectsArray(analysisStepDocs) : [];
         pipelineDocs = pipelineDocs.length ? globals.uniqueObjectsArray(pipelineDocs) : [];
-
-        // Generate biosample summaries
-        var fullSummaries = biosampleSummaries(biosamples);
 
         var antibodies = {};
         replicates.forEach(replicate => {
@@ -338,9 +269,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         var assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
         var assayName = context[assayTerm];
         var assayQuery = assayTerm + '=' + assayName;
-        var organismNames = _.chain(biosamples.map(function(biosample) {
-            return biosample.donor ? biosample.donor.organism.scientific_name : '';
-        })).compact().uniq().value();
+        var organismNames = BiosampleOrganismNames(biosamples);
         var nameQuery = '';
         var nameTip = '';
         var names = organismNames.map(function(organismName, i) {
@@ -359,22 +288,23 @@ var Experiment = module.exports.Experiment = React.createClass({
 
         // Compile the document list
         var combinedDocuments = _(documents.concat(
-            biosampleCharacterizationDocs,
+            biosampleDocs,
             libraryDocs,
             biosampleDocs,
-            biosampleTalenDocs,
-            biosampleRnaiDocs,
-            biosampleConstructDocs,
-            biosampleDonorDocs,
-            biosampleDonorCharacterizations,
             pipelineDocs,
             analysisStepDocs
-        )).uniq(doc => doc.uuid);
+        )).chain().uniq(doc => doc ? doc.uuid : null).compact().value();
 
         var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
 
         // Make a list of reference links, if any
         var references = PubReferenceList(context.references);
+
+        // Render tags badges
+        var tagBadges;
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
 
         // XXX This makes no sense.
         //var control = context.possible_controls[0];
@@ -417,10 +347,23 @@ var Experiment = module.exports.Experiment = React.createClass({
                                         </div>
                                     : null}
 
-                                    {biosamples.length || context.biosample_term_name ?
+                                    {context.biosample_summary ?
                                         <div data-test="biosample-summary">
                                             <dt>Biosample summary</dt>
-                                            <dd>{context.biosample_term_name ? <span>{context.biosample_term_name}{' '}{fullSummaries}</span> : <span>{fullSummaries}</span>}</dd>
+                                            <dd>
+                                                {organismNames.length ?
+                                                    <span>
+                                                        {organismNames.map((organismName, i) =>
+                                                            <span>
+                                                                {i > 0 ? <span> and </span> : null}
+                                                                <i>{organismName}</i>
+                                                            </span>
+                                                        )}
+                                                        <span> </span>
+                                                    </span>
+                                                : null}
+                                                <span>{context.biosample_summary}</span>
+                                            </dd>
                                         </div>
                                     : null}
 
@@ -546,6 +489,13 @@ var Experiment = module.exports.Experiment = React.createClass({
                                             <dd>{context.submitter_comment}</dd>
                                         </div>
                                     : null}
+
+                                    {tagBadges ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd>{tagBadges}</dd>
+                                        </div>
+                                    : null}
                                 </dl>
                             </div>
                         </div>
@@ -561,7 +511,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} ignoreErrors />
 
-                <DocumentsPanel documentSpecs={[{documents: combinedDocuments}]} />
+                {combinedDocuments.length ? <DocumentsPanel documentSpecs={[{documents: combinedDocuments}]} /> : null}
             </div>
         );
     }
@@ -603,7 +553,7 @@ var ReplicateTable = React.createClass({
 
                 // Else, display biosample summary if the biosample exists
                 if (replicate.library && replicate.library.biosample) {
-                    return <span>{replicate.library.biosample.summary}</span>;
+                    return <span>{BiosampleSummaryString(replicate.library.biosample, true)}</span>;
                 }
 
                 // Else, display nothing
@@ -814,100 +764,6 @@ var AssayDetails = function (replicates, libraryValues, librarySpecials, library
 
     // Finally, return the array of JSX renderings of all assay details.
     return components;
-};
-
-
-// Return a summary of the given biosamples, ready to be displayed in a React component.
-var biosampleSummaries = function(biosamples) {
-    var organismNames = []; // Array of all organism scientific names in all given biosamples
-    var lifeAges = []; // Array of all life stages, ages, and sexes in all given biosamples
-    var depletedIns = {}; // Collection of depleted_in_term_name in all biosamples; each one is a key with the value True
-    var mutatedGenes = {}; // Collection of donor.mutated_gene in all biosamples; each one is a key with the value True
-    var subcellularTerms = {}; // Collection of subcellular_fraction_term_name in all biosamples; each one is a key with the value True
-    var cellCycles = {}; // Collection of phase in all biosamples; each one is a key with the value True
-    var fullSummary = null; // Complete summary of biosample in a <span>, ready to include in a React component
-
-    // Collect biosample data from all biosamples
-    biosamples.forEach(function(biosample) {
-        // Collect names of biosample characteristics
-        if (biosample.depleted_in_term_name && biosample.depleted_in_term_name.length) {
-            biosample.depleted_in_term_name.forEach(function(depletedIn) {
-                depletedIns[depletedIn] = true;
-            });
-        }
-        if (biosample.donor && biosample.donor.mutated_gene) {
-            mutatedGenes[biosample.donor.mutated_gene.label] = true;
-        }
-        if (biosample.subcellular_fraction_term_name) {
-            subcellularTerms[biosample.subcellular_fraction_term_name] = true;
-        }
-        if (biosample.phase) {
-            cellCycles[biosample.phase] = true;
-        }
-
-        // Collect organism scientific names
-        if (biosample.organism.scientific_name) {
-            organismNames.push(biosample.organism.scientific_name);
-        }
-
-        // Collect strings with non-'unknown', non-empty life_stage, age, age_units, and sex, concatenated
-        var lifeAgeString = (biosample.life_stage && biosample.life_stage != 'unknown') ? biosample.life_stage : '';
-        // Add to the filtering options to generate a <select>
-        if (biosample.age && biosample.age != 'unknown') {
-            lifeAgeString += (lifeAgeString ? ' ' : '') + biosample.age;
-            lifeAgeString += (biosample.age_units && biosample.age_units != 'unknown') ? ' ' + biosample.age_units : '';
-        }
-        if (biosample.sex && biosample.sex != 'unknown') {
-            lifeAgeString += (lifeAgeString ? ' ' : '') + biosample.sex;
-        }
-        if (lifeAgeString) {
-            lifeAges.push(lifeAgeString);
-        }
-    });
-
-    // Remove duplicates from stage/age/sex strings and organism names
-    if (lifeAges.length) {
-        lifeAges = _.uniq(lifeAges);
-    }
-    if (organismNames.length) {
-        organismNames = _.uniq(organismNames);
-    }
-
-    // Make summary strings of each kind of biosample data
-    var nameKeys = Object.keys(depletedIns);
-    var depletedInSummary = nameKeys.length ? 'missing: ' + nameKeys.join('/') : '';
-    nameKeys = Object.keys(mutatedGenes);
-    var mutatedGeneSummary = nameKeys.length ? 'mutated gene: ' + nameKeys.join('/') : '';
-    nameKeys = Object.keys(subcellularTerms);
-    var subcellularTermSummary = nameKeys.length ? 'subcellular fraction: ' + nameKeys.join('/') : '';
-    nameKeys = Object.keys(cellCycles);
-    var cellCycleSummary = nameKeys.length ? 'cell-cycle phase: ' + nameKeys.join('/') : '';
-
-    // Combine all summary strings, comma separated and including only non-empty ones
-    var summary = _.compact([depletedInSummary, mutatedGeneSummary, subcellularTermSummary, cellCycleSummary]).join(', ');
-
-    // Combine all name and life/age/sex strings
-    fullSummary = (
-        <span>
-            {summary ? summary : null}
-            {organismNames.length || lifeAges.length ?
-                <span>
-                    {summary ? ' (' : '('}
-                    {organismNames.map(function(name, i) {
-                        if (i === 0) {
-                            return (<em key={name}>{name}</em>);
-                        } else {
-                            return (<span key={name}>{' and '}<em>{name}</em></span>);
-                        }
-                    })}
-                    {lifeAges.length ? ', ' + lifeAges.join(' and ') : ''}
-                    {')'}
-                </span>
-            : null}
-        </span>
-    );
-
-    return fullSummary;
 };
 
 

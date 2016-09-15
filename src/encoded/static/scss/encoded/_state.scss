@@ -11,7 +11,7 @@
     height: $appVersionHeight;
     line-height: $appVersionHeight;
     text-align: center;
-    @include font-size(0.9);
+    font-size: 0.9rem;
     color: #a0a0a0;
 }
 

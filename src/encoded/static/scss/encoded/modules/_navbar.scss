@@ -3,17 +3,16 @@
     border: none;
     border-bottom: 0px solid #4e7294;
     background: #0a253d;
-    @include box-shadow(0px 0px 30px 2px rgba(170, 170, 170, .9));
 
     .navbar-brand {
         margin-left: -15px;
         color: #fff;
-        @include font-size(1.4);
+        font-size: 1.4rem;
         font-weight: 200;
         text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 
         &:hover {
-            @include text-shadow(0px 0px 8px rgba(255, 255, 255, 0.8));
+            text-shadow: 0px 0px 8px rgba(255, 255, 255, 0.8);
         }
     }
 
@@ -60,18 +59,17 @@
     padding: 5px 0 7px;
     color: #fff;
     background-color: $brand-danger;
-    @include background-image(linear-gradient(top, darken($brand-danger,20%) 0%,darken($brand-danger,10%) 5%,lighten($brand-danger,0%) 93%,lighten($brand-danger,40%) 95%));
-    background-image: -ms-linear-gradient(top, darken($brand-danger,20%) 0%,darken($brand-danger,10%) 5%,lighten($brand-danger,0%) 93%,lighten($brand-danger,40%) 95%);
+    background-image: linear-gradient(top, darken($brand-danger,20%) 0%,darken($brand-danger,10%) 5%,lighten($brand-danger,0%) 93%,lighten($brand-danger,40%) 95%);
 
     p {
         margin: 0;
         width: 90%;
-        @include font-size(0.85);
+       font-size: 0.85rem;
 
         @media screen and (min-width: $screen-md-min) {
             width: 100%;
             text-align: center;
-            @include font-size(1);
+            font-size: 1rem;
         }
     }
 }
@@ -84,7 +82,7 @@
     top: 50%;
     right: 5px;
     margin-top: -13px;
-    @include font-size(1.2);
+    font-size: 1.2rem;
     line-height: 23px !important;
     color: #fff;
     vertical-align: top;
@@ -106,7 +104,7 @@
 
 .dropdown-menu {
     background-color: #fff;
-    @include background-image(linear-gradient(top,  #ffffff 0%,#f0f0f0 100%));
+    background-image: linear-gradient(top,  #ffffff 0%,#f0f0f0 100%);
 
     &>li {
         &>a {
@@ -124,7 +122,7 @@
         &>li {
             &>a {
                 padding: 2px 30px 2px 20px;
-                @include font-size(1.1);
+                font-size: 1.1rem;
                 color: #444 !important;
                 border-top: 1px solid transparent;
                 border-bottom: 1px solid transparent;
@@ -149,4 +147,11 @@
             right: -1px;
         }
     }
+}
+
+// Dropdown menu separator item
+.dropdown-sep {
+    margin: 5px 0;
+    border-top: 1px solid #c0c0c0;
+    border-bottom: 1px solid #fff;
 }

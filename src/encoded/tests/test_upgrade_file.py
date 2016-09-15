@@ -68,6 +68,48 @@ def file_5(file_base):
     return item
 
 
+@pytest.fixture
+def file_7(file_base):
+    item = file_base.copy()
+    item.update({
+        'schema_version': '7'
+    })
+    return item
+
+
+@pytest.fixture
+def file_8a(file_base):
+    item = file_base.copy()
+    item.update({
+        'file_format': 'fastq',
+        'assembly': 'hg19',
+        'schema_version': '8'
+    })
+    return item
+
+
+@pytest.fixture
+def old_file(experiment):
+    return {
+        'accession': 'ENCFF000OLD',
+        'dataset': experiment['uuid'],
+        'file_format': 'fasta',
+        'md5sum': 'e41d9ce97b00b204e9811998ecf8427b',
+        'output_type': 'raw data',
+        'uuid': '627ef1f4-3426-44f4-afc3-d723eccd20bf'
+    }
+
+
+@pytest.fixture
+def file_8b(file_base, old_file):
+    item = file_base.copy()
+    item.update({
+        'schema_version': '8',
+        'supercedes': list(old_file['uuid'])
+    })
+    return item
+
+
 def test_file_upgrade(upgrader, file_1):
     value = upgrader.upgrade('file', file_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -115,3 +157,19 @@ def test_file_upgrade5(root, upgrader, registry, file_5, file, threadlocals, dum
         'file', file_5, current_version='5', target_version='6', registry=registry)
     assert value['schema_version'] == '6'
     assert value['output_type'] == 'signal of all reads'
+
+
+def test_file_upgrade7(upgrader, file_7):
+    value = upgrader.upgrade('file', file_7, current_version='7', target_version='8')
+    assert value['schema_version'] == '8'
+
+
+def test_file_upgrade8(upgrader, file_8a, file_8b):
+    value_a = upgrader.upgrade('file', file_8a, current_version='8', target_version='9')
+    assert value_a['schema_version'] == '9'
+    assert 'assembly' not in value_a
+
+    value_b = upgrader.upgrade('file', file_8b, current_version='8', target_version='9')
+    assert value_b['schema_version'] == '9'
+    assert 'supersedes' in value_b
+    assert 'supercedes' not in value_b

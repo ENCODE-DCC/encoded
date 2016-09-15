@@ -16,6 +16,7 @@ var search = module.exports;
 var dbxref = require('./dbxref');
 var audit = require('./audit');
 var objectutils = require('./objectutils');
+var {BiosampleSummaryString, BiosampleOrganismNames} = require('./typeutils');
 
 var DbxrefList = dbxref.DbxrefList;
 var statusOrder = globals.statusOrder;
@@ -248,6 +249,7 @@ var Antibody = module.exports.Antibody = React.createClass({
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Antibody</p>
                         <p className="type">{' ' + result.accession}</p>
+                        <p className="type meta-status">{' ' + result['status']}</p>
                         <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                     </div>
                     <div className="accession">
@@ -321,7 +323,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                     </div>
                     <div className="data-row">
                         <div><strong>Type: </strong>{result['biosample_type']}</div>
-                        {result.summary ? <div><strong>Summary: </strong>{globals.truncateString(result.summary, 80)}</div> : null}
+                        {result.summary ? <div><strong>Summary: </strong>{BiosampleSummaryString(result)}</div> : null}
                         {rnais ? <div><strong>RNAi target: </strong>{rnais}</div> : null}
                         {constructs ? <div><strong>Construct: </strong>{constructs}</div> : null}
                         {treatment ? <div><strong>Treatment: </strong>{treatment}</div> : null}
@@ -345,24 +347,15 @@ var Experiment = module.exports.Experiment = React.createClass({
     render: function() {
         var result = this.props.context;
 
-        // Make array of scientific names from replicates; remove all duplicates
-        var names = _.uniq(result.replicates.map(function(replicate) {
-            return (replicate.library && replicate.library.biosample && replicate.library.biosample.organism &&
-                    replicate.library.biosample.organism) ? replicate.library.biosample.organism.scientific_name : undefined;
-        }));
-        var name = (names.length === 1 && names[0] && names[0] !== 'unknown') ? names[0] : '';
+        // Collect all biosamples associated with the experiment. This array can contain duplicate
+        // biosamples, but no null entries.
+        var biosamples = [];
+        if (result.replicates && result.replicates.length) {
+            biosamples = _.compact(result.replicates.map(replicate => replicate.library && replicate.library.biosample));
+        }
 
-        // Make array of life stages from replicates; remove all duplicates
-        var lifeStages = _.uniq(result.replicates.map(function(replicate) {
-            return (replicate.library && replicate.library.biosample) ? replicate.library.biosample.life_stage : undefined;
-        }));
-        var lifeStage = (lifeStages.length === 1 && lifeStages[0] && lifeStages[0] !== 'unknown') ? ' ' + lifeStages[0] : '';
-
-        // Make array of ages from replicates; remove all duplicates
-        var ages = _.uniq(result.replicates.map(function(replicate) {
-            return (replicate.library && replicate.library.biosample) ? replicate.library.biosample.age : undefined;
-        }));
-        var age = (ages.length === 1 && ages[0] && ages[0] !== 'unknown') ? ' ' + ages[0] : '';
+        // Get all biosample organism names
+        var organismNames = biosamples.length ? BiosampleOrganismNames(biosamples) : [];
 
         // Collect synchronizations
         var synchronizations = _.uniq(result.replicates.filter(function(replicate) {
@@ -374,22 +367,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                     ' + ' + biosample.post_synchronization_time + (biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : '')
                 : ''));
         }));
-
-        // Make array of age units from replicates; remove all duplicates
-        var ageUnit = '';
-        if (age) {
-            var ageUnits = _.uniq(result.replicates.map(function(replicate) {
-                return (replicate.library && replicate.library.biosample) ? replicate.library.biosample.age_units : undefined;
-            }));
-            ageUnit = (ageUnits.length === 1 && ageUnits[0] && ageUnits[0] !== 'unknown') ? ' ' + ageUnits[0] : '';
-        }
-
-        // If we have life stage or age, need to separate from scientific name with comma
-        var separator = (lifeStage || age) ? ', ' : '';
-
-        // Get the first treatment if it's there
-        var treatment = (result.replicates[0] && result.replicates[0].library && result.replicates[0].library.biosample &&
-                result.replicates[0].library.biosample.treatments[0]) ? SingleTreatment(result.replicates[0].library.biosample.treatments[0]) : '';
 
         return (
             <li>
@@ -411,19 +388,24 @@ var Experiment = module.exports.Experiment = React.createClass({
                             {result['biosample_term_name'] ? <span>{' of ' + result['biosample_term_name']}</span> : null}
                         </a>
                     </div>
-                    {name || lifeStage || age || ageUnit ?
+                    {result.biosample_summary ?
                         <div className="highlight-row">
-                            {name ? <em>{name}</em> : null}
-                            {separator + lifeStage + age + ageUnit}
+                            {organismNames.length ?
+                                <span>
+                                    {organismNames.map((organism, i) => 
+                                        <span>
+                                            {i > 0 ? <span>and </span> : null}
+                                            <i>{organism} </i>
+                                        </span>
+                                    )}
+                                </span>
+                            : null}
+                            {result.biosample_summary}
                         </div>
                     : null}
                     <div className="data-row">
                         {result.target && result.target.label ?
                             <div><strong>Target: </strong>{result.target.label}</div>
-                        : null}
-
-                        {treatment ?
-                            <div><strong>Treatment: </strong>{treatment}</div>
                         : null}
 
                         {synchronizations && synchronizations.length ?
@@ -557,7 +539,7 @@ var Target = module.exports.Target = React.createClass({
                     <div className="data-row">
                         <strong>External resources: </strong>
                         {result.dbxref && result.dbxref.length ?
-                            <DbxrefList values={result.dbxref} target_gene={result.gene_name} />
+                            <DbxrefList values={result.dbxref} target_gene={result.gene_name} target_ref />
                         : <em>None submitted</em> }
                     </div>
                 </div>
@@ -638,18 +620,27 @@ var Term = search.Term = React.createClass({
         } else if (selected) {
             href = selected;
         } else {
-            href = this.props.searchBase + field + '=' + encodeURIComponent(term).replace(/%20/g, '+');
+            href = this.props.searchBase + field + '=' + globals.encodedURIComponent(term);
         }
         return (
             <li id={selected ? "selected" : null} key={term}>
                 {selected ? '' : <span className="bar" style={barStyle}></span>}
                 {field === 'lot_reviews.status' ? <span className={globals.statusClass(term, 'indicator pull-left facet-term-key icon icon-circle')}></span> : null}
-                <a id={selected ? "selected" : null} href={href} onClick={href ? this.props.onFilter : null}>
-                    <span className="pull-right">{count} {selected && this.props.canDeselect ? <i className="icon icon-times-circle-o"></i> : ''}</span>
-                    <span className="facet-item">
-                        {em ? <em>{title}</em> : <span>{title}</span>}
+                {count ?
+                    <a id={selected ? "selected" : null} href={href} onClick={href ? this.props.onFilter : null}>
+                        <span className="pull-right">{count} {selected && this.props.canDeselect ? <i className="icon icon-times-circle-o"></i> : ''}</span>
+                        <span className="facet-item">
+                            {em ? <em>{title}</em> : <span>{title}</span>}
+                        </span>
+                    </a>
+                :
+                    <span>
+                        <span className="pull-right">{count}</span>
+                        <span className="facet-item">
+                            {em ? <em>{title}</em> : <span>{title}</span>}
+                        </span>
                     </span>
-                </a>
+                }
             </li>
         );
     }
@@ -673,7 +664,10 @@ var TypeTerm = search.TypeTerm = React.createClass({
 
 var Facet = search.Facet = React.createClass({
     getDefaultProps: function() {
-        return {width: 'inherit'};
+        return {
+            width: 'inherit',
+            hideZeros: true
+        };
     },
 
     getInitialState: function () {
@@ -693,18 +687,21 @@ var Facet = search.Facet = React.createClass({
         var field = facet['field'];
         var total = facet['total'];
         var termID = title.replace(/\s+/g, '');
-        var terms = facet['terms'].filter(function (term) {
-            if (term.key) {
-                for(var filter in filters) {
-                    if(filters[filter].term === term.key) {
-                        return true;
+        var terms = facet.terms;
+        if (this.props.hideZeros) {
+            terms = terms.filter(function (term) {
+                if (term.key) {
+                    for(var filter in filters) {
+                        if(filters[filter].term === term.key) {
+                            return true;
+                        }
                     }
+                    return term.doc_count > 0;
+                } else {
+                    return false;
                 }
-                return term.doc_count > 0;
-            } else {
-                return false;
-            }
-        });
+            });
+        }
         var moreTerms = terms.slice(5);
         var TermComponent = field === 'type' ? TypeTerm : Term;
         var selectedTermCount = countSelectedTerms(moreTerms, field, filters);
@@ -712,6 +709,19 @@ var Facet = search.Facet = React.createClass({
         var canDeselect = (!facet.restrictions || selectedTermCount >= 2);
         var moreSecClass = 'collapse' + ((moreTermSelected || this.state.facetOpen) ? ' in' : '');
         var seeMoreClass = 'btn btn-link' + ((moreTermSelected || this.state.facetOpen) ? '' : ' collapsed');
+
+        // Handle audit facet titles
+        if (field.substr(0, 6) === 'audit.') {
+            var titleParts = title.split(': ');
+            var fieldParts = field.match(/^audit.(.+).category$/i);
+            if (fieldParts && fieldParts.length === 2 && titleParts) {
+                var iconClass = 'icon audit-activeicon-' + fieldParts[1].toLowerCase();
+                title = <span>{titleParts[0]}: <i className={iconClass}></i></span>;
+            } else {
+                title = <span>{title}</span>;
+            }
+        }
+
         return (
             <div className="facet" hidden={terms.length === 0} style={{width: this.props.width}}>
                 <h5>{title}</h5>

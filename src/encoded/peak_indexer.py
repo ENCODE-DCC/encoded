@@ -5,6 +5,7 @@ import csv
 import logging
 import collections
 from pyramid.view import view_config
+from sqlalchemy.sql import text
 from elasticsearch.exceptions import (
     NotFoundError
 )
@@ -53,6 +54,8 @@ def tsvreader(file):
         yield row
 
 # Mapping should be generated dynamically for each assembly type
+
+
 def get_mapping(assembly_name='hg19'):
     return {
         assembly_name: {
@@ -101,6 +104,14 @@ def get_assay_term_name(accession, request):
         return context['assay_term_name']
     return None
 
+def all_bed_file_uuids(request):
+    file_uuids = []
+    stmt = text("select distinct(resources.rid) from resources, propsheets where resources.rid = propsheets.rid and resources.item_type='file' and propsheets.properties->>'file_format' = 'bed' and properties->>'status' = 'released';")
+    connection = request.registry[DBSESSION].connection()
+    uuids = connection.execute(stmt)
+    file_uuids = [str(item[0]) for item in uuids]
+    return file_uuids
+
 
 def index_peaks(uuid, request):
     """
@@ -108,15 +119,13 @@ def index_peaks(uuid, request):
     """
     context = request.embed('/', str(uuid), '@@object')
 
-
-
     if 'File' not in context['@type'] or 'dataset' not in context:
         return
 
     if 'status' not in context or context['status'] != 'released':
         return
 
-    # Index human data for now       
+    # Index human data for now
     if 'assembly' not in context or 'hg19' not in context['assembly']:
         return
 
@@ -124,9 +133,8 @@ def index_peaks(uuid, request):
     if assay_term_name is None or isinstance(assay_term_name, collections.Hashable) is False:
         return
 
-    
     flag = False
-    
+
     for k, v in _INDEXED_DATA.get(assay_term_name, {}).items():
         if k in context and context[k] in v:
             if 'file_format' in context and context['file_format'] == 'bed':
@@ -135,22 +143,17 @@ def index_peaks(uuid, request):
     if not flag:
         return
 
-
-
-
     urllib3.disable_warnings()
     es = request.registry.get(SNP_SEARCH_ES, None)
     http = urllib3.PoolManager()
     r = http.request('GET', request.host_url + context['href'])
     if r.status != 200:
-        log.warn('File status is not 200: {}, will not index file'.format(r.status))
         return
     comp = io.BytesIO()
     comp.write(r.data)
     comp.seek(0)
     r.release_conn()
     file_data = dict()
-
 
     with gzip.open(comp, mode='rt') as file:
         for row in tsvreader(file):
@@ -166,8 +169,6 @@ def index_peaks(uuid, request):
             else:
                 log.warn('positions are not integers, will not index file')
 
-
-        
     for key in file_data:
         doc = {
             'uuid': context['uuid'],
@@ -177,9 +178,7 @@ def index_peaks(uuid, request):
             es.indices.create(index=key, body=index_settings())
             es.indices.put_mapping(index=key, doc_type=context['assembly'],
                                    body=get_mapping(context['assembly']))
-        es.index(index=key, doc_type=context['assembly'], body=doc,
-                 id=context['uuid'])
-    
+        es.index(index=key, doc_type=context['assembly'], body=doc, id=context['uuid'])
 
 
 @view_config(route_name='index_file', request_method='POST', permission="index")
@@ -212,7 +211,7 @@ def index_file(request):
         last_xmin = request.json['last_xmin']
     else:
         try:
-            status = es_peaks.get(index='encoded_peaks', doc_type='meta', id='indexing')
+            status = es_peaks.get(index='snovault', doc_type='meta', id='peak_indexing')
         except NotFoundError:
             pass
         else:
@@ -223,11 +222,12 @@ def index_file(request):
         'last_xmin': last_xmin,
     }
 
-
     if last_xmin is None:
-        result['types'] = types = request.json.get('types', None)
-        invalidated = list(all_uuids(request.root, types))
+        result['types'] = request.json.get('types', None)
+        invalidated = all_bed_file_uuids(request)
+        initial_index = True
     else:
+        initial_index = False
         txns = session.query(TransactionRecord).filter(
             TransactionRecord.xid >= last_xmin,
         )
@@ -289,6 +289,8 @@ def index_file(request):
     if not dry_run:
         err = None
         uuid_current = None
+        if not initial_index:
+            invalidated = list(set(invalidated).intersection(set(all_bed_file_uuids(request))))
         try:
             for uuid in invalidated:
                 uuid_current = uuid
@@ -299,9 +301,6 @@ def index_file(request):
         result['errors'] = [err]
         result['indexed'] = len(invalidated)
         if record:
-            if not es_peaks.indices.exists('encoded_peaks'):
-                es_peaks.indices.create(index='encoded_peaks', body=index_settings())
-            es_peaks.index(index='encoded_peaks', doc_type='meta', body=result, id='indexing')
-
+            es_peaks.index(index='snovault', doc_type='meta', body=result, id='peak_indexing')
 
     return result

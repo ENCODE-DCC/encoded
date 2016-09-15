@@ -111,7 +111,7 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^GEO:GSM\\d+$"
+                "pattern": "^(GEO:GSM\\d+|GEO-obsolete:GSM\\d+)$"
             }
         },
         "nucleic_acid_starting_quantity": {
@@ -305,7 +305,8 @@
         "biosample.alternate_accessions": 1.0,
         "biosample.aliases": 1.0,
         "biosample.donor.accession": 1.0,
-        "biosample.donor.organism.name": 1.0
+        "biosample.donor.organism.name": 1.0,
+        "notes": 1.0
     },
     "changelog": "/profiles/changelogs/library.md"
 }

@@ -66,14 +66,6 @@ $brand-info: #4F689E;
 //@import "bootstrap/carousel";
 
 // ENCODED
-// Compass
-@import "compass/css3/text-shadow";
-@import "compass/css3/box-shadow";
-@import "compass/css3/border-radius";
-//@import "compass/css3/transition";
-@import "compass/css3/images";
-@import "compass/typography/text/force-wrap";
-
 // Font Awesome
 @import "fontawesome/font-awesome";
 
@@ -84,6 +76,7 @@ $brand-info: #4F689E;
 @import "encoded/mixins-custom";
 // SMACSS-based architecture (http://smacss.com/)
 @import "encoded/base";
+@import "encoded/math";
 @import "encoded/layout";
 @import "encoded/bootstrap-lib";
 @import "encoded/modules/breadcrumbs",
@@ -105,6 +98,7 @@ $brand-info: #4F689E;
         "encoded/modules/pipeline",
         "encoded/modules/tooltip",
         "encoded/modules/badge",
+        "encoded/modules/home",
         "encoded/modules/blocks",
         "encoded/modules/layout-editor";
 @import "encoded/state";

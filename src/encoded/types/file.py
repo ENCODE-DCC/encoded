@@ -96,6 +96,7 @@ class File(Item):
     rev = {
         'paired_with': ('File', 'paired_with'),
         'quality_metrics': ('QualityMetric', 'quality_metric_of'),
+        'superseded_by': ('File', 'supersedes')
     }
 
     embedded = [
@@ -203,8 +204,8 @@ class File(Item):
             "nt"
         ]
     })
-    def read_length_units(self, read_length=None):
-        if read_length is not None:
+    def read_length_units(self, read_length=None, mapped_read_length=None):
+        if read_length is not None or mapped_read_length is not None:
             return "nt"
 
     @calculated_property(schema={
@@ -236,6 +237,39 @@ class File(Item):
             for uuid in replicates
         }
         return sorted(bioreps)
+
+    @calculated_property(schema={
+        "title": "Technical replicates",
+        "type": "array",
+        "items": {
+            "title": "Technical replicate number",
+            "description": "The identifying number of each relevant technical replicate",
+            "type": "string"
+        }
+    })
+    def technical_replicates(self, request, registry, root, replicate=None):
+        if replicate is not None:
+            replicate_obj = traverse(root, replicate)['context']
+            replicate_biorep = replicate_obj.__json__(request)['biological_replicate_number']
+            replicate_techrep = replicate_obj.__json__(request)['technical_replicate_number']
+            tech_rep_string = str(replicate_biorep)+"_"+str(replicate_techrep)
+            return [tech_rep_string]
+
+        conn = registry[CONNECTION]
+        derived_from_closure = property_closure(request, 'derived_from', self.uuid)
+        dataset_uuid = self.__json__(request)['dataset']
+        obj_props = (conn.get_by_uuid(uuid).__json__(request) for uuid in derived_from_closure)
+        replicates = {
+            props['replicate']
+            for props in obj_props
+            if props['dataset'] == dataset_uuid and 'replicate' in props
+        }
+        techreps = {
+            str(conn.get_by_uuid(uuid).__json__(request)['biological_replicate_number']) +
+            '_' + str(conn.get_by_uuid(uuid).__json__(request)['technical_replicate_number'])
+            for uuid in replicates
+        }
+        return sorted(techreps)
 
     @calculated_property(schema={
         "title": "Analysis Step Version",
@@ -285,6 +319,18 @@ class File(Item):
             return file_format
         else:
             return file_format + ' ' + file_format_type
+
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "description": "The file(s) that supersede this file (i.e. are more preferable to use).",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "File.supersedes",
+        },
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
 
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):

@@ -155,7 +155,7 @@ g.pipeline-node-qc-metric {
     }
 }
 
-.quality-metrics-header {
+.details-view-header {
     margin-bottom: 10px;
     border-bottom: 1px solid #e0e0e0;
 
@@ -165,7 +165,7 @@ g.pipeline-node-qc-metric {
     }
 }
 
-.quality-metrics-info {
+.details-view-info {
     @media screen and (min-width: $screen-md-min) {
         display: table-cell;
         width: 60%;

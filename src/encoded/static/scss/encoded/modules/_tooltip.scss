@@ -36,7 +36,7 @@ $tooltip-color: desaturate(lighten(#0a253d,30%),30%);
     border-bottom: 1px solid #fff;
     border-left: 1px solid #fff;
     background-color: $tooltip-color;
-    @include box-shadow(0 2px 4px 0 rgba(0,0,0,0.3));
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
     max-width: $tooltip-width;
     cursor: auto;
     font-family: $font-family-sans-serif;
@@ -57,12 +57,12 @@ $tooltip-color: desaturate(lighten(#0a253d,30%),30%);
     z-index: 100;
     border: 1px solid #fff;
     background-color: $tooltip-color;
-    @include box-shadow(0 2px 4px 0 rgba(0,0,0,0.3));
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
     color: #fff;
     text-align: center;
     white-space: nowrap;
-    @include font-size(0.9);
-    @include border-radius(4px);
+    font-size: 0.9rem;
+    border-radius: 4px;
 
     span:last-child {
         font-weight: normal;
@@ -76,7 +76,7 @@ $tooltip-color: desaturate(lighten(#0a253d,30%),30%);
 .tooltip-status-trigger {
     position: relative;
     margin-left: 5px;
-    @include font-size(1.2);
+    font-size: 1.2rem;
     cursor: default;
 }
 

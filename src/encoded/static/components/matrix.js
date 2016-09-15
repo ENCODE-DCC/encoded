@@ -37,7 +37,8 @@ var Matrix = module.exports.Matrix = React.createClass({
 
     contextTypes: {
         location_href: React.PropTypes.string,
-        navigate: React.PropTypes.func
+        navigate: React.PropTypes.func,
+        biosampleTypeColors: React.PropTypes.object // DataColor instance for experiment project
     },
 
     // Called when the Visualize button dropdown menu gets opened or closed. `dropdownEl` is the DOM node for the dropdown menu.
@@ -74,7 +75,7 @@ var Matrix = module.exports.Matrix = React.createClass({
             var y_groups = matrix.y[primary_y_grouping].buckets;
             var y_limit = matrix.y.limit;
             var y_group_facet = _.findWhere(context.facets, {field: primary_y_grouping});
-            var y_group_options = y_group_facet.terms.map(term => term.key);
+            var y_group_options = y_group_facet ? y_group_facet.terms.map(term => term.key) : [];
             y_group_options.sort();
             var search_base = context.matrix.search_base;
             var batch_hub_disabled = matrix.doc_count > batchHubLimit;
@@ -97,6 +98,9 @@ var Matrix = module.exports.Matrix = React.createClass({
                 'list-alt': 'search',
                 'table': 'table'
             };
+
+            // Make an array of colors corresponding to the ordering of biosample_type
+            var biosampleTypeColors = this.context.biosampleTypeColors.colorList(y_groups.map(y_group => y_group.key), {shade: 40});
 
             return (
                 <div>
@@ -159,7 +163,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                 </th>
                                                 {x_buckets.map(function(xb, i) {
                                                     if (i < x_limit) {
-                                                        var href = search_base + '&' + x_grouping + '=' + encodeURIComponent(xb.key);
+                                                        var href = search_base + '&' + x_grouping + '=' + globals.encodedURIComponent(xb.key);
                                                         return <th key={i} className="rotate30" style={{width: 10}}><div><a title={xb.key} href={href}>{xb.key}</a></div></th>;
                                                     } else if (i == x_limit) {
                                                         var parsed = url.parse(matrix_base, true);
@@ -172,16 +176,17 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                     }
                                                 })}
                                             </tr>
-                                            {y_groups.map(function(group) {
+                                            {y_groups.map(function(group, i) {
                                                 var seriesIndex = y_group_options.indexOf(group.key);
-                                                var seriesColor = color(COLORS[seriesIndex % COLORS.length]);
+                                                var groupColor = biosampleTypeColors[i];
+                                                var seriesColor = color(groupColor);
                                                 var parsed = url.parse(matrix_base, true);
                                                 parsed.query[primary_y_grouping] = group.key;
                                                 parsed.query['y.limit'] = null;
                                                 delete parsed.search; // this makes format compose the search string out of the query object
                                                 var group_href = url.format(parsed);
                                                 var rows = [<tr key={group.key}>
-                                                    <th colSpan={colCount + 1} style={{textAlign: 'left', backgroundColor: seriesColor.hexString()}}>
+                                                    <th colSpan={colCount + 1} style={{textAlign: 'left', backgroundColor: groupColor}}>
                                                         <a href={group_href} style={{color: '#000'}}>{group.key}</a>
                                                     </th>
                                                 </tr>];
@@ -189,7 +194,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                 var y_limit = matrix.y.limit || group_buckets.length;
                                                 rows.push.apply(rows, group_buckets.map(function(yb, j) {
                                                     if (j < y_limit) {
-                                                        var href = search_base + '&' + secondary_y_grouping + '=' + encodeURIComponent(yb.key);
+                                                        var href = search_base + '&' + secondary_y_grouping + '=' + globals.encodedURIComponent(yb.key);
                                                         return <tr key={yb.key}>
                                                             <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}><a href={href}>{yb.key}</a></th>
                                                             {x_buckets.map(function(xb, i) {
@@ -198,8 +203,8 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                                     var color = seriesColor.clone();
                                                                     // scale color between white and the series color
                                                                     color.lightness(color.lightness() + (1 - value / matrix.max_cell_doc_count) * (100 - color.lightness()));
-                                                                    var href = search_base + '&' + secondary_y_grouping + '=' + encodeURIComponent(yb.key)
-                                                                                           + '&' + x_grouping + '=' + encodeURIComponent(xb.key);
+                                                                    var href = search_base + '&' + secondary_y_grouping + '=' + globals.encodedURIComponent(yb.key)
+                                                                                           + '&' + x_grouping + '=' + globals.encodedURIComponent(xb.key);
                                                                     var title = yb.key + ' / ' + xb.key + ': ' + value;
                                                                     return <td key={xb.key} style={{backgroundColor: color.hexString()}}>
                                                                         {value ? <a href={href} style={{color: '#000'}} title={title}>{value}</a> : ''}

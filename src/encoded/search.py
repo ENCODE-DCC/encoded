@@ -13,6 +13,7 @@ from urllib.parse import urlencode
 from collections import OrderedDict
 
 
+
 _ASSEMBLY_MAPPER = {
     'GRCh38-minimal': 'hg38',
     'GRCh38': 'hg38',
@@ -46,7 +47,7 @@ audit_facets = [
     ('audit.ERROR.category', {'title': 'Audit category: ERROR'}),
     ('audit.NOT_COMPLIANT.category', {'title': 'Audit category: NOT COMPLIANT'}),
     ('audit.WARNING.category', {'title': 'Audit category: WARNING'}),
-    ('audit.DCC_ACTION.category', {'title': 'Audit category: DCC ACTION'})
+    ('audit.INTERNAL_ACTION.category', {'title': 'Audit category: DCC ACTION'})
 ]
 
 
@@ -224,6 +225,10 @@ def list_visible_columns_for_schemas(request, schemas):
             if field in columns:
                 limited_columns[field] = columns[field]
             else:
+                # We don't currently traverse to other schemas for embedded
+                # objects to find property titles. In this case we'll just
+                # show the field's dotted path for now.
+                limited_columns[field] = {'title': field}
                 for schema in schemas:
                     if field in schema['properties']:
                         limited_columns[field] = {
@@ -255,6 +260,11 @@ def list_result_fields(request, doc_types):
         schemas = [types[doc_type].schema for doc_type in doc_types]
         columns = list_visible_columns_for_schemas(request, schemas)
         fields.update('embedded.' + column for column in columns)
+
+    # Ensure that 'audit' field is requested with _source in the ES query
+    if request.__parent__ and '/metadata/' in request.__parent__.url and request.has_permission('search_audit'):
+        fields.add('audit.*')
+
     return fields
 
 
@@ -401,6 +411,11 @@ def format_results(request, hits):
     else:
         frame = request.params.get('frame')
 
+    # Request originating from metadata generation will skip to
+    # partion of the code that adds audit  object to result items
+    if request.__parent__ and '/metadata/' in request.__parent__.url:
+        frame = ''
+
     if frame in ['embedded', 'object']:
         for hit in hits:
             yield hit['_source'][frame]
@@ -455,7 +470,7 @@ def search_result_actions(request, doc_types, es_results, position=None):
     return actions
 
 
-def format_facets(es_results, facets, used_filters, schemas, total):
+def format_facets(es_results, facets, used_filters, schemas, total, principals):
     result = []
     # Loading facets in to the results
     if 'aggregations' not in es_results:
@@ -470,6 +485,9 @@ def format_facets(es_results, facets, used_filters, schemas, total):
             continue
         terms = aggregations[agg_name][agg_name]['buckets']
         if len(terms) < 2:
+            continue
+        # internal_status exception. Only display for admin users
+        if field == 'internal_status' and 'group.admin' not in principals:
             continue
         result.append({
             'field': field,
@@ -638,7 +656,7 @@ def search(context, request, search_type=None, return_generator=False):
 
 
     # Set sort order
-    has_sort = set_sort_order(request, search_term, types, doc_types, query, result)
+    set_sort_order(request, search_term, types, doc_types, query, result)
 
     # Setting filters
     used_filters = set_filters(request, query, result)
@@ -650,16 +668,15 @@ def search(context, request, search_type=None, return_generator=False):
     if len(doc_types) == 1 and 'facets' in types[doc_types[0]].schema:
         facets.extend(types[doc_types[0]].schema['facets'].items())
 
-    # Display all audits if logged in, or all but DCC_ACTION if logged out
+    # Display all audits if logged in, or all but INTERNAL_ACTION if logged out
     for audit_facet in audit_facets:
-        if search_audit and 'group.submitter' in principals or 'DCC_ACTION' not in audit_facet[0]:
+        if search_audit and 'group.submitter' in principals or 'INTERNAL_ACTION' not in audit_facet[0]:
             facets.append(audit_facet)
 
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
     # Decide whether to use scan for results.
     do_scan = size is None or size > 1000
-
     # Execute the query
     if do_scan:
         es_results = es.search(body=query, index=es_index, search_type='count')
@@ -670,7 +687,7 @@ def search(context, request, search_type=None, return_generator=False):
 
     schemas = (types[item_type].schema for item_type in doc_types)
     result['facets'] = format_facets(
-        es_results, facets, used_filters, schemas, total)
+        es_results, facets, used_filters, schemas, total, principals)
 
     # Add batch actions
     result.update(search_result_actions(request, doc_types, es_results))
@@ -689,7 +706,6 @@ def search(context, request, search_type=None, return_generator=False):
         return result if not return_generator else []
 
     result['notification'] = 'Success'
-
     # Format results for JSON-LD
     if not do_scan:
         graph = format_results(request, es_results['hits']['hits'])
@@ -744,9 +760,24 @@ def collection_view_listing_es(context, request):
 
 @view_config(route_name='report', request_method='GET', permission='search')
 def report(context, request):
-    types = request.params.getall('type')
-    if len(types) != 1:
+    doc_types = request.params.getall('type')
+    if len(doc_types) != 1:
         msg = 'Report view requires specifying a single type.'
+        raise HTTPBadRequest(explanation=msg)
+
+    types = request.registry[TYPES]
+
+    # Get the subtypes of the requested type
+    try:
+        sub_types = types[doc_types[0]].subtypes
+    except KeyError:
+        # Raise an error for an invalid type
+        msg = "Invalid type: " + doc_types[0]
+        raise HTTPBadRequest(explanation=msg)
+
+    # Raise an error if the requested type has subtypes.
+    if len(sub_types) > 1:
+        msg = 'Report view requires a type with no child types.'
         raise HTTPBadRequest(explanation=msg)
 
     # Ignore large limits, which make `search` return a Response
@@ -801,7 +832,10 @@ def matrix(context, request):
         msg = 'No matrix configured for type: {}'.format(item_type)
         raise HTTPBadRequest(explanation=msg)
     schema = type_info.schema
-    result['title'] = type_info.name + ' Matrix'
+    if type_info.name is 'Annotation':
+        result['title'] = 'Encyclopedia'
+    else:
+        result['title'] = type_info.name + ' Matrix'
 
     matrix = result['matrix'] = type_info.factory.matrix.copy()
     matrix['x']['limit'] = request.params.get('x.limit', 20)
@@ -853,9 +887,9 @@ def matrix(context, request):
     facets = [(field, facet) for field, facet in schema['facets'].items() if
               field in matrix['x']['facets'] or field in matrix['y']['facets']]
 
-    # Display all audits if logged in, or all but DCC_ACTION if logged out
+    # Display all audits if logged in, or all but INTERNAL_ACTION if logged out
     for audit_facet in audit_facets:
-        if search_audit and 'group.submitter' in principals or 'DCC_ACTION' not in audit_facet[0]:
+        if search_audit and 'group.submitter' in principals or 'INTERNAL_ACTION' not in audit_facet[0]:
             facets.append(audit_facet)
 
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
@@ -900,7 +934,7 @@ def matrix(context, request):
 
     # Format facets for results
     result['facets'] = format_facets(
-        es_results, facets, used_filters, (schema,), total)
+        es_results, facets, used_filters, (schema,), total, principals)
 
     def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
         group_by = grouping_fields[0]

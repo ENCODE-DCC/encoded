@@ -6,7 +6,7 @@
 // Applies to all block types, and specific blog styles nest inside
 .block {
     margin-bottom: 10px;
-    @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
+    box-shadow: 0 0 6px rgba(195, 202, 211, 0.5);
 
     @media screen and (min-width: $screen-md-min) {
         margin-bottom: 20px;
@@ -133,7 +133,7 @@
             margin-bottom: 0.5em;
             color: #808080;
             line-height: 1.5;
-            @include font-size(0.9);
+            font-size: 0.9rem;
         }
 
         a[name] {
@@ -156,6 +156,36 @@
             @media screen and (min-width: $screen-md-min) {
                 padding: 20px;
             }
+        }
+    }
+
+    &.homepage-summary-block {
+        background: #fff;
+        padding: 20px;
+        position: relative;
+        z-index: 0;
+        h3 {
+            margin: 0;
+        }
+        .homepage-summary-row {
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+        }
+        .homepage-summary-count {
+            clear: both;
+            text-align: center;
+            padding: 1em 0;
+            svg {
+                fill: #fff;
+                margin-right: 1em;
+            }
+        }
+        .facet {
+            width: 50%;
+            float: left;
+            padding: 0 30px;
+            border-bottom: none;
         }
     }
 }
@@ -202,7 +232,7 @@ a.url {
     }
 
     figcaption {
-        @include font-size(0.9);
+        font-size: 0.9rem;
         color: #808080;
         line-height: 1.5;
     }
@@ -284,7 +314,7 @@ img.fig-align-center {
 .teaser {
     position: relative;
     padding: 0;
-    @include border-radius(0);
+    border-radius: 0;
     border: 4px solid #fff;
 
     // Only react to hover if there's an href
@@ -329,6 +359,6 @@ img.fig-align-center {
 }
 
 
-.teaser-font-13 p { @include font-size(0.9, true); }
-.teaser-font-12 p { @include font-size(0.85, true); }
-.teaser-font-11 p { @include font-size(0.8, true); }
+.teaser-font-13 p { font-size: 0.9rem; }
+.teaser-font-12 p { font-size: 0.85rem; }
+.teaser-font-11 p { font-size: 0.8rem; }
