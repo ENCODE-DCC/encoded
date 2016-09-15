@@ -47,15 +47,15 @@ class Pipeline(Item):
            and assay_term_name is not None:
             award_object = request.embed(award, '@@object')
             if assay_term_id == 'OBI:0001271':
-                return award_object['rfa'] + '-WGBS'
+                return award_object['project'] + '-WGBS'
             elif assay_term_id == 'NTR:0000762':
-                return award_object['rfa'] + '-RNA-seq'
+                return award_object['project'] + '-RNA-seq'
             elif assay_term_id == 'OBI:0001247':
-                return award_object['rfa'] + '-DNA-seq'
+                return award_object['project'] + '-DNA-seq'
             elif assay_term_id == 'NTR:0003660':
-                return award_object['rfa'] + '-microRNA-counts'
+                return award_object['project'] + '-microRNA-counts'
             else:
-                return award_object['rfa'] + '-' + assay_term_name
+                return award_object['project'] + '-' + assay_term_name
         return 'undefined'
 
 
