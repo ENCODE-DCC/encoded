@@ -3,8 +3,8 @@
 var SingleTreatment = module.exports.SingleTreatment = function(treatment) {
     var treatmentText = '';
 
-    if (treatment.concentration) {
-        treatmentText += treatment.concentration + (treatment.concentration_units ? ' ' + treatment.concentration_units : '') + ' ';
+    if (treatment.amount) {
+        treatmentText += treatment.amount + (treatment.amount_units ? ' ' + treatment.amount_units : '') + ' ';
     }
     treatmentText += treatment.treatment_term_name + (treatment.treatment_term_id ? ' (' + treatment.treatment_term_id + ')' : '') + ' ';
     if (treatment.duration) {
