@@ -42,16 +42,17 @@ class Pipeline(Item):
                          schema={"title": "Group",
                                  "type": "string"})
     def group(self, request, award=None,
-              assay_term_name=None):
-        if award is not None and assay_term_name is not None:
+              assay_term_id=None, assay_term_name=None):
+        if award is not None and assay_term_id is not None \
+           and assay_term_name is not None:
             award_object = request.embed(award, '@@object')
-            if assay_term_name == 'whole genome bisulfite sequencing':
+            if assay_term_id == 'OBI:0001271':
                 return award_object['rfa'] + '-WGBS'
-            elif assay_term_name == 'shRNA knockdown followed by RNA-seq':
+            elif assay_term_id == 'NTR:0000762':
                 return award_object['rfa'] + '-RNA-seq'
-            elif assay_term_name == 'genotyping by high throughput sequencing assay':
+            elif assay_term_id == 'OBI:0001247':
                 return award_object['rfa'] + '-DNA-seq'
-            elif assay_term_name == 'microRNA profiling by array assay':
+            elif assay_term_id == 'NTR:0003660':
                 return award_object['rfa'] + '-microRNA-counts'
             else:
                 return award_object['rfa'] + '-' + assay_term_name
