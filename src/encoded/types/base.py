@@ -125,6 +125,7 @@ class Item(snovault.Item):
         'not compliant': ALLOW_CURRENT,
         'not reviewed': ALLOW_CURRENT,
         'not submitted for review by lab': ALLOW_CURRENT,
+        'exempt from standards': ALLOW_CURRENT,
 
         # antibody_lot
         'eligible for new data': ALLOW_CURRENT,

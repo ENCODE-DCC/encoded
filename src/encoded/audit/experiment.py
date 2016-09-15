@@ -104,6 +104,36 @@ def audit_experiment_mixed_libraries(value, system):
                                     'original_files.derived_from',
                                     'original_files.analysis_step_version',
                                     'original_files.analysis_step_version.analysis_step',
+                                    'original_files.analysis_step_version.analysis_step.pipelines'])
+def audit_experiment_pipeline_assay_details(value, system):
+    if 'original_files' not in value or len(value['original_files']) == 0:
+        return
+    if 'assay_term_id' not in value:
+        return
+    files_to_check = []
+    for f in value['original_files']:
+        if f['status'] not in ['replaced', 'revoked', 'deleted', 'archived']:
+            files_to_check.append(f)
+    pipelines = get_pipeline_objects(files_to_check)
+    reported_pipelines = []
+    for p in pipelines:
+        if 'assay_term_id' not in p:
+            continue
+        if p['assay_term_id'] != value['assay_term_id'] and \
+           p['assay_term_id'] not in reported_pipelines:
+                reported_pipelines.append(p['assay_term_id'])
+                detail = 'This experiment ' + \
+                         'contains file(s) associated with ' + \
+                         'pipeline {} '.format(p['@id']) + \
+                         'which assay_term_id does not match experiments\'s asssay_term_id.'
+                yield AuditFailure('inconsistent assay_term_id', detail, level='INTERNAL_ACTION')
+
+
+@audit_checker('Experiment', frame=['original_files',
+                                    'original_files.replicate',
+                                    'original_files.derived_from',
+                                    'original_files.analysis_step_version',
+                                    'original_files.analysis_step_version.analysis_step',
                                     'original_files.analysis_step_version.analysis_step.pipelines',
                                     'target',
                                     'replicates'],
@@ -1552,6 +1582,20 @@ def scanFilesForPipelineTitle_not_chipseq(files_to_scan, assemblies, pipeline_ti
                 if p['title'] in pipeline_titles:
                     return p['title']
     return False
+
+
+def get_pipeline_objects(files):
+    added_pipelines = []
+    pipelines_to_return = []
+    for inspected_file in files:
+        if 'analysis_step_version' in inspected_file and \
+           'analysis_step' in inspected_file['analysis_step_version'] and \
+           'pipelines' in inspected_file['analysis_step_version']['analysis_step']:
+            for p in inspected_file['analysis_step_version']['analysis_step']['pipelines']:
+                if p['title'] not in added_pipelines:
+                    added_pipelines.append(p['title'])
+                    pipelines_to_return.append(p)
+    return pipelines_to_return
 
 
 def getPipelines(alignment_files):

@@ -1019,15 +1019,39 @@ def test_audit_experiment_replicate_with_file(testapp, file_fastq,
                                               base_experiment,
                                               base_replicate,
                                               base_library):
-    testapp.patch_json(file_fastq['@id'],{'replicate': base_replicate['@id']})
+    testapp.patch_json(file_fastq['@id'], {'replicate': base_replicate['@id']})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
-    testapp.patch_json(base_experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released',
+                                                'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert all((error['category'] != 'missing raw data in replicate') for error in errors_list)
+
+
+def test_audit_experiment_pipeline_assay_term_id_consistency(
+        testapp,
+        experiment, bam_file,
+        analysis_step_run_bam,
+        analysis_step_version_bam,
+        analysis_step_bam,
+        pipeline_bam):
+    testapp.patch_json(experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
+    testapp.patch_json(bam_file['@id'], {'step_run': analysis_step_run_bam['@id']})
+    testapp.patch_json(pipeline_bam['@id'], {'title':
+                                             'RNA-seq of long RNAs (single-end, unstranded)',
+                                             'assay_term_id': 'OBI:0000716',
+                                             'assay_term_name': 'RNA-seq'})
+    testapp.patch_json(experiment['@id'], {'assay_term_name': 'RNA-seq',
+                                           'assay_term_id': 'OBI:0001271'})
+    res = testapp.get(experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent assay_term_id' for error in errors_list)
 
 
 def test_audit_experiment_needs_pipeline_and_has_one(testapp,  replicate, library,
