@@ -46,4 +46,19 @@ def treatment_3_4(value, system):
 @upgrade_step('treatment', '4', '5')
 def treatment_4_5(value, system):
     # http://redmine.encodedcc.org/issues/1483#note-20
-    return
+    # http://redmine.encodedcc.org/issues/4448
+    if 'protocols' in value:
+        value['documents'] = value['protocols']
+        value.pop('protocols')
+
+    if 'antibodies' in value:
+        value['antibodies_used'] = value['antibodies']
+        value.pop('antibodies')
+
+    if 'concentration' in value:
+        # http://redmine.encodedcc.org/issues/4385. At the time of upgrade, there were
+        # no values without units and from v5 on, will be enforced by dependencies.
+        value['amount'] = value['concentration']
+        value['amount_units'] = value['concentration_units']
+        value.pop('concentration')
+        value.pop('concentration_units')
