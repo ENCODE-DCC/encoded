@@ -12,6 +12,9 @@ from urllib.parse import (
 from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
 import time
 
+from pyramid.events import subscriber
+from .peak_indexer import AfterIndexedExperimentsAndDatasets
+
 import logging
 from .search import _ASSEMBLY_MAPPER
 
@@ -2455,7 +2458,7 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False,
     ### LRNA: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR000AAA/@@hub/GRCh38/trackDb.txt
 
     # USE ES CACHE
-    USE_CACHE = False
+    USE_CACHE = True
 
     acc_composite = None
     es_key = acc + "_" + assembly
@@ -2510,9 +2513,9 @@ def generate_batch_trackDb(request, hide=False, regen=False):
 
     ### local test: RNA-seq: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/batch_hub/type=Experiment,,assay_title=RNA-seq,,award.rfa=ENCODE3,,status=released,,assembly=GRCh38,,replicates.library.biosample.biosample_type=induced+pluripotent+stem+cell+line/GRCh38/trackDb.txt
 
-    USE_CACHE = False   # USE ES CACHE
+    USE_CACHE = True   # USE ES CACHE
     CACHE_SETS = False  # NO CACHING OF set_composites!!!
-    USE_SEARCH = False  # USE ES CACHE SEARCH EXCLUSIVELY to find batch trackhub acc_composites
+    USE_SEARCH = True  # USE ES CACHE SEARCH EXCLUSIVELY to find batch trackhub acc_composites
     # TODO: consider using vew=all to decide on cache usage.
 
     # Special logic to force remaking of trackDb
@@ -2626,6 +2629,21 @@ def generate_batch_trackDb(request, hide=False, regen=False):
 
     return blob
 
+@subscriber(AfterIndexedExperimentsAndDatasets)
+def prime_vis_es_cache(event):
+    request = event.request
+    uuids = event.object
+
+    for uuid in uuids:
+        dataset = request.embed(uuid)
+        # TODO Try to limit the sets we are interested in
+        acc = dataset['accession']
+        assemblies = dataset.get('assembly',[])
+        for assembly in assemblies:
+            ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
+            (found_or_made, acc_composite) = find_or_make_acc_composite(request, ucsc_assembly, acc, dataset, regen=True)
+            if acc_composite:
+                log.warn("primed cache with acc_composite %s" % (acc))  # DEBUG
 
 def render(data):
     arr = []
