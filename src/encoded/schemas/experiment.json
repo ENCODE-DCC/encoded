@@ -45,6 +45,45 @@
                     }
                 }
             ]
+        },
+        "possible_controls": {
+            "anyOf": [
+                {
+                    "properties": {
+                        "possible_controls": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "linkTo": "Experiment"
+                            }
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "possible_controls": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "linkTo": "Series"
+                            }
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "possible_controls": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "linkTo": "FileSet"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
         }
     },
     "properties": {
@@ -83,22 +122,11 @@
             "default": [],
             "uniqueItems": true,
             "items": {
-                "anyOf": [
-                    {
-                        "title": "Control experiment",
-                        "description": "An experiment that contains files that can serve as a scientific control for this experiment.",
-                        "comment": "See experiment.json for a list of available identifiers. Exact pairing of data files with their controls is done using file relationships.",
-                        "type": "string",
-                        "linkTo": "Experiment"
-                    },
-                    {
-                        "title": "Control series",
-                        "description": "A Series of experiments that contain files that can serve as a scientific control for this experiment.",
-                        "comment": "See Series.json for a list of available identifiers. Exact pairing of data files with their controls is done using file relationships.",
-                        "type": "string",
-                        "linkTo": "Series"
-                    }
-                ]
+                "title": "Control experiment",
+                "description": "An experiment that contains files that can serve as a scientific control for this experiment.",
+                "comment": "See experiment.json for a list of available identifiers. Exact pairing of data files with their controls is done using file relationships.",
+                "type": "string",
+                "linkTo": "Dataset"
             }
         },
         "supersedes": {
