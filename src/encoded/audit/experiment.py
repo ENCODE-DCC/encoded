@@ -2541,7 +2541,8 @@ def get_platforms_used_in_experiment(experiment):
 
     for f in experiment['original_files']:
         if f['output_category'] == 'raw data' and \
-           'platform' in f:
+           'platform' in f and \
+           f['status'] not in ['deleted', 'archived', 'replaced']:
             # collapsing interchangable platforms
             if f['platform']['term_name'] in ['HiSeq 2000', 'HiSeq 2500']:
                 platforms.add('HiSeq 2000/2500')
