@@ -48,6 +48,29 @@ This will set cluster status to "yellow"; probably best to wait for green for fu
 
 == Check Batch Upgrade for Errors ==
 
+Once the instance has booted enough to allow ssh connections too it move too directory /var/log
+
+	$ cd /var/log
+
+Tail the log "cloud-init-ouput.log" while looking for batchupgrades and if any errors comeup
+
+	$ tail -f cloud-init-output.log | grep batchupgrade
+
+You will either see upgrades with no errors:
+
+	INFO:snovault.batchupgrade:Batch: Updated 0 of 1000 (errors 0)
+  File "bin/batchupgrade", line 74, in <module>
+    sys.exit(snovault.batchupgrade.main())
+  File "/srv/encoded/develop/snovault/src/snovault/batchupgrade.py", line 194, in main
+  File "/srv/encoded/develop/snovault/src/snovault/batchupgrade.py", line 161, in run
+
+Or you may see errors such as:
+
+	INFO:snovault.batchupgrade:Batch: Updated 0 of 1000 (errors 19)
+  File "bin/batchupgrade", line 74, in <module>
+    sys.exit(snovault.batchupgrade.main())
+  File "/srv/encoded/develop/snovault/src/snovault/batchupgrade.py", line 194, in main
+  File "/srv/encoded/develop/snovault/src/snovault/batchupgrade.py", line 161, in run
 
 
 
