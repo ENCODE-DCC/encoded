@@ -211,9 +211,6 @@ var GeneticModificationTable = module.exports.GeneticModificationTable = React.c
                 }
                 return null;
             } 
-        },
-        'notes': {
-            title: 'Notes'
         }
     },
 

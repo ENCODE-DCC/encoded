@@ -1,20 +1,27 @@
 'use strict';
-var React = require('react');
-var _ = require('underscore');
-var url = require('url');
-var {Panel, PanelHeading, PanelBody} = require('../libs/bootstrap/panel');
-var globals = require('./globals');
-var {StatusLabel} = require('./statuslabel');
-var {ProjectBadge, Attachment} = require('./image');
-var {AuditIndicators, AuditDetail, AuditMixin} = require('./audit');
-var {RelatedItems} = require('./item');
-var {DbxrefList} = require('./dbxref');
-var {FetchedItems} = require('./fetched');
-var {Breadcrumbs} = require('./navigation');
-var {TreatmentDisplay} = require('./objectutils');
-var {BiosampleTable} = require('./typeutils');
-var {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile} = require('./doc');
-var {PickerActionsMixin} = require('./search');
+const React = require('react');
+const _ = require('underscore');
+const url = require('url');
+const {Panel, PanelHeading, PanelBody} = require('../libs/bootstrap/panel');
+const globals = require('./globals');
+const {StatusLabel} = require('./statuslabel');
+const {ProjectBadge, Attachment} = require('./image');
+const {AuditIndicators, AuditDetail, AuditMixin} = require('./audit');
+const {RelatedItems} = require('./item');
+const {DbxrefList} = require('./dbxref');
+const {FetchedItems} = require('./fetched');
+const {Breadcrumbs} = require('./navigation');
+const {TreatmentDisplay} = require('./objectutils');
+const {BiosampleTable} = require('./typeutils');
+const {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile} = require('./doc');
+const {PickerActionsMixin} = require('./search');
+
+
+// Map GM techniques to a presentable string
+const GM_TECHNIQUE_MAP = {
+    'Crispr': 'CRISPR',
+    'Tale': 'TALE'
+};
 
 
 var GeneticModification = module.exports.GeneticModification = React.createClass({
@@ -490,3 +497,67 @@ var Listing = React.createClass({
 });
 
 globals.listing_views.register(Listing, 'GeneticModification');
+
+
+// Given a GeneticModification object, get all its modification techniques as an array of strings.
+// If the GM object has no modification techniques, this function returns a zero-length array. This
+// function is exported so that Jest can test it.
+const getGMModificationTechniques = module.exports.getGMModificationTechniques = _.memoize(_getGMModificationTechniques, gm => gm.uuid);
+
+// Root function for getGMModificationTechniques, which caches the results based on the genetic
+// modification's uuid.
+function _getGMModificationTechniques(gm) {
+    let techniques = [];
+    if (gm.modification_techniques && gm.modification_techniques.length) {
+        techniques = gm.modification_techniques.map(technique => {
+            // Map modification technique @type[0] to presentable string.
+            let presented = GM_TECHNIQUE_MAP[technique['@type'][0]];
+            if (!presented) {
+                // If we don't know the technique, just use the technique without mapping.
+                presented = technique['@type'][0];
+            }
+            return presented;
+        });
+    }
+    return techniques;
+}
+
+
+// Display a summary of genetic modifications given in the geneticModifications prop.
+const GeneticModificationSummary = module.exports.GeneticModificationSummary = React.createClass({
+    propTypes: {
+        geneticModifications: React.PropTypes.array.isRequired // Array of genetic modifications
+    },
+
+    render: function() {
+        const geneticModifications = this.props.geneticModifications;
+        _(geneticModifications).groupBy(gm => {
+            let group = gm.modification_type;
+
+            // Add any modification techniques to the group key.
+            const techniques = getGMModificationTechniques(gm);
+            if (techniques.length) {
+                group += ',' + techniques.join();
+            }
+
+            // Add the target (if any) to the group key.
+            if (gm.target) {
+                group += ',' + gm.target.label;
+            }
+        });
+        return null;
+    }
+});
+
+
+let GeneticModificationGroup = module.exports.GeneticModificationGroup = React.createClass({
+    getInitialState: function() {
+        return {
+            expanded: false // True if group is expanded
+        };
+    },
+
+    render: function() {
+        return null;
+    }
+});
