@@ -229,7 +229,6 @@ var AssayClicking = React.createClass({
             ctx.setState({currentAssay: category}); // updates current assay
         }
 
-        console.log('CAT: %s:%o', category, e.type);
         if (e.type === 'touchend') {
             handleClick(category, this);
             this.assayClickHandled = true;
