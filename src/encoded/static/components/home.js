@@ -191,7 +191,7 @@ var ChartGallery = React.createClass({
                 <div className="col-md-4">
                     <HomepageChart3 {...this.props} searchBase={this.props.searchBase} />
                     <div className="view-all">
-                        <a href={"/matrix/" + this.props.searchBase} className="view-all-button btn btn-info btn-lg" role="button"> View Selected </a>
+                        <a href={"/matrix/" + this.props.searchBase} className="view-all-button btn btn-info" role="button"> View Selected </a>
                     </div>
                 </div>
             </div>
@@ -269,7 +269,7 @@ var AssayClicking = React.createClass({
                             <div className="site-banner-intro-content">
                                 <p>The ENCODE (Encyclopedia of DNA Elements) Consortium is an international collaboration of research groups funded by the National Human Genome Research Institute (NHGRI). The goal of ENCODE is to build a comprehensive parts list of functional elements in the human genome, including elements that act at the protein and RNA levels, and regulatory elements that control cells and circumstances in which a gene is active.</p>
                                 <div className="getting-started-button">
-                                    <a href="/help/getting-started" className="btn btn-info btn-lg" role="button">Getting Started</a>
+                                    <a href="/help/getting-started" className="btn btn-info" role="button">Getting Started</a>
                                 </div>
                             </div>
                         </div>
