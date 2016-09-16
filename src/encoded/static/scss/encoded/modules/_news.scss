@@ -79,6 +79,15 @@
     }
 }
 
+.news-keyword-list {
+    p {
+        margin: 0;
+        font-size: 0.9rem;
+        font-style: italic;
+        color: #808080;
+    }
+}
+
 .news-keyword {
     @extend .btn;
     @extend .btn-sm;

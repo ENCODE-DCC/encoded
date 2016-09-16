@@ -53,6 +53,14 @@
     }
 }
 
+// Overrride styling within the Twitter widget iframe. Hopefully Twitter never changes the name of
+// this class. Weird styles here prevent the Twitter widget from overflowing on the right side on
+// iOS Safari.
+#twitter-widget-0 {
+    width: 1px !important;
+    min-width: 100% !important;
+}
+
 .site-banner {
     display: block;
 
@@ -293,7 +301,7 @@
         display: flex;
         flex-wrap: nowrap;
         justify-content: flex-start;
-        align-items: flex-start;
+        align-items: stretch;
         align-content: stretch;
     }
 

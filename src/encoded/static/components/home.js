@@ -9,6 +9,9 @@ var panel = require('../libs/bootstrap/panel');
 var {Panel, PanelBody, PanelHeading} = panel;
 
 
+const newsUri = '/search/?type=Page&news=true&status=released';
+
+
 // Main page component to render the home page
 var Home = module.exports.Home = React.createClass({
 
@@ -156,7 +159,7 @@ var Home = module.exports.Home = React.createClass({
                             <div className="social">
                                 <div className="social-news">
                                     <div className="news-header">
-                                        <h2>News <a href="/search/?type=Page&news=true" title="All ENCODE news" className="twitter-ref">All news</a></h2>
+                                        <h2>News <a href={newsUri} title="All ENCODE news" className="twitter-ref">All news</a></h2>
                                     </div>
                                     <NewsLoader ref="newslisting" newsLoaded={this.newsLoaded} />
                                 </div>
@@ -878,7 +881,7 @@ var NewsLoader = React.createClass({
     },
 
     render: function() {
-        return <FetchedItems {...this.props} url="/search/?type=Page&news=true&limit=5" Component={News} ignoreErrors newsLoaded={this.props.newsLoaded} />;
+        return <FetchedItems {...this.props} url={newsUri + '&limit=5'} Component={News} ignoreErrors newsLoaded={this.props.newsLoaded} />;
     }
 });
 
@@ -900,7 +903,7 @@ var News = React.createClass({
                 <div className="news-listing">
                     {items.map(item => {
                         return (
-                            <div key={item.uuid} className="news-listing-item">
+                            <div key={item['@id']} className="news-listing-item">
                                 <h3>{item.title}</h3>
                                 <h4>{moment.utc(item.date_created).format('MMMM D, YYYY')}</h4>
                                 <div className="news-excerpt">{item.news_excerpt}</div>
