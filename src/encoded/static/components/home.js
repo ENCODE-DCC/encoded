@@ -222,10 +222,22 @@ var AssayClicking = React.createClass({
     },
 
     // Properly adds or removes assay category from link
-    sortByAssay: function(category) {
-        console.log('CAT: %s', category);
-        this.props.handleAssayCategoryClick(category); // handles assay category click
-        this.setState({currentAssay: category}); // updates current assay
+    sortByAssay: function(category, e) {
+
+        function handleClick(category, ctx) {
+            ctx.props.handleAssayCategoryClick(category); // handles assay category click
+            ctx.setState({currentAssay: category}); // updates current assay
+        }
+
+        console.log('CAT: %s:%o', category, e.type);
+        if (e.type === 'touchend') {
+            handleClick(category, this);
+            this.assayClickHandled = true;
+        } else if (e.type === 'click' && !this.assayClickHandled) {
+            handleClick(category, this);
+        } else {
+            this.assayClickHandled = false;
+        }
     },
 
     // Renders classic image and svg rectangles
@@ -241,13 +253,13 @@ var AssayClicking = React.createClass({
                             <img src="static/img/classic-image.jpg" />
 
                             <svg id="site-banner-overlay" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2260 1450" className="classic-svg">
-                                <rect id={this.state.assayList[0]} x="101.03" y="645.8" width="257.47" height="230.95"  className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[0] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[0])} onTouchStart={this.sortByAssay.bind(null, this.state.assayList[0])} />
-                                <rect id={this.state.assayList[1]} x="386.6" y="645.8" width="276.06" height="230.95"   className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[1] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[1])} onTouchStart={this.sortByAssay.bind(null, this.state.assayList[1])} />
-                                <rect id={this.state.assayList[2]} x="688.7" y="645.8" width="237.33" height="230.95"   className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[2] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[2])} onTouchStart={this.sortByAssay.bind(null, this.state.assayList[2])} />
-                                <rect id={this.state.assayList[3]} x="950.83" y="645.8" width="294.65" height="230.95"  className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[3] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[3])} onTouchStart={this.sortByAssay.bind(null, this.state.assayList[3])} />
-                                <rect id={this.state.assayList[4]} x="1273.07" y="645.8" width="373.37" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[4] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[4])} onTouchStart={this.sortByAssay.bind(null, this.state.assayList[4])} />
-                                <rect id={this.state.assayList[5]} x="1674.06" y="645.8" width="236.05" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[5] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[5])} onTouchStart={this.sortByAssay.bind(null, this.state.assayList[5])} />
-                                <rect id={this.state.assayList[6]} x="1937.74" y="645.8" width="227.38" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[6] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[6])} onTouchStart={this.sortByAssay.bind(null, this.state.assayList[6])} />
+                                <rect id={this.state.assayList[0]} x="101.03" y="645.8" width="257.47" height="230.95"  className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[0] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[0])} onTouchEnd={this.sortByAssay.bind(null, this.state.assayList[0])} />
+                                <rect id={this.state.assayList[1]} x="386.6" y="645.8" width="276.06" height="230.95"   className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[1] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[1])} onTouchEnd={this.sortByAssay.bind(null, this.state.assayList[1])} />
+                                <rect id={this.state.assayList[2]} x="688.7" y="645.8" width="237.33" height="230.95"   className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[2] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[2])} onTouchEnd={this.sortByAssay.bind(null, this.state.assayList[2])} />
+                                <rect id={this.state.assayList[3]} x="950.83" y="645.8" width="294.65" height="230.95"  className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[3] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[3])} onTouchEnd={this.sortByAssay.bind(null, this.state.assayList[3])} />
+                                <rect id={this.state.assayList[4]} x="1273.07" y="645.8" width="373.37" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[4] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[4])} onTouchEnd={this.sortByAssay.bind(null, this.state.assayList[4])} />
+                                <rect id={this.state.assayList[5]} x="1674.06" y="645.8" width="236.05" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[5] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[5])} onTouchEnd={this.sortByAssay.bind(null, this.state.assayList[5])} />
+                                <rect id={this.state.assayList[6]} x="1937.74" y="645.8" width="227.38" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[6] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[6])} onTouchEnd={this.sortByAssay.bind(null, this.state.assayList[6])} />
                             </svg>
                         </div>
 
