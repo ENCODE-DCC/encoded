@@ -2069,7 +2069,6 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
                 addendum = addendum + 'TopHat,'
             if a_file.get('assembly',assembly) == 'mm10-minimal':
                 addendum = addendum + 'mm10-minimal,'
-                #track["longLabel"] = track["longLabel"] + " (mm10-minimal)" # add mm10-minimal into the longLabel
             if len(addendum) > 0:
                 track["longLabel"] = track["longLabel"] + " (" + addendum[0:-1] + ")" # add mm10-minimal into the longLabel
 
@@ -2123,19 +2122,16 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
                         if "url" in subgroup:
                             metadata_pairs[group_title] = '"<a href=\'%s/%s/\' TARGET=\'_blank\' title=\'%s details\'>%s</a>"' % (host,subgroup["url"],group_title,subgroup["title"])
                         elif group_title == "Biosample":
-                            bs_value = ""
+                            bs_value = sanitize_label( dataset.get("biosample_summary","") )
+                            if len(bs_value) == 0:
+                                bs_value = subgroup["title"]
                             biosamples = biosamples_for_file(a_file,dataset)
                             if len(biosamples) > 0:
                                 for bs_acc in sorted( biosamples.keys() ):
-                                    bs_value += "%s <a href=\'%s%s\' TARGET=\'_blank\' title=\'%s details\'>%s</a> " % \
-                                        (biosamples[bs_acc].get("summary",subgroup["title"]),host,biosamples[bs_acc]["@id"],group_title,bs_acc)
-                            if len(bs_value) > 0:
-                                metadata_pairs[group_title] = '"%s"' % (bs_value[0:-1])
-                            else:
-                                metadata_pairs[group_title] = '"%s"' % (subgroup["title"])
+                                    bs_value += " <a href=\'%s%s\' TARGET=\'_blank\' title=\'%s details\'>%s</a>" % (host,biosamples[bs_acc]["@id"],group_title,bs_acc)
+                            metadata_pairs[group_title] = '"%s"' % (bs_value)
                         else:
                             metadata_pairs[group_title] = '"%s"' % (subgroup["title"])
-                        #subgroups[0]["tracks"] = [ track ]
                 else:
                     ### Help!
                     assert(group_tag == "Don't know this group!")
@@ -2287,6 +2283,7 @@ def remodel_acc_to_set_composites(acc_composites,hide_after=None):
         else: # Adding an acc_composite to an existing set_composite
             #log.warn("Adding %s into %s composite" % (acc_composite.get("name"," a composite"),vis_type)) # DEBUG: remodelling
             set_composite = set_composites[vis_type]
+            set_composite['composite_type'] = 'set'
 
             if set_composite.get("project","unknown") != "NHGRI":
                 acc_pennant = acc_composite["pennantIcon"]
@@ -2384,14 +2381,26 @@ def ucsc_trackDb_composite_blob(composite,title):
     dimensions = composite.get("dimensions",{})
     if dimensions:
         pairs = ""
+        XY_skipped = []
+        XY_added = []
         for dim_tag in sorted( dimensions.keys() ):
             group = composite["groups"].get(dimensions[dim_tag])
             if group is None: # e.g. "Targets" may not exist
                 continue
-            if dimensions[dim_tag] != "REP" and len(group.get("groups",{})) <= 1: # NOTE get hui.js line 262 is now fixed!
-                continue
+            if dimensions[dim_tag] != "REP":
+                if len(group.get("groups",{})) <= 1:
+                    if dim_tag[-1] in ['X','Y']:
+                        XY_skipped.append(dim_tag)
+                    continue
+                elif dim_tag[-1] in ['X','Y']:
+                    XY_added.append(dim_tag)
             pairs += " %s=%s" % (dim_tag, dimensions[dim_tag])
             actual_group_tags.append(dimensions[dim_tag])
+        # Getting too fancy for our own good: If one XY dimension has more than one member then we must add both X and Y
+        if len(XY_skipped) > 0 and len(XY_added) > 0:
+            for dim_tag in XY_skipped:
+                pairs += " %s=%s" % (dim_tag, dimensions[dim_tag])
+                actual_group_tags.append(dimensions[dim_tag])
         if len(pairs) > 0:
             blob += "dimensions%s\n" % pairs
     # filterComposite
