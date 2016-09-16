@@ -114,3 +114,9 @@ def test_biosample_mating_status_no_sex_fail(testapp, mouse_biosample):
     del mouse_biosample['model_organism_sex']
     mouse_biosample['model_organism_mating_status'] = 'mated'
     testapp.post_json('/biosample', mouse_biosample, status=422)
+
+
+def test_biosmple_post_synchronization_no_unit_fail(testapp, mouse_biosample, fly):
+    mouse_biosample['organism'] = fly['uuid']
+    mouse_biosample['post_synchronization_time'] = '30'
+    testapp.post_json('/biosample', mouse_biosample, status=422)
