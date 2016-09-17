@@ -1,34 +1,35 @@
 'use strict';
-var React = require('react');
-var panel = require('../libs/bootstrap/panel');
-var _ = require('underscore');
-var url = require('url');
-var globals = require('./globals');
-var navigation = require('./navigation');
-var dataset = require('./dataset');
-var dbxref = require('./dbxref');
-var statuslabel = require('./statuslabel');
-var audit = require('./audit');
-var image = require('./image');
-var item = require('./item');
-var reference = require('./reference');
-var {TreatmentDisplay, SingleTreatment} = require('./objectutils');
-var {SortTablePanel, SortTable} = require('./sorttable');
-var doc = require('./doc');
-var {BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable, GeneticModificationTable} = require('./typeutils');
+const React = require('react');
+const panel = require('../libs/bootstrap/panel');
+const _ = require('underscore');
+const url = require('url');
+const globals = require('./globals');
+const navigation = require('./navigation');
+const dataset = require('./dataset');
+const dbxref = require('./dbxref');
+const statuslabel = require('./statuslabel');
+const audit = require('./audit');
+const image = require('./image');
+const item = require('./item');
+const reference = require('./reference');
+const {TreatmentDisplay, SingleTreatment} = require('./objectutils');
+const {SortTablePanel, SortTable} = require('./sorttable');
+const doc = require('./doc');
+const {BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable, GeneticModificationTable} = require('./typeutils');
+const {GeneticModificationSummary} = require('./genetic_modification');
 
-var Breadcrumbs = navigation.Breadcrumbs;
-var DbxrefList = dbxref.DbxrefList;
-var StatusLabel = statuslabel.StatusLabel;
-var AuditIndicators = audit.AuditIndicators;
-var AuditDetail = audit.AuditDetail;
-var AuditMixin = audit.AuditMixin;
-var {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile} = doc;
-var ExperimentTable = dataset.ExperimentTable;
-var PubReferenceList = reference.PubReferenceList;
-var RelatedItems = item.RelatedItems;
-var ProjectBadge = image.ProjectBadge;
-var {Panel, PanelBody, PanelHeading} = panel;
+const Breadcrumbs = navigation.Breadcrumbs;
+const DbxrefList = dbxref.DbxrefList;
+const StatusLabel = statuslabel.StatusLabel;
+const AuditIndicators = audit.AuditIndicators;
+const AuditDetail = audit.AuditDetail;
+const AuditMixin = audit.AuditMixin;
+const {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile} = doc;
+const ExperimentTable = dataset.ExperimentTable;
+const PubReferenceList = reference.PubReferenceList;
+const RelatedItems = item.RelatedItems;
+const ProjectBadge = image.ProjectBadge;
+const {Panel, PanelBody, PanelHeading} = panel;
 
 
 var PanelLookup = function (props) {
@@ -438,7 +439,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                 : null}
 
                 {context.genetic_modifications.length ?
-                    <GeneticModificationTable geneticModifications={context.genetic_modifications} />
+                    <GeneticModificationSummary geneticModifications={context.genetic_modifications} />
                 : null}
             </div>
         );

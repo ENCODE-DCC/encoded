@@ -4,7 +4,7 @@
 jest.autoMockOff();
 
 describe('Genetic modification functionality', function() {
-    const {getGMModificationTechniques} = require('../genetic_modification');
+    const {getGMTechniques} = require('../genetic_modification');
 
     const gmTestData = [
         {
@@ -97,20 +97,20 @@ describe('Genetic modification functionality', function() {
     ];
 
     it('it retrieves modification technique strings', function() {
-        let techniques = getGMModificationTechniques(gmTestData[0]);
+        let techniques = getGMTechniques(gmTestData[0]);
         expect(techniques.length).toEqual(2);
         expect(techniques[0]).toEqual('TALE');
         expect(techniques[1]).toEqual('CRISPR');
 
         // Try a second time to make sure we get the same results even with memoization.
-        techniques = getGMModificationTechniques(gmTestData[0]);
+        techniques = getGMTechniques(gmTestData[0]);
         expect(techniques.length).toEqual(2);
         expect(techniques[0]).toEqual('TALE');
         expect(techniques[1]).toEqual('CRISPR');
 
         // Try a third time with a different GM to make sure memoization isn't caching results
         // improperly.
-        techniques = getGMModificationTechniques(gmTestData[1]);
+        techniques = getGMTechniques(gmTestData[1]);
         expect(techniques.length).toEqual(1);
         expect(techniques[0]).toEqual('CRISPR');
     });

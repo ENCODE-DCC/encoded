@@ -1011,7 +1011,10 @@
         "uuid": "9e9f3352-ed7f-426e-961f-3b43feed715b",
         "genetic_modifications": [
             "encode:modification-test-1",
-            "encode:modification-test-2"
+            "encode:modification-test-2",
+            "ef12855f-5d3e-4da5-8684-3a594c60505a",
+            "2f33a486-e3d9-4633-8682-a363b48ba67d",
+            "b9264c83-2222-4678-a82f-4915af941fa4"
         ]
     }
 ]
