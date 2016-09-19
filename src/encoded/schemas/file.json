@@ -851,11 +851,8 @@
         "primer sequence": "reference",
         "spike-in sequence": "reference",
         "reference": "reference",
-<<<<<<< HEAD
         "sequence alignability": "reference",
         "sequence uniqueness": "reference",
-=======
->>>>>>> master
 
         "enhancer validation": "validation",
         "validation": "validation",
