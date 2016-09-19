@@ -11,7 +11,7 @@ const {RelatedItems} = require('./item');
 const {DbxrefList} = require('./dbxref');
 const {FetchedItems} = require('./fetched');
 const {Breadcrumbs} = require('./navigation');
-const {TreatmentDisplay} = require('./objectutils');
+const {TreatmentDisplay, SingleTreatment} = require('./objectutils');
 const {BiosampleTable} = require('./typeutils');
 const {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile} = require('./doc');
 const {PickerActionsMixin} = require('./search');
@@ -523,18 +523,33 @@ function _getGMTechniques(gm) {
 }
 
 
+const calcGMSummarySentence = module.exports.calcGMSummarySentence = _.memoize(_calcGMSummarySentence, gm => gm.uuid);
+
 // Calculate a summary sentence for the GM passed in `gm`.
 function _calcGMSummarySentence(gm) {
-    let sentence = gm.modification_type;
     let treatments = [];
+
+    // modification_type is required, so start the sentence with that.
+    let sentence = gm.modification_type;
 
     // Add the target of the modification if there is one.
     if (gm.target) {
         sentence += ' of ' + gm.target.label;
     }
 
-    const techniques = getGMTechniques(gm);
-    const treatments
+    // Collect up an array of strings with techniques and treatments.
+    let techniques = getGMTechniques(gm);
+    if (gm.modification_treatments && gm.modification_treatments.length) {
+        treatments = gm.modification_treatments.map(treatment => SingleTreatment(treatment));
+    }
+    let techtreat = techniques.concat(treatments).join(', ');
+
+    // Add techniques and treatments string if any.
+    if (techtreat.length) {
+        sentence += ' using ' + techtreat;
+    }
+
+    return sentence;
 }
 
 

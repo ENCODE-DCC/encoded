@@ -4,7 +4,7 @@
 jest.autoMockOff();
 
 describe('Genetic modification functionality', function() {
-    const {getGMTechniques} = require('../genetic_modification');
+    const {getGMTechniques, calcGMSummarySentence} = require('../genetic_modification');
 
     const gmTestData = [
         {
@@ -90,28 +90,36 @@ describe('Genetic modification functionality', function() {
                     "insert_sequence": "ACTCGT"
                 }
             ],
-            "modification_treatments": [],
+            "modification_treatments": [
+                require('../testdata/treatment/CHEBI34730'),
+                require('../testdata/treatment/CHEBI44616')
+            ],
             "submitted_by": "dignissim.euismod@amet.habitant",
-            "target": "/targets/H3K4me3-human"
+            "target": require('../testdata/target/HNRNPA1-human')
         }
     ];
 
-    it('it retrieves modification technique strings', function() {
+    it('retrieves modification technique strings', function() {
         let techniques = getGMTechniques(gmTestData[0]);
         expect(techniques.length).toEqual(2);
-        expect(techniques[0]).toEqual('TALE');
-        expect(techniques[1]).toEqual('CRISPR');
+        expect(techniques[0]).toEqual('CRISPR');
+        expect(techniques[1]).toEqual('TALE');
 
         // Try a second time to make sure we get the same results even with memoization.
         techniques = getGMTechniques(gmTestData[0]);
         expect(techniques.length).toEqual(2);
-        expect(techniques[0]).toEqual('TALE');
-        expect(techniques[1]).toEqual('CRISPR');
+        expect(techniques[0]).toEqual('CRISPR');
+        expect(techniques[1]).toEqual('TALE');
 
         // Try a third time with a different GM to make sure memoization isn't caching results
         // improperly.
         techniques = getGMTechniques(gmTestData[1]);
         expect(techniques.length).toEqual(1);
         expect(techniques[0]).toEqual('CRISPR');
+    });
+
+    it('calculates summary sentences', function() {
+        let summary = calcGMSummarySentence(gmTestData[1]);
+        expect(summary).toEqual('replacement of HNRNPA1 using CRISPR, 97.2 nM doxycycline hyclate (CHEBI:34730) for 6 hour, 600 nM afimoxifene (CHEBI:44616) for 30 minute');
     });
 });
