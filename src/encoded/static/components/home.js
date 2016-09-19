@@ -414,10 +414,10 @@ var HomepageChart = React.createClass({
                             text.push('<ul>');
                             for (var i = 0; i < facetData.length; i++) {
                                 text.push('<li>');
-                                text.push('<a href="' + this.props.data['@id'] + '&award.project=' + facetData[i].key  + '">'); // go to matrix view when clicked
-                                text.push('<span style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
+                                text.push('<a href="' + '/matrix/' + this.props.searchBase + '&award.project=' + facetData[i].key  + '">'); // go to matrix view when clicked
+                                text.push('<span class="chart-legend-chip" style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
                                 if (chart.data.labels[i]) {
-                                    text.push(chart.data.labels[i]);
+                                    text.push('<span class="chart-legend-label">' + chart.data.labels[i] + '</span>');
                                 }
                                 text.push('</a></li>');
                             }
@@ -627,10 +627,10 @@ var HomepageChart2 = React.createClass({
                             text.push('<ul>');
                             for (var i = 0; i < facetTerms.length; i++) {
                                 text.push('<li>');
-                                text.push('<a href="' + this.props.data['@id'] + '&' + query + facetTerms[i].key  + '">'); // go to matrix view when clicked
-                                text.push('<span style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
+                                text.push('<a href="' + '/matrix/' + this.props.searchBase + '&' + query + facetTerms[i].key  + '">'); // go to matrix view when clicked
+                                text.push('<span class="chart-legend-chip" style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
                                 if (chart.data.labels[i]) {
-                                    text.push(chart.data.labels[i]);
+                                    text.push('<span class="chart-legend-label">' + chart.data.labels[i] + '</span>');
                                 }
                                 text.push('</a></li>');
                             }
