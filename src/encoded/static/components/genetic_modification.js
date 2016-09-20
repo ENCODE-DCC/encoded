@@ -45,6 +45,7 @@ const GeneticModification = module.exports.GeneticModification = React.createCla
         let modDocs = [];
         let charDocs = [];
         let techDocs = [];
+        let biosampleProtocolDocs = [];
         if (context.documents && context.documents.length) {
             modDocs = context.documents;
         }
@@ -62,6 +63,13 @@ const GeneticModification = module.exports.GeneticModification = React.createCla
                 }
             });
         }
+        if (context.biosamples_modified && context.biosamples_modified) {
+            context.biosamples_modified.forEach(biosample => {
+                if (biosample.protocol_documents && biosample.protocol_documents.length) {
+                    biosampleProtocolDocs = biosampleProtocolDocs.concat(biosample.protocol_documents);
+                }
+            });
+        }
         if (modDocs.length) {
             modDocs = globals.uniqueObjectsArray(modDocs);
         }
@@ -70,6 +78,9 @@ const GeneticModification = module.exports.GeneticModification = React.createCla
         }
         if (techDocs.length) {
             techDocs = globals.uniqueObjectsArray(techDocs);
+        }
+        if (biosampleProtocolDocs.length) {
+            biosampleProtocolDocs = globals.uniqueObjectsArray(biosampleProtocolDocs);
         }
 
         return (
@@ -178,10 +189,12 @@ const GeneticModification = module.exports.GeneticModification = React.createCla
                                         </div>
                                     : null}
 
-                                    <div data-test="submittedby">
-                                        <dt>Submitted by</dt>
-                                        <dd>{context.submitted_by.title}</dd>
-                                    </div>
+                                    {context.submitted_by ?
+                                        <div data-test="submittedby">
+                                            <dt>Submitted by</dt>
+                                            <dd>{context.submitted_by.title}</dd>
+                                        </div>
+                                    : null}
 
                                     {context.source.title ?
                                         <div data-test="sourcetitle">
@@ -227,7 +240,8 @@ const GeneticModification = module.exports.GeneticModification = React.createCla
                 <DocumentsPanel documentSpecs={[
                     {label: 'Modification', documents: modDocs},
                     {label: 'Characterization', documents: charDocs},
-                    {label: 'Techniques', documents: techDocs}]} />
+                    {label: 'Techniques', documents: techDocs},
+                    {label: 'Protocols', documents: biosampleProtocolDocs}]} />
 
                 <RelatedItems
                     title="Biosamples using this genetic modification"
