@@ -1,8 +1,17 @@
 =========================
  Change log for treatment.json
 =========================
+
+Schema version 5
+----------------
  
- Schema version 4
+* *duration_units* is now required for *duration* and vice versa
+* *concentration* and *concentration_units* were renamed to *amount* and *amount_units*
+* *amount_units* is now required for *amount* and vice versa
+* *antibodies* was renamed to *antibodies_used*
+* *protocols* were renamed to *documents*
+
+Schema version 4
 ----------------
 
 * *antibodies* was added 

@@ -841,14 +841,14 @@ def test_audit_experiment_model_organism_mismatched_sex(testapp,
                                                         mouse_donor_1):
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
+    testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'male'})
     testapp.patch_json(biosample_2['@id'], {'model_organism_sex': 'female'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_age_units': 'day',
                                             'model_organism_age': '54'})
     testapp.patch_json(biosample_2['@id'], {'model_organism_age_units': 'day',
                                             'model_organism_age': '54'})
-    testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
-    testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
