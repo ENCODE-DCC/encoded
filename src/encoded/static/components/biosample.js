@@ -419,19 +419,19 @@ var Biosample = module.exports.Biosample = React.createClass({
                 <RelatedItems
                     title="Experiments using this biosample"
                     url={'/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid}
-                    Component={ExperimentTable} />
+                    Component={ExperimentTable} ignoreErrors />
 
                 <RelatedItems title="Biosamples that are part of this biosample"
                               url={'/search/?type=biosample&part_of.uuid=' + context.uuid}
-                              Component={BiosampleTable} />
+                              Component={BiosampleTable} ignoreErrors />
 
                 <RelatedItems title="Biosamples that are derived from this biosample"
                               url={'/search/?type=biosample&derived_from.uuid=' + context.uuid}
-                              Component={BiosampleTable} />
+                              Component={BiosampleTable} ignoreErrors />
 
                 <RelatedItems title="Biosamples that are pooled from this biosample"
                               url={'/search/?type=biosample&pooled_from.uuid=' + context.uuid}
-                              Component={BiosampleTable} />
+                              Component={BiosampleTable} ignoreErrors />
 
                 {combinedDocs.length ?
                     <DocumentsPanel documentSpecs={[{documents: combinedDocs}]} />

@@ -620,6 +620,11 @@ const GeneticModificationGroup = module.exports.GeneticModificationGroup = React
     },
 
     columns: {
+        'aliases': {
+            title: 'Aliases',
+            display: modification => modification.aliases && modification.aliases.length ? modification.aliases.join(', ') : '',
+            sorter: false
+        },
         'modification_purpose': {
             title: 'Purpose'
         },
@@ -638,7 +643,27 @@ const GeneticModificationGroup = module.exports.GeneticModificationGroup = React
                     return <span>chr{coords.chromosome}:{coords.start}-{coords.end}</span>;
                 }
                 return null;
-            } 
+            },
+            objSorter: (a, b) => {
+                let sortRes; // Sorting result
+                var aCoord = a.modification_genome_coordinates;
+                var bCoord = b.modification_genome_coordinates;
+                if (aCoord && bCoord) {
+                    sortRes = (aCoord.chromosome < bCoord.chromosome) ? -1 : ((bCoord.chromosome > aCoord.chromosome) ? 1 : 0);
+                    if (!sortRes) {
+                        // Identical chromosomes; sort by start coordinates
+                        sortRes = aCoord.start - bCoord.start;
+                        if (!sortRes) {
+                            // Identical start coordinates; sort by end coordinates
+                            sortRes = aCoord.end - bCoord.end;
+                        }
+                    }
+                } else {
+                    // One or the other or both are missing; sort the non-missing one first
+                    sortRes = aCoord ? -1 : (bCoord ? 1 : 0);
+                }
+                return sortRes;
+            }
         }
     },
 
