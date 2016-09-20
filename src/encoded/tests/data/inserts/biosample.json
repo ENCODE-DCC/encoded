@@ -1004,7 +1004,7 @@
         "biosample_type": "whole organisms",
         "donor": "/mouse-donors/ENCDO242AAA/",
         "lab": "/labs/michael-snyder",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:EPC_Stam_protocol"
         ],
         "organism": "/organisms/mouse/",

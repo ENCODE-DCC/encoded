@@ -45,7 +45,7 @@ const GeneticModification = module.exports.GeneticModification = React.createCla
         let modDocs = [];
         let charDocs = [];
         let techDocs = [];
-        let biosampleProtocolDocs = [];
+        let biosampleDocs = [];
         if (context.documents && context.documents.length) {
             modDocs = context.documents;
         }
@@ -65,8 +65,8 @@ const GeneticModification = module.exports.GeneticModification = React.createCla
         }
         if (context.biosamples_modified && context.biosamples_modified) {
             context.biosamples_modified.forEach(biosample => {
-                if (biosample.protocol_documents && biosample.protocol_documents.length) {
-                    biosampleProtocolDocs = biosampleProtocolDocs.concat(biosample.protocol_documents);
+                if (biosample.documents && biosample.documents.length) {
+                    biosampleDocs = biosampleDocs.concat(biosample.documents);
                 }
             });
         }
@@ -79,8 +79,8 @@ const GeneticModification = module.exports.GeneticModification = React.createCla
         if (techDocs.length) {
             techDocs = globals.uniqueObjectsArray(techDocs);
         }
-        if (biosampleProtocolDocs.length) {
-            biosampleProtocolDocs = globals.uniqueObjectsArray(biosampleProtocolDocs);
+        if (biosampleDocs.length) {
+            biosampleDocs = globals.uniqueObjectsArray(biosampleDocs);
         }
 
         return (
@@ -241,7 +241,7 @@ const GeneticModification = module.exports.GeneticModification = React.createCla
                     {label: 'Modification', documents: modDocs},
                     {label: 'Characterization', documents: charDocs},
                     {label: 'Techniques', documents: techDocs},
-                    {label: 'Protocols', documents: biosampleProtocolDocs}]} />
+                    {label: 'Biosample', documents: biosampleDocs}]} />
 
                 <RelatedItems
                     title="Biosamples using this genetic modification"
