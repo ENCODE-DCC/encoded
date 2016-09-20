@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+var panel = require('../libs/bootstrap/panel');
 var globals = require('./globals');
 var fetched = require('./fetched');
 var TabbedArea = require('react-bootstrap/lib/TabbedArea');
@@ -18,6 +19,15 @@ var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
 var DropdownButton = button.DropdownButton;
 var DropdownMenu = dropdownMenu.DropdownMenu;
+var {Panel, PanelBody, PanelHeading} = panel;
+
+
+var regionGenomes = [
+    {value: 'GRCh37', display: 'hg19'},
+    {value: 'GRCh38', display: 'GRCh38'},
+    {value: 'GRCm37', display: 'mm9'},
+    {value: 'GRCm38', display: 'mm10'}
+];
 
 
 var AutocompleteBox = React.createClass({
@@ -59,6 +69,7 @@ var AdvSearch = React.createClass({
             showAutoSuggest: false,
             searchTerm: '',
             coordinates: '',
+            genome: regionGenomes[0].value,
             terms: {}
         };
     },
@@ -90,6 +101,11 @@ var AdvSearch = React.createClass({
         // Now let the timer update the terms state when it gets around to it.
     },
 
+    handleAssemblySelect: function(event) {
+        // Handle click in assembly-selection <select>
+        this.setState({genome: event.target.value});
+    },
+
     componentDidMount: function() {
         // Use timer to limit to one request per second
         this.timer = setInterval(this.tick, 1000);
@@ -103,11 +119,6 @@ var AdvSearch = React.createClass({
         if (this.newSearchTerm !== this.state.searchTerm) {
             this.setState({searchTerm: this.newSearchTerm});
         }
-        if (this.coordinates !== this.props.context.coordinates && this.props.context.coordinates !== null) {
-            this.coordinates = this.props.context.coordinates
-            var inputNode = this.refs.annotation.getDOMNode();
-            inputNode.value = inputNode.value.concat(' ', this.coordinates)
-        }
     },
 
     render: function() {
@@ -115,27 +126,39 @@ var AdvSearch = React.createClass({
         var id = url.parse(this.context.location_href, true);
         var region = id.query['region'] || '';
         return (
-            <div className="adv-search-form">
-                <form id="panel1" ref="adv-search" role="form" autoComplete="off" aria-labeledby="tab1">
-                    <div className="row">
-                        <div className="form-group col-md-8">
-                            <input type="hidden" name="genome" value="hg19" />
-                            <input type="hidden" name="annotation" value={this.state.terms['annotation']} />
-                            <input ref="annotation" defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange}
-                                placeholder="Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID" />
-                            {(this.state.showAutoSuggest && this.state.searchTerm) ?
-                                <FetchedData loadingComplete={true}>
-                                    <Param name="auto" url={'/suggest/?q=' + this.state.searchTerm} />
-                                    <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} />
-                                </FetchedData>
-                            : null}
+            <Panel>
+                <PanelBody>
+                    <form id="panel1" className="adv-search-form" ref="adv-search" role="form" autoComplete="off" aria-labeledby="tab1">
+                        <input type="hidden" name="annotation" value={this.state.terms['annotation']} />
+                        <div className="form-group">
+                            <label>Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID</label>
+                            <div className="input-group input-group-region-input">
+                                <input ref="annotation" defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange} />
+                                {(this.state.showAutoSuggest && this.state.searchTerm) ?
+                                    <FetchedData loadingComplete={true}>
+                                        <Param name="auto" url={'/suggest/?genome=' + this.state.genome + '&q=' + this.state.searchTerm  } type="json" />
+                                        <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} />
+                                    </FetchedData>
+                                : null}
+                                <div className="input-group-addon input-group-select-addon">
+                                    <select value={this.state.genome} name="genome" onChange={this.handleAssemblySelect}>
+                                        {regionGenomes.map(genomeId => 
+                                            <option key={genomeId.value} value={genomeId.value}>{genomeId.display}</option>
+                                        )}
+                                    </select>
+                                </div>
+                                {context.notification ?
+                                    <p className="input-region-error">{context.notification}</p>
+                                : null}
+                            </div>
                         </div>
-                        <div className="form-group col-md-2">
-                            <input type="submit" value="Search" className="btn btn-sm btn-info adv-search-submit" />
-                        </div>
-                    </div>
-                </form>
-            </div>
+                        <input type="submit" value="Search" className="btn btn-sm btn-info pull-right" />
+                    </form>
+                    {context.coordinates ?
+                        <p>Searched coordinates: <strong>{context.coordinates}</strong></p>
+                    : null}
+                </PanelBody>
+            </Panel>
         );
     }
 });
@@ -179,76 +202,74 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
         }
 
         return (
-          <div>
-              <h2>Region search</h2>
-              <AdvSearch {...this.props} />
-                {context['notification'] === 'Success' ?
-                  <div className="panel data-display main-panel">
-                      <div className="row">
-                          <div className="col-sm-5 col-md-4 col-lg-3">
-                              <FacetList {...this.props} facets={facets} filters={filters}
-                                  searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
-                          </div>
-                          <div className="col-sm-7 col-md-8 col-lg-9">
-                              <div>
-                                <h4>
-                                    Showing {results.length} of {total}
-                                </h4>
-                                <div className="results-table-control">  
-                                    {total > results.length && searchBase.indexOf('limit=all') === -1 ?
-                                            <a rel="nofollow" className="btn btn-info btn-sm"
-                                                 href={searchBase ? searchBase + '&limit=all' : '?limit=all'}
-                                                 onClick={this.onFilter}>View All</a>
-                                    :
-                                        <span>
-                                            {results.length > 25 ?
-                                                    <a className="btn btn-info btn-sm"
-                                                       href={trimmedSearchBase ? trimmedSearchBase : "/region-search/"}
-                                                       onClick={this.onFilter}>View 25</a>
+            <div>
+                <h2>Region search</h2>
+                <AdvSearch {...this.props} />
+                    {context['notification'] === 'Success' ?
+                        <div className="panel data-display main-panel">
+                            <div className="row">
+                                <div className="col-sm-5 col-md-4 col-lg-3">
+                                    <FacetList {...this.props} facets={facets} filters={filters}
+                                        searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
+                                </div>
+                                <div className="col-sm-7 col-md-8 col-lg-9">
+                                    <div>
+                                        <h4>
+                                            Showing {results.length} of {total}
+                                        </h4>
+                                        <div className="results-table-control">  
+                                            {total > results.length && searchBase.indexOf('limit=all') === -1 ?
+                                                    <a rel="nofollow" className="btn btn-info btn-sm"
+                                                         href={searchBase ? searchBase + '&limit=all' : '?limit=all'}
+                                                         onClick={this.onFilter}>View All</a>
+                                            :
+                                                <span>
+                                                    {results.length > 25 ?
+                                                            <a className="btn btn-info btn-sm"
+                                                               href={trimmedSearchBase ? trimmedSearchBase : "/region-search/"}
+                                                               onClick={this.onFilter}>View 25</a>
+                                                    : null}
+                                                </span>
+                                            }
+        
+                                            {context['download_elements'] ?
+                                                <DropdownButton title='Download Elements' label="downloadelements" wrapperClasses="results-table-button">
+                                                    <DropdownMenu>
+                                                        {context['download_elements'].map(link =>
+                                                            <a key={link} data-bypass="true" target="_blank" private-browsing="true" href={link}>
+                                                                {link.split('.').pop()}
+                                                            </a>
+                                                        )}
+                                                    </DropdownMenu>
+                                                </DropdownButton>
                                             : null}
-                                        </span>
-                                    }
-
-                                    {context['download_elements'] ?
-                                        <DropdownButton title='Download Elements' label="downloadelements" wrapperClasses="results-table-button">
-                                            <DropdownMenu>
-                                                {context['download_elements'].map(link =>
-                                                    <a key={link} data-bypass="true" target="_blank" private-browsing="true" href={link}>
-                                                        {link.split('.').pop()}
-                                                    </a>
-                                                )}
-                                            </DropdownMenu>
-                                        </DropdownButton>
-                                    : null}
-
-                                    {batchHubKeys ?
-                                      <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'} label="batchhubs" wrapperClasses="results-table-button">
-                                          <DropdownMenu>
-                                              {batchHubKeys.map(assembly =>
-                                                  <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context['batch_hub'][assembly]}>
-                                                      {assembly}
-                                                  </a>
-                                              )}
-                                          </DropdownMenu>
-                                      </DropdownButton>
-                                    : null}
-
-                                </div>  
-                              </div>
-                            
-                            <hr />
-                            <ul className="nav result-table" id="result-table">
-                                {results.map(function (result) {
-                                    return Listing({context:result, columns: columns, key: result['@id']});
-                                })}
-                            </ul>
-                          </div>
-                      </div>
-                  </div>
-                :
-                   <h4>{context['notification']}</h4>
-               }
-          </div>
+        
+                                            {batchHubKeys ?
+                                                <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'} label="batchhubs" wrapperClasses="results-table-button">
+                                                    <DropdownMenu>
+                                                        {batchHubKeys.map(assembly =>
+                                                            <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context['batch_hub'][assembly]}>
+                                                                {assembly}
+                                                            </a>
+                                                        )}
+                                                    </DropdownMenu>
+                                                </DropdownButton>
+                                            : null}
+        
+                                        </div>  
+                                    </div>
+                                  
+                                  <hr />
+                                  <ul className="nav result-table" id="result-table">
+                                      {results.map(function (result) {
+                                          return Listing({context:result, columns: columns, key: result['@id']});
+                                      })}
+                                  </ul>
+                                </div>
+                            </div>
+                        </div>
+                    : null}
+            </div>
         );
     }
 });

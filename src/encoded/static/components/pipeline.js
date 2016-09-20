@@ -210,7 +210,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                         <dl className="key-value">
                             <div data-test="title">
                                 <dt>Title</dt>
-                                <dd>{context.source_url ? <a href={context.source_url}>{context.title}</a> : context.title}</dd>
+                                <dd>{context.title}</dd>
                             </div>
 
                             {context.assay_term_name ?
@@ -236,6 +236,13 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                                 <div data-test="awardpi">
                                     <dt>Award PI</dt>
                                     <dd>{context.award.pi.lab.title}</dd>
+                                </div>
+                            : null}
+
+                            {context.source_url ?
+                                <div data-test="sourceurl">
+                                    <dt>Source</dt>
+                                    <dd><a href={context.source_url}>{context.source_url}</a></dd>
                                 </div>
                             : null}
                         </dl>
