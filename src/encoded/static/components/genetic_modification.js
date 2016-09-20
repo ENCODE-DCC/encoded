@@ -622,7 +622,10 @@ const GeneticModificationGroup = module.exports.GeneticModificationGroup = React
     columns: {
         'aliases': {
             title: 'Aliases',
-            display: modification => modification.aliases && modification.aliases.length ? modification.aliases.join(', ') : '',
+            display: modification => {
+                let aliases = modification.aliases && modification.aliases.length ? modification.aliases.join(', ') : 'None';
+                return <a href={modification['@id']} title="View details about this genetic modification">{aliases}</a>;
+            },
             sorter: false
         },
         'purpose': {
