@@ -13,7 +13,6 @@ const image = require('./image');
 const item = require('./item');
 const reference = require('./reference');
 const {TreatmentDisplay, SingleTreatment} = require('./objectutils');
-const {SortTablePanel, SortTable} = require('./sorttable');
 const doc = require('./doc');
 const {BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable, GeneticModificationTable} = require('./typeutils');
 const {GeneticModificationSummary} = require('./genetic_modification');

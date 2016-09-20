@@ -3,6 +3,8 @@ const React = require('react');
 const _ = require('underscore');
 const url = require('url');
 const {Panel, PanelHeading, PanelBody} = require('../libs/bootstrap/panel');
+const {SvgIcon, CollapseIcon} = require('../libs/svg-icons');
+const {SortTable} = require('./sorttable');
 const globals = require('./globals');
 const {StatusLabel} = require('./statuslabel');
 const {ProjectBadge, Attachment} = require('./image');
@@ -562,15 +564,15 @@ const GeneticModificationSummary = module.exports.GeneticModificationSummary = R
     },
 
     render: function() {
-        const geneticModifications = this.props.geneticModifications;
+        let geneticModifications = this.props.geneticModifications;
 
         // Group genetic modifications by a combination like this:
         // modification_type;modification_technique,modification_technique,...;target.label
-        const gmGroups = _(geneticModifications).groupBy(gm => {
+        let gmGroups = _(geneticModifications).groupBy(gm => {
             let groupKey = gm.modification_type;
 
             // Add any modification techniques to the group key.
-            const techniques = getGMTechniques(gm);
+            let techniques = getGMTechniques(gm);
             if (techniques.length) {
                 groupKey += ';' + techniques.join();
             }
@@ -593,26 +595,79 @@ const GeneticModificationSummary = module.exports.GeneticModificationSummary = R
                 <PanelHeading>
                     <h4>Genetic modifications</h4>
                 </PanelHeading>
-                <PanelBody>
-                    {Object.keys(gmGroups).map(groupKey => {
-                        const group = gmGroups[groupKey];
-                        console.log('GROUP: %s:%o', groupKey, group);
-                    })}
-                </PanelBody>
+                {Object.keys(gmGroups).map(groupKey => {
+                    let group = gmGroups[groupKey];
+                    let sentence = calcGMSummarySentence(group[0]);
+                    return <GeneticModificationGroup key={groupKey} groupSentence={sentence} gms={group} />;
+                })}
             </Panel>
         );
     }
 });
 
 
+// Display one GM group, which consists of all GMs that share the same type, technique, target, and
+// treatments. A group is an array of GM objects.
 const GeneticModificationGroup = module.exports.GeneticModificationGroup = React.createClass({
+    propTypes: {
+        group: React.PropTypes.array // Array of GM objects in the same group
+    },
+
     getInitialState: function() {
         return {
-            expanded: false // True if group is expanded
+            detailOpen: false // True if group is expanded
         };
     },
 
+    columns: {
+        'modification_purpose': {
+            title: 'Purpose'
+        },
+        'modification_zygocity': {
+            title: 'Zygosity'
+        },
+        'assembly': {
+            title: 'Mapping assembly',
+            getValue: modification => modification.modification_genome_coordinates && modification.modification_genome_coordinates.assembly ? modification.modification_genome_coordinates.assembly : ''
+        },
+        'coordinates': {
+            title: 'Coordinates',
+            display: modification => {
+                var coords = modification.modification_genome_coordinates;
+                if (coords && coords.chromosome) {
+                    return <span>chr{coords.chromosome}:{coords.start}-{coords.end}</span>;
+                }
+                return null;
+            } 
+        }
+    },
+
+    detailSwitch: function() {
+        // Click on the detail disclosure triangle
+        this.setState({detailOpen: !this.state.detailOpen});
+    },
+
     render: function() {
-        return null;
+        let {groupSentence, gms} = this.props;
+        return (
+            <div className="gm-group">
+                <div className="gm-group-detail">
+                    <div className="icon gm-detail-trigger">
+                        <a href="#" data-trigger onClick={this.detailSwitch} className="collapsing-title">
+                            {CollapseIcon(!this.state.detailOpen)}
+                        </a>
+                    </div>
+                    <div className="gm-detail-sentence">
+                        {groupSentence}
+                    </div>
+                </div>
+                {this.state.detailOpen ?
+                    <div className="gm-detail-table">
+                        <SortTable list={gms} columns={this.columns} />
+                        <div className="gm-detail-table-shadow"></div>
+                    </div>
+                : null}
+            </div>
+        );
     }
 });
