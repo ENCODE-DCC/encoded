@@ -12,7 +12,7 @@
         "modification_techniques": [
         	"encode:crispr-test-1"
         ],
-        "modification_treatments": []
+        "treatments": []
     },
     {
         "aliases": [
@@ -27,7 +27,13 @@
         "modification_techniques": [
             "encode:tale-test-1"
         ],
-        "modification_treatments": [],
-        "modification_description": "Very important description"
+        "modified_site": {
+            "chromosome": "X",
+            "assembly": "hg19",
+            "start": 48560532,
+            "end": 48560547
+        },
+        "treatments": [],
+        "description": "Very important description"
     }
 ]
