@@ -30,6 +30,7 @@ targetBasedAssayList = [
     'iCLIP',
     'eCLIP',
     'shRNA knockdown followed by RNA-seq',
+    'siRNA knockdown followed by RNA-seq',
     'CRISPR genome editing followed by RNA-seq',
     ]
 
@@ -42,6 +43,7 @@ controlRequiredAssayList = [
     'eCLIP',
     'single cell isolation followed by RNA-seq',
     'shRNA knockdown followed by RNA-seq',
+    'siRNA knockdown followed by RNA-seq'
     'CRISPR genome editing followed by RNA-seq',
     ]
 
@@ -412,6 +414,7 @@ def audit_experiment_standards_dispatcher(value, system):
     if 'assay_term_name' not in value or \
        value['assay_term_name'] not in ['RAMPAGE', 'RNA-seq', 'ChIP-seq',
                                         'shRNA knockdown followed by RNA-seq',
+                                        'siRNA knockdown followed by RNA-seq',
                                         'CRISPR genome editing followed by RNA-seq',
                                         'single cell isolation followed by RNA-seq',
                                         'whole-genome shotgun bisulfite sequencing']:
@@ -447,6 +450,7 @@ def audit_experiment_standards_dispatcher(value, system):
 
     if value['assay_term_name'] in ['RAMPAGE', 'RNA-seq',
                                     'shRNA knockdown followed by RNA-seq',
+                                    'siRNA knockdown followed by RNA-seq',
                                     'CRISPR genome editing followed by RNA-seq',
                                     'single cell isolation followed by RNA-seq']:
         gene_quantifications = scanFilesForOutputType(value['original_files'],
@@ -773,6 +777,7 @@ def check_experiement_long_rna_encode3_standards(experiment,
                                                             'long RNA')
 
             if experiment['assay_term_name'] in ['shRNA knockdown followed by RNA-seq',
+                                                 'siRNA knockdown followed by RNA-seq',
                                                  'CRISPR genome editing followed by RNA-seq']:
                 for failure in check_file_read_depth(f, read_depth, 10000000, 0,
                                                      experiment['assay_term_name'],
@@ -1627,6 +1632,7 @@ def audit_experiment_needs_pipeline(value, system):
                                         'ChIP-seq',
                                         'RNA-seq',
                                         'shRNA knockdown followed by RNA-seq',
+                                        'siRNA knockdown followed by RNA-seq',
                                         'RAMPAGE']:
         return
 
@@ -1687,7 +1693,8 @@ def audit_experiment_needs_pipeline(value, system):
         else:
             return
 
-    if value['assay_term_name'] in ['RNA-seq', 'shRNA knockdown followed by RNA-seq'] and \
+    if value['assay_term_name'] in ['RNA-seq', 'shRNA knockdown followed by RNA-seq',
+                                    'siRNA knockdown followed by RNA-seq'] and \
        run_type == 'single-ended' and \
        file_size_range == '>200':
         if scanFilesForPipeline(value['original_files'],
@@ -1699,7 +1706,8 @@ def audit_experiment_needs_pipeline(value, system):
         else:
             return
 
-    if value['assay_term_name'] in ['RNA-seq', 'shRNA knockdown followed by RNA-seq'] and \
+    if value['assay_term_name'] in ['RNA-seq', 'shRNA knockdown followed by RNA-seq'
+                                    'siRNA knockdown followed by RNA-seq'] and \
        run_type == 'paired-ended' and \
        file_size_range == '>200':
         if scanFilesForPipeline(value['original_files'],
@@ -2384,6 +2392,7 @@ def audit_experiment_target(value, system):
     # Some assays don't need antibodies
     if value['assay_term_name'] in ['RNA Bind-n-Seq',
                                     'shRNA knockdown followed by RNA-seq',
+                                    'siRNA knockdown followed by RNA-seq',
                                     'CRISPR genome editing followed by RNA-seq']:
         return
 
@@ -2532,7 +2541,8 @@ def get_platforms_used_in_experiment(experiment):
 
     for f in experiment['original_files']:
         if f['output_category'] == 'raw data' and \
-           'platform' in f:
+           'platform' in f and \
+           f['status'] not in ['deleted', 'archived', 'replaced']:
             # collapsing interchangable platforms
             if f['platform']['term_name'] in ['HiSeq 2000', 'HiSeq 2500']:
                 platforms.add('HiSeq 2000/2500')
@@ -2748,8 +2758,8 @@ def audit_experiment_biosample_term(value, system):
         'replicates.library.biosample.organism',
     ],
     condition=rfa('ENCODE3', 'modERN'))
-def audit_experiment_antibody_eligible(value, system):
-    '''Check that biosample in the experiment is eligible for new data for the given antibody.'''
+def audit_experiment_antibody_characterized(value, system):
+    '''Check that biosample in the experiment has been characterized for the given antibody.'''
 
     if value['status'] in ['deleted', 'proposed', 'preliminary']:
         return
@@ -2764,7 +2774,8 @@ def audit_experiment_antibody_eligible(value, system):
     if 'control' in target['investigated_as']:
         return
 
-    if value['assay_term_name'] in ['RNA Bind-n-Seq', 'shRNA knockdown followed by RNA-seq']:
+    if value['assay_term_name'] in ['RNA Bind-n-Seq', 'shRNA knockdown followed by RNA-seq',
+                                    'siRNA knockdown followed by RNA-seq']:
         return
 
     for rep in value['replicates']:
@@ -2788,55 +2799,49 @@ def audit_experiment_antibody_eligible(value, system):
                 ab_targets_investigated_as.add(i)
 
         # We only want the audit raised if the organism in lot reviews matches that of the biosample
-        # and if is not eligible for new data. Otherwise, it doesn't apply and we shouldn't raise a stink
+        # and if has not been characterized to standards. Otherwise, it doesn't apply and we shouldn't
+        # raise a stink
 
         if 'histone modification' in ab_targets_investigated_as:
             for lot_review in antibody['lot_reviews']:
-                if (lot_review['status'] == 'awaiting lab characterization'):
+                if (lot_review['status'] == 'awaiting characterization'):
                     for lot_organism in lot_review['organisms']:
                         if organism == lot_organism:
-                            detail = 'Antibody {} is not eligible for {}. {} '.format(
-                                antibody['@id'],
-                                organism,
-                                lot_review['detail'])
-                            yield AuditFailure('not eligible antibody',
-                                               detail,
-                                               level='NOT_COMPLIANT')
-                if lot_review['status'] == 'eligible for new data (via exemption)':
+                            detail = '{} has not been characterized to the standard for {}: {}'.format(
+                                antibody['@id'], organism, lot_review['detail'])
+                            yield AuditFailure('not characterized antibody', detail, level='NOT_COMPLIANT')
+                if lot_review['status'] == 'characterized to standards with exemption':
                     for lot_organism in lot_review['organisms']:
                         if organism == lot_organism:
-                            detail = 'Antibody {} is eligible via exemption for {}.'.format(
-                                antibody['@id'],
-                                organism)
-                            yield AuditFailure('antibody eligible via exemption',
+                            detail = '{} has been characterized to the standard with exemption for' + \
+                                ' {}'.format(antibody['@id'], organism)
+                            yield AuditFailure('antibody characterized with exemption',
                                                detail, level='WARNING')
-
         else:
+
             biosample_term_id = value['biosample_term_id']
             biosample_term_name = value['biosample_term_name']
             experiment_biosample = (biosample_term_id, organism)
             eligible_biosamples = set()
             exempt_biosamples = set()
             for lot_review in antibody['lot_reviews']:
-                if lot_review['status'] in ['eligible for new data',
-                                            'eligible for new data (via exemption)']:
+                if lot_review['status'] in ['characterized to standards',
+                                            'characterized to standards with exemption']:
                     for lot_organism in lot_review['organisms']:
                         eligible_biosample = (lot_review['biosample_term_id'], lot_organism)
-                        if lot_review['status'] == 'eligible for new data (via exemption)':
+                        if lot_review['status'] == 'characterized to standards with exemption':
                             exempt_biosamples.add(eligible_biosample)
                         eligible_biosamples.add(eligible_biosample)
 
             if experiment_biosample in exempt_biosamples:
-                detail = 'Antibody {} is eligible via exemption for {} in {} '.format(
-                    antibody['@id'],
-                    biosample_term_name,
-                    organism)
-                yield AuditFailure('antibody eligible via exemption', detail, level='WARNING')
+                detail = '{} has been characterized to the standard with exemption ' + \
+                    'for {} in {}'.format(antibody['@id'], biosample_term_name, organism)
+                yield AuditFailure('antibody characterized with exemption', detail, level='WARNING')
 
             if experiment_biosample not in eligible_biosamples:
-                detail = 'Antibody {} is not eligible for {} in {}. {} '.format(
+                detail = '{} has not been characterized to the standard for {} in {}: {}'.format(
                     antibody['@id'], biosample_term_name, organism, lot_review['detail'])
-                yield AuditFailure('not eligible antibody', detail, level='NOT_COMPLIANT')
+                yield AuditFailure('not characterized antibody', detail, level='NOT_COMPLIANT')
 
 
 @audit_checker(
