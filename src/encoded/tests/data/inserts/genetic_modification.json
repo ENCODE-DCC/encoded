@@ -68,7 +68,7 @@
         "award": "/awards/U41HG007355/",
         "uuid": "ef12855f-5d3e-4da5-8684-3a594c60505a",
         "status": "released",
-        "modification_description": "Also aligns to the following location in the hg19 build:chr3:139375066-139375080, chr6:20406320-2040",
+        "description": "Also aligns to the following location in the hg19 build:chr3:139375066-139375080, chr6:20406320-2040",
         "notes": "TL1595   /tales/2f1feb18-c724-4cdf-8434-c5126ca78a9e/"
     },
     {
