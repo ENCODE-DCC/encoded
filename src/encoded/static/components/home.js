@@ -846,8 +846,8 @@ var HomepageChart3 = React.createClass({
     },
 
     componentDidUpdate: function() {
-        if (this.myBarChart) {
-            this.myBarChart.destroy(); // clears old chart before creating new one
+        if (this.myPieChart) {
+            this.myPieChart.destroy(); // clears old chart before creating new one
             this.drawChart();
         }
     },
