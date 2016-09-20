@@ -21,7 +21,8 @@ var sortTable = require('./sorttable');
 var objectutils = require('./objectutils');
 var doc = require('./doc');
 var {FileGallery} = require('./filegallery');
-var {BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, GeneticModificationTable} = require('./typeutils');
+var {GeneticModificationSummary} = require('./genetic_modification');
+var {BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs} = require('./typeutils');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -519,7 +520,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 {combinedDocuments.length ? <DocumentsPanel documentSpecs={[{documents: combinedDocuments}]} /> : null}
 
                 {geneticModifications.length ?
-                    <GeneticModificationTable geneticModifications={geneticModifications} />
+                    <GeneticModificationSummary geneticModifications={geneticModifications} />
                 : null}
             </div>
         );

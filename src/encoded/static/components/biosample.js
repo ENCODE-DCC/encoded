@@ -14,7 +14,7 @@ const item = require('./item');
 const reference = require('./reference');
 const {TreatmentDisplay, SingleTreatment} = require('./objectutils');
 const doc = require('./doc');
-const {BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable, GeneticModificationTable} = require('./typeutils');
+const {BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable} = require('./typeutils');
 const {GeneticModificationSummary} = require('./genetic_modification');
 
 const Breadcrumbs = navigation.Breadcrumbs;
