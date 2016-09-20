@@ -107,7 +107,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'genetic_modifications.award',
         'genetic_modifications.lab',
         'genetic_modifications.modification_techniques',
-        'genetic_modifications.modification_treatments',
+        'genetic_modifications.treatments',
         'genetic_modifications.target'
     ]
     audit_inherit = [

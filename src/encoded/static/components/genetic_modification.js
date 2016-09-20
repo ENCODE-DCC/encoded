@@ -32,7 +32,7 @@ const GeneticModification = module.exports.GeneticModification = React.createCla
     render: function() {
         const context = this.props.context;
         let itemClass = globals.itemClass(context, 'view-detail key-value');
-        let coords = context.modification_genome_coordinates;
+        let coords = context.modified_site;
 
         // Configure breadcrumbs for the page.
         const crumbs = [
@@ -93,24 +93,24 @@ const GeneticModification = module.exports.GeneticModification = React.createCla
                             <div className="flexcol-sm-6">
                                 <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
                                 <dl className={itemClass}>
-                                    {context.modification_description ?
+                                    {context.description ?
                                         <div data-test="description">
                                             <dt>Description</dt>
-                                            <dd>{context.modification_description}</dd>
+                                            <dd>{context.description}</dd>
                                         </div>
                                     : null}
 
-                                    {context.modification_purpose ?
+                                    {context.purpose ?
                                         <div data-test="purpose">
                                             <dt>Modification purpose</dt>
-                                            <dd>{context.modification_purpose}</dd>
+                                            <dd>{context.purpose}</dd>
                                         </div>
                                     : null}
 
-                                    {context.modification_zygocity ?
-                                        <div data-test="zygocity">
-                                            <dt>Modification zygocity</dt>
-                                            <dd>{context.modification_zygocity}</dd>
+                                    {context.zygosity ?
+                                        <div data-test="zygosity">
+                                            <dt>Modification zygosity</dt>
+                                            <dd>{context.zygosity}</dd>
                                         </div>
                                     : null}
 
@@ -131,7 +131,7 @@ const GeneticModification = module.exports.GeneticModification = React.createCla
                                     {coords && coords.assembly ?
                                         <div data-test="coordsassembly">
                                             <dt>Mapping assembly</dt>
-                                            <dd>{context.modification_genome_coordinates.assembly}</dd>
+                                            <dd>{context.modified_site.assembly}</dd>
                                         </div>
                                     : null}
 
@@ -143,11 +143,11 @@ const GeneticModification = module.exports.GeneticModification = React.createCla
                                     : null}
                                 </dl>
 
-                                {context.modification_treatments && context.modification_treatments.length ?
+                                {context.treatments && context.treatments.length ?
                                     <section className="data-display-array">
                                         <hr />
                                         <h4>Treatment details</h4>
-                                        {context.modification_treatments.map(treatment => TreatmentDisplay(treatment))}
+                                        {context.treatments.map(treatment => TreatmentDisplay(treatment))}
                                     </section>
                                 : null}
 
@@ -541,8 +541,8 @@ function _calcGMSummarySentence(gm) {
 
     // Collect up an array of strings with techniques and treatments.
     let techniques = getGMTechniques(gm);
-    if (gm.modification_treatments && gm.modification_treatments.length) {
-        treatments = gm.modification_treatments.map(treatment => SingleTreatment(treatment));
+    if (gm.treatments && gm.treatments.length) {
+        treatments = gm.treatments.map(treatment => SingleTreatment(treatment));
     }
     let techtreat = techniques.concat(treatments).join(', ');
 
@@ -625,20 +625,20 @@ const GeneticModificationGroup = module.exports.GeneticModificationGroup = React
             display: modification => modification.aliases && modification.aliases.length ? modification.aliases.join(', ') : '',
             sorter: false
         },
-        'modification_purpose': {
+        'purpose': {
             title: 'Purpose'
         },
-        'modification_zygocity': {
+        'zygosity': {
             title: 'Zygosity'
         },
         'assembly': {
             title: 'Mapping assembly',
-            getValue: modification => modification.modification_genome_coordinates && modification.modification_genome_coordinates.assembly ? modification.modification_genome_coordinates.assembly : ''
+            getValue: modification => modification.modified_site && modification.modified_site.assembly ? modification.modified_site.assembly : ''
         },
         'coordinates': {
             title: 'Coordinates',
             display: modification => {
-                var coords = modification.modification_genome_coordinates;
+                var coords = modification.modified_site;
                 if (coords && coords.chromosome) {
                     return <span>chr{coords.chromosome}:{coords.start}-{coords.end}</span>;
                 }
@@ -646,8 +646,8 @@ const GeneticModificationGroup = module.exports.GeneticModificationGroup = React
             },
             objSorter: (a, b) => {
                 let sortRes; // Sorting result
-                var aCoord = a.modification_genome_coordinates;
-                var bCoord = b.modification_genome_coordinates;
+                var aCoord = a.modified_site;
+                var bCoord = b.modified_site;
                 if (aCoord && bCoord) {
                     sortRes = (aCoord.chromosome < bCoord.chromosome) ? -1 : ((bCoord.chromosome > aCoord.chromosome) ? 1 : 0);
                     if (!sortRes) {

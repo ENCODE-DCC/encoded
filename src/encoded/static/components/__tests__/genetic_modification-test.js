@@ -13,14 +13,14 @@ describe('Genetic modification functionality', function() {
             "lab": "/labs/robert-waterston/",
             "award": "/awards/U41HG007355/",
             "source":"gregory-crawford",
-            "modification_description": "Scientists in India have delayed the ripening of tomatoes by silencing two genes encoding N-glycoprotein modifying enzymes, α-mannosidase and β-D-N-acetylhexosaminidase.",
-            "modification_genome_coordinates": {
+            "description": "Scientists in India have delayed the ripening of tomatoes by silencing two genes encoding N-glycoprotein modifying enzymes, α-mannosidase and β-D-N-acetylhexosaminidase.",
+            "modified_site": {
                 "assembly": "GRCh38",
                 "chromosome": "11",
                 "start": 20000,
                 "end": 21000
             },
-            "modification_purpose": "repression",
+            "purpose": "repression",
             "modification_type": "deletion",
             "modification_techniques": [
                 {
@@ -60,7 +60,7 @@ describe('Genetic modification functionality', function() {
                     "insert_sequence": "CTCGGTG"
                 }
             ],
-            "modification_zygocity": "homozygous",
+            "zygosity": "homozygous",
             "product_id": "CRL-2522",
             "submitted_by": "amet.fusce@est.fermentum"
         },
@@ -90,7 +90,7 @@ describe('Genetic modification functionality', function() {
                     "insert_sequence": "ACTCGT"
                 }
             ],
-            "modification_treatments": [
+            "treatments": [
                 require('../testdata/treatment/CHEBI34730'),
                 require('../testdata/treatment/CHEBI44616')
             ],

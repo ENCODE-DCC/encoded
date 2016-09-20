@@ -43,7 +43,7 @@ class GeneticModification(Item):
         'modification_techniques.documents.award',
         'modification_techniques.documents.lab',
         'modification_techniques.documents.submitted_by',
-        'modification_treatments'
+        'treatments'
     ]
 
     rev = {
