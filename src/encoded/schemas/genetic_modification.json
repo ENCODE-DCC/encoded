@@ -183,5 +183,27 @@
                 "linkTo": "Treatment"
             }
         }
+    },
+    "columns": {
+        "aliases": {
+            "title": "Lab aliases"
+        },
+        "modification_type": {
+            "title": "Modification type"
+        },
+        "status": {
+            "title": "Genetic modification status"
+        }
+    },
+    "facets": {
+        "modification_type": {
+            "title": "Modification type"
+        },
+        "target.label": {
+            "title": "Target"
+        },
+        "status": {
+            "title": "Genetic modification status"
+        }
     }
 }
