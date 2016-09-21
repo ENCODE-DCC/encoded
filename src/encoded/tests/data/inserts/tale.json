@@ -7,7 +7,8 @@
         "status": "released",
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
-        "source":"gregory-crawford",
+        "source": "gregory-crawford",
+        "dbxrefs": ["addgene:234235", "addgene:12345"],
         "talen_platform":"Golden road",
         "RVD_sequence":"NN"
 
@@ -20,8 +21,39 @@
         "status": "in progress",
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
-        "source":"gregory-crawford",
+        "source": "gregory-crawford",
+        "dbxrefs": ["addgene:234235"],
         "talen_platform":"Silver gate",
         "RVD_sequence":"NN"
+    },
+    {
+        "RVD_sequence": "NI,NH,NH,NG,HD,NG,NH,HD,NI,NI,HD,NG,HD,NG",
+        "talen_platform": "Golden Gate",
+        "lab": "/labs/robert-waterston/",
+        "award": "/awards/U41HG007355/",
+        "uuid": "2f1feb18-c724-4cdf-8434-c5126ca78a9e",
+        "schema_version": "1",
+        "status": "released",
+        "source": "gregory-crawford"
+    },
+    {
+        "status": "released",
+        "talen_platform": "Golden Gate",
+        "RVD_sequence": "HD,HD,NG,NI,HD,NH,NG,NH,NI,NI,HD,HD,NG,NI,NG,HD,NG,NG",
+        "lab": "/labs/robert-waterston/",
+        "award": "/awards/U41HG007355/",
+        "uuid": "0e23048f-4cbc-416f-9238-e63ef4fd7d17",
+        "schema_version": "1",
+        "dbxrefs": [],
+        "source": "gregory-crawford"
+    },
+    {
+        "uuid": "69790723-e4de-41d3-ab89-6e06a67d84d6",
+        "source": "gregory-crawford",
+        "RVD_sequence": "HD,NG,HD,HD,NH,NH,NG,HD,HD,HD,NI,NH,HD,NG,NG",
+        "status": "released",
+        "talen_platform": "Golden Gate",
+        "award": "/awards/U41HG007355/",
+        "lab": "/labs/robert-waterston/"
     }
 ]
