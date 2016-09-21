@@ -190,9 +190,6 @@ var ChartGallery = React.createClass({
                 </div>
                 <div className="col-md-4">
                     <HomepageChart3 {...this.props} searchBase={this.props.searchBase} />
-                    <div className="view-all">
-                        <a href={"/matrix/" + this.props.searchBase} className="view-all-button btn btn-info" role="button"> View Selected </a>
-                    </div>
                 </div>
             </div>
         );
@@ -627,7 +624,7 @@ var HomepageChart2 = React.createClass({
                             text.push('<ul>');
                             for (var i = 0; i < facetTerms.length; i++) {
                                 text.push('<li>');
-                                text.push('<a href="' + '/matrix/' + this.props.searchBase + '&' + query + facetTerms[i].key  + '">'); // go to matrix view when clicked
+                                text.push('<a href="/matrix/' + this.props.searchBase + '&' + query + facetTerms[i].key  + '">'); // go to matrix view when clicked
                                 text.push('<span class="chart-legend-chip" style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
                                 if (chart.data.labels[i]) {
                                     text.push('<span class="chart-legend-label">' + chart.data.labels[i] + '</span>');
@@ -706,7 +703,8 @@ var HomepageChart2 = React.createClass({
 var HomepageChart3 = React.createClass({
 
     contextTypes: {
-        navigate: React.PropTypes.func
+        navigate: React.PropTypes.func,
+        assayCatColors: React.PropTypes.object // DataColor instance for experiment project
     },
 
     drawChart: function() {
@@ -717,109 +715,105 @@ var HomepageChart3 = React.createClass({
         // require.
         require.ensure(['chart.js'], function(require) {
             var Chart = require('chart.js');
-            var colorList = [
-                '#871F78',
-                '#FFB90F',
-                '#003F87',
-                '#3D9140',
-                '#E5E4E2'
-            ];
-            var colors = [];
+            var data = [];
+            var labels = [];
 
             // Handle cancelled GET request. We'll have made another GET request.
             if (this.props.data.status === 'error') {
                 return;
             }
 
-            // Get the assay_title counts from the facets
             var facets = this.props.data.facets;
-            var assayFacet = facets.find(facet => facet.field === 'month_released');
-            var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            var assayFacet = facets.find(facet => facet.field === 'assay_slims');
 
             // Collect up the experiment assay_title counts to our local arrays to prepare for
             // the charts.
-            if (assayFacet && assayFacet.terms.length ) {
+            if (assayFacet ) {
                 // clear empty chart div
                 document.getElementById('MyEmptyChart3').innerHTML = "";
                 document.getElementById('MyEmptyChart3').removeAttribute("class");
 
-                // Sort assayFacet terms array by year/month, and get most recent six entries
-                var terms = assayFacet.terms.sort((a, b) => {
-                    // Split "Month, YEAR" into array ["Month", "YEAR"];
-                    var sortDataA = a.key.split(', ');
-                    var sortDataB = b.key.split(', ');
+                var totalDocCount = 0;
 
-                    // Convert arrays to "YYYYMM" format
-                    var normalizedDateA = sortDataA[1] + globals.zeroFill(months.indexOf(sortDataA[0]), 2);
-                    var normalizedDateB = sortDataB[1] + globals.zeroFill(months.indexOf(sortDataB[0]), 2);
-                    return (normalizedDateA < normalizedDateB) ? -1 : ((normalizedDateA > normalizedDateB) ? 1 : 0);
-                }).slice(-6);
-
-                // Extract counts and abbreviated months from sortedReleases, so we can pass these
-                // to the charting code.
-                var xlabels = [];
-                var labels = [];
-                var data = terms.map(term => {
-                    // Collect abbreviated and full month names corresponding to term month names;
-                    // needed to create the chart.
-                    var month = term.key.split(', ')[0];
-                    labels.push(term.key);
-                    xlabels.push(month.substring(0, 3));
-                    return term.doc_count;
+                // for each item, set doc count, add to total doc count, add proper label, and assign color
+                var colors = this.context.assayCatColors.colorList(assayFacet.terms.map(term => term.key), {shade: 10});
+                assayFacet.terms.forEach((term, i) => {
+                    data[i] = term.doc_count;
+                    totalDocCount += term.doc_count;
+                    labels[i] = term.key;
                 });
 
-                // gives bar graph a constant green color
-                colors = ['#96e528', '#96e528', '#96e528', '#96e528', '#96e528', '#96e528'];
+                // adding total doc count to middle of donut
+                // http://stackoverflow.com/questions/20966817/how-to-add-text-inside-the-doughnut-chart-using-chart-js/24671908
+                Chart.pluginService.register({
+                    beforeDraw: function(chart) {
+                        if(chart.chart.canvas.id == 'myChart3'){
+                            var width = chart.chart.width,
+                                height = chart.chart.height,
+                                ctx = chart.chart.ctx;
 
+                            ctx.fillStyle = '#000000';
+                            ctx.restore();
+                            var fontSize = (height / 114).toFixed(2);
+                            ctx.font = fontSize + "em sans-serif";
+                            ctx.textBaseline = "middle";
+
+                            var text = totalDocCount,
+                                textX = Math.round((width - ctx.measureText(text).width) / 2),
+                                textY = height / 2;
+
+                            ctx.clearRect(0, 0, width, height);
+                            ctx.fillText(text, textX, textY);
+                            ctx.save();
+                        }
+
+                    }
+                });
 
                 // Pass the counts to the charting library to render it.
                 var canvas = document.getElementById("myChart3");
                 var ctx = canvas.getContext("2d");
-                this.myBarChart = new Chart(ctx, {
-                    type: 'bar',
+                this.myPieChart = new Chart(ctx, {
+                    type: 'doughnut',
                     data: {
                         labels: labels, // full labels
-                        xLabels: xlabels, // abbreviated labels
                         datasets: [{
                             data: data,
-                            backgroundColor: colors,
-                            label: "Number of Released Experiments"
+                            backgroundColor: colors
                         }]
                     },
                     options: {
-                        tooltips: {
-                            callbacks: {
-                                title: function(tooltipItems, data){ // show full label in hovering
-                                    return data.labels[tooltipItems[0].index];
-                                }
-                            }
-                        },
                         legend: {
-                            display: false // hiding legend
+                            display: false // hiding automatically generated legend
                         },
-                        scales: {
-                            xAxes: [{
-                                ticks: { // http://www.chartjs.org/docs/ tick configuration
-                                    maxRotation: 30, // max rotation of 30 degrees
+                        legendCallback: (chart) => { // allows for legend clicking
+                            var facetTerms = _(assayFacet.terms).filter(term => term.doc_count > 0);
+                            var text = [];
+                            var query = 'assay_slims=';
+                            text.push('<ul>');
+                            for (var i = 0; i < facetTerms.length; i++) {
+                                text.push('<li>');
+                                text.push('<a href="/matrix/' + this.props.searchBase + '&' + query + facetTerms[i].key  + '">'); // go to matrix view when clicked
+                                text.push('<span class="chart-legend-chip" style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
+                                if (chart.data.labels[i]) {
+                                    text.push('<span class="chart-legend-label">' + chart.data.labels[i] + '</span>');
                                 }
-                            }],
-                            yAxes: [{
-                                scaleLabel: {
-                                    display: true,
-                                    labelString: 'Experiments'
-                                }
-                            }]
+                                text.push('</a></li>');
+                            }
+                            text.push('</ul>');
+                            return text.join('');
                         },
-
                         onClick: (e) => {
                             // React to clicks on pie sections
-                            var activePoints = this.myBarChart.getElementAtEvent(e);
-                            var term = labels[activePoints[0]._index];
-                            this.context.navigate('/matrix' + this.props.searchBase + '&month_released=' + term); // goes to matrix view
+                            var query = 'assay_slims=';
+                            var activePoints = this.myPieChart.getElementAtEvent(e);
+                            var term = assayFacet.terms[activePoints[0]._index].key;
+                            this.context.navigate('/matrix/' + this.props.searchBase + '&' + query + term); // go to matrix view
                         }
                     }
                 });
 
+                document.getElementById('chart-legend-3').innerHTML = this.myPieChart.generateLegend(); // generates legend
             }
 
             else{ // if no data
@@ -852,8 +846,8 @@ var HomepageChart3 = React.createClass({
     },
 
     componentDidUpdate: function() {
-        if (this.myBarChart) {
-            this.myBarChart.destroy(); // clears old chart before creating new one
+        if (this.myPieChart) {
+            this.myPieChart.destroy(); // clears old chart before creating new one
             this.drawChart();
         }
     },
@@ -862,11 +856,12 @@ var HomepageChart3 = React.createClass({
         return (
             <div>
                 <div className="title">
-                    Recent Releases
+                    Assay Categories
                 </div>
                 <center> <hr width="80%"></hr> </center>
                 <canvas id="myChart3"></canvas>
                 <div id="MyEmptyChart3"> </div>
+                <div id="chart-legend-3" className="chart-legend"></div>
             </div>
         );
     }
