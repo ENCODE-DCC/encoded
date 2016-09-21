@@ -183,6 +183,18 @@
             "title": "Assay",
             "type": "string"
         },
+        "files.file_type": {
+            "title": "Available data"
+        },
+        "files.run_type": {
+            "title": "Run type"
+        },
+        "files.read_length": {
+            "title": "Read length (nt)"
+        },
+        "files.mapped_read_length": {
+            "title": "Mapped read length (nt)"
+        },
         "status": {
             "title": "File set status",
             "type": "string"
@@ -203,7 +215,7 @@
             "title": "Target(s) of assay",
             "type": "array"
         },
-       "biosample_type": {
+        "biosample_type": {
             "title": "Biosample type",
             "type": "string"
         },
