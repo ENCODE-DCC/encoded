@@ -195,20 +195,20 @@
         padding: 5px 20px !important;
         flex: 0 1 auto;
         font-size: 0.9rem;
-        font-weight: bold;
+        font-weight: normal;
         text-decoration: none;
-        color: #a0a0a0;
-        background-color: #fff;
-        border: 1px solid #c0c0c0;
+        color: #404040;
+        background-color: #c0beff;
+        border: 1px solid #0001ee;
         text-transform: uppercase;
 
         &:hover {
-            background-color: #e0e0e0;
+            background-color: #adabf8;
         }
 
         &.selected {
-            color: white;
-            background-color: #428bca;
+            color: #000;
+            background-color: #7575f7;
         }
     }
     
@@ -328,13 +328,15 @@
 .social-news {
     @media screen and (min-width: $screen-md-min) {
         flex: 0 1 70%;
-        border-right: 1px solid #a0a0a0;
+        order: 1;
+        border-left: 1px solid #a0a0a0;
     }
 }
 
 .social-twitter {
     @media screen and (min-width: $screen-md-min) {
         flex: 0 1 30%;
+        order: 0;
     }
 }
 

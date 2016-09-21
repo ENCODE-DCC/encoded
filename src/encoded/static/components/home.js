@@ -717,6 +717,7 @@ var HomepageChart3 = React.createClass({
             var Chart = require('chart.js');
             var data = [];
             var labels = [];
+            let lcolors = ['#FFD962', '#FFD962', '#FFD962', '#FFD962', '#FFD962', '#FFD962', '#FFD962'];
 
             // Handle cancelled GET request. We'll have made another GET request.
             if (this.props.data.status === 'error') {
@@ -743,65 +744,21 @@ var HomepageChart3 = React.createClass({
                     labels[i] = term.key;
                 });
 
-                // adding total doc count to middle of donut
-                // http://stackoverflow.com/questions/20966817/how-to-add-text-inside-the-doughnut-chart-using-chart-js/24671908
-                Chart.pluginService.register({
-                    beforeDraw: function(chart) {
-                        if(chart.chart.canvas.id == 'myChart3'){
-                            var width = chart.chart.width,
-                                height = chart.chart.height,
-                                ctx = chart.chart.ctx;
-
-                            ctx.fillStyle = '#000000';
-                            ctx.restore();
-                            var fontSize = (height / 114).toFixed(2);
-                            ctx.font = fontSize + "em sans-serif";
-                            ctx.textBaseline = "middle";
-
-                            var text = totalDocCount,
-                                textX = Math.round((width - ctx.measureText(text).width) / 2),
-                                textY = height / 2;
-
-                            ctx.clearRect(0, 0, width, height);
-                            ctx.fillText(text, textX, textY);
-                            ctx.save();
-                        }
-
-                    }
-                });
-
                 // Pass the counts to the charting library to render it.
                 var canvas = document.getElementById("myChart3");
                 var ctx = canvas.getContext("2d");
                 this.myPieChart = new Chart(ctx, {
-                    type: 'doughnut',
+                    type: 'bar',
                     data: {
                         labels: labels, // full labels
                         datasets: [{
                             data: data,
-                            backgroundColor: colors
+                            backgroundColor: lcolors
                         }]
                     },
                     options: {
                         legend: {
                             display: false // hiding automatically generated legend
-                        },
-                        legendCallback: (chart) => { // allows for legend clicking
-                            var facetTerms = _(assayFacet.terms).filter(term => term.doc_count > 0);
-                            var text = [];
-                            var query = 'assay_slims=';
-                            text.push('<ul>');
-                            for (var i = 0; i < facetTerms.length; i++) {
-                                text.push('<li>');
-                                text.push('<a href="/matrix/' + this.props.searchBase + '&' + query + facetTerms[i].key  + '">'); // go to matrix view when clicked
-                                text.push('<span class="chart-legend-chip" style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
-                                if (chart.data.labels[i]) {
-                                    text.push('<span class="chart-legend-label">' + chart.data.labels[i] + '</span>');
-                                }
-                                text.push('</a></li>');
-                            }
-                            text.push('</ul>');
-                            return text.join('');
                         },
                         onClick: (e) => {
                             // React to clicks on pie sections
@@ -812,8 +769,6 @@ var HomepageChart3 = React.createClass({
                         }
                     }
                 });
-
-                document.getElementById('chart-legend-3').innerHTML = this.myPieChart.generateLegend(); // generates legend
             }
 
             else{ // if no data
@@ -859,7 +814,7 @@ var HomepageChart3 = React.createClass({
                     Assay Categories
                 </div>
                 <center> <hr width="80%"></hr> </center>
-                <canvas id="myChart3"></canvas>
+                <canvas id="myChart3" height="240"></canvas>
                 <div id="MyEmptyChart3"> </div>
                 <div id="chart-legend-3" className="chart-legend"></div>
             </div>
