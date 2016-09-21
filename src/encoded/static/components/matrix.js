@@ -100,7 +100,7 @@ var Matrix = module.exports.Matrix = React.createClass({
             };
 
             // Make an array of colors corresponding to the ordering of biosample_type
-            var biosampleTypeColors = this.context.biosampleTypeColors.colorList(y_groups.map(y_group => y_group.key), {shade: 55});
+            var biosampleTypeColors = this.context.biosampleTypeColors.colorList(y_groups.map(y_group => y_group.key));
 
             return (
                 <div>
@@ -187,7 +187,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                 var group_href = url.format(parsed);
                                                 var rows = [<tr key={group.key}>
                                                     <th colSpan={colCount + 1} style={{textAlign: 'left', backgroundColor: groupColor}}>
-                                                        <a href={group_href} style={{color: '#000'}}>{group.key}</a>
+                                                        <a href={group_href} style={{color: '#fff'}}>{group.key}</a>
                                                     </th>
                                                 </tr>];
                                                 var group_buckets = group[secondary_y_grouping].buckets;
@@ -203,11 +203,12 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                                     var color = seriesColor.clone();
                                                                     // scale color between white and the series color
                                                                     color.lightness(color.lightness() + (1 - value / matrix.max_cell_doc_count) * (100 - color.lightness()));
+                                                                    let textColor = color.luminosity() > .5 ? '#000' : '#fff';
                                                                     var href = search_base + '&' + secondary_y_grouping + '=' + globals.encodedURIComponent(yb.key)
                                                                                            + '&' + x_grouping + '=' + globals.encodedURIComponent(xb.key);
                                                                     var title = yb.key + ' / ' + xb.key + ': ' + value;
                                                                     return <td key={xb.key} style={{backgroundColor: color.hexString()}}>
-                                                                        {value ? <a href={href} style={{color: '#000'}} title={title}>{value}</a> : ''}
+                                                                        {value ? <a href={href} style={{color: textColor}} title={title}>{value}</a> : ''}
                                                                     </td>;
                                                                 } else {
                                                                     return null;
