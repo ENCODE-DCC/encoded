@@ -2,6 +2,7 @@
 var React = require('react');
 var globals = require('./globals');
 var {Panel, PanelBody, PanelHeading} = require('../libs/bootstrap/panel');
+var {ModalMixin, Modal} = require('../libs/bootstrap/modal');
 var {DropdownButton} = require('../libs/bootstrap/button');
 var {DropdownMenu} = require('../libs/bootstrap/dropdown-menu');
 var {AuditIcon} = require('./audit');
@@ -699,6 +700,8 @@ var FileGallery = module.exports.FileGallery = React.createClass({
 // Function to render the file gallery, and it gets called after the file search results (for files associated with
 // the displayed experiment) return.
 var FileGalleryRenderer = React.createClass({
+    mixins: [ModalMixin],
+
     propTypes: {
         encodevers: React.PropTypes.string, // ENCODE version number
         anisogenic: React.PropTypes.bool, // True if anisogenic experiment
@@ -764,6 +767,9 @@ var FileGalleryRenderer = React.createClass({
             <Panel>
                 <PanelHeading addClasses="file-gallery-heading">
                     <h4>Files</h4>
+                    <Modal title="My Modal" btnOk="OK" btnCancel="Cancel">
+                        <button modal={<ModalContent closeModal={this.closeModal} />}>Open Modal</button>
+                    </Modal>
                     <div className="file-gallery-controls">
                         {context.visualize_ucsc && context.status == "released" ?
                             <div className="file-gallery-control">
@@ -803,6 +809,24 @@ var FileGalleryRenderer = React.createClass({
                         encodevers={globals.encodeVersion(context)} session={this.context.session} showFileCount noDefaultClasses />
                 }
             </Panel>
+        );
+    }
+});
+
+
+var ModalContent = React.createClass({
+    propTypes: {
+        closeModal: React.PropTypes.func // Function to call to close the modal
+    },
+
+    render: function() {
+        return (
+            <div>
+                Hello
+                <div className='modal-footer'>
+                    <button onClick={this.props.closeModal}>Cancel</button>
+                </div>
+            </div>
         );
     }
 });
