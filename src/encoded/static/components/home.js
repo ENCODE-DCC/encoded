@@ -768,6 +768,9 @@ var HomepageChart3 = React.createClass({
                             xAxes: [{
                                 gridLines: {
                                     display: false
+                                },
+                                ticks: {
+                                    autoSkip: false
                                 }
                             }]
                         },
