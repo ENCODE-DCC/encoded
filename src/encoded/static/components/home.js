@@ -153,7 +153,7 @@ var Home = module.exports.Home = React.createClass({
                             </div>
                             <div className="graphs">
                                 <div className="row">
-                                    <HomepageChartLoader searchBase={this.state.current} callback={this.callback} />
+                                    <HomepageChartLoader assayCategory={this.state.assayCategory} searchBase={this.state.current} callback={this.callback} />
                                 </div>
                             </div>
                             <div className="social">
@@ -181,7 +181,10 @@ var Home = module.exports.Home = React.createClass({
 var ChartGallery = React.createClass({
     render: function() {
         return (
-            <div>
+            <PanelBody>
+                <div className="view-all">
+                    <a href={"/matrix/" + this.props.searchBase} className="view-all-button btn btn-info btn-sm" role="button">View Selected Assay</a>
+                </div>
                 <div className="col-md-4">
                     <HomepageChart {...this.props} searchBase={this.props.searchBase} />
                 </div>
@@ -191,7 +194,7 @@ var ChartGallery = React.createClass({
                 <div className="col-md-4">
                     <HomepageChart3 {...this.props} searchBase={this.props.searchBase} />
                 </div>
-            </div>
+            </PanelBody>
         );
     }
 });
@@ -508,15 +511,16 @@ var HomepageChart = React.createClass({
 // component to draw the resulting chart.
 var HomepageChartLoader = React.createClass({
     propTypes: {
-        searchBase: React.PropTypes.string,
-        callback: React.PropTypes.func
+        assayCategory: React.PropTypes.string, // Currently selected assay category from the classic image
+        searchBase: React.PropTypes.string, // Current search URI based on selected assayCategory
+        callback: React.PropTypes.func // 
     },
 
     render: function() {
         return (
             <FetchedData ignoreErrors>
                 <Param name="data" url={'/search/' + this.props.searchBase} />
-                <ChartGallery searchBase={this.props.searchBase} />
+                <ChartGallery assayCategory={this.props.assayCategory} searchBase={this.props.searchBase} />
             </FetchedData>
         );
     }
@@ -703,8 +707,7 @@ var HomepageChart2 = React.createClass({
 var HomepageChart3 = React.createClass({
 
     contextTypes: {
-        navigate: React.PropTypes.func,
-        assayCatColors: React.PropTypes.object // DataColor instance for experiment project
+        navigate: React.PropTypes.func
     },
 
     drawChart: function() {
@@ -714,18 +717,19 @@ var HomepageChart3 = React.createClass({
         // mechanism. Once the callback is called, it's loaded and can be referenced through
         // require.
         require.ensure(['chart.js'], function(require) {
-            var Chart = require('chart.js');
-            var data = [];
-            var labels = [];
-            let lcolors = ['#FFD962', '#FFD962', '#FFD962', '#FFD962', '#FFD962', '#FFD962', '#FFD962'];
+            const Chart = require('chart.js');
+            let data = [];
+            let labels = [];
+            let colors = [];
+            let selectedAssay = (this.props.assayCategory && this.props.assayCategory !== 'COMPPRED') ? this.props.assayCategory.replace(/\+/g,' ') : '';
 
             // Handle cancelled GET request. We'll have made another GET request.
             if (this.props.data.status === 'error') {
                 return;
             }
 
-            var facets = this.props.data.facets;
-            var assayFacet = facets.find(facet => facet.field === 'assay_slims');
+            let facets = this.props.data.facets;
+            let assayFacet = facets.find(facet => facet.field === 'assay_slims');
 
             // Collect up the experiment assay_title counts to our local arrays to prepare for
             // the charts.
@@ -734,31 +738,38 @@ var HomepageChart3 = React.createClass({
                 document.getElementById('MyEmptyChart3').innerHTML = "";
                 document.getElementById('MyEmptyChart3').removeAttribute("class");
 
-                var totalDocCount = 0;
+                let totalDocCount = 0;
 
                 // for each item, set doc count, add to total doc count, add proper label, and assign color
-                var colors = this.context.assayCatColors.colorList(assayFacet.terms.map(term => term.key), {shade: 10});
                 assayFacet.terms.forEach((term, i) => {
                     data[i] = term.doc_count;
                     totalDocCount += term.doc_count;
                     labels[i] = term.key;
+                    colors[i] = selectedAssay ? (term.key === selectedAssay ? 'rgb(255,217,98)' : 'rgba(255,217,98,.4)') : '#FFD962';
                 });
 
                 // Pass the counts to the charting library to render it.
-                var canvas = document.getElementById("myChart3");
-                var ctx = canvas.getContext("2d");
+                let canvas = document.getElementById("myChart3");
+                let ctx = canvas.getContext("2d");
                 this.myPieChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: labels, // full labels
                         datasets: [{
                             data: data,
-                            backgroundColor: lcolors
+                            backgroundColor: colors
                         }]
                     },
                     options: {
                         legend: {
                             display: false // hiding automatically generated legend
+                        },
+                        scales: {
+                            xAxes: [{
+                                gridLines: {
+                                    display: false
+                                }
+                            }]
                         },
                         onClick: (e) => {
                             // React to clicks on pie sections

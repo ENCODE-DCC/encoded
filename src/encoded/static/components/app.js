@@ -69,17 +69,6 @@ const biosampleTypeList = [
     'in vitro differentiated cells',
     'induced pluripotent stem cell line'
 ];
-const assayCatList = [
-    'DNA binding',
-    'Transcription',
-    'RNA binding',
-    'DNA accessibility',
-    'DNA methylation',
-    'Genotyping',
-    'Replication timing',
-    '3D chromatin structure',
-    'Proteomics'
-];
 
 
 // See https://github.com/facebook/react/issues/2323
@@ -124,8 +113,7 @@ var App = React.createClass({
         portal: React.PropTypes.object,
         hidePublicAudits: React.PropTypes.bool,
         projectColors: React.PropTypes.object,
-        biosampleTypeColors: React.PropTypes.object,
-        assayCatColors: React.PropTypes.object
+        biosampleTypeColors: React.PropTypes.object
     },
 
     // Retrieve current React context
@@ -133,7 +121,6 @@ var App = React.createClass({
         // Make `project` and `biosample_type` color mappings for downstream modules to use.
         let projectColors = new DataColors(projectList);
         let biosampleTypeColors = new DataColors(biosampleTypeList);
-        let assayCatColors = new DataColors(assayCatList);
 
         return {
             dropdownComponent: this.state.dropdownComponent, // ID of component with visible dropdown
@@ -144,8 +131,7 @@ var App = React.createClass({
             portal: portal,
             hidePublicAudits: false, // True if audits should be hidden on the UI while logged out
             projectColors: projectColors,
-            biosampleTypeColors: biosampleTypeColors,
-            assayCatColors: assayCatColors
+            biosampleTypeColors: biosampleTypeColors
         };
     },
 
