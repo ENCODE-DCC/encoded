@@ -188,7 +188,8 @@
                         "tagAlign",
                         "vcf",
                         "wig",
-                        "bedpe"
+                        "bedpe",
+                        "PWM"
                     ]
                 },
                 {
@@ -398,6 +399,7 @@
                         "variant calls",
                         "filtered SNPs",
                         "filtered indels",
+                        "motif model",
 
                         "hotspots",
                         "long range chromatin interactions",
@@ -794,6 +796,7 @@
         "filtered peptide quantification": "quantification",
         "unfiltered peptide quantification": "quantification",
         "replication timing profile": "quantification",
+        "motif model": "quantification",
 
         "hotspots": "annotation",
         "long range chromatin interactions": "annotation",
