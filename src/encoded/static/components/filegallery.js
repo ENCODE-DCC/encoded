@@ -767,9 +767,6 @@ var FileGalleryRenderer = React.createClass({
             <Panel>
                 <PanelHeading addClasses="file-gallery-heading">
                     <h4>Files</h4>
-                    <Modal title="My Modal" btnOk="OK" btnCancel="Cancel">
-                        <button modal={<ModalContent closeModal={this.closeModal} />}>Open Modal</button>
-                    </Modal>
                     <div className="file-gallery-controls">
                         {context.visualize_ucsc && context.status == "released" ?
                             <div className="file-gallery-control">
@@ -809,24 +806,6 @@ var FileGalleryRenderer = React.createClass({
                         encodevers={globals.encodeVersion(context)} session={this.context.session} showFileCount noDefaultClasses />
                 }
             </Panel>
-        );
-    }
-});
-
-
-var ModalContent = React.createClass({
-    propTypes: {
-        closeModal: React.PropTypes.func // Function to call to close the modal
-    },
-
-    render: function() {
-        return (
-            <div>
-                Hello
-                <div className='modal-footer'>
-                    <button onClick={this.props.closeModal}>Cancel</button>
-                </div>
-            </div>
         );
     }
 });
