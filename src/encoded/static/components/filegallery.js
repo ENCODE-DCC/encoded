@@ -2,7 +2,7 @@
 var React = require('react');
 var globals = require('./globals');
 var {Panel, PanelBody, PanelHeading} = require('../libs/bootstrap/panel');
-var {ModalMixin, Modal} = require('../libs/bootstrap/modal');
+var {Modal, ModalHeader, ModalBody} = require('../libs/bootstrap/modal');
 var {DropdownButton} = require('../libs/bootstrap/button');
 var {DropdownMenu} = require('../libs/bootstrap/dropdown-menu');
 var {AuditIcon} = require('./audit');
@@ -700,8 +700,6 @@ var FileGallery = module.exports.FileGallery = React.createClass({
 // Function to render the file gallery, and it gets called after the file search results (for files associated with
 // the displayed experiment) return.
 var FileGalleryRenderer = React.createClass({
-    mixins: [ModalMixin],
-
     propTypes: {
         encodevers: React.PropTypes.string, // ENCODE version number
         anisogenic: React.PropTypes.bool, // True if anisogenic experiment
@@ -1318,6 +1316,7 @@ var FileGraph = React.createClass({
     getInitialState: function() {
         return {
             infoNodeId: '', // @id of node whose info panel is open
+            infoModalOpen: false, // Graph information modal open
             collapsed: false // T if graphing panel is collapsed
         };
     },
@@ -1326,19 +1325,19 @@ var FileGraph = React.createClass({
     // jsonGraph: JSON graph data.
     // infoNodeId: ID of the selected node
     detailNodes: function(jsonGraph, infoNodeId) {
-        var meta;
+        let meta;
 
         // Find data matching selected node, if any
         if (infoNodeId) {
             if (infoNodeId.indexOf('qc:') === -1) {
                 // Not a QC subnode; render normally
-                var node = jsonGraph.getNode(infoNodeId);
+                let node = jsonGraph.getNode(infoNodeId);
                 if (node) {
                     meta = globals.graph_detail.lookup(node)(node);
                 }
             } else {
                 // QC subnode
-                var subnode = jsonGraph.getSubnode(infoNodeId);
+                let subnode = jsonGraph.getSubnode(infoNodeId);
                 if (subnode) {
                     meta = QcDetailsView(subnode);
                 }
@@ -1350,12 +1349,19 @@ var FileGraph = React.createClass({
 
     // Handle a click in a graph node
     handleNodeClick: function(nodeId) {
-        this.setState({infoNodeId: this.state.infoNodeId !== nodeId ? nodeId : ''});
+        this.setState({
+            infoNodeId: nodeId,
+            infoModalOpen: true
+        });
     },
 
     handleCollapse: function() {
         // Handle click on panel collapse icon
         this.setState({collapsed: !this.state.collapsed});
+    },
+
+    closeModal: function() {
+        this.setState({infoModalOpen: false});
     },
 
     render: function() {
@@ -1386,9 +1392,15 @@ var FileGraph = React.createClass({
                                 <div>
                                     {goodGraph ?
                                         <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw>
-                                            <div id="graph-node-info">
-                                                {meta ? <PanelBody>{meta}</PanelBody> : null}
-                                            </div>
+                                            <Modal modalOpen={this.state.infoModalOpen}>
+                                                <ModalHeader>
+                                                    {meta ? meta.header : null}
+                                                    <button className="icon icon-times" onClick={this.closeModal}><span className="sr-only">Close</span></button>
+                                                </ModalHeader>
+                                                <ModalBody className="modal-body">
+                                                    {meta ? meta.body : null}
+                                                </ModalBody>
+                                            </Modal>
                                         </Graph>
                                     :
                                         <p className="browser-error">Currently selected assembly and genomic annotation hides the graph</p>
@@ -1411,27 +1423,27 @@ var FileGraph = React.createClass({
 
 
 // Display the metadata of the selected file in the graph
-var FileDetailView = function(node) {
+let FileDetailView = function(node) {
     // The node is for a file
-    var selectedFile = node.metadata.ref;
-    var meta;
+    let selectedFile = node.metadata.ref;
+    let body, header;
 
     if (selectedFile) {
-        var contributingAccession;
+        let contributingAccession;
 
         if (node.metadata.contributing) {
-            var accessionStart = selectedFile.dataset.indexOf('/', 1) + 1;
-            var accessionEnd = selectedFile.dataset.indexOf('/', accessionStart) - accessionStart;
+            let accessionStart = selectedFile.dataset.indexOf('/', 1) + 1;
+            let accessionEnd = selectedFile.dataset.indexOf('/', accessionStart) - accessionStart;
             contributingAccession = selectedFile.dataset.substr(accessionStart, accessionEnd);
         }
-        var dateString = !!selectedFile.date_created && moment.utc(selectedFile.date_created).format('YYYY-MM-DD');
-        return (
+        let dateString = !!selectedFile.date_created && moment.utc(selectedFile.date_created).format('YYYY-MM-DD');
+        header = (
+            <div className="details-view-info">
+                <h4>{selectedFile.file_type} {selectedFile.accession}</h4>
+            </div>
+        );
+        body = (
             <div>
-                <div className="details-view-header">
-                    <div className="details-view-info">
-                        <h4>{selectedFile.file_type} {selectedFile.accession}</h4>
-                    </div>
-                </div>
                 <dl className="key-value">
                     {selectedFile.output_type ?
                         <div data-test="output">
@@ -1527,8 +1539,14 @@ var FileDetailView = function(node) {
             </div>
         );
     } else {
-        return <p className="browser-error">No information available</p>;
+        header = (
+            <div className="details-view-info">
+                <h4>Unknown file</h4>
+            </div>
+        );
+        body = <p className="browser-error">No information available</p>;
     }
+    return {header: header, body: body};
 };
 
 globals.graph_detail.register(FileDetailView, 'File');
@@ -1562,6 +1580,7 @@ var QcDetailsView = function(metrics) {
         var qcPanels = []; // Each QC metric panel to display
         var id2accessionRE = /\/\w+\/(\w+)\//;
         var filesOfMetric = []; // Array of accessions of files that share this metric
+        let body, header;
 
         // Make an array of the accessions of files that share this quality metrics object.
         // quality_metric_of is an array of @ids because they're not embedded, and we're trying
@@ -1609,14 +1628,14 @@ var QcDetailsView = function(metrics) {
             qcName = qcName[0].toUpperCase() + qcName.substring(1);
         }
 
-        return (
+        header = (
+            <div className="details-view-info">
+                <h4>{qcName} of {metrics.parent.accession}</h4>
+                {filesOfMetric.length ? <h5>Shared with {filesOfMetric.join(', ')}</h5> : null}
+            </div>
+        );
+        body = (
             <div>
-                <div className="details-view-header">
-                    <div className="details-view-info">
-                        <h4>{qcName} of {metrics.parent.accession}</h4>
-                        {filesOfMetric.length ? <h5>Shared with {filesOfMetric.join(', ')}</h5> : null}
-                    </div>
-                </div>
                 <div className="row">
                     <div className="col-md-4 col-sm-6 col-xs-12">
                         <dl className="key-value-flex">
@@ -1647,8 +1666,9 @@ var QcDetailsView = function(metrics) {
                 </div>
             </div>
         );
+        return {header: header, body: body};
     } else {
-        return null;
+        return {header: null, body: null};
     }
 };
 
