@@ -183,7 +183,7 @@ var ChartGallery = React.createClass({
         return (
             <PanelBody>
                 <div className="view-all">
-                    <a href={"/matrix/" + this.props.searchBase} className="view-all-button btn btn-info btn-sm" role="button">View Selected Assay</a>
+                    <a href={"/matrix/" + this.props.searchBase} className="view-all-button btn btn-info btn-sm" role="button">View Assay Matrix</a>
                 </div>
                 <div className="col-md-4">
                     <HomepageChart {...this.props} searchBase={this.props.searchBase} />
