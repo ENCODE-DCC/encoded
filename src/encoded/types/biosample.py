@@ -55,24 +55,23 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'award.pi.lab',
         'source',
         'treatments',
-        'treatments.protocols.submitted_by',
-        'treatments.protocols.lab',
-        'treatments.protocols.award',
+        'treatments.documents.submitted_by',
+        'treatments.documents.lab',
+        'treatments.documents.award',
         'constructs',
         'constructs.documents.submitted_by',
         'constructs.documents.award',
         'constructs.documents.lab',
         'constructs.target',
-        'constructs.promoter_used',
-        'protocol_documents.lab',
-        'protocol_documents.award',
-        'protocol_documents.submitted_by',
+        'documents.lab',
+        'documents.award',
+        'documents.submitted_by',
         'derived_from',
         'part_of',
-        'part_of.protocol_documents',
-        'part_of.protocol_documents.award',
-        'part_of.protocol_documents.lab',
-        'part_of.protocol_documents.submitted_by',
+        'part_of.documents',
+        'part_of.documents.award',
+        'part_of.documents.lab',
+        'part_of.documents.submitted_by',
         'part_of.characterizations.documents',
         'part_of.characterizations.documents.award',
         'part_of.characterizations.documents.lab',
@@ -84,7 +83,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'part_of.rnais.documents.award',
         'part_of.rnais.documents.lab',
         'part_of.rnais.documents.submitted_by',
-        'part_of.treatments.protocols',
+        'part_of.treatments.documents',
         'part_of.talens.documents',
         'parent_of',
         'pooled_from',
@@ -106,8 +105,11 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'talens.documents.lab',
         'talens.documents.submitted_by',
         'genetic_modifications',
-        'genetic_modifications.modification_treatments',
-        'genetic_modifications.modification_techniques'
+        'genetic_modifications.award',
+        'genetic_modifications.lab',
+        'genetic_modifications.modification_techniques',
+        'genetic_modifications.treatments',
+        'genetic_modifications.target'
     ]
     audit_inherit = [
         'donor',
@@ -135,17 +137,17 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'award.pi.lab',
         'source',
         'treatments',
-        'treatments.protocols.submitted_by',
-        'treatments.protocols.lab',
-        'treatments.protocols.award',
+        'treatments.documents.submitted_by',
+        'treatments.documents.lab',
+        'treatments.documents.award',
         'constructs',
         'constructs.documents.submitted_by',
         'constructs.documents.award',
         'constructs.documents.lab',
         'constructs.target',
-        'protocol_documents.lab',
-        'protocol_documents.award',
-        'protocol_documents.submitted_by',
+        'documents.lab',
+        'documents.award',
+        'documents.submitted_by',
         'derived_from',
         'pooled_from',
         'characterizations.submitted_by',
@@ -730,14 +732,15 @@ def generate_summary_dictionary(
             treatments_list = []
             for treatmentObject in treatment_objects_list:
                 to_add = ''
+
                 if experiment_flag is True:
                     if 'treatment_term_name' in treatmentObject:
                         to_add = treatmentObject['treatment_term_name'] + ' '
                 else:
-                    if 'concentration' in treatmentObject and \
-                       'concentration_units' in treatmentObject:
-                        to_add += str(treatmentObject['concentration']) + ' ' + \
-                            treatmentObject['concentration_units'] + ' '
+                    if 'amount' in treatmentObject and \
+                       'amount_units' in treatmentObject:
+                        to_add += str(treatmentObject['amount']) + ' ' + \
+                            treatmentObject['amount_units'] + ' '
                     if 'treatment_term_name' in treatmentObject:
                         to_add += treatmentObject['treatment_term_name'] + ' '
                     if 'duration' in treatmentObject and \

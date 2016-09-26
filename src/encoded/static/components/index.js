@@ -11,6 +11,7 @@ require('./dataset');
 require('./dbxref');
 require('./errors');
 require('./experiment');
+require('./genetic_modification');
 require('./footer');
 require('./globals');
 require('./graph');
