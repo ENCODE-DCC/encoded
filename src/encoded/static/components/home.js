@@ -474,7 +474,9 @@ var HomepageChart = React.createClass({
     },
 
     componentDidUpdate: function(){
-        if (this.myPieChart) {
+        let query = this.props.data['@id'].replace(/^\/search\//, '');
+
+        if (this.myPieChart && query === this.props.searchBase) {
             this.myPieChart.destroy(); // clears old chart before creating new one
             this.drawChart();
         }
@@ -673,7 +675,9 @@ var HomepageChart2 = React.createClass({
     },
 
     componentDidUpdate: function() {
-        if (this.myPieChart) {
+        let query = this.props.data['@id'].replace(/^\/search\//, '');
+
+        if (this.myPieChart && query === this.props.searchBase) {
             this.myPieChart.destroy(); // clears old chart before creating new one
             this.drawChart();
         }
@@ -807,7 +811,9 @@ var HomepageChart3 = React.createClass({
     },
 
     componentDidUpdate: function() {
-        if (this.myPieChart) {
+        let query = this.props.data['@id'].replace(/^\/search\//, '');
+
+        if (this.myPieChart && query === this.props.searchBase) {
             this.myPieChart.destroy(); // clears old chart before creating new one
             this.drawChart();
         }
