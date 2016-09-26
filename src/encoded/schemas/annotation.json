@@ -58,7 +58,9 @@
                 "binding sites",
                 "blacklist",
                 "chromatin state",
+                "enhancer validations",
                 "enhancer-like regions",
+                "experimental validation summaries",
                 "gene expression",
                 "long-range chromatin interactions",
                 "promoter-like regions",
@@ -66,6 +68,7 @@
                 "DNase master peaks",
                 "transcription factor motifs",
                 "validated enhancers",
+                "validation summaries",
                 "overlap",
                 "other"
             ]
