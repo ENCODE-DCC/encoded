@@ -216,7 +216,7 @@ module.exports.Persona = {
         });
     },
 
-    handlePersonaLogin: function (assertion, retrying) {
+    handleAuth0Login: function (assertion, retrying) {
         if (!assertion) return;
         this.sessionPropertiesRequest = true;
         this.fetch('/login', {
@@ -261,10 +261,16 @@ module.exports.Persona = {
         if (this.state.session && !this.state.session._csrft_) {
             this.fetch('/session');
         }
-        $script.ready('persona', () => {
-            var request_params = {}; // could be site name
-            navigator.id.get(this.handlePersonaLogin, request_params);
+        var lock = new Auth0Lock('B64hILFXnt9XtKZ9Cs7B4xjkh3uVxqPV', 'encode-dcc.auth0.com', {
+            auth: {
+                redirectUrl: '',
+                responseType: 'code',
+                params: {
+                    scope: 'openid email' // Learn about scopes: https://auth0.com/docs/scopes
+                    }
+            }
         });
+        lock.show()
     },
 
     triggerLogout: function (event) {

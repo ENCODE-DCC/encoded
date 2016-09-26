@@ -103,6 +103,8 @@ def logout(request):
 @view_config(route_name='session-properties', request_method='GET',
              permission=NO_PERMISSION_REQUIRED)
 def session_properties(request):
+    print('#######')
+    print('session_properties')
     for principal in request.effective_principals:
         if principal.startswith('userid.'):
             break
