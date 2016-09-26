@@ -213,7 +213,6 @@ var AssayClicking = React.createClass({
     getInitialState: function(){
         return {
             updatedLink: this.props.current,
-            currentAssay: this.props.assayCategory,
             assayList: ["3D+chromatin+structure",
                         "DNA+accessibility",
                         "DNA+binding",
@@ -229,7 +228,6 @@ var AssayClicking = React.createClass({
 
         function handleClick(category, ctx) {
             ctx.props.handleAssayCategoryClick(category); // handles assay category click
-            ctx.setState({currentAssay: category}); // updates current assay
         }
 
         if (e.type === 'touchend') {
@@ -435,11 +433,6 @@ var HomepageChart = React.createClass({
                                 var term = facetData[activePoints[0]._index].key;
                                 this.context.navigate('/matrix/' + this.props.searchBase + '&award.project=' + term);
                             }
-
-                            this.myPieChart.update();
-                            this.myPieChart.render();
-                            this.forceUpdate();
-
                         }
                     }
                 });
@@ -488,7 +481,6 @@ var HomepageChart = React.createClass({
     },
 
     render: function() {
-
         return (
             <div>
                 <div className="title">
@@ -518,7 +510,7 @@ var HomepageChartLoader = React.createClass({
 
     render: function() {
         return (
-            <FetchedData ignoreErrors>
+            <FetchedData>
                 <Param name="data" url={'/search/' + this.props.searchBase} />
                 <ChartGallery assayCategory={this.props.assayCategory} searchBase={this.props.searchBase} />
             </FetchedData>
