@@ -211,7 +211,7 @@ var Annotation = React.createClass({
                                             <dd>{context.lab.title}</dd>
                                         </div>
                                     : null}
-                                    
+
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
@@ -522,7 +522,7 @@ var Reference = React.createClass({
                                             <dd>{context.lab.title}</dd>
                                         </div>
                                     : null}
-                                    
+
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
@@ -704,7 +704,7 @@ var Project = React.createClass({
                                             <dd>{context.lab.title}</dd>
                                         </div>
                                     : null}
-                                    
+
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
@@ -873,7 +873,7 @@ var UcscBrowserComposite = React.createClass({
                                             <dd>{context.lab.title}</dd>
                                         </div>
                                     : null}
-                                    
+
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
@@ -927,7 +927,7 @@ var FilePanelHeader = module.exports.FilePanelHeader = React.createClass({
 
         return (
             <div>
-                {context.visualize_ucsc  && context.status == "released" ?
+                {context.visualize_ucsc && context.status == "released" ?
                     <span className="pull-right">
                         <DropdownButton title='Visualize Data' label="filepaneheader">
                             <DropdownMenu>
