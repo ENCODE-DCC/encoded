@@ -804,6 +804,7 @@ def generate_summary_dictionary(
 
         if construct_objects_list is not None and len(construct_objects_list) > 0:
             constructs_list = []
+            construct_types = set()
             for construct_data in construct_objects_list:
                 cons = construct_data[0]
                 tar = construct_data[1]
@@ -826,17 +827,22 @@ def generate_summary_dictionary(
                                 addition += tar['label'] + ' ' + \
                                     cons['construct_type']
                         constructs_list.append(addition)
+                        construct_types.add(cons['construct_type'])
                 else:
                     constructs_list.append(tar['label'])
-
-            if len(constructs_list) == 1:
-                dict_of_phrases['constructs'] = 'expressing ' + constructs_list[0]
-            elif len(constructs_list) > 1:
-                dict_of_phrases['constructs'] = 'expressing ' + \
-                    ', '.join(map(str, list(set(constructs_list))))
+            if experiment_flag is True:
+                dict_of_phrases['constructs'] = 'expressing ' + ', '.join(
+                    sorted(list(construct_types)))
+            else:
+                if len(constructs_list) == 1:
+                    dict_of_phrases['constructs'] = 'expressing ' + constructs_list[0]
+                elif len(constructs_list) > 1:
+                    dict_of_phrases['constructs'] = 'expressing ' + \
+                        ', '.join(map(str, list(set(constructs_list))))
 
         if model_construct_objects_list is not None and len(model_construct_objects_list) > 0:
             constructs_list = []
+            construct_types = set()
             for construct_data in model_construct_objects_list:
                 cons = construct_data[0]
                 tar = construct_data[1]
@@ -859,14 +865,19 @@ def generate_summary_dictionary(
                                 addition += tar['label'] + ' ' + \
                                     cons['construct_type']
                         constructs_list.append(addition)
+                        construct_types.add(cons['construct_type'])
                 else:
                     constructs_list.append(tar['label'])
+            if experiment_flag is True:
+                dict_of_phrases['model_organism_constructs'] = 'expressing ' + ', '.join(
+                    sorted(list(construct_types)))
+            else:
 
-            if len(constructs_list) == 1:
-                dict_of_phrases['model_organism_constructs'] = 'expressing ' + constructs_list[0]
-            elif len(constructs_list) > 1:
-                dict_of_phrases['model_organism_constructs'] = 'expressing ' + \
-                    ', '.join(map(str, list(set(constructs_list))))
+                if len(constructs_list) == 1:
+                    dict_of_phrases['model_organism_constructs'] = 'expressing ' + constructs_list[0]
+                elif len(constructs_list) > 1:
+                    dict_of_phrases['model_organism_constructs'] = 'expressing ' + \
+                        ', '.join(map(str, list(set(constructs_list))))
 
         if rnai_objects is not None and len(rnai_objects) > 0:
             if experiment_flag is True:
