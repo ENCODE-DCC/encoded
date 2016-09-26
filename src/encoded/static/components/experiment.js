@@ -21,6 +21,7 @@ var sortTable = require('./sorttable');
 var objectutils = require('./objectutils');
 var doc = require('./doc');
 var {FileGallery} = require('./filegallery');
+var {GeneticModificationSummary} = require('./genetic_modification');
 var {BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs} = require('./typeutils');
 
 var Breadcrumbs = navigation.Breadcrumbs;
@@ -86,12 +87,19 @@ var Experiment = module.exports.Experiment = React.createClass({
         // Make array of all replicate biosamples, not including biosample-less replicates. Also collect up library documents.
         var libraryDocs = [];
         var biosamples = [];
+        var geneticModifications = [];
         if (replicates) {
             biosamples = _.compact(replicates.map(replicate => {
                 if (replicate.library) {
                     if (replicate.library.documents && replicate.library.documents.length){
                         Array.prototype.push.apply(libraryDocs, replicate.library.documents);
                     }
+
+                    // Collect biosample genetic modifications
+                    if (replicate.library.biosample && replicate.library.biosample.genetic_modifications && replicate.library.biosample.genetic_modifications.length) {
+                        geneticModifications = geneticModifications.concat(replicate.library.biosample.genetic_modifications);
+                    }
+
                     return replicate.library.biosample;
                 }
                 return null;
@@ -303,11 +311,9 @@ var Experiment = module.exports.Experiment = React.createClass({
         // Render tags badges
         var tagBadges;
         if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+            tagBadges = context.internal_tags.map(tag => <img key={tag} src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
         }
-
-        // XXX This makes no sense.
-        //var control = context.possible_controls[0];
+        
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -354,7 +360,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                                                 {organismNames.length ?
                                                     <span>
                                                         {organismNames.map((organismName, i) =>
-                                                            <span>
+                                                            <span key={organismName}>
                                                                 {i > 0 ? <span> and </span> : null}
                                                                 <i>{organismName}</i>
                                                             </span>
@@ -512,6 +518,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} ignoreErrors />
 
                 {combinedDocuments.length ? <DocumentsPanel documentSpecs={[{documents: combinedDocuments}]} /> : null}
+
+                {geneticModifications.length ?
+                    <GeneticModificationSummary geneticModifications={geneticModifications} />
+                : null}
             </div>
         );
     }
