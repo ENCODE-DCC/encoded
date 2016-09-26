@@ -5,7 +5,6 @@ var button = require('../libs/bootstrap/button');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var {SvgIcon, CollapseIcon} = require('../libs/svg-icons');
 var _ = require('underscore');
-var moment = require('moment');
 var globals = require('./globals');
 var navigation = require('./navigation');
 var dbxref = require('./dbxref');
