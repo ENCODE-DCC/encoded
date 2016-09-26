@@ -5,8 +5,6 @@ import subprocess
 import sys
 import datetime
 import base64
-import pdb
-from pprint import pprint as pp
 
 
 BDM = [
@@ -51,14 +49,16 @@ def get_spot_id(instance, client):
 
 def get_spot_code(instance, client, spot_id):
     request = client.describe_spot_instance_requests(SpotInstanceRequestIds=[get_spot_id(instance, client)])
-    for key, value in request.items():
-       if key == 'SpotInstanceRequests':
-            for item in value:
-                for i in item:
-                    if i == 'Status':
-                        for j in item[i]:
-                            if j == 'Code':
-                                code_status = item[i][j]
+    code_status = request['SpotInstanceRequests']['Status']['Code']
+
+    #for key, value in request.items():
+     #  if key == 'SpotInstanceRequests':
+      #      for item in value:
+       #         for i in item:
+        #            if i == 'Status':
+         #               for j in item[i]:
+          #                  if j == 'Code':
+           #                     code_status = item[i][j]
     return code_status
 
 def wait_for_code_change(instance, client):
@@ -215,7 +215,7 @@ def tag_ec2_instance(instance, name, branch, commit, username, elasticsearch, cl
     ]
     if elasticsearch == 'yes':
         tags.append({'Key': 'elasticsearch', 'Value': elasticsearch})
-    if not cluster_name == None:
+    if cluster_name != None:
         tags.append({'Key': 'ec_cluster_name', 'Value': cluster_name})
     instance.create_tags(Tags=tags)
     return instance
@@ -297,14 +297,13 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         iam_role = 'elasticsearch-instance'
         count = int(cluster_size)
     
-    if not check_price == False :
+    if check_price == "True" :
         ec2_spot = boto3.client('ec2')
         get_spot_price = spot_instance_price_check(ec2_spot, instance_type)
         exit()
 
-    if not spot_instance == False :
+    if spot_instance == "True" :
         print("spot_instance check worked")
-        spot_security_groups = 'ssh-http-https'
         ec2_spot = boto3.client('ec2')
         # issue with base64 encoding so no decoding in utc-8 and recoding in base64 then decoding in base 64.
         config_file = ':cloud-config.yml'
@@ -313,7 +312,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         user_data = user_data_b64.decode()
         client = spot_client()
         client.spotClient = ec2_spot
-        instances = spot_instances(ec2_spot, spot_price, count, image_id, instance_type, spot_security_groups, user_data, iam_role, BDM)
+        instances = spot_instances(ec2_spot, spot_price, count, image_id, instance_type, security_groups, user_data, iam_role, BDM)
     else:
         instances = create_ec2_instances(ec2, image_id, count, instance_type, security_groups, user_data, BDM, iam_role)
 
@@ -332,7 +331,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
             if domain == 'instance':
                 print('https://%s.demo.encodedcc.org' % tmp_name)
 
-    if not spot_instance == False:        
+    if spot_instance == "True":        
         tag_spot_instance(instances, tmp_name, branch, commit, username, elasticsearch, client.spotClient, cluster_name)
         print("Spot instance request had been completed, please check to be sure it was fufilled")
 
@@ -351,9 +350,9 @@ def main():
     parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
     parser.add_argument('-n', '--name', type=hostname, help="Instance name")
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')
-    parser.add_argument('--spot_instance', default=False, help="Launch as spot instance")
-    parser.add_argument('--spot_price', default='0.70', help="Set price or keep default price of 0.70")
-    parser.add_argument('--check_price', default=False, help="Check price on spot instances")
+    parser.add_argument('--spot-instance', default=False, help="Launch as spot instance")
+    parser.add_argument('--spot-price', default='0.70', help="Set price or keep default price of 0.70")
+    parser.add_argument('--check-price', default=False, help="Check price on spot instances")
     parser.add_argument(
         '--candidate', action='store_const', default='demo', const='candidate', dest='role',
         help="Deploy candidate instance")
