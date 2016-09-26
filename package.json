@@ -46,6 +46,7 @@
     "webpack": "^1.13.0"
   },
   "dependencies": {
+    "auth0-lock": "^10.3.0",
     "babel-polyfill": "^6.7.4",
     "brace": "^0.3.0",
     "ckeditor": "file:node_shims/ckeditor",

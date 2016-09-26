@@ -257,7 +257,7 @@ module.exports.Persona = {
 
     triggerLogin: function (event) {
         var $script = require('scriptjs');
-        console.log('Logging in (persona) ');
+        console.log('Logging in (Auth0) ');
         if (this.state.session && !this.state.session._csrft_) {
             this.fetch('/session');
         }
