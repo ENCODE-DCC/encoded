@@ -22,15 +22,17 @@
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/submitter_comment" },
-        { "$ref": "mixins.json#/genetic_modifications" }
+        { "$ref": "mixins.json#/genetic_modifications" },
+        { "$ref": "mixins.json#/documents"}
     ],
     "dependencies": {
         "transfection_method": ["transfection_type"],
         "depleted_in_term_name": ["depleted_in_term_id"],
         "post_synchronization_time_units": ["post_synchronization_time"],
-        "post_synchronization_time": ["post_synchronization_time_units"],
         "post_treatment_time": ["post_treatment_time_units"],
         "post_treatment_time_units": ["post_treatment_time"],
+        "starting_amount": ["starting_amount_units"],
+        "starting_amount_units": ["starting_amount"],
         "depleted_in_term_id": {
             "required": ["depleted_in_term_name"],
             "properties": {
@@ -52,6 +54,71 @@
                 }
             }
         },
+        "model_organism_age": {
+            "required": ["model_organism_age_units"],
+            "not": {
+                "properties": {
+                    "organism": {
+                        "linkTo": "Organism",
+                        "linkEnum": [
+                            "7745b647-ff15-4ff3-9ced-b897d4e2983c"
+                        ]
+                    }
+                }
+            }
+        },
+        "model_organism_health_status": {
+            "not": {
+                "properties": {
+                    "organism": {
+                        "linkTo": "Organism",
+                        "linkEnum": [
+                            "7745b647-ff15-4ff3-9ced-b897d4e2983c"
+                        ]
+                    }
+                }
+            }
+        },
+        "model_organism_sex": {
+            "not": {
+                "properties": {
+                    "organism": {
+                        "linkTo": "Organism",
+                        "linkEnum": [
+                            "7745b647-ff15-4ff3-9ced-b897d4e2983c"
+                        ]
+                    }
+                }
+            }
+        },
+        "model_organism_mating_status": {
+            "required": ["model_organism_sex"],
+            "not": {
+                "properties": {
+                    "organism": {
+                        "linkTo": "Organism",
+                        "linkEnum": [
+                            "7745b647-ff15-4ff3-9ced-b897d4e2983c"
+                        ]
+                    }
+                }
+            }
+        },
+        "post_synchronization_time": {
+            "required": ["post_synchronization_time_units"],
+            "not": {
+                "properties": {
+                    "organism": {
+                        "linkTo": "Organism",
+                        "linkEnum": [
+                            "7745b647-ff15-4ff3-9ced-b897d4e2983c",
+                            "3413218c-3d86-498b-a0a2-9a406638e786"
+                        ]
+                    }
+                }
+            }
+        },
+        "model_organism_age_units": ["model_organism_age"],
         "fly_life_stage": {
             "properties": {
                 "organism": {
@@ -123,7 +190,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "12"
+            "default": "13"
         },
         "accession": {
             "accessionType": "BS"
@@ -214,19 +281,8 @@
                 "pattern": "^((UCSC-ENCODE-cv:[\\S\\s\\d\\-\\(\\)\\+]+)|(GTEx:[a-zA-Z0-9\\-_]+)|(GEO:SAMN\\d+)|(Cellosaurus:CVCL_\\w{4}))$"
             }
         },
-        "protocol_documents": {
-            "title": "Protocol documents",
-            "description": "Documents that describe the biosample preparation.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Protocol document",
-                "description": "A document that describes the biosample preparation.",
-                "comment": "See document.json for available identifiers.",
-                "type": "string",
-                "linkTo": "Document"
-            }
+        "documents": {
+            "description": "Documents that describe the biosample preparation."
         },
         "donor": {
             "title": "Donor",
@@ -352,13 +408,6 @@
             "type": "string",
             "linkTo": "Biosample"
         },
-        "note": {
-            "title": "Note",
-            "description": "Additional information pertaining to the biosample.",
-            "comment": "Please use the submitter_comment property instead.",
-            "type": "string",
-            "permission": "import_items"
-        },
         "subcellular_fraction_term_name": {
             "title": "Subcellular fraction name",
             "description": "The GO (Gene Ontology) term name for cellular component that constitutes the biosample.",
@@ -459,10 +508,8 @@
         "starting_amount": {
             "title": "Starting amount",
             "description": "The initial quantity of cells or tissue obtained.",
-            "comment": "The pattern is only enforced when the value supplied is a string.",
-            "type": ["number", "string"],
-            "minimum":0,
-            "pattern": "^unknown$"
+            "type": "number",
+            "minimum":0
         },
         "starting_amount_units": {
             "title": "Starting amount units",
@@ -635,7 +682,7 @@
         "model_organism_health_status": {
             "title": "Model organism donor health status",
             "type": "string",
-            "comment": "model_organism_halth_status is not valid for a human biosample."
+            "comment": "model_organism_health_status is not valid for a human biosample."
         },
         "status": {
             "enum" : [
