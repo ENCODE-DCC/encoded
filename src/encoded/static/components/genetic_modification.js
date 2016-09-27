@@ -196,7 +196,7 @@ const GeneticModification = module.exports.GeneticModification = React.createCla
                                         </div>
                                     : null}
 
-                                    {context.source.title ?
+                                    {context.source && context.source.title ?
                                         <div data-test="sourcetitle">
                                             <dt>Source</dt>
                                             <dd>
@@ -221,7 +221,7 @@ const GeneticModification = module.exports.GeneticModification = React.createCla
                                         </div>
                                     : null}
 
-                                    {context.aliases.length ?
+                                    {context.aliases && context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
                                             <dd>{context.aliases.join(", ")}</dd>
