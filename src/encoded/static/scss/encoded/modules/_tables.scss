@@ -1,6 +1,6 @@
 /*  TABLES    */
 
-$file-restricted-bg: #ff6040; // Background color of restricted files
+$file-restricted-bg: #ff9080; // Background color of restricted files
 
 
 table {
@@ -182,11 +182,16 @@ form.table-filter {
             &.file-restricted {
                 td {
                     background-color: $file-restricted-bg;
+
+                    &.table-raw-merged {
+                        background-color: #fff;
+                    }
                 }
             }
         }
     }
 }
+
 
 .table-section {
     font-size: 1.3rem;

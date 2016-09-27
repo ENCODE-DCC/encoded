@@ -865,6 +865,7 @@
         "dataset": "ENCSR000ACT",
         "date_created": "2014-01-21",
         "file_format": "idat",
+        "restricted": true,
         "lab":"j-michael-cherry",
         "md5sum": "f42f32235d27104036737e4d33b6e13f",
         "output_type": "idat green channel",

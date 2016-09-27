@@ -606,7 +606,7 @@ var RawFileTable = React.createClass({
 
                                     // Prepare for run_type display
                                     return (
-                                        <tr key={i}>
+                                        <tr key={i} className={file.restricted ? 'file-restricted' : ''}>
                                             {i === 0 ? {spanned} : null}
                                             <td className={pairClass}>
                                                 {file.title}&nbsp;<a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
@@ -624,8 +624,12 @@ var RawFileTable = React.createClass({
                             })}
                             {nonpairedFiles.sort(sortBioReps).map((file, i) => {
                                 // Prepare for run_type display
+                                let rowClasses = [
+                                    pairedKeys.length && i === 0 ? 'table-raw-separator' : null,
+                                    file.restricted ? 'file-restricted' : null
+                                ];
                                 return (
-                                    <tr key={i} className={pairedKeys.length && i === 0 ? 'table-raw-separator' : ''}>
+                                    <tr key={i} className={rowClasses.join(' ')}>
                                         <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
                                         <td>{file.title}&nbsp;<a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a></td>
