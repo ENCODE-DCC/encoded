@@ -367,7 +367,7 @@ $qualitymetric-figure-height: 96px;
 
 // Status indicator glyph colors
 .indicator.status-characterized-to-standards { color: $indicator-eligible; }
-.indicator.status-characterized-to-standards-via-exemption { color: $indicator-eligible-exempt; }
+.indicator.status-characterized-to-standards-with-exemption { color: $indicator-eligible-exempt; }
 .indicator.status-pending-dcc-review { color: $indicator-pending; }
 .indicator.status-not-characterized-to-standards { color: $indicator-noteligible; }
 .indicator.status-awaiting-characterization { color: $indicator-awaiting; }
