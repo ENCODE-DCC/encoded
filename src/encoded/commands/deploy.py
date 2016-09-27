@@ -5,6 +5,7 @@ import subprocess
 import sys
 import datetime
 import base64
+import json
 
 
 BDM = [
@@ -38,19 +39,17 @@ class spot_client(object):
         self._spotClient = value
 
 def get_spot_id(instance, client):
-    
-    for key, value in instance.items():
-        if key == 'SpotInstanceRequests':
-            for item in value:
-                for i in item:
-                    if i == 'SpotInstanceRequestId':
-                        SpotInstanceRequestId=item[i]
+    SpotInstanceRequestId = instance['SpotInstanceRequests'][0]['SpotInstanceRequestId']
+    #print(list(instance.values()))
+    #print("SpotInstanceRequestId: %s" % SpotInstanceRequestId)
     return SpotInstanceRequestId
 
 def get_spot_code(instance, client, spot_id):
     request = client.describe_spot_instance_requests(SpotInstanceRequestIds=[get_spot_id(instance, client)])
-    code_status = request['SpotInstanceRequests']['Status']['Code']
+    print(list(request.values()))
+    code_status = request['SpotInstanceRequests']['Status']['UpdateTime'][0]['Code']
 
+    print("Code Status: %s" % code_status)
     #for key, value in request.items():
      #  if key == 'SpotInstanceRequests':
       #      for item in value:
@@ -161,7 +160,7 @@ def spot_instance_price_check(client, instance_type):
 
     return highest
 
-def spot_instances(client, spot_price, count, image_id, instance_type, spot_security_groups, user_data, iam_role, bdm):
+def spot_instances(client, spot_price, count, image_id, instance_type, security_groups, user_data, iam_role, bdm):
     responce = client.request_spot_instances(
     DryRun=False,
     SpotPrice=spot_price,
@@ -169,7 +168,7 @@ def spot_instances(client, spot_price, count, image_id, instance_type, spot_secu
     Type='one-time',
     LaunchSpecification={
         'ImageId': image_id,
-        'SecurityGroups': [spot_security_groups],
+        'SecurityGroups': list(security_groups),
         'UserData': user_data,
         'InstanceType': instance_type,
         'Placement': {
@@ -312,6 +311,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         user_data = user_data_b64.decode()
         client = spot_client()
         client.spotClient = ec2_spot
+        print("security_groups: %s" % security_groups)
         instances = spot_instances(ec2_spot, spot_price, count, image_id, instance_type, security_groups, user_data, iam_role, BDM)
     else:
         instances = create_ec2_instances(ec2, image_id, count, instance_type, security_groups, user_data, BDM, iam_role)
