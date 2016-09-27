@@ -1,5 +1,8 @@
 /*  TABLES    */
 
+$file-restricted-bg: #ff6040; // Background color of restricted files
+
+
 table {
     font-size: 0.9rem;
 }
@@ -174,6 +177,12 @@ form.table-filter {
         tr {
             td {
                 height: 4em;
+            }
+
+            &.file-restricted {
+                td {
+                    background-color: $file-restricted-bg;
+                }
             }
         }
     }

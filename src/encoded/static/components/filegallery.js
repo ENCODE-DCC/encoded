@@ -202,6 +202,11 @@ var FileTable = module.exports.FileTable = React.createClass({
         this.setState({collapsed: collapsed});
     },
 
+    rowClasses: function(file, i) {
+        // Called for each row of file table to generate row classes
+        return file.restricted ? 'file-restricted' : '';
+    },
+
     render: function() {
         var {
             context,
@@ -260,9 +265,9 @@ var FileTable = module.exports.FileTable = React.createClass({
                         <RawFileTable files={files.rawArray} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} />
                         <SortTable title={<CollapsingTitle title="Processed data" collapsed={this.state.collapsed.proc} handleCollapse={this.handleCollapse.bind(null, 'proc')}
                             selectedFilterValue={selectedFilterValue} filterOptions={filterOptions} handleFilterChange={handleFilterChange} />}
-                            collapsed={this.state.collapsed.proc} list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
+                            rowClasses={this.rowClasses} collapsed={this.state.collapsed.proc} list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
                         <SortTable title={<CollapsingTitle title="Reference data" collapsed={this.state.collapsed.ref} handleCollapse={this.handleCollapse.bind(null, 'ref')} />} collapsed={this.state.collapsed.ref}
-                            list={files.ref} columns={this.refTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} />
+                            rowClasses={this.rowClasses} list={files.ref} columns={this.refTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} />
                     </SortTablePanel>
                 </div>
             );
@@ -322,13 +327,13 @@ var RawSequencingTable = React.createClass({
     },
 
     render: function() {
-        var {files, meta} = this.props;
-        var loggedIn = meta.session && meta.session['auth.userid'];
+        let {files, meta} = this.props;
+        let loggedIn = meta.session && meta.session['auth.userid'];
 
         if (files && files.length) {
             // Make object keyed by all files' @ids to make searching easy. Each key's value
             // points to the corresponding file object.
-            var filesKeyed = {};
+            let filesKeyed = {};
             files.forEach(file => {
                 filesKeyed[file['@id']] = file;
             });
@@ -336,8 +341,8 @@ var RawSequencingTable = React.createClass({
             // Make lists of files that are and aren't paired. Paired files with missing partners
             // count as not paired. Files with more than one biological replicate don't count as
             // paired.
-            var nonpairedFiles = [];
-            var pairedFiles = _(files).filter(file => {
+            let nonpairedFiles = [];
+            let pairedFiles = _(files).filter(file => {
                 if (file.pairSortKey) {
                     // If we already know this file is part of a good pair from before, just let it
                     // pass the filter
@@ -374,8 +379,8 @@ var RawSequencingTable = React.createClass({
             // Group paired files by biological replicate and library -- four-digit biological
             // replicate concatenated with library accession becomes the group key, and all files
             // with that biological replicate and library form an array under that key.
-            var pairedRepGroups = {};
-            var pairedRepKeys = [];
+            let pairedRepGroups = {};
+            let pairedRepKeys = [];
             if (pairedFiles.length) {
                 pairedRepGroups = _(pairedFiles).groupBy(file => globals.zeroFill(file.biological_replicates[0]) + file.replicate.library.accession);
 
@@ -413,13 +418,13 @@ var RawSequencingTable = React.createClass({
                         <tbody>
                             {pairedRepKeys.map((pairedRepKey, j) => {
                                 // groupFiles is an array of files under a bioreplicate/library
-                                var groupFiles = pairedRepGroups[pairedRepKey];
-                                var bottomClass = j < (pairedRepKeys.length - 1) ? 'merge-bottom' : '';
+                                let groupFiles = pairedRepGroups[pairedRepKey];
+                                let bottomClass = j < (pairedRepKeys.length - 1) ? 'merge-bottom' : '';
 
                                 // Render an array of biological replicate and library to display on
                                 // the first row of files, spanned to all rows for that replicate and
                                 // library
-                                var spanned = [
+                                let spanned = [
                                     <td key="br" rowSpan={groupFiles.length} className={bottomClass + ' merge-right table-raw-merged table-raw-biorep'}>{groupFiles[0].biological_replicates[0]}</td>,
                                     <td key="lib" rowSpan={groupFiles.length} className={bottomClass + ' merge-right + table-raw-merged'}>{groupFiles[0].replicate.library.accession}</td>
                                 ];
@@ -427,7 +432,7 @@ var RawSequencingTable = React.createClass({
                                 // Render each file's row, with the biological replicate and library
                                 // cells only on the first row.
                                 return groupFiles.sort((a, b) => a.pairSortKey < b.pairSortKey ? -1 : 1).map((file, i) => {
-                                    var pairClass;
+                                    let pairClass;
                                     if (file.paired_end === "2") {
                                         pairClass = 'align-pair2' + ((i === groupFiles.length - 1) && (j === pairedRepKeys.length - 1) ? '' : ' pair-bottom');
                                     } else {
@@ -435,14 +440,14 @@ var RawSequencingTable = React.createClass({
                                     }
 
                                     // Prepare for run_type display
-                                    var runType;
+                                    let runType;
                                     if (file.run_type === 'single-ended') {
                                         runType = 'SE';
                                     } else if (file.run_type === 'paired-ended') {
                                         runType = 'PE';
                                     }
                                     return (
-                                        <tr key={i}>
+                                        <tr key={i} className={file.restricted ? 'file-restricted' : ''}>
                                             {i === 0 ? {spanned} : null}
                                             <td className={pairClass}>
                                                 {file.title}&nbsp;<a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
@@ -461,14 +466,18 @@ var RawSequencingTable = React.createClass({
                             })}
                             {nonpairedFiles.sort(sortBioReps).map((file, i) => {
                                 // Prepare for run_type display
-                                var runType;
+                                let runType;
                                 if (file.run_type === 'single-ended') {
                                     runType = 'SE';
                                 } else if (file.run_type === 'paired-ended') {
                                     runType = 'PE';
                                 }
+                                let rowClasses = [
+                                    pairedRepKeys.length && i === 0 ? 'table-raw-separator' : null,
+                                    file.restricted ? 'file-restricted' : null
+                                ];
                                 return (
-                                    <tr key={i} className={pairedRepKeys.length && i === 0 ? 'table-raw-separator' : ''}>
+                                    <tr key={i} className={rowClasses.join(' ')}>
                                         <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
                                         <td>{file.title}&nbsp;<a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a></td>
