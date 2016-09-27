@@ -441,7 +441,6 @@
         "award":"U41HG006992",
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19",
-        "run_type":"single-ended",
         "file_format": "fastq",
         "flowcell_details":
         [{
@@ -456,6 +455,7 @@
         "paired_end": "1",
         "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
         "replicate": "e3abd889-053d-44a9-a1f7-90b06bb6d73f",
+        "restricted": true,
         "status": "released",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "set2/fastq/K562-B-6-1_pool6_AGTTCC_L006_R1_001.fastq.gz",

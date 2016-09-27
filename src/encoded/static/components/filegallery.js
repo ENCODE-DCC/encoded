@@ -404,7 +404,8 @@ var RawSequencingTable = React.createClass({
                                         <tr key={i} className={file.restricted ? 'file-restricted' : ''}>
                                             {i === 0 ? {spanned} : null}
                                             <td className={pairClass}>
-                                                {file.title}&nbsp;<a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                                                {file.title}&nbsp;
+                                                {(!file.restricted || loggedIn) ? <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a> : null}
                                             </td>
                                             <td className={pairClass}>{file.file_type}</td>
                                             <td className={pairClass}>{runType}{file.read_length ? <span>{runType ? <span> </span> : null}{file.read_length + file.read_length_units}</span> : null}</td>
@@ -563,7 +564,8 @@ var RawFileTable = React.createClass({
                                         <tr key={i} className={file.restricted ? 'file-restricted' : ''}>
                                             {i === 0 ? {spanned} : null}
                                             <td className={pairClass}>
-                                                {file.title}&nbsp;<a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                                                {file.title}&nbsp;
+                                                {(!file.restricted || loggedIn) ? <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a> : null}
                                             </td>
                                             <td className={pairClass}>{file.file_type}</td>
                                             <td className={pairClass}>{file.output_type}</td>
