@@ -13,6 +13,7 @@
         "output_type": "sequence alignability",
         "platform": "bdfd8a33-4f14-4242-b6d5-ad198d4225f8",
         "replicate": "6e85c807-684a-46e3-b4b9-1f7990e85720",
+        "restricted": true,
         "status": "released",
         "submitted_by": "vestibulum.tortor@vitae.nec",
         "submitted_file_name": "hg19/wgEncodeHaibMethyl450/wgEncodeHaibMethyl450SaecSitesRep1.bigBed",

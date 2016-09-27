@@ -271,11 +271,11 @@ var SortTable = module.exports.SortTable = React.createClass({
                                         {columnIds.map(columnId => {
                                             if (!hiddenColumns[columnId]) {
                                                 if (columns[columnId].display) {
-                                                    return <td key={columnId}>{columns[columnId].display(item)}</td>;
+                                                    return <td key={columnId}>{columns[columnId].display(item, meta)}</td>;
                                                 }
 
                                                 // No custom display function; just display the standard way
-                                                var itemValue = columns[columnId].getValue ? columns[columnId].getValue(item) : item[columnId];
+                                                var itemValue = columns[columnId].getValue ? columns[columnId].getValue(item, meta) : item[columnId];
                                                 return (
                                                     <td key={columnId}>{itemValue}</td>
                                                 );

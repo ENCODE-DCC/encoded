@@ -55,62 +55,15 @@ var FileTable = module.exports.FileTable = React.createClass({
         maxWidthNode: null // DOM node of table with this.state.maxWidth width
     },
 
-    // Configuration for raw file table
-    rawArrayTableColumns: {
-        'accession': {
-            title: 'Accession',
-            display: item =>
-                <span>
-                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
-                </span>
-        },
-        'file_type': {title: 'File type'},
-        'biological_replicates': {
-            title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
-            getValue: item => item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''
-        },
-        'library': {
-            title: 'Library',
-            getValue: item => (item.replicate && item.replicate.library) ? item.replicate.library.accession : null
-        },
-        'assembly': {title: 'Mapping assembly'},
-        'title': {
-            title: 'Lab',
-            getValue: item => item.lab && item.lab.title ? item.lab.title : null
-        },
-        'date_created': {
-            title: 'Date added',
-            getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
-            sorter: (a, b) => {
-                if (a && b) {
-                    return Date.parse(a) - Date.parse(b);
-                }
-                return a ? -1 : (b ? 1 : 0);
-            }
-        },
-        'file_size': {
-            title: 'File size',
-            display: item => <span>{humanFileSize(item.file_size)}</span>
-        },
-        'audit': {
-            title: 'Audit status',
-            display: item => <div>{fileAuditStatus(item)}</div>
-        },
-        'status': {
-            title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>
-        }
-    },
-
     // Configuration for process file table
     procTableColumns: {
         'accession': {
             title: 'Accession',
-            display: item => {
-                return <span>
-                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
-                </span>;
-            }
+            display: (item, meta) =>
+                <span>
+                    {item.title}&nbsp;
+                    {!item.restricted || (meta.session && meta.session['auth.userid']) ? <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a> : null}
+                </span>
         },
         'file_type': {title: 'File type'},
         'output_type': {title: 'Output type'},
@@ -155,9 +108,10 @@ var FileTable = module.exports.FileTable = React.createClass({
     refTableColumns: {
         'accession': {
             title: 'Accession',
-            display: item =>
+            display: (item, meta) =>
                 <span>
-                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                    {item.title}&nbsp;
+                    {!item.restricted || (meta.session && meta.session['auth.userid']) ? <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a> : null}
                 </span>
         },
         'file_type': {title: 'File type'},
