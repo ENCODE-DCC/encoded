@@ -46,9 +46,37 @@ $ curl -XPUT 'localhost:9200/_all/_settings' -d '{"index": {"number_of_replicas"
 This will set cluster status to "yellow"; probably best to wait for green for full release.
 
 
+== Check Batch Upgrade for Errors ==
+
+Once the instance has booted enough to allow ssh connections too it move too directory /var/log
+
+	$ cd /var/log
+
+Tail the log "cloud-init-ouput.log" while looking for batchupgrades and if any errors comeup
+
+	$ tail -f cloud-init-output.log | grep batchupgrade
+
+You will either see upgrades with no errors:
+
+	INFO:snovault.batchupgrade:Batch: Updated 0 of 1000 (errors 0)
+  File "bin/batchupgrade", line 74, in <module>
+    sys.exit(snovault.batchupgrade.main())
+  File "/srv/encoded/develop/snovault/src/snovault/batchupgrade.py", line 194, in main
+  File "/srv/encoded/develop/snovault/src/snovault/batchupgrade.py", line 161, in run
+
+Or you may see errors such as:
+
+	INFO:snovault.batchupgrade:Batch: Updated 0 of 1000 (errors 19)
+  File "bin/batchupgrade", line 74, in <module>
+    sys.exit(snovault.batchupgrade.main())
+  File "/srv/encoded/develop/snovault/src/snovault/batchupgrade.py", line 194, in main
+  File "/srv/encoded/develop/snovault/src/snovault/batchupgrade.py", line 161, in run
+
+
+
 == Create and install keys ==
 
-THis is all done only on the master node, v{XX}-master.production.encodedcc.org
+This is all done only on the master node, v{XX}-master.production.encodedcc.org
 
 Go to the AWS console and create new write-encoded-backups-prod access key and add to new instance ~postgres/.aws/credentials (write-encode-backups and upload-encode-files are AWS users; they can each only have 2 keys so you have to delete the old inactive ones)
 $ sudo -u postgres mkdir ~postgres/.aws

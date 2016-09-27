@@ -79,7 +79,7 @@ module.exports.truncateString = function (str, len) {
 
 // Given an array of objects with @id properties, this returns the same array but with any
 // duplicate @id objects removed.
-module.exports.uniqueObjectsArray = objects => _(objects).uniq(object =>  object['@id']);
+module.exports.uniqueObjectsArray = objects => _(objects).uniq(object => object['@id']);
 
 module.exports.bindEvent = function (el, eventName, eventHandler) {
     if (el.addEventListener) {
@@ -132,9 +132,9 @@ String.prototype.uppercaseFirstChar = function(string) {
 
 // Convert the number `n` to a string, zero-filled to `digits` digits. Maximum of four zeroes.
 // http://stackoverflow.com/questions/2998784/how-to-output-integers-with-leading-zeros-in-javascript#answer-2998822
-module.exports.zeroFill = function(n) {
+module.exports.zeroFill = function(n, digits) {
     var filled = '0000' + n;
-    return filled.substr(filled.length - 4);
+    return filled.substr(filled.length - digits);
 };
 
 // Order that antibody statuses should be displayed

@@ -1,9 +1,9 @@
 {
-    "description": "Schema for reporting the 'PCR bottleneck coefficient' (PBC) quality metric",
-    "id": "/profiles/pbc_quality_metric.json",
+    "description": "Schema for reporting correlation as a quality metric",
+    "id": "/profiles/correlation_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step_run", "award", "lab"],
+    "required": ["step_run","quality_metric_of", "award", "lab"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
@@ -20,33 +20,29 @@
         "schema_version": {
             "default": "3"
         },
-        "locations": {
+        "Pearson correlation": {
             "type": "number",
-            "description": "locations"
+            "description": "Pearson's R correlation"
         },
-        "locations per read": {
+        "Spearman correlation": {
             "type": "number",
-            "description": "locations per read"
+            "description": "Spearman's rank correlation"
         },
-        "mapped by 1 read": {
+        "Items": {
             "type": "number",
-            "description": "mapped by 1 read"
+            "description": "Count of items from two different datasets that are being correlated"
         },
-        "mapped by 2 reads": {
+        "Standard deviation": {
             "type": "number",
-            "description": "mapped by 2 reads"
+            "description": "Standard deviation of difference"
         },
-        "proportion of 1 read locations": {
+        "Replicate log-ratio SD": {
             "type": "number",
-            "description": "proportion of 1 read locations"
+            "description": "Replicate log-ratio standard deviation, formerly mis-labelled as Mean-Average-Deviation (MAD)."
         },
-        "ratio: 1 read over 2 read locations": {
-            "type": "number",
-            "description": "ratio: 1 read over 2 read locations"
-        },
-        "reads": {
-            "type": "number",
-            "description": "reads"
+        "Details": {
+            "type": "string",
+            "description": "Description of methods"
         }
     }
 }

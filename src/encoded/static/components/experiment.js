@@ -5,7 +5,6 @@ var button = require('../libs/bootstrap/button');
 var {SvgIcon, CollapseIcon} = require('../libs/svg-icons');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var _ = require('underscore');
-var moment = require('moment');
 var navigation = require('./navigation');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
@@ -21,6 +20,7 @@ var sortTable = require('./sorttable');
 var objectutils = require('./objectutils');
 var doc = require('./doc');
 var {FileGallery} = require('./filegallery');
+var {GeneticModificationSummary} = require('./genetic_modification');
 var {BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs} = require('./typeutils');
 
 var Breadcrumbs = navigation.Breadcrumbs;
@@ -86,12 +86,19 @@ var Experiment = module.exports.Experiment = React.createClass({
         // Make array of all replicate biosamples, not including biosample-less replicates. Also collect up library documents.
         var libraryDocs = [];
         var biosamples = [];
+        var geneticModifications = [];
         if (replicates) {
             biosamples = _.compact(replicates.map(replicate => {
                 if (replicate.library) {
                     if (replicate.library.documents && replicate.library.documents.length){
                         Array.prototype.push.apply(libraryDocs, replicate.library.documents);
                     }
+
+                    // Collect biosample genetic modifications
+                    if (replicate.library.biosample && replicate.library.biosample.genetic_modifications && replicate.library.biosample.genetic_modifications.length) {
+                        geneticModifications = geneticModifications.concat(replicate.library.biosample.genetic_modifications);
+                    }
+
                     return replicate.library.biosample;
                 }
                 return null;
@@ -128,7 +135,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
             // For any library properties that aren't simple values, put functions to process them into simple values in this object,
             // keyed by their library property name. Returned JS undefined if no complex value exists so that we can reliably test it
-            // momentarily. We have a couple properties too complex even for this, so they'll get added separately at the end.
+            // arily. We have a couple properties too complex even for this, so they'll get added separately at the end.
             var librarySpecials = {
                 treatments: function(library) {
                     var treatments = []; // Array of treatment_term_name
@@ -303,11 +310,9 @@ var Experiment = module.exports.Experiment = React.createClass({
         // Render tags badges
         var tagBadges;
         if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+            tagBadges = context.internal_tags.map(tag => <img key={tag} src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
         }
-
-        // XXX This makes no sense.
-        //var control = context.possible_controls[0];
+        
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -354,7 +359,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                                                 {organismNames.length ?
                                                     <span>
                                                         {organismNames.map((organismName, i) =>
-                                                            <span>
+                                                            <span key={organismName}>
                                                                 {i > 0 ? <span> and </span> : null}
                                                                 <i>{organismName}</i>
                                                             </span>
@@ -512,6 +517,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} ignoreErrors />
 
                 {combinedDocuments.length ? <DocumentsPanel documentSpecs={[{documents: combinedDocuments}]} /> : null}
+
+                {geneticModifications.length ?
+                    <GeneticModificationSummary geneticModifications={geneticModifications} />
+                : null}
             </div>
         );
     }

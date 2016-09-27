@@ -279,6 +279,14 @@ span.bar {
     top: 0;
     bottom:0;
     z-index: -1;
+    transition: width .2s;
+    animation-name: stretch-bar;
+    animation-duration: .2s;
+}
+
+@keyframes stretch-bar {
+    from { max-width: 0%; }
+    to { max-width: 100%; }
 }
 
 
