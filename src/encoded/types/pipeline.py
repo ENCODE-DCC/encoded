@@ -36,7 +36,7 @@ class Pipeline(Item):
         'analysis_steps.versions.software_versions.software',
         'lab',
         'award.pi.lab'
-    ],
+    ]
     audit_inherit = [
         'documents',
         'documents.award',
