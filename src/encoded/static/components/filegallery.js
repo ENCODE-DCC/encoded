@@ -53,7 +53,7 @@ var FileTable = module.exports.FileTable = React.createClass({
 
     cv: {
         maxWidthRef: '', // ref key of table with this.state.maxWidth width
-        maxWidthNode: null // DOM node of table with this.state.maxWidth width 
+        maxWidthNode: null // DOM node of table with this.state.maxWidth width
     },
 
     // Configuration for raw file table
@@ -1638,7 +1638,7 @@ var QcDetailsView = function(metrics) {
                 <div className="row">
                     <div className="col-md-4 col-sm-6 col-xs-12">
                         <dl className="key-value-flex">
-                            {sortedKeys.map(key => 
+                            {sortedKeys.map(key =>
                                 (typeof metrics.ref[key] === 'string' || typeof metrics.ref[key] === 'number') ?
                                     <div key={key}>
                                         <dt>{key}</dt>
