@@ -4,6 +4,7 @@ from snovault.validation import ValidationFailure
 from snovault.validators import no_validate_item_content_post
 from operator import itemgetter
 from pyramid.authentication import CallbackAuthenticationPolicy
+import requests
 from pyramid.httpexceptions import (
     HTTPForbidden,
     HTTPFound,
@@ -48,6 +49,41 @@ class Auth0AuthenticationPolicy(CallbackAuthenticationPolicy):
 
     def unauthenticated_userid(self, request):
         if request.method != self.method or request.path != self.login_path:
+            return None
+
+        cached = getattr(request, '_auth0_authenticated', _marker)
+        if cached is not _marker:
+            return cached
+
+        try:
+            access_token = request.json['accessToken']
+        except (ValueError, TypeError, KeyError):
+            if self.debug:
+                self._log(
+                    'Missing assertion.',
+                    'unauthenticated_userid',
+                    request)
+            request._auth0_authenticated = None
+            return None
+        
+        try:
+            user_url = "https://{domain}/userinfo?access_token={access_token}" \
+                .format(domain='encode-dcc.auth0.com', access_token=access_token)
+
+            user_info = requests.get(user_url).json()
+        except Exception as e:
+            if self.debug:
+                self._log(
+                    ('Invalid assertion: %s (%s)', (e, type(e).__name__)),
+                    'unauthenticated_userid',
+                    request)
+            request._auth0_authenticated = None
+            return None
+
+        if user_info['email_verified'] == True:
+            email = request._auth0_authenticated = user_info['email'].lower()
+            return email
+        else:
             return None
 
         return request.json['email']

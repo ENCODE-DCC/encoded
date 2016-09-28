@@ -7,7 +7,6 @@ var origin = require('../libs/origin');
 var serialize = require('form-serialize');
 var ga = require('google-analytics');
 
-
 var parseError = module.exports.parseError = function (response) {
     if (response instanceof Error) {
         return Promise.resolve({
@@ -76,7 +75,7 @@ class Timeout {
 }
 
 
-module.exports.Persona = {
+module.exports.Auth0 = {
     childContextTypes: {
         fetch: React.PropTypes.func,
         session: React.PropTypes.object,
@@ -109,6 +108,12 @@ module.exports.Persona = {
             href: window.location.href,
             session_cookie: session_cookie
         });
+        this.lock = new Auth0Lock('B64hILFXnt9XtKZ9Cs7B4xjkh3uVxqPV', 'encode-dcc.auth0.com', {
+            auth: {
+                redirect: false
+            }
+        });
+        this.lock.on("authenticated", this.handleAuth0Login.bind(this));
     },
 
     fetch: function (url, options) {
@@ -216,8 +221,11 @@ module.exports.Persona = {
         });
     },
 
-    handleAuth0Login: function (assertion, retrying) {
-        if (!assertion) return;
+    handleAuth0Login: function (authResult, retrying) {
+
+        console.log(authResult);
+        var accessToken = authResult.accessToken;
+        if (!accessToken) return;
         this.sessionPropertiesRequest = true;
         this.fetch('/login', {
             method: 'POST',
@@ -225,7 +233,7 @@ module.exports.Persona = {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({assertion: assertion})
+            body: JSON.stringify({accessToken: accessToken})
         })
         .then(response => {
             if (!response.ok) throw response;
@@ -238,6 +246,7 @@ module.exports.Persona = {
             if (window.location.hash == '#logged-out') {
                 next_url = window.location.pathname + window.location.search;
             }
+            this.lock.hide();
             this.navigate(next_url, {replace: true});
         }, err => {
             this.sessionPropertiesRequest = null;
@@ -245,7 +254,7 @@ module.exports.Persona = {
                 // Server session creds might have changed.
                 if (data.code === 400 && data.detail.indexOf('CSRF') !== -1) {
                     if (!retrying) {
-                        window.setTimeout(this.handlePersonaLogin.bind(this, assertion, true));
+                        window.setTimeout(this.handleAuth0Login.bind(this, accessToken, true));
                         return;
                     }
                 }
@@ -257,24 +266,14 @@ module.exports.Persona = {
 
     triggerLogin: function (event) {
         var $script = require('scriptjs');
-        console.log('Logging in (Auth0) ');
         if (this.state.session && !this.state.session._csrft_) {
             this.fetch('/session');
         }
-        var lock = new Auth0Lock('B64hILFXnt9XtKZ9Cs7B4xjkh3uVxqPV', 'encode-dcc.auth0.com', {
-            auth: {
-                redirectUrl: '',
-                responseType: 'code',
-                params: {
-                    scope: 'openid email' // Learn about scopes: https://auth0.com/docs/scopes
-                    }
-            }
-        });
-        lock.show()
+        this.lock.show();
     },
 
     triggerLogout: function (event) {
-        console.log('Logging out (persona)');
+        console.log('Logging out (Auth0)');
         var session = this.state.session;
         if (!(session && session['auth.userid'])) return;
         this.fetch('/logout?redirect=false', {
