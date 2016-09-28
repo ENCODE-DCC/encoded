@@ -46,10 +46,11 @@ def get_spot_id(instance, client):
 
 def get_spot_code(instance, client, spot_id):
     request = client.describe_spot_instance_requests(SpotInstanceRequestIds=[get_spot_id(instance, client)])
-    print(list(request.values()))
-    code_status = request['SpotInstanceRequests']['Status']['UpdateTime'][0]['Code']
+    #print(list(request.values()))
+    code_status_start = request['SpotInstanceRequests'][0]['Status']
+    code_status = code_status_start['Code']
 
-    print("Code Status: %s" % code_status)
+    #print("\n Code Status: %s" % code_status)  
     #for key, value in request.items():
      #  if key == 'SpotInstanceRequests':
       #      for item in value:
@@ -87,12 +88,8 @@ def wait_for_code_change(instance, client):
 
 def get_instance_id(instance, client):
     request = client.describe_spot_instance_requests(SpotInstanceRequestIds=[get_spot_id(instance, client)])
-    for key, value in request.items():
-       if key == 'SpotInstanceRequests':
-            for item in value:
-                for i in item:
-                    if i == 'InstanceId':
-                        instance_id = item[i]
+    instance_id = request['SpotInstanceRequests'][0]['InstanceId']
+    #print("\n Instace ID: %s" % instance_id)
     return instance_id
 
 def error_cleanup(code_status, instance, client):
