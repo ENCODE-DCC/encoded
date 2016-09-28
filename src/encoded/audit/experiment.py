@@ -43,7 +43,7 @@ controlRequiredAssayList = [
     'eCLIP',
     'single cell isolation followed by RNA-seq',
     'shRNA knockdown followed by RNA-seq',
-    'siRNA knockdown followed by RNA-seq'
+    'siRNA knockdown followed by RNA-seq',
     'CRISPR genome editing followed by RNA-seq',
     ]
 
