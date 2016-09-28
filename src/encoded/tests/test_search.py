@@ -601,6 +601,7 @@ def test_format_facets():
             }
         ],
         'total': 3,
+        'type': 'terms',
     }]
 
 

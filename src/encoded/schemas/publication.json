@@ -225,7 +225,7 @@
         "published_by": {
             "title": "Published by"
         },
-        "datasets": {
+        "datasets.accession": {
             "type": "exists",
             "title": "Has dataset"
         }

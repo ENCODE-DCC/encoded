@@ -359,8 +359,8 @@ def build_aggregation(facet_name, facet_options, min_doc_count=0):
         field = 'embedded.' + facet_name + '.raw'
     agg_name = facet_name.replace('.', '-')
 
-    facet_type = facet_options.get('type', 'string')
-    if facet_type == 'string':
+    facet_type = facet_options.get('type', 'terms')
+    if facet_type == 'terms':
         agg = {
             'terms': {
                 'field': field,
@@ -527,12 +527,14 @@ def format_facets(es_results, facets, used_filters, schemas, total, principals):
         # internal_status exception. Only display for admin users
         if field == 'internal_status' and 'group.admin' not in principals:
             continue
-        if options.get('type') == 'exists':
+        facet_type = options.get('type', 'terms')
+        if facet_type == 'exists':
             terms = [
                 {'key': 'yes', 'doc_count': terms['yes']['doc_count']},
                 {'key': 'no', 'doc_count': terms['no']['doc_count']},
             ]
         result.append({
+            'type': facet_type,
             'field': field,
             'title': options.get('title', field),
             'terms': terms,
@@ -542,7 +544,7 @@ def format_facets(es_results, facets, used_filters, schemas, total, principals):
     # Show any filters that aren't facets as a fake facet with one entry,
     # so that the filter can be viewed and removed
     for field, values in used_filters.items():
-        if field not in used_facets:
+        if field not in used_facets and not field.endswith('!'):
             title = field
             for schema in schemas:
                 if field in schema['properties']:
