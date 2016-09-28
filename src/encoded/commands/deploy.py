@@ -117,42 +117,40 @@ def spot_instance_price_check(client, instance_type):
     highest = 0
     todaysDate = datetime.datetime.now()
     response = client.describe_spot_price_history(
-    DryRun=False,
-    StartTime=todaysDate,
-    EndTime=todaysDate,
-    InstanceTypes=[
-        instance_type
-    ],
-    Filters=[
-        {
-            'Name': 'availability-zone',
-            'Values': [
-                'us-west-2a',
-                'us-west-2b',
-                'us-west-2c'
-            ],
+        DryRun=False,
+        StartTime=todaysDate,
+        EndTime=todaysDate,
+        InstanceTypes=[
+            instance_type
+        ],
+        Filters=[
+            {
+                'Name': 'availability-zone',
+                'Values': [
+                    'us-west-2a',
+                    'us-west-2b',
+                    'us-west-2c'
+                ],
 
-            'Name': 'product-description',
-            'Values': [
-                'Linux/UNIX'
-            ]
-        },
-    ]
+                'Name': 'product-description',
+                'Values': [
+                    'Linux/UNIX (Amazon VPC)'
+                ]
+            },
+        ]
     )
     # dragons teeth lie below
 
-    for key, value in response.items() :
+    for key, value in response.items():
 
         if key == 'SpotPriceHistory':
             for item in value:
-                
                 for i in item:
                     if i == 'SpotPrice':
                         print("SpotPrice: %s" % item[i])
 
-                        if float(item[i]) > highest :
+                        if float(item[i]) > highest:
                             highest = float(item[i])
-
     print("Highest price: %f" % highest)
 
     return highest
@@ -293,12 +291,12 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         iam_role = 'elasticsearch-instance'
         count = int(cluster_size)
     
-    if check_price == "True" :
+    if check_price:
         ec2_spot = boto3.client('ec2')
         get_spot_price = spot_instance_price_check(ec2_spot, instance_type)
         exit()
 
-    if spot_instance == "True" :
+    if spot_instance:
         print("spot_instance check worked")
         ec2_spot = boto3.client('ec2')
         # issue with base64 encoding so no decoding in utc-8 and recoding in base64 then decoding in base 64.
@@ -320,7 +318,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         else:
             tmp_name = name
 
-        if spot_instance == False :    
+        if not spot_instance:
             print('%s.%s.encodedcc.org' % (instance.id, domain))  # Instance:i-34edd56f
             instance.wait_until_exists()
             tag_ec2_instance(instance, tmp_name, branch, commit, username, elasticsearch, cluster_name)
@@ -328,7 +326,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
             if domain == 'instance':
                 print('https://%s.demo.encodedcc.org' % tmp_name)
 
-    if spot_instance == "True":        
+    if spot_instance:
         tag_spot_instance(instances, tmp_name, branch, commit, username, elasticsearch, client.spotClient, cluster_name)
         print("Spot instance request had been completed, please check to be sure it was fufilled")
 
@@ -347,9 +345,9 @@ def main():
     parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
     parser.add_argument('-n', '--name', type=hostname, help="Instance name")
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')
-    parser.add_argument('--spot-instance', default=False, help="Launch as spot instance")
+    parser.add_argument('--spot-instance', action='store_true', help="Launch as spot instance")
     parser.add_argument('--spot-price', default='0.70', help="Set price or keep default price of 0.70")
-    parser.add_argument('--check-price', default=False, help="Check price on spot instances")
+    parser.add_argument('--check-price', action='store_true', help="Check price on spot instances")
     parser.add_argument(
         '--candidate', action='store_const', default='demo', const='candidate', dest='role',
         help="Deploy candidate instance")
