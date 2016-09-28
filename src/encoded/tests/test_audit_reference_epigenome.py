@@ -223,7 +223,7 @@ def test_reference_epigenome_without_required_assays(testapp, reference_epigenom
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing IHEC required assay' for error in errors_list)
+    assert any(error['category'] == 'partial reference epigenome' for error in errors_list)
 
 
 @pytest.fixture
@@ -279,7 +279,7 @@ def test_reference_epigenome_with_required_assays(testapp, reference_epigenome_1
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'missing IHEC required assay' for error in errors_list)
+    assert all(error['category'] != 'partial reference epigenome' for error in errors_list)
 
 
 def test_reference_epigenome_multiple_donors(testapp, reference_epigenome_1,
