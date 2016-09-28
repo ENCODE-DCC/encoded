@@ -139,23 +139,31 @@ def test_biosample_summary(testapp,
                                             "biosample_term_name": "liver",
                                             "biosample_type": "tissue",
                                             'treatments': [treatment['@id']]})
-
     res = testapp.get(biosample_1['@id']+'@@index-data')
     assert res.json['object']['summary'] == \
         'Homo sapiens liver tissue male (10 days) treated with ethanol'
 
 
 def test_biosample_summary_construct(testapp,
-                                     donor_1,
-                                     biosample_1, construct):
-    testapp.patch_json(donor_1['@id'], {'age_units': 'day', 'age': '10'})
-    testapp.patch_json(donor_1['@id'], {'sex': 'male'})
-    testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id'],
-                                            "biosample_term_id": "EFO:0002784",
-                                            "biosample_term_name": "liver",
-                                            "biosample_type": "tissue",
-                                            'constructs': [construct['@id']]})
+                                     fly,
+                                     fly_donor,
+                                     biosample_1,
+                                     construct,
+                                     target_promoter):
+
+    testapp.patch_json(construct['@id'],
+                       {'promoter_used': target_promoter['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': fly_donor['@id'],
+                                            'biosample_term_id': 'EFO:0002784',
+                                            'biosample_term_name': 'liver',
+                                            'biosample_type': 'tissue',
+                                            'constructs': [construct['@id']],
+                                            'model_organism_age': '10',
+                                            'model_organism_age_units': 'day',
+                                            'model_organism_sex': 'female',
+                                            'organism': fly['@id']})
 
     res = testapp.get(biosample_1['@id']+'@@index-data')
     assert res.json['object']['summary'] == \
-        'Homo sapiens liver tissue male (10 days) expressing ATF4'
+        'Drosophila melanogaster liver tissue ' + \
+        'female (10 days) expressing C-terminal ATF4 fusion protein under daf-2 promoter'

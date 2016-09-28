@@ -1393,9 +1393,8 @@ var FileGraph = React.createClass({
                                     {goodGraph ?
                                         <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw>
                                             <Modal modalOpen={this.state.infoModalOpen}>
-                                                <ModalHeader>
+                                                <ModalHeader closeModal={this.closeModal}>
                                                     {meta ? meta.header : null}
-                                                    <button className="icon icon-times" onClick={this.closeModal}><span className="sr-only">Close</span></button>
                                                 </ModalHeader>
                                                 <ModalBody className="modal-body">
                                                     {meta ? meta.body : null}

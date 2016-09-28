@@ -47,9 +47,16 @@ var Modal = module.exports.Modal = React.createClass({
 
 
 var ModalHeader = module.exports.ModalHeader = React.createClass({
+    propTypes: {
+        closeModal: React.PropTypes.func // Function to call when the close button in the header is clicked
+    },
+
     render: function() {
+        let {closeModal} = this.props;
+
         return (
             <div className="modal-header">
+                {closeModal ? <button type="button" className="close" onClick={closeModal}>×</button> : null}
                 {this.props.children}
             </div>
         );
