@@ -86,7 +86,6 @@ class Auth0AuthenticationPolicy(CallbackAuthenticationPolicy):
         else:
             return None
 
-        return request.json['email']
 
     def remember(self, request, principal, **kw):
         return []

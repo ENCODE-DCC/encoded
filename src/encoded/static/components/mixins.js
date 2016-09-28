@@ -222,8 +222,6 @@ module.exports.Auth0 = {
     },
 
     handleAuth0Login: function (authResult, retrying) {
-
-        console.log(authResult);
         var accessToken = authResult.accessToken;
         if (!accessToken) return;
         this.sessionPropertiesRequest = true;
@@ -236,6 +234,7 @@ module.exports.Auth0 = {
             body: JSON.stringify({accessToken: accessToken})
         })
         .then(response => {
+            this.lock.hide();
             if (!response.ok) throw response;
             return response.json();
         })
@@ -246,7 +245,6 @@ module.exports.Auth0 = {
             if (window.location.hash == '#logged-out') {
                 next_url = window.location.pathname + window.location.search;
             }
-            this.lock.hide();
             this.navigate(next_url, {replace: true});
         }, err => {
             this.sessionPropertiesRequest = null;
