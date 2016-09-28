@@ -320,6 +320,7 @@ def audit_file_controlled_by(value, system):
                                                        'RAMPAGE',
                                                        'CAGE',
                                                        'shRNA knockdown followed by RNA-seq',
+                                                       'siRNA knockdown followed by RNA-seq',
                                                        'CRISPR genome editing followed by RNA-seq']:
 
         return
@@ -448,6 +449,7 @@ def audit_file_controlled_by(value, system):
                abs(read_length - control_length) > 2 and \
                value['dataset'].get('assay_term_name') not in \
                     ['shRNA knockdown followed by RNA-seq',
+                     'siRNA knockdown followed by RNA-seq',
                      'CRISPR genome editing followed by RNA-seq']:
 
                 detail = 'File {} is {} but its control file {} is {}'.format(

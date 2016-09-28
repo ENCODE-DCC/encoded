@@ -750,7 +750,7 @@ def test_audit_experiment_target_mismatch(testapp, base_experiment, base_replica
     assert any(error['category'] == 'inconsistent target' for error in errors_list)
 
 
-def test_audit_experiment_eligible_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, antibody_lot, target, base_antibody_characterization1, base_antibody_characterization2):
+def test_audit_experiment_characterized_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, antibody_lot, target, base_antibody_characterization1, base_antibody_characterization2):
     testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['@id'], 'library': base_library['@id']})
     testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'biosample_term_id': 'EFO:0002067', 'biosample_term_name': 'K562',  'biosample_type': 'immortalized cell line', 
                                                 'target': target['@id']})
@@ -759,10 +759,10 @@ def test_audit_experiment_eligible_antibody(testapp, base_experiment, base_repli
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'not eligible antibody' for error in errors_list)
+    assert any(error['category'] == 'not characterized antibody' for error in errors_list)
 
 
-def test_audit_experiment_eligible_histone_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, base_antibody, histone_target, base_antibody_characterization1, base_antibody_characterization2, fly_organism):
+def test_audit_experiment_characterized_histone_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, base_antibody, histone_target, base_antibody_characterization1, base_antibody_characterization2, fly_organism):
     base_antibody['targets'] = [histone_target['@id']]
     histone_antibody = testapp.post_json('/antibody_lot', base_antibody).json['@graph'][0]
     testapp.patch_json(base_biosample['@id'], {'organism': fly_organism['uuid']})
@@ -776,7 +776,7 @@ def test_audit_experiment_eligible_histone_antibody(testapp, base_experiment, ba
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'not eligible antibody' for error in errors_list)
+    assert any(error['category'] == 'not characterized antibody' for error in errors_list)
 
 
 def test_audit_experiment_biosample_type_missing(testapp, base_experiment):
@@ -841,14 +841,14 @@ def test_audit_experiment_model_organism_mismatched_sex(testapp,
                                                         mouse_donor_1):
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
+    testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'male'})
     testapp.patch_json(biosample_2['@id'], {'model_organism_sex': 'female'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_age_units': 'day',
                                             'model_organism_age': '54'})
     testapp.patch_json(biosample_2['@id'], {'model_organism_age_units': 'day',
                                             'model_organism_age': '54'})
-    testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
-    testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
@@ -1248,6 +1248,21 @@ def test_audit_experiment_mismatched_platforms(testapp, file_fastq,
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent platforms'
+               for error in errors_list)
+
+
+def test_audit_experiment_archived_files_mismatched_platforms(
+        testapp, file_fastq, base_experiment, file_fastq_2, base_replicate,
+        platform1, base_library, platform2):
+    testapp.patch_json(file_fastq['@id'], {'platform': platform1['@id'],
+                                           'status': 'archived'})
+    testapp.patch_json(file_fastq_2['@id'], {'platform': platform2['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'inconsistent platforms'
                for error in errors_list)
 
 
