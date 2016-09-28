@@ -224,6 +224,10 @@
         },
         "published_by": {
             "title": "Published by"
+        },
+        "datasets": {
+            "type": "exists",
+            "title": "Has dataset"
         }
     },
     "columns": {

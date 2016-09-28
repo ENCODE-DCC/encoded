@@ -274,21 +274,35 @@ def build_terms_filter(field, terms):
         if not field.startswith('audit'):
             field = 'embedded.' + field + '.raw'
         # Setting not filter instead of terms filter
-        return {
-            'not': {
-                'terms': {
-                    field: terms,
+        if terms == ['*']:
+            return {
+                'missing': {
+                    'field': field,
                 }
             }
-        }
+        else:
+            return {
+                'not': {
+                    'terms': {
+                        field: terms,
+                    }
+                }
+            }
     else:
         if not field.startswith('audit'):
             field = 'embedded.' + field + '.raw'
-        return {
-            'terms': {
-                field: terms,
-            },
-        }
+        if terms == ['*']:
+            return {
+                'exists': {
+                    'field': field,
+                }
+            }
+        else:
+            return {
+                'terms': {
+                    field: terms,
+                },
+            }
 
 
 def set_filters(request, query, result):
@@ -297,7 +311,11 @@ def set_filters(request, query, result):
     """
     query_filters = query['filter']['and']['filters']
     used_filters = {}
-    for field, terms in request.params.dict_of_lists().items():
+    for field in request.params.keys():
+        if field in used_filters:
+            continue
+
+        terms = request.params.getall(field)
         if field in ['type', 'limit', 'y.limit', 'x.limit', 'mode', 'annotation',
                      'format', 'frame', 'datastore', 'field', 'region', 'genome',
                      'sort', 'from', 'referrer']:
@@ -340,15 +358,31 @@ def build_aggregation(facet_name, facet_options, min_doc_count=0):
     else:
         field = 'embedded.' + facet_name + '.raw'
     agg_name = facet_name.replace('.', '-')
-    agg = {
-        'terms': {
-            'field': field,
-            'min_doc_count': min_doc_count,
-            'size': 100,
-        },
-    }
-    if exclude:
-        agg['terms']['exclude'] = exclude
+
+    facet_type = facet_options.get('type', 'string')
+    if facet_type == 'string':
+        agg = {
+            'terms': {
+                'field': field,
+                'min_doc_count': min_doc_count,
+                'size': 100,
+            },
+        }
+        if exclude:
+            agg['terms']['exclude'] = exclude
+    elif facet_type == 'exists':
+        agg = {
+            'filters': {
+                'filters': {
+                    'yes': {'exists': {'field': field}},
+                    'no': {'missing': {'field': field}},
+                },
+            },
+        }
+    else:
+        raise ValueError('Unrecognized facet type {} for {} facet'.format(
+            facet_type, field))
+
     return agg_name, agg
 
 
@@ -380,9 +414,15 @@ def set_facets(facets, used_filters, principals, doc_types):
                 query_field = 'embedded.' + query_field + '.raw'
 
             if field.endswith('!'):
-                filters.append({'not': {'terms': {query_field: terms}}})
+                if terms == ['*']:
+                    filters.append({'missing': {'field': query_field}})
+                else:
+                    filters.append({'not': {'terms': {query_field: terms}}})
             else:
-                filters.append({'terms': {query_field: terms}})
+                if terms == ['*']:
+                    filters.append({'exists': {'field': query_field}})
+                else:
+                    filters.append({'terms': {query_field: terms}})
 
         agg_name, agg = build_aggregation(facet_name, facet_options)
         aggs[agg_name] = {
@@ -476,7 +516,7 @@ def format_facets(es_results, facets, used_filters, schemas, total, principals):
 
     aggregations = es_results['aggregations']
     used_facets = set()
-    for field, facet in facets:
+    for field, options in facets:
         used_facets.add(field)
         agg_name = field.replace('.', '-')
         if agg_name not in aggregations:
@@ -487,9 +527,14 @@ def format_facets(es_results, facets, used_filters, schemas, total, principals):
         # internal_status exception. Only display for admin users
         if field == 'internal_status' and 'group.admin' not in principals:
             continue
+        if options.get('type') == 'exists':
+            terms = [
+                {'key': 'yes', 'doc_count': terms['yes']['doc_count']},
+                {'key': 'no', 'doc_count': terms['no']['doc_count']},
+            ]
         result.append({
             'field': field,
-            'title': facet.get('title', field),
+            'title': options.get('title', field),
             'terms': terms,
             'total': aggregations[agg_name]['doc_count']
         })

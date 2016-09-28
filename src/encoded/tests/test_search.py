@@ -313,6 +313,61 @@ def test_set_filters_audit():
     }
 
 
+def test_set_filters_exists_missing():
+    from encoded.search import set_filters
+
+    request = FakeRequest((
+        ('field1', '*'),
+        ('field2!', '*'),
+    ))
+    query = {
+        'filter': {
+            'and': {
+                'filters': [],
+            },
+        },
+    }
+    result = {'filters': []}
+    used_filters = set_filters(request, query, result)
+
+    assert used_filters == {
+        'field1': ['*'],
+        'field2!': ['*'],
+    }
+    assert query == {
+        'filter': {
+            'and': {
+                'filters': [
+                    {
+                        'exists': {
+                            'field': 'embedded.field1.raw',
+                        },
+                    },
+                    {
+                        'missing': {
+                            'field': 'embedded.field2.raw',
+                        }
+                    }
+                ],
+            },
+        },
+    }
+    assert result == {
+        'filters': [
+            {
+                'field': 'field1',
+                'term': '*',
+                'remove': '/search/?field2%21=%2A',
+            },
+            {
+                'field': 'field2!',
+                'term': '*',
+                'remove': '/search/?field1=%2A',
+            }
+        ],
+    }
+
+
 def test_set_facets():
     from collections import OrderedDict
     from encoded.search import set_facets
@@ -429,6 +484,75 @@ def test_set_facets_negated_filter():
                 },
             },
         }
+    } == aggs
+
+
+def test_set_facets_type_exists():
+    from collections import OrderedDict
+    from encoded.search import set_facets
+    facets = [
+        ('field1', {'title': 'Facet 1', 'type': 'exists'}),
+        ('field2', {'title': 'Facet 2', 'type': 'exists'}),
+    ]
+    used_filters = OrderedDict((
+        ('field1', ['*']),
+        ('field2!', ['*']),
+    ))
+    principals = ['group.admin']
+    doc_types = ['Experiment']
+    aggs = set_facets(facets, used_filters, principals, doc_types)
+
+    assert {
+        'field1': {
+            'aggs': {
+                'field1': {
+                    'filters': {
+                        'filters': {
+                            'yes': {
+                                'exists': {'field': 'embedded.field1.raw'}
+                            },
+                            'no': {
+                                'missing': {'field': 'embedded.field1.raw'}
+                            }
+                        },
+                    },
+                },
+            },
+            'filter': {
+                'bool': {
+                    'must': [
+                        {'terms': {'principals_allowed.view': ['group.admin']}},
+                        {'terms': {'embedded.@type.raw': ['Experiment']}},
+                        {'missing': {'field': 'embedded.field2.raw'}},
+                    ],
+                },
+            },
+        },
+        'field2': {
+            'aggs': {
+                'field2': {
+                    'filters': {
+                        'filters': {
+                            'yes': {
+                                'exists': {'field': 'embedded.field2.raw'}
+                            },
+                            'no': {
+                                'missing': {'field': 'embedded.field2.raw'}
+                            }
+                        },
+                    },
+                },
+            },
+            'filter': {
+                'bool': {
+                    'must': [
+                        {'terms': {'principals_allowed.view': ['group.admin']}},
+                        {'terms': {'embedded.@type.raw': ['Experiment']}},
+                        {'exists': {'field': 'embedded.field1.raw'}},
+                    ],
+                },
+            },
+        },
     } == aggs
 
 
