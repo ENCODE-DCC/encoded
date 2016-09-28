@@ -1,10 +1,10 @@
 /* Modals */
 .modal {
-  border: 9px solid #333;
-  border: 9px solid rgba(0,0,0,.4);
-  *border: 9px solid #333; /* IE6-7 */
-  border-radius: 6px;
-  box-shadow: none;
+    border: 9px solid #333;
+    border: 9px solid rgba(0,0,0,.4);
+    *border: 9px solid #333; /* IE6-7 */
+    border-radius: 6px;
+    box-shadow: none;
 }
 
 /* used to mask who screen, for modals etc */
@@ -23,4 +23,10 @@
 .unmask {
 	position: relative;
 	z-index: 9999;
+}
+
+.modal-header {
+    h4 {
+        margin: 0;
+    }
 }

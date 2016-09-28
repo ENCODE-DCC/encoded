@@ -274,140 +274,137 @@ globals.content_views.register(Pipeline, 'Pipeline');
 
 
 
-var AnalysisStep = module.exports.AnalysisStep = React.createClass({
-    render: function() {
-        let {step, node} = this.props;
-        let header = null;
-        let body = null;
+function AnalysisStep(step, node) {
+    let header = null;
+    let body = null;
 
-        if (step) {
-            let stepVersions, swVersions, swStepVersions;
-            let typesList = step.analysis_step_types.join(", ");
+    if (step) {
+        let stepVersions, swVersions, swStepVersions;
+        let typesList = step.analysis_step_types.join(", ");
 
-            // node.metadata.stepVersion is set by the experiment file graph. It's undefined for pipeline graphs.
-            if (node.metadata && node.metadata.stepVersion) {
-                // Get the analysis_step_version that this step came from.
-                swVersions = node.metadata.stepVersion.software_versions;
-            } else {
-                // Get the analysis_step_version array from the step for pipeline graph display.
-                stepVersions = step.versions && _(step.versions).sortBy(function(version) { return version.version; });
-                swStepVersions = _.compact(stepVersions.map(function(version) {
-                    if (version.software_versions && version.software_versions.length) {
-                        return (
-                            <span className="sw-step-versions" key={version.uuid}><strong>Version {version.version}</strong>: {SoftwareVersionList(version.software_versions)}<br /></span>
-                        );
-                    }
-                    return {header: null, body: null};
-                }));
-            }
-
-            header = (
-                <div className="details-view-info">
-                    <h4>
-                        {swVersions ?
-                            <span>{step.title + ' — Version ' + node.metadata.stepVersion.version}</span>
-                        :
-                            <span>{step.title}</span>
-                        }
-                    </h4>
-                </div>
-            );
-            body = (
-                <div>
-                    <dl className="key-value">
-                        <div data-test="steptype">
-                            <dt>Step type</dt>
-                            <dd>{step.analysis_step_types.join(', ')}</dd>
-                        </div>
-
-                        {step.aliases && step.aliases.length ?
-                            <div data-test="stepname">
-                                <dt>Step aliases</dt>
-                                <dd>{step.aliases.join(', ')}</dd>
-                            </div>
-                        : null}
-
-                        {step.input_file_types && step.input_file_types.length ?
-                            <div data-test="inputtypes">
-                                <dt>Input</dt>
-                                <dd>{step.input_file_types.join(', ')}</dd>
-                            </div>
-                        : null}
-
-                        {step.output_file_types && step.output_file_types.length ?
-                            <div data-test="outputtypes">
-                                <dt>Output</dt>
-                                <dd>{step.output_file_types.map(function(type, i) {
-                                    return (
-                                        <span key={i}>
-                                            {i > 0 ? <span>{','}<br /></span> : null}
-                                            {type}
-                                        </span>
-                                    );
-                                })}</dd>
-                            </div>
-                        : null}
-
-                        {node && node.metadata.pipelines && node.metadata.pipelines.length ?
-                            <div data-test="pipeline">
-                                <dt>Pipeline</dt>
-                                <dd>
-                                    {node.metadata.pipelines.map(function(pipeline, i) {
-                                        return (
-                                            <span key={i}>
-                                                {i > 0 ? <span>{','}<br /></span> : null}
-                                                <a href={pipeline['@id']}>{pipeline.title}</a>
-                                            </span>
-                                        );
-                                    })}
-                                </dd>
-                            </div>
-                        : null}
-
-                        {step.qa_stats_generated && step.qa_stats_generated.length ?
-                            <div data-test="qastats">
-                                <dt>QA statistics</dt>
-                                <dd>{step.qa_stats_generated.map(function(stat, i) {
-                                    return (
-                                        <span key={i}>
-                                            {i > 0 ? <span>{','}<br /></span> : null}
-                                            {stat}
-                                        </span>
-                                    );
-                                })}</dd>
-                            </div>
-                        : null}
-
-                        {swVersions ?
-                            <div data-test="swversions">
-                                <dt>Software</dt>
-                                <dd>{SoftwareVersionList(swVersions)}</dd>
-                            </div>
-                        : stepVersions && stepVersions.length ?
-                            <div data-test="swstepversions">
-                                <dt>Software</dt>
-                                <dd>{swStepVersions}</dd>
-                            </div>
-                        : null}
-
-                        {step.documents && step.documents.length ?
-                            <div data-test="documents">
-                                <dt>Documents</dt>
-                                <dd>
-                                    {step.documents.map(function(document, i) {
-                                        var docName = document.attachment ? document.attachment.download : document['@id'];
-                                        return (<span>{i > 0 ? ', ' : null}<a href={document['@id']}>{docName}</a></span>);
-                                    })}
-                                </dd>
-                            </div>
-                        : null}
-                    </dl>
-                </div>
-            );
+        // node.metadata.stepVersion is set by the experiment file graph. It's undefined for pipeline graphs.
+        if (node.metadata && node.metadata.stepVersion) {
+            // Get the analysis_step_version that this step came from.
+            swVersions = node.metadata.stepVersion.software_versions;
+        } else {
+            // Get the analysis_step_version array from the step for pipeline graph display.
+            stepVersions = step.versions && _(step.versions).sortBy(function(version) { return version.version; });
+            swStepVersions = _.compact(stepVersions.map(function(version) {
+                if (version.software_versions && version.software_versions.length) {
+                    return (
+                        <span className="sw-step-versions" key={version.uuid}><strong>Version {version.version}</strong>: {SoftwareVersionList(version.software_versions)}<br /></span>
+                    );
+                }
+                return {header: null, body: null};
+            }));
         }
-        return {header: header, body: body};
+
+        header = (
+            <div className="details-view-info">
+                <h4>
+                    {swVersions ?
+                        <span>{step.title + ' — Version ' + node.metadata.stepVersion.version}</span>
+                    :
+                        <span>{step.title}</span>
+                    }
+                </h4>
+            </div>
+        );
+        body = (
+            <div>
+                <dl className="key-value">
+                    <div data-test="steptype">
+                        <dt>Step type</dt>
+                        <dd>{step.analysis_step_types.join(', ')}</dd>
+                    </div>
+
+                    {step.aliases && step.aliases.length ?
+                        <div data-test="stepname">
+                            <dt>Step aliases</dt>
+                            <dd>{step.aliases.join(', ')}</dd>
+                        </div>
+                    : null}
+
+                    {step.input_file_types && step.input_file_types.length ?
+                        <div data-test="inputtypes">
+                            <dt>Input</dt>
+                            <dd>{step.input_file_types.join(', ')}</dd>
+                        </div>
+                    : null}
+
+                    {step.output_file_types && step.output_file_types.length ?
+                        <div data-test="outputtypes">
+                            <dt>Output</dt>
+                            <dd>{step.output_file_types.map(function(type, i) {
+                                return (
+                                    <span key={i}>
+                                        {i > 0 ? <span>{','}<br /></span> : null}
+                                        {type}
+                                    </span>
+                                );
+                            })}</dd>
+                        </div>
+                    : null}
+
+                    {node && node.metadata.pipelines && node.metadata.pipelines.length ?
+                        <div data-test="pipeline">
+                            <dt>Pipeline</dt>
+                            <dd>
+                                {node.metadata.pipelines.map(function(pipeline, i) {
+                                    return (
+                                        <span key={i}>
+                                            {i > 0 ? <span>{','}<br /></span> : null}
+                                            <a href={pipeline['@id']}>{pipeline.title}</a>
+                                        </span>
+                                    );
+                                })}
+                            </dd>
+                        </div>
+                    : null}
+
+                    {step.qa_stats_generated && step.qa_stats_generated.length ?
+                        <div data-test="qastats">
+                            <dt>QA statistics</dt>
+                            <dd>{step.qa_stats_generated.map(function(stat, i) {
+                                return (
+                                    <span key={i}>
+                                        {i > 0 ? <span>{','}<br /></span> : null}
+                                        {stat}
+                                    </span>
+                                );
+                            })}</dd>
+                        </div>
+                    : null}
+
+                    {swVersions ?
+                        <div data-test="swversions">
+                            <dt>Software</dt>
+                            <dd>{SoftwareVersionList(swVersions)}</dd>
+                        </div>
+                    : stepVersions && stepVersions.length ?
+                        <div data-test="swstepversions">
+                            <dt>Software</dt>
+                            <dd>{swStepVersions}</dd>
+                        </div>
+                    : null}
+
+                    {step.documents && step.documents.length ?
+                        <div data-test="documents">
+                            <dt>Documents</dt>
+                            <dd>
+                                {step.documents.map(function(document, i) {
+                                    var docName = document.attachment ? document.attachment.download : document['@id'];
+                                    return (<span>{i > 0 ? ', ' : null}<a href={document['@id']}>{docName}</a></span>);
+                                })}
+                            </dd>
+                        </div>
+                    : null}
+                </dl>
+            </div>
+        );
     }
-});
+    return {header: header, body: body};
+}
 
 
 // Display the metadata of the selected analysis step in the graph
@@ -418,9 +415,9 @@ var StepDetailView = module.exports.StepDetailView = function(node) {
     var meta;
 
     if (selectedStep) {
-        return <AnalysisStep step={selectedStep} node={node} />;
+        return AnalysisStep(selectedStep, node);
     } else {
-        return <p className="browser-error">Missing step_run derivation information for {node.metadata.fileAccession}</p>;
+        return {header: null, body: <p className="browser-error">Missing step_run derivation information for {node.metadata.fileAccession}</p>};
     }
 };
 
