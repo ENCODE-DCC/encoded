@@ -580,20 +580,32 @@ globals.listing_views.register(Image, 'Image');
 
 
 // If the given term is selected, return the href for the term
-function termSelected(term, field, filters) {
-    for (var filter in filters) {
-        if (filters[filter]['field'] == field && filters[filter]['term'] == term) {
-            return url.parse(filters[filter]['remove']).search;
+function termSelected(term, facet, filters) {
+    var selected = false;
+    var filter;
+    for (var filterName in filters) {
+        filter = filters[filterName];
+        if (facet.type === 'exists') {
+            if ((filter.field === facet.field + '!' && term === 'no') ||
+                (filter.field === facet.field && term === 'yes')) {
+                selected = true; break;
+            } 
+        } else if (filter.field == facet.field && filter.term == term) {
+            selected = true; break;
         }
     }
-    return null;
+    if (selected) {
+        return url.parse(filter.remove).search;
+    } else {
+        return null;
+    }
 }
 
 // Determine whether any of the given terms are selected
-function countSelectedTerms(terms, field, filters) {
+function countSelectedTerms(terms, facet, filters) {
     var count = 0;
     for(var oneTerm in terms) {
-        if(termSelected(terms[oneTerm].key, field, filters)) {
+        if(termSelected(terms[oneTerm].key, facet, filters)) {
             count++;
         }
     }
@@ -606,21 +618,30 @@ var Term = search.Term = React.createClass({
         var term = this.props.term['key'];
         var count = this.props.term['doc_count'];
         var title = this.props.title || term;
-        var field = this.props.facet['field'];
+        var facet = this.props.facet;
+        var field = facet['field'];
         var em = field === 'target.organism.scientific_name' ||
                     field === 'organism.scientific_name' ||
                     field === 'replicates.library.biosample.donor.organism.scientific_name';
         var barStyle = {
             width:  Math.ceil( (count/this.props.total) * 100) + "%"
         };
-        var selected = termSelected(term, field, filters);
+        var selected = termSelected(term, facet, filters);
         var href;
         if (selected && !this.props.canDeselect) {
             href = null;
         } else if (selected) {
             href = selected;
         } else {
-            href = this.props.searchBase + field + '=' + globals.encodedURIComponent(term);
+            if (facet.type === 'exists') {
+                if (term === 'yes') {
+                    href = this.props.searchBase + field + '=*';
+                } else {
+                    href = this.props.searchBase + field + '!=*';
+                }
+            } else {
+                href = this.props.searchBase + field + '=' + globals.encodedURIComponent(term);
+            }
         }
         return (
             <li id={selected ? "selected" : null} key={term}>
