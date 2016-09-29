@@ -136,15 +136,13 @@
     },
     "facets": {
         "assay_slims": {
-            "title": "Assay category",
-            "type": "array"
+            "title": "Assay category"
         },
         "assay_title": {
             "title": "Assay"
         },
         "award.project": {
-            "title": "Project",
-            "type": "string"
+            "title": "Project"
         },
         "award.rfa": {
             "title": "RFA"
