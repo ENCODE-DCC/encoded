@@ -46,7 +46,8 @@ var FileTable = module.exports.FileTable = React.createClass({
                 'rawArray': false,
                 'proc': false,
                 'ref': false
-            }
+            },
+            restrictedTip: '' // UUID of file in table whose tooltip is showing
         };
     },
 
@@ -59,11 +60,28 @@ var FileTable = module.exports.FileTable = React.createClass({
     procTableColumns: {
         'accession': {
             title: 'Accession',
-            display: (item, meta) =>
-                <span>
-                    {item.title}&nbsp;
-                    {!item.restricted || (meta.session && meta.session['auth.userid']) ? <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a> : null}
-                </span>
+            display: (item, meta) => {
+                let loggedIn = !!(meta.session && meta.session['auth.userid']);
+                let hoverInDL = item.restricted && loggedIn ? meta.hoverDL.bind(null, true, item.uuid) : null;
+                let hoverOutDL = item.restricted && loggedIn ? meta.hoverDL.bind(null, false, item.uuid) : null;
+                let restrictedTip = item.restricted && loggedIn && meta.restrictedTip == item.uuid ?
+                    <span>{RestrictedTooltip('Restricted file')}</span>
+                : null;
+
+                return (
+                    <span>
+                        {item.title}&nbsp;
+                        {!item.restricted || loggedIn ?
+                            <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true" onMouseEnter={hoverInDL} onMouseLeave={hoverOutDL}>
+                                <i className="icon icon-download" style={{position: "relative"}}>
+                                    <span className="sr-only">Download</span>
+                                    {restrictedTip}
+                                </i>
+                            </a>
+                        : null}
+                    </span>
+                );
+            }
         },
         'file_type': {title: 'File type'},
         'output_type': {title: 'Output type'},
@@ -108,11 +126,28 @@ var FileTable = module.exports.FileTable = React.createClass({
     refTableColumns: {
         'accession': {
             title: 'Accession',
-            display: (item, meta) =>
-                <span>
-                    {item.title}&nbsp;
-                    {!item.restricted || (meta.session && meta.session['auth.userid']) ? <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a> : null}
-                </span>
+            display: (item, meta) => {
+                let loggedIn = !!(meta.session && meta.session['auth.userid']);
+                let hoverInDL = item.restricted && loggedIn ? meta.hoverDL.bind(null, true, item.uuid) : null;
+                let hoverOutDL = item.restricted && loggedIn ? meta.hoverDL.bind(null, false, item.uuid) : null;
+                let restrictedTip = item.restricted && loggedIn && meta.restrictedTip == item.uuid ?
+                    <span>{RestrictedTooltip('Restricted file')}</span>
+                : null;
+
+                return (
+                    <span>
+                        {item.title}&nbsp;
+                        {!item.restricted || loggedIn ?
+                            <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true" onMouseEnter={hoverInDL} onMouseLeave={hoverOutDL}>
+                                <i className="icon icon-download" style={{position: "relative"}}>
+                                    <span className="sr-only">Download</span>
+                                    {restrictedTip}
+                                </i>
+                            </a>
+                        : null}
+                    </span>
+                );
+            }
         },
         'file_type': {title: 'File type'},
         'output_type': {title: 'Output type'},
@@ -159,6 +194,10 @@ var FileTable = module.exports.FileTable = React.createClass({
     rowClasses: function(file, i) {
         // Called for each row of file table to generate row classes
         return file.restricted ? 'file-restricted' : '';
+    },
+
+    hoverDL: function(hovering, fileUuid) {
+        this.setState({restrictedTip: hovering ? fileUuid : ''});
     },
 
     render: function() {
@@ -219,9 +258,11 @@ var FileTable = module.exports.FileTable = React.createClass({
                         <RawFileTable files={files.rawArray} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} />
                         <SortTable title={<CollapsingTitle title="Processed data" collapsed={this.state.collapsed.proc} handleCollapse={this.handleCollapse.bind(null, 'proc')}
                             selectedFilterValue={selectedFilterValue} filterOptions={filterOptions} handleFilterChange={handleFilterChange} />}
-                            rowClasses={this.rowClasses} collapsed={this.state.collapsed.proc} list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
+                            rowClasses={this.rowClasses} collapsed={this.state.collapsed.proc} list={files.proc} columns={this.procTableColumns} sortColumn="biological_replicates"
+                            meta={{encodevers: encodevers, anisogenic: anisogenic, hoverDL: this.hoverDL, restrictedTip: this.state.restrictedTip, session: session}} />
                         <SortTable title={<CollapsingTitle title="Reference data" collapsed={this.state.collapsed.ref} handleCollapse={this.handleCollapse.bind(null, 'ref')} />} collapsed={this.state.collapsed.ref}
-                            rowClasses={this.rowClasses} list={files.ref} columns={this.refTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} />
+                            rowClasses={this.rowClasses} list={files.ref} columns={this.refTableColumns}
+                            meta={{encodevers: encodevers, anisogenic: anisogenic, hoverDL: this.hoverDL, restrictedTip: this.state.restrictedTip, session: session}} />
                     </SortTablePanel>
                 </div>
             );
@@ -262,6 +303,17 @@ function sortBioReps(a, b) {
 }
 
 
+function RestrictedTooltip(message) {
+    return (
+        <div className="tooltip bottom tooltip-open">
+            <div className="tooltip-arrow"></div>
+            <div className="tooltip-inner">
+                {message}
+            </div>
+        </div>
+    );
+}
+
 
 var RawSequencingTable = React.createClass({
     propTypes: {
@@ -271,13 +323,18 @@ var RawSequencingTable = React.createClass({
 
     getInitialState: function() {
         return {
-            collapsed: false // Collapsed/uncollapsed state of table
+            collapsed: false, // Collapsed/uncollapsed state of table
+            restrictedTip: '' // UUID of file with tooltip showing
         };
     },
 
     handleCollapse: function(table) {
         // Handle a click on a collapse button by toggling the corresponding tableCollapse state var
         this.setState({collapsed: !this.state.collapsed});
+    },
+
+    hoverDL: function(hovering, fileUuid) {
+        this.setState({restrictedTip: hovering ? fileUuid : ''});
     },
 
     render: function() {
@@ -400,12 +457,26 @@ var RawSequencingTable = React.createClass({
                                     } else if (file.run_type === 'paired-ended') {
                                         runType = 'PE';
                                     }
+
+                                    let hoverInDL = file.restricted && loggedIn ? this.hoverDL.bind(null, true, file.uuid) : null;
+                                    let hoverOutDL = file.restricted && loggedIn ? this.hoverDL.bind(null, false, file.uuid) : null;
+                                    let restrictedTip = file.restricted && loggedIn && this.state.restrictedTip == file.uuid ?
+                                        <span>{RestrictedTooltip('Restricted file')}</span>
+                                    : null;
+
                                     return (
                                         <tr key={i} className={file.restricted ? 'file-restricted' : ''}>
                                             {i === 0 ? {spanned} : null}
                                             <td className={pairClass}>
                                                 {file.title}&nbsp;
-                                                {(!file.restricted || loggedIn) ? <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a> : null}
+                                                {(!file.restricted || loggedIn) ?
+                                                    <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true" onMouseEnter={hoverInDL} onMouseLeave={hoverOutDL}>
+                                                        <i className="icon icon-download" style={{position: "relative"}}>
+                                                            <span className="sr-only">Download</span>
+                                                            {restrictedTip}
+                                                        </i>
+                                                    </a>
+                                                : null}
                                             </td>
                                             <td className={pairClass}>{file.file_type}</td>
                                             <td className={pairClass}>{runType}{file.read_length ? <span>{runType ? <span> </span> : null}{file.read_length + file.read_length_units}</span> : null}</td>
@@ -431,11 +502,27 @@ var RawSequencingTable = React.createClass({
                                     pairedRepKeys.length && i === 0 ? 'table-raw-separator' : null,
                                     file.restricted ? 'file-restricted' : null
                                 ];
+                                let hoverInDL = file.restricted && loggedIn ? this.hoverDL.bind(null, true, file.uuid) : null;
+                                let hoverOutDL = file.restricted && loggedIn ? this.hoverDL.bind(null, false, file.uuid) : null;
+                                let restrictedTip = file.restricted && loggedIn && this.state.restrictedTip == file.uuid ?
+                                    <span>{RestrictedTooltip('Restricted file')}</span>
+                                : null;
+
                                 return (
                                     <tr key={i} className={rowClasses.join(' ')}>
                                         <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
-                                        <td>{file.title}&nbsp;<a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a></td>
+                                        <td>
+                                            {file.title}&nbsp;
+                                            {(!file.restricted || loggedIn) ?
+                                                <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true" onMouseEnter={hoverInDL} onMouseLeave={hoverOutDL}>
+                                                    <i className="icon icon-download" style={{position: "relative"}}>
+                                                        <span className="sr-only">Download</span>
+                                                        {restrictedTip}
+                                                    </i>
+                                                </a>
+                                            : null}
+                                        </td>
                                         <td>{file.file_type}</td>
                                         <td>{runType}{file.read_length ? <span>{runType ? <span> </span> : null}{file.read_length + file.read_length_units}</span> : null}</td>
                                         <td>{file.paired_end}</td>
@@ -474,13 +561,18 @@ var RawFileTable = React.createClass({
 
     getInitialState: function() {
         return {
-            collapsed: false // Collapsed/uncollapsed state of table
+            collapsed: false, // Collapsed/uncollapsed state of table
+            restrictedTip: '' // UUID of file with tooltip showing
         };
     },
 
     handleCollapse: function(table) {
         // Handle a click on a collapse button by toggling the corresponding tableCollapse state var
         this.setState({collapsed: !this.state.collapsed});
+    },
+
+    hoverDL: function(hovering, fileUuid) {
+        this.setState({restrictedTip: hovering ? fileUuid : ''});
     },
 
     render: function() {
@@ -559,13 +651,26 @@ var RawFileTable = React.createClass({
                                         pairClass = 'align-pair1';
                                     }
 
+                                    let hoverInDL = file.restricted && loggedIn ? this.hoverDL.bind(null, true, file.uuid) : null;
+                                    let hoverOutDL = file.restricted && loggedIn ? this.hoverDL.bind(null, false, file.uuid) : null;
+                                    let restrictedTip = file.restricted && loggedIn && this.state.restrictedTip == file.uuid ?
+                                        <span>{RestrictedTooltip('Restricted file')}</span>
+                                    : null;
+
                                     // Prepare for run_type display
                                     return (
                                         <tr key={i} className={file.restricted ? 'file-restricted' : ''}>
                                             {i === 0 ? {spanned} : null}
                                             <td className={pairClass}>
                                                 {file.title}&nbsp;
-                                                {(!file.restricted || loggedIn) ? <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a> : null}
+                                                {(!file.restricted || loggedIn) ?
+                                                    <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true" onMouseEnter={hoverInDL} onMouseLeave={hoverOutDL}>
+                                                        <i className="icon icon-download" style={{position: "relative"}}>
+                                                            <span className="sr-only">Download</span>
+                                                            {restrictedTip}
+                                                        </i>
+                                                    </a>
+                                                : null}
                                             </td>
                                             <td className={pairClass}>{file.file_type}</td>
                                             <td className={pairClass}>{file.output_type}</td>
@@ -584,11 +689,28 @@ var RawFileTable = React.createClass({
                                     pairedKeys.length && i === 0 ? 'table-raw-separator' : null,
                                     file.restricted ? 'file-restricted' : null
                                 ];
+
+                                let hoverInDL = file.restricted && loggedIn ? this.hoverDL.bind(null, true, file.uuid) : null;
+                                let hoverOutDL = file.restricted && loggedIn ? this.hoverDL.bind(null, false, file.uuid) : null;
+                                let restrictedTip = file.restricted && loggedIn && this.state.restrictedTip == file.uuid ?
+                                    <span>{RestrictedTooltip('Restricted file')}</span>
+                                : null;
+
                                 return (
                                     <tr key={i} className={rowClasses.join(' ')}>
                                         <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
-                                        <td>{file.title}&nbsp;<a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a></td>
+                                        <td>
+                                            {file.title}&nbsp;
+                                            {(!file.restricted || loggedIn) ?
+                                                <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true" onMouseEnter={hoverInDL} onMouseLeave={hoverOutDL}>
+                                                    <i className="icon icon-download" style={{position: "relative"}}>
+                                                        <span className="sr-only">Download</span>
+                                                        {restrictedTip}
+                                                    </i>
+                                                </a>
+                                            : null}
+                                        </td>
                                         <td>{file.file_type}</td>
                                         <td>{file.output_type}</td>
                                         <td>{file.lab && file.lab.title ? file.lab.title : null}</td>

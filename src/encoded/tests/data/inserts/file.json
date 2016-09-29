@@ -116,6 +116,7 @@
         "output_type": "reads",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "replicate": "d990fa42-09e9-4b24-b5f9-44efbdbf4363",
+        "restricted": true,
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12InputIggyaleRawData2.fastq.gz",
@@ -975,7 +976,6 @@
         "uuid": "e394868c-5e63-48c6-bfda-8cbebe62e36d",
         "file_format": "fastq",
         "flowcell_details": [],
-        "replicate": "1add7e11-a642-42cd-9f4e-fe58fee29d88",
         "status": "uploaded",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "award": "/awards/U54HG006998/",
@@ -1008,7 +1008,6 @@
     },
     {
         "paired_end": "2",
-        "run_type": "paired-ended",
         "accession": "ENCFF360FSI",
         "dataset": "ENCSR765JPC",
         "paired_with": "/files/ENCFF431TKZ/",
@@ -1020,7 +1019,6 @@
         "file_format": "fastq",
         "run_type":"single-ended",
         "flowcell_details": [],
-        "replicate": "1add7e11-a642-42cd-9f4e-fe58fee29d88",
         "status": "uploaded",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "lab": "/labs/richard-myers/",
@@ -1857,6 +1855,7 @@
         "submitted_by": "/users/0d48e8c4-5954-4bf5-8c75-1e386eb27e31/",
         "submitted_file_name": "20130418_2013-04-18_01_03_K562_BR1.RCC",
         "file_format": "rcc",
+        "restricted": true,
         "md5sum": "497283c78f5c553a72174f850468b688",
         "replicate": "/replicates/d52a3aaf-5fa7-4bea-ac08-a5e70c6e7dbd/",
         "output_type": "reporter code counts"
@@ -1889,6 +1888,7 @@
         "submitted_by": "/users/0d48e8c4-5954-4bf5-8c75-1e386eb27e31/",
         "submitted_file_name": "20130418_2013-04-18_01_03_K562_BR1.RCC",
         "file_format": "idat",
+        "restricted": true,
         "md5sum": "4a7283c78f5c553a72174f850468b688",
         "replicate": "/replicates/0f427e79-556e-4125-8102-f6723471807e/",
         "output_type": "reporter code counts"
