@@ -35,7 +35,23 @@ class Pipeline(Item):
         'analysis_steps.versions.software_versions',
         'analysis_steps.versions.software_versions.software',
         'lab',
-        'award.pi.lab',
+        'award.pi.lab'
+    ]
+    audit_inherit = [
+        'documents',
+        'documents.award',
+        'documents.lab',
+        'documents.submitted_by',
+        'analysis_steps',
+        'analysis_steps.documents',
+        'analysis_steps.current_version.software_versions',
+        'analysis_steps.current_version.software_versions.software',
+        'analysis_steps.current_version.software_versions.software.references',
+        'analysis_steps.versions',
+        'analysis_steps.versions.software_versions',
+        'analysis_steps.versions.software_versions.software',
+        'lab',
+        'award.pi.lab'
     ]
 
 
