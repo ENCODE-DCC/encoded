@@ -2,6 +2,8 @@
 var React = require('react');
 var _ = require('underscore');
 var globals = require('./globals');
+var {SortTablePanel, SortTable} = require('./sorttable');
+
 
 // BIOSAMPLE UTILITIES
 
@@ -98,4 +100,55 @@ module.exports.CollectBiosampleDocs = function(biosample) {
     )).chain().uniq(doc => doc ? doc.uuid : null).compact().value();
 
     return combinedDocuments;
-}
+};
+
+
+// Display a table of retrieved biosamples related to the displayed biosample
+var BiosampleTable = module.exports.BiosampleTable = React.createClass({
+    columns: {
+        'accession': {
+            title: 'Accession',
+            display: function(biosample) {
+                return <a href={biosample['@id']}>{biosample.accession}</a>;
+            }
+        },
+        'biosample_type': {title: 'Type'},
+        'biosample_term_name': {title: 'Term'},
+        'summary': {title: 'Summary', sorter: false}
+    },
+
+    render: function() {
+        var biosamples;
+
+        // If there's a limit on entries to display and the array is greater than that
+        // limit, then clone the array with just that specified number of elements
+        if (this.props.limit && (this.props.limit < this.props.items.length)) {
+            // Limit the experiment list by cloning first {limit} elements
+            biosamples = this.props.items.slice(0, this.props.limit);
+        } else {
+            // No limiting; just reference the original array
+            biosamples = this.props.items;
+        }
+
+        return (
+            <SortTablePanel title={this.props.title}>
+                <SortTable list={this.props.items} columns={this.columns} footer={<BiosampleTableFooter items={biosamples} total={this.props.total} url={this.props.url} />} />
+            </SortTablePanel>
+        );
+    }
+});
+
+
+// Display a count of biosamples in the footer, with a link to the corresponding search if needed
+var BiosampleTableFooter = React.createClass({
+    render: function() {
+        var {items, total, url} = this.props;
+
+        return (
+            <div>
+                <span>Displaying {items.length} of {total} </span>
+                {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
+            </div>
+        );
+    }
+});

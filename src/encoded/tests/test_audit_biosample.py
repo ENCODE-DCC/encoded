@@ -268,25 +268,3 @@ def test_audit_biosample_part_of_consistency_ontology_part_of(testapp,
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert all(error['category'] != 'inconsistent biosample_term_id' for error in errors_list)
-
-
-def test_audit_biosample_human_model_organism(testapp, biosample):
-    testapp.patch_json(biosample['@id'], {'model_organism_sex': 'male'})
-    res = testapp.get(biosample['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'model organism term in human biosample' for error
-               in errors_list)
-
-
-def test_audit_biosample_mouse_model_organism(testapp, base_mouse_biosample):
-    testapp.patch_json(base_mouse_biosample['@id'], {'model_organism_sex': 'male'})
-    res = testapp.get(base_mouse_biosample['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'model organism term in human biosample' for error
-               in errors_list)

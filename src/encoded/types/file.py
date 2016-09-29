@@ -157,6 +157,10 @@ class File(Item):
             if 'md5sum' in properties:
                 value = 'md5:{md5sum}'.format(**properties)
                 keys.setdefault('alias', []).append(value)
+            if 'fastq_signature' in properties and \
+               properties['fastq_signature'] != []:
+                for entry in properties['fastq_signature']:
+                    keys.setdefault('alias', []).append(entry)
             # Ensure no files have multiple reverse paired_with
             if 'paired_with' in properties:
                 keys.setdefault('file:paired_with', []).append(properties['paired_with'])
