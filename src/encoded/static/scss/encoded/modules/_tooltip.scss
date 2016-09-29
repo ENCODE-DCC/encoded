@@ -9,7 +9,7 @@ $tooltip-color: desaturate(lighten(#0a253d,30%),30%);
     cursor: default;
 }
 
-.tooltip {
+.tooltip.bottom {
     position: absolute;
     left: 50%;
     margin-right: -$tooltip-width;
@@ -20,13 +20,32 @@ $tooltip-color: desaturate(lighten(#0a253d,30%),30%);
     opacity: 1;
     z-index: 100;
 
-    .no-csstransforms & {
-        left: 0;
-        padding: 0;
+    &.tooltip-open {
+        visibility: visible;
+    }
+}
+
+.tooltip.right {
+    position: absolute;
+    visibility: hidden;
+    transform: translateY(-50%);
+    left: 100%;
+    top: 50%;
+    white-space: nowrap;
+    text-align: left;
+    opacity: 1;
+    z-index: 100;
+
+    a {
+        color: #ccccff;
     }
 
     &.tooltip-open {
         visibility: visible;
+    }
+
+    .tooltip-inner {
+        text-align: left !important;
     }
 }
 

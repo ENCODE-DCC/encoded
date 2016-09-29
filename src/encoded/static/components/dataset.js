@@ -17,7 +17,7 @@ var software = require('./software');
 var {SortTablePanel, SortTable} = require('./sorttable');
 var image = require('./image');
 var doc = require('./doc');
-var {FileTable, DatasetFiles} = require('./filegallery');
+var {DatasetFiles} = require('./filegallery');
 var {FileGallery} = require('./filegallery');
 
 var Breadcrumbs = navigation.Breadcrumbs;
