@@ -98,7 +98,7 @@ module.exports.Auth0 = {
     },
 
     componentDidMount: function () {
-        // Login / logout actions must be deferred until persona is ready.
+        // Login / logout actions must be deferred until Auth0 is ready.
         var session_cookie = this.extractSessionCookie();
         var session = this.parseSessionCookie(session_cookie);
         if (session['auth.userid']) {
@@ -108,7 +108,7 @@ module.exports.Auth0 = {
             href: window.location.href,
             session_cookie: session_cookie
         });
-        this.lock = new Auth0Lock('B64hILFXnt9XtKZ9Cs7B4xjkh3uVxqPV', 'encode-dcc.auth0.com', {
+        this.lock = new Auth0Lock('WIOr638GdDdEGPJmABPhVzMn6SYUIdIH', 'encode.auth0.com', {
             auth: {
                 redirect: false
             }
@@ -567,7 +567,7 @@ module.exports.HistoryAndTriggers = {
         }
 
         // options.skipRequest only used by collection search form
-        // options.replace only used handleSubmit, handlePopState, handlePersonaLogin
+        // options.replace only used handleSubmit, handlePopState, handleAuth0Login
         options = options || {};
         href = url.resolve(this.props.href, href);
 
