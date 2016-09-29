@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 var panel = require('../libs/bootstrap/panel');
+var {Modal, ModalHeader, ModalBody} = require('../libs/bootstrap/modal');
 var url = require('url');
 var _ = require('underscore');
 var graph = require('./graph');
@@ -45,7 +46,8 @@ var Pipeline = module.exports.Pipeline = React.createClass({
 
     getInitialState: function() {
         return {
-            infoNodeId: '' // ID of node whose info panel is open
+            infoNodeId: '', // ID of node whose info panel is open
+            infoModalOpen: false // Graph information modal open
         };
     },
 
@@ -160,18 +162,23 @@ var Pipeline = module.exports.Pipeline = React.createClass({
         this.setState({infoNodeId: this.state.infoNodeId !== nodeId ? nodeId : ''});
     },
 
-    render: function() {
-        var context = this.props.context;
-        var itemClass = globals.itemClass(context, 'view-item');
+    closeModal: function() {
+        // Called when user wants to close modal somehow
+        this.setState({infoModalOpen: false});
+    },
 
-        var assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
-        var assayName = context[assayTerm];
-        var crumbs = [
+    render: function() {
+        let context = this.props.context;
+        let itemClass = globals.itemClass(context, 'view-item');
+
+        let assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
+        let assayName = context[assayTerm];
+        let crumbs = [
             {id: 'Pipelines'},
             {id: assayName, query:  assayTerm + '=' + assayName, tip: assayName}
         ];
 
-        var documents = {};
+        let documents = {};
         if (context.documents) {
             context.documents.forEach(function(doc, i) {
                 documents[doc['@id']] = PanelLookup({context: doc, key: i + 1});
@@ -182,11 +189,12 @@ var Pipeline = module.exports.Pipeline = React.createClass({
         this.jsonGraph = this.assembleGraph();
 
         // Find the selected step, if any
-        var selectedStep, selectedNode;
+        let selectedStep, selectedNode, meta;
         if (this.state.infoNodeId) {
             selectedNode = this.jsonGraph.getNode(this.state.infoNodeId);
             if (selectedNode) {
                 selectedStep = selectedNode.metadata.ref;
+                meta = AnalysisStep(selectedStep, selectedNode);
             }
         }
 
@@ -252,13 +260,14 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                     <div>
                         <h3>Pipeline schematic</h3>
                         <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} forceRedraw>
-                            <div className="graph-node-info">
-                                {selectedStep ?
-                                    <PanelBody>
-                                        <AnalysisStep step={selectedStep} node={selectedNode} />
-                                    </PanelBody>
-                                : null}
-                            </div>
+                            <Modal modalOpen={this.state.infoModalOpen}>
+                                <ModalHeader closeModal={this.closeModal}>
+                                    {meta ? meta.header : null}
+                                </ModalHeader>
+                                <ModalBody className="modal-body">
+                                    {meta ? meta.body : null}
+                                </ModalBody>
+                            </Modal>
                         </Graph>
                     </div>
                 : null}

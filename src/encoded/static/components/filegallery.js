@@ -1361,6 +1361,7 @@ var FileGraph = React.createClass({
     },
 
     closeModal: function() {
+        // Called when user wants to close modal somehow
         this.setState({infoModalOpen: false});
     },
 
