@@ -65,6 +65,7 @@
                 "enhancer predictions",
                 "DNase master peaks",
                 "transcription factor motifs",
+                "transcript expression",
                 "validated enhancers",
                 "overlap",
                 "other"
