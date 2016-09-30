@@ -137,7 +137,7 @@ var ChartGallery = React.createClass({
         return (
             <PanelBody>
                 <div className="view-all">
-                    <a href={"/matrix/" + this.props.searchBase} className="view-all-button btn btn-info btn-sm" role="button">View Assay Matrix</a>
+                    <a href={"/matrix/" + this.props.query} className="view-all-button btn btn-info btn-sm" role="button">View Assay Matrix</a>
                 </div>
                 <div className="col-md-4">
                     <HomepageChart {...this.props} />
@@ -337,13 +337,13 @@ var HomepageChart = React.createClass({
                         legend: {
                             display: false // hiding automatically generated legend
                         },
-                        legendCallback: (chart) => { // allows for legend clicking
+                        legendCallback: function(chart) { // allows for legend clicking
                             facetData = _(facetData).filter(term => term.doc_count > 0);
                             var text = [];
                             text.push('<ul>');
                             for (var i = 0; i < facetData.length; i++) {
                                 text.push('<li>');
-                                text.push('<a href="' + '/matrix/' + this.props.searchBase + '&award.project=' + facetData[i].key  + '">'); // go to matrix view when clicked
+                                text.push('<a href="' + '/matrix/' + this.props.query + '&award.project=' + facetData[i].key  + '">'); // go to matrix view when clicked
                                 text.push('<span class="chart-legend-chip" style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
                                 if (chart.data.labels[i]) {
                                     text.push('<span class="chart-legend-label">' + chart.data.labels[i] + '</span>');
@@ -352,8 +352,8 @@ var HomepageChart = React.createClass({
                             }
                             text.push('</ul>');
                             return text.join('');
-                        },
-                        onClick: (e) => {
+                        }.bind(this),
+                        onClick: function(e) {
                             // React to clicks on pie sections
                             var activePoints = this.myPieChart.getElementAtEvent(e);
 
@@ -362,9 +362,9 @@ var HomepageChart = React.createClass({
                             }
                             else{ // otherwise go to matrix view
                                 var term = facetData[activePoints[0]._index].key;
-                                this.context.navigate('/matrix/' + this.props.searchBase + '&award.project=' + term);
+                                this.context.navigate('/matrix/' + this.props.query + '&award.project=' + term);
                             }
-                        }
+                        }.bind(this)
                     }
                 });
                 document.getElementById('chart-legend').innerHTML = this.myPieChart.generateLegend(); // generates legend
@@ -541,14 +541,14 @@ var HomepageChart2 = React.createClass({
                         legend: {
                             display: false // hiding automatically generated legend
                         },
-                        legendCallback: (chart) => { // allows for legend clicking
+                        legendCallback: function(chart) { // allows for legend clicking
                             var facetTerms = _(assayFacet.terms).filter(term => term.doc_count > 0);
                             var text = [];
                             var query = computationalPredictions ? 'biosample_type=' : 'replicates.library.biosample.biosample_type=';
                             text.push('<ul>');
                             for (var i = 0; i < facetTerms.length; i++) {
                                 text.push('<li>');
-                                text.push('<a href="/matrix/' + this.props.searchBase + '&' + query + facetTerms[i].key  + '">'); // go to matrix view when clicked
+                                text.push('<a href="/matrix/' + this.props.query + '&' + query + facetTerms[i].key  + '">'); // go to matrix view when clicked
                                 text.push('<span class="chart-legend-chip" style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
                                 if (chart.data.labels[i]) {
                                     text.push('<span class="chart-legend-label">' + chart.data.labels[i] + '</span>');
@@ -557,13 +557,13 @@ var HomepageChart2 = React.createClass({
                             }
                             text.push('</ul>');
                             return text.join('');
-                        },
+                        }.bind(this),
                         onClick: function(e) {
                             // React to clicks on pie sections
                             var query = computationalPredictions ? 'biosample_type=' : 'replicates.library.biosample.biosample_type=';
                             var activePoints = this.myPieChart.getElementAtEvent(e);
                             var term = assayFacet.terms[activePoints[0]._index].key;
-                            this.context.navigate('/matrix/' + this.props.searchBase + '&' + query + term); // go to matrix view
+                            this.context.navigate('/matrix/' + this.props.query + '&' + query + term); // go to matrix view
                         }.bind(this)
                     }
                 });
@@ -694,13 +694,13 @@ var HomepageChart3 = React.createClass({
                                 }
                             }]
                         },
-                        onClick: (e) => {
+                        onClick: function(e) {
                             // React to clicks on pie sections
                             var query = 'assay_slims=';
                             var activePoints = this.myPieChart.getElementAtEvent(e);
                             var term = assayFacet.terms[activePoints[0]._index].key;
-                            this.context.navigate('/matrix/' + this.props.searchBase + '&' + query + term); // go to matrix view
-                        }
+                            this.context.navigate('/matrix/' + this.props.query + '&' + query + term); // go to matrix view
+                        }.bind(this)
                     }
                 });
             }
