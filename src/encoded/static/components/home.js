@@ -107,7 +107,7 @@ var Home = module.exports.Home = React.createClass({
                             </div>
                             <div className="graphs">
                                 <div className="row">
-                                    <HomepageChartLoader query={currentQuery} />
+                                    <HomepageChartLoader organisms={this.state.organisms} assayCategory={this.state.assayCategory} query={currentQuery} />
                                 </div>
                             </div>
                             <div className="social">
@@ -140,13 +140,13 @@ var ChartGallery = React.createClass({
                     <a href={"/matrix/" + this.props.searchBase} className="view-all-button btn btn-info btn-sm" role="button">View Assay Matrix</a>
                 </div>
                 <div className="col-md-4">
-                    <HomepageChart {...this.props} searchBase={this.props.searchBase} />
+                    <HomepageChart {...this.props} />
                 </div>
                 <div className="col-md-4">
-                    <HomepageChart2 {...this.props} searchBase={this.props.searchBase} />
+                    <HomepageChart2 {...this.props} />
                 </div>
                 <div className="col-md-4">
-                    <HomepageChart3 {...this.props} searchBase={this.props.searchBase} />
+                    <HomepageChart3 {...this.props} />
                 </div>
             </PanelBody>
         );
@@ -428,8 +428,6 @@ var HomepageChart = React.createClass({
 });
 
 
-
-
 // Initiates the GET request to search for experiments, and then pass the data to the HomepageChart
 // component to draw the resulting chart.
 var HomepageChartLoader = React.createClass({
@@ -439,14 +437,15 @@ var HomepageChartLoader = React.createClass({
 
     render: function() {
         return (
-            <FetchedData>
+            <FetchedData ignoreErrors>
                 <Param name="data" url={'/search/' + this.props.query} />
-                <ChartGallery searchBase={this.props.query} />
+                <ChartGallery organisms={this.props.organisms} assayCategory={this.props.assayCategory}query={this.props.query} />
             </FetchedData>
         );
     }
 
 });
+
 
 // Component to display the D3-based chart for Biosample
 var HomepageChart2 = React.createClass({
@@ -474,7 +473,7 @@ var HomepageChart2 = React.createClass({
             }
 
             // Our data source will be different for computational predictions
-            var computationalPredictions = this.props.searchBase === '?type=Annotation&encyclopedia_version=3';
+            var computationalPredictions = this.props.assayCategory === 'COMPPRED';
 
             var facets = this.props.data.facets;
             if (computationalPredictions) {
