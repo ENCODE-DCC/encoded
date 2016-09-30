@@ -36,9 +36,9 @@
             "type": "number",
             "description": "Standard deviation of difference"
         },
-        "Replicate log-ratio SD": {
+        "MAD of log ratios": {
             "type": "number",
-            "description": "Replicate log-ratio standard deviation, formerly mis-labelled as Mean-Average-Deviation (MAD)."
+            "description": "Mean-Average-Deviation (MAD) of replicate log ratios from quantification"
         },
         "Details": {
             "type": "string",
