@@ -402,7 +402,7 @@ def get_derived_from_files_set(list_of_files):
                                     'original_files.analysis_step_version.software_versions.software',
                                     'original_files.analysis_step_version.analysis_step',
                                     'original_files.analysis_step_version.analysis_step.pipelines'],
-               condition=rfa('ENCODE3', 'ENCODE'))
+               condition=rfa('ENCODE3', 'ENCODE', 'ENCODE2'))
 def audit_experiment_standards_dispatcher(value, system):
     '''
     Dispatcher function that will redirect to other functions that would
@@ -463,7 +463,8 @@ def audit_experiment_standards_dispatcher(value, system):
                                                                   desired_annotation):
             yield failure
 
-    if value['assay_term_name'] == 'ChIP-seq':
+    if value['assay_term_name'] == 'ChIP-seq' and \
+       value['award']['rfa'] != 'ENCODE2':
         optimal_idr_peaks = scanFilesForOutputType(value['original_files'],
                                                    'optimal idr thresholded peaks')
         for failure in check_experiment_chip_seq_encode3_standards(value,
@@ -472,7 +473,8 @@ def audit_experiment_standards_dispatcher(value, system):
                                                                    optimal_idr_peaks):
                 yield failure
 
-    if value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
+    if value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing' and \
+       value['award']['rfa'] != 'ENCODE2':
         cpg_quantifications = scanFilesForOutputType(value['original_files'],
                                                      'methylation state at CpG')
 
