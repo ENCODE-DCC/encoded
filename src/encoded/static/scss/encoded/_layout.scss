@@ -22,41 +22,62 @@
     margin-top: 20px;
 }
 
+.app-version {
+    height: $appVersionHeight;
+    line-height: $appVersionHeight;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #a0a0a0;
+
+    @media (min-width: $screen-sm-min) {
+        text-align: left;
+    }
+}
+
 /* *********************************************************
 		FOOTER
 ********************************************************** */
+
+#page-footer {
+    @media (min-width: $screen-sm-min) {
+        height: $footerHeight;
+    }
+}
+
+.footer-row {
+    @media screen and (min-width: $screen-sm-min) {
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
 
 .page-footer {
 	color: rgb(255, 255, 255);
 	background-color: #a4afb8; // for IE8
 	background-color: $footerBackground; // overwrite previous line for CSS3 browsers
-	//height: $footerHeight;
 	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
-	//line-height: 0;
 	text-align: center;
 	overflow: hidden;
+
 	a { 
 		color: rgb(255, 255, 255); 
 		font-weight: bold;
 	}
+
 	ul {
 	    list-style: none;
 	    list-style-position: outside;
 	    padding: 0;
 	}
+
+    @media screen and (min-width: $screen-sm-min) {
+        height: $footerHeight - $appVersionHeight;
+    }
 }
 
 .footer-links {
     margin: 15px 0;
     text-align: center;
-
-    @media (min-width: $screen-sm-min) {
-        text-align: right;
-
-        li:last-child {
-            padding-right: 0;
-        }
-    }
 
     a {
         display: block;
@@ -64,13 +85,53 @@
         padding: 10px 15px;
         background-color: darken($footerBackground, 0.1%);
         border-radius: 3px;
+
+        &:hover { 
+            text-decoration: none; 
+            background-color: darken($footerBackground, 6%);   
+        }
+
+        &:active {
+            background-color: darken($footerBackground, 15%);
+        }
     }
-    a:hover { 
-        text-decoration: none; 
-        background-color: darken($footerBackground, 6%);   
-    }
-    a:active {
-        background-color: darken($footerBackground, 15%);
+
+    @media (min-width: $screen-sm-min) {
+        list-style: none outside none;
+        margin-left: -5px;
+        padding-left: 0;
+        text-align: right;
+
+        li { 
+            display: inline-block;
+            padding-left: 5px;
+            padding-right: 5px;
+
+            @media screen and (min-width: $screen-md-min) {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+
+            &:last-child {
+                padding-right: 0;
+            }
+        }
+
+        a {
+            display: inline;
+            margin: 0;
+            padding: 0;
+            background-color: transparent;   
+
+            &:hover {
+                text-decoration: underline;
+                background-color: transparent; 
+            }
+    
+            &:active {
+                background-color: transparent;
+            }
+        }
     }
 }
 
@@ -78,12 +139,19 @@
     margin: 10px 0;
     text-align: center;
 
-    @media (min-width: $screen-sm-min) {
-        text-align: left;
-    }
-
     li {
         margin: 0 0 15px;
+    }
+
+    @media (min-width: $screen-sm-min) {
+        margin-top: 16px;
+        text-align: left;
+
+        li { 
+            display: inline-block;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
     }
 }
 

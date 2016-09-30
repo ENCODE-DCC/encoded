@@ -41,9 +41,9 @@ var Footer = React.createClass({
 
                             <div className="col-sm-7 col-sm-pull-5 col-md-6 col-md-pull-6">
                                 <ul className="footer-logos">
-                                    <li><a href="/"><img src="/static/img/encode-logo-small-2x.png" alt="ENCODE" id="encode-logo" height="45px" width="78px" /></a></li>
-                                    <li><a href="http://www.stanford.edu"><img src="/static/img/su-logo-white-2x.png" alt="Stanford University" id="su-logo" width="105px" height="49px" /></a></li>
-                                    <li><a width="150" height="50" href="https://auth0.com/?utm_source=oss&utm_medium=gp&utm_campaign=oss" target="_blank" alt="Single Sign On & Token Based Authentication - Auth0"><img width="150" height="50" alt="JWT Auth for open source projects" src="//cdn.auth0.com/oss/badges/a0-badge-light.png"/></a></li>
+                                    <li><a href="/"><img src="/static/img/encode-logo.svg" alt="ENCODE" id="encode-logo" height="45px" width="78px" /></a></li>
+                                    <li><a href="http://www.stanford.edu"><img src="/static/img/su-logo-white.svg" alt="Stanford University" id="su-logo" width="105px" height="49px" /></a></li>
+                                    <li><a width="150" height="50" href="https://auth0.com/?utm_source=oss&utm_medium=gp&utm_campaign=oss" target="_blank" alt="Single Sign On & Token Based Authentication - Auth0"><img width="150" height="50" alt="JWT Auth for open source projects" src="/static/img/a0-badge-light.png"/></a></li>
                                 </ul>
                             </div>
                         </div>
