@@ -69,7 +69,7 @@ def audit_reference_epigenome_assay_types_requirments(value, system):
         detail = detail_prefix + \
             'has no related datasets. It lacks all of the IHEC required ' + \
             'assays.'
-        yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
+        yield AuditFailure('partial reference epigenome', detail, level='WARNING')
         return
 
     roadmap_flag = False
@@ -118,33 +118,33 @@ def audit_reference_epigenome_assay_types_requirments(value, system):
         detail = detail_prefix + \
             'is missing control ChIP-seq assay, ' + \
             project_detail
-        yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
+        yield AuditFailure('partial reference epigenome', detail, level='WARNING')
     if required_assays[('OBI:0000716', 'H3K27me3')] == 0:
         detail = detail_prefix + \
             'is missing H3K27me3 ChIP-seq assay, ' + \
             project_detail
-        yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
+        yield AuditFailure('partial reference epigenome', detail, level='WARNING')
     if required_assays[('OBI:0000716', 'H3K36me3')] == 0:
         detail = detail_prefix + \
             'is missing H3K36me3 ChIP-seq assay, ' + \
             project_detail
-        yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
+        yield AuditFailure('partial reference epigenome', detail, level='WARNING')
     if required_assays[('OBI:0000716', 'H3K4me1')] == 0:
         detail = detail_prefix + \
             'is missing H3K4me1 ChIP-seq assay, ' + \
             project_detail
-        yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
+        yield AuditFailure('partial reference epigenome', detail, level='WARNING')
     if required_assays[('OBI:0000716', 'H3K4me3')] == 0:
         detail = detail_prefix + \
             'is missing H3K4me3 ChIP-seq assay, ' + \
             project_detail
-        yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
+        yield AuditFailure('partial reference epigenome', detail, level='WARNING')
 
     if required_assays[('OBI:0000716', 'H3K9me3')] == 0:
         detail = detail_prefix + \
             'is missing H3K9me3 ChIP-seq assay, ' + \
             project_detail
-        yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
+        yield AuditFailure('partial reference epigenome', detail, level='WARNING')
 
     if roadmap_flag is True:
         rna_assays = required_assays['OBI:0001271'] + \
@@ -159,26 +159,26 @@ def audit_reference_epigenome_assay_types_requirments(value, system):
             detail = detail_prefix + \
                 'is missing MeDIP-seq, MRE-seq, RRBS, or MethylCap-seq assays. ' + \
                 'At least one is ' + project_detail
-            yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
+            yield AuditFailure('partial reference epigenome', detail, level='WARNING')
         if rna_assays == 0:
             detail = detail_prefix + \
                 'is missing RNA-seq or array based transcription assays. ' + \
                 'At least one is ' + project_detail
-            yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
+            yield AuditFailure('partial reference epigenome', detail, level='WARNING')
     else:
         if required_assays[('OBI:0000716', 'H3K27ac')] == 0:
             detail = detail_prefix + \
                 'is missing H3K27ac ChIP-seq assay, ' + \
                 project_detail
-            yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
+            yield AuditFailure('partial reference epigenome', detail, level='WARNING')
         if required_assays['OBI:0001863'] == 0:
             detail = detail_prefix + \
                 'is missing WGBS assay, ' + \
                 project_detail
-            yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
+            yield AuditFailure('partial reference epigenome', detail, level='WARNING')
         if required_assays['OBI:0001271'] == 0:
             detail = detail_prefix + \
                 'is missing RNA-seq assay, ' + \
                 project_detail
-            yield AuditFailure('missing IHEC required assay', detail, level='WARNING')
+            yield AuditFailure('partial reference epigenome', detail, level='WARNING')
     return
