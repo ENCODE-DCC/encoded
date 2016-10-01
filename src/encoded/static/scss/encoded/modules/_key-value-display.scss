@@ -58,10 +58,18 @@ dl.key-value, dl.key-value-doc {
         dt {
             min-width: 140px;
             padding: 8px 0;
+
+            .modal-body & {
+                padding: 4px 0;
+            }
         }
 
         dd {
             padding: 8px 0 8px 10px;
+
+            .modal-body & {
+                padding: 4px 0 4px 10px;
+            }
         }
 
         [data-test] {
