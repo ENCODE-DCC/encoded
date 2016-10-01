@@ -991,6 +991,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
                     // derived-from file isn't released and we're not logged in, or because it's a contributing file.
                     derivedFromFiles[derivedFromId] = derived_from;
                     derived_from.missing = true;
+                    derived_from.removed = false; // Clears previous value Redmine #4536
                 } else if (!derivedFromFiles[derivedFromId]) {
                     // The derived-from file was in the given file list, so record the derived-from file in derivedFromFiles.
                     // ...that is, unless the derived-from file has already been seen. Just move on if it has.
