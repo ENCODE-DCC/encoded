@@ -75,6 +75,10 @@
     }
 }
 
+@media screen and (min-width: $screen-sm-min) {
+    @include sticky-footer($footerHeight, $footerTopBorderHeight, "#layout", "#layout-footer", "#page-footer");
+}
+
 .footer-links {
     margin: 15px 0;
     text-align: center;

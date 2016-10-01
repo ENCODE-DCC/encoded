@@ -23,9 +23,7 @@ var Footer = React.createClass({
         return (
             <footer id="page-footer">
                 <div className="container">
-                    <div className="row">
-                        <div className="app-version">{this.props.version}</div>
-                    </div>
+                    <div className="app-version">{this.props.version}</div>
                 </div>
                 <div className="page-footer">
                     <div className="container">
