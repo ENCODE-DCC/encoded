@@ -905,7 +905,8 @@ var BatchDownload = search.BatchDownload = React.createClass({
                     <code>xargs -n 1 curl -O -L &lt; files.txt</code><br />
                 </ModalBody>
                 <ModalFooter closeBtn={<a className="btn btn-info btn-sm">Close</a>}
-                    submitBtn={<a data-bypass="true" target="_self" className="btn btn-info btn-sm" href={link}>{'Download'}</a>} />
+                    submitBtn={<a data-bypass="true" target="_self" className="btn btn-info btn-sm" href={link}>{'Download'}</a>}
+                    dontClose />
             </Modal>
         );
     },

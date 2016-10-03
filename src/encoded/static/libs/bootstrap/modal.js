@@ -178,6 +178,23 @@ var ModalFooter = module.exports.ModalFooter = React.createClass({
         ])
     },
 
+    closeModal: function() {
+        // Call close button's existing close handler if it had one first. 
+        if (this.chainedCloseModal) {
+            this.chainedCloseModal();
+        }
+
+        // Now call the standard close handler.
+        this.props.closeModal();
+    },
+
+    submitModal: function() {
+        this.props.submitBtn();
+        if (!this.props.dontClose) {
+            this.props.closeModal();
+        }
+    },
+
     render: function() {
         let {submitBtn, closeBtn} = this.props;
         let submitBtnComponent = null;
@@ -187,13 +204,18 @@ var ModalFooter = module.exports.ModalFooter = React.createClass({
         // given function. Note: if you pass `null` in the submitBtn property, this component
         // thinks that's a function because of an old Javascript characteristic.
         if (submitBtn) {
-            submitBtnComponent = (typeof submitBtn === 'object') ? submitBtn : <button className="btn btn-info" onClick={submitBtn}>Submit</button>;
+            submitBtnComponent = (typeof submitBtn === 'object') ? submitBtn : <button className="btn btn-info" onClick={this.submitModal}>Submit</button>;
         }
 
         // If the given closeModal property is a component, make sure it calls the close function
         // when it gets clicked.
         if (typeof closeBtn === 'object') {
-            closeBtn = cloneWithProps(closeBtn, {onClick: this.props.closeModal});
+            // If the close button had a click handler, save it so we can call it before calling
+            // the standard one.
+            if (closeBtn.props.onClick) {
+                this.chainedCloseModal = closeBtn.props.onClick;
+            }
+            closeBtn = cloneWithProps(closeBtn, {onClick: this.closeModal});
         }
 
         // Make a Cancel button component -- either the given one, a default one that calls the
@@ -208,7 +230,7 @@ var ModalFooter = module.exports.ModalFooter = React.createClass({
         return (
             <div className="modal-footer">
                 {this.props.children ? this.props.children : null}
-                {submitBtnComponent || cancelBtnComponent ?
+                {submitBtnComponent || closeBtnComponent ?
                     <div className="modal-footer-controls">
                         {closeBtnComponent}
                         {submitBtnComponent}
