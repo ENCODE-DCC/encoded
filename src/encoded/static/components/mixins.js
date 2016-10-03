@@ -226,7 +226,6 @@ module.exports.Auth0 = {
     },
 
     handleAuth0Login: function (authResult, retrying) {
-        console.log(authResult);
         var accessToken = authResult.accessToken;
         if (!accessToken) return;
         this.sessionPropertiesRequest = true;
