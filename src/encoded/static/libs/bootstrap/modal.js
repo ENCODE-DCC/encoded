@@ -19,55 +19,16 @@ var cloneWithProps = require('react/lib/cloneWithProps');
 // DOM comes from: http://jamesknelson.com/rendering-react-components-to-the-document-body/
 
 
-module.exports.ModalMixin = {
-    childContextTypes: {
-        Modal_modalOpen: React.PropTypes.bool, // T if modal is visible
-        Modal_openModal: React.PropTypes.func, // Function to open the modal
-        Modal_cancelBtnDefault: React.PropTypes.func, // Default function to close the modal
-    },
-
-    // Retrieve current React context
-    getChildContext: function() {
-        return {
-            Modal_modalOpen: this.state.Modal_modalOpen,
-            Modal_openModal: this.Modal_openModal,
-            Modal_cancelBtnDefault: this.Modal_cancelBtnDefault
-        };
+var Modal = module.exports.Modal = React.createClass({
+    propTypes: {
+        actuator: React.PropTypes.object, // Component (usually a button) that makes the modal appear
+        closeModal: React.PropTypes.func // Called to close the modal if an actuator isn't provided'
     },
 
     getInitialState: function() {
         return {
-            Modal_modalOpen: false // T if the modal and blocking backdrop are visible
-        };
-    },
-
-    // Open the modal
-    Modal_openModal: function() {
-        this.setState({Modal_modalOpen: true});
-
-        // Add class to body element to make modal-backdrop div visible
-        document.body.classList.add('modal-open');
-    },
-
-    // Default function to close the modal without doing anything.
-    Modal_cancelBtnDefault: function() {
-        this.setState({Modal_modalOpen: false});
-
-        // Remove class from body element to make modal-backdrop div visible
-        document.body.classList.remove('modal-open');
-    },
-};
-
-
-var Modal = module.exports.Modal = React.createClass({
-    propTypes: {
-        actuator: React.PropTypes.object // Component (usually a button) that makes the modal appear
-    },
-
-    contextTypes: {
-        Modal_modalOpen: React.PropTypes.bool, // Is the modal open or not? Owned by ModalMixin
-        Modal_openModal: React.PropTypes.func, // Function to call to open the modal. Owned by ModalMixin
-        Modal_cancelBtnDefault: React.PropTypes.func // Function to call to close the modal. Owned by ModalMixin
+            modalOpen: false // True if modal is visible. Ignored if no actuator given
+        }
     },
 
     componentDidMount: function() {
@@ -93,9 +54,29 @@ var Modal = module.exports.Modal = React.createClass({
 
     // Called when the user presses the ESC key.
     handleEsc: function(e) {
-        if (this.context.Modal_modalOpen && e.keyCode === 27) {
-            this.context.Modal_cancelBtnDefault();
+        if ((!this.props.actuator || this.state.modalOpen) && e.keyCode === 27) {
+            if (this.props.closeModal) {
+                this.props.closeModal();
+            } else {
+                this.closeModal();
+            }
         }
+    },
+
+    // Open the modal
+    openModal: function() {
+        this.setState({modalOpen: true});
+
+        // Add class to body element to make modal-backdrop div visible
+        document.body.classList.add('modal-open');
+    },
+
+    // Default function to close the modal without doing anything.
+    closeModal: function() {
+        this.setState({modalOpen: false});
+
+        // Remove class from body element to make modal-backdrop div visible
+        document.body.classList.remove('modal-open');
     },
 
     // Render the modal JSX into the element this component appended to the <body> element. that
@@ -104,12 +85,12 @@ var Modal = module.exports.Modal = React.createClass({
     renderModal: function() {
         React.render(
             <div>
-                {!this.props.actuator || this.context.Modal_modalOpen ?
+                {!this.props.actuator || this.state.modalOpen ?
                     <div>
                         <div className="modal" style={{display: "block"}}>
                             <div className="modal-dialog">
                                 <div className="modal-content">
-                                    {this.props.children}
+                                    {this.modalChildren}
                                 </div>
                             </div>
                         </div>
@@ -125,7 +106,16 @@ var Modal = module.exports.Modal = React.createClass({
         // We don't require/allow a click handler for the actuator, so we attach the one from
         // ModalMixin here. You can't add attributes to an existing component in React, but React
         // has no issue adding attributes while cloning a component.
-        let actuator = this.props.actuator ? cloneWithProps(this.props.actuator, {onClick: this.context.Modal_openModal}) : null;
+        let actuator = this.props.actuator ? cloneWithProps(this.props.actuator, {onClick: this.openModal}) : null;
+
+        // Pass important Modal states and functions to child objects without the parent component
+        // needing to do it explicitly.
+        this.modalChildren = React.Children.map(this.props.children, child => {
+            if (child.type === ModalHeader.type || child.type === ModalBody.type || child.type === ModalFooter.type) {
+                return cloneWithProps(child, {closeModal: this.closeModal, modalOpen: this.state.modalOpen});
+            }
+            return child;
+        });
 
         return actuator ? <span>{actuator}</span> : null;
     }
@@ -138,15 +128,14 @@ var ModalHeader = module.exports.ModalHeader = React.createClass({
             React.PropTypes.string, // String to display as an <h4> title
             React.PropTypes.object // React component to display for the title 
         ]),
-        cancelBtn: React.PropTypes.bool // True to display the close button in the header
-    },
-
-    contextTypes: {
-        Modal_cancelBtnDefault: React.PropTypes.func // Function to call to close the modal. Owned by ModalMixin
+        closeBtn: React.PropTypes.oneOfType([
+            React.PropTypes.bool, // True to display the close button in the header with the built-in handler
+            React.PropTypes.func // If not using an actuator on <Modal>, provide a function to close the modal
+        ])
     },
 
     render: function() {
-        let {title, cancelBtn} = this.props;
+        let {title, closeBtn} = this.props;
         let titleRender = null;
 
         // Handle the string and React component cases for the title
@@ -156,7 +145,7 @@ var ModalHeader = module.exports.ModalHeader = React.createClass({
 
         return (
             <div className="modal-header">
-                {cancelBtn ? <button type="button" className="close" aria-label="Close" onClick={this.context.Modal_cancelBtnDefault}><span aria-hidden="true">&times;</span></button> : null}
+                {closeBtn ? <button type="button" className="close" aria-label="Close" onClick={typeof closeBtn === 'function' ? closeBtn : this.props.closeModal}><span aria-hidden="true">&times;</span></button> : null}
                 {titleRender ? <div>{titleRender}</div> : null}
                 {this.props.children}
             </div>
@@ -182,21 +171,17 @@ var ModalFooter = module.exports.ModalFooter = React.createClass({
             React.PropTypes.object, // Submit button is a React component; just render it
             React.PropTypes.func // Function to call when default-rendered Submit button clicked
         ]),
-        cancelBtn: React.PropTypes.oneOfType([
+        closeBtn: React.PropTypes.oneOfType([
             React.PropTypes.bool, // Use default-rendered Cancel button that closes the modal
             React.PropTypes.object, // Cancel button is a React component; just render it
             React.PropTypes.func // Function to call when default-rendered Cancel button clicked
         ])
     },
 
-    contextTypes: {
-        Modal_cancelBtnDefault: React.PropTypes.func // Function to call to close the modal. Owned by ModalMixin
-    },
-
     render: function() {
-        let {submitBtn, cancelBtn} = this.props;
+        let {submitBtn, closeBtn} = this.props;
         let submitBtnComponent = null;
-        let cancelBtnComponent = null;
+        let closeBtnComponent = null;
 
         // Make a Submit button component -- either the given one or a default one that calls the
         // given function. Note: if you pass `null` in the submitBtn property, this component
@@ -205,13 +190,19 @@ var ModalFooter = module.exports.ModalFooter = React.createClass({
             submitBtnComponent = (typeof submitBtn === 'object') ? submitBtn : <button className="btn btn-info" onClick={submitBtn}>Submit</button>;
         }
 
+        // If the given closeModal property is a component, make sure it calls the close function
+        // when it gets clicked.
+        if (typeof closeBtn === 'object') {
+            closeBtn = cloneWithProps(closeBtn, {onClick: this.props.closeModal});
+        }
+
         // Make a Cancel button component -- either the given one, a default one that calls the
         // given function, or a default one that calls the default function. Note: if you pass
-        // `null` in the cancelBtn property, this component thinks that's a function because of an
+        // `null` in the closeBtn property, this component thinks that's a function because of an
         // old Javascript characteristic.
-        if (cancelBtn) {
-            let cancelBtnFunc = (typeof cancelBtn === 'function') ? cancelBtn : (typeof cancelBtn === 'boolean' ? this.context.Modal_cancelBtnDefault : null);
-            cancelBtnComponent = (typeof cancelBtn === 'object') ? cancelBtn : <button className="btn btn-info" onClick={cancelBtnFunc}>Cancel</button>;
+        if (closeBtn) {
+            let closeBtnFunc = (typeof closeBtn === 'function') ? closeBtn : (typeof closeBtn === 'boolean' ? this.props.closeModal : null);
+            closeBtnComponent = (typeof closeBtn === 'object') ? closeBtn : <button className="btn btn-info" onClick={closeBtnFunc}>Cancel</button>;
         }
 
         return (
@@ -219,7 +210,7 @@ var ModalFooter = module.exports.ModalFooter = React.createClass({
                 {this.props.children ? this.props.children : null}
                 {submitBtnComponent || cancelBtnComponent ?
                     <div className="modal-footer-controls">
-                        {cancelBtnComponent}
+                        {closeBtnComponent}
                         {submitBtnComponent}
                     </div>
                 : null}

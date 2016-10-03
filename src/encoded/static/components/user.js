@@ -92,8 +92,8 @@ var AccessKeyTable = React.createClass({
     },
     showNewSecret: function(title, response) {
         this.setState({modal:
-            <Modal title={title}>
-                <ModalHeader title={title} cancelBtn />
+            <Modal closeModal={this.hideModal}>
+                <ModalHeader title={title} closeBtn={this.hideModal} />
                 <ModalBody>
                     Please make a note of the new secret access key.
                     This is the last time you will be able to view it.
@@ -114,8 +114,8 @@ var AccessKeyTable = React.createClass({
 
     onDelete: function(item) {
         this.setState({modal:
-            <Modal>
-                <ModalHeader title={'Access key deleted.'} cancelBtn />
+            <Modal closeModal={this.hideModal}>
+                <ModalHeader title={'Access key deleted.'} closeBtn={this.hideModal} />
                 <ModalBody>
                     <p>{'Access key ' + item['access_key_id'] + ' has been deleted.'}</p>
                 </ModalBody>
@@ -126,8 +126,8 @@ var AccessKeyTable = React.createClass({
     onError: function(error) {
         var View = globals.content_views.lookup(error);
         this.setState({modal:
-            <Modal>
-                <ModalHeader title="Error" cancelBtn />
+            <Modal closeModal={this.hideModal}>
+                <ModalHeader title="Error" closeBtn={this.hideModal} />
                 <ModalBody>
                     <View context={error} loadingComplete={true} />
                 </ModalBody>
