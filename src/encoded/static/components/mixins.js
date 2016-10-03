@@ -113,9 +113,12 @@ module.exports.Auth0 = {
                 redirect: false
             },
             theme: {
-                logo: 'static/img/encode-logo-small-2x.png'
+                logo: 'static/img/encode-logo-square.png'
             },
             socialButtonStyle: 'big',
+            languageDictionary: {
+                title: "Log in to ENCODE"
+            }
         });
         this.lock.on("authenticated", this.handleAuth0Login.bind(this));
     },
