@@ -3,6 +3,7 @@ import pytest
 
 def persona_test_data(audience):
     import requests
+    print(audience)
     from urllib.parse import quote
     url = 'http://personatestuser.org/email_with_assertion/%s' % quote(audience, '')
     try:

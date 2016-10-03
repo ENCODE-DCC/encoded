@@ -111,7 +111,11 @@ module.exports.Auth0 = {
         this.lock = new Auth0Lock('WIOr638GdDdEGPJmABPhVzMn6SYUIdIH', 'encode.auth0.com', {
             auth: {
                 redirect: false
-            }
+            },
+            theme: {
+                logo: 'static/img/encode-logo-small-2x.png'
+            },
+            socialButtonStyle: 'big',
         });
         this.lock.on("authenticated", this.handleAuth0Login.bind(this));
     },
@@ -222,6 +226,7 @@ module.exports.Auth0 = {
     },
 
     handleAuth0Login: function (authResult, retrying) {
+        console.log(authResult);
         var accessToken = authResult.accessToken;
         if (!accessToken) return;
         this.sessionPropertiesRequest = true;
