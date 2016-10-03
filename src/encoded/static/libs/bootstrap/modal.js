@@ -61,7 +61,7 @@ module.exports.ModalMixin = {
 
 var Modal = module.exports.Modal = React.createClass({
     propTypes: {
-        actuator: React.PropTypes.object.isRequired // Component (usually a button) that makes the modal appear
+        actuator: React.PropTypes.object // Component (usually a button) that makes the modal appear
     },
 
     contextTypes: {
@@ -78,7 +78,7 @@ var Modal = module.exports.Modal = React.createClass({
         this.renderModal();
 
         // Have ESC key press close the modal.
-        document.addEventListener('keydown', this.handleEsc.bind(this), false);
+        document.addEventListener('keydown', this.handleEsc, false);
     },
 
     componentWillUnmount: function() {
@@ -104,7 +104,7 @@ var Modal = module.exports.Modal = React.createClass({
     renderModal: function() {
         React.render(
             <div>
-                {this.context.Modal_modalOpen ?
+                {!this.props.actuator || this.context.Modal_modalOpen ?
                     <div>
                         <div className="modal" style={{display: "block"}}>
                             <div className="modal-dialog">
@@ -125,9 +125,9 @@ var Modal = module.exports.Modal = React.createClass({
         // We don't require/allow a click handler for the actuator, so we attach the one from
         // ModalMixin here. You can't add attributes to an existing component in React, but React
         // has no issue adding attributes while cloning a component.
-        let actuator = cloneWithProps(this.props.actuator, {onClick: this.context.Modal_openModal});
+        let actuator = this.props.actuator ? cloneWithProps(this.props.actuator, {onClick: this.context.Modal_openModal}) : null;
 
-        return <span>{actuator}</span>;
+        return actuator ? <span>{actuator}</span> : null;
     }
 });
 
