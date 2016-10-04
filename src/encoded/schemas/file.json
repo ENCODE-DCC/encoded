@@ -159,7 +159,7 @@
                 "description": "Fastq file flowcell based unique signature to reference a file.",
                 "comment": "Current convention is based on the Illumina unique sequence identifier, colon separated flowcell, lane, read_end(1/2) and barcode.",
                 "type":  "string",
-                "pattern": "^[a-zA-Z0-9]+:[0-9]+:[12]:([ACNTG]+|[0-9]+)$"
+                "pattern": "^[a-zA-Z0-9]+:[0-9]+:[12]:.*:.*$"
             }
         },
         "file_format": {
@@ -421,6 +421,7 @@
                         "predicted heart enhancers",
                         "predicted whole brain enhancers",
                         "candidate regulatory elements",
+                        "sequence alignability",
                         
                         "genome reference",
                         "transcriptome reference",
@@ -477,9 +478,7 @@
                         "transcribed fragments",
                         "filtered transcribed fragments",
                         "valleys",
-                        "sequence alignability",
                         "sequence uniqueness",
-                        
 
                         "primer sequence",
                         "reference",
@@ -816,8 +815,6 @@
         "transcribed fragments": "annotation",
         "filtered transcribed fragments": "annotation",
         "valleys": "annotation",
-        "sequence alignability": "annotation",
-        "sequence uniqueness": "annotation",
         "blacklisted regions": "annotation",
         "mitochondria blacklisted regions": "annotation",
         "distal peaks": "annotation",
@@ -854,6 +851,8 @@
         "primer sequence": "reference",
         "spike-in sequence": "reference",
         "reference": "reference",
+        "sequence alignability": "reference",
+        "sequence uniqueness": "reference",
 
         "enhancer validation": "validation",
         "validation": "validation",

@@ -52,7 +52,7 @@ var FileTable = module.exports.FileTable = React.createClass({
 
     cv: {
         maxWidthRef: '', // ref key of table with this.state.maxWidth width
-        maxWidthNode: null // DOM node of table with this.state.maxWidth width 
+        maxWidthNode: null // DOM node of table with this.state.maxWidth width
     },
 
     // Configuration for raw file table
@@ -990,6 +990,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
                     // derived-from file isn't released and we're not logged in, or because it's a contributing file.
                     derivedFromFiles[derivedFromId] = derived_from;
                     derived_from.missing = true;
+                    derived_from.removed = false; // Clears previous value Redmine #4536
                 } else if (!derivedFromFiles[derivedFromId]) {
                     // The derived-from file was in the given file list, so record the derived-from file in derivedFromFiles.
                     // ...that is, unless the derived-from file has already been seen. Just move on if it has.
@@ -1617,7 +1618,7 @@ var QcDetailsView = function(metrics) {
                 <div className="row">
                     <div className="col-md-4 col-sm-6 col-xs-12">
                         <dl className="key-value-flex">
-                            {sortedKeys.map(key => 
+                            {sortedKeys.map(key =>
                                 (typeof metrics.ref[key] === 'string' || typeof metrics.ref[key] === 'number') ?
                                     <div key={key}>
                                         <dt>{key}</dt>
