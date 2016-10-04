@@ -1640,7 +1640,7 @@ var QcDetailsView = function(metrics) {
             <div>
                 <div className="row">
                     <div className="col-md-4 col-sm-6 col-xs-12">
-                        <dl className="key-value-flex">
+                        <dl className="key-value">
                             {sortedKeys.map(key =>
                                 (typeof metrics.ref[key] === 'string' || typeof metrics.ref[key] === 'number') ?
                                     <div key={key}>

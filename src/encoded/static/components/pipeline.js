@@ -159,7 +159,10 @@ var Pipeline = module.exports.Pipeline = React.createClass({
     },
 
     handleNodeClick: function(nodeId) {
-        this.setState({infoNodeId: this.state.infoNodeId !== nodeId ? nodeId : ''});
+        this.setState({
+            infoNodeId: nodeId,
+            infoModalOpen: true
+        });
     },
 
     closeModal: function() {
@@ -259,23 +262,23 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                 {this.jsonGraph ?
                     <div>
                         <h3>Pipeline schematic</h3>
-                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} forceRedraw>
-                            <Modal modalOpen={this.state.infoModalOpen}>
+                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} forceRedraw />
+                        {meta && this.state.infoModalOpen ?
+                            <Modal closeModal={this.closeModal}>
                                 <ModalHeader closeModal={this.closeModal}>
                                     {meta ? meta.header : null}
                                 </ModalHeader>
-                                <ModalBody className="modal-body">
+                                <ModalBody>
                                     {meta ? meta.body : null}
                                 </ModalBody>
                             </Modal>
-                        </Graph>
+                        : null}
                     </div>
                 : null}
                 {context.documents && context.documents.length ?
                     <DocumentsPanel documentSpecs={[{documents: context.documents}]} />
                 : null}
             </div>
-
         );
     }
 });
