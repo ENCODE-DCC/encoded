@@ -87,6 +87,8 @@ $ sudo -u postgres nano ~postgres/.aws/credentials
 Create new upload-encode-files access key
 $ sudo -u encoded nano ~encoded/.aws/credentials
 
+# Wait for new Master to finish its first big index before any switch over
+
 # Set these new keys inaactive
 
 # Send email to ENCODE_DEVELOPERS@LIST.NIH.GOV announcing write downtime (currently 15-20 min)
