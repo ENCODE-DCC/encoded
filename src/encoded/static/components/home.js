@@ -15,117 +15,39 @@ const newsUri = '/search/?type=Page&news=true&status=released';
 // Main page component to render the home page
 var Home = module.exports.Home = React.createClass({
 
-    getInitialState: function(){ // sets initial state for current and newtabs
+    getInitialState: function() { // sets initial state for current and newtabs
         return {
             current: "?type=Experiment&status=released", // show all released experiments
-            newtabs: [], // create empty array of selected tabs
+            organisms: [], // create empty array of selected tabs
             assayCategory: "",
             socialHeight: 0
         };
     },
 
-    handleAssayCategoryClick: function(assay){
-        var oldLink = this.state.current; // getting original search
-        var tempAssay = assay;
-
-        // if assay category already clicked then clear tempAssay essentially unclicking it
-        if(this.state.assayCategory == assay){
-            tempAssay = "";
+    handleAssayCategoryClick: function(assayCategory) {
+        if (this.state.assayCategory === assayCategory) {
+            this.setState({assayCategory: ''});
+        } else{
+            this.setState({assayCategory: assayCategory});
         }
-
-        this.setState({
-            assayCategory: tempAssay // set assayCategory to tempAssay
-        });
-
-        // checking to see if it is currently computational predictions
-        var indexOfExperiment = oldLink.indexOf("?type=Experiment&status=released");
-        if (indexOfExperiment === -1){ // if computational predictions
-            // keeps any organism parameters and puts back normal searchbase
-            oldLink = "?type=Experiment&status=released";
-        }
-
-        // getting index of "&assay_slims=" in original search link if it's there
-        var startingIndex = oldLink.search("&assay_slims=");
-
-        // if &assay_slims already is in original search link, then remove it so we can add
-        // the correct "&assay_slims="
-        if (startingIndex != -1) {
-
-            // adding the length of "&assay_slims" to make endingIndex the index of the
-            // category
-            var endingIndex = startingIndex + 13;
-
-            // either get to end of string or find next parameter starting with "&"
-            while (endingIndex < oldLink.length-1 && oldLink.substring(endingIndex, endingIndex + 1) != "&") {
-
-                // increase endingIndex until the end of the "&assay_slims=" parameter
-                endingIndex++;
-            }
-
-            // if did not reach end of string, "&assay_slims=" is in middle of search
-            if(endingIndex != oldLink.length-1){
-
-                // assay_slims part is from (startingIndex, endingIndex), so cut that out
-                // of oldLink
-                oldLink = oldLink.substr(0, startingIndex) + oldLink.substr(endingIndex);
-            }
-            else{ // "&assay_slims=" is at end of search
-
-                // assay_slims is from (startingIndex, oldLink.length, so cut that out
-                oldLink = oldLink.substr(0, startingIndex);
-            }
-        }
-        if (tempAssay != "") { // if not unclicking
-            // add in assay category parameter to search
-            if (assay === 'COMPPRED') {
-                oldLink = '?type=Annotation&encyclopedia_version=3';
-            } else {
-                oldLink = oldLink + '&assay_slims=' + tempAssay;
-            }
-        }
-
-        this.callback(oldLink); // updating current through callback
-
     },
-
 
     // pass in string with organism query and either adds or removes tab from list of selected tabs
-    handleTabClick: function(tab){
+    handleTabClick: function(selectedTab) {
 
-        var tempArray = _.clone(this.state.newtabs); // creates a copy of this.state.newtabs
-        var finalLink = _.clone(this.state.current); // clones current
+        var tempArray = _.clone(this.state.organisms); // creates a copy of this.state.newtabs
 
-        if (tempArray.indexOf(tab) == -1) { // if tab isn't already in array, then add it
-            tempArray.push(tab);
-        }
-        else{ // otherwise if it is in array, remove it from array and from link
-            var indexToRemoveArray = tempArray.indexOf(tab);
+        if (tempArray.indexOf(selectedTab) == -1) {
+            // if tab isn't already in array, then add it
+            tempArray.push(selectedTab);
+        } else{
+            // otherwise if it is in array, remove it from array and from link
+            var indexToRemoveArray = tempArray.indexOf(selectedTab);
             tempArray.splice(indexToRemoveArray, 1);
-            var indexToRemoveLink = finalLink.indexOf(tab);
-            finalLink = finalLink.substr(0, indexToRemoveLink) + finalLink.substr(indexToRemoveLink + tab.length);
         }
 
-        var organismString = ""; // create empty string to add all organisms selected
-        for(var x = 0; x < tempArray.length; x++){
-            if(finalLink.indexOf(tempArray[x]) == -1){ // if organisms were previously not selected
-                organismString = organismString + tempArray[x]; // then add them in
-            }
-        }
-
-        finalLink = finalLink + organismString; // add in updated organism queries to link
-
-        this.setState({
-            newtabs: tempArray // update newtabs
-        });
-
-        this.callback(finalLink); // updated current, updating homepage charts
-
-    },
-
-    callback: function(newUrl){ // updates current when it changes
-        this.setState({
-            current: newUrl
-        });
+        // update newtabs
+        this.setState({organisms: tempArray});
     },
 
     newsLoaded: function() {
@@ -134,11 +56,43 @@ var Home = module.exports.Home = React.createClass({
         this.setState({socialHeight: newsEl.clientHeight});
     },
 
-    render: function() { // renders home page
+    generateQuery: function(selectedOrganisms, selectedAssayCategory) {
+        // Make the base query
+        let query = selectedAssayCategory === 'COMPPRED' ? '?type=Annotation&encyclopedia_version=3' : "?type=Experiment&status=released";
+
+        // Add the selected assay category, if any (doesn't apply to Computational Predictions)
+        if (selectedAssayCategory && selectedAssayCategory !== 'COMPPRED') {
+            query += '&assay_slims=' + selectedAssayCategory;
+        }
+
+        // Add all the selected organisms, if any
+        if (selectedOrganisms.length) {
+            let organismSpec = selectedAssayCategory === 'COMPPRED' ? 'organism.scientific_name=' : 'replicates.library.biosample.donor.organism.scientific_name=';
+            let queryStrings = {'HUMAN': organismSpec + 'Homo+sapiens', // human
+                                'MOUSE': organismSpec + 'Mus+musculus', // mouse
+                                'WORM':  organismSpec + 'Caenorhabditis+elegans', // worm
+                                'FLY':   organismSpec + 'Drosophila+melanogaster&' + // fly
+                                         organismSpec + 'Drosophila+pseudoobscura&' +
+                                         organismSpec + 'Drosophila+simulans&' +
+                                         organismSpec + 'Drosophila+mojavensis&' +
+                                         organismSpec + 'Drosophila+ananassae&' +
+                                         organismSpec + 'Drosophila+virilis&' +
+                                         organismSpec + 'Drosophila+yakuba'
+            };
+            let organismQueries = selectedOrganisms.map(organism => queryStrings[organism]);
+            query += '&' + organismQueries.join('&');
+        }
+    
+        return query;
+    },
+
+    render: function() {
+        // Based on the currently selected organisms and assay category, generate a query string
+        // for the GET request to retrieve chart data.
+        let currentQuery = this.generateQuery(this.state.organisms, this.state.assayCategory);
+
         return (
-
             <div className="whole-page">
-
                 <header className="row">
                     <div className="col-sm-12">
                         <h1 className="page-title"></h1>
@@ -147,13 +101,13 @@ var Home = module.exports.Home = React.createClass({
                 <div className="row">
                     <div className="col-xs-12">
                         <Panel>
-                            <AssayClicking current={this.state.current} callback={this.callback} assayCategory={this.state.assayCategory} handleAssayCategoryClick={this.handleAssayCategoryClick}/>
+                            <AssayClicking assayCategory={this.state.assayCategory} handleAssayCategoryClick={this.handleAssayCategoryClick} />
                             <div className="organism-tabs">
-                                <TabClicking handleTabClick={this.handleTabClick} newtabs={this.state.newtabs}/>
+                                <TabClicking organisms={this.state.organisms} handleTabClick={this.handleTabClick} />
                             </div>
                             <div className="graphs">
                                 <div className="row">
-                                    <HomepageChartLoader assayCategory={this.state.assayCategory} searchBase={this.state.current} callback={this.callback} />
+                                    <HomepageChartLoader organisms={this.state.organisms} assayCategory={this.state.assayCategory} query={currentQuery} />
                                 </div>
                             </div>
                             <div className="social">
@@ -183,16 +137,16 @@ var ChartGallery = React.createClass({
         return (
             <PanelBody>
                 <div className="view-all">
-                    <a href={"/matrix/" + this.props.searchBase} className="view-all-button btn btn-info btn-sm" role="button">View Assay Matrix</a>
+                    <a href={"/matrix/" + this.props.query} className="view-all-button btn btn-info btn-sm" role="button">View Assay Matrix</a>
                 </div>
                 <div className="col-md-4">
-                    <HomepageChart {...this.props} searchBase={this.props.searchBase} />
+                    <HomepageChart {...this.props} />
                 </div>
                 <div className="col-md-4">
-                    <HomepageChart2 {...this.props} searchBase={this.props.searchBase} />
+                    <HomepageChart2 {...this.props} />
                 </div>
                 <div className="col-md-4">
-                    <HomepageChart3 {...this.props} searchBase={this.props.searchBase} />
+                    <HomepageChart3 {...this.props} />
                 </div>
             </PanelBody>
         );
@@ -203,30 +157,14 @@ var ChartGallery = React.createClass({
 // Component to allow clicking boxes on classic image
 var AssayClicking = React.createClass({
     propTypes: {
-        current: React.PropTypes.string,
-        callback: React.PropTypes.func,
         assayCategory: React.PropTypes.string
-    },
-
-    // Sets value of updatedLink to current to allow easy modification, sets value of currentAssay
-    // to assayCategory, creates assayList with ids of assay categories for rectangles in SVG
-    getInitialState: function(){
-        return {
-            updatedLink: this.props.current,
-            assayList: ["3D+chromatin+structure",
-                        "DNA+accessibility",
-                        "DNA+binding",
-                        "DNA+methylation",
-                        "COMPPRED",
-                        "Transcription",
-                        "RNA+binding"]
-        };
     },
 
     // Properly adds or removes assay category from link
     sortByAssay: function(category, e) {
 
         function handleClick(category, ctx) {
+            // Call the Home component's function to record the new assay cateogry
             ctx.props.handleAssayCategoryClick(category); // handles assay category click
         }
 
@@ -242,6 +180,14 @@ var AssayClicking = React.createClass({
 
     // Renders classic image and svg rectangles
     render: function() {
+        const assayList = ["3D+chromatin+structure",
+                        "DNA+accessibility",
+                        "DNA+binding",
+                        "DNA+methylation",
+                        "COMPPRED",
+                        "Transcription",
+                        "RNA+binding"];
+        let assayCategory = this.props.assayCategory;
         return (
             <div ref="graphdisplay">
                 <div className="overall-classic">
@@ -253,13 +199,13 @@ var AssayClicking = React.createClass({
                             <img src="static/img/classic-image.jpg" />
 
                             <svg id="site-banner-overlay" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2260 1450" className="classic-svg">
-                                <rect id={this.state.assayList[0]} x="101.03" y="645.8" width="257.47" height="230.95"  className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[0] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[0])} onTouchEnd={this.sortByAssay.bind(null, this.state.assayList[0])} />
-                                <rect id={this.state.assayList[1]} x="386.6" y="645.8" width="276.06" height="230.95"   className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[1] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[1])} onTouchEnd={this.sortByAssay.bind(null, this.state.assayList[1])} />
-                                <rect id={this.state.assayList[2]} x="688.7" y="645.8" width="237.33" height="230.95"   className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[2] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[2])} onTouchEnd={this.sortByAssay.bind(null, this.state.assayList[2])} />
-                                <rect id={this.state.assayList[3]} x="950.83" y="645.8" width="294.65" height="230.95"  className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[3] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[3])} onTouchEnd={this.sortByAssay.bind(null, this.state.assayList[3])} />
-                                <rect id={this.state.assayList[4]} x="1273.07" y="645.8" width="373.37" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[4] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[4])} onTouchEnd={this.sortByAssay.bind(null, this.state.assayList[4])} />
-                                <rect id={this.state.assayList[5]} x="1674.06" y="645.8" width="236.05" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[5] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[5])} onTouchEnd={this.sortByAssay.bind(null, this.state.assayList[5])} />
-                                <rect id={this.state.assayList[6]} x="1937.74" y="645.8" width="227.38" height="230.95" className={"rectangle-box" + (this.props.assayCategory == this.state.assayList[6] ? " selected": "")} onClick={this.sortByAssay.bind(null, this.state.assayList[6])} onTouchEnd={this.sortByAssay.bind(null, this.state.assayList[6])} />
+                                <rect id={assayList[0]} x="101.03" y="645.8" width="257.47" height="230.95"  className={"rectangle-box" + (assayCategory == assayList[0] ? " selected": "")} onClick={this.sortByAssay.bind(null, assayList[0])} onTouchEnd={this.sortByAssay.bind(null, assayList[0])} />
+                                <rect id={assayList[1]} x="386.6" y="645.8" width="276.06" height="230.95"   className={"rectangle-box" + (assayCategory == assayList[1] ? " selected": "")} onClick={this.sortByAssay.bind(null, assayList[1])} onTouchEnd={this.sortByAssay.bind(null, assayList[1])} />
+                                <rect id={assayList[2]} x="688.7" y="645.8" width="237.33" height="230.95"   className={"rectangle-box" + (assayCategory == assayList[2] ? " selected": "")} onClick={this.sortByAssay.bind(null, assayList[2])} onTouchEnd={this.sortByAssay.bind(null, assayList[2])} />
+                                <rect id={assayList[3]} x="950.83" y="645.8" width="294.65" height="230.95"  className={"rectangle-box" + (assayCategory == assayList[3] ? " selected": "")} onClick={this.sortByAssay.bind(null, assayList[3])} onTouchEnd={this.sortByAssay.bind(null, assayList[3])} />
+                                <rect id={assayList[4]} x="1273.07" y="645.8" width="373.37" height="230.95" className={"rectangle-box" + (assayCategory == assayList[4] ? " selected": "")} onClick={this.sortByAssay.bind(null, assayList[4])} onTouchEnd={this.sortByAssay.bind(null, assayList[4])} />
+                                <rect id={assayList[5]} x="1674.06" y="645.8" width="236.05" height="230.95" className={"rectangle-box" + (assayCategory == assayList[5] ? " selected": "")} onClick={this.sortByAssay.bind(null, assayList[5])} onTouchEnd={this.sortByAssay.bind(null, assayList[5])} />
+                                <rect id={assayList[6]} x="1937.74" y="645.8" width="227.38" height="230.95" className={"rectangle-box" + (assayCategory == assayList[6] ? " selected": "")} onClick={this.sortByAssay.bind(null, assayList[6])} onTouchEnd={this.sortByAssay.bind(null, assayList[6])} />
                             </svg>
                         </div>
 
@@ -282,34 +228,19 @@ var AssayClicking = React.createClass({
 // Passes in tab to handleTabClick
 var TabClicking = React.createClass({
     propTypes: {
+        organisms: React.PropTypes.array, // Array of currently selected tabs
         handleTabClick: React.PropTypes.func
     },
 
-    // Gives proper queries to tabs
-    getInitialState: function(){
-        return {
-            queryStrings: ['&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens', // human
-                            '&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus', // mouse
-                            '&replicates.library.biosample.donor.organism.scientific_name=Caenorhabditis+elegans', // worm
-
-                            '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+melanogaster' + // fly
-                            '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+pseudoobscura' +
-                            '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+simulans' +
-                            '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+mojavensis' +
-                            '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+ananassae' +
-                            '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+virilis' +
-                            '&replicates.library.biosample.donor.organism.scientific_name=Drosophila+yakuba']
-        };
-    },
-
     render: function() {
+        let organisms = this.props.organisms;
         return (
             <div ref="tabdisplay">
                 <div className="organism-selector">
-                    <a className={"single-tab" + (this.props.newtabs.indexOf(this.state.queryStrings[0]) != -1 ? " selected": "")} href="#" data-trigger onClick={this.props.handleTabClick.bind(null, this.state.queryStrings[0])}>Human</a>
-                    <a className={"single-tab" + (this.props.newtabs.indexOf(this.state.queryStrings[1]) != -1 ? " selected": "")} href="#" data-trigger onClick={this.props.handleTabClick.bind(null, this.state.queryStrings[1])}>Mouse</a>
-                    <a className={"single-tab" + (this.props.newtabs.indexOf(this.state.queryStrings[2]) != -1 ? " selected": "")} href="#" data-trigger onClick={this.props.handleTabClick.bind(null, this.state.queryStrings[2])}>Worm</a>
-                    <a className={"single-tab" + (this.props.newtabs.indexOf(this.state.queryStrings[3]) != -1 ? " selected": "")} href="#" data-trigger onClick={this.props.handleTabClick.bind(null, this.state.queryStrings[3])}>Fly</a>
+                    <a className={"single-tab" + (organisms.indexOf('HUMAN') != -1 ? " selected": "")} href="#" data-trigger onClick={this.props.handleTabClick.bind(null, 'HUMAN')}>Human</a>
+                    <a className={"single-tab" + (organisms.indexOf('MOUSE') != -1 ? " selected": "")} href="#" data-trigger onClick={this.props.handleTabClick.bind(null, 'MOUSE')}>Mouse</a>
+                    <a className={"single-tab" + (organisms.indexOf('WORM') != -1 ? " selected": "")} href="#" data-trigger onClick={this.props.handleTabClick.bind(null, 'WORM')}>Worm</a>
+                    <a className={"single-tab" + (organisms.indexOf('FLY') != -1 ? " selected": "")} href="#" data-trigger onClick={this.props.handleTabClick.bind(null, 'FLY')}>Fly</a>
                 </div>
             </div>
         );
@@ -406,13 +337,13 @@ var HomepageChart = React.createClass({
                         legend: {
                             display: false // hiding automatically generated legend
                         },
-                        legendCallback: (chart) => { // allows for legend clicking
+                        legendCallback: function(chart) { // allows for legend clicking
                             facetData = _(facetData).filter(term => term.doc_count > 0);
                             var text = [];
                             text.push('<ul>');
                             for (var i = 0; i < facetData.length; i++) {
                                 text.push('<li>');
-                                text.push('<a href="' + '/matrix/' + this.props.searchBase + '&award.project=' + facetData[i].key  + '">'); // go to matrix view when clicked
+                                text.push('<a href="' + '/matrix/' + this.props.query + '&award.project=' + facetData[i].key  + '">'); // go to matrix view when clicked
                                 text.push('<span class="chart-legend-chip" style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
                                 if (chart.data.labels[i]) {
                                     text.push('<span class="chart-legend-label">' + chart.data.labels[i] + '</span>');
@@ -421,8 +352,8 @@ var HomepageChart = React.createClass({
                             }
                             text.push('</ul>');
                             return text.join('');
-                        },
-                        onClick: (e) => {
+                        }.bind(this),
+                        onClick: function(e) {
                             // React to clicks on pie sections
                             var activePoints = this.myPieChart.getElementAtEvent(e);
 
@@ -431,9 +362,9 @@ var HomepageChart = React.createClass({
                             }
                             else{ // otherwise go to matrix view
                                 var term = facetData[activePoints[0]._index].key;
-                                this.context.navigate('/matrix/' + this.props.searchBase + '&award.project=' + term);
+                                this.context.navigate('/matrix/' + this.props.query + '&award.project=' + term);
                             }
-                        }
+                        }.bind(this)
                     }
                 });
                 document.getElementById('chart-legend').innerHTML = this.myPieChart.generateLegend(); // generates legend
@@ -497,27 +428,24 @@ var HomepageChart = React.createClass({
 });
 
 
-
-
 // Initiates the GET request to search for experiments, and then pass the data to the HomepageChart
 // component to draw the resulting chart.
 var HomepageChartLoader = React.createClass({
     propTypes: {
-        assayCategory: React.PropTypes.string, // Currently selected assay category from the classic image
-        searchBase: React.PropTypes.string, // Current search URI based on selected assayCategory
-        callback: React.PropTypes.func // 
+        query: React.PropTypes.string // Current search URI based on selected assayCategory
     },
 
     render: function() {
         return (
-            <FetchedData>
-                <Param name="data" url={'/search/' + this.props.searchBase} />
-                <ChartGallery assayCategory={this.props.assayCategory} searchBase={this.props.searchBase} />
+            <FetchedData ignoreErrors>
+                <Param name="data" url={'/search/' + this.props.query} />
+                <ChartGallery organisms={this.props.organisms} assayCategory={this.props.assayCategory}query={this.props.query} />
             </FetchedData>
         );
     }
 
 });
+
 
 // Component to display the D3-based chart for Biosample
 var HomepageChart2 = React.createClass({
@@ -545,7 +473,7 @@ var HomepageChart2 = React.createClass({
             }
 
             // Our data source will be different for computational predictions
-            var computationalPredictions = this.props.searchBase === '?type=Annotation&encyclopedia_version=3';
+            var computationalPredictions = this.props.assayCategory === 'COMPPRED';
 
             var facets = this.props.data.facets;
             if (computationalPredictions) {
@@ -613,14 +541,14 @@ var HomepageChart2 = React.createClass({
                         legend: {
                             display: false // hiding automatically generated legend
                         },
-                        legendCallback: (chart) => { // allows for legend clicking
+                        legendCallback: function(chart) { // allows for legend clicking
                             var facetTerms = _(assayFacet.terms).filter(term => term.doc_count > 0);
                             var text = [];
                             var query = computationalPredictions ? 'biosample_type=' : 'replicates.library.biosample.biosample_type=';
                             text.push('<ul>');
                             for (var i = 0; i < facetTerms.length; i++) {
                                 text.push('<li>');
-                                text.push('<a href="/matrix/' + this.props.searchBase + '&' + query + facetTerms[i].key  + '">'); // go to matrix view when clicked
+                                text.push('<a href="/matrix/' + this.props.query + '&' + query + facetTerms[i].key  + '">'); // go to matrix view when clicked
                                 text.push('<span class="chart-legend-chip" style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
                                 if (chart.data.labels[i]) {
                                     text.push('<span class="chart-legend-label">' + chart.data.labels[i] + '</span>');
@@ -629,13 +557,13 @@ var HomepageChart2 = React.createClass({
                             }
                             text.push('</ul>');
                             return text.join('');
-                        },
+                        }.bind(this),
                         onClick: function(e) {
                             // React to clicks on pie sections
                             var query = computationalPredictions ? 'biosample_type=' : 'replicates.library.biosample.biosample_type=';
                             var activePoints = this.myPieChart.getElementAtEvent(e);
                             var term = assayFacet.terms[activePoints[0]._index].key;
-                            this.context.navigate('/matrix/' + this.props.searchBase + '&' + query + term); // go to matrix view
+                            this.context.navigate('/matrix/' + this.props.query + '&' + query + term); // go to matrix view
                         }.bind(this)
                     }
                 });
@@ -766,13 +694,13 @@ var HomepageChart3 = React.createClass({
                                 }
                             }]
                         },
-                        onClick: (e) => {
+                        onClick: function(e) {
                             // React to clicks on pie sections
                             var query = 'assay_slims=';
                             var activePoints = this.myPieChart.getElementAtEvent(e);
                             var term = assayFacet.terms[activePoints[0]._index].key;
-                            this.context.navigate('/matrix/' + this.props.searchBase + '&' + query + term); // go to matrix view
-                        }
+                            this.context.navigate('/matrix/' + this.props.query + '&' + query + term); // go to matrix view
+                        }.bind(this)
                     }
                 });
             }

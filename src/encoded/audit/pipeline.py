@@ -29,11 +29,6 @@ def audit_pipeline_assay(value, system):
         return
 
     # This should be a dependancy
-    if 'assay_term_id' not in value and \
-       'assay_term_name' not in value:
-        detail = 'Pipeline {} is missing assay_term_id and assay_term_name'.format(value['@id'])
-        yield AuditFailure('missing assay information', detail, level='ERROR')
-        return
     if 'assay_term_id' not in value:
         detail = 'Pipeline {} is missing assay_term_id'.format(value['@id'])
         yield AuditFailure('missing assay information', detail, level='ERROR')

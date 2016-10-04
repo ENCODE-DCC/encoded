@@ -31,8 +31,8 @@ module.exports.BiosampleOrganismNames = function(biosamples) {
 module.exports.CollectBiosampleDocs = function(biosample) {
     // Collect up the various biosample documents
     var protocolDocuments = [];
-    if (biosample.protocol_documents && biosample.protocol_documents.length) {
-        protocolDocuments = globals.uniqueObjectsArray(biosample.protocol_documents);
+    if (biosample.documents && biosample.documents.length) {
+        protocolDocuments = globals.uniqueObjectsArray(biosample.documents);
     }
     var characterizations = [];
     if (biosample.characterizations && biosample.characterizations.length) {
