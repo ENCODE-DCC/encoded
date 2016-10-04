@@ -57,7 +57,12 @@ class Pipeline(Item):
             else:
                 return award_object['project'] + '-' + assay_term_name
         return 'undefined'
-
+'''
+OBI:0001271 RNA-seq
+OBI:0001247 DNA-seq
+OBI:0000716 ChIP-seq
+OBI:0001863 WGBS
+'''
 
 @collection(
     name='analysis-steps',
