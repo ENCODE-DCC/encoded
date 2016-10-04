@@ -118,7 +118,8 @@ module.exports.Auth0 = {
             socialButtonStyle: 'big',
             languageDictionary: {
                 title: "Log in to ENCODE"
-            }
+            },
+            allowedConnections: ['github', 'google-oauth2', 'facebook', 'linkedin', 'windowslive']
         });
         this.lock.on("authenticated", this.handleAuth0Login.bind(this));
     },
