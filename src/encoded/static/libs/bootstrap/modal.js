@@ -69,7 +69,7 @@ var Modal = module.exports.Modal = React.createClass({
     getInitialState: function() {
         return {
             modalOpen: false // True if modal is visible. Ignored if no actuator given
-        }
+        };
     },
 
     componentDidMount: function() {
