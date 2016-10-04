@@ -58,7 +58,7 @@ var BlockEditModal = React.createClass({
         var BlockEdit = blocktype.edit || FallbackBlockEdit;
         return (
             <Modal actuator={this.props.actuator}>
-                <ModalHeader title={'Edit ' + blocktype.label} />
+                <ModalHeader title={'Edit ' + blocktype.label} closeBtn={this.cancel} />
                 <ModalBody>
                     <BlockEdit schema={schema} value={this.state.value} onChange={this.onChange} />
                 </ModalBody>

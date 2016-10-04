@@ -3,18 +3,59 @@ var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
 
 
-// Display a modal dialog box that blocks all other page input until it's dismissed.
-// Use it as a wrapper around a button or link that actuates it, like:
-// <Modal title="My Modal" btnOk="OK" btnCancel="Cancel">
-//     <button modal={<ModalContent />}>Open Modal</button>
+// Display a modal dialog box that blocks all other page input until the user dismisses it. The
+// typical format looks like:
+//
+// <Modal actuator={JSX component to actuate the modal}>
+//     <ModalHeader>
+//         <content in addition to title and close button>
+//     </ModalHeader>
+//     <ModalBody>
+//         <content of modal dialog body>
+//     </ModalBody>
+//     <ModalFooter>
+//         <content of modal footer>
+//     </ModalFooter>
 // </Modal>
-// The button or link to actuate the modal must have "modal" property that references the
-// React component that renders the content of the modal.
-// You must pass a "title" property to the Modal component. You can also pass btnOk which
-// specifies the text of the button to confirm and dismiss the modal, and it defaults to "OK".
-// You can pass btnCancel which specifies the text of the button to cancel and dismiss the
-// modal. If you don't pass this property, no Cancel button is displayed.
-
+//
+// Generally you place this anywhere you want to see the actuator rendered. When you click the
+// actuator (often a button), the modal appears, e.g.:
+//
+// <div>
+//     <Modal actuator={<button className="btn btn-info">Open Modal</button>}>
+//         ...
+//
+// The resulting HTML becomes:
+//
+// <div>
+//     <button class="btn btn-info">Open Modal</button>
+//         ...
+//
+// <Modal> usage details:
+// actuator: Component that opens the modal. You don't normally need a click handler for this
+//           component because <Modal> attaches a default click handler that simply opens the
+//           modal.
+// closeModal: Function to close the modal if `actuator` isn't provided. Use this when you handle
+//             the visibility of the modal yourself. Providing this to the <Modal> component simply
+//             allows the ESC key to close the modal without an `actuator` component.
+//
+// <ModalHeader> usage details:
+// title: Title to display in the header. You can pass this as a string or a React component (e.g.
+//        a link within the title string).
+// closeBtn: As a boolean, this displays the standard close button in the header with the standard
+//           close handler. You can also pass a function to use as a click handler on this button
+//           to close the modal if you handle the visibility of the modal yourself.
+//
+// <ModalBody> takes no properties.
+//
+// <ModalFooter> usage details:
+// submitBtn: Pass a React component to render as the submit button. You can also supply a function
+//            that gets used as a click handler for a standard Submit button.
+// closeBtn: Pass True to get a standard cancel button that simply closes the modal. You can also
+//           pass a function that gets used as the click handler for the standard cancel button
+//           that gets called before closing the modal. Finally, you can pass a React component
+//           that handles the closing of the modal.
+//
 // The method of rendering the modal to a div appended to <body> rather than into the React virtual
 // DOM comes from: http://jamesknelson.com/rendering-react-components-to-the-document-body/
 
@@ -22,7 +63,7 @@ var cloneWithProps = require('react/lib/cloneWithProps');
 var Modal = module.exports.Modal = React.createClass({
     propTypes: {
         actuator: React.PropTypes.object, // Component (usually a button) that makes the modal appear
-        closeModal: React.PropTypes.func // Called to close the modal if an actuator isn't provided'
+        closeModal: React.PropTypes.func // Called to close the modal if an actuator isn't provided
     },
 
     getInitialState: function() {
@@ -134,6 +175,16 @@ var ModalHeader = module.exports.ModalHeader = React.createClass({
         ])
     },
 
+    closeModal: function() {
+        // Call close button's existing close handler if it had one first. 
+        if (this.chainedCloseModal) {
+            this.chainedCloseModal();
+        }
+
+        // Now call the standard close handler.
+        this.props.closeModal();
+    },
+
     render: function() {
         let {title, closeBtn} = this.props;
         let titleRender = null;
@@ -143,9 +194,14 @@ var ModalHeader = module.exports.ModalHeader = React.createClass({
             titleRender = typeof title === 'string' ? <h4>{title}</h4> : <div>{title}</div>;
         }
 
+        // Chain in the given closeBtn function if given
+        if (typeof closeBtn === 'function') {
+            this.chainedCloseModal = closeBtn;
+        }
+
         return (
             <div className="modal-header">
-                {closeBtn ? <button type="button" className="close" aria-label="Close" onClick={typeof closeBtn === 'function' ? closeBtn : this.props.closeModal}><span aria-hidden="true">&times;</span></button> : null}
+                {closeBtn ? <button type="button" className="close" aria-label="Close" onClick={this.props.closeModal}><span aria-hidden="true">&times;</span></button> : null}
                 {titleRender ? <div>{titleRender}</div> : null}
                 {this.props.children}
             </div>
@@ -175,7 +231,8 @@ var ModalFooter = module.exports.ModalFooter = React.createClass({
             React.PropTypes.bool, // Use default-rendered Cancel button that closes the modal
             React.PropTypes.object, // Cancel button is a React component; just render it
             React.PropTypes.func // Function to call when default-rendered Cancel button clicked
-        ])
+        ]),
+        dontClose: React.PropTypes.bool // True to *not* close the modal when the user clicks Submit
     },
 
     closeModal: function() {
@@ -189,9 +246,12 @@ var ModalFooter = module.exports.ModalFooter = React.createClass({
     },
 
     submitModal: function() {
-        this.props.submitBtn();
-        if (!this.props.dontClose) {
-            this.props.closeModal();
+        let {submitBtn, dontClose, closeModal} = this.props;
+        if (typeof submitBtn === 'function') {
+            submitBtn();
+        }
+        if (!dontClose) {
+            this.closeModal();
         }
     },
 
@@ -216,6 +276,8 @@ var ModalFooter = module.exports.ModalFooter = React.createClass({
                 this.chainedCloseModal = closeBtn.props.onClick;
             }
             closeBtn = cloneWithProps(closeBtn, {onClick: this.closeModal});
+        } else if (typeof closeBtn === 'function') {
+            this.chainedCloseModal = closeBtn;
         }
 
         // Make a Cancel button component -- either the given one, a default one that calls the
