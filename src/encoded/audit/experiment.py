@@ -1904,6 +1904,24 @@ def audit_experiment_gtex_biosample(value, system):
     return
 
 
+@audit_checker('Experiment', frame=['object'])
+def audit_experiment_geo_submission(value, system):
+    if value['status'] not in ['released']:
+        return
+    submitted_flag = False
+    detail = 'Experiment {} '.format(value['@id']) + \
+             'is released, but was not submitted to GEO.'
+    if 'dbxrefs' in value and value['dbxrefs'] != []:
+        for entry in value['dbxrefs']:
+            if value.startswith('GEO:'):
+                submitted_flag = True
+    if submitted_flag is False:
+        detail = 'Experiment {} '.format(value['@id']) + \
+                 'is released, but is not submitted to GEO.'
+        yield AuditFailure('experiment not submitted to GEO', detail, level='INTERNAL_ACTION')
+    return
+
+
 @audit_checker('experiment', frame=['object'])
 def audit_experiment_biosample_term_id(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
