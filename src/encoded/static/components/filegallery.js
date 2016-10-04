@@ -1393,22 +1393,23 @@ var FileGraph = React.createClass({
                             {!this.state.collapsed ?
                                 <div>
                                     {goodGraph ?
-                                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw>
-                                            <Modal modalOpen={this.state.infoModalOpen}>
-                                                <ModalHeader closeModal={this.closeModal}>
-                                                    {meta ? meta.header : null}
-                                                </ModalHeader>
-                                                <ModalBody className="modal-body">
-                                                    {meta ? meta.body : null}
-                                                </ModalBody>
-                                            </Modal>
-                                        </Graph>
+                                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw />
                                     :
                                         <p className="browser-error">Currently selected assembly and genomic annotation hides the graph</p>
                                     }
                                 </div>
                             : null}
                             <div className={'file-gallery-graph-footer' + (this.state.collapsed ? ' hiding' : '')}></div>
+                            {meta && this.state.infoModalOpen ?
+                                <Modal closeModal={this.closeModal}>
+                                    <ModalHeader closeModal={this.closeModal}>
+                                        {meta ? meta.header : null}
+                                    </ModalHeader>
+                                    <ModalBody>
+                                        {meta ? meta.body : null}
+                                    </ModalBody>
+                                </Modal>
+                            : null}
                         </div>
                     );
                 } else {

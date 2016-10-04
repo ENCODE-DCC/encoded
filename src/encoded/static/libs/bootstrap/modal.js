@@ -42,9 +42,9 @@ var cloneWithProps = require('react/lib/cloneWithProps');
 // <ModalHeader> usage details:
 // title: Title to display in the header. You can pass this as a string or a React component (e.g.
 //        a link within the title string).
-// closeBtn: As a boolean, this displays the standard close button in the header with the standard
-//           close handler. You can also pass a function to use as a click handler on this button
-//           to close the modal if you handle the visibility of the modal yourself.
+// closeModal: As a boolean, this displays the standard close button in the header with the
+//             standard close handler. You can also pass a function to use as a click handler on
+//             this button to close the modal if you handle the visibility of the modal yourself.
 //
 // <ModalBody> takes no properties.
 //
@@ -153,7 +153,7 @@ var Modal = module.exports.Modal = React.createClass({
         // needing to do it explicitly.
         this.modalChildren = React.Children.map(this.props.children, child => {
             if (child.type === ModalHeader.type || child.type === ModalBody.type || child.type === ModalFooter.type) {
-                return cloneWithProps(child, {closeModal: this.closeModal, modalOpen: this.state.modalOpen});
+                return cloneWithProps(child, {_closeModal: this.closeModal, _modalOpen: this.state.modalOpen});
             }
             return child;
         });
@@ -169,7 +169,7 @@ var ModalHeader = module.exports.ModalHeader = React.createClass({
             React.PropTypes.string, // String to display as an <h4> title
             React.PropTypes.object // React component to display for the title 
         ]),
-        closeBtn: React.PropTypes.oneOfType([
+        closeModal: React.PropTypes.oneOfType([
             React.PropTypes.bool, // True to display the close button in the header with the built-in handler
             React.PropTypes.func // If not using an actuator on <Modal>, provide a function to close the modal
         ])
@@ -182,11 +182,11 @@ var ModalHeader = module.exports.ModalHeader = React.createClass({
         }
 
         // Now call the standard close handler.
-        this.props.closeModal();
+        this.props._closeModal();
     },
 
     render: function() {
-        let {title, closeBtn} = this.props;
+        let {title, closeModal} = this.props;
         let titleRender = null;
 
         // Handle the string and React component cases for the title
@@ -195,13 +195,13 @@ var ModalHeader = module.exports.ModalHeader = React.createClass({
         }
 
         // Chain in the given closeBtn function if given
-        if (typeof closeBtn === 'function') {
-            this.chainedCloseModal = closeBtn;
+        if (typeof closeModal === 'function') {
+            this.chainedCloseModal = closeModal;
         }
 
         return (
             <div className="modal-header">
-                {closeBtn ? <button type="button" className="close" aria-label="Close" onClick={this.props.closeModal}><span aria-hidden="true">&times;</span></button> : null}
+                {closeModal ? <button type="button" className="close" aria-label="Close" onClick={this.closeModal}><span aria-hidden="true">&times;</span></button> : null}
                 {titleRender ? <div>{titleRender}</div> : null}
                 {this.props.children}
             </div>
@@ -227,7 +227,7 @@ var ModalFooter = module.exports.ModalFooter = React.createClass({
             React.PropTypes.object, // Submit button is a React component; just render it
             React.PropTypes.func // Function to call when default-rendered Submit button clicked
         ]),
-        closeBtn: React.PropTypes.oneOfType([
+        closeModal: React.PropTypes.oneOfType([
             React.PropTypes.bool, // Use default-rendered Cancel button that closes the modal
             React.PropTypes.object, // Cancel button is a React component; just render it
             React.PropTypes.func // Function to call when default-rendered Cancel button clicked
@@ -242,7 +242,7 @@ var ModalFooter = module.exports.ModalFooter = React.createClass({
         }
 
         // Now call the standard close handler.
-        this.props.closeModal();
+        this.props._closeModal();
     },
 
     submitModal: function() {
@@ -256,7 +256,7 @@ var ModalFooter = module.exports.ModalFooter = React.createClass({
     },
 
     render: function() {
-        let {submitBtn, closeBtn} = this.props;
+        let {submitBtn, closeModal} = this.props;
         let submitBtnComponent = null;
         let closeBtnComponent = null;
 
@@ -269,24 +269,24 @@ var ModalFooter = module.exports.ModalFooter = React.createClass({
 
         // If the given closeModal property is a component, make sure it calls the close function
         // when it gets clicked.
-        if (typeof closeBtn === 'object') {
+        if (typeof closeModal === 'object') {
             // If the close button had a click handler, save it so we can call it before calling
             // the standard one.
-            if (closeBtn.props.onClick) {
-                this.chainedCloseModal = closeBtn.props.onClick;
+            if (closeModal.props.onClick) {
+                this.chainedCloseModal = closeModal.props.onClick;
             }
-            closeBtn = cloneWithProps(closeBtn, {onClick: this.closeModal});
-        } else if (typeof closeBtn === 'function') {
-            this.chainedCloseModal = closeBtn;
+            closeModal = cloneWithProps(closeModal, {onClick: this.closeModal});
+        } else if (typeof closeModal === 'function') {
+            this.chainedCloseModal = closeModal;
         }
 
         // Make a Cancel button component -- either the given one, a default one that calls the
         // given function, or a default one that calls the default function. Note: if you pass
-        // `null` in the closeBtn property, this component thinks that's a function because of an
+        // `null` in the closeModal property, this component thinks that's a function because of an
         // old Javascript characteristic.
-        if (closeBtn) {
-            let closeBtnFunc = (typeof closeBtn === 'function') ? closeBtn : (typeof closeBtn === 'boolean' ? this.props.closeModal : null);
-            closeBtnComponent = (typeof closeBtn === 'object') ? closeBtn : <button className="btn btn-info" onClick={closeBtnFunc}>Cancel</button>;
+        if (closeModal) {
+            let closeBtnFunc = (typeof closeModal === 'function') ? closeModal : (typeof closeModal === 'boolean' ? this.props._closeModal : null);
+            closeBtnComponent = (typeof closeModal === 'object') ? closeModal : <button className="btn btn-info" onClick={closeBtnFunc}>Cancel</button>;
         }
 
         return (
