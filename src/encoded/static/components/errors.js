@@ -74,7 +74,7 @@ var LoginDenied = module.exports.LoginDenied = React.createClass({
                 <div className="row">
                     <div className="col-sm-12">
                         <h1>Login failure</h1>
-                        <p>Access is restricted to ENCODE consortium members.</p>
+                        <p>Access is restricted to ENCODE consortium members. Your identity provider account email must match your ENCODE member email.</p>
                         <p><a href='mailto:encode-help@lists.stanford.edu'>Request an account</a></p>
                         
                     </div>
