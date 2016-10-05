@@ -631,8 +631,8 @@ def test_audit_file_derived_from_archived(testapp, file7, file6):
                for error in errors_list)
 
 
-def test_audit_file_supercedes_archived(testapp, file7, file6):
-    testapp.patch_json(file6['@id'], {'supercedes': [file7['@id']],
+def test_audit_file_supersedes_archived(testapp, file7, file6):
+    testapp.patch_json(file6['@id'], {'supersedes': [file7['@id']],
                                       'status': 'archived'})
     testapp.patch_json(file7['@id'], {'status': 'released'})
     res = testapp.get(file6['@id'] + '@@index-data')
@@ -640,7 +640,7 @@ def test_audit_file_supercedes_archived(testapp, file7, file6):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'supercedes archived'
+    assert any(error['category'] == 'supersedes archived'
                for error in errors_list)
 
 
