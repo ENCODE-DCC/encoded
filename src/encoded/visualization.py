@@ -1087,7 +1087,7 @@ CHIA_COMPOSITE_VIS_DEFS = {
     "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
     "Views": {
         "tag": "view",
-        "group_order": [ "Signal of unique reads", "Signal of all reads", "Plus signal of unique reads", "Minus signal of unique reads", "Plus signal of all reads", "Minus signal of all reads", ],
+        "group_order": [ "Signal of unique reads", "Signal of all reads", ],
         "groups": {
             "Signal of unique reads": {
                 "tag": "SIGBL",
