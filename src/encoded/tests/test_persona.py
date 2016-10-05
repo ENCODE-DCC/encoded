@@ -1,15 +1,17 @@
 import pytest
 
 
-def auth0_access_token(token):
+def auth0_access_token():
     import requests
     fb_access_token = {
-        'access_token': 'EAAH5N89jqAUBAIlE1HrHXrZBzchIGXfGqLyfflkl0r0ZAW8gEtuxtYFRVlNKQvGZCchfybkXOLevWhhZAb5T0X8QhZCIdy5ZCJDrG4JvDpcOnl6Ld2gj1ZCBiFg8jtdoGWOV2Dwp045KYF0RGsonLJ20U2ZCaDytibFEXwZAAGBW6mORUMz6l7tlt',
-        'connection': 'facebook',
+        'connection': 'Username-Password-Authentication',
         'scope': 'openid',
-        'client_id': 'WIOr638GdDdEGPJmABPhVzMn6SYUIdIH'
+        'client_id': 'WIOr638GdDdEGPJmABPhVzMn6SYUIdIH',
+        'grant_type': 'password',
+        'username': 'test@encodeproject.org',
+        'password': 'test'
     }
-    url = 'https://encode.auth0.com/oauth/access_token'
+    url = 'https://encode.auth0.com/oauth/ro'
     try:
         res = requests.post(url, data=fb_access_token)
         res.raise_for_status()
@@ -20,29 +22,25 @@ def auth0_access_token(token):
         pytest.skip("Missing 'access_token' in persona test user access token: %r" % data)
     return data['access_token']
 
-def user_email
-
 
 @pytest.fixture(scope='session')
 def auth0_encode_user():
-    fb_token = 'EAAH5N89jqAUBAIlE1HrHXrZBzchIGXfGqLyfflkl0r0ZAW8gEtuxtYFRVlNKQvGZCchfybkXOLevWhhZAb5T0X8QhZCIdy5ZCJDrG4JvDpcOnl6Ld2gj1ZCBiFg8jtdoGWOV2Dwp045KYF0RGsonLJ20U2ZCaDytibFEXwZAAGBW6mORUMz6l7tlt'
-    access_token = auth0_access_token(fb_token)
+    access_token = auth0_access_token()
+    return {'accessToken': access_token}
 
 
 
-
-
-def test_login_no_csrf(anontestapp, persona_assertion):
-    res = anontestapp.post_json('/login', persona_assertion, status=400)
+def test_login_no_csrf(anontestapp, auth0_encode_user):
+    res = anontestapp.post_json('/login', auth0_encode_user, status=400)
     assert 'Set-Cookie' in res.headers
 
 
-# def test_login_unknown_user(anontestapp, persona_assertion):
-#     res = anontestapp.get('/session')
-#     csrf_token = str(res.json['_csrft_'])
-#     headers = {'X-CSRF-Token': csrf_token}
-#     res = anontestapp.post_json('/login', persona_assertion, headers=headers, status=403)
-#     assert 'Set-Cookie' in res.headers
+def test_login_unknown_user(anontestapp, auth0_encode_user):
+    res = anontestapp.get('/session')
+    csrf_token = str(res.json['_csrft_'])
+    headers = {'X-CSRF-Token': csrf_token}
+    res = anontestapp.post_json('/login', auth0_encode_user, headers=headers, status=403)
+    assert 'Set-Cookie' in res.headers
 
 
 # def test_login_bad_audience(anontestapp, persona_bad_assertion):
