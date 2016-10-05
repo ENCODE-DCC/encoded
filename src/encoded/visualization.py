@@ -471,8 +471,8 @@ SRNA_COMPOSITE_VIS_DEFS = {
 
 RAMPAGE_COMPOSITE_VIS_DEFS = {
     "assay_composite": {
-        "longLabel":  "Collection of ENCODE Rampage/CAGE experiments",
-        "shortLabel": "ENCODE Rampage/CAGE",
+        "longLabel":  "Collection of ENCODE RAMPAGE/CAGE experiments",
+        "shortLabel": "ENCODE RAMPAGE/CAGE",
     },
     "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
     "shortLabel": "{assay_title} of {biosample_term_name} - {accession}",
@@ -890,7 +890,7 @@ CHIP_COMPOSITE_VIS_DEFS = {
                 "tag": "eFCOC",
                 "visibility": "full",
                 "type": "bigWig",
-                "viewLimits": "0:1",
+                "viewLimits": "0:10",
                 "autoScale": "off",
                 "maxHeightPixels": "64:18:8",
                 "windowingFunction": "mean+whiskers",
@@ -900,7 +900,7 @@ CHIP_COMPOSITE_VIS_DEFS = {
                 "tag": "fSPV",
                 "visibility": "hide",
                 "type": "bigWig",
-                "viewLimits": "0:1",
+                "viewLimits": "0:10",
                 "autoScale": "off",
                 "maxHeightPixels": "64:18:8",
                 "windowingFunction": "mean+whiskers",
@@ -910,7 +910,7 @@ CHIP_COMPOSITE_VIS_DEFS = {
                 "tag": "gSIG",
                 "visibility": "hide",
                 "type": "bigWig",
-                "viewLimits": "0:1",
+                "viewLimits": "0:10",
                 "autoScale": "off",
                 "maxHeightPixels": "64:18:8",
                 "windowingFunction": "mean+whiskers",
@@ -1704,7 +1704,7 @@ def lookup_token(token,dataset,a_file=None):
             else:
                 target = {}
         if token.find('.') > -1:
-            sub_token = token.strip('{}').split('.')[0]
+            sub_token = token.strip('{}').split('.')[1]
         else:
             sub_token = "label"
         return target.get(sub_token,"Unknown Target")
@@ -1880,6 +1880,8 @@ def generate_live_groups(composite,title,group_defs,dataset,rep_tags=[]):
                     if mask is not None:
                         term = convert_mask(mask,dataset)
                         live_group["groups"][term_tag]["url"] = term
+                #else:
+                #    log.warn("Generating live groups mask: %s: '%s'" % (mask,term))
         live_group["preferred_order"] = "sorted"
         # No tag order since only one
 
@@ -1952,7 +1954,7 @@ def biosamples_for_file(a_file,dataset):
             if replicate.get("biological_replicate_number",-1) != bio_rep:
                 continue
             biosample = replicate.get("library",{}).get("biosample",{})
-            if biosample is None:
+            if not biosample:
                 continue
             biosamples[biosample["accession"]] = biosample
             break  # If multiple techical replicates then the one should do
@@ -2063,8 +2065,16 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
             if longLabel is None:
                 longLabel = "{assay_title} of {biosample_term_name} {output_type} {biological_replicate_number} {experiment.accession} - {file.accession}"
             track["longLabel"] = sanitize_label( convert_mask(longLabel,dataset,a_file) )
+            # Specialized addendum comments because subtle details are always getting in the way of elegance.
+            addendum = ""
+            submitted_name = a_file.get('submitted_file_name',"none")
+            if "_tophat" in submitted_name:
+                addendum = addendum + 'TopHat,'
             if a_file.get('assembly',assembly) == 'mm10-minimal':
-                track["longLabel"] = track["longLabel"] + " (mm10-minimal)" # add mm10-minimal into the longLabel
+                addendum = addendum + 'mm10-minimal,'
+            if len(addendum) > 0:
+                track["longLabel"] = track["longLabel"] + " (" + addendum[0:-1] + ")" # add mm10-minimal into the longLabel
+
 
             metadata_pairs = {}
             metadata_pairs['file&#32;download'] = '"<a href=\'%s%s\' title=\'Download this file from the ENCODE portal\'>%s</a>"' % (host,a_file["href"],a_file["accession"])
@@ -2115,7 +2125,9 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
                         if "url" in subgroup:
                             metadata_pairs[group_title] = '"<a href=\'%s/%s/\' TARGET=\'_blank\' title=\'%s details\'>%s</a>"' % (host,subgroup["url"],group_title,subgroup["title"])
                         elif group_title == "Biosample":
-                            bs_value = subgroup["title"]
+                            bs_value = sanitize_label( dataset.get("biosample_summary","") )
+                            if len(bs_value) == 0:
+                                bs_value = subgroup["title"]
                             biosamples = biosamples_for_file(a_file,dataset)
                             if len(biosamples) > 0:
                                 for bs_acc in sorted( biosamples.keys() ):
@@ -2123,7 +2135,6 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
                             metadata_pairs[group_title] = '"%s"' % (bs_value)
                         else:
                             metadata_pairs[group_title] = '"%s"' % (subgroup["title"])
-                        #subgroups[0]["tracks"] = [ track ]
                 else:
                     ### Help!
                     assert(group_tag == "Don't know this group!")
@@ -2275,6 +2286,7 @@ def remodel_acc_to_set_composites(acc_composites,hide_after=None):
         else: # Adding an acc_composite to an existing set_composite
             #log.warn("Adding %s into %s composite" % (acc_composite.get("name"," a composite"),vis_type)) # DEBUG: remodelling
             set_composite = set_composites[vis_type]
+            set_composite['composite_type'] = 'set'
 
             if set_composite.get("project","unknown") != "NHGRI":
                 acc_pennant = acc_composite["pennantIcon"]
@@ -2369,17 +2381,29 @@ def ucsc_trackDb_composite_blob(composite,title):
         blob += '\n'
     # dimensions
     actual_group_tags = [ "view" ] # Not all groups will be used in composite, depending upon subgroup content
-    dimensions = composite.get("dimensions")
+    dimensions = composite.get("dimensions",{})
     if dimensions:
         pairs = ""
+        XY_skipped = []
+        XY_added = []
         for dim_tag in sorted( dimensions.keys() ):
             group = composite["groups"].get(dimensions[dim_tag])
             if group is None: # e.g. "Targets" may not exist
                 continue
-            if len(group.get("groups",{})) <= 1: # NOTE get hui.js line 262 is now fixed!
-                continue
+            if dimensions[dim_tag] != "REP":
+                if len(group.get("groups",{})) <= 1:
+                    if dim_tag[-1] in ['X','Y']:
+                        XY_skipped.append(dim_tag)
+                    continue
+                elif dim_tag[-1] in ['X','Y']:
+                    XY_added.append(dim_tag)
             pairs += " %s=%s" % (dim_tag, dimensions[dim_tag])
             actual_group_tags.append(dimensions[dim_tag])
+        # Getting too fancy for our own good: If one XY dimension has more than one member then we must add both X and Y
+        if len(XY_skipped) > 0 and len(XY_added) > 0:
+            for dim_tag in XY_skipped:
+                pairs += " %s=%s" % (dim_tag, dimensions[dim_tag])
+                actual_group_tags.append(dimensions[dim_tag])
         if len(pairs) > 0:
             blob += "dimensions%s\n" % pairs
     # filterComposite
@@ -2479,8 +2503,8 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False,
         acc_composite = make_acc_composite(dataset, assembly, host=request.host_url, hide=hide)  # DEBUG: batch trackDb
         if USE_CACHE:
             add_to_es(request,es_key,acc_composite)
-        if not regen:
-            log.warn("made acc_composite %s_%s" % (acc, assembly))
+        #if not regen:
+        #    log.info("made acc_composite %s_%s" % (acc, assembly))
         found_or_made = "made"
 
         if request_dataset: # Manage meomory
@@ -2496,6 +2520,9 @@ def generate_trackDb(request, dataset, assembly, hide=False, regen=False):
     (found_or_made, acc_composite) = find_or_make_acc_composite(request, ucsc_assembly, dataset["accession"], dataset, hide=hide, regen=regen)
     log.warn("%s composite %s_%s %.3f" % (found_or_made,dataset['accession'],ucsc_assembly,(time.time() - PROFILE_START_TIME)))
     #del dataset
+    json_out = (request.url.find("jsonout") > -1) # @@hub/GRCh38/jsonout/trackDb.txt  regenvis/GRCh38 causes and error
+    if json_out:
+        return json.dumps(acc_composite,indent=4,sort_keys=True)
     return ucsc_trackDb_composite_blob(acc_composite,acc)
 
 def make_set_key(param_list,assembly):
@@ -2621,6 +2648,10 @@ def generate_batch_trackDb(request, hide=False, regen=False):
         # 198 acc_composites => 1 set_composites (198 generated, 0 found)  28.590 secs - len(results) = 198   27.667 secs
         # 474 acc_composites => 1 set_composites (474 generated, 0 found)  63.715 secs - len(results) = 474   62.148 secs
         # 474 acc_composites => 1 set_composites (474 generated, 0 found)  63.494 secs - len(results) = 474   61.706 secs
+
+    json_out = (request.url.find("jsonout") > -1) # ...&assembly=hg19&jsonout/hg19/trackDb.txt  regenvis=1 causes an error
+    if json_out:
+        return json.dumps(set_composites,indent=4,sort_keys=True)
 
     blob = ""
     for composite_tag in sorted( set_composites.keys() ):
