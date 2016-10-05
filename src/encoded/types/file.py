@@ -96,6 +96,7 @@ class File(Item):
     rev = {
         'paired_with': ('File', 'paired_with'),
         'quality_metrics': ('QualityMetric', 'quality_metric_of'),
+        'superseded_by': ('File', 'supersedes')
     }
 
     embedded = [
@@ -156,6 +157,10 @@ class File(Item):
             if 'md5sum' in properties:
                 value = 'md5:{md5sum}'.format(**properties)
                 keys.setdefault('alias', []).append(value)
+            if 'fastq_signature' in properties and \
+               properties['fastq_signature'] != []:
+                for entry in properties['fastq_signature']:
+                    keys.setdefault('alias', []).append(entry)
             # Ensure no files have multiple reverse paired_with
             if 'paired_with' in properties:
                 keys.setdefault('file:paired_with', []).append(properties['paired_with'])
@@ -318,6 +323,18 @@ class File(Item):
             return file_format
         else:
             return file_format + ' ' + file_format_type
+
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "description": "The file(s) that supersede this file (i.e. are more preferable to use).",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "File.supersedes",
+        },
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
 
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):

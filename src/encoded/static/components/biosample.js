@@ -1,37 +1,34 @@
 'use strict';
-var React = require('react');
-var panel = require('../libs/bootstrap/panel');
-var _ = require('underscore');
-var url = require('url');
-var globals = require('./globals');
-var navigation = require('./navigation');
-var dataset = require('./dataset');
-var dbxref = require('./dbxref');
-var statuslabel = require('./statuslabel');
-var audit = require('./audit');
-var image = require('./image');
-var item = require('./item');
-var reference = require('./reference');
-var objectutils = require('./objectutils');
-var sortTable = require('./sorttable');
-var doc = require('./doc');
-var {BiosampleSummaryString} = require('./typeutils');
+const React = require('react');
+const panel = require('../libs/bootstrap/panel');
+const _ = require('underscore');
+const url = require('url');
+const globals = require('./globals');
+const navigation = require('./navigation');
+const dataset = require('./dataset');
+const dbxref = require('./dbxref');
+const statuslabel = require('./statuslabel');
+const audit = require('./audit');
+const image = require('./image');
+const item = require('./item');
+const reference = require('./reference');
+const {TreatmentDisplay, SingleTreatment} = require('./objectutils');
+const doc = require('./doc');
+const {BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable} = require('./typeutils');
+const {GeneticModificationSummary} = require('./genetic_modification');
 
-var Breadcrumbs = navigation.Breadcrumbs;
-var DbxrefList = dbxref.DbxrefList;
-var StatusLabel = statuslabel.StatusLabel;
-var AuditIndicators = audit.AuditIndicators;
-var AuditDetail = audit.AuditDetail;
-var AuditMixin = audit.AuditMixin;
-var {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile} = doc;
-var ExperimentTable = dataset.ExperimentTable;
-var PubReferenceList = reference.PubReferenceList;
-var RelatedItems = item.RelatedItems;
-var SingleTreatment = objectutils.SingleTreatment;
-var SortTablePanel = sortTable.SortTablePanel;
-var SortTable = sortTable.SortTable;
-var ProjectBadge = image.ProjectBadge;
-var {Panel, PanelBody, PanelHeading} = panel;
+const Breadcrumbs = navigation.Breadcrumbs;
+const DbxrefList = dbxref.DbxrefList;
+const StatusLabel = statuslabel.StatusLabel;
+const AuditIndicators = audit.AuditIndicators;
+const AuditDetail = audit.AuditDetail;
+const AuditMixin = audit.AuditMixin;
+const {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile} = doc;
+const ExperimentTable = dataset.ExperimentTable;
+const PubReferenceList = reference.PubReferenceList;
+const RelatedItems = item.RelatedItems;
+const ProjectBadge = image.ProjectBadge;
+const {Panel, PanelBody, PanelHeading} = panel;
 
 
 var PanelLookup = function (props) {
@@ -44,135 +41,6 @@ var PanelLookup = function (props) {
     var PanelView = globals.panel_views.lookup(props.context);
     return <PanelView key={props.context.uuid} {...props} />;
 };
-
-
-// Display a table of retrieved biosamples related to the displayed biosample
-var BiosampleTable = React.createClass({
-    columns: {
-        'accession': {
-            title: 'Accession',
-            display: function(biosample) {
-                return <a href={biosample['@id']}>{biosample.accession}</a>;
-            }
-        },
-        'biosample_type': {title: 'Type'},
-        'biosample_term_name': {title: 'Term'},
-        'summary': {title: 'Summary', sorter: false}
-    },
-
-    render: function() {
-        var biosamples;
-
-        // If there's a limit on entries to display and the array is greater than that
-        // limit, then clone the array with just that specified number of elements
-        if (this.props.limit && (this.props.limit < this.props.items.length)) {
-            // Limit the experiment list by cloning first {limit} elements
-            biosamples = this.props.items.slice(0, this.props.limit);
-        } else {
-            // No limiting; just reference the original array
-            biosamples = this.props.items;
-        }
-
-        return (
-            <SortTablePanel title={this.props.title}>
-                <SortTable list={this.props.items} columns={this.columns} footer={<BiosampleTableFooter items={biosamples} total={this.props.total} url={this.props.url} />} />
-            </SortTablePanel>
-        );
-    }
-});
-
-// Display a count of biosamples in the footer, with a link to the corresponding search if needed
-var BiosampleTableFooter = React.createClass({
-    render: function() {
-        var {items, total, url} = this.props;
-
-        return (
-            <div>
-                <span>Displaying {items.length} of {total} </span>
-                {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
-            </div>
-        );
-    }
-});
-
-
-// Collect up all the documents associated with the given biosample. They get combined all into one array of
-// documents (with @type of Document or Characterization). If the given biosample has no documdents, this
-// function returns null. Protocol documents, characterizations, construct documents, and RNAi documents
-// all get included.
-function collectBiosampleDocs(biosample) {
-    // Collect up the various biosample documents
-    var protocolDocuments = [];
-    if (biosample.protocol_documents && biosample.protocol_documents.length) {
-        protocolDocuments = globals.uniqueObjectsArray(biosample.protocol_documents);
-    }
-    var characterizations = [];
-    if (biosample.characterizations && biosample.characterizations.length) {
-        characterizations = globals.uniqueObjectsArray(biosample.characterizations);
-    }
-    var constructDocuments = [];
-    if (biosample.constructs && biosample.constructs.length) {
-        biosample.constructs.forEach(construct => {
-            if (construct.documents && construct.documents.length) {
-                constructDocuments = constructDocuments.concat(construct.documents);
-            }
-        });
-    }
-    var rnaiDocuments = [];
-    if (biosample.rnais && biosample.rnais.length) {
-        biosample.rnais.forEach(rnai => {
-            if (rnai.documents && rnai.documents.length) {
-                rnaiDocuments = rnaiDocuments.concat(rnai.documents);
-            }
-        });
-    }
-    var donorDocuments = [];
-    var donorCharacterizations = [];
-    if (biosample.donor) {
-        if (biosample.donor.characterizations && biosample.donor.characterizations.length) {
-            donorCharacterizations = biosample.donor.characterizations;
-        }
-        if (biosample.donor.documents && biosample.donor.documents.length) {
-            donorDocuments = biosample.donor.documents;
-        }
-    }
-    var donorConstructs = [];
-    if (biosample.model_organism_donor_constructs && biosample.model_organism_donor_constructs.length) {
-        biosample.model_organism_donor_constructs.forEach(construct => {
-            if (construct.documents && construct.documents.length) {
-                donorConstructs = donorConstructs.concat(construct.documents);
-            }
-        });
-    }
-    var talenDocuments = [];
-    if (biosample.talens && biosample.talens.length) {
-        biosample.talens.forEach(talen => {
-            talenDocuments = talenDocuments.concat(talen.documents);
-        });
-    }
-    var treatmentDocuments = [];
-    if (biosample.treatments && biosample.treatments.length) {
-        biosample.treatments.forEach(treatment => {
-            treatmentDocuments = treatmentDocuments.concat(treatment.protocols);
-        });
-    }
-
-    // Put together the document list for rendering
-    // Compile the document list
-    var combinedDocuments = _([].concat(
-        protocolDocuments,
-        characterizations,
-        constructDocuments,
-        rnaiDocuments,
-        donorDocuments,
-        donorCharacterizations,
-        donorConstructs,
-        talenDocuments,
-        treatmentDocuments
-    )).uniq(doc => doc.uuid);
-
-    return combinedDocuments;
-}
 
 
 var Biosample = module.exports.Biosample = React.createClass({
@@ -200,23 +68,15 @@ var Biosample = module.exports.Biosample = React.createClass({
         }
 
         // Collect all documents in this biosample
-        var combinedDocs = collectBiosampleDocs(context);
+        var combinedDocs = CollectBiosampleDocs(context);
 
         // If this biosample is part of another, collect those documents too, then remove
         // any duplicate documents in the combinedDocs array.
         if (context.part_of) {
-            var parentCombinedDocs = collectBiosampleDocs(context.part_of);
+            var parentCombinedDocs = CollectBiosampleDocs(context.part_of);
             combinedDocs = combinedDocs.concat(parentCombinedDocs);
         }
         combinedDocs = globals.uniqueObjectsArray(combinedDocs);
-
-        // Set up TALENs panel for multiple TALENs
-        var talens = null;
-        if (context.talens && context.talens.length) {
-            talens = context.talens.map(talen => {
-                return PanelLookup({context: talen});
-            });
-        }
 
         // Collect up biosample and model organism donor constructs
         var constructs = ((context.constructs && context.constructs.length) ? context.constructs : [])
@@ -232,6 +92,12 @@ var Biosample = module.exports.Biosample = React.createClass({
         var tagBadges;
         if (context.internal_tags && context.internal_tags.length) {
             tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
+
+        // Make the donor panel (if any) title
+        var donorPanelTitle;
+        if (context.donor) {
+            donorPanelTitle = (context.donor.organism.name === 'human' ? 'Donor' : 'Strain') + ' information';
         }
 
         return (
@@ -516,7 +382,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                             <section>
                                 <hr />
                                 <h4>Treatment details</h4>
-                                {context.treatments.map(PanelLookup)}
+                                {context.treatments.map(treatment => TreatmentDisplay(treatment))}
                             </section>
                         : null}
 
@@ -546,43 +412,33 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                 {context.donor ?
                     <div>
-                        <h3>{context.donor.organism.name === 'human' ? 'Donor' : 'Strain'} information</h3>
-                        <div className="data-display">
-                            {PanelLookup({context: context.donor, biosample: context})}
-                        </div>
-                    </div>
-                : null}
-
-                {talens ?
-                    <div>
-                        <h3>TALENs</h3>
-                        <Panel>
-                            <div className="data-display">
-                                {talens}
-                            </div>
-                        </Panel>
+                        {PanelLookup({context: context.donor, biosample: context, panelTitle: donorPanelTitle})}
                     </div>
                 : null}
 
                 <RelatedItems
                     title="Experiments using this biosample"
                     url={'/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid}
-                    Component={ExperimentTable} />
+                    Component={ExperimentTable} ignoreErrors />
 
                 <RelatedItems title="Biosamples that are part of this biosample"
                               url={'/search/?type=biosample&part_of.uuid=' + context.uuid}
-                              Component={BiosampleTable} />
+                              Component={BiosampleTable} ignoreErrors />
 
                 <RelatedItems title="Biosamples that are derived from this biosample"
                               url={'/search/?type=biosample&derived_from.uuid=' + context.uuid}
-                              Component={BiosampleTable} />
+                              Component={BiosampleTable} ignoreErrors />
 
                 <RelatedItems title="Biosamples that are pooled from this biosample"
                               url={'/search/?type=biosample&pooled_from.uuid=' + context.uuid}
-                              Component={BiosampleTable} />
+                              Component={BiosampleTable} ignoreErrors />
 
                 {combinedDocs.length ?
                     <DocumentsPanel documentSpecs={[{documents: combinedDocs}]} />
+                : null}
+
+                {context.genetic_modifications.length ?
+                    <GeneticModificationSummary geneticModifications={context.genetic_modifications} />
                 : null}
             </div>
         );
@@ -647,8 +503,7 @@ var BiosampleTermId = React.createClass({
 
 var HumanDonor = module.exports.HumanDonor = React.createClass({
     render: function() {
-        var context = this.props.context;
-        var biosample = this.props.biosample;
+        var {context, biosample, panelTitle} = this.props;
         var references = PubReferenceList(context.references);
 
         // Render tags badges
@@ -660,6 +515,9 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
         return (
             <div>
                 <Panel>
+                    <PanelHeading>
+                        <h4>{panelTitle}</h4>
+                    </PanelHeading>
                     <PanelBody>
                         <dl className="key-value">
                             <div data-test="accession">
@@ -1291,7 +1149,7 @@ var CharacterizationDetail = React.createClass({
 
         return (
             <div className={keyClass}>
-                <dl className='key-value-doc' id={'panel' + this.props.key} aria-labeledby={'tab' + this.props.key} role="tabpanel">
+                <dl className='key-value-doc' id={'panel' + this.props.id} aria-labeledby={'tab' + this.props.id} role="tabpanel">
                     {excerpt ?
                         <div data-test="caption">
                             <dt>Caption</dt>

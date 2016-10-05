@@ -2,8 +2,8 @@
 [
      {
         "accession": "ENCPL001MQC",
-        "assay_term_id": "OBI:0000748",
-        "assay_term_name": "whole genome bisulfite sequencing",
+        "assay_term_id": "OBI:0001863",
+        "assay_term_name": "whole-genome shotgun bisulfite sequencing",
         "uuid": "9e3f23ae-716a-4fe0-a238-b9bbd98508d5",
         "title": "WGBS Methlyation Pipeline - QC",
         "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline",
@@ -16,8 +16,8 @@
     },
     {
         "accession": "ENCPL000MEG",
-        "assay_term_id": "OBI:0000748",
-        "assay_term_name": "whole genome bisulfite sequencing",
+        "assay_term_id": "OBI:0001863",
+        "assay_term_name": "whole-genome shotgun bisulfite sequencing",
         "uuid": "23b2f12c-8a55-4860-b013-423b5de9de0d",
         "title": "WGBS Methlyation Pipeline - Genome Conversion",
         "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline",
@@ -34,8 +34,8 @@
     },
     {
         "accession": "ENCPL002BIS",
-        "assay_term_id": "OBI:0000748",
-        "assay_term_name": "whole genome bisulfite sequencing",
+        "assay_term_id": "OBI:0001863",
+        "assay_term_name": "whole-genome shotgun bisulfite sequencing",
         "uuid": "b0636cbe-e2f4-4606-b68b-faf6bbda5959",
         "title": "WGBS Methlyation Pipeline",
         "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline",
@@ -123,8 +123,8 @@
     },
     {
         "accession": "ENCPL001CLP",
-        "assay_term_id": "NTR:0001449",
-        "assay_term_name": "iCLIP",
+        "assay_term_id": "NTR:0003027",
+        "assay_term_name": "eCLIP",
         "analysis_steps": [
             "alignment-test-step-3",
             "peak-calling-test-step-1"

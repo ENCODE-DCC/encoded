@@ -69,9 +69,17 @@ $qualitymetric-figure-height: 96px;
     border-bottom: 1px solid #c0c0c0;
     font-weight: bold;
     text-align: left;
-    @include font-size(1);
+    font-size: 1rem;
 }
 
+.document-label {
+    display: inline-block;
+    padding: 0 5px;
+    font-size: 0.9rem;
+    color: #fff;
+    background-color: #808080;
+    border-radius: 4px;
+}
 
 .characterization-title {
     @extend .document-title;
@@ -120,7 +128,7 @@ $qualitymetric-figure-height: 96px;
         padding: 5px 20px 8px;
         background-color: desaturate(lighten(#0a253d,30%),30%);
         color: #fff;
-        @include font-size(0.8);
+        font-size: 0.8rem;
         font-weight: bold;
     }
 
@@ -145,7 +153,7 @@ $qualitymetric-figure-height: 96px;
 
     .label {
         display: inline-block;
-        @include font-size(0.8);
+        font-size: 0.8rem;
     }
 }
 
@@ -157,7 +165,7 @@ $qualitymetric-figure-height: 96px;
 .characterization-status {
     margin-bottom: 8px;
     font-weight: bold;
-    @include font-size(1.5);
+    font-size: 1.5rem;
 
     %status-pos {
         top: -5px;
@@ -208,13 +216,13 @@ $qualitymetric-figure-height: 96px;
     text-shadow: 0 -1px 0 rgba(0,0,0,.3);
     text-align: left;
     padding: .3em .5em .4em;
-    @include font-size(1);
+    font-size: 1rem;
     line-height: 1.1;
     background-color: $gray-light;
 
     @media screen and (min-width: $screen-sm-min) {
         display: inline-block;
-        @include font-size(1.1);
+        font-size: 1.1rem;
     }
 }
 
@@ -231,7 +239,7 @@ $qualitymetric-figure-height: 96px;
 
     li {
         display: table-cell;
-        @include border-radius(0);
+        border-radius: 0;
         vertical-align: bottom;
         border-left: 1px solid #606060;
 
@@ -240,43 +248,43 @@ $qualitymetric-figure-height: 96px;
         }
 
         &:first-child {
-            @include border-top-left-radius(4px);
-            @include border-bottom-left-radius(4px);
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
             border-left: none;
         }
 
         &:last-child {
-            @include border-top-right-radius(4px);
-            @include border-bottom-right-radius(4px);
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
         }
     }
 }
 
 .status-list-title {
     display: block;
-    @include font-size(0.7);
+    font-size: 0.7rem;
     font-weight: normal;
     text-align: left;
 
     @media screen and (min-width: $screen-sm-min) {
         display: inline;
-        @include font-size(1.2);
+        font-size: 1.2rem;
     }
 }
 
 @each $item in label, badge {
     // ELIGIBLE FOR NEW DATA (green)
-    .#{$item}.status-eligible-for-new-data        { background-color: $brand-success; }
-    .#{$item}.status-eligible-for-new-data[href]   { background-color: darken($brand-success, 10%); }
+    .#{$item}.status-characterized-to-standards        { background-color: $brand-success; }
+    .#{$item}.status-characterized-to-standards[href]   { background-color: darken($brand-success, 10%); }
     // PENDING DCC REVIEW (blue)
     .#{$item}.status-pending-dcc-review      { background-color: $brand-info; }
     .#{$item}.status-pending-dcc-review[href] { background-color: darken($brand-info, 10%); }
     // NOT ELIGIBLE FOR NEW DATA (red)
-    .#{$item}.status-not-eligible-for-new-data          { background-color: $brand-danger; }
-    .#{$item}.status-not-eligible-for-new-data[href]    { background-color: darken($brand-danger, 10%); }
+    .#{$item}.status-not-characterized-to-standards          { background-color: $brand-danger; }
+    .#{$item}.status-not-characterized-to-standards[href]    { background-color: darken($brand-danger, 10%); }
     // AWAITING LAB CHARACTERIZATION (yellow)
-    .#{$item}.status-awaiting-lab-characterization      { background-color: $brand-warning; }
-    .#{$item}.status-awaiting-lab-characterization[href]{ background-color: darken($brand-warning, 10%); }
+    .#{$item}.status-awaiting-characterization      { background-color: $brand-warning; }
+    .#{$item}.status-awaiting-characterization[href]{ background-color: darken($brand-warning, 10%); }
     // COMPLIANT (green)
     .#{$item}.status-compliant          { background-color: $brand-success; }
     .#{$item}.status-compliant[href]    { background-color: darken($brand-success, 10%); }
@@ -358,11 +366,11 @@ $qualitymetric-figure-height: 96px;
 }
 
 // Status indicator glyph colors
-.indicator.status-eligible-for-new-data { color: $indicator-eligible; }
-.indicator.status-eligible-for-new-data-via-exemption { color: $indicator-eligible-exempt; }
+.indicator.status-characterized-to-standards { color: $indicator-eligible; }
+.indicator.status-characterized-to-standards-with-exemption { color: $indicator-eligible-exempt; }
 .indicator.status-pending-dcc-review { color: $indicator-pending; }
-.indicator.status-not-eligible-for-new-data { color: $indicator-noteligible; }
-.indicator.status-awaiting-lab-characterization { color: $indicator-awaiting; }
+.indicator.status-not-characterized-to-standards { color: $indicator-noteligible; }
+.indicator.status-awaiting-characterization { color: $indicator-awaiting; }
 .indicator.status-not-pursued { color: $indicator-notpursued; }
 .indicator.status-not-reviewed { color: $indicator-notreviewed; }
 
@@ -409,7 +417,7 @@ $qualitymetric-figure-height: 96px;
 
 .facet-term-key {
     margin-right: 5px;
-    @include font-size(1.1);
+    font-size: 1.1rem;
 }
 
 
@@ -505,7 +513,7 @@ $qualitymetric-figure-height: 96px;
             width: 100%;
             padding: 0 17px 0 10px;
             text-align: center;
-            @include font-size(0.85);
+            font-size: 0.85rem;
             line-height: 24px;
         }
     }
@@ -572,12 +580,12 @@ $qualitymetric-figure-height: 96px;
 
     h3 {
         margin: 0;
-        @include font-size(1.2);
+        font-size: 1.2rem;
     }
 
     p {
         margin: 2px 0 0 0;
-        @include font-size(1);
+        font-size: 1rem;
         word-wrap: break-word;
     }
 }
@@ -652,7 +660,7 @@ $dl-bar-height: 30px;
     margin: 0;
     background-color: $mainThemeColor;
     text-align: center;
-    @include background-image(linear-gradient(top, lighten($mainThemeColor,5%) 0%, $mainThemeColor 100%));
+    background-image: linear-gradient(top, lighten($mainThemeColor,5%) 0%, $mainThemeColor 100%);
     background-image: -ms-linear-gradient(top, lighten($mainThemeColor,5%) 0%, $mainThemeColor 100%);
     border-top: 1px solid #808080 !important;
     border-bottom: none;
@@ -663,13 +671,12 @@ $dl-bar-height: 30px;
     color: #333333;
 
     &:hover {
-        @include background-image(linear-gradient(top, $mainThemeColor 0%, darken($mainThemeColor,5%) 100%));
-        background-image: -ms-linear-gradient(top, $mainThemeColor 0%, darken($mainThemeColor,5%) 100%);
+        background-image: linear-gradient(top, $mainThemeColor 0%, darken($mainThemeColor,5%) 100%);
     }
 
     &:focus {
         outline: none;
-        @include box-shadow(0 0 3px 2px #94bfe7 inset);
+        box-shadow: 0 0 3px 2px #94bfe7 inset;
     }
 
     &.panel-footer {
@@ -714,7 +721,7 @@ $dl-bar-height: 30px;
     left: 0;
     width: 100%;
     height: 40px;
-    @include background-image(linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.3) 100%));
+    background-image: linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.3) 100%);
 
     &.active {
         display: none;
@@ -726,7 +733,7 @@ $dl-bar-height: 30px;
 }
 
 .journal, .author {
-    @include font-size(1);
+   font-size: 1rem;
 }
 
 // Characterization panel biosample terms

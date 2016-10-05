@@ -20,17 +20,17 @@
         "schema_version": {
             "default": "3"
         },
-        "SPOT": {
+        "SPOT score": {
             "type": "number",
-            "description": "SPOT"
+            "description": "SPOT score as calculated by hotspot2"
         },
-        "hotspot tags": {
+        "hotspot count": {
             "type": "number",
-            "description": "Count of read tags in hotspots"
+            "description": "Count of hotspots discovered by hotspot2"
         },
-        "total tags": {
+        "peaks count": {
             "type": "number",
-            "description": "Count of all read tags"
+            "description": "Count of peaks discovered by hotspot2"
         }
     }
 }

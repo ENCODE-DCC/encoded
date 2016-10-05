@@ -28,6 +28,7 @@ def non_concord_experiment(testapp, lab, award):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
+        'assay_term_name': 'RNA-seq',
         'biosample_type': 'immortalized cell line',
         'biosample_term_id': 'NTR:000945',
         'biosample_term_name': 'bad name'

@@ -111,6 +111,18 @@ def award(testapp):
     }
     return testapp.post_json('/award', item).json['@graph'][0]
 
+
+@pytest.fixture
+def award_modERN(testapp):
+    item = {
+        'name': 'modERN-award',
+        'rfa': 'modERN',
+        'project': 'modERN',
+        'viewing_group': 'ENCODE',
+    }
+    return testapp.post_json('/award', item).json['@graph'][0]
+
+
 @pytest.fixture
 def remc_award(testapp):
     item = {
@@ -213,6 +225,7 @@ def experiment(testapp, lab, award):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
+        'assay_term_name': 'RNA-seq'
     }
     return testapp.post_json('/experiment', item).json['@graph'][0]
 
@@ -221,6 +234,7 @@ def base_experiment(testapp, lab, award):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
+        'assay_term_name': 'RNA-seq',
         'status': 'started'
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -258,6 +272,7 @@ def fastq_file(testapp, lab, award, experiment, replicate):
         'md5sum': 'd41d8cd9f00b204e9800998ecf8427e',
         'replicate': replicate['@id'],
         'output_type': 'reads',
+        'run_type': 'single-ended',
         'lab': lab['@id'],
         'award': award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath
@@ -272,6 +287,7 @@ def bam_file(testapp, lab, award, experiment):
         'file_format': 'bam',
         'md5sum': 'd41d8cd9f00b204e9800998ecf86674427e',
         'output_type': 'alignments',
+        'assembly': 'hg19',
         'lab': lab['@id'],
         'award': award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath
@@ -351,6 +367,15 @@ def target_control(testapp, organism):
     return testapp.post_json('/target', item).json['@graph'][0]
 
 
+@pytest.fixture
+def target_promoter(testapp, fly):
+    item = {
+        'label': 'daf-2',
+        'organism': fly['@id'],
+        'investigated_as': ['other context']
+    }
+    return testapp.post_json('/target', item).json['@graph'][0]
+
 RED_DOT = """data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
 AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
 9TXL0Y4OHwAAAABJRU5ErkJggg=="""
@@ -409,7 +434,7 @@ def rnai(testapp, lab, award, target):
 
 
 @pytest.fixture
-def construct(testapp, lab, award, target, source):
+def construct(testapp, lab, award, target, source, target_control):
     item = {
         'target': target['@id'],
         'award': award['@id'],
