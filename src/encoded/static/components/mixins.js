@@ -108,7 +108,8 @@ module.exports.Auth0 = {
             href: window.location.href,
             session_cookie: session_cookie
         });
-        this.lock = new Auth0Lock('WIOr638GdDdEGPJmABPhVzMn6SYUIdIH', 'encode.auth0.com', {
+        var lock_ = require('auth0-lock');
+        this.lock = new lock_.default('WIOr638GdDdEGPJmABPhVzMn6SYUIdIH', 'encode.auth0.com', {
             auth: {
                 redirect: false
             },
