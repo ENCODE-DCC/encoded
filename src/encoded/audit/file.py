@@ -27,17 +27,17 @@ paired_end_assays = [
 
 @audit_checker('File', frame=['derived_from',
                               'controlled_by',
-                              'supercedes'])
+                              'supersedes'])
 def audit_file_archived_derivation(value, system):
     if value['status'] == 'archived':
-        if 'supercedes' in value:
-            for entry in value['supercedes']:
+        if 'supersedes' in value:
+            for entry in value['supersedes']:
                 if entry['status'] != 'archived':
                     detail = 'File {} '.format(value['@id']) + \
                              'with the status {} '.format(value['status']) + \
                              'supersedes file {} '.format(entry['@id']) + \
                              'with the status {}.'.format(entry['status'])
-                    yield AuditFailure('supercedes archived',
+                    yield AuditFailure('supersedes archived',
                                        detail, level='INTERNAL_ACTION')
     else:
         if 'derived_from' in value:
