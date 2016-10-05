@@ -44,12 +44,16 @@ class GeneticModification(Item):
         'modification_techniques.documents.lab',
         'modification_techniques.documents.submitted_by',
         'biosamples_modified.documents',
+        'donors_modified.documents',
         'treatments'
     ]
 
     rev = {
         'biosamples_modified': ('Biosample', 'genetic_modifications'),
-        'donors_modified': ('Donor', 'genetic_modifications'),
+        'mouse_donors_modified': ('MouseDonor', 'genetic_modifications'),
+        'fly_donors_modified': ('FlyDonor', 'genetic_modifications'),
+        'worm_donors_modified': ('WormDonor', 'genetic_modifications'),
+        'human_donors_modified': ('HumanDonor', 'genetic_modifications'),
         'characterizations': ('GeneticModificationCharacterization', 'characterizes')
     }
 
@@ -69,11 +73,17 @@ class GeneticModification(Item):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "Biosample.genetic_modifications",
+            "linkFrom": "Donor.genetic_modifications",
         },
     })
-    def donors_modified(self, request, donors_modified):
-        return paths_filtered_by_status(request, donors_modified)
+    def donors_modified(self, request, fly_donors_modified,
+                        worm_donors_modified, human_donors_modified,
+                        mouse_donors_modified):
+        returnList = paths_filtered_by_status(request, fly_donors_modified)
+        returnList.extend(paths_filtered_by_status(request, worm_donors_modified))
+        returnList.extend(paths_filtered_by_status(request, human_donors_modified))
+        returnList.extend(paths_filtered_by_status(request, mouse_donors_modified))
+        return returnList
 
     @calculated_property(schema={
         "title": "Characterizations",
