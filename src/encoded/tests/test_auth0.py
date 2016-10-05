@@ -3,7 +3,7 @@ import requests
 
 @pytest.fixture(scope='session')
 def auth0_access_token():
-    fb_access_token = {
+    creds = {
         'connection': 'Username-Password-Authentication',
         'scope': 'openid',
         'client_id': 'WIOr638GdDdEGPJmABPhVzMn6SYUIdIH',
@@ -13,13 +13,13 @@ def auth0_access_token():
     }
     url = 'https://encode.auth0.com/oauth/ro'
     try:
-        res = requests.post(url, data=fb_access_token)
+        res = requests.post(url, data=creds)
         res.raise_for_status()
     except Exception as e:
-        pytest.skip("Error retrieving auth0 fb test user access token: %r" % e)
+        pytest.skip("Error retrieving auth0 test user access token: %r" % e)
     data = res.json()
     if 'access_token' not in data:
-        pytest.skip("Missing 'access_token' in persona test user access token: %r" % data)
+        pytest.skip("Missing 'access_token' in auth0 test user access token: %r" % data)
     return data['access_token']
 
 
