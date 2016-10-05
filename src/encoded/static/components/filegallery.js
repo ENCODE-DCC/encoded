@@ -1654,14 +1654,16 @@ var QcDetailsView = function(metrics) {
 
                     {(qcPanels && qcPanels.length) || metrics.ref.attachment ?
                         <div className="col-md-8 col-sm-12 quality-metrics-attachments">
-                            <h5>Quality metric attachments</h5>
                             <div className="row">
-                                {/* If the metrics object has an `attachment` property, display that first, then display the properties
-                                    not named `attachment` but which have their own schema attribute, `attachment`, set to true */}
-                                {metrics.ref.attachment ?
-                                    <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} />
-                                : null}
-                                {qcPanels}
+                                <h5>Quality metric attachments</h5>
+                                <div className="flexrow attachment-panel-inner">
+                                    {/* If the metrics object has an `attachment` property, display that first, then display the properties
+                                        not named `attachment` but which have their own schema attribute, `attachment`, set to true */}
+                                    {metrics.ref.attachment ?
+                                        <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} />
+                                    : null}
+                                    {qcPanels}
+                                </div>
                             </div>
                         </div>
                     : null}
