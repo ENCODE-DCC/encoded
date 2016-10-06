@@ -744,7 +744,7 @@ var FileGalleryRenderer = React.createClass({
         var items = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
 
         // Combined object's files and search results files for display
-        var files = _.uniq(((context.files && context.files.length) ? context.files : []).concat((items && items.length) ? items : []));
+        var files = (items && items.length) ? items : [];
         if (files.length === 0) {
             return null;
         }
@@ -759,6 +759,17 @@ var FileGalleryRenderer = React.createClass({
 
         // Get a list of files for the graph (filters out archived files)
         var graphFiles = _(files).filter(file => file.status !== 'archived');
+
+        // Collect all QC objects associated with all files in allFileQCs (keyed by each quality
+        // metric object's @id) so that we can get at their audits.
+        let allFileQCs = {};
+        files.forEach(file => {
+            if (file.quality_metrics && file.quality_metrics.length) {
+                file.quality_metrics.forEach(qc => {
+                    allFileQCs[qc['@id']] = qc;
+                });
+            }
+        });
 
         return (
             <Panel>
@@ -787,7 +798,8 @@ var FileGalleryRenderer = React.createClass({
                 </PanelHeading>
 
                 {!this.props.hideGraph ?
-                    <FileGraph context={context} items={graphFiles} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
+                    <FileGraph context={context} items={graphFiles} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation}
+                        qualityMetrics={allFileQCs} session={this.context.session} />
                 : null}
 
                 {/* If logged in and dataset is released, need to combine search of files that reference
@@ -878,7 +890,7 @@ function graphException(message, file0, file1) {
 module.exports.graphException = graphException;
 
 
-var assembleGraph = module.exports.assembleGraph = function(context, session, infoNodeId, files, filterAssembly, filterAnnotation) {
+var assembleGraph = module.exports.assembleGraph = function(context, session, infoNodeId, files, filterAssembly, filterAnnotation, qualityMetrics) {
 
     // Calculate a step ID from a file's derived_from array
     function _derivedFileIds(file) {
@@ -1228,7 +1240,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
 
             // Add QC metrics info from the file to the list to generate the nodes later
             if (fileQcMetrics[fileId] && fileQcMetrics[fileId].length && file.step_run) {
-                metricsInfo = fileQcMetrics[fileId].map(function(metric) {
+                metricsInfo = fileQcMetrics[fileId].map(metric => {
                     var qcId = genQcId(metric, file);
                     return {id: qcId, label: 'QC', class: 'pipeline-node-qc-metric' + (infoNodeId === qcId ? ' active' : ''), ref: metric, parent: file};
                 });
@@ -1312,6 +1324,14 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
 
 
 var FileGraph = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object, // Displayed Experiment (or sibling Dataset type) object
+        items: React.PropTypes.array, // Array of files we're graphing
+        selectedAssembly: React.PropTypes.string, // Assembly to filter on
+        selectedAnnotation: React.PropTypes.string, // Annotation to filter on
+        qualityMetrics: React.PropTypes.object, // All QualityMetric objects for all files in `items`
+        session: React.PropTypes.object // Login information
+    },
 
     getInitialState: function() {
         return {
@@ -1357,13 +1377,13 @@ var FileGraph = React.createClass({
     },
 
     render: function() {
-        var {context, session, items, selectedAssembly, selectedAnnotation} = this.props;
+        var {context, session, items, selectedAssembly, selectedAnnotation, qualityMetrics} = this.props;
         var files = items;
 
         // Build node graph of the files and analysis steps with this experiment
         if (files && files.length) {
             try {
-                this.jsonGraph = assembleGraph(context, session, this.state.infoNodeId, files, selectedAssembly, selectedAnnotation);
+                this.jsonGraph = assembleGraph(context, session, this.state.infoNodeId, files, selectedAssembly, selectedAnnotation, qualityMetrics);
             } catch(e) {
                 this.jsonGraph = null;
                 console.warn(e.message + (e.file0 ? ' -- file0:' + e.file0 : '') + (e.file1 ? ' -- file1:' + e.file1: ''));
@@ -1383,7 +1403,7 @@ var FileGraph = React.createClass({
                             {!this.state.collapsed ?
                                 <div>
                                     {goodGraph ?
-                                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw>
+                                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses>
                                             <div id="graph-node-info">
                                                 {meta ? <PanelBody>{meta}</PanelBody> : null}
                                             </div>
