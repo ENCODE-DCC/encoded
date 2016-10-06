@@ -1913,7 +1913,7 @@ def audit_experiment_geo_submission(value, system):
              'is released, but was not submitted to GEO.'
     if 'dbxrefs' in value and value['dbxrefs'] != []:
         for entry in value['dbxrefs']:
-            if value.startswith('GEO:'):
+            if entry.startswith('GEO:'):
                 submitted_flag = True
     if submitted_flag is False:
         detail = 'Experiment {} '.format(value['@id']) + \
