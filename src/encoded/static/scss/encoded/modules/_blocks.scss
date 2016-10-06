@@ -3,7 +3,7 @@
 }
 
 
-// Applies to all block types, and specific blog styles nest inside
+// Applies to all block types, and specific news styles nest inside
 .block {
     margin-bottom: 10px;
     box-shadow: 0 0 6px rgba(195, 202, 211, 0.5);
@@ -156,6 +156,36 @@
             @media screen and (min-width: $screen-md-min) {
                 padding: 20px;
             }
+        }
+    }
+
+    &.homepage-summary-block {
+        background: #fff;
+        padding: 20px;
+        position: relative;
+        z-index: 0;
+        h3 {
+            margin: 0;
+        }
+        .homepage-summary-row {
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+        }
+        .homepage-summary-count {
+            clear: both;
+            text-align: center;
+            padding: 1em 0;
+            svg {
+                fill: #fff;
+                margin-right: 1em;
+            }
+        }
+        .facet {
+            width: 50%;
+            float: left;
+            padding: 0 30px;
+            border-bottom: none;
         }
     }
 }

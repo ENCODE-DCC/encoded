@@ -124,8 +124,8 @@ def test_experiment_biosample_summary(testapp,
                                                                replicate_2_1['@id']]})
     res = testapp.get(base_experiment['@id']+'@@index-data')
     assert res.json['object']['biosample_summary'] == \
-        'S2R+ immortalized cell line nuclear fraction and ' + \
-        'liver tissue male (1 day), treated with ethanol'
+        'S2R+ nuclear fraction and ' + \
+        'liver male (1 day), treated with ethanol'
 
 
 def test_experiment_biosample_summary_2(testapp,
@@ -162,4 +162,4 @@ def test_experiment_biosample_summary_2(testapp,
                                                                replicate_2_1['@id']]})
     res = testapp.get(base_experiment['@id']+'@@index-data')
     assert res.json['object']['biosample_summary'] == \
-        'liver tissue male (10 days) not treated and treated with ethanol'
+        'liver male (10 days) not treated and treated with ethanol'
