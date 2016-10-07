@@ -259,155 +259,150 @@ var HomepageChart = React.createClass({
         projectColors: React.PropTypes.object // DataColor instance for experiment project
     },
 
-    drawChart: function() {
-        // Draw the chart of search results given in this.props.data.facets. Since D3 doesn't work
-        // with the React virtual DOM, we have to load it separately using the webpack .ensure
-        // mechanism. Once the callback is called, it's loaded and can be referenced through
-        // require.
+    createChart: function(facetData) {
         require.ensure(['chart.js'], function(require) {
             var Chart = require('chart.js');
-            var data = [];
-            var labels = [];
-            var facetData;
 
-            // Handle cancelled GET request. We'll have made another GET request.
-            if (this.props.data.status === 'error') {
-                return;
-            }
+            // for each item, set doc count, add to total doc count, add proper label, and assign color.
+            let colors = this.context.projectColors.colorList(facetData.map(term => term.key), {shade: 10});
+            let totalDocCount = 0;
+            let data = [];
+            let labels = [];
 
-            var facets = this.props.data.facets;
-            var assayFacet = facets.find(facet => facet.field === 'award.project');
-            facetData = assayFacet ? assayFacet.terms : [];
+            // Convert facet data to chart data.
+            facetData.forEach((term, i) => {
+                totalDocCount += term.doc_count;
+                data[i] = term.doc_count;
+                labels[i] = term.key;
+            });
 
-            if(facetData.length){ // if there is data
-                document.getElementById('MyEmptyChart').innerHTML = "";
-                document.getElementById('MyEmptyChart').removeAttribute("class"); // clear out empty chart div
+            // adding total doc count to middle of donut
+            // http://stackoverflow.com/questions/20966817/how-to-add-text-inside-the-doughnut-chart-using-chart-js/24671908
+            Chart.pluginService.register({
+                beforeDraw: function(chart) {
+                    if (chart.chart.canvas.id === 'myChart') {
+                        let width = chart.chart.width;
+                        let height = chart.chart.height;
+                        let ctx = chart.chart.ctx;
 
-                var totalDocCount = 0;
+                        ctx.fillStyle = '#000000';
+                        ctx.restore();
+                        let fontSize = (height / 114).toFixed(2);
+                        ctx.font = fontSize + "em sans-serif";
+                        ctx.textBaseline = "middle";
 
-                // for each item, set doc count, add to total doc count, add proper label, and assign color
-                var colors = this.context.projectColors.colorList(facetData.map(term => term.key), {shade: 10});
-                facetData.forEach(function(term, i) {
-                    data[i] = term.doc_count;
-                    totalDocCount += term.doc_count;
-                    labels[i] = term.key;
-                });
+                        let text = totalDocCount;
+                        let textX = Math.round((width - ctx.measureText(text).width) / 2);
+                        let textY = height / 2;
 
-                // adding total doc count to middle of donut
-                // http://stackoverflow.com/questions/20966817/how-to-add-text-inside-the-doughnut-chart-using-chart-js/24671908
-                Chart.pluginService.register({
-                    beforeDraw: function(chart) {
-                        if(chart.chart.canvas.id == 'myChart'){
-                            var width = chart.chart.width,
-                                height = chart.chart.height,
-                                ctx = chart.chart.ctx;
-
-                            ctx.fillStyle = '#000000';
-                            ctx.restore();
-                            var fontSize = (height / 114).toFixed(2);
-                            ctx.font = fontSize + "em sans-serif";
-                            ctx.textBaseline = "middle";
-
-                            var text = totalDocCount,
-                                textX = Math.round((width - ctx.measureText(text).width) / 2),
-                                textY = height / 2;
-
-                            ctx.clearRect(0, 0, width, height);
-                            ctx.fillText(text, textX, textY);
-                            ctx.save();
-                        }
+                        ctx.clearRect(0, 0, width, height);
+                        ctx.fillText(text, textX, textY);
+                        ctx.save();
                     }
-                });
-
-                // Pass the assay_title counts to the charting library to render it.
-                var canvas = document.getElementById("myChart");
-                var ctx = canvas.getContext("2d");
-
-                this.myPieChart = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            data: data,
-                            backgroundColor: colors
-                        }]
-                    },
-
-                    options: {
-                        legend: {
-                            display: false // hiding automatically generated legend
-                        },
-                        legendCallback: function(chart) { // allows for legend clicking
-                            facetData = _(facetData).filter(term => term.doc_count > 0);
-                            var text = [];
-                            text.push('<ul>');
-                            for (var i = 0; i < facetData.length; i++) {
-                                text.push('<li>');
-                                text.push('<a href="' + '/matrix/' + this.props.query + '&award.project=' + facetData[i].key  + '">'); // go to matrix view when clicked
-                                text.push('<span class="chart-legend-chip" style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
-                                if (chart.data.labels[i]) {
-                                    text.push('<span class="chart-legend-label">' + chart.data.labels[i] + '</span>');
-                                }
-                                text.push('</a></li>');
-                            }
-                            text.push('</ul>');
-                            return text.join('');
-                        }.bind(this),
-                        onClick: function(e) {
-                            // React to clicks on pie sections
-                            var activePoints = this.myPieChart.getElementAtEvent(e);
-
-                            if (activePoints[0] == null) { // if click on wrong area, do nothing
-                                var placeholder = 0;
-                            }
-                            else{ // otherwise go to matrix view
-                                var term = facetData[activePoints[0]._index].key;
-                                this.context.navigate('/matrix/' + this.props.query + '&award.project=' + term);
-                            }
-                        }.bind(this)
+                },
+                beforeUpdate: function(chart) {
+                    if (chart.chart.canvas.id === 'myChart') {
+                        let ctx = chart.chart.ctx;
+                        let data = chart.data.datasets[0].data;
+                        let width = chart.chart.width;
+                        let height = chart.chart.height;
+                        let total = data.reduce((prev, curr) => prev + curr);
+                        console.log(total);
+                        let textX = Math.round((width - ctx.measureText(total).width) / 2);
+                        let textY = height / 2;
+                        ctx.fillText(total, textX, textY);
+                        ctx.save();
                     }
-                });
-                document.getElementById('chart-legend').innerHTML = this.myPieChart.generateLegend(); // generates legend
-
-            }
-
-
-            else{ //if no data
-
-                var element = document.getElementById('MyEmptyChart');
-                var chart = document.getElementById('myChart');
-                var existingText = document.getElementById('p1');
-                if(existingText){
-                    element.removeChild(existingText);
                 }
+            });
 
-                var para = document.createElement("p");
-                para.setAttribute('id', 'p1');
-                var node = document.createTextNode("No data to display.");
-                para.appendChild(node); // display no data error message
+            // Pass the assay_title counts to the charting library to render it.
+            var canvas = document.getElementById("myChart");
+            var ctx = canvas.getContext("2d");
 
-                element.appendChild(para);
-                element.setAttribute('class', 'empty-chart'); // add class to empty-chart div
+            this.myPieChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors
+                    }]
+                },
 
-                chart.setAttribute('height', '0'); // clear chart canvas so it won't display
-                document.getElementById('chart-legend').innerHTML = ''; // Clear legend
-            }
+                options: {
+                    legend: {
+                        display: false // hiding automatically generated legend
+                    },
+                    legendCallback: function(chart) { // allows for legend clicking
+                        facetData = _(facetData).filter(term => term.doc_count > 0);
+                        var text = [];
+                        text.push('<ul>');
+                        for (var i = 0; i < facetData.length; i++) {
+                            text.push('<li>');
+                            text.push('<a href="' + '/matrix/' + this.props.query + '&award.project=' + facetData[i].key  + '">'); // go to matrix view when clicked
+                            text.push('<span class="chart-legend-chip" style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
+                            if (chart.data.labels[i]) {
+                                text.push('<span class="chart-legend-label">' + chart.data.labels[i] + '</span>');
+                            }
+                            text.push('</a></li>');
+                        }
+                        text.push('</ul>');
+                        return text.join('');
+                    }.bind(this),
+                    onClick: function(e) {
+                        // React to clicks on pie sections
+                        var activePoints = this.myPieChart.getElementAtEvent(e);
 
-
+                        if (activePoints[0]) { // if click on wrong area, do nothing
+                            var clickedElementIndex = activePoints[0]._index;
+                            var term = this.myPieChart.data.labels[clickedElementIndex];
+                            this.context.navigate('/matrix/' + this.props.query + '&award.project=' + term);
+                        }
+                    }.bind(this)
+                }
+            });
+            document.getElementById('chart-legend').innerHTML = this.myPieChart.generateLegend(); // generates legend
         }.bind(this));
-
     },
 
+    updateChart: function(Chart, facetData) {
+        // for each item, set doc count, add to total doc count, add proper label, and assign color.
+        let colors = this.context.projectColors.colorList(facetData.map(term => term.key), {shade: 10});
+        let totalDocCount = 0;
+        let data = [];
+        let labels = [];
 
+        // Convert facet data to chart data.
+        facetData.forEach((term, i) => {
+            totalDocCount += term.doc_count;
+            data[i] = term.doc_count;
+            labels[i] = term.key;
+        });
+    
+        Chart.data.datasets[0].data = data;
+        Chart.data.datasets[0].backgroundColor = colors;
+        Chart.data.labels = labels;
+        Chart.update();
+        document.getElementById('chart-legend').innerHTML = Chart.generateLegend(); // generates legend
+    },
 
     componentDidMount: function() {
-        this.drawChart();
+        let facets = this.props.data.facets;
+        let assayFacet = facets.find(facet => facet.field === 'award.project');
+        let facetData = assayFacet ? assayFacet.terms : [];
+        
+        // Create the chart, and assign the chart to this.myPieChart when the process finishes.
+        this.createChart(facetData);
     },
 
     componentDidUpdate: function(){
         if (this.myPieChart) {
-            this.myPieChart.destroy(); // clears old chart before creating new one
-            this.drawChart();
+            let facets = this.props.data.facets;
+            let assayFacet = facets.find(facet => facet.field === 'award.project');
+            let facetData = assayFacet ? assayFacet.terms : [];
+
+            this.updateChart(this.myPieChart, facetData);
         }
     },
 
@@ -484,8 +479,8 @@ var HomepageChart2 = React.createClass({
 
             if(assayFacet) {
                 // if there is data
-                document.getElementById('MyEmptyChart2').innerHTML = "";
-                document.getElementById('MyEmptyChart2').removeAttribute("class"); // clear out empty chart div
+                // document.getElementById('MyEmptyChart2').innerHTML = "";
+                // document.getElementById('MyEmptyChart2').removeAttribute("class"); // clear out empty chart div
 
                 var totalDocCount = 0;
 
@@ -572,7 +567,6 @@ var HomepageChart2 = React.createClass({
             }
 
             else{ // if no data
-
                 var element = document.getElementById('MyEmptyChart2');
                 var chart = document.getElementById('myChart2');
                 var existingText = document.getElementById('p2');
@@ -655,8 +649,8 @@ var HomepageChart3 = React.createClass({
             // the charts.
             if (assayFacet ) {
                 // clear empty chart div
-                document.getElementById('MyEmptyChart3').innerHTML = "";
-                document.getElementById('MyEmptyChart3').removeAttribute("class");
+                // document.getElementById('MyEmptyChart3').innerHTML = "";
+                // document.getElementById('MyEmptyChart3').removeAttribute("class");
 
                 let totalDocCount = 0;
 
@@ -706,7 +700,6 @@ var HomepageChart3 = React.createClass({
             }
 
             else{ // if no data
-
                 var element = document.getElementById('MyEmptyChart3');
                 var chart = document.getElementById('myChart3');
                 var existingText = document.getElementById('p3');
