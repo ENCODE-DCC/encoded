@@ -139,14 +139,16 @@ var ChartGallery = React.createClass({
                 <div className="view-all">
                     <a href={"/matrix/" + this.props.query} className="view-all-button btn btn-info btn-sm" role="button">View Assay Matrix</a>
                 </div>
-                <div className="col-md-4">
-                    <HomepageChart {...this.props} />
-                </div>
-                <div className="col-md-4">
-                    <HomepageChart2 {...this.props} />
-                </div>
-                <div className="col-md-4">
-                    <HomepageChart3 {...this.props} />
+                <div className="chart-gallery">
+                    <div className="chart-single">
+                        <HomepageChart {...this.props} />
+                    </div>
+                    <div className="chart-single">
+                        <HomepageChart2 {...this.props} />
+                    </div>
+                    <div className="chart-single">
+                        <HomepageChart3 {...this.props} />
+                    </div>
                 </div>
             </PanelBody>
         );
@@ -249,6 +251,24 @@ var TabClicking = React.createClass({
 });
 
 
+// Initiates the GET request to search for experiments, and then pass the data to the HomepageChart
+// component to draw the resulting chart.
+var HomepageChartLoader = React.createClass({
+    propTypes: {
+        query: React.PropTypes.string // Current search URI based on selected assayCategory
+    },
+
+    render: function() {
+        return (
+            <FetchedData ignoreErrors>
+                <Param name="data" url={'/search/' + this.props.query} />
+                <ChartGallery organisms={this.props.organisms} assayCategory={this.props.assayCategory}query={this.props.query} />
+            </FetchedData>
+        );
+    }
+
+});
+
 
 // Component to display the D3-based chart for Project
 var HomepageChart = React.createClass({
@@ -291,25 +311,12 @@ var HomepageChart = React.createClass({
                         ctx.font = fontSize + "em sans-serif";
                         ctx.textBaseline = "middle";
 
-                        let text = totalDocCount;
-                        let textX = Math.round((width - ctx.measureText(text).width) / 2);
+                        let data = chart.data.datasets[0].data;
+                        let total = data.reduce((prev, curr) => prev + curr);
+                        let textX = Math.round((width - ctx.measureText(total).width) / 2);
                         let textY = height / 2;
 
                         ctx.clearRect(0, 0, width, height);
-                        ctx.fillText(text, textX, textY);
-                        ctx.save();
-                    }
-                },
-                beforeUpdate: function(chart) {
-                    if (chart.chart.canvas.id === 'myChart') {
-                        let ctx = chart.chart.ctx;
-                        let data = chart.data.datasets[0].data;
-                        let width = chart.chart.width;
-                        let height = chart.chart.height;
-                        let total = data.reduce((prev, curr) => prev + curr);
-                        console.log(total);
-                        let textX = Math.round((width - ctx.measureText(total).width) / 2);
-                        let textY = height / 2;
                         ctx.fillText(total, textX, textY);
                         ctx.save();
                     }
@@ -331,21 +338,28 @@ var HomepageChart = React.createClass({
                 },
 
                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
                     legend: {
                         display: false // hiding automatically generated legend
                     },
+                    animation: {
+                        duration: 200
+                    },
                     legendCallback: function(chart) { // allows for legend clicking
-                        facetData = _(facetData).filter(term => term.doc_count > 0);
+                        let data = chart.data.datasets[0].data;
                         var text = [];
                         text.push('<ul>');
-                        for (var i = 0; i < facetData.length; i++) {
-                            text.push('<li>');
-                            text.push('<a href="' + '/matrix/' + this.props.query + '&award.project=' + facetData[i].key  + '">'); // go to matrix view when clicked
-                            text.push('<span class="chart-legend-chip" style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
-                            if (chart.data.labels[i]) {
-                                text.push('<span class="chart-legend-label">' + chart.data.labels[i] + '</span>');
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i]) {
+                                text.push('<li>');
+                                text.push('<a href="' + '/matrix/' + this.props.query + '&award.project=' + chart.data.labels[i]  + '">'); // go to matrix view when clicked
+                                text.push('<span class="chart-legend-chip" style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
+                                if (chart.data.labels[i]) {
+                                    text.push('<span class="chart-legend-label">' + chart.data.labels[i] + '</span>');
+                                }
+                                text.push('</a></li>');
                             }
-                            text.push('</a></li>');
                         }
                         text.push('</ul>');
                         return text.join('');
@@ -379,7 +393,8 @@ var HomepageChart = React.createClass({
             data[i] = term.doc_count;
             labels[i] = term.key;
         });
-    
+
+        // Update chart data and redraw with the new data
         Chart.data.datasets[0].data = data;
         Chart.data.datasets[0].backgroundColor = colors;
         Chart.data.labels = labels;
@@ -388,54 +403,51 @@ var HomepageChart = React.createClass({
     },
 
     componentDidMount: function() {
-        let facets = this.props.data.facets;
-        let assayFacet = facets.find(facet => facet.field === 'award.project');
-        let facetData = assayFacet ? assayFacet.terms : [];
-        
         // Create the chart, and assign the chart to this.myPieChart when the process finishes.
-        this.createChart(facetData);
+        this.createChart(this.facetData);
     },
 
-    componentDidUpdate: function(){
+    componentDidUpdate: function() {
         if (this.myPieChart) {
-            let facets = this.props.data.facets;
-            let assayFacet = facets.find(facet => facet.field === 'award.project');
-            let facetData = assayFacet ? assayFacet.terms : [];
-
-            this.updateChart(this.myPieChart, facetData);
+            // Existing data updated
+            this.updateChart(this.myPieChart, this.facetData);
+        } else if (this.facetData.length) {
+            // Chart existed but was destroyed for lack of data. Rebuild the chart.
+            this.createChart(this.facetData);
         }
     },
 
     render: function() {
+        let facets = this.props.data.facets;
+
+        // Get all project facets, or an empty array if none.
+        let projectFacet = facets.find(facet => facet.field === 'award.project');
+        this.facetData = projectFacet ? projectFacet.terms : [];
+
+        // No data with the current selection, but we used to? Destroy the existing chart so we can
+        // display a no-data message instead.
+        if (this.facetData.length === 0 && this.myPieChart) {
+            this.myPieChart.destroy();
+            this.myPieChart = null;
+        }
+
         return (
             <div>
                 <div className="title">
                     Project
                     <center> <hr width="80%" position="static" color="blue"></hr> </center>
                 </div>
-                <canvas id="myChart"></canvas>
-                <div id="MyEmptyChart"> </div>
-                <div id="chart-legend" className="chart-legend"></div>
+                {this.facetData.length ?
+                    <div className="chart-wrapper">
+                        <div className="chart-container">
+                            <canvas id="myChart"></canvas>
+                        </div>
+                        <div id="chart-legend" className="chart-legend"></div>
+                    </div>
+                :
+                    <div className="chart-no-data">No data to display</div>
+                }
             </div>
-        );
-    }
-
-});
-
-
-// Initiates the GET request to search for experiments, and then pass the data to the HomepageChart
-// component to draw the resulting chart.
-var HomepageChartLoader = React.createClass({
-    propTypes: {
-        query: React.PropTypes.string // Current search URI based on selected assayCategory
-    },
-
-    render: function() {
-        return (
-            <FetchedData ignoreErrors>
-                <Param name="data" url={'/search/' + this.props.query} />
-                <ChartGallery organisms={this.props.organisms} assayCategory={this.props.assayCategory}query={this.props.query} />
-            </FetchedData>
         );
     }
 

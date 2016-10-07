@@ -220,6 +220,32 @@
     padding-bottom: 25px;
 }
 
+.chart-gallery{
+    display: block;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: stretch;
+    }
+}
+
+.chart-single {
+    @media screen and (min-width: $screen-md-min) {
+        flex: 1 1 auto;
+    }
+}
+
+.chart-container {
+    height: 180px;
+}
+
+.chart-no-data {
+    margin: 20px 0;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
 // Positions legends
 .chart-legend {
     float: center;
