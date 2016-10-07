@@ -270,11 +270,36 @@ var HomepageChartLoader = React.createClass({
 });
 
 
+// Draw the total chart count in the middle of the donut.
+function drawDonutCenter(chart) {
+    let canvasId = chart.chart.canvas.id;
+    if (canvasId === 'myChart' || canvasId === 'myChart2') {
+        let width = chart.chart.width;
+        let height = chart.chart.height;
+        let ctx = chart.chart.ctx;
+
+        ctx.fillStyle = '#000000';
+        ctx.restore();
+        let fontSize = (height / 114).toFixed(2);
+        ctx.font = fontSize + "em sans-serif";
+        ctx.textBaseline = "middle";
+
+        let data = chart.data.datasets[0].data;
+        let total = data.reduce((prev, curr) => prev + curr);
+        let textX = Math.round((width - ctx.measureText(total).width) / 2);
+        let textY = height / 2;
+
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillText(total, textX, textY);
+        ctx.save();
+    }
+}
+
+
 // Component to display the D3-based chart for Project
 var HomepageChart = React.createClass({
 
     contextTypes: {
-        location_href: React.PropTypes.string,
         navigate: React.PropTypes.func,
         projectColors: React.PropTypes.object // DataColor instance for experiment project
     },
@@ -299,34 +324,12 @@ var HomepageChart = React.createClass({
             // adding total doc count to middle of donut
             // http://stackoverflow.com/questions/20966817/how-to-add-text-inside-the-doughnut-chart-using-chart-js/24671908
             Chart.pluginService.register({
-                beforeDraw: function(chart) {
-                    if (chart.chart.canvas.id === 'myChart') {
-                        let width = chart.chart.width;
-                        let height = chart.chart.height;
-                        let ctx = chart.chart.ctx;
-
-                        ctx.fillStyle = '#000000';
-                        ctx.restore();
-                        let fontSize = (height / 114).toFixed(2);
-                        ctx.font = fontSize + "em sans-serif";
-                        ctx.textBaseline = "middle";
-
-                        let data = chart.data.datasets[0].data;
-                        let total = data.reduce((prev, curr) => prev + curr);
-                        let textX = Math.round((width - ctx.measureText(total).width) / 2);
-                        let textY = height / 2;
-
-                        ctx.clearRect(0, 0, width, height);
-                        ctx.fillText(total, textX, textY);
-                        ctx.save();
-                    }
-                }
+                beforeDraw: drawDonutCenter
             });
 
             // Pass the assay_title counts to the charting library to render it.
             var canvas = document.getElementById("myChart");
             var ctx = canvas.getContext("2d");
-
             this.myPieChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
@@ -348,9 +351,9 @@ var HomepageChart = React.createClass({
                     },
                     legendCallback: function(chart) { // allows for legend clicking
                         let data = chart.data.datasets[0].data;
-                        var text = [];
+                        let text = [];
                         text.push('<ul>');
-                        for (var i = 0; i < data.length; i++) {
+                        for (let i = 0; i < data.length; i++) {
                             if (data[i]) {
                                 text.push('<li>');
                                 text.push('<a href="' + '/matrix/' + this.props.query + '&award.project=' + chart.data.labels[i]  + '">'); // go to matrix view when clicked
@@ -462,7 +465,7 @@ var HomepageChart2 = React.createClass({
         biosampleTypeColors: React.PropTypes.object // DataColor instance for experiment project
     },
 
-    drawChart: function() {
+    createChart: function(facetData) {
 
         // Draw the chart of search results given in this.props.data.facets. Since D3 doesn't work
         // with the React virtual DOM, we have to load it separately using the webpack .ensure
@@ -474,155 +477,144 @@ var HomepageChart2 = React.createClass({
             var labels = [];
             var assayFacet;
 
-            // Handle cancelled GET request. We'll have made another GET request.
-            if (this.props.data.status === 'error') {
-                return;
-            }
+            var totalDocCount = 0;
 
-            // Our data source will be different for computational predictions
-            var computationalPredictions = this.props.assayCategory === 'COMPPRED';
+            // for each item, set doc count, add to total doc count, add proper label, and assign color
+            var colors = this.context.biosampleTypeColors.colorList(facetData.map(term => term.key), {shade: 10});
+            facetData.forEach((term, i) => {
+                totalDocCount += term.doc_count;
+                data[i] = term.doc_count;
+                labels[i] = term.key;
+            });
 
-            var facets = this.props.data.facets;
-            if (computationalPredictions) {
-                assayFacet = facets.find(facet => facet.field === 'biosample_type');
-            } else {
-                assayFacet = facets.find(facet => facet.field === 'replicates.library.biosample.biosample_type');
-            }
+            // adding total doc count to middle of donut
+            // http://stackoverflow.com/questions/20966817/how-to-add-text-inside-the-doughnut-chart-using-chart-js/24671908
+            Chart.pluginService.register({
+                beforeDraw: drawDonutCenter
+            });
 
-            if(assayFacet) {
-                // if there is data
-                // document.getElementById('MyEmptyChart2').innerHTML = "";
-                // document.getElementById('MyEmptyChart2').removeAttribute("class"); // clear out empty chart div
-
-                var totalDocCount = 0;
-
-                // for each item, set doc count, add to total doc count, add proper label, and assign color
-                var colors = this.context.biosampleTypeColors.colorList(assayFacet.terms.map(term => term.key), {shade: 10});
-                assayFacet.terms.forEach(function(term, i) {
-                    data[i] = term.doc_count;
-                    totalDocCount += term.doc_count;
-                    labels[i] = term.key;
-                });
-
-                // adding total doc count to middle of donut
-                // http://stackoverflow.com/questions/20966817/how-to-add-text-inside-the-doughnut-chart-using-chart-js/24671908
-                Chart.pluginService.register({
-                    beforeDraw: function(chart) {
-                        if(chart.chart.canvas.id == 'myChart2'){
-                            var width = chart.chart.width,
-                                height = chart.chart.height,
-                                ctx = chart.chart.ctx;
-
-                            ctx.fillStyle = '#000000';
-                            ctx.restore();
-                            var fontSize = (height / 114).toFixed(2);
-                            ctx.font = fontSize + "em sans-serif";
-                            ctx.textBaseline = "middle";
-
-                            var text = totalDocCount,
-                                textX = Math.round((width - ctx.measureText(text).width) / 2),
-                                textY = height / 2;
-
-                            ctx.clearRect(0, 0, width, height);
-                            ctx.fillText(text, textX, textY);
-                            ctx.save();
-                        }
-
-                    }
-                });
-
-
-                // Pass the assay_title counts to the charting library to render it.
-                var canvas = document.getElementById("myChart2");
-                var ctx = canvas.getContext("2d");
-                this.myPieChart = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            data: data,
-                            backgroundColor: colors
-                        }]
+            // Pass the assay_title counts to the charting library to render it.
+            var canvas = document.getElementById("myChart2");
+            var ctx = canvas.getContext("2d");
+            this.myPieChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: {
+                        display: false // hiding automatically generated legend
                     },
-                    options: {
-                        legend: {
-                            display: false // hiding automatically generated legend
-                        },
-                        legendCallback: function(chart) { // allows for legend clicking
-                            var facetTerms = _(assayFacet.terms).filter(term => term.doc_count > 0);
-                            var text = [];
-                            var query = computationalPredictions ? 'biosample_type=' : 'replicates.library.biosample.biosample_type=';
-                            text.push('<ul>');
-                            for (var i = 0; i < facetTerms.length; i++) {
+                    animation: {
+                        duration: 200
+                    },
+                    legendCallback: function(chart) { // allows for legend clicking
+                        let data = chart.data.datasets[0].data;
+                        let text = [];
+                        let query = this.computationalPredictions ? 'biosample_type=' : 'replicates.library.biosample.biosample_type=';
+                        text.push('<ul>');
+                        for (let i = 0; i < data.length; i++) {
+                            if (data[i]) {
                                 text.push('<li>');
-                                text.push('<a href="/matrix/' + this.props.query + '&' + query + facetTerms[i].key  + '">'); // go to matrix view when clicked
+                                text.push('<a href="/matrix/' + this.props.query + '&' + query + chart.data.labels[i]  + '">'); // go to matrix view when clicked
                                 text.push('<span class="chart-legend-chip" style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
                                 if (chart.data.labels[i]) {
                                     text.push('<span class="chart-legend-label">' + chart.data.labels[i] + '</span>');
                                 }
                                 text.push('</a></li>');
                             }
-                            text.push('</ul>');
-                            return text.join('');
-                        }.bind(this),
-                        onClick: function(e) {
-                            // React to clicks on pie sections
-                            var query = computationalPredictions ? 'biosample_type=' : 'replicates.library.biosample.biosample_type=';
-                            var activePoints = this.myPieChart.getElementAtEvent(e);
-                            var term = assayFacet.terms[activePoints[0]._index].key;
+                        }
+                        text.push('</ul>');
+                        return text.join('');
+                    }.bind(this),
+                    onClick: function(e) {
+                        // React to clicks on pie sections
+                        let query = this.computationalPredictions ? 'biosample_type=' : 'replicates.library.biosample.biosample_type=';
+                        let activePoints = this.myPieChart.getElementAtEvent(e);
+                        if (activePoints[0]) {
+                            let clickedElementIndex = activePoints[0]._index;
+                            let term = this.myPieChart.data.labels[clickedElementIndex];
                             this.context.navigate('/matrix/' + this.props.query + '&' + query + term); // go to matrix view
-                        }.bind(this)
-                    }
-                });
-
-                document.getElementById('chart-legend-2').innerHTML = this.myPieChart.generateLegend(); // generates legend
-            }
-
-            else{ // if no data
-                var element = document.getElementById('MyEmptyChart2');
-                var chart = document.getElementById('myChart2');
-                var existingText = document.getElementById('p2');
-                if(existingText){
-                    element.removeChild(existingText);
+                        }
+                    }.bind(this)
                 }
+            });
 
-                var para = document.createElement("p");
-                para.setAttribute('id', 'p2');
-                var node = document.createTextNode("No data to display.");
-                para.appendChild(node); // display no data error message
-
-                element.appendChild(para);
-                element.setAttribute('class', 'empty-chart'); // add class to empty-chart div
-
-                chart.setAttribute('height', '0'); // clear chart canvas so it won't display
-                document.getElementById('chart-legend-2').innerHTML = ''; // Clear legend
-            }
-
+            document.getElementById('chart-legend-2').innerHTML = this.myPieChart.generateLegend(); // generates legend
         }.bind(this));
+    },
 
+    updateChart: function(Chart, facetData) {
+        // for each item, set doc count, add to total doc count, add proper label, and assign color.
+        let colors = this.context.biosampleTypeColors.colorList(facetData.map(term => term.key), {shade: 10});
+        let totalDocCount = 0;
+        let data = [];
+        let labels = [];
+
+        // Convert facet data to chart data.
+        facetData.forEach((term, i) => {
+            totalDocCount += term.doc_count;
+            data[i] = term.doc_count;
+            labels[i] = term.key;
+        });
+
+        // Update chart data and redraw with the new data
+        Chart.data.datasets[0].data = data;
+        Chart.data.datasets[0].backgroundColor = colors;
+        Chart.data.labels = labels;
+        Chart.update();
+        document.getElementById('chart-legend-2').innerHTML = Chart.generateLegend(); // generates legend
     },
 
     componentDidMount: function() {
-        this.drawChart();
+        this.createChart(this.facetData);
     },
 
     componentDidUpdate: function() {
         if (this.myPieChart) {
-            this.myPieChart.destroy(); // clears old chart before creating new one
-            this.drawChart();
+            // Existing data updated
+            this.updateChart(this.myPieChart, this.facetData);
+        } else if (this.facetData.length) {
+            // Chart existed but was destroyed for lack of data. Rebuild the chart.
+            this.createChart(this.facetData);
         }
     },
 
     render: function() {
+        let assayFacet = {};
+        let facets = this.props.data.facets;
+
+        // Our data source will be different for computational predictions
+        this.computationalPredictions = this.props.assayCategory === 'COMPPRED';
+        if (this.computationalPredictions) {
+            assayFacet = facets.find(facet => facet.field === 'biosample_type');
+        } else {
+            assayFacet = facets.find(facet => facet.field === 'replicates.library.biosample.biosample_type');
+        }
+        this.facetData = assayFacet ? assayFacet.terms : [];
+
         return (
             <div>
                 <div className="title">
                     Biosample Type
                     <center> <hr width="80%" position="static" color="blue"></hr> </center>
                 </div>
-                <canvas id="myChart2"></canvas>
-                <div id="MyEmptyChart2"> </div>
-                <div id="chart-legend-2" className="chart-legend"></div>
+                {this.facetData.length ?
+                    <div className="chart-wrapper">
+                        <div className="chart-container">
+                            <canvas id="myChart2"></canvas>
+                        </div>
+                        <div id="chart-legend-2" className="chart-legend"></div>
+                    </div>
+                :
+                    <div className="chart-no-data">No data to display</div>
+                }
             </div>
         );
     }
