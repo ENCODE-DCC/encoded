@@ -297,7 +297,7 @@ function drawDonutCenter(chart) {
 
 
 // Component to display the D3-based chart for Project
-var HomepageChart = React.createClass({
+let HomepageChart = React.createClass({
 
     contextTypes: {
         navigate: React.PropTypes.func,
@@ -306,7 +306,7 @@ var HomepageChart = React.createClass({
 
     createChart: function(facetData) {
         require.ensure(['chart.js'], function(require) {
-            var Chart = require('chart.js');
+            let Chart = require('chart.js');
 
             // for each item, set doc count, add to total doc count, add proper label, and assign color.
             let colors = this.context.projectColors.colorList(facetData.map(term => term.key), {shade: 10});
@@ -599,6 +599,13 @@ var HomepageChart2 = React.createClass({
         }
         this.facetData = assayFacet ? assayFacet.terms : [];
 
+        // No data with the current selection, but we used to? Destroy the existing chart so we can
+        // display a no-data message instead.
+        if (this.facetData.length === 0 && this.myPieChart) {
+            this.myPieChart.destroy();
+            this.myPieChart = null;
+        }
+
         return (
             <div>
                 <div className="title">
@@ -622,132 +629,144 @@ var HomepageChart2 = React.createClass({
 
 
 // Component to display the D3-based chart for Biosample
-var HomepageChart3 = React.createClass({
+let HomepageChart3 = React.createClass({
 
     contextTypes: {
         navigate: React.PropTypes.func
     },
 
-    drawChart: function() {
+    createChart: function(facetData) {
 
         // Draw the chart of search results given in this.props.data.facets. Since D3 doesn't work
         // with the React virtual DOM, we have to load it separately using the webpack .ensure
         // mechanism. Once the callback is called, it's loaded and can be referenced through
         // require.
         require.ensure(['chart.js'], function(require) {
-            const Chart = require('chart.js');
+            let Chart = require('chart.js');
             let data = [];
             let labels = [];
             let colors = [];
             let selectedAssay = (this.props.assayCategory && this.props.assayCategory !== 'COMPPRED') ? this.props.assayCategory.replace(/\+/g,' ') : '';
 
-            // Handle cancelled GET request. We'll have made another GET request.
-            if (this.props.data.status === 'error') {
-                return;
-            }
+            let totalDocCount = 0;
 
-            let facets = this.props.data.facets;
-            let assayFacet = facets.find(facet => facet.field === 'assay_slims');
+            // for each item, set doc count, add to total doc count, add proper label, and assign color
+            facetData.forEach((term, i) => {
+                totalDocCount += term.doc_count;
+                data[i] = term.doc_count;
+                labels[i] = term.key;
+                colors[i] = selectedAssay ? (term.key === selectedAssay ? 'rgb(255,217,98)' : 'rgba(255,217,98,.4)') : '#FFD962';
+            });
 
-            // Collect up the experiment assay_title counts to our local arrays to prepare for
-            // the charts.
-            if (assayFacet ) {
-                // clear empty chart div
-                // document.getElementById('MyEmptyChart3').innerHTML = "";
-                // document.getElementById('MyEmptyChart3').removeAttribute("class");
-
-                let totalDocCount = 0;
-
-                // for each item, set doc count, add to total doc count, add proper label, and assign color
-                assayFacet.terms.forEach((term, i) => {
-                    data[i] = term.doc_count;
-                    totalDocCount += term.doc_count;
-                    labels[i] = term.key;
-                    colors[i] = selectedAssay ? (term.key === selectedAssay ? 'rgb(255,217,98)' : 'rgba(255,217,98,.4)') : '#FFD962';
-                });
-
-                // Pass the counts to the charting library to render it.
-                let canvas = document.getElementById("myChart3");
-                let ctx = canvas.getContext("2d");
-                this.myPieChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels, // full labels
-                        datasets: [{
-                            data: data,
-                            backgroundColor: colors
+            // Pass the counts to the charting library to render it.
+            let canvas = document.getElementById("myChart3");
+            let ctx = canvas.getContext("2d");
+            this.myPieChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels, // full labels
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: {
+                        display: false // hiding automatically generated legend
+                    },
+                    animation: {
+                        duration: 200
+                    },
+                    scales: {
+                        xAxes: [{
+                            gridLines: {
+                                display: false
+                            },
+                            ticks: {
+                                autoSkip: false
+                            }
                         }]
                     },
-                    options: {
-                        legend: {
-                            display: false // hiding automatically generated legend
-                        },
-                        scales: {
-                            xAxes: [{
-                                gridLines: {
-                                    display: false
-                                },
-                                ticks: {
-                                    autoSkip: false
-                                }
-                            }]
-                        },
-                        onClick: function(e) {
-                            // React to clicks on pie sections
-                            var query = 'assay_slims=';
-                            var activePoints = this.myPieChart.getElementAtEvent(e);
-                            var term = assayFacet.terms[activePoints[0]._index].key;
+                    onClick: function(e) {
+                        // React to clicks on pie sections
+                        var query = 'assay_slims=';
+                        var activePoints = this.myPieChart.getElementAtEvent(e);
+                        if (activePoints[0]) {
+                            let clickedElementIndex = activePoints[0]._index;
+                            var term = this.myPieChart.data.labels[clickedElementIndex];
                             this.context.navigate('/matrix/' + this.props.query + '&' + query + term); // go to matrix view
-                        }.bind(this)
-                    }
-                });
-            }
-
-            else{ // if no data
-                var element = document.getElementById('MyEmptyChart3');
-                var chart = document.getElementById('myChart3');
-                var existingText = document.getElementById('p3');
-                if(existingText){
-                    element.removeChild(existingText);
+                        }
+                    }.bind(this)
                 }
-
-                var para = document.createElement("p");
-                para.setAttribute('id', 'p3');
-                var node = document.createTextNode("No data to display.");
-                para.appendChild(node); // display no data error message
-
-                element.appendChild(para);
-                element.setAttribute('class', 'empty-chart'); // add class to empty-chart div
-
-                chart.setAttribute('height', '0'); // clear chart canvas so it won't display
-
-            }
-
+            });
         }.bind(this));
 
     },
 
+    updateChart: function(Chart, facetData) {
+        // for each item, set doc count, add to total doc count, add proper label, and assign color.
+        let totalDocCount = 0;
+        let data = [];
+        let labels = [];
+
+        // Convert facet data to chart data.
+        facetData.forEach((term, i) => {
+            totalDocCount += term.doc_count;
+            data[i] = term.doc_count;
+            labels[i] = term.key;
+        });
+
+        // Update chart data and redraw with the new data
+        Chart.data.datasets[0].data = data;
+        Chart.data.labels = labels;
+        Chart.update();
+    },
+
     componentDidMount: function() {
-        this.drawChart();
+        this.createChart(this.facetData);
     },
 
     componentDidUpdate: function() {
         if (this.myPieChart) {
-            this.myPieChart.destroy(); // clears old chart before creating new one
-            this.drawChart();
+            // Existing data updated
+            this.updateChart(this.myPieChart, this.facetData);
+        } else if (this.facetData.length) {
+            // Chart existed but was destroyed for lack of data. Rebuild the chart.
+            this.createChart(this.facetData);
         }
     },
 
     render: function() {
+        let facets = this.props.data.facets;
+
+        // Get all assay category facets, or an empty array if none
+        let projectFacet = facets.find(facet => facet.field === 'assay_slims');
+        this.facetData = projectFacet ? projectFacet.terms : [];
+
+        // No data with the current selection, but we used to? Destroy the existing chart so we can
+        // display a no-data message instead.
+        if (this.facetData.length === 0 && this.myPieChart) {
+            this.myPieChart.destroy();
+            this.myPieChart = null;
+        }
+
         return (
             <div>
                 <div className="title">
                     Assay Categories
+                    <center> <hr width="80%" position="static" color="blue"></hr> </center>
                 </div>
-                <center> <hr width="80%"></hr> </center>
-                <canvas id="myChart3" height="240"></canvas>
-                <div id="MyEmptyChart3"> </div>
-                <div id="chart-legend-3" className="chart-legend"></div>
+                {this.facetData.length ?
+                    <div className="chart-wrapper">
+                        <div className="chart-container-assaycat">
+                            <canvas id="myChart3"></canvas>
+                        </div>
+                    </div>
+                :
+                    <div className="chart-no-data">No data to display</div>
+                }
             </div>
         );
     }
