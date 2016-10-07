@@ -217,11 +217,11 @@
 // Gives graphs white background color
 .graphs {
     background-color: white;
-    padding-bottom: 25px;
 }
 
 .chart-gallery{
     display: block;
+    padding: 20px;
 
     @media screen and (min-width: $screen-md-min) {
         display: flex;
@@ -232,6 +232,7 @@
 
 .chart-single {
     @media screen and (min-width: $screen-md-min) {
+        width: 33.33333%;
         flex: 1 1 auto;
     }
 }
@@ -245,17 +246,18 @@
 }
 
 .chart-no-data {
-    margin: 20px 0;
     font-size: 1.2rem;
     text-align: center;
+    color: #808080;
+    font-style: italic;
 }
 
 // Positions legends
 .chart-legend {
-    float: center;
     margin-top: 20px;
 
     ul {
+        margin: 0;
         list-style: none;
 
         li {

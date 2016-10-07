@@ -380,6 +380,8 @@ let HomepageChart = React.createClass({
                 }
             });
             document.getElementById('chart-legend').innerHTML = this.myPieChart.generateLegend(); // generates legend
+            let chartWrapperDiv = document.getElementById('chart-wrapper-1');
+            this.wrapperHeight = chartWrapperDiv.clientHeight;
         }.bind(this));
     },
 
@@ -441,14 +443,14 @@ let HomepageChart = React.createClass({
                     <center> <hr width="80%" position="static" color="blue"></hr> </center>
                 </div>
                 {this.facetData.length ?
-                    <div className="chart-wrapper">
+                    <div id="chart-wrapper-1" className="chart-wrapper">
                         <div className="chart-container">
                             <canvas id="myChart"></canvas>
                         </div>
                         <div id="chart-legend" className="chart-legend"></div>
                     </div>
                 :
-                    <div className="chart-no-data">No data to display</div>
+                    <div className="chart-no-data" style={{height: this.wrapperHeight}}><p>No data to display</p></div>
                 }
             </div>
         );
@@ -546,7 +548,9 @@ var HomepageChart2 = React.createClass({
                 }
             });
 
-            document.getElementById('chart-legend-2').innerHTML = this.myPieChart.generateLegend(); // generates legend
+            document.getElementById('chart-legend-2').innerHTML = this.myPieChart.generateLegend();
+            let chartWrapperDiv = document.getElementById('chart-wrapper-2');
+            this.wrapperHeight = chartWrapperDiv.clientHeight;
         }.bind(this));
     },
 
@@ -613,14 +617,14 @@ var HomepageChart2 = React.createClass({
                     <center> <hr width="80%" position="static" color="blue"></hr> </center>
                 </div>
                 {this.facetData.length ?
-                    <div className="chart-wrapper">
+                    <div id="chart-wrapper-2" className="chart-wrapper">
                         <div className="chart-container">
                             <canvas id="myChart2"></canvas>
                         </div>
                         <div id="chart-legend-2" className="chart-legend"></div>
                     </div>
                 :
-                    <div className="chart-no-data">No data to display</div>
+                    <div className="chart-no-data" style={{height: this.wrapperHeight}}>No data to display</div>
                 }
             </div>
         );
@@ -701,6 +705,10 @@ let HomepageChart3 = React.createClass({
                     }.bind(this)
                 }
             });
+
+            // Save height of wrapper div.
+            let chartWrapperDiv = document.getElementById('chart-wrapper-3');
+            this.wrapperHeight = chartWrapperDiv.clientHeight;
         }.bind(this));
 
     },
@@ -710,17 +718,21 @@ let HomepageChart3 = React.createClass({
         let totalDocCount = 0;
         let data = [];
         let labels = [];
+        let colors = [];
 
         // Convert facet data to chart data.
+        let selectedAssay = (this.props.assayCategory && this.props.assayCategory !== 'COMPPRED') ? this.props.assayCategory.replace(/\+/g,' ') : '';
         facetData.forEach((term, i) => {
             totalDocCount += term.doc_count;
             data[i] = term.doc_count;
             labels[i] = term.key;
+            colors[i] = selectedAssay ? (term.key === selectedAssay ? 'rgb(255,217,98)' : 'rgba(255,217,98,.4)') : '#FFD962';
         });
 
         // Update chart data and redraw with the new data
         Chart.data.datasets[0].data = data;
         Chart.data.labels = labels;
+        Chart.data.datasets[0].backgroundColor = colors;
         Chart.update();
     },
 
@@ -759,13 +771,13 @@ let HomepageChart3 = React.createClass({
                     <center> <hr width="80%" position="static" color="blue"></hr> </center>
                 </div>
                 {this.facetData.length ?
-                    <div className="chart-wrapper">
+                    <div id="chart-wrapper-3" className="chart-wrapper">
                         <div className="chart-container-assaycat">
                             <canvas id="myChart3"></canvas>
                         </div>
                     </div>
                 :
-                    <div className="chart-no-data">No data to display</div>
+                    <div className="chart-no-data" style={{height: this.wrapperHeight}}>No data to display</div>
                 }
             </div>
         );
