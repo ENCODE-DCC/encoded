@@ -12,6 +12,7 @@ import json
 import sys
 from shlex import quote
 import subprocess
+import re
 from urllib.parse import urljoin
 
 EPILOG = __doc__
@@ -182,6 +183,105 @@ def check_format(encValData, job, path):
     else:
         result['validateFiles'] = output.decode(errors='replace').rstrip('\n')
 
+
+def process_fastq_file(job, unzipped_fastq_path, session, url):
+    item = job['item']
+    errors = job['errors']
+    result = job['result']
+
+    sequence_pattern = re.compile('[ACTGN.]+')
+    read_name_pattern = re.compile(
+        '^(@[a-zA-Z\d]+[a-zA-Z\d_-]*:[a-zA-Z\d-]+:[a-zA-Z\d_-]' +
+        '+:\d+:\d+:\d+:\d+[\s_][12]:[YXN]:[0-9]+:([ACNTG\+]*|[0-9]*))$'
+    )
+
+    special_read_name_pattern = re.compile(
+        '^(@[a-zA-Z\d]+[a-zA-Z\d_-]*:[a-zA-Z\d-]+:[a-zA-Z\d_-]' +
+        '+:\d+:\d+:\d+:\d+[/1|/2]*[\s_][12]:[YXN]:[0-9]+:([ACNTG\+]*|[0-9]*))$'
+    )
+    weird_read_name = False
+    read_numbers_set = set()
+    signatures_set = set()
+    signatures_no_barcode_set = set()
+    read_lengths_dictionary = {}
+    read_count = 0
+    try:
+        print ('checking file ' + unzipped_fastq_path)
+        with open(unzipped_fastq_path, 'r') as f:
+            line_index = 0
+            for line in f:
+                line_index += 1
+                if line_index == 1:
+                    read_name = line.strip()
+                    words_array = re.split(r'[\s]', read_name)
+                    if read_name_pattern.match(read_name) is None:
+                        weird_read_name = read_name
+                        errors['fastq_format_readname'] = 'submitted fastq file does not ' + \
+                                                          'comply with illumina fastq read name format, ' + \
+                                                          'read name was : {}'.format(read_name)
+                        #  it could be old name that can be used to extract 1/2 info
+                        if len(words_array) == 1 and \
+                           len(read_name) > 3:
+                            if read_name[-2:] in ['/1', '/2']:
+                                read_numbers_set.add(read_name[-1])
+                            else:
+                                read_numbers_set.add('1')
+
+                        if special_read_name_pattern.match(read_name) is not None:
+                            read_number = 'not initialized'
+                            if len(words_array[0]) > 3 and \
+                               words_array[0][-2:] in ['/1', '/2']:                                
+                                read_number = words_array[0][-1]
+                                read_numbers_set.add(read_number)
+                            read_numbers_set.add(words_array[1][0])
+                            read_name_array = re.split(r'[:\s_]', read_name)
+                            flowcell = read_name_array[2]
+                            lane_number = read_name_array[3]
+                            barcode_index = read_name_array[-1]
+                            signatures_set.add(
+                                flowcell + ':' + lane_number + ':' +
+                                read_number + ':' + barcode_index)
+                            signatures_no_barcode_set.add(
+                                flowcell + ':' + lane_number + ':' +
+                                read_number + ':')
+
+                    else:  # found a match to the regex of "almost" illumina read_name
+                        if len(words_array) == 2:
+                            read_name_array = re.split(r'[:\s_]', read_name)
+                            flowcell = read_name_array[2]
+                            lane_number = read_name_array[3]
+                            read_number = read_name_array[-4]
+                            read_numbers_set.add(read_number)
+                            barcode_index = read_name_array[-1]
+                            signatures_set.add(
+                                flowcell + ':' + lane_number + ':' +
+                                read_number + ':' + barcode_index)
+                            signatures_no_barcode_set.add(
+                                flowcell + ':' + lane_number + ':' +
+                                read_number + ':')
+
+                if line_index == 2:
+                    read_count += 1
+                    length = len(line.strip())
+                    if length not in read_lengths_dictionary:
+                        read_lengths_dictionary[length] = 0
+                    read_lengths_dictionary[length] += 1
+                line_index = line_index % 4
+        # read_count update
+        result['read_count'] = read_count
+
+        # read1/read2
+        if len(read_numbers_set) > 1:
+            errors['inconsistent_read_numbers'] = \
+                'fastq file contains mixed read numbers ' + \
+                '{}.'.format(', '.join(sorted(list(read_numbers_set))))
+
+        # read_length
+        # 
+ 
+    except IOError:
+        errors['file_open_error'] = 'OS could not open the file ' + \
+                                    unzipped_fastq_path
 
 def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url):
     result['content_md5sum'] = output[:32].decode(errors='replace')
