@@ -114,7 +114,7 @@ module.exports.Auth0 = {
                 redirect: false
             },
             theme: {
-                logo: 'static/img/encode-logo-square.png'
+                logo: 'static/img/encode-logo-small-2x.png'
             },
             socialButtonStyle: 'big',
             languageDictionary: {
