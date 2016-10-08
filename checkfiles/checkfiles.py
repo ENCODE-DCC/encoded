@@ -294,6 +294,40 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
                                     ', '.join(read_lengths_list))
 
         # signatures
+        uniqueness_flag = True
+        signatures_for_comparison = set()
+        is_UMI = False
+        if 'flowcell_details' in item and len(item['flowcell_details']) > 0:
+            for entry in item['flowcell_details']:
+                if 'barcode' in entry and entry['barcode'] == 'UMI':
+                    is_UMI = True
+                    break
+        if is_UMI is True:
+            for entry in signatures_no_barcode_set:
+                signatures_for_comparison.add(entry + 'UMI')
+        else:
+            if len(signatures_set) > 100:
+                for entry in signatures_no_barcode_set:
+                    signatures_for_comparison.add(entry + 'mixed')
+            else:
+                signatures_for_comparison = signatures_set
+
+        conflicts = []
+        for unique_signature in signatures_for_comparison:
+            query = '/'+unique_signature
+            r = session.get(urljoin(url, query))
+            r_graph = r.json().get('@graph')
+            if r_graph is not None and len(r_graph) > 0:
+                uniqueness_flag = False
+
+                conflicts = [
+                    'specified unique identifier {} '.format(unique_signature) +
+                    'is conflicting with identifier of reads from ' +
+                    'file {}.'.format(x['accession']) for x in r_graph]
+        if uniqueness_flag is True:
+            result['fastq_signature'] = sorted(list(signatures_for_comparison))
+        else:
+            errors['not_unique_flowcell_details'] = conflicts
 
     except IOError:
         errors['file_open_error'] = 'OS could not open the file ' + \
