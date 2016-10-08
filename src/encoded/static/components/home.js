@@ -310,13 +310,11 @@ let HomepageChart = React.createClass({
 
             // for each item, set doc count, add to total doc count, add proper label, and assign color.
             let colors = this.context.projectColors.colorList(facetData.map(term => term.key), {shade: 10});
-            let totalDocCount = 0;
             let data = [];
             let labels = [];
 
             // Convert facet data to chart data.
             facetData.forEach((term, i) => {
-                totalDocCount += term.doc_count;
                 data[i] = term.doc_count;
                 labels[i] = term.key;
             });
@@ -388,13 +386,11 @@ let HomepageChart = React.createClass({
     updateChart: function(Chart, facetData) {
         // for each item, set doc count, add to total doc count, add proper label, and assign color.
         let colors = this.context.projectColors.colorList(facetData.map(term => term.key), {shade: 10});
-        let totalDocCount = 0;
         let data = [];
         let labels = [];
 
         // Convert facet data to chart data.
         facetData.forEach((term, i) => {
-            totalDocCount += term.doc_count;
             data[i] = term.doc_count;
             labels[i] = term.key;
         });
@@ -428,10 +424,11 @@ let HomepageChart = React.createClass({
         // Get all project facets, or an empty array if none.
         let projectFacet = facets.find(facet => facet.field === 'award.project');
         this.facetData = projectFacet ? projectFacet.terms : [];
+        let total = this.facetData.length ? this.facetData.reduce((prev, curr) => prev.doc_count + curr.doc_count) : 0;
 
         // No data with the current selection, but we used to? Destroy the existing chart so we can
         // display a no-data message instead.
-        if (this.facetData.length === 0 && this.myPieChart) {
+        if ((this.facetData.length === 0 || total === 0) && this.myPieChart) {
             this.myPieChart.destroy();
             this.myPieChart = null;
         }
@@ -557,13 +554,11 @@ var HomepageChart2 = React.createClass({
     updateChart: function(Chart, facetData) {
         // for each item, set doc count, add to total doc count, add proper label, and assign color.
         let colors = this.context.biosampleTypeColors.colorList(facetData.map(term => term.key), {shade: 10});
-        let totalDocCount = 0;
         let data = [];
         let labels = [];
 
         // Convert facet data to chart data.
         facetData.forEach((term, i) => {
-            totalDocCount += term.doc_count;
             data[i] = term.doc_count;
             labels[i] = term.key;
         });
@@ -602,10 +597,12 @@ var HomepageChart2 = React.createClass({
             assayFacet = facets.find(facet => facet.field === 'replicates.library.biosample.biosample_type');
         }
         this.facetData = assayFacet ? assayFacet.terms : [];
+        let docCounts = this.facetData.length ? this.facetData.map(data => data.doc_count) : [];
+        let total = docCounts.length ? docCounts.reduce((prev, curr) => prev + curr) : 0;
 
-        // No data with the current selection, but we used to? Destroy the existing chart so we can
+        // No data with the current selection, but we used to destroy the existing chart so we can
         // display a no-data message instead.
-        if (this.facetData.length === 0 && this.myPieChart) {
+        if ((this.facetData.length === 0 || total === 0) && this.myPieChart) {
             this.myPieChart.destroy();
             this.myPieChart = null;
         }
@@ -616,7 +613,7 @@ var HomepageChart2 = React.createClass({
                     Biosample Type
                     <center> <hr width="80%" position="static" color="blue"></hr> </center>
                 </div>
-                {this.facetData.length ?
+                {this.facetData.length && total > 0 ?
                     <div id="chart-wrapper-2" className="chart-wrapper">
                         <div className="chart-container">
                             <canvas id="myChart2"></canvas>
@@ -715,7 +712,6 @@ let HomepageChart3 = React.createClass({
 
     updateChart: function(Chart, facetData) {
         // for each item, set doc count, add to total doc count, add proper label, and assign color.
-        let totalDocCount = 0;
         let data = [];
         let labels = [];
         let colors = [];
@@ -723,7 +719,6 @@ let HomepageChart3 = React.createClass({
         // Convert facet data to chart data.
         let selectedAssay = (this.props.assayCategory && this.props.assayCategory !== 'COMPPRED') ? this.props.assayCategory.replace(/\+/g,' ') : '';
         facetData.forEach((term, i) => {
-            totalDocCount += term.doc_count;
             data[i] = term.doc_count;
             labels[i] = term.key;
             colors[i] = selectedAssay ? (term.key === selectedAssay ? 'rgb(255,217,98)' : 'rgba(255,217,98,.4)') : '#FFD962';
@@ -756,10 +751,11 @@ let HomepageChart3 = React.createClass({
         // Get all assay category facets, or an empty array if none
         let projectFacet = facets.find(facet => facet.field === 'assay_slims');
         this.facetData = projectFacet ? projectFacet.terms : [];
+        let total = this.facetData.length ? this.facetData.reduce((prev, curr) => prev.doc_count + curr.doc_count) : 0;
 
         // No data with the current selection, but we used to? Destroy the existing chart so we can
         // display a no-data message instead.
-        if (this.facetData.length === 0 && this.myPieChart) {
+        if ((this.facetData.length === 0 || total === 0) && this.myPieChart) {
             this.myPieChart.destroy();
             this.myPieChart = null;
         }
