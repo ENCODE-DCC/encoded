@@ -468,9 +468,16 @@ def check_file(config, session, url, job):
             # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
             # or http://stackoverflow.com/a/15343686/199100
             try:
-                output = subprocess.check_output(
-                    'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
-                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                if item['file_format'] == 'fastq':
+                    unzipped_fastq_path = local_path[-20:-9] + '_original.fastq'
+                    output = subprocess.check_output(
+                        'set -o pipefail; gunzip --stdout {} | tee {} | md5sum'.format(
+                            local_path, unzipped_fastq_path),
+                        shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                else:
+                    output = subprocess.check_output(
+                        'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
+                        shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
             except subprocess.CalledProcessError as e:
                 errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
             else:
@@ -480,6 +487,8 @@ def check_file(config, session, url, job):
             check_format(config['encValData'], job, unzipped_modified_bed_path)
         else:
             check_format(config['encValData'], job, local_path)
+        if item['file_format'] == 'fastq':
+            process_fastq_file(job, unzipped_fastq_path, session, url)
 
     if item['file_format'] == 'bed':
         try:
@@ -490,6 +499,18 @@ def check_file(config, session, url, job):
                 except OSError as e:
                     errors['file_remove_error'] = 'OS could not remove the file ' + \
                                                   unzipped_modified_bed_path
+        except NameError:
+            pass
+
+    elif item['file_format'] == 'fastq':
+        try:
+            unzipped_fastq_path = unzipped_fastq_path
+            if os.path.exists(unzipped_fastq_path):
+                try:
+                    os.remove(unzipped_fastq_path)
+                except OSError as e:
+                    errors['file_remove_error'] = 'OS could not remove the file ' + \
+                                                  unzipped_fastq_path
         except NameError:
             pass
 
