@@ -277,11 +277,50 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
                 '{}.'.format(', '.join(sorted(list(read_numbers_set))))
 
         # read_length
-        # 
- 
+        read_lengths_list = []
+        for k in sorted(read_lengths_dictionary.keys()):
+            read_lengths_list.append((k, read_lengths_dictionary[k]))
+
+        if 'read_length' in item and item['read_length'] > 2:
+            process_read_lengths(read_lengths_dictionary,
+                                 read_lengths_list,
+                                 item['read_length'],
+                                 read_count,
+                                 0.95,
+                                 errors)
+        else:
+            errors['read_length'] = 'no specified read length in the uploaded fastq file, ' + \
+                                    'while read length(s) found in the file were {}.'.format(
+                                    ', '.join(read_lengths_list))
+
+        # signatures
+
     except IOError:
         errors['file_open_error'] = 'OS could not open the file ' + \
                                     unzipped_fastq_path
+
+
+def process_read_lengths(read_lengths_dict,
+                         lengths_list,
+                         submitted_read_length,
+                         read_count,
+                         threshold_percentage,
+                         errors_to_report):
+    expected_read_lengths = [
+        submitted_read_length-2,
+        submitted_read_length-1,
+        submitted_read_length,
+        submitted_read_length+1,
+        submitted_read_length+2]
+    reads_quantity = 0
+    for length in expected_read_lengths:
+        if length in read_lengths_dict:
+            reads_quantity += read_lengths_dict[length]
+    if ((threshold_percentage * read_count) > reads_quantity):
+        errors_to_report['read_length'] = \
+            'in file metadata the read_length is {}, '.format(submitted_read_length) + \
+            'however the uploaded fastq file contains reads of following length(s) ' + \
+            '{}.'.format(', '.join(lengths_list))
 
 def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url):
     result['content_md5sum'] = output[:32].decode(errors='replace')
