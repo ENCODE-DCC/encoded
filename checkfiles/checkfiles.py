@@ -216,9 +216,11 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
                     words_array = re.split(r'[\s]', read_name)
                     if read_name_pattern.match(read_name) is None:
                         weird_read_name = read_name
-                        errors['fastq_format_readname'] = 'submitted fastq file does not ' + \
+                        # potentially report weird read names???
+                        '''errors['fastq_format_readname'] = 'submitted fastq file does not ' + \
                                                           'comply with illumina fastq read name format, ' + \
                                                           'read name was : {}'.format(read_name)
+                        '''
                         #  it could be old name that can be used to extract 1/2 info
                         if len(words_array) == 1 and \
                            len(read_name) > 3:
@@ -230,7 +232,7 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
                         if special_read_name_pattern.match(read_name) is not None:
                             read_number = 'not initialized'
                             if len(words_array[0]) > 3 and \
-                               words_array[0][-2:] in ['/1', '/2']:                                
+                               words_array[0][-2:] in ['/1', '/2']:
                                 read_number = words_array[0][-1]
                                 read_numbers_set.add(read_number)
                             read_numbers_set.add(words_array[1][0])
