@@ -269,6 +269,9 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
                         read_lengths_dictionary[length] = 0
                     read_lengths_dictionary[length] += 1
                 line_index = line_index % 4
+
+        if weird_read_name is not False:
+            print ('example of not illumina read_name ' + weird_read_name)
         # read_count update
         result['read_count'] = read_count
 
@@ -577,7 +580,10 @@ def patch_file(session, url, job):
         data = {
             'status': 'in progress',
             'file_size': result['file_size'],
+            'read_count': result['read_count']
         }
+        if result['fastq_signature'] != []:
+            data['fastq_signature']= result['fastq_signature']
         if 'content_md5sum' in result:
             data['content_md5sum'] = result['content_md5sum']
         r = session.patch(
