@@ -21,6 +21,7 @@ from pyramid.traversal import (
     find_resource,
 )
 from pyramid.view import view_config
+import datetime
 
 
 @collection(
@@ -57,6 +58,13 @@ class Page(SharedItem):
         if name == 'homepage':
             return '/'
         return '/%s/' % name
+
+    @calculated_property(condition='date_created', schema={
+        "title": "Date",
+        "type": "string",
+    })
+    def month_released(self, date_created):
+        return datetime.datetime.strptime(date_created[:19], '%Y-%m-%dT%H:%M:%S').strftime('%B, %Y')
 
     @property
     def __parent__(self):

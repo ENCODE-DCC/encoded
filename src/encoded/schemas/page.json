@@ -144,6 +144,9 @@
     "facets": {
         "news_keywords": {
             "title": "Topics"
+        },
+        "month_released": {
+            "title": "Date"
         }
     },
     "columns": {
