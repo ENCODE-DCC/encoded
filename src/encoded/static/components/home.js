@@ -384,7 +384,7 @@ let HomepageChart = React.createClass({
             // Have chartjs draw the legend into the DOM.
             document.getElementById('chart-legend').innerHTML = this.myPieChart.generateLegend();
 
-            // Save the chart <div> height so we can set it to that value when no data's available.'
+            // Save the chart <div> height so we can set it to that value when no data's available.
             let chartWrapperDiv = document.getElementById('chart-wrapper-1');
             this.wrapperHeight = chartWrapperDiv.clientHeight;
         }.bind(this));
@@ -482,16 +482,11 @@ var HomepageChart2 = React.createClass({
         // require.
         require.ensure(['chart.js'], function(require) {
             var Chart = require('chart.js');
+            var colors = this.context.biosampleTypeColors.colorList(facetData.map(term => term.key), {shade: 10});
             var data = [];
             var labels = [];
-            var assayFacet;
 
-            var totalDocCount = 0;
-
-            // for each item, set doc count, add to total doc count, add proper label, and assign color
-            var colors = this.context.biosampleTypeColors.colorList(facetData.map(term => term.key), {shade: 10});
             facetData.forEach((term, i) => {
-                totalDocCount += term.doc_count;
                 data[i] = term.doc_count;
                 labels[i] = term.key;
             });
@@ -555,7 +550,10 @@ var HomepageChart2 = React.createClass({
                 }
             });
 
+            // Have chartjs draw the legend into the DOM.
             document.getElementById('chart-legend-2').innerHTML = this.myPieChart.generateLegend();
+
+            // Save the chart <div> height so we can set it to that value when no data's available.
             let chartWrapperDiv = document.getElementById('chart-wrapper-2');
             this.wrapperHeight = chartWrapperDiv.clientHeight;
         }.bind(this));
@@ -578,6 +576,8 @@ var HomepageChart2 = React.createClass({
         Chart.data.datasets[0].backgroundColor = colors;
         Chart.data.labels = labels;
         Chart.update();
+
+        // Redraw the updated legend
         document.getElementById('chart-legend-2').innerHTML = Chart.generateLegend(); // generates legend
     },
 
@@ -654,16 +654,13 @@ let HomepageChart3 = React.createClass({
         // require.
         require.ensure(['chart.js'], function(require) {
             let Chart = require('chart.js');
+            let colors = [];
             let data = [];
             let labels = [];
-            let colors = [];
             let selectedAssay = (this.props.assayCategory && this.props.assayCategory !== 'COMPPRED') ? this.props.assayCategory.replace(/\+/g,' ') : '';
-
-            let totalDocCount = 0;
 
             // for each item, set doc count, add to total doc count, add proper label, and assign color
             facetData.forEach((term, i) => {
-                totalDocCount += term.doc_count;
                 data[i] = term.doc_count;
                 labels[i] = term.key;
                 colors[i] = selectedAssay ? (term.key === selectedAssay ? 'rgb(255,217,98)' : 'rgba(255,217,98,.4)') : '#FFD962';
