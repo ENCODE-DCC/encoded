@@ -215,20 +215,6 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
                     read_name = line.strip()
                     words_array = re.split(r'[\s]', read_name)
                     if read_name_pattern.match(read_name) is None:
-                        weird_read_name = read_name
-                        # potentially report weird read names???
-                        '''errors['fastq_format_readname'] = 'submitted fastq file does not ' + \
-                                                          'comply with illumina fastq read name format, ' + \
-                                                          'read name was : {}'.format(read_name)
-                        '''
-                        #  it could be old name that can be used to extract 1/2 info
-                        if len(words_array) == 1 and \
-                           len(read_name) > 3:
-                            if read_name[-2:] in ['/1', '/2']:
-                                read_numbers_set.add(read_name[-1])
-                            else:
-                                read_numbers_set.add('1')
-
                         if special_read_name_pattern.match(read_name) is not None:
                             read_number = 'not initialized'
                             if len(words_array[0]) > 3 and \
@@ -245,6 +231,19 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
                             signatures_no_barcode_set.add(
                                 flowcell + ':' + lane_number + ':' +
                                 read_number + ':')
+                        else:
+                            if len(words_array) == 1 and \
+                               len(read_name) > 3:  # assuming old illumina format
+                                if read_name[-2:] in ['/1', '/2']:
+                                    read_numbers_set.add(read_name[-1])
+                                else:
+                                    read_numbers_set.add('1')
+                            else:
+                                weird_read_name = read_name
+                                errors['fastq_format_readname'] = \
+                                    'submitted fastq file does not ' + \
+                                    'comply with illumina fastq read name format, ' + \
+                                    'read name was : {}'.format(read_name)
 
                     else:  # found a match to the regex of "almost" illumina read_name
                         if len(words_array) == 2:
