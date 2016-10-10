@@ -359,7 +359,7 @@ def process_read_lengths(read_lengths_dict,
         errors_to_report['read_length'] = \
             'in file metadata the read_length is {}, '.format(submitted_read_length) + \
             'however the uploaded fastq file contains reads of following length(s) ' + \
-            '{}.'.format(', '.join(lengths_list))
+            '{}.'.format(', '.join(map(str, lengths_list)))
 
 def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url):
     result['content_md5sum'] = output[:32].decode(errors='replace')
