@@ -319,16 +319,15 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
 
         conflicts = []
         for unique_signature in signatures_for_comparison:
-            query = '/'+unique_signature
+            query = '/' + unique_signature + '?format=json'
             r = session.get(urljoin(url, query))
-            r_graph = r.json().get('@graph')
-            if r_graph is not None and len(r_graph) > 0:
+            response = r.json()
+            if response is not None and 'File' in response['@type']:
                 uniqueness_flag = False
-
-                conflicts = [
+                conflicts.append(
                     'specified unique identifier {} '.format(unique_signature) +
                     'is conflicting with identifier of reads from ' +
-                    'file {}.'.format(x['accession']) for x in r_graph]
+                    'file {}.'.format(response['accession']))
         if uniqueness_flag is True:
             result['fastq_signature'] = sorted(list(signatures_for_comparison))
         else:
