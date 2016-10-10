@@ -42,7 +42,7 @@ var Home = module.exports.Home = React.createClass({
             tempArray.push(selectedTab);
         } else{
             // otherwise if it is in array, remove it from array and from link
-            var indexToRemoveArray = tempArray.indexOf(selectedTab);
+            let indexToRemoveArray = tempArray.indexOf(selectedTab);
             tempArray.splice(indexToRemoveArray, 1);
         }
 
@@ -52,10 +52,11 @@ var Home = module.exports.Home = React.createClass({
 
     newsLoaded: function() {
         // Called once the news content gets loaded
-        var newsEl = this.refs.newslisting.getDOMNode();
+        let newsEl = this.refs.newslisting.getDOMNode();
         this.setState({socialHeight: newsEl.clientHeight});
     },
 
+    // Convert the selected organisms and assays into an encoded query.
     generateQuery: function(selectedOrganisms, selectedAssayCategory) {
         // Make the base query
         let query = selectedAssayCategory === 'COMPPRED' ? '?type=Annotation&encyclopedia_version=3' : "?type=Experiment&status=released";
@@ -262,7 +263,7 @@ var HomepageChartLoader = React.createClass({
         return (
             <FetchedData ignoreErrors>
                 <Param name="data" url={'/search/' + this.props.query} />
-                <ChartGallery organisms={this.props.organisms} assayCategory={this.props.assayCategory}query={this.props.query} />
+                <ChartGallery organisms={this.props.organisms} assayCategory={this.props.assayCategory} query={this.props.query} />
             </FetchedData>
         );
     }
@@ -304,6 +305,8 @@ let HomepageChart = React.createClass({
         projectColors: React.PropTypes.object // DataColor instance for experiment project
     },
 
+    // Draw the Project chart, for initial load, or when the previous load had no data for this
+    // chart.
     createChart: function(facetData) {
         require.ensure(['chart.js'], function(require) {
             let Chart = require('chart.js');
@@ -342,7 +345,7 @@ let HomepageChart = React.createClass({
                     responsive: true,
                     maintainAspectRatio: false,
                     legend: {
-                        display: false // hiding automatically generated legend
+                        display: false // Hide automatically generated legend; we draw it ourselves
                     },
                     animation: {
                         duration: 200
@@ -377,12 +380,17 @@ let HomepageChart = React.createClass({
                     }.bind(this)
                 }
             });
-            document.getElementById('chart-legend').innerHTML = this.myPieChart.generateLegend(); // generates legend
+
+            // Have chartjs draw the legend into the DOM.
+            document.getElementById('chart-legend').innerHTML = this.myPieChart.generateLegend();
+
+            // Save the chart <div> height so we can set it to that value when no data's available.'
             let chartWrapperDiv = document.getElementById('chart-wrapper-1');
             this.wrapperHeight = chartWrapperDiv.clientHeight;
         }.bind(this));
     },
 
+    // Update existing chart with new data.
     updateChart: function(Chart, facetData) {
         // for each item, set doc count, add to total doc count, add proper label, and assign color.
         let colors = this.context.projectColors.colorList(facetData.map(term => term.key), {shade: 10});
@@ -400,7 +408,9 @@ let HomepageChart = React.createClass({
         Chart.data.datasets[0].backgroundColor = colors;
         Chart.data.labels = labels;
         Chart.update();
-        document.getElementById('chart-legend').innerHTML = Chart.generateLegend(); // generates legend
+
+        // Redraw the updated legend
+        document.getElementById('chart-legend').innerHTML = Chart.generateLegend();
     },
 
     componentDidMount: function() {
