@@ -242,7 +242,7 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
                             barcode_index = read_name_array[-1]
                             signatures_set.add(
                                 flowcell + ':' + lane_number + ':' +
-                                read_number + ':' + barcode_index)
+                                read_number + ':' + barcode_index + ':')
                             signatures_no_barcode_set.add(
                                 flowcell + ':' + lane_number + ':' +
                                 read_number + ':')
@@ -257,7 +257,7 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
                             barcode_index = read_name_array[-1]
                             signatures_set.add(
                                 flowcell + ':' + lane_number + ':' +
-                                read_number + ':' + barcode_index)
+                                read_number + ':' + barcode_index + ':')
                             signatures_no_barcode_set.add(
                                 flowcell + ':' + lane_number + ':' +
                                 read_number + ':')
@@ -309,11 +309,11 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
                     break
         if is_UMI is True:
             for entry in signatures_no_barcode_set:
-                signatures_for_comparison.add(entry + 'UMI')
+                signatures_for_comparison.add(entry + 'UMI:')
         else:
             if len(signatures_set) > 100:
                 for entry in signatures_no_barcode_set:
-                    signatures_for_comparison.add(entry + 'mixed')
+                    signatures_for_comparison.add(entry + 'mixed:')
             else:
                 signatures_for_comparison = signatures_set
 
