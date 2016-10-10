@@ -120,7 +120,7 @@ module.exports.Auth0 = {
             languageDictionary: {
                 title: "Log in to ENCODE"
             },
-            allowedConnections: ['github', 'google-oauth2', 'facebook', 'linkedin', 'windowslive']
+            allowedConnections: ['github', 'google-oauth2', 'facebook', 'linkedin']
         });
         this.lock.on("authenticated", this.handleAuth0Login.bind(this));
     },
