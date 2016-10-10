@@ -72,6 +72,14 @@ $qualitymetric-figure-height: 96px;
     font-size: 1rem;
 }
 
+.document-label {
+    display: inline-block;
+    padding: 0 5px;
+    font-size: 0.9rem;
+    color: #fff;
+    background-color: #808080;
+    border-radius: 4px;
+}
 
 .characterization-title {
     @extend .document-title;
@@ -266,17 +274,17 @@ $qualitymetric-figure-height: 96px;
 
 @each $item in label, badge {
     // ELIGIBLE FOR NEW DATA (green)
-    .#{$item}.status-eligible-for-new-data        { background-color: $brand-success; }
-    .#{$item}.status-eligible-for-new-data[href]   { background-color: darken($brand-success, 10%); }
+    .#{$item}.status-characterized-to-standards        { background-color: $brand-success; }
+    .#{$item}.status-characterized-to-standards[href]   { background-color: darken($brand-success, 10%); }
     // PENDING DCC REVIEW (blue)
     .#{$item}.status-pending-dcc-review      { background-color: $brand-info; }
     .#{$item}.status-pending-dcc-review[href] { background-color: darken($brand-info, 10%); }
     // NOT ELIGIBLE FOR NEW DATA (red)
-    .#{$item}.status-not-eligible-for-new-data          { background-color: $brand-danger; }
-    .#{$item}.status-not-eligible-for-new-data[href]    { background-color: darken($brand-danger, 10%); }
+    .#{$item}.status-not-characterized-to-standards          { background-color: $brand-danger; }
+    .#{$item}.status-not-characterized-to-standards[href]    { background-color: darken($brand-danger, 10%); }
     // AWAITING LAB CHARACTERIZATION (yellow)
-    .#{$item}.status-awaiting-lab-characterization      { background-color: $brand-warning; }
-    .#{$item}.status-awaiting-lab-characterization[href]{ background-color: darken($brand-warning, 10%); }
+    .#{$item}.status-awaiting-characterization      { background-color: $brand-warning; }
+    .#{$item}.status-awaiting-characterization[href]{ background-color: darken($brand-warning, 10%); }
     // COMPLIANT (green)
     .#{$item}.status-compliant          { background-color: $brand-success; }
     .#{$item}.status-compliant[href]    { background-color: darken($brand-success, 10%); }
@@ -358,11 +366,11 @@ $qualitymetric-figure-height: 96px;
 }
 
 // Status indicator glyph colors
-.indicator.status-eligible-for-new-data { color: $indicator-eligible; }
-.indicator.status-eligible-for-new-data-via-exemption { color: $indicator-eligible-exempt; }
+.indicator.status-characterized-to-standards { color: $indicator-eligible; }
+.indicator.status-characterized-to-standards-with-exemption { color: $indicator-eligible-exempt; }
 .indicator.status-pending-dcc-review { color: $indicator-pending; }
-.indicator.status-not-eligible-for-new-data { color: $indicator-noteligible; }
-.indicator.status-awaiting-lab-characterization { color: $indicator-awaiting; }
+.indicator.status-not-characterized-to-standards { color: $indicator-noteligible; }
+.indicator.status-awaiting-characterization { color: $indicator-awaiting; }
 .indicator.status-not-pursued { color: $indicator-notpursued; }
 .indicator.status-not-reviewed { color: $indicator-notreviewed; }
 

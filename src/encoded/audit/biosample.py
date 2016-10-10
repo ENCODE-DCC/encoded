@@ -87,34 +87,6 @@ def audit_biosample_constructs(value, system):
                     return
 
 
-@audit_checker('biosample', frame=['organism'])
-def audit_biosample_human_no_model_organism_properties(value, system):
-    '''
-    human bioamples shouldn't have model organism properties initiated
-    '''
-    if 'organism' not in value:
-        return
-
-    if value['organism']['scientific_name'] != 'Homo sapiens':
-        return
-    terms_list = []
-    for term in model_organism_terms:
-        if term in value:
-            terms_list.append(term)
-    if len(terms_list) == 1:
-        detail = 'Human biosample {}'.format(value['@id']) + \
-                 ' contains model organism field {}'.format(terms_list[0])
-        yield AuditFailure('model organism term in human biosample', detail,
-                           level='ERROR')
-        return
-    if len(terms_list) > 1:
-        detail = 'Human biosample {}'.format(value['@id']) + \
-                 ' contains model organism fields {}'.format(terms_list)
-        yield AuditFailure('model organism term in human biosample', detail,
-                           level='ERROR')
-        return
-
-
 @audit_checker('biosample', frame=['source', 'part_of', 'donor'])
 def audit_biosample_gtex_children(value, system):
     '''
