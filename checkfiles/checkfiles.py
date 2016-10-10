@@ -235,7 +235,6 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
                                words_array[0][-2:] in ['/1', '/2']:
                                 read_number = words_array[0][-1]
                                 read_numbers_set.add(read_number)
-                            read_numbers_set.add(words_array[1][0])
                             read_name_array = re.split(r'[:\s_]', read_name)
                             flowcell = read_name_array[2]
                             lane_number = read_name_array[3]
