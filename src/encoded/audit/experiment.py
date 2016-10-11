@@ -535,10 +535,11 @@ def audit_modERN_experiment_standards_dispatcher(value, system):
     if value['assay_term_name'] == 'ChIP-seq':
         optimal_idr_peaks = scanFilesForOutputType(value['original_files'],
                                                    'optimal idr thresholded peaks')
-        for failure in check_experiment_chip_seq_encode3_standards(value,
-                                                                   fastq_files,
-                                                                   alignment_files,
-                                                                   optimal_idr_peaks):
+        for failure in check_experiment_chip_seq_standards(value,
+                                                           fastq_files,
+                                                           alignment_files,
+                                                           optimal_idr_peaks,
+                                                           'modERN'):
                 yield failure
 
 
@@ -749,11 +750,12 @@ def get_metrics(files_list, metric_type, desired_assembly=None, desired_annotati
 
 
 def check_experiment_chip_seq_standards(experiment,
-                                                fastq_files,
-                                                alignment_files,
-                                                idr_peaks_files,
-                                                standards_version):
+                                        fastq_files,
+                                        alignment_files,
+                                        idr_peaks_files,
+                                        standards_version):
 
+    
     upper_limit_read_length = 50
     lower_limit_read_length = 36
     if standards_version == 'ENC2':
@@ -778,6 +780,7 @@ def check_experiment_chip_seq_standards(experiment,
             return
 
         read_depth = get_file_read_depth_from_alignment(f, target, 'ChIP-seq')
+
         for failure in check_file_chip_seq_read_depth(f, target, read_depth, standards_version):
             yield failure
         for failure in check_file_chip_seq_library_complexity(f):
@@ -1329,9 +1332,9 @@ def check_file_chip_seq_read_depth(file_to_check,
     if pipeline_title is False:
         return
 
-    marks = pipelines_with_read_depth['Histone ChIP-seq'][standards_version]
+    if standards_version in ['ENC2', 'ENC3']:
+        marks = pipelines_with_read_depth['Histone ChIP-seq'][standards_version]
     modERN_cutoff = pipelines_with_read_depth['Transcription factor ChIP-seq pipeline (modERN)']
-
     if read_depth is False:
         detail = 'ENCODE Processed alignment file {} has no read depth information.'.format(
             file_to_check['@id'])
@@ -1390,7 +1393,8 @@ def check_file_chip_seq_read_depth(file_to_check,
                          'usable fragments is acceptable.'
                 yield AuditFailure('insufficient read depth',
                                    detail, level='NOT_COMPLIANT')
-    elif 'broad histone mark' in target_investigated_as:  # target_name in broad_peaks_targets:
+    elif 'broad histone mark' in target_investigated_as and \
+         standards_version != 'modERN':  # target_name in broad_peaks_targets:
         if target_name in ['H3K9me3-human', 'H3K9me3-mouse'] and standards_version == 'ENC3':
             if read_depth < marks['broad']:
                 detail = 'ENCODE processed alignment file {} has {} '.format(file_to_check['@id'],
@@ -1423,7 +1427,8 @@ def check_file_chip_seq_read_depth(file_to_check,
                 if read_depth < marks['broad']:
                     yield AuditFailure('low read depth',
                                        detail, level='NOT_COMPLIANT')
-    elif 'narrow histone mark' in target_investigated_as:
+    elif 'narrow histone mark' in target_investigated_as and \
+            standards_version != 'modERN':
         detail = 'ENCODE processed alignment file {} has {} '.format(
             file_to_check['@id'],
             read_depth) + \
