@@ -448,6 +448,9 @@ def audit_experiment_standards_dispatcher(value, system):
     fastq_files = scan_files_for_file_format_output_type(value['original_files'],
                                                          'fastq', 'reads')
 
+    standards_version = 'ENC3'
+    if (value['award']['rfa'] in ['ENCODE2-Mouse', 'ENCODE2']):
+        standards_version = 'ENC2'
     if value['assay_term_name'] in ['RAMPAGE', 'RNA-seq', 'CAGE',
                                     'shRNA knockdown followed by RNA-seq',
                                     'siRNA knockdown followed by RNA-seq',
@@ -460,7 +463,8 @@ def audit_experiment_standards_dispatcher(value, system):
                                                           alignment_files,
                                                           gene_quantifications,
                                                           desired_assembly,
-                                                          desired_annotation):
+                                                          desired_annotation,
+                                                          standards_version):
             yield failure
 
     if value['assay_term_name'] == 'ChIP-seq':
