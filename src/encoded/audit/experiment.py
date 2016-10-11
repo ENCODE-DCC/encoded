@@ -478,7 +478,8 @@ def audit_experiment_standards_dispatcher(value, system):
                                                            standards_version):
                 yield failure
 
-    if value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
+    if standards_version == 'ENC3' and \
+            value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
         cpg_quantifications = scanFilesForOutputType(value['original_files'],
                                                      'methylation state at CpG')
 
