@@ -751,6 +751,14 @@ def get_target_name(bam_file):
     return False
 
 
+def extract_award_version(bam_file):
+    if 'dataset' in bam_file and 'award' in bam_file['dataset'] and \
+       'rfa' in bam_file['dataset']['award']:
+        if bam_file['dataset']['award']['rfa'] in ['ENCODE2-Mouse', 'ENCODE2']:
+            return 'ENC2'
+    return 'ENC3'
+
+
 @audit_checker('file', frame=[
     'quality_metrics',
     'analysis_step_version',
@@ -852,6 +860,7 @@ def audit_file_chip_seq_control_read_depth(value, system):
 
     if target_name not in ['Control-human', 'Control-mouse']:
         control_bam = get_control_bam(value, 'Histone ChIP-seq')
+        standards_version = extract_award_version(control_bam)
         if control_bam is not False:
             control_depth = get_chip_seq_bam_read_depth(control_bam)
             control_target = get_target_name(control_bam)
@@ -861,12 +870,19 @@ def audit_file_chip_seq_control_read_depth(value, system):
                                                                   control_target,
                                                                   True,
                                                                   target_name,
-                                                                  target_investigated_as):
+                                                                  target_investigated_as,
+                                                                  standards_version):
                     yield failure
 
 
-def check_control_read_depth_standards(value, read_depth, target_name, is_control_file, control_to_target, target_investigated_as):
-    marks = pipelines_with_read_depth['Histone ChIP-seq']
+def check_control_read_depth_standards(value,
+                                       read_depth,
+                                       target_name,
+                                       is_control_file,
+                                       control_to_target,
+                                       target_investigated_as,
+                                       standards_version):
+    marks = pipelines_with_read_depth['Histone ChIP-seq'][standards_version]
     modERN_cutoff = pipelines_with_read_depth['Transcription factor ChIP-seq pipeline (modERN)']
 
     if is_control_file is True:  # treat this file as control_bam -
