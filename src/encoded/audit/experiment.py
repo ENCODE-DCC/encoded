@@ -451,6 +451,7 @@ def audit_experiment_standards_dispatcher(value, system):
     standards_version = 'ENC3'
     if (value['award']['rfa'] in ['ENCODE2-Mouse', 'ENCODE2']):
         standards_version = 'ENC2'
+
     if value['assay_term_name'] in ['RAMPAGE', 'RNA-seq', 'CAGE',
                                     'shRNA knockdown followed by RNA-seq',
                                     'siRNA knockdown followed by RNA-seq',
@@ -470,10 +471,11 @@ def audit_experiment_standards_dispatcher(value, system):
     if value['assay_term_name'] == 'ChIP-seq':
         optimal_idr_peaks = scanFilesForOutputType(value['original_files'],
                                                    'optimal idr thresholded peaks')
-        for failure in check_experiment_chip_seq_encode3_standards(value,
-                                                                   fastq_files,
-                                                                   alignment_files,
-                                                                   optimal_idr_peaks):
+        for failure in check_experiment_chip_seq_standards(value,
+                                                           fastq_files,
+                                                           alignment_files,
+                                                           optimal_idr_peaks,
+                                                           standards_version):
                 yield failure
 
     if value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
@@ -746,7 +748,7 @@ def get_metrics(files_list, metric_type, desired_assembly=None, desired_annotati
     return metrics
 
 
-def check_experiment_chip_seq_encode3_standards(experiment,
+def check_experiment_chip_seq_standards(experiment,
                                                 fastq_files,
                                                 alignment_files,
                                                 idr_peaks_files,
@@ -953,7 +955,7 @@ def check_idr(metrics, rescue, self_consistency, pipeline):
                          'ENCODE processed IDR thresholded peaks files {} '.format(file_names_string) + \
                          'have a rescue ratio of {0:.2f} and a '.format(rescue_r) + \
                          'self consistency ratio of {0:.2f}. '.format(self_r) + \
-                         'According to ENCODE3 standards, having both rescue ratio ' + \
+                         'According to ENCODE standards, having both rescue ratio ' + \
                          'and self consistency ratio values < 2 is recommended, but ' + \
                          'having only one of the ratio values < 2 is acceptable.'
                 yield AuditFailure('insufficient replicate concordance', detail,
@@ -969,7 +971,7 @@ def check_idr(metrics, rescue, self_consistency, pipeline):
                              'ENCODE processed IDR thresholded peaks files {} '.format(file_names_string) + \
                              'have a rescue ratio of {0:.2f} and a '.format(rescue_r) + \
                              'self consistency ratio of {0:.2f}. '.format(self_r) + \
-                             'According to ENCODE3 standards, having both rescue ratio ' + \
+                             'According to ENCODE standards, having both rescue ratio ' + \
                              'and self consistency ratio values < 2 is recommended, but ' + \
                              'having only one of the ratio values < 2 is acceptable.'
                     yield AuditFailure('borderline replicate concordance', detail,
