@@ -132,9 +132,8 @@ g.edgePath {
 
 g.pipeline-node-qc-metric {
     circle {
-        stroke-width: 2px;
-        stroke: #a0a0a0;
-        fill: #80ffc0;
+        stroke-width: 1px;
+        stroke: #606060;
     }
 
     text {
@@ -145,8 +144,8 @@ g.pipeline-node-qc-metric {
 
     &.active {
         circle {
-            stroke: #404040;
-            fill: darken(#80ffc0, 50%);
+            stroke-width: 2px;
+            stroke: #000;
         }
 
         text {

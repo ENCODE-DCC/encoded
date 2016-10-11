@@ -1245,12 +1245,12 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
             // Add QC metrics info from the file to the list to generate the nodes later
             if (fileQcMetrics[fileId] && fileQcMetrics[fileId].length && file.step_run) {
                 metricsInfo = fileQcMetrics[fileId].map(metric => {
-                    let maxAuditClass;
+                    let maxAuditClass = '';
 
                     if (auditObjects[metric['@id']]) {
-                        // An audit in the file matches a metric. Find the most severe audit in the array
+                        // An audit in the file matches a metric. Find the most severe audit in the array.
                         let maxAudit = _(auditObjects[metric['@id']]).max(audit => audit.level);
-                        console.log('MAXAUDIT: %o', maxAudit);
+                        maxAuditClass = ' qc-metric-node-' + maxAudit.level_name.toLowerCase();
                     }
                     var qcId = genQcId(metric, file);
                     return {id: qcId, label: 'QC', class: 'pipeline-node-qc-metric' + maxAuditClass + (infoNodeId === qcId ? ' active' : ''), ref: metric, parent: file};
