@@ -402,7 +402,7 @@ def get_derived_from_files_set(list_of_files):
                                     'original_files.analysis_step_version.software_versions.software',
                                     'original_files.analysis_step_version.analysis_step',
                                     'original_files.analysis_step_version.analysis_step.pipelines'],
-               condition=rfa('ENCODE3', 'ENCODE'))
+               condition=rfa('ENCODE3', 'ENCODE2-Mouse', 'ENCODE2', 'ENCODE'))
 def audit_experiment_standards_dispatcher(value, system):
     '''
     Dispatcher function that will redirect to other functions that would
@@ -412,7 +412,7 @@ def audit_experiment_standards_dispatcher(value, system):
     if value['status'] in ['revoked', 'deleted', 'replaced']:
         return
     if 'assay_term_name' not in value or \
-       value['assay_term_name'] not in ['RAMPAGE', 'RNA-seq', 'ChIP-seq',
+       value['assay_term_name'] not in ['RAMPAGE', 'RNA-seq', 'ChIP-seq', 'CAGE',
                                         'shRNA knockdown followed by RNA-seq',
                                         'siRNA knockdown followed by RNA-seq',
                                         'CRISPR genome editing followed by RNA-seq',
@@ -448,19 +448,19 @@ def audit_experiment_standards_dispatcher(value, system):
     fastq_files = scan_files_for_file_format_output_type(value['original_files'],
                                                          'fastq', 'reads')
 
-    if value['assay_term_name'] in ['RAMPAGE', 'RNA-seq',
+    if value['assay_term_name'] in ['RAMPAGE', 'RNA-seq', 'CAGE',
                                     'shRNA knockdown followed by RNA-seq',
                                     'siRNA knockdown followed by RNA-seq',
                                     'CRISPR genome editing followed by RNA-seq',
                                     'single cell isolation followed by RNA-seq']:
         gene_quantifications = scanFilesForOutputType(value['original_files'],
                                                       'gene quantifications')
-        for failure in check_experiemnt_rna_seq_encode3_standards(value,
-                                                                  fastq_files,
-                                                                  alignment_files,
-                                                                  gene_quantifications,
-                                                                  desired_assembly,
-                                                                  desired_annotation):
+        for failure in check_experiment_rna_seq_standards(value,
+                                                          fastq_files,
+                                                          alignment_files,
+                                                          gene_quantifications,
+                                                          desired_assembly,
+                                                          desired_annotation):
             yield failure
 
     if value['assay_term_name'] == 'ChIP-seq':
@@ -536,12 +536,13 @@ def audit_modERN_experiment_standards_dispatcher(value, system):
                 yield failure
 
 
-def check_experiemnt_rna_seq_encode3_standards(value,
-                                               fastq_files,
-                                               alignment_files,
-                                               gene_quantifications,
-                                               desired_assembly,
-                                               desired_annotation):
+def check_experiment_rna_seq_standards(value,
+                                       fastq_files,
+                                       alignment_files,
+                                       gene_quantifications,
+                                       desired_assembly,
+                                       desired_annotation,
+                                       standards_version):
     for f in fastq_files:
         for failure in check_file_read_length_rna(f, 50):
             yield failure
@@ -576,33 +577,52 @@ def check_experiemnt_rna_seq_encode3_standards(value,
     alignment_files = get_non_tophat_alignment_files(alignment_files)
 
     if pipeline_title in ['RAMPAGE (paired-end, stranded)']:
-        for failure in check_experiement_rampage_encode3_standards(value,
-                                                                   fastq_files,
-                                                                   alignment_files,
-                                                                   pipeline_title,
-                                                                   gene_quantifications,
-                                                                   desired_assembly,
-                                                                   desired_annotation):
+        upper_limit = 20000000
+        lower_limit = 10000000
+        if standards_version == 'ENC2':
+            upper_limit = 10000000
+        for failure in check_experiment_cage_rampage_standards(value,
+                                                               fastq_files,
+                                                               alignment_files,
+                                                               pipeline_title,
+                                                               gene_quantifications,
+                                                               desired_assembly,
+                                                               desired_annotation,
+                                                               upper_limit,
+                                                               lower_limit):
             yield failure
     elif pipeline_title in ['Small RNA-seq single-end pipeline']:
-        for failure in check_experiement_small_rna_encode3_standards(value,
-                                                                     fastq_files,
-                                                                     alignment_files,
-                                                                     pipeline_title,
-                                                                     gene_quantifications,
-                                                                     desired_assembly,
-                                                                     desired_annotation):
+        upper_limit = 30000000
+        lower_limit = 20000000
+        if standards_version == 'ENC2':
+            upper_limit = 10000000
+            lower_limit = 10000000
+        for failure in check_experiment_small_rna_standards(value,
+                                                            fastq_files,
+                                                            alignment_files,
+                                                            pipeline_title,
+                                                            gene_quantifications,
+                                                            desired_assembly,
+                                                            desired_annotation,
+                                                            upper_limit,
+                                                            lower_limit):
             yield failure
 
     elif pipeline_title in ['RNA-seq of long RNAs (paired-end, stranded)',
                             'RNA-seq of long RNAs (single-end, unstranded)']:
-        for failure in check_experiement_long_rna_encode3_standards(value,
-                                                                    fastq_files,
-                                                                    alignment_files,
-                                                                    pipeline_title,
-                                                                    gene_quantifications,
-                                                                    desired_assembly,
-                                                                    desired_annotation):
+        upper_limit = 30000000
+        lower_limit = 20000000
+        if standards_version == 'ENC2':
+            upper_limit = 20000000
+        for failure in check_experiment_long_rna_standards(value,
+                                                           fastq_files,
+                                                           alignment_files,
+                                                           pipeline_title,
+                                                           gene_quantifications,
+                                                           desired_assembly,
+                                                           desired_annotation,
+                                                           upper_limit,
+                                                           lower_limit):
             yield failure
 
     return
@@ -758,13 +778,15 @@ def check_experiment_chip_seq_encode3_standards(experiment,
         yield failure
 
 
-def check_experiement_long_rna_encode3_standards(experiment,
-                                                 fastq_files,
-                                                 alignment_files,
-                                                 pipeline_title,
-                                                 gene_quantifications,
-                                                 desired_assembly,
-                                                 desired_annotation):
+def check_experiment_long_rna_standards(experiment,
+                                        fastq_files,
+                                        alignment_files,
+                                        pipeline_title,
+                                        gene_quantifications,
+                                        desired_assembly,
+                                        desired_annotation,
+                                        upper_limit_read_depth,
+                                        lower_limit_read_depth):
 
     for failure in check_experiment_ERCC_spikeins(experiment, pipeline_title):
         yield failure
@@ -789,7 +811,9 @@ def check_experiement_long_rna_encode3_standards(experiment,
                                                      pipeline_title):
                     yield failure
             else:
-                for failure in check_file_read_depth(f, read_depth, 30000000, 20000000,
+                for failure in check_file_read_depth(f, read_depth,
+                                                     upper_limit_read_depth,
+                                                     lower_limit_read_depth,
                                                      experiment['assay_term_name'],
                                                      pipeline_title):
                     yield failure
@@ -813,13 +837,15 @@ def check_experiement_long_rna_encode3_standards(experiment,
     return
 
 
-def check_experiement_small_rna_encode3_standards(experiment,
-                                                  fastq_files,
-                                                  alignment_files,
-                                                  pipeline_title,
-                                                  gene_quantifications,
-                                                  desired_assembly,
-                                                  desired_annotation):
+def check_experiment_small_rna_standards(experiment,
+                                         fastq_files,
+                                         alignment_files,
+                                         pipeline_title,
+                                         gene_quantifications,
+                                         desired_assembly,
+                                         desired_annotation,
+                                         upper_limit_read_depth,
+                                         lower_limit_read_depth):
     for f in fastq_files:
         if 'run_type' in f and f['run_type'] != 'single-ended':
             detail = 'Small RNA-seq experiment {} '.format(experiment['@id']) + \
@@ -833,7 +859,9 @@ def check_experiement_small_rna_encode3_standards(experiment,
                                                             get_target(experiment),
                                                             'small RNA')
 
-            for failure in check_file_read_depth(f, read_depth, 30000000, 20000000,
+            for failure in check_file_read_depth(f, read_depth,
+                                                 upper_limit_read_depth,
+                                                 lower_limit_read_depth,
                                                  experiment['assay_term_name'],
                                                  pipeline_title):
                 yield failure
@@ -852,19 +880,23 @@ def check_experiement_small_rna_encode3_standards(experiment,
     return
 
 
-def check_experiement_rampage_encode3_standards(experiment,
-                                                fastq_files,
-                                                alignment_files,
-                                                pipeline_title,
-                                                gene_quantifications,
-                                                desired_assembly,
-                                                desired_annotation):
+def check_experiment_cage_rampage_standards(experiment,
+                                            fastq_files,
+                                            alignment_files,
+                                            pipeline_title,
+                                            gene_quantifications,
+                                            desired_assembly,
+                                            desired_annotation,
+                                            upper_limit_read_depth,
+                                            lower_limit_read_depth):
 
     for f in fastq_files:
         if 'run_type' in f and f['run_type'] != 'paired-ended':
-            detail = 'RAMPAGE experiment {} '.format(experiment['@id']) + \
-                     'contains a file {} '.format(f['@id']) + \
-                     'that is not paired-ended.'
+            detail = '{} experiment {} '.format(
+                experiment['assay_term_name'],
+                experiment['@id']) + \
+                'contains a file {} '.format(f['@id']) + \
+                'that is not paired-ended.'
             yield AuditFailure('non-standard run type', detail, level='WARNING')
 
     for f in alignment_files:
@@ -872,8 +904,10 @@ def check_experiement_rampage_encode3_standards(experiment,
 
             read_depth = get_file_read_depth_from_alignment(f,
                                                             get_target(experiment),
-                                                            'RAMPAGE')
-            for failure in check_file_read_depth(f, read_depth, 20000000, 10000000,
+                                                            experiment['assay_term_name'])
+            for failure in check_file_read_depth(f, read_depth,
+                                                 upper_limit_read_depth,
+                                                 lower_limit_read_depth,
                                                  experiment['assay_term_name'],
                                                  pipeline_title):
                 yield failure
@@ -989,10 +1023,12 @@ def check_experiment_ERCC_spikeins(experiment, pipeline):
             continue
 
         ercc_flag = False
+        some_spikein_present = False
         spikes = lib.get('spikeins_used')
 
         if (spikes is not None) and (len(spikes) > 0):
             for s in spikes:
+                some_spikein_present = True
                 if 'files' in s:
                     for f in s['files']:
                         if (('ENCFF001RTP' == f['accession']) or
@@ -1002,12 +1038,20 @@ def check_experiment_ERCC_spikeins(experiment, pipeline):
                             ercc_flag = True
 
         if ercc_flag is False:
-            detail = 'Library {} '.format(lib['@id']) + \
-                     'in experiment {} '.format(experiment['@id']) + \
-                     'that was processed by {} pipeline '.format(pipeline) + \
-                     'requires ERCC spike-in to be used in it`s preparation.'
-            yield AuditFailure('missing spikeins',
-                               detail, level='NOT_COMPLIANT')
+            if some_spikein_present is True:
+                detail = 'Library {} '.format(lib['@id']) + \
+                         'in experiment {} '.format(experiment['@id']) + \
+                         'that was processed by {} pipeline '.format(pipeline) + \
+                         'requires standard ERCC spike-in to be used in it`s preparation.'
+                yield AuditFailure('missing spikeins',
+                                   detail, level='WARNING')
+            else:
+                detail = 'Library {} '.format(lib['@id']) + \
+                         'in experiment {} '.format(experiment['@id']) + \
+                         'that was processed by {} pipeline '.format(pipeline) + \
+                         'requires ERCC spike-in to be used in it`s preparation.'
+                yield AuditFailure('missing spikeins',
+                                   detail, level='NOT_COMPLIANT')
 
 
 def get_target(experiment):
@@ -1039,7 +1083,7 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
                          'of the replicates. ' + \
                          'ENCODE processed gene quantification files {} '.format(file_names_string) + \
                          'have a Spearman correlation of {0:.2f}. '.format(spearman_correlation) + \
-                         'According to ENCODE3 standards, in an {} '.format(replication_type) + \
+                         'According to ENCODE standards, in an {} '.format(replication_type) + \
                          'assay analyzed using the {} pipeline, '.format(pipeline) + \
                          'a Spearman correlation value > {} '.format(threshold) + \
                          'is recommended.'
@@ -1061,7 +1105,7 @@ def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
     if (quality_metrics is None) or (quality_metrics == []):
         return False
 
-    if assay_name in ['RAMPAGE',
+    if assay_name in ['RAMPAGE', 'CAGE',
                       'small RNA',
                       'long RNA']:
         for metric in quality_metrics:
@@ -1447,7 +1491,7 @@ def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_thre
         yield AuditFailure('missing read depth', detail, level='INTERNAL_ACTION')
         return
 
-    if read_depth is not False and assay_term_name in ['RAMPAGE',
+    if read_depth is not False and assay_term_name in ['RAMPAGE', 'CAGE',
                                                        'RNA-seq']:
         if read_depth >= lower_threshold and read_depth < upper_threshold:
             detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
@@ -1518,9 +1562,8 @@ def check_file_read_length_rna(file_to_check, threshold_length):
     read_length = file_to_check['read_length']
     if read_length < threshold_length:
         detail = 'Fastq file {} '.format(file_to_check['@id']) + \
-                 'has read length of {}bp.'.format(read_length) + \
-                 ' It is not compliant with ENCODE3 standards.' + \
-                 ' According to ENCODE3 standards sequencing reads ' + \
+                 'has read length of {}bp. '.format(read_length) + \
+                 'According to ENCODE uniform processing pipelines requirments, sequencing reads ' + \
                  'should be at least {}bp long.'.format(threshold_length)
         yield AuditFailure('insufficient read length', detail,
                            level='NOT_COMPLIANT')
