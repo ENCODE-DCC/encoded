@@ -755,7 +755,7 @@ def check_experiment_chip_seq_encode3_standards(experiment,
     upper_limit_read_length = 50
     lower_limit_read_length = 36
     if standards_version == 'ENC2':
-        upper_limit_read_depth = 36
+        upper_limit_read_length = 36
 
     for f in fastq_files:
         for failure in check_file_read_length_chip(f,
@@ -776,7 +776,7 @@ def check_experiment_chip_seq_encode3_standards(experiment,
             return
 
         read_depth = get_file_read_depth_from_alignment(f, target, 'ChIP-seq')
-        for failure in check_file_chip_seq_read_depth(f, target, read_depth):
+        for failure in check_file_chip_seq_read_depth(f, target, read_depth, standards_version):
             yield failure
         for failure in check_file_chip_seq_library_complexity(f):
             yield failure
@@ -1315,7 +1315,8 @@ def check_wgbs_lambda(bismark_metrics, threshold, pipeline_title):
 
 def check_file_chip_seq_read_depth(file_to_check,
                                    target,
-                                   read_depth):
+                                   read_depth,
+                                   standards_version):
     # added individual file pipeline validation due to the fact that one experiment may
     # have been mapped using 'Raw mapping' and also 'Histone ChIP-seq' - and there is no need to
     # check read depth on Raw files, while it is required for Histone
@@ -1326,7 +1327,7 @@ def check_file_chip_seq_read_depth(file_to_check,
     if pipeline_title is False:
         return
 
-    marks = pipelines_with_read_depth['Histone ChIP-seq']
+    marks = pipelines_with_read_depth['Histone ChIP-seq'][standards_version]
     modERN_cutoff = pipelines_with_read_depth['Transcription factor ChIP-seq pipeline (modERN)']
 
     if read_depth is False:
@@ -1354,68 +1355,41 @@ def check_file_chip_seq_read_depth(file_to_check,
                     'in experiments studying transcription factors, which ' + \
                     'require {} usable fragments, according to '.format(modERN_cutoff) + \
                     'the standards defined by the modERN project.'
-        if read_depth >= marks['narrow'] and read_depth < marks['broad']:
-            detail = 'ENCODE processed alignment file {} has {} '.format(file_to_check['@id'],
-                                                                         read_depth) + \
-                     'usable fragments. It cannot be used as a control ' + \
-                     'for ChIP-seq experiments targeting broad histone marks, which ' + \
-                     'according to ENCODE3 standards require > 45 million usable fragments. ' + \
-                     'According to ENCODE2 standards > 20 million ' + \
-                     'usable fragments is acceptable.'
-            yield AuditFailure('low read depth', detail, level='INTERNAL_ACTION')
-        if read_depth >= 10000000 and read_depth < marks['narrow']:
-            detail = 'ENCODE processed alignment file {} has {} '.format(file_to_check['@id'],
-                                                                         read_depth) + \
-                     'usable fragments. It cannot be used as a control ' + \
-                     'for ChIP-seq experiments targeting narrow histone marks or ' + \
-                     'transcription factors, which ' + \
-                     'according to ENCODE3 standards require > 20 million usable fragments. ' + \
-                     'According to ENCODE2 standards > 10 million ' + \
-                     'usable fragments is acceptable.'
-            yield AuditFailure('low read depth', detail, level='WARNING')
-        if read_depth < 10000000:
-            detail = 'ENCODE processed alignment file {} has {} '.format(file_to_check['@id'],
-                                                                         read_depth) + \
-                     'usable fragments. It cannot be used as a control ' + \
-                     'for ChIP-seq experiments targeting narrow histone marks or ' + \
-                     'transcription factors, which ' + \
-                     'according to ENCODE3 standards require > 20 million usable fragments. ' + \
-                     'According to ENCODE2 standards > 10 million ' + \
-                     'usable fragments is acceptable.'
-            yield AuditFailure('insufficient read depth',
-                               detail, level='NOT_COMPLIANT')
-        else:
-            if read_depth >= marks['narrow'] and read_depth < marks['broad']:
-                detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
-                                                                             read_depth) + \
-                         'usable fragments. It cannot be used as a control ' + \
-                         'in experiments studying broad histone marks, which ' + \
-                         'require {} usable fragments, according to '.format(marks['broad']) + \
-                         'June 2015 standards.'
-                yield AuditFailure('low read depth', detail, level='INTERNAL_ACTION')
-            if read_depth >= 10000000 and read_depth < marks['narrow']:
-                detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
-                                                                             read_depth) + \
-                         'usable fragments. It cannot be used as a control ' + \
-                         'in experiments studying narrow histone marks or ' + \
-                         'transcription factors, which ' + \
-                         'require {} usable fragments, according to '.format(marks['narrow']) + \
-                         'June 2015 standards.'
-                yield AuditFailure('low read depth', detail, level='WARNING')
-            if read_depth < 10000000:
-                detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
-                                                                             read_depth) + \
-                         'usable fragments. It cannot be used as a control ' + \
-                         'in experiments studying narrow histone marks or ' + \
-                         'transcription factors, which ' + \
-                         'require {} usable fragments, according to '.format(marks['narrow']) + \
-                         'June 2015 standards, and 10000000 usable fragments according to' + \
-                         ' ENCODE2 standards.'
                 yield AuditFailure('insufficient read depth',
                                    detail, level='NOT_COMPLIANT')
-            return
+        else:
+            if read_depth >= marks['narrow'] and read_depth < marks['broad']:
+                detail = 'ENCODE processed alignment file {} has {} '.format(file_to_check['@id'],
+                                                                             read_depth) + \
+                         'usable fragments. It cannot be used as a control ' + \
+                         'for ChIP-seq experiments targeting broad histone marks, which ' + \
+                         'according to ENCODE3 standards require > 45 million usable fragments. ' + \
+                         'According to ENCODE2 standards > 20 million ' + \
+                         'usable fragments is acceptable.'
+                yield AuditFailure('low read depth', detail, level='INTERNAL_ACTION')
+            if read_depth >= 10000000 and read_depth < marks['narrow']:
+                detail = 'ENCODE processed alignment file {} has {} '.format(file_to_check['@id'],
+                                                                             read_depth) + \
+                         'usable fragments. It cannot be used as a control ' + \
+                         'for ChIP-seq experiments targeting narrow histone marks or ' + \
+                         'transcription factors, which ' + \
+                         'according to ENCODE3 standards require > 20 million usable fragments. ' + \
+                         'According to ENCODE2 standards > 10 million ' + \
+                         'usable fragments is acceptable.'
+                yield AuditFailure('low read depth', detail, level='WARNING')
+            if read_depth < 10000000:
+                detail = 'ENCODE processed alignment file {} has {} '.format(file_to_check['@id'],
+                                                                             read_depth) + \
+                         'usable fragments. It cannot be used as a control ' + \
+                         'for ChIP-seq experiments targeting narrow histone marks or ' + \
+                         'transcription factors, which ' + \
+                         'according to ENCODE3 standards require > 20 million usable fragments. ' + \
+                         'According to ENCODE2 standards > 10 million ' + \
+                         'usable fragments is acceptable.'
+                yield AuditFailure('insufficient read depth',
+                                   detail, level='NOT_COMPLIANT')
     elif 'broad histone mark' in target_investigated_as:  # target_name in broad_peaks_targets:
-        if target_name in ['H3K9me3-human', 'H3K9me3-mouse']:
+        if target_name in ['H3K9me3-human', 'H3K9me3-mouse'] and standards_version == 'ENC3':
             if read_depth < marks['broad']:
                 detail = 'ENCODE processed alignment file {} has {} '.format(file_to_check['@id'],
                                                                              read_depth) + \
@@ -1436,12 +1410,17 @@ def check_file_chip_seq_read_depth(file_to_check,
                 'is > 45 million, but > 40 million is acceptable. ' + \
                 'According to ENCODE2 standards > 20 million usable ' + \
                 'fragments is acceptable.'
-            if read_depth >= 40000000 and read_depth < marks['broad']:
-                yield AuditFailure('low read depth',
-                                   detail, level='WARNING')
-            elif read_depth < 40000000:
-                yield AuditFailure('insufficient read depth',
-                                   detail, level='NOT_COMPLIANT')
+            if standards_version == 'ENC3':
+                if read_depth >= 40000000 and read_depth < marks['broad']:
+                    yield AuditFailure('low read depth',
+                                       detail, level='WARNING')
+                elif read_depth < 40000000:
+                    yield AuditFailure('insufficient read depth',
+                                       detail, level='NOT_COMPLIANT')
+            else:
+                if read_depth < marks['broad']:
+                    yield AuditFailure('low read depth',
+                                       detail, level='NOT_COMPLIANT')
     elif 'narrow histone mark' in target_investigated_as:
         detail = 'ENCODE processed alignment file {} has {} '.format(
             file_to_check['@id'],
@@ -1463,7 +1442,7 @@ def check_file_chip_seq_read_depth(file_to_check,
         if pipeline_title == 'Transcription factor ChIP-seq pipeline (modERN)':
             if read_depth < modERN_cutoff:
                 detail = 'modERN processed alignment file {} has {} '.format(file_to_check['@id'],
-                                                                         read_depth) + \
+                                                                             read_depth) + \
                     'usable fragments. Replicates for ChIP-seq ' + \
                     'assays and target {} '.format(target_name) + \
                     'investigated as transcription factor require ' + \
@@ -1472,24 +1451,18 @@ def check_file_chip_seq_read_depth(file_to_check,
                 yield AuditFailure('insufficient read depth',
                                    detail, level='NOT_COMPLIANT')
         else:
+            detail = 'ENCODE Processed alignment file {} has {} '.format(
+                file_to_check['@id'],
+                read_depth) + \
+                'usable fragments. According to ENCODE3 standards for ChIP-seq ' + \
+                'experiments targeting {}, '.format(target_name) + \
+                'investigated as transcription factor the recommended number of usable fragments ' + \
+                'is > 20 million, but > 10 million is acceptable. ' + \
+                'According to ENCODE2 standards > 10 million usable ' + \
+                'fragments is acceptable.'
             if read_depth >= 10000000 and read_depth < marks['narrow']:
-                detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
-                                                                             read_depth) + \
-                         'usable fragments. Replicates for ChIP-seq ' + \
-                         'assays and target {} '.format(target_name) + \
-                         'investigated as transcription factor require ' + \
-                         '{} usable fragments, according to '.format(marks['narrow']) + \
-                         'June 2015 standards.'
                 yield AuditFailure('low read depth', detail, level='WARNING')
             elif read_depth < 10000000:
-                detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
-                                                                             read_depth) + \
-                         'usable fragments. Replicates for ChIP-seq ' + \
-                         'assays and target {} '.format(target_name) + \
-                         'investigated as transcription factor require ' + \
-                         '{} usable fragments, according to '.format(marks['narrow']) + \
-                         'June 2015 standards, and 10000000 usable fragments according to' + \
-                         ' ENCODE2 standards.'
                 yield AuditFailure('insufficient read depth',
                                    detail, level='NOT_COMPLIANT')
 
@@ -1555,8 +1528,7 @@ def check_file_read_length_chip(file_to_check, upper_threshold_length, lower_thr
     read_length = file_to_check['read_length']
     detail = 'Fastq file {} '.format(file_to_check['@id']) + \
              'has read length of {}bp. '.format(read_length) + \
-             'It is not compliant with ENCODE3 standards. ' + \
-             'According to ENCODE3 standards fastq files ' + \
+             'According to ENCODE uniform processing pipelines requirments, sequencing reads ' + \
              'should be at least {}bp long.'.format(upper_threshold_length)
     if read_length < lower_threshold_length:
         yield AuditFailure('insufficient read length', detail, level='NOT_COMPLIANT')

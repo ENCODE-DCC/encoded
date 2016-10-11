@@ -37,9 +37,15 @@ pipelines_with_read_depth = {
     'RNA-seq of long RNAs (single-end, unstranded)': 30000000,
     'RAMPAGE (paired-end, stranded)': 20000000,
     'Histone ChIP-seq': {
-        'narrow': 20000000,
-        'broad': 45000000
+        'ENC2': {
+            'narrow': 10000000,
+            'broad': 20000000
         },
+        'ENC3': {
+            'narrow': 20000000,
+            'broad': 45000000
+        }
+    },
     'Transcription factor ChIP-seq pipeline (modERN)': 3000000
     }
 
