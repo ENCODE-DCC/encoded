@@ -30,9 +30,66 @@ var assemblyPriority = [
     'J02459.1'
 ];
 
-var DownloadButton = React.createClass({
+
+// Render a download button for a file that reacts to login state and admin status to render a
+// tooltip about the restriction based on those things.
+var RestrictedDownloadButton = React.createClass({
+    propTypes: {
+        file: React.PropTypes.object, // File containing `href` to use as download link
+        loggedIn: React.PropTypes.bool, // True if user is logged in
+        adminUser: React.PropTypes.bool // True if logged in user is admin
+    },
+
+    getInitialState: function() {
+        return {
+            tip: false // True if tip is visible
+        };
+    },
+
+    hoverDL: function(hovering) {
+        this.setState({tip: hovering});
+    },
+
     render: function() {
-        
+        let {file, loggedIn, adminUser} = this.props;
+
+        let icon = (
+            <i className="icon icon-download" style={adminUser ? {} : {opacity: "0.3"}} onMouseEnter={this.hoverDL.bind(null, true)} onMouseLeave={this.hoverDL.bind(null, false)}>
+                <span className="sr-only">Download</span>
+            </i>
+        );
+
+        return (
+            <div className="dl-tooltip-trigger">
+                {!file.restricted || adminUser ?
+                    <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true">
+                        {icon}
+                    </a>
+                :
+                    <span>{icon}</span>
+                }
+                {file.restricted ?
+                    <div className={"tooltip right" + (this.state.tip ? ' tooltip-open' : '')} role="tooltip">
+                        <div className="tooltip-arrow"></div>
+                        <div className="tooltip-inner">
+                            {loggedIn ?
+                                (adminUser ?
+                                    <span>Restricted file</span>
+                                :
+                                    <span>
+                                        If you are a collaborator or owner of this file,<br />
+                                        please contact <a href="mailto:encode-help@lists.stanford.edu">encode-help@lists.stanford.edu</a> to<br />
+                                        receive a copy of this file
+                                    </span>
+                                )
+                            :
+                                <span>This file has restricted access</span>
+                            }
+                        </div>
+                    </div>
+                : null}
+            </div>
+        );
     }
 });
 
@@ -54,8 +111,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                 'rawArray': false,
                 'proc': false,
                 'ref': false
-            },
-            restrictedTip: '' // UUID of file in table whose tooltip is showing
+            }
         };
     },
 
@@ -70,22 +126,11 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: 'Accession',
             display: (item, meta) => {
                 let {loggedIn, adminUser} = meta;
-                let hoverInDL = item.restricted && !adminUser ? meta.hoverDL.bind(null, true, item.uuid) : null;
-                let hoverOutDL = item.restricted && !adminUser ? meta.hoverDL.bind(null, false, item.uuid) : null;
-                let restrictedTip = item.restricted && !adminUser && meta.restrictedTip == item.uuid ?
-                    <span>{RestrictedTooltip(loggedIn)}</span>
-                : null;
 
                 return (
                     <div>
-                        <div className="restricted-accession" onMouseEnter={hoverInDL} onMouseLeave={hoverOutDL}>{item.title}{restrictedTip}</div>&nbsp;
-                        {!item.restricted || adminUser ?
-                            <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true">
-                                <i className="icon icon-download">
-                                    <span className="sr-only">Download</span>
-                                </i>
-                            </a>
-                        : null}
+                        <div className="restricted-accession">{item.title}</div>
+                        <RestrictedDownloadButton file={item} loggedIn={loggedIn} adminUser={adminUser} />
                     </div>
                 );
             }
@@ -135,22 +180,11 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: 'Accession',
             display: (item, meta) => {
                 let {loggedIn, adminUser} = meta;
-                let hoverInDL = item.restricted && !adminUser ? meta.hoverDL.bind(null, true, item.uuid) : null;
-                let hoverOutDL = item.restricted && !adminUser ? meta.hoverDL.bind(null, false, item.uuid) : null;
-                let restrictedTip = item.restricted && !adminUser && meta.restrictedTip == item.uuid ?
-                    <span>{RestrictedTooltip(loggedIn)}</span>
-                : null;
 
                 return (
                     <div>
-                        <div className="restricted-accession" onMouseEnter={hoverInDL} onMouseLeave={hoverOutDL}>{item.title}{restrictedTip}</div>&nbsp;
-                        {!item.restricted || adminUser ?
-                            <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true">
-                                <i className="icon icon-download">
-                                    <span className="sr-only">Download</span>
-                                </i>
-                            </a>
-                        : null}
+                        <div className="restricted-accession">{item.title}</div>
+                        <RestrictedDownloadButton file={item} loggedIn={loggedIn} adminUser={adminUser} />
                     </div>
                 );
             }
@@ -475,24 +509,12 @@ var RawSequencingTable = React.createClass({
                                         runType = 'PE';
                                     }
 
-                                    let hoverInDL = file.restricted && !adminUser ? this.hoverDL.bind(null, true, file.uuid) : null;
-                                    let hoverOutDL = file.restricted && !adminUser ? this.hoverDL.bind(null, false, file.uuid) : null;
-                                    let restrictedTip = file.restricted && !adminUser && this.state.restrictedTip == file.uuid ?
-                                        <span>{RestrictedTooltip(loggedIn)}</span>
-                                    : null;
-
                                     return (
                                         <tr key={i} className={file.restricted ? 'file-restricted' : ''}>
                                             {i === 0 ? {spanned} : null}
                                             <td className={pairClass}>
-                                                <div className="restricted-accession" onMouseEnter={hoverInDL} onMouseLeave={hoverOutDL}>{file.title}{restrictedTip}</div>&nbsp;
-                                                {(!file.restricted || adminUser) ?
-                                                    <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true">
-                                                        <i className="icon icon-download" style={{position: "relative"}}>
-                                                            <span className="sr-only">Download</span>
-                                                        </i>
-                                                    </a>
-                                                : null}
+                                                <div className="restricted-accession">{file.title}</div>
+                                                <RestrictedDownloadButton file={file} loggedIn={loggedIn} adminUser={adminUser} />
                                             </td>
                                             <td className={pairClass}>{file.file_type}</td>
                                             <td className={pairClass}>{runType}{file.read_length ? <span>{runType ? <span> </span> : null}{file.read_length + file.read_length_units}</span> : null}</td>
@@ -518,25 +540,14 @@ var RawSequencingTable = React.createClass({
                                     pairedRepKeys.length && i === 0 ? 'table-raw-separator' : null,
                                     file.restricted ? 'file-restricted' : null
                                 ];
-                                let hoverInDL = file.restricted && !adminUser ? this.hoverDL.bind(null, true, file.uuid) : null;
-                                let hoverOutDL = file.restricted && !adminUser ? this.hoverDL.bind(null, false, file.uuid) : null;
-                                let restrictedTip = file.restricted && !adminUser && this.state.restrictedTip == file.uuid ?
-                                    <span>{RestrictedTooltip(loggedIn)}</span>
-                                : null;
 
                                 return (
                                     <tr key={i} className={rowClasses.join(' ')}>
                                         <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
                                         <td>
-                                            <div className="restricted-accession" onMouseEnter={hoverInDL} onMouseLeave={hoverOutDL}>{file.title}{restrictedTip}</div>&nbsp;
-                                            {(!file.restricted || adminUser) ?
-                                                <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true">
-                                                    <i className="icon icon-download" style={{position: "relative"}}>
-                                                        <span className="sr-only">Download</span>
-                                                    </i>
-                                                </a>
-                                            : null}
+                                            <div className="restricted-accession">{file.title}</div>
+                                            <RestrictedDownloadButton file={file} loggedIn={loggedIn} adminUser={adminUser} />
                                         </td>
                                         <td>{file.file_type}</td>
                                         <td>{runType}{file.read_length ? <span>{runType ? <span> </span> : null}{file.read_length + file.read_length_units}</span> : null}</td>
@@ -666,25 +677,13 @@ var RawFileTable = React.createClass({
                                         pairClass = 'align-pair1';
                                     }
 
-                                    let hoverInDL = file.restricted && !adminUser ? this.hoverDL.bind(null, true, file.uuid) : null;
-                                    let hoverOutDL = file.restricted && !adminUser ? this.hoverDL.bind(null, false, file.uuid) : null;
-                                    let restrictedTip = file.restricted && !adminUser && this.state.restrictedTip == file.uuid ?
-                                        <span>{RestrictedTooltip(loggedIn)}</span>
-                                    : null;
-
                                     // Prepare for run_type display
                                     return (
                                         <tr key={i} className={file.restricted ? 'file-restricted' : ''}>
                                             {i === 0 ? {spanned} : null}
                                             <td className={pairClass}>
-                                                <div className="restricted-accession" onMouseEnter={hoverInDL} onMouseLeave={hoverOutDL}>{file.title}{restrictedTip}</div>&nbsp;
-                                                {(!file.restricted || adminUser) ?
-                                                    <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true" onMouseEnter={hoverInDL} onMouseLeave={hoverOutDL}>
-                                                        <i className="icon icon-download" style={{position: "relative"}}>
-                                                            <span className="sr-only">Download</span>
-                                                        </i>
-                                                    </a>
-                                                : null}
+                                                <div className="restricted-accession">{file.title}</div>
+                                                <RestrictedDownloadButton file={file} loggedIn={loggedIn} adminUser={adminUser} />
                                             </td>
                                             <td className={pairClass}>{file.file_type}</td>
                                             <td className={pairClass}>{file.output_type}</td>
@@ -704,25 +703,13 @@ var RawFileTable = React.createClass({
                                     file.restricted ? 'file-restricted' : null
                                 ];
 
-                                let hoverInDL = file.restricted && !adminUser ? this.hoverDL.bind(null, true, file.uuid) : null;
-                                let hoverOutDL = file.restricted && !adminUser ? this.hoverDL.bind(null, false, file.uuid) : null;
-                                let restrictedTip = file.restricted && !adminUser && this.state.restrictedTip == file.uuid ?
-                                    <span>{RestrictedTooltip(loggedIn)}</span>
-                                : null;
-
                                 return (
                                     <tr key={i} className={rowClasses.join(' ')}>
                                         <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
                                         <td>
-                                            <div className="restricted-accession" onMouseEnter={hoverInDL} onMouseLeave={hoverOutDL}>{file.title}{restrictedTip}</div>&nbsp;
-                                            {(!file.restricted || adminUser) ?
-                                                <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true">
-                                                    <i className="icon icon-download" style={{position: "relative"}}>
-                                                        <span className="sr-only">Download</span>
-                                                    </i>
-                                                </a>
-                                            : null}
+                                            <div className="restricted-accession">{file.title}</div>
+                                            <RestrictedDownloadButton file={file} loggedIn={loggedIn} adminUser={adminUser} />
                                         </td>
                                         <td>{file.file_type}</td>
                                         <td>{file.output_type}</td>
