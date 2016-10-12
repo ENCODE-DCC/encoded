@@ -2,7 +2,7 @@
 var React = require('react');
 var globals = require('./globals');
 var {Panel, PanelBody, PanelHeading} = require('../libs/bootstrap/panel');
-var {Modal, ModalHeader, ModalBody} = require('../libs/bootstrap/modal');
+var {Modal, ModalHeader, ModalBody, ModalFooter} = require('../libs/bootstrap/modal');
 var {DropdownButton} = require('../libs/bootstrap/button');
 var {DropdownMenu} = require('../libs/bootstrap/dropdown-menu');
 var {AuditIcon} = require('./audit');
@@ -1408,6 +1408,7 @@ var FileGraph = React.createClass({
                                     <ModalBody>
                                         {meta ? meta.body : null}
                                     </ModalBody>
+                                    <ModalFooter closeModal={<button className="btn btn-info">Close</button>} />
                                 </Modal>
                             : null}
                         </div>
