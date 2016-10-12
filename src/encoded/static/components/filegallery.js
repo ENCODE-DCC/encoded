@@ -46,8 +46,38 @@ var RestrictedDownloadButton = React.createClass({
         };
     },
 
+    timer: null, // Holds timer for the tooltip
+    tipHovering: false, // True if currently hovering over the tooltip
+
     hoverDL: function(hovering) {
-        this.setState({tip: hovering});
+        if (hovering) {
+            // Started hovering over the DL button; show the tooltip.
+            this.setState({tip: true});
+        } else {
+            // No longer hovering over the DL button; start a timer that might hide the tooltip
+            // after a second passes. It won't hide the tooltip if they're now hovering over the
+            // tooltip itself.
+            this.timer = setTimeout(function() {
+                this.timer = null;
+                if (!this.tipHovering) {
+                    this.setState({tip: false});
+                }
+            }.bind(this), 1000);
+        }
+    },
+
+    hoverTip: function(hovering) {
+        if (hovering) {
+            // Started hovering over the tooltip. This prevents the timer from hiding the tooltip.
+            this.tipHovering = true;
+        } else {
+            // Stopped hovering over the tooltip. If the DL button hover time isn't running, hide
+            // the tooltip here.
+            this.tipHovering = false;
+            if (!this.timer) {
+                this.setState({tip: false});
+            }
+        }
     },
 
     render: function() {
@@ -69,22 +99,12 @@ var RestrictedDownloadButton = React.createClass({
                     <span>{icon}</span>
                 }
                 {file.restricted ?
-                    <div className={"tooltip right" + (this.state.tip ? ' tooltip-open' : '')} role="tooltip">
+                    <div className={"tooltip right" + (this.state.tip ? ' tooltip-open' : '')} role="tooltip" onMouseEnter={this.hoverTip.bind(null, true)} onMouseLeave={this.hoverTip.bind(null, false)}>
                         <div className="tooltip-arrow"></div>
                         <div className="tooltip-inner">
-                            {loggedIn ?
-                                (adminUser ?
-                                    <span>Restricted file</span>
-                                :
-                                    <span>
-                                        If you are a collaborator or owner of this file,<br />
-                                        please contact <a href="mailto:encode-help@lists.stanford.edu">encode-help@lists.stanford.edu</a> to<br />
-                                        receive a copy of this file
-                                    </span>
-                                )
-                            :
-                                <span>This file has restricted access</span>
-                            }
+                            If you are a collaborator or owner of this file,<br />
+                            please contact <a href="mailto:encode-help@lists.stanford.edu">encode-help@lists.stanford.edu</a> to<br />
+                            receive a copy of this file
                         </div>
                     </div>
                 : null}
