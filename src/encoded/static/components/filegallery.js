@@ -1408,7 +1408,7 @@ var FileGraph = React.createClass({
                                     <ModalBody>
                                         {meta ? meta.body : null}
                                     </ModalBody>
-                                    <ModalFooter closeModal={<button className="btn btn-info">Close</button>} />
+                                    <ModalFooter closeModal={<button className="btn btn-info" onClick={this.closeModal}>Close</button>} />
                                 </Modal>
                             : null}
                         </div>
