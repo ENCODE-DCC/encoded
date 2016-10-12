@@ -54,7 +54,7 @@ var RestrictedDownloadButton = React.createClass({
         let {file, loggedIn, adminUser} = this.props;
 
         let icon = (
-            <i className="icon icon-download" style={adminUser ? {} : {opacity: "0.3"}} onMouseEnter={this.hoverDL.bind(null, true)} onMouseLeave={this.hoverDL.bind(null, false)}>
+            <i className="icon icon-download" style={!file.restricted || adminUser ? {} : {opacity: "0.3"}} onMouseEnter={this.hoverDL.bind(null, true)} onMouseLeave={this.hoverDL.bind(null, false)}>
                 <span className="sr-only">Download</span>
             </i>
         );
