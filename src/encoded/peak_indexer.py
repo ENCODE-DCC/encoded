@@ -284,8 +284,10 @@ def index_file(request):
             },
             '_source': False,
         })
+        log.warn('      ')
+        log.warn('invalidated {}'.format(len(res['hits']['total'])))
         if res['hits']['total'] > SEARCH_MAX:
-            log.warn('invalidated {}'.format(len(res['hits']['total'])))
+            log.warn('invalidated {} > SEARCH_MAX'.format(len(res['hits']['total'])))
             invalidated = list(all_uuids(request.registry))
         else:
             referencing = {hit['_id'] for hit in res['hits']['hits']}
