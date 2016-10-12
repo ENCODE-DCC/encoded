@@ -1,7 +1,7 @@
 'use strict';
 var React = require('react');
 var panel = require('../libs/bootstrap/panel');
-var {Modal, ModalHeader, ModalBody} = require('../libs/bootstrap/modal');
+var {Modal, ModalHeader, ModalBody, ModalFooter} = require('../libs/bootstrap/modal');
 var url = require('url');
 var _ = require('underscore');
 var graph = require('./graph');
@@ -271,6 +271,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                                 <ModalBody>
                                     {meta ? meta.body : null}
                                 </ModalBody>
+                                <ModalFooter closeModal={<button className="btn btn-info" onClick={this.closeModal}>Close</button>} />
                             </Modal>
                         : null}
                     </div>
