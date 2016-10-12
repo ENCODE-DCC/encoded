@@ -30,6 +30,13 @@ var assemblyPriority = [
     'J02459.1'
 ];
 
+var DownloadButton = React.createClass({
+    render: function() {
+        
+    }
+});
+
+
 var FileTable = module.exports.FileTable = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // Optional parent object of file list
