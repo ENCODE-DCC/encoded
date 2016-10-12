@@ -429,7 +429,7 @@ var StepDetailView = module.exports.StepDetailView = function(node) {
     if (selectedStep) {
         return AnalysisStep(selectedStep, node);
     } else {
-        return {header: null, body: <p className="browser-error">Missing step_run derivation information for {node.metadata.fileAccession}</p>};
+        return {header: <h4>Software unknown</h4>, body: <p className="browser-error">Missing step_run derivation information for {node.metadata.fileAccession}</p>};
     }
 };
 
