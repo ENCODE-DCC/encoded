@@ -463,11 +463,10 @@ def audit_file_controlled_by(value, system):
                 return
 
 
-@audit_checker('file', frame='object', condition=rfa('modERN', 'GGR'))
+@audit_checker('file', frame='object', condition=rfa('modERN', 'GGR', 'ENCODE3'))
 def audit_file_flowcells(value, system):
     '''
     A fastq file could have its flowcell details.
-    Don't bother to check anything but ENCODE3
     '''
 
     if value['status'] in ['deleted', 'replaced', 'revoked']:
