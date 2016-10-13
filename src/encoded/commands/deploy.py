@@ -123,6 +123,9 @@ def spot_instance_price_check(client, instance_type):
         InstanceTypes=[
             instance_type
         ],
+        ProductDescriptions=[
+            'Linux/UNIX (Amazon VPC)',
+        ],
         Filters=[
             {
                 'Name': 'availability-zone',
@@ -131,16 +134,10 @@ def spot_instance_price_check(client, instance_type):
                     'us-west-2b',
                     'us-west-2c'
                 ],
-
-                'Name': 'product-description',
-                'Values': [
-                    'Linux/UNIX (Amazon VPC)'
-                ]
             },
         ]
     )
     # dragons teeth lie below
-
     for key, value in response.items():
 
         if key == 'SpotPriceHistory':
@@ -287,7 +284,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         user_data = user_data % {
             'CLUSTER_NAME': cluster_name,
         }
-        security_groups = ['ssh-http-https']
+        security_groups = ['elasticsearch-https']
         iam_role = 'elasticsearch-instance'
         count = int(cluster_size)
     
@@ -306,6 +303,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         user_data = user_data_b64.decode()
         client = spot_client()
         client.spotClient = ec2_spot
+        security_groups = ['ssh-http-https']
         print("security_groups: %s" % security_groups)
         instances = spot_instances(ec2_spot, spot_price, count, image_id, instance_type, security_groups, user_data, iam_role, BDM)
     else:
