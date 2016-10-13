@@ -2,9 +2,8 @@
 var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
 var queryString = require('query-string');
-var Modal = require('react-bootstrap/lib/Modal');
-var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var button = require('../libs/bootstrap/button');
+var {Modal, ModalHeader, ModalBody, ModalFooter} = require('../libs/bootstrap/modal');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var SvgIcon = require('../libs/svg-icons').SvgIcon;
 var cx = require('react/lib/cx');
@@ -877,50 +876,25 @@ var FacetList = search.FacetList = React.createClass({
 });
 
 var BatchDownload = search.BatchDownload = React.createClass({
-    mixins: [OverlayMixin],
-
-    getInitialState: function () {
-        return {
-            isModalOpen: false
-        };
-    },
-
-    handleToggle: function () {
-        this.setState({
-            isModalOpen: !this.state.isModalOpen
-        });
-    },
-
     render: function () {
-        return (
-            <a className="btn btn-info btn-sm" onClick={this.handleToggle}>Download</a>
-        );
-    },
-
-    renderOverlay: function () {
         var link = this.props.context['batch_download'];
-        if (!this.state.isModalOpen) {
-            return <span/>;
-        }
         return (
-            <Modal title="Using batch download" onRequestHide={this.handleToggle}>
-                <div className="modal-body">
-                <p>Click the "Download" button below to download a "files.txt" file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
-                The first line of the file will always be the URL to download the metadata file. <br />
-                Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.</p><br />
-
-                <p>The "files.txt" file can be copied to any server.<br />
-                The following command using cURL can be used to download all the files in the list:</p><br />
-                <code>xargs -n 1 curl -O -L &lt; files.txt</code><br />
-                </div>
-                <div className="modal-footer">
-                    <a className="btn btn-info btn-sm" onClick={this.handleToggle}>Close</a>
-                    <a data-bypass="true" target="_self" className="btn btn-info btn-sm"
-                        href={link}>{'Download'}</a>
-                </div>
+            <Modal actuator={<button className="btn btn-info btn-sm">Download</button>}>
+                <ModalHeader title="Using batch download" closeModal />
+                <ModalBody>
+                    <p>Click the "Download" button below to download a "files.txt" file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
+                    The first line of the file will always be the URL to download the metadata file. <br />
+                    Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.</p><br />
+                    <p>The "files.txt" file can be copied to any server.<br />
+                    The following command using cURL can be used to download all the files in the list:</p><br />
+                    <code>xargs -n 1 curl -O -L &lt; files.txt</code><br />
+                </ModalBody>
+                <ModalFooter closeModal={<a className="btn btn-info btn-sm">Close</a>}
+                    submitBtn={<a data-bypass="true" target="_self" className="btn btn-info btn-sm" href={link}>{'Download'}</a>}
+                    dontClose />
             </Modal>
         );
-    }
+    },
 });
 
 var ResultTable = search.ResultTable = React.createClass({

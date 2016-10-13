@@ -2,6 +2,7 @@
 var React = require('react');
 var globals = require('./globals');
 var {Panel, PanelBody, PanelHeading} = require('../libs/bootstrap/panel');
+var {Modal, ModalHeader, ModalBody, ModalFooter} = require('../libs/bootstrap/modal');
 var {DropdownButton} = require('../libs/bootstrap/button');
 var {DropdownMenu} = require('../libs/bootstrap/dropdown-menu');
 var {AuditIcon} = require('./audit');
@@ -1319,6 +1320,7 @@ var FileGraph = React.createClass({
     getInitialState: function() {
         return {
             infoNodeId: '', // @id of node whose info panel is open
+            infoModalOpen: false, // Graph information modal open
             collapsed: false // T if graphing panel is collapsed
         };
     },
@@ -1327,19 +1329,19 @@ var FileGraph = React.createClass({
     // jsonGraph: JSON graph data.
     // infoNodeId: ID of the selected node
     detailNodes: function(jsonGraph, infoNodeId) {
-        var meta;
+        let meta;
 
         // Find data matching selected node, if any
         if (infoNodeId) {
             if (infoNodeId.indexOf('qc:') === -1) {
                 // Not a QC subnode; render normally
-                var node = jsonGraph.getNode(infoNodeId);
+                let node = jsonGraph.getNode(infoNodeId);
                 if (node) {
                     meta = globals.graph_detail.lookup(node)(node);
                 }
             } else {
                 // QC subnode
-                var subnode = jsonGraph.getSubnode(infoNodeId);
+                let subnode = jsonGraph.getSubnode(infoNodeId);
                 if (subnode) {
                     meta = QcDetailsView(subnode);
                 }
@@ -1351,12 +1353,20 @@ var FileGraph = React.createClass({
 
     // Handle a click in a graph node
     handleNodeClick: function(nodeId) {
-        this.setState({infoNodeId: this.state.infoNodeId !== nodeId ? nodeId : ''});
+        this.setState({
+            infoNodeId: nodeId,
+            infoModalOpen: true
+        });
     },
 
     handleCollapse: function() {
         // Handle click on panel collapse icon
         this.setState({collapsed: !this.state.collapsed});
+    },
+
+    closeModal: function() {
+        // Called when user wants to close modal somehow
+        this.setState({infoModalOpen: false});
     },
 
     render: function() {
@@ -1386,17 +1396,24 @@ var FileGraph = React.createClass({
                             {!this.state.collapsed ?
                                 <div>
                                     {goodGraph ?
-                                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw>
-                                            <div id="graph-node-info">
-                                                {meta ? <PanelBody>{meta}</PanelBody> : null}
-                                            </div>
-                                        </Graph>
+                                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw />
                                     :
                                         <p className="browser-error">Currently selected assembly and genomic annotation hides the graph</p>
                                     }
                                 </div>
                             : null}
                             <div className={'file-gallery-graph-footer' + (this.state.collapsed ? ' hiding' : '')}></div>
+                            {meta && this.state.infoModalOpen ?
+                                <Modal closeModal={this.closeModal}>
+                                    <ModalHeader closeModal={this.closeModal}>
+                                        {meta ? meta.header : null}
+                                    </ModalHeader>
+                                    <ModalBody>
+                                        {meta ? meta.body : null}
+                                    </ModalBody>
+                                    <ModalFooter closeModal={<button className="btn btn-info" onClick={this.closeModal}>Close</button>} />
+                                </Modal>
+                            : null}
                         </div>
                     );
                 } else {
@@ -1412,27 +1429,27 @@ var FileGraph = React.createClass({
 
 
 // Display the metadata of the selected file in the graph
-var FileDetailView = function(node) {
+let FileDetailView = function(node) {
     // The node is for a file
-    var selectedFile = node.metadata.ref;
-    var meta;
+    let selectedFile = node.metadata.ref;
+    let body, header;
 
     if (selectedFile) {
-        var contributingAccession;
+        let contributingAccession;
 
         if (node.metadata.contributing) {
-            var accessionStart = selectedFile.dataset.indexOf('/', 1) + 1;
-            var accessionEnd = selectedFile.dataset.indexOf('/', accessionStart) - accessionStart;
+            let accessionStart = selectedFile.dataset.indexOf('/', 1) + 1;
+            let accessionEnd = selectedFile.dataset.indexOf('/', accessionStart) - accessionStart;
             contributingAccession = selectedFile.dataset.substr(accessionStart, accessionEnd);
         }
-        var dateString = !!selectedFile.date_created && moment.utc(selectedFile.date_created).format('YYYY-MM-DD');
-        return (
+        let dateString = !!selectedFile.date_created && moment.utc(selectedFile.date_created).format('YYYY-MM-DD');
+        header = (
+            <div className="details-view-info">
+                <h4>{selectedFile.file_type} {selectedFile.accession}</h4>
+            </div>
+        );
+        body = (
             <div>
-                <div className="details-view-header">
-                    <div className="details-view-info">
-                        <h4>{selectedFile.file_type} {selectedFile.accession}</h4>
-                    </div>
-                </div>
                 <dl className="key-value">
                     {selectedFile.output_type ?
                         <div data-test="output">
@@ -1528,8 +1545,14 @@ var FileDetailView = function(node) {
             </div>
         );
     } else {
-        return <p className="browser-error">No information available</p>;
+        header = (
+            <div className="details-view-info">
+                <h4>Unknown file</h4>
+            </div>
+        );
+        body = <p className="browser-error">No information available</p>;
     }
+    return {header: header, body: body};
 };
 
 globals.graph_detail.register(FileDetailView, 'File');
@@ -1563,6 +1586,7 @@ var QcDetailsView = function(metrics) {
         var qcPanels = []; // Each QC metric panel to display
         var id2accessionRE = /\/\w+\/(\w+)\//;
         var filesOfMetric = []; // Array of accessions of files that share this metric
+        let body, header;
 
         // Make an array of the accessions of files that share this quality metrics object.
         // quality_metric_of is an array of @ids because they're not embedded, and we're trying
@@ -1610,17 +1634,17 @@ var QcDetailsView = function(metrics) {
             qcName = qcName[0].toUpperCase() + qcName.substring(1);
         }
 
-        return (
+        header = (
+            <div className="details-view-info">
+                <h4>{qcName} of {metrics.parent.accession}</h4>
+                {filesOfMetric.length ? <h5>Shared with {filesOfMetric.join(', ')}</h5> : null}
+            </div>
+        );
+        body = (
             <div>
-                <div className="details-view-header">
-                    <div className="details-view-info">
-                        <h4>{qcName} of {metrics.parent.accession}</h4>
-                        {filesOfMetric.length ? <h5>Shared with {filesOfMetric.join(', ')}</h5> : null}
-                    </div>
-                </div>
                 <div className="row">
                     <div className="col-md-4 col-sm-6 col-xs-12">
-                        <dl className="key-value-flex">
+                        <dl className="key-value">
                             {sortedKeys.map(key =>
                                 (typeof metrics.ref[key] === 'string' || typeof metrics.ref[key] === 'number') ?
                                     <div key={key}>
@@ -1634,22 +1658,25 @@ var QcDetailsView = function(metrics) {
 
                     {(qcPanels && qcPanels.length) || metrics.ref.attachment ?
                         <div className="col-md-8 col-sm-12 quality-metrics-attachments">
-                            <h5>Quality metric attachments</h5>
                             <div className="row">
-                                {/* If the metrics object has an `attachment` property, display that first, then display the properties
-                                    not named `attachment` but which have their own schema attribute, `attachment`, set to true */}
-                                {metrics.ref.attachment ?
-                                    <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} />
-                                : null}
-                                {qcPanels}
+                                <h5>Quality metric attachments</h5>
+                                <div className="flexrow attachment-panel-inner">
+                                    {/* If the metrics object has an `attachment` property, display that first, then display the properties
+                                        not named `attachment` but which have their own schema attribute, `attachment`, set to true */}
+                                    {metrics.ref.attachment ?
+                                        <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} />
+                                    : null}
+                                    {qcPanels}
+                                </div>
                             </div>
                         </div>
                     : null}
                 </div>
             </div>
         );
+        return {header: header, body: body};
     } else {
-        return null;
+        return {header: null, body: null};
     }
 };
 
