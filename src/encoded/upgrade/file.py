@@ -448,8 +448,8 @@ def file_6_7(value, system):
     if 'derived_from' in value:
         value['derived_from'] = list(set(value['derived_from']))
 
-    if 'supercedes' in value:
-        value['supercedes'] = list(set(value['supercedes']))
+    if 'supersedes' in value:
+        value['supersedes'] = list(set(value['supersedes']))
 
     if 'aliases' in value:
         value['aliases'] = list(set(value['aliases']))
@@ -468,6 +468,6 @@ def file_8_9(value, system):
         value.pop('assembly')
 
     # http://redmine.encodedcc.org/issues/1859
-    if 'supercedes' in value:
-        value['supersedes'] = value['supercedes']
-        value.pop('supercedes', None)
+    if 'supersedes' in value:
+        value['supersedes'] = value['supersedes']
+        value.pop('supersedes', None)

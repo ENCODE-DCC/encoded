@@ -105,7 +105,7 @@ def file_8b(file_base, old_file):
     item = file_base.copy()
     item.update({
         'schema_version': '8',
-        'supercedes': list(old_file['uuid'])
+        'supersedes': list(old_file['uuid'])
     })
     return item
 
@@ -172,4 +172,4 @@ def test_file_upgrade8(upgrader, file_8a, file_8b):
     value_b = upgrader.upgrade('file', file_8b, current_version='8', target_version='9')
     assert value_b['schema_version'] == '9'
     assert 'supersedes' in value_b
-    assert 'supercedes' not in value_b
+    assert 'supersedes' not in value_b

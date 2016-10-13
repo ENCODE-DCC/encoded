@@ -78,6 +78,39 @@ STATUS_LEVEL = {
 }
 
 
+FILE
+            "uploading",
+                "uploaded",
+                "upload failed",
+                "format check failed",
+                "in progress",
+                "deleted",
+                "replaced",
+                "revoked",
+                "archived",
+                "released"
+
+ANTI
+                "in progress",
+                "pending dcc review",
+                "compliant",
+                "not compliant",
+                "not reviewed",
+                "not submitted for review by lab",
+                "exempt from standards",
+                "deleted"
+
+DATASET
+                "proposed",
+                "started",
+                "submitted",
+                "ready for review",
+                "deleted",
+                "released",
+                "revoked",
+                "archived",
+                "replaced"
+
 @audit_checker('Item', frame='object')
 def audit_item_status(value, system):
     if 'status' not in value:
@@ -90,10 +123,24 @@ def audit_item_status(value, system):
     context = system['context']
     request = system['request']
     linked = set()
+    supercedes_linked = set()
+    derived_controlled_linked = set()
     for schema_path in context.type_info.schema_links:
-        if schema_path in ['supercedes', 'step_run']:
+        if schema_path in ['supersedes']:
+            supercedes_linked.update(simple_path_ids(value, schema_path))
+        elif schema_path in ['derived_from', 'controlled_by']:
+            derived_controlled_linked.update(simple_path_ids(value, schema_path))
+        elif schema_path in ['step_run']:
             continue
-        linked.update(simple_path_ids(value, schema_path))
+        else:
+            linked.update(simple_path_ids(value, schema_path))
+
+    for path in supercedes_linked:
+        linked_value = request.embed(path + '@@object')
+        if 'status' not in linked_value:
+            continue
+        linked_level = STATUS_LEVEL.get(linked_value['status'], 50)
+
 
     for path in linked:
         linked_value = request.embed(path + '@@object')
