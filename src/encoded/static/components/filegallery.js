@@ -562,6 +562,7 @@ var RawFileTable = React.createClass({
                                 <th>Accession</th>
                                 <th>File type</th>
                                 <th>Output type</th>
+                                <th>Mapping assembly</th>
                                 <th>Lab</th>
                                 <th>Date added</th>
                                 <th>File size</th>
@@ -605,6 +606,7 @@ var RawFileTable = React.createClass({
                                             </td>
                                             <td className={pairClass}>{file.file_type}</td>
                                             <td className={pairClass}>{file.output_type}</td>
+                                            <td className={pairClass}>{file.assembly}</td>
                                             <td className={pairClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={pairClass}>{humanFileSize(file.file_size)}</td>
@@ -623,6 +625,7 @@ var RawFileTable = React.createClass({
                                         <td>{file.title}&nbsp;<a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a></td>
                                         <td>{file.file_type}</td>
                                         <td>{file.output_type}</td>
+                                        <td>{file.assembly}</td>
                                         <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{humanFileSize(file.file_size)}</td>
