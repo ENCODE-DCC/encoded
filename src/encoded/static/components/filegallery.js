@@ -899,7 +899,7 @@ var FileGalleryRenderer = React.createClass({
                 </PanelHeading>
 
                 {!this.props.hideGraph ?
-                    <FileGraph context={context} items={graphFiles} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
+                    <FileGraph context={context} items={graphFiles} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} adminUser={!!this.context.session_properties.admin} forceRedraw />
                 : null}
 
                 {/* If logged in and dataset is released, need to combine search of files that reference
@@ -990,7 +990,7 @@ function graphException(message, file0, file1) {
 module.exports.graphException = graphException;
 
 
-var assembleGraph = module.exports.assembleGraph = function(context, session, infoNodeId, files, filterAssembly, filterAnnotation) {
+var assembleGraph = module.exports.assembleGraph = function(context, session, adminUser, infoNodeId, files, filterAssembly, filterAnnotation) {
 
     // Calculate a step ID from a file's derived_from array
     function _derivedFileIds(file) {
@@ -1435,7 +1435,7 @@ var FileGraph = React.createClass({
     // Render metadata if a graph node is selected.
     // jsonGraph: JSON graph data.
     // infoNodeId: ID of the selected node
-    detailNodes: function(jsonGraph, infoNodeId) {
+    detailNodes: function(jsonGraph, infoNodeId, loggedIn, adminUser) {
         var meta;
 
         // Find data matching selected node, if any
@@ -1444,7 +1444,7 @@ var FileGraph = React.createClass({
                 // Not a QC subnode; render normally
                 var node = jsonGraph.getNode(infoNodeId);
                 if (node) {
-                    meta = globals.graph_detail.lookup(node)(node);
+                    meta = globals.graph_detail.lookup(node)(node, loggedIn, adminUser);
                 }
             } else {
                 // QC subnode
@@ -1469,13 +1469,14 @@ var FileGraph = React.createClass({
     },
 
     render: function() {
-        var {context, session, items, selectedAssembly, selectedAnnotation} = this.props;
+        var {context, session, adminUser, items, selectedAssembly, selectedAnnotation} = this.props;
+        let loggedIn = !!(session && session['auth.userid']);
         var files = items;
 
         // Build node graph of the files and analysis steps with this experiment
         if (files && files.length) {
             try {
-                this.jsonGraph = assembleGraph(context, session, this.state.infoNodeId, files, selectedAssembly, selectedAnnotation);
+                this.jsonGraph = assembleGraph(context, session, adminUser, this.state.infoNodeId, files, selectedAssembly, selectedAnnotation);
             } catch(e) {
                 this.jsonGraph = null;
                 console.warn(e.message + (e.file0 ? ' -- file0:' + e.file0 : '') + (e.file1 ? ' -- file1:' + e.file1: ''));
@@ -1485,7 +1486,7 @@ var FileGraph = React.createClass({
             // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
             if (goodGraph) {
                 if (selectedAssembly || selectedAnnotation) {
-                    var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
+                    var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId, loggedIn, adminUser);
                     return (
                         <div>
                             <div className="file-gallery-graph-header collapsing-title">
@@ -1521,7 +1522,7 @@ var FileGraph = React.createClass({
 
 
 // Display the metadata of the selected file in the graph
-var FileDetailView = function(node) {
+var FileDetailView = function(node, loggedIn, adminUser) {
     // The node is for a file
     var selectedFile = node.metadata.ref;
     var meta;
@@ -1627,9 +1628,8 @@ var FileDetailView = function(node) {
                         <div data-test="download">
                             <dt>File download</dt>
                             <dd>
-                                <a href={selectedFile.href} download={selectedFile.href.substr(selectedFile.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i>
-                                    &nbsp;Download
-                                </a>
+                                <div className="restricted-accession">{selectedFile.title}</div>
+                                <RestrictedDownloadButton file={selectedFile} loggedIn={loggedIn} adminUser={adminUser} />
                             </dd>
                         </div>
                     : null}
