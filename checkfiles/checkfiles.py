@@ -305,7 +305,7 @@ def process_fastq_file(job, unzipped_fastq_path, session, url):
                 if 'barcode' in entry and entry['barcode'] == 'UMI':
                     is_UMI = True
                     break
-        if is_UMI is True:
+        if is_UMI:
             for entry in signatures_no_barcode_set:
                 signatures_for_comparison.add(entry + 'UMI:')
         else:
