@@ -2825,14 +2825,17 @@ def audit_experiment_antibody_characterized(value, system):
                 if (lot_review['status'] == 'awaiting characterization'):
                     for lot_organism in lot_review['organisms']:
                         if organism == lot_organism:
-                            detail = '{} has not been characterized to the standard for {}: {}'.format(
-                                antibody['@id'], organism, lot_review['detail'])
-                            yield AuditFailure('not characterized antibody', detail, level='NOT_COMPLIANT')
+                            detail = '{} has not been '.format(antibody['@id']) + \
+                                     'characterized to the standard for {}: {}'.format(
+                                organism, lot_review['detail'])
+                            yield AuditFailure('not characterized antibody',
+                                               detail,
+                                               level='NOT_COMPLIANT')
                 if lot_review['status'] == 'characterized to standards with exemption':
                     for lot_organism in lot_review['organisms']:
                         if organism == lot_organism:
-                            detail = '{} has been characterized to the standard with exemption for' + \
-                                ' {}'.format(antibody['@id'], organism)
+                            detail = '{} has been characterized '.format(antibody['@id']) + \
+                                     'to the standard with exemption for {}'.format(organism)
                             yield AuditFailure('antibody characterized with exemption',
                                                detail, level='WARNING')
         else:
@@ -2852,8 +2855,9 @@ def audit_experiment_antibody_characterized(value, system):
                         eligible_biosamples.add(eligible_biosample)
 
             if experiment_biosample in exempt_biosamples:
-                detail = '{} has been characterized to the standard with exemption ' + \
-                    'for {} in {}'.format(antibody['@id'], biosample_term_name, organism)
+                detail = '{} has been characterized to the '.format(antibody['@id']) + \
+                         'standard with exemption ' + \
+                         'for {} in {}'.format(biosample_term_name, organism)
                 yield AuditFailure('antibody characterized with exemption', detail, level='WARNING')
 
             if experiment_biosample not in eligible_biosamples:
