@@ -597,7 +597,8 @@ def check_experiment_rna_seq_standards(value,
                                                                desired_assembly,
                                                                desired_annotation,
                                                                upper_limit,
-                                                               lower_limit):
+                                                               lower_limit,
+                                                               standards_version):
             yield failure
     elif pipeline_title in ['Small RNA-seq single-end pipeline']:
         upper_limit = 30000000
@@ -905,16 +906,18 @@ def check_experiment_cage_rampage_standards(experiment,
                                             desired_assembly,
                                             desired_annotation,
                                             upper_limit_read_depth,
-                                            lower_limit_read_depth):
+                                            lower_limit_read_depth,
+                                            standards_version):
 
-    for f in fastq_files:
-        if 'run_type' in f and f['run_type'] != 'paired-ended':
-            detail = '{} experiment {} '.format(
-                experiment['assay_term_name'],
-                experiment['@id']) + \
-                'contains a file {} '.format(f['@id']) + \
-                'that is not paired-ended.'
-            yield AuditFailure('non-standard run type', detail, level='WARNING')
+    if standards_version == 'ENC3':
+        for f in fastq_files:
+            if 'run_type' in f and f['run_type'] != 'paired-ended':
+                detail = '{} experiment {} '.format(
+                    experiment['assay_term_name'],
+                    experiment['@id']) + \
+                    'contains a file {} '.format(f['@id']) + \
+                    'that is not paired-ended.'
+                yield AuditFailure('non-standard run type', detail, level='WARNING')
 
     for f in alignment_files:
         if 'assembly' in f and f['assembly'] == desired_assembly:
@@ -1334,6 +1337,10 @@ def check_file_chip_seq_read_depth(file_to_check,
 
     if standards_version in ['ENC2', 'ENC3']:
         marks = pipelines_with_read_depth['Histone ChIP-seq'][standards_version]
+    audit_level = 'NOT_COMPLIANT'
+    if standards_version == 'ENC2':
+        audit_level = 'WARNING'
+
     modERN_cutoff = pipelines_with_read_depth['Transcription factor ChIP-seq pipeline (modERN)']
     if read_depth is False:
         detail = 'ENCODE Processed alignment file {} has no read depth information.'.format(
@@ -1390,9 +1397,9 @@ def check_file_chip_seq_read_depth(file_to_check,
                          'transcription factors, which ' + \
                          'according to ENCODE3 standards require > 20 million usable fragments. ' + \
                          'According to ENCODE2 standards > 10 million ' + \
-                         'usable fragments is acceptable.'
+                         'usable fragments is acceptable.'                
                 yield AuditFailure('insufficient read depth',
-                                   detail, level='NOT_COMPLIANT')
+                                   detail, level=audit_level)
     elif 'broad histone mark' in target_investigated_as and \
          standards_version != 'modERN':  # target_name in broad_peaks_targets:
         if target_name in ['H3K9me3-human', 'H3K9me3-mouse'] and standards_version == 'ENC3':
@@ -1426,7 +1433,7 @@ def check_file_chip_seq_read_depth(file_to_check,
             else:
                 if read_depth < marks['broad']:
                     yield AuditFailure('low read depth',
-                                       detail, level='NOT_COMPLIANT')
+                                       detail, level=audit_level)
     elif 'narrow histone mark' in target_investigated_as and \
             standards_version != 'modERN':
         detail = 'ENCODE processed alignment file {} has {} '.format(
@@ -1444,7 +1451,7 @@ def check_file_chip_seq_read_depth(file_to_check,
             yield AuditFailure('low read depth', detail, level='WARNING')
         elif read_depth < 10000000:
             yield AuditFailure('insufficient read depth',
-                               detail, level='NOT_COMPLIANT')
+                               detail, level=audit_level)
     elif 'transcription factor' in target_investigated_as:
         if pipeline_title == 'Transcription factor ChIP-seq pipeline (modERN)':
             if read_depth < modERN_cutoff:
@@ -1471,7 +1478,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                 yield AuditFailure('low read depth', detail, level='WARNING')
             elif read_depth < 10000000:
                 yield AuditFailure('insufficient read depth',
-                                   detail, level='NOT_COMPLIANT')
+                                   detail, level=audit_level)
 
 
 def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_threshold,
