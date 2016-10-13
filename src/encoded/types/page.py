@@ -21,7 +21,7 @@ from pyramid.traversal import (
     find_resource,
 )
 from pyramid.view import view_config
-import datetime
+import dateutil.parser
 
 
 @collection(
@@ -64,7 +64,7 @@ class Page(SharedItem):
         "type": "string",
     })
     def month_released(self, date_created):
-        return datetime.datetime.strptime(date_created[:19], '%Y-%m-%dT%H:%M:%S').strftime('%B, %Y')
+        return dateutil.parser.parse(date_created).strftime('%B, %Y')
 
     @property
     def __parent__(self):
