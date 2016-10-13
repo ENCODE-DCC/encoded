@@ -34,7 +34,7 @@ var cloneWithProps = require('react/lib/cloneWithProps');
 // <Modal> usage details:
 // actuator: Component that opens the modal. You don't normally need a click handler for this
 //           component because <Modal> attaches a default click handler that simply opens the
-//           modal.
+//           modal. If you handle the visibility of the modal yourself, `actuator` isn't needed.
 // closeModal: Function to close the modal if `actuator` isn't provided. Use this when you handle
 //             the visibility of the modal yourself. Providing this to the <Modal> component simply
 //             allows the ESC key to close the modal without an `actuator` component.
@@ -51,10 +51,10 @@ var cloneWithProps = require('react/lib/cloneWithProps');
 // <ModalFooter> usage details:
 // submitBtn: Pass a React component to render as the submit button. You can also supply a function
 //            that gets used as a click handler for a standard Submit button.
-// closeBtn: Pass True to get a standard cancel button that simply closes the modal. You can also
+// closeBtn: Pass True to get a standard "Cancel" button that simply closes the modal. You can also
 //           pass a function that gets used as the click handler for the standard cancel button
 //           that gets called before closing the modal. Finally, you can pass a React component
-//           that handles the closing of the modal.
+//           that handles the closing of the modal if you handle modal visibility yourself.
 //
 // The method of rendering the modal to a div appended to <body> rather than into the React virtual
 // DOM comes from: http://jamesknelson.com/rendering-react-components-to-the-document-body/
@@ -66,13 +66,13 @@ var Modal = module.exports.Modal = React.createClass({
         closeModal: React.PropTypes.func // Called to close the modal if an actuator isn't provided
     },
 
-    getInitialState: function() {
+    getInitialState: function () {
         return {
             modalOpen: false // True if modal is visible. Ignored if no actuator given
         };
     },
 
-    componentDidMount: function() {
+    componentDidMount: function () {
         // Modal HTML gets injected at the end of <body> so the backdrop overlay works, even with other
         // fixed elements on the page.
         this.modalEl = document.createElement('div');
@@ -83,18 +83,18 @@ var Modal = module.exports.Modal = React.createClass({
         document.addEventListener('keydown', this.handleEsc, false);
     },
 
-    componentWillUnmount: function() {
+    componentWillUnmount: function () {
         React.unmountComponentAtNode(this.modalEl);
         document.body.removeChild(this.modalEl);
         document.removeEventListener('keydown', this.handleEsc, false);
     },
 
-    componentDidUpdate: function() {
+    componentDidUpdate: function () {
         this.renderModal();
     },
 
     // Called when the user presses the ESC key.
-    handleEsc: function(e) {
+    handleEsc: function (e) {
         if ((!this.props.actuator || this.state.modalOpen) && e.keyCode === 27) {
             if (this.props.closeModal) {
                 this.props.closeModal();
@@ -105,16 +105,16 @@ var Modal = module.exports.Modal = React.createClass({
     },
 
     // Open the modal
-    openModal: function() {
-        this.setState({modalOpen: true});
+    openModal: function () {
+        this.setState({ modalOpen: true });
 
         // Add class to body element to make modal-backdrop div visible
         document.body.classList.add('modal-open');
     },
 
     // Default function to close the modal without doing anything.
-    closeModal: function() {
-        this.setState({modalOpen: false});
+    closeModal: function () {
+        this.setState({ modalOpen: false });
 
         // Remove class from body element to make modal-backdrop div visible
         document.body.classList.remove('modal-open');
@@ -123,12 +123,12 @@ var Modal = module.exports.Modal = React.createClass({
     // Render the modal JSX into the element this component appended to the <body> element. that
     // lets us properly render the fixed-position backdrop so that it overlays the fixed-position
     // navigation bar.
-    renderModal: function() {
+    renderModal: function () {
         React.render(
             <div>
                 {!this.props.actuator || this.state.modalOpen ?
                     <div>
-                        <div className="modal" style={{display: "block"}}>
+                        <div className="modal" style={{ display: "block" }}>
                             <div className="modal-dialog">
                                 <div className="modal-content">
                                     {this.modalChildren}
@@ -137,23 +137,23 @@ var Modal = module.exports.Modal = React.createClass({
                         </div>
                         <div className="modal-backdrop in"></div>
                     </div>
-                : null}
+                    : null}
             </div>,
             this.modalEl
         );
     },
 
-    render: function() {
+    render: function () {
         // We don't require/allow a click handler for the actuator, so we attach the one from
         // ModalMixin here. You can't add attributes to an existing component in React, but React
         // has no issue adding attributes while cloning a component.
-        let actuator = this.props.actuator ? cloneWithProps(this.props.actuator, {onClick: this.openModal}) : null;
+        let actuator = this.props.actuator ? cloneWithProps(this.props.actuator, { onClick: this.openModal }) : null;
 
         // Pass important Modal states and functions to child objects without the parent component
         // needing to do it explicitly.
         this.modalChildren = React.Children.map(this.props.children, child => {
             if (child.type === ModalHeader.type || child.type === ModalBody.type || child.type === ModalFooter.type) {
-                return cloneWithProps(child, {_closeModal: this.closeModal, _modalOpen: this.state.modalOpen});
+                return cloneWithProps(child, { _closeModal: this.closeModal, _modalOpen: this.state.modalOpen });
             }
             return child;
         });
@@ -175,7 +175,7 @@ var ModalHeader = module.exports.ModalHeader = React.createClass({
         ])
     },
 
-    closeModal: function() {
+    closeModal: function () {
         // Call close button's existing close handler if it had one first. 
         if (this.chainedCloseModal) {
             this.chainedCloseModal();
@@ -185,7 +185,7 @@ var ModalHeader = module.exports.ModalHeader = React.createClass({
         this.props._closeModal();
     },
 
-    render: function() {
+    render: function () {
         let {title, closeModal} = this.props;
         let titleRender = null;
 
@@ -211,7 +211,7 @@ var ModalHeader = module.exports.ModalHeader = React.createClass({
 
 
 var ModalBody = module.exports.ModalBody = React.createClass({
-    render: function() {
+    render: function () {
         return (
             <div className="modal-body">
                 {this.props.children}
@@ -235,7 +235,7 @@ var ModalFooter = module.exports.ModalFooter = React.createClass({
         dontClose: React.PropTypes.bool // True to *not* close the modal when the user clicks Submit
     },
 
-    closeModal: function() {
+    closeModal: function () {
         // Call close button's existing close handler if it had one first. 
         if (this.chainedCloseModal) {
             this.chainedCloseModal();
@@ -245,7 +245,7 @@ var ModalFooter = module.exports.ModalFooter = React.createClass({
         this.props._closeModal();
     },
 
-    submitModal: function() {
+    submitModal: function () {
         let {submitBtn, dontClose, closeModal} = this.props;
         if (typeof submitBtn === 'function') {
             submitBtn();
@@ -255,7 +255,7 @@ var ModalFooter = module.exports.ModalFooter = React.createClass({
         }
     },
 
-    render: function() {
+    render: function () {
         let {submitBtn, closeModal} = this.props;
         let submitBtnComponent = null;
         let closeBtnComponent = null;
@@ -275,7 +275,7 @@ var ModalFooter = module.exports.ModalFooter = React.createClass({
             if (closeModal.props.onClick) {
                 this.chainedCloseModal = closeModal.props.onClick;
             }
-            closeModal = cloneWithProps(closeModal, {onClick: this.closeModal});
+            closeModal = cloneWithProps(closeModal, { onClick: this.closeModal });
         } else if (typeof closeModal === 'function') {
             this.chainedCloseModal = closeModal;
         }
@@ -297,7 +297,7 @@ var ModalFooter = module.exports.ModalFooter = React.createClass({
                         {closeBtnComponent}
                         {submitBtnComponent}
                     </div>
-                : null}
+                    : null}
                 {this.props.children}
             </div>
         );
