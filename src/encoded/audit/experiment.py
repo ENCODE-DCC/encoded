@@ -756,12 +756,11 @@ def check_experiment_chip_seq_standards(experiment,
                                         idr_peaks_files,
                                         standards_version):
 
-    
     upper_limit_read_length = 50
     lower_limit_read_length = 36
     if standards_version == 'ENC2':
         upper_limit_read_length = 36
-
+        lower_limit_read_length = 1
     for f in fastq_files:
         for failure in check_file_read_length_chip(f,
                                                    upper_limit_read_length,
