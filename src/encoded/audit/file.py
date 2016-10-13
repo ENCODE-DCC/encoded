@@ -884,9 +884,6 @@ def check_control_read_depth_standards(value,
     if standards_version in ['ENC2', 'ENC3']:
         marks = pipelines_with_read_depth['Histone ChIP-seq'][standards_version]
     modERN_cutoff = pipelines_with_read_depth['Transcription factor ChIP-seq pipeline (modERN)']
-    audit_level = 'NOT_COMPLIANT'
-    if standards_version == 'ENC2':
-        audit_level = 'WARNING'
 
     if is_control_file is True:  # treat this file as control_bam -
         # raising insufficient control read depth
@@ -914,7 +911,7 @@ def check_control_read_depth_standards(value,
             if read_depth >= marks['narrow'] and read_depth < marks['broad']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
             elif read_depth < marks['narrow']:
-                yield AuditFailure('control insufficient read depth', detail, level=audit_level)
+                yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
         elif 'narrow histone mark' in target_investigated_as:  # else:
             detail = 'ENCODE processed alignment file {} has {} '.format(
                 value['@id'],
@@ -928,7 +925,7 @@ def check_control_read_depth_standards(value,
             if read_depth >= 10000000 and read_depth < marks['narrow']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
             elif read_depth < 10000000:
-                yield AuditFailure('control insufficient read depth', detail, level=audit_level)
+                yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
 
         elif 'transcription factor' in target_investigated_as:
             if value['lab'] == '/labs/kevin-white/':
@@ -954,5 +951,5 @@ def check_control_read_depth_standards(value,
             if read_depth >= 10000000 and read_depth < marks['narrow']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
             elif read_depth < 10000000:
-                yield AuditFailure('control insufficient read depth', detail, level=audit_level)
+                yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
         return
