@@ -880,6 +880,7 @@
         "gtf": ".gtf.gz",
         "hdf5": ".h5",
         "idat": ".idat",
+        "PWM":".pwm",
         "rcc": ".rcc",
         "tagAlign": ".tagAlign.gz",
         "tar": ".tar.gz",
