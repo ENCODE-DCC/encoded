@@ -437,7 +437,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                     <DocumentsPanel documentSpecs={[{documents: combinedDocs}]} />
                 : null}
 
-                {context.genetic_modifications.length ?
+                {context.genetic_modifications && context.genetic_modifications.length ?
                     <GeneticModificationSummary geneticModifications={context.genetic_modifications} />
                 : null}
             </div>

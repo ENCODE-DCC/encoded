@@ -44,6 +44,7 @@ class GeneticModification(Item):
         'modification_techniques.documents.lab',
         'modification_techniques.documents.submitted_by',
         'biosamples_modified.documents',
+        'donors_modified.documents',
         'treatments'
     ]
 
@@ -69,7 +70,7 @@ class GeneticModification(Item):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "Biosample.genetic_modifications",
+            "linkFrom": "Donor.genetic_modifications",
         },
     })
     def donors_modified(self, request, donors_modified):
