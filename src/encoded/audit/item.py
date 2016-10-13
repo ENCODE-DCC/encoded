@@ -46,70 +46,41 @@ def audit_item_schema(value, system):
 
 
 STATUS_LEVEL = {
-    # standard_status
+    # public statuses
     'released': 100,
-    'deleted': 0,
-    'replaced': 0,
-
-    # shared_status
     'current': 100,
-    'disabled': 0,
-
-    # file
-    'obsolete': 50,
-
-    # antibody_characterization
+    'published': 100,
     'compliant': 100,
     'not compliant': 100,
     'not reviewed': 100,
     'not submitted for review by lab': 100,
-
-    # antibody_lot
+    'exempt from standards': 100,
     'eligible for new data': 100,
     'not eligible for new data': 100,
     'not pursued': 100,
 
-    # dataset / experiment
-    'release ready': 50,
-    'revoked': 100,
+    # 'discouraged for use' public statuses
+    'archived': 90,
+    'revoked': 80,
 
-    # publication
-    'published': 100,
-}
+    # private statuses (visible for consortium members only)
+    'in progress': 50,
+    'pending dcc review': 50,
+    'proposed': 50,
+    'started': 50,
+    'submitted': 50,
+    'ready for review': 50,
+    'uploading': 50,
+    'upload failed': 50,
+    'pending dcc review': 50,
+    'awaiting lab characterization': 50,
 
+    # invisible statuses (visible for admins only)
+    'deleted': 0,
+    'replaced': 0,
+    'disabled': 0
+    }
 
-FILE
-            "uploading",
-                "uploaded",
-                "upload failed",
-                "format check failed",
-                "in progress",
-                "deleted",
-                "replaced",
-                "revoked",
-                "archived",
-                "released"
-
-ANTI
-                "in progress",
-                "pending dcc review",
-                "compliant",
-                "not compliant",
-                "not reviewed",
-                "not submitted for review by lab",
-                "exempt from standards",
-                "deleted"
-
-DATASET
-                "proposed",
-                "started",
-                "submitted",
-                "ready for review",
-                "deleted",
-                "released",
-                "revoked",
-                "archived",
-                "replaced"
 
 @audit_checker('Item', frame='object')
 def audit_item_status(value, system):
@@ -123,24 +94,12 @@ def audit_item_status(value, system):
     context = system['context']
     request = system['request']
     linked = set()
-    supercedes_linked = set()
-    derived_controlled_linked = set()
+
     for schema_path in context.type_info.schema_links:
-        if schema_path in ['supersedes']:
-            supercedes_linked.update(simple_path_ids(value, schema_path))
-        elif schema_path in ['derived_from', 'controlled_by']:
-            derived_controlled_linked.update(simple_path_ids(value, schema_path))
-        elif schema_path in ['step_run']:
+        if schema_path in ['step_run', 'supersedes']:
             continue
         else:
             linked.update(simple_path_ids(value, schema_path))
-
-    for path in supercedes_linked:
-        linked_value = request.embed(path + '@@object')
-        if 'status' not in linked_value:
-            continue
-        linked_level = STATUS_LEVEL.get(linked_value['status'], 50)
-
 
     for path in linked:
         linked_value = request.embed(path + '@@object')
