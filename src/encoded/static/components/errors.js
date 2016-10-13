@@ -74,7 +74,7 @@ var LoginDenied = module.exports.LoginDenied = React.createClass({
                 <div className="row">
                     <div className="col-sm-12">
                         <h2>Our Apologies!</h2>
-                        <p>The email address you have provided us does not match any user in our system!</p>
+                        <p>The email address you have provided us does not match any user of the ENCODE Portal.</p>
                         <p>As you know, we have recently changed our login system.</p>
 
                         <p>The ENCODE Portal now uses a variety of common identity providers to verify you are who say you are.<br/>
