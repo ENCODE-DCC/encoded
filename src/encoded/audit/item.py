@@ -96,7 +96,7 @@ def audit_item_status(value, system):
     linked = set()
 
     for schema_path in context.type_info.schema_links:
-        if schema_path in ['step_run', 'supersedes']:
+        if schema_path in ['supersedes', 'step_run']:
             continue
         else:
             linked.update(simple_path_ids(value, schema_path))
