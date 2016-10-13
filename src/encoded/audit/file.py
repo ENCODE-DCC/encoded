@@ -860,10 +860,10 @@ def audit_file_chip_seq_control_read_depth(value, system):
 
     if target_name not in ['Control-human', 'Control-mouse']:
         control_bam = get_control_bam(value, 'Histone ChIP-seq')
-        standards_version = extract_award_version(control_bam)
         if control_bam is not False:
             control_depth = get_chip_seq_bam_read_depth(control_bam)
             control_target = get_target_name(control_bam)
+            standards_version = extract_award_version(control_bam)
             if control_depth is not False and control_target is not False:
                 for failure in check_control_read_depth_standards(control_bam,
                                                                   control_depth,
@@ -882,7 +882,8 @@ def check_control_read_depth_standards(value,
                                        control_to_target,
                                        target_investigated_as,
                                        standards_version):
-    marks = pipelines_with_read_depth['Histone ChIP-seq'][standards_version]
+    if standards_version in ['ENC2', 'ENC3']:
+        marks = pipelines_with_read_depth['Histone ChIP-seq'][standards_version]
     modERN_cutoff = pipelines_with_read_depth['Transcription factor ChIP-seq pipeline (modERN)']
 
     if is_control_file is True:  # treat this file as control_bam -
