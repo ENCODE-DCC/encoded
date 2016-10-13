@@ -33,7 +33,7 @@
           		"title": "gRNA sequence",
               	"description": "guide RNA sequence used in the experiment.",
                 "type": "string",
-                "pattern": "^[ACTG]+$"
+                "pattern": "^[ACUNTG]+$"
 			}
 		},
 		"insert_sequence": {
