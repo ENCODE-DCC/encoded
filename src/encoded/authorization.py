@@ -19,7 +19,7 @@ def groupfinder(login, request):
         elif localname in ['TEST_AUTHENTICATED']:
             return ['viewing_group.ENCODE']
 
-    if namespace in ('mailto', 'remoteuser', 'persona'):
+    if namespace in ('mailto', 'remoteuser', 'auth0'):
         users = collections.by_item_type['user']
         try:
             user = users[localname]

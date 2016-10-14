@@ -1,11 +1,10 @@
-from browserid.errors import TrustError
 from snovault import COLLECTIONS
 from snovault.calculated import calculate_properties
 from snovault.validation import ValidationFailure
 from snovault.validators import no_validate_item_content_post
 from operator import itemgetter
 from pyramid.authentication import CallbackAuthenticationPolicy
-from pyramid.config import ConfigurationError
+import requests
 from pyramid.httpexceptions import (
     HTTPForbidden,
     HTTPFound,
@@ -27,24 +26,9 @@ from pyramid.view import (
 _marker = object()
 
 
-AUDIENCES_MESSAGE = """\
-Missing persona.audiences settings. This is needed for security reasons. \
-See https://developer.mozilla.org/en-US/docs/Mozilla/Persona/Security_Considerations \
-for details."""
-
 
 def includeme(config):
     config.scan(__name__)
-    settings = config.registry.settings
-
-    if 'persona.audiences' not in settings:
-        raise ConfigurationError(AUDIENCES_MESSAGE)
-    # Construct a browserid Verifier using the configured audience.
-    # This will pre-compile some regexes to reduce per-request overhead.
-    verifier_factory = config.maybe_dotted(settings.get('persona.verifier',
-                                                        'browserid.RemoteVerifier'))
-    audiences = aslist(settings['persona.audiences'])
-    config.registry['persona.verifier'] = verifier_factory(audiences)
     config.add_route('login', 'login')
     config.add_route('logout', 'logout')
     config.add_route('session', 'session')
@@ -56,7 +40,7 @@ class LoginDenied(HTTPForbidden):
     title = 'Login failure'
 
 
-class PersonaAuthenticationPolicy(CallbackAuthenticationPolicy):
+class Auth0AuthenticationPolicy(CallbackAuthenticationPolicy):
     """
     Checks assertion during authentication so login can construct user session.
     """
@@ -64,37 +48,45 @@ class PersonaAuthenticationPolicy(CallbackAuthenticationPolicy):
     method = 'POST'
 
     def unauthenticated_userid(self, request):
+
         if request.method != self.method or request.path != self.login_path:
             return None
 
-        cached = getattr(request, '_persona_authenticated', _marker)
+        cached = getattr(request, '_auth0_authenticated', _marker)
         if cached is not _marker:
             return cached
 
-        verifier = request.registry['persona.verifier']
         try:
-            assertion = request.json['assertion']
+            access_token = request.json['accessToken']
         except (ValueError, TypeError, KeyError):
             if self.debug:
                 self._log(
                     'Missing assertion.',
                     'unauthenticated_userid',
                     request)
-            request._persona_authenticated = None
+            request._auth0_authenticated = None
             return None
+        
         try:
-            data = verifier.verify(assertion)
-        except (ValueError, TrustError) as e:
+            user_url = "https://{domain}/userinfo?access_token={access_token}" \
+                .format(domain='encode.auth0.com', access_token=access_token)
+
+            user_info = requests.get(user_url).json()
+        except Exception as e:
             if self.debug:
                 self._log(
                     ('Invalid assertion: %s (%s)', (e, type(e).__name__)),
                     'unauthenticated_userid',
                     request)
-            request._persona_authenticated = None
+            request._auth0_authenticated = None
             return None
 
-        email = request._persona_authenticated = data['email'].lower()
-        return email
+        if user_info['email_verified'] == True:
+            email = request._auth0_authenticated = user_info['email'].lower()
+            return email
+        else:
+            return None
+
 
     def remember(self, request, principal, **kw):
         return []
@@ -109,14 +101,14 @@ class PersonaAuthenticationPolicy(CallbackAuthenticationPolicy):
 @view_config(route_name='login', request_method='POST',
              permission=NO_PERMISSION_REQUIRED)
 def login(request):
-    """View to check the persona assertion and remember the user"""
+    """View to check the auth0 assertion and remember the user"""
     login = request.authenticated_userid
     if login is None:
         namespace = userid = None
     else:
         namespace, userid = login.split('.', 1)
 
-    if namespace != 'persona':
+    if namespace != 'auth0':
         request.session.invalidate()
         request.response.headerlist.extend(forget(request))
         raise LoginDenied()

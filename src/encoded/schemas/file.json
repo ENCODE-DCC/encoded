@@ -188,7 +188,8 @@
                         "tagAlign",
                         "vcf",
                         "wig",
-                        "bedpe"
+                        "bedpe",
+                        "PWM"
                     ]
                 },
                 {
@@ -398,6 +399,7 @@
                         "variant calls",
                         "filtered SNPs",
                         "filtered indels",
+                        "motif model",
 
                         "hotspots",
                         "long range chromatin interactions",
@@ -797,6 +799,7 @@
         "filtered peptide quantification": "quantification",
         "unfiltered peptide quantification": "quantification",
         "replication timing profile": "quantification",
+        "motif model": "quantification",
 
         "hotspots": "annotation",
         "long range chromatin interactions": "annotation",
@@ -880,6 +883,7 @@
         "gtf": ".gtf.gz",
         "hdf5": ".h5",
         "idat": ".idat",
+        "PWM":".pwm",
         "rcc": ".rcc",
         "tagAlign": ".tagAlign.gz",
         "tar": ".tar.gz",
