@@ -204,6 +204,7 @@ def process_fastq_file(job, fastq_data_stream, session, url):
     signatures_no_barcode_set = set()
     read_lengths_dictionary = {}
     read_count = 0
+    old_illumina_current_prefix = ''
     try:
         line_index = 0
         for encoded_line in fastq_data_stream.stdout:
@@ -232,10 +233,26 @@ def process_fastq_file(job, fastq_data_stream, session, url):
                     else:
                         if len(words_array) == 1 and \
                            len(read_name) > 3:  # assuming old illumina format
+                            read_number = '1'
                             if read_name[-2:] in ['/1', '/2']:
                                 read_numbers_set.add(read_name[-1])
-                            else:
-                                read_numbers_set.add('1')
+                                read_number = read_name[-1]
+
+                            '''
+                            add the code that will allow detection of some old dups
+                            '''
+                            arr = read_name.split(':')
+                            prefix = arr[0] + ':' + arr[1]
+                            if prefix != old_illumina_current_prefix:
+                                old_illumina_current_prefix = prefix
+                                flowcell = arr[0][1:]
+                                lane_number = arr[1]
+                                signatures_set.add(
+                                    flowcell + ':' + lane_number + ':' +
+                                    read_number + '::' + read_name)
+                                signatures_no_barcode_set.add(
+                                    flowcell + ':' + lane_number + ':' +
+                                    read_number + '::' + read_name)
                         else:
                             weird_read_name = read_name
                             errors['fastq_format_readname'] = \
