@@ -8,6 +8,7 @@ Example.
 """
 import datetime
 import os.path
+import io
 import json
 import sys
 from shlex import quote
@@ -204,134 +205,133 @@ def process_fastq_file(job, fastq_data_stream, session, url):
     signatures_no_barcode_set = set()
     read_lengths_dictionary = {}
     read_count = 0
-
-    # print ('checking file ' + unzipped_fastq_path)
-    line = fastq_data_stream.readline()
-    # with open(unzipped_fastq_path, 'r') as f:
-    # line_index = 0
-    # for line in f:
-    line_index = 1
-    while line:
-        if line_index == 1:
-            read_name = line.strip()
-            words_array = re.split(r'[\s]', read_name)
-            if read_name_pattern.match(read_name) is None:
-                if special_read_name_pattern.match(read_name) is not None:
-                    read_number = 'not initialized'
-                    if len(words_array[0]) > 3 and \
-                       words_array[0][-2:] in ['/1', '/2']:
-                        read_number = words_array[0][-1]
-                        read_numbers_set.add(read_number)
-                    read_name_array = re.split(r'[:\s_]', read_name)
-                    flowcell = read_name_array[2]
-                    lane_number = read_name_array[3]
-                    barcode_index = read_name_array[-1]
-                    signatures_set.add(
-                        flowcell + ':' + lane_number + ':' +
-                        read_number + ':' + barcode_index + ':')
-                    signatures_no_barcode_set.add(
-                        flowcell + ':' + lane_number + ':' +
-                        read_number + ':')
-                else:
-                    if len(words_array) == 1 and \
-                       len(read_name) > 3:  # assuming old illumina format
-                        if read_name[-2:] in ['/1', '/2']:
-                            read_numbers_set.add(read_name[-1])
-                        else:
-                            read_numbers_set.add('1')
+    try:
+        unzipped_fastq = io.BytesIO(fastq_data_stream)
+        line_index = 0
+        for encoded_line in unzipped_fastq:
+            line = encoded_line.decode()
+            line_index += 1
+            if line_index == 1:
+                read_name = line.strip()
+                words_array = re.split(r'[\s]', read_name)
+                if read_name_pattern.match(read_name) is None:
+                    if special_read_name_pattern.match(read_name) is not None:
+                        read_number = 'not initialized'
+                        if len(words_array[0]) > 3 and \
+                           words_array[0][-2:] in ['/1', '/2']:
+                            read_number = words_array[0][-1]
+                            read_numbers_set.add(read_number)
+                        read_name_array = re.split(r'[:\s_]', read_name)
+                        flowcell = read_name_array[2]
+                        lane_number = read_name_array[3]
+                        barcode_index = read_name_array[-1]
+                        signatures_set.add(
+                            flowcell + ':' + lane_number + ':' +
+                            read_number + ':' + barcode_index + ':')
+                        signatures_no_barcode_set.add(
+                            flowcell + ':' + lane_number + ':' +
+                            read_number + ':')
                     else:
-                        weird_read_name = read_name
-                        errors['fastq_format_readname'] = \
-                            'submitted fastq file does not ' + \
-                            'comply with illumina fastq read name format, ' + \
-                            'read name was : {}'.format(read_name)
+                        if len(words_array) == 1 and \
+                           len(read_name) > 3:  # assuming old illumina format
+                            if read_name[-2:] in ['/1', '/2']:
+                                read_numbers_set.add(read_name[-1])
+                            else:
+                                read_numbers_set.add('1')
+                        else:
+                            weird_read_name = read_name
+                            errors['fastq_format_readname'] = \
+                                'submitted fastq file does not ' + \
+                                'comply with illumina fastq read name format, ' + \
+                                'read name was : {}'.format(read_name)
 
-            else:  # found a match to the regex of "almost" illumina read_name
-                if len(words_array) == 2:
-                    read_name_array = re.split(r'[:\s_]', read_name)
-                    flowcell = read_name_array[2]
-                    lane_number = read_name_array[3]
-                    read_number = read_name_array[-4]
-                    read_numbers_set.add(read_number)
-                    barcode_index = read_name_array[-1]
-                    signatures_set.add(
-                        flowcell + ':' + lane_number + ':' +
-                        read_number + ':' + barcode_index + ':')
-                    signatures_no_barcode_set.add(
-                        flowcell + ':' + lane_number + ':' +
-                        read_number + ':')
+                else:  # found a match to the regex of "almost" illumina read_name
+                    if len(words_array) == 2:
+                        read_name_array = re.split(r'[:\s_]', read_name)
+                        flowcell = read_name_array[2]
+                        lane_number = read_name_array[3]
+                        read_number = read_name_array[-4]
+                        read_numbers_set.add(read_number)
+                        barcode_index = read_name_array[-1]
+                        signatures_set.add(
+                            flowcell + ':' + lane_number + ':' +
+                            read_number + ':' + barcode_index + ':')
+                        signatures_no_barcode_set.add(
+                            flowcell + ':' + lane_number + ':' +
+                            read_number + ':')
 
-        if line_index == 2:
-            read_count += 1
-            length = len(line.strip())
-            if length not in read_lengths_dictionary:
-                read_lengths_dictionary[length] = 0
-            read_lengths_dictionary[length] += 1
-        line_index = line_index % 4
-        line_index += 1
-
-    if weird_read_name is not False:
-        print ('example of not illumina read_name ' + weird_read_name)
-    # read_count update
-    result['read_count'] = read_count
-
-    # read1/read2
-    if len(read_numbers_set) > 1:
-        errors['inconsistent_read_numbers'] = \
-            'fastq file contains mixed read numbers ' + \
-            '{}.'.format(', '.join(sorted(list(read_numbers_set))))
-
-    # read_length
-    read_lengths_list = []
-    for k in sorted(read_lengths_dictionary.keys()):
-        read_lengths_list.append((k, read_lengths_dictionary[k]))
-
-    if 'read_length' in item and item['read_length'] > 2:
-        process_read_lengths(read_lengths_dictionary,
-                             read_lengths_list,
-                             item['read_length'],
-                             read_count,
-                             0.95,
-                             errors)
+            if line_index == 2:
+                read_count += 1
+                length = len(line.strip())
+                if length not in read_lengths_dictionary:
+                    read_lengths_dictionary[length] = 0
+                read_lengths_dictionary[length] += 1
+            line_index = line_index % 4
+    except IOError:
+        errors['unzipped_fastq_streaming'] = 'Error occured, while streaming unzipped fastq.'
     else:
-        errors['read_length'] = 'no specified read length in the uploaded fastq file, ' + \
-                                'while read length(s) found in the file were {}.'.format(
-                                ', '.join(read_lengths_list))
+        if weird_read_name is not False:
+            print ('example of not illumina read_name ' + weird_read_name)
+        # read_count update
+        result['read_count'] = read_count
 
-    # signatures
-    uniqueness_flag = True
-    signatures_for_comparison = set()
-    is_UMI = False
-    if 'flowcell_details' in item and len(item['flowcell_details']) > 0:
-        for entry in item['flowcell_details']:
-            if 'barcode' in entry and entry['barcode'] == 'UMI':
-                is_UMI = True
-                break
-    if is_UMI is True:
-        for entry in signatures_no_barcode_set:
-            signatures_for_comparison.add(entry + 'UMI:')
-    else:
-        if len(signatures_set) > 100:
-            for entry in signatures_no_barcode_set:
-                signatures_for_comparison.add(entry + 'mixed:')
+        # read1/read2
+        if len(read_numbers_set) > 1:
+            errors['inconsistent_read_numbers'] = \
+                'fastq file contains mixed read numbers ' + \
+                '{}.'.format(', '.join(sorted(list(read_numbers_set))))
+
+        # read_length
+        read_lengths_list = []
+        for k in sorted(read_lengths_dictionary.keys()):
+            read_lengths_list.append((k, read_lengths_dictionary[k]))
+
+        if 'read_length' in item and item['read_length'] > 2:
+            process_read_lengths(read_lengths_dictionary,
+                                 read_lengths_list,
+                                 item['read_length'],
+                                 read_count,
+                                 0.95,
+                                 errors)
         else:
-            signatures_for_comparison = signatures_set
+            errors['read_length'] = 'no specified read length in the uploaded fastq file, ' + \
+                                    'while read length(s) found in the file were {}.'.format(
+                                    ', '.join(read_lengths_list))
 
-    conflicts = []
-    for unique_signature in signatures_for_comparison:
-        query = '/' + unique_signature + '?format=json'
-        r = session.get(urljoin(url, query))
-        response = r.json()
-        if response is not None and 'File' in response['@type']:
-            uniqueness_flag = False
-            conflicts.append(
-                'specified unique identifier {} '.format(unique_signature) +
-                'is conflicting with identifier of reads from ' +
-                'file {}.'.format(response['accession']))
-    if uniqueness_flag is True:
-        result['fastq_signature'] = sorted(list(signatures_for_comparison))
-    else:
-        errors['not_unique_flowcell_details'] = conflicts
+        # signatures
+        uniqueness_flag = True
+        signatures_for_comparison = set()
+        is_UMI = False
+        if 'flowcell_details' in item and len(item['flowcell_details']) > 0:
+            for entry in item['flowcell_details']:
+                if 'barcode' in entry and entry['barcode'] == 'UMI':
+                    is_UMI = True
+                    break
+        if is_UMI is True:
+            for entry in signatures_no_barcode_set:
+                signatures_for_comparison.add(entry + 'UMI:')
+        else:
+            if len(signatures_set) > 100:
+                for entry in signatures_no_barcode_set:
+                    signatures_for_comparison.add(entry + 'mixed:')
+            else:
+                signatures_for_comparison = signatures_set
+
+        conflicts = []
+        for unique_signature in signatures_for_comparison:
+            query = '/' + unique_signature + '?format=json'
+            r = session.get(urljoin(url, query))
+            response = r.json()
+            if response is not None and 'File' in response['@type']:
+                uniqueness_flag = False
+                conflicts.append(
+                    'specified unique identifier {} '.format(unique_signature) +
+                    'is conflicting with identifier of reads from ' +
+                    'file {}.'.format(response['accession']))
+        if uniqueness_flag is True:
+            result['fastq_signature'] = sorted(list(signatures_for_comparison))
+        else:
+            errors['not_unique_flowcell_details'] = conflicts
 
 
 def process_read_lengths(read_lengths_dict,
@@ -491,8 +491,9 @@ def check_file(config, session, url, job):
             try:
                 print ('checking file ' + local_path[-20:-9])
                 process_fastq_file(job,
-                                   subprocess.check_output('gunzip --stdout {}'.format(local_path),
-                                                           shell=True, executable='/bin/bash',
+                                   subprocess.check_output(['gunzip --stdout {}'.format(local_path)],
+                                                           shell=True,
+                                                           executable='/bin/bash',
                                                            stderr=subprocess.PIPE),
                                    session, url)
             except subprocess.CalledProcessError as e:
@@ -507,18 +508,6 @@ def check_file(config, session, url, job):
                 except OSError as e:
                     errors['file_remove_error'] = 'OS could not remove the file ' + \
                                                   unzipped_modified_bed_path
-        except NameError:
-            pass
-
-    elif item['file_format'] == 'fastq':
-        try:
-            unzipped_fastq_path = unzipped_fastq_path
-            if os.path.exists(unzipped_fastq_path):
-                try:
-                    os.remove(unzipped_fastq_path)
-                except OSError as e:
-                    errors['file_remove_error'] = 'OS could not remove the file ' + \
-                                                  unzipped_fastq_path
         except NameError:
             pass
 
