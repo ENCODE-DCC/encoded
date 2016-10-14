@@ -1478,7 +1478,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                 yield AuditFailure('low read depth', detail, level='WARNING')
             elif read_depth < 10000000:
                 yield AuditFailure('insufficient read depth',
-                                   detail, level=audit_level)
+                                   detail, level='NOT_COMPLIANT')
 
 
 def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_threshold,

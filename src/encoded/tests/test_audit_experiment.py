@@ -1924,8 +1924,8 @@ def test_audit_experiment_chip_seq_standards_encode2(testapp,
 
     testapp.patch_json(chip_seq_quality_metric['@id'], {'quality_metric_of': [file_bam_1_1['@id']],
                                                         'processing_stage': 'unfiltered',
-                                                        'total': 21000000,
-                                                        'mapped': 21000000,
+                                                        'total': 31000000,
+                                                        'mapped': 31000000,
                                                         'read1': 100, 'read2': 100})
     testapp.patch_json(file_fastq_3['@id'], {'read_length': 20})
     testapp.patch_json(file_fastq_4['@id'], {'read_length': 100})
