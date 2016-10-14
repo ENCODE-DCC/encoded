@@ -8,7 +8,6 @@ Example.
 """
 import datetime
 import os.path
-import io
 import json
 import sys
 from shlex import quote
@@ -206,9 +205,8 @@ def process_fastq_file(job, fastq_data_stream, session, url):
     read_lengths_dictionary = {}
     read_count = 0
     try:
-        unzipped_fastq = io.BytesIO(fastq_data_stream)
         line_index = 0
-        for encoded_line in unzipped_fastq:
+        for encoded_line in fastq_data_stream.stdout:
             line = encoded_line.decode()
             line_index += 1
             if line_index == 1:
@@ -469,7 +467,6 @@ def check_file(config, session, url, job):
             # or http://stackoverflow.com/a/15343686/199100
             try:
                 if item['file_format'] == 'fastq':
-                    # unzipped_fastq_path = local_path[-20:-9] + '_original.fastq'
                     output = subprocess.check_output(
                         'set -o pipefail; gunzip --stdout {} | md5sum'.format(
                             local_path),
@@ -491,10 +488,11 @@ def check_file(config, session, url, job):
             try:
                 print ('checking file ' + local_path[-20:-9])
                 process_fastq_file(job,
-                                   subprocess.check_output(['gunzip --stdout {}'.format(local_path)],
-                                                           shell=True,
-                                                           executable='/bin/bash',
-                                                           stderr=subprocess.PIPE),
+                                   subprocess.Popen(['gunzip --stdout {}'.format(
+                                                    local_path)],
+                                                    shell=True,
+                                                    executable='/bin/bash',
+                                                    stdout=subprocess.PIPE),
                                    session, url)
             except subprocess.CalledProcessError as e:
                 errors['fastq_information_extraction'] = 'Failed to extract information from ' + \
