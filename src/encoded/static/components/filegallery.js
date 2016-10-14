@@ -1124,7 +1124,7 @@ const FilterMenu = React.createClass({
 
 
 // Handle graphing throws
-export function graphException(message, file0, file1) {
+export function GraphException(message, file0, file1) {
     this.message = message;
     if (file0) {
         this.file0 = file0;
@@ -1338,7 +1338,7 @@ export function assembleGraph(context, session, adminUser, infoNodeId, files, fi
                 }
             } else {
                 // Missing derived-from file not in a replicate or in multiple replicates; don't draw any graph
-                throw graphException('No graph: derived_from file outside replicate (or in multiple replicates) missing', derivedFromFileId);
+                throw new GraphException('No graph: derived_from file outside replicate (or in multiple replicates) missing', derivedFromFileId);
             }
         } // else the derived_from file is in files array (allFiles object); normal case
     });
@@ -1376,13 +1376,13 @@ export function assembleGraph(context, session, adminUser, infoNodeId, files, fi
     // Check whether all files have been removed
     abortGraph = _(Object.keys(allFiles)).all(fileId => allFiles[fileId].removed);
     if (abortGraph) {
-        throw graphException('No graph: all files removed');
+        throw new GraphException('No graph: all files removed');
     }
 
     // No files exist outside replicates, and all replicates are removed
     const replicateIds = Object.keys(allReplicates);
     if (!fileOutsideReplicate && replicateIds.length && _(replicateIds).all(replicateNum => !allReplicates[replicateNum].length)) {
-        throw graphException('No graph: All replicates removed and no files outside replicates exist');
+        throw new GraphException('No graph: All replicates removed and no files outside replicates exist');
     }
 
     // Last check; see if any files derive from files now missing. This test is child-file based, where the last test
@@ -1399,7 +1399,7 @@ export function assembleGraph(context, session, adminUser, infoNodeId, files, fi
 
                 // These two just for debugging a unrendered graph
                 if (derivedGone) {
-                    throw graphException(`file0 derives from file1 which is ${(orgDerivedFromFile.missing ? 'missing' : 'removed')}`, fileId, derivedFromFile['@id']);
+                    throw new GraphException(`file0 derives from file1 which is ${(orgDerivedFromFile.missing ? 'missing' : 'removed')}`, fileId, derivedFromFile['@id']);
                 }
             });
         }
