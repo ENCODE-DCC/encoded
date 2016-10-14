@@ -202,7 +202,7 @@ globals.listing_views.register(Listing, 'Software');
 
 // Display a list of software versions from the given software_version list. This is meant to be displayed
 // in a panel.
-var SoftwareVersionList = module.exports.SoftwareVersionList = function(softwareVersions) {
+var softwareVersionList = module.exports.softwareVersionList = function(softwareVersions) {
     return (
         <span className="software-version-list">
             {softwareVersions.map(function(version, i) {
