@@ -779,6 +779,16 @@ def test_audit_experiment_characterized_histone_antibody(testapp, base_experimen
     assert any(error['category'] == 'not characterized antibody' for error in errors_list)
 
 
+def test_audit_experiment_geo_submission(testapp, base_experiment):
+    testapp.patch_json(base_experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'experiment not submitted to GEO' for error in errors_list)
+
+
 def test_audit_experiment_biosample_type_missing(testapp, base_experiment):
     testapp.patch_json(base_experiment['@id'], {'biosample_term_id': "EFO:0002067",
                                                 'biosample_term_name': 'K562'})
