@@ -49,16 +49,6 @@ def get_spot_code(instance, client, spot_id):
     #print(list(request.values()))
     code_status_start = request['SpotInstanceRequests'][0]['Status']
     code_status = code_status_start['Code']
-
-    #print("\n Code Status: %s" % code_status)  
-    #for key, value in request.items():
-     #  if key == 'SpotInstanceRequests':
-      #      for item in value:
-       #         for i in item:
-        #            if i == 'Status':
-         #               for j in item[i]:
-          #                  if j == 'Code':
-           #                     code_status = item[i][j]
     return code_status
 
 def wait_for_code_change(instance, client):
@@ -148,7 +138,10 @@ def spot_instance_price_check(client, instance_type):
 
                         if float(item[i]) > highest:
                             highest = float(item[i])
-    print("Highest price: %f" % highest)
+    if highest == float(0):
+        print("ERROR: no price found")
+    else:
+        print("Highest price: %f" % highest)
 
     return highest
 
@@ -156,7 +149,7 @@ def spot_instances(client, spot_price, count, image_id, instance_type, security_
     responce = client.request_spot_instances(
     DryRun=False,
     SpotPrice=spot_price,
-    InstanceCount=1,
+    InstanceCount=count,
     Type='one-time',
     LaunchSpecification={
         'ImageId': image_id,
