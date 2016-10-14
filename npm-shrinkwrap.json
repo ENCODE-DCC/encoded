@@ -646,11 +646,6 @@
         }
       }
     },
-    "react-bootstrap": {
-      "version": "0.15.1",
-      "from": "react-bootstrap@>=0.15.1 <0.16.0",
-      "resolved": "https://registry.npmjs.org/react-bootstrap/-/react-bootstrap-0.15.1.tgz"
-    },
     "react-forms": {
       "version": "1.0.0-rc3",
       "from": "git+https://github.com/lrowe/react-forms.git#3953a633b1f77640dffb5e3f1d5bbe78a98c3dfe",

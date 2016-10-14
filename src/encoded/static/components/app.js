@@ -52,7 +52,8 @@ var portal = {
 
 
 // Keep lists of currently known project and biosample_type. As new project and biosample_type
-// enter the system, these lists must be updated.
+// enter the system, these lists must be updated. Used mostly to keep chart and matrix colors
+// consistent.
 const projectList = [
     'ENCODE',
     'Roadmap',
