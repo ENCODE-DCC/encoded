@@ -23,11 +23,11 @@ def autouse_external_tx(external_tx):
 _app_settings = {
     'collection_datastore': 'database',
     'item_datastore': 'database',
-    'multiauth.policies': 'persona session remoteuser accesskey',
+    'multiauth.policies': 'auth0 session remoteuser accesskey',
     'multiauth.groupfinder': 'encoded.authorization.groupfinder',
-    'multiauth.policy.persona.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
-    'multiauth.policy.persona.base': 'encoded.persona.PersonaAuthenticationPolicy',
-    'multiauth.policy.persona.namespace': 'persona',
+    'multiauth.policy.auth0.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
+    'multiauth.policy.auth0.base': 'encoded.auth0.Auth0AuthenticationPolicy',
+    'multiauth.policy.auth0.namespace': 'auth0',
     'multiauth.policy.session.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
     'multiauth.policy.session.base': 'pyramid.authentication.SessionAuthenticationPolicy',
     'multiauth.policy.session.namespace': 'mailto',
@@ -38,9 +38,6 @@ _app_settings = {
     'multiauth.policy.accesskey.namespace': 'accesskey',
     'multiauth.policy.accesskey.base': 'encoded.authentication.BasicAuthAuthenticationPolicy',
     'multiauth.policy.accesskey.check': 'encoded.authentication.basic_auth_check',
-    'persona.audiences': 'http://localhost:6543',
-    'persona.verifier': 'browserid.LocalVerifier',
-    'persona.siteName': 'ENCODE DCC Submission',
     'load_test_only': True,
     'testing': True,
     'pyramid.debug_authorization': True,
@@ -54,7 +51,7 @@ _app_settings = {
 def app_settings(request, wsgi_server_host_port, conn, DBSession):
     from snovault import DBSESSION
     settings = _app_settings.copy()
-    settings['persona.audiences'] = 'http://%s:%s' % wsgi_server_host_port
+    settings['auth0.audiences'] = 'http://%s:%s' % wsgi_server_host_port
     settings[DBSESSION] = DBSession
     return settings
 
