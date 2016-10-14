@@ -166,7 +166,13 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'talens.documents',
         'talens.documents.award',
         'talens.documents.lab',
-        'talens.documents.submitted_by'
+        'talens.documents.submitted_by',
+        'genetic_modifications',
+        'genetic_modifications.award',
+        'genetic_modifications.lab',
+        'genetic_modifications.modification_techniques',
+        'genetic_modifications.treatments',
+        'genetic_modifications.target'
     ]
 
     @calculated_property(define=True,

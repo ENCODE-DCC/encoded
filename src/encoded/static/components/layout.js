@@ -4,11 +4,10 @@ var FallbackBlockEdit = require('./blocks/fallback').FallbackBlockEdit;
 var globals = require('./globals');
 var closest = require('../libs/closest');
 var offset = require('../libs/offset');
+var {Modal, ModalHeader, ModalBody, ModalFooter} = require('../libs/bootstrap/modal');
 var _ = require('underscore');
 
 var cx = require('react/lib/cx');
-var ModalTrigger = require('react-bootstrap/lib/ModalTrigger');
-var Modal = require('react-bootstrap/lib/Modal');
 
 var LAYOUT_CONTEXT = {
     dragStart: React.PropTypes.func,
@@ -58,14 +57,14 @@ var BlockEditModal = React.createClass({
         var schema = blocktype.schema();
         var BlockEdit = blocktype.edit || FallbackBlockEdit;
         return (
-            <Modal {...this.props} title={'Edit ' + blocktype.label}>
-                <div className="modal-body">
+            <Modal actuator={this.props.actuator}>
+                <ModalHeader title={'Edit ' + blocktype.label} closeModal={this.cancel} />
+                <ModalBody>
                     <BlockEdit schema={schema} value={this.state.value} onChange={this.onChange} />
-                </div>
-                <div className="modal-footer">
-                    <button className="btn btn-default" onClick={this.cancel}>Cancel</button>
-                    <button className="btn btn-primary" onClick={this.save}>Save</button>
-                </div>
+                </ModalBody>
+                <ModalFooter
+                    closeBtn={<button className="btn btn-default" onClick={this.cancel}>Cancel</button>}
+                    submitBtn={this.save} />
             </Modal>
         );
     },
@@ -79,12 +78,10 @@ var BlockEditModal = React.createClass({
         if (this.props.onCancel !== undefined) {
             this.props.onCancel();
         }
-        this.props.onRequestHide();
     },
 
     save: function() {
         this.props.onChange(this.state.value);
-        this.props.onRequestHide();
     }
 
 });
@@ -103,13 +100,12 @@ var Block = module.exports.Block = React.createClass({
             modalcontext={_.pick(this.context, Object.keys(MODAL_CONTEXT))}
             value={this.props.value}
             onChange={this.onChange}
-            onCancel={this.onCancelEdit} />;
+            onCancel={this.onCancelEdit}
+            actuator={<a className="edit"><i className="icon icon-edit"></i></a>} />;
 
         return (
             <div className="block-toolbar">
-                <ModalTrigger ref="edit_trigger" modal={modal}>
-                    <a className="edit"><i className="icon icon-edit"></i></a>
-                </ModalTrigger>
+                {modal}
                 {' '}
                 <a className="remove" onClick={this.remove}><i className="icon icon-trash-o"></i></a>
             </div>
