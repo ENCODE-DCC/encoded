@@ -112,6 +112,8 @@ module.exports.Auth0 = {
         // Make a URL for the logo.
         const hrefInfo = url.parse(this.props.href);
         const logoHrefInfo = {
+            hostname: hrefInfo.hostname,
+            port: hrefInfo.port,
             protocol: hrefInfo.protocol,
             pathname: '/static/img/encode-logo-small-2x.png'
         };
