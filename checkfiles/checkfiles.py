@@ -306,7 +306,7 @@ def process_fastq_file(job, fastq_data_stream, session, url):
         else:
             errors['read_length'] = 'no specified read length in the uploaded fastq file, ' + \
                                     'while read length(s) found in the file were {}.'.format(
-                                    ', '.join(read_lengths_list))
+                                    ', '.join(map(str, read_lengths_list)))
 
         # signatures
         uniqueness_flag = True
