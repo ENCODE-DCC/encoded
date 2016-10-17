@@ -204,7 +204,7 @@ def process_fastq_file(job, fastq_data_stream, session, url):
     signatures_no_barcode_set = set()
     read_lengths_dictionary = {}
     read_count = 0
-    old_illumina_current_prefix = ''
+    old_illumina_current_prefix = 'empty'
     try:
         line_index = 0
         for encoded_line in fastq_data_stream.stdout:
@@ -232,15 +232,12 @@ def process_fastq_file(job, fastq_data_stream, session, url):
                             read_number + ':')
                     else:
                         if len(words_array) == 1 and \
-                           len(read_name) > 3:  # assuming old illumina format
+                           len(read_name) > 3 and\
+                           read_name.count(':') > 2:  # assuming old illumina format
                             read_number = '1'
                             if read_name[-2:] in ['/1', '/2']:
                                 read_numbers_set.add(read_name[-1])
                                 read_number = read_name[-1]
-
-                            '''
-                            add the code that will allow detection of some old dups
-                            '''
                             arr = read_name.split(':')
                             prefix = arr[0] + ':' + arr[1]
                             if prefix != old_illumina_current_prefix:
@@ -248,9 +245,6 @@ def process_fastq_file(job, fastq_data_stream, session, url):
                                 flowcell = arr[0][1:]
                                 lane_number = arr[1]
                                 signatures_set.add(
-                                    flowcell + ':' + lane_number + ':' +
-                                    read_number + '::' + read_name)
-                                signatures_no_barcode_set.add(
                                     flowcell + ':' + lane_number + ':' +
                                     read_number + '::' + read_name)
                         else:
@@ -322,11 +316,11 @@ def process_fastq_file(job, fastq_data_stream, session, url):
                 if 'barcode' in entry and entry['barcode'] == 'UMI':
                     is_UMI = True
                     break
-        if is_UMI is True:
+        if old_illumina_current_prefix == 'empty' and is_UMI:
             for entry in signatures_no_barcode_set:
                 signatures_for_comparison.add(entry + 'UMI:')
         else:
-            if len(signatures_set) > 100:
+            if old_illumina_current_prefix == 'empty' and len(signatures_set) > 100:
                 for entry in signatures_no_barcode_set:
                     signatures_for_comparison.add(entry + 'mixed:')
             else:
