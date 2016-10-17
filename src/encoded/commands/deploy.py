@@ -3,6 +3,9 @@ import getpass
 import re
 import subprocess
 import sys
+import datetime
+import base64
+import json
 
 
 BDM = [
@@ -23,7 +26,159 @@ BDM = [
         'NoDevice': "",
     },
 ]
+class spot_client(object):
+    def __init__(self):
+        self._spotClient = None
+    
+    @property
+    def spotClient(self):
+        return self._spotClient
 
+    @spotClient.setter
+    def spotClient(self, value):
+        self._spotClient = value
+
+def get_spot_id(instance, client):
+    SpotInstanceRequestId = instance['SpotInstanceRequests'][0]['SpotInstanceRequestId']
+    #print(list(instance.values()))
+    #print("SpotInstanceRequestId: %s" % SpotInstanceRequestId)
+    return SpotInstanceRequestId
+
+def get_spot_code(instance, client, spot_id):
+    request = client.describe_spot_instance_requests(SpotInstanceRequestIds=[get_spot_id(instance, client)])
+    #print(list(request.values()))
+    code_status_start = request['SpotInstanceRequests'][0]['Status']
+    code_status = code_status_start['Code']
+
+    #print("\n Code Status: %s" % code_status)  
+    #for key, value in request.items():
+     #  if key == 'SpotInstanceRequests':
+      #      for item in value:
+       #         for i in item:
+        #            if i == 'Status':
+         #               for j in item[i]:
+          #                  if j == 'Code':
+           #                     code_status = item[i][j]
+    return code_status
+
+def wait_for_code_change(instance, client):
+    spot_id = get_spot_id(instance, client)
+    code_status = get_spot_code(instance, client, get_spot_id(instance, client ))
+
+    if not get_spot_code(instance, client, spot_id) == 'fulfilled':
+        print("waiting for spot request to be fulfilled")
+        code_status = get_spot_code(instance, client, get_spot_id(instance, client))                     
+        while code_status != 'fulfilled':
+            if code_status == error_cleanup(code_status, instance, client):
+                exit()
+            waiting = client.describe_spot_instance_requests(SpotInstanceRequestIds=[get_spot_id(instance, client)])
+            for key, value in waiting.items():
+                if key == 'SpotInstanceRequests':
+                    for item in value:
+                        for i in item:
+                            if i == 'Status':
+                                for j in item[i]:
+                                    if j == 'Code':
+                                        code_status = item[i][j]
+            if code_status == 'price-too-low':
+                print("Spot Instance ERROR: Bid placed is too low.")
+                cancel_spot(instance, client)
+                exit()
+        return code_status
+
+def get_instance_id(instance, client):
+    request = client.describe_spot_instance_requests(SpotInstanceRequestIds=[get_spot_id(instance, client)])
+    instance_id = request['SpotInstanceRequests'][0]['InstanceId']
+    #print("\n Instace ID: %s" % instance_id)
+    return instance_id
+
+def error_cleanup(code_status, instance, client):
+    hold_ERROR_list = [
+        'capacity-not-available',
+        'capacity-oversubscribed',
+        'not-scheduled-yet',
+        'launch-group-constraint',
+        'az-group-constraint',
+        'placement-group-constraint',
+        'constraint-not-fulfillable'
+    ]
+
+    if code_status in hold_ERROR_list:
+        print('------------ERROR-------------')
+        print('Spot Instance ERROR: %s' % code_status)
+        cancel_spot(instance, client)
+        exit()
+
+def cancel_spot(instance, client):
+    kill_spot = client.cancel_spot_instance_requests(SpotInstanceRequestIds=[get_spot_id(instance,client)])
+
+
+def spot_instance_price_check(client, instance_type):
+    highest = 0
+    todaysDate = datetime.datetime.now()
+    response = client.describe_spot_price_history(
+        DryRun=False,
+        StartTime=todaysDate,
+        EndTime=todaysDate,
+        InstanceTypes=[
+            instance_type
+        ],
+        Filters=[
+            {
+                'Name': 'availability-zone',
+                'Values': [
+                    'us-west-2a',
+                    'us-west-2b',
+                    'us-west-2c'
+                ],
+
+                'Name': 'product-description',
+                'Values': [
+                    'Linux/UNIX (Amazon VPC)'
+                ]
+            },
+        ]
+    )
+    # dragons teeth lie below
+
+    for key, value in response.items():
+
+        if key == 'SpotPriceHistory':
+            for item in value:
+                for i in item:
+                    if i == 'SpotPrice':
+                        print("SpotPrice: %s" % item[i])
+
+                        if float(item[i]) > highest:
+                            highest = float(item[i])
+    print("Highest price: %f" % highest)
+
+    return highest
+
+def spot_instances(client, spot_price, count, image_id, instance_type, security_groups, user_data, iam_role, bdm):
+    responce = client.request_spot_instances(
+    DryRun=False,
+    SpotPrice=spot_price,
+    InstanceCount=1,
+    Type='one-time',
+    LaunchSpecification={
+        'ImageId': image_id,
+        'SecurityGroups': list(security_groups),
+        'UserData': user_data,
+        'InstanceType': instance_type,
+        'Placement': {
+            'AvailabilityZone': 'us-west-2c'
+        },
+        'BlockDeviceMappings': bdm,
+        'IamInstanceProfile': {
+            "Name": iam_role,
+        }
+        }
+    )
+    code_status = wait_for_code_change(responce, client)
+    if not code_status == 'fufilled':
+        code_status = wait_for_code_change(responce, client)
+    return responce
 
 def nameify(s):
     name = ''.join(c if c.isalnum() else '-' for c in s.lower()).strip('-')
@@ -45,7 +200,7 @@ def create_ec2_instances(client, image_id, count, instance_type, security_groups
     )
     return reservations
 
-def tag_ec2_instance(instance, name, branch, commit, username, elasticsearch):
+def tag_ec2_instance(instance, name, branch, commit, username, elasticsearch, cluster_name):
     tags=[
         {'Key': 'Name', 'Value': name},
         {'Key': 'branch', 'Value': branch},
@@ -54,11 +209,26 @@ def tag_ec2_instance(instance, name, branch, commit, username, elasticsearch):
     ]
     if elasticsearch == 'yes':
         tags.append({'Key': 'elasticsearch', 'Value': elasticsearch})
+    if cluster_name != None:
+        tags.append({'Key': 'ec_cluster_name', 'Value': cluster_name})
     instance.create_tags(Tags=tags)
     return instance
 
+def tag_spot_instance(instance, name, branch, commit, username, elasticsearch, client, cluster_name):
+    tags=[
+        {'Key': 'Name', 'Value': name},
+        {'Key': 'branch', 'Value': branch},
+        {'Key': 'commit', 'Value': commit},
+        {'Key': 'started_by', 'Value': username},
+    ]
+    if elasticsearch == 'yes':
+        tags.append({'Key': 'elasticsearch', 'Value': elasticsearch})
+    if not cluster_name == None:
+        tags.append({'Key': 'ec_cluster_name', 'Value': cluster_name})
+    instance_id = client.create_tags(Resources=[get_instance_id(instance, client)], Tags=tags)
+    return instance_id
 
-def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size, cluster_name,
+def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, spot_price, cluster_size, cluster_name, check_price,
         branch=None, name=None, role='demo', profile_name=None, teardown_cluster=None):
     
     if branch is None:
@@ -120,8 +290,26 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size, cl
         security_groups = ['elasticsearch-https']
         iam_role = 'elasticsearch-instance'
         count = int(cluster_size)
+    
+    if check_price:
+        ec2_spot = boto3.client('ec2')
+        get_spot_price = spot_instance_price_check(ec2_spot, instance_type)
+        exit()
 
-    instances = create_ec2_instances(ec2, image_id, count, instance_type, security_groups, user_data, BDM, iam_role)
+    if spot_instance:
+        print("spot_instance check worked")
+        ec2_spot = boto3.client('ec2')
+        # issue with base64 encoding so no decoding in utc-8 and recoding in base64 then decoding in base 64.
+        config_file = ':cloud-config.yml'
+        user_config = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml'])
+        user_data_b64 = base64.b64encode(user_config)
+        user_data = user_data_b64.decode()
+        client = spot_client()
+        client.spotClient = ec2_spot
+        print("security_groups: %s" % security_groups)
+        instances = spot_instances(ec2_spot, spot_price, count, image_id, instance_type, security_groups, user_data, iam_role, BDM)
+    else:
+        instances = create_ec2_instances(ec2, image_id, count, instance_type, security_groups, user_data, BDM, iam_role)
 
     for i, instance in enumerate(instances):
         if elasticsearch == 'yes' and count > 1:
@@ -129,14 +317,18 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, cluster_size, cl
             tmp_name = "{}{}".format(name,i)
         else:
             tmp_name = name
-        print('%s.%s.encodedcc.org' % (instance.id, domain))  # Instance:i-34edd56f
-        instance.wait_until_exists()
-        tag_ec2_instance(instance, tmp_name, branch, commit, username, elasticsearch)
-        print('ssh %s.%s.encodedcc.org' % (tmp_name, domain))
-        if domain == 'instance':
-            print('https://%s.demo.encodedcc.org' % tmp_name)
 
+        if not spot_instance:
+            print('%s.%s.encodedcc.org' % (instance.id, domain))  # Instance:i-34edd56f
+            instance.wait_until_exists()
+            tag_ec2_instance(instance, tmp_name, branch, commit, username, elasticsearch, cluster_name)
+            print('ssh %s.%s.encodedcc.org' % (tmp_name, domain))
+            if domain == 'instance':
+                print('https://%s.demo.encodedcc.org' % tmp_name)
 
+    if spot_instance:
+        tag_spot_instance(instances, tmp_name, branch, commit, username, elasticsearch, client.spotClient, cluster_name)
+        print("Spot instance request had been completed, please check to be sure it was fufilled")
 
 def main():
     import argparse
@@ -153,6 +345,9 @@ def main():
     parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
     parser.add_argument('-n', '--name', type=hostname, help="Instance name")
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')
+    parser.add_argument('--spot-instance', action='store_true', help="Launch as spot instance")
+    parser.add_argument('--spot-price', default='0.70', help="Set price or keep default price of 0.70")
+    parser.add_argument('--check-price', action='store_true', help="Check price on spot instances")
     parser.add_argument(
         '--candidate', action='store_const', default='demo', const='candidate', dest='role',
         help="Deploy candidate instance")

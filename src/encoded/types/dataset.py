@@ -32,6 +32,28 @@ def item_is_revoked(request, path):
     return request.embed(path, '@@object').get('status') == 'revoked'
 
 
+def calculate_assembly(request, files_list, status):
+    assembly = set()
+    viewable_file_formats = ['bigWig',
+                             'bigBed',
+                             'narrowPeak',
+                             'broadPeak',
+                             'bedRnaElements',
+                             'bedMethyl',
+                             'bedLogR']
+    viewable_file_status = ['released']
+    if status not in ['released']:
+        viewable_file_status.extend(['in progress'])
+
+    for path in files_list:
+        properties = request.embed(path, '@@object')
+        if properties['file_format'] in viewable_file_formats and \
+                properties['status'] in viewable_file_status:
+            if 'assembly' in properties:
+                assembly.add(properties['assembly'])
+    return list(assembly)
+
+
 @abstract_collection(
     name='datasets',
     unique_key='accession',
@@ -161,15 +183,8 @@ class Dataset(Item):
             "type": "string",
         },
     })
-    def assembly(self, request, original_files):
-        assembly = []
-        for path in original_files:
-            properties = request.embed(path, '@@object')
-            if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak', 'bedRnaElements', 'bedMethyl', 'bedLogR'] and \
-                    properties['status'] in ['released']:
-                if 'assembly' in properties:
-                    assembly.append(properties['assembly'])
-        return list(set(assembly))
+    def assembly(self, request, original_files, status):
+        return calculate_assembly(request, original_files, status)
 
     @calculated_property(condition='assembly', schema={
         "title": "Hub",
@@ -277,19 +292,8 @@ class FileSet(Dataset):
             "type": "string",
         },
     })
-    def assembly(self, request, original_files, related_files):
-        assembly = []
-        count = 1
-        for path in chain(original_files, related_files):
-            # Need to cap this due to the large numbers of files in related_files
-            if count < 100:
-                properties = request.embed(path, '@@object')
-                count = count + 1
-                if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak', 'bedRnaElements', 'bedMethyl', 'bedLogR'] and \
-                        properties['status'] in ['released']:
-                    if 'assembly' in properties:
-                        assembly.append(properties['assembly'])
-        return list(set(assembly))
+    def assembly(self, request, original_files, related_files, status):
+        return calculate_assembly(request, list(chain(original_files, related_files))[:101], status)
 
 
 @collection(
