@@ -209,73 +209,74 @@ def process_fastq_file(job, fastq_data_stream, session, url):
         line_index = 0
         for encoded_line in fastq_data_stream.stdout:
             line = encoded_line.decode()
-            line_index += 1
-            if line_index == 1:
-                read_name = line.strip()
-                words_array = re.split(r'[\s]', read_name)
-                if read_name_pattern.match(read_name) is None:
-                    if special_read_name_pattern.match(read_name) is not None:
-                        read_number = 'not initialized'
-                        if len(words_array[0]) > 3 and \
-                           words_array[0][-2:] in ['/1', '/2']:
-                            read_number = words_array[0][-1]
-                            read_numbers_set.add(read_number)
-                        read_name_array = re.split(r'[:\s_]', read_name)
-                        flowcell = read_name_array[2]
-                        lane_number = read_name_array[3]
-                        barcode_index = read_name_array[-1]
-                        signatures_set.add(
-                            flowcell + ':' + lane_number + ':' +
-                            read_number + ':' + barcode_index + ':')
-                        signatures_no_barcode_set.add(
-                            flowcell + ':' + lane_number + ':' +
-                            read_number + ':')
-                    else:
-                        if len(words_array) == 1 and \
-                           len(read_name) > 3 and\
-                           read_name.count(':') > 2:  # assuming old illumina format
-                            read_number = '1'
-                            if read_name[-2:] in ['/1', '/2']:
-                                read_numbers_set.add(read_name[-1])
-                                read_number = read_name[-1]
-                            arr = read_name.split(':')
-                            prefix = arr[0] + ':' + arr[1]
-                            if prefix != old_illumina_current_prefix:
-                                old_illumina_current_prefix = prefix
-                                flowcell = arr[0][1:]
-                                lane_number = arr[1]
-                                signatures_set.add(
-                                    flowcell + ':' + lane_number + ':' +
-                                    read_number + '::' + read_name)
+            if len(line.strip()) > 0:  # skipping empty lines
+                line_index += 1
+                if line_index == 1:
+                    read_name = line.strip()
+                    words_array = re.split(r'[\s]', read_name)
+                    if read_name_pattern.match(read_name) is None:
+                        if special_read_name_pattern.match(read_name) is not None:
+                            read_number = 'not initialized'
+                            if len(words_array[0]) > 3 and \
+                               words_array[0][-2:] in ['/1', '/2']:
+                                read_number = words_array[0][-1]
+                                read_numbers_set.add(read_number)
+                            read_name_array = re.split(r'[:\s_]', read_name)
+                            flowcell = read_name_array[2]
+                            lane_number = read_name_array[3]
+                            barcode_index = read_name_array[-1]
+                            signatures_set.add(
+                                flowcell + ':' + lane_number + ':' +
+                                read_number + ':' + barcode_index + ':')
+                            signatures_no_barcode_set.add(
+                                flowcell + ':' + lane_number + ':' +
+                                read_number + ':')
                         else:
-                            weird_read_name = read_name
-                            errors['fastq_format_readname'] = \
-                                'submitted fastq file does not ' + \
-                                'comply with illumina fastq read name format, ' + \
-                                'read name was : {}'.format(read_name)
+                            if len(words_array) == 1 and \
+                               len(read_name) > 3 and\
+                               read_name.count(':') > 2:  # assuming old illumina format
+                                read_number = '1'
+                                if read_name[-2:] in ['/1', '/2']:
+                                    read_numbers_set.add(read_name[-1])
+                                    read_number = read_name[-1]
+                                arr = read_name.split(':')
+                                prefix = arr[0] + ':' + arr[1]
+                                if prefix != old_illumina_current_prefix:
+                                    old_illumina_current_prefix = prefix
+                                    flowcell = arr[0][1:]
+                                    lane_number = arr[1]
+                                    signatures_set.add(
+                                        flowcell + ':' + lane_number + ':' +
+                                        read_number + '::' + read_name)
+                            else:
+                                weird_read_name = read_name
+                                errors['fastq_format_readname'] = \
+                                    'submitted fastq file does not ' + \
+                                    'comply with illumina fastq read name format, ' + \
+                                    'read name was : {}'.format(read_name)
 
-                else:  # found a match to the regex of "almost" illumina read_name
-                    if len(words_array) == 2:
-                        read_name_array = re.split(r'[:\s_]', read_name)
-                        flowcell = read_name_array[2]
-                        lane_number = read_name_array[3]
-                        read_number = read_name_array[-4]
-                        read_numbers_set.add(read_number)
-                        barcode_index = read_name_array[-1]
-                        signatures_set.add(
-                            flowcell + ':' + lane_number + ':' +
-                            read_number + ':' + barcode_index + ':')
-                        signatures_no_barcode_set.add(
-                            flowcell + ':' + lane_number + ':' +
-                            read_number + ':')
+                    else:  # found a match to the regex of "almost" illumina read_name
+                        if len(words_array) == 2:
+                            read_name_array = re.split(r'[:\s_]', read_name)
+                            flowcell = read_name_array[2]
+                            lane_number = read_name_array[3]
+                            read_number = read_name_array[-4]
+                            read_numbers_set.add(read_number)
+                            barcode_index = read_name_array[-1]
+                            signatures_set.add(
+                                flowcell + ':' + lane_number + ':' +
+                                read_number + ':' + barcode_index + ':')
+                            signatures_no_barcode_set.add(
+                                flowcell + ':' + lane_number + ':' +
+                                read_number + ':')
 
-            if line_index == 2:
-                read_count += 1
-                length = len(line.strip())
-                if length not in read_lengths_dictionary:
-                    read_lengths_dictionary[length] = 0
-                read_lengths_dictionary[length] += 1
-            line_index = line_index % 4
+                if line_index == 2:
+                    read_count += 1
+                    length = len(line.strip())
+                    if length not in read_lengths_dictionary:
+                        read_lengths_dictionary[length] = 0
+                    read_lengths_dictionary[length] += 1
+                line_index = line_index % 4
     except IOError:
         errors['unzipped_fastq_streaming'] = 'Error occured, while streaming unzipped fastq.'
     else:
