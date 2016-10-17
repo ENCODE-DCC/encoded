@@ -111,9 +111,11 @@ module.exports.Auth0 = {
 
         // Make a URL for the logo.
         const hrefInfo = url.parse(this.props.href);
-        hrefInfo.hash = hrefInfo.query = hrefInfo.search = hrefInfo.path = '';
-        hrefInfo.pathname = '/static/img/encode-logo-small-2x.png';
-        const logoUrl = url.format(hrefInfo);
+        const logoHrefInfo = {
+            protocol: hrefInfo.protocol,
+            pathname: '/static/img/encode-logo-small-2x.png'
+        };
+        const logoUrl = url.format(logoHrefInfo);
 
         var lock_ = require('auth0-lock');
         this.lock = new lock_.default('WIOr638GdDdEGPJmABPhVzMn6SYUIdIH', 'encode.auth0.com', {
