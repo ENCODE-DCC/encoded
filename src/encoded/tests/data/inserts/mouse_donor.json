@@ -54,5 +54,22 @@
         "organism": "mouse",
         "strain_background": "unknown",
         "uuid": "5128e9f5-d9ef-4a8f-8b9d-71ddaf143d75"
+    },
+    {
+        "accession": "ENCDO003MUS",
+        "award": "U41HG006992",
+        "lab": "j-michael-cherry",
+        "organism": "mouse",
+        "strain_background": "unknown",
+        "uuid": "caf5635e-0f6d-4e24-a0cf-99263a37d22e",
+        "genetic_modifications": [
+            "encode:modification-test-1",
+            "encode:modification-test-2",
+            "ef12855f-5d3e-4da5-8684-3a594c60505a",
+            "2f33a486-e3d9-4633-8682-a363b48ba67d",
+            "b9264c83-2222-4678-a82f-4915af941fa4"
+        ]
     }
+
+    
 ]
