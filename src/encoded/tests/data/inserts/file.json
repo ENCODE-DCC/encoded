@@ -1175,7 +1175,7 @@
         "assembly": "hg19",
         "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
         "submitted_by": "amet.fusce@est.fermentum",
-        "submitted_file_name": "../../wgEncodeAwg/wgEncodeAwgTfbsSydhGm12878Ebf1sc137065UniPk.narrowPeak",
+        "submitted_file_name": "/static/test/peak_indexer/ENCFF002COS.bed.gz",
         "uuid": "956cba28-ccff-4cbd-b1c8-39db4e3de572"
     },
     {
@@ -1216,9 +1216,9 @@
         "alternate_accessions": [],
         "dbxrefs": [],
         "notes": "{\"dx-createdBy\": {\"job\": \"job-BX3pPz00F1G03f7Zx1JZF143\", \"executable\": \"applet-BX3jXk00F1G79Gbb68P630vj\", \"user\": \"user-tdreszer\"}, \"software_versions\": [{\"version\": \"v1.2.19\", \"software\": \"RSEM\"}], \"dx-id\": \"file-BX3zzv80jFJX2bJYQJpf7b76\"}",
-        "accession": "ENCFF946MFS",
+        "accession": "ENCFF296FFD",
         "schema_version": "4",
-        "submitted_file_name": "/static/test/peak_indexer/ENCFF647DYV.tsv",
+        "submitted_file_name": "/static/test/peak_indexer/ENCFF296FFD.tsv",
         "submitted_by": "amet.fusce@est.fermentum",
         "file_format": "tsv",
         "dataset": "ENCSR000AEM"
@@ -1371,6 +1371,7 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "file_size": 8728715,
         "md5sum": "04452eaaff844876057d19cab050aee5",
+        "submitted_file_name": "/static/test/peak_indexer/ENCFF000PAR.bed.gz",
         "uuid": "4d103c08-22b8-4707-bc37-def3ade26153",
         "status": "released",
         "dataset": "/matched-sets/ENCSR834QRI/"

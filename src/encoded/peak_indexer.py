@@ -206,12 +206,13 @@ def index_peaks(uuid, request, ftype='bed'):
         host_url = request.host_url
 
     req = http.request('GET', host_url + context['href'])
+    '''
     if req.status != 200:
         # Note horrible hack here for test data
         req = http.request('GET', host_url + context['submitted_file_name'])
-        import pdb;pdb.set_trace()
-
+    '''
     if not req or req.status != 200:
+        log.warn("File (%s or %s) not found" % (context.get('href',"No href"), context.get('submitted_file_name', 'No submitted file name')))
         return
     comp = io.BytesIO()
     comp.write(req.data)
