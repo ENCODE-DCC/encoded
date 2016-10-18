@@ -197,53 +197,43 @@ def index_peaks(uuid, request, ftype='bed'):
     if not flag:
         return
 
-    urllib3.disable_warnings()
-    http = urllib3.PoolManager()
     if request.host_url == 'http://localhost':
         host_url = request.host_url + ':8000'
         # assume we are running in dev-servers
     else:
         host_url = request.host_url
 
-    req = http.request('GET', host_url + context['href'])
-    '''
-    if req.status != 200:
-        # Note horrible hack here for test data
-        req = http.request('GET', host_url + context['submitted_file_name'])
-    '''
-    if not req or req.status != 200:
-        log.warn("File (%s or %s) not found" % (context.get('href',"No href"), context.get('submitted_file_name', 'No submitted file name')))
-        return
-    comp = io.BytesIO()
-    comp.write(req.data)
-    comp.seek(0)
-    req.release_conn()
-
+    href = host_url + context['href']
     if ftype == 'bed':
-        index_bed(comp, request, context, assembly)
+        index_bed(href, request, context, assembly)
     elif ftype == 'tsv':
-        index_tsv(comp, request, context, assembly)
+        index_tsv(href, request, context, assembly)
 
 
-def index_tsv(comp, request, context, assembly):
+def index_tsv(href, request, context, assembly):
+
     file_data = dict()
     es = request.registry.get(SNP_SEARCH_ES, None)
     annotation = context['genome_annotation']
 
-    with open(comp, mode='rt') as file:
-        for row in tsvreader(file):
-            transcript_id, gene_id, tpm, fpkm = row[0], row[1], float(row[5]), float(row([6]))
-            if tpm > 0.0 or fpkm > 0.0:
-                payload = {
-                    'transcript_id': transcript_id,
-                    'gene_id': gene_id,
-                    'tpm': tpm,
-                    'fpkm': fpkm
-                }
-                if annotation in file_data:
-                    file_data[annotation].append(payload)
-                else:
-                    file_data[annotation] = [payload]
+    urllib3.disable_warnings()
+    http = urllib3.PoolManager(timeout=3.0)
+    dlreq = http.request('GET', href)
+
+    import codec
+    for row in tsvreader(codec.iterdecode(dlreq.read, 'utf-8')):
+        transcript_id, gene_id, tpm, fpkm = row[0], row[1], float(row[5]), float(row([6]))
+        if tpm > 0.0 or fpkm > 0.0:
+            payload = {
+                'transcript_id': transcript_id,
+                'gene_id': gene_id,
+                'tpm': tpm,
+                'fpkm': fpkm
+            }
+            if annotation in file_data:
+                file_data[annotation].append(payload)
+            else:
+                file_data[annotation] = [payload]
 
     for key in file_data:
         doc = {
@@ -259,7 +249,21 @@ def index_tsv(comp, request, context, assembly):
         es.index(index=key, doc_type=assembly, body=doc, id=context['uuid'])
 
 
-def index_bed(comp, request, context, assembly):
+def index_bed(href, request, context, assembly):
+
+    urllib3.disable_warnings()
+    http = urllib3.PoolManager(timeout=3.0)
+    dlreq = http.request('GET', href )
+
+    if not dlreq or dlreq.status != 200:
+        log.warn("File (%s or %s) not found" % (context.get('href',"No href"), context.get('submitted_file_name', 'No submitted file name')))
+        return
+
+    comp = io.BytesIO()
+    comp.write(dlreq.data)
+    comp.seek(0)
+    dlreq.release_conn()
+
     file_data = dict()
     es = request.registry.get(SNP_SEARCH_ES, None)
 
