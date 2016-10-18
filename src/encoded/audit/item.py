@@ -60,8 +60,8 @@ STATUS_LEVEL = {
     'not pursued': 100,
 
     # 'discouraged for use' public statuses
-    'archived': 90,
-    'revoked': 80,
+    'archived': 40,
+    'revoked': 30,
 
     # private statuses (visible for consortium members only)
     'in progress': 50,
@@ -83,11 +83,82 @@ STATUS_LEVEL = {
 
 
 @audit_checker('Item', frame='object')
+def audit_item_relations_status(value, system):
+    if 'status' not in value:
+        return
+
+    level = STATUS_LEVEL.get(value['status'], 50)
+
+    context = system['context']
+    request = system['request']
+
+    for schema_path in context.type_info.schema_links:
+        if schema_path in ['supersedes']:
+            for path in simple_path_ids(value, schema_path):
+                linked_value = request.embed(path + '@@object')
+                if 'status' not in linked_value:
+                    continue
+                else:
+                    linked_level = STATUS_LEVEL.get(
+                        linked_value['status'], 50)
+                    detail = \
+                        '{} {} has {} {} {}'.format(
+                            value['status'],
+                            value['@id'],
+                            linked_value['status'],
+                            schema_path,
+                            linked_value['@id'])
+                    if level == 100 and linked_level >= 50:
+                        yield AuditFailure(
+                            'supersedes relation mismatched status',
+                            detail,
+                            level='INTERNAL_ACTION')
+                    elif level == 50 and linked_level == 50:
+                        yield AuditFailure(
+                            'supersedes relation mismatched status',
+                            detail,
+                            level='INTERNAL_ACTION')
+                    elif level < 50 and linked_level >= 50:
+                        yield AuditFailure(
+                            'supersedes relation mismatched status',
+                            detail,
+                            level='INTERNAL_ACTION')
+
+        elif schema_path in ['derived_from',
+                             'controlled_by',
+                             'possible_controls']:
+            for path in simple_path_ids(value, schema_path):
+                linked_value = request.embed(path + '@@object')
+                if 'status' not in linked_value:
+                    continue
+                else:
+                    linked_level = STATUS_LEVEL.get(
+                        linked_value['status'], 50)
+                    if level > linked_level:
+                        detail = \
+                            '{} {} has {} {} {}'.format(
+                                value['status'],
+                                value['@id'],
+                                linked_value['status'],
+                                schema_path,
+                                linked_value['@id'])
+                        yield AuditFailure(
+                            'derivation relation mismatched status',
+                            detail,
+                            level='INTERNAL_ACTION')
+
+
+@audit_checker('Item', frame='object')
 def audit_item_status(value, system):
     if 'status' not in value:
         return
 
     level = STATUS_LEVEL.get(value['status'], 50)
+    if value['status'] == 'revoked':
+        level = 80
+    if value['status'] == 'archived':
+        level = 90
+
     if level == 0:
         return
 
@@ -115,6 +186,10 @@ def audit_item_status(value, system):
         ):
             continue
         linked_level = STATUS_LEVEL.get(linked_value['status'], 50)
+        if linked_value['status'] == 'revoked':
+            linked_level = 80
+        if linked_value['status'] == 'archived':
+            linked_level = 90
         if linked_level == 0:
             detail = '{} {} has {} subobject {}'.format(
                 value['status'], value['@id'], linked_value['status'], linked_value['@id'])
