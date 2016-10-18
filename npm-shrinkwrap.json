@@ -42,9 +42,9 @@
               }
             },
             "qs": {
-              "version": "6.3.0",
+              "version": "6.2.1",
               "from": "qs@>=6.2.1 <7.0.0",
-              "resolved": "https://registry.npmjs.org/qs/-/qs-6.3.0.tgz"
+              "resolved": "https://registry.npmjs.org/qs/-/qs-6.2.1.tgz"
             },
             "reqwest": {
               "version": "2.0.5",
@@ -503,9 +503,9 @@
                       "resolved": "https://registry.npmjs.org/glob/-/glob-5.0.15.tgz",
                       "dependencies": {
                         "inflight": {
-                          "version": "1.0.6",
+                          "version": "1.0.5",
                           "from": "inflight@>=1.0.4 <2.0.0",
-                          "resolved": "https://registry.npmjs.org/inflight/-/inflight-1.0.6.tgz",
+                          "resolved": "https://registry.npmjs.org/inflight/-/inflight-1.0.5.tgz",
                           "dependencies": {
                             "wrappy": {
                               "version": "1.0.2",
