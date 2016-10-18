@@ -287,7 +287,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         user_data = user_data % {
             'CLUSTER_NAME': cluster_name,
         }
-        security_groups = ['ssh-http-https']
+        security_groups = ['elasticsearch-https']
         iam_role = 'elasticsearch-instance'
         count = int(cluster_size)
     
