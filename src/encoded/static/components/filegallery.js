@@ -52,6 +52,13 @@ const RestrictedDownloadButton = React.createClass({
         if (hovering) {
             // Started hovering over the DL button; show the tooltip.
             this.setState({ tip: true });
+
+            // If we happen to have a running timer, clear it so we don't clear the tooltip while
+            // hovering over the DL button.
+            if (this.timer) {
+                clearTimeout(this.timer);
+                this.timer = null;
+            }
         } else {
             // No longer hovering over the DL button; start a timer that might hide the tooltip
             // after a second passes. It won't hide the tooltip if they're now hovering over the
@@ -108,8 +115,8 @@ const RestrictedDownloadButton = React.createClass({
                         <div className="tooltip-arrow" />
                         <div className="tooltip-inner">
                             If you are a collaborator or owner of this file,<br />
-                            please contact <a href="mailto:encode-help@lists.stanford.edu">encode-help@lists.stanford.edu</a> to<br />
-                            receive a copy of this file
+                            please contact <a href="mailto:encode-help@lists.stanford.edu">encode-help@lists.stanford.edu</a><br />
+                            to receive a copy of this file
                         </div>
                     </div>
                 : null}
@@ -166,7 +173,7 @@ const DownloadIcon = React.createClass({
         const { file, adminUser } = this.props;
 
         return (
-            <i className="icon icon-download" style={!file.restricted || adminUser ? {} : { opacity: '0.3' }} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
+            <i className="icon icon-download" style={!file.restricted || adminUser ? {} : { opacity: '0.3' }} onMouseEnter={file.restricted ? this.onMouseEnter : null} onMouseLeave={file.restricted ? this.onMouseLeave : null}>
                 <span className="sr-only">Download</span>
             </i>
         );
