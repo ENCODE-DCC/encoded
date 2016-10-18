@@ -220,8 +220,8 @@ def index_tsv(href, request, context, assembly):
     http = urllib3.PoolManager(timeout=3.0)
     dlreq = http.request('GET', href)
 
-    import codec
-    for row in tsvreader(codec.iterdecode(dlreq.read, 'utf-8')):
+    import codecs
+    for row in tsvreader(codecs.iterdecode(dlreq.read, 'utf-8')):
         transcript_id, gene_id, tpm, fpkm = row[0], row[1], float(row[5]), float(row([6]))
         if tpm > 0.0 or fpkm > 0.0:
             payload = {
