@@ -1099,7 +1099,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         // Build an object keyed with all files that other files derive from. If the file is contributed,
         // we don't care about its derived_from because we don't render that.
         if (file.derived_from && file.derived_from.length) {
-            file.derived_from.forEach((derivedFrom) => {
+            file.derived_from.forEach((derivedFrom, i) => {
                 const derivedFromId = derivedFrom['@id'];
                 const derivedFile = allFiles[derivedFromId];
                 if (!derivedFile) {
@@ -1110,9 +1110,13 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
                     derivedFrom.missing = true;
                     derivedFrom.removed = false; // Clears previous value Redmine #4536
                 } else if (!derivedFromFiles[derivedFromId]) {
-                    // The derived-from file was in the given file list, so record the derived-from file in derivedFromFiles.
-                    // ...that is, unless the derived-from file has already been seen. Just move on if it has.
+                    // The derived-from file was in the given file list, so record the derived-from
+                    // file in derivedFromFiles...that is, unless the derived-from file has already
+                    // been seen. Just move on if it has.
                     derivedFromFiles[derivedFromId] = derivedFile;
+                } else {
+                    // File was in the file list, and it hasn't been seen.
+                    file.derived_from[i] = derivedFile;
                 }
             });
         }
@@ -1311,6 +1315,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
     // Go through each file (released or unreleased) to add it and associated steps to the graph
     Object.keys(allFiles).forEach((fileId) => {
         const file = allFiles[fileId];
+        const fileContributed = allContributing[fileId];
 
         // Only add files derived from others, or that others derive from,
         // and that aren't part of a removed replicate
@@ -1322,7 +1327,6 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
             let metricsInfo;
             const fileNodeId = `file:${file['@id']}`;
             const replicateNode = (file.biological_replicates && file.biological_replicates.length === 1) ? jsonGraph.getNode(`rep:${file.biological_replicates[0]}`) : null;
-            const fileContributed = allContributing[fileId];
 
             // Add QC metrics info from the file to the list to generate the nodes later
             if (fileQcMetrics[fileId] && fileQcMetrics[fileId].length && file.step_run) {
