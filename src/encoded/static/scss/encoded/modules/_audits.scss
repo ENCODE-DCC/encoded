@@ -114,8 +114,18 @@ $audit-types:
 }
 
 
+// Use this `brightness` function instead of Sass's `lightness` function as `brightness` produces
+// more useful results.
+// https://codepen.io/scottkellum/pen/qFvKd
+@function brightness($color) {
+    $sum: red($color) + green($color) + blue($color);
+    @return percentage($sum / (255 * 3));
+}
+
+// Determine whether to draw `QC` button text in the experiment file graphs in black or white
+// depending on the brightness of the background color passed in the $color parameter.
 @function qc-text-color($color) {
-    @if (lightness($color) > 50) {
+    @if (brightness($color) > 50) {
         @return #000;
     } @else {
         @return #fff;
