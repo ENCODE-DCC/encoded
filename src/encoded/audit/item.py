@@ -108,17 +108,17 @@ def audit_item_relations_status(value, system):
                             linked_value['status'],
                             schema_path,
                             linked_value['@id'])
-                    if level == 100 and linked_level >= 50:
+                    if level == 100 and linked_level in [0, 50, 100]:
                         yield AuditFailure(
                             'supersedes relation mismatched status',
                             detail,
                             level='INTERNAL_ACTION')
-                    elif level == 50 and linked_level == 50:
+                    elif level == 50 and linked_level in [0, 50]:
                         yield AuditFailure(
                             'supersedes relation mismatched status',
                             detail,
                             level='INTERNAL_ACTION')
-                    elif level < 50 and linked_level >= 50:
+                    elif level in [30, 40] and linked_level in [0, 50, 100]:
                         yield AuditFailure(
                             'supersedes relation mismatched status',
                             detail,
