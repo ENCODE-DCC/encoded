@@ -587,11 +587,13 @@ def patch_file(session, url, job):
     if not errors:
         data = {
             'status': 'in progress',
-            'file_size': result['file_size'],
-            'read_count': result['read_count']
+            'file_size': result['file_size']
         }
-        if result['fastq_signature'] != []:
-            data['fastq_signature']= result['fastq_signature']
+        if 'read_count' in result:
+            data['read_count'] = result['read_count']
+        if 'fastq_signature' in result and \
+           result['fastq_signature'] != []:
+            data['fastq_signature'] = result['fastq_signature']
         if 'content_md5sum' in result:
             data['content_md5sum'] = result['content_md5sum']
         r = session.patch(
