@@ -102,12 +102,13 @@ def audit_item_relations_status(value, system):
                     linked_level = STATUS_LEVEL.get(
                         linked_value['status'], 50)
                     detail = \
-                        '{} {} has {} {} {}'.format(
-                            value['status'],
+                        '{} with status \'{}\' has {} {} with status \'{}\''.format(
                             value['@id'],
-                            linked_value['status'],
+                            value['status'],
                             schema_path,
-                            linked_value['@id'])
+                            linked_value['@id'],
+                            linked_value['status']
+                            )
                     if level == 100 and linked_level in [0, 50, 100]:
                         yield AuditFailure(
                             'supersedes relation mismatched status',
@@ -136,12 +137,13 @@ def audit_item_relations_status(value, system):
                         linked_value['status'], 50)
                     if level > linked_level:
                         detail = \
-                            '{} {} has {} {} {}'.format(
-                                value['status'],
+                            '{} with status \'{}\' has {} {} with status \'{}\''.format(
                                 value['@id'],
-                                linked_value['status'],
+                                value['status'],
                                 schema_path,
-                                linked_value['@id'])
+                                linked_value['@id'],
+                                linked_value['status']
+                                )
                         yield AuditFailure(
                             'derivation relation mismatched status',
                             detail,
