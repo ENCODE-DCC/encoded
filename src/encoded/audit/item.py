@@ -102,10 +102,9 @@ def audit_item_relations_status(value, system):
                     linked_level = STATUS_LEVEL.get(
                         linked_value['status'], 50)
                     detail = \
-                        '{} with status \'{}\' has {} {} with status \'{}\''.format(
+                        '{} with status \'{}\' supersedes {} with status \'{}\''.format(
                             value['@id'],
                             value['status'],
-                            schema_path,
                             linked_value['@id'],
                             linked_value['status']
                             )
@@ -128,6 +127,11 @@ def audit_item_relations_status(value, system):
         elif schema_path in ['derived_from',
                              'controlled_by',
                              'possible_controls']:
+            message = 'has a possible control'
+            if schema_path == 'derived_from':
+                message = 'is derived from'
+            elif schema_path == 'controlled_by':
+                message = 'is controlled by'
             for path in simple_path_ids(value, schema_path):
                 linked_value = request.embed(path + '@@object')
                 if 'status' not in linked_value:
@@ -137,10 +141,10 @@ def audit_item_relations_status(value, system):
                         linked_value['status'], 50)
                     if level > linked_level:
                         detail = \
-                            '{} with status \'{}\' has {} {} with status \'{}\''.format(
+                            '{} with status \'{}\' {} {} with status \'{}\''.format(
                                 value['@id'],
                                 value['status'],
-                                schema_path,
+                                message,
                                 linked_value['@id'],
                                 linked_value['status']
                                 )
