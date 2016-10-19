@@ -1023,7 +1023,7 @@ export function GraphException(message, file0, file1) {
 }
 
 
-export function assembleGraph(context, session, adminUser, infoNodeId, files, filterAssembly, filterAnnotation) {
+export function assembleGraph(context, session, infoNodeId, files, filterAssembly, filterAnnotation) {
     // Calculate a step ID from a file's derived_from array
     function rDerivedFileIds(file) {
         if (file.derived_from) {
@@ -1541,7 +1541,6 @@ const FileGraph = React.createClass({
         selectedAssembly: React.PropTypes.string, // Currently selected assembly
         selectedAnnotation: React.PropTypes.string, // Currently selected annotation
         session: React.PropTypes.object, // Current user's login information
-        adminUser: React.PropTypes.bool, // True if logged in user is an admin
     },
 
     getInitialState: function () {
@@ -1597,14 +1596,14 @@ const FileGraph = React.createClass({
     },
 
     render: function () {
-        const { context, session, adminUser, items, selectedAssembly, selectedAnnotation } = this.props;
+        const { context, session, items, selectedAssembly, selectedAnnotation } = this.props;
         const loggedIn = !!(session && session['auth.userid']);
         const files = items;
 
         // Build node graph of the files and analysis steps with this experiment
         if (files && files.length) {
             try {
-                this.jsonGraph = assembleGraph(context, session, adminUser, this.state.infoNodeId, files, selectedAssembly, selectedAnnotation);
+                this.jsonGraph = assembleGraph(context, session, this.state.infoNodeId, files, selectedAssembly, selectedAnnotation);
             } catch (e) {
                 this.jsonGraph = null;
                 console.warn(e.message + (e.file0 ? ` -- file0:${e.file0}` : '') + (e.file1 ? ` -- file1:${e.file1}` : ''));
@@ -1614,7 +1613,7 @@ const FileGraph = React.createClass({
             // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
             if (goodGraph) {
                 if (selectedAssembly || selectedAnnotation) {
-                    const meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId, loggedIn, adminUser);
+                    const meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId, loggedIn);
                     return (
                         <div>
                             <div className="file-gallery-graph-header collapsing-title">
