@@ -114,6 +114,15 @@ $audit-types:
 }
 
 
+@function qc-text-color($color) {
+    @if (lightness($color) > 50) {
+        @return #000;
+    } @else {
+        @return #fff;
+    }
+}
+
+
 // Generate the audit icon classes for each of the audit types
 @each $audit-type, $suffix, $color in $audit-types {
     // Audit icons
@@ -184,25 +193,13 @@ $audit-types:
 
     // "green" QC cirles in file nodes
     g.pipeline-node-qc-metric {
-        circle {
-            fill: #80ffc0;
-        }
-
-        &.active {
-            circle {
-                fill: darken(#80ffc0, 50%);
-            }
-        }
-
         &.qc-metric-node-#{$audit-type} {
             circle {
-                fill: lighten($color, 30%);
+                fill: $color;
             }
 
-            &.active {
-                circle {
-                    fill: darken($color, 10%);
-                }
+            text {
+                fill: qc-text-color($color);
             }
         }
     }
