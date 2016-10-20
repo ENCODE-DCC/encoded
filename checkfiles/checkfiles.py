@@ -189,6 +189,10 @@ def process_fastq_file(job, fastq_data_stream, session, url):
     errors = job['errors']
     result = job['result']
 
+    read_name_prefix = re.compile(
+        '^(@[a-zA-Z\d]+[a-zA-Z\d_-]*:[a-zA-Z\d-]+:[a-zA-Z\d_-]' +
+        '+:\d+:\d+:\d+:\d+')
+
     read_name_pattern = re.compile(
         '^(@[a-zA-Z\d]+[a-zA-Z\d_-]*:[a-zA-Z\d-]+:[a-zA-Z\d_-]' +
         '+:\d+:\d+:\d+:\d+[\s_][12]:[YXN]:[0-9]+:([ACNTG\+]*|[0-9]*))$'
@@ -231,31 +235,43 @@ def process_fastq_file(job, fastq_data_stream, session, url):
                             flowcell + ':' + lane_number + ':' +
                             read_number + ':')
                     else:
-                        if len(words_array) == 1 and \
-                           len(read_name) > 3 and\
-                           read_name.count(':') > 2:  # assuming old illumina format
-                            read_number = '1'
-                            if read_name[-2:] in ['/1', '/2']:
-                                read_numbers_set.add(read_name[-1])
-                                read_number = read_name[-1]
-                            arr = read_name.split(':')
-                            prefix = arr[0] + ':' + arr[1]
-                            if prefix != old_illumina_current_prefix:
-                                old_illumina_current_prefix = prefix
-                                flowcell = arr[0][1:]
-                                if (flowcell.find('-') != -1 or
-                                   flowcell.find('_') != -1):
-                                    flowcell = 'TEMP'
-                                lane_number = arr[1]
+                        if len(words_array) == 1:
+                            if read_name_prefix.match(read_name) is not None:
+                                # new illumina without second part
+                                read_number = '1'
+                                read_name_array = re.split(r'[:]', read_name)
+                                flowcell = read_name_array[2]
+                                lane_number = read_name_array[3]
                                 signatures_set.add(
                                     flowcell + ':' + lane_number + ':' +
-                                    read_number + '::' + read_name)
-                        else:
-                            weird_read_name = read_name
-                            errors['fastq_format_readname'] = \
-                                'submitted fastq file does not ' + \
-                                'comply with illumina fastq read name format, ' + \
-                                'read name was : {}'.format(read_name)
+                                    read_number + '::')
+                                signatures_no_barcode_set.add(
+                                    flowcell + ':' + lane_number + ':' +
+                                    read_number + ':')
+                            elif len(read_name) > 3 and read_name.count(':') > 2:
+                                # assuming old illumina format
+                                read_number = '1'
+                                if read_name[-2:] in ['/1', '/2']:
+                                    read_numbers_set.add(read_name[-1])
+                                    read_number = read_name[-1]
+                                arr = read_name.split(':')
+                                prefix = arr[0] + ':' + arr[1]
+                                if prefix != old_illumina_current_prefix:
+                                    old_illumina_current_prefix = prefix
+                                    flowcell = arr[0][1:]
+                                    if (flowcell.find('-') != -1 or
+                                       flowcell.find('_') != -1):
+                                        flowcell = 'TEMP'
+                                    lane_number = arr[1]
+                                    signatures_set.add(
+                                        flowcell + ':' + lane_number + ':' +
+                                        read_number + '::' + read_name)
+                            else:
+                                weird_read_name = read_name
+                                errors['fastq_format_readname'] = \
+                                    'submitted fastq file does not ' + \
+                                    'comply with illumina fastq read name format, ' + \
+                                    'read name was : {}'.format(read_name)
 
                 else:  # found a match to the regex of "almost" illumina read_name
                     if len(words_array) == 2:
