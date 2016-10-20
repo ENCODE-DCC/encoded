@@ -27,6 +27,7 @@ from snovault.elasticsearch import (
 )
 from snovault.json_renderer import json_renderer
 from elasticsearch import Elasticsearch
+from snovault.multiprocessing_queue import QueueServer
 STATIC_MAX_AGE = 0
 
 
@@ -245,6 +246,9 @@ def main(global_config, **local_config):
         config.include('.peak_indexer')
     config.include(static_resources)
     config.include(changelogs)
+
+    if 'queue_server_address' in config.registry.settings and config.registry.settings['queue_server_address'] == 'localhost':
+        config.registry['queue_server'] = QueueServer(config.registry)
 
     config.registry['ontology'] = json_from_path(settings.get('ontology_path'), {})
     aws_ip_ranges = json_from_path(settings.get('aws_ip_ranges_path'), {'prefixes': []})
