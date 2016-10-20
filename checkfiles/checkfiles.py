@@ -191,7 +191,7 @@ def process_fastq_file(job, fastq_data_stream, session, url):
 
     read_name_prefix = re.compile(
         '^(@[a-zA-Z\d]+[a-zA-Z\d_-]*:[a-zA-Z\d-]+:[a-zA-Z\d_-]' +
-        '+:\d+:\d+:\d+:\d+')
+        '+:\d+:\d+:\d+:\d+)$')
 
     read_name_pattern = re.compile(
         '^(@[a-zA-Z\d]+[a-zA-Z\d_-]*:[a-zA-Z\d-]+:[a-zA-Z\d_-]' +
