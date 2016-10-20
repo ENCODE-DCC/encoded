@@ -243,6 +243,9 @@ def process_fastq_file(job, fastq_data_stream, session, url):
                             if prefix != old_illumina_current_prefix:
                                 old_illumina_current_prefix = prefix
                                 flowcell = arr[0][1:]
+                                if (flowcell.find('-') != -1 or
+                                   flowcell.find('_') != -1):
+                                    flowcell = 'TEMP'
                                 lane_number = arr[1]
                                 signatures_set.add(
                                     flowcell + ':' + lane_number + ':' +
