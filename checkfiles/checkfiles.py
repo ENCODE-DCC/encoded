@@ -304,15 +304,9 @@ def process_fastq_file(job, fastq_data_stream, session, url):
                                  0.95,
                                  errors)
         else:
-            if 'read_length' in item:
-                errors['read_length'] = 'the specified read length in the uploaded fastq file ' + \
-                                        'was {}, while read '.format(item['read_length']) + \
-                                        'length(s) found in the file were {}.'.format(
-                                        ', '.join(map(str, read_lengths_list)))
-            else:
-                errors['read_length'] = 'no specified read length in the uploaded fastq file, ' + \
-                                        'while read length(s) found in the file were {}.'.format(
-                                        ', '.join(map(str, read_lengths_list)))
+            errors['read_length'] = 'no specified read length in the uploaded fastq file, ' + \
+                                    'while read length(s) found in the file were {}.'.format(
+                                    ', '.join(map(str, read_lengths_list)))
 
         # signatures
         uniqueness_flag = True
