@@ -384,6 +384,7 @@ def process_read_lengths(read_lengths_dict,
             'however the uploaded fastq file contains reads of following length(s) ' + \
             '{}.'.format(', '.join(map(str, lengths_list)))
 
+
 def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url):
     result['content_md5sum'] = output[:32].decode(errors='replace')
     try:
@@ -471,17 +472,21 @@ def check_file(config, session, url, job):
                                                      unzipped_original_bed_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
                 unzipped_modified_bed_path = local_path[-18:-7] + '_modified.bed'
-                subprocess.check_output(
-                    'grep -v \'^#\' {} > {}'.format(unzipped_original_bed_path,
-                                                    unzipped_modified_bed_path),
-                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                try:
+                    subprocess.check_output(
+                        'grep -v \'^#\' {} > {}'.format(unzipped_original_bed_path,
+                                                        unzipped_modified_bed_path),
+                        shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                except subprocess.CalledProcessError as e:
+                    if e.returncode > 1:  # empty file
+                        errors['grep_bed_problem'] = e.output.decode(errors='replace').rstrip('\n')
 
                 output = subprocess.check_output(
                     'set -o pipefail; md5sum {}'.format(unzipped_original_bed_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
 
             except subprocess.CalledProcessError as e:
-                errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
+                    errors['content_md5sum_calculation'] = e.output.decode(errors='replace').rstrip('\n')
             else:
                 check_for_contentmd5sum_conflicts(item, result, output, errors, session, url)
 
