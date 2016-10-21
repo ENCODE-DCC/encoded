@@ -1176,35 +1176,22 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
     // is an object keyed by each file's @id. allContributingArray is an array of file objects.
     let allContributingArray = _(derivedFromFiles).filter((derivedFromFile, derivedFromId) => _(context.contributing_files).any(contributingFile => contributingFile['@id'] === derivedFromId));
 
-    // Process the contributing files array. We have an array of contributing files from the last
-    // step that this dataset's files derive from. Convert that to a keyed object by each
-    // contributing file's @id. Also add them to `allFiles`. Make sure `allContributing` and
-    // `allFiles` point at the same file objects in memory. `allContributingArray` points at
-    // objects within dataset.contributing_files.
+    // We have an array of contributing files from the last step that this dataset's files derive
+    // from. Convert that to a keyed object by each contributing file's @id.
     const allContributing = {};
     allContributingArray.forEach((contributingFile) => {
         // Convert array of contributing files to a keyed object to help with searching later.
         contributingFile.missing = false;
-        const contributingFileId = contributingFile['@id'];
-        allContributing[contributingFileId] = contributingFile;
-
-        // Also add contributing files to the allFiles object.
-        if (allFiles[contributingFileId]) {
-            // Contributing file already existed in file array for some reason; use its existing
-            // file object.
-            allContributing[contributingFileId] = allFiles[contributingFileId];
-        } else {
-            // Seeing contributed file for the first time; save it in allFiles
-            allFiles[contributingFileId] = allContributing[contributingFileId];
-        }
+        allContributing[contributingFile['@id']] = contributingFile;
     });
 
     // Map all contributing files to arrays of the files that derive from them. At the end of this
     // loop, all contributing files in the allContributing object have a derivedFiles property with
     // an array of all files that derive from these contributing files. If no files are derived
-    // from a particular contributing file, its derivedFiles property is just []. Also rebuild
-    // `allContributingArray` to point at the same objects in memory as allContributing, to make
-    // things easier for the next step.
+    // from a particular contributing file, its derivedFiles property is just [] (should never
+    // happen; `allContributingArray` generated above only contains contributing files that other
+    // files derive from. Also rebuild `allContributingArray` to point at the same objects in
+    // memory as allContributing, to make things easier for the next step.
     allContributingArray = [];
     Object.keys(allContributing).forEach((contributingFileKey) => {
         const contributingFile = allContributing[contributingFileKey];
@@ -1225,12 +1212,16 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
 
         // Set a property in the contributing file with array of files that derive from it, sorted
         // joined into one comma-separated string so we can group them.
-        contributingFile.derivedFiles = derivedFiles.sort().join(',');
+        contributingFile.derivedFiles = derivedFiles.sort();
     });
 
     // Now use the derivedFiles property of every contributing file to group them into potential
-    // coalescing nodes.
-    const coalescingGroups = _(allContributingArray).groupBy(contributingFile => contributingFile.derivedFiles);
+    // coalescing nodes. `coalescingGroups` gets assigned an object keyed by dataset file ids
+    // hashed to a 32-bit integer, and mapped to an array of contributing files they derive from.
+    const coalescingGroups = _(allContributingArray).groupBy(contributingFile => globals.hashCode(contributingFile.derivedFiles.join(',')).toString());
+
+    // Based on these coalescingGroups, set a coalescing flag in any contributing file that
+    // should be coalesced. Point at its coalescing group.
     console.log('COALESCINGGROUPS: %o', coalescingGroups);
 
     // Now that we know at least some files derive from each other through analysis steps, mark
