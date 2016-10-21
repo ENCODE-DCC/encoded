@@ -1217,12 +1217,19 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
 
     // Now use the derivedFiles property of every contributing file to group them into potential
     // coalescing nodes. `coalescingGroups` gets assigned an object keyed by dataset file ids
-    // hashed to a 32-bit integer, and mapped to an array of contributing files they derive from.
+    // hashed to a stringified 32-bit integer, and mapped to an array of contributing files they
+    // derive from.
     const coalescingGroups = _(allContributingArray).groupBy(contributingFile => globals.hashCode(contributingFile.derivedFiles.join(',')).toString());
 
-    // Based on these coalescingGroups, set a coalescing flag in any contributing file that
-    // should be coalesced. Point at its coalescing group.
-    console.log('COALESCINGGROUPS: %o', coalescingGroups);
+    // Set a `coalescingGroup` property in each contributing file with its coalescing group's hash
+    // value. That'll be important when we add step nodes.
+    Object.keys(coalescingGroups).forEach((groupHash) => {
+        const group = coalescingGroups[groupHash];
+        group.forEach((contributingFile) => {
+            // Assign the 32-bit hash
+            contributingFile.coalescingGroup = groupHash;
+        });
+    });
 
     // Now that we know at least some files derive from each other through analysis steps, mark
     // file objects that don't derive from other files — and that no files derive from them — as
@@ -1354,7 +1361,6 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
     // Go through each file (released or unreleased) to add it and associated steps to the graph
     Object.keys(allFiles).forEach((fileId) => {
         const file = allFiles[fileId];
-        const fileContributed = allContributing[fileId];
 
         // Only add files derived from others, or that others derive from,
         // and that aren't part of a removed replicate
@@ -1376,78 +1382,97 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
             }
 
             // Add file to the graph as a node
-            let fileNodeLabel;
-            let fileCssClass;
-            let fileRef;
-            const loggedIn = session && session['auth.userid'];
-            if (fileContributed && fileContributed.status !== 'released' && !loggedIn) {
-                // A contributed file isn't released and we're not logged in
-                fileNodeLabel = 'Unreleased';
-                fileCssClass = `pipeline-node-file contributing error${infoNodeId === fileNodeId ? ' active' : ''}`;
-                fileRef = null;
-            } else {
-                fileNodeLabel = `${file.title} (${file.output_type})`;
-                fileCssClass = `pipeline-node-file${(fileContributed ? ' contributing' : '') + (infoNodeId === fileNodeId ? ' active' : '')}`;
-                fileRef = file;
-            }
+            const fileNodeLabel = `${file.title} (${file.output_type})`;
+            const fileCssClass = `pipeline-node-file${infoNodeId === fileNodeId ? ' active' : ''}`;
+            const fileRef = file;
             jsonGraph.addNode(fileNodeId, fileNodeLabel, {
                 cssClass: fileCssClass,
                 type: 'File',
                 shape: 'rect',
                 cornerRadius: 16,
                 parentNode: replicateNode,
-                contributing: fileContributed,
                 ref: fileRef,
             }, metricsInfo);
 
             // If the file has an analysis step, prepare it for graph insertion
-            if (!fileContributed) {
-                const fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
-                if (fileAnalysisStep) {
-                    // Make an ID and label for the step
-                    stepId = `step:${derivedFileIds(file) + fileAnalysisStep['@id']}`;
-                    label = fileAnalysisStep.analysis_step_types;
-                    pipelineInfo = allPipelines[fileAnalysisStep['@id']];
-                    error = false;
-                } else if (derivedFileIds(file)) {
-                    // File derives from others, but no analysis step; make dummy step
-                    stepId = `error:${derivedFileIds(file)}`;
-                    label = 'Software unknown';
-                    pipelineInfo = null;
-                    error = true;
-                } else {
-                    // No analysis step and no derived_from; don't add a step
-                    stepId = '';
-                }
+            const fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
+            if (fileAnalysisStep) {
+                // Make an ID and label for the step
+                stepId = `step:${derivedFileIds(file) + fileAnalysisStep['@id']}`;
+                label = fileAnalysisStep.analysis_step_types;
+                pipelineInfo = allPipelines[fileAnalysisStep['@id']];
+                error = false;
+            } else if (derivedFileIds(file)) {
+                // File derives from others, but no analysis step; make dummy step
+                stepId = `error:${derivedFileIds(file)}`;
+                label = 'Software unknown';
+                pipelineInfo = null;
+                error = true;
+            } else {
+                // No analysis step and no derived_from; don't add a step
+                stepId = '';
+            }
 
-                if (stepId) {
-                    // Add the step to the graph only if we haven't for this derived-from set already
-                    if (!jsonGraph.getNode(stepId)) {
-                        jsonGraph.addNode(stepId, label, {
-                            cssClass: `pipeline-node-analysis-step${(infoNodeId === stepId ? ' active' : '') + (error ? ' error' : '')}`,
-                            type: 'Step',
-                            shape: 'rect',
-                            cornerRadius: 4,
-                            parentNode: replicateNode,
-                            ref: fileAnalysisStep,
-                            pipelines: pipelineInfo,
-                            fileId: file['@id'],
-                            fileAccession: file.accession,
-                            stepVersion: file.analysis_step_version,
-                        });
-                    }
-
-                    // Connect the file to the step, and the step to the derived_from files
-                    jsonGraph.addEdge(stepId, fileNodeId);
-                    file.derived_from.forEach((derived) => {
-                        if (!jsonGraph.getEdge(`file:${derived['@id']}`, stepId)) {
-                            jsonGraph.addEdge(`file:${derived['@id']}`, stepId);
-                        }
+            if (stepId) {
+                // Add the step to the graph only if we haven't for this derived-from set already
+                if (!jsonGraph.getNode(stepId)) {
+                    jsonGraph.addNode(stepId, label, {
+                        cssClass: `pipeline-node-analysis-step${(infoNodeId === stepId ? ' active' : '') + (error ? ' error' : '')}`,
+                        type: 'Step',
+                        shape: 'rect',
+                        cornerRadius: 4,
+                        parentNode: replicateNode,
+                        ref: fileAnalysisStep,
+                        pipelines: pipelineInfo,
+                        fileId: file['@id'],
+                        fileAccession: file.accession,
+                        stepVersion: file.analysis_step_version,
                     });
                 }
+
+                // Connect the file to the step, and the step to the derived_from files
+                jsonGraph.addEdge(stepId, fileNodeId);
+                file.derived_from.forEach((derived) => {
+                    const derivedFromFile = allFiles[derived['@id']];
+                    if (derivedFromFile) {
+                        // Not derived from a contributing file; just add edges normally.
+                        const derivedFileId = `file:${derivedFromFile['@id']}`;
+                        if (!jsonGraph.getEdge(derivedFileId, stepId)) {
+                            jsonGraph.addEdge(derivedFileId, stepId);
+                        }
+                    } else {
+                        // File derived from a contributing file; add edges to a coalesced node
+                        // that we'll add to the graph later.
+                        const contributingFile = allContributing[derived['@id']];
+                        const derivedFileId = `coalesced:${contributingFile.coalescingGroup}`;
+                        if (!jsonGraph.getEdge(derivedFileId, stepId)) {
+                            jsonGraph.addEdge(derivedFileId, stepId);
+                        }
+                    }
+                });
             }
         }
     }, this);
+
+    // Now add coalesced nodes to the graph.
+    Object.keys(coalescingGroups).forEach((groupHash) => {
+        const coalescingGroup = coalescingGroups[groupHash];
+
+        // Check if any files that derive from this group aren't removed. If at least one isn't,
+        // then we can add this coalesced node.
+        const filesExist = coalescingGroup.some(contributingFile => contributingFile.derivedFiles.some(derivedFileId => !allFiles[derivedFileId].removed));
+        if (filesExist) {
+            const fileCssClass = 'pipeline-node-file contributing';
+            jsonGraph.addNode(`coalesced:${groupHash}`, `${coalescingGroup.length} contributing files`, {
+                cssClass: fileCssClass,
+                type: 'File',
+                shape: 'rect',
+                cornerRadius: 16,
+                contributing: true,
+                ref: null,
+            });
+        }
+    });
 
     jsonGraph.filterOptions = filterOptions.length ? _(filterOptions).uniq(option => `${option.assembly}!${(option.annotation ? option.annotation : '')}`) : [];
     return jsonGraph;
