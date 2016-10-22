@@ -1458,8 +1458,8 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
     Object.keys(coalescingGroups).forEach((groupHash) => {
         const coalescingGroup = coalescingGroups[groupHash];
 
-        // Check if any files that derive from this group aren't removed. If at least one isn't,
-        // then we can add this coalesced node.
+        // Check if any files that derive from this coalesced node group aren't removed. If at
+        // least one isn't, then we can add this coalesced node.
         const filesExist = coalescingGroup.some(contributingFile => contributingFile.derivedFiles.some(derivedFileId => !allFiles[derivedFileId].removed));
         if (filesExist) {
             const fileCssClass = 'pipeline-node-file contributing';
@@ -1469,7 +1469,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
                 shape: 'rect',
                 cornerRadius: 16,
                 contributing: true,
-                ref: null,
+                ref: coalescingGroup,
             });
         }
     });
@@ -1602,6 +1602,62 @@ function qcDetailsView(metrics) {
 }
 
 
+function coalescedDetailsView(node) {
+    // Configuration for reference file table
+    const coalescedFileColumns = {
+        accession: {
+            title: 'Accession',
+            display: item =>
+                <span>
+                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf('/') + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                </span>,
+        },
+        file_type: { title: 'File type' },
+        output_type: { title: 'Output type' },
+        assembly: { title: 'Mapping assembly' },
+        genome_annotation: {
+            title: 'Genome annotation',
+            hide: list => _(list).all(item => !item.genome_annotation),
+        },
+        title: {
+            title: 'Lab',
+            getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
+        },
+        date_created: {
+            title: 'Date added',
+            getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
+            sorter: (a, b) => {
+                if (a && b) {
+                    return Date.parse(a) - Date.parse(b);
+                }
+                const bTest = b ? 1 : 0;
+                return a ? -1 : bTest;
+            },
+        },
+        file_size: {
+            title: 'File size',
+            display: item => <span>{humanFileSize(item.file_size)}</span>,
+        },
+        audit: {
+            title: 'Audit status',
+            display: item => <div>{fileAuditStatus(item)}</div>,
+        },
+        status: {
+            title: 'File status',
+            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
+        },
+    },
+
+    const body = (
+        <SortTable
+            list={node.metadata.ref}
+            columns={this.procTableColumns}
+            sortColumn="biological_replicates"
+        />
+    );
+    return { body: body };
+}
+
 const FileGraph = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // Experiment whose file's we're graphing
@@ -1627,17 +1683,23 @@ const FileGraph = React.createClass({
 
         // Find data matching selected node, if any
         if (infoNodeId) {
-            if (infoNodeId.indexOf('qc:') === -1) {
-                // Not a QC subnode; render normally
-                const node = jsonGraph.getNode(infoNodeId);
-                if (node) {
-                    meta = globals.graph_detail.lookup(node)(node, loggedIn, adminUser);
-                }
-            } else {
-                // QC subnode
+            if (infoNodeId.indexOf('qc:') >= 0) {
+                // QC subnode.
                 const subnode = jsonGraph.getSubnode(infoNodeId);
                 if (subnode) {
                     meta = qcDetailsView(subnode);
+                }
+            } else if (infoNodeId.indexOf('coalesced:') >= 0) {
+                // Coalesced contributing files.
+                const node = jsonGraph.getNode(infoNodeId);
+                if (node) {
+                    meta = coalescedDetailsView(node);
+                }
+            } else {
+                // A regular file.
+                const node = jsonGraph.getNode(infoNodeId);
+                if (node) {
+                    meta = globals.graph_detail.lookup(node)(node, loggedIn, adminUser);
                 }
             }
         }
