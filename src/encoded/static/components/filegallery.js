@@ -1491,13 +1491,14 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         if (coalescingGroup.length) {
             // Check if any files that derive from this coalesced node group aren't removed. If at
             // least one isn't, then we can add this coalesced node.
+            const fileNodeId = `coalesced:${groupHash}`;
             const filesExist = coalescingGroup.some(contributingFile => contributingFile.derivedFiles.some(derivedFileId => !allFiles[derivedFileId].removed));
             if (filesExist) {
-                const fileCssClass = 'pipeline-node-file contributing';
-                jsonGraph.addNode(`coalesced:${groupHash}`, `${coalescingGroup.length} contributing files`, {
+                const fileCssClass = `pipeline-node-file contributing${infoNodeId === fileNodeId ? ' active' : ''}`;
+                jsonGraph.addNode(fileNodeId, `${coalescingGroup.length} contributing files`, {
                     cssClass: fileCssClass,
                     type: 'File',
-                    shape: 'rect',
+                    shape: 'stack',
                     cornerRadius: 16,
                     contributing: true,
                     ref: coalescingGroup,
