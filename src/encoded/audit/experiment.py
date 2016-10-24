@@ -307,6 +307,81 @@ def get_assemblies(list_of_files):
     return assemblies
 
 
+@audit_checker('Experiment', frame=[
+    'dataset',
+    'original_files',
+    'original_files.replicate',
+    'original_files.derived_from',
+    'original_files.derived_from.derived_from',
+    'original_files.derived_from.dataset',
+    'original_files.derived_from.dataset.original_files'])
+def audit_experiment_control_out_of_date_analysis(value, system):
+    if value['assay_term_name'] not in ['ChIP-seq']:
+        return
+    if 'target' in value and 'control' in value['target']['investigated_as']:
+        return
+    all_signal_files = scan_files_for_file_format_output_type(value['original_files'],
+                                                              'bigWig', 'signal p-value')
+    signal_files = []
+    for signal_file in all_signal_files:
+        if 'lab' in signal_file and signal_file['lab'] == '/labs/encode-processing-pipeline/':
+            signal_files.append(signal_file)
+
+    if len(signal_files) == 0:
+        return
+
+    derived_from_bams = get_derived_from_files_set(signal_files, 'bam', True)
+    for bam_file in derived_from_bams:
+        if bam_file['dataset']['accession'] != value['accession'] and \
+           is_outdated_bams_replicate(bam_file):
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     'signal tracks are using alignment files from a control ' + \
+                     'replicate that has not been processed yet.'
+            yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
+            return
+
+
+def is_outdated_bams_replicate(bam_file):
+    if 'lab' not in bam_file or bam_file['lab'] != '/labs/encode-processing-pipeline/' or \
+       'dataset' not in bam_file or 'original_files' not in bam_file['dataset']:
+        return False
+    derived_from_fastqs = get_derived_from_files_set([bam_file], 'fastq', True)
+    if len(derived_from_fastqs) == 0:
+        return False
+
+    derived_from_fastq_accessions = get_file_accessions(derived_from_fastqs)
+
+    bio_rep = []
+    for fastq_file in derived_from_fastqs:
+        if 'biological_replicates' in fastq_file and \
+           len(fastq_file['biological_replicates']) != 0:
+            for entry in fastq_file['biological_replicates']:
+                bio_rep.append(entry)
+            break
+
+    fastq_files = scan_files_for_file_format_output_type(
+        bam_file['dataset']['original_files'],
+        'fastq', 'reads')
+
+    bio_rep_fastqs = []
+    for fastq_file in fastq_files:
+        if 'biological_replicates' in fastq_file:
+            for entry in fastq_file['biological_replicates']:
+                if entry in bio_rep:
+                    bio_rep_fastqs.append(fastq_file)
+                    break
+
+    replicate_fastq_accessions = get_file_accessions(bio_rep_fastqs)
+    for f_accession in replicate_fastq_accessions:
+        if f_accession not in derived_from_fastq_accessions:
+            return True
+
+    for f_accession in derived_from_fastq_accessions:
+        if f_accession not in replicate_fastq_accessions:
+            return True
+    return False
+
+
 @audit_checker('Experiment', frame=['original_files',
                                     'original_files.replicate',
                                     'original_files.derived_from'])
@@ -330,8 +405,8 @@ def audit_experiment_out_of_date_analysis(value, system):
             break
     if uniform_pipeline_flag is False:
         return
-    alignment_derived_from = get_derived_from_files_set(alignment_files)
-    transcriptome_alignment_derived_from = get_derived_from_files_set(transcriptome_alignments)
+    alignment_derived_from = get_derived_from_files_set(alignment_files, 'fastq', False)
+    transcriptome_alignment_derived_from = get_derived_from_files_set(transcriptome_alignments, 'fastq', False)
 
     derived_from_set = alignment_derived_from | transcriptome_alignment_derived_from
     fastq_files = scan_files_for_file_format_output_type(value['original_files'],
@@ -374,13 +449,19 @@ def get_file_accessions(list_of_files):
     return accessions_set
 
 
-def get_derived_from_files_set(list_of_files):
+def get_derived_from_files_set(list_of_files, file_format, object_flag):
     derived_from_set = set()
+    derived_from_objects_list = []
     for f in list_of_files:
         if 'derived_from' in f:
             for d_f in f['derived_from']:
-                if 'file_format' in d_f and d_f['file_format'] == 'fastq':
+                if 'file_format' in d_f and d_f['file_format'] == file_format and \
+                   d_f['accession'] not in derived_from_set:
                     derived_from_set.add(d_f['accession'])
+                    if object_flag:
+                        derived_from_objects_list.append(d_f)
+    if object_flag:
+        return derived_from_objects_list
     return derived_from_set
 
 
