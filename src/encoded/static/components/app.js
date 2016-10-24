@@ -52,7 +52,8 @@ var portal = {
 
 
 // Keep lists of currently known project and biosample_type. As new project and biosample_type
-// enter the system, these lists must be updated.
+// enter the system, these lists must be updated. Used mostly to keep chart and matrix colors
+// consistent.
 const projectList = [
     'ENCODE',
     'Roadmap',
@@ -89,7 +90,7 @@ var Title = React.createClass({
 // It lives for the entire duration the page is loaded.
 // App maintains state for the
 var App = React.createClass({
-    mixins: [mixins.Persona, mixins.HistoryAndTriggers],
+    mixins: [mixins.Auth0, mixins.HistoryAndTriggers],
     triggers: {
         login: 'triggerLogin',
         profile: 'triggerProfile',
