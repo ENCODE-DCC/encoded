@@ -1188,65 +1188,6 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         allContributing[contributingFile['@id']] = contributingFile;
     });
 
-    // Map all contributing files to arrays of the files that derive from them. At the end of this
-    // loop, all contributing files in the allContributing object have a derivedFiles property with
-    // an array of all files that derive from these contributing files. If no files are derived
-    // from a particular contributing file, its derivedFiles property is just [] (should never
-    // happen; `allContributingArray` generated above only contains contributing files that other
-    // files derive from). Also rebuild `allContributingArray` to point at the same objects in
-    // memory as allContributing, to make things easier for the next step.
-    allContributingArray = [];
-    Object.keys(allContributing).forEach((contributingFileKey) => {
-        const contributingFile = allContributing[contributingFileKey];
-        allContributingArray.push(contributingFile);
-
-        // Find all files that are derived from this contributing file.
-        const derivedFiles = Object.keys(allFiles).filter((fileKey) => {
-            const file = allFiles[fileKey];
-
-            // Find any derived_from matching contributingFile.
-            if (file.derived_from && file.derived_from.length) {
-                return file.derived_from.some(derivedFile => derivedFile['@id'] === contributingFile['@id']);
-            }
-
-            // No derived_from, so definitely no matching contributingFile.
-            return false;
-        });
-
-        // Set a property in the contributing file with array of files that derive from it, sorted
-        // joined into one comma-separated string so we can group them.
-        contributingFile.derivedFiles = derivedFiles.sort();
-    });
-
-    // Now use the derivedFiles property of every contributing file to group them into potential
-    // coalescing nodes. `coalescingGroups` gets assigned an object keyed by dataset file ids
-    // hashed to a stringified 32-bit integer, and mapped to an array of contributing files they
-    // derive from.
-    const coalescingGroups = _(allContributingArray).groupBy(contributingFile => globals.hashCode(contributingFile.derivedFiles.join(',')).toString());
-
-    // Set a `coalescingGroup` property in each contributing file with its coalescing group's hash
-    // value. That'll be important when we add step nodes.
-    Object.keys(coalescingGroups).forEach((groupHash) => {
-        const group = coalescingGroups[groupHash];
-        if (group.length >= MINIMUM_COALESCE_COUNT) {
-            // Number of files in the coalescing group is at least the minimum number of files we
-            // allow in a coalescig group. Mark every contributing file in the group with the
-            // group's hash value in a `coalescingGroup` property that step node can connnect to.
-            group.forEach((contributingFile) => {
-                contributingFile.coalescingGroup = groupHash;
-            });
-        } else {
-            // The number of files in the coalescing group isn't enough to coalesce them. Just add
-            // them to allFiles and add them to the graph as pretty much regular files.
-            group.forEach((contributingFile) => {
-                allFiles[contributingFile['@id']] = contributingFile;
-            });
-
-            // Don't use this coalescingGroup anymore.
-            coalescingGroups[groupHash] = [];
-        }
-    });
-
     // Now that we know at least some files derive from each other through analysis steps, mark
     // file objects that don't derive from other files — and that no files derive from them — as
     // removed from the graph. Also build the filtering menu here; it genomic annotations and
@@ -1314,6 +1255,65 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         // For all files matching the filtering options that derive from others, go up the derivation chain and re-include everything there.
         processFiltering(allFiles, filterAssembly, filterAnnotation, allFiles, allContributing);
     }
+
+    // Map all contributing files to arrays of the files that derive from them. At the end of this
+    // loop, all contributing files in the allContributing object have a derivedFiles property with
+    // an array of all files that derive from these contributing files. If no files are derived
+    // from a particular contributing file, its derivedFiles property is just [] (should never
+    // happen; `allContributingArray` generated above only contains contributing files that other
+    // files derive from). Also rebuild `allContributingArray` to point at the same objects in
+    // memory as allContributing, to make things easier for the next step.
+    allContributingArray = [];
+    Object.keys(allContributing).forEach((contributingFileKey) => {
+        const contributingFile = allContributing[contributingFileKey];
+        allContributingArray.push(contributingFile);
+
+        // Find all files that are derived from this contributing file.
+        const derivedFiles = Object.keys(allFiles).filter((fileKey) => {
+            const file = allFiles[fileKey];
+
+            // Find any derived_from matching contributingFile.
+            if (!file.removed && file.derived_from && file.derived_from.length) {
+                return file.derived_from.some(derivedFile => derivedFile['@id'] === contributingFile['@id']);
+            }
+
+            // No derived_from, so definitely no matching contributingFile.
+            return false;
+        });
+
+        // Set a property in the contributing file with array of files that derive from it, sorted
+        // joined into one comma-separated string so we can group them.
+        contributingFile.derivedFiles = derivedFiles.sort();
+    });
+
+    // Now use the derivedFiles property of every contributing file to group them into potential
+    // coalescing nodes. `coalescingGroups` gets assigned an object keyed by dataset file ids
+    // hashed to a stringified 32-bit integer, and mapped to an array of contributing files they
+    // derive from.
+    const coalescingGroups = _(allContributingArray).groupBy(contributingFile => globals.hashCode(contributingFile.derivedFiles.join(',')).toString());
+
+    // Set a `coalescingGroup` property in each contributing file with its coalescing group's hash
+    // value. That'll be important when we add step nodes.
+    Object.keys(coalescingGroups).forEach((groupHash) => {
+        const group = coalescingGroups[groupHash];
+        if (group.length >= MINIMUM_COALESCE_COUNT) {
+            // Number of files in the coalescing group is at least the minimum number of files we
+            // allow in a coalescig group. Mark every contributing file in the group with the
+            // group's hash value in a `coalescingGroup` property that step node can connnect to.
+            group.forEach((contributingFile) => {
+                contributingFile.coalescingGroup = groupHash;
+            });
+        } else {
+            // The number of files in the coalescing group isn't enough to coalesce them. Just add
+            // them to allFiles and add them to the graph as pretty much regular files.
+            group.forEach((contributingFile) => {
+                allFiles[contributingFile['@id']] = contributingFile;
+            });
+
+            // Don't use this coalescingGroup anymore.
+            coalescingGroups[groupHash] = [];
+        }
+    });
 
     // See if removing files by filtering have emptied a replicate.
     if (Object.keys(allReplicates).length) {
@@ -1410,7 +1410,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
                 fileRef = null;
             } else {
                 fileNodeLabel = `${file.title} (${file.output_type})`;
-                fileCssClass = 'pipeline-node-file' + (fileContributed ? ' contributing' : '') + (infoNodeId === fileNodeId ? ' active' : '');
+                fileCssClass = `pipeline-node-file${(fileContributed ? ' contributing' : '') + (infoNodeId === fileNodeId ? ' active' : '')}`;
                 fileRef = file;
             }
             jsonGraph.addNode(fileNodeId, fileNodeLabel, {
