@@ -16,6 +16,9 @@ const { SortTablePanel, SortTable } = require('./sorttable');
 const { AttachmentPanel } = require('./doc');
 
 
+const MINIMUM_COALESCE_COUNT = 3; // Minimum number of files in a coalescing group
+
+
 // Order that assemblies should appear in filtering menu
 const assemblyPriority = [
     'GRCh38',
@@ -1190,7 +1193,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
     // an array of all files that derive from these contributing files. If no files are derived
     // from a particular contributing file, its derivedFiles property is just [] (should never
     // happen; `allContributingArray` generated above only contains contributing files that other
-    // files derive from. Also rebuild `allContributingArray` to point at the same objects in
+    // files derive from). Also rebuild `allContributingArray` to point at the same objects in
     // memory as allContributing, to make things easier for the next step.
     allContributingArray = [];
     Object.keys(allContributing).forEach((contributingFileKey) => {
@@ -1225,10 +1228,23 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
     // value. That'll be important when we add step nodes.
     Object.keys(coalescingGroups).forEach((groupHash) => {
         const group = coalescingGroups[groupHash];
-        group.forEach((contributingFile) => {
-            // Assign the 32-bit hash
-            contributingFile.coalescingGroup = groupHash;
-        });
+        if (group.length >= MINIMUM_COALESCE_COUNT) {
+            // Number of files in the coalescing group is at least the minimum number of files we
+            // allow in a coalescig group. Mark every contributing file in the group with the
+            // group's hash value in a `coalescingGroup` property that step node can connnect to.
+            group.forEach((contributingFile) => {
+                contributingFile.coalescingGroup = groupHash;
+            });
+        } else {
+            // The number of files in the coalescing group isn't enough to coalesce them. Just add
+            // them to allFiles and add them to the graph as pretty much regular files.
+            group.forEach((contributingFile) => {
+                allFiles[contributingFile['@id']] = contributingFile;
+            });
+
+            // Don't use this coalescingGroup anymore.
+            coalescingGroups[groupHash] = [];
+        }
     });
 
     // Now that we know at least some files derive from each other through analysis steps, mark
@@ -1382,74 +1398,89 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
             }
 
             // Add file to the graph as a node
-            const fileNodeLabel = `${file.title} (${file.output_type})`;
-            const fileCssClass = `pipeline-node-file${infoNodeId === fileNodeId ? ' active' : ''}`;
-            const fileRef = file;
+            let fileNodeLabel;
+            let fileCssClass;
+            let fileRef;
+            const loggedIn = session && session['auth.userid'];
+            const fileContributed = allContributing[fileId];
+            if (fileContributed && fileContributed.status !== 'released' && !loggedIn) {
+                // A contributed file isn't released and we're not logged in
+                fileNodeLabel = 'Unreleased';
+                fileCssClass = `pipeline-node-file contributing error${infoNodeId === fileNodeId ? ' active' : ''}`;
+                fileRef = null;
+            } else {
+                fileNodeLabel = `${file.title} (${file.output_type})`;
+                fileCssClass = 'pipeline-node-file' + (fileContributed ? ' contributing' : '') + (infoNodeId === fileNodeId ? ' active' : '');
+                fileRef = file;
+            }
             jsonGraph.addNode(fileNodeId, fileNodeLabel, {
                 cssClass: fileCssClass,
                 type: 'File',
                 shape: 'rect',
                 cornerRadius: 16,
                 parentNode: replicateNode,
+                contributing: !!fileContributed,
                 ref: fileRef,
             }, metricsInfo);
 
             // If the file has an analysis step, prepare it for graph insertion
-            const fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
-            if (fileAnalysisStep) {
-                // Make an ID and label for the step
-                stepId = `step:${derivedFileIds(file) + fileAnalysisStep['@id']}`;
-                label = fileAnalysisStep.analysis_step_types;
-                pipelineInfo = allPipelines[fileAnalysisStep['@id']];
-                error = false;
-            } else if (derivedFileIds(file)) {
-                // File derives from others, but no analysis step; make dummy step
-                stepId = `error:${derivedFileIds(file)}`;
-                label = 'Software unknown';
-                pipelineInfo = null;
-                error = true;
-            } else {
-                // No analysis step and no derived_from; don't add a step
-                stepId = '';
-            }
-
-            if (stepId) {
-                // Add the step to the graph only if we haven't for this derived-from set already
-                if (!jsonGraph.getNode(stepId)) {
-                    jsonGraph.addNode(stepId, label, {
-                        cssClass: `pipeline-node-analysis-step${(infoNodeId === stepId ? ' active' : '') + (error ? ' error' : '')}`,
-                        type: 'Step',
-                        shape: 'rect',
-                        cornerRadius: 4,
-                        parentNode: replicateNode,
-                        ref: fileAnalysisStep,
-                        pipelines: pipelineInfo,
-                        fileId: file['@id'],
-                        fileAccession: file.accession,
-                        stepVersion: file.analysis_step_version,
-                    });
+            if (!fileContributed) {
+                const fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
+                if (fileAnalysisStep) {
+                    // Make an ID and label for the step
+                    stepId = `step:${derivedFileIds(file) + fileAnalysisStep['@id']}`;
+                    label = fileAnalysisStep.analysis_step_types;
+                    pipelineInfo = allPipelines[fileAnalysisStep['@id']];
+                    error = false;
+                } else if (derivedFileIds(file)) {
+                    // File derives from others, but no analysis step; make dummy step
+                    stepId = `error:${derivedFileIds(file)}`;
+                    label = 'Software unknown';
+                    pipelineInfo = null;
+                    error = true;
+                } else {
+                    // No analysis step and no derived_from; don't add a step
+                    stepId = '';
                 }
 
-                // Connect the file to the step, and the step to the derived_from files
-                jsonGraph.addEdge(stepId, fileNodeId);
-                file.derived_from.forEach((derived) => {
-                    const derivedFromFile = allFiles[derived['@id']];
-                    if (derivedFromFile) {
-                        // Not derived from a contributing file; just add edges normally.
-                        const derivedFileId = `file:${derivedFromFile['@id']}`;
-                        if (!jsonGraph.getEdge(derivedFileId, stepId)) {
-                            jsonGraph.addEdge(derivedFileId, stepId);
-                        }
-                    } else {
-                        // File derived from a contributing file; add edges to a coalesced node
-                        // that we'll add to the graph later.
-                        const contributingFile = allContributing[derived['@id']];
-                        const derivedFileId = `coalesced:${contributingFile.coalescingGroup}`;
-                        if (!jsonGraph.getEdge(derivedFileId, stepId)) {
-                            jsonGraph.addEdge(derivedFileId, stepId);
-                        }
+                if (stepId) {
+                    // Add the step to the graph only if we haven't for this derived-from set already
+                    if (!jsonGraph.getNode(stepId)) {
+                        jsonGraph.addNode(stepId, label, {
+                            cssClass: `pipeline-node-analysis-step${(infoNodeId === stepId ? ' active' : '') + (error ? ' error' : '')}`,
+                            type: 'Step',
+                            shape: 'rect',
+                            cornerRadius: 4,
+                            parentNode: replicateNode,
+                            ref: fileAnalysisStep,
+                            pipelines: pipelineInfo,
+                            fileId: file['@id'],
+                            fileAccession: file.accession,
+                            stepVersion: file.analysis_step_version,
+                        });
                     }
-                });
+
+                    // Connect the file to the step, and the step to the derived_from files
+                    jsonGraph.addEdge(stepId, fileNodeId);
+                    file.derived_from.forEach((derived) => {
+                        const derivedFromFile = allFiles[derived['@id']];
+                        if (derivedFromFile) {
+                            // Not derived from a contributing file; just add edges normally.
+                            const derivedFileId = `file:${derivedFromFile['@id']}`;
+                            if (!jsonGraph.getEdge(derivedFileId, stepId)) {
+                                jsonGraph.addEdge(derivedFileId, stepId);
+                            }
+                        } else {
+                            // File derived from a contributing file; add edges to a coalesced node
+                            // that we'll add to the graph later.
+                            const contributingFile = allContributing[derived['@id']];
+                            const derivedFileId = `coalesced:${contributingFile.coalescingGroup}`;
+                            if (!jsonGraph.getEdge(derivedFileId, stepId)) {
+                                jsonGraph.addEdge(derivedFileId, stepId);
+                            }
+                        }
+                    });
+                }
             }
         }
     }, this);
@@ -1457,20 +1488,21 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
     // Now add coalesced nodes to the graph.
     Object.keys(coalescingGroups).forEach((groupHash) => {
         const coalescingGroup = coalescingGroups[groupHash];
-
-        // Check if any files that derive from this coalesced node group aren't removed. If at
-        // least one isn't, then we can add this coalesced node.
-        const filesExist = coalescingGroup.some(contributingFile => contributingFile.derivedFiles.some(derivedFileId => !allFiles[derivedFileId].removed));
-        if (filesExist) {
-            const fileCssClass = 'pipeline-node-file contributing';
-            jsonGraph.addNode(`coalesced:${groupHash}`, `${coalescingGroup.length} contributing files`, {
-                cssClass: fileCssClass,
-                type: 'File',
-                shape: 'rect',
-                cornerRadius: 16,
-                contributing: true,
-                ref: coalescingGroup,
-            });
+        if (coalescingGroup.length) {
+            // Check if any files that derive from this coalesced node group aren't removed. If at
+            // least one isn't, then we can add this coalesced node.
+            const filesExist = coalescingGroup.some(contributingFile => contributingFile.derivedFiles.some(derivedFileId => !allFiles[derivedFileId].removed));
+            if (filesExist) {
+                const fileCssClass = 'pipeline-node-file contributing';
+                jsonGraph.addNode(`coalesced:${groupHash}`, `${coalescingGroup.length} contributing files`, {
+                    cssClass: fileCssClass,
+                    type: 'File',
+                    shape: 'rect',
+                    cornerRadius: 16,
+                    contributing: true,
+                    ref: coalescingGroup,
+                });
+            }
         }
     });
 
@@ -1634,28 +1666,19 @@ function coalescedDetailsView(node) {
                 return a ? -1 : bTest;
             },
         },
-        file_size: {
-            title: 'File size',
-            display: item => <span>{humanFileSize(item.file_size)}</span>,
-        },
-        audit: {
-            title: 'Audit status',
-            display: item => <div>{fileAuditStatus(item)}</div>,
-        },
-        status: {
-            title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
-        },
-    },
+    };
 
+    const header = (
+        <h4>Selected contributing files</h4>
+    );
     const body = (
         <SortTable
             list={node.metadata.ref}
-            columns={this.procTableColumns}
-            sortColumn="biological_replicates"
+            columns={coalescedFileColumns}
+            sortColumn="accession"
         />
     );
-    return { body: body };
+    return { header: header, body: body };
 }
 
 const FileGraph = React.createClass({
