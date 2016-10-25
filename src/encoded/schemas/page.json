@@ -64,7 +64,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "parent": {
             "title": "Parent Page",
@@ -106,7 +106,19 @@
             "items": {
                 "title": "News keyword",
                 "description": "A keyword for news post filtering.",
-                "type": "string"
+                "type": "string",
+                "enum": [
+                    "3D chromatin structure",
+                    "DNA accessibility",
+                    "DNA binding",
+                    "DNA methylation",
+                    "Transcription",
+                    "RNA binding",
+                    "Genotyping",
+                    "Proteomics",
+                    "Conferences",
+                    "Encyclopedia"
+                ]
             }
         },
         "layout": {
