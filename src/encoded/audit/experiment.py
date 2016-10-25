@@ -308,9 +308,8 @@ def get_assemblies(list_of_files):
 
 
 @audit_checker('Experiment', frame=[
-    'dataset',
+    'target',
     'original_files',
-    'original_files.replicate',
     'original_files.derived_from',
     'original_files.derived_from.derived_from',
     'original_files.derived_from.dataset',
@@ -318,7 +317,8 @@ def get_assemblies(list_of_files):
 def audit_experiment_control_out_of_date_analysis(value, system):
     if value['assay_term_name'] not in ['ChIP-seq']:
         return
-    if 'target' in value and 'control' in value['target']['investigated_as']:
+    if 'target' in value and 'investigated_as' in value['target'] and \
+       'control' in value['target']['investigated_as']:
         return
     all_signal_files = scan_files_for_file_format_output_type(value['original_files'],
                                                               'bigWig', 'signal p-value')
