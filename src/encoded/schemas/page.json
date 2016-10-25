@@ -190,6 +190,9 @@
         },
         "month_released": {
             "title": "Date"
+        },
+        "award.project": {
+            "title": "Project"
         }
     },
     "columns": {
