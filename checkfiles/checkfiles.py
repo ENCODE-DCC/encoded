@@ -472,6 +472,9 @@ def check_file(config, session, url, job):
                                                      unzipped_original_bed_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
                 unzipped_modified_bed_path = local_path[-18:-7] + '_modified.bed'
+            except subprocess.CalledProcessError as e:
+                errors['bed_unzip_failure'] = e.output.decode(errors='replace').rstrip('\n')
+            else:
                 try:
                     subprocess.check_output(
                         'grep -v \'^#\' {} > {}'.format(unzipped_original_bed_path,
@@ -480,22 +483,24 @@ def check_file(config, session, url, job):
                 except subprocess.CalledProcessError as e:
                     if e.returncode > 1:  # empty file
                         errors['grep_bed_problem'] = e.output.decode(errors='replace').rstrip('\n')
-
-                output = subprocess.check_output(
-                    'set -o pipefail; md5sum {}'.format(unzipped_original_bed_path),
-                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
-
-            except subprocess.CalledProcessError as e:
+                    else:
+                        errors['bed_comments_remove_failure'] = e.output.decode(
+                            errors='replace').rstrip('\n')
+                try:
+                    output = subprocess.check_output(
+                        'set -o pipefail; md5sum {}'.format(unzipped_original_bed_path),
+                        shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                except subprocess.CalledProcessError as e:
                     errors['content_md5sum_calculation'] = e.output.decode(errors='replace').rstrip('\n')
-            else:
-                check_for_contentmd5sum_conflicts(item, result, output, errors, session, url)
+                else:
+                    check_for_contentmd5sum_conflicts(item, result, output, errors, session, url)
 
-                if os.path.exists(unzipped_original_bed_path):
-                    try:
-                        os.remove(unzipped_original_bed_path)
-                    except OSError as e:
-                        errors['file_remove_error'] = 'OS could not remove the file ' + \
-                                                      unzipped_original_bed_path
+                    if os.path.exists(unzipped_original_bed_path):
+                        try:
+                            os.remove(unzipped_original_bed_path)
+                        except OSError as e:
+                            errors['file_remove_error'] = 'OS could not remove the file ' + \
+                                                          unzipped_original_bed_path
         else:
             # May want to replace this with something like:
             # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
