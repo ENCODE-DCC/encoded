@@ -235,19 +235,26 @@ def process_fastq_file(job, fastq_data_stream, session, url):
                             flowcell + ':' + lane_number + ':' +
                             read_number + ':')
                     else:
+                        # unrecognized read_name_format
+                        # current convention is to include WHOLE 
+                        # readname at the end of the signature
                         if len(words_array) == 1:
                             if read_name_prefix.match(read_name) is not None:
                                 # new illumina without second part
                                 read_number = '1'
                                 read_name_array = re.split(r'[:]', read_name)
+
                                 flowcell = read_name_array[2]
                                 lane_number = read_name_array[3]
-                                signatures_set.add(
-                                    flowcell + ':' + lane_number + ':' +
-                                    read_number + '::')
-                                signatures_no_barcode_set.add(
-                                    flowcell + ':' + lane_number + ':' +
-                                    read_number + ':')
+
+                                prefix = flowcell + ':' + lane_number
+                                if prefix != old_illumina_current_prefix:
+                                    old_illumina_current_prefix = prefix
+
+                                    signatures_set.add(
+                                        flowcell + ':' + lane_number + ':' +
+                                        read_number + '::' + read_name)
+
                             elif len(read_name) > 3 and read_name.count(':') > 2:
                                 # assuming old illumina format
                                 read_number = '1'
@@ -255,6 +262,8 @@ def process_fastq_file(job, fastq_data_stream, session, url):
                                     read_numbers_set.add(read_name[-1])
                                     read_number = read_name[-1]
                                 arr = read_name.split(':')
+
+
                                 prefix = arr[0] + ':' + arr[1]
                                 if prefix != old_illumina_current_prefix:
                                     old_illumina_current_prefix = prefix
@@ -491,7 +500,8 @@ def check_file(config, session, url, job):
                         'set -o pipefail; md5sum {}'.format(unzipped_original_bed_path),
                         shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
                 except subprocess.CalledProcessError as e:
-                    errors['content_md5sum_calculation'] = e.output.decode(errors='replace').rstrip('\n')
+                    errors['content_md5sum_calculation'] = e.output.decode(
+                        errors='replace').rstrip('\n')
                 else:
                     check_for_contentmd5sum_conflicts(item, result, output, errors, session, url)
 
