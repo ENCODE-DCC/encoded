@@ -1,7 +1,7 @@
 #cloud-config
 
 # Instance
-
+apt_sources:
 - source: "deb https://deb.nodesource.com/node_4.x trusty main"
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
