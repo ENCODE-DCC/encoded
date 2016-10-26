@@ -3,6 +3,7 @@ from pyramid.compat import bytes_
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 from pyramid.response import Response
+from pyramid.security import effective_principals
 from snovault import TYPES
 from snovault.util import simple_path_ids
 from urllib.parse import (
@@ -291,8 +292,9 @@ def metadata_tsv(context, request):
 @view_config(route_name='batch_download', request_method='GET')
 def batch_download(context, request):
     # adding extra params to get required columns
+    principals = effective_principals(request)
     param_list = parse_qs(request.matchdict['search_params'])
-    param_list['field'] = ['files.href', 'files.file_type']
+    param_list['field'] = ['files.href', 'files.file_type', 'files.restricted']
     param_list['limit'] = ['all']
     path = '/search/?%s' % urlencode(param_list, True)
     results = request.embed(path, as_user=True)
@@ -310,12 +312,14 @@ def batch_download(context, request):
                         href=f['href']
                     ))
     else:
+        admin = 'group.admin' in principals
         for exp in results['@graph']:
             for f in exp['files']:
-                files.append('{host_url}{href}'.format(
-                    host_url=request.host_url,
-                    href=f['href']
-                ))
+                if 'restricted' not in f or admin:
+                    files.append('{host_url}{href}'.format(
+                        host_url=request.host_url,
+                        href=f['href']
+                    ))
     return Response(
         content_type='text/plain',
         body='\n'.join(files),
