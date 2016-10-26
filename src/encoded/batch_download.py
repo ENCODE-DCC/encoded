@@ -220,12 +220,14 @@ def peak_metadata(context, request):
 
 @view_config(route_name='metadata', request_method='GET')
 def metadata_tsv(context, request):
+    principals = effective_principals(request)
+    admin = 'group.admin' in principals
     param_list = parse_qs(request.matchdict['search_params'])
     if 'referrer' in param_list:
         search_path = '/{}/'.format(param_list.pop('referrer')[0])
     else:
         search_path = '/search/'
-    param_list['field'] = []
+    param_list['field'] = ['files.restricted']
     header = []
     file_attributes = []
     for prop in _tsv_mapping:
@@ -248,6 +250,8 @@ def metadata_tsv(context, request):
                             'files.output_type']
 
             for f in experiment_json['files']:
+                if 'restricted' in f and not admin:
+                    continue
                 if 'files.file_type' in param_list:
                     if f['file_type'] not in param_list['files.file_type']:
                         continue
@@ -293,6 +297,7 @@ def metadata_tsv(context, request):
 def batch_download(context, request):
     # adding extra params to get required columns
     principals = effective_principals(request)
+    admin = 'group.admin' in principals
     param_list = parse_qs(request.matchdict['search_params'])
     param_list['field'] = ['files.href', 'files.file_type', 'files.restricted']
     param_list['limit'] = ['all']
@@ -306,13 +311,13 @@ def batch_download(context, request):
     if 'files.file_type' in param_list:
         for exp in results['@graph']:
             for f in exp['files']:
-                if f['file_type'] in param_list['files.file_type']:
-                    files.append('{host_url}{href}'.format(
-                        host_url=request.host_url,
-                        href=f['href']
-                    ))
+                if 'restricted' not in f or admin:
+                    if f['file_type'] in param_list['files.file_type']:
+                        files.append('{host_url}{href}'.format(
+                            host_url=request.host_url,
+                            href=f['href']
+                        ))
     else:
-        admin = 'group.admin' in principals
         for exp in results['@graph']:
             for f in exp['files']:
                 if 'restricted' not in f or admin:
