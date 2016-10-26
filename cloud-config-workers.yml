@@ -30,7 +30,9 @@ packages:
 - libxml2-dev
 - libxslt1-dev
 - lzop
+- nodejs
 - ntp
+- postgresql-9.3
 - pv
 - python2.7-dev
 - python3.4-dev

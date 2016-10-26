@@ -118,7 +118,7 @@ def spot_instance_price_check(client, instance_type):
     todaysDate = datetime.datetime.now()
     response = client.describe_spot_price_history(
         DryRun=False,
-        StartTime=todaysDate,
+        StartTime=todaysDate - datetime.timedelta(hours=7),
         EndTime=todaysDate,
         InstanceTypes=[
             instance_type
@@ -230,7 +230,6 @@ def tag_spot_instance(instance, name, branch, commit, username, elasticsearch, c
 
 def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, spot_price, cluster_size, cluster_name, check_price,
         branch=None, name=None, role='demo', profile_name=None, teardown_cluster=None, supercharge=None):
-    
     if branch is None:
         branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode('utf-8').strip()
 
@@ -279,7 +278,10 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         if cluster_name:
             data_insert['CLUSTER_NAME'] = cluster_name
         user_data = user_data % data_insert
-        security_groups = ['ssh-http-https']
+        if supercharge:
+            security_groups = ['encoded-workers']
+        else:
+            security_groups = ['ssh-http-https']
         iam_role = 'encoded-instance'
         count = 1
     else:
@@ -321,6 +323,8 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
             tmp_name = "{}{}".format(name,i)
         else:
             tmp_name = name
+            if supercharge:
+                tmp_name = 'workers-' + name
 
         if not spot_instance:
             print('%s.%s.encodedcc.org' % (instance.id, domain))  # Instance:i-34edd56f
@@ -370,7 +374,7 @@ def main():
     parser.add_argument('--cluster-size', default=2, help="Elasticsearch cluster size")
     parser.add_argument('--teardown-cluster', default=None, help="Takes down all the cluster launched from the branch")
     parser.add_argument('--cluster-name', default=None, help="Name of the cluster")
-    parser.add_argument('--supercharge', default=5, help="Remote workers to speed up indexing")
+    parser.add_argument('--supercharge', default=None, help="Remote workers to speed up indexing")
     args = parser.parse_args()
 
     return run(**vars(args))
