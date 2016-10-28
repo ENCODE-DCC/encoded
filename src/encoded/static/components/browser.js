@@ -2,14 +2,14 @@ const React = require('react');
 
 module.exports.GenomeBrowser = React.createClass({
     propTypes: {
-        files: React.PropTypes.array, // Array of files to represent
-        assembly: React.PropTypes.string, // Assembly to use with browser
+        files: React.PropTypes.array.isRequired, // Array of files to represent
+        assembly: React.PropTypes.array.isRequired, // Assembly to use with browser
         region: React.PropTypes.string, // Region to use with browser
     },
 
     componentDidMount: function () {
         require.ensure(['dalliance'], (require) => {
-            const Dalliance = require('dalliance');
+            const Dalliance = require('dalliance').browser;
 
             const browser = new Dalliance({
                 maxHeight: 1000,
