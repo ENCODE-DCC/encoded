@@ -18,6 +18,7 @@ from snovault.elasticsearch.interfaces import (
     ELASTIC_SEARCH,
     SNP_SEARCH_ES,
 )
+import datetime
 
 
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
@@ -116,6 +117,8 @@ def index_peaks(uuid, request):
     """
     Indexes bed files in elasticsearch index
     """
+    start = datetime.datetime.now()
+
     context = request.embed('/', str(uuid), '@@object')
 
     if 'assembly' not in context:
@@ -191,6 +194,7 @@ def index_peaks(uuid, request):
             es.indices.put_mapping(index=key, doc_type=assembly, body=get_mapping(assembly))
 
         es.index(index=key, doc_type=assembly, body=doc, id=context['uuid'])
+        log.warn(datetime.datetime.now() - start)
 
 
 
@@ -305,6 +309,7 @@ def index_file(request):
         if not initial_index:
             invalidated = list(set(invalidated).intersection(set(all_bed_file_uuids(request))))
         try:
+            log.warn('NUMBER OF FILES TO INDEX: {}'.format(len(invalidated)))
             for uuid in invalidated:
                 uuid_current = uuid
                 index_peaks(uuid, request)
