@@ -1,6 +1,6 @@
 const React = require('react');
 
-module.exports.GenomeBrowser = React.createClass({
+const GenomeBrowser = React.createClass({
     propTypes: {
         files: React.PropTypes.array.isRequired, // Array of files to represent
         assembly: React.PropTypes.array.isRequired, // Assembly to use with browser
@@ -183,3 +183,6 @@ module.exports.GenomeBrowser = React.createClass({
         );
     },
 });
+
+
+export default GenomeBrowser;
