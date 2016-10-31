@@ -5,7 +5,7 @@ var {Panel, PanelBody, PanelHeading} = require('../libs/bootstrap/panel');
 var {Modal, ModalHeader, ModalBody, ModalFooter} = require('../libs/bootstrap/modal');
 var {DropdownButton} = require('../libs/bootstrap/button');
 var {DropdownMenu} = require('../libs/bootstrap/dropdown-menu');
-var {AuditIcon} = require('./audit');
+var {AuditMixin, AuditIndicators, AuditDetail, AuditIcon} = require('./audit');
 var {StatusLabel} = require('./statuslabel');
 var {Graph, JsonGraph} = require('./graph');
 var {SoftwareVersionList} = require('./software');
@@ -1244,7 +1244,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
                     });
                 });
             }
-            console.log('AUDITOBJECTS: %o', auditObjects);
 
             // Add QC metrics info from the file to the list to generate the nodes later
             if (fileQcMetrics[fileId] && fileQcMetrics[fileId].length && file.step_run) {
@@ -1348,6 +1347,8 @@ var FileGraph = React.createClass({
         session: React.PropTypes.object // Login information
     },
 
+    mixins: [AuditMixin],
+
     getInitialState: function() {
         return {
             infoNodeId: '', // @id of node whose info panel is open
@@ -1374,7 +1375,7 @@ var FileGraph = React.createClass({
                 // QC subnode
                 let subnode = jsonGraph.getSubnode(infoNodeId);
                 if (subnode) {
-                    meta = QcDetailsView(subnode);
+                    meta = QcDetailsView.call(this, subnode);
                 }
             }
         }
@@ -1612,6 +1613,7 @@ var qcAttachmentProperties = {
 var qcReservedProperties = ['uuid', 'assay_term_name', 'assay_term_id', 'attachment', 'award', 'lab', 'submitted_by', 'level', 'status', 'date_created', 'step_run', 'schema_version'];
 
 // Display QC metrics of the selected QC sub-node in a file node.
+// caller.
 var QcDetailsView = function(metrics) {
     if (metrics) {
         var qcPanels = []; // Each QC metric panel to display
@@ -1665,6 +1667,27 @@ var QcDetailsView = function(metrics) {
             qcName = qcName[0].toUpperCase() + qcName.substring(1);
         }
 
+        // Build an audit object using the file (metric.parent) object's audit object, but only
+        // including audits for this QC metric.
+        const qcAudits = {};
+        if (metrics.parent.audit) {
+            const fileAudits = metrics.parent.audit;
+            // Loop through all file audit levels in the file's audit object. 
+            Object.keys(fileAudits).forEach((auditLevelKey) => {
+                // Within each audit level, search the array for an entry whose path matches the
+                // current audit's @id. Add that to our "fake" audit object.
+                fileAudits[auditLevelKey].forEach((audit) => {
+                    if (audit.path === metrics.ref['@id']) {
+                        if (qcAudits[auditLevelKey]) {
+                            qcAudits[auditLevelKey].push(audit);
+                        } else {
+                            qcAudits[auditLevelKey] = [audit]; 
+                        }
+                    }
+                });
+            });
+        }
+
         header = (
             <div className="details-view-info">
                 <h4>{qcName} of {metrics.parent.accession}</h4>
@@ -1674,6 +1697,11 @@ var QcDetailsView = function(metrics) {
         body = (
             <div>
                 <div className="row">
+                    <div className="col-xs-12">
+                        <AuditIndicators audits={qcAudits} id="qc-audit" />
+                        <AuditDetail audits={qcAudits} except={metrics.ref['@id']} id="qc-audit" />
+                    </div>
+
                     <div className="col-md-4 col-sm-6 col-xs-12">
                         <dl className="key-value">
                             {sortedKeys.map(key =>
