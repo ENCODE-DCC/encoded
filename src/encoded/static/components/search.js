@@ -284,7 +284,7 @@ globals.listing_views.register(Antibody, 'AntibodyLot');
 
 const Biosample = module.exports.Biosample = React.createClass({
     propTypes: {
-        context: this.PropTypes.object,
+        context: React.PropTypes.object,
     },
 
     mixins: [PickerActionsMixin, AuditMixin],
@@ -646,7 +646,7 @@ function countSelectedTerms(terms, facet, filters) {
 
 const Term = search.Term = React.createClass({
     propTypes: {
-        filters: React.PropTypes.object,
+        filters: React.PropTypes.array,
         term: React.PropTypes.object,
         title: React.PropTypes.string,
         facet: React.PropTypes.object,
@@ -724,7 +724,7 @@ const TypeTerm = search.TypeTerm = React.createClass({
 const Facet = search.Facet = React.createClass({
     propTypes: {
         facet: React.PropTypes.object,
-        filters: React.PropTypes.filters,
+        filters: React.PropTypes.array,
         width: React.PropTypes.string,
     },
 
@@ -864,7 +864,10 @@ const TextFilter = search.TextFilter = React.createClass({
 const FacetList = search.FacetList = React.createClass({
     propTypes: {
         context: React.PropTypes.object,
-        facets: React.PropTypes.object,
+        facets: React.PropTypes.oneOfType([
+            React.PropTypes.array,
+            React.PropTypes.object,
+        ]),
         filters: React.PropTypes.array,
         mode: React.PropTypes.string,
         orientation: React.PropTypes.string,
@@ -1055,6 +1058,9 @@ const ResultTable = search.ResultTable = React.createClass({
             table: 'table',
             th: 'matrix',
         };
+
+        // Check whether the search query qualifies for a genome browser display.
+
 
         return (
             <div>
