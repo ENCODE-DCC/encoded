@@ -8,6 +8,12 @@ accession_factory = ${accession_factory}
 snp_search.server = ${region_search_instance}
 indexer.processes = ${indexer_processes}
 
+
+sqlalchemy.url = sqlalchemy_url
+queue_server_address = queue_server_address
+elasticsearch.server = elasticsearch_server
+
+
 [composite:indexer]
 use = config:base.ini#indexer
 

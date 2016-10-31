@@ -120,7 +120,8 @@ runcmd:
 - sudo -u build virtualenv --python=python2.7 /opt/cloudwatchmon
 - sudo -u build /opt/cloudwatchmon/bin/pip install -r cloudwatchmon-requirements.txt
 - sudo -u encoded python3.4 bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.1
-- sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg
+- sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg production-ini:sqlalchemy_url=%(PG_SERVER)s production-ini:elasticsearch_server=%(ES_SERVER)s production-ini:queue_server_address=%(QUEUE_SERVER)s
+
 - sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf-prod/.aws .aws
 - sudo -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
 - ln -s /srv/encoded/etc/encoded-apache-workers.conf /etc/apache2/sites-available/encoded.conf

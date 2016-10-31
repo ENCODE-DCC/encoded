@@ -166,6 +166,7 @@ runcmd:
 - service elasticsearch start
 - chown postgres:postgres /etc/postgresql/9.3/main/*.conf
 - echo "include 'custom.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
+- echo "include 'custom_pg_hba.conf'" >> /etc/postgresql/9.3/main/pg_hba.conf
 - if test "%(ROLE)s" = "demo"
 - then
 -   echo "standby_mode = off" >> /etc/postgresql/9.3/main/recovery.conf
@@ -298,10 +299,15 @@ write_files:
     archive_timeout = 60
     # http://www.postgresql.org/message-id/CAOycyLTm6X3mVLz+sLCex+W==WSMgu9giteV7efPoPXYDhPtzQ@mail.gmail.com
     checkpoint_timeout = 1h
+    listen_addresses = '0.0.0.0'
 
 - path: /etc/postgresql/9.3/main/demo.conf
   content: |
     archive_mode = off
+
+- path: /etc/postgresql/9.3/main/custom_pg_hba.conf
+  content: |
+    host  all  all 0.0.0.0/0 trust
 
 - path: /etc/postgresql/9.3/main/master.conf
   content: |
