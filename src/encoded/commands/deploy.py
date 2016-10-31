@@ -280,6 +280,17 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         user_data = user_data % data_insert
         if supercharge:
             security_groups = ['encoded-workers']
+            es_server = "{}.instance.encodedcc.org:9200".format(name)
+            pg_server = "postgresql://postgres@{}.instance.encodedcc.org:5432/encoded".format(name)
+            queue_server = "{}.instance.encodedcc.org".format(name)
+            data_insert = {
+                'COMMIT': commit,
+                'ROLE': role,
+                'ES_SERVER': es_server,
+                'PG_SERVER': pg_server,
+                'QUEUE_SERVER': queue_server
+            }
+            user_data = subprocess.check_output(['git', 'show', commit + config_file]).decode('utf-8') % data_insert
         else:
             security_groups = ['ssh-http-https']
         iam_role = 'encoded-instance'
