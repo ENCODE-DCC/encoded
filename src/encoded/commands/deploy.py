@@ -277,7 +277,6 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         }
         if cluster_name:
             data_insert['CLUSTER_NAME'] = cluster_name
-        user_data = user_data % data_insert
         if supercharge:
             security_groups = ['encoded-workers']
             es_server = "{}.instance.encodedcc.org:9200".format(name)
@@ -293,6 +292,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
             user_data = subprocess.check_output(['git', 'show', commit + config_file]).decode('utf-8') % data_insert
         else:
             security_groups = ['ssh-http-https']
+            user_data = user_data % data_insert
         iam_role = 'encoded-instance'
         count = 1
     else:

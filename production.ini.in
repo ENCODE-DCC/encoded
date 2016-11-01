@@ -12,6 +12,7 @@ indexer.processes = ${indexer_processes}
 sqlalchemy.url = ${sqlalchemy_url}
 queue_server_address = ${queue_server_address}
 elasticsearch.server = ${elasticsearch_server}
+queue_authkey = ${queue_authkey}
 
 
 [composite:indexer]
