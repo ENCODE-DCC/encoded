@@ -14,6 +14,7 @@ from shlex import quote
 import subprocess
 import re
 from urllib.parse import urljoin
+import requests
 
 EPILOG = __doc__
 
@@ -350,34 +351,35 @@ def process_fastq_file(job, fastq_data_stream, session, url):
         else:
             if old_illumina_current_prefix == 'empty' and len(signatures_set) > 100:
                 signatures_for_comparison = process_barcodes(signatures_set)
+                if len(signatures_for_comparison) == 0:
+                    for entry in signatures_no_barcode_set:
+                        signatures_for_comparison.add(entry + 'mixed:')
+
             else:
                 signatures_for_comparison = signatures_set
 
         conflicts = []
         for unique_signature in signatures_for_comparison:
             query = '/' + unique_signature + '?format=json'
-
-#>>>>>>>>>>>>> ADD TRY
-#>>>>>>>>>>>>> ADD TRY
-#>>>>>>>>>>>>> ADD TRY
-
-            r = session.get(urljoin(url, query))
-            
-#>>>>>>>>>>>>> ADD TRY
-#>>>>>>>>>>>>> ADD TRY
-#>>>>>>>>>>>>> ADD TRY
-
-            response = r.json()
-            if response is not None and 'File' in response['@type']:
-                uniqueness_flag = False
-                conflicts.append(
-                    'specified unique identifier {} '.format(unique_signature) +
-                    'is conflicting with identifier of reads from ' +
-                    'file {}.'.format(response['accession']))
+            try:
+                r = session.get(urljoin(url, query))
+            except requests.exceptions.RequestException as e:  # This is the correct syntax
+                errors['lookup_for_fastq_signature'] = 'Network error occured, while looking for ' + \
+                                                       'fastq signatures conflict on the portal. ' + \
+                                                       str(e)
+            else:
+                response = r.json()
+                if response is not None and 'File' in response['@type']:
+                    uniqueness_flag = False
+                    conflicts.append(
+                        'specified unique identifier {} '.format(unique_signature) +
+                        'is conflicting with identifier of reads from ' +
+                        'file {}.'.format(response['accession']))
         if uniqueness_flag is True:
             result['fastq_signature'] = sorted(list(signatures_for_comparison))
         else:
             errors['not_unique_flowcell_details'] = conflicts
+
 
 def process_barcodes(signatures_set):
     set_to_return = set()
@@ -438,32 +440,29 @@ def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url
     else:
         query = '/search/?type=File&status!=replaced&content_md5sum=' + result[
             'content_md5sum']
-        
-#>>>>>>>>>>>>> ADD TRY
-#>>>>>>>>>>>>> ADD TRY
-#>>>>>>>>>>>>> ADD TRY
-        r = session.get(urljoin(url, query))
-#>>>>>>>>>>>>> ADD TRY
-#>>>>>>>>>>>>> ADD TRY
-#>>>>>>>>>>>>> ADD TRY       
-
-        r_graph = r.json().get('@graph')
-        if len(r_graph) > 0:
-            conflicts = []
-            for entry in r_graph:
-                if 'accession' in entry and 'accession' in item:
-                    if entry['accession'] != item['accession']:
+        try:
+            r = session.get(urljoin(url, query))
+        except requests.exceptions.RequestException as e:  # This is the correct syntax
+            errors['lookup_for_content_md5sum'] = 'Network error occured, while looking for ' + \
+                                                  'content md5sum conflict on the portal. ' + str(e)
+        else:
+            r_graph = r.json().get('@graph')
+            if len(r_graph) > 0:
+                conflicts = []
+                for entry in r_graph:
+                    if 'accession' in entry and 'accession' in item:
+                        if entry['accession'] != item['accession']:
+                            conflicts.append(
+                                'checked %s is conflicting with content_md5sum of %s' % (
+                                    result['content_md5sum'],
+                                    entry['accession']))
+                    else:
                         conflicts.append(
                             'checked %s is conflicting with content_md5sum of %s' % (
                                 result['content_md5sum'],
                                 entry['accession']))
-                else:
-                    conflicts.append(
-                        'checked %s is conflicting with content_md5sum of %s' % (
-                            result['content_md5sum'],
-                            entry['accession']))
-            if len(conflicts) > 0:
-                errors['content_md5sum'] = str(conflicts)
+                if len(conflicts) > 0:
+                    errors['content_md5sum'] = str(conflicts)
 
 
 def check_file(config, session, url, job):
@@ -691,7 +690,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
         processes=None, include_unexpired_upload=False, dry_run=False, json_out=False):
     import functools
     import multiprocessing
-    import requests
+    
     session = requests.Session()
     session.auth = (username, password)
     session.headers['Accept'] = 'application/json'
