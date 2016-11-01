@@ -222,7 +222,7 @@ export const FileTable = React.createClass({
 
                 return (
                     <div>
-                        <div className="restricted-accession">{item.title}</div>
+                        <div className="restricted-accession">{item.title}&nbsp;</div>
                         <RestrictedDownloadButton file={item} loggedIn={loggedIn} adminUser={adminUser} />
                     </div>
                 );
@@ -277,7 +277,7 @@ export const FileTable = React.createClass({
 
                 return (
                     <div>
-                        <div className="restricted-accession">{item.title}</div>
+                        <div className="restricted-accession">{item.title}&nbsp;</div>
                         <RestrictedDownloadButton file={item} loggedIn={loggedIn} adminUser={adminUser} />
                     </div>
                 );
@@ -617,7 +617,7 @@ const RawSequencingTable = React.createClass({
                                         <tr key={i} className={file.restricted ? 'file-restricted' : ''}>
                                             {i === 0 ? { spanned } : null}
                                             <td className={pairClass}>
-                                                <div className="restricted-accession">{file.title}</div>
+                                                <div className="restricted-accession">{file.title}&nbsp;</div>
                                                 <RestrictedDownloadButton file={file} loggedIn={loggedIn} adminUser={adminUser} />
                                             </td>
                                             <td className={pairClass}>{file.file_type}</td>
@@ -650,7 +650,7 @@ const RawSequencingTable = React.createClass({
                                         <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : ''}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
                                         <td>
-                                            <div className="restricted-accession">{file.title}</div>
+                                            <div className="restricted-accession">{file.title}&nbsp;</div>
                                             <RestrictedDownloadButton file={file} loggedIn={loggedIn} adminUser={adminUser} />
                                         </td>
                                         <td>{file.file_type}</td>
@@ -786,7 +786,7 @@ const RawFileTable = React.createClass({
                                         <tr key={i} className={file.restricted ? 'file-restricted' : ''}>
                                             {i === 0 ? { spanned } : null}
                                             <td className={pairClass}>
-                                                <div className="restricted-accession">{file.title}</div>
+                                                <div className="restricted-accession">{file.title}&nbsp;</div>
                                                 <RestrictedDownloadButton file={file} loggedIn={loggedIn} adminUser={adminUser} />
                                             </td>
                                             <td className={pairClass}>{file.file_type}</td>
@@ -813,7 +813,7 @@ const RawFileTable = React.createClass({
                                         <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : ''}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
                                         <td>
-                                            <div className="restricted-accession">{file.title}</div>
+                                            <div className="restricted-accession">{file.title}&nbsp;</div>
                                             <RestrictedDownloadButton file={file} loggedIn={loggedIn} adminUser={adminUser} />
                                         </td>
                                         <td>{file.file_type}</td>
@@ -1881,7 +1881,7 @@ const FileDetailView = function (node, loggedIn, adminUser) {
                         <div data-test="download">
                             <dt>File download</dt>
                             <dd>
-                                <div className="restricted-accession">{selectedFile.title}</div>
+                                <div className="restricted-accession">{selectedFile.title}&nbsp;</div>
                                 <RestrictedDownloadButton file={selectedFile} loggedIn={loggedIn} adminUser={adminUser} />
                             </dd>
                         </div>
