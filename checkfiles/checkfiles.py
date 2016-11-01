@@ -349,15 +349,24 @@ def process_fastq_file(job, fastq_data_stream, session, url):
                 signatures_for_comparison.add(entry + 'UMI:')
         else:
             if old_illumina_current_prefix == 'empty' and len(signatures_set) > 100:
-                for entry in signatures_no_barcode_set:
-                    signatures_for_comparison.add(entry + 'mixed:')
+                signatures_for_comparison = process_barcodes(signatures_set)
             else:
                 signatures_for_comparison = signatures_set
 
         conflicts = []
         for unique_signature in signatures_for_comparison:
             query = '/' + unique_signature + '?format=json'
+
+#>>>>>>>>>>>>> ADD TRY
+#>>>>>>>>>>>>> ADD TRY
+#>>>>>>>>>>>>> ADD TRY
+
             r = session.get(urljoin(url, query))
+            
+#>>>>>>>>>>>>> ADD TRY
+#>>>>>>>>>>>>> ADD TRY
+#>>>>>>>>>>>>> ADD TRY
+
             response = r.json()
             if response is not None and 'File' in response['@type']:
                 uniqueness_flag = False
@@ -370,6 +379,32 @@ def process_fastq_file(job, fastq_data_stream, session, url):
         else:
             errors['not_unique_flowcell_details'] = conflicts
 
+def process_barcodes(signatures_set):
+    set_to_return = set()
+    flowcells_dict = {}
+    for entry in signatures_set:
+        arr = entry.split(':')
+        f = arr[0]
+        l = arr[1]
+        r = arr[2]
+        b = arr[3]
+        if (f, l, r) not in flowcells_dict:
+            flowcells_dict[(f, l, r)] = {}
+        if b not in flowcells_dict[(f, l, r)]:
+            flowcells_dict[(f, l, r)][b] = 0
+        flowcells_dict[(f, l, r)][b] += 1
+    for key in flowcells_dict.keys():
+        barcodes_dict = flowcells_dict[key]
+        total = 0
+        for b in barcodes_dict.keys():
+            total += barcodes_dict[b]
+        for b in barcodes_dict.keys():
+            if ((float(total)/float(barcodes_dict[b])) < 100):
+                set_to_return.add(key[0] + ':' +
+                                  key[1] + ':' +
+                                  key[2] + ':' +
+                                  b + ':')
+    return set_to_return
 
 def process_read_lengths(read_lengths_dict,
                          lengths_list,
@@ -403,7 +438,15 @@ def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url
     else:
         query = '/search/?type=File&status!=replaced&content_md5sum=' + result[
             'content_md5sum']
+        
+#>>>>>>>>>>>>> ADD TRY
+#>>>>>>>>>>>>> ADD TRY
+#>>>>>>>>>>>>> ADD TRY
         r = session.get(urljoin(url, query))
+#>>>>>>>>>>>>> ADD TRY
+#>>>>>>>>>>>>> ADD TRY
+#>>>>>>>>>>>>> ADD TRY       
+
         r_graph = r.json().get('@graph')
         if len(r_graph) > 0:
             conflicts = []
