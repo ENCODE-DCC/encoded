@@ -15,6 +15,7 @@ var moment = require('moment');
 var {CollapseIcon} = require('../libs/svg-icons');
 var {SortTablePanel, SortTable} = require('./sorttable');
 var {AttachmentPanel} = require('./doc');
+import GenomeBrowser from './genome_browser';
 
 
 // Order that assemblies should appear in filtering menu
@@ -806,6 +807,8 @@ var FileGalleryRenderer = React.createClass({
                         filterOptions={filterOptions} handleFilterChange={this.handleFilterChange}
                         encodevers={globals.encodeVersion(context)} session={this.context.session} showFileCount noDefaultClasses />
                 }
+
+                <GenomeBrowser files={context.files} assembly={['hg19']} />
             </Panel>
         );
     }

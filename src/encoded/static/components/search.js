@@ -10,7 +10,6 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/mo
 import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
 import { svgIcon } from '../libs/svg-icons';
 import * as globals from './globals';
-import { FetchedData, Param } from './fetched';
 import { Attachment } from './image';
 import { DbxrefList } from './dbxref';
 import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
@@ -978,7 +977,7 @@ const BatchDownload = search.BatchDownload = React.createClass({
 const ResultBrowser = React.createClass({
     propTypes: {
         files: React.PropTypes.array, // Array of files whose browser we're rendering
-        assembly: React.PropTypes.string, // Filter `files` by this assembly
+        assembly: React.PropTypes.array, // Filter `files` by this assembly
     },
 
     render: function () {
@@ -1070,8 +1069,31 @@ const ResultTable = search.ResultTable = React.createClass({
             th: 'matrix',
         };
 
-        // Check whether the search query qualifies for a genome browser display.
+        // Check whether the search query qualifies for a genome browser display. Start by counting
+        // the number of "type" filters exist.
+        let typeFilter;
+        let assemblies = [];
+        const counter = filters.reduce((prev, curr) => {
+            if (curr.field === 'type') {
+                typeFilter = curr;
+                return prev + 1;
+            }
+            return prev;
+        }, 0);
 
+        // If we have only one "type" term in the query string, see if it's for File
+        if (counter === 1 && typeFilter.term === 'File') {
+            // Only one "type" term in the query string, and it's for "File". Make an array of
+            // assemblies from the files with empty assemblies filtered out.
+            const unsortedAssemblies = _.compact(results.map(file => (file.assembly ? file.assembly : '')));
+
+            // Now find how many times each assembly happened in the array. Results in an object
+            // keyed by assembly with a count of the number of times it occurred as its value.
+            const occurrences = _.countBy(unsortedAssemblies, _.identity);
+
+            // Make an array of assemblies sorted by their occurrence count.
+            assemblies = _(Object.keys(occurrences)).sortBy(assembly => -occurrences[assembly]);
+        }
 
         return (
             <div>
@@ -1144,7 +1166,7 @@ const ResultTable = search.ResultTable = React.createClass({
                                         </ul>
                                     </TabPanelPane>
                                     <TabPanelPane key="browserpane">
-                                        <ResultBrowser files={results} assembly="hg19" />
+                                        <ResultBrowser files={results} assembly={assemblies} />
                                     </TabPanelPane>
                                 </TabPanel>
                             </div>

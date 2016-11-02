@@ -11,6 +11,7 @@ const GenomeBrowser = React.createClass({
 
     contextTypes: {
         location_href: React.PropTypes.string,
+        localInstance: React.PropTypes.bool,
     },
 
     componentDidMount: function () {
@@ -19,7 +20,7 @@ const GenomeBrowser = React.createClass({
 
             // Get the current domain name.
             const urlInfo = url.parse(this.context.location_href);
-            const domainName = `${urlInfo.protocol}//${urlInfo.host}`;
+            const domainName = this.context.localInstance ? 'https://test.encodedcc.org' : `${urlInfo.protocol}//${urlInfo.host}`;
 
             const browser = new Dalliance({
                 maxHeight: 1000,
@@ -43,7 +44,52 @@ const GenomeBrowser = React.createClass({
                 noTitle: true,
                 disablePoweredBy: true,
             });
-            const { files, assembly, region } = this.props;
+            const { assembly, region } = this.props;
+            let files = this.props.files;
+
+            // Make some fake file objects from "test" just to give the genome browser something to
+            // chew on if we're running locally.
+            if (this.context.localInstance) {
+                files = [
+                    {
+                        file_format: 'bigWig',
+                        output_type: 'minus strand signal of all reads',
+                        accession: 'ENCFF425LKJ',
+                        href: '/files/ENCFF425LKJ/@@download/ENCFF425LKJ.bigWig',
+                    },
+                    {
+                        file_format: 'bigWig',
+                        output_type: 'plus strand signal of all reads',
+                        accession: 'ENCFF638QHN',
+                        href: '/files/ENCFF638QHN/@@download/ENCFF638QHN.bigWig',
+                    },
+                    {
+                        file_format: 'bigWig',
+                        output_type: 'plus strand signal of unique reads',
+                        accession: 'ENCFF541XFO',
+                        href: '/files/ENCFF541XFO/@@download/ENCFF541XFO.bigWig',
+                    },
+                    {
+                        file_format: 'bigBed',
+                        output_type: 'transcription start sites',
+                        accession: 'ENCFF517WSY',
+                        href: '/files/ENCFF517WSY/@@download/ENCFF517WSY.bigBed',
+                    },
+                    {
+                        file_format: 'bigBed',
+                        output_type: 'peaks',
+                        accession: 'ENCFF026DAN',
+                        href: '/files/ENCFF026DAN/@@download/ENCFF026DAN.bigBed',
+                    },
+                    {
+                        file_format: 'bigBed',
+                        output_type: 'peaks',
+                        accession: 'ENCFF847CBY',
+                        href: '/files/ENCFF847CBY/@@download/ENCFF847CBY.bigBed',
+                    },
+                ];
+            }
+
             browser.sources = [];
             if (assembly[0] === 'hg19') {
                 if (this.props.region) {
