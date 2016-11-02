@@ -330,7 +330,8 @@ def process_fastq_file(job, fastq_data_stream, session, url):
                                  item['read_length'],
                                  read_count,
                                  0.95,
-                                 errors)
+                                 errors,
+                                 result)
         else:
             errors['read_length'] = 'no specified read length in the uploaded fastq file, ' + \
                                     'while read length(s) found in the file were {}. '.format(
@@ -417,7 +418,8 @@ def process_read_lengths(read_lengths_dict,
                          submitted_read_length,
                          read_count,
                          threshold_percentage,
-                         errors_to_report):
+                         errors_to_report,
+                         result):
     expected_read_lengths = [
         submitted_read_length-2,
         submitted_read_length-1,
@@ -432,8 +434,8 @@ def process_read_lengths(read_lengths_dict,
         errors_to_report['read_length'] = \
             'in file metadata the read_length is {}, '.format(submitted_read_length) + \
             'however the uploaded fastq file contains reads of following length(s) ' + \
-            '{}.'.format(', '.join(map(str, lengths_list)))
-
+            '{}.'.format(', '.join(map(str, lengths_list))) + \
+            'Gathered information about the file was: '.format(str(result))
 
 def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url):
     result['content_md5sum'] = output[:32].decode(errors='replace')
