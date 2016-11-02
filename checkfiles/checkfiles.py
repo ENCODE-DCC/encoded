@@ -333,8 +333,10 @@ def process_fastq_file(job, fastq_data_stream, session, url):
                                  errors)
         else:
             errors['read_length'] = 'no specified read length in the uploaded fastq file, ' + \
-                                    'while read length(s) found in the file were {}.'.format(
-                                    ', '.join(map(str, read_lengths_list)))
+                                    'while read length(s) found in the file were {}. '.format(
+                                    ', '.join(map(str, read_lengths_list))) + \
+                'Gathered information about the file was: '.format(str(result))
+
 
         # signatures
         uniqueness_flag = True
@@ -366,7 +368,8 @@ def process_fastq_file(job, fastq_data_stream, session, url):
             except requests.exceptions.RequestException as e:  # This is the correct syntax
                 errors['lookup_for_fastq_signature'] = 'Network error occured, while looking for ' + \
                                                        'fastq signatures conflict on the portal. ' + \
-                                                       str(e)
+                                                       str(e) + \
+                    ' Gathered information about the file was: '.format(str(result))
             else:
                 response = r.json()
                 if response is not None and 'File' in response['@type']:
@@ -378,7 +381,8 @@ def process_fastq_file(job, fastq_data_stream, session, url):
         if uniqueness_flag is True:
             result['fastq_signature'] = sorted(list(signatures_for_comparison))
         else:
-            errors['not_unique_flowcell_details'] = conflicts
+            errors['not_unique_flowcell_details'] = conflicts + \
+                ' Gathered information about the file was: '.format(str(result))
 
 
 def process_barcodes(signatures_set):
