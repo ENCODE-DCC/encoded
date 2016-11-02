@@ -336,7 +336,7 @@ def process_fastq_file(job, fastq_data_stream, session, url):
             errors['read_length'] = 'no specified read length in the uploaded fastq file, ' + \
                                     'while read length(s) found in the file were {}. '.format(
                                     ', '.join(map(str, read_lengths_list))) + \
-                'Gathered information about the file was: '.format(str(result))
+                'Gathered information about the file was: {}.'.format(str(result))
 
 
         # signatures
@@ -370,7 +370,7 @@ def process_fastq_file(job, fastq_data_stream, session, url):
                 errors['lookup_for_fastq_signature'] = 'Network error occured, while looking for ' + \
                                                        'fastq signatures conflict on the portal. ' + \
                                                        str(e) + \
-                    ' Gathered information about the file was: '.format(str(result))
+                    ' Gathered information about the file was: {}.'.format(str(result))
             else:
                 response = r.json()
                 if response is not None and 'File' in response['@type']:
@@ -383,7 +383,7 @@ def process_fastq_file(job, fastq_data_stream, session, url):
             result['fastq_signature'] = sorted(list(signatures_for_comparison))
         else:
             errors['not_unique_flowcell_details'] = conflicts + \
-                ' Gathered information about the file was: '.format(str(result))
+                ' Gathered information about the file was: {}.'.format(str(result))
 
 
 def process_barcodes(signatures_set):
@@ -435,7 +435,7 @@ def process_read_lengths(read_lengths_dict,
             'in file metadata the read_length is {}, '.format(submitted_read_length) + \
             'however the uploaded fastq file contains reads of following length(s) ' + \
             '{}.'.format(', '.join(map(str, lengths_list))) + \
-            'Gathered information about the file was: '.format(str(result))
+            'Gathered information about the file was: {}.'.format(str(result))
 
 def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url):
     result['content_md5sum'] = output[:32].decode(errors='replace')
