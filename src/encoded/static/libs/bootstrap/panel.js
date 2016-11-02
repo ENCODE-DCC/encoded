@@ -1,68 +1,71 @@
-'use strict';
-var React = require('react');
-var cloneWithProps = require('react/lib/cloneWithProps');
+import React from 'react';
+import cloneWithProps from 'react/lib/cloneWithProps';
 
 
-var Panel = module.exports.Panel = React.createClass({
+const Panel = React.createClass({
     propTypes: {
         addClasses: React.PropTypes.string, // Classes to add to outer panel div
-        noDefaultClasses: React.PropTypes.bool // T to not include default panel classes
+        noDefaultClasses: React.PropTypes.bool, // T to not include default panel classes
+        children: React.PropTypes.node,
     },
 
-    render: function() {
-        var {addClasses, noDefaultClasses} = this.props;
+    render: function () {
+        const { addClasses, noDefaultClasses } = this.props;
 
         return (
-            <div className={(noDefaultClasses ? '' : 'panel panel-default') + (addClasses ? ' ' + addClasses : '')}>
+            <div className={(noDefaultClasses ? '' : 'panel panel-default') + (addClasses ? ` ${addClasses}` : '')}>
                 {this.props.children}
             </div>
         );
-    }
+    },
 });
 
 
-var PanelBody = module.exports.PanelBody = React.createClass({
+const PanelBody = React.createClass({
     propTypes: {
-        addClasses: React.PropTypes.string // Classes to add to outer panel div
+        addClasses: React.PropTypes.string, // Classes to add to outer panel div
+        children: React.PropTypes.node,
     },
 
-    render: function() {
+    render: function () {
         return (
-            <div className={'panel-body' + (this.props.addClasses ? ' ' + this.props.addClasses : '')}>
+            <div className={`panel-body ${this.props.addClasses ? ` ${this.props.addClasses}` : ''}`}>
                 {this.props.children}
             </div>
         );
-    }
+    },
 });
 
 
-var PanelHeading = module.exports.PanelHeading = React.createClass({
+const PanelHeading = React.createClass({
     propTypes: {
-        addClasses: React.PropTypes.string // Classes to add to outer panel div
+        addClasses: React.PropTypes.string, // Classes to add to outer panel div
+        children: React.PropTypes.node,
     },
 
-    render: function() {
+    render: function () {
         return (
-            <div className={'panel-heading' + (this.props.addClasses ? ' ' + this.props.addClasses : '')}>
+            <div className={`panel-heading ${this.props.addClasses ? ` ${this.props.addClasses}` : ''}`}>
                 {this.props.children}
             </div>
         );
-    }
+    },
 });
 
 
-var PanelFooter = module.exports.PanelFooter = React.createClass({
+const PanelFooter = React.createClass({
     propTypes: {
-        addClasses: React.PropTypes.string // Classes to add to outer panel div
+        addClasses: React.PropTypes.string, // Classes to add to outer panel div
+        children: React.PropTypes.node,
     },
 
-    render: function() {
+    render: function () {
         return (
-            <div className={'panel-footer' + (this.props.addClasses ? ' ' + this.props.addClasses : '')}>
+            <div className={`panel-footer${this.props.addClasses ? ` ${this.props.addClasses}` : ''}`}>
                 {this.props.children}
             </div>
         );
-    }
+    },
 });
 
 
@@ -88,29 +91,47 @@ var PanelFooter = module.exports.PanelFooter = React.createClass({
 // receive those. <TabPanel> copies the `key` property to an `id` property in any child <TabPanel>
 // components so that <TabPanel> can see it.
 
-var TabPanel = module.exports.TabPanel = React.createClass({
+const TabPanelPane = React.createClass({
+    propTypes: {
+        id: React.PropTypes.string.isRequired, // ID of the pane; not passed explicitly -- comes from `key` of <TabPanelPane>
+        active: React.PropTypes.bool, // True if this panel is the active one
+        children: React.PropTypes.node,
+    },
+
+    render: function () {
+        return (
+            <div role="tabpanel" className={`tab-pane${this.props.active ? ' active' : ''}`} id={this.props.id}>
+                {this.props.active ? <div>{this.props.children}</div> : null}
+            </div>
+        );
+    },
+});
+
+
+const TabPanel = React.createClass({
     propTypes: {
         tabs: React.PropTypes.object.isRequired, // Object with tab=>pane specifications
         addClasses: React.PropTypes.string, // Classes to add to navigation <ul>
         moreComponents: React.PropTypes.object, // Other components to render in the tab bar
-        moreComponentsClasses: React.PropTypes.string // Classes to add to moreComponents wrapper <div>
+        moreComponentsClasses: React.PropTypes.string, // Classes to add to moreComponents wrapper <div>
+        children: React.PropTypes.node,
     },
 
-    getInitialState: function() {
-        return {currentTab: ''};
+    getInitialState: function () {
+        return { currentTab: '' };
     },
 
     // Handle a click on a tab
-    handleClick: function(tab) {
+    handleClick: function (tab) {
         if (tab !== this.state.currentTab) {
-            this.setState({currentTab: tab});
+            this.setState({ currentTab: tab });
         }
     },
 
-    render: function() {
-        var children = [];
-        var {tabs, addClasses, moreComponents, moreComponentsClasses} = this.props;
-        var firstPaneIndex = -1; // React.Children.map index of first <TabPanelPane> component
+    render: function () {
+        const { tabs, addClasses, moreComponents, moreComponentsClasses } = this.props;
+        let children = [];
+        let firstPaneIndex = -1; // React.Children.map index of first <TabPanelPane> component
 
         // We expect to find <TabPanelPane> child elements inside <TabPanel>. For any we find, get
         // the React `key` value and copy it to an `id` value that we add to each child component.
@@ -123,7 +144,7 @@ var TabPanel = module.exports.TabPanel = React.createClass({
                     firstPaneIndex = firstPaneIndex === -1 ? i : firstPaneIndex;
 
                     // Replace the existing child <TabPanelPane> component
-                    return cloneWithProps(child, {id: child.key, active: this.state.currentTab ? this.state.currentTab === child.key : firstPaneIndex === i});
+                    return cloneWithProps(child, { id: child.key, active: this.state.currentTab ? this.state.currentTab === child.key : firstPaneIndex === i });
                 }
                 return child;
             });
@@ -131,15 +152,15 @@ var TabPanel = module.exports.TabPanel = React.createClass({
 
         return (
             <div>
-                <ul className={'nav nav-tabs' + (addClasses ? (' ' + addClasses) : '')} role="tablist">
+                <ul className={`nav nav-tabs${addClasses ? ` ${addClasses}` : ''}`} role="tablist">
                     {Object.keys(tabs).map((tab, i) => {
-                        var currentTab = (i === 0 && this.state.currentTab === '') ? tab : this.state.currentTab;
+                        const currentTab = (i === 0 && this.state.currentTab === '') ? tab : this.state.currentTab;
 
                         return (
                             <li key={tab} role="presentation" aria-controls={tab} className={currentTab === tab ? 'active' : ''}>
-                                <a href={'#' + tab} ref={tab} onClick={this.handleClick.bind(this, tab)} data-trigger="tab" aria-controls={tab} role="tab" data-toggle="tab">
+                                <TabItem tab={tab} handleClick={this.handleClick}>
                                     {tabs[tab]}
-                                </a>
+                                </TabItem>
                             </li>
                         );
                     })}
@@ -150,21 +171,38 @@ var TabPanel = module.exports.TabPanel = React.createClass({
                 </div>
             </div>
         );
-    }
+    },
 });
 
 
-var TabPanelPane = module.exports.TabPanelPane = React.createClass({
+const TabItem = React.createClass({
     propTypes: {
-        id: React.PropTypes.string.isRequired, // ID of the pane; not passed explicitly -- comes from `key` of <TabPanelPane>
-        active: React.PropTypes.bool // True if this panel is the active one
+        tab: React.PropTypes.string, // Text of tab
+        handleClick: React.PropTypes.func, // Handle a click on the link
+        children: React.PropTypes.node,
     },
 
-    render: function() {
+    clickHandler: function () {
+        this.props.handleClick(this.props.tab);
+    },
+
+    render: function () {
+        const tab = this.props.tab;
+
         return (
-            <div role="tabpanel" className={'tab-pane' + (this.props.active ? ' active' : '')} id={this.props.id}>
-                {this.props.active ? <div>{this.props.children}</div> : null}
-            </div>
+            <a href={`#${tab}`} ref={tab} onClick={this.clickHandler} data-trigger="tab" aria-controls={tab} role="tab" data-toggle="tab">
+                {this.props.children}
+            </a>
         );
-    }
+    },
 });
+
+
+export {
+    Panel,
+    PanelBody,
+    PanelHeading,
+    PanelFooter,
+    TabPanel,
+    TabPanelPane,
+};

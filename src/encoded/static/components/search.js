@@ -5,10 +5,12 @@ import url from 'url';
 import _ from 'underscore';
 import queryString from 'query-string';
 import { DropdownButton } from '../libs/bootstrap/button';
+import { TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
 import { svgIcon } from '../libs/svg-icons';
 import * as globals from './globals';
+import { FetchedData, Param } from './fetched';
 import { Attachment } from './image';
 import { DbxrefList } from './dbxref';
 import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
@@ -974,8 +976,17 @@ const BatchDownload = search.BatchDownload = React.createClass({
 // Display a local genome browser in the ResultTable where search results would normally go. This
 // only gets displayed if the query string contains only one type and it's "File."
 const ResultBrowser = React.createClass({
-    render: function () {
+    propTypes: {
+        files: React.PropTypes.array, // Array of files whose browser we're rendering
+        assembly: React.PropTypes.string, // Filter `files` by this assembly
+    },
 
+    render: function () {
+        return (
+            <div>
+                <GenomeBrowser files={this.props.files} assembly={this.props.assembly} />
+            </div>
+        );
     },
 });
 
@@ -1072,10 +1083,10 @@ const ResultTable = search.ResultTable = React.createClass({
                         />
                     </div> : ''}
                     <div className="col-sm-7 col-md-8 col-lg-9">
+
                         {context.notification === 'Success' ?
                             <div>
                                 <h4>Showing {results.length} of {total} {label}</h4>
-
                                 <div className="results-table-control">
                                     {context.views ?
                                         <div className="btn-attached">
@@ -1123,16 +1134,23 @@ const ResultTable = search.ResultTable = React.createClass({
                                         </DropdownButton>
                                     : null}
                                 </div>
+                                <hr />
+                                <TabPanel tabs={{ listpane: 'List', browserpane: 'Browser' }}>
+                                    <TabPanelPane key="listpane">
+                                        <ul className="nav result-table" id="result-table">
+                                            {results.length ?
+                                                results.map(result => listing({ context: result, columns: columns, key: result['@id'] }))
+                                            : null}
+                                        </ul>
+                                    </TabPanelPane>
+                                    <TabPanelPane key="browserpane">
+                                        <ResultBrowser files={results} assembly="hg19" />
+                                    </TabPanelPane>
+                                </TabPanel>
                             </div>
                         :
                             <h4>{context.notification}</h4>
                         }
-                        <hr />
-                        <ul className="nav result-table" id="result-table">
-                            {results.length ?
-                                results.map(result => listing({ context: result, columns: columns, key: result['@id'] }))
-                            : null}
-                        </ul>
                     </div>
                 </div>
             </div>

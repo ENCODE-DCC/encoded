@@ -1,4 +1,6 @@
-const React = require('react');
+import React from 'react';
+import url from 'url';
+
 
 const GenomeBrowser = React.createClass({
     propTypes: {
@@ -7,9 +9,17 @@ const GenomeBrowser = React.createClass({
         region: React.PropTypes.string, // Region to use with browser
     },
 
+    contextTypes: {
+        location_href: React.PropTypes.string,
+    },
+
     componentDidMount: function () {
         require.ensure(['dalliance'], (require) => {
             const Dalliance = require('dalliance').browser;
+
+            // Get the current domain name.
+            const urlInfo = url.parse(this.context.location_href);
+            const domainName = `${urlInfo.protocol}//${urlInfo.host}`;
 
             const browser = new Dalliance({
                 maxHeight: 1000,
@@ -147,7 +157,7 @@ const GenomeBrowser = React.createClass({
                     browser.sources.push({
                         name: file.output_type,
                         desc: file.accession,
-                        bwgURI: `https://www.encodeproject.org${file.href}`,
+                        bwgURI: `${domainName}${file.href}`,
                         style: [
                             {
                                 type: 'default',
@@ -163,7 +173,7 @@ const GenomeBrowser = React.createClass({
                     browser.sources.push({
                         name: file.output_type,
                         desc: file.accession,
-                        bwgURI: `https://www.encodeproject.org${file.href}`,
+                        bwgURI: `${domainName}${file.href}`,
                         style: [
                             {
                                 style: {
