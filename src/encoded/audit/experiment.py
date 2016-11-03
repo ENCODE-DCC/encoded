@@ -815,37 +815,47 @@ def check_experiment_long_rna_standards(experiment,
                                         desired_assembly,
                                         desired_annotation,
                                         upper_limit_read_depth,
-                                        lower_limit_read_depth):
+                                        lower_limit_read_depth,
+                                        standards_link):
 
     for failure in check_experiment_ERCC_spikeins(experiment, pipeline_title):
         yield failure
 
-    for f in alignment_files:
-        if 'assembly' in f and f['assembly'] == desired_assembly:
+    pipelines = get_pipeline_objects(alignment_files)
+    if pipelines is not None and len(pipelines) > 0:
+        for f in alignment_files:
 
-            read_depth = get_file_read_depth_from_alignment(f,
-                                                            get_target(experiment),
-                                                            'long RNA')
+            if 'assembly' in f and f['assembly'] == desired_assembly:
 
-            if experiment['assay_term_name'] in ['shRNA knockdown followed by RNA-seq',
-                                                 'siRNA knockdown followed by RNA-seq',
-                                                 'CRISPR genome editing followed by RNA-seq']:
-                for failure in check_file_read_depth(f, read_depth, 10000000, 0,
-                                                     experiment['assay_term_name'],
-                                                     pipeline_title):
-                    yield failure
-            elif experiment['assay_term_name'] in ['single cell isolation followed by RNA-seq']:
-                for failure in check_file_read_depth(f, read_depth, 5000000, 0,
-                                                     experiment['assay_term_name'],
-                                                     pipeline_title):
-                    yield failure
-            else:
-                for failure in check_file_read_depth(f, read_depth,
-                                                     upper_limit_read_depth,
-                                                     lower_limit_read_depth,
-                                                     experiment['assay_term_name'],
-                                                     pipeline_title):
-                    yield failure
+                read_depth = get_file_read_depth_from_alignment(f,
+                                                                get_target(experiment),
+                                                                'long RNA')
+
+                if experiment['assay_term_name'] in ['shRNA knockdown followed by RNA-seq',
+                                                     'siRNA knockdown followed by RNA-seq',
+                                                     'CRISPR genome editing followed by RNA-seq']:
+                    for failure in check_file_read_depth(f, read_depth, 10000000, 0,
+                                                         experiment['assay_term_name'],
+                                                         pipeline_title,
+                                                         pipelines[0],
+                                                         standards_link):
+                        yield failure
+                elif experiment['assay_term_name'] in ['single cell isolation followed by RNA-seq']:
+                    for failure in check_file_read_depth(f, read_depth, 5000000, 0,
+                                                         experiment['assay_term_name'],
+                                                         pipeline_title,
+                                                         pipelines[0],
+                                                         standards_link):
+                        yield failure
+                else:
+                    for failure in check_file_read_depth(f, read_depth,
+                                                         upper_limit_read_depth,
+                                                         lower_limit_read_depth,
+                                                         experiment['assay_term_name'],
+                                                         pipeline_title,
+                                                         pipelines[0],
+                                                         standards_link):
+                        yield failure
 
     if 'replication_type' not in experiment:
         return
@@ -1510,7 +1520,9 @@ def check_file_chip_seq_read_depth(file_to_check,
 
 def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_threshold,
                           assay_term_name,
-                          pipeline_title):
+                          pipeline_title,
+                          pipeline,
+                          standards_link):
     if read_depth is False:
         detail = 'Alignment file {} has no read depth information.'.format(
             file_to_check['@id'])
@@ -1519,33 +1531,28 @@ def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_thre
 
     if read_depth is not False and assay_term_name in ['RAMPAGE', 'CAGE',
                                                        'RNA-seq']:
+        detail = 'Alignment file {} produced by {} '.format(file_to_check['@id'],
+                                                            pipeline_title) + \
+                 '({}) has {} aligned reads. '.format(pipeline['@id'], read_depth) + \
+                 'The minimum ENCODE standard for each replicate in a ' + \
+                 '{} assay is {} aligned reads. '.format(assay_term_name, lower_threshold) + \
+                 'The recommended value is > {}. '.format(upper_threshold) + \
+                 '(See {})'.format(standards_link)
         if read_depth >= lower_threshold and read_depth < upper_threshold:
-            detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
-                                                                         read_depth) + \
-                     'aligned reads. Replicates for ' + \
-                     '{} assay '.format(assay_term_name) + \
-                     'processed by {} pipeline '.format(pipeline_title) + \
-                     'require {} aligned reads.'.format(upper_threshold)
             yield AuditFailure('low read depth', detail, level='WARNING')
             return
         elif read_depth < lower_threshold:
-            detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
-                                                                         read_depth) + \
-                     'aligned reads. Replicates for ' + \
-                     '{} assay '.format(assay_term_name) + \
-                     'processed by {} pipeline '.format(pipeline_title) + \
-                     'require {} aligned reads.'.format(upper_threshold)
             yield AuditFailure('insufficient read depth', detail,
                                level='NOT_COMPLIANT')
             return
 
     elif read_depth is not False and read_depth < upper_threshold:
-        detail = 'ENCODE Processed alignment file {} has {} '.format(file_to_check['@id'],
-                                                                     read_depth) + \
-                 'aligned reads. Replicates for ' + \
-                 '{} assay '.format(assay_term_name) + \
-                 'processed by {} pipeline '.format(pipeline_title) + \
-                 'require {} aligned reads.'.format(upper_threshold)
+        detail = 'Alignment file {} produced by {} '.format(file_to_check['@id'],
+                                                            pipeline_title) + \
+                 '({}) has {} aligned reads. '.format(pipeline['@id'], read_depth) + \
+                 'The minimum ENCODE standard for each replicate in a ' + \
+                 '{} assay is {} aligned reads. '.format(assay_term_name, lower_threshold) + \
+                 '(See {})'.format(standards_link)
         yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
         return
 
