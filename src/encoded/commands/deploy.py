@@ -49,16 +49,6 @@ def get_spot_code(instance, client, spot_id):
     #print(list(request.values()))
     code_status_start = request['SpotInstanceRequests'][0]['Status']
     code_status = code_status_start['Code']
-
-    #print("\n Code Status: %s" % code_status)  
-    #for key, value in request.items():
-     #  if key == 'SpotInstanceRequests':
-      #      for item in value:
-       #         for i in item:
-        #            if i == 'Status':
-         #               for j in item[i]:
-          #                  if j == 'Code':
-           #                     code_status = item[i][j]
     return code_status
 
 def wait_for_code_change(instance, client):
@@ -123,6 +113,9 @@ def spot_instance_price_check(client, instance_type):
         InstanceTypes=[
             instance_type
         ],
+        ProductDescriptions=[
+            'Linux/UNIX (Amazon VPC)',
+        ],
         Filters=[
             {
                 'Name': 'availability-zone',
@@ -131,16 +124,10 @@ def spot_instance_price_check(client, instance_type):
                     'us-west-2b',
                     'us-west-2c'
                 ],
-
-                'Name': 'product-description',
-                'Values': [
-                    'Linux/UNIX (Amazon VPC)'
-                ]
             },
         ]
     )
     # dragons teeth lie below
-
     for key, value in response.items():
 
         if key == 'SpotPriceHistory':
@@ -151,7 +138,10 @@ def spot_instance_price_check(client, instance_type):
 
                         if float(item[i]) > highest:
                             highest = float(item[i])
-    print("Highest price: %f" % highest)
+    if highest == float(0):
+        print("ERROR: no price found")
+    else:
+        print("Highest price: %f" % highest)
 
     return highest
 
@@ -159,7 +149,7 @@ def spot_instances(client, spot_price, count, image_id, instance_type, security_
     responce = client.request_spot_instances(
     DryRun=False,
     SpotPrice=spot_price,
-    InstanceCount=1,
+    InstanceCount=count,
     Type='one-time',
     LaunchSpecification={
         'ImageId': image_id,
@@ -323,6 +313,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         user_data = user_data_b64.decode()
         client = spot_client()
         client.spotClient = ec2_spot
+        security_groups = ['ssh-http-https']
         print("security_groups: %s" % security_groups)
         instances = spot_instances(ec2_spot, spot_price, count, image_id, instance_type, security_groups, user_data, iam_role, BDM)
     else:
