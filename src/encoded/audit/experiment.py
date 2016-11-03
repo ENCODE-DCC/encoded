@@ -551,11 +551,6 @@ def check_experiment_rna_seq_standards(value,
                                        desired_assembly,
                                        desired_annotation,
                                        standards_version):
-    for f in fastq_files:
-        for failure in check_file_read_length_rna(f, 50):
-            yield failure
-        for failure in check_file_platform(f, ['OBI:0002024', 'OBI:0000696']):
-            yield failure
 
     pipeline_title = scanFilesForPipelineTitle_not_chipseq(
         alignment_files,
@@ -566,6 +561,21 @@ def check_experiment_rna_seq_standards(value,
          'RAMPAGE (paired-end, stranded)'])
     if pipeline_title is False:
         return
+
+    standards_links = {
+        'RNA-seq of long RNAs (paired-end, stranded)': '/data-standards/rna-seq/long-rnas/',
+        'RNA-seq of long RNAs (single-end, unstranded)': '/data-standards/rna-seq/long-rnas/',
+        'Small RNA-seq single-end pipeline': '/data-standards/rna-seq/small-rnas/',
+        'RAMPAGE (paired-end, stranded)': '/data-standards/rampage/'
+    }
+
+    for f in fastq_files:
+        for failure in check_file_read_length_rna(f, 50,
+                                                  pipeline_title,
+                                                  standards_links[pipeline_title]):
+            yield failure
+        for failure in check_file_platform(f, ['OBI:0002024', 'OBI:0000696']):
+            yield failure
 
     if pipeline_title in ['RNA-seq of long RNAs (paired-end, stranded)',
                           'RNA-seq of long RNAs (single-end, unstranded)',
@@ -1559,8 +1569,8 @@ def check_file_read_length_chip(file_to_check, upper_threshold_length, lower_thr
     read_length = file_to_check['read_length']
     detail = 'Fastq file {} '.format(file_to_check['@id']) + \
              'has read length of {}bp. '.format(read_length) + \
-             'According to ENCODE uniform processing pipelines requirments, sequencing reads ' + \
-             'should be at least {}bp long.'.format(upper_threshold_length)
+             'ENCODE standards recommend that sequencing reads should ' + \
+             'be at least {}bp long. (See /data-standards/chip-seq/)'.format(upper_threshold_length)
     if read_length < lower_threshold_length:
         yield AuditFailure('insufficient read length', detail, level='NOT_COMPLIANT')
     elif read_length >= lower_threshold_length and read_length < upper_threshold_length:
@@ -1568,18 +1578,20 @@ def check_file_read_length_chip(file_to_check, upper_threshold_length, lower_thr
     return
 
 
-def check_file_read_length_rna(file_to_check, threshold_length):
+def check_file_read_length_rna(file_to_check, threshold_length, pipeline_title, standard_link):
     if 'read_length' not in file_to_check:
         detail = 'Reads file {} missing read_length'.format(file_to_check['@id'])
         yield AuditFailure('missing read_length', detail, level='NOT_COMPLIANT')
         return
-
     read_length = file_to_check['read_length']
     if read_length < threshold_length:
         detail = 'Fastq file {} '.format(file_to_check['@id']) + \
                  'has read length of {}bp. '.format(read_length) + \
-                 'According to ENCODE uniform processing pipelines requirments, sequencing reads ' + \
-                 'should be at least {}bp long.'.format(threshold_length)
+                 'ENCODE uniform processing pipelines ({}) '.format(pipeline_title) + \
+                 'require sequencing reads to be at least {}bp long. ({})'.format(
+                     threshold_length,
+                     standard_link)
+
         yield AuditFailure('insufficient read length', detail,
                            level='NOT_COMPLIANT')
     return
