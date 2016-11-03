@@ -889,7 +889,7 @@ def check_control_read_depth_standards(value,
     if is_control_file is True:  # treat this file as control_bam -
         # raising insufficient control read depth
         if target_name not in ['Control-human', 'Control-mouse']:
-            detail = 'Control ENCODE processed alignment file {} '.format(value['@id']) + \
+            detail = 'Control alignment file {} '.format(value['@id']) + \
                      'has a target {} that is neither '.format(target_name) + \
                      'Control-human nor Control-mouse.'
             yield AuditFailure('inconsistent target of control experiment', detail, level='WARNING')
@@ -899,30 +899,27 @@ def check_control_read_depth_standards(value,
             return
 
         elif 'broad histone mark' in target_investigated_as: #  control_to_target in broad_peaks_targets:
-            detail = 'ENCODE processed alignment file {} has {} '.format(
+            detail = 'Control alignment file {} has {} '.format(
                 value['@id'],
                 read_depth) + \
-                'usable fragments. According to ENCODE3 standards in control ' + \
-                'experiemnts for ChIP-seq assays targeting ' + \
-                'broad histone mark {}, the recommended '.format(control_to_target) + \
-                'number of usable fragments is > 45 million. ' + \
-                'According to ENCODE2 standards > 20 million ' + \
-                'usable fragments is acceptable.'
-
+                'usable fragments. ' + \
+                'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad ' + \
+                'histone mark {} '.format(control_to_target) + \
+                'is 20 million usable fragments, the recommended number of usable ' + \
+                'fragments is > 45 million.'
             if read_depth >= marks['narrow'] and read_depth < marks['broad']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
             elif read_depth < marks['narrow']:
                 yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
         elif 'narrow histone mark' in target_investigated_as:  # else:
-            detail = 'ENCODE processed alignment file {} has {} '.format(
+            detail = 'Control alignment file {} has {} '.format(
                 value['@id'],
                 read_depth) + \
-                'usable fragments. According to ENCODE3 standards in control ' + \
-                'experiemnts for ChIP-seq assays targeting ' + \
-                'narrow histone mark {}, the recommended '.format(control_to_target) + \
-                'number of usable fragments is > 20 million. ' + \
-                'According to ENCODE2 standards > 10 million ' + \
-                'usable fragments is acceptable.'
+                'usable fragments. ' + \
+                'The minimum ENCODE standard for a control of ChIP-seq assays targeting narrow ' + \
+                'histone mark {} '.format(control_to_target) + \
+                'is 10 million usable fragments, the recommended number of usable ' + \
+                'fragments is > 20 million.'
             if read_depth >= 10000000 and read_depth < marks['narrow']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
             elif read_depth < 10000000:
@@ -939,16 +936,14 @@ def check_control_read_depth_standards(value,
                         'the standards defined by the modERN project.'
                 yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
 
-            detail = 'ENCODE processed alignment file {} has {} '.format(
+            detail = 'Control alignment file {} has {} '.format(
                 value['@id'],
                 read_depth) + \
-                'usable fragments. According to ENCODE3 standards in control ' + \
-                'experiemnts for ChIP-seq assays targeting ' + \
-                'transcription factor {}, the recommended '.format(control_to_target) + \
-                'number of usable fragments is > 20 million. ' + \
-                'According to ENCODE2 standards > 10 million ' + \
-                'usable fragments is acceptable.'
-
+                'usable fragments. ' + \
+                'The minimum ENCODE standard for a control of ChIP-seq assays targeting ' + \
+                'transcription factor {} '.format(control_to_target) + \
+                'is 10 million usable fragments, the recommended number of usable ' + \
+                'fragments is > 20 million.'
             if read_depth >= 10000000 and read_depth < marks['narrow']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
             elif read_depth < 10000000:
