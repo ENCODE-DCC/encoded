@@ -1337,7 +1337,7 @@ var FileGraph = React.createClass({
                 // Not a QC subnode; render normally
                 let node = jsonGraph.getNode(infoNodeId);
                 if (node) {
-                    meta = globals.graph_detail.lookup(node)(node);
+                    meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick);
                 }
             } else {
                 // QC subnode
@@ -1428,8 +1428,43 @@ var FileGraph = React.createClass({
 });
 
 
+// Extract a displayable string from a QualityMetric object passed in the `qc` parameter.
+function qcIdToDisplay(qc) {
+    var qcName = qc['@id'].match(/^\/([a-z0-9-]*)\/.*$/i);
+    if (qcName && qcName[1]) {
+        qcName = qcName[1].replace(/-/g, ' ');
+        qcName = qcName[0].toUpperCase() + qcName.substring(1);
+        return qcName;
+    }
+    return '';
+}
+
+
+// Display a QC button in the file modal.
+const FileQCButton = React.createClass({
+    propTypes: {
+        qc: React.PropTypes.object.isRequired, // QC object we're directing to
+        file: React.PropTypes.object.isRequired, // File this QC object is attached to
+        handleClick: React.PropTypes.func.isRequired, // Function to open a modal to the given object
+    },
+
+    handleClick: function() {
+        const qcId = `qc:${this.props.qc['@id']}${this.props.file['@id']}`;
+        this.props.handleClick(qcId);
+    },
+
+    render: function () {
+        const qcName = qcIdToDisplay(this.props.qc);
+        if (qcName) {
+            return <button className="btn btn-info btn-xs" onClick={this.handleClick}>{qcName}</button>;
+        }
+        return null;
+    }
+});
+
+
 // Display the metadata of the selected file in the graph
-let FileDetailView = function(node) {
+let FileDetailView = function(node, qcClick) {
     // The node is for a file
     let selectedFile = node.metadata.ref;
     let body, header;
@@ -1541,6 +1576,17 @@ let FileDetailView = function(node) {
                             </dd>
                         </div>
                     : null}
+
+                    {selectedFile.quality_metrics && selectedFile.quality_metrics.length ?
+                        <div data-test="fileqc">
+                            <dt>File quality metrics</dt>
+                            <dd className="file-qc-buttons">
+                                {selectedFile.quality_metrics.map((qc) => {
+                                    return <FileQCButton qc={qc} file={selectedFile} handleClick={qcClick} />;
+                                })}
+                            </dd>
+                        </div>
+                    : null}
                 </dl>
             </div>
         );
@@ -1628,11 +1674,7 @@ var QcDetailsView = function(metrics) {
         }
 
         // Convert the QC metric object @id to a displayable string
-        var qcName = metrics.ref['@id'].match(/^\/([a-z0-9-]*)\/.*$/i);
-        if (qcName && qcName[1]) {
-            qcName = qcName[1].replace(/-/g, ' ');
-            qcName = qcName[0].toUpperCase() + qcName.substring(1);
-        }
+        const qcName = qcIdToDisplay(metrics.ref);
 
         header = (
             <div className="details-view-info">
