@@ -435,7 +435,8 @@ def audit_file_controlled_by(value, system):
             if (read_length is None) or (control_length is None):
                 continue
 
-            if run_type != control_run:
+            if run_type != control_run and \
+               value['dataset'].get('assay_term_name') not in ['RAMPAGE', 'CAGE']:
                 detail = 'File {} is {} but its control file {} is {}'.format(
                     value['@id'],
                     run_type,
