@@ -63,8 +63,8 @@ var FileTable = module.exports.FileTable = React.createClass({
             display: (item, meta) => {
                 return (
                     <span>
-                        {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
-                        <FileTableButton file={item} clickHandler={meta.fileClick} />
+                        <FileTableButton file={item} graphedFiles={meta.graphedFiles} clickHandler={meta.fileClick} />
+                        <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
                     </span>
                 );
             }
@@ -112,10 +112,14 @@ var FileTable = module.exports.FileTable = React.createClass({
     refTableColumns: {
         'accession': {
             title: 'Accession',
-            display: item =>
-                <span>
-                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
-                </span>
+            display: (item, meta) => {
+                return (
+                    <span>
+                        <FileTableButton file={item} graphedFiles={meta.graphedFiles} clickHandler={meta.fileClick} />
+                        <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                    </span>
+                );
+            }
         },
         'file_type': {title: 'File type'},
         'output_type': {title: 'Output type'},
@@ -169,6 +173,7 @@ var FileTable = module.exports.FileTable = React.createClass({
         var {
             context,
             items,
+            graphedFiles,
             filePanelHeader,
             encodevers,
             selectedFilterValue,
@@ -219,8 +224,26 @@ var FileTable = module.exports.FileTable = React.createClass({
                 <div>
                     {showFileCount ? <div className="file-gallery-counts">Displaying {filteredCount} of {unfilteredCount} files</div> : null}
                     <SortTablePanel header={filePanelHeader} noDefaultClasses={this.props.noDefaultClasses}>
-                        <RawSequencingTable files={files.raw} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} />
-                        <RawFileTable files={files.rawArray} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} />
+                        <RawSequencingTable
+                            files={files.raw}
+                            meta={{
+                                encodevers: encodevers,
+                                anisogenic: anisogenic,
+                                fileClick: this.fileClick,
+                                graphedFiles: graphedFiles,
+                                session: session
+                            }}
+                        />
+                        <RawFileTable
+                            files={files.rawArray}
+                            meta={{
+                                encodevers: encodevers,
+                                anisogenic: anisogenic,
+                                fileClick: this.fileClick,
+                                graphedFiles: graphedFiles,
+                                session: session
+                            }}
+                        />
                         <SortTable
                             title={<CollapsingTitle title="Processed data" collapsed={this.state.collapsed.proc}
                             handleCollapse={this.handleCollapse.bind(null, 'proc')}
@@ -235,6 +258,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                                 anisogenic: anisogenic,
                                 session: session,
                                 fileClick: this.fileClick,
+                                graphedFiles: graphedFiles,
                             }}
                             sortColumn="biological_replicates"
                         />
@@ -252,6 +276,7 @@ var FileTable = module.exports.FileTable = React.createClass({
 const FileTableButton = React.createClass({
     propTypes: {
         file: React.PropTypes.object.isRequired, // File whose button is being rendered
+        graphedFiles: React.PropTypes.object.isRequired, // Object holding @ids of files actually in the graph
         clickHandler: React.PropTypes.func.isRequired, // Function to call when the button is clicked
     },
 
@@ -261,7 +286,17 @@ const FileTableButton = React.createClass({
     },
 
     render: function () {
-        return <button onClick={this.onClick}>{this.props.file.accession}</button>;
+        const { file, graphedFiles } = this.props;
+        const fileInGraph = !!graphedFiles[file['@id']];
+        return (
+            <span>
+                {fileInGraph ?
+                    <span><button className="btn btn-info btn-xs" onClick={this.onClick}>{file.accession}</button>&nbsp;</span>
+                :
+                    <span>{file.accession}&nbsp;</span>
+                }
+            </span>
+        );
     }
 });
 
@@ -316,7 +351,7 @@ var RawSequencingTable = React.createClass({
     },
 
     render: function() {
-        var {files, meta} = this.props;
+        var { files, meta } = this.props;
         var loggedIn = meta.session && meta.session['auth.userid'];
 
         if (files && files.length) {
@@ -439,7 +474,8 @@ var RawSequencingTable = React.createClass({
                                         <tr key={i}>
                                             {i === 0 ? {spanned} : null}
                                             <td className={pairClass}>
-                                                {file.title}&nbsp;<a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                                                <FileTableButton file={file} graphedFiles={meta.graphedFiles} clickHandler={meta.fileClick} />
+                                                <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
                                             </td>
                                             <td className={pairClass}>{file.file_type}</td>
                                             <td className={pairClass}>{runType}{file.read_length ? <span>{runType ? <span> </span> : null}{file.read_length + file.read_length_units}</span> : null}</td>
@@ -465,7 +501,10 @@ var RawSequencingTable = React.createClass({
                                     <tr key={i} className={pairedRepKeys.length && i === 0 ? 'table-raw-separator' : ''}>
                                         <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
-                                        <td>{file.title}&nbsp;<a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a></td>
+                                        <td>
+                                            <FileTableButton file={file} graphedFiles={meta.graphedFiles} clickHandler={meta.fileClick} />
+                                            <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                                        </td>
                                         <td>{file.file_type}</td>
                                         <td>{runType}{file.read_length ? <span>{runType ? <span> </span> : null}{file.read_length + file.read_length_units}</span> : null}</td>
                                         <td>{file.paired_end}</td>
@@ -595,7 +634,8 @@ var RawFileTable = React.createClass({
                                         <tr key={i}>
                                             {i === 0 ? {spanned} : null}
                                             <td className={pairClass}>
-                                                {file.title}&nbsp;<a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                                                <FileTableButton file={file} graphedFiles={meta.graphedFiles} clickHandler={meta.fileClick} />
+                                                <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
                                             </td>
                                             <td className={pairClass}>{file.file_type}</td>
                                             <td className={pairClass}>{file.output_type}</td>
@@ -615,7 +655,10 @@ var RawFileTable = React.createClass({
                                     <tr key={i} className={pairedKeys.length && i === 0 ? 'table-raw-separator' : ''}>
                                         <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
-                                        <td>{file.title}&nbsp;<a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a></td>
+                                        <td>
+                                            <FileTableButton file={file} graphedFiles={meta.graphedFiles} clickHandler={meta.fileClick} />
+                                            <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                                        </td>
                                         <td>{file.file_type}</td>
                                         <td>{file.output_type}</td>
                                         <td>{file.assembly}</td>
@@ -748,6 +791,8 @@ var FileGalleryRenderer = React.createClass({
         var {context, data} = this.props;
         var selectedAssembly = '';
         var selectedAnnotation = '';
+        let jsonGraph;
+        let allGraphedFiles;
         var items = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
 
         // Combined object's files and search results files for display
@@ -766,6 +811,19 @@ var FileGalleryRenderer = React.createClass({
 
         // Get a list of files for the graph (filters out archived files)
         var graphFiles = _(files).filter(file => file.status !== 'archived');
+
+        // Build node graph of the files and analysis steps with this experiment
+        if (graphFiles && graphFiles.length) {
+            try {
+                const { graph, graphedFiles } = assembleGraph(context, this.context.session, this.state.infoNodeId, files, selectedAssembly, selectedAnnotation);
+                jsonGraph = graph;
+                allGraphedFiles = (selectedAssembly || selectedAnnotation) ? graphedFiles : {};
+            } catch(e) {
+                jsonGraph = null;
+                allGraphedFiles = {};
+                console.warn(e.message + (e.file0 ? ' -- file0:' + e.file0 : '') + (e.file1 ? ' -- file1:' + e.file1: ''));
+            }
+        }
 
         return (
             <Panel>
@@ -797,6 +855,7 @@ var FileGalleryRenderer = React.createClass({
                     <FileGraph
                         context={context}
                         items={graphFiles}
+                        graph={jsonGraph}
                         selectedAssembly={selectedAssembly}
                         selectedAnnotation={selectedAnnotation}
                         session={this.context.session}
@@ -818,6 +877,7 @@ var FileGalleryRenderer = React.createClass({
                         Component={DatasetFiles}
                         selectedFilterValue={this.state.selectedFilterValue}
                         filterOptions={filterOptions}
+                        graphedFiles={allGraphedFiles}
                         handleFilterChange={this.handleFilterChange}
                         encodevers={globals.encodeVersion(context)}
                         session={this.context.session}
@@ -835,6 +895,7 @@ var FileGalleryRenderer = React.createClass({
                         items={context.files}
                         selectedFilterValue={this.state.selectedFilterValue}
                         filterOptions={filterOptions}
+                        graphedFiles={allGraphedFiles}
                         handleFilterChange={this.handleFilterChange}
                         encodevers={globals.encodeVersion(context)}
                         session={this.context.session}
@@ -1255,6 +1316,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
     });
 
     // Go through each file (released or unreleased) to add it and associated steps to the graph
+    const graphedFiles = {};
     Object.keys(allFiles).forEach(function(fileId) {
         var file = allFiles[fileId];
 
@@ -1300,6 +1362,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
                 contributing: fileContributed,
                 ref: fileRef
             }, metricsInfo);
+            graphedFiles[file['@id']] = file;
 
             // If the file has an analysis step, prepare it for graph insertion
             if (!fileContributed) {
@@ -1351,12 +1414,11 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
     }, this);
 
     jsonGraph.filterOptions = filterOptions.length ? _(filterOptions).uniq(option => option.assembly + '!' + (option.annotation ? option.annotation : '')) : [];
-    return jsonGraph;
+    return { graph: jsonGraph, graphedFiles: graphedFiles };
 };
 
 
 var FileGraph = React.createClass({
-
     getInitialState: function() {
         return {
             infoModalOpen: false, // Graph information modal open
@@ -1407,23 +1469,16 @@ var FileGraph = React.createClass({
     },
 
     render: function() {
-        var { context, session, items, selectedAssembly, selectedAnnotation, infoNodeId, infoNodeVisible } = this.props;
+        var { context, session, items, graph, selectedAssembly, selectedAnnotation, infoNodeId, infoNodeVisible } = this.props;
         var files = items;
 
         // Build node graph of the files and analysis steps with this experiment
         if (files && files.length) {
-            try {
-                this.jsonGraph = assembleGraph(context, session, infoNodeId, files, selectedAssembly, selectedAnnotation);
-            } catch(e) {
-                this.jsonGraph = null;
-                console.warn(e.message + (e.file0 ? ' -- file0:' + e.file0 : '') + (e.file1 ? ' -- file1:' + e.file1: ''));
-            }
-            var goodGraph = this.jsonGraph && Object.keys(this.jsonGraph).length;
-
             // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
+            const goodGraph = graph && Object.keys(graph).length;
             if (goodGraph) {
                 if (selectedAssembly || selectedAnnotation) {
-                    var meta = this.detailNodes(this.jsonGraph, infoNodeId);
+                    var meta = this.detailNodes(graph, infoNodeId);
                     return (
                         <div>
                             <div className="file-gallery-graph-header collapsing-title">
@@ -1432,11 +1487,7 @@ var FileGraph = React.createClass({
                             </div>
                             {!this.state.collapsed ?
                                 <div>
-                                    {goodGraph ?
-                                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw />
-                                    :
-                                        <p className="browser-error">Currently selected assembly and genomic annotation hides the graph</p>
-                                    }
+                                    <Graph graph={graph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw />
                                 </div>
                             : null}
                             <div className={'file-gallery-graph-footer' + (this.state.collapsed ? ' hiding' : '')}></div>
