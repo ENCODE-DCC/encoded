@@ -608,7 +608,8 @@ def check_experiment_rna_seq_standards(value,
                                                                desired_annotation,
                                                                upper_limit,
                                                                lower_limit,
-                                                               standards_version):
+                                                               standards_version,
+                                                               standards_links[pipeline_title]):
             yield failure
     elif pipeline_title in ['Small RNA-seq single-end pipeline']:
         upper_limit = 30000000
@@ -624,7 +625,8 @@ def check_experiment_rna_seq_standards(value,
                                                             desired_assembly,
                                                             desired_annotation,
                                                             upper_limit,
-                                                            lower_limit):
+                                                            lower_limit,
+                                                            standards_links[pipeline_title]):
             yield failure
 
     elif pipeline_title in ['RNA-seq of long RNAs (paired-end, stranded)',
@@ -641,7 +643,8 @@ def check_experiment_rna_seq_standards(value,
                                                            desired_assembly,
                                                            desired_annotation,
                                                            upper_limit,
-                                                           lower_limit):
+                                                           lower_limit,
+                                                           standards_links[pipeline_title]):
             yield failure
 
     return
