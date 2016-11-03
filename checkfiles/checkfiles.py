@@ -382,8 +382,8 @@ def process_fastq_file(job, fastq_data_stream, session, url):
         if uniqueness_flag is True:
             result['fastq_signature'] = sorted(list(signatures_for_comparison))
         else:
-            errors['not_unique_flowcell_details'] = conflicts + \
-                ' Gathered information about the file was: {}.'.format(str(result))
+            errors['not_unique_flowcell_details'] = str(conflicts.append(
+                ' Gathered information about the file was: {}.'.format(str(result))))
 
 
 def process_barcodes(signatures_set):
