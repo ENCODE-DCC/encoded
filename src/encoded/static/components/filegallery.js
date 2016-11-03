@@ -56,61 +56,17 @@ var FileTable = module.exports.FileTable = React.createClass({
         maxWidthNode: null // DOM node of table with this.state.maxWidth width
     },
 
-    // Configuration for raw file table
-    rawArrayTableColumns: {
-        'accession': {
-            title: 'Accession',
-            display: item =>
-                <span>
-                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
-                </span>
-        },
-        'file_type': {title: 'File type'},
-        'biological_replicates': {
-            title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
-            getValue: item => item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : ''
-        },
-        'library': {
-            title: 'Library',
-            getValue: item => (item.replicate && item.replicate.library) ? item.replicate.library.accession : null
-        },
-        'assembly': {title: 'Mapping assembly'},
-        'title': {
-            title: 'Lab',
-            getValue: item => item.lab && item.lab.title ? item.lab.title : null
-        },
-        'date_created': {
-            title: 'Date added',
-            getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
-            sorter: (a, b) => {
-                if (a && b) {
-                    return Date.parse(a) - Date.parse(b);
-                }
-                return a ? -1 : (b ? 1 : 0);
-            }
-        },
-        'file_size': {
-            title: 'File size',
-            display: item => <span>{humanFileSize(item.file_size)}</span>
-        },
-        'audit': {
-            title: 'Audit status',
-            display: item => <div>{fileAuditStatus(item)}</div>
-        },
-        'status': {
-            title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>
-        }
-    },
-
     // Configuration for process file table
     procTableColumns: {
         'accession': {
             title: 'Accession',
-            display: item => {
-                return <span>
-                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
-                </span>;
+            display: (item, meta) => {
+                return (
+                    <span>
+                        {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                        <FileTableButton file={item} clickHandler={meta.fileClick} />
+                    </span>
+                );
             }
         },
         'file_type': {title: 'File type'},
@@ -196,6 +152,12 @@ var FileTable = module.exports.FileTable = React.createClass({
         }
     },
 
+    fileClick: function (nodeId) {
+        // Called when the user clicks a file in the table to bring up a file modal in the graph.
+        this.props.setInfoNodeId(nodeId);
+        this.props.setInfoNodeVisible(true);
+    },
+
     handleCollapse: function(table) {
         // Handle a click on a collapse button by toggling the corresponding tableCollapse state var
         var collapsed = _.clone(this.state.collapsed);
@@ -243,14 +205,14 @@ var FileTable = module.exports.FileTable = React.createClass({
             var filteredCount = datasetFiles.length;
 
             // Extract four kinds of file arrays
-            var files = _(datasetFiles).groupBy(file => {
+            var files = _(datasetFiles).groupBy((file) => {
                 if (file.output_category === 'raw data') {
                     return file.output_type === 'reads' ? 'raw' : 'rawArray';
-                } else if (file.output_category === 'reference') {
-                    return 'ref';
-                } else {
-                    return 'proc';
                 }
+                if (file.output_category === 'reference') {
+                    return 'ref';
+                }
+                return 'proc';
             });
 
             return (
@@ -259,9 +221,23 @@ var FileTable = module.exports.FileTable = React.createClass({
                     <SortTablePanel header={filePanelHeader} noDefaultClasses={this.props.noDefaultClasses}>
                         <RawSequencingTable files={files.raw} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} />
                         <RawFileTable files={files.rawArray} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} />
-                        <SortTable title={<CollapsingTitle title="Processed data" collapsed={this.state.collapsed.proc} handleCollapse={this.handleCollapse.bind(null, 'proc')}
-                            selectedFilterValue={selectedFilterValue} filterOptions={filterOptions} handleFilterChange={handleFilterChange} />}
-                            collapsed={this.state.collapsed.proc} list={files.proc} columns={this.procTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} sortColumn="biological_replicates" />
+                        <SortTable
+                            title={<CollapsingTitle title="Processed data" collapsed={this.state.collapsed.proc}
+                            handleCollapse={this.handleCollapse.bind(null, 'proc')}
+                            selectedFilterValue={selectedFilterValue}
+                            filterOptions={filterOptions}
+                            handleFilterChange={handleFilterChange} />}
+                            collapsed={this.state.collapsed.proc}
+                            list={files.proc}
+                            columns={this.procTableColumns}
+                            meta={{
+                                encodevers: encodevers,
+                                anisogenic: anisogenic,
+                                session: session,
+                                fileClick: this.fileClick,
+                            }}
+                            sortColumn="biological_replicates"
+                        />
                         <SortTable title={<CollapsingTitle title="Reference data" collapsed={this.state.collapsed.ref} handleCollapse={this.handleCollapse.bind(null, 'ref')} />} collapsed={this.state.collapsed.ref}
                             list={files.ref} columns={this.refTableColumns} meta={{encodevers: encodevers, anisogenic: anisogenic, session: session}} />
                     </SortTablePanel>
@@ -269,6 +245,23 @@ var FileTable = module.exports.FileTable = React.createClass({
             );
         }
         return null;
+    }
+});
+
+
+const FileTableButton = React.createClass({
+    propTypes: {
+        file: React.PropTypes.object.isRequired, // File whose button is being rendered
+        clickHandler: React.PropTypes.func.isRequired, // Function to call when the button is clicked
+    },
+
+    onClick: function () {
+        const nodeId = `file:${this.props.file['@id']}`;
+        this.props.clickHandler(nodeId);
+    },
+
+    render: function () {
+        return <button onClick={this.onClick}>{this.props.file.accession}</button>;
     }
 });
 
@@ -663,9 +656,8 @@ var DatasetFiles = module.exports.DatasetFiles = React.createClass({
         var files = _.uniq(((context.files && context.files.length) ? context.files : []).concat((items && items.length) ? items : []));
         if (files.length) {
             return <FileTable {...this.props} items={files} />;
-        } else {
-            return null;
         }
+        return null;
     }
 });
 
@@ -717,8 +709,19 @@ var FileGalleryRenderer = React.createClass({
 
     getInitialState: function() {
         return {
-            selectedFilterValue: '' // <select> value of selected filter
+            selectedFilterValue: '', // <select> value of selected filter
+            infoNodeId: '', // @id of node whose info panel is open
+            infoModalOpen: false, // True if info modal is open
         };
+    },
+
+    // Called from child components when the selected node changes.
+    setInfoNodeId: function (nodeId) {
+        this.setState({ infoNodeId: nodeId });
+    },
+
+    setInfoNodeVisible: function (visible) {
+        this.setState({ infoNodeVisible: visible });
     },
 
     // Set the graph filter based on the given <option> value
@@ -774,7 +777,7 @@ var FileGalleryRenderer = React.createClass({
                                 <DropdownButton title='Visualize Data' label="visualize-data">
                                     <DropdownMenu>
                                         {Object.keys(context.visualize_ucsc).map(assembly =>
-                                            <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context.visualize_ucsc[assembly]}>
+                                            <a key={assembly} data-bypass="true" target="_blank" href={context.visualize_ucsc[assembly]}>
                                                 {assembly}
                                             </a>
                                         )}
@@ -791,20 +794,57 @@ var FileGalleryRenderer = React.createClass({
                 </PanelHeading>
 
                 {!this.props.hideGraph ?
-                    <FileGraph context={context} items={graphFiles} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} session={this.context.session} forceRedraw />
+                    <FileGraph
+                        context={context}
+                        items={graphFiles}
+                        selectedAssembly={selectedAssembly}
+                        selectedAnnotation={selectedAnnotation}
+                        session={this.context.session}
+                        infoNodeId={this.state.infoNodeId}
+                        setInfoNodeId={this.setInfoNodeId}
+                        infoNodeVisible={this.state.infoNodeVisible}
+                        setInfoNodeVisible={this.setInfoNodeVisible}
+                        forceRedraw
+                    />
                 : null}
 
                 {/* If logged in and dataset is released, need to combine search of files that reference
                     this dataset to get released and unreleased ones. If not logged in, then just get
                     files from dataset.files */}
                 {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
-                    <FetchedItems {...this.props} url={globals.unreleased_files_url(context)} Component={DatasetFiles}
-                        selectedFilterValue={this.state.selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleFilterChange}
-                        encodevers={globals.encodeVersion(context)} session={this.context.session} showFileCount ignoreErrors noDefaultClasses />
+                    <FetchedItems
+                        {...this.props}
+                        url={globals.unreleased_files_url(context)}
+                        Component={DatasetFiles}
+                        selectedFilterValue={this.state.selectedFilterValue}
+                        filterOptions={filterOptions}
+                        handleFilterChange={this.handleFilterChange}
+                        encodevers={globals.encodeVersion(context)}
+                        session={this.context.session}
+                        infoNodeId={this.state.infoNodeId}
+                        setInfoNodeId={this.setInfoNodeId}
+                        infoNodeVisible={this.state.infoNodeVisible}
+                        setInfoNodeVisible={this.setInfoNodeVisible}
+                        showFileCount
+                        ignoreErrors
+                        noDefaultClasses
+                    />
                 :
-                    <FileTable {...this.props} items={context.files} selectedFilterValue={this.state.selectedFilterValue}
-                        filterOptions={filterOptions} handleFilterChange={this.handleFilterChange}
-                        encodevers={globals.encodeVersion(context)} session={this.context.session} showFileCount noDefaultClasses />
+                    <FileTable
+                        {...this.props}
+                        items={context.files}
+                        selectedFilterValue={this.state.selectedFilterValue}
+                        filterOptions={filterOptions}
+                        handleFilterChange={this.handleFilterChange}
+                        encodevers={globals.encodeVersion(context)}
+                        session={this.context.session}
+                        infoNodeId={this.state.infoNodeId}
+                        setInfoNodeId={this.setInfoNodeId}
+                        infoNodeVisible={this.state.infoNodeVisible}
+                        setInfoNodeVisible={this.setInfoNodeVisible}
+                        showFileCount
+                        noDefaultClasses
+                    />
                 }
             </Panel>
         );
@@ -1319,7 +1359,6 @@ var FileGraph = React.createClass({
 
     getInitialState: function() {
         return {
-            infoNodeId: '', // @id of node whose info panel is open
             infoModalOpen: false, // Graph information modal open
             collapsed: false // T if graphing panel is collapsed
         };
@@ -1353,10 +1392,8 @@ var FileGraph = React.createClass({
 
     // Handle a click in a graph node
     handleNodeClick: function(nodeId) {
-        this.setState({
-            infoNodeId: nodeId,
-            infoModalOpen: true
-        });
+        this.props.setInfoNodeId(nodeId);
+        this.props.setInfoNodeVisible(true);
     },
 
     handleCollapse: function() {
@@ -1366,17 +1403,17 @@ var FileGraph = React.createClass({
 
     closeModal: function() {
         // Called when user wants to close modal somehow
-        this.setState({infoModalOpen: false});
+        this.props.setInfoNodeVisible(false);
     },
 
     render: function() {
-        var {context, session, items, selectedAssembly, selectedAnnotation} = this.props;
+        var { context, session, items, selectedAssembly, selectedAnnotation, infoNodeId, infoNodeVisible } = this.props;
         var files = items;
 
         // Build node graph of the files and analysis steps with this experiment
         if (files && files.length) {
             try {
-                this.jsonGraph = assembleGraph(context, session, this.state.infoNodeId, files, selectedAssembly, selectedAnnotation);
+                this.jsonGraph = assembleGraph(context, session, infoNodeId, files, selectedAssembly, selectedAnnotation);
             } catch(e) {
                 this.jsonGraph = null;
                 console.warn(e.message + (e.file0 ? ' -- file0:' + e.file0 : '') + (e.file1 ? ' -- file1:' + e.file1: ''));
@@ -1386,7 +1423,7 @@ var FileGraph = React.createClass({
             // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
             if (goodGraph) {
                 if (selectedAssembly || selectedAnnotation) {
-                    var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
+                    var meta = this.detailNodes(this.jsonGraph, infoNodeId);
                     return (
                         <div>
                             <div className="file-gallery-graph-header collapsing-title">
@@ -1403,7 +1440,7 @@ var FileGraph = React.createClass({
                                 </div>
                             : null}
                             <div className={'file-gallery-graph-footer' + (this.state.collapsed ? ' hiding' : '')}></div>
-                            {meta && this.state.infoModalOpen ?
+                            {meta && infoNodeVisible ?
                                 <Modal closeModal={this.closeModal}>
                                     <ModalHeader closeModal={this.closeModal}>
                                         {meta ? meta.header : null}
