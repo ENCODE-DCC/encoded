@@ -649,7 +649,7 @@ def check_experiment_wgbs_encode3_standards(experiment,
     for failure in check_wgbs_read_lengths(fastq_files, organism_name, 130, 100):
         yield failure
 
-    # read_lengths = get_read_lengths_wgbs(fastq_files)
+    read_lengths = get_read_lengths_wgbs(fastq_files)
 
     pipeline_title = scanFilesForPipelineTitle_not_chipseq(alignment_files,
                                                            ['GRCh38', 'mm10'],
@@ -665,7 +665,7 @@ def check_experiment_wgbs_encode3_standards(experiment,
 
     bismark_metrics = get_metrics(cpg_quantifications, 'BismarkQualityMetric', desired_assembly)
     cpg_metrics = get_metrics(cpg_quantifications, 'CpgCorrelationQualityMetric', desired_assembly)
-    '''
+
     samtools_metrics = get_metrics(cpg_quantifications,
                                    'SamtoolsFlagstatsQualityMetric',
                                    desired_assembly)
@@ -673,9 +673,10 @@ def check_experiment_wgbs_encode3_standards(experiment,
     for failure in check_wgbs_coverage(samtools_metrics,
                                        pipeline_title,
                                        min(read_lengths),
-                                       organism_name):
+                                       organism_name,
+                                       get_pipeline_objects(alignment_files)):
         yield failure
-    '''
+
     for failure in check_wgbs_pearson(cpg_metrics, 0.8, pipeline_title):
         yield failure
 
@@ -1258,7 +1259,8 @@ def check_file_chip_seq_library_complexity(alignment_file):
 def check_wgbs_coverage(samtools_metrics,
                         pipeline_title,
                         read_length,
-                        organism):
+                        organism,
+                        pipeline_objects):
     for m in samtools_metrics:
         if 'mapped' in m:
             bio_rep_num = False
@@ -1277,13 +1279,20 @@ def check_wgbs_coverage(samtools_metrics,
                 if bio_rep_num is not False:
                     detail = 'Biological replicate {} '.format(bio_rep_num) + \
                              'of experiment processed by {} '.format(pipeline_title) + \
-                             'has a coverage of {}, '.format(int(coverage)) + \
-                             'while coverage > 30 is required.'
+                             '({}) '.format(pipeline_objects[0]['@id']) + \
+                             'has a coverage of {}. '.format(int(coverage)) + \
+                             'The minimum ENCODE standard for each replicate in ' + \
+                             'a WGBS assay is 30X. (See /data-standards/wgbs/)'
                     yield AuditFailure('insufficient coverage',
                                        detail,
                                        level='NOT_COMPLIANT')
                 else:
-                    detail = 'UNKNOWN replicate insufficient coverage'
+                    detail = 'Replicate ' + \
+                             'of experiment processed by {} '.format(pipeline_title) + \
+                             '({}) '.format(pipeline_objects[0]['@id']) + \
+                             'has a coverage of {}. '.format(int(coverage)) + \
+                             'The minimum ENCODE standard for each replicate in ' + \
+                             'a WGBS assay is 30X. (See /data-standards/wgbs/)'
                     yield AuditFailure('insufficient coverage',
                                        detail,
                                        level='INTERNAL_ACTION')
