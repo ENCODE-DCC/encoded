@@ -2162,6 +2162,7 @@ def test_audit_experiment_dnase_seq_missing_read_depth(testapp,
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing read depth' for error in errors_list)
 
+
 def test_audit_experiment_chip_seq_unfiltered_missing_read_depth(testapp,
                                                                  base_experiment,
                                                                  replicate_1_1,

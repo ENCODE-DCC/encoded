@@ -924,7 +924,7 @@ def check_experiment_long_rna_standards(experiment,
         for failure in check_spearman(mad_metrics, experiment['replication_type'],
                                       0.9, 0.8, pipeline_title):
             yield failure
-    #for failure in check_mad(mad_metrics, experiment['replication_type'],
+    # for failure in check_mad(mad_metrics, experiment['replication_type'],
     #                         0.2, pipeline_title):
     #    yield failure
 
