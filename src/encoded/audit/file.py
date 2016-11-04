@@ -907,7 +907,7 @@ def check_control_read_depth_standards(value,
                 'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad ' + \
                 'histone mark {} '.format(control_to_target) + \
                 'is 20 million usable fragments, the recommended number of usable ' + \
-                'fragments is > 45 million. (See /data-standards/chip-seq/)'
+                'fragments is > 45 million. (See /data-standards/chip-seq/ )'
             if read_depth >= marks['narrow'] and read_depth < marks['broad']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
             elif read_depth < marks['narrow']:
@@ -920,7 +920,7 @@ def check_control_read_depth_standards(value,
                 'The minimum ENCODE standard for a control of ChIP-seq assays targeting narrow ' + \
                 'histone mark {} '.format(control_to_target) + \
                 'is 10 million usable fragments, the recommended number of usable ' + \
-                'fragments is > 20 million. (See /data-standards/chip-seq/)'
+                'fragments is > 20 million. (See /data-standards/chip-seq/ )'
             if read_depth >= 10000000 and read_depth < marks['narrow']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
             elif read_depth < 10000000:
@@ -944,7 +944,7 @@ def check_control_read_depth_standards(value,
                 'The minimum ENCODE standard for a control of ChIP-seq assays targeting ' + \
                 'transcription factor {} '.format(control_to_target) + \
                 'is 10 million usable fragments, the recommended number of usable ' + \
-                'fragments is > 20 million. (See /data-standards/chip-seq/)'
+                'fragments is > 20 million. (See /data-standards/chip-seq/ )'
             if read_depth >= 10000000 and read_depth < marks['narrow']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
             elif read_depth < 10000000:

@@ -577,7 +577,7 @@ def check_experiment_dnase_seq_standards(value,
                    metric['mapped'] < 5000000 and 'quality_metric_of' in metric:
                     detail = 'Alignment file {} '.format(metric['quality_metric_of']) + \
                              'produced by {} '.format(pipelines[0]['title']) + \
-                             '({}) '.format(pipelines[0]['@id']) + \
+                             '( {} ) '.format(pipelines[0]['@id']) + \
                              'has {} '.format(metric['mapped']) + \
                              'mapped reads. ' + \
                              'The minimum ENCODE standard for each replicate in a DNase-seq ' + \
@@ -589,9 +589,9 @@ def check_experiment_dnase_seq_standards(value,
             files_list = []
             for f in alignment_files:
                 files_list.append(f['@id'])
-            detail = 'Alignment files ({}) '.format(', '.join(files_list)) + \
+            detail = 'Alignment files ( {} ) '.format(', '.join(files_list)) + \
                      'produced by {} '.format(pipelines[0]['title']) + \
-                     '({}) '.format(pipelines[0]['@id']) + \
+                     '( {} ) '.format(pipelines[0]['@id']) + \
                      'lack read depth information.'
             yield AuditFailure('missing read depth', detail, level='WARNING')
 
@@ -1362,7 +1362,7 @@ def check_wgbs_coverage(samtools_metrics,
                 if bio_rep_num is not False:
                     detail = 'Biological replicate {} '.format(bio_rep_num) + \
                              'of experiment processed by {} '.format(pipeline_title) + \
-                             '({}) '.format(pipeline_objects[0]['@id']) + \
+                             '( {} ) '.format(pipeline_objects[0]['@id']) + \
                              'has a coverage of {}. '.format(int(coverage)) + \
                              'The minimum ENCODE standard for each replicate in ' + \
                              'a WGBS assay is 30X. (See /data-standards/wgbs/)'
@@ -1372,7 +1372,7 @@ def check_wgbs_coverage(samtools_metrics,
                 else:
                     detail = 'Replicate ' + \
                              'of experiment processed by {} '.format(pipeline_title) + \
-                             '({}) '.format(pipeline_objects[0]['@id']) + \
+                             '( {} ) '.format(pipeline_objects[0]['@id']) + \
                              'has a coverage of {}. '.format(int(coverage)) + \
                              'The minimum ENCODE standard for each replicate in ' + \
                              'a WGBS assay is 30X. (See /data-standards/wgbs/)'
@@ -1494,7 +1494,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                 if read_depth < marks['broad']:
                     detail = 'Alignment file {} '.format(file_to_check['@id']) + \
                         'produced by {} '.format(pipeline_object['title']) + \
-                        '({}) '.format(pipeline_object['@id']) + \
+                        '( {} ) '.format(pipeline_object['@id']) + \
                         'has {} '.format(read_depth) + \
                         'mapped reads. ' + \
                         'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
@@ -1507,7 +1507,7 @@ def check_file_chip_seq_read_depth(file_to_check,
             else:
                 detail = 'Alignment file {} '.format(file_to_check['@id']) + \
                     'produced by {} '.format(pipeline_object['title']) + \
-                    '({}) '.format(pipeline_object['@id']) + \
+                    '( {} ) '.format(pipeline_object['@id']) + \
                     'has {} '.format(read_depth) + \
                     'usable fragments. ' + \
                     'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
@@ -1536,7 +1536,7 @@ def check_file_chip_seq_read_depth(file_to_check,
         if pipeline_object:
             detail = 'Alignment file {} '.format(file_to_check['@id']) + \
                 'produced by {} '.format(pipeline_object['title']) + \
-                '({}) '.format(pipeline_object['@id']) + \
+                '( {} ) '.format(pipeline_object['@id']) + \
                 'has {} '.format(read_depth) + \
                 'usable fragments. ' + \
                 'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
@@ -1566,7 +1566,7 @@ def check_file_chip_seq_read_depth(file_to_check,
             if pipeline_object:
                 detail = 'Alignment file {} '.format(file_to_check['@id']) + \
                     'produced by {} '.format(pipeline_object['title']) + \
-                    '({}) '.format(pipeline_object['@id']) + \
+                    '( {} ) '.format(pipeline_object['@id']) + \
                     'has {} '.format(read_depth) + \
                     'usable fragments. ' + \
                     'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
@@ -1596,11 +1596,11 @@ def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_thre
                                                        'RNA-seq']:
         detail = 'Alignment file {} produced by {} '.format(file_to_check['@id'],
                                                             pipeline_title) + \
-                 '({}) has {} aligned reads. '.format(pipeline['@id'], read_depth) + \
+                 '( {} ) has {} aligned reads. '.format(pipeline['@id'], read_depth) + \
                  'The minimum ENCODE standard for each replicate in a ' + \
                  '{} assay is {} aligned reads. '.format(assay_term_name, lower_threshold) + \
                  'The recommended value is > {}. '.format(upper_threshold) + \
-                 '(See {})'.format(standards_link)
+                 '(See {} )'.format(standards_link)
         if read_depth >= lower_threshold and read_depth < upper_threshold:
             yield AuditFailure('low read depth', detail, level='WARNING')
             return
@@ -1612,10 +1612,10 @@ def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_thre
     elif read_depth is not False and read_depth < upper_threshold:
         detail = 'Alignment file {} produced by {} '.format(file_to_check['@id'],
                                                             pipeline_title) + \
-                 '({}) has {} aligned reads. '.format(pipeline['@id'], read_depth) + \
+                 '( {} ) has {} aligned reads. '.format(pipeline['@id'], read_depth) + \
                  'The minimum ENCODE standard for each replicate in a ' + \
                  '{} assay is {} aligned reads. '.format(assay_term_name, lower_threshold) + \
-                 '(See {})'.format(standards_link)
+                 '(See {} )'.format(standards_link)
         yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
         return
 
@@ -1658,7 +1658,7 @@ def check_file_read_length_rna(file_to_check, threshold_length, pipeline_title, 
         detail = 'Fastq file {} '.format(file_to_check['@id']) + \
                  'has read length of {}bp. '.format(read_length) + \
                  'ENCODE uniform processing pipelines ({}) '.format(pipeline_title) + \
-                 'require sequencing reads to be at least {}bp long. ({})'.format(
+                 'require sequencing reads to be at least {}bp long. ( {} )'.format(
                      threshold_length,
                      standard_link)
 
