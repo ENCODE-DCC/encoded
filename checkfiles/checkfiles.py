@@ -213,7 +213,8 @@ def process_fastq_file(job, fastq_data_stream, session, url):
     try:
         line_index = 0
         for encoded_line in fastq_data_stream.stdout:
-            line = encoded_line.decode()
+            line = encoded_line.decode('utf-8')
+            print (line)
             line_index += 1
             if line_index == 1:
                 read_name = line.strip()
