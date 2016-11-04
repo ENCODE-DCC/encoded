@@ -185,6 +185,93 @@ def check_format(encValData, job, path):
         result['validateFiles'] = output.decode(errors='replace').rstrip('\n')
 
 
+def process_almost_new_illumina_read_name(read_name,
+                                          read_numbers_set,
+                                          signatures_set,
+                                          signatures_no_barcode_set):
+    read_name_array = re.split(r'[:\s_]', read_name)
+    flowcell = read_name_array[2]
+    lane_number = read_name_array[3]
+    read_number = read_name_array[-4]
+    read_numbers_set.add(read_number)
+    barcode_index = read_name_array[-1]
+    signatures_set.add(
+        flowcell + ':' + lane_number + ':' +
+        read_number + ':' + barcode_index + ':')
+    signatures_no_barcode_set.add(
+        flowcell + ':' + lane_number + ':' +
+        read_number + ':')
+
+
+def process_prefix_of_illumina_read_name(read_name,
+                                         signatures_set,
+                                         old_illumina_current_prefix):
+    read_number = '1'
+    read_name_array = re.split(r'[:]', read_name)
+
+    flowcell = read_name_array[2]
+    lane_number = read_name_array[3]
+
+    prefix = flowcell + ':' + lane_number
+    if prefix != old_illumina_current_prefix:
+        signatures_set.add(
+            flowcell + ':' + lane_number + ':' +
+            read_number + '::' + read_name)
+        return prefix
+
+
+def process_old_illumina_format(read_name,
+                                read_numbers_set,
+                                old_illumina_current_prefix,
+                                signatures_set):
+    read_number = '1'
+    if read_name[-2:] in ['/1', '/2']:
+        read_numbers_set.add(read_name[-1])
+        read_number = read_name[-1]
+    arr = read_name.split(':')
+
+    prefix = arr[0] + ':' + arr[1]
+    if prefix != old_illumina_current_prefix:
+        flowcell = arr[0][1:]
+        if (flowcell.find('-') != -1 or
+           flowcell.find('_') != -1):
+            flowcell = 'TEMP'
+        lane_number = arr[1]
+        signatures_set.add(
+            flowcell + ':' + lane_number + ':' +
+            read_number + '::' + read_name)
+    return prefix
+
+
+def process_special_read_name(read_name,
+                              words_array,
+                              read_numbers_set,
+                              signatures_set,
+                              signatures_no_barcode_set):
+    read_number = 'not initialized'
+    if len(words_array[0]) > 3 and \
+       words_array[0][-2:] in ['/1', '/2']:
+        read_number = words_array[0][-1]
+        read_numbers_set.add(read_number)
+    read_name_array = re.split(r'[:\s_]', read_name)
+    flowcell = read_name_array[2]
+    lane_number = read_name_array[3]
+    barcode_index = read_name_array[-1]
+    signatures_set.add(
+        flowcell + ':' + lane_number + ':' +
+        read_number + ':' + barcode_index + ':')
+    signatures_no_barcode_set.add(
+        flowcell + ':' + lane_number + ':' +
+        read_number + ':')
+
+
+def process_sequence_line(line, read_lengths_dictionary):
+    length = len(line.strip())
+    if length not in read_lengths_dictionary:
+        read_lengths_dictionary[length] = 0
+    read_lengths_dictionary[length] += 1
+
+
 def process_fastq_file(job, fastq_data_stream, session, url):
     item = job['item']
     errors = job['errors']
@@ -203,7 +290,7 @@ def process_fastq_file(job, fastq_data_stream, session, url):
         '^(@[a-zA-Z\d]+[a-zA-Z\d_-]*:[a-zA-Z\d-]+:[a-zA-Z\d_-]' +
         '+:\d+:\d+:\d+:\d+[/1|/2]*[\s_][12]:[YXN]:[0-9]+:([ACNTG\+]*|[0-9]*))$'
     )
-    weird_read_name = False
+    unrecognized_read_name = False
     read_numbers_set = set()
     signatures_set = set()
     signatures_no_barcode_set = set()
@@ -214,71 +301,39 @@ def process_fastq_file(job, fastq_data_stream, session, url):
         line_index = 0
         for encoded_line in fastq_data_stream.stdout:
             line = encoded_line.decode('utf-8')
-            print (line)
             line_index += 1
             if line_index == 1:
                 read_name = line.strip()
-                words_array = re.split(r'[\s]', read_name)
+                words_array = re.split(r'\s', read_name)
                 if read_name_pattern.match(read_name) is None:
                     if special_read_name_pattern.match(read_name) is not None:
-                        read_number = 'not initialized'
-                        if len(words_array[0]) > 3 and \
-                           words_array[0][-2:] in ['/1', '/2']:
-                            read_number = words_array[0][-1]
-                            read_numbers_set.add(read_number)
-                        read_name_array = re.split(r'[:\s_]', read_name)
-                        flowcell = read_name_array[2]
-                        lane_number = read_name_array[3]
-                        barcode_index = read_name_array[-1]
-                        signatures_set.add(
-                            flowcell + ':' + lane_number + ':' +
-                            read_number + ':' + barcode_index + ':')
-                        signatures_no_barcode_set.add(
-                            flowcell + ':' + lane_number + ':' +
-                            read_number + ':')
+                        process_special_read_name(read_name,
+                                                  words_array,
+                                                  read_numbers_set,
+                                                  signatures_set,
+                                                  signatures_no_barcode_set)
                     else:
                         # unrecognized read_name_format
-                        # current convention is to include WHOLE 
+                        # current convention is to include WHOLE
                         # readname at the end of the signature
                         if len(words_array) == 1:
                             if read_name_prefix.match(read_name) is not None:
                                 # new illumina without second part
-                                read_number = '1'
-                                read_name_array = re.split(r'[:]', read_name)
-
-                                flowcell = read_name_array[2]
-                                lane_number = read_name_array[3]
-
-                                prefix = flowcell + ':' + lane_number
-                                if prefix != old_illumina_current_prefix:
-                                    old_illumina_current_prefix = prefix
-
-                                    signatures_set.add(
-                                        flowcell + ':' + lane_number + ':' +
-                                        read_number + '::' + read_name)
+                                old_illumina_current_prefix = process_prefix_of_illumina_read_name(
+                                    read_name,
+                                    signatures_set,
+                                    old_illumina_current_prefix)
 
                             elif len(read_name) > 3 and read_name.count(':') > 2:
                                 # assuming old illumina format
-                                read_number = '1'
-                                if read_name[-2:] in ['/1', '/2']:
-                                    read_numbers_set.add(read_name[-1])
-                                    read_number = read_name[-1]
-                                arr = read_name.split(':')
-
-
-                                prefix = arr[0] + ':' + arr[1]
-                                if prefix != old_illumina_current_prefix:
-                                    old_illumina_current_prefix = prefix
-                                    flowcell = arr[0][1:]
-                                    if (flowcell.find('-') != -1 or
-                                       flowcell.find('_') != -1):
-                                        flowcell = 'TEMP'
-                                    lane_number = arr[1]
-                                    signatures_set.add(
-                                        flowcell + ':' + lane_number + ':' +
-                                        read_number + '::' + read_name)
+                                old_illumina_current_prefix = process_old_illumina_format(
+                                    read_name,
+                                    read_numbers_set,
+                                    old_illumina_current_prefix,
+                                    signatures_set)
                             else:
-                                weird_read_name = read_name
+                                # unrecognized
+                                unrecognized_read_name = read_name
                                 errors['fastq_format_readname'] = \
                                     'submitted fastq file does not ' + \
                                     'comply with illumina fastq read name format, ' + \
@@ -286,31 +341,20 @@ def process_fastq_file(job, fastq_data_stream, session, url):
 
                 else:  # found a match to the regex of "almost" illumina read_name
                     if len(words_array) == 2:
-                        read_name_array = re.split(r'[:\s_]', read_name)
-                        flowcell = read_name_array[2]
-                        lane_number = read_name_array[3]
-                        read_number = read_name_array[-4]
-                        read_numbers_set.add(read_number)
-                        barcode_index = read_name_array[-1]
-                        signatures_set.add(
-                            flowcell + ':' + lane_number + ':' +
-                            read_number + ':' + barcode_index + ':')
-                        signatures_no_barcode_set.add(
-                            flowcell + ':' + lane_number + ':' +
-                            read_number + ':')
+                        process_almost_new_illumina_read_name(read_name,
+                                                              read_numbers_set,
+                                                              signatures_set,
+                                                              signatures_no_barcode_set)
 
             if line_index == 2:
                 read_count += 1
-                length = len(line.strip())
-                if length not in read_lengths_dictionary:
-                    read_lengths_dictionary[length] = 0
-                read_lengths_dictionary[length] += 1
+                process_sequence_line(line, read_lengths_dictionary)
             line_index = line_index % 4
     except IOError:
         errors['unzipped_fastq_streaming'] = 'Error occured, while streaming unzipped fastq.'
     else:
-        if weird_read_name is not False:
-            print ('example of not illumina read_name ' + weird_read_name)
+        if unrecognized_read_name is not False:
+            print ('example of not illumina read_name ' + unrecognized_read_name)
         # read_count update
         result['read_count'] = read_count
 
