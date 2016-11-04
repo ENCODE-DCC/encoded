@@ -459,6 +459,7 @@ def audit_experiment_standards_dispatcher(value, system):
                                                             desired_assembly,
                                                             desired_annotation):
             yield failure
+        return
     if value['assay_term_name'] in ['RAMPAGE', 'RNA-seq', 'CAGE',
                                     'shRNA knockdown followed by RNA-seq',
                                     'siRNA knockdown followed by RNA-seq',
@@ -474,7 +475,7 @@ def audit_experiment_standards_dispatcher(value, system):
                                                           desired_annotation,
                                                           standards_version):
             yield failure
-
+        return
     if value['assay_term_name'] == 'ChIP-seq':
         optimal_idr_peaks = scanFilesForOutputType(value['original_files'],
                                                    'optimal idr thresholded peaks')
@@ -483,8 +484,8 @@ def audit_experiment_standards_dispatcher(value, system):
                                                            alignment_files,
                                                            optimal_idr_peaks,
                                                            standards_version):
-                yield failure
-
+            yield failure
+        return
     if standards_version == 'ENC3' and \
             value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
         cpg_quantifications = scanFilesForOutputType(value['original_files'],
@@ -497,6 +498,7 @@ def audit_experiment_standards_dispatcher(value, system):
                                                                cpg_quantifications,
                                                                desired_assembly):
             yield failure
+        return
 
 
 @audit_checker('Experiment', frame=['original_files',
@@ -565,23 +567,33 @@ def check_experiment_dnase_seq_standards(value,
         return
     pipelines = get_pipeline_objects(alignment_files)
     if pipelines is not None and len(pipelines) > 0:
-        for f in alignment_files:
-            if 'assembly' in f and f['assembly'] == desired_assembly:
-                samtools_flagstat_metrics = get_metrics([f],
-                                                        'SamtoolsFlagstatsQualityMetric',
-                                                        desired_assembly)
-                if samtools_flagstat_metrics is not None and \
-                   len(samtools_flagstat_metrics) > 0 and \
-                   'mapped' in samtools_flagstat_metrics[0] and \
-                   samtools_flagstat_metrics[0]['mapped'] < 5000000:
-                    detail = 'Alignment file {} '.format(f['@id']) + \
+        samtools_flagstat_metrics = get_metrics(alignment_files,
+                                                'SamtoolsFlagstatsQualityMetric',
+                                                desired_assembly)
+        if samtools_flagstat_metrics is not None and \
+                len(samtools_flagstat_metrics) > 0:
+            for metric in samtools_flagstat_metrics:
+                if 'mapped' in metric and \
+                   metric['mapped'] < 5000000 and 'quality_metric_of' in metric:
+                    detail = 'Alignment file {} '.format(metric['quality_metric_of']) + \
                              'produced by {} '.format(pipelines[0]['title']) + \
                              '({}) '.format(pipelines[0]['@id']) + \
-                             'has {} '.format(samtools_flagstat_metrics[0]['mapped']) + \
+                             'has {} '.format(metric['mapped']) + \
                              'mapped reads. ' + \
                              'The minimum ENCODE standard for each replicate in a DNase-seq ' + \
                              'experiments is 5 million mapped reads.'
                     yield AuditFailure('low read depth', detail, level='WARNING')
+        elif alignment_files is not None and len(alignment_files) > 0 and \
+                (samtools_flagstat_metrics is None or
+                    len(samtools_flagstat_metrics) == 0):
+            files_list = []
+            for f in alignment_files:
+                files_list.append(f['@id'])
+            detail = 'Alignment files ({}) '.format(', '.join(files_list)) + \
+                     'produced by {} '.format(pipelines[0]['title']) + \
+                     '({}) '.format(pipelines[0]['@id']) + \
+                     'lack read depth information.'
+            yield AuditFailure('missing read depth', detail, level='WARNING')
 
 
 def check_experiment_rna_seq_standards(value,
