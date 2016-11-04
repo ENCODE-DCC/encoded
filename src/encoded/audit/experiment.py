@@ -412,7 +412,7 @@ def audit_experiment_standards_dispatcher(value, system):
     if value['status'] in ['revoked', 'deleted', 'replaced']:
         return
     if 'assay_term_name' not in value or \
-       value['assay_term_name'] not in ['RAMPAGE', 'RNA-seq', 'ChIP-seq', 'CAGE',
+       value['assay_term_name'] not in ['DNase-seq', 'RAMPAGE', 'RNA-seq', 'ChIP-seq', 'CAGE',
                                         'shRNA knockdown followed by RNA-seq',
                                         'siRNA knockdown followed by RNA-seq',
                                         'CRISPR genome editing followed by RNA-seq',
@@ -452,6 +452,13 @@ def audit_experiment_standards_dispatcher(value, system):
     if (value['award']['rfa'] in ['ENCODE2-Mouse', 'ENCODE2']):
         standards_version = 'ENC2'
 
+    if value['assay_term_name'] in ['DNase-seq']:
+        for failure in check_experiment_dnase_seq_standards(value,
+                                                            fastq_files,
+                                                            alignment_files,
+                                                            desired_assembly,
+                                                            desired_annotation):
+            yield failure
     if value['assay_term_name'] in ['RAMPAGE', 'RNA-seq', 'CAGE',
                                     'shRNA knockdown followed by RNA-seq',
                                     'siRNA knockdown followed by RNA-seq',
@@ -543,6 +550,41 @@ def audit_modERN_experiment_standards_dispatcher(value, system):
                                                            'modERN'):
                 yield failure
 
+
+def check_experiment_dnase_seq_standards(value,
+                                         fastq_files,
+                                         alignment_files,
+                                         desired_assembly,
+                                         desired_annotation):
+    pipeline_title = scanFilesForPipelineTitle_not_chipseq(
+        alignment_files,
+        ['GRCh38', 'mm10'],
+        ['DNase-HS pipeline (paired-end)',
+         'DNase-HS pipeline (single-end)'])
+    if pipeline_title is False:
+        return
+    pipelines = get_pipeline_objects(alignment_files)
+    if pipelines is not None and len(pipelines) > 0:
+        for f in alignment_files:
+            if 'assembly' in f and f['assembly'] == desired_assembly:
+                samtools_flagstat_metrics = get_metrics([f],
+                                                        'SamtoolsFlagstatsQualityMetric',
+                                                        desired_assembly)
+                if samtools_flagstat_metrics is not None and \
+                   len(samtools_flagstat_metrics) > 0 and \
+                   'mapped' in samtools_flagstat_metrics[0] and \
+                   samtools_flagstat_metrics[0]['mapped'] < 5000000:
+                    detail = 'Alignment file {} '.format(f['@id']) + \
+                             'produced by {} '.format(pipelines[0]['title']) + \
+                             '({}) '.format(pipelines[0]['@id']) + \
+                             'has {} '.format(samtools_flagstat_metrics[0]['mapped']) + \
+                             'mapped reads. ' + \
+                             'The minimum ENCODE standard for each replicate in a DNase-seq ' + \
+                             'experiments is 5 million mapped reads.'
+                    yield AuditFailure('missing read depth', detail, level='WARNING')
+
+
+                    
 
 def check_experiment_rna_seq_standards(value,
                                        fastq_files,
@@ -887,26 +929,30 @@ def check_experiment_small_rna_standards(experiment,
                                          desired_assembly,
                                          desired_annotation,
                                          upper_limit_read_depth,
-                                         lower_limit_read_depth):
+                                         lower_limit_read_depth,
+                                         standards_link):
     for f in fastq_files:
         if 'run_type' in f and f['run_type'] != 'single-ended':
             detail = 'Small RNA-seq experiment {} '.format(experiment['@id']) + \
                      'contains a file {} '.format(f['@id']) + \
                      'that is not single-ended.'
             yield AuditFailure('non-standard run type', detail, level='WARNING')
+    pipelines = get_pipeline_objects(alignment_files)
+    if pipelines is not None and len(pipelines) > 0:
+        for f in alignment_files:
+            if 'assembly' in f and f['assembly'] == desired_assembly:
+                read_depth = get_file_read_depth_from_alignment(f,
+                                                                get_target(experiment),
+                                                                'small RNA')
 
-    for f in alignment_files:
-        if 'assembly' in f and f['assembly'] == desired_assembly:
-            read_depth = get_file_read_depth_from_alignment(f,
-                                                            get_target(experiment),
-                                                            'small RNA')
-
-            for failure in check_file_read_depth(f, read_depth,
-                                                 upper_limit_read_depth,
-                                                 lower_limit_read_depth,
-                                                 experiment['assay_term_name'],
-                                                 pipeline_title):
-                yield failure
+                for failure in check_file_read_depth(f, read_depth,
+                                                     upper_limit_read_depth,
+                                                     lower_limit_read_depth,
+                                                     experiment['assay_term_name'],
+                                                     pipeline_title,
+                                                     pipelines[0],
+                                                     standards_link):
+                    yield failure
 
     if 'replication_type' not in experiment:
         return
@@ -931,7 +977,8 @@ def check_experiment_cage_rampage_standards(experiment,
                                             desired_annotation,
                                             upper_limit_read_depth,
                                             lower_limit_read_depth,
-                                            standards_version):
+                                            standards_version,
+                                            standards_link):
 
     if standards_version == 'ENC3':
         for f in fastq_files:
@@ -942,19 +989,22 @@ def check_experiment_cage_rampage_standards(experiment,
                     'contains a file {} '.format(f['@id']) + \
                     'that is not paired-ended.'
                 yield AuditFailure('non-standard run type', detail, level='WARNING')
+    pipelines = get_pipeline_objects(alignment_files)
+    if pipelines is not None and len(pipelines) > 0:
+        for f in alignment_files:
+            if 'assembly' in f and f['assembly'] == desired_assembly:
 
-    for f in alignment_files:
-        if 'assembly' in f and f['assembly'] == desired_assembly:
-
-            read_depth = get_file_read_depth_from_alignment(f,
-                                                            get_target(experiment),
-                                                            experiment['assay_term_name'])
-            for failure in check_file_read_depth(f, read_depth,
-                                                 upper_limit_read_depth,
-                                                 lower_limit_read_depth,
-                                                 experiment['assay_term_name'],
-                                                 pipeline_title):
-                yield failure
+                read_depth = get_file_read_depth_from_alignment(f,
+                                                                get_target(experiment),
+                                                                experiment['assay_term_name'])
+                for failure in check_file_read_depth(f, read_depth,
+                                                     upper_limit_read_depth,
+                                                     lower_limit_read_depth,
+                                                     experiment['assay_term_name'],
+                                                     pipeline_title,
+                                                     pipelines[0],
+                                                     standards_link):
+                    yield failure
 
     if 'replication_type' not in experiment:
         return
