@@ -581,10 +581,8 @@ def check_experiment_dnase_seq_standards(value,
                              'mapped reads. ' + \
                              'The minimum ENCODE standard for each replicate in a DNase-seq ' + \
                              'experiments is 5 million mapped reads.'
-                    yield AuditFailure('missing read depth', detail, level='WARNING')
+                    yield AuditFailure('low read depth', detail, level='WARNING')
 
-
-                    
 
 def check_experiment_rna_seq_standards(value,
                                        fastq_files,
