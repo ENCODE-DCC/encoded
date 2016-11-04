@@ -285,7 +285,7 @@ def index_file(request):
             '_source': False,
         })
         if res['hits']['total'] > SEARCH_MAX:
-            invalidated = list(all_uuids(request.root))
+            invalidated = list(all_uuids(request.registry))
         else:
             referencing = {hit['_id'] for hit in res['hits']['hits']}
             invalidated = referencing | updated

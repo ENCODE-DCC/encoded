@@ -2045,6 +2045,11 @@ def audit_experiment_gtex_biosample(value, system):
 def audit_experiment_geo_submission(value, system):
     if value['status'] not in ['released']:
         return
+    if 'assay_term_id' in value and \
+       value['assay_term_id'] in ['NTR:0000612',
+                                  'OBI:0001923',
+                                  'OBI:0002044']:
+        return
     submitted_flag = False
     detail = 'Experiment {} '.format(value['@id']) + \
              'is released, but was not submitted to GEO.'
