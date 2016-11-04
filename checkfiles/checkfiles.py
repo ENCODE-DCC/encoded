@@ -366,52 +366,10 @@ def process_fastq_file(job, fastq_data_stream, session, url):
                     old_illumina_current_prefix,
                     errors)
 
-                read_name = line.strip()
-                words_array = re.split(r'\s', read_name)
-                if read_name_pattern.match(read_name) is None:
-                    if special_read_name_pattern.match(read_name) is not None:
-                        process_special_read_name(read_name,
-                                                  words_array,
-                                                  read_numbers_set,
-                                                  signatures_set,
-                                                  signatures_no_barcode_set)
-                    else:
-                        # unrecognized read_name_format
-                        # current convention is to include WHOLE
-                        # readname at the end of the signature
-                        if len(words_array) == 1:
-                            if read_name_prefix.match(read_name) is not None:
-                                # new illumina without second part
-                                old_illumina_current_prefix = process_prefix_of_illumina_read_name(
-                                    read_name,
-                                    signatures_set,
-                                    old_illumina_current_prefix)
-
-                            elif len(read_name) > 3 and read_name.count(':') > 2:
-                                # assuming old illumina format
-                                old_illumina_current_prefix = process_old_illumina_format(
-                                    read_name,
-                                    read_numbers_set,
-                                    old_illumina_current_prefix,
-                                    signatures_set)
-                            else:
-                                # unrecognized
-
-                                errors['fastq_format_readname'] = \
-                                    'submitted fastq file does not ' + \
-                                    'comply with illumina fastq read name format, ' + \
-                                    'read name was : {}'.format(read_name)
-
-                else:  # found a match to the regex of "almost" illumina read_name
-                    if len(words_array) == 2:
-                        process_almost_new_illumina_read_name(read_name,
-                                                              read_numbers_set,
-                                                              signatures_set,
-                                                              signatures_no_barcode_set)
-
             if line_index == 2:
                 read_count += 1
                 process_sequence_line(line, read_lengths_dictionary)
+
             line_index = line_index % 4
     except IOError:
         errors['unzipped_fastq_streaming'] = 'Error occured, while streaming unzipped fastq.'
