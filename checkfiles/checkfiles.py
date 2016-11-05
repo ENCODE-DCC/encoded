@@ -715,10 +715,6 @@ def patch_file(session, url, job):
     item = job['item']
     result = job['result']
     errors = job['errors']
-    if errors:
-        return
-    item_url = urljoin(url, job['@id'])
-
     data = None
     if not errors:
         data = {
@@ -754,6 +750,7 @@ def patch_file(session, url, job):
                 'status': 'upload failed'
                 }
     if data:
+        item_url = urljoin(url, job['@id'])
         r = session.patch(
             item_url,
             data=json.dumps(data),
