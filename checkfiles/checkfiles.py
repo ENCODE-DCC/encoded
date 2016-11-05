@@ -719,6 +719,7 @@ def patch_file(session, url, job):
         return
     item_url = urljoin(url, job['@id'])
 
+    data = None
     if not errors:
         data = {
             'status': 'in progress',
@@ -732,6 +733,27 @@ def patch_file(session, url, job):
 
         if 'content_md5sum' in result:
             data['content_md5sum'] = result['content_md5sum']
+    else:
+        to_patch = True
+        for e in errors.keys():
+            if e in [
+               'unzipped_fastq_streaming',
+               'lookup_for_fastq_signature',
+               'lookup_for_content_md5sum',
+               'file_not_found',
+               'bed_unzip_failure',
+               'grep_bed_problem',
+               'bed_comments_remove_failure',
+               'content_md5sum_calculation',
+               'file_remove_error',
+               'fastq_information_extraction']:
+                to_patch = False
+                break
+        if to_patch:
+            data = {
+                'status': 'upload failed'
+                }
+    if data:
         r = session.patch(
             item_url,
             data=json.dumps(data),
@@ -751,7 +773,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
         processes=None, include_unexpired_upload=False, dry_run=False, json_out=False):
     import functools
     import multiprocessing
-    
+
     session = requests.Session()
     session.auth = (username, password)
     session.headers['Accept'] = 'application/json'
