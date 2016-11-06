@@ -21,7 +21,7 @@ $pipeline-node-types:
             }
         }
 
-        &.error {
+        &.error, &.restricted {
             fill: #ffc0c0;
         }
 

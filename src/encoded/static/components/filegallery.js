@@ -1463,7 +1463,7 @@ export function assembleGraph(context, session, adminUser, infoNodeId, files, fi
                 fileRef = null;
             } else {
                 fileNodeLabel = `${file.title} (${file.output_type})`;
-                fileCssClass = `pipeline-node-file${(fileContributed ? ' contributing' : '') + (infoNodeId === fileNodeId ? ' active' : '')}`;
+                fileCssClass = `pipeline-node-file${fileContributed ? ' contributing' : ''}${file.restricted ? ' restricted' : ''}${infoNodeId === fileNodeId ? ' active' : ''}`;
                 fileRef = file;
             }
             jsonGraph.addNode(fileNodeId, fileNodeLabel, {
