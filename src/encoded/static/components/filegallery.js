@@ -16,7 +16,7 @@ const { SortTablePanel, SortTable } = require('./sorttable');
 const { AttachmentPanel } = require('./doc');
 
 
-const MINIMUM_COALESCE_COUNT = 3; // Minimum number of files in a coalescing group
+const MINIMUM_COALESCE_COUNT = 5; // Minimum number of files in a coalescing group
 
 
 // Order that assemblies should appear in filtering menu
@@ -1673,11 +1673,13 @@ function coalescedDetailsView(node) {
         <h4>Selected contributing files</h4>
     );
     const body = (
-        <SortTable
-            list={node.metadata.ref}
-            columns={coalescedFileColumns}
-            sortColumn="accession"
-        />
+        <div className="coalesced-table">
+            <SortTable
+                list={node.metadata.ref}
+                columns={coalescedFileColumns}
+                sortColumn="accession"
+            />
+        </div>
     );
     return { header: header, body: body };
 }
