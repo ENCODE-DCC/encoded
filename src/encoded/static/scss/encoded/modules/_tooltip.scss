@@ -41,6 +41,8 @@ $tooltip-color: #000;
 }
 
 .tooltip {
+    visibility: hidden;
+
     &.right {
         transform: translateY(-50%);
         left: 100%;
@@ -67,6 +69,7 @@ $tooltip-color: #000;
 }
 
 .tooltip-open {
+    visibility: visible;
     opacity: 1;
 }
 

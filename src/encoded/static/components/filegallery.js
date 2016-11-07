@@ -31,6 +31,33 @@ const assemblyPriority = [
 ];
 
 
+// Render an accession as a button if clicking it sets a graph node, or just as text if not.
+const FileAccessionButton = React.createClass({
+    propTypes: {
+        file: React.PropTypes.object.isRequired, // File whose button is being rendered
+        buttonEnabled: React.PropTypes.bool, // True if accession should be a button
+        clickHandler: React.PropTypes.func, // Function to call when the button is clicked
+    },
+
+    onClick: function () {
+        this.props.clickHandler(`file:${this.props.file['@id']}`);
+    },
+
+    render: function () {
+        const { file, buttonEnabled } = this.props;
+        return (
+            <span>
+                {buttonEnabled ?
+                    <span><button className="file-table-btn" onClick={this.onClick}>{file.accession}</button>&nbsp;</span>
+                :
+                    <span>{file.accession}&nbsp;</span>
+                }
+            </span>
+        );
+    },
+});
+
+
 // Render a download button for a file that reacts to login state and admin status to render a
 // tooltip about the restriction based on those things.
 const RestrictedDownloadButton = React.createClass({
@@ -121,6 +148,27 @@ const RestrictedDownloadButton = React.createClass({
                     </div>
                 : null}
             </div>
+        );
+    },
+});
+
+
+const DownloadableAccession = React.createClass({
+    propTypes: {
+        file: React.PropTypes.object.isRequired, // File whose accession to render
+        buttonEnabled: React.PropTypes.bool, // True if accession should be a button
+        clickHandler: React.PropTypes.func, // Function to call when button is clicked
+        loggedIn: React.PropTypes.bool, // True if current user is logged in
+        adminUser: React.PropTypes.bool, // True if current user is logged in and admin
+    },
+
+    render: function () {
+        const { file, buttonEnabled, clickHandler, loggedIn, adminUser } = this.props;
+        return (
+            <span className="file-table-accession">
+                <FileAccessionButton file={file} buttonEnabled={buttonEnabled} clickHandler={clickHandler} />
+                <RestrictedDownloadButton file={file} loggedIn={loggedIn} adminUser={adminUser} />
+            </span>
         );
     },
 });
@@ -222,13 +270,8 @@ export const FileTable = React.createClass({
             title: 'Accession',
             display: (item, meta) => {
                 const { loggedIn, adminUser } = meta;
-
-                return (
-                    <span>
-                        <FileTableButton file={item} graphedFiles={meta.graphedFiles} clickHandler={meta.fileClick} />
-                        <RestrictedDownloadButton file={item} loggedIn={loggedIn} adminUser={adminUser} />
-                    </span>
-                );
+                const buttonEnabled = !!meta.graphedFiles[item['@id']];
+                return <DownloadableAccession file={item} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick} loggedIn={loggedIn} adminUser={adminUser} />;
             },
         },
         file_type: { title: 'File type' },
@@ -277,13 +320,8 @@ export const FileTable = React.createClass({
             title: 'Accession',
             display: (item, meta) => {
                 const { loggedIn, adminUser } = meta;
-
-                return (
-                    <span>
-                        <FileTableButton file={item} graphedFiles={meta.graphedFiles} clickHandler={meta.fileClick} />
-                        <RestrictedDownloadButton file={item} loggedIn={loggedIn} adminUser={adminUser} />
-                    </span>
-                );
+                const buttonEnabled = !!meta.graphedFiles[item['@id']];
+                return <DownloadableAccession file={item} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick} loggedIn={loggedIn} adminUser={adminUser} />;
             },
         },
         file_type: { title: 'File type' },
@@ -488,34 +526,6 @@ export const FileTable = React.createClass({
 });
 
 
-const FileTableButton = React.createClass({
-    propTypes: {
-        file: React.PropTypes.object.isRequired, // File whose button is being rendered
-        graphedFiles: React.PropTypes.object.isRequired, // Object holding @ids of files actually in the graph
-        clickHandler: React.PropTypes.func.isRequired, // Function to call when the button is clicked
-    },
-
-    onClick: function () {
-        const nodeId = `file:${this.props.file['@id']}`;
-        this.props.clickHandler(nodeId);
-    },
-
-    render: function () {
-        const { file, graphedFiles } = this.props;
-        const fileInGraph = !!graphedFiles[file['@id']];
-        return (
-            <span>
-                {fileInGraph ?
-                    <span><button className="btn btn-info btn-xs" onClick={this.onClick}>{file.accession}</button>&nbsp;</span>
-                :
-                    <span>{file.accession}&nbsp;</span>
-                }
-            </span>
-        );
-    },
-});
-
-
 function sortBioReps(a, b) {
     // Sorting function for biological replicates of the given files.
     let result; // Ends sorting loop once it has a value
@@ -690,12 +700,14 @@ const RawSequencingTable = React.createClass({
                                         runType = 'PE';
                                     }
 
+                                    // Determine if accession should be a button or not
+                                    const buttonEnabled = !!meta.graphedFiles[file['@id']];
+
                                     return (
                                         <tr key={i} className={file.restricted ? 'file-restricted' : ''}>
                                             {i === 0 ? { spanned } : null}
                                             <td className={pairClass}>
-                                                <FileTableButton file={file} graphedFiles={meta.graphedFiles} clickHandler={meta.fileClick} />
-                                                <RestrictedDownloadButton file={file} loggedIn={loggedIn} adminUser={adminUser} />
+                                                <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick} loggedIn={loggedIn} adminUser={adminUser} />;
                                             </td>
                                             <td className={pairClass}>{file.file_type}</td>
                                             <td className={pairClass}>{runType}{file.read_length ? <span>{runType ? <span /> : null}{file.read_length + file.read_length_units}</span> : null}</td>
@@ -722,13 +734,15 @@ const RawSequencingTable = React.createClass({
                                     file.restricted ? 'file-restricted' : null,
                                 ];
 
+                                // Determine if accession should be a button or not.
+                                const buttonEnabled = !!meta.graphedFiles[file['@id']];
+
                                 return (
                                     <tr key={i} className={rowClasses.join(' ')}>
                                         <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : ''}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
                                         <td>
-                                            <FileTableButton file={file} graphedFiles={meta.graphedFiles} clickHandler={meta.fileClick} />
-                                            <RestrictedDownloadButton file={file} loggedIn={loggedIn} adminUser={adminUser} />
+                                            <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick} loggedIn={loggedIn} adminUser={adminUser} />;
                                         </td>
                                         <td>{file.file_type}</td>
                                         <td>{runType}{file.read_length ? <span>{runType ? <span /> : null}{file.read_length + file.read_length_units}</span> : null}</td>
@@ -858,13 +872,15 @@ const RawFileTable = React.createClass({
                                         pairClass = 'align-pair1';
                                     }
 
+                                    // Determine if the accession should be a button or not.
+                                    const buttonEnabled = !!meta.graphedFiles[file['@id']];
+
                                     // Prepare for run_type display
                                     return (
                                         <tr key={i} className={file.restricted ? 'file-restricted' : ''}>
                                             {i === 0 ? { spanned } : null}
                                             <td className={pairClass}>
-                                                <FileTableButton file={file} graphedFiles={meta.graphedFiles} clickHandler={meta.fileClick} />
-                                                <RestrictedDownloadButton file={file} loggedIn={loggedIn} adminUser={adminUser} />
+                                                <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick} loggedIn={loggedIn} adminUser={adminUser} />;
                                             </td>
                                             <td className={pairClass}>{file.file_type}</td>
                                             <td className={pairClass}>{file.output_type}</td>
@@ -885,13 +901,15 @@ const RawFileTable = React.createClass({
                                     file.restricted ? 'file-restricted' : null,
                                 ];
 
+                                // Determine if accession should be a button or not.
+                                const buttonEnabled = !!meta.graphedFiles[file['@id']];
+
                                 return (
                                     <tr key={i} className={rowClasses.join(' ')}>
                                         <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : ''}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
                                         <td>
-                                            <FileTableButton file={file} graphedFiles={meta.graphedFiles} clickHandler={meta.fileClick} />
-                                            <RestrictedDownloadButton file={file} loggedIn={loggedIn} adminUser={adminUser} />
+                                            <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick} loggedIn={loggedIn} adminUser={adminUser} />;
                                         </td>
                                         <td>{file.file_type}</td>
                                         <td>{file.output_type}</td>
@@ -1552,6 +1570,7 @@ const FileGalleryRenderer = React.createClass({
                         setInfoNodeId={this.setInfoNodeId}
                         infoNodeVisible={this.state.infoNodeVisible}
                         setInfoNodeVisible={this.setInfoNodeVisible}
+                        adminUser={!!this.context.session_properties.admin}
                         forceRedraw
                     />
                 : null}
@@ -2036,10 +2055,7 @@ const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
                     {selectedFile.href ?
                         <div data-test="download">
                             <dt>File download</dt>
-                            <dd>
-                                <div className="restricted-accession">{selectedFile.title}&nbsp;</div>
-                                <RestrictedDownloadButton file={selectedFile} loggedIn={loggedIn} adminUser={adminUser} />
-                            </dd>
+                            <dd><DownloadableAccession file={selectedFile} loggedIn={loggedIn} adminUser={adminUser} /></dd>
                         </div>
                     : null}
 

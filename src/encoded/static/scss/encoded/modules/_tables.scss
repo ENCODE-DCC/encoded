@@ -2,7 +2,6 @@
 
 $file-restricted-bg: #ffdcda; // Background color of restricted files
 
-
 table {
     font-size: 0.9rem;
 }
@@ -300,4 +299,16 @@ table.table-raw {
 .restricted-accession {
     display: inline-block;
     position: relative;
+}
+
+.file-table-accession {
+    white-space: nowrap;
+}
+
+.file-table-btn {
+    @extend .btn;
+    @extend .btn-info;
+    @extend .btn-xs;
+
+    font-weight: normal !important;
 }
