@@ -56,13 +56,14 @@ def audit_file_bam_derived_from(value, system):
        'derived_from' in value and len(value['derived_from']) == 0:
         return
     derived_from_files = value.get('derived_from')
-    raw_data_counter = 0
+    fastq_bam_counter = 0
     for f in derived_from_files:
         if f['status'] not in ['deleted', 'replaced', 'revoked'] and \
-           (f['file_format'] == 'fastq' or (f['file_format'] == 'fasta' and
+           (f['file_format'] == 'bam' or
+            f['file_format'] == 'fastq' or (f['file_format'] == 'fasta' and
                                             f['output_type'] == 'reads' and
                                             f['output_category'] == 'raw data')):
-            raw_data_counter += 1
+            fastq_bam_counter += 1
             if f['dataset'] != value['dataset']:
                 detail = 'derived_from is a list of files that were used to create a given file; ' + \
                          'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
@@ -73,7 +74,7 @@ def audit_file_bam_derived_from(value, system):
                          'in its derived_from list.'
                 yield AuditFailure('inconsistent derived_from',
                                    detail, level='INTERNAL_ACTION')
-    if raw_data_counter == 0:
+    if fastq_bam_counter == 0:
         detail = 'derived_from is a list of files that were used to create a given file; ' + \
                  'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
                  'Alignments file {} '.format(value['@id']) + \
@@ -463,11 +464,10 @@ def audit_file_controlled_by(value, system):
                 return
 
 
-@audit_checker('file', frame='object', condition=rfa('modERN', 'GGR'))
+@audit_checker('file', frame='object', condition=rfa('modERN', 'GGR', 'ENCODE3'))
 def audit_file_flowcells(value, system):
     '''
     A fastq file could have its flowcell details.
-    Don't bother to check anything but ENCODE3
     '''
 
     if value['status'] in ['deleted', 'replaced', 'revoked']:

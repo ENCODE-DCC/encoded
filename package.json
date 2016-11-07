@@ -46,6 +46,7 @@
     "webpack": "^1.13.0"
   },
   "dependencies": {
+    "auth0-lock": "^10.4.0",
     "babel-polyfill": "^6.7.4",
     "brace": "^0.3.0",
     "chart.js": "^2.1.4",
@@ -62,7 +63,6 @@
     "moment": "^2.8.2",
     "query-string": "^4.1.0",
     "react": "^0.12.2",
-    "react-bootstrap": "^0.15.1",
     "react-forms": "git+https://github.com/lrowe/react-forms.git#3953a633b1f77640dffb5e3f1d5bbe78a98c3dfe",
     "scriptjs": "^2.5.7",
     "source-map-support": "^0.2.7",
