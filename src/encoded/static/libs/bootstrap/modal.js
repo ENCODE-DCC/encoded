@@ -61,6 +61,7 @@ import cloneWithProps from 'react/lib/cloneWithProps';
 
 export const ModalHeader = React.createClass({
     propTypes: {
+        addCss: React.PropTypes.string, // CSS classes to add to modal header
         title: React.PropTypes.oneOfType([
             React.PropTypes.string, // String to display as an <h4> title
             React.PropTypes.object, // React component to display for the title
@@ -84,7 +85,7 @@ export const ModalHeader = React.createClass({
     },
 
     render: function () {
-        const { title, closeModal } = this.props;
+        const { title, closeModal, addCss } = this.props;
         let titleRender = null;
 
         // Handle the string and React component cases for the title
@@ -98,7 +99,7 @@ export const ModalHeader = React.createClass({
         }
 
         return (
-            <div className="modal-header">
+            <div className={`modal-header${addCss ? ` ${addCss}` : ''}`}>
                 {closeModal ? <button type="button" className="close" aria-label="Close" onClick={this.closeModal}><span aria-hidden="true">&times;</span></button> : null}
                 {titleRender ? <div>{titleRender}</div> : null}
                 {this.props.children}

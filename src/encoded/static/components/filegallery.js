@@ -1359,7 +1359,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
             if (fileQcMetrics[fileId] && fileQcMetrics[fileId].length && file.step_run) {
                 metricsInfo = fileQcMetrics[fileId].map((metric) => {
                     const qcId = genQcId(metric, file);
-                    return { id: qcId, label: 'QC', class: `pipeline-node-qc-metric${infoNodeId === qcId ? ' active' : ''}`, ref: metric, parent: file };
+                    return { id: qcId, label: 'QC', '@type': ['QualityMetric'], class: `pipeline-node-qc-metric${infoNodeId === qcId ? ' active' : ''}`, ref: metric, parent: file };
                 });
             }
 
@@ -1836,12 +1836,14 @@ const FileGraph = React.createClass({
                 const node = jsonGraph.getNode(infoNodeId);
                 if (node) {
                     meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, loggedIn, adminUser);
+                    meta.type = node['@type'][0];
                 }
             } else {
                 // QC subnode
                 const subnode = jsonGraph.getSubnode(infoNodeId);
                 if (subnode) {
                     meta = qcDetailsView(subnode);
+                    meta.type = subnode['@type'][0];
                 }
             }
         }
@@ -1869,6 +1871,11 @@ const FileGraph = React.createClass({
         const { session, adminUser, items, graph, selectedAssembly, selectedAnnotation, infoNodeId, infoNodeVisible } = this.props;
         const loggedIn = !!(session && session['auth.userid']);
         const files = items;
+        const modalTypeMap = {
+            'File': 'file',
+            'Step': 'analysis-step',
+            'QualityMetric': 'quality-metric',
+        };
 
         // Build node graph of the files and analysis steps with this experiment
         if (files && files.length) {
@@ -1877,6 +1884,7 @@ const FileGraph = React.createClass({
             if (goodGraph) {
                 if (selectedAssembly || selectedAnnotation) {
                     const meta = this.detailNodes(graph, infoNodeId, loggedIn, adminUser);
+                    const modalClass = meta ? `graph-modal-${modalTypeMap[meta.type]}` : '';
 
                     return (
                         <div>
@@ -1892,7 +1900,7 @@ const FileGraph = React.createClass({
                             <div className={`file-gallery-graph-footer${this.state.collapsed ? ' hiding' : ''}`} />
                             {meta && infoNodeVisible ?
                                 <Modal closeModal={this.closeModal}>
-                                    <ModalHeader closeModal={this.closeModal}>
+                                    <ModalHeader closeModal={this.closeModal} addCss={modalClass}>
                                         {meta ? meta.header : null}
                                     </ModalHeader>
                                     <ModalBody>
