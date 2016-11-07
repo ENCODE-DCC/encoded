@@ -3,7 +3,7 @@ var React = require('react/addons');
 var panel = require('../libs/bootstrap/panel');
 var button = require('../libs/bootstrap/button');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
-var {SvgIcon, CollapseIcon} = require('../libs/svg-icons');
+var {SvgIcon} = require('../libs/svg-icons');
 var _ = require('underscore');
 var globals = require('./globals');
 var navigation = require('./navigation');
@@ -17,7 +17,7 @@ var software = require('./software');
 var {SortTablePanel, SortTable} = require('./sorttable');
 var image = require('./image');
 var doc = require('./doc');
-var {FileTable, DatasetFiles} = require('./filegallery');
+var {DatasetFiles} = require('./filegallery');
 var {FileGallery} = require('./filegallery');
 
 var Breadcrumbs = navigation.Breadcrumbs;
@@ -25,7 +25,7 @@ var DbxrefList = dbxref.DbxrefList;
 var FetchedItems = fetched.FetchedItems;
 var StatusLabel = statuslabel.StatusLabel;
 var PubReferenceList = reference.PubReferenceList;
-var SoftwareVersionList = software.SoftwareVersionList;
+var softwareVersionList = software.softwareVersionList;
 var DocumentsPanel = doc.DocumentsPanel;
 var {AuditIndicators, AuditDetail, AuditIcon, AuditMixin} = audit;
 var ProjectBadge = image.ProjectBadge;
@@ -186,7 +186,7 @@ var Annotation = React.createClass({
                                     {context.software_used && context.software_used.length ?
                                         <div data-test="softwareused">
                                             <dt>Software used</dt>
-                                            <dd>{SoftwareVersionList(context.software_used)}</dd>
+                                            <dd>{softwareVersionList(context.software_used)}</dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -504,7 +504,7 @@ var Reference = React.createClass({
                                     {context.software_used && context.software_used.length ?
                                         <div data-test="softwareused">
                                             <dt>Software used</dt>
-                                            <dd>{SoftwareVersionList(context.software_used)}</dd>
+                                            <dd>{softwareVersionList(context.software_used)}</dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -686,7 +686,7 @@ var Project = React.createClass({
                                     {context.software_used && context.software_used.length ?
                                         <div data-test="softwareused">
                                             <dt>Software used</dt>
-                                            <dd>{SoftwareVersionList(context.software_used)}</dd>
+                                            <dd>{softwareVersionList(context.software_used)}</dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -855,7 +855,7 @@ var UcscBrowserComposite = React.createClass({
                                     {context.software_used && context.software_used.length ?
                                         <div data-test="software-used">
                                             <dt>Software used</dt>
-                                            <dd>{SoftwareVersionList(context.software_used)}</dd>
+                                            <dd>{softwareVersionList(context.software_used)}</dd>
                                         </div>
                                     : null}
                                 </dl>

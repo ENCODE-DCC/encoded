@@ -741,6 +741,9 @@
         "analysis_step_version": {
             "title": "Analysis Step Version"
         },
+        "restricted": {
+            "title": "Restricted file"
+        },
         "status": {
             "title": "File status"
         }
