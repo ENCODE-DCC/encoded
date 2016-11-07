@@ -125,7 +125,7 @@ var Annotation = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -313,7 +313,7 @@ var PublicationData = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -468,7 +468,7 @@ var Reference = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -629,7 +629,7 @@ var Project = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -812,7 +812,7 @@ var UcscBrowserComposite = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -1261,7 +1261,7 @@ var Series = module.exports.Series = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">

@@ -1,19 +1,19 @@
-const React = require('react');
-const globals = require('./globals');
-const { Panel, PanelHeading } = require('../libs/bootstrap/panel');
-const { Modal, ModalHeader, ModalBody, ModalFooter } = require('../libs/bootstrap/modal');
-const { DropdownButton } = require('../libs/bootstrap/button');
-const { DropdownMenu } = require('../libs/bootstrap/dropdown-menu');
-const { AuditIcon } = require('./audit');
-const { StatusLabel } = require('./statuslabel');
-const { Graph, JsonGraph } = require('./graph');
-const { softwareVersionList } = require('./software');
-const { FetchedItems, FetchedData, Param } = require('./fetched');
-const _ = require('underscore');
-const moment = require('moment');
-const { collapseIcon } = require('../libs/svg-icons');
-const { SortTablePanel, SortTable } = require('./sorttable');
-const { AttachmentPanel } = require('./doc');
+import React from 'react';
+import globals from './globals';
+import { Panel, PanelHeading } from '../libs/bootstrap/panel';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
+import { DropdownButton } from '../libs/bootstrap/button';
+import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
+import { StatusLabel } from './statuslabel';
+import { Graph, JsonGraph } from './graph';
+import { softwareVersionList } from './software';
+import { FetchedItems, FetchedData, Param } from './fetched';
+import _ from 'underscore';
+import moment from 'moment';
+import { collapseIcon } from '../libs/svg-icons';
+import { SortTablePanel, SortTable } from './sorttable';
+import { AttachmentPanel } from './doc';
+import { AuditMixin, AuditIndicators, AuditDetail, AuditIcon } from './audit';
 
 
 // Order that assemblies should appear in filtering menu
@@ -1816,6 +1816,8 @@ const FileGraph = React.createClass({
         adminUser: React.PropTypes.bool, // True if logged in user is an admin
     },
 
+    mixins: [AuditMixin],
+
     getInitialState: function () {
         return {
             infoModalOpen: false, // Graph information modal open
@@ -1865,6 +1867,7 @@ const FileGraph = React.createClass({
     closeModal: function () {
         // Called when user wants to close modal somehow
         this.props.setInfoNodeVisible(false);
+        this.auditStateClosed();
     },
 
     render: function () {
@@ -1872,9 +1875,9 @@ const FileGraph = React.createClass({
         const loggedIn = !!(session && session['auth.userid']);
         const files = items;
         const modalTypeMap = {
-            'File': 'file',
-            'Step': 'analysis-step',
-            'QualityMetric': 'quality-metric',
+            File: 'file',
+            Step: 'analysis-step',
+            QualityMetric: 'quality-metric',
         };
 
         // Build node graph of the files and analysis steps with this experiment
@@ -1977,6 +1980,14 @@ const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
                 <h4>{selectedFile.file_type} {selectedFile.accession}</h4>
             </div>
         );
+
+        // Determine if the file has audits or not.
+        let fileAudits = false;
+        if (selectedFile.audit) {
+            const fileAuditKeys = Object.keys(selectedFile.audit);
+            fileAudits = !!(fileAuditKeys && fileAuditKeys.length);
+        }
+
         body = (
             <div>
                 <dl className="key-value">
@@ -2078,6 +2089,16 @@ const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
                         </div>
                     : null}
                 </dl>
+
+                {fileAudits ?
+                    <div className="row graph-modal-audits">
+                        <div className="col-xs-12">
+                            <h5>File audits:</h5>
+                            <AuditIndicators audits={selectedFile.audit} id="qc-audit" />
+                            <AuditDetail audits={selectedFile.audit} except={selectedFile['@id']} id="qc-audit" />
+                        </div>
+                    </div>
+                : null}
             </div>
         );
     } else {

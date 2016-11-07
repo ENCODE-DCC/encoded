@@ -215,7 +215,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="biosample-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="biosample-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody>
                         <dl className="key-value">
@@ -483,7 +483,7 @@ var Listing = React.createClass({
                         : null}
                     </div>
                 </div>
-                <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
+                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     }

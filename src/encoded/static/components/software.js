@@ -72,7 +72,7 @@ var Software = module.exports.Software = React.createClass({
                         <AuditIndicators audits={context.audit} id="publication-audit" />
                     </div>
                 </header>
-                <AuditDetail context={context} id="publication-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="publication-audit" />
 
                 <div className="panel">
                     <dl className="key-value">
@@ -192,7 +192,7 @@ var Listing = React.createClass({
 
                     </div>
                 </div>
-                <AuditDetail context={result} id={result['@id']} forcedEditLink />
+                <AuditDetail audits={result.audit} except={result['@id']} id={result['@id']} forcedEditLink />
             </li>
         );
     }
