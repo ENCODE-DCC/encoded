@@ -126,7 +126,7 @@ def index_peaks(uuid, request):
 
     if 'assembly' not in context:
         return
-        
+
     assembly = context['assembly']
 
     # Treat mm10-minimal as mm1
@@ -192,7 +192,7 @@ def index_peaks(uuid, request):
         }
         if not es.indices.exists(key):
             es.indices.create(index=key, body=index_settings())
-            
+
         if not es.indices.exists_type(index=key, doc_type=assembly):
             es.indices.put_mapping(index=key, doc_type=assembly, body=get_mapping(assembly))
 
@@ -290,11 +290,7 @@ def index_file(request):
             '_source': False,
         })
         if res['hits']['total'] > SEARCH_MAX:
-<<<<<<< HEAD
-            invalidated = list(all_uuids(registry))
-=======
             invalidated = list(all_uuids(request.registry))
->>>>>>> master
         else:
             referencing = {hit['_id'] for hit in res['hits']['hits']}
             invalidated = referencing | updated

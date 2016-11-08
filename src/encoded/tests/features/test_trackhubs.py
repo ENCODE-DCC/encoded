@@ -46,7 +46,7 @@ def test_genomes(testapp, workbook, expected):
     "        track ENCFF762DWI",
     "        parent ENCSR575ZXX_cSTATE_view on",
     "        bigDataUrl /files/ENCFF762DWI/@@download/ENCFF762DWI.bigBed?proxy=true",
-    "        longLabel Encyclopedia annotation of IMR-90 semi-automated genome annotation pool ENCSR575ZXX - ENCFF762DWI",
+    "        longLabel ENCSR575ZXX: Encyclopedia annotation of IMR-90 semi-automated genome annotation pool - ENCFF762DWI",
     "        shortLabel pool saga",
     "        type bigBed",
     "        subGroups BS=IMR4590 REP=pool view=cSTATE",
@@ -78,7 +78,7 @@ def test_dataset_trackDb(testapp, workbook, expected):
     "        track ENCFF003COS",
     "        parent ENCSR727WCB_PK_view on",
     "        bigDataUrl /files/ENCFF003COS/@@download/ENCFF003COS.bigBed?proxy=true",
-    "        longLabel Unknown Assay of &#91;&#93; optimal idr thresholded peaks pool ENCSR727WCB - ENCFF003COS",
+    "        longLabel ENCSR727WCB: Unknown Assay of &#91;&#93; optimal idr thresholded peaks pool - ENCFF003COS",
     "        shortLabel pool oIDR pk",
     "        type bigBed",
     "        subGroups BS=z9193 REP=pool view=PK"
