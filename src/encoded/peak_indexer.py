@@ -19,6 +19,8 @@ from snovault.elasticsearch.interfaces import (
     SNP_SEARCH_ES,
 )
 
+import requests
+
 
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
 log = logging.getLogger(__name__)
@@ -199,6 +201,11 @@ def index_peaks(uuid, request, ftype='bed'):
 
     if request.host_url == 'http://localhost':
         host_url = request.host_url + ':8000'
+        test_files = ['/static/test/peak_indexer/ENCFF002COS.bed.gz',
+                      '/static/test/peak_indexer/ENCFF296FFD.tsv',
+                      '/static/test/peak_indexer/ENCFF000PAR.bed.gz']
+        if context['submitted_file_name'] not in test_files:
+            return
         # assume we are running in dev-servers
     else:
         host_url = request.host_url
@@ -216,12 +223,14 @@ def index_tsv(href, request, context, assembly):
     es = request.registry.get(SNP_SEARCH_ES, None)
     annotation = context['genome_annotation']
 
-    urllib3.disable_warnings()
-    http = urllib3.PoolManager(timeout=3.0)
-    dlreq = http.request('GET', href)
+    dlreq = requests.get(href)
 
-    import codecs
-    for row in tsvreader(codecs.iterdecode(dlreq.read, 'utf-8')):
+    comp = io.StringIO()
+    comp.write(dlreq.text)
+    comp.seek(0)
+
+
+    for row in tsvreader(comp):
         transcript_id, gene_id, tpm, fpkm = row[0], row[1], float(row[5]), float(row([6]))
         if tpm > 0.0 or fpkm > 0.0:
             payload = {
@@ -251,35 +260,33 @@ def index_tsv(href, request, context, assembly):
 
 def index_bed(href, request, context, assembly):
 
-    urllib3.disable_warnings()
-    http = urllib3.PoolManager(timeout=3.0)
-    dlreq = http.request('GET', href )
+    dlreq = requests.get(href)
 
-    if not dlreq or dlreq.status != 200:
+    if not dlreq or dlreq.status_code != 200:
         log.warn("File (%s or %s) not found" % (context.get('href',"No href"), context.get('submitted_file_name', 'No submitted file name')))
         return
 
     comp = io.BytesIO()
-    comp.write(dlreq.data)
+    comp.write(dlreq.content)
     comp.seek(0)
-    dlreq.release_conn()
 
     file_data = dict()
     es = request.registry.get(SNP_SEARCH_ES, None)
 
-    with gzip.open(comp, mode='rt') as file:
-        for row in tsvreader(file):
-            chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
-            if isinstance(start, int) and isinstance(end, int):
-                if chrom in file_data:
-                    file_data[chrom].append({
-                        'start': start + 1,
-                        'end': end + 1
-                    })
-                else:
-                    file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
+    import pdb; pdb.set_trace()
+
+    for row in tsvreader(comp):
+        chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
+        if isinstance(start, int) and isinstance(end, int):
+            if chrom in file_data:
+                file_data[chrom].append({
+                    'start': start + 1,
+                    'end': end + 1
+                })
             else:
-                log.warn('positions are not integers, will not index file')
+                file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
+        else:
+            log.warn('positions are not integers, will not index file')
 
     for key in file_data:
         doc = {
@@ -400,18 +407,17 @@ def index_file(request):
             )
 
     if not dry_run:
-        err = None
-        uuid_current = None
+        error_collection = []
         for ftype in ('bed', 'tsv'):
             invalidated_files = list(set(invalidated).intersection(set(all_file_uuids_by_type(request, ftype))))
-            try:
-                for uuid in invalidated_files:
-                    uuid_current = uuid
+            for uuid in invalidated_files:
+                uuid_current = uuid
+                try:
                     index_peaks(uuid, request, ftype)
-            except Exception as e:
-                log.error('Error indexing %s', uuid_current, exc_info=True)
-                err = repr(e)
-            result['errors'] = [err]
+                except Exception as e:
+                    log.error('Error indexing %s', uuid_current, exc_info=True)
+                    error_collection.append(repr(e))
+            result['errors'] = error_collection
             result['indexed'] = len(invalidated)
         if record:
             es_peaks.index(index='snovault', doc_type='meta', body=result, id='peak_indexing')
