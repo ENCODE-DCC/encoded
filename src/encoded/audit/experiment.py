@@ -2922,3 +2922,48 @@ def audit_library_RNA_size_range(value, system):
             detail = 'Metadata of RNA library {} lacks information on '.format(rep['library']['@id']) + \
                      'the size range of fragments used to construct the library.'
             yield AuditFailure('missing RNA fragment size', detail, level='NOT_COMPLIANT')
+
+
+@audit_checker(
+    'experiment',
+    frame=[
+        'target',
+        'replicates',
+        'replicates.library',
+        'replicates.library.biosample',
+        'replicates.library.biosample.constructs',
+        'replicates.library.biosample.constructs.target'])
+def audit_missing_construct(value, system):
+
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if 'target' not in value:
+        return
+
+    '''
+    Note that this audit only deals with tagged constructs for now and does not check
+    genetic_modifications where tagging information could also be specified. Constructs
+    should get absorbed by genetic_modifications in the future and this audit would need
+    to be re-written.
+    '''
+    target = value['target']
+    if 'recombinant protein' not in target['investigated_as']:
+        return
+    else:
+        biosamples = get_biosamples(value)
+        for biosample in biosamples:
+            if not biosample['constructs']:
+                detail = 'Recombinant protein target {} requires '.format(value['target']['name']) + \
+                    ' a fusion protein construct to specify the relevant tagging details.'
+                yield AuditFailure('missing tag construct', detail, level='WARNING')
+                return
+
+            tag_match = False
+            for construct in biosample['constructs']:
+                if construct['target']['label'] == target['label']:
+                    tag_match = True
+            if not tag_match:
+                detail = 'The target of this assay {} does not'.format(value['target']['name']) + \
+                    ' match that of the linked construct(s) {}.'.format(construct['@id'])
+                yield AuditFailure('mismatched construct target', detail, level='WARNING')
