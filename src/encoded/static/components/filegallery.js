@@ -1450,6 +1450,13 @@ let FileDetailView = function(node) {
                         </div>
                     : null}
 
+                    {selectedFile.mapped_read_length !== undefined ?
+                        <div data-test="mappedreadlength">
+                            <dt>Mapped read length</dt>
+                            <dd>{selectedFile.mapped_read_length}</dd>
+                        </div>
+                    : null}
+
                     {selectedFile.assembly ?
                         <div data-test="assembly">
                             <dt>Mapping assembly</dt>
