@@ -2935,7 +2935,7 @@ def audit_library_RNA_size_range(value, system):
         'replicates.library.biosample.constructs.target'])
 def audit_missing_construct(value, system):
 
-    if value['status'] in ['deleted', 'replaced']:
+    if value['status'] in ['deleted', 'replaced', 'proposed', 'revoked']:
         return
 
     if 'target' not in value:
