@@ -2952,26 +2952,39 @@ def audit_missing_construct(value, system):
         return
     else:
         biosamples = get_biosamples(value)
+        has_construct = False
+
+        if 'biosample_type' not in value:
+            detail = '{} is missing biosample_type'.format(value['@id'])
+            yield AuditFailure('missing biosample_type', detail, level='ERROR')
+
         for biosample in biosamples:
-            if not biosample['constructs'] and not biosample['model_organism_donor_constructs']:
-                detail = 'Recombinant protein target {} requires '.format(value['target']['name']) + \
-                    ' a fusion protein construct associated with the biosample and/or donor ' + \
-                    'to specify the relevant tagging details.'
-                yield AuditFailure('missing tag construct', detail, level='WARNING')
-                return
+            if biosample['biosample_type'] != 'whole organisms' and biosample['constructs']:
+                has_construct = True
+            else:
+                if biosample['biosample_type'] == 'whole organisms' and \
+                        biosample['model_organism_donor_constructs']:
+                        has_construct = True
 
-            tag_match = False
-            if biosample['constructs']:
-                for construct in biosample['constructs']:
-                    if construct['target']['name'] == target['name']:
-                        tag_match = True
+        if not has_construct:
+            detail = 'Recombinant protein target {} requires '.format(value['target']['name']) + \
+                'a fusion protein construct associated with the biosample and/or donor ' + \
+                'to specify the relevant tagging details.'
+            yield AuditFailure('missing tag construct', detail, level='WARNING')
+            return
 
-            if biosample['model_organism_donor_constructs']:
-                for construct in biosample['model_organism_donor_constructs']:
-                    if construct['target']['name'] == target['name']:
-                        tag_match = True
+        tag_match = False
+        if biosample['constructs']:
+            for construct in biosample['constructs']:
+                if construct['target']['name'] == target['name']:
+                    tag_match = True
 
-            if not tag_match:
-                detail = 'The target of this assay {} does not'.format(value['target']['name']) + \
-                    ' match that of the linked construct(s) {}.'.format(construct['target']['name'])
-                yield AuditFailure('mismatched construct target', detail, level='WARNING')
+        if 'model_organism_donor_constructs' in biosample:
+            for construct in biosample['model_organism_donor_constructs']:
+                if construct['target']['name'] == target['name']:
+                    tag_match = True
+
+        if not tag_match:
+            detail = 'The target of this assay {} does not'.format(value['target']['name']) + \
+                ' match that of the linked construct(s) {}.'.format(construct['target']['name'])
+            yield AuditFailure('mismatched construct target', detail, level='WARNING')
