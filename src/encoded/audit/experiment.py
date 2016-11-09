@@ -2953,17 +2953,25 @@ def audit_missing_construct(value, system):
     else:
         biosamples = get_biosamples(value)
         for biosample in biosamples:
-            if not biosample['constructs']:
+            if not biosample['constructs'] and not biosample['model_organism_donor_constructs']:
                 detail = 'Recombinant protein target {} requires '.format(value['target']['name']) + \
-                    ' a fusion protein construct to specify the relevant tagging details.'
+                    ' a fusion protein construct associated with the biosample and/or donor ' + \
+                    'to specify the relevant tagging details.'
                 yield AuditFailure('missing tag construct', detail, level='WARNING')
                 return
 
             tag_match = False
-            for construct in biosample['constructs']:
-                if construct['target']['label'] == target['label']:
-                    tag_match = True
+            if biosample['constructs']:
+                for construct in biosample['constructs']:
+                    if construct['target']['name'] == target['name']:
+                        tag_match = True
+
+            if biosample['model_organism_donor_constructs']:
+                for construct in biosample['model_organism_donor_constructs']:
+                    if construct['target']['name'] == target['name']:
+                        tag_match = True
+
             if not tag_match:
                 detail = 'The target of this assay {} does not'.format(value['target']['name']) + \
-                    ' match that of the linked construct(s) {}.'.format(construct['@id'])
+                    ' match that of the linked construct(s) {}.'.format(construct['target']['name'])
                 yield AuditFailure('mismatched construct target', detail, level='WARNING')
