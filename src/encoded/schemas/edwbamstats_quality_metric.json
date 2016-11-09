@@ -21,6 +21,7 @@
             "default": "3"
         },
         "alignedBy": {
+            "title": "Aligner used",
             "type": "string",
             "description": "The aligner used"
         },
