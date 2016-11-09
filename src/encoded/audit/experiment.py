@@ -615,10 +615,10 @@ def check_experiment_rna_seq_standards(value,
         return
 
     standards_links = {
-        'RNA-seq of long RNAs (paired-end, stranded)': '/data-standards/rna-seq/long-rnas/',
-        'RNA-seq of long RNAs (single-end, unstranded)': '/data-standards/rna-seq/long-rnas/',
-        'Small RNA-seq single-end pipeline': '/data-standards/rna-seq/small-rnas/',
-        'RAMPAGE (paired-end, stranded)': '/data-standards/rampage/'
+        'RNA-seq of long RNAs (paired-end, stranded)': ' /data-standards/rna-seq/long-rnas/ ',
+        'RNA-seq of long RNAs (single-end, unstranded)': ' /data-standards/rna-seq/long-rnas/ ',
+        'Small RNA-seq single-end pipeline': ' /data-standards/rna-seq/small-rnas/ ',
+        'RAMPAGE (paired-end, stranded)': ' /data-standards/rampage/  '
     }
 
     for f in fastq_files:
@@ -1365,7 +1365,7 @@ def check_wgbs_coverage(samtools_metrics,
                              '( {} ) '.format(pipeline_objects[0]['@id']) + \
                              'has a coverage of {}. '.format(int(coverage)) + \
                              'The minimum ENCODE standard for each replicate in ' + \
-                             'a WGBS assay is 30X. (See /data-standards/wgbs/)'
+                             'a WGBS assay is 30X. (See /data-standards/wgbs/ )'
                     yield AuditFailure('insufficient coverage',
                                        detail,
                                        level='NOT_COMPLIANT')
@@ -1375,7 +1375,7 @@ def check_wgbs_coverage(samtools_metrics,
                              '( {} ) '.format(pipeline_objects[0]['@id']) + \
                              'has a coverage of {}. '.format(int(coverage)) + \
                              'The minimum ENCODE standard for each replicate in ' + \
-                             'a WGBS assay is 30X. (See /data-standards/wgbs/)'
+                             'a WGBS assay is 30X. (See /data-standards/wgbs/ )'
                     yield AuditFailure('insufficient coverage',
                                        detail,
                                        level='INTERNAL_ACTION')
@@ -1467,7 +1467,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                     'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad ' + \
                     'histone marks ' + \
                     'is 20 million usable fragments, the recommended number of usable ' + \
-                    'fragments is > 45 million. (See /data-standards/chip-seq/)'
+                    'fragments is > 45 million. (See /data-standards/chip-seq/ )'
                 yield AuditFailure('low read depth', detail, level='INTERNAL_ACTION')
             if read_depth < marks['narrow']:
                 detail = 'Control alignment file {} has {} '.format(file_to_check['@id'],
@@ -1480,7 +1480,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                     'The minimum for a control of ChIP-seq assays targeting narrow ' + \
                     'histone marks or transcription factors ' + \
                     'is 10 million usable fragments, the recommended number of usable ' + \
-                    'fragments is > 20 million. (See /data-standards/chip-seq/)'
+                    'fragments is > 20 million. (See /data-standards/chip-seq/ )'
                 if read_depth >= 10000000:
                     yield AuditFailure('low read depth', detail, level='WARNING')
                 else:
@@ -1501,7 +1501,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                         'experiments targeting {}, investigated as '.format(target_name) + \
                         'broad histone mark is 40 million usable fragments. ' + \
                         'The recommended value is > 45 million, but > 40 million is ' + \
-                        'acceptable. (See /data-standards/chip-seq/)'
+                        'acceptable. (See /data-standards/chip-seq/ )'
                     yield AuditFailure('insufficient read depth',
                                        detail, level='NOT_COMPLIANT')
             else:
@@ -1514,7 +1514,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                     'experiments targeting {}, investigated as '.format(target_name) + \
                     'broad histone mark is 20 million usable fragments. ' + \
                     'The recommended value is > 45 million, but > 40 million is ' + \
-                    'acceptable. (See /data-standards/chip-seq/)'
+                    'acceptable. (See /data-standards/chip-seq/ )'
                 if standards_version == 'ENC3':
                     if read_depth >= 40000000 and read_depth < marks['broad']:
                         yield AuditFailure('low read depth',
@@ -1543,7 +1543,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                 'experiments targeting {}, investigated as '.format(target_name) + \
                 'narrow histone mark is 10 million usable fragments. ' + \
                 'The recommended value is > 20 million, but > 10 million is ' + \
-                'acceptable. (See /data-standards/chip-seq/)'
+                'acceptable. (See /data-standards/chip-seq/ )'
             if read_depth >= 10000000 and read_depth < marks['narrow']:
                 yield AuditFailure('low read depth', detail, level='WARNING')
             elif read_depth < 10000000:
@@ -1573,7 +1573,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                     'experiments targeting {}, investigated as '.format(target_name) + \
                     'transcription factor is 10 million usable fragments. ' + \
                     'The recommended value is > 20 million, but > 10 million is ' + \
-                    'acceptable. (See /data-standards/chip-seq/)'
+                    'acceptable. (See /data-standards/chip-seq/ )'
                 if read_depth >= 10000000 and read_depth < marks['narrow']:
                     yield AuditFailure('low read depth', detail, level='WARNING')
                 elif read_depth < 10000000:
@@ -1640,7 +1640,7 @@ def check_file_read_length_chip(file_to_check, upper_threshold_length, lower_thr
     detail = 'Fastq file {} '.format(file_to_check['@id']) + \
              'has read length of {}bp. '.format(read_length) + \
              'ENCODE standards recommend that sequencing reads should ' + \
-             'be at least {}bp long. (See /data-standards/chip-seq/)'.format(upper_threshold_length)
+             'be at least {}bp long. (See /data-standards/chip-seq/ )'.format(upper_threshold_length)
     if read_length < lower_threshold_length:
         yield AuditFailure('insufficient read length', detail, level='NOT_COMPLIANT')
     elif read_length >= lower_threshold_length and read_length < upper_threshold_length:
