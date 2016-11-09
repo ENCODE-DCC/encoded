@@ -101,6 +101,12 @@ var Annotation = React.createClass({
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
 
+        // Make array of superseded_by accessions
+        let supersededBys = [];
+        if (context.superseded_by && context.superseded_by.length) {
+            supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
+        }
+
         // Get a list of reference links, if any
         var references = PubReferenceList(context.references);
 
@@ -117,6 +123,7 @@ var Annotation = React.createClass({
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for annotation file set {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />

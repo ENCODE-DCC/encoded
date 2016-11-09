@@ -262,7 +262,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
-        // Make array of superceded_by accessions
+        // Make array of superseded_by accessions
         let supersededBys = [];
         if (context.superseded_by && context.superseded_by.length) {
             supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
