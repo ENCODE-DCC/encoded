@@ -1952,7 +1952,7 @@ const FileQCButton = React.createClass({
     render: function () {
         const qcName = qcIdToDisplay(this.props.qc);
         if (qcName) {
-            return <button className="btn btn-info btn-xs" onClick={this.handleClick}>{qcName}</button>;
+            return <button className="file-qc-btn" onClick={this.handleClick}>{qcName}</button>;
         }
         return null;
     },
