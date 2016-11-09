@@ -312,10 +312,14 @@
         },
         "mapped_run_type": {
             "title": "Mapped run type for bam files",
-            "description": "The modified run type of the file if the control run_type and experiment_run type do not match. Listed under the bam",
+            "description": "The mapped run type of the alignment file which may differ from the fastqs it is derived from.",
             "comment": "When the control and experiment run types do not match, one may be changed in order to meet pipeline requirements.",
             "type": "string",
-            "enum": ["single-ended"]
+            "enum": [
+                "single-ended",
+                "paired-ended",
+                "unknown"
+            ]
         },
         "flowcell_details": {
             "title": "Flowcells",
