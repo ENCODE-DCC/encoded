@@ -2932,7 +2932,9 @@ def audit_library_RNA_size_range(value, system):
         'replicates.library',
         'replicates.library.biosample',
         'replicates.library.biosample.constructs',
-        'replicates.library.biosample.constructs.target'])
+        'replicates.library.biosample.constructs.target',
+        'replicates.library.biosample.model_organism_donor_constructs',
+        'replicates.library.biosample.model_organism_donor_constructs.target'])
 def audit_missing_construct(value, system):
 
     if value['status'] in ['deleted', 'replaced', 'proposed', 'revoked']:
@@ -2946,6 +2948,9 @@ def audit_missing_construct(value, system):
     genetic_modifications where tagging information could also be specified. Constructs
     should get absorbed by genetic_modifications in the future and this audit would need
     to be re-written.
+
+    Also, the audit does not cover whether or not the biosamples in possible_controls also
+    have the same construct. In some cases, they legitimately don't, e.g. HEK-ZNFs
     '''
     target = value['target']
     if 'recombinant protein' not in target['investigated_as']:
