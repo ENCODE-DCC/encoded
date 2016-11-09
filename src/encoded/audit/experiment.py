@@ -388,10 +388,14 @@ def is_outdated_bams_replicate(bam_file):
 def audit_experiment_out_of_date_analysis(value, system):
     alignment_files = scan_files_for_file_format_output_type(value['original_files'],
                                                              'bam', 'alignments')
+    not_filtered_alignments = scan_files_for_file_format_output_type(
+        value['original_files'],
+        'bam', 'unfiltered alignments')
     transcriptome_alignments = scan_files_for_file_format_output_type(value['original_files'],
                                                                       'bam',
                                                                       'transcriptome alignments')
-    if len(alignment_files) == 0 and len(transcriptome_alignments) == 0:
+    if len(alignment_files) == 0 and len(transcriptome_alignments) == 0 and \
+       len(not_filtered_alignments) == 0:
         return  # probably needs pipeline, since there are no processed files
 
     uniform_pipeline_flag = False
@@ -403,12 +407,22 @@ def audit_experiment_out_of_date_analysis(value, system):
         if bam_file['lab'] == '/labs/encode-processing-pipeline/':
             uniform_pipeline_flag = True
             break
+    for bam_file in not_filtered_alignments:
+        if bam_file['lab'] == '/labs/encode-processing-pipeline/':
+            uniform_pipeline_flag = True
+            break
     if uniform_pipeline_flag is False:
         return
     alignment_derived_from = get_derived_from_files_set(alignment_files, 'fastq', False)
-    transcriptome_alignment_derived_from = get_derived_from_files_set(transcriptome_alignments, 'fastq', False)
+    transcriptome_alignment_derived_from = get_derived_from_files_set(
+        transcriptome_alignments, 'fastq', False)
+    not_filtered_alignment_derived_from = get_derived_from_files_set(
+        not_filtered_alignments, 'fastq', False)
 
-    derived_from_set = alignment_derived_from | transcriptome_alignment_derived_from
+    derived_from_set = alignment_derived_from | \
+        not_filtered_alignment_derived_from | \
+        transcriptome_alignment_derived_from
+
     fastq_files = scan_files_for_file_format_output_type(value['original_files'],
                                                          'fastq', 'reads')
     fastq_accs = get_file_accessions(fastq_files)
