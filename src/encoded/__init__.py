@@ -195,12 +195,6 @@ def main(global_config, **local_config):
     settings['snovault.jsonld.terms_namespace'] = 'https://www.encodeproject.org/terms/'
     settings['snovault.jsonld.terms_prefix'] = 'encode'
     settings['snovault.elasticsearch.index'] = 'snovault'
-    hostname_command = settings.get('hostname_command', '').strip()
-    if hostname_command:
-        hostname = subprocess.check_output(hostname_command, shell=True).strip()
-        settings.setdefault('persona.audiences', '')
-        settings['persona.audiences'] += '\nhttp://%s' % hostname
-        settings['persona.audiences'] += '\nhttp://%s:6543' % hostname
 
     config = Configurator(settings=settings)
     from snovault.elasticsearch import APP_FACTORY
@@ -212,7 +206,7 @@ def main(global_config, **local_config):
     # Override default authz policy set by pyramid_multiauth
     config.set_authorization_policy(LocalRolesAuthorizationPolicy())
     config.include(session)
-    config.include('.persona')
+    config.include('.auth0')
 
     config.include(configure_dbsession)
     config.include('snovault')
