@@ -402,7 +402,7 @@ def get_derived_from_files_set(list_of_files):
                                     'original_files.analysis_step_version.software_versions.software',
                                     'original_files.analysis_step_version.analysis_step',
                                     'original_files.analysis_step_version.analysis_step.pipelines'],
-               condition=rfa('ENCODE3', 'ENCODE2-Mouse', 'ENCODE2', 'ENCODE'))
+               condition=rfa('ENCODE3', 'ENCODE2-Mouse', 'ENCODE2', 'ENCODE', 'Roadmap'))
 def audit_experiment_standards_dispatcher(value, system):
     '''
     Dispatcher function that will redirect to other functions that would
@@ -449,8 +449,6 @@ def audit_experiment_standards_dispatcher(value, system):
                                                          'fastq', 'reads')
 
     standards_version = 'ENC3'
-    if (value['award']['rfa'] in ['ENCODE2-Mouse', 'ENCODE2']):
-        standards_version = 'ENC2'
 
     if value['assay_term_name'] in ['DNase-seq']:
         for failure in check_experiment_dnase_seq_standards(value,
@@ -649,8 +647,6 @@ def check_experiment_rna_seq_standards(value,
     if pipeline_title in ['RAMPAGE (paired-end, stranded)']:
         upper_limit = 20000000
         lower_limit = 10000000
-        if standards_version == 'ENC2':
-            upper_limit = 10000000
         for failure in check_experiment_cage_rampage_standards(value,
                                                                fastq_files,
                                                                alignment_files,
@@ -666,9 +662,6 @@ def check_experiment_rna_seq_standards(value,
     elif pipeline_title in ['Small RNA-seq single-end pipeline']:
         upper_limit = 30000000
         lower_limit = 20000000
-        if standards_version == 'ENC2':
-            upper_limit = 10000000
-            lower_limit = 10000000
         for failure in check_experiment_small_rna_standards(value,
                                                             fastq_files,
                                                             alignment_files,
@@ -685,8 +678,6 @@ def check_experiment_rna_seq_standards(value,
                             'RNA-seq of long RNAs (single-end, unstranded)']:
         upper_limit = 30000000
         lower_limit = 20000000
-        if standards_version == 'ENC2':
-            upper_limit = 20000000
         for failure in check_experiment_long_rna_standards(value,
                                                            fastq_files,
                                                            alignment_files,
