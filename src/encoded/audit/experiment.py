@@ -335,8 +335,8 @@ def audit_experiment_control_out_of_date_analysis(value, system):
         if bam_file['dataset']['accession'] != value['accession'] and \
            is_outdated_bams_replicate(bam_file):
             detail = 'Experiment {} '.format(value['@id']) + \
-                     'signal tracks are using alignment files from a control ' + \
-                     'replicate that has not been processed yet.'
+                     'processed files are using alignment files from a control ' + \
+                     'replicate that is out of date.'
             yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
             return
 
