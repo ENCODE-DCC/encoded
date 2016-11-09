@@ -623,13 +623,28 @@ def test_audit_file_bam_derived_from_no_fastq(testapp, file7, file6):
                                       'status': 'released',
                                       'file_format': 'bam',
                                       'assembly': 'hg19'})
-    testapp.patch_json(file7['@id'], {'file_format': 'bam', 'assembly': 'hg19'})
+    testapp.patch_json(file7['@id'], {'file_format': 'tsv', 'assembly': 'hg19'})
     res = testapp.get(file6['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing derived_from'
+               for error in errors_list)
+
+
+def test_audit_file_bam_derived_from_bam_no_fastq(testapp, file7, file6):
+    testapp.patch_json(file6['@id'], {'derived_from': [file7['@id']],
+                                      'status': 'released',
+                                      'file_format': 'bam',
+                                      'assembly': 'hg19'})
+    testapp.patch_json(file7['@id'], {'file_format': 'bam', 'assembly': 'hg19'})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'missing derived_from'
                for error in errors_list)
 
 
