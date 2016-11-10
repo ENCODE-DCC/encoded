@@ -132,7 +132,7 @@ String.prototype.uppercaseFirstChar = function(string) {
 
 // Convert a string to a 32-bit hash.
 // http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
-export function hashCode(src) {
+module.exports.hashCode = function (src) {
     let hash = 0;
     if (src.length > 0) {
         for (let i = 0; i < src.length; i += 1) {
