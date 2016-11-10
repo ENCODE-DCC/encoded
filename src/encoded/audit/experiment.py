@@ -2980,13 +2980,14 @@ def audit_missing_construct(value, system):
                         for construct in biosample['model_organism_donor_constructs']:
                             if construct['target']['name'] == target['name']:
                                 tag_mismatch.append(construct)
+            else:
+                pass
 
         if missing_construct:
             for b in missing_construct:
                 detail = 'Recombinant protein target {} requires '.format(value['target']['name']) + \
-                    'a fusion protein construct associated with the biosample {}'.format(b['@id']) + \
-                    'and/or donor {} to specify the relevant tagging ' + \
-                    'details.'.format(b['donor']['@id'])
+                    'a fusion protein construct associated with the biosample {} '.format(b['@id']) + \
+                    'and/or donor {} to specify the relevant tagging details.'.format(b['donor']['@id'])
                 yield AuditFailure('missing tag construct', detail, level='WARNING')
                 return
 
