@@ -573,7 +573,8 @@ def check_experiment_dnase_seq_standards(value,
             for metric in samtools_flagstat_metrics:
                 if 'mapped' in metric and \
                    metric['mapped'] < 5000000 and 'quality_metric_of' in metric:
-                    detail = 'Alignment file {} '.format(metric['quality_metric_of']) + \
+
+                    detail = 'Alignment file {} '.format(metric['quality_metric_of'][0]['@id']) + \
                              'produced by {} '.format(pipelines[0]['title']) + \
                              '( {} ) '.format(pipelines[0]['@id']) + \
                              'has {} '.format(metric['mapped']) + \
