@@ -36,8 +36,9 @@ def test_genomes(testapp, workbook, expected):
     "pennantIcon https://www.encodeproject.org/static/img/pennant-encode.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the ENCODE files and metadata found at the ENCODE portal\"",
     "subGroup1 view Views aENHAN=Candidate_enhancers bPROMO=Candidate_promoters cSTATE=Chromatin_state sPKS=Peaks",
     "subGroup2 BS Biosample IMR4590=IMR-90",
-    "subGroup3 REP Replicates pool=Pooled",
-    "sortOrder BS=+ REP=+ view=+",
+    "subGroup3 EXP Experiments ENCSR575ZXX=ENCSR575ZXX"
+    "subGroup4 REP Replicates pool=Pooled",
+    "sortOrder BS=+ REP=+ view=+ EXP=+",
     "    track ENCSR575ZXX_cSTATE_view",
     "    parent ENCSR575ZXX on",
     "    view cSTATE",
@@ -46,10 +47,10 @@ def test_genomes(testapp, workbook, expected):
     "        track ENCFF762DWI",
     "        parent ENCSR575ZXX_cSTATE_view on",
     "        bigDataUrl /files/ENCFF762DWI/@@download/ENCFF762DWI.bigBed?proxy=true",
-    "        longLabel ENCSR575ZXX: Encyclopedia annotation of IMR-90 semi-automated genome annotation pool - ENCFF762DWI",
+    "        longLabel Encyclopedia annotation of IMR-90 semi-automated genome annotation pool ENCSR575ZXX - ENCFF762DWI",
     "        shortLabel pool saga",
     "        type bigBed",
-    "        subGroups BS=IMR4590 REP=pool view=cSTATE",
+    "        subGroups BS=IMR4590 EXP=ENCSR575ZXX REP=pool view=cSTATE",
 ])
 def test_dataset_trackDb(testapp, workbook, expected):
     res = testapp.get("/annotations/ENCSR575ZXX/@@hub/hg19/trackDb.txt")
@@ -66,8 +67,9 @@ def test_dataset_trackDb(testapp, workbook, expected):
     "pennantIcon https://www.encodeproject.org/static/img/pennant-encode.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the ENCODE files and metadata found at the ENCODE portal\"",
     "subGroup1 view Views PK=Peaks SIG=Signals",
     "subGroup2 BS Biosample z9193=&#91;&#93;",
-    "subGroup3 REP Replicates pool=Pooled",
-    "sortOrder BS=+ REP=+ view=+",
+    "subGroup3 EXP Experiments ENCSR727WCB=ENCSR727WCB"
+    "subGroup4 REP Replicates pool=Pooled",
+    "sortOrder BS=+ REP=+ view=+ EXP=+",
     "dimensionAchecked pool",
     "    track ENCSR727WCB_PK_view",
     "    parent ENCSR727WCB on",
@@ -78,10 +80,10 @@ def test_dataset_trackDb(testapp, workbook, expected):
     "        track ENCFF003COS",
     "        parent ENCSR727WCB_PK_view on",
     "        bigDataUrl /files/ENCFF003COS/@@download/ENCFF003COS.bigBed?proxy=true",
-    "        longLabel ENCSR727WCB: Unknown Assay of &#91;&#93; optimal idr thresholded peaks pool - ENCFF003COS",
+    "        longLabel Unknown Assay of &#91;&#93; optimal idr thresholded peaks pool ENCSR727WCB - ENCFF003COS",
     "        shortLabel pool oIDR pk",
     "        type bigBed",
-    "        subGroups BS=z9193 REP=pool view=PK"
+    "        subGroups BS=z9193 EXP=ENCSR727WCB REP=pool view=PK"
 ])
 def test_fileset_files_trackDb(testapp, workbook, expected):
     res = testapp.get("/publication-data/ENCSR727WCB/@@hub/hg19/trackDb.txt")
