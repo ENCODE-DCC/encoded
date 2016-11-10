@@ -201,6 +201,7 @@
         "biosample_term_name": "K562",
         "biosample_type": "immortalized cell line",
         "description": "RNA Evaluation K562 Long Total from Graveley",
+        "internal_tags": ["dbGaP"],
         "lab": "brenton-graveley",
         "status": "released",
         "date_released": "2016-01-01",
