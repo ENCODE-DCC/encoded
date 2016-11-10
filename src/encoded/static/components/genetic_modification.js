@@ -3,7 +3,7 @@ const React = require('react');
 const _ = require('underscore');
 const url = require('url');
 const {Panel, PanelHeading, PanelBody} = require('../libs/bootstrap/panel');
-const {SvgIcon, CollapseIcon} = require('../libs/svg-icons');
+const {SvgIcon, collapseIcon} = require('../libs/svg-icons');
 const {SortTable} = require('./sorttable');
 const globals = require('./globals');
 const {StatusLabel} = require('./statuslabel');
@@ -696,7 +696,7 @@ const GeneticModificationGroup = module.exports.GeneticModificationGroup = React
                 <div className="gm-group-detail">
                     <div className="icon gm-detail-trigger">
                         <a href="#" data-trigger onClick={this.detailSwitch} className="collapsing-title">
-                            {CollapseIcon(!this.state.detailOpen)}
+                            {collapseIcon(!this.state.detailOpen)}
                         </a>
                     </div>
                     <div className="gm-detail-sentence">
