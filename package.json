@@ -54,7 +54,7 @@
     "color": "^0.10.1",
     "cookie-monster": "0.0.7",
     "d3": "^3.4.6",
-    "dagre-d3": "git+https://github.com/ENCODE-DCC/dagre-d3.git#compound-nodes",
+    "dagre-d3": "git+https://github.com/ENCODE-DCC/dagre-d3.git#coalesced-nodes",
     "domready": "^0.3.0",
     "form-serialize": "^0.6.0",
     "google-analytics": "file:node_shims/google-analytics",
