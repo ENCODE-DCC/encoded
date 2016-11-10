@@ -350,7 +350,11 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     left: 0;
     width: 41px;
     padding: 10px;
+    border-top: none;
     border-right: 1px solid #fff;
+    border-bottom: none;
+    border-left: none;
+    background: transparent;
 
     &:hover {
         background-color: darken(#d8e0e8, 10%);

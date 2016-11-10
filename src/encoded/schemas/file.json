@@ -43,6 +43,13 @@
                 "required": ["accession"]
             }
         },
+        "mapped_run_type": {
+            "properties": {
+                "file_format": {
+                    "enum": ["bam"]
+                }
+            }
+        },
         "paired_end": {
             "oneOf": [
                 {
@@ -302,6 +309,17 @@
             "description": "The length of the reads actually mapped, if the original read length was clipped.",
             "comment": "This is used when the original sequenced read length needed to be adjusted to match a replicate, or to match experiments and controls.",
             "type": "integer"
+        },
+        "mapped_run_type": {
+            "title": "Mapped run type for bam files",
+            "description": "The mapped run type of the alignment file which may differ from the fastqs it is derived from.",
+            "comment": "When the control and experiment run types do not match, one may be changed in order to meet pipeline requirements.",
+            "type": "string",
+            "enum": [
+                "single-ended",
+                "paired-ended",
+                "unknown"
+            ]
         },
         "flowcell_details": {
             "title": "Flowcells",
