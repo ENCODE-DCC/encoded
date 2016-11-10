@@ -478,20 +478,26 @@ def search_result_actions(request, doc_types, es_results, position=None):
     # generate batch hub URL for experiments
     # TODO we could enable them for Datasets as well here, but not sure how well it will work
     if doc_types == ['Experiment']:
-        for bucket in aggregations['assembly']['assembly']['buckets']:
-            if bucket['doc_count'] > 0:
-                assembly = bucket['key']
-                ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
-                search_params = request.query_string.replace('&', ',,')
-                if not request.params.getall('assembly') or assembly in request.params.getall('assembly'):
-                    # filter  assemblies that are not selected
-                    hub = request.route_url('batch_hub',
-                                            search_params=search_params,
-                                            txt='hub.txt')
-                    if 'region-search' in request.url and position is not None:
-                        actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly + '&position={}'.format(position)
-                    else:
-                        actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly
+        may_visualize = False
+        for es_exp in es_results['hits']['hits']:
+            if es_exp['_source']['embedded']['status'] == 'released':
+                may_visualize = True
+                break
+        if may_visualize:
+            for bucket in aggregations['assembly']['assembly']['buckets']:
+                if bucket['doc_count'] > 0:
+                    assembly = bucket['key']
+                    ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
+                    search_params = request.query_string.replace('&', ',,')
+                    if not request.params.getall('assembly') or assembly in request.params.getall('assembly'):
+                        # filter  assemblies that are not selected
+                        hub = request.route_url('batch_hub',
+                                                search_params=search_params,
+                                                txt='hub.txt')
+                        if 'region-search' in request.url and position is not None:
+                            actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly + '&position={}'.format(position)
+                        else:
+                            actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly
 
     # generate batch download URL for experiments
     # TODO we could enable them for Datasets as well here, but not sure how well it will work
@@ -763,9 +769,9 @@ def search(context, request, search_type=None, return_generator=False):
     # Scan large result sets.
     del query['aggs']
     if size is None:
-        # preserve_order=True has unexpected results in clustered environment 
+        # preserve_order=True has unexpected results in clustered environment
         # https://github.com/elastic/elasticsearch-py/blob/master/elasticsearch/helpers/__init__.py#L257
-        hits = scan(es, query=query, index=es_index, preserve_order=False) 
+        hits = scan(es, query=query, index=es_index, preserve_order=False)
     else:
         hits = scan(es, query=query, index=es_index, from_=from_, size=size, preserve_order=False)
     graph = format_results(request, hits)

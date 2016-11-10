@@ -2339,6 +2339,7 @@ def ucsc_trackDb_composite_blob(composite,title):
     '''Given an in-memory composite object, prints a single UCSC trackDb.txt composite structure'''
     if composite is None or len(composite) == 0:
         return "# Empty composite for %s.  It cannot be visualized at this time.\n" % title
+    # TODO provide more detail about different possible reasons (should already be in errorlog)
 
     blob = ""
     # First the composite structure
@@ -2381,6 +2382,8 @@ def ucsc_trackDb_composite_blob(composite,title):
     if sort_order:
         blob += "sortOrder"
         for sort_tag in sort_order:
+            if title.startswith("ENCSR") and sort_tag == "EXP": # Single exp composites do not need to sort on EMP
+                continue
             blob += " %s=+" % sort_tag
         blob += '\n'
     # dimensions
