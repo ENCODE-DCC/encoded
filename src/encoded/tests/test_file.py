@@ -73,7 +73,7 @@ def test_file_post_mapped_run_type_on_fastq(testapp, mapped_run_type_on_fastq):
     testapp.post_json('/file', mapped_run_type_on_fastq, status=422)
 
 
-def test_file_post_mapped_run_type_on_bam(testapp, mapped_run_type_on_fastq):
+def test_file_post_mapped_run_type_on_bam(testapp, mapped_run_type_on_bam):
     testapp.post_json('/file', mapped_run_type_on_bam, status=201)
 
 
