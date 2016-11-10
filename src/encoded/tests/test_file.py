@@ -62,6 +62,7 @@ def mapped_run_type_on_bam(award, experiment, lab):
         'dataset': experiment['@id'],
         'lab': lab['@id'],
         'file_format': 'bam',
+        'assembly': 'mm10',
         'mapped_run_type': 'single-ended',
         'md5sum': 'abcdef01234567890123456789abcdef',
         'output_type': 'alignments',
