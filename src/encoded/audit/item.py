@@ -110,17 +110,17 @@ def audit_item_relations_status(value, system):
                             )
                     if level == 100 and linked_level in [0, 50, 100]:
                         yield AuditFailure(
-                            'supersedes relation mismatched status',
+                            'mismatched status',
                             detail,
                             level='INTERNAL_ACTION')
                     elif level == 50 and linked_level in [0, 50]:
                         yield AuditFailure(
-                            'supersedes relation mismatched status',
+                            'mismatched status',
                             detail,
                             level='INTERNAL_ACTION')
                     elif level in [30, 40] and linked_level in [0, 50, 100]:
                         yield AuditFailure(
-                            'supersedes relation mismatched status',
+                            'mismatched status',
                             detail,
                             level='INTERNAL_ACTION')
 
@@ -149,7 +149,7 @@ def audit_item_relations_status(value, system):
                                 linked_value['status']
                                 )
                         yield AuditFailure(
-                            'derivation relation mismatched status',
+                            'mismatched status',
                             detail,
                             level='INTERNAL_ACTION')
 
@@ -160,13 +160,12 @@ def audit_item_status(value, system):
         return
 
     level = STATUS_LEVEL.get(value['status'], 50)
-    if value['status'] == 'revoked':
-        level = 80
-    if value['status'] == 'archived':
-        level = 90
 
     if level == 0:
         return
+
+    if value['status'] in ['revoked', 'archived']:
+        level += 50
 
     context = system['context']
     request = system['request']
@@ -196,10 +195,8 @@ def audit_item_status(value, system):
         ):
             continue
         linked_level = STATUS_LEVEL.get(linked_value['status'], 50)
-        if linked_value['status'] == 'revoked':
-            linked_level = 80
-        if linked_value['status'] == 'archived':
-            linked_level = 90
+        if linked_value['status'] in ['revoked', 'archived']:
+            linked_level += 50
         if linked_level == 0:
             detail = '{} {} has {} subobject {}'.format(
                 value['status'], value['@id'], linked_value['status'], linked_value['@id'])
