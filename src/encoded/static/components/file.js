@@ -2,6 +2,7 @@ import React from 'react';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import globals from './globals';
 import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
+import { DbxrefList } from './dbxref';
 import { ProjectBadge } from './image';
 import { StatusLabel } from './statuslabel';
 
@@ -25,8 +26,8 @@ const File = React.createClass({
         }
 
         let pipelines = [];
-        if (context.analysis_step_version && context.analysis_step_version.pipelines && context.analysis_step_version.pipelines.length) {
-            pipelines = context.analysis_step_version.pipelines;
+        if (context.analysis_step_version && context.analysis_step_version.analysis_step.pipelines && context.analysis_step_version.analysis_step.pipelines.length) {
+            pipelines = context.analysis_step_version.analysis_step.pipelines;
         }
 
         return (
@@ -84,7 +85,7 @@ const File = React.createClass({
 
                                     {pipelines.length ?
                                         <div data-test="pipelines">
-                                            <dt>Technical replicate</dt>
+                                            <dt>Pipelines</dt>
                                             <dd>
                                                 {pipelines.map((pipeline, i) =>
                                                     <span key={i}>
@@ -93,6 +94,39 @@ const File = React.createClass({
                                                     </span>
                                                 )}
                                             </dd>
+                                        </div>
+                                    : null}
+
+                                    <div data-test="md5sum">
+                                        <dt>MD5sum</dt>
+                                        <dd>{context.md5sum}</dd>
+                                    </div>
+
+                                    {context.content_md5sum ?
+                                        <div data-test="contentmd5sum">
+                                            <dt>Content MD5sum</dt>
+                                            <dd>{context.content_md5sum}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.read_count ?
+                                        <div data-test="readcount">
+                                            <dt>Read count</dt>
+                                            <dd>{context.read_count}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.file_size ?
+                                        <div data-test="filesize">
+                                            <dt>File size</dt>
+                                            <dd>{context.file_size}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.mapped_read_length ?
+                                        <div data-test="mappreadlength">
+                                            <dt>Mapped read length</dt>
+                                            <dd>{context.mapped_read_length}</dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -125,6 +159,20 @@ const File = React.createClass({
                                         <div data-test="project">
                                             <dt>Project</dt>
                                             <dd>{context.award.project}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.date_created ?
+                                        <div data-test="datecreated">
+                                            <dt>Date added</dt>
+                                            <dd>{context.date_created}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.dbxrefs && context.dbxrefs.length ?
+                                        <div data-test="externalresources">
+                                            <dt>External resources</dt>
+                                            <dd><DbxrefList values={context.dbxrefs} /></dd>
                                         </div>
                                     : null}
                                 </dl>
