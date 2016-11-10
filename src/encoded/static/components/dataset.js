@@ -3,7 +3,7 @@ var React = require('react/addons');
 var panel = require('../libs/bootstrap/panel');
 var button = require('../libs/bootstrap/button');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
-var {SvgIcon, CollapseIcon} = require('../libs/svg-icons');
+var {SvgIcon} = require('../libs/svg-icons');
 var _ = require('underscore');
 var globals = require('./globals');
 var navigation = require('./navigation');
@@ -25,7 +25,7 @@ var DbxrefList = dbxref.DbxrefList;
 var FetchedItems = fetched.FetchedItems;
 var StatusLabel = statuslabel.StatusLabel;
 var PubReferenceList = reference.PubReferenceList;
-var SoftwareVersionList = software.SoftwareVersionList;
+var softwareVersionList = software.softwareVersionList;
 var DocumentsPanel = doc.DocumentsPanel;
 var {AuditIndicators, AuditDetail, AuditIcon, AuditMixin} = audit;
 var ProjectBadge = image.ProjectBadge;
@@ -101,6 +101,12 @@ var Annotation = React.createClass({
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
 
+        // Make array of superseded_by accessions
+        let supersededBys = [];
+        if (context.superseded_by && context.superseded_by.length) {
+            supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
+        }
+
         // Get a list of reference links, if any
         var references = PubReferenceList(context.references);
 
@@ -117,6 +123,7 @@ var Annotation = React.createClass({
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for annotation file set {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -186,7 +193,7 @@ var Annotation = React.createClass({
                                     {context.software_used && context.software_used.length ?
                                         <div data-test="softwareused">
                                             <dt>Software used</dt>
-                                            <dd>{SoftwareVersionList(context.software_used)}</dd>
+                                            <dd>{softwareVersionList(context.software_used)}</dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -504,7 +511,7 @@ var Reference = React.createClass({
                                     {context.software_used && context.software_used.length ?
                                         <div data-test="softwareused">
                                             <dt>Software used</dt>
-                                            <dd>{SoftwareVersionList(context.software_used)}</dd>
+                                            <dd>{softwareVersionList(context.software_used)}</dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -686,7 +693,7 @@ var Project = React.createClass({
                                     {context.software_used && context.software_used.length ?
                                         <div data-test="softwareused">
                                             <dt>Software used</dt>
-                                            <dd>{SoftwareVersionList(context.software_used)}</dd>
+                                            <dd>{(context.software_used)}</dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -855,7 +862,7 @@ var UcscBrowserComposite = React.createClass({
                                     {context.software_used && context.software_used.length ?
                                         <div data-test="software-used">
                                             <dt>Software used</dt>
-                                            <dd>{SoftwareVersionList(context.software_used)}</dd>
+                                            <dd>{softwareVersionList(context.software_used)}</dd>
                                         </div>
                                     : null}
                                 </dl>
