@@ -18,6 +18,7 @@ from snovault.elasticsearch.interfaces import (
     ELASTIC_SEARCH,
     SNP_SEARCH_ES,
 )
+import copy
 
 
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
@@ -285,7 +286,7 @@ def index_file(request):
             '_source': False,
         })
         if res['hits']['total'] > SEARCH_MAX:
-            invalidated = list(all_uuids(request.root))
+            invalidated = list(all_uuids(request.registry))
         else:
             referencing = {hit['_id'] for hit in res['hits']['hits']}
             invalidated = referencing | updated
@@ -314,6 +315,16 @@ def index_file(request):
         result['errors'] = [err]
         result['indexed'] = len(invalidated)
         if record:
-            es_peaks.index(index='snovault', doc_type='meta', body=result, id='peak_indexing')
+            try:
+                es_peaks.index(index='snovault', doc_type='meta', body=result, id='peak_indexing')
+            except:
+                error_messages = copy.deepcopy(result['errors'])
+                del result['errors']
+                es_peaks.index(index='snovault', doc_type='meta', body=result, id='peak_indexing')
+                for item in error_messages:
+                    if 'error' in item:
+                        log.error('Indexing error for {}, error message: {}'.format(item['uuid'], item['error']))
+                        item['error'] = "Error occured during indexing, check the logs"
+            result['errors'] = error_messages
 
     return result
