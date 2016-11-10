@@ -2933,6 +2933,7 @@ def audit_library_RNA_size_range(value, system):
         'replicates.library.biosample',
         'replicates.library.biosample.constructs',
         'replicates.library.biosample.constructs.target',
+        'replicates.library.biosample.donor',
         'replicates.library.biosample.model_organism_donor_constructs',
         'replicates.library.biosample.model_organism_donor_constructs.target'])
 def audit_missing_construct(value, system):
@@ -2957,39 +2958,40 @@ def audit_missing_construct(value, system):
         return
     else:
         biosamples = get_biosamples(value)
-        has_construct = False
+        missing_construct = list()
+        tag_mismatch = list()
 
         if 'biosample_type' not in value:
             detail = '{} is missing biosample_type'.format(value['@id'])
             yield AuditFailure('missing biosample_type', detail, level='ERROR')
 
         for biosample in biosamples:
-            if biosample['biosample_type'] != 'whole organisms' and biosample['constructs']:
-                has_construct = True
-            else:
-                if biosample['biosample_type'] == 'whole organisms' and \
-                        biosample['model_organism_donor_constructs']:
-                        has_construct = True
+            if (biosample['biosample_type'] != 'whole organisms') and (not biosample['constructs']):
+                missing_construct.append(biosample)
+            elif (biosample['biosample_type'] == 'whole organisms') and \
+                    (not biosample['model_organism_donor_constructs']):
+                    missing_construct.append(biosample)
+            elif (biosample['biosample_type'] != 'whole organisms') and (biosample['constructs']):
+                for construct in biosample['constructs']:
+                    if construct['target']['name'] != target['name']:
+                        tag_mismatch.append(construct)
+            elif (biosample['biosample_type'] == 'whole organisms') and \
+                    (biosample['model_organism_donor_constructs']):
+                        for construct in biosample['model_organism_donor_constructs']:
+                            if construct['target']['name'] == target['name']:
+                                tag_mismatch.append(construct)
 
-        if not has_construct:
-            detail = 'Recombinant protein target {} requires '.format(value['target']['name']) + \
-                'a fusion protein construct associated with the biosample and/or donor ' + \
-                'to specify the relevant tagging details.'
-            yield AuditFailure('missing tag construct', detail, level='WARNING')
-            return
+        if missing_construct:
+            for b in missing_construct:
+                detail = 'Recombinant protein target {} requires '.format(value['target']['name']) + \
+                    'a fusion protein construct associated with the biosample {}'.format(b['@id']) + \
+                    'and/or donor {} to specify the relevant tagging ' + \
+                    'details.'.format(b['donor']['@id'])
+                yield AuditFailure('missing tag construct', detail, level='WARNING')
+                return
 
-        tag_match = False
-        if biosample['constructs']:
-            for construct in biosample['constructs']:
-                if construct['target']['name'] == target['name']:
-                    tag_match = True
-
-        if 'model_organism_donor_constructs' in biosample:
-            for construct in biosample['model_organism_donor_constructs']:
-                if construct['target']['name'] == target['name']:
-                    tag_match = True
-
-        if not tag_match:
-            detail = 'The target of this assay {} does not'.format(value['target']['name']) + \
-                ' match that of the linked construct(s) {}.'.format(construct['target']['name'])
-            yield AuditFailure('mismatched construct target', detail, level='WARNING')
+        if tag_mismatch:
+            for c in tag_mismatch:
+                detail = 'The target of this assay {} does not'.format(value['target']['name']) + \
+                    ' match that of the linked construct {}, {}.'.format(c['@id'], c['target']['name'])
+                yield AuditFailure('mismatched construct target', detail, level='WARNING')
