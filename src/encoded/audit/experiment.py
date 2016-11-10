@@ -2987,13 +2987,14 @@ def audit_missing_construct(value, system):
             for b in missing_construct:
                 detail = 'Recombinant protein target {} requires '.format(value['@id']) + \
                     'a fusion protein construct associated with the biosample {} '.format(b['@id']) + \
-                    'or donor {} to specify the relevant tagging details.'.format(b['donor']['@id'])
+                    'or donor {} (for whole organism biosamples) to specify the relevant tagging ' + \
+                    ' details.'.format(b['donor']['@id'])
                 yield AuditFailure('missing tag construct', detail, level='WARNING')
             return
 
         if tag_mismatch:
             for c in tag_mismatch:
-                detail = 'The target of this assay {} does not'.format(value['@id']) + \
+                detail = 'The target of this assay {} does not'.format(value['target']['@id']) + \
                     ' match that of the linked construct {}, {}.'.format(c['@id'], c['target']['@id'])
                 yield AuditFailure('mismatched construct target', detail, level='ERROR')
             return
