@@ -593,7 +593,7 @@ def check_experiment_dnase_seq_standards(value,
                                  'mapped reads. ' + \
                                  'The minimum ENCODE standard for each replicate in a DNase-seq ' + \
                                  'experiments is 5 million mapped reads.'
-                    yield AuditFailure('low read depth', detail, level='ERROR')
+                    yield AuditFailure('extremely low read depth', detail, level='ERROR')
         elif alignment_files is not None and len(alignment_files) > 0 and \
                 (samtools_flagstat_metrics is None or
                     len(samtools_flagstat_metrics) == 0):
