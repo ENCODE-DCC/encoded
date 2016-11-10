@@ -2978,21 +2978,21 @@ def audit_missing_construct(value, system):
             elif (biosample['biosample_type'] == 'whole organisms') and \
                     (biosample['model_organism_donor_constructs']):
                         for construct in biosample['model_organism_donor_constructs']:
-                            if construct['target']['name'] == target['name']:
+                            if construct['target']['name'] != target['name']:
                                 tag_mismatch.append(construct)
             else:
                 pass
 
         if missing_construct:
             for b in missing_construct:
-                detail = 'Recombinant protein target {} requires '.format(value['target']['name']) + \
+                detail = 'Recombinant protein target {} requires '.format(value['@id']) + \
                     'a fusion protein construct associated with the biosample {} '.format(b['@id']) + \
-                    'and/or donor {} to specify the relevant tagging details.'.format(b['donor']['@id'])
+                    'or donor {} to specify the relevant tagging details.'.format(b['donor']['@id'])
                 yield AuditFailure('missing tag construct', detail, level='WARNING')
                 return
 
         if tag_mismatch:
             for c in tag_mismatch:
-                detail = 'The target of this assay {} does not'.format(value['target']['name']) + \
-                    ' match that of the linked construct {}, {}.'.format(c['@id'], c['target']['name'])
+                detail = 'The target of this assay {} does not'.format(value['@id']) + \
+                    ' match that of the linked construct {}, {}.'.format(c['@id'], c['target']['@id'])
                 yield AuditFailure('mismatched construct target', detail, level='WARNING')
