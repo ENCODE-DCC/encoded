@@ -2,7 +2,7 @@
 var React = require('react');
 var panel = require('../libs/bootstrap/panel');
 var button = require('../libs/bootstrap/button');
-var {SvgIcon, CollapseIcon} = require('../libs/svg-icons');
+var {SvgIcon} = require('../libs/svg-icons');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var _ = require('underscore');
 var navigation = require('./navigation');
@@ -31,7 +31,7 @@ var StatusLabel = statuslabel.StatusLabel;
 var {AuditMixin, AuditIndicators, AuditDetail} = audit;
 var PubReferenceList = reference.PubReferenceList;
 var SingleTreatment = objectutils.SingleTreatment;
-var SoftwareVersionList = software.SoftwareVersionList;
+var softwareVersionList = software.softwareVersionList;
 var {SortTablePanel, SortTable} = sortTable;
 var ProjectBadge = image.ProjectBadge;
 var {DocumentsPanel} = doc;

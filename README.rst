@@ -121,15 +121,17 @@ in your terminal window and watches for changes in Javascript and SCSS files, re
 bundles as you make changes.
 
 
-SublimeLinter
-=============
+Linting your code within your code editor
+=========================================
 
-To setup SublimeLinter with Sublime Text 3, first install the linters::
+To set up linting with Sublime Text 3 or Visual Studio Code, first install the linters::
 
     $ easy_install-2.7 flake8
     $ npm install -g eslint
     $ npm install -g eslint-plugin-react
 
+Sublime Text 3
+--------------
 After first setting up `Package Control`_ (follow install and usage instructions on site), use it to install the following packages in Sublime Text 3:
 
     * sublimelinter
@@ -138,3 +140,11 @@ After first setting up `Package Control`_ (follow install and usage instructions
     * babel (`instructions <https://github.com/babel/babel-sublime#setting-as-the-default-syntax>`_)
 
 .. _`Package Control`: https://sublime.wbond.net/
+
+Visual Studio Code
+------------------
+Go to the Visual Studio Code marketplace and install these extensions:
+
+    * ESLint
+    * Python
+    * Sass

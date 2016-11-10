@@ -143,6 +143,20 @@ String.prototype.uppercaseFirstChar = function(string) {
     return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
+// Convert a string to a 32-bit hash.
+// http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
+export function hashCode(src) {
+    let hash = 0;
+    if (src.length > 0) {
+        for (let i = 0; i < src.length; i += 1) {
+            const char = src.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char; // eslint-disable-line no-bitwise
+            hash &= hash; // eslint-disable-line no-bitwise
+        }
+    }
+    return hash;
+}
+
 // Convert the number `n` to a string, zero-filled to `digits` digits. Maximum of four zeroes.
 // http://stackoverflow.com/questions/2998784/how-to-output-integers-with-leading-zeros-in-javascript#answer-2998822
 module.exports.zeroFill = function(n, digits) {
