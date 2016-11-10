@@ -883,8 +883,8 @@ def check_control_read_depth_standards(value,
                                        control_to_target,
                                        target_investigated_as,
                                        standards_version):
-    if standards_version in ['ENC2', 'ENC3']:
-        marks = pipelines_with_read_depth['Histone ChIP-seq'][standards_version]
+
+    marks = pipelines_with_read_depth['Histone ChIP-seq']
     modERN_cutoff = pipelines_with_read_depth['Transcription factor ChIP-seq pipeline (modERN)']
 
     if is_control_file is True:  # treat this file as control_bam -
@@ -906,12 +906,14 @@ def check_control_read_depth_standards(value,
                 'usable fragments. ' + \
                 'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad ' + \
                 'histone mark {} '.format(control_to_target) + \
-                'is 20 million usable fragments, the recommended number of usable ' + \
+                'is 40 million usable fragments, the recommended number of usable ' + \
                 'fragments is > 45 million. (See /data-standards/chip-seq/ )'
-            if read_depth >= marks['narrow'] and read_depth < marks['broad']:
+            if read_depth >= 40000000 and read_depth < marks['broad']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
-            elif read_depth < marks['narrow']:
-                yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
+            elif read_depth >= 5000000 and read_depth < 40000000:
+                yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')               
+            elif read_depth < 5000000:
+                yield AuditFailure('control extremely low read depth', detail, level='ERROR')
         elif 'narrow histone mark' in target_investigated_as:  # else:
             detail = 'Control alignment file {} has {} '.format(
                 value['@id'],
@@ -923,8 +925,10 @@ def check_control_read_depth_standards(value,
                 'fragments is > 20 million. (See /data-standards/chip-seq/ )'
             if read_depth >= 10000000 and read_depth < marks['narrow']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
-            elif read_depth < 10000000:
-                yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
+            elif read_depth >= 5000000 and read_depth < 10000000:
+                yield AuditFailure('control low read depth', detail, level='NOT_COMPLIANT')
+            elif read_depth < 5000000:
+                yield AuditFailure('control extremely low read depth', detail, level='ERROR')
 
         elif 'transcription factor' in target_investigated_as:
             if value['lab'] == '/labs/kevin-white/':
@@ -947,6 +951,8 @@ def check_control_read_depth_standards(value,
                 'fragments is > 20 million. (See /data-standards/chip-seq/ )'
             if read_depth >= 10000000 and read_depth < marks['narrow']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
-            elif read_depth < 10000000:
-                yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
+            elif read_depth >= 5000000 and read_depth < 10000000:
+                yield AuditFailure('control low read depth', detail, level='NOT_COMPLIANT')
+            elif read_depth < 5000000:
+                yield AuditFailure('control extremely low read depth', detail, level='ERROR')
         return
