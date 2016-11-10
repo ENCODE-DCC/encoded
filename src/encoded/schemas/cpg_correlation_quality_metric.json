@@ -18,7 +18,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "CpG pairs": {
             "title": "CpG pairs",
@@ -30,7 +30,7 @@
             "type": "number",
             "description": "CpG pairs with atleast 10 reads each"
         },
-        "Pearson Correlation Coefficient": {
+        "Pearson correlation": {
             "title": "Pearson correlation", 
             "type": "number",
             "minimum": -1,
