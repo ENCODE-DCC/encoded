@@ -36,9 +36,9 @@ def test_genomes(testapp, workbook, expected):
     "pennantIcon https://www.encodeproject.org/static/img/pennant-encode.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the ENCODE files and metadata found at the ENCODE portal\"",
     "subGroup1 view Views aENHAN=Candidate_enhancers bPROMO=Candidate_promoters cSTATE=Chromatin_state sPKS=Peaks",
     "subGroup2 BS Biosample IMR4590=IMR-90",
-    "subGroup3 EXP Experiments ENCSR575ZXX=ENCSR575ZXX"
+    "subGroup3 EXP Experiments ENCSR575ZXX=ENCSR575ZXX",
     "subGroup4 REP Replicates pool=Pooled",
-    "sortOrder BS=+ REP=+ view=+ EXP=+",
+    "sortOrder BS=+ REP=+ view=+",
     "    track ENCSR575ZXX_cSTATE_view",
     "    parent ENCSR575ZXX on",
     "    view cSTATE",
@@ -67,9 +67,9 @@ def test_dataset_trackDb(testapp, workbook, expected):
     "pennantIcon https://www.encodeproject.org/static/img/pennant-encode.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the ENCODE files and metadata found at the ENCODE portal\"",
     "subGroup1 view Views PK=Peaks SIG=Signals",
     "subGroup2 BS Biosample z9193=&#91;&#93;",
-    "subGroup3 EXP Experiments ENCSR727WCB=ENCSR727WCB"
+    "subGroup3 EXP Experiments ENCSR727WCB=ENCSR727WCB",
     "subGroup4 REP Replicates pool=Pooled",
-    "sortOrder BS=+ REP=+ view=+ EXP=+",
+    "sortOrder BS=+ REP=+ view=+",
     "dimensionAchecked pool",
     "    track ENCSR727WCB_PK_view",
     "    parent ENCSR727WCB on",
