@@ -3,9 +3,8 @@
     background-color: #fff;
     border: 1px solid #a0a0a0;
     border-radius: $border-radius-base;
-    box-shadow: 0 0 6px rgba(195, 202, 211, 0.5);
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: 15px;
+    margin-bottom: 15px;
     padding: 15px 20px;
     overflow: visible;
 
@@ -193,6 +192,16 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
 .attachment-panel-inner {
     padding: 0 5px;
+    flex-wrap: wrap;
+}
+
+.attachment-panel {
+    flex: 0 1 48%;
+    margin: 5px;
+}
+
+.type-QualityMetric.view-detail {
+    margin: 0;
 }
 
 // Holds documents, but as a panel within a panel

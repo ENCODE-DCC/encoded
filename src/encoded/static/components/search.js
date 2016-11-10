@@ -2,9 +2,8 @@
 var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
 var queryString = require('query-string');
-var Modal = require('react-bootstrap/lib/Modal');
-var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var button = require('../libs/bootstrap/button');
+var {Modal, ModalHeader, ModalBody, ModalFooter} = require('../libs/bootstrap/modal');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var SvgIcon = require('../libs/svg-icons').SvgIcon;
 var cx = require('react/lib/cx');
@@ -580,20 +579,32 @@ globals.listing_views.register(Image, 'Image');
 
 
 // If the given term is selected, return the href for the term
-function termSelected(term, field, filters) {
-    for (var filter in filters) {
-        if (filters[filter]['field'] == field && filters[filter]['term'] == term) {
-            return url.parse(filters[filter]['remove']).search;
+function termSelected(term, facet, filters) {
+    var selected = false;
+    var filter;
+    for (var filterName in filters) {
+        filter = filters[filterName];
+        if (facet.type === 'exists') {
+            if ((filter.field === facet.field + '!' && term === 'no') ||
+                (filter.field === facet.field && term === 'yes')) {
+                selected = true; break;
+            } 
+        } else if (filter.field == facet.field && filter.term == term) {
+            selected = true; break;
         }
     }
-    return null;
+    if (selected) {
+        return url.parse(filter.remove).search;
+    } else {
+        return null;
+    }
 }
 
 // Determine whether any of the given terms are selected
-function countSelectedTerms(terms, field, filters) {
+function countSelectedTerms(terms, facet, filters) {
     var count = 0;
     for(var oneTerm in terms) {
-        if(termSelected(terms[oneTerm].key, field, filters)) {
+        if(termSelected(terms[oneTerm].key, facet, filters)) {
             count++;
         }
     }
@@ -606,21 +617,30 @@ var Term = search.Term = React.createClass({
         var term = this.props.term['key'];
         var count = this.props.term['doc_count'];
         var title = this.props.title || term;
-        var field = this.props.facet['field'];
+        var facet = this.props.facet;
+        var field = facet['field'];
         var em = field === 'target.organism.scientific_name' ||
                     field === 'organism.scientific_name' ||
                     field === 'replicates.library.biosample.donor.organism.scientific_name';
         var barStyle = {
             width:  Math.ceil( (count/this.props.total) * 100) + "%"
         };
-        var selected = termSelected(term, field, filters);
+        var selected = termSelected(term, facet, filters);
         var href;
         if (selected && !this.props.canDeselect) {
             href = null;
         } else if (selected) {
             href = selected;
         } else {
-            href = this.props.searchBase + field + '=' + globals.encodedURIComponent(term);
+            if (facet.type === 'exists') {
+                if (term === 'yes') {
+                    href = this.props.searchBase + field + '=*';
+                } else {
+                    href = this.props.searchBase + field + '!=*';
+                }
+            } else {
+                href = this.props.searchBase + field + '=' + globals.encodedURIComponent(term);
+            }
         }
         return (
             <li id={selected ? "selected" : null} key={term}>
@@ -856,50 +876,25 @@ var FacetList = search.FacetList = React.createClass({
 });
 
 var BatchDownload = search.BatchDownload = React.createClass({
-    mixins: [OverlayMixin],
-
-    getInitialState: function () {
-        return {
-            isModalOpen: false
-        };
-    },
-
-    handleToggle: function () {
-        this.setState({
-            isModalOpen: !this.state.isModalOpen
-        });
-    },
-
     render: function () {
-        return (
-            <a className="btn btn-info btn-sm" onClick={this.handleToggle}>Download</a>
-        );
-    },
-
-    renderOverlay: function () {
         var link = this.props.context['batch_download'];
-        if (!this.state.isModalOpen) {
-            return <span/>;
-        }
         return (
-            <Modal title="Using batch download" onRequestHide={this.handleToggle}>
-                <div className="modal-body">
-                <p>Click the "Download" button below to download a "files.txt" file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
-                The first line of the file will always be the URL to download the metadata file. <br />
-                Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.</p><br />
-
-                <p>The "files.txt" file can be copied to any server.<br />
-                The following command using cURL can be used to download all the files in the list:</p><br />
-                <code>xargs -n 1 curl -O -L &lt; files.txt</code><br />
-                </div>
-                <div className="modal-footer">
-                    <a className="btn btn-info btn-sm" onClick={this.handleToggle}>Close</a>
-                    <a data-bypass="true" target="_self" className="btn btn-info btn-sm"
-                        href={link}>{'Download'}</a>
-                </div>
+            <Modal actuator={<button className="btn btn-info btn-sm">Download</button>}>
+                <ModalHeader title="Using batch download" closeModal />
+                <ModalBody>
+                    <p>Click the "Download" button below to download a "files.txt" file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
+                    The first line of the file will always be the URL to download the metadata file. <br />
+                    Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.</p><br />
+                    <p>The "files.txt" file can be copied to any server.<br />
+                    The following command using cURL can be used to download all the files in the list:</p><br />
+                    <code>xargs -n 1 curl -O -L &lt; files.txt</code><br />
+                </ModalBody>
+                <ModalFooter closeModal={<a className="btn btn-info btn-sm">Close</a>}
+                    submitBtn={<a data-bypass="true" target="_self" className="btn btn-info btn-sm" href={link}>{'Download'}</a>}
+                    dontClose />
             </Modal>
         );
-    }
+    },
 });
 
 var ResultTable = search.ResultTable = React.createClass({

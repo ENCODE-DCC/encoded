@@ -344,7 +344,7 @@ var AttachmentPanel = module.exports.AttachmentPanel = React.createClass({
         }
 
         return (
-            <section className="col-sm-12 col-md-6">
+            <section className="attachment-panel">
                 <Panel addClasses={globals.itemClass(context, 'view-detail quality-metric-header')}>
                     <figure>
                         <Attachment context={context} attachment={attachment} className="characterization" />
