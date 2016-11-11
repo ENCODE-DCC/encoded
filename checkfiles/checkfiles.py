@@ -657,12 +657,9 @@ def fetch_files(session, url, search_query, out, include_unexpired_upload=False)
 
 
 def patch_file(session, url, job):
-    item = job['item']
     result = job['result']
     errors = job['errors']
-    if errors:
-        return
-    item_url = urljoin(url, job['@id'])
+    data = None
 
     if not errors:
         data = {
@@ -677,6 +674,28 @@ def patch_file(session, url, job):
 
         if 'content_md5sum' in result:
             data['content_md5sum'] = result['content_md5sum']
+    else:
+        to_patch = True
+        for e in errors.keys():
+            if e in [
+               'unzipped_fastq_streaming',
+               'lookup_for_fastq_signature',
+               'lookup_for_content_md5sum',
+               'file_not_found',
+               'bed_unzip_failure',
+               'grep_bed_problem',
+               'bed_comments_remove_failure',
+               'content_md5sum_calculation',
+               'file_remove_error',
+               'fastq_information_extraction']:
+                to_patch = False
+                break
+        if to_patch:
+            data = {
+                'status': 'upload failed'
+                }
+    if data:
+        item_url = urljoin(url, job['@id'])
         r = session.patch(
             item_url,
             data=json.dumps(data),
@@ -690,13 +709,13 @@ def patch_file(session, url, job):
                 '{} {}\n{}'.format(r.status_code, r.reason, r.text)
         else:
             job['patched'] = True
-
+    return
 
 def run(out, err, url, username, password, encValData, mirror, search_query,
         processes=None, include_unexpired_upload=False, dry_run=False, json_out=False):
     import functools
     import multiprocessing
-    
+
     session = requests.Session()
     session.auth = (username, password)
     session.headers['Accept'] = 'application/json'
@@ -715,7 +734,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
         nprocesses = 1
 
     out.write("STARTING Checkfiles (%s): with %d processes %s at %s\n" %
-             (search_query, nprocesses, dr, datetime.datetime.now()))
+              (search_query, nprocesses, dr, datetime.datetime.now()))
     if processes == 0:
         # Easier debugging without multiprocessing.
         imap = map
