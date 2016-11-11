@@ -283,6 +283,10 @@ export const FileTable = React.createClass({
             title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
             getValue: item => (item.biological_replicates ? item.biological_replicates.sort((a, b) => a - b).join(', ') : ''),
         },
+        mapped_read_length: {
+            title: 'Mapped read length',
+            hide: list => _(list).all(file => file.mapped_read_length === undefined),
+        },
         assembly: { title: 'Mapping assembly' },
         genome_annotation: {
             title: 'Genome annotation',
@@ -329,6 +333,10 @@ export const FileTable = React.createClass({
         },
         file_type: { title: 'File type' },
         output_type: { title: 'Output type' },
+        mapped_read_length: {
+            title: 'Mapped read length',
+            hide: list => _(list).all(file => file.mapped_read_length === undefined),
+        },
         assembly: { title: 'Mapping assembly' },
         genome_annotation: {
             title: 'Genome annotation',
@@ -2185,6 +2193,13 @@ const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
                             <dd>{'-'}</dd>
                         </div>
                     : null)}
+
+                    {selectedFile.mapped_read_length !== undefined ?
+                        <div data-test="mappedreadlength">
+                            <dt>Mapped read length</dt>
+                            <dd>{selectedFile.mapped_read_length}</dd>
+                        </div>
+                    : null}
 
                     {selectedFile.assembly ?
                         <div data-test="assembly">

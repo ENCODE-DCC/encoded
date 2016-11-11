@@ -3017,3 +3017,79 @@ def audit_library_RNA_size_range(value, system):
             detail = 'Metadata of RNA library {} lacks information on '.format(rep['library']['@id']) + \
                      'the size range of fragments used to construct the library.'
             yield AuditFailure('missing RNA fragment size', detail, level='NOT_COMPLIANT')
+
+
+@audit_checker(
+    'experiment',
+    frame=[
+        'target',
+        'replicates',
+        'replicates.library',
+        'replicates.library.biosample',
+        'replicates.library.biosample.constructs',
+        'replicates.library.biosample.constructs.target',
+        'replicates.library.biosample.donor',
+        'replicates.library.biosample.model_organism_donor_constructs',
+        'replicates.library.biosample.model_organism_donor_constructs.target'])
+def audit_missing_construct(value, system):
+
+    if value['status'] in ['deleted', 'replaced', 'proposed', 'revoked']:
+        return
+
+    if 'target' not in value:
+        return
+
+    '''
+    Note that this audit only deals with tagged constructs for now and does not check
+    genetic_modifications where tagging information could also be specified. Constructs
+    should get absorbed by genetic_modifications in the future and this audit would need
+    to be re-written.
+
+    Also, the audit does not cover whether or not the biosamples in possible_controls also
+    have the same construct. In some cases, they legitimately don't, e.g. HEK-ZNFs
+    '''
+    target = value['target']
+    if 'recombinant protein' not in target['investigated_as']:
+        return
+    else:
+        biosamples = get_biosamples(value)
+        missing_construct = list()
+        tag_mismatch = list()
+
+        if 'biosample_type' not in value:
+            detail = '{} is missing biosample_type'.format(value['@id'])
+            yield AuditFailure('missing biosample_type', detail, level='ERROR')
+
+        for biosample in biosamples:
+            if (biosample['biosample_type'] != 'whole organisms') and (not biosample['constructs']):
+                missing_construct.append(biosample)
+            elif (biosample['biosample_type'] == 'whole organisms') and \
+                    (not biosample['model_organism_donor_constructs']):
+                    missing_construct.append(biosample)
+            elif (biosample['biosample_type'] != 'whole organisms') and (biosample['constructs']):
+                for construct in biosample['constructs']:
+                    if construct['target']['name'] != target['name']:
+                        tag_mismatch.append(construct)
+            elif (biosample['biosample_type'] == 'whole organisms') and \
+                    (biosample['model_organism_donor_constructs']):
+                        for construct in biosample['model_organism_donor_constructs']:
+                            if construct['target']['name'] != target['name']:
+                                tag_mismatch.append(construct)
+            else:
+                pass
+
+        if missing_construct:
+            for b in missing_construct:
+                detail = 'Recombinant protein target {} requires '.format(value['@id']) + \
+                    'a fusion protein construct associated with the biosample {} '.format(b['@id']) + \
+                    'or donor {} (for whole organism biosamples) to specify the relevant tagging ' + \
+                    ' details.'.format(b['donor']['@id'])
+                yield AuditFailure('missing tag construct', detail, level='WARNING')
+            return
+
+        if tag_mismatch:
+            for c in tag_mismatch:
+                detail = 'The target of this assay {} does not'.format(value['target']['@id']) + \
+                    ' match that of the linked construct {}, {}.'.format(c['@id'], c['target']['@id'])
+                yield AuditFailure('mismatched construct target', detail, level='ERROR')
+            return
