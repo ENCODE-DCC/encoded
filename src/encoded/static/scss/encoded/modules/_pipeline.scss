@@ -1,7 +1,7 @@
 $pipeline-node-types:
     (file, #FFF5BA),
     (analysis-step, #D3E9FF),
-    (quality-metric, #f0e0f8);
+    (quality-metric, #80ffc0);
 
 @each $node-type, $color in $pipeline-node-types {
     // Audit icons
@@ -21,7 +21,7 @@ $pipeline-node-types:
             }
         }
 
-        &.error {
+        &.error, &.restricted {
             fill: #ffc0c0;
         }
 
@@ -32,6 +32,10 @@ $pipeline-node-types:
         text {
             fill: #000;
         }
+    }
+
+    .graph-modal-#{$node-type} {
+        background-color: $color;
     }
 }
 
@@ -155,6 +159,12 @@ g.pipeline-node-qc-metric {
     }
 }
 
+.file-qc-buttons {
+    .btn {
+        margin-right: 5px;
+    }
+}
+
 .details-view-header {
     margin-bottom: 10px;
     border-bottom: 1px solid #e0e0e0;
@@ -225,4 +235,12 @@ g.pipeline-node-qc-metric {
     font-size: 1.5rem;
     font-weight: bold;
     vertical-align: middle;
+}
+
+.graph-modal-audits {
+    margin-top: 4px;
+
+    h5 {
+        margin-top: 0;
+    }
 }

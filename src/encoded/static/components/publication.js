@@ -35,7 +35,7 @@ var Publication = module.exports.Panel = React.createClass({
                 <Breadcrumbs root='/search/?type=publication' crumbs={crumbs} />
                 <h2>{context.title}</h2>
                 <AuditIndicators audits={context.audit} id="publication-audit" />
-                <AuditDetail context={context} id="publication-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="publication-audit" />
                 {context.authors ? <div className="authors">{context.authors}.</div> : null}
                 <div className="journal">
                     <Citation {...this.props} />
@@ -245,7 +245,7 @@ var Listing = React.createClass({
                         : null}
                     </div>
                 </div>
-                <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
+                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     }

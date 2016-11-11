@@ -341,7 +341,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     background-size: auto 40%;
 
     &.hiding {
-        background-image: inline-image('../img/hiding-dots.svg');
+        background-image: url('data:image/svg+xml;utf8,<svg data-name="Hiding Dots" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760.67 139.33"><defs><style>.cls-1{fill:#808080;}</style></defs><title>Indicates hiddent content</title><circle class="cls-1" cx="380.33" cy="69.67" r="64.11"/><circle class="cls-1" cx="692.4" cy="69.67" r="64.11"/><circle class="cls-1" cx="68.27" cy="69.67" r="64.11"/></svg>');
     }
 }
 
@@ -397,7 +397,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     border-right: 1px solid #fff;
     border-bottom: none;
     border-left: none;
-    background: transparent;
+    background-color: transparent;
 
     &:hover {
         background-color: darken(#d8e0e8, 10%);
