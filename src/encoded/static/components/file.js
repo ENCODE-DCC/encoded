@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import globals from './globals';
 import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
@@ -18,13 +19,15 @@ const File = React.createClass({
         const { context } = this.props;
         const itemClass = globals.itemClass(context, 'view-item');
         const altacc = (context.alternate_accessions && context.alternate_accessions.length) ? context.alternate_accessions.join(', ') : null;
+        const aliasList = (context.aliases && context.aliases.length) ? context.aliases.join(', ') : '';
 
-        // Make array of superceded_by accessions
+        // Make array of superceded_by accessions.
         let supersededBys = [];
         if (context.superseded_by && context.superseded_by.length) {
             supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
         }
 
+        // Collect up relevant pipelines.
         let pipelines = [];
         if (context.analysis_step_version && context.analysis_step_version.analysis_step.pipelines && context.analysis_step_version.analysis_step.pipelines.length) {
             pipelines = context.analysis_step_version.analysis_step.pipelines;
@@ -49,10 +52,10 @@ const File = React.createClass({
                 </header>
                 <AuditDetail context={context} except={context['@id']} id="file-audit" />
                 <Panel addClasses="data-display">
-                    <PanelBody addClasses="panel-body-with-header">
-                        <div className="flexrow">
-                            <div className="flexcol-sm-6">
-                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
+                    <div className="split-panel">
+                        <div className="split-panel__part split-panel__part--p50">
+                            <div className="split-panel__heading"><h4>Summary</h4></div>
+                            <div className="split-panel__content">
                                 <dl className="key-value">
                                     <div data-test="term-name">
                                         <dt>Dataset</dt>
@@ -131,12 +134,14 @@ const File = React.createClass({
                                     : null}
                                 </dl>
                             </div>
+                        </div>
 
-                            <div className="flexcol-sm-6">
-                                <div className="flexcol-heading experiment-heading">
-                                    <h4>Attribution</h4>
-                                    <ProjectBadge award={context.award} addClasses="badge-heading" />
-                                </div>
+                        <div className="split-panel__part split-panel__part--p50">
+                            <div className="split-panel__heading">
+                                <h4>Attribution</h4>
+                                <ProjectBadge award={context.award} addClasses="badge-heading" />
+                            </div>
+                            <div className="split-panel__content">
                                 <dl className="key-value">
                                     <div data-test="lab">
                                         <dt>Lab</dt>
@@ -165,7 +170,7 @@ const File = React.createClass({
                                     {context.date_created ?
                                         <div data-test="datecreated">
                                             <dt>Date added</dt>
-                                            <dd>{context.date_created}</dd>
+                                            <dd>{moment.utc(context.date_created).format('YYYY-MM-DD')}</dd>
                                         </div>
                                     : null}
 
@@ -175,10 +180,24 @@ const File = React.createClass({
                                             <dd><DbxrefList values={context.dbxrefs} /></dd>
                                         </div>
                                     : null}
+
+                                    {aliasList ?
+                                        <div data-test="aliases">
+                                            <dt>Aliases</dt>
+                                            <dd>{aliasList}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.submitted_file_name ?
+                                        <div data-test="submittedfilename">
+                                            <dt>Original file name</dt>
+                                            <dd className="sequence">{context.submitted_file_name}</dd>
+                                        </div>
+                                    : null}
                                 </dl>
                             </div>
                         </div>
-                    </PanelBody>
+                    </div>
                 </Panel>
             </div>
         );

@@ -107,6 +107,7 @@ class File(Item):
         'replicate.library',
         'replicate.experiment.lab',
         'replicate.experiment.target',
+        'award',
         'lab',
         'derived_from',
         'derived_from.analysis_step_version.software_versions',
