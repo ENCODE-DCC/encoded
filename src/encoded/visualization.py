@@ -2065,7 +2065,7 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
             longLabel = vis_defs.get('file_defs',{}).get('longLabel')
             if longLabel is None:
                 longLabel = "{assay_title} of {biosample_term_name} {output_type} {biological_replicate_number}"
-            longLabel += longLabel + " {experiment.accession} - {file.accession}" # Always wrap with accessions
+            longLabel += " {experiment.accession} - {file.accession}" # Always add the accessions
             track["longLabel"] = sanitize_label( convert_mask(longLabel,dataset,a_file) )
             # Specialized addendum comments because subtle details are always getting in the way of elegance.
             addendum = ""
