@@ -21,14 +21,17 @@
             "default": "3"
         },
         "SPOT score": {
+            "title": "SPOT score",
             "type": "number",
             "description": "SPOT score as calculated by hotspot2"
         },
         "hotspot count": {
+            "title": "# of hotspots",
             "type": "number",
             "description": "Count of hotspots discovered by hotspot2"
         },
         "peaks count": {
+            "title": "# of peaks",
             "type": "number",
             "description": "Count of peaks discovered by hotspot2"
         }
