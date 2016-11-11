@@ -307,16 +307,95 @@ def get_assemblies(list_of_files):
     return assemblies
 
 
+@audit_checker('Experiment', frame=[
+    'target',
+    'original_files',
+    'original_files.derived_from',
+    'original_files.derived_from.derived_from',
+    'original_files.derived_from.dataset',
+    'original_files.derived_from.dataset.original_files'])
+def audit_experiment_control_out_of_date_analysis(value, system):
+    if value['assay_term_name'] not in ['ChIP-seq']:
+        return
+    if 'target' in value and 'investigated_as' in value['target'] and \
+       'control' in value['target']['investigated_as']:
+        return
+    all_signal_files = scan_files_for_file_format_output_type(value['original_files'],
+                                                              'bigWig', 'signal p-value')
+    signal_files = []
+    for signal_file in all_signal_files:
+        if 'lab' in signal_file and signal_file['lab'] == '/labs/encode-processing-pipeline/':
+            signal_files.append(signal_file)
+
+    if len(signal_files) == 0:
+        return
+
+    derived_from_bams = get_derived_from_files_set(signal_files, 'bam', True)
+    for bam_file in derived_from_bams:
+        if bam_file['dataset']['accession'] != value['accession'] and \
+           is_outdated_bams_replicate(bam_file):
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     'processed files are using alignment files from a control ' + \
+                     'replicate that is out of date.'
+            yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
+            return
+
+
+def is_outdated_bams_replicate(bam_file):
+    if 'lab' not in bam_file or bam_file['lab'] != '/labs/encode-processing-pipeline/' or \
+       'dataset' not in bam_file or 'original_files' not in bam_file['dataset']:
+        return False
+    derived_from_fastqs = get_derived_from_files_set([bam_file], 'fastq', True)
+    if len(derived_from_fastqs) == 0:
+        return False
+
+    derived_from_fastq_accessions = get_file_accessions(derived_from_fastqs)
+
+    bio_rep = []
+    for fastq_file in derived_from_fastqs:
+        if 'biological_replicates' in fastq_file and \
+           len(fastq_file['biological_replicates']) != 0:
+            for entry in fastq_file['biological_replicates']:
+                bio_rep.append(entry)
+            break
+
+    fastq_files = scan_files_for_file_format_output_type(
+        bam_file['dataset']['original_files'],
+        'fastq', 'reads')
+
+    bio_rep_fastqs = []
+    for fastq_file in fastq_files:
+        if 'biological_replicates' in fastq_file:
+            for entry in fastq_file['biological_replicates']:
+                if entry in bio_rep:
+                    bio_rep_fastqs.append(fastq_file)
+                    break
+
+    replicate_fastq_accessions = get_file_accessions(bio_rep_fastqs)
+    for f_accession in replicate_fastq_accessions:
+        if f_accession not in derived_from_fastq_accessions:
+            return True
+
+    for f_accession in derived_from_fastq_accessions:
+        if f_accession not in replicate_fastq_accessions:
+            return True
+    return False
+
+
 @audit_checker('Experiment', frame=['original_files',
                                     'original_files.replicate',
                                     'original_files.derived_from'])
 def audit_experiment_out_of_date_analysis(value, system):
     alignment_files = scan_files_for_file_format_output_type(value['original_files'],
                                                              'bam', 'alignments')
+    not_filtered_alignments = scan_files_for_file_format_output_type(
+        value['original_files'],
+        'bam', 'unfiltered alignments')
     transcriptome_alignments = scan_files_for_file_format_output_type(value['original_files'],
                                                                       'bam',
                                                                       'transcriptome alignments')
-    if len(alignment_files) == 0 and len(transcriptome_alignments) == 0:
+    if len(alignment_files) == 0 and len(transcriptome_alignments) == 0 and \
+       len(not_filtered_alignments) == 0:
         return  # probably needs pipeline, since there are no processed files
 
     uniform_pipeline_flag = False
@@ -328,12 +407,22 @@ def audit_experiment_out_of_date_analysis(value, system):
         if bam_file['lab'] == '/labs/encode-processing-pipeline/':
             uniform_pipeline_flag = True
             break
+    for bam_file in not_filtered_alignments:
+        if bam_file['lab'] == '/labs/encode-processing-pipeline/':
+            uniform_pipeline_flag = True
+            break
     if uniform_pipeline_flag is False:
         return
-    alignment_derived_from = get_derived_from_files_set(alignment_files)
-    transcriptome_alignment_derived_from = get_derived_from_files_set(transcriptome_alignments)
+    alignment_derived_from = get_derived_from_files_set(alignment_files, 'fastq', False)
+    transcriptome_alignment_derived_from = get_derived_from_files_set(
+        transcriptome_alignments, 'fastq', False)
+    not_filtered_alignment_derived_from = get_derived_from_files_set(
+        not_filtered_alignments, 'fastq', False)
 
-    derived_from_set = alignment_derived_from | transcriptome_alignment_derived_from
+    derived_from_set = alignment_derived_from | \
+        not_filtered_alignment_derived_from | \
+        transcriptome_alignment_derived_from
+
     fastq_files = scan_files_for_file_format_output_type(value['original_files'],
                                                          'fastq', 'reads')
     fastq_accs = get_file_accessions(fastq_files)
@@ -374,13 +463,19 @@ def get_file_accessions(list_of_files):
     return accessions_set
 
 
-def get_derived_from_files_set(list_of_files):
+def get_derived_from_files_set(list_of_files, file_format, object_flag):
     derived_from_set = set()
+    derived_from_objects_list = []
     for f in list_of_files:
         if 'derived_from' in f:
             for d_f in f['derived_from']:
-                if 'file_format' in d_f and d_f['file_format'] == 'fastq':
+                if 'file_format' in d_f and d_f['file_format'] == file_format and \
+                   d_f['accession'] not in derived_from_set:
                     derived_from_set.add(d_f['accession'])
+                    if object_flag:
+                        derived_from_objects_list.append(d_f)
+    if object_flag:
+        return derived_from_objects_list
     return derived_from_set
 
 
@@ -2922,3 +3017,79 @@ def audit_library_RNA_size_range(value, system):
             detail = 'Metadata of RNA library {} lacks information on '.format(rep['library']['@id']) + \
                      'the size range of fragments used to construct the library.'
             yield AuditFailure('missing RNA fragment size', detail, level='NOT_COMPLIANT')
+
+
+@audit_checker(
+    'experiment',
+    frame=[
+        'target',
+        'replicates',
+        'replicates.library',
+        'replicates.library.biosample',
+        'replicates.library.biosample.constructs',
+        'replicates.library.biosample.constructs.target',
+        'replicates.library.biosample.donor',
+        'replicates.library.biosample.model_organism_donor_constructs',
+        'replicates.library.biosample.model_organism_donor_constructs.target'])
+def audit_missing_construct(value, system):
+
+    if value['status'] in ['deleted', 'replaced', 'proposed', 'revoked']:
+        return
+
+    if 'target' not in value:
+        return
+
+    '''
+    Note that this audit only deals with tagged constructs for now and does not check
+    genetic_modifications where tagging information could also be specified. Constructs
+    should get absorbed by genetic_modifications in the future and this audit would need
+    to be re-written.
+
+    Also, the audit does not cover whether or not the biosamples in possible_controls also
+    have the same construct. In some cases, they legitimately don't, e.g. HEK-ZNFs
+    '''
+    target = value['target']
+    if 'recombinant protein' not in target['investigated_as']:
+        return
+    else:
+        biosamples = get_biosamples(value)
+        missing_construct = list()
+        tag_mismatch = list()
+
+        if 'biosample_type' not in value:
+            detail = '{} is missing biosample_type'.format(value['@id'])
+            yield AuditFailure('missing biosample_type', detail, level='ERROR')
+
+        for biosample in biosamples:
+            if (biosample['biosample_type'] != 'whole organisms') and (not biosample['constructs']):
+                missing_construct.append(biosample)
+            elif (biosample['biosample_type'] == 'whole organisms') and \
+                    (not biosample['model_organism_donor_constructs']):
+                    missing_construct.append(biosample)
+            elif (biosample['biosample_type'] != 'whole organisms') and (biosample['constructs']):
+                for construct in biosample['constructs']:
+                    if construct['target']['name'] != target['name']:
+                        tag_mismatch.append(construct)
+            elif (biosample['biosample_type'] == 'whole organisms') and \
+                    (biosample['model_organism_donor_constructs']):
+                        for construct in biosample['model_organism_donor_constructs']:
+                            if construct['target']['name'] != target['name']:
+                                tag_mismatch.append(construct)
+            else:
+                pass
+
+        if missing_construct:
+            for b in missing_construct:
+                detail = 'Recombinant protein target {} requires '.format(value['@id']) + \
+                    'a fusion protein construct associated with the biosample {} '.format(b['@id']) + \
+                    'or donor {} (for whole organism biosamples) to specify the relevant tagging ' + \
+                    ' details.'.format(b['donor']['@id'])
+                yield AuditFailure('missing tag construct', detail, level='WARNING')
+            return
+
+        if tag_mismatch:
+            for c in tag_mismatch:
+                detail = 'The target of this assay {} does not'.format(value['target']['@id']) + \
+                    ' match that of the linked construct {}, {}.'.format(c['@id'], c['target']['@id'])
+                yield AuditFailure('mismatched construct target', detail, level='ERROR')
+            return
