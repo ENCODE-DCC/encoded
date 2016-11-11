@@ -477,7 +477,7 @@ def search_result_actions(request, doc_types, es_results, position=None):
 
     # generate batch hub URL for experiments
     # TODO we could enable them for Datasets as well here, but not sure how well it will work
-    if doc_types == ['Experiment']:
+    if doc_types == ['Experiment'] or doc_types == ['Annotation']:
         may_visualize = False
         for es_exp in es_results['hits']['hits']:
             if es_exp['_source']['embedded']['status'] == 'released':
@@ -503,7 +503,7 @@ def search_result_actions(request, doc_types, es_results, position=None):
     # TODO we could enable them for Datasets as well here, but not sure how well it will work
     # batch download disabled for region-search results
     if '/region-search/' not in request.url:
-        if doc_types == ['Experiment'] and any(
+        if (doc_types == ['Experiment'] or doc_types == ['Annotation']) and any(
                 bucket['doc_count'] > 0
                 for bucket in aggregations['files-file_type']['files-file_type']['buckets']):
             actions['batch_download'] = request.route_url(
