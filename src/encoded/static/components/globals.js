@@ -127,14 +127,13 @@ var encodedURIComponent = module.exports.encodedURIComponent = function(str, spa
 
 // Take an @id and return the corresponding accession. If no accession could be found in the @id,
 // the empty string is returned.
-function atIdToAccession(atId) {
+module.exports.atIdToAccession = function (atId) {
     const matched = atId.match(/^\/.+\/(.+)\/$/);
     if (matched && matched.length === 2) {
         return matched[1];
     }
     return '';
-}
-export { atIdToAccession };
+};
 
 
 // Make the first character of the given string uppercase. Can be less fiddly than CSS text-transform.
