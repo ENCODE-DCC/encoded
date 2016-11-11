@@ -92,53 +92,6 @@ export const FileTable = React.createClass({
         maxWidthNode: null, // DOM node of table with this.state.maxWidth width
     },
 
-    // Configuration for raw file table
-    rawArrayTableColumns: {
-        accession: {
-            title: 'Accession',
-            display: item =>
-                <span>
-                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf('/') + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
-                </span>,
-        },
-        file_type: { title: 'File type' },
-        biological_replicates: {
-            title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
-            getValue: item => (item.biological_replicates ? item.biological_replicates.sort((a, b) => a - b).join(', ') : ''),
-        },
-        library: {
-            title: 'Library',
-            getValue: item => ((item.replicate && item.replicate.library) ? item.replicate.library.accession : null),
-        },
-        assembly: { title: 'Mapping assembly' },
-        title: {
-            title: 'Lab',
-            getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
-        },
-        date_created: {
-            title: 'Date added',
-            getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
-            sorter: (a, b) => {
-                if (a && b) {
-                    return Date.parse(a) - Date.parse(b);
-                }
-                return a ? -1 : (b ? 1 : 0);
-            },
-        },
-        file_size: {
-            title: 'File size',
-            display: item => <span>{humanFileSize(item.file_size)}</span>,
-        },
-        audit: {
-            title: 'Audit status',
-            display: item => <div>{fileAuditStatus(item)}</div>,
-        },
-        status: {
-            title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
-        },
-    },
-
     // Configuration for process file table
     procTableColumns: {
         accession: {
@@ -153,6 +106,10 @@ export const FileTable = React.createClass({
         biological_replicates: {
             title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
             getValue: item => (item.biological_replicates ? item.biological_replicates.sort((a, b) => a - b).join(', ') : ''),
+        },
+        mapped_read_length: {
+            title: 'Mapped read length',
+            hide: list => _(list).all(file => file.mapped_read_length === undefined),
         },
         assembly: { title: 'Mapping assembly' },
         genome_annotation: {
@@ -199,6 +156,10 @@ export const FileTable = React.createClass({
         },
         file_type: { title: 'File type' },
         output_type: { title: 'Output type' },
+        mapped_read_length: {
+            title: 'Mapped read length',
+            hide: list => _(list).all(file => file.mapped_read_length === undefined),
+        },
         assembly: { title: 'Mapping assembly' },
         genome_annotation: {
             title: 'Genome annotation',
@@ -1870,6 +1831,13 @@ const FileDetailView = function (node) {
                             <dd>{'-'}</dd>
                         </div>
                     : null)}
+
+                    {selectedFile.mapped_read_length !== undefined ?
+                        <div data-test="mappedreadlength">
+                            <dt>Mapped read length</dt>
+                            <dd>{selectedFile.mapped_read_length}</dd>
+                        </div>
+                    : null}
 
                     {selectedFile.assembly ?
                         <div data-test="assembly">
