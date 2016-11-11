@@ -21,26 +21,32 @@
             "default": "3"
         },
         "Pearson correlation": {
+            "title": "Pearson correlation",
             "type": "number",
             "description": "Pearson's R correlation"
         },
         "Spearman correlation": {
+            "title": "Spearman correlation",
             "type": "number",
             "description": "Spearman's rank correlation"
         },
         "Items": {
+            "title": "Items",
             "type": "number",
             "description": "Count of items from two different datasets that are being correlated"
         },
         "Standard deviation": {
+            "title": "Standard deviation",
             "type": "number",
             "description": "Standard deviation of difference"
         },
         "MAD of log ratios": {
+            "title": "MAD of log ratios",
             "type": "number",
             "description": "Mean-Average-Deviation (MAD) of replicate log ratios from quantification"
         },
         "Details": {
+            "title": "Details",
             "type": "string",
             "description": "Description of methods"
         }

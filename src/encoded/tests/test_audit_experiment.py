@@ -4,6 +4,7 @@ RED_DOT = """data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
 AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
 9TXL0Y4OHwAAAABJRU5ErkJggg=="""
 
+
 @pytest.fixture
 def library_no_biosample(testapp, lab, award):
     item = {
@@ -26,6 +27,7 @@ def base_library(testapp, lab, award, base_biosample):
     }
     return testapp.post_json('/library', item, status=201).json['@graph'][0]
 
+
 @pytest.fixture
 def base_replicate(testapp, base_experiment):
     item = {
@@ -35,6 +37,7 @@ def base_replicate(testapp, base_experiment):
     }
     return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
 
+
 @pytest.fixture
 def base_replicate_two(testapp, base_experiment):
     item = {
@@ -43,6 +46,7 @@ def base_replicate_two(testapp, base_experiment):
         'experiment': base_experiment['@id'],
     }
     return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
+
 
 @pytest.fixture
 def base_target(testapp, organism):
@@ -61,6 +65,17 @@ def tag_target(testapp, organism):
         'organism': organism['uuid'],
         'label': 'eGFP',
         'investigated_as': ['tag']
+    }
+    return testapp.post_json('/target', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def recombinant_target(testapp, organism):
+    item = {
+        'organism': organism['uuid'],
+        'gene_name': 'CTCF',
+        'label': 'eGFP-CTCF',
+        'investigated_as': ['recombinant protein', 'transcription factor']
     }
     return testapp.post_json('/target', item, status=201).json['@graph'][0]
 
@@ -181,6 +196,7 @@ def IgG_ctrl_rep(testapp, ctrl_experiment, IgG_antibody):
     }
     return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
 
+
 @pytest.fixture
 def library_1(testapp, lab, award, base_biosample):
     item = {
@@ -191,6 +207,8 @@ def library_1(testapp, lab, award, base_biosample):
         'biosample': base_biosample['uuid']
     }
     return testapp.post_json('/library', item, status=201).json['@graph'][0]
+
+
 @pytest.fixture
 def library_2(testapp, lab, award, base_biosample):
     item = {
@@ -201,6 +219,7 @@ def library_2(testapp, lab, award, base_biosample):
         'biosample': base_biosample['uuid']
     }
     return testapp.post_json('/library', item, status=201).json['@graph'][0]
+
 
 @pytest.fixture
 def replicate_1_1(testapp, base_experiment):
@@ -220,6 +239,7 @@ def replicate_2_1(testapp, base_experiment):
         'experiment': base_experiment['@id'],
     }
     return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
+
 
 @pytest.fixture
 def replicate_1_2(testapp, base_experiment):
@@ -246,7 +266,7 @@ def biosample_1(testapp, lab, award, source, organism):
 
 @pytest.fixture
 def biosample_2(testapp, lab, award, source, organism):
-    item = {        
+    item = {
         'award': award['uuid'],
         'biosample_term_id': 'UBERON:349829',
         'biosample_type': 'tissue',
@@ -287,6 +307,7 @@ def file_fastq_2(testapp, lab, award, base_experiment, base_replicate):
         'status': 'in progress',  # avoid s3 upload codepath
     }
     return testapp.post_json('/file', item).json['@graph'][0]
+
 
 @pytest.fixture
 def file_fastq_3(testapp, lab, award, base_experiment, replicate_1_1):
@@ -634,7 +655,7 @@ def test_audit_experiment_biological_replicates_biosample(testapp, base_experime
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
-        errors_list.extend(errors[error_type])        
+        errors_list.extend(errors[error_type])
     assert any(error['category'] == 'biological replicates with identical biosample' for error in errors_list)
 
 
@@ -648,7 +669,7 @@ def test_audit_experiment_technical_replicates_biosample(testapp, base_experimen
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
-        errors_list.extend(errors[error_type])        
+        errors_list.extend(errors[error_type])
     assert any(error['category'] == 'technical replicates with not identical biosample' for error in errors_list)
 
 
@@ -2359,7 +2380,6 @@ def test_audit_experiment_modern_chip_seq_standards(testapp,
 
     for error_type in errors:
         errors_list.extend(errors[error_type])
-        
         '''print (error_type)
         for e in errors[error_type]:
             print (e)
@@ -2368,3 +2388,79 @@ def test_audit_experiment_modern_chip_seq_standards(testapp,
             print (e)
         '''
     assert any(error['category'] == 'insufficient read depth' for error in errors_list)
+
+
+def test_audit_experiment_missing_construct(testapp,
+                                            base_experiment,
+                                            recombinant_target,
+                                            replicate_1_1,
+                                            replicate_2_1,
+                                            library_1,
+                                            library_2,
+                                            biosample_1,
+                                            biosample_2,
+                                            donor_1,
+                                            donor_2):
+
+    testapp.patch_json(biosample_1['@id'], {'biosample_term_name': 'K562',
+                                            'biosample_term_id': 'EFO:0002067',
+                                            'biosample_type': 'immortalized cell line',
+                                            'donor': donor_1['@id']})
+    testapp.patch_json(biosample_2['@id'], {'biosample_term_name': 'K562',
+                                            'biosample_term_id': 'EFO:0002067',
+                                            'biosample_type': 'immortalized cell line',
+                                            'donor': donor_2['@id']})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
+                                                'assay_term_id': 'OBI:0000716',
+                                                'target': recombinant_target['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing tag construct' for error in errors_list)
+
+
+def test_audit_experiment_wrong_construct(testapp,
+                                          base_experiment,
+                                          base_target,
+                                          recombinant_target,
+                                          replicate_1_1,
+                                          replicate_2_1,
+                                          library_1,
+                                          library_2,
+                                          biosample_1,
+                                          biosample_2,
+                                          donor_1,
+                                          donor_2,
+                                          construct):
+
+    testapp.patch_json(construct['@id'], {'target': base_target['@id'],
+                                          'tags': [{'name': 'FLAG', 'location': 'internal'}]})
+    testapp.patch_json(biosample_1['@id'], {'biosample_term_name': 'K562',
+                                            'biosample_term_id': 'EFO:0002067',
+                                            'biosample_type': 'immortalized cell line',
+                                            'donor': donor_1['@id']})
+    testapp.patch_json(biosample_2['@id'], {'biosample_term_name': 'K562',
+                                            'biosample_term_id': 'EFO:0002067',
+                                            'biosample_type': 'immortalized cell line',
+                                            'donor': donor_2['@id']})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(biosample_1['@id'], {'constructs': [construct['@id']]})
+    testapp.patch_json(biosample_2['@id'], {'constructs': [construct['@id']]})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
+                                                'assay_term_id': 'OBI:0000716',
+                                                'target': recombinant_target['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched construct target' for error in errors_list)

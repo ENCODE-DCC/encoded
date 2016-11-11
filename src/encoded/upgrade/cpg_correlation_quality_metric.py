@@ -16,3 +16,11 @@ def cpg_correlation_quality_metric_1_2(value, system):
     lab = conn.get_by_uuid(lab_uuid)
     value['award'] = '/awards/'+str(award.properties['name'])+'/'
     value['lab'] = '/labs/'+str(lab.properties['name'])+'/'
+
+
+@upgrade_step('cpg_correlation_quality_metric', '2', '3')
+def cpg_correlation_quality_metric_2_3(value, system):
+    # http://redmine.encodedcc.org/issues/4471
+    if 'Pearson Correlation Coefficient' in value:
+        value['Pearson correlation'] = value['Pearson Correlation Coefficient']
+        value.pop('Pearson Correlation Coefficient')
