@@ -420,10 +420,16 @@ def process_read_lengths(read_lengths_dict,
                          threshold_percentage,
                          errors_to_report,
                          result):
-
-    reads_quantity = sum([count for length, count in read_lengths_dict.items()
-                          if (submitted_read_length - 2) <= length <= (submitted_read_length + 2)])
-
+    expected_read_lengths = [
+        submitted_read_length-2,
+        submitted_read_length-1,
+        submitted_read_length,
+        submitted_read_length+1,
+        submitted_read_length+2]
+    reads_quantity = 0
+    for length in expected_read_lengths:
+        if length in read_lengths_dict:
+            reads_quantity += read_lengths_dict[length]
     if ((threshold_percentage * read_count) > reads_quantity):
         errors_to_report['read_length'] = \
             'in file metadata the read_length is {}, '.format(submitted_read_length) + \
