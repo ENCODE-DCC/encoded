@@ -127,14 +127,13 @@ var encodedURIComponent = module.exports.encodedURIComponent = function(str, spa
 
 // Take an @id and return the corresponding accession. If no accession could be found in the @id,
 // the empty string is returned.
-function atIdToAccession(atId) {
+module.exports.atIdToAccession = function (atId) {
     const matched = atId.match(/^\/.+\/(.+)\/$/);
     if (matched && matched.length === 2) {
         return matched[1];
     }
     return '';
-}
-export { atIdToAccession };
+};
 
 
 // Make the first character of the given string uppercase. Can be less fiddly than CSS text-transform.
@@ -145,7 +144,7 @@ String.prototype.uppercaseFirstChar = function(string) {
 
 // Convert a string to a 32-bit hash.
 // http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
-export function hashCode(src) {
+module.exports.hashCode = function (src) {
     let hash = 0;
     if (src.length > 0) {
         for (let i = 0; i < src.length; i += 1) {

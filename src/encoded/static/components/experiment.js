@@ -335,7 +335,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         </div>
                    </div>
                 </header>
-                <AuditDetail context={context} id="experiment-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="experiment-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
