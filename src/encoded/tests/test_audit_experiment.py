@@ -2125,7 +2125,7 @@ def test_audit_experiment_dnase_seq_low_read_depth(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'low read depth' for error in errors_list)
+    assert any(error['category'] == 'extremely low read depth' for error in errors_list)
 
 
 def test_audit_experiment_dnase_seq_missing_read_depth(testapp,
