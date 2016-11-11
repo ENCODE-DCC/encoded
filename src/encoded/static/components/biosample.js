@@ -117,7 +117,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="biosample-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="biosample-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">

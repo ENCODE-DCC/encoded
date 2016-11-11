@@ -72,7 +72,7 @@ var Software = module.exports.Software = React.createClass({
                         <AuditIndicators audits={context.audit} id="publication-audit" />
                     </div>
                 </header>
-                <AuditDetail context={context} id="publication-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="publication-audit" />
 
                 <div className="panel">
                     <dl className="key-value">
@@ -192,7 +192,7 @@ var Listing = React.createClass({
 
                     </div>
                 </div>
-                <AuditDetail context={result} id={result['@id']} forcedEditLink />
+                <AuditDetail audits={result.audit} except={result['@id']} id={result['@id']} forcedEditLink />
             </li>
         );
     }
@@ -202,7 +202,7 @@ globals.listing_views.register(Listing, 'Software');
 
 // Display a list of software versions from the given software_version list. This is meant to be displayed
 // in a panel.
-var SoftwareVersionList = module.exports.SoftwareVersionList = function(softwareVersions) {
+var softwareVersionList = module.exports.softwareVersionList = function(softwareVersions) {
     return (
         <span className="software-version-list">
             {softwareVersions.map(function(version, i) {

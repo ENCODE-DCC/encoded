@@ -65,7 +65,7 @@ var Item = module.exports.Item = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} key="biosample-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} key="biosample-audit" />
                 <div className="row item-row">
                     <div className="col-sm-12">
                         {context.description ? <p className="description">{context.description}</p> : null}

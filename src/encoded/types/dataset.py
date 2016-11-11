@@ -197,7 +197,9 @@ class Dataset(Item):
         "title": "Visualize at UCSC",
         "type": "string",
     })
-    def visualize_ucsc(self, request, hub, assembly):
+    def visualize_ucsc(self, request, hub, assembly, status):
+        if status  != 'released':
+            return {}
         hub_url = urljoin(request.resource_url(request.root), hub)
         viz = {}
         for assembly_hub in assembly:
