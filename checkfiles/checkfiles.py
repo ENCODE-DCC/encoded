@@ -361,7 +361,7 @@ def process_fastq_file(job, fastq_data_stream, session, url):
             else:
                 signatures_for_comparison = signatures_set
 
-        conflicts = []
+        signature_conflicts = []
         for unique_signature in signatures_for_comparison:
             query = '/' + unique_signature + '?format=json'
             try:
@@ -375,26 +375,24 @@ def process_fastq_file(job, fastq_data_stream, session, url):
                 response = r.json()
                 if response is not None and 'File' in response['@type']:
                     uniqueness_flag = False
-                    conflicts.append(
+                    signature_conflicts.append(
                         'specified unique identifier {} '.format(unique_signature) +
                         'is conflicting with identifier of reads from ' +
                         'file {}.'.format(response['accession']))
         if uniqueness_flag is True:
             result['fastq_signature'] = sorted(list(signatures_for_comparison))
         else:
-            errors['not_unique_flowcell_details'] = str(conflicts.append(
-                ' Gathered information about the file was: {}.'.format(str(result))))
+            gathered_info = ' Gathered information about the uploading file was: {}.'.format(
+                str(result))
+            signature_conflicts.append(gathered_info)
+            errors['not_unique_flowcell_details'] = ', '.join(map(str, signature_conflicts))
 
 
 def process_barcodes(signatures_set):
     set_to_return = set()
     flowcells_dict = {}
     for entry in signatures_set:
-        arr = entry.split(':')
-        f = arr[0]
-        l = arr[1]
-        r = arr[2]
-        b = arr[3]
+        (f, l, r, b, rest) = entry.split(':')
         if (f, l, r) not in flowcells_dict:
             flowcells_dict[(f, l, r)] = {}
         if b not in flowcells_dict[(f, l, r)]:
@@ -413,6 +411,7 @@ def process_barcodes(signatures_set):
                                   b + ':')
     return set_to_return
 
+
 def process_read_lengths(read_lengths_dict,
                          lengths_list,
                          submitted_read_length,
@@ -420,22 +419,15 @@ def process_read_lengths(read_lengths_dict,
                          threshold_percentage,
                          errors_to_report,
                          result):
-    expected_read_lengths = [
-        submitted_read_length-2,
-        submitted_read_length-1,
-        submitted_read_length,
-        submitted_read_length+1,
-        submitted_read_length+2]
-    reads_quantity = 0
-    for length in expected_read_lengths:
-        if length in read_lengths_dict:
-            reads_quantity += read_lengths_dict[length]
+    reads_quantity = sum([count for length, count in read_lengths_dict.items()
+                          if (submitted_read_length - 2) <= length <= (submitted_read_length + 2)])
     if ((threshold_percentage * read_count) > reads_quantity):
         errors_to_report['read_length'] = \
             'in file metadata the read_length is {}, '.format(submitted_read_length) + \
             'however the uploaded fastq file contains reads of following length(s) ' + \
             '{}. '.format(', '.join(map(str, lengths_list))) + \
             'Gathered information about the file was: {}.'.format(str(result))
+
 
 def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url):
     result['content_md5sum'] = output[:32].decode(errors='replace')
