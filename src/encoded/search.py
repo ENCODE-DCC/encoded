@@ -478,26 +478,20 @@ def search_result_actions(request, doc_types, es_results, position=None):
     # generate batch hub URL for experiments
     # TODO we could enable them for Datasets as well here, but not sure how well it will work
     if doc_types == ['Experiment'] or doc_types == ['Annotation']:
-        may_visualize = False
-        for es_exp in es_results['hits']['hits']:
-            if es_exp['_source']['embedded']['status'] == 'released':
-                may_visualize = True
-                break
-        if may_visualize:
-            for bucket in aggregations['assembly']['assembly']['buckets']:
-                if bucket['doc_count'] > 0:
-                    assembly = bucket['key']
-                    ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
-                    search_params = request.query_string.replace('&', ',,')
-                    if not request.params.getall('assembly') or assembly in request.params.getall('assembly'):
-                        # filter  assemblies that are not selected
-                        hub = request.route_url('batch_hub',
-                                                search_params=search_params,
-                                                txt='hub.txt')
-                        if 'region-search' in request.url and position is not None:
-                            actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly + '&position={}'.format(position)
-                        else:
-                            actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly
+        for bucket in aggregations['assembly']['assembly']['buckets']:
+            if bucket['doc_count'] > 0:
+                assembly = bucket['key']
+                ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
+                search_params = request.query_string.replace('&', ',,')
+                if not request.params.getall('assembly') or assembly in request.params.getall('assembly'):
+                    # filter  assemblies that are not selected
+                    hub = request.route_url('batch_hub',
+                                            search_params=search_params,
+                                            txt='hub.txt')
+                    if 'region-search' in request.url and position is not None:
+                        actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly + '&position={}'.format(position)
+                    else:
+                        actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly
 
     # generate batch download URL for experiments
     # TODO we could enable them for Datasets as well here, but not sure how well it will work
@@ -597,6 +591,16 @@ def iter_long_json(name, iterable, **other):
 
     yield ']}'
 
+def visualizable(experiments):
+    """
+    Determine if any experiment may actually be visualized
+    """
+    may_visualize = False
+    for exp in experiments:
+        if exp['status'] == 'released':
+            may_visualize = True
+            break
+    return may_visualize
 
 @view_config(route_name='search', request_method='GET', permission='search')
 def search(context, request, search_type=None, return_generator=False):
@@ -764,6 +768,8 @@ def search(context, request, search_type=None, return_generator=False):
             return graph
         else:
             result['@graph'] = list(graph)
+            if not visualizable(result['@graph']):
+                del result["batch_hub"]
             return result
 
     # Scan large result sets.
@@ -782,6 +788,8 @@ def search(context, request, search_type=None, return_generator=False):
             return graph
         else:
             result['@graph'] = list(graph)
+            if not visualizable(result['@graph']):
+                del result["batch_hub"]
             return result
 
     # Stream response using chunked encoding.
