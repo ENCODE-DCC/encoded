@@ -262,6 +262,13 @@ def metadata_tsv(context, request):
                     temp = []
                     for value in simple_path_ids(f, path):
                         temp.append(str(value))
+                    if prop == 'files.replicate.library.biosample.age_display' and 'fastq' != f['file_type']:
+                        temp = []
+                        for replicate_number in f['biological_replicate']:
+                            for replicate in experiment_json['replicates']:
+                                if replicate_number == replicate['replicate_technical_number']:
+                                    for value in simple_path_ids(replicate, prop[16:]):
+                                        temp.append(str(value))
                     if prop == 'files.replicate.rbns_protein_concentration':
                         if 'replicate' in f and 'rbns_protein_concentration_units' in f['replicate']:
                             temp[0] = temp[0] + ' ' + f['replicate']['rbns_protein_concentration_units']
