@@ -112,6 +112,7 @@ class File(Item):
         'derived_from',
         'derived_from.analysis_step_version.software_versions',
         'derived_from.analysis_step_version.software_versions.software',
+        'platform',
         'submitted_by',
         'analysis_step_version.analysis_step',
         'analysis_step_version.analysis_step.pipelines',

@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { Panel, PanelBody } from '../libs/bootstrap/panel';
+import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import globals from './globals';
 import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
 import { DbxrefList } from './dbxref';
@@ -50,7 +50,7 @@ const File = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} except={context['@id']} id="file-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="file-audit" />
                 <Panel addClasses="data-display">
                     <div className="split-panel">
                         <div className="split-panel__part split-panel__part--p50">
@@ -184,7 +184,7 @@ const File = React.createClass({
                                     {aliasList ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
-                                            <dd>{aliasList}</dd>
+                                            <dd className="sequence">{aliasList}</dd>
                                         </div>
                                     : null}
 
@@ -199,9 +199,122 @@ const File = React.createClass({
                         </div>
                     </div>
                 </Panel>
+
+                {context.file_format === 'fastq' ?
+                    <SequenceFileInfo file={context} />
+                : null}
+
             </div>
         );
     },
 });
 
 globals.content_views.register(File, 'File');
+
+
+// Display the sequence file summary panel for fastq files.
+const SequenceFileInfo = React.createClass({
+    propTypes: {
+        file: React.PropTypes.object.isRequired, // File being displayed
+    },
+
+    render: function () {
+        const { file } = this.props;
+
+        return (
+            <Panel>
+                <PanelHeading>
+                    <h4>Sequencing file information</h4>
+                </PanelHeading>
+
+                <PanelBody>
+                    <dl className="key-value">
+                        {file.platform ?
+                            <div data-test="platform">
+                                <dt>Platform</dt>
+                                <dd><a href={file.platform['@id']}>{file.platform.title ? file.platform.title : file.platform.term_id}</a></dd>
+                            </div>
+                        : null}
+
+                        {file.flowcell_details && file.flowcell_details.length ?
+                            <div data-test="flowcelldetails">
+                                <dt>Flowcell</dt>
+                                <dd><FlowcellDetails flowcells={file.flowcell_details} /></dd>
+                            </div>
+                        : null}
+
+                        {file.fastq_signature && file.fastq_signature.length ?
+                            <div data-test="fastqsignature">
+                                <dt>Fastq flowcell signature</dt>
+                                <dd>{file.fastq_signature.join(', ')}</dd>
+                            </div>
+                        : null}
+                    </dl>
+                </PanelBody>
+            </Panel>
+        );
+    },
+});
+
+
+// Render an array of flow cell details into a <dd>
+const FlowcellDetails = React.createClass({
+    propTypes: {
+        flowcells: React.PropTypes.array, // Array of flowcell_detail objects
+    },
+
+    render: function () {
+        const { flowcells } = this.props;
+
+        return (
+            <div className="flowcell-details">
+                {flowcells.map((flowcell) => {
+                    return (
+                        <Panel addClasses="flowcell-details__panel">
+                            <PanelHeading addClasses="flowcell-details__header">
+                                {flowcell.machine ? <h5>{flowcell.machine}</h5> : <h5>Unspecified machine</h5>}
+                            </PanelHeading>
+                            <PanelBody addClasses="flowcell-details__body">
+                                {flowcell.flowcell ?
+                                    <div className="flowcell-details__item">
+                                        <strong>ID: </strong>{flowcell.flowcell}
+                                    </div>
+                                : null}
+
+                                {flowcell.lane ?
+                                    <div className="flowcell-details__item">
+                                        <strong>Lane: </strong> {flowcell.lane}
+                                    </div>
+                                : null}
+
+                                {flowcell.barcode ?
+                                    <div className="flowcell-details__item">
+                                        <strong>Barcode: </strong> {flowcell.barcode}
+                                    </div>
+                                : null}
+
+                                {flowcell.barcode_in_read ?
+                                    <div className="flowcell-details__item">
+                                        <strong>Barcode in read: </strong> {flowcell.barcode_in_read}
+                                    </div>
+                                : null}
+
+                                {flowcell.barcode_position ?
+                                    <div className="flowcell-details__item">
+                                        <strong>Barcode position: </strong> {flowcell.barcode_position}
+                                    </div>
+                                : null}
+
+                                {flowcell.chunk ?
+                                    <div className="flowcell-details__item">
+                                        <strong>Chunk: </strong> {flowcell.chunk}
+                                    </div>
+                                : null}
+                            </PanelBody>
+                        </Panel>
+                    );
+                })}
+            </div>
+        );
+    },
+});
