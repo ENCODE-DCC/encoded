@@ -3,7 +3,7 @@ var React = require('react');
 var _ = require('underscore');
 var url = require('url');
 var panel = require('../libs/bootstrap/panel');
-var {CollapseIcon} = require('../libs/svg-icons');
+var {SvgIcon, collapseIcon} = require('../libs/svg-icons');
 var globals = require('./globals');
 var image = require('./image');
 var {StatusLabel} = require('./statuslabel');
@@ -233,7 +233,7 @@ var DocumentFile = module.exports.DocumentFile = React.createClass({
                     {detailSwitch ?
                         <div className="detail-switch">
                             <a href="#" data-trigger onClick={detailSwitch} className="collapsing-doc">
-                                {CollapseIcon(!this.props.detailOpen)}
+                                {collapseIcon(!this.props.detailOpen)}
                             </a>
                         </div>
                     : null}

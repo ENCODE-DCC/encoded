@@ -9,7 +9,7 @@ from sqlalchemy.sql import text
 from elasticsearch.exceptions import (
     NotFoundError
 )
-from snovault import DBSESSION
+from snovault import DBSESSION, COLLECTIONS
 from snovault.storage import (
     TransactionRecord,
 )
@@ -18,6 +18,7 @@ from snovault.elasticsearch.interfaces import (
     ELASTIC_SEARCH,
     SNP_SEARCH_ES,
 )
+import copy
 
 
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
@@ -104,12 +105,18 @@ def get_assay_term_name(accession, request):
     return None
 
 def all_bed_file_uuids(request):
-    file_uuids = []
     stmt = text("select distinct(resources.rid) from resources, propsheets where resources.rid = propsheets.rid and resources.item_type='file' and propsheets.properties->>'file_format' = 'bed' and properties->>'status' = 'released';")
     connection = request.registry[DBSESSION].connection()
     uuids = connection.execute(stmt)
-    file_uuids = [str(item[0]) for item in uuids]
-    return file_uuids
+    return [str(item[0]) for item in uuids]
+
+
+def all_dataset_uuids(request):
+    datasets = request.registry[COLLECTIONS]['datasets']
+    return [uuid for uuid in datasets]
+
+def all_experiment_uuids(request):
+    return list(all_uuids(request.registry, types='experiment'))
 
 
 def index_peaks(uuid, request):
@@ -120,7 +127,7 @@ def index_peaks(uuid, request):
 
     if 'assembly' not in context:
         return
-        
+
     assembly = context['assembly']
 
     # Treat mm10-minimal as mm1
@@ -186,7 +193,7 @@ def index_peaks(uuid, request):
         }
         if not es.indices.exists(key):
             es.indices.create(index=key, body=index_settings())
-            
+
         if not es.indices.exists_type(index=key, doc_type=assembly):
             es.indices.put_mapping(index=key, doc_type=assembly, body=get_mapping(assembly))
 
@@ -196,15 +203,16 @@ def index_peaks(uuid, request):
 
 @view_config(route_name='index_file', request_method='POST', permission="index")
 def index_file(request):
-    INDEX = request.registry.settings['snovault.elasticsearch.index']
+    registry = request.registry
+    INDEX = registry.settings['snovault.elasticsearch.index']
     request.datastore = 'database'
     dry_run = request.json.get('dry_run', False)
     recovery = request.json.get('recovery', False)
     record = request.json.get('record', False)
-    es = request.registry[ELASTIC_SEARCH]
-    es_peaks = request.registry[SNP_SEARCH_ES]
+    es = registry[ELASTIC_SEARCH]
+    es_peaks = registry[SNP_SEARCH_ES]
 
-    session = request.registry[DBSESSION]()
+    session = registry[DBSESSION]()
     connection = session.connection()
     if recovery:
         query = connection.execute(
@@ -237,10 +245,8 @@ def index_file(request):
 
     if last_xmin is None:
         result['types'] = request.json.get('types', None)
-        invalidated = all_bed_file_uuids(request)
-        initial_index = True
+        invalidated = list(all_uuids(registry))
     else:
-        initial_index = False
         txns = session.query(TransactionRecord).filter(
             TransactionRecord.xid >= last_xmin,
         )
@@ -285,7 +291,7 @@ def index_file(request):
             '_source': False,
         })
         if res['hits']['total'] > SEARCH_MAX:
-            invalidated = list(all_uuids(request.root))
+            invalidated = list(all_uuids(request.registry))
         else:
             referencing = {hit['_id'] for hit in res['hits']['hits']}
             invalidated = referencing | updated
@@ -302,10 +308,9 @@ def index_file(request):
     if not dry_run:
         err = None
         uuid_current = None
-        if not initial_index:
-            invalidated = list(set(invalidated).intersection(set(all_bed_file_uuids(request))))
+        invalidated_files = list(set(invalidated).intersection(set(all_bed_file_uuids(request))))
         try:
-            for uuid in invalidated:
+            for uuid in invalidated_files:
                 uuid_current = uuid
                 index_peaks(uuid, request)
         except Exception as e:
@@ -314,6 +319,21 @@ def index_file(request):
         result['errors'] = [err]
         result['indexed'] = len(invalidated)
         if record:
-            es_peaks.index(index='snovault', doc_type='meta', body=result, id='peak_indexing')
+            try:
+                es_peaks.index(index='snovault', doc_type='meta', body=result, id='peak_indexing')
+            except:
+                error_messages = copy.deepcopy(result['errors'])
+                del result['errors']
+                es_peaks.index(index='snovault', doc_type='meta', body=result, id='peak_indexing')
+                for item in error_messages:
+                    if 'error' in item:
+                        log.error('Indexing error for {}, error message: {}'.format(item['uuid'], item['error']))
+                        item['error'] = "Error occured during indexing, check the logs"
+            result['errors'] = error_messages
 
     return result
+
+class AfterIndexedExperimentsAndDatasets(object):
+    def __init__(self, object, request):
+        self.object = object
+        self.request = request

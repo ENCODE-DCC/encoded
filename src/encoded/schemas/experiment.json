@@ -58,6 +58,21 @@
             "type": "string",
             "linkTo": "Target"
         },
+        "biosample_type": {
+            "title": "Biosample type",
+            "description": "The categorization of the biosample.",
+            "type": "string",
+            "enum" : [
+                "primary cell",
+                "immortalized cell line",
+                "tissue",
+                "in vitro differentiated cells",
+                "induced pluripotent stem cell line",
+                "whole organisms",
+                "stem cell",
+                "in vitro sample"
+            ]
+        },
         "dbxrefs": {
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",

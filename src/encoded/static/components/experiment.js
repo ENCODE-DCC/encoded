@@ -2,7 +2,7 @@
 var React = require('react');
 var panel = require('../libs/bootstrap/panel');
 var button = require('../libs/bootstrap/button');
-var {CollapseIcon} = require('../libs/svg-icons');
+var {SvgIcon} = require('../libs/svg-icons');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var _ = require('underscore');
 var navigation = require('./navigation');
@@ -21,7 +21,7 @@ var objectutils = require('./objectutils');
 var doc = require('./doc');
 var {FileGallery} = require('./filegallery');
 var {GeneticModificationSummary} = require('./genetic_modification');
-var {biosampleSummaryString, biosampleOrganismNames, CollectBiosampleDocs} = require('./typeutils');
+var {BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs} = require('./typeutils');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -31,7 +31,7 @@ var StatusLabel = statuslabel.StatusLabel;
 var {AuditMixin, AuditIndicators, AuditDetail} = audit;
 var PubReferenceList = reference.PubReferenceList;
 var SingleTreatment = objectutils.SingleTreatment;
-var SoftwareVersionList = software.SoftwareVersionList;
+var softwareVersionList = software.softwareVersionList;
 var {SortTablePanel, SortTable} = sortTable;
 var ProjectBadge = image.ProjectBadge;
 var {DocumentsPanel} = doc;
@@ -262,6 +262,12 @@ var Experiment = module.exports.Experiment = React.createClass({
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
+        // Make array of superseded_by accessions
+        let supersededBys = [];
+        if (context.superseded_by && context.superseded_by.length) {
+            supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
+        }
+
         // Determine whether the experiment is isogenic or anisogenic. No replication_type indicates isogenic.
         var anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
 
@@ -276,7 +282,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         var assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
         var assayName = context[assayTerm];
         var assayQuery = assayTerm + '=' + assayName;
-        var organismNames = biosampleOrganismNames(biosamples);
+        var organismNames = BiosampleOrganismNames(biosamples);
         var nameQuery = '';
         var nameTip = '';
         var names = organismNames.map(function(organismName, i) {
@@ -320,6 +326,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <Breadcrumbs root='/search/?type=experiment' crumbs={crumbs} />
                         <h2>Experiment summary for {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -328,7 +335,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         </div>
                    </div>
                 </header>
-                <AuditDetail context={context} id="experiment-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="experiment-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -562,7 +569,7 @@ var ReplicateTable = React.createClass({
 
                 // Else, display biosample summary if the biosample exists
                 if (replicate.library && replicate.library.biosample) {
-                    return <span>{biosampleSummaryString(replicate.library.biosample, true)}</span>;
+                    return <span>{BiosampleSummaryString(replicate.library.biosample, true)}</span>;
                 }
 
                 // Else, display nothing

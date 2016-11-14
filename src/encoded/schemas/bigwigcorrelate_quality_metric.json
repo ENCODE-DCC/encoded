@@ -20,7 +20,8 @@
         "schema_version": {
             "default": "3"
         },
-        "Pearson's correlation": {
+        "Pearson_correlation": {
+            "title": "Pearson correlation",
             "type": "number",
             "description": "Pearson's correlation"
         }

@@ -53,6 +53,7 @@
         "news_excerpt": "367 modERN datasets released",
         "title": "367 modERN Datasets Released",
         "status": "released",
+        "award": "U41HG007355",
         "date_created": "2016-07-06T16:48:27.199407+00:00",
         "layout": {
             "blocks": [
@@ -229,18 +230,19 @@
         "title": "Release of Annotation File Sets",
         "status": "released",
         "news_excerpt": "111 Annotation File Sets of promoter-like and enhancer-like regions have been released!",
-        "news_keywords": ["Annotation file set", "Promoters", "Enhancers", "Data release"],
+        "news_keywords": ["RNA binding", "Transcription"],
         "date_created": "2016-08-26T16:14:06.471431+00:00"
     },
     {
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
         "uuid": "17ac540c-ef0a-4f99-940c-daf03cd04fd8",
         "title": "336 Annotation File Sets Released",
+        "award": "ENCODE2",
         "news": true,
         "status": "released",
         "name": "336-annotation-file-sets-released",
         "news_excerpt": "With collaborations from the DAC (Data Analysis Center), a total of 336 Annotation File Sets of promoter-like and enhancer-like regions have been released!",
-        "news_keywords": ["Annotation file set", "Promoters", "Enhancers", "Data release"],
+        "news_keywords": ["Proteomics"],
         "date_created": "2016-08-03T16:28:11.258613+00:00",
         "layout": {
             "blocks": [
@@ -271,7 +273,7 @@
         "status": "released",
         "name": "mouse-histone-chip-seq-dataset",
         "news_excerpt": "Mouse e10.5\u00a0histone ChIP-seq dataset\u00a0from from the Ren lab available.",
-        "news_keywords": ["Mouse", "ChIP-seq", "Data release"],
+        "news_keywords": ["DNA binding", "Genotyping"],
         "date_created": "2016-07-20T16:44:05.457718+00:00",
         "layout": {
             "blocks": [
@@ -302,7 +304,7 @@
         "status": "released",
         "name": "191-encode-experiments-released",
         "news_excerpt": "191 new ENCODE experiments released in July!",
-        "news_keywords": ["Experiment", "Data release"],
+        "news_keywords": ["DNA accessibility"],
         "date_created": "2016-08-01T16:33:38.726440+00:00",
         "layout": {
             "blocks": [
@@ -333,7 +335,7 @@
         "status": "released",
         "name": "latest-ggr-release-reddy-lab",
         "news_excerpt": "Check out the latest GGR release from the Reddy lab.",
-        "news_keywords": ["GGR", "Data release"],
+        "news_keywords": ["DNA methylation"],
         "date_created": "2016-07-21T16:37:40.681507+00:00",
         "layout": {
             "blocks": [
@@ -364,7 +366,7 @@
         "status": "released",
         "name": "abstract-deadline-encode-users-meeting",
         "news_excerpt": "Don’t miss the abstract deadline for ENCODE Users Meeting.",
-        "news_keywords": ["Conference", "ENCODE Users Meeting", "Abstract"],
+        "news_keywords": ["Conferences", "Encyclopedia"],
         "date_created": "2016-04-15T16:37:40.681507+00:00",
         "layout": {
             "blocks": [
@@ -395,7 +397,7 @@
         "status": "released",
         "name": "2016-encode-users-meeting",
         "news_excerpt": "We’re happy to announce the second annual ENCODE Users Meeting.",
-        "news_keywords": ["Conference", "ENCODE Users Meeting"],
+        "news_keywords": ["Conferences"],
         "date_created": "2016-04-15T16:37:40.681507+00:00",
         "layout": {
             "blocks": [

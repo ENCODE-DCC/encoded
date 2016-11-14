@@ -113,7 +113,7 @@ const Item = module.exports.Item = React.createClass({
                         {result.description}
                     </div>
                 </div>
-                <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
+                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     },
@@ -276,7 +276,7 @@ const Antibody = module.exports.Antibody = React.createClass({
                         <div><strong>Product ID / Lot ID: </strong>{result.product_id} / {result.lot_id}</div>
                     </div>
                 </div>
-                <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
+                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     },
@@ -345,7 +345,7 @@ const Biosample = module.exports.Biosample = React.createClass({
                         <div><strong>Source: </strong>{result.source.title}</div>
                     </div>
                 </div>
-                <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
+                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     },
@@ -432,7 +432,7 @@ const Experiment = module.exports.Experiment = React.createClass({
                         <div><strong>Project: </strong>{result.award.project}</div>
                     </div>
                 </div>
-                <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
+                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     },
@@ -533,7 +533,7 @@ const Dataset = module.exports.Dataset = React.createClass({
                         <div><strong>Project: </strong>{result.award.project}</div>
                     </div>
                 </div>
-                <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
+                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     },
@@ -570,7 +570,7 @@ const Target = module.exports.Target = React.createClass({
                         : <em>None submitted</em> }
                     </div>
                 </div>
-                <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
+                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     },
@@ -602,7 +602,7 @@ const Image = module.exports.Image = React.createClass({
                         <Attachment context={result} attachment={result.attachment} />
                     </div>
                 </div>
-                <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
+                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     },

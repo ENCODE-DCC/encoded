@@ -449,7 +449,7 @@ def file_6_7(value, system):
         value['derived_from'] = list(set(value['derived_from']))
 
     if 'supercedes' in value:
-        value['supercedes'] = list(set(value['supercedes']))
+        value['supercedes'] = list(set(value['supersedes']))
 
     if 'aliases' in value:
         value['aliases'] = list(set(value['aliases']))
