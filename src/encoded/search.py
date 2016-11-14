@@ -471,6 +471,30 @@ def format_results(request, hits):
         yield item
 
 
+def only_unreleased(hits):
+    """
+    Determine if only unreleased experiments are found.  Only examines first 100.
+    """
+    any_released = False
+    count = 0
+    for hit in hits:
+        if 'status' in hit:
+            if hit['status'] == 'released':
+                any_released = True
+                break
+        elif '_source' in hit and 'embedded' in hit['_source']:
+            if hit['_source']['embedded']['status'] == 'released':
+                any_released = True
+                break
+        count += 1
+        if count == 100:
+            any_released = True # Did our best, just leave it alone
+            break
+    if count == 0: # We can't say no without no data!
+        return False
+    return (not any_released)
+
+
 def search_result_actions(request, doc_types, es_results, position=None):
     actions = {}
     aggregations = es_results['aggregations']
@@ -591,16 +615,6 @@ def iter_long_json(name, iterable, **other):
 
     yield ']}'
 
-def visualizable(experiments):
-    """
-    Determine if any experiment may actually be visualized
-    """
-    may_visualize = False
-    for exp in experiments:
-        if exp['status'] == 'released':
-            may_visualize = True
-            break
-    return may_visualize
 
 @view_config(route_name='search', request_method='GET', permission='search')
 def search(context, request, search_type=None, return_generator=False):
@@ -768,7 +782,7 @@ def search(context, request, search_type=None, return_generator=False):
             return graph
         else:
             result['@graph'] = list(graph)
-            if not visualizable(result['@graph']):
+            if "batch_hub" in result and only_unreleased(result['@graph']):
                 del result["batch_hub"]
             return result
 
@@ -788,7 +802,7 @@ def search(context, request, search_type=None, return_generator=False):
             return graph
         else:
             result['@graph'] = list(graph)
-            if not visualizable(result['@graph']):
+            if "batch_hub" in result and only_unreleased(result['@graph']):
                 del result["batch_hub"]
             return result
 
