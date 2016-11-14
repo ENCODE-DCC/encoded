@@ -185,6 +185,13 @@ def check_format(encValData, job, path):
         result['validateFiles'] = output.decode(errors='replace').rstrip('\n')
 
 
+def process_sequence_line(sequence_line, read_lengths_dictionary):
+    length = len(sequence_line.strip())
+    if length not in read_lengths_dictionary:
+        read_lengths_dictionary[length] = 0
+    read_lengths_dictionary[length] += 1
+
+
 def process_fastq_file(job, fastq_data_stream, session, url):
     item = job['item']
     errors = job['errors']
@@ -213,7 +220,7 @@ def process_fastq_file(job, fastq_data_stream, session, url):
     try:
         line_index = 0
         for encoded_line in fastq_data_stream.stdout:
-            line = encoded_line.decode()
+            line = encoded_line.decode('utf-8')
             line_index += 1
             if line_index == 1:
                 read_name = line.strip()
@@ -300,10 +307,11 @@ def process_fastq_file(job, fastq_data_stream, session, url):
 
             if line_index == 2:
                 read_count += 1
-                length = len(line.strip())
+                process_sequence_line(line, read_lengths_dictionary)
+                '''length = len(line.strip())
                 if length not in read_lengths_dictionary:
                     read_lengths_dictionary[length] = 0
-                read_lengths_dictionary[length] += 1
+                read_lengths_dictionary[length] += 1'''
             line_index = line_index % 4
     except IOError:
         errors['unzipped_fastq_streaming'] = 'Error occured, while streaming unzipped fastq.'
