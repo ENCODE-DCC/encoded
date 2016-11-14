@@ -42,7 +42,7 @@ _tsv_mapping = OrderedDict([
     ('Biosample treatments', ['replicates.library.biosample.treatments.treatment_term_name']),
     ('Biosample subcellular fraction term name', ['replicates.library.biosample.subcellular_fraction_term_name']),
     ('Biosample phase', ['replicates.library.biosample.phase']),
-    ('Biosample biological technical number', ['replicates.biological_replicate_number']),
+    ('Biosample age', ['replicates.library.biosample.age_display']),
     ('Biosample synchronization stage', ['replicates.library.biosample.fly_synchronization_stage',
                                          'replicates.library.biosample.worm_synchronization_stage',
                                          'replicates.library.biosample.post_synchronization_time',
@@ -59,7 +59,6 @@ _tsv_mapping = OrderedDict([
     ('RBNS protein concentration', ['files.replicate.rbns_protein_concentration', 'files.replicate.rbns_protein_concentration_units']),
     ('Library fragmentation method', ['files.replicate.library.fragmentation_method']),
     ('Library size range', ['files.replicate.library.size_range']),
-    ('Biosample Age', ['files.replicate.library.biosample.age_display']),
     ('Biological replicate(s)', ['files.biological_replicates']),
     ('Technical replicate', ['files.replicate.technical_replicate_number']),
     ('Read length', ['files.read_length']),
@@ -263,13 +262,6 @@ def metadata_tsv(context, request):
                     temp = []
                     for value in simple_path_ids(f, path):
                         temp.append(str(value))
-                    if prop == 'files.replicate.library.biosample.age_display' and 'fastq' != f['file_type']:
-                        temp = []
-                        for replicate_number in f['biological_replicate']:
-                            for replicate in experiment_json['replicates']:
-                                if 'biological_replicate_number' in replicate and replicate_number == replicate['biological_replicate_number']:
-                                    for value in simple_path_ids(replicate, prop[16:]):
-                                        temp.append(str(value))
                     if prop == 'files.replicate.rbns_protein_concentration':
                         if 'replicate' in f and 'rbns_protein_concentration_units' in f['replicate']:
                             temp[0] = temp[0] + ' ' + f['replicate']['rbns_protein_concentration_units']
