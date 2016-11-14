@@ -20,7 +20,7 @@ const GenomeBrowser = React.createClass({
 
             // Get the current domain name.
             const urlInfo = url.parse(this.context.location_href);
-            const domainName = this.context.localInstance ? 'https://test.encodedcc.org' : `${urlInfo.protocol}//${urlInfo.host}`;
+            const domainName = this.context.localInstance ? 'https://www.encodeproject.org' : `${urlInfo.protocol}//${urlInfo.host}`;
 
             const browser = new Dalliance({
                 maxHeight: 1000,
