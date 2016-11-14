@@ -20,6 +20,7 @@
             "default": "3"
         },
         "name": {
+            "title": "Name",
             "description": "The name of the quality metric",
             "type": "string"
         },

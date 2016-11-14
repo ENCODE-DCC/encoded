@@ -21,18 +21,22 @@
             "default": "3"
         },
         "PE read-pairs processed": {
+            "title": "PE read-pairs processed",
             "type": "number",
             "description": "Total number read-pairs processed"
         },
         "PE read-pairs trimmed": {
+            "title": "PE read-pairs trimmed",
             "type": "number",
             "description": "Total number read-pairs trimmed"
         },
         "SE reads processed": {
+            "title": "SE reads processed",
             "type": "number",
             "description": "Total number (single-end) reads processed"
         },
         "SE reads trimmed": {
+            "title": "SE reads trimmed",
             "type": "number",
             "description": "Total number (single-end) reads trimmed"
         }

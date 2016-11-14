@@ -124,6 +124,18 @@ var encodedURIComponent = module.exports.encodedURIComponent = function(str, spa
     return encodeURIComponent(str).replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/%20/g, spaceReplace);
 };
 
+
+// Take an @id and return the corresponding accession. If no accession could be found in the @id,
+// the empty string is returned.
+module.exports.atIdToAccession = function (atId) {
+    const matched = atId.match(/^\/.+\/(.+)\/$/);
+    if (matched && matched.length === 2) {
+        return matched[1];
+    }
+    return '';
+};
+
+
 // Make the first character of the given string uppercase. Can be less fiddly than CSS text-transform.
 // http://stackoverflow.com/questions/1026069/capitalize-the-first-letter-of-string-in-javascript#answer-1026087
 String.prototype.uppercaseFirstChar = function(string) {
@@ -132,7 +144,7 @@ String.prototype.uppercaseFirstChar = function(string) {
 
 // Convert a string to a 32-bit hash.
 // http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
-export function hashCode(src) {
+module.exports.hashCode = function (src) {
     let hash = 0;
     if (src.length > 0) {
         for (let i = 0; i < src.length; i += 1) {

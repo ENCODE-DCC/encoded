@@ -190,6 +190,7 @@ class File(Item):
         return request.resource_path(self, '@@download', filename)
 
     @calculated_property(condition=show_upload_credentials, schema={
+        "title": "Upload Credentials",
         "type": "object",
     })
     def upload_credentials(self):

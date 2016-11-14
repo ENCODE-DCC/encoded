@@ -151,7 +151,8 @@ def session_properties(request):
 
     properties = {
         'user': request.embed(request.resource_path(user)),
-        'user_actions': [v for k, v in sorted(user_actions.items(), key=itemgetter(0))]
+        'user_actions': [v for k, v in sorted(user_actions.items(), key=itemgetter(0))],
+        'admin': 'group.admin' in request.effective_principals
     }
 
     if 'auth.userid' in request.session:

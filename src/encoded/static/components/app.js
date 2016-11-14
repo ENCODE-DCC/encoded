@@ -43,7 +43,7 @@ var portal = {
             {id: 'restapi', title: 'REST API', url: '/help/rest-api/'},
             {id: 'projectoverview', title: 'Project overview', url: '/about/contributors/'},
             {id: 'tutorials', title: 'Tutorials', url: '/tutorials/'},
-            {id: 'news', title: 'News', url: '/news'},
+            {id: 'news', title: 'News', url: '/search/?type=Page&news=true&status=released'},
             {id: 'acknowledgements', title: 'Acknowledgements', url: '/acknowledgements/'},
             {id: 'contact', title: 'Contact', url: '/help/contacts/'}
         ]}

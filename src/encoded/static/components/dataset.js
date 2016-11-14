@@ -17,7 +17,7 @@ var software = require('./software');
 var {SortTablePanel, SortTable} = require('./sorttable');
 var image = require('./image');
 var doc = require('./doc');
-var {FileTable, DatasetFiles} = require('./filegallery');
+var {DatasetFiles} = require('./filegallery');
 var {FileGallery} = require('./filegallery');
 
 var Breadcrumbs = navigation.Breadcrumbs;
@@ -101,6 +101,12 @@ var Annotation = React.createClass({
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
 
+        // Make array of superseded_by accessions
+        let supersededBys = [];
+        if (context.superseded_by && context.superseded_by.length) {
+            supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
+        }
+
         // Get a list of reference links, if any
         var references = PubReferenceList(context.references);
 
@@ -117,6 +123,7 @@ var Annotation = React.createClass({
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for annotation file set {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -125,7 +132,7 @@ var Annotation = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -313,7 +320,7 @@ var PublicationData = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -468,7 +475,7 @@ var Reference = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -629,7 +636,7 @@ var Project = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -686,7 +693,7 @@ var Project = React.createClass({
                                     {context.software_used && context.software_used.length ?
                                         <div data-test="softwareused">
                                             <dt>Software used</dt>
-                                            <dd>{(context.software_used)}</dd>
+                                            <dd>{softwareVersionList(context.software_used)}</dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -812,7 +819,7 @@ var UcscBrowserComposite = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -1261,7 +1268,7 @@ var Series = module.exports.Series = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
