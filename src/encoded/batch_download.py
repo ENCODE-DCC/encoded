@@ -42,6 +42,7 @@ _tsv_mapping = OrderedDict([
     ('Biosample treatments', ['replicates.library.biosample.treatments.treatment_term_name']),
     ('Biosample subcellular fraction term name', ['replicates.library.biosample.subcellular_fraction_term_name']),
     ('Biosample phase', ['replicates.library.biosample.phase']),
+    ('Biosample biological technical number', ['replicates.biological_replicate_number']),
     ('Biosample synchronization stage', ['replicates.library.biosample.fly_synchronization_stage',
                                          'replicates.library.biosample.worm_synchronization_stage',
                                          'replicates.library.biosample.post_synchronization_time',
@@ -266,7 +267,7 @@ def metadata_tsv(context, request):
                         temp = []
                         for replicate_number in f['biological_replicate']:
                             for replicate in experiment_json['replicates']:
-                                if replicate_number == replicate['replicate_technical_number']:
+                                if 'biological_replicate_number' in replicate and replicate_number == replicate['biological_replicate_number']:
                                     for value in simple_path_ids(replicate, prop[16:]):
                                         temp.append(str(value))
                     if prop == 'files.replicate.rbns_protein_concentration':
