@@ -330,6 +330,8 @@ def index_file(request):
                         log.error('Indexing error for {}, error message: {}'.format(item['uuid'], item['error']))
                         item['error'] = "Error occured during indexing, check the logs"
             result['errors'] = error_messages
+        invalidated_datasets_and_experiments = list(set(invalidated).intersection(set(all_dataset_uuids(request) + all_experiment_uuids(request))))
+        registry.notify(AfterIndexedExperimentsAndDatasets(invalidated_datasets_and_experiments, request))
 
     return result
 

@@ -13,8 +13,8 @@ from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
 import time
 
 # TODO: uncomment when ready to try Bek's cache priming solution.
-#from pyramid.events import subscriber
-#from .peak_indexer import AfterIndexedExperimentsAndDatasets
+from pyramid.events import subscriber
+from .peak_indexer import AfterIndexedExperimentsAndDatasets
 
 import logging
 from .search import _ASSEMBLY_MAPPER
@@ -1238,8 +1238,9 @@ def get_vis_type(dataset):
             return "opaque" # This becomes a dict key later so None is not okay
 
     if isinstance(assay,list):
-        log.warn("assay_term_name for %s is unexpectedly a list %s" % (dataset['accession'],str(assay)))
-        if len(assay) > 0:
+        if len(assay) != 1:
+            log.warn("assay_term_name for %s is unexpectedly a list %s" % (dataset['accession'],str(assay)))
+        if len(assay) == 1:
             assay = assay[0]
         else:
             return "opaque"
@@ -1493,7 +1494,8 @@ def lookup_colors(dataset):
     biosample_term = dataset.get('biosample_type')
     if biosample_term is not None:
         if isinstance(biosample_term,list):
-            log.warn("%s has biosample_type %s that is unexpectedly a list" % (dataset['accession'],str(biosample_term)))
+            if len(biosample_term) != 1:
+                log.warn("%s has biosample_type %s that is unexpectedly a list" % (dataset['accession'],str(biosample_term)))
             if len(biosample_term) > 0:
                 biosample_term = biosample_term[0]
             else:
@@ -1503,7 +1505,8 @@ def lookup_colors(dataset):
         biosample_term = dataset.get('biosample_term_name')
         if biosample_term is not None:
             if isinstance(biosample_term,list):
-                log.warn("%s has biosample_term_name %s that is unexpectedly a list" % (dataset['accession'],str(biosample_term)))
+                if len(biosample_term) != 1:
+                    log.warn("%s has biosample_term_name %s that is unexpectedly a list" % (dataset['accession'],str(biosample_term)))
                 if len(biosample_term) > 0:
                     biosample_term = biosample_term[0]
                 else:
@@ -2156,8 +2159,10 @@ def make_acc_composite(dataset, assembly, host=None, hide=False):
     vis_type = get_vis_type(dataset)
     vis_defs = lookup_vis_defs(vis_type)
     if vis_defs is None:
+        log.warn("%s (vis_type: %s) has undiscoverable vis_defs." % (dataset["accession"],vis_type))
         return {}
     composite = {}
+    #log.warn("%s has vis_type: %s." % (dataset["accession"],vis_type))
     composite["vis_type"] = vis_type
     composite["name"] = dataset["accession"]
 
@@ -2489,7 +2494,7 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False,
     ### LRNA: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR000AAA/@@hub/GRCh38/trackDb.txt
 
     # USE ES CACHE
-    USE_CACHE = False # TODO: set to True when ready to try Bek's cache priming solution.
+    USE_CACHE = True # TODO: set to True when ready to try Bek's cache priming solution.
 
     acc_composite = None
     es_key = acc + "_" + assembly
@@ -2547,10 +2552,10 @@ def generate_batch_trackDb(request, hide=False, regen=False):
 
     ### local test: RNA-seq: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/batch_hub/type=Experiment,,assay_title=RNA-seq,,award.rfa=ENCODE3,,status=released,,assembly=GRCh38,,replicates.library.biosample.biosample_type=induced+pluripotent+stem+cell+line/GRCh38/trackDb.txt
 
-    USE_CACHE = False # TODO: set to True when ready to try Bek's cache priming solution.
+    USE_CACHE = True # TODO: set to True when ready to try Bek's cache priming solution.
     CACHE_SETS = False  # NO CACHING OF set_composites!!!
-    USE_SEARCH = False # TODO: set to True when ready to try Bek's cache priming solution.  # USE ES CACHE SEARCH EXCLUSIVELY to find batch trackhub acc_composites
-    # TODO: consider using vew=all to decide on cache usage.
+    USE_SEARCH = True # TODO: set to True when ready to try Bek's cache priming solution.  # USE ES CACHE SEARCH EXCLUSIVELY to find batch trackhub acc_composites
+    # TODO: consider using view=all to decide on cache usage.
 
     # Special logic to force remaking of trackDb
     if not regen:
@@ -2668,21 +2673,21 @@ def generate_batch_trackDb(request, hide=False, regen=False):
     return blob
 
 # TODO: uncomment when ready to try Bek's cache priming solution.
-#@(AfterIndexedExperimentsAndDatasets)
-#def prime_vis_es_cache(event):
-#    request = event.request
-#    uuids = event.object
-#
-#    for uuid in uuids:
-#        dataset = request.embed(uuid)
-#        # TODO Try to limit the sets we are interested in
-#        acc = dataset['accession']
-#        assemblies = dataset.get('assembly',[])
-#        for assembly in assemblies:
-#            ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
-#            (found_or_made, acc_composite) = find_or_make_acc_composite(request, ucsc_assembly, acc, dataset, regen=True)
-#            if acc_composite:
-#                log.warn("primed cache with acc_composite %s" % (acc))  # DEBUG
+@subscriber(AfterIndexedExperimentsAndDatasets)
+def prime_vis_es_cache(event):
+    request = event.request
+    uuids = event.object
+
+    for uuid in uuids:
+        dataset = request.embed(uuid)
+        # TODO Try to limit the sets we are interested in
+        acc = dataset['accession']
+        assemblies = dataset.get('assembly',[])
+        for assembly in assemblies:
+            ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
+            (found_or_made, acc_composite) = find_or_make_acc_composite(request, ucsc_assembly, acc, dataset, regen=True)
+            if acc_composite:
+                log.warn("primed cache with acc_composite %s" % (acc))  # DEBUG
 
 def render(data):
     arr = []
@@ -2697,7 +2702,6 @@ def get_genome_txt(assembly):
     # UCSC shim
     ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
     genome = OrderedDict([
-        #('trackDb', assembly + '/trackDb.txt'),  # TODO: make a decision on mm10-minimal/trackdDb.txt vs. mm10/trackDb.txt
         ('trackDb', ucsc_assembly + '/trackDb.txt'),
         ('genome', ucsc_assembly)
     ])
