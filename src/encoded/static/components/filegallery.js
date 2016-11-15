@@ -1631,7 +1631,7 @@ const FileGalleryRenderer = React.createClass({
         // Build node graph of the files and analysis steps with this experiment
         if (graphFiles && graphFiles.length) {
             try {
-                const { graph, graphedFiles } = assembleGraph(context, this.context.session, this.state.infoNodeId, files, selectedAssembly, selectedAnnotation);
+                const { graph, graphedFiles } = assembleGraph(context, this.context.session, this.state.infoNodeId, graphFiles, selectedAssembly, selectedAnnotation);
                 jsonGraph = graph;
                 allGraphedFiles = (selectedAssembly || selectedAnnotation) ? graphedFiles : {};
             } catch (e) {
