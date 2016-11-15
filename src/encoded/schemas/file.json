@@ -897,7 +897,7 @@
         "bam": ".bam",
         "bed": ".bed.gz",
         "bedpe": ".bedpe.gz",
-        "chain": "chain",
+        "chain": ".chain",
         "bigBed": ".bigBed",
         "bigWig": ".bigWig",
         "btr": ".btr",
