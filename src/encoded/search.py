@@ -458,15 +458,15 @@ def format_results(request, hits, result=None):
 
     if frame in ['embedded', 'object']:
         for hit in hits:
-            if not any_released and hit['_source'][frame]['status'] == 'released':
+            if not any_released and hit['_source'][frame].get('status','released') == 'released':
                 any_released = True
             yield hit['_source'][frame]
     else:
         # columns
         for hit in hits:
             item = hit['_source']['embedded']
-            if not any_released and item['status'] == 'released':
-                any_released = True
+            if not any_released and item.get('status','released') == 'released':
+                any_released = True # Not exp? 'released' to do the least harm
             if 'audit' in hit['_source']:
                 item['audit'] = hit['_source']['audit']
             if 'highlight' in hit:
