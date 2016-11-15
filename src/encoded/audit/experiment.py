@@ -3352,11 +3352,10 @@ def audit_missing_construct(value, system):
                     'or donor {} (for whole organism biosamples) to specify '.format(b['donor']['@id']) + \
                     'the relevant tagging details.'
                 yield AuditFailure('missing tag construct', detail, level='WARNING')
-            return
 
+        # Continue audit because only some linked biosamples may have missing constructs, not all.
         if tag_mismatch:
             for c in tag_mismatch:
                 detail = 'The target of this assay {} does not'.format(value['target']['@id']) + \
                     ' match that of the linked construct {}, {}.'.format(c['@id'], c['target']['@id'])
                 yield AuditFailure('mismatched construct target', detail, level='ERROR')
-            return
