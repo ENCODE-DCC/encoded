@@ -97,7 +97,7 @@ const GeneticModification = module.exports.GeneticModification = React.createCla
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="genetic-modification-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="genetic-modification-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -506,7 +506,7 @@ const Listing = React.createClass({
                         {techniques.length ? <div><strong>Modification techniques: </strong>{techniques.join(', ')}</div> : null}
                     </div>
                 </div>
-                <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
+                <AuditDetail audits={context.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     }

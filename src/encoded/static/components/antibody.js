@@ -118,7 +118,7 @@ var Lot = module.exports.Lot = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="antibody-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="antibody-audit" />
 
                 {context.lot_reviews && context.lot_reviews.length ?
                     <div className="antibody-statuses">

@@ -183,6 +183,18 @@
         "files.replicate.experiment.assay_term_name": {
             "title": "Assay"
         },
+        "files.file_type": {
+            "title": "Available data"
+        },
+        "files.run_type": {
+            "title": "Run type"
+        },
+        "files.read_length": {
+            "title": "Read length (nt)"
+        },
+        "files.mapped_read_length": {
+            "title": "Mapped read length (nt)"
+        },
         "status": {
             "title": "File set status"
         },
