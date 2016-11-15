@@ -333,7 +333,8 @@ def process_read_name_line(read_name_line,
                     old_illumina_current_prefix = process_new_illumina_prefix(
                         read_name,
                         signatures_set,
-                        old_illumina_current_prefix)
+                        old_illumina_current_prefix,
+                        read_numbers_set)
 
                 elif len(read_name) > 3 and read_name.count(':') > 2:
                     # assuming old illumina format
