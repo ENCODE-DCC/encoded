@@ -392,9 +392,9 @@
       }
     },
     "dalliance": {
-      "version": "0.13.8",
+      "version": "0.13.90-alpha",
       "from": "git://github.com/ENCODE-DCC/dalliance.git#commonjs-require-13.x",
-      "resolved": "git://github.com/ENCODE-DCC/dalliance.git#3c21693e5f3fb17134f2afa5b959af47c69544fa",
+      "resolved": "git://github.com/ENCODE-DCC/dalliance.git#f8cb3e60af399560041021ac527e33eef935814b",
       "dependencies": {
         "es6-promise": {
           "version": "3.0.2",

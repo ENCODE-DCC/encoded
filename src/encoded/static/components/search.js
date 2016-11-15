@@ -1159,9 +1159,9 @@ const ResultTable = search.ResultTable = React.createClass({
                                 </div>
                                 <hr />
                                 {browserAvail && assemblies.length ?
-                                    <TabPanel tabs={{ listpane: 'List', browserpane: 'Browser' }}>
+                                    <TabPanel tabs={{ listpane: 'List', browserpane: 'Browser' }} tabFlange>
                                         <TabPanelPane key="listpane">
-                                            <ResultTableList results={results} columns={columns} />
+                                            <ResultTableList results={results} columns={columns} tabbed />
                                         </TabPanelPane>
                                         <TabPanelPane key="browserpane">
                                             <ResultBrowser files={results} assembly={assemblies} />
@@ -1183,14 +1183,15 @@ const ResultTable = search.ResultTable = React.createClass({
 
 const ResultTableList = React.createClass({
     propTypes: {
-        results: React.PropTypes.array, // Array of search results to display
-        columns: React.PropTypes.object, // Columns from search results
+        results: React.PropTypes.array.isRequired, // Array of search results to display
+        columns: React.PropTypes.object.isRequired, // Columns from search results
+        tabbed: React.PropTypes.bool, // True if table is in a tab
     },
 
     render: function () {
-        const { results, columns } = this.props;
+        const { results, columns, tabbed } = this.props;
         return (
-            <ul className="nav result-table" id="result-table">
+            <ul className={`nav result-table${tabbed ? ' result-table-tabbed' : ''}`} id="result-table">
                 {results.length ?
                     results.map(result => listing({ context: result, columns: columns, key: result['@id'] }))
                 : null}

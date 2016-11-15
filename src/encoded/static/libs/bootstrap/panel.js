@@ -99,9 +99,10 @@ const TabPanelPane = React.createClass({
     },
 
     render: function () {
+        const { id, active, tabFlange } = this.props;
         return (
-            <div role="tabpanel" className={`tab-pane${this.props.active ? ' active' : ''}`} id={this.props.id}>
-                {this.props.active ? <div>{this.props.children}</div> : null}
+            <div role="tabpanel" className={`tab-pane${active ? ' active' : ''}`} id={id}>
+                {active ? <div>{this.props.children}</div> : null}
             </div>
         );
     },
@@ -114,6 +115,7 @@ const TabPanel = React.createClass({
         addClasses: React.PropTypes.string, // Classes to add to navigation <ul>
         moreComponents: React.PropTypes.object, // Other components to render in the tab bar
         moreComponentsClasses: React.PropTypes.string, // Classes to add to moreComponents wrapper <div>
+        tabFlange: React.PropTypes.bool, // True to show a small full-width strip under active tab
         children: React.PropTypes.node,
     },
 
@@ -129,7 +131,7 @@ const TabPanel = React.createClass({
     },
 
     render: function () {
-        const { tabs, addClasses, moreComponents, moreComponentsClasses } = this.props;
+        const { tabs, addClasses, moreComponents, moreComponentsClasses, tabFlange } = this.props;
         let children = [];
         let firstPaneIndex = -1; // React.Children.map index of first <TabPanelPane> component
 
@@ -152,20 +154,23 @@ const TabPanel = React.createClass({
 
         return (
             <div>
-                <ul className={`nav nav-tabs${addClasses ? ` ${addClasses}` : ''}`} role="tablist">
-                    {Object.keys(tabs).map((tab, i) => {
-                        const currentTab = (i === 0 && this.state.currentTab === '') ? tab : this.state.currentTab;
+                <div className="tab-nav">
+                    <ul className={`nav nav-tabs${addClasses ? ` ${addClasses}` : ''}`} role="tablist">
+                        {Object.keys(tabs).map((tab, i) => {
+                            const currentTab = (i === 0 && this.state.currentTab === '') ? tab : this.state.currentTab;
 
-                        return (
-                            <li key={tab} role="presentation" aria-controls={tab} className={currentTab === tab ? 'active' : ''}>
-                                <TabItem tab={tab} handleClick={this.handleClick}>
-                                    {tabs[tab]}
-                                </TabItem>
-                            </li>
-                        );
-                    })}
-                    {moreComponents ? <div className={moreComponentsClasses}>{moreComponents}</div> : null}
-                </ul>
+                            return (
+                                <li key={tab} role="presentation" aria-controls={tab} className={currentTab === tab ? 'active' : ''}>
+                                    <TabItem tab={tab} handleClick={this.handleClick}>
+                                        {tabs[tab]}
+                                    </TabItem>
+                                </li>
+                            );
+                        })}
+                        {moreComponents ? <div className={moreComponentsClasses}>{moreComponents}</div> : null}
+                    </ul>
+                    { tabFlange ? <div className="tab-flange" /> : null}
+                </div>
                 <div className="tab-content">
                     {children}
                 </div>
