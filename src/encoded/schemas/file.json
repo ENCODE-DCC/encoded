@@ -901,6 +901,8 @@
         "CEL": ".cel.gz",
         "bam": ".bam",
         "bed": ".bed.gz",
+        "bedpe": ".bedpe.gz",
+        "chain": ".chain",
         "bigBed": ".bigBed",
         "bigWig": ".bigWig",
         "btr": ".btr",
