@@ -1080,9 +1080,10 @@ const ResultTable = search.ResultTable = React.createClass({
             }
             return prev;
         }, 0);
+        const browserAvail = counter === 1 && typeFilter && typeFilter.term === 'File';
 
         // If we have only one "type" term in the query string, see if it's for File
-        if (counter === 1 && typeFilter.term === 'File') {
+        if (browserAvail) {
             // Only one "type" term in the query string, and it's for "File". Make an array of
             // assemblies from the files with empty assemblies filtered out.
             const unsortedAssemblies = _.compact(results.map(file => (file.assembly ? file.assembly : '')));
@@ -1157,18 +1158,18 @@ const ResultTable = search.ResultTable = React.createClass({
                                     : null}
                                 </div>
                                 <hr />
-                                <TabPanel tabs={{ listpane: 'List', browserpane: 'Browser' }}>
-                                    <TabPanelPane key="listpane">
-                                        <ul className="nav result-table" id="result-table">
-                                            {results.length ?
-                                                results.map(result => listing({ context: result, columns: columns, key: result['@id'] }))
-                                            : null}
-                                        </ul>
-                                    </TabPanelPane>
-                                    <TabPanelPane key="browserpane">
-                                        <ResultBrowser files={results} assembly={assemblies} />
-                                    </TabPanelPane>
-                                </TabPanel>
+                                {browserAvail && assemblies.length ?
+                                    <TabPanel tabs={{ listpane: 'List', browserpane: 'Browser' }}>
+                                        <TabPanelPane key="listpane">
+                                            <ResultTableList results={results} columns={columns} />
+                                        </TabPanelPane>
+                                        <TabPanelPane key="browserpane">
+                                            <ResultBrowser files={results} assembly={assemblies} />
+                                        </TabPanelPane>
+                                    </TabPanel>
+                                :
+                                    <ResultTableList results={results} columns={columns} />
+                                }
                             </div>
                         :
                             <h4>{context.notification}</h4>
@@ -1176,6 +1177,24 @@ const ResultTable = search.ResultTable = React.createClass({
                     </div>
                 </div>
             </div>
+        );
+    },
+});
+
+const ResultTableList = React.createClass({
+    propTypes: {
+        results: React.PropTypes.array, // Array of search results to display
+        columns: React.PropTypes.object, // Columns from search results
+    },
+
+    render: function () {
+        const { results, columns } = this.props;
+        return (
+            <ul className="nav result-table" id="result-table">
+                {results.length ?
+                    results.map(result => listing({ context: result, columns: columns, key: result['@id'] }))
+                : null}
+            </ul>
         );
     },
 });

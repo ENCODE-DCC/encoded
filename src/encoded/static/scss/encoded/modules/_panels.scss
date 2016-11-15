@@ -372,3 +372,36 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
         border-top: none;
     }
 }
+
+// Tab Panel Styles
+$nav-tab-border-style: 1px solid #a0a0a0;
+$nav-tab-border-radius: 4px;
+.nav.nav-tabs {
+    border-bottom: 0;
+
+    > li {
+        a {
+            margin: 0;
+            padding: 5px 20px;
+            background-color: #e0e0e0;
+            border-top: $nav-tab-border-style;
+            border-right: $nav-tab-border-style;
+            border-bottom: 0;
+            border-left: $nav-tab-border-style;
+            border-radius: $nav-tab-border-radius $nav-tab-border-radius 0 0;
+
+            &:hover {
+                background-color: #c0c0c0;
+                color: #000;
+            }
+        }
+
+        &.active {
+            a {
+                pointer-events: none;
+                background-color: #fff;
+            }
+        }
+
+    }
+}

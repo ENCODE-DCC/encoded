@@ -201,8 +201,8 @@ const GenomeBrowser = React.createClass({
             files.forEach((file) => {
                 if (file.file_format === 'bigWig') {
                     browser.sources.push({
-                        name: file.output_type,
-                        desc: file.accession,
+                        name: file.accession,
+                        desc: file.output_type,
                         bwgURI: `${domainName}${file.href}`,
                         style: [
                             {
@@ -217,8 +217,8 @@ const GenomeBrowser = React.createClass({
                     });
                 } else if (file.file_format === 'bigBed') {
                     browser.sources.push({
-                        name: file.output_type,
-                        desc: file.accession,
+                        name: file.accession,
+                        desc: file.output_type,
                         bwgURI: `${domainName}${file.href}`,
                         style: [
                             {
