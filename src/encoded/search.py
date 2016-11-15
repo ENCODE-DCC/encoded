@@ -439,7 +439,7 @@ def set_facets(facets, used_filters, principals, doc_types):
     return aggs
 
 
-def format_results(request, hits):
+def format_results(request, hits, result=None):
     """
     Loads results to pass onto UI
     """
@@ -454,45 +454,30 @@ def format_results(request, hits):
     if request.__parent__ and '/metadata/' in request.__parent__.url:
         frame = ''
 
+    any_released = False  # While formatting, figure out if any are released.
+
     if frame in ['embedded', 'object']:
         for hit in hits:
+            if not any_released and hit['_source'][frame]['status'] == 'released':
+                any_released = True
             yield hit['_source'][frame]
-        return
-
-    # columns
-    for hit in hits:
-        item = hit['_source']['embedded']
-        if 'audit' in hit['_source']:
-            item['audit'] = hit['_source']['audit']
-        if 'highlight' in hit:
-            item['highlight'] = {}
-            for key in hit['highlight']:
-                item['highlight'][key[9:]] = list(set(hit['highlight'][key]))
-        yield item
-
-
-def only_unreleased(hits):
-    """
-    Determine if only unreleased experiments are found.  Only examines first 100.
-    """
-    any_released = False
-    count = 0
-    for hit in hits:
-        if 'status' in hit:
-            if hit['status'] == 'released':
+    else:
+        # columns
+        for hit in hits:
+            item = hit['_source']['embedded']
+            if not any_released and item['status'] == 'released':
                 any_released = True
-                break
-        elif '_source' in hit and 'embedded' in hit['_source']:
-            if hit['_source']['embedded']['status'] == 'released':
-                any_released = True
-                break
-        count += 1
-        if count == 100:
-            any_released = True # Did our best, just leave it alone
-            break
-    if count == 0: # We can't say no without no data!
-        return False
-    return (not any_released)
+            if 'audit' in hit['_source']:
+                item['audit'] = hit['_source']['audit']
+            if 'highlight' in hit:
+                item['highlight'] = {}
+                for key in hit['highlight']:
+                    item['highlight'][key[9:]] = list(set(hit['highlight'][key]))
+            yield item
+
+    # After all are yielded, it may not be too late to change this result setting
+    if not any_released and result is not None and 'batch_hub' in result:
+        del result['batch_hub']
 
 
 def search_result_actions(request, doc_types, es_results, position=None):
@@ -521,7 +506,8 @@ def search_result_actions(request, doc_types, es_results, position=None):
     # TODO we could enable them for Datasets as well here, but not sure how well it will work
     # batch download disabled for region-search results
     if '/region-search/' not in request.url:
-        if (doc_types == ['Experiment'] or doc_types == ['Annotation']) and any(
+        #if (doc_types == ['Experiment'] or doc_types == ['Annotation']) and any(
+        if (doc_types == ['Experiment']) and any(
                 bucket['doc_count'] > 0
                 for bucket in aggregations['files-file_type']['files-file_type']['buckets']):
             actions['batch_download'] = request.route_url(
@@ -597,24 +583,29 @@ def normalize_query(request):
     return '?' + qs if qs else ''
 
 
-def iter_long_json(name, iterable, **other):
+def iter_long_json(name, iterable, other):
     import json
 
-    before = (json.dumps(other)[:-1] + ',') if other else '{'
-    yield before + json.dumps(name) + ':['
+    start = None
 
+    # Note: by yielding @graph (iterable) first, then the contents of result (other) *may* be altered based upon @graph
     it = iter(iterable)
     try:
         first = next(it)
     except StopIteration:
         pass
     else:
-        yield json.dumps(first)
+        #yield json.dumps(first)
+        start = '{' + json.dumps(name) + ':['
+        yield start + json.dumps(first)
         for value in it:
             yield ',' + json.dumps(value)
 
-    yield ']}'
-
+    if start is None: # Nothing has bee yielded yet
+        yield json.dumps(other)
+    else:
+        other_stuff = (',' + json.dumps(other)[1:-1]) if other else ''
+        yield ']' + other_stuff + '}'
 
 @view_config(route_name='search', request_method='GET', permission='search')
 def search(context, request, search_type=None, return_generator=False):
@@ -777,13 +768,11 @@ def search(context, request, search_type=None, return_generator=False):
     result['notification'] = 'Success'
     # Format results for JSON-LD
     if not do_scan:
-        graph = format_results(request, es_results['hits']['hits'])
+        graph = format_results(request, es_results['hits']['hits'], result)
         if return_generator:
             return graph
         else:
             result['@graph'] = list(graph)
-            if "batch_hub" in result and only_unreleased(result['@graph']):
-                del result["batch_hub"]
             return result
 
     # Scan large result sets.
@@ -794,7 +783,7 @@ def search(context, request, search_type=None, return_generator=False):
         hits = scan(es, query=query, index=es_index, preserve_order=False)
     else:
         hits = scan(es, query=query, index=es_index, from_=from_, size=size, preserve_order=False)
-    graph = format_results(request, hits)
+    graph = format_results(request, hits, result)
 
     # Support for request.embed() and `return_generator`
     if request.__parent__ is not None or return_generator:
@@ -802,13 +791,11 @@ def search(context, request, search_type=None, return_generator=False):
             return graph
         else:
             result['@graph'] = list(graph)
-            if "batch_hub" in result and only_unreleased(result['@graph']):
-                del result["batch_hub"]
             return result
 
     # Stream response using chunked encoding.
     # XXX BeforeRender event listeners not called.
-    app_iter = iter_long_json('@graph', graph, **result)
+    app_iter = iter_long_json('@graph', graph, result)
     request.response.content_type = 'application/json'
     if str is bytes:  # Python 2 vs 3 wsgi differences
         request.response.app_iter = app_iter  # Python 2
