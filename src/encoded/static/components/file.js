@@ -5,6 +5,7 @@ import globals from './globals';
 import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
 import { DbxrefList } from './dbxref';
 import { ProjectBadge } from './image';
+import { PickerActionsMixin } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import { StatusLabel } from './statuslabel';
 
@@ -319,52 +320,50 @@ const FlowcellDetails = React.createClass({
 
         return (
             <div className="flowcell-details">
-                {flowcells.map((flowcell) => {
-                    return (
-                        <Panel addClasses="flowcell-details__panel">
-                            <PanelHeading addClasses="flowcell-details__header">
-                                {flowcell.machine ? <h5>{flowcell.machine}</h5> : <h5>Unspecified machine</h5>}
-                            </PanelHeading>
-                            <PanelBody addClasses="flowcell-details__body">
-                                {flowcell.flowcell ?
-                                    <div className="flowcell-details__item">
-                                        <strong>ID: </strong>{flowcell.flowcell}
-                                    </div>
-                                : null}
+                {flowcells.map(flowcell =>
+                    <Panel addClasses="flowcell-details__panel">
+                        <PanelHeading addClasses="flowcell-details__header">
+                            {flowcell.machine ? <h5>{flowcell.machine}</h5> : <h5>Unspecified machine</h5>}
+                        </PanelHeading>
+                        <PanelBody addClasses="flowcell-details__body">
+                            {flowcell.flowcell ?
+                                <div className="flowcell-details__item">
+                                    <strong>ID: </strong>{flowcell.flowcell}
+                                </div>
+                            : null}
 
-                                {flowcell.lane ?
-                                    <div className="flowcell-details__item">
-                                        <strong>Lane: </strong> {flowcell.lane}
-                                    </div>
-                                : null}
+                            {flowcell.lane ?
+                                <div className="flowcell-details__item">
+                                    <strong>Lane: </strong> {flowcell.lane}
+                                </div>
+                            : null}
 
-                                {flowcell.barcode ?
-                                    <div className="flowcell-details__item">
-                                        <strong>Barcode: </strong> {flowcell.barcode}
-                                    </div>
-                                : null}
+                            {flowcell.barcode ?
+                                <div className="flowcell-details__item">
+                                    <strong>Barcode: </strong> {flowcell.barcode}
+                                </div>
+                            : null}
 
-                                {flowcell.barcode_in_read ?
-                                    <div className="flowcell-details__item">
-                                        <strong>Barcode in read: </strong> {flowcell.barcode_in_read}
-                                    </div>
-                                : null}
+                            {flowcell.barcode_in_read ?
+                                <div className="flowcell-details__item">
+                                    <strong>Barcode in read: </strong> {flowcell.barcode_in_read}
+                                </div>
+                            : null}
 
-                                {flowcell.barcode_position ?
-                                    <div className="flowcell-details__item">
-                                        <strong>Barcode position: </strong> {flowcell.barcode_position}
-                                    </div>
-                                : null}
+                            {flowcell.barcode_position ?
+                                <div className="flowcell-details__item">
+                                    <strong>Barcode position: </strong> {flowcell.barcode_position}
+                                </div>
+                            : null}
 
-                                {flowcell.chunk ?
-                                    <div className="flowcell-details__item">
-                                        <strong>Chunk: </strong> {flowcell.chunk}
-                                    </div>
-                                : null}
-                            </PanelBody>
-                        </Panel>
-                    );
-                })}
+                            {flowcell.chunk ?
+                                <div className="flowcell-details__item">
+                                    <strong>Chunk: </strong> {flowcell.chunk}
+                                </div>
+                            : null}
+                        </PanelBody>
+                    </Panel>
+                )}
             </div>
         );
     },
@@ -425,3 +424,39 @@ const DerivedFiles = React.createClass({
         );
     },
 });
+
+
+const Listing = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object, // File object being rendered
+    },
+
+    mixins: [PickerActionsMixin, AuditMixin],
+
+    render: function () {
+        const result = this.props.context;
+        const aliasList = (result.aliases && result.aliases.length) ? result.aliases.join(', ') : '';
+
+        return (
+            <li>
+                <div className="clearfix">
+                    {this.renderActions()}
+                    <div className="pull-right search-meta">
+                        <p className="type meta-title">File</p>
+                        <p className="type">{' ' + result.accession}</p>
+                        <p className="type meta-status">{' ' + result.status}</p>
+                        <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
+                    </div>
+                    <div className="accession"><a href={result['@id']}>{`${result.file_format}${result.file_format_type ? ` (${result.file_format_type})` : ''}`}</a></div>
+                    <div className="data-row">
+                        <div><strong>Lab: </strong>{result.lab.title}</div>
+                        {result.award.project ? <div><strong>Project: </strong>{result.award.project}</div> : null}
+                    </div>
+                </div>
+                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
+            </li>
+        );
+    },
+});
+
+globals.listing_views.register(Listing, 'File');
