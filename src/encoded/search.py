@@ -439,7 +439,7 @@ def set_facets(facets, used_filters, principals, doc_types):
     return aggs
 
 
-def format_results(request, hits):
+def format_results(request, hits, result=None):
     """
     Loads results to pass onto UI
     """
@@ -454,21 +454,30 @@ def format_results(request, hits):
     if request.__parent__ and '/metadata/' in request.__parent__.url:
         frame = ''
 
+    any_released = False  # While formatting, figure out if any are released.
+
     if frame in ['embedded', 'object']:
         for hit in hits:
+            if not any_released and hit['_source'][frame].get('status','released') == 'released':
+                any_released = True
             yield hit['_source'][frame]
-        return
+    else:
+        # columns
+        for hit in hits:
+            item = hit['_source']['embedded']
+            if not any_released and item.get('status','released') == 'released':
+                any_released = True # Not exp? 'released' to do the least harm
+            if 'audit' in hit['_source']:
+                item['audit'] = hit['_source']['audit']
+            if 'highlight' in hit:
+                item['highlight'] = {}
+                for key in hit['highlight']:
+                    item['highlight'][key[9:]] = list(set(hit['highlight'][key]))
+            yield item
 
-    # columns
-    for hit in hits:
-        item = hit['_source']['embedded']
-        if 'audit' in hit['_source']:
-            item['audit'] = hit['_source']['audit']
-        if 'highlight' in hit:
-            item['highlight'] = {}
-            for key in hit['highlight']:
-                item['highlight'][key[9:]] = list(set(hit['highlight'][key]))
-        yield item
+    # After all are yielded, it may not be too late to change this result setting
+    if not any_released and result is not None and 'batch_hub' in result:
+        del result['batch_hub']
 
 
 def search_result_actions(request, doc_types, es_results, position=None):
@@ -478,32 +487,27 @@ def search_result_actions(request, doc_types, es_results, position=None):
     # generate batch hub URL for experiments
     # TODO we could enable them for Datasets as well here, but not sure how well it will work
     if doc_types == ['Experiment'] or doc_types == ['Annotation']:
-        may_visualize = False
-        for es_exp in es_results['hits']['hits']:
-            if es_exp['_source']['embedded']['status'] == 'released':
-                may_visualize = True
-                break
-        if may_visualize:
-            for bucket in aggregations['assembly']['assembly']['buckets']:
-                if bucket['doc_count'] > 0:
-                    assembly = bucket['key']
-                    ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
-                    search_params = request.query_string.replace('&', ',,')
-                    if not request.params.getall('assembly') or assembly in request.params.getall('assembly'):
-                        # filter  assemblies that are not selected
-                        hub = request.route_url('batch_hub',
-                                                search_params=search_params,
-                                                txt='hub.txt')
-                        if 'region-search' in request.url and position is not None:
-                            actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly + '&position={}'.format(position)
-                        else:
-                            actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly
+        for bucket in aggregations['assembly']['assembly']['buckets']:
+            if bucket['doc_count'] > 0:
+                assembly = bucket['key']
+                ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
+                search_params = request.query_string.replace('&', ',,')
+                if not request.params.getall('assembly') or assembly in request.params.getall('assembly'):
+                    # filter  assemblies that are not selected
+                    hub = request.route_url('batch_hub',
+                                            search_params=search_params,
+                                            txt='hub.txt')
+                    if 'region-search' in request.url and position is not None:
+                        actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly + '&position={}'.format(position)
+                    else:
+                        actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly
 
     # generate batch download URL for experiments
     # TODO we could enable them for Datasets as well here, but not sure how well it will work
     # batch download disabled for region-search results
     if '/region-search/' not in request.url:
-        if (doc_types == ['Experiment'] or doc_types == ['Annotation']) and any(
+        #if (doc_types == ['Experiment'] or doc_types == ['Annotation']) and any(
+        if (doc_types == ['Experiment']) and any(
                 bucket['doc_count'] > 0
                 for bucket in aggregations['files-file_type']['files-file_type']['buckets']):
             actions['batch_download'] = request.route_url(
@@ -579,24 +583,29 @@ def normalize_query(request):
     return '?' + qs if qs else ''
 
 
-def iter_long_json(name, iterable, **other):
+def iter_long_json(name, iterable, other):
     import json
 
-    before = (json.dumps(other)[:-1] + ',') if other else '{'
-    yield before + json.dumps(name) + ':['
+    start = None
 
+    # Note: by yielding @graph (iterable) first, then the contents of result (other) *may* be altered based upon @graph
     it = iter(iterable)
     try:
         first = next(it)
     except StopIteration:
         pass
     else:
-        yield json.dumps(first)
+        #yield json.dumps(first)
+        start = '{' + json.dumps(name) + ':['
+        yield start + json.dumps(first)
         for value in it:
             yield ',' + json.dumps(value)
 
-    yield ']}'
-
+    if start is None: # Nothing has bee yielded yet
+        yield json.dumps(other)
+    else:
+        other_stuff = (',' + json.dumps(other)[1:-1]) if other else ''
+        yield ']' + other_stuff + '}'
 
 @view_config(route_name='search', request_method='GET', permission='search')
 def search(context, request, search_type=None, return_generator=False):
@@ -759,7 +768,7 @@ def search(context, request, search_type=None, return_generator=False):
     result['notification'] = 'Success'
     # Format results for JSON-LD
     if not do_scan:
-        graph = format_results(request, es_results['hits']['hits'])
+        graph = format_results(request, es_results['hits']['hits'], result)
         if return_generator:
             return graph
         else:
@@ -774,7 +783,7 @@ def search(context, request, search_type=None, return_generator=False):
         hits = scan(es, query=query, index=es_index, preserve_order=False)
     else:
         hits = scan(es, query=query, index=es_index, from_=from_, size=size, preserve_order=False)
-    graph = format_results(request, hits)
+    graph = format_results(request, hits, result)
 
     # Support for request.embed() and `return_generator`
     if request.__parent__ is not None or return_generator:
@@ -786,7 +795,7 @@ def search(context, request, search_type=None, return_generator=False):
 
     # Stream response using chunked encoding.
     # XXX BeforeRender event listeners not called.
-    app_iter = iter_long_json('@graph', graph, **result)
+    app_iter = iter_long_json('@graph', graph, result)
     request.response.content_type = 'application/json'
     if str is bytes:  # Python 2 vs 3 wsgi differences
         request.response.app_iter = app_iter  # Python 2
