@@ -253,8 +253,7 @@ def process_old_illumina_read_name_pattern(read_name,
                                            signatures_set,
                                            old_illumina_current_prefix):
     read_number = '1'
-    if len(read_name) > 3 and \
-       read_name[-2:] in ['/1', '/2']:
+    if read_name[-2:] in ['/1', '/2']:
         read_numbers_set.add(read_name[-1])
         read_number = read_name[-1]
     arr = re.split(r':', read_name)
@@ -314,19 +313,17 @@ def process_read_name_line(read_name_line,
                         signatures_set,
                         old_illumina_current_prefix)
                 else:
-                    # weird_read_name = read_name
                     errors['fastq_format_readname'] = \
                         'submitted fastq file does not ' + \
                         'comply with illumina fastq read name format, ' + \
                         'read name was : {}'.format(read_name)
 
     else:  # found a match to the regex of "almost" illumina read_name
-        if len(words_array) == 2:
-            process_illumina_read_name_pattern(
-                read_name,
-                read_numbers_set,
-                signatures_set,
-                signatures_no_barcode_set)
+        process_illumina_read_name_pattern(
+            read_name,
+            read_numbers_set,
+            signatures_set,
+            signatures_no_barcode_set)
 
     return old_illumina_current_prefix
 
