@@ -505,6 +505,43 @@ def process_read_lengths(read_lengths_dict,
             'Gathered information about the file was: {}.'.format(str(result))
 
 
+def check_for_fastq_signature_conflicts(session,
+                                        url,
+                                        errors,
+                                        item,
+                                        signature_to_check):
+    query = '/search/?type=File&status!=replaced&file_format=fastq&fastq_signature=' + \
+            signature_to_check
+    try:
+        r = session.get(urljoin(url, query))
+    except requests.exceptions.RequestException as e:  # This is the correct syntax
+        errors['lookup_for_fastq_signature'] = 'Network error occured, while looking for ' + \
+                                               'fastq signature conflict on the portal. ' + str(e)
+    else:
+        r_graph = r.json().get('@graph')
+        if len(r_graph) > 0:
+            conflicts = []
+            for entry in r_graph:
+                if 'accession' in entry and 'accession' in item and \
+                   entry['accession'] != item['accession']:
+                        conflicts.append(
+                            'checked %s is conflicting with fastq_signature of %s' % (
+                                signature_to_check,
+                                entry['accession']))
+                elif 'accession' in entry and 'accession' not in item:
+                    conflicts.append(
+                        'checked %s is conflicting with fastq_signature of %s' % (
+                            signature_to_check,
+                            entry['accession']))
+                elif 'accession' not in entry and 'accession' not in item:
+                    conflicts.append(
+                        'checked %s is conflicting with fastq_signature of another ' % (
+                            signature_to_check) +
+                        'file on the portal.')
+            if len(conflicts) > 0:
+                errors['not_unique_flowcell_details'] = ', '.join(map(str, conflicts))
+
+
 def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url):
     result['content_md5sum'] = output[:32].decode(errors='replace')
     try:
@@ -755,6 +792,7 @@ def patch_file(session, url, job):
                'bed_comments_remove_failure',
                'content_md5sum_calculation',
                'file_remove_error',
+               'lookup_for_fastq_signature',
                'fastq_information_extraction']:
                 to_patch = False
                 break
