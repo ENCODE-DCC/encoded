@@ -411,8 +411,7 @@ def process_fastq_file(job, fastq_data_stream, session, url):
         else:
             errors['read_length'] = 'no specified read length in the uploaded fastq file, ' + \
                                     'while read length(s) found in the file were {}. '.format(
-                                    ', '.join(map(str, read_lengths_list))) + \
-                'Gathered information about the file was: {}.'.format(str(result))
+                                    ', '.join(map(str, read_lengths_list)))  # + \ 'Gathered information about the file was: {}.'.format(str(result))
 
 
         # signatures
@@ -445,8 +444,7 @@ def process_fastq_file(job, fastq_data_stream, session, url):
             except requests.exceptions.RequestException as e:  # This is the correct syntax
                 errors['lookup_for_fastq_signature'] = 'Network error occured, while looking for ' + \
                                                        'fastq signatures conflict on the portal. ' + \
-                                                       str(e) + \
-                    ' Gathered information about the file was: {}.'.format(str(result))
+                                                       str(e) # + / ' Gathered information about the file was: {}.'.format(str(result))
             else:
                 response = r.json()
                 if response is not None and 'File' in response['@type']:
@@ -458,9 +456,9 @@ def process_fastq_file(job, fastq_data_stream, session, url):
         if uniqueness_flag is True:
             result['fastq_signature'] = sorted(list(signatures_for_comparison))
         else:
-            gathered_info = ' Gathered information about the uploading file was: {}.'.format(
-                str(result))
-            signature_conflicts.append(gathered_info)
+            #gathered_info = ' Gathered information about the uploading file was: {}.'.format(
+            #    str(result))
+            # signature_conflicts.append(gathered_info)
             errors['not_unique_flowcell_details'] = ', '.join(map(str, signature_conflicts))
 
 
@@ -501,8 +499,7 @@ def process_read_lengths(read_lengths_dict,
         errors_to_report['read_length'] = \
             'in file metadata the read_length is {}, '.format(submitted_read_length) + \
             'however the uploaded fastq file contains reads of following length(s) ' + \
-            '{}. '.format(', '.join(map(str, lengths_list))) + \
-            'Gathered information about the file was: {}.'.format(str(result))
+            '{}. '.format(', '.join(map(str, lengths_list))) # + \'Gathered information about the file was: {}.'.format(str(result))
 
 
 def check_for_fastq_signature_conflicts(session,
@@ -715,6 +712,8 @@ def check_file(config, session, url, job):
     if item['status'] != 'uploading':
         errors['status_check'] = \
             "status '{}' is not 'uploading'".format(item['status'])
+        errors['gathered information'] = 'Gathered information about the file was: {}.'.format(
+            str(result))
 
     return job
 
