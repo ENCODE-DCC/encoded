@@ -520,17 +520,36 @@
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19",
         "file_format": "fastq",
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        },
-        {
-            "flowcell": "C5WA6ACUU",
-            "lane": "8",
-            "machine": "HWI-ST382"
-        }],
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            },
+            {
+                "flowcell": "C5WA6ACUU",
+                "lane": "8",
+                "machine": "HWI-ST382"
+            },
+            {
+                "flowcell": "C5WA6ACUA",
+                "lane": "1",
+                "machine": "HiSeq 4000",
+                "barcode": "ABCDEFG",
+                "barcode_in_read": "1",
+                "barcode_position": 3,
+                "chunk": "HIJKLM"
+            },
+            {
+                "flowcell": "C5WA6ACUB",
+                "lane": "2",
+                "machine": "HiSeq 4000",
+                "barcode": "ABCDEFG",
+                "barcode_in_read": "2",
+                "barcode_position": 1,
+                "chunk": "HIJKLM"
+            }
+        ],
         "lab":"j-michael-cherry",
         "md5sum": "3541f1a048453b65ab01a673b743a573",
         "output_type": "reads",

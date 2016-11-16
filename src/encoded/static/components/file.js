@@ -20,6 +20,7 @@ const File = React.createClass({
         const itemClass = globals.itemClass(context, 'view-item');
         const altacc = (context.alternate_accessions && context.alternate_accessions.length) ? context.alternate_accessions.join(', ') : null;
         const aliasList = (context.aliases && context.aliases.length) ? context.aliases.join(', ') : '';
+        const datasetAccession = globals.atIdToAccession(context.dataset);
 
         // Make array of superceded_by accessions.
         let supersededBys = [];
@@ -59,7 +60,7 @@ const File = React.createClass({
                                 <dl className="key-value">
                                     <div data-test="term-name">
                                         <dt>Dataset</dt>
-                                        <dd><a href={context.dataset}>{globals.atIdToAccession(context.dataset)}</a></dd>
+                                        <dd><a href={context.dataset} title={`View page for dataset ${datasetAccession}`}>{datasetAccession}</a></dd>
                                     </div>
 
                                     {context.replicate ?
@@ -220,6 +221,7 @@ const SequenceFileInfo = React.createClass({
 
     render: function () {
         const { file } = this.props;
+        const pairedWithAccession = file.paired_with ? globals.atIdToAccession(file.paired_with) : '';
 
         return (
             <Panel>
@@ -232,7 +234,7 @@ const SequenceFileInfo = React.createClass({
                         {file.platform ?
                             <div data-test="platform">
                                 <dt>Platform</dt>
-                                <dd><a href={file.platform['@id']}>{file.platform.title ? file.platform.title : file.platform.term_id}</a></dd>
+                                <dd><a href={file.platform['@id']} title="View page for this platform">{file.platform.title ? file.platform.title : file.platform.term_id}</a></dd>
                             </div>
                         : null}
 
@@ -247,6 +249,51 @@ const SequenceFileInfo = React.createClass({
                             <div data-test="fastqsignature">
                                 <dt>Fastq flowcell signature</dt>
                                 <dd>{file.fastq_signature.join(', ')}</dd>
+                            </div>
+                        : null}
+
+                        {file.run_type ?
+                            <div data-test="runtype">
+                                <dt>Run type</dt>
+                                <dd>{file.run_type}</dd>
+                            </div>
+                        : null}
+
+                        {file.read_length ?
+                            <div data-test="readlength">
+                                <dt>Flowcell</dt>
+                                <dd>{file.read_length}</dd>
+                            </div>
+                        : null}
+
+                        {file.paired_end ?
+                            <div data-test="pairedend">
+                                <dt>Paired end identifier</dt>
+                                <dd>{file.paired_end}</dd>
+                            </div>
+                        : null}
+
+                        {file.controlled_by && file.controlled_by.length ?
+                            <div data-test="controlledby">
+                                <dt>Controlled by</dt>
+                                <dd>
+                                    {file.controlled_by.map((controlFile, i) => {
+                                        const controlFileAccession = globals.atIdToAccession(controlFile);
+                                        return (
+                                            <span>
+                                                {i > 0 ? <span>, </span> : null}
+                                                <a href={controlFile} title={`View page for file ${controlFileAccession}`}>{controlFileAccession}</a>
+                                            </span>
+                                        );
+                                    })}
+                                </dd>
+                            </div>
+                        : null}
+
+                        {file.paired_with ?
+                            <div data-test="pairedwith">
+                                <dt>File pairing</dt>
+                                <dd><a href={file.paired_with} title={`View page for file ${pairedWithAccession}`}>{pairedWithAccession}</a></dd>
                             </div>
                         : null}
                     </dl>
