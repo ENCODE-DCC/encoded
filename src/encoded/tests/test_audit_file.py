@@ -370,6 +370,16 @@ def test_audit_file_missing_paired_controlled_by(testapp, file1,
                                     error in errors_list)
 
 
+def test_audit_processed_file_replicate(testapp, file6, file_rep2):
+    testapp.patch_json(file6['@id'], {'replicate': file_rep2['uuid']})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'processed file replicate' for error in errors_list)
+
+
 def test_audit_file_replicate_match(testapp, file1, file_rep2):
     testapp.patch_json(file1['@id'], {'replicate': file_rep2['uuid']})
     res = testapp.get(file1['@id'] + '@@index-data')

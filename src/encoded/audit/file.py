@@ -168,6 +168,23 @@ def audit_file_assembly(value, system):
                         return
 
 
+@audit_checker('file', frame=['replicate'])
+def audit_file_processed_file_replicate(value, system):
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+
+    if 'replicate' not in value:
+        return
+
+    if value['output_category'] != 'raw data':
+        detail = 'File {} '.format(value['@id']) + \
+                 'belonging to {} category '.format(value['output_category']) + \
+                 'is associated with replicate {} '.format(value['replicate']['@id'])
+        yield AuditFailure('processed file replicate',
+                           detail, level='INTERNAL_ACTION')
+        return
+
+
 @audit_checker('file', frame=['replicate', 'replicate.experiment',
                               'derived_from', 'derived_from.replicate',
                               'derived_from.replicate.experiment'])
