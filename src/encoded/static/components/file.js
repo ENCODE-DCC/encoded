@@ -5,6 +5,7 @@ import globals from './globals';
 import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
 import { DbxrefList } from './dbxref';
 import { ProjectBadge } from './image';
+import { SortTablePanel, SortTable } from './sorttable';
 import { StatusLabel } from './statuslabel';
 
 
@@ -94,7 +95,7 @@ const File = React.createClass({
                                                 {pipelines.map((pipeline, i) =>
                                                     <span key={i}>
                                                         {i > 0 ? <span>{','}<br /></span> : null}
-                                                        <a href={pipeline['@id']}>{pipeline.title}</a>
+                                                        <a href={pipeline['@id']} title="View page for this pipeline">{pipeline.title}</a>
                                                     </span>
                                                 )}
                                             </dd>
@@ -205,6 +206,9 @@ const File = React.createClass({
                     <SequenceFileInfo file={context} />
                 : null}
 
+                {(context.derived_from && context.derived_from.length) || (context.deriving && context.deriving.length) ?
+                    <DerivedFiles file={context} />
+                : null}
             </div>
         );
     },
@@ -362,6 +366,62 @@ const FlowcellDetails = React.createClass({
                     );
                 })}
             </div>
+        );
+    },
+});
+
+const DerivedFiles = React.createClass({
+    propTypes: {
+        file: React.PropTypes.object.isRequired, // File being analyzed
+    },
+
+    derivingCols: {
+        accession: {
+            title: 'Accession',
+            display: file => <a href={file['@id']} title={`View page for file ${file.accession}`}>{file.accession}</a>,
+        },
+        dataset: {
+            title: 'Dataset',
+            display: (file) => {
+                const datasetAccession = globals.atIdToAccession(file.dataset);
+                return <a href={file.dataset} title={`View page for dataset ${datasetAccession}`}>{datasetAccession}</a>;
+            },
+        },
+        file_format: { title: 'File format' },
+        output_type: { title: 'Output type' },
+        title: {
+            title: 'Lab',
+            getValue: file => (file.lab && file.lab.title ? file.lab.title : ''),
+        },
+        assembly: { title: 'Mapping assembly' },
+        status: {
+            title: 'File status',
+            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
+        },
+    },
+
+    render: function () {
+        const { file } = this.props;
+
+        return (
+            <SortTablePanel header={<h4>File derivations</h4>}>
+                {file.deriving && file.deriving.length ?
+                    <SortTable
+                        title={<div className="collapsing-title"><h5>{`Files deriving from ${file.accession}`}</h5></div>}
+                        list={file.deriving}
+                        columns={this.derivingCols}
+                        sortColumn="accession"
+                    />
+                : null}
+                {file.derived_from && file.derived_from.length ?
+                    <SortTable
+                        title={<div className="collapsing-title"><h5>{`Files ${file.accession} derives from `}</h5></div>}
+                        list={file.derived_from}
+                        columns={this.derivingCols}
+                        sortColumn="accession"
+                    />
+                : null}
+            </SortTablePanel>
         );
     },
 });

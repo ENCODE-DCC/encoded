@@ -96,7 +96,8 @@ class File(Item):
     rev = {
         'paired_with': ('File', 'paired_with'),
         'quality_metrics': ('QualityMetric', 'quality_metric_of'),
-        'superseded_by': ('File', 'supersedes')
+        'superseded_by': ('File', 'supersedes'),
+        'deriving': ('File', 'derived_from'),
     }
 
     embedded = [
@@ -110,8 +111,11 @@ class File(Item):
         'award',
         'lab',
         'derived_from',
+        'derived_from.lab',
         'derived_from.analysis_step_version.software_versions',
         'derived_from.analysis_step_version.software_versions.software',
+        'deriving',
+        'deriving.lab',
         'platform',
         'submitted_by',
         'analysis_step_version.analysis_step',
@@ -338,6 +342,18 @@ class File(Item):
     })
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
+
+    @calculated_property(schema={
+        "title": "Deriving files",
+        "description": "The file(s) that derive from this file.",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "File.derived_from",
+        },
+    })
+    def deriving(self, request, deriving):
+        return paths_filtered_by_status(request, deriving)
 
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):

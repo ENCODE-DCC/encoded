@@ -356,6 +356,10 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
         margin: 0 0 0 40px;
     }
 
+    h5 {
+        margin: 0;
+    }
+
     &:focus, &:active {
         text-decoration: none;
     }
