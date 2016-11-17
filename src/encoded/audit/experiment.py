@@ -924,7 +924,7 @@ def check_experiment_chip_seq_standards(experiment,
 
     upper_limit_read_length = 50
     medium_limit_read_length = 36
-    lower_limit_read_length = 30
+    lower_limit_read_length = 26
     for f in fastq_files:
         for failure in check_file_read_length_chip(f,
                                                    upper_limit_read_length,
@@ -1850,12 +1850,11 @@ def check_file_read_length_chip(file_to_check, upper_threshold_length,
     read_length = file_to_check['read_length']
     detail = 'Fastq file {} '.format(file_to_check['@id']) + \
              'has read length of {}bp. '.format(read_length) + \
-             'ENCODE standards recommend that sequencing reads should ' + \
+             'For mapping accuracy ENCODE standards recommend that sequencing reads should ' + \
              'be at least {}bp long. (See /data-standards/chip-seq/ )'.format(
                  upper_threshold_length)
-
     if read_length < lower_threshold_length:
-        yield AuditFailure('extremely short read length', detail, level='ERROR')
+        yield AuditFailure('extremely low read length', detail, level='ERROR')
     elif read_length >= lower_threshold_length and read_length < medium_threshold_length:
         yield AuditFailure('insufficient read length', detail, level='NOT_COMPLIANT')
     elif read_length >= medium_threshold_length and read_length < upper_threshold_length:
