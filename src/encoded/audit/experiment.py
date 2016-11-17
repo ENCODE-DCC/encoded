@@ -1621,25 +1621,25 @@ def check_file_chip_seq_read_depth(file_to_check,
                     if 'assembly' in file_to_check:
                         detail = 'Alignment file {} '.format(file_to_check['@id']) + \
                             'produced by {} '.format(pipeline_object['title']) + \
-                            '( {} ) using {} assembly '.format(
+                            'pipeline ( {} ) using the {} assembly '.format(
                                 pipeline_object['@id'],
                                 file_to_check['assembly']) + \
                             'has {} '.format(read_depth) + \
                             'mapped reads. ' + \
                             'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
-                            'experiments targeting {}, investigated as '.format(target_name) + \
-                            'broad histone mark is 40 million mapped reads. ' + \
+                            'experiment targeting {} and investigated as '.format(target_name) + \
+                            'a broad histone mark is 40 million mapped reads. ' + \
                             'The recommended value is > 45 million, but > 40 million is ' + \
                             'acceptable. (See /data-standards/chip-seq/ )'
                     else:
                         detail = 'Alignment file {} '.format(file_to_check['@id']) + \
                             'produced by {} '.format(pipeline_object['title']) + \
-                            '( {} ) '.format(pipeline_object['@id']) + \
+                            'pipeline ( {} ) '.format(pipeline_object['@id']) + \
                             'has {} '.format(read_depth) + \
                             'mapped reads. ' + \
                             'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
-                            'experiments targeting {}, investigated as '.format(target_name) + \
-                            'broad histone mark is 40 million mapped reads. ' + \
+                            'experiment targeting {} and investigated as '.format(target_name) + \
+                            'a broad histone mark is 40 million mapped reads. ' + \
                             'The recommended value is > 45 million, but > 40 million is ' + \
                             'acceptable. (See /data-standards/chip-seq/ )'
                     if read_depth >= 40000000:
@@ -1655,25 +1655,25 @@ def check_file_chip_seq_read_depth(file_to_check,
                 if 'assembly' in file_to_check:
                     detail = 'Alignment file {} '.format(file_to_check['@id']) + \
                         'produced by {} '.format(pipeline_object['title']) + \
-                        '( {} ) using {} assembly '.format(
+                        'pipeline ( {} ) using the {} assembly '.format(
                             pipeline_object['@id'],
                             file_to_check['assembly']) + \
                         'has {} '.format(read_depth) + \
                         'usable fragments. ' + \
                         'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
-                        'experiments targeting {}, investigated as '.format(target_name) + \
-                        'broad histone mark is 20 million usable fragments. ' + \
+                        'experiment targeting {} and investigated as '.format(target_name) + \
+                        'a broad histone mark is 20 million usable fragments. ' + \
                         'The recommended value is > 45 million, but > 40 million is ' + \
                         'acceptable. (See /data-standards/chip-seq/ )'
                 else:
                     detail = 'Alignment file {} '.format(file_to_check['@id']) + \
                         'produced by {} '.format(pipeline_object['title']) + \
-                        '( {} ) '.format(pipeline_object['@id']) + \
+                        'pipeline ( {} ) '.format(pipeline_object['@id']) + \
                         'has {} '.format(read_depth) + \
                         'usable fragments. ' + \
                         'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
-                        'experiments targeting {}, investigated as '.format(target_name) + \
-                        'broad histone mark is 20 million usable fragments. ' + \
+                        'experiment targeting {} and investigated as '.format(target_name) + \
+                        'a broad histone mark is 20 million usable fragments. ' + \
                         'The recommended value is > 45 million, but > 40 million is ' + \
                         'acceptable. (See /data-standards/chip-seq/ )'
 
@@ -1693,25 +1693,25 @@ def check_file_chip_seq_read_depth(file_to_check,
             if 'assembly' in file_to_check:
                 detail = 'Alignment file {} '.format(file_to_check['@id']) + \
                     'produced by {} '.format(pipeline_object['title']) + \
-                    '( {} ) using {} assembly '.format(
+                    'pipeline ( {} ) using the {} assembly '.format(
                         pipeline_object['@id'],
                         file_to_check['assembly']) + \
                     'has {} '.format(read_depth) + \
                     'usable fragments. ' + \
                     'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
-                    'experiments targeting {}, investigated as '.format(target_name) + \
-                    'narrow histone mark is 10 million usable fragments. ' + \
+                    'experiment targeting {} and investigated as '.format(target_name) + \
+                    'a narrow histone mark is 10 million usable fragments. ' + \
                     'The recommended value is > 20 million, but > 10 million is ' + \
                     'acceptable. (See /data-standards/chip-seq/ )'               
             else:
                 detail = 'Alignment file {} '.format(file_to_check['@id']) + \
                     'produced by {} '.format(pipeline_object['title']) + \
-                    '( {} ) '.format(pipeline_object['@id']) + \
+                    'pipeline ( {} ) '.format(pipeline_object['@id']) + \
                     'has {} '.format(read_depth) + \
                     'usable fragments. ' + \
                     'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
-                    'experiments targeting {}, investigated as '.format(target_name) + \
-                    'narrow histone mark is 10 million usable fragments. ' + \
+                    'experiment targeting {} and investigated as '.format(target_name) + \
+                    'a narrow histone mark is 10 million usable fragments. ' + \
                     'The recommended value is > 20 million, but > 10 million is ' + \
                     'acceptable. (See /data-standards/chip-seq/ )'
             if read_depth >= 10000000 and read_depth < marks['narrow']:
@@ -1740,25 +1740,25 @@ def check_file_chip_seq_read_depth(file_to_check,
                 if 'assembly' in file_to_check:
                     detail = 'Alignment file {} '.format(file_to_check['@id']) + \
                         'produced by {} '.format(pipeline_object['title']) + \
-                        '( {} ) using {} assembly '.format(
+                        'pipeline ( {} ) using the {} assembly '.format(
                         pipeline_object['@id'],
                         file_to_check['assembly']) + \
                         'has {} '.format(read_depth) + \
                         'usable fragments. ' + \
                         'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
-                        'experiments targeting {}, investigated as '.format(target_name) + \
-                        'transcription factor is 10 million usable fragments. ' + \
+                        'experiment targeting {} and investigated as '.format(target_name) + \
+                        'a transcription factor is 10 million usable fragments. ' + \
                         'The recommended value is > 20 million, but > 10 million is ' + \
                         'acceptable. (See /data-standards/chip-seq/ )'
                 else:
                     detail = 'Alignment file {} '.format(file_to_check['@id']) + \
                         'produced by {} '.format(pipeline_object['title']) + \
-                        '( {} ) '.format(pipeline_object['@id']) + \
+                        'pipeline ( {} ) '.format(pipeline_object['@id']) + \
                         'has {} '.format(read_depth) + \
                         'usable fragments. ' + \
                         'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
-                        'experiments targeting {}, investigated as '.format(target_name) + \
-                        'transcription factor is 10 million usable fragments. ' + \
+                        'experiment targeting {} and investigated as '.format(target_name) + \
+                        'a transcription factor is 10 million usable fragments. ' + \
                         'The recommended value is > 20 million, but > 10 million is ' + \
                         'acceptable. (See /data-standards/chip-seq/ )'
                 if read_depth >= 10000000 and read_depth < marks['narrow']:
@@ -1787,7 +1787,7 @@ def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_thre
         if 'assembly' in file_to_check:
             detail = 'Alignment file {} produced by {} '.format(file_to_check['@id'],
                                                                 pipeline_title) + \
-                     '( {} ) using {} assembly has {} aligned reads. '.format(
+                     'pipeline ( {} ) using the {} assembly has {} aligned reads. '.format(
                          pipeline['@id'], file_to_check['assembly'], read_depth) + \
                      'The minimum ENCODE standard for each replicate in a ' + \
                      '{} assay is {} aligned reads. '.format(assay_term_name, lower_threshold) + \
@@ -1796,7 +1796,7 @@ def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_thre
         else:
             detail = 'Alignment file {} produced by {} '.format(file_to_check['@id'],
                                                                 pipeline_title) + \
-                     '( {} ) has {} aligned reads. '.format(pipeline['@id'], read_depth) + \
+                     'pipeline ( {} ) has {} aligned reads. '.format(pipeline['@id'], read_depth) + \
                      'The minimum ENCODE standard for each replicate in a ' + \
                      '{} assay is {} aligned reads. '.format(assay_term_name, lower_threshold) + \
                      'The recommended value is > {}. '.format(upper_threshold) + \
@@ -1813,7 +1813,7 @@ def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_thre
         if 'assembly' in file_to_check:
             detail = 'Alignment file {} produced by {} '.format(file_to_check['@id'],
                                                                 pipeline_title) + \
-                     '( {} ) using {} assembly has {} aligned reads. '.format(
+                     'pipeline ( {} ) using the {} assembly has {} aligned reads. '.format(
                          pipeline['@id'], file_to_check['assembly'], read_depth) + \
                      'The minimum ENCODE standard for each replicate in a ' + \
                      '{} assay is {} aligned reads. '.format(assay_term_name, lower_threshold) + \
@@ -1821,7 +1821,7 @@ def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_thre
         else:
             detail = 'Alignment file {} produced by {} '.format(file_to_check['@id'],
                                                                 pipeline_title) + \
-                     '( {} ) has {} aligned reads. '.format(pipeline['@id'], read_depth) + \
+                     'pipeline ( {} ) has {} aligned reads. '.format(pipeline['@id'], read_depth) + \
                      'The minimum ENCODE standard for each replicate in a ' + \
                      '{} assay is {} aligned reads. '.format(assay_term_name, lower_threshold) + \
                      '(See {} )'.format(standards_link)
