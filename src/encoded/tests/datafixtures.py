@@ -400,9 +400,9 @@ def treatment(testapp, organism):
     item = {
         'treatment_term_name': 'ethanol',
         'treatment_type': 'chemical'
-       
     }
     return testapp.post_json('/treatment', item).json['@graph'][0]
+
 
 @pytest.fixture
 def attachment():
