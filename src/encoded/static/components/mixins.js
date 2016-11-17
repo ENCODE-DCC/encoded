@@ -283,7 +283,6 @@ module.exports.Auth0 = {
     },
 
     triggerLogin: function (event) {
-        var $script = require('scriptjs');
         if (this.state.session && !this.state.session._csrft_) {
             this.fetch('/session');
         }
