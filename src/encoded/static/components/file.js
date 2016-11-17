@@ -266,7 +266,7 @@ const SequenceFileInfo = React.createClass({
 
                         {file.read_length ?
                             <div data-test="readlength">
-                                <dt>Flowcell</dt>
+                                <dt>Mapped read length</dt>
                                 <dd>{file.read_length}</dd>
                             </div>
                         : null}

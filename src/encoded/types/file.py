@@ -101,6 +101,9 @@ class File(Item):
     }
 
     embedded = [
+        'award',
+        'award.pi',
+        'award.pi.lab',
         'replicate',
         'replicate.experiment',
         'replicate.experiment.lab',
