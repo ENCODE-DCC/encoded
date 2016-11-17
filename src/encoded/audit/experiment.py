@@ -754,7 +754,8 @@ def check_experiment_rna_seq_standards(value,
 
     if pipeline_title in ['RAMPAGE (paired-end, stranded)']:
         upper_limit = 20000000
-        lower_limit = 10000000
+        medium_limit = 10000000
+        lower_limit = 1000000
         for failure in check_experiment_cage_rampage_standards(value,
                                                                fastq_files,
                                                                alignment_files,
@@ -763,13 +764,15 @@ def check_experiment_rna_seq_standards(value,
                                                                desired_assembly,
                                                                desired_annotation,
                                                                upper_limit,
+                                                               medium_limit,
                                                                lower_limit,
                                                                standards_version,
                                                                standards_links[pipeline_title]):
             yield failure
     elif pipeline_title in ['Small RNA-seq single-end pipeline']:
         upper_limit = 30000000
-        lower_limit = 20000000
+        medium_limit = 20000000
+        lower_limit = 1000000
         for failure in check_experiment_small_rna_standards(value,
                                                             fastq_files,
                                                             alignment_files,
@@ -778,6 +781,7 @@ def check_experiment_rna_seq_standards(value,
                                                             desired_assembly,
                                                             desired_annotation,
                                                             upper_limit,
+                                                            medium_limit,
                                                             lower_limit,
                                                             standards_links[pipeline_title]):
             yield failure
@@ -987,14 +991,14 @@ def check_experiment_long_rna_standards(experiment,
                 if experiment['assay_term_name'] in ['shRNA knockdown followed by RNA-seq',
                                                      'siRNA knockdown followed by RNA-seq',
                                                      'CRISPR genome editing followed by RNA-seq']:
-                    for failure in check_file_read_depth(f, read_depth, 10000000, 0,
+                    for failure in check_file_read_depth(f, read_depth, 10000000, 1000000, 1000000,
                                                          experiment['assay_term_name'],
                                                          pipeline_title,
                                                          pipelines[0],
                                                          standards_link):
                         yield failure
                 elif experiment['assay_term_name'] in ['single cell isolation followed by RNA-seq']:
-                    for failure in check_file_read_depth(f, read_depth, 5000000, 0,
+                    for failure in check_file_read_depth(f, read_depth, 5000000, 500000, 500000,
                                                          experiment['assay_term_name'],
                                                          pipeline_title,
                                                          pipelines[0],
@@ -1004,6 +1008,7 @@ def check_experiment_long_rna_standards(experiment,
                     for failure in check_file_read_depth(f, read_depth,
                                                          upper_limit_read_depth,
                                                          lower_limit_read_depth,
+                                                         1000000,
                                                          experiment['assay_term_name'],
                                                          pipeline_title,
                                                          pipelines[0],
@@ -1037,6 +1042,7 @@ def check_experiment_small_rna_standards(experiment,
                                          desired_assembly,
                                          desired_annotation,
                                          upper_limit_read_depth,
+                                         medium_limit_read_depth,
                                          lower_limit_read_depth,
                                          standards_link):
     for f in fastq_files:
@@ -1055,6 +1061,7 @@ def check_experiment_small_rna_standards(experiment,
 
                 for failure in check_file_read_depth(f, read_depth,
                                                      upper_limit_read_depth,
+                                                     medium_limit_read_depth,
                                                      lower_limit_read_depth,
                                                      experiment['assay_term_name'],
                                                      pipeline_title,
@@ -1084,6 +1091,7 @@ def check_experiment_cage_rampage_standards(experiment,
                                             desired_assembly,
                                             desired_annotation,
                                             upper_limit_read_depth,
+                                            middle_limit_read_depth,
                                             lower_limit_read_depth,
                                             standards_version,
                                             standards_link):
@@ -1107,7 +1115,8 @@ def check_experiment_cage_rampage_standards(experiment,
                                                                 experiment['assay_term_name'])
                 for failure in check_file_read_depth(f, read_depth,
                                                      upper_limit_read_depth,
-                                                     lower_limit_read_depth,
+                                                     middle_limit_read_depth,
+                                                     lower_limit_read_depth,                            
                                                      experiment['assay_term_name'],
                                                      pipeline_title,
                                                      pipelines[0],
@@ -1771,7 +1780,11 @@ def check_file_chip_seq_read_depth(file_to_check,
                                        detail, level='ERROR')
 
 
-def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_threshold,
+def check_file_read_depth(file_to_check,
+                          read_depth,
+                          upper_threshold,
+                          middle_threshold,
+                          lower_threshold,
                           assay_term_name,
                           pipeline_title,
                           pipeline,
@@ -1801,12 +1814,15 @@ def check_file_read_depth(file_to_check, read_depth, upper_threshold, lower_thre
                      '{} assay is {} aligned reads. '.format(assay_term_name, lower_threshold) + \
                      'The recommended value is > {}. '.format(upper_threshold) + \
                      '(See {} )'.format(standards_link)
-        if read_depth >= lower_threshold and read_depth < upper_threshold:
+        if read_depth >= middle_threshold and read_depth < upper_threshold:
             yield AuditFailure('low read depth', detail, level='WARNING')
             return
-        elif read_depth < lower_threshold:
+        elif read_depth >= lower_threshold and read_depth < middle_threshold:
             yield AuditFailure('insufficient read depth', detail,
                                level='NOT_COMPLIANT')
+        elif read_depth < lower_threshold:
+            yield AuditFailure('extremely low read depth', detail,
+                               level='ERROR')
             return
 
     elif read_depth is not False and read_depth < upper_threshold:
