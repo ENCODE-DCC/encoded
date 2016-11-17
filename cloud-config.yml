@@ -272,6 +272,7 @@ write_files:
     # http://www.postgresql.org/message-id/CAOycyLTm6X3mVLz+sLCex+W==WSMgu9giteV7efPoPXYDhPtzQ@mail.gmail.com
     checkpoint_timeout = 1h
     listen_addresses = '0.0.0.0'
+    max_connections = 500
     hba_file = '/etc/postgresql/9.3/main/custom_pg_hba.conf'
 
 - path: /etc/postgresql/9.3/main/demo.conf

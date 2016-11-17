@@ -6,6 +6,7 @@ import sys
 import datetime
 import base64
 import json
+import random
 
 
 BDM = [
@@ -218,6 +219,20 @@ def tag_spot_instance(instance, name, branch, commit, username, elasticsearch, c
     instance_id = client.create_tags(Resources=[get_instance_id(instance, client)], Tags=tags)
     return instance_id
 
+def get_master_queue_address(branch, session):
+    client = session.client('ec2')
+    res = client.describe_instances(Filters=[{'Name':'tag:branch', 'Values':[branch]}])
+    public_dns_name = None
+    for reservation in res['Reservations']:
+        if reservation['Instances'][0]['State']['Name'] != 'running':
+            continue
+        if reservation['Instances'][0]['SecurityGroups'][0]['GroupName'] == 'ssh-http-https':
+            public_dns_name = reservation['Instances'][0]['PublicDnsName']
+            break
+    return public_dns_name
+
+
+
 def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, spot_price, cluster_size, cluster_name, check_price,
         branch=None, name=None, role='demo', profile_name=None, teardown_cluster=None, supercharge=None):
     if branch is None:
@@ -249,6 +264,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         print('An instance already exists with name: %s' % name)
         if not supercharge:
             sys.exit(1)
+            
 
 
     if not elasticsearch == 'yes':
@@ -267,11 +283,14 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         }
         if cluster_name:
             data_insert['CLUSTER_NAME'] = cluster_name
+        count = 1
         if supercharge:
+            count = int(supercharge)
             security_groups = ['encoded-workers']
-            es_server = "{}.instance.encodedcc.org:9200".format(name)
-            pg_server = "postgresql://postgres@{}.instance.encodedcc.org:5432/encoded".format(name)
-            queue_server = "{}.instance.encodedcc.org".format(name)
+            master_queue_address = get_master_queue_address(branch, session)
+            es_server = "{}:9200".format(master_queue_address)
+            pg_server = "postgresql://postgres@{}:5432/encoded".format(master_queue_address)
+            queue_server = "{}".format(master_queue_address)
             data_insert = {
                 'COMMIT': commit,
                 'ROLE': role,
@@ -284,7 +303,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
             security_groups = ['ssh-http-https']
             user_data = user_data % data_insert
         iam_role = 'encoded-instance'
-        count = 1
+        
     else:
         if not cluster_name:
             print("Cluster must have a name")
@@ -326,7 +345,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         else:
             tmp_name = name
             if supercharge:
-                tmp_name = 'workers-' + name
+                tmp_name = 'workers-{}-'.format(random.randint(0,1000)) + name
 
         if not spot_instance:
             print('%s.%s.encodedcc.org' % (instance.id, domain))  # Instance:i-34edd56f
