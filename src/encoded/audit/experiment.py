@@ -1798,8 +1798,7 @@ def check_file_read_depth(file_to_check,
         yield AuditFailure('missing read depth', detail, level='INTERNAL_ACTION')
         return
 
-    if read_depth is not False and assay_term_name in ['RAMPAGE', 'CAGE',
-                                                       'RNA-seq']:
+    if read_depth is not False:
         if 'assembly' in file_to_check:
             detail = 'Alignment file {} produced by {} '.format(file_to_check['@id'],
                                                                 pipeline_title) + \
@@ -1827,25 +1826,6 @@ def check_file_read_depth(file_to_check,
             yield AuditFailure('extremely low read depth', detail,
                                level='ERROR')
             return
-
-    elif read_depth is not False and read_depth < upper_threshold:
-        if 'assembly' in file_to_check:
-            detail = 'Alignment file {} produced by {} '.format(file_to_check['@id'],
-                                                                pipeline_title) + \
-                     'pipeline ( {} ) using the {} assembly has {} aligned reads. '.format(
-                         pipeline['@id'], file_to_check['assembly'], read_depth) + \
-                     'The minimum ENCODE standard for each replicate in a ' + \
-                     '{} assay is {} aligned reads. '.format(assay_term_name, lower_threshold) + \
-                     '(See {} )'.format(standards_link)
-        else:
-            detail = 'Alignment file {} produced by {} '.format(file_to_check['@id'],
-                                                                pipeline_title) + \
-                     'pipeline ( {} ) has {} aligned reads. '.format(pipeline['@id'], read_depth) + \
-                     'The minimum ENCODE standard for each replicate in a ' + \
-                     '{} assay is {} aligned reads. '.format(assay_term_name, lower_threshold) + \
-                     '(See {} )'.format(standards_link)
-        yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
-        return
 
 
 def check_file_platform(file_to_check, excluded_platforms):
