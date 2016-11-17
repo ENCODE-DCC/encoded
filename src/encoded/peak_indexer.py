@@ -329,7 +329,7 @@ def index_file(request):
                     if 'error' in item:
                         log.error('Indexing error for {}, error message: {}'.format(item['uuid'], item['error']))
                         item['error'] = "Error occured during indexing, check the logs"
-            result['errors'] = error_messages
+                result['errors'] = error_messages
 
     return result
 
