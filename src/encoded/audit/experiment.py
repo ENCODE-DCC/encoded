@@ -1244,14 +1244,14 @@ def check_experiment_ERCC_spikeins(experiment, pipeline):
                 detail = 'Library {} '.format(lib['@id']) + \
                          'in experiment {} '.format(experiment['@id']) + \
                          'that was processed by {} pipeline '.format(pipeline) + \
-                         'requires standard ERCC spike-in to be used in it`s preparation.'
+                         'requires standard ERCC spike-in to be used in its preparation.'
                 yield AuditFailure('missing spikeins',
                                    detail, level='WARNING')
             else:
                 detail = 'Library {} '.format(lib['@id']) + \
                          'in experiment {} '.format(experiment['@id']) + \
                          'that was processed by {} pipeline '.format(pipeline) + \
-                         'requires ERCC spike-in to be used in it`s preparation.'
+                         'requires ERCC spike-in to be used in its preparation.'
                 yield AuditFailure('missing spikeins',
                                    detail, level='NOT_COMPLIANT')
 
