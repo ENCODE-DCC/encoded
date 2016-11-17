@@ -994,14 +994,14 @@ def check_experiment_long_rna_standards(experiment,
                 if experiment['assay_term_name'] in ['shRNA knockdown followed by RNA-seq',
                                                      'siRNA knockdown followed by RNA-seq',
                                                      'CRISPR genome editing followed by RNA-seq']:
-                    for failure in check_file_read_depth(f, read_depth, 10000000, 1000000, 1000000,
+                    for failure in check_file_read_depth(f, read_depth, 10000000, 10000000, 1000000,
                                                          experiment['assay_term_name'],
                                                          pipeline_title,
                                                          pipelines[0],
                                                          standards_link):
                         yield failure
                 elif experiment['assay_term_name'] in ['single cell isolation followed by RNA-seq']:
-                    for failure in check_file_read_depth(f, read_depth, 5000000, 500000, 500000,
+                    for failure in check_file_read_depth(f, read_depth, 5000000, 5000000, 500000,
                                                          experiment['assay_term_name'],
                                                          pipeline_title,
                                                          pipelines[0],
@@ -1806,7 +1806,7 @@ def check_file_read_depth(file_to_check,
                      'pipeline ( {} ) using the {} assembly has {} aligned reads. '.format(
                          pipeline['@id'], file_to_check['assembly'], read_depth) + \
                      'The minimum ENCODE standard for each replicate in a ' + \
-                     '{} assay is {} aligned reads. '.format(assay_term_name, lower_threshold) + \
+                     '{} assay is {} aligned reads. '.format(assay_term_name, middle_threshold) + \
                      'The recommended value is > {}. '.format(upper_threshold) + \
                      '(See {} )'.format(standards_link)
         else:
@@ -1814,7 +1814,7 @@ def check_file_read_depth(file_to_check,
                                                                 pipeline_title) + \
                      'pipeline ( {} ) has {} aligned reads. '.format(pipeline['@id'], read_depth) + \
                      'The minimum ENCODE standard for each replicate in a ' + \
-                     '{} assay is {} aligned reads. '.format(assay_term_name, lower_threshold) + \
+                     '{} assay is {} aligned reads. '.format(assay_term_name, middle_threshold) + \
                      'The recommended value is > {}. '.format(upper_threshold) + \
                      '(See {} )'.format(standards_link)
         if read_depth >= middle_threshold and read_depth < upper_threshold:
