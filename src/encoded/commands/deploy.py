@@ -283,7 +283,9 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         }
         if cluster_name:
             data_insert['CLUSTER_NAME'] = cluster_name
+        count = 1
         if supercharge:
+            count = int(supercharge)
             security_groups = ['encoded-workers']
             master_queue_address = get_master_queue_address(branch, session)
             es_server = "{}:9200".format(master_queue_address)
@@ -301,7 +303,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
             security_groups = ['ssh-http-https']
             user_data = user_data % data_insert
         iam_role = 'encoded-instance'
-        count = 1
+        
     else:
         if not cluster_name:
             print("Cluster must have a name")
