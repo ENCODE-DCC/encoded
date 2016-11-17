@@ -940,7 +940,7 @@
         "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
         "flowcell_details": [],
-        "alternate_accessions": [],
+        "alternate_accessions": ["ENCFF020HBG", "ENCFF021HBG"],
         "file_size": 5836340790,
         "lab":"j-michael-cherry",
         "output_type": "female genome index",
@@ -948,7 +948,7 @@
         "derived_from": ["ENCFF019HGN"]
     },
     {
-        "status": "released",
+        "status": "replaced",
         "submitted_file_name": "female.hg19.bisulfite.tgz",
         "uuid": "b9cb0beb-2568-4a5c-a89b-ea4728ce5dbb",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -966,7 +966,7 @@
         "derived_from": ["ENCFF019HGN"]
     },
     {
-        "status": "released",
+        "status": "replaced",
         "submitted_file_name": "female.hg19.bisulfite.tgz",
         "uuid": "b15f5034-2a8f-4f92-aa0f-0fdb524aa450",
         "submitted_by": "facilisi.tristique@potenti.vivamus",

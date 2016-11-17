@@ -65,29 +65,15 @@ const File = React.createClass({
                                         <dd><a href={context.dataset} title={`View page for dataset ${datasetAccession}`}>{datasetAccession}</a></dd>
                                     </div>
 
-                                    {context.replicate ?
-                                        <div data-test="bioreplicate">
-                                            <dt>Biological replicate(s)</dt>
-                                            <dd>{`[${context.replicate.biological_replicate_number}]`}</dd>
-                                        </div>
-                                    : (context.biological_replicates && context.biological_replicates.length ?
-                                        <div data-test="bioreplicate">
-                                            <dt>Biological replicate(s)</dt>
-                                            <dd>{`[${context.biological_replicates.join(', ')}]`}</dd>
-                                        </div>
-                                    : null)}
+                                    <div data-test="bioreplicate">
+                                        <dt>Biological replicate(s)</dt>
+                                        <dd>{`[${context.biological_replicates && context.biological_replicates.length ? context.biological_replicates.join(', ') : '-'}]`}</dd>
+                                    </div>
 
-                                    {context.replicate ?
-                                        <div data-test="techreplicate">
-                                            <dt>Technical replicate</dt>
-                                            <dd>{context.replicate.technical_replicate_number}</dd>
-                                        </div>
-                                    : (context.biological_replicates && context.biological_replicates.length ?
-                                        <div data-test="techreplicate">
-                                            <dt>Technical replicate</dt>
-                                            <dd>{'-'}</dd>
-                                        </div>
-                                    : null)}
+                                    <div data-test="techreplicate">
+                                        <dt>Technical replicate(s)</dt>
+                                        <dd>{`[${context.technical_replicates && context.technical_replicates.length ? context.technical_replicates.join(', ') : '-'}]`}</dd>
+                                    </div>
 
                                     {pipelines.length ?
                                         <div data-test="pipelines">
