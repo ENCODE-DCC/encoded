@@ -1606,7 +1606,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                         'fragments is > 20 million. (See /data-standards/chip-seq/ )'
                 if read_depth >= 10000000:
                     yield AuditFailure('low read depth', detail, level='WARNING')
-                elif read_depth >= 5000000 and read_depth < 10000000:
+                elif read_depth >= 3000000 and read_depth < 10000000:
                     yield AuditFailure('insufficient read depth',
                                        detail, level='NOT_COMPLIANT')
                 else:
@@ -1763,10 +1763,10 @@ def check_file_chip_seq_read_depth(file_to_check,
                         'acceptable. (See /data-standards/chip-seq/ )'
                 if read_depth >= 10000000 and read_depth < marks['narrow']:
                     yield AuditFailure('low read depth', detail, level='WARNING')
-                elif read_depth < 10000000 and read_depth >= 5000000:
+                elif read_depth < 10000000 and read_depth >= 3000000:
                     yield AuditFailure('insufficient read depth',
                                        detail, level='NOT_COMPLIANT')
-                elif read_depth < 5000000:
+                elif read_depth < 3000000:
                     yield AuditFailure('extremely low read depth',
                                        detail, level='ERROR')
 
