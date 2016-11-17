@@ -789,7 +789,8 @@ def check_experiment_rna_seq_standards(value,
     elif pipeline_title in ['RNA-seq of long RNAs (paired-end, stranded)',
                             'RNA-seq of long RNAs (single-end, unstranded)']:
         upper_limit = 30000000
-        lower_limit = 20000000
+        medium_limit = 20000000
+        lower_limit = 1000000
         for failure in check_experiment_long_rna_standards(value,
                                                            fastq_files,
                                                            alignment_files,
@@ -798,6 +799,7 @@ def check_experiment_rna_seq_standards(value,
                                                            desired_assembly,
                                                            desired_annotation,
                                                            upper_limit,
+                                                           medium_limit,
                                                            lower_limit,
                                                            standards_links[pipeline_title]):
             yield failure
@@ -972,6 +974,7 @@ def check_experiment_long_rna_standards(experiment,
                                         desired_assembly,
                                         desired_annotation,
                                         upper_limit_read_depth,
+                                        medium_limit_read_depth,
                                         lower_limit_read_depth,
                                         standards_link):
 
@@ -1007,8 +1010,8 @@ def check_experiment_long_rna_standards(experiment,
                 else:
                     for failure in check_file_read_depth(f, read_depth,
                                                          upper_limit_read_depth,
+                                                         medium_limit_read_depth,
                                                          lower_limit_read_depth,
-                                                         1000000,
                                                          experiment['assay_term_name'],
                                                          pipeline_title,
                                                          pipelines[0],
