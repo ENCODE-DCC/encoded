@@ -6,6 +6,7 @@ import sys
 import datetime
 import base64
 import json
+import random
 
 
 BDM = [
@@ -225,7 +226,7 @@ def get_master_queue_address(branch, session):
     for reservation in res['Reservations']:
         if reservation['Instances'][0]['State']['Name'] != 'running':
             continue
-        if reservation['Instances'][0]['SecurityGroups'][0]['GroupName'] != 'encoded-workers':
+        if reservation['Instances'][0]['SecurityGroups'][0]['GroupName'] == 'ssh-http-https':
             public_dns_name = reservation['Instances'][0]['PublicDnsName']
             break
     return public_dns_name
@@ -263,8 +264,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         print('An instance already exists with name: %s' % name)
         if not supercharge:
             sys.exit(1)
-        else:
-            master_queue_address = get_master_queue_address(branch, session)
+            
 
 
     if not elasticsearch == 'yes':
@@ -285,6 +285,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
             data_insert['CLUSTER_NAME'] = cluster_name
         if supercharge:
             security_groups = ['encoded-workers']
+            master_queue_address = get_master_queue_address(branch, session)
             es_server = "{}:9200".format(master_queue_address)
             pg_server = "postgresql://postgres@{}:5432/encoded".format(master_queue_address)
             queue_server = "{}".format(master_queue_address)
@@ -342,7 +343,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         else:
             tmp_name = name
             if supercharge:
-                tmp_name = 'workers-' + name
+                tmp_name = 'workers-{}-'.format(random.randint(0,1000)) + name
 
         if not spot_instance:
             print('%s.%s.encodedcc.org' % (instance.id, domain))  # Instance:i-34edd56f
