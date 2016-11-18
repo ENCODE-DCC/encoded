@@ -45,8 +45,9 @@ const dummyFiles = [
 const GenomeBrowser = React.createClass({
     propTypes: {
         files: React.PropTypes.array.isRequired, // Array of files to represent
-        assembly: React.PropTypes.array.isRequired, // Assembly to use with browser
+        assembly: React.PropTypes.string.isRequired, // Assembly to use with browser
         region: React.PropTypes.string, // Region to use with browser
+        limitFiles: React.PropTypes.bool, // True to limit # files to maxFilesBrowsed
     },
 
     contextTypes: {
@@ -55,11 +56,16 @@ const GenomeBrowser = React.createClass({
     },
 
     componentDidMount: function () {
-        const { assembly, region } = this.props;
+        const { assembly, region, limitFiles } = this.props;
+
+        // Extract only bigWig and bigBed files from the list:
+        let files = this.props.files.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
 
         // Make some fake file objects from "test" just to give the genome browser something to
         // chew on if we're running locally.
-        const files = !this.context.localInstance ? this.props.files.slice(0, maxFilesBrowsed - 1) : dummyFiles;
+        files = !this.context.localInstance ?
+            (limitFiles ? files.slice(0, maxFilesBrowsed - 1) : files)
+        : dummyFiles;
 
         const browserCfg = {
             chr: '22',
@@ -76,7 +82,7 @@ const GenomeBrowser = React.createClass({
             sources: [],
         };
 
-        if (assembly[0] === 'hg19') {
+        if (assembly === 'hg19') {
             if (this.props.region) {
                 const reg = region.split(':');
                 browserCfg.chr = reg[0].substring(3, reg[0].length);
@@ -123,7 +129,7 @@ const GenomeBrowser = React.createClass({
                     forceReduction: -1,
                 },
             ];
-        } else if (assembly[0] === 'mm10') {
+        } else if (assembly === 'mm10') {
             browserCfg.chr = '19';
             browserCfg.viewStart = 30000000;
             browserCfg.viewEnd = 30100000;
@@ -152,7 +158,7 @@ const GenomeBrowser = React.createClass({
                     stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/bb-repeats2.xml',
                 },
             ];
-        } else if (assembly[0] === 'mm9') {
+        } else if (assembly === 'mm9') {
             browserCfg.chr = '19';
             browserCfg.viewStart = 30000000;
             browserCfg.viewEnd = 30030000;
@@ -167,7 +173,7 @@ const GenomeBrowser = React.createClass({
                     provides_entrypoints: true,
                 },
             ];
-        } else if (assembly[0] === 'dm3') {
+        } else if (assembly === 'dm3') {
             browserCfg.chr = '3L';
             browserCfg.viewStart = 15940000;
             browserCfg.viewEnd = 15985000;

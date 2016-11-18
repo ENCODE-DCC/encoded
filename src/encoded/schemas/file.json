@@ -33,6 +33,9 @@
         "file_format_type": {
             "title": "Specific file format type"
         },
+        "assembly": {
+            "title": "Mapping assembly"
+        },
         "lab.title": {
             "title": "Lab"
         }

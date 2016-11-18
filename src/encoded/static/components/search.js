@@ -972,31 +972,14 @@ const BatchDownload = search.BatchDownload = React.createClass({
 });
 
 
-// Display a local genome browser in the ResultTable where search results would normally go. This
-// only gets displayed if the query string contains only one type and it's "File."
-const ResultBrowser = React.createClass({
-    propTypes: {
-        files: React.PropTypes.array, // Array of files whose browser we're rendering
-        assembly: React.PropTypes.array, // Filter `files` by this assembly
-    },
-
-    render: function () {
-        return (
-            <div>
-                <GenomeBrowser files={this.props.files} assembly={this.props.assembly} />
-            </div>
-        );
-    },
-});
-
-
 const ResultTable = search.ResultTable = React.createClass({
     propTypes: {
         context: React.PropTypes.object,
         actions: React.PropTypes.string,
         restrictions: React.PropTypes.object,
-        onChange: React.PropTypes.func,
+        assemblies: React.PropTypes.array, // List of assemblies of all 'File' objects in search results
         searchBase: React.PropTypes.string,
+        onChange: React.PropTypes.func,
     },
 
     childContextTypes: { actions: React.PropTypes.array },
@@ -1005,6 +988,12 @@ const ResultTable = search.ResultTable = React.createClass({
         return {
             restrictions: {},
             searchBase: '',
+        };
+    },
+
+    getInitialState: function () {
+        return {
+            browserAssembly: this.props.assemblies[0], // Currently selected assembly for the browser
         };
     },
 
@@ -1023,15 +1012,17 @@ const ResultTable = search.ResultTable = React.createClass({
 
     render: function () {
         const batchHubLimit = 100;
-        const context = this.props.context;
+        const { context, searchBase, assemblies } = this.props;
         const results = context['@graph'];
         const total = context.total;
         const batchHubDisabled = total > batchHubLimit;
         const columns = context.columns;
         const filters = context.filters;
         const label = 'results';
-        const searchBase = this.props.searchBase;
         const trimmedSearchBase = searchBase.replace(/[\?|&]limit=all/, '');
+        let browseAllFiles = true; // True to pass all files to browser
+        let browserAssembly = ''; // Assembly to pass to ResultsBrowser component
+        let assemblyChooser;
 
         const facets = context.facets.map((facet) => {
             if (this.props.restrictions[facet.field] !== undefined) {
@@ -1072,7 +1063,6 @@ const ResultTable = search.ResultTable = React.createClass({
         // Check whether the search query qualifies for a genome browser display. Start by counting
         // the number of "type" filters exist.
         let typeFilter;
-        let assemblies = [];
         const counter = filters.reduce((prev, curr) => {
             if (curr.field === 'type') {
                 typeFilter = curr;
@@ -1080,20 +1070,26 @@ const ResultTable = search.ResultTable = React.createClass({
             }
             return prev;
         }, 0);
+
+        // If we have only one "type" term in the query string and it's for File, then we can
+        // display the List/Browser tabs. Otherwise we just get the list.
         const browserAvail = counter === 1 && typeFilter && typeFilter.term === 'File';
-
-        // If we have only one "type" term in the query string, see if it's for File
         if (browserAvail) {
-            // Only one "type" term in the query string, and it's for "File". Make an array of
-            // assemblies from the files with empty assemblies filtered out.
-            const unsortedAssemblies = _.compact(results.map(file => (file.assembly ? file.assembly : '')));
+            // Determine if we should limit the number of files to browse or not. If 'dataset' is
+            // in the query string, we render all the file tracks because the dataset has only a
+            // limited set of files. Otherwise, we'll let the genome browser component itself limit
+            // the file count.
+            browseAllFiles = filters.find(filter => filter.field === 'dataset');
 
-            // Now find how many times each assembly happened in the array. Results in an object
-            // keyed by assembly with a count of the number of times it occurred as its value.
-            const occurrences = _.countBy(unsortedAssemblies, _.identity);
-
-            // Make an array of assemblies sorted by their occurrence count.
-            assemblies = _(Object.keys(occurrences)).sortBy(assembly => -occurrences[assembly]);
+            // Now determine if we have a mix of assemblies in the files, or just one. If we have
+            // a mix, we need to render a drop-down.
+            if (assemblies.length === 1) {
+                // Only one assembly in all the files. No menu needed.
+                browserAssembly = assemblies[0];
+            } else {
+                browserAssembly = this.state.browserAssembly;
+                assemblyChooser = <AssemblyChooser assemblies={assemblies} assemblyChange={this.assemblyChange} />;
+            }
         }
 
         return (
@@ -1158,13 +1154,18 @@ const ResultTable = search.ResultTable = React.createClass({
                                     : null}
                                 </div>
                                 <hr />
-                                {browserAvail && assemblies.length ?
-                                    <TabPanel tabs={{ listpane: 'List', browserpane: 'Browser' }} tabFlange>
+                                {browserAvail ?
+                                    <TabPanel
+                                        tabs={{ listpane: 'List', browserpane: 'Browser' }}
+                                        decoration={assemblyChooser}
+                                        decorationClasses=""
+                                        tabFlange
+                                    >
                                         <TabPanelPane key="listpane">
                                             <ResultTableList results={results} columns={columns} tabbed />
                                         </TabPanelPane>
                                         <TabPanelPane key="browserpane">
-                                            <ResultBrowser files={results} assembly={assemblies} />
+                                            <ResultBrowser files={results} assembly={browserAssembly} limitFiles={!browseAllFiles} />
                                         </TabPanelPane>
                                     </TabPanel>
                                 :
@@ -1180,6 +1181,7 @@ const ResultTable = search.ResultTable = React.createClass({
         );
     },
 });
+
 
 const ResultTableList = React.createClass({
     propTypes: {
@@ -1200,6 +1202,48 @@ const ResultTableList = React.createClass({
     },
 });
 
+
+// Display a local genome browser in the ResultTable where search results would normally go. This
+// only gets displayed if the query string contains only one type and it's "File."
+const ResultBrowser = React.createClass({
+    propTypes: {
+        files: React.PropTypes.array, // Array of files whose browser we're rendering
+        assembly: React.PropTypes.string, // Filter `files` by this assembly
+        limitFiles: React.PropTypes.bool, // True to limit browsing to 20 files
+    },
+
+    render: function () {
+        return (
+            <div>
+                <GenomeBrowser files={this.props.files} assembly={this.props.assembly} limitFiles={this.props.limitFiles} />
+            </div>
+        );
+    },
+});
+
+
+// Display a dropdown menu of the given assemblies.
+const AssemblyChooser = React.createClass({
+    propTypes: {
+        assemblies: React.PropTypes.array, // Array of assemblies to include in the dropdown
+        currentAssembly: React.PropTypes.string, // Currently selected assembly
+        assemblyChange: React.PropTypes.func, // Function to call when the user chooses a new assembly
+    },
+
+    render: function () {
+        const { assemblies, currentAssembly, assemblyChange } = this.props;
+
+        return (
+            <select className="form-control" value={currentAssembly} onChange={assemblyChange}>
+                {assemblies.map((assembly, i) =>
+                    <option key={i} value={assembly}>{assembly}</option>
+                )}
+            </select>
+        );
+    },
+});
+
+
 const Search = search.Search = React.createClass({
     propTypes: {
         context: React.PropTypes.object,
@@ -1215,11 +1259,23 @@ const Search = search.Search = React.createClass({
         const notification = context.notification;
         const searchBase = url.parse(this.context.location_href).search || '';
         const facetdisplay = context.facets && context.facets.some(facet => facet.total > 0);
+        let assemblies = [];
+
+        // Make an array of all assemblies found in all files in the search results.
+        const results = this.props.context['@graph'];
+        const files = results.length ? results.filter(result => result['@type'][0] === 'File') : [];
+        if (files.length) {
+            assemblies = files.reduce((assembliesAcc, file) => {
+                console.log('RES: %o:%o', assembliesAcc, file);
+                return ((file.assembly && assembliesAcc.indexOf(file.assembly) === -1) ? assembliesAcc : assembliesAcc.push(file.assembly));
+            }, []);
+        }
+
         return (
             <div>
                 {facetdisplay ?
                     <div className="panel data-display main-panel">
-                        <ResultTable {...this.props} key={undefined} searchBase={searchBase} onChange={this.context.navigate} />
+                        <ResultTable {...this.props} key={undefined} searchBase={searchBase} assemblies={assemblies} onChange={this.context.navigate} />
                     </div>
                 : <h4>{notification}</h4>}
             </div>

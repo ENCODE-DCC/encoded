@@ -116,6 +116,8 @@ const TabPanel = React.createClass({
         moreComponents: React.PropTypes.object, // Other components to render in the tab bar
         moreComponentsClasses: React.PropTypes.string, // Classes to add to moreComponents wrapper <div>
         tabFlange: React.PropTypes.bool, // True to show a small full-width strip under active tab
+        decoration: React.PropTypes.object, // Component to render in the tab bar
+        decorationClasses: React.PropTypes.string, // CSS classes to wrap decoration in
         children: React.PropTypes.node,
     },
 
@@ -131,7 +133,7 @@ const TabPanel = React.createClass({
     },
 
     render: function () {
-        const { tabs, addClasses, moreComponents, moreComponentsClasses, tabFlange } = this.props;
+        const { tabs, addClasses, moreComponents, moreComponentsClasses, tabFlange, decoration, decorationClasses } = this.props;
         let children = [];
         let firstPaneIndex = -1; // React.Children.map index of first <TabPanelPane> component
 
@@ -169,7 +171,8 @@ const TabPanel = React.createClass({
                         })}
                         {moreComponents ? <div className={moreComponentsClasses}>{moreComponents}</div> : null}
                     </ul>
-                    { tabFlange ? <div className="tab-flange" /> : null}
+                    {decoration ? <div className={decorationClasses}>{decoration}</div> : null}
+                    {tabFlange ? <div className="tab-flange" /> : null}
                 </div>
                 <div className="tab-content">
                     {children}
