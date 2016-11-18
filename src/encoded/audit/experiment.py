@@ -3361,26 +3361,36 @@ def audit_experiment_antibody_characterized(value, system):
         # and if has not been characterized to standards. Otherwise, it doesn't apply and we shouldn't
         # raise a stink
 
+        characterized_in_organism = False
         if 'histone modification' in ab_targets_investigated_as:
             for lot_review in antibody['lot_reviews']:
-                if (lot_review['status'] == 'awaiting characterization'):
+                # Exclude awaiting characterization from this list since no
+                # characterizations submitted would also mean the ab has not
+                # been characterized to standards
+                if lot_review['status'] in ['not characterized to standards',
+                                            'pending dcc review',
+                                            'not pursued']:
                     for lot_organism in lot_review['organisms']:
                         if organism == lot_organism:
-                            detail = '{} has not been '.format(antibody['@id']) + \
-                                     'characterized to the standard for {}: {}'.format(
+                            characterized_in_organism = True
+                            detail = '{} has characterization attempts '.format(antibody['@id']) + \
+                                     'that do not meet the standard in {}: {}'.format(
                                 organism, lot_review['detail'])
-                            yield AuditFailure('not characterized antibody',
-                                               detail,
-                                               level='NOT_COMPLIANT')
+                            yield AuditFailure('partially characterized antibody',
+                                               detail, level='NOT_COMPLIANT')
                 if lot_review['status'] == 'characterized to standards with exemption':
                     for lot_organism in lot_review['organisms']:
                         if organism == lot_organism:
+                            characterized_in_organism = True
                             detail = '{} has been characterized '.format(antibody['@id']) + \
                                      'to the standard with exemption for {}'.format(organism)
                             yield AuditFailure('antibody characterized with exemption',
                                                detail, level='WARNING')
+            if not characterized_in_organism:
+                detail = '{} has not been '.format(antibody['@id']) + \
+                    'characterized to the standard for {}: {}'.format(organism, lot_review['detail'])
+                yield AuditFailure('not characterized antibody', detail, level='NOT_COMPLIANT')
         else:
-
             biosample_term_id = value['biosample_term_id']
             biosample_term_name = value['biosample_term_name']
             experiment_biosample = (biosample_term_id, organism)
@@ -3401,10 +3411,15 @@ def audit_experiment_antibody_characterized(value, system):
                          'for {} in {}'.format(biosample_term_name, organism)
                 yield AuditFailure('antibody characterized with exemption', detail, level='WARNING')
 
-            if experiment_biosample not in eligible_biosamples:
+            elif experiment_biosample not in eligible_biosamples:
                 detail = '{} has not been characterized to the standard for {} in {}: {}'.format(
                     antibody['@id'], biosample_term_name, organism, lot_review['detail'])
                 yield AuditFailure('not characterized antibody', detail, level='NOT_COMPLIANT')
+            else:
+                detail = '{} has characterization attempts '.format(antibody['@id']) + \
+                         'that do not meet the standard in {}: {}'.format(biosample_term_name,
+                                                                          organism)
+                yield AuditFailure('partially characterized antibody', detail, level='NOT_COMPLIANT')
 
 
 @audit_checker(
