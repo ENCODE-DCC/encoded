@@ -229,6 +229,7 @@ def experiment(testapp, lab, award):
     }
     return testapp.post_json('/experiment', item).json['@graph'][0]
 
+
 @pytest.fixture
 def base_experiment(testapp, lab, award):
     item = {
@@ -238,6 +239,7 @@ def base_experiment(testapp, lab, award):
         'status': 'started'
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
 
 @pytest.fixture
 def replicate(testapp, experiment, library):
