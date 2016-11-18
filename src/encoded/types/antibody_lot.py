@@ -262,23 +262,36 @@ def build_lot_reviews(primary_chars,
     if not primary_chars:
         if secondary_status in ['not reviewed', 'not submitted for review by lab']:
             base_review['status'] = 'not pursued'
-
-        if secondary_status in ['pending dcc review']:
+        elif secondary_status in ['pending dcc review']:
             base_review['status'] = 'pending dcc review'
-
+        elif secondary_status in ['in progress']:
+            base_review['status'] = 'awaiting characterization'
+        else:
+            base_review['status'] = 'not characterized to standards'
         base_review['detail'] = 'Awaiting submission of primary characterization(s).'
         return [base_review]
 
     else:
         char_reviews = {}
         for primary in primary_chars:
+            # This is currently not working for the case where there are multiple primaries some
+            # of them without characterization_reviews. It can't just return the base review with
+            # nothing before getting to the characterizations with reviews.
+            #
+            #
+            #
+            #
+            #
+            #
             if 'characterization_reviews' not in primary:
                 if primary['status'] and secondary_status in ['not reviewed']:
                     base_review['status'] = 'not characterized to standards',
                 if primary['status'] == 'not submitted for review by lab' and \
                         (secondary_status == 'not submitted for review by lab' or secondary_status is None):
                     base_review['status'] = 'not pursued'
-
+                if secondary_status == 'pending dcc review':
+                    base_review['status'] = 'pending dcc review'
+                    base_review['detail'] = 'Awaiting submission of primary characterization(s).'
                 if primary['status'] == 'in progress':
                     base_review['detail'] = 'Primary characterization(s) in progress.'
 
@@ -308,8 +321,8 @@ def build_lot_reviews(primary_chars,
                     # Need to use status ranking to determine whether or not to
                     # add this review to the list or not if another already exists.
                     key = (
-                        lane_review['biosample_term_name'],
-                        lane_review['biosample_term_id'],
+                        new_review['biosample_term_name'],
+                        new_review['biosample_term_id'],
                         lane_review['organism'],
                         primary['target']
                     )
@@ -349,6 +362,12 @@ def build_lot_reviews(primary_chars,
                     char_reviews[key]['status'] = 'not characterized to standards'
                     char_reviews[key]['detail'] = 'Awaiting a compliant primary characterization.'
             elif char_reviews[key]['status'] == 'compliant' and secondary_status == 'compliant':
+
+                # I think these checks can be removed for histones
+                #
+                #
+                #
+                #
                 if is_histone_mod:
                     if lane_organism not in target_organisms['all']:
                         char_reviews[key]['detail'] = 'Organism was not found in the list ' + \
