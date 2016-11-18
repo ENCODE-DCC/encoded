@@ -89,11 +89,11 @@ def fly_organism(testapp):
 
 
 @pytest.fixture
-def histone_target(testapp, fly_organism):
+def mouse_H3K9me3(testapp, mouse):
     item = {
-        'organism': fly_organism['uuid'],
-        'label': 'Histone',
-        'investigated_as': ['histone modification', 'histone']
+        'organism': mouse['@id'],
+        'label': 'H3K9me3',
+        'investigated_as': ['histone modification', 'histone', 'broad histone mark']
     }
     return testapp.post_json('/target', item, status=201).json['@graph'][0]
 
@@ -787,7 +787,7 @@ def test_audit_experiment_target_mismatch(testapp, base_experiment, base_replica
     assert any(error['category'] == 'inconsistent target' for error in errors_list)
 
 
-def test_audit_experiment_characterized_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, antibody_lot, target, base_antibody_characterization1, base_antibody_characterization2):
+def test_audit_experiment_no_characterizations_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, antibody_lot, target, base_antibody_characterization1, base_antibody_characterization2):
     testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['@id'], 'library': base_library['@id']})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq', 'biosample_term_id': 'EFO:0002067', 'biosample_term_name': 'K562',  'biosample_type': 'immortalized cell line', 
                                                 'target': target['@id']})
@@ -799,21 +799,26 @@ def test_audit_experiment_characterized_antibody(testapp, base_experiment, base_
     assert any(error['category'] == 'not characterized antibody' for error in errors_list)
 
 
-def test_audit_experiment_characterized_histone_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, base_antibody, histone_target, base_antibody_characterization1, base_antibody_characterization2, fly_organism):
-    base_antibody['targets'] = [histone_target['@id']]
+def test_audit_experiment_wrong_organism_histone_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, base_antibody, mouse_H3K9me3, base_antibody_characterization1, base_antibody_characterization2, human):
+    base_antibody['targets'] = [mouse_H3K9me3['@id']]
     histone_antibody = testapp.post_json('/antibody_lot', base_antibody).json['@graph'][0]
-    testapp.patch_json(base_biosample['@id'], {'organism': fly_organism['uuid']})
-    testapp.patch_json(base_antibody_characterization1['@id'], {'target': histone_target['@id'], 'characterizes': histone_antibody['@id']})
-    testapp.patch_json(base_antibody_characterization2['@id'], {'target': histone_target['@id'], 'characterizes': histone_antibody['@id']})
+    testapp.patch_json(base_biosample['@id'], {'organism': human['@id']})
+    testapp.patch_json(base_antibody_characterization1['@id'], {'target': mouse_H3K9me3['@id'], 'characterizes': histone_antibody['@id']})
+    testapp.patch_json(base_antibody_characterization2['@id'], {'target': mouse_H3K9me3['@id'], 'characterizes': histone_antibody['@id']})
     testapp.patch_json(base_replicate['@id'], {'antibody': histone_antibody['@id'], 'library': base_library['@id']})
+<<<<<<< HEAD
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq', 'biosample_term_id': 'EFO:0002067', 'biosample_term_name': 'K562',  'biosample_type': 'immortalized cell line', 'target': 
                                                 histone_target['@id']})
+=======
+    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'biosample_term_id': 'EFO:0002067', 'biosample_term_name': 'K562',  'biosample_type': 'immortalized cell line', 'target': 
+                                                mouse_H3K9me3['@id']})
+>>>>>>> Update experiment ab audits
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'not characterized antibody' for error in errors_list)
+    assert any(error['category'] == 'partially characterized antibody' for error in errors_list)
 
 
 def test_audit_experiment_geo_submission(testapp, base_experiment):
