@@ -5,12 +5,14 @@ from collections import OrderedDict
 from copy import deepcopy
 import cgi
 import json
+import os
 from urllib.parse import (
     parse_qs,
     urlencode,
 )
 from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
 import time
+from pkg_resources import resource_filename
 
 # TODO: uncomment when ready to try Bek's cache priming solution.
 from pyramid.events import subscriber
@@ -20,6 +22,7 @@ import logging
 from .search import _ASSEMBLY_MAPPER
 
 log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
 
 def includeme(config):
     config.add_route('batch_hub', '/batch_hub/{search_params}/{txt}')
@@ -36,9 +39,9 @@ TRACKDB_TXT = 'trackDb.txt'
 BIGWIG_FILE_TYPES = ['bigWig']
 BIGBED_FILE_TYPES = ['bigBed']
 
-#INVISIBLE_FILE_STATUSES = ["revoked", "replaced", "deleted", "archived" ]
-VISIBLE_EXP_STATUSES = ["released" ]
+VISIBLE_DATASET_STATUSES = ["released" ]
 VISIBLE_FILE_STATUSES = ["released" ]
+VISIBLE_DATASET_TYPES = ["Experiment","Annotation"]
 
 # ASSEMBLY_MAPPINGS is needed to ensure that mm10 and mm10-minimal will get combined into the same trackHub.txt
 # This is necessary because mm10 and mm10-minimal are only mm10 at UCSC, so the 2 must be collapsed into one.
@@ -75,6 +78,7 @@ SUPPORTED_MASK_TOKENS = [
     "{output_type}",                        # files.output_type
     "{accession}","{experiment.accession}", # "{accession}" is assumed to be experiment.accession
     "{file.accession}",
+    "{@id}", "{@type}",                     # dataset only
     "{target}","{target.label}",            # Either is acceptible
     "{target.title}",
     "{target.name}",                        # Used in metadata URLs
@@ -88,7 +92,7 @@ SUPPORTED_MASK_TOKENS = [
     ]
 
 # Simple tokens are a straight lookup, no questions asked
-SIMPLE_DATASET_TOKENS = ["{biosample_term_name}","{accession}","{assay_title}","{assay_term_name}", "{annotation_type}"]
+SIMPLE_DATASET_TOKENS = ["{biosample_term_name}","{accession}","{assay_title}","{assay_term_name}", "{annotation_type}", "{@id}", "{@type}"]
 
 # static group defs are keyed by group title (or special token) and consist of
 # tag: (optional) unique terse key for referencing group
@@ -100,1155 +104,217 @@ SIMPLE_DATASET_TOKENS = ["{biosample_term_name}","{accession}","{assay_title}","
 # title: (required) same as the static group's key
 # groups: (if appropriate) { subgroups keyed by subgroup tag }
 # group_order: (if appropriate) [ ordered list of subgroup tags ]
-COMPOSITE_VIS_DEFS_DEFAULT = {
-    "assay_composite": {
-        "longLabel":  "Collection of Miscellaneous ENCODE datasets",
-        "shortLabel": "ENCODE Misc.",
-    },
-    "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
-    "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
-     #"allButtonPair": "off"
-    "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
-    "Views":  {
-        "tag": "view",
-        "group_order": [ "Peaks", "Signals" ],
-        "groups": {
-            "Peaks": {
-                "tag": "PK",
-                "visibility": "dense",
-                "type": "bigBed",
-                "spectrum": "on",
-            },
-            "Signals": {
-                "tag": "SIG",
-                "visibility": "full",
-                "type": "bigWig",
-                "autoScale": "on",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-            },
-        },
-    },
-    "other_groups":  {
-        "dimensions": { "Biosample": "dimY", "Targets": "dimX", "Replicates": "dimA" },
-        "dimensionAchecked": "first", # or "all"
-        "groups": {
-            "Replicates": {
-                "tag": "REP",
-                "groups": {
-                    "replicate": {
-                        "title_mask": "Replicate_{replicate_number}",
-                        "combined_title": "Pooled",
-                    },
-                },
-            },
-            "Biosample": {
-                "tag": "BS",
-                "groups": { "one": { "title_mask": "{biosample_term_name}" } },
-            },
-            "Targets": {
-                "tag": "TARG",
-                "groups": { "one": { "title_mask": "{target.label}", "url_mask": "targets/{target.name}" } },
-            },
-        }
-    },
-    "file_defs": {
-        "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate}",
-        "shortLabel": "{replicate} {output_type_short_label}",
-    },
-}
 
-LRNA_COMPOSITE_VIS_DEFS = {
-    "assay_composite": {
-        "longLabel":  "Collection of ENCODE long-RNA-seq experiments",
-        "shortLabel": "ENCODE long-RNA-seq",
-    },
-    "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
-    "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
-    "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
-    "Views": {
-        "tag": "view",
-        "group_order": [ "Signal of unique reads", "Signal of all reads",
-                        "Plus signal of unique reads", "Minus signal of unique reads",
-                        "Plus signal of all reads", "Minus signal of all reads" ],
-        "groups": {
-            "Signal of unique reads": {
-                "tag": "SIGBL",
-                "visibility": "full",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "signal of unique reads" ]
-            },
-            "Signal of all reads": {
-                "tag": "SIGBM",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "signal of all reads" ]
-            },
-            "Minus signal of unique reads": {
-                "tag": "SIGLR",
-                "visibility": "full",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "negateValues": "on",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "minus strand signal of unique reads" ]
-            },
-            "Plus signal of unique reads": {
-                "tag": "SIGLF",
-                "visibility": "full",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "plus strand signal of unique reads" ]
-            },
-            "Plus signal of all reads": {
-                "tag": "SIGMF",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "plus strand signal of all reads" ]
-            },
-            "Minus signal of all reads": {
-                "tag": "SIGMR",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "negateValues": "on",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "minus strand signal of all reads" ]
-            },
-        },
-    },
-    "other_groups": {
-        "dimensions": { "Biosample": "dimY", "Targets": "dimX", "Replicates": "dimA" },
-        "dimensionAchecked": "first", # or "all"
-        "groups": {
-            "Replicates": {
-                "tag": "REP",
-                "groups": {
-                "replicate": {
-                    "title_mask": "Replicate_{replicate_number}",
-                    #"combined_title": "Pooled", # "Combined"
-                    }
-                },
-            },
-            "Biosample": {
-                "tag": "BS",
-                "groups": { "one": { "title_mask": "{biosample_term_name}"} }
-            },
-            "Targets": {
-                "tag": "TARG",
-                "groups": { "one": { "title_mask": "{target.label}", "url_mask": "targets/{target.name}" } },
-            },
-        }
-    },
-    "file_defs": {
-        "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate}",
-        "shortLabel": "{replicate} {output_type_short_label}",
-    }
-}
-
-TKRNA_COMPOSITE_VIS_DEFS = {
-    "assay_composite": {
-        "longLabel":  "Collection of ENCODE targeted knockdowns RNA-seq experiments",
-        "shortLabel": "ENCODE knockdown RNA-seq",
-    },
-    "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
-    "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
-    "sortOrder": [ "Biosample", "Targets", "Replicates",  "Assay", "Views" ],
-    "Views": {
-        "tag": "view",
-        "group_order": [ "Signal of unique reads", "Signal of all reads", "Plus signal of unique reads", "Minus signal of unique reads", "Plus signal of all reads", "Minus signal of all reads", ],
-        "groups": {
-            "Signal of unique reads": {
-                "tag": "SIGBL",
-                "visibility": "full",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "signal of unique reads" ]
-            },
-            "Signal of all reads": {
-                "tag": "SIGBM",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "signal of all reads" ]
-            },
-            "Plus signal of unique reads": {
-                "tag": "SIGLF",
-                "visibility": "full",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "plus strand signal of unique reads" ]
-            },
-            "Minus signal of unique reads": {
-                "tag": "SIGLR",
-                "visibility": "full",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "negateValues": "on",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "minus strand signal of unique reads" ]
-            },
-            "Plus signal of all reads": {
-                "tag": "SIGMF",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "plus strand signal of all reads" ]
-            },
-            "Minus signal of all reads": {
-                "tag": "SIGMR",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "negateValues": "on",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "minus strand signal of all reads" ]
-            },
-        },
-    },
-    "other_groups": {
-        "dimensions": { "Biosample": "dimY", "Targets": "dimX", "Replicates": "dimA" },
-        "dimensionAchecked": "first", # or "all"
-        "groups": {
-            "Replicates": {
-                "tag": "REP",
-                "group_order": "sort",
-                "groups": {
-                "replicate": {
-                    "title_mask": "Replicate_{replicate_number}", # Optional
-                    "combined_title": "Pooled", # "Combined"
-                    }
-                },
-            },
-            "Biosample": {
-                "tag": "BS",
-                "groups": { "one": { "title_mask": "{biosample_term_name}"} }
-            },
-            "Targets": {
-                "tag": "TARG",
-                "groups": { "one": { "title_mask": "{target.label}" } },
-            },
-            "Assay": {
-                "tag": "Assay",
-                "groups": { "one": { "title_mask": "{target.title}" } },
-            },
-        }
-    },
-    "file_defs": {
-        "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate}",
-        "shortLabel": "{replicate} {output_type_short_label}",
-    }
-}
-
-SRNA_COMPOSITE_VIS_DEFS = {
-    "assay_composite": {
-        "longLabel":  "Collection of ENCODE small-RNA-seq experiments",
-        "shortLabel": "ENCODE small-RNA-seq",
-    },
-    "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
-    "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
-    "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
-    "Views": {
-        "tag": "view",
-        "group_order": [ "Plus signal of unique reads", "Minus signal of unique reads", "Plus signal of all reads", "Minus signal of all reads", ],
-        "groups": {
-            "Minus signal of unique reads": {
-                "tag": "SIGLR",
-                "visibility": "full",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "negateValues": "on",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "minus strand signal of unique reads" ]
-            },
-            "Plus signal of unique reads": {
-                "tag": "SIGLF",
-                "visibility": "full",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "plus strand signal of unique reads" ]
-            },
-            "Plus signal of all reads": {
-                "tag": "SIGMF",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "plus strand signal of all reads" ]
-            },
-            "Minus signal of all reads": {
-                "tag": "SIGMR",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "negateValues": "on",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "minus strand signal of all reads" ]
-            },
-        },
-    },
-    "other_groups": {
-        "dimensions": { "Biosample": "dimY", "Replicates": "dimA" },
-        "dimensionAchecked": "first", # or "all"
-        "groups": {
-            "Replicates": {
-                "tag": "REP",
-                "groups": {
-                "replicate": {
-                    "title_mask": "Replicate_{replicate_number}", # Optional
-                    #"combined_title": "Pooled", # "Combined"
-                    }
-                },
-            },
-            "Biosample": {
-                "tag": "BS",
-                "groups": { "one": { "title_mask": "{biosample_term_name}"} }
-            },
-        }
-    },
-    "file_defs": {
-        "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate}",
-        "shortLabel": "{replicate} {output_type_short_label}",
-    }
-}
-
-RAMPAGE_COMPOSITE_VIS_DEFS = {
-    "assay_composite": {
-        "longLabel":  "Collection of ENCODE RAMPAGE/CAGE experiments",
-        "shortLabel": "ENCODE RAMPAGE/CAGE",
-    },
-    "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
-    "shortLabel": "{assay_title} of {biosample_term_name} - {accession}",
-    "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
-    "Views":  {
-        "tag": "view",
-        "group_order": [ "Replicated TSSs", "TSSs",
-                         "Signal of unique reads", "Signal of all reads",
-                         "Plus signal of unique reads", "Minus signal of unique reads",
-                         "Plus signal of all reads", "Minus signal of all reads" ],
-        "groups": {
-          "Replicated TSSs": {
-                "tag": "ARTSS",
-                "visibility": "dense",
-                "spectrum": "on",
-                "type": "bigBed",
-                "file_format_type": ["idr_peak"],
-           },
-          "TSSs": {
-                "tag": "AZTSS",
-                "visibility": "hide",
-                "spectrum": "on",
-                "type": "bigBed",
-                "file_format_type": ["tss_peak"],
-            },
-            "Signal of unique reads": {
-                "tag": "SIGBL",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "autoScale": "off",
-                "maxHeightPixels": "32:16:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "signal of unique reads" ]
-            },
-            "Signal of all reads": {
-                "tag": "SIGBM",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "autoScale": "off",
-                "maxHeightPixels": "32:16:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "signal of all reads" ]
-            },
-            "Plus signal of unique reads": {
-                "tag": "SIGLF",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "autoScale": "off",
-                "maxHeightPixels": "32:16:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "plus strand signal of unique reads" ]
-            },
-            "Minus signal of unique reads": {
-                "tag": "SIGLR",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "autoScale": "off",
-                "negateValues": "on",
-                "maxHeightPixels": "32:16:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "minus strand signal of unique reads" ]
-            },
-            "Plus signal of all reads": {
-                "tag": "SIGMF",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "autoScale": "off",
-                "maxHeightPixels": "32:16:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "plus strand signal of all reads" ]
-            },
-            "Minus signal of all reads": {
-                "tag": "SIGMR",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "autoScale": "off",
-                "negateValues": "on",
-                "maxHeightPixels": "32:16:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "minus strand signal of all reads" ]
-            },
-        }
-    },
-    "other_groups":  {
-        "dimensions": { "Biosample": "dimY", "Replicates": "dimA" },
-        "groups": {
-            "Replicates": {
-                "tag": "REP",
-                "groups": {
-                    "replicate": {
-                        "title_mask": "Replicate_{replicate_number}",
-                        "combined_title": "Pooled",
-                    }
-                },
-            },
-            "Biosample": {
-                "tag": "BS",
-                "groups": { "one": { "title_mask": "{biosample_term_name}"} }
-            },
-        }
-    },
-    "file_defs": {
-        "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate}",
-        "shortLabel": "{replicate} {output_type_short_label}",
-    }
-}
-
-MICRORNA_COMPOSITE_VIS_DEFS = {
-    "assay_composite": {
-        "longLabel":  "Collection of ENCODE microRNA experiments",
-        "shortLabel": "ENCODE microRNA",
-    },
-    "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
-    "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
-    "sortOrder": [ "Biosample", "Replicates", "Views", "Assay" ],
-    "Views": {
-        "tag": "view",
-        "group_order": [ "microRNA quantifications", "Plus signal of unique reads", "Minus signal of unique reads", "Plus signal of all reads" ,  "Minus signal of all reads"],
-        "groups": {
-            "microRNA quantifications": {
-                "tag": "QUANT",
-                "visibility": "dense",
-                "type": "bigBed",
-                "useScore": "0",
-                "output_type": [ "microRNA quantifications" ]
-            },
-            "Plus signal of unique reads": {
-                "tag": "SIGLF",
-                "visibility": "full",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "plus strand signal of unique reads" ]
-            },
-            "Minus signal of unique reads": {
-                "tag": "SIGLR",
-                "visibility": "full",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "negateValues": "on",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "minus strand signal of unique reads" ]
-            },
-            "Plus signal of all reads": {
-                "tag": "SIGMF",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "plus strand signal of all reads" ]
-            },
-            "Minus signal of all reads": {
-                "tag": "SIGMR",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "negateValues": "on",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "minus strand signal of all reads" ]
-            },
-        },
-    },
-    "other_groups": {
-        "dimensions": { "Biosample": "dimY", "Assay": "dimX", "Replicates": "dimA" },
-        "dimensionAchecked": "first", # or "all"
-        "groups": {
-            "Replicates": {
-                "tag": "REP",
-                "group_order": "sort",
-                "groups": {
-                "replicate": {
-                    "title_mask": "Replicate_{replicate_number}", # Optional
-                    #"tag_mask": "{replicate}", # Implicit
-                    "combined_title": "Pooled", # "Combined"
-                    }
-                },
-            },
-            "Biosample": {
-                "tag": "BS",
-                "groups": { "one": { "title_mask": "{biosample_term_name}"} }
-            },
-            "Assay": {
-                "tag": "ASSAY",
-                "group_order": {"microRNA counts", "microRNA-seq"},
-                "groups": { "one": { "title_mask": "{assay_term_name}" } },
-            },
-        }
-    },
-    "file_defs": {
-        "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate}",
-        "shortLabel": "{replicate} {output_type_short_label}",
-    }
-}
-
-DNASE_COMPOSITE_VIS_DEFS = {
-    "assay_composite": {
-        "longLabel":  "Collection of ENCODE DNase-HS experiments",
-        "shortLabel": "ENCODE DNase-HS",
-    },
-    "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
-    "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
-    "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
-    "Views":  {
-        "tag": "view",
-        "group_order": [ "Signal", "Peaks", "Hotspots" ],
-        "groups": {
-            "Signal": {
-                "tag": "aSIG",
-                "visibility": "full",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "autoScale": "off",
-                "maxHeightPixels": "32:16:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "signal of unique reads" ]
-            },
-            "Peaks": {
-                "tag": "bPKS",
-                "visibility": "hide",
-                "type": "bigBed",
-                "spectrum": "on",
-                "scoreFilter": "100",
-                "output_type": [ "peaks" ]
-            },
-            "Hotspots": {
-                "tag": "cHOT",
-                "visibility": "hide",
-                "type": "bigBed",
-                "spectrum": "on",
-                "output_type": [ "hotspots" ]
-            },
-        },
-    },
-    "other_groups":  {
-        "dimensions": { "Biosample": "dimY", "Replicates": "dimA" },
-        "groups": {
-            "Replicates": {
-                "tag": "REP",
-                "groups": {
-                    "replicate": {
-                        "title_mask": "Replicate_{replicate_number}",
-                        "combined_title": "Pooled",
-                    }
-                },
-            },
-            "Biosample": {
-                "tag": "BS",
-                "groups": { "one": { "title_mask": "{biosample_term_name}"} }
-            },
-        }
-    },
-    "file_defs": {
-        "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate}",
-        "shortLabel": "{replicate} {output_type_short_label}",
-    }
-}
-
-WGBS_COMPOSITE_VIS_DEFS = {
-    "assay_composite": {
-        "longLabel":  "Collection of ENCODE WGBS experiments",
-        "shortLabel": "ENCODE WGBS",
-    },
-    "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
-    "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
-    "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
-    "Views":  {
-        "tag": "view",
-        "group_order": [ "Optimal IDR thresholded peaks", "Conservative IDR thresholded peaks",
-                        "Replicated peaks", "Peaks",  "Signal" ],
-        "groups": {
-            "Optimal IDR thresholded peaks": {
-                "tag": "aOIDR",
-                "visibility": "dense",
-                "type": "bigBed",
-                "file_format_type": [ "narrowPeak" ],
-                "spectrum":"on",
-                "scoreFilter":"0:1000",
-                "output_type": [ "optimal idr thresholded peaks" ]
-            },
-            "Conservative IDR thresholded peaks": {
-                "tag": "bCIDR",
-                "visibility": "hide",
-                "type": "bigBed",
-                "file_format_type": [ "narrowPeak" ],
-                "spectrum":"on",
-                "scoreFilter": "0:1000",
-                "output_type": [ "conservative idr thresholded peaks" ]
-            },
-            "Replicated peaks": {
-                "tag": "cRPKS",
-                "visibility": "dense",
-                "type": "bigBed",
-                "file_format_type": [ "narrowPeak" ],
-                "spectrum":"on",
-                "scoreFilter": "0:1000",
-                "output_type": [ "replicated peaks" ]
-            },
-            "Peaks": {
-                "tag": "dPKS",
-                "visibility": "hide",
-                "type": "bigBed",
-                "file_format_type": [ "narrowPeak" ],
-                "scoreFilter": "0:1000",
-                "output_type": [ "peaks" ],
-            },
-            "Signal": {
-                "tag": "eSIG",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "signal" ]
-            },
-        },
-    },
-    "other_groups":  {
-        "dimensions": { "Biosample": "dimY","Targets": "dimX","Replicates": "dimA" },
-        "dimensionAchecked": "first", # or "all"
-        "groups": {
-            "Replicates": {
-                "tag": "REP",
-                "groups": {
-                    "replicate": {
-                        "title_mask": "Replicate_{replicate_number}",
-                        "combined_title": "Pooled",  #We only want pooled replicates on
-                    }
-                },
-            },
-            "Biosample": {
-                "tag": "BS",
-                "groups": { "one": { "title_mask": "{biosample_term_name}"} }
-            },
-            "Targets": {
-                "tag": "TARG",
-                "groups": { "one": { "title_mask": "{target.label}"} }
-            }
-        }
-    },
-    "file_defs": {
-        "longLabel": "{target} {assay_title} of {biosample_term_name} {output_type} {replicate}",
-        "shortLabel": "{replicate} {output_type_short_label}",
-    }
-}
-
-CHIP_COMPOSITE_VIS_DEFS = {
-    "assay_composite": {
-        "longLabel":  "Collection of ENCODE ChIP-seq experiments",
-        "shortLabel": "ENCODE ChIP-seq",
-    },
-    "longLabel":  "{target} {assay_title} of {replicates.library.biosample.summary} - {accession}",
-    "shortLabel": "{target} {assay_title} of {biosample_term_name} {accession}",
-    "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
-    "Views":  {
-        "tag": "view",
-        "group_order": [ "Optimal IDR thresholded peaks", "Conservative IDR thresholded peaks",
-                        "Replicated peaks", "Peaks",  "Fold change over control", "Signal p-value", "Signal" ],
-        "groups": {
-            "Optimal IDR thresholded peaks": {
-                "tag": "aOIDR",
-                "visibility": "dense",
-                "type": "bigBed",
-                "file_format_type": [ "narrowPeak" ],
-                "spectrum":"on",
-                "scoreFilter": "100:1000",
-                "output_type": [ "optimal idr thresholded peaks" ]
-            },
-            "Conservative IDR thresholded peaks": {
-                "tag": "bCIDR",
-                "visibility": "hide",
-                "type": "bigBed",
-                "file_format_type": [ "narrowPeak" ],
-                "spectrum":"on",
-                "scoreFilter": "0:1000",
-                "output_type": [ "conservative idr thresholded peaks" ]
-            },
-            "Replicated peaks": {
-                "tag": "cRPKS",
-                "visibility": "dense",
-                "type": "bigBed",
-                "file_format_type": [ "narrowPeak" ],
-                "spectrum":"on",
-                "scoreFilter": "0:1000",
-                "output_type": [ "replicated peaks" ]
-            },
-            "Peaks": {
-                "tag": "dPKS",
-                "visibility": "hide",
-                "type": "bigBed",
-                "file_format_type": [ "narrowPeak" ],
-                "scoreFilter": "0",
-                "output_type": [ "peaks" ],
-                # Tim, how complicated would it be to exclude "peaks" if other files are there?
-            },
-            "Fold change over control": {
-                "tag": "eFCOC",
-                "visibility": "full",
-                "type": "bigWig",
-                "viewLimits": "0:10",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "fold change over control" ]
-            },
-            "Signal p-value": {
-                "tag": "fSPV",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:10",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "signal p-value" ]
-            },
-            "Signal": {
-                "tag": "gSIG",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:10",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "signal","signal of unique reads" ]
-            },
-        },
-    },
-    "other_groups":  {
-        "dimensions": { "Biosample": "dimY","Targets": "dimX","Replicates": "dimA" },
-        "dimensionAchecked": "first", # or "all"
-        "groups": {
-            "Replicates": {
-                "tag": "REP",
-                "groups": {
-                    "replicate": {
-                        "title_mask": "Replicate_{replicate_number}", # Optional
-                        "combined_title": "Pooled", # "Combined"
-                         #We only want pooled replicates on
-                    }
-                },
-            },
-            "Biosample": {
-                "tag": "BS",
-                "groups": { "one": { "title_mask": "{biosample_term_name}"} }
-            },
-            "Targets": {
-                "tag": "TARG",
-                "groups": { "one": { "title_mask": "{target.label}", "url_mask": "targets/{target.name}"} }
-            }
-        }
-    },
-    "file_defs": {
-        "longLabel": "{target} {assay_title} of {biosample_term_name} {output_type} {replicate}",
-        "shortLabel": "{replicate} {output_type_short_label}",
-    }
-}
+VIS_DEFS_FOLDER = "static/vis_defs/"
+VIS_DEFS_BY_TYPE = {}
+COMPOSITE_VIS_DEFS_DEFAULT = {}
 
 
-ECLIP_COMPOSITE_VIS_DEFS = {
-    "assay_composite": {
-        "longLabel":  "Collection of ENCODE eCLIP experiments",
-        "shortLabel": "ENCODE eCLIP",
-    },
-    "longLabel":  "{target} {assay_title} of {replicates.library.biosample.summary} - {accession}",
-    "shortLabel": "{target} {assay_title} of {biosample_term_name} {accession}",
-    "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
-    "Views":  {
-        "tag": "view",
-        "group_order": [ "Signal", "Peaks" ],
-        "groups": {
-            "Signal": {
-                "tag": "aSIG",
-                "visibility": "full",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "autoScale": "off",
-                "maxHeightPixels": "32:16:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "signal" ]
-            },
-            "Peaks": {
-                "tag": "bPKS",
-                "visibility": "dense",
-                "type": "bigBed",
-                "spectrum": "on",
-                "scoreFilter": "100",
-                "output_type": [ "peaks" ]
-            },
-        },
-    },
-    "other_groups":  {
-        "dimensions": { "Biosample": "dimY","Targets": "dimX","Replicates": "dimA" },
-        "dimensionAchecked": "all",
-        "groups": {
-            "Replicates": {
-                "tag": "REP",
-                "groups": {
-                    "replicate": {
-                        "title_mask": "Replicate_{replicate_number}",
-                        "combined_title": "Pooled",
-                         #We only want pooled replicates on
-                    }
-                },
-            },
-            "Biosample": {
-                "tag": "BS",
-                "groups": { "one": { "title_mask": "{biosample_term_name}"} }
-            },
-            "Targets": {
-                "tag": "TARG",
-                "groups": { "one": { "title_mask": "{target.label}", "url_mask": "targets/{target.name}" } }
-            }
-        }
-    },
-    "file_defs": {
-        "longLabel": "{target} {assay_title} of {biosample_term_name} {output_type} {replicate}",
-        "shortLabel": "{target} {replicate}",
-    }
-}
+def lookup_token(token,dataset,a_file=None):
+    '''Encodes the string to swap special characters and remove spaces.'''
 
-ANNO_COMPOSITE_VIS_DEFS = {
-    "assay_composite": {
-        "longLabel":  "Collection of ENCODE annotations",
-        "shortLabel": "ENCODE annotations",
-    },
-    "longLabel":  "Encyclopedia annotation of {annotation_type} for {biosample_term_name|multiple} - {accession}", #blank means "multiple biosamples"
-    "shortLabel": "{annotation_type} of {biosample_term_name|multiple} {accession}", #blank means "multiple biosamples" not unknown
-    "sortOrder": [ "Biosample","Replicates", "Views" ],
-    "Views":  {
-        "tag": "view",
-        "group_order": [ "Candidate enhancers", "Candidate promoters",  "Chromatin state", "Peaks" ],
-        "groups": {
+    if token not in SUPPORTED_MASK_TOKENS:
+        log.warn("Attempting to look up unexpected token: '%s'" % token)
+        return "unknown token"
 
-            "Candidate enhancers": {
-                "tag": "aENHAN",
-                "type": "bigBed",
-                "visibility": "dense",
-                "output_type": [ "candidate enhancers" ]
-            },
-            "Candidate promoters": {
-                "tag": "bPROMO",
-                "type": "bigBed",
-                "visibility": "dense",
-                "output_type": [ "candidate promoters" ]
-            },
-            "Chromatin state": {
-                "tag": "cSTATE",
-                "type": "bigBed",
-                "visibility": "dense",
-                "output_type": [ "semi-automated genome annotation" ]
-            },
-            "Peaks": {
-                "tag": "sPKS",
-                "visibility": "hide",
-                "type": "bigBed",
-                "file_format_type": [ "narrowPeak" ],
-                "scoreFilter": "0:1000",
-                "output_type": [ "peaks" ],
-            },
-        },
-    },
-    "other_groups":  {
-        "dimensions": { "Biosample": "dimY","Replicates": "dimA" },
-        "dimensionAchecked": "all", # or "first"
-        "groups": {
-            "Replicates": {
-                "tag": "REP",
-                "groups": {
-                    "replicate": {
-                        "title_mask": "Replicate_{replicate_number}", # Optional
-                        "combined_title": "Pooled", # "Combined"
-                         #We only want pooled replicates on
-                    }
-                },
-            },
-            "Biosample": {
-                "tag": "BS",
-                "groups": { "one": { "title_mask": "{biosample_term_name}"} }
-            },
-        }
-    },
-    "file_defs": {
-        "longLabel": "Encyclopedia annotation of {biosample_term_name} {output_type} {replicate}",
-        "shortLabel": "{replicate} {output_type_short_label}",
-    }
-}
+    if token in SIMPLE_DATASET_TOKENS:
+        term = dataset.get(token[1:-1])
+        if term is None:
+            term = "Unknown " + token[1:-1].split('_')[0].capitalize()
+        return term
+    elif token == "{experiment.accession}":
+        return dataset['accession']
+    elif token in ["{target}","{target.label}","{target.name}","{target.title}"]:
+        target = dataset.get('target',{})
+        if isinstance(target,list):
+            if len(target) > 0:
+                target = target[0]
+            else:
+                target = {}
+        if token.find('.') > -1:
+            sub_token = token.strip('{}').split('.')[1]
+        else:
+            sub_token = "label"
+        return target.get(sub_token,"Unknown Target")
+        #if token == "{target.name}":
+        #    return target.get('name',"Unknown Target")
+        #return target.get('label',"Unknown Target")
+    elif token in ["{target.name}"]:
+        target = dataset.get('target',{})
+        if isinstance(target,list):
+            if len(target) > 0:
+                target = target[0]
+            else:
+                target = {}
+        return target.get('label',"Unknown Target")
+    elif token in ["{replicates.library.biosample.summary}","{replicates.library.biosample.summary|multiple}"]:
+        term = None
+        replicates = dataset.get("replicates",[])
+        if replicates:
+            term = replicates[0].get("library",{}).get("biosample",{}).get("summary")
+        if term is None:
+            term = dataset.get("{biosample_term_name}")
+        if term is None:
+            if token.endswith("|multiple}"):
+                term = "multiple biosamples"
+            else:
+                term = "Unknown Biosample"
+        return term
+    elif token == "{biosample_term_name|multiple}":
+        return dataset.get("biosample_term_name","multiple biosamples")
+    # TODO: rna_species
+    #elif token == "{rna_species}":
+    #    if replicates.library.nucleic_acid = polyadenylated mRNA
+    #       rna_species = polyA RNA
+    #    elseif replicates.library.nucleic_acid = RNA
+    #       if polyadenylated mRNA in replicates.library.depleted_in_term_name
+    #               rna_species = polyA depleted RNA
+    #       else
+    #               rna_species = total RNA
+    elif a_file is not None:
+        if token == "{file.accession}":
+            return a_file['accession']
+        elif token == "{output_type}":
+            return a_file['output_type']
+        elif token == "{output_type_short_label}":
+            output_type = a_file['output_type']
+            return OUTPUT_TYPE_8CHARS.get(output_type,output_type)
+        elif token == "{replicate}":
+            rep_tag = a_file.get("rep_tag")
+            if rep_tag is not None:
+                while len(rep_tag) > 4:
+                    if rep_tag[3] != '0':
+                        break
+                    rep_tag = rep_tag[0:3] + rep_tag[4:]
+                return rep_tag
+            rep_tech = a_file.get("rep_tech")
+            if rep_tech is not None:
+                return rep_tech.split('_')[0]  # Should truncate tech_rep
+            rep_tech = rep_for_file(a_file)
+            return rep_tech.split('_')[0]  # Should truncate tech_rep
+        elif token == "{replicate_number}":
+            rep_tag = a_file.get("rep_tag",a_file.get("rep_tech",rep_for_file(a_file)))
+            if not rep_tag.startswith("rep"):
+                return "0"
+            return rep_tag[3:].split('_')[0]
+        elif token == "{biological_replicate_number}":
+            rep_tech = a_file.get("rep_tech",rep_for_file(a_file))
+            if not rep_tech.startswith("rep"):
+                return "0"
+            return rep_tech[3:].split('_')[0]
+        elif token == "{technical_replicate_number}":
+            rep_tech = a_file.get("rep_tech",rep_for_file(a_file))
+            if not rep_tech.startswith("rep"):
+                return "0"
+            return rep_tech.split('_')[1]
+        elif token == "{rep_tech}":
+            return a_file.get("rep_tech",rep_for_file(a_file))
+        else:
+            return ""
+    else:
+        log.warn('Untranslated token: "%s"' % token)
+        return "unknown"
 
-CHIA_COMPOSITE_VIS_DEFS = {
-    "assay_composite": {
-        "longLabel":  "Collection of ENCODE ChIA-PET experiments",
-        "shortLabel": "ENCODE ChIA-PET",
-    },
-    "longLabel":  "{target} {assay_title} of {replicates.library.biosample.summary} - {accession}",
-    "shortLabel": "{target} {assay_title} of {biosample_term_name} {accession}",
-    "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
-    "Views": {
-        "tag": "view",
-        "group_order": [ "Signal of unique reads", "Signal of all reads", ],
-        "groups": {
-            "Signal of unique reads": {
-                "tag": "SIGBL",
-                "visibility": "full",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "signal of unique reads" ]
-            },
-            "Signal of all reads": {
-                "tag": "SIGBM",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "signal of all reads" ]
-            },
-        },
-    },
-    "other_groups": {
-        "dimensions": { "Biosample": "dimY", "Targets": "dimX", "Replicates": "dimA" },
-        "dimensionAchecked": "first", # or "all"
-        "groups": {
-            "Replicates": {
-                "tag": "REP",
-                "group_order": "sort",
-                "groups": {
-                "replicate": {
-                    "title_mask": "Replicate_{replicate_number}", # Optional
-                    "combined_title": "Pooled", # "Combined"
-                    }
-                },
-            },
-            "Biosample": {
-                "tag": "BS",
-                "groups": { "one": { "title_mask": "{biosample_term_name}"} }
-            },
-            "Targets": {
-                "tag": "TARG",
-                "groups": { "one": { "title_mask": "{target.label}" } },
-            },
-        }
-    },
-    "file_defs": {
-        "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate}",
-        "shortLabel": "{replicate} {output_type_short_label}",
-    }
-}
+def convert_mask(mask,dataset,a_file=None):
+    '''Given a mask with one or more known {term_name}s, replaces with values.'''
+    working_on = mask
+    chars = len(working_on)
+    while chars > 0:
+        beg_ix = working_on.find('{')
+        if beg_ix == -1:
+            break
+        end_ix = working_on.find('}')
+        if end_ix == -1:
+            break
+        term = lookup_token(working_on[beg_ix:end_ix+1],dataset,a_file=a_file)
+        new_mask = []
+        if beg_ix > 0:
+            new_mask = working_on[0:beg_ix]
+        new_mask += "%s%s" % (term,working_on[end_ix+1:])
+        chars = len(working_on[end_ix+1:])
+        working_on = ''.join(new_mask)
 
-HIC_COMPOSITE_VIS_DEFS = {
-    "assay_composite": {
-        "longLabel":  "Collection of ENCODE Hi-C experiments",
-        "shortLabel": "ENCODE HI-C",
-    },
-    "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
-    "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
-    "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
-    "Views": {
-        "tag": "view",
-        "group_order": [ "Topologically associated domains", "Nested TADs", "Genome compartments" ],
-        "groups": {
-            "Topologically associated domains": {
-                "tag": "aTADS",
-                "visibility": "dense",
-                "type": "bigBed 3+",
-                "output_type": [ "topologically associated domains" ]
-            },
-            "Nested TADs": {
-                "tag": "bTADS",
-                "visibility": "hide",
-                "type": "bigBed 3+",
-                "output_type": [ "nested topologically associated domains" ]
-            },
-            "Genome compartments": {
-                "tag": "cCOMPART",
-                "visibility": "hide",
-                "type": "bigWig",
-                "viewLimits": "0:1",
-                "transformFunc": "LOG",
-                "autoScale": "off",
-                "maxHeightPixels": "64:18:8",
-                "windowingFunction": "mean+whiskers",
-                "output_type": [ "genome compartments" ]
-            },
-        },
-    },
-    "other_groups": {
-        "dimensions": { "Biosample": "dimY", "Replicates": "dimA" },
-        "dimensionAchecked": "first", # or "all"
-        "groups": {
-            "Replicates": {
-                "tag": "REP",
-                "group_order": "sort",
-                "groups": {
-                "replicate": {
-                    "title_mask": "Replicate_{replicate_number}", # Optional
-                    "combined_title": "Pooled", # "Combined"
-                    }
-                },
-            },
-            "Biosample": {
-                "tag": "BS",
-                "groups": { "one": { "title_mask": "{biosample_term_name}"} }
-            },
-        }
-    },
-    "file_defs": {
-        "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate}",
-        "shortLabel": "{replicate} {output_type_short_label}",
-    }
-}
+    return working_on
 
 
-VIS_DEFS_BY_ASSAY = {
-    "LRNA":     LRNA_COMPOSITE_VIS_DEFS,
-    "tkRNA":    TKRNA_COMPOSITE_VIS_DEFS,
-    "SRNA":     SRNA_COMPOSITE_VIS_DEFS,
-    "TSS":      RAMPAGE_COMPOSITE_VIS_DEFS,
-    "miRNA":    MICRORNA_COMPOSITE_VIS_DEFS,
-    "DNASE":    DNASE_COMPOSITE_VIS_DEFS,
-    "WGBS":     WGBS_COMPOSITE_VIS_DEFS,
-    "ChIP":     CHIP_COMPOSITE_VIS_DEFS,
-    "eCLIP":    ECLIP_COMPOSITE_VIS_DEFS,
-    "ANNO":     ANNO_COMPOSITE_VIS_DEFS,
-    "ChIA":     CHIA_COMPOSITE_VIS_DEFS,
-    "HiC":      HIC_COMPOSITE_VIS_DEFS,
-    }
+def strip_comments(line,ws_too=False):
+    """
+    Strips comments from a line (and opptionally leading/trailing whitespace).
+    """
+    pound = -1
+    ix = 0
+    while True:
+        pound = line[ix:].find('#',pound + 1)
+        if pound == -1:
+            break
+        pound = ix + pound
+        if pound == 0:
+            return ''
+        if line[ pound - 1 ] != '\\':
+            line = line[ 0:pound ]
+            break  
+        else: #if line[ pound - 1 ] == '\\': # ignore '#' and keep looking
+            ix = pound + 1
+            #line = line[ 0:pound - 1 ] + line[ pound: ]           
+    if ws_too:
+        line = line.strip()
+    return line 
+
+def gulp_file_strip_comments(path):
+    '''Reads in entire file stripping any # comments and returns string.'''
+    blob = ''
+    with open(path) as fh:
+        for line in fh:
+            line = line.rstrip('\n')
+            while line.endswith('\\'): # Support for continuation lines
+                line = line[:-1] + next(fn).strip()
+            line = strip_comments(line,False)
+            if line == '':
+                continue
+            blob += line + '\n'
+    return blob
+
+    
+def load_vis_defs():
+    '''Loads 'vis_defs' (visualization definitions by assay type) from a static file.'''
+    global VIS_DEFS_FOLDER
+    global VIS_DEFS_BY_TYPE
+    global COMPOSITE_VIS_DEFS_DEFAULT
+    folder = resource_filename(__name__, VIS_DEFS_FOLDER)
+    files = os.listdir(folder)
+    for filename in files:
+        if filename.endswith('.json'):
+            log.debug('Preparing to load %s' % (filename))
+            vis_def = json.loads(gulp_file_strip_comments(folder + filename))
+            if vis_def:
+                VIS_DEFS_BY_TYPE.update(vis_def)
 
 def get_vis_type(dataset):
     '''returns the best static composite definition set, based upon dataset.'''
-    assay = dataset.get("assay_term_name")
-    if assay is None:
-        type = dataset["@id"].split('/')[1]
-        if type == "annotations":
-            return "ANNO"
-        else:
-            log.warn("assay_term_name not found for %s" % dataset['accession'])
-            return "opaque" # This becomes a dict key later so None is not okay
+    global VIS_DEFS_BY_TYPE
+    if not VIS_DEFS_BY_TYPE:
+        load_vis_defs()
+        
+    assay = dataset.get("assay_term_name",'none')
 
     if isinstance(assay,list):
-        if len(assay) != 1:
-            log.warn("assay_term_name for %s is unexpectedly a list %s" % (dataset['accession'],str(assay)))
         if len(assay) == 1:
             assay = assay[0]
         else:
+            log.warn("assay_term_name for %s is unexpectedly a list %s" % (dataset['accession'],str(assay)))
             return "opaque"
+            
+    # simple rule defined in most vis_defs
+    for vis_type in sorted(VIS_DEFS_BY_TYPE.keys(), reverse=True): # Reverse pushes anno to bottom
+        if "rule" in VIS_DEFS_BY_TYPE[vis_type]:
+            rule = VIS_DEFS_BY_TYPE[vis_type]["rule"].replace('{assay_term_name}',assay)
+            if rule.find('{') != -1:
+                rule = convert_mask(rule,dataset)
+            if eval(rule):
+                return vis_type
 
-    # This will be long AND small
-    if assay in ["shRNA knockdown followed by RNA-seq","siRNA knockdown followed by RNA-seq","CRISPR genome editing followed by RNA-seq"]:
-        return "tkRNA"
-    elif assay in ["RNA-seq","single cell isolation followed by RNA-seq"]:
+    # Ugly rules:
+    if assay in ["RNA-seq","single cell isolation followed by RNA-seq"]:
         reps = dataset.get("replicates",[]) # NOTE: overly cautious due to test failures with incomplete test data
         if len(reps) < 1:
             log.warn("Could not distinguish between long and short RNA for %s because there are no replicates.  Defaulting to short." % (dataset.get("accession")))
@@ -1284,43 +350,29 @@ def get_vis_type(dataset):
             return "LRNA"
         else:
             return "SRNA"
-    elif assay in ["microRNA-seq","microRNA counts"]:
-        return "miRNA"
-    elif assay in ["whole-genome shotgun bisulfite sequencing","shotgun bisulfite-seq assay","RRBS"]:
-        return "WGBS"
-    elif assay in ["RAMPAGE","CAGE"]:
-        return "TSS"
-    elif assay == "ChIP-seq":
-        return "ChIP"
-    elif assay == "eCLIP":
-        return assay
-    elif assay.lower() == "dnase-seq":
-        return "DNASE"
-    elif assay == "ChIA-PET":
-        return "ChIA"
-    elif assay == "HiC":
-        return "HiC"
 
-    log.warn("%s has unvisualizable assay '%s'" % (dataset['accession'],assay)) # DEBUG
+    log.warn("%s (assay:'%s') has undefined vis_type" % (dataset['accession'],assay))
     return "opaque" # This becomes a dict key later so None is not okay
 
 # TODO:
-# ENCSR000BBI has unvisualizable assay 'comparative genomic hybridization by array'
-# ENCSR000DBZ has unvisualizable assay 'FAIRE-seq'
-# ENCSR901QEL has unvisualizable assay 'protein sequencing by tandem mass spectrometry assay'
-# ENCSR000AWN has unvisualizable assay 'transcription profiling by array assay'
-# ENCSR066KKK has unvisualizable assay 'Repli-chip'
-# ENCSR935ULX has unvisualizable assay 'Repli-seq'
-# ENCSR000AYD has unvisualizable assay 'RIP-chip'
-# ENCSR000CWU has unvisualizable assay 'RIP-seq'
-# ENCSR000BCM has unvisualizable assay 'RNA-PET'
+# ENCSR000BBI (assay:'comparative genomic hybridization by array') has undefined vis_type
+# ENCSR000DBZ (assay:'FAIRE-seq') has undefined vis_type
+# ENCSR901QEL (assay:'protein sequencing by tandem mass spectrometry assay') has undefined vis_type
+# ENCSR000AWN (assay:'transcription profiling by array assay') has undefined vis_type
+# ENCSR066KKK (assay:'Repli-chip') has undefined vis_type
+# ENCSR935ULX (assay:'Repli-seq') has undefined vis_type
+# ENCSR000AYD (assay:'RIP-chip') has undefined vis_type
+# ENCSR000CWU (assay:'RIP-seq') has undefined vis_type
+# ENCSR000BCM (assay:'RNA-PET') has undefined vis_type
 
 EXP_GROUP = "Experiment"
 DEFAULT_EXPERIMENT_GROUP = { "tag": "EXP", "groups": { "one": { "title_mask": "{accession}", "url_mask": "experiments/{accession}"} } }
 
 def lookup_vis_defs(vis_type):
     '''returns the best static composite definition set, based upon dataset.'''
-    vis_def = VIS_DEFS_BY_ASSAY.get(vis_type, COMPOSITE_VIS_DEFS_DEFAULT )
+    global VIS_DEFS_BY_TYPE
+    global COMPOSITE_VIS_DEFS_DEFAULT
+    vis_def = VIS_DEFS_BY_TYPE.get(vis_type, COMPOSITE_VIS_DEFS_DEFAULT )
     if EXP_GROUP not in vis_def["other_groups"]["groups"]:
         vis_def["other_groups"]["groups"][EXP_GROUP] = DEFAULT_EXPERIMENT_GROUP
     if "sortOrder" in vis_def and EXP_GROUP not in vis_def["sortOrder"]:
@@ -1494,22 +546,20 @@ def lookup_colors(dataset):
     biosample_term = dataset.get('biosample_type')
     if biosample_term is not None:
         if isinstance(biosample_term,list):
-            if len(biosample_term) != 1:
-                log.warn("%s has biosample_type %s that is unexpectedly a list" % (dataset['accession'],str(biosample_term)))
-            if len(biosample_term) > 0:
+            if len(biosample_term) == 1:
                 biosample_term = biosample_term[0]
             else:
+                log.warn("%s has biosample_type %s that is unexpectedly a list" % (dataset['accession'],str(biosample_term)))
                 biosample_term = "unknown"  # really only seen in test data!
         coloring = BIOSAMPLE_COLOR.get(biosample_term,{})
     if not coloring:
         biosample_term = dataset.get('biosample_term_name')
         if biosample_term is not None:
             if isinstance(biosample_term,list):
-                if len(biosample_term) != 1:
-                    log.warn("%s has biosample_term_name %s that is unexpectedly a list" % (dataset['accession'],str(biosample_term)))
-                if len(biosample_term) > 0:
+                if len(biosample_term) == 1:
                     biosample_term = biosample_term[0]
                 else:
+                    log.warn("%s has biosample_term_name %s that is unexpectedly a list" % (dataset['accession'],str(biosample_term)))
                     biosample_term = "unknown"  # really only seen in test data!
             coloring = BIOSAMPLE_COLOR.get(biosample_term,{})
     if not coloring:
@@ -1605,7 +655,7 @@ def add_to_es(request,comp_id,composite):
         #                            "_ttl":     { "enabled": True, "default" : "1d" },
                                } }
         es.indices.put_mapping(index=key, doc_type='default', body=mapping )
-        log.warn("created %s index" % key)
+        log.debug("created %s index" % key)
     es.index(index=key, doc_type='default', body=composite, id=comp_id)
 
 def get_from_es(request,comp_id):
@@ -1631,8 +681,8 @@ def search_es(request,ids):
             hits = res.get("hits",{}).get("hits",[])
             results = {}
             for hit in hits:
-                results[hit["_id"]] = hit["_source"]
-            log.warn("ids found: %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))  # DEBUG: batch trackDb
+                results[hit["_id"]] = hit["_source"] # make this a generator? No... len(results)
+            log.debug("ids found: %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))
             return results
         except:
             pass
@@ -1684,134 +734,6 @@ def rep_for_file(a_file):
     if tech_rep > 0:
         rep += "_%d" % tech_rep
     return rep
-
-
-def lookup_token(token,dataset,a_file=None):
-    '''Encodes the string to swap special characters and remove spaces.'''
-
-    if token not in SUPPORTED_MASK_TOKENS:
-        log.warn("Attempting to look up unexpected token: '%s'" % token)
-        return "unknown token"
-
-    if token in SIMPLE_DATASET_TOKENS:
-        term = dataset.get(token[1:-1])
-        if term is None:
-            term = "Unknown " + token[1:-1].split('_')[0].capitalize()
-        return term
-    elif token == "{experiment.accession}":
-        return dataset['accession']
-    elif token in ["{target}","{target.label}","{target.name}","{target.title}"]:
-        target = dataset.get('target',{})
-        if isinstance(target,list):
-            if len(target) > 0:
-                target = target[0]
-            else:
-                target = {}
-        if token.find('.') > -1:
-            sub_token = token.strip('{}').split('.')[1]
-        else:
-            sub_token = "label"
-        return target.get(sub_token,"Unknown Target")
-        #if token == "{target.name}":
-        #    return target.get('name',"Unknown Target")
-        #return target.get('label',"Unknown Target")
-    elif token in ["{target.name}"]:
-        target = dataset.get('target',{})
-        if isinstance(target,list):
-            if len(target) > 0:
-                target = target[0]
-            else:
-                target = {}
-        return target.get('label',"Unknown Target")
-    elif token in ["{replicates.library.biosample.summary}","{replicates.library.biosample.summary|multiple}"]:
-        term = None
-        replicates = dataset.get("replicates",[])
-        if replicates:
-            term = replicates[0].get("library",{}).get("biosample",{}).get("summary")
-        if term is None:
-            term = dataset.get("{biosample_term_name}")
-        if term is None:
-            if token.endswith("|multiple}"):
-                term = "multiple biosamples"
-            else:
-                term = "Unknown Biosample"
-        return term
-    elif token == "{biosample_term_name|multiple}":
-        return dataset.get("biosample_term_name","multiple biosamples")
-    # TODO: rna_species
-    #elif token == "{rna_species}":
-    #    if replicates.library.nucleic_acid = polyadenylated mRNA
-    #       rna_species = polyA RNA
-    #    elseif replicates.library.nucleic_acid = RNA
-    #       if polyadenylated mRNA in replicates.library.depleted_in_term_name
-    #               rna_species = polyA depleted RNA
-    #       else
-    #               rna_species = total RNA
-    elif a_file is not None:
-        if token == "{file.accession}":
-            return a_file['accession']
-        elif token == "{output_type}":
-            return a_file['output_type']
-        elif token == "{output_type_short_label}":
-            output_type = a_file['output_type']
-            return OUTPUT_TYPE_8CHARS.get(output_type,output_type)
-        elif token == "{replicate}":
-            rep_tag = a_file.get("rep_tag")
-            if rep_tag is not None:
-                while len(rep_tag) > 4:
-                    if rep_tag[3] != '0':
-                        break
-                    rep_tag = rep_tag[0:3] + rep_tag[4:]
-                return rep_tag
-            rep_tech = a_file.get("rep_tech")
-            if rep_tech is not None:
-                return rep_tech.split('_')[0]  # Should truncate tech_rep
-            rep_tech = rep_for_file(a_file)
-            return rep_tech.split('_')[0]  # Should truncate tech_rep
-        elif token == "{replicate_number}":
-            rep_tag = a_file.get("rep_tag",a_file.get("rep_tech",rep_for_file(a_file)))
-            if not rep_tag.startswith("rep"):
-                return "0"
-            return rep_tag[3:].split('_')[0]
-        elif token == "{biological_replicate_number}":
-            rep_tech = a_file.get("rep_tech",rep_for_file(a_file))
-            if not rep_tech.startswith("rep"):
-                return "0"
-            return rep_tech[3:].split('_')[0]
-        elif token == "{technical_replicate_number}":
-            rep_tech = a_file.get("rep_tech",rep_for_file(a_file))
-            if not rep_tech.startswith("rep"):
-                return "0"
-            return rep_tech.split('_')[1]
-        elif token == "{rep_tech}":
-            return a_file.get("rep_tech",rep_for_file(a_file))
-        else:
-            return ""
-    else:
-        log.warn('Untranslated token: "%s"' % token)
-        return "unknown"
-
-def convert_mask(mask,dataset,a_file=None):
-    '''Given a mask with one or more known {term_name}s, replaces with values.'''
-    working_on = mask
-    chars = len(working_on)
-    while chars > 0:
-        beg_ix = working_on.find('{')
-        if beg_ix == -1:
-            break
-        end_ix = working_on.find('}')
-        if end_ix == -1:
-            break
-        term = lookup_token(working_on[beg_ix:end_ix+1],dataset,a_file=a_file)
-        new_mask = []
-        if beg_ix > 0:
-            new_mask = working_on[0:beg_ix]
-        new_mask += "%s%s" % (term,working_on[end_ix+1:])
-        chars = len(working_on[end_ix+1:])
-        working_on = ''.join(new_mask)
-
-    return working_on
-
 
 def handle_negateValues(live_settings, defs, dataset, composite):
     '''If negateValues is set then adjust some settings like color'''
@@ -1884,8 +806,6 @@ def generate_live_groups(composite,title,group_defs,dataset,rep_tags=[]):
                     if mask is not None:
                         term = convert_mask(mask,dataset)
                         live_group["groups"][term_tag]["url"] = term
-                #else:
-                #    log.warn("Generating live groups mask: %s: '%s'" % (mask,term))
         live_group["preferred_order"] = "sorted"
         # No tag order since only one
 
@@ -1913,8 +833,10 @@ def generate_live_groups(composite,title,group_defs,dataset,rep_tags=[]):
                 live_group["groups"][subgroup_tag] = subgroup
                 tag_order.append(subgroup_tag)
             #assert(len(live_group["groups"]) == len(groups))
-            if len(live_group["groups"]) != len(groups):
-                log.warn(json.dumps(live_group,indent=4))
+            if len(live_group['groups']) != len(groups):
+                log.warn("len(live_group['groups']):%d != len(groups):%d" % \
+                                                    (len(live_group['groups']), len(groups)))
+                log.debug(json.dumps(live_group,indent=4))
             live_group["group_order"] = tag_order
             live_group["preferred_order"] = preferred_order
 
@@ -1927,7 +849,7 @@ def insert_live_group(live_groups,new_tag,new_group):
     if preferred_order is None or not isinstance(preferred_order,list):
         old_groups[new_tag] = new_group
         live_groups["groups"] = old_groups
-        #log.warn("Added %s to %s in sort order" % (new_tag,live_groups.get("tag","a group"))) # DEBUG: remodelling
+        #log.debug("Added %s to %s in sort order" % (new_tag,live_groups.get("tag","a group")))
         return live_groups
 
     # well we are going to have to generate s new order
@@ -1943,7 +865,7 @@ def insert_live_group(live_groups,new_tag,new_group):
 
     old_groups[new_tag] = new_group
     live_groups["groups"] = old_groups
-    #log.warn("Added %s to %s in preferred order" % (new_tag,live_groups.get("tag","a group"))) # DEBUG: remodelling
+    #log.debug("Added %s to %s in preferred order" % (new_tag,live_groups.get("tag","a group")))
     return live_groups
 
 def biosamples_for_file(a_file,dataset):
@@ -1978,29 +900,27 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
         view = composite["view"]["groups"][view_tag]
         output_types = view.get("output_type",[])
         file_format_types = view.get("file_format_type",[])
-        #if "type" not in view:
-        #    log.warn(json.dumps(composite)) # DEBUG: basics
         file_format = view["type"].split()[0]
         if file_format == "bigBed" and "scoreFilter" in view:
             view["type"] = "bigBed 6 +" # be more discriminating as to what bigBeds are 6 + ?  Just rely on scoreFilter
-        #log.warn("%d files looking for type %s" % (len(dataset["files"]),view["type"]))
+        #log.debug("%d files looking for type %s" % (len(dataset["files"]),view["type"]))
         for a_file in dataset["files"]:
             if a_file['status'] not in VISIBLE_FILE_STATUSES:
                 continue
             if file_format != a_file['file_format']:
-                #log.warn("- file_format %s does not match %s" % (a_file['file_format'],file_format))
+                #log.debug("- file_format %s does not match %s" % (a_file['file_format'],file_format))
                 continue
             if len(output_types) > 0 and a_file.get('output_type','unknown') not in output_types:
-                #log.warn("- wrong output_type: %s != %s" % (a_file.get('output_type','unknown'),str(output_types)))
+                #log.debug("- wrong output_type: %s != %s" % (a_file.get('output_type','unknown'),str(output_types)))
                 continue
             if len(file_format_types) > 0 and a_file.get('file_format_type','unknown') not in file_format_types:
-                #log.warn("- wrong file_format_type: %s != %s" % (a_file.get('file_format_type','unknown'),str(file_format_types)))
+                #log.debug("- wrong file_format_type: %s != %s" % (a_file.get('file_format_type','unknown'),str(file_format_types)))
                 continue
             if 'assembly' not in a_file or _ASSEMBLY_MAPPER.get(a_file['assembly'], a_file['assembly']) != ucsc_assembly:
                 #if 'assembly' not in a_file:
-                #    log.warn("- no assembly")
+                #    log.debug("- no assembly")
                 #else:
-                #    log.warn("- wrong assembly %s != %s" % (_ASSEMBLY_MAPPER.get(a_file['assembly'], a_file['assembly']), ucsc_assembly))
+                #    log.debug("- wrong assembly %s != %s" % (_ASSEMBLY_MAPPER.get(a_file['assembly'], a_file['assembly']), ucsc_assembly))
                 continue
             if "rep_tech" not in a_file:
                 rep_tech = rep_for_file(a_file)
@@ -2010,7 +930,7 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
             rep_techs[rep_tech] = rep_tech
             files.append(a_file)
     if len(files) == 0:
-        log.warn("No visualizable files for %s" % dataset["accession"])
+        log.warn("No visualizable files for %s %s" % (dataset["accession"],composite["vis_type"]))
         return None
 
     # convert rep_techs to simple reps
@@ -2153,7 +1073,7 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
 
 def make_acc_composite(dataset, assembly, host=None, hide=False):
     '''Converts experiment composite static definitions to live composite object'''
-    if dataset["status"] not in VISIBLE_EXP_STATUSES:
+    if dataset["status"] not in VISIBLE_DATASET_STATUSES:
         log.warn("%s can't be visualized because it's not unreleased status:%s." % (dataset["accession"],dataset["status"]))
         return {}
     vis_type = get_vis_type(dataset)
@@ -2162,7 +1082,7 @@ def make_acc_composite(dataset, assembly, host=None, hide=False):
         log.warn("%s (vis_type: %s) has undiscoverable vis_defs." % (dataset["accession"],vis_type))
         return {}
     composite = {}
-    #log.warn("%s has vis_type: %s." % (dataset["accession"],vis_type))
+    #log.debug("%s has vis_type: %s." % (dataset["accession"],vis_type))
     composite["vis_type"] = vis_type
     composite["name"] = dataset["accession"]
 
@@ -2230,13 +1150,11 @@ def make_acc_composite(dataset, assembly, host=None, hide=False):
                 sort_order.append(title_to_tag[title])
         composite["sortOrder"] = sort_order
 
-    #log.warn(json.dumps(composite)) # DEBUG: basics
     tracks = acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, host=host)
     if tracks is None or len(tracks) == 0:
-        # Already warned about files log.warn("No tracks for %s" % dataset["accession"])
+        # Already warned about files log.debug("No tracks for %s" % dataset["accession"])
         return {}
     composite["tracks"] = tracks
-    #log.warn(json.dumps(composite["view"]["groups"]["REPTSS"])) # DEBUG: basics
     return composite
 
 def remodel_acc_to_set_composites(acc_composites,hide_after=None):
@@ -2249,7 +1167,7 @@ def remodel_acc_to_set_composites(acc_composites,hide_after=None):
     for acc in sorted( acc_composites.keys() ):
         acc_composite = acc_composites[acc]
         if acc_composite is None or len(acc_composite) == 0: # wounded composite can be dropped or added for evidence
-            #log.warn("Found empty acc_composite for %s" % (acc)) # DEBUG: remodelling
+            #log.debug("Found empty acc_composite for %s" % (acc))
             set_composites[acc] = {}
             continue
 
@@ -2282,7 +1200,7 @@ def remodel_acc_to_set_composites(acc_composites,hide_after=None):
         vis_defs = lookup_vis_defs(vis_type)
         assert(vis_type is not None)
         if vis_type not in set_composites.keys():  # First one so just drop in place
-            #log.warn("Remodelling %s into %s composite" % (acc_composite.get("name"," a composite"),vis_type)) # DEBUG: remodelling
+            #log.debug("Remodelling %s into %s composite" % (acc_composite.get("name"," a composite"),vis_type))
             set_composite = acc_composite # Don't bother with deep copy... we aren't needing the acc_composites any more
             set_defs = vis_defs.get("assay_composite",{})
             set_composite["name"] = vis_type.lower()  # is there something more elegant?
@@ -2293,7 +1211,7 @@ def remodel_acc_to_set_composites(acc_composites,hide_after=None):
             set_composites[vis_type] = set_composite
 
         else: # Adding an acc_composite to an existing set_composite
-            #log.warn("Adding %s into %s composite" % (acc_composite.get("name"," a composite"),vis_type)) # DEBUG: remodelling
+            #log.debug("Adding %s into %s composite" % (acc_composite.get("name"," a composite"),vis_type))
             set_composite = set_composites[vis_type]
             set_composite['composite_type'] = 'set'
 
@@ -2310,7 +1228,7 @@ def remodel_acc_to_set_composites(acc_composites,hide_after=None):
             for view_tag in acc_views["group_order"]:
                 acc_view = acc_views["groups"][view_tag]
                 if view_tag not in set_views["groups"].keys():  # Should never happen
-                    #log.warn("Surprise: view %s not found before" % view_tag) # DEBUG: remodelling
+                    #log.debug("Surprise: view %s not found before" % view_tag)
                     insert_live_group(set_views,view_tag,acc_view)
                 else: # View is already defined but tracks need to be appended.
                     set_view = set_views["groups"][view_tag]
@@ -2325,7 +1243,7 @@ def remodel_acc_to_set_composites(acc_composites,hide_after=None):
             for group_tag in acc_composite["group_order"]:
                 acc_group = acc_composite["groups"][group_tag]
                 if group_tag not in set_composite["groups"].keys(): # Should never happen
-                    #log.warn("Surprise: group %s not found before" % group_tag) # DEBUG: remodelling
+                    #log.debug("Surprise: group %s not found before" % group_tag)
                     insert_live_group(set_composite,group_tag,acc_group)
                 else: # Need to handle subgroups which definitely may not be there.
                     set_group = set_composite["groups"].get(group_tag,{})
@@ -2336,7 +1254,7 @@ def remodel_acc_to_set_composites(acc_composites,hide_after=None):
                             insert_live_group(set_group,subgroup_tag,acc_subgroups[subgroup_tag]) # Adding biosamples, targets, and reps
 
             # dimensions and filterComposite should not need any extra care: they get dynamically scaled down during printing
-            #log.warn("       Added.") # DEBUG: remodelling
+            #log.debug("       Added.")
 
     return set_composites
 
@@ -2510,9 +1428,9 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False,
         request_dataset = (dataset is None)
         if request_dataset:
             dataset = request.embed("/datasets/" + acc + '/', as_user=True)
-            #log.warn("find_or_make_acc_composite len(results) = %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))  # DEBUG
+            #log.debug("find_or_make_acc_composite len(results) = %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))
 
-        acc_composite = make_acc_composite(dataset, assembly, host=request.host_url, hide=hide)  # DEBUG: batch trackDb
+        acc_composite = make_acc_composite(dataset, assembly, host=request.host_url, hide=hide)
         if USE_CACHE:
             add_to_es(request,es_key,acc_composite)
         #if not regen:
@@ -2529,8 +1447,11 @@ def generate_trackDb(request, dataset, assembly, hide=False, regen=False):
 
     acc = dataset['accession']
     ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
-    (found_or_made, acc_composite) = find_or_make_acc_composite(request, ucsc_assembly, dataset["accession"], dataset, hide=hide, regen=regen)
-    log.warn("%s composite %s_%s %.3f" % (found_or_made,dataset['accession'],ucsc_assembly,(time.time() - PROFILE_START_TIME)))
+    (found_or_made, acc_composite) = find_or_make_acc_composite(request, ucsc_assembly, \
+                                            dataset["accession"], dataset, hide=hide, regen=regen)
+    vis_type = acc_composite.get("vis_type",get_vis_type(dataset))
+    log.debug("%s composite %s_%s %s %.3f" % (found_or_made,dataset['accession'],ucsc_assembly, \
+                                                    vis_type,(time.time() - PROFILE_START_TIME)))
     #del dataset
     json_out = (request.url.find("jsonout") > -1) # @@hub/GRCh38/jsonout/trackDb.txt  regenvis/GRCh38 causes and error
     if json_out:
@@ -2554,19 +1475,16 @@ def generate_batch_trackDb(request, hide=False, regen=False):
 
     USE_CACHE = True # TODO: set to True when ready to try Bek's cache priming solution.
     CACHE_SETS = False  # NO CACHING OF set_composites!!!
-    USE_SEARCH = True # TODO: set to True when ready to try Bek's cache priming solution.  # USE ES CACHE SEARCH EXCLUSIVELY to find batch trackhub acc_composites
-    # TODO: consider using view=all to decide on cache usage.
 
     # Special logic to force remaking of trackDb
     if not regen:
         regen = (request.url.find("regenvis") > -1) # ...&assembly=hg19&regenvis/hg19/trackDb.txt  regenvis=1 causes an error
     find_or_make = "find or make"
-    #regen = 5 # DEBUG
     if not regen: # Find composite?
         find_or_make = "make"
 
     assembly = str(request.matchdict['assembly'])
-    log.warn("Request for %s trackDb begins   %.3f secs" % (assembly,(time.time() - PROFILE_START_TIME)))  # DEBUG: batch trackDb
+    log.debug("Request for %s trackDb begins   %.3f secs" % (assembly,(time.time() - PROFILE_START_TIME)))
     param_list = parse_qs(request.matchdict['search_params'].replace(',,', '&'))
 
     set_composites = None
@@ -2579,7 +1497,7 @@ def generate_batch_trackDb(request, hide=False, regen=False):
         if not regen: # Force regeneration?
             set_composites = get_from_es(request,es_set_key)
             if set_composites is not None:
-                log.warn("Found with key %s   %.3f secs" % (es_set_key,(time.time() - PROFILE_START_TIME)))
+                log.debug("Found with key %s   %.3f secs" % (es_set_key,(time.time() - PROFILE_START_TIME)))
 
     if set_composites is None:
 
@@ -2602,7 +1520,7 @@ def generate_batch_trackDb(request, hide=False, regen=False):
         path = '/%s/?%s' % (view, urlencode(params, True))
         results = request.embed(path, as_user=True)['@graph']
         if not USE_CACHE:
-            log.warn("len(results) = %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))  # DEBUG: batch trackDb
+            log.debug("len(results) = %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))
         else:
             # Note: better memory usage to get acc array from non-embedded results, since acc_composites should be in cache
             accs = [result['accession'] for result in results]
@@ -2610,12 +1528,12 @@ def generate_batch_trackDb(request, hide=False, regen=False):
 
         found = 0
         made = 0
-        if USE_CACHE and USE_SEARCH and not regen:
-            # Rely upon es cache only
+        if USE_CACHE and not regen:
             es_keys = [acc + "_" + assembly for acc in accs]
             acc_composites = search_es(request, es_keys)
             found = len(acc_composites)
-        else:
+            
+        if found == 0: # if 0 were found in cache try generating (for pre-primed-cache access)
             acc_composites = {}
             if not USE_CACHE:
                 for dataset in results:          # Note: Poor memory usage, since acc_composites should all be in cache
@@ -2628,7 +1546,7 @@ def generate_batch_trackDb(request, hide=False, regen=False):
                     (found_or_made, acc_composite) = find_or_make_acc_composite(request, assembly, acc, None, hide=hide, regen=regen)
                     if found_or_made == "made":
                         made += 1
-                        #log.warn("%s composite %s" % (found_or_made,acc))
+                        #log.debug("%s composite %s" % (found_or_made,acc))
                     else:
                         found += 1
                     acc_composites[acc] = acc_composite
@@ -2636,39 +1554,17 @@ def generate_batch_trackDb(request, hide=False, regen=False):
         set_composites = remodel_acc_to_set_composites(acc_composites, hide_after=100)
         if USE_CACHE and CACHE_SETS:
             add_to_es(request,es_set_key,set_composites)
-        log.warn("%d acc_composites => %d set_composites (%s generated, %d found)   %.3f secs" % \
+        log.debug("%d acc_composites => %d set_composites (%s generated, %d found)   %.3f secs" % \
             ((made + found),len(set_composites),made,found,(time.time() - PROFILE_START_TIME)))
-        # TODO:
-        # 1) Either find good way to prime cache or decide to not.
-        # 2) If mm10 and mm10-minimal exist all files get folded into mm10.  Is this what is wanted?
-        # 3) Generating reps can be fooled by multiple tech_reps (LRNA rep1_1 and rep1_2 = "rep1" as opposed to "pooled"
-        # 4) assays without vis_defs...
-        # m4.large:
-        #  20 acc_composites => 1 set_composites (20 generated, 0 found)    0.619 secs - len(results) =  20    0.599 secs
-        #  41 acc_composites => 1 set_composites (41 generated, 0 found)    3.241 secs - len(results) =  41    3.177 secs
-        #  88 acc_composites => 1 set_composites (88 generated, 0 found)   10.397 secs - len(results) =  88   10.184 secs
-        # 198 acc_composites => 1 set_composites (198 generated, 0 found)  27.517 secs - len(results) = 198   26.658 secs
-        # 474 acc_composites => 1 set_composites (474 generated, 0 found) 360.696 secs - len(results) = 474  338.761 secs
-        # t4.x4large:
-        #  20 acc_composites => 1 set_composites (20 generated, 0 found)    1.820 secs - len(results) =  20    1.800 secs
-        #  20 acc_composites => 1 set_composites (20 generated, 0 found)    0.200 secs - len(results) =  20    0.184 secs
-        #  41 acc_composites => 1 set_composites (41 generated, 0 found)    2.232 secs - len(results) =  41    2.176 secs
-        #  41 acc_composites => 1 set_composites (41 generated, 0 found)    3.740 secs - len(results) =  41    3.667 secs
-        #  88 acc_composites => 1 set_composites (88 generated, 0 found)   12.528 secs - len(results) =  88   12.314 secs
-        #  88 acc_composites => 1 set_composites (88 generated, 0 found)   10.657 secs - len(results) =  88   10.459 secs
-        # 198 acc_composites => 1 set_composites (198 generated, 0 found)  25.008 secs - len(results) = 198   24.468 secs
-        # 198 acc_composites => 1 set_composites (198 generated, 0 found)  28.590 secs - len(results) = 198   27.667 secs
-        # 474 acc_composites => 1 set_composites (474 generated, 0 found)  63.715 secs - len(results) = 474   62.148 secs
-        # 474 acc_composites => 1 set_composites (474 generated, 0 found)  63.494 secs - len(results) = 474   61.706 secs
 
-    json_out = (request.url.find("jsonout") > -1) # ...&assembly=hg19&jsonout/hg19/trackDb.txt  regenvis=1 causes an error
+    json_out = (request.url.find("jsonout") > -1) # ...&assembly=hg19&jsonout/hg19/trackDb.txt
     if json_out:
         return json.dumps(set_composites,indent=4,sort_keys=True)
 
     blob = ""
     for composite_tag in sorted( set_composites.keys() ):
         blob += ucsc_trackDb_composite_blob(set_composites[composite_tag],composite_tag)
-    log.warn("Length of trackDb %d   %.3f secs" % (len(blob),(time.time() - PROFILE_START_TIME)))  # DEBUG: batch trackDb
+    log.debug("Length of trackDb %d   %.3f secs" % (len(blob),(time.time() - PROFILE_START_TIME)))
 
     return blob
 
@@ -2677,17 +1573,34 @@ def generate_batch_trackDb(request, hide=False, regen=False):
 def prime_vis_es_cache(event):
     request = event.request
     uuids = event.object
+    
+    # NOTE: log.warn (not debug) to be seen, since this log is NOT in this module's scope
+    #log.warn("Starting prime_vis_es_cache")
 
+    visualizabe_types = set(VISIBLE_DATASET_TYPES)
+    count = 0
     for uuid in uuids:
         dataset = request.embed(uuid)
-        # TODO Try to limit the sets we are interested in
+        # Try to limit the sets we are interested in
+        if dataset.get('status','none') not in VISIBLE_DATASET_STATUSES:
+            continue
+        if visualizabe_types.isdisjoint(dataset['@type']):
+            continue
         acc = dataset['accession']
         assemblies = dataset.get('assembly',[])
         for assembly in assemblies:
             ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
-            (found_or_made, acc_composite) = find_or_make_acc_composite(request, ucsc_assembly, acc, dataset, regen=True)
+            (found_or_made, acc_composite) = find_or_make_acc_composite(request, ucsc_assembly, \
+                                                                        acc, dataset, regen=True)
             if acc_composite:
-                log.warn("primed cache with acc_composite %s" % (acc))  # DEBUG
+                count += 1
+                log.warn("primed vis_es_cache with acc_composite %s_%s '%s'" % \
+                                            (acc,ucsc_assembly,acc_composite.get('vis_type','')))
+            else:
+                log.warn("prime_vis_es_cache for %s_%s unvisualizable '%s'" % \
+                                            (acc,ucsc_assembly,get_vis_type(dataset)))
+    if count == 0:
+        log.warn("prime_vis_es_cache made %d acc_composites" % (count))
 
 def render(data):
     arr = []
@@ -2739,13 +1652,13 @@ def generate_html(context, request):
     ''' Generates and returns HTML for the track hub'''
 
     # First determine if single dataset or collection
-    #log.warn("HTML request: %s" % request.url)
+    #log.debug("HTML request: %s" % request.url)
 
     html_requested = request.url.split('/')[-1].split('.')[0]
     if html_requested.startswith('ENCSR'):
         embedded = request.embed(request.resource_path(context))
         acc = embedded['accession']
-        log.warn("generate_html for %s   %.3f secs" % (acc,(time.time() - PROFILE_START_TIME)))  # DEBUG
+        log.debug("generate_html for %s   %.3f secs" % (acc,(time.time() - PROFILE_START_TIME)))
         assert( html_requested == acc)
 
         vis_type = get_vis_type(embedded)
@@ -2819,7 +1732,7 @@ def generate_batch_hubs(context, request):
             view = 'region-search'
         path = '/%s/?%s' % (view, urlencode(param_list, True))
         results = request.embed(path, as_user=True)
-        #log.warn("generate_batch(genomes) len(results) = %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))  # DEBUG
+        #log.debug("generate_batch(genomes) len(results) = %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))
         g_text = ''
         if 'assembly' in param_list:
             g_text = get_genomes_txt(param_list.get('assembly'))
