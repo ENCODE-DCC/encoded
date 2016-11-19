@@ -839,8 +839,10 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
     except multiprocessing.NotImplmentedError:
         nprocesses = 1
 
-    out.write("STARTING Checkfiles (%s): with %d processes %s at %s\n" %
-              (search_query, nprocesses, dr, datetime.datetime.now()))
+    version = '1.0'
+
+    out.write("STARTING Checkfiles version %s (%s): with %d processes %s at %s\n" %
+              (version, search_query, nprocesses, dr, datetime.datetime.now()))
     if processes == 0:
         # Easier debugging without multiprocessing.
         imap = map
