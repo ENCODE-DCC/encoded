@@ -1010,6 +1010,11 @@ const ResultTable = search.ResultTable = React.createClass({
         e.preventDefault();
     },
 
+    // Called when new value chosen from assembly dropdown.
+    assemblyChange: function (e) {
+        this.setState({ browserAssembly: e.target.value });
+    },
+
     render: function () {
         const batchHubLimit = 100;
         const { context, searchBase, assemblies } = this.props;
@@ -1088,7 +1093,14 @@ const ResultTable = search.ResultTable = React.createClass({
                 browserAssembly = assemblies[0];
             } else {
                 browserAssembly = this.state.browserAssembly;
-                assemblyChooser = <AssemblyChooser assemblies={assemblies} assemblyChange={this.assemblyChange} />;
+                assemblyChooser = (
+                    <div className="browser-assembly-chooser">
+                        <div className="browser-assembly-chooser__title">Assembly:</div>
+                        <div className="browser-assembly-chooser__menu">
+                            <AssemblyChooser assemblies={assemblies} assemblyChange={this.assemblyChange} />
+                        </div>
+                    </div>
+                );
             }
         }
 
@@ -1155,16 +1167,12 @@ const ResultTable = search.ResultTable = React.createClass({
                                 </div>
                                 <hr />
                                 {browserAvail ?
-                                    <TabPanel
-                                        tabs={{ listpane: 'List', browserpane: 'Browser' }}
-                                        decoration={assemblyChooser}
-                                        decorationClasses=""
-                                        tabFlange
-                                    >
+                                    <TabPanel tabs={{ listpane: 'List', browserpane: 'Browser' }} tabFlange>
                                         <TabPanelPane key="listpane">
                                             <ResultTableList results={results} columns={columns} tabbed />
                                         </TabPanelPane>
                                         <TabPanelPane key="browserpane">
+                                            {assemblyChooser}
                                             <ResultBrowser files={results} assembly={browserAssembly} limitFiles={!browseAllFiles} />
                                         </TabPanelPane>
                                     </TabPanel>
@@ -1265,10 +1273,8 @@ const Search = search.Search = React.createClass({
         const results = this.props.context['@graph'];
         const files = results.length ? results.filter(result => result['@type'][0] === 'File') : [];
         if (files.length) {
-            assemblies = files.reduce((assembliesAcc, file) => {
-                console.log('RES: %o:%o', assembliesAcc, file);
-                return ((file.assembly && assembliesAcc.indexOf(file.assembly) === -1) ? assembliesAcc : assembliesAcc.push(file.assembly));
-            }, []);
+            // Reduce all found file assemblies so we don't have duplicates in the 'assemblies' array.
+            assemblies = files.reduce((assembliesAcc, file) => ((!file.assembly || assembliesAcc.indexOf(file.assembly) > -1) ? assembliesAcc : assembliesAcc.concat(file.assembly)), []);
         }
 
         return (

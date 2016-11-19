@@ -42,6 +42,136 @@ const dummyFiles = [
     },
 ];
 
+
+function rAssemblyToSources(assembly, region) {
+    let browserCfg;
+
+    if (assembly === 'hg19') {
+        if (region) {
+            const reg = region.split(':');
+            const chr = reg[0].substring(3, reg[0].length);
+            let viewStart;
+            let viewEnd;
+            const positions = reg[1].split('-');
+            for (let i = 0; i < positions.length; i += 1) {
+                positions[i] = parseInt(positions[i].replace(/,/g, ''), 10);
+            }
+            if (positions.length > 1) {
+                if (positions[0] > 10000) {
+                    viewStart = positions[0] - 10000;
+                } else {
+                    viewStart = 1;
+                }
+                viewEnd = positions[1] + 10000;
+            } else {
+                if (positions[0] > 10000) {
+                    viewStart = positions[0] - 10000;
+                } else {
+                    viewStart = 1;
+                }
+                viewEnd = positions[0] + 10000;
+            }
+
+            browserCfg = {
+                chr: chr,
+                viewStart: viewStart,
+                viewEnd: viewEnd,
+                sources: [
+                    {
+                        name: 'Genome',
+                        twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/hg19.2bit',
+                        tier_type: 'sequence',
+                        provides_entrypoints: true,
+                        pinned: true,
+                    },
+                    {
+                        name: 'GENCODE',
+                        bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/gencode.bb',
+                        stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/gencode.xml',
+                        collapseSuperGroups: true,
+                        trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/geneIndex.ix',
+                    },
+                    {
+                        name: 'Repeats',
+                        desc: 'Repeat annotation from RepeatMasker',
+                        bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/repeats.bb',
+                        stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/bb-repeats.xml',
+                        forceReduction: -1,
+                    },
+                ],
+            };
+        }
+    } else if (assembly === 'mm10') {
+        browserCfg = {
+            chr: '19',
+            viewStart: 30000000,
+            viewEnd: 30100000,
+            cookieKey: 'mouse38',
+            coordSystem: { speciesName: 'Mouse', taxon: 10090, auth: 'GRCm', version: 38, ucscName: 'mm10' },
+            sources: [
+                {
+                    name: 'Genome',
+                    twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/mm10.2bit',
+                    desc: 'Mouse reference genome build GRCm38',
+                    tier_type: 'sequence',
+                    provides_entrypoints: true,
+                },
+                {
+                    name: 'Genes',
+                    desc: 'Gene structures from GENCODE M2',
+                    bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/gencodeM2.bb',
+                    stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/gencode.xml',
+                    collapseSuperGroups: true,
+                    trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/gencodeM2.ix',
+                },
+                {
+                    name: 'Repeats',
+                    desc: 'Repeat annotation from UCSC',
+                    bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/repeats.bb',
+                    stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/bb-repeats2.xml',
+                },
+            ],
+        };
+    } else if (assembly === 'mm9') {
+        browserCfg = {
+            chr: '19',
+            viewStart: 30000000,
+            viewEnd: 30030000,
+            cookieKey: 'mouse',
+            coordSystem: { speciesName: 'Mouse', taxon: 10090, auth: 'NCBIM', version: 37 },
+            sources: [
+                {
+                    name: 'Genome',
+                    twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm9/mm9.2bit',
+                    desc: 'Mouse reference genome build NCBIm37',
+                    tier_type: 'sequence',
+                    provides_entrypoints: true,
+                },
+            ],
+        };
+    } else if (assembly === 'dm3') {
+        browserCfg = {
+            chr: '3L',
+            viewStart: 15940000,
+            viewEnd: 15985000,
+            cookieKey: 'drosophila',
+            coordSystem: { speciesName: 'Drosophila', taxon: 7227, auth: 'BDGP', version: 5 },
+            sources: [
+                {
+                    name: 'Genome',
+                    twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm3/dm3.2bit',
+                    desc: 'D. melanogaster reference genome build BDGP R5',
+                    tier_type: 'sequence',
+                    provides_entrypoints: true,
+                },
+            ],
+        };
+    }
+
+    return browserCfg;
+}
+
+
 const GenomeBrowser = React.createClass({
     propTypes: {
         files: React.PropTypes.array.isRequired, // Array of files to represent
@@ -57,6 +187,7 @@ const GenomeBrowser = React.createClass({
 
     componentDidMount: function () {
         const { assembly, region, limitFiles } = this.props;
+        console.log('ASSEMBLY: %s', assembly);
 
         // Extract only bigWig and bigBed files from the list:
         let files = this.props.files.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
