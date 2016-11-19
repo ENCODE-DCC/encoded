@@ -1,19 +1,14 @@
 # This file contains standard json (no extra commas) with the exception that '#' comments are OK.
 
-# vis_defs are "Visualization Definitions" which define the default viusualization settings for
+# vis_defs are "Visualization Definitions" which define the default viusualization settings for 
 #          a given experiment type.  Initially created to enable visualization on the UCSC
 #          browser, th definitions can be extended for alternate visualization tools.
 # vis_type, a short identifier, is the unique vis_def key.  An experiment's vis_type and vis_def
-#          vis_def is determined by a set of rules.
-# "rule"   If the vis_def contains a 'rule' property, then this alone defines the rule for
+#          vis_def is determined by a set of rules.  
+# "rule"   If the vis_def contains a 'rule' property, then this alone defines the rule for 
 #          assigning a vis_type/vis_def to a dataset.  More complicated rules for some vis_types
 #          are hard-coded into visualization.py.  If a datasets' vis_type cannot be determined,
 #          it is considered "opaque" and will used the default vis_def.
-
-# "live group" defs are keyed by tag and are the transformed in memory version of static defs
-# title: (required) same as the static group's key
-# groups: (if appropriate) { subgroups keyed by subgroup tag }
-# group_order: (if appropriate) [ ordered list of subgroup tags ]
 
 {
 "opaque": {  # COMPOSITE_VIS_DEFS_DEFAULT = {
@@ -1136,19 +1131,3 @@
     }
 }
 }
-
-#VIS_DEFS_BY_ASSAY = {
-#    "LRNA":     LRNA_COMPOSITE_VIS_DEFS,
-#    "tkRNA":    TKRNA_COMPOSITE_VIS_DEFS,
-#    "SRNA":     SRNA_COMPOSITE_VIS_DEFS,
-#    "TSS":      RAMPAGE_COMPOSITE_VIS_DEFS,
-#    "miRNA":    MICRORNA_COMPOSITE_VIS_DEFS,
-#    "DNASE":    DNASE_COMPOSITE_VIS_DEFS,
-#    "WGBS":     WGBS_COMPOSITE_VIS_DEFS,
-#    "ChIP":     CHIP_COMPOSITE_VIS_DEFS,
-#    "eCLIP":    ECLIP_COMPOSITE_VIS_DEFS,
-#    "ANNO":     ANNO_COMPOSITE_VIS_DEFS,
-#    "ChIA":     CHIA_COMPOSITE_VIS_DEFS,
-#    "HiC":      HIC_COMPOSITE_VIS_DEFS,
-#    }
-

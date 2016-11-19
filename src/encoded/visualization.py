@@ -372,6 +372,8 @@ def lookup_vis_defs(vis_type):
     '''returns the best static composite definition set, based upon dataset.'''
     global VIS_DEFS_BY_TYPE
     global COMPOSITE_VIS_DEFS_DEFAULT
+    if not VIS_DEFS_BY_TYPE:
+        load_vis_defs()
     vis_def = VIS_DEFS_BY_TYPE.get(vis_type, COMPOSITE_VIS_DEFS_DEFAULT )
     if EXP_GROUP not in vis_def["other_groups"]["groups"]:
         vis_def["other_groups"]["groups"][EXP_GROUP] = DEFAULT_EXPERIMENT_GROUP
@@ -1412,7 +1414,7 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False,
     ### LRNA: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR000AAA/@@hub/GRCh38/trackDb.txt
 
     # USE ES CACHE
-    USE_CACHE = True # TODO: set to True when ready to try Bek's cache priming solution.
+    USE_CACHE = True # Note: set to True when ready to try Bek's cache priming solution.
 
     acc_composite = None
     es_key = acc + "_" + assembly
@@ -1473,7 +1475,7 @@ def generate_batch_trackDb(request, hide=False, regen=False):
 
     ### local test: RNA-seq: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/batch_hub/type=Experiment,,assay_title=RNA-seq,,award.rfa=ENCODE3,,status=released,,assembly=GRCh38,,replicates.library.biosample.biosample_type=induced+pluripotent+stem+cell+line/GRCh38/trackDb.txt
 
-    USE_CACHE = True # TODO: set to True when ready to try Bek's cache priming solution.
+    USE_CACHE = True # Note: set to True when ready to try Bek's cache priming solution.
     CACHE_SETS = False  # NO CACHING OF set_composites!!!
 
     # Special logic to force remaking of trackDb
@@ -1568,7 +1570,7 @@ def generate_batch_trackDb(request, hide=False, regen=False):
 
     return blob
 
-# TODO: uncomment when ready to try Bek's cache priming solution.
+# Note: uncomment when ready to try Bek's cache priming solution.
 @subscriber(AfterIndexedExperimentsAndDatasets)
 def prime_vis_es_cache(event):
     request = event.request
@@ -1596,9 +1598,9 @@ def prime_vis_es_cache(event):
                 count += 1
                 log.warn("primed vis_es_cache with acc_composite %s_%s '%s'" % \
                                             (acc,ucsc_assembly,acc_composite.get('vis_type','')))
-            else:
-                log.warn("prime_vis_es_cache for %s_%s unvisualizable '%s'" % \
-                                            (acc,ucsc_assembly,get_vis_type(dataset)))
+            #else:
+            #    log.warn("prime_vis_es_cache for %s_%s unvisualizable '%s'" % \
+            #                                (acc,ucsc_assembly,get_vis_type(dataset)))
     if count == 0:
         log.warn("prime_vis_es_cache made %d acc_composites" % (count))
 
