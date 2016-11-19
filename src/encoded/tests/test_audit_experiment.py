@@ -1481,7 +1481,7 @@ def test_audit_experiment_rampage_standards(testapp,
     for error_type in errors:
         errors_list.extend(errors[error_type])
 
-    assert any(error['category'] == 'insufficient read depth' for error in errors_list)
+    assert any(error['category'] == 'extremely low read depth' for error in errors_list)
 
 
 def test_audit_experiment_small_rna_standards(testapp,

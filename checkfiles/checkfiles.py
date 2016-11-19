@@ -161,6 +161,7 @@ def check_format(encValData, job, path):
         ('sam', None): None,
         ('wig', None): None,
         ('hdf5', None): None,
+        ('hic', None): None,
         ('gff', None): None,
         ('vcf', None): None,
         ('btr', None): None
