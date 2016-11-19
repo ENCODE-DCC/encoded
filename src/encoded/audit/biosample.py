@@ -228,6 +228,7 @@ def audit_biosample_culture_date(value, system):
             value['culture_start_date'])
         raise AuditFailure('invalid dates', detail, level='ERROR')
 
+
 @audit_checker('biosample', frame=['organism', 'donor', 'donor.organism', 'donor.mutated_gene', 'donor.mutated_gene.organism'])
 def audit_biosample_donor(value, system):
     '''
@@ -239,8 +240,13 @@ def audit_biosample_donor(value, system):
 
     if ('donor' not in value):
         detail = 'Biosample {} is not associated with any donor.'.format(value['@id'])
-        raise AuditFailure('missing donor', detail, level='ERROR')
-        return
+        if 'award' in value and 'rfa' in value['award'] and \
+           value['award']['rfa'] == 'GGR':
+            raise AuditFailure('missing donor', detail, level='INTERNAL_ACTION')
+            return
+        else:
+            raise AuditFailure('missing donor', detail, level='ERROR')
+            return
 
     donor = value['donor']
     if value['organism']['name'] != donor['organism']['name']:
