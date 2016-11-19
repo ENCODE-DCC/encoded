@@ -984,8 +984,8 @@ def check_control_read_depth_standards(value,
                     'fragments is > 20 million. (See /data-standards/chip-seq/ )'
             if read_depth >= 10000000 and read_depth < marks['narrow']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
-            elif read_depth >= 5000000 and read_depth < 10000000:
+            elif read_depth >= 3000000 and read_depth < 10000000:
                 yield AuditFailure('control low read depth', detail, level='NOT_COMPLIANT')
-            elif read_depth < 5000000:
+            elif read_depth < 3000000:
                 yield AuditFailure('control extremely low read depth', detail, level='ERROR')
         return

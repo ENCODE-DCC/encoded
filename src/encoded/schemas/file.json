@@ -161,7 +161,6 @@
             "uniqueItems": true,
             "permission": "import_items",
             "items": {
-                "uniqueKey": "fastq_signature_part",
                 "title": "Flowcell based fastq siganture part",
                 "description": "Fastq file flowcell based unique signature to reference a file.",
                 "comment": "Current convention is based on the Illumina unique sequence identifier, colon separated flowcell, lane, read_end(1/2) and barcode.",
@@ -185,6 +184,7 @@
                         "gff",
                         "gtf",
                         "hdf5",
+                        "hic",
                         "idat",
                         "rcc",
                         "CEL",
@@ -913,6 +913,7 @@
         "fastq": ".fastq.gz",
         "gff": ".gff.gz",
         "gtf": ".gtf.gz",
+        "hic": ".hic",
         "hdf5": ".h5",
         "idat": ".idat",
         "PWM":".pwm",
