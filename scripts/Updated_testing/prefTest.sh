@@ -37,13 +37,13 @@ if [ $indexerOutput == "indexing" ];then
 	else
 		##Locust
 		osascript -e 'tell application "Terminal" to activate' -e 'tell application "System Events" to tell process "Terminal" to keystroke "t" using command down' -e 'tell application "Terminal" to do script "locust -f locustfile.py --host='$URL_PREF'" in selected tab of the front window'
-		time python3 ~/Documents/ENCODE-DCC-encoded/Master_ENCODE-DCC-encoded/ENCODE-DCC-encoded/pyencoded-tools/ENCODE_patch_set.py --infile fasq; python3 stress.py $URL_PREF;
+		time python3 py_encoded_tools/ENCODE_patch_set.py --infile fasq; python3 stress.py $URL_PREF;
  		fullExit
 	fi
 	
 	else
 		osascript -e 'tell application "Terminal" to activate' -e 'tell application "System Events" to tell process "Terminal" to keystroke "t" using command down' -e 'tell application "Terminal" to do script "locust -f locustfile.py --host='$URL_PREF'" in selected tab of the front window'
-		time python3 ~/Documents/ENCODE-DCC-encoded/Master_ENCODE-DCC-encoded/ENCODE-DCC-encoded/pyencoded-tools/ENCODE_patch_set.py --infile fasq; python3 stress.py $URL_PREF;
+		time python3 py_encoded_tools/ENCODE_patch_set.py --infile fasq; python3 stress.py $URL_PREF;
 		IT_FINISH=1
  		fullExit
 fi
