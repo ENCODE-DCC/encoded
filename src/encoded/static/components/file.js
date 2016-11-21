@@ -4,15 +4,96 @@ import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import globals from './globals';
 import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
 import { DbxrefList } from './dbxref';
+import { FetchedItems } from './fetched';
 import { ProjectBadge } from './image';
 import { PickerActionsMixin } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import { StatusLabel } from './statuslabel';
 
 
+// Columns to display in Deriving/Derived From file tables
+const derivingCols = {
+    accession: {
+        title: 'Accession',
+        display: file => <a href={file['@id']} title={`View page for file ${file.accession}`}>{file.accession}</a>,
+    },
+    dataset: {
+        title: 'Dataset',
+        display: (file) => {
+            const datasetAccession = globals.atIdToAccession(file.dataset);
+            return <a href={file.dataset} title={`View page for dataset ${datasetAccession}`}>{datasetAccession}</a>;
+        },
+    },
+    file_format: { title: 'File format' },
+    output_type: { title: 'Output type' },
+    title: {
+        title: 'Lab',
+        getValue: file => (file.lab && file.lab.title ? file.lab.title : ''),
+    },
+    assembly: { title: 'Mapping assembly' },
+    status: {
+        title: 'File status',
+        display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
+    },
+};
+
+
+// Display a table of files deriving from the one being displayed. This component gets called once
+// a GET request's data returns.
+const DerivedFiles = React.createClass({
+    propTypes: {
+        items: React.PropTypes.array, // Array of files from the GET request
+        context: React.PropTypes.object, // File that requested this list
+    },
+
+    render: function () {
+        const { items, context } = this.props;
+
+        if (items.length) {
+            return (
+                <SortTablePanel header={<h4>{`Files deriving from ${context.accession}`}</h4>}>
+                    <SortTable
+                        list={items}
+                        columns={derivingCols}
+                        sortColumn="accession"
+                    />
+                </SortTablePanel>
+            );
+        }
+        return null;
+    },
+});
+
+
+// Display a table of files the current file derives from.
+const DerivedFromFiles = React.createClass({
+    propTypes: {
+        file: React.PropTypes.object.isRequired, // File being analyzed
+    },
+
+    render: function () {
+        const { file } = this.props;
+
+        return (
+            <SortTablePanel header={<h4>{`Files ${file.accession} derives from`}</h4>}>
+                <SortTable
+                    list={file.derived_from}
+                    columns={derivingCols}
+                    sortColumn="accession"
+                />
+            </SortTablePanel>
+        );
+    },
+});
+
+
 const File = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // File object being displayed
+    },
+
+    contextTypes: {
+        session: React.PropTypes.object, // Login information
     },
 
     mixins: [AuditMixin],
@@ -193,9 +274,16 @@ const File = React.createClass({
                     <SequenceFileInfo file={context} />
                 : null}
 
-                {(context.derived_from && context.derived_from.length) || (context.deriving && context.deriving.length) ?
-                    <DerivedFiles file={context} />
-                : null}
+                {context.derived_from && context.derived_from.length ? <DerivedFromFiles file={context} /> : null}
+
+                <FetchedItems
+                    {...this.props}
+                    url={`/search/?type=File&derived_from.accession=${context.accession}`}
+                    Component={DerivedFiles}
+                    encodevers={globals.encodeVersion(context)}
+                    session={this.context.session}
+                    ignoreErrors
+                />
             </div>
         );
     },
@@ -351,62 +439,6 @@ const FlowcellDetails = React.createClass({
                     </Panel>
                 )}
             </div>
-        );
-    },
-});
-
-const DerivedFiles = React.createClass({
-    propTypes: {
-        file: React.PropTypes.object.isRequired, // File being analyzed
-    },
-
-    derivingCols: {
-        accession: {
-            title: 'Accession',
-            display: file => <a href={file['@id']} title={`View page for file ${file.accession}`}>{file.accession}</a>,
-        },
-        dataset: {
-            title: 'Dataset',
-            display: (file) => {
-                const datasetAccession = globals.atIdToAccession(file.dataset);
-                return <a href={file.dataset} title={`View page for dataset ${datasetAccession}`}>{datasetAccession}</a>;
-            },
-        },
-        file_format: { title: 'File format' },
-        output_type: { title: 'Output type' },
-        title: {
-            title: 'Lab',
-            getValue: file => (file.lab && file.lab.title ? file.lab.title : ''),
-        },
-        assembly: { title: 'Mapping assembly' },
-        status: {
-            title: 'File status',
-            display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
-        },
-    },
-
-    render: function () {
-        const { file } = this.props;
-
-        return (
-            <SortTablePanel header={<h4>File derivations</h4>}>
-                {file.deriving && file.deriving.length ?
-                    <SortTable
-                        title={<div className="collapsing-title"><h5>{`Files deriving from ${file.accession}`}</h5></div>}
-                        list={file.deriving}
-                        columns={this.derivingCols}
-                        sortColumn="accession"
-                    />
-                : null}
-                {file.derived_from && file.derived_from.length ?
-                    <SortTable
-                        title={<div className="collapsing-title"><h5>{`Files ${file.accession} derives from `}</h5></div>}
-                        list={file.derived_from}
-                        columns={this.derivingCols}
-                        sortColumn="accession"
-                    />
-                : null}
-            </SortTablePanel>
         );
     },
 });
