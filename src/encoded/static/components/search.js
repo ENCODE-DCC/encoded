@@ -856,7 +856,7 @@ var FacetList = search.FacetList = React.createClass({
 
         return (
             <div className="box facets">
-                <div className={this.props.orientation === 'horizontal' ? 'horizontal' : ''}>
+                <div className={`orientation${this.props.orientation === 'horizontal' ? ' horizontal' : ''}`}>
                     {clearButton ?
                         <div className="clear-filters-control">
                             <a href={context.clear_filters}>Clear Filters <i className="icon icon-times-circle"></i></a>
