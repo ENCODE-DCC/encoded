@@ -40,7 +40,7 @@ class Award(Item):
     item_type = 'award'
     schema = load_schema('encoded:schemas/award.json')
     name_key = 'name'
-    embedded = ['pi']
+    embedded = ['pi.lab']
 
 
 @collection(

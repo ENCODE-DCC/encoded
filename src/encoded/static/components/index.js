@@ -4,6 +4,7 @@
 require('./lib');
 require('./antibody');
 require('./app');
+require('./award');
 require('./image');
 require('./biosample');
 require('./collection');
