@@ -412,11 +412,8 @@ def process_fastq_file(job, fastq_data_stream, session, url):
         else:
             errors['read_length'] = 'no specified read length in the uploaded fastq file, ' + \
                                     'while read length(s) found in the file were {}. '.format(
-                                    ', '.join(map(str, read_lengths_list)))  # + \ 'Gathered information about the file was: {}.'.format(str(result))
-
-
+                                    ', '.join(map(str, read_lengths_list)))
         # signatures
-        uniqueness_flag = True
         signatures_for_comparison = set()
         is_UMI = False
         if 'flowcell_details' in item and len(item['flowcell_details']) > 0:
@@ -437,7 +434,7 @@ def process_fastq_file(job, fastq_data_stream, session, url):
             else:
                 signatures_for_comparison = signatures_set
 
-        signature_conflicts = []
+        '''signature_conflicts = []
         for unique_signature in signatures_for_comparison:
             query = '/' + unique_signature + '?format=json'
             try:
@@ -454,13 +451,14 @@ def process_fastq_file(job, fastq_data_stream, session, url):
                         'specified unique identifier {} '.format(unique_signature) +
                         'is conflicting with identifier of reads from ' +
                         'file {}.'.format(response['accession']))
-        if uniqueness_flag is True:
+        '''
+        if check_for_fastq_signature_conflicts(
+           session,
+           url,
+           errors,
+           item,
+           signatures_for_comparison):
             result['fastq_signature'] = sorted(list(signatures_for_comparison))
-        else:
-            #gathered_info = ' Gathered information about the uploading file was: {}.'.format(
-            #    str(result))
-            # signature_conflicts.append(gathered_info)
-            errors['not_unique_flowcell_details'] = ', '.join(map(str, signature_conflicts))
 
 
 def process_barcodes(signatures_set):
@@ -500,7 +498,7 @@ def process_read_lengths(read_lengths_dict,
         errors_to_report['read_length'] = \
             'in file metadata the read_length is {}, '.format(submitted_read_length) + \
             'however the uploaded fastq file contains reads of following length(s) ' + \
-            '{}. '.format(', '.join(map(str, lengths_list))) # + \'Gathered information about the file was: {}.'.format(str(result))
+            '{}. '.format(', '.join(map(str, lengths_list)))
 
 
 def check_for_fastq_signature_conflicts(session,
@@ -538,6 +536,8 @@ def check_for_fastq_signature_conflicts(session,
                         'file on the portal.')
             if len(conflicts) > 0:
                 errors['not_unique_flowcell_details'] = ', '.join(map(str, conflicts))
+                return False
+        return True
 
 
 def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url):
