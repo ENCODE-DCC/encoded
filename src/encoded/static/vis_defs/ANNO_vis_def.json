@@ -1,0 +1,80 @@
+# This file contains standard json (no extra commas) with the exception that '#' comments are OK.
+
+# vis_defs are "Visualization Definitions" which define the default viusualization settings for
+#          a given experiment type.  Initially created to enable visualization on the UCSC
+#          browser, th definitions can be extended for alternate visualization tools.
+# vis_type, a short identifier, is the unique vis_def key.  An experiment's vis_type and vis_def
+#          vis_def is determined by a set of rules.
+# "rule"   If the vis_def contains a 'rule' property, then this alone defines the rule for
+#          assigning a vis_type/vis_def to a dataset.  More complicated rules for some vis_types
+#          are hard-coded into visualization.py.  If a datasets' vis_type cannot be determined,
+#          it is considered "opaque" and will used the default vis_def.
+{
+    "ANNO": {
+        "rule": "'{@id}'.startswith('/annotations/')",
+        "assay_composite": {
+            "longLabel":  "Collection of ENCODE annotations",
+            "shortLabel": "ENCODE annotations"
+        },
+        "longLabel":  "Encyclopedia annotation of {annotation_type} for {biosample_term_name|multiple} - {accession}", #blank means "multiple biosamples"
+        "shortLabel": "{annotation_type} of {biosample_term_name|multiple} {accession}", #blank means "multiple biosamples" not unknown
+        "sortOrder": [ "Biosample","Replicates", "Views" ],
+        "Views":  {
+            "tag": "view",
+            "group_order": [ "Candidate enhancers", "Candidate promoters",  "Chromatin state", "Peaks" ],
+            "groups": {
+
+                "Candidate enhancers": {
+                    "tag": "aENHAN",
+                    "type": "bigBed",
+                    "visibility": "dense",
+                    "output_type": [ "candidate enhancers" ]
+                },
+                "Candidate promoters": {
+                    "tag": "bPROMO",
+                    "type": "bigBed",
+                    "visibility": "dense",
+                    "output_type": [ "candidate promoters" ]
+                },
+                "Chromatin state": {
+                    "tag": "cSTATE",
+                    "type": "bigBed",
+                    "visibility": "dense",
+                    "output_type": [ "semi-automated genome annotation" ]
+                },
+                "Peaks": {
+                    "tag": "sPKS",
+                    "visibility": "hide",
+                    "type": "bigBed",
+                    "file_format_type": [ "narrowPeak" ],
+                    "scoreFilter": "0:1000",
+                    "output_type": [ "peaks" ]
+                }
+            }
+        },
+        "other_groups":  {
+            "dimensions": { "Biosample": "dimY","Replicates": "dimA" },
+            "dimensionAchecked": "all", # or "first"
+            "groups": {
+                "Replicates": {
+                    "tag": "REP",
+                    "groups": {
+                        "replicate": {
+                            "title_mask": "Replicate_{replicate_number}", # Optional
+                            "combined_title": "Pooled" # "Combined"
+                             #We only want pooled replicates on
+                        }
+                    }
+                },
+                "Biosample": {
+                    "tag": "BS",
+                    "groups": { "one": { "title_mask": "{biosample_term_name}"} }
+                }
+            }
+        },
+        "file_defs": {
+            "longLabel": "Encyclopedia annotation of {biosample_term_name} {output_type} {replicate}",
+            "shortLabel": "{replicate} {output_type_short_label}"
+        }
+    }
+}

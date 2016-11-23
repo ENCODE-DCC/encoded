@@ -10,55 +10,64 @@
 #          are hard-coded into visualization.py.  If a datasets' vis_type cannot be determined,
 #          it is considered "opaque" and will used the default vis_def.
 {
-    "opaque": {   # Default visualization definition when no other rules apply
+    "ChIA": {
+        "rule": "'{assay_term_name}' == 'ChIA-PET'",
         "assay_composite": {
-            "longLabel":  "Collection of Miscellaneous ENCODE datasets",
-            "shortLabel": "ENCODE Misc."
+            "longLabel":  "Collection of ENCODE ChIA-PET experiments",
+            "shortLabel": "ENCODE ChIA-PET"
         },
-        "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
-        "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
-         #"allButtonPair": "off"
+        "longLabel":  "{target} {assay_title} of {replicates.library.biosample.summary} - {accession}",
+        "shortLabel": "{target} {assay_title} of {biosample_term_name} {accession}",
         "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
-        "Views":  {
+        "Views": {
             "tag": "view",
-            "group_order": [ "Peaks", "Signals" ],
+            "group_order": [ "Signal of unique reads", "Signal of all reads" ],
             "groups": {
-                "Peaks": {
-                    "tag": "PK",
-                    "visibility": "dense",
-                    "type": "bigBed",
-                    "spectrum": "on"
-                },
-                "Signals": {
-                    "tag": "SIG",
+                "Signal of unique reads": {
+                    "tag": "SIGBL",
                     "visibility": "full",
                     "type": "bigWig",
-                    "autoScale": "on",
+                    "viewLimits": "0:1",
+                    "transformFunc": "LOG",
+                    "autoScale": "off",
                     "maxHeightPixels": "64:18:8",
-                    "windowingFunction": "mean+whiskers"
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "signal of unique reads" ]
+                },
+                "Signal of all reads": {
+                    "tag": "SIGBM",
+                    "visibility": "hide",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "transformFunc": "LOG",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "signal of all reads" ]
                 }
             }
         },
-        "other_groups":  {
+        "other_groups": {
             "dimensions": { "Biosample": "dimY", "Targets": "dimX", "Replicates": "dimA" },
             "dimensionAchecked": "first", # or "all"
             "groups": {
                 "Replicates": {
                     "tag": "REP",
+                    "group_order": "sort",
                     "groups": {
-                        "replicate": {
-                            "title_mask": "Replicate_{replicate_number}",
-                            "combined_title": "Pooled"
+                    "replicate": {
+                        "title_mask": "Replicate_{replicate_number}", # Optional
+                        "combined_title": "Pooled" # "Combined"
                         }
                     }
                 },
                 "Biosample": {
                     "tag": "BS",
-                    "groups": { "one": { "title_mask": "{biosample_term_name}" } }
+                    "groups": { "one": { "title_mask": "{biosample_term_name}"} }
                 },
                 "Targets": {
                     "tag": "TARG",
-                    "groups": { "one": { "title_mask": "{target.label}", "url_mask": "targets/{target.name}" } }
+                    "groups": { "one": { "title_mask": "{target.label}" } }
                 }
             }
         },

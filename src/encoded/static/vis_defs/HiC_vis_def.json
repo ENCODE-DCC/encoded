@@ -10,55 +10,61 @@
 #          are hard-coded into visualization.py.  If a datasets' vis_type cannot be determined,
 #          it is considered "opaque" and will used the default vis_def.
 {
-    "opaque": {   # Default visualization definition when no other rules apply
+    "HiC": {
+        "rule": "'{assay_term_name}' == 'HiC'",
         "assay_composite": {
-            "longLabel":  "Collection of Miscellaneous ENCODE datasets",
-            "shortLabel": "ENCODE Misc."
+            "longLabel":  "Collection of ENCODE Hi-C experiments",
+            "shortLabel": "ENCODE HI-C"
         },
         "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
         "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
-         #"allButtonPair": "off"
         "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
-        "Views":  {
+        "Views": {
             "tag": "view",
-            "group_order": [ "Peaks", "Signals" ],
+            "group_order": [ "Topologically associated domains", "Nested TADs", "Genome compartments" ],
             "groups": {
-                "Peaks": {
-                    "tag": "PK",
+                "Topologically associated domains": {
+                    "tag": "aTADS",
                     "visibility": "dense",
-                    "type": "bigBed",
-                    "spectrum": "on"
+                    "type": "bigBed 3+",
+                    "output_type": [ "topologically associated domains" ]
                 },
-                "Signals": {
-                    "tag": "SIG",
-                    "visibility": "full",
+                "Nested TADs": {
+                    "tag": "bTADS",
+                    "visibility": "hide",
+                    "type": "bigBed 3+",
+                    "output_type": [ "nested topologically associated domains" ]
+                },
+                "Genome compartments": {
+                    "tag": "cCOMPART",
+                    "visibility": "hide",
                     "type": "bigWig",
-                    "autoScale": "on",
+                    "viewLimits": "0:1",
+                    "transformFunc": "LOG",
+                    "autoScale": "off",
                     "maxHeightPixels": "64:18:8",
-                    "windowingFunction": "mean+whiskers"
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "genome compartments" ]
                 }
             }
         },
-        "other_groups":  {
-            "dimensions": { "Biosample": "dimY", "Targets": "dimX", "Replicates": "dimA" },
+        "other_groups": {
+            "dimensions": { "Biosample": "dimY", "Replicates": "dimA" },
             "dimensionAchecked": "first", # or "all"
             "groups": {
                 "Replicates": {
                     "tag": "REP",
+                    "group_order": "sort",
                     "groups": {
-                        "replicate": {
-                            "title_mask": "Replicate_{replicate_number}",
-                            "combined_title": "Pooled"
+                    "replicate": {
+                        "title_mask": "Replicate_{replicate_number}", # Optional
+                        "combined_title": "Pooled" # "Combined"
                         }
                     }
                 },
                 "Biosample": {
                     "tag": "BS",
-                    "groups": { "one": { "title_mask": "{biosample_term_name}" } }
-                },
-                "Targets": {
-                    "tag": "TARG",
-                    "groups": { "one": { "title_mask": "{target.label}", "url_mask": "targets/{target.name}" } }
+                    "groups": { "one": { "title_mask": "{biosample_term_name}"} }
                 }
             }
         },

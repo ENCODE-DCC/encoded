@@ -1,0 +1,124 @@
+# This file contains standard json (no extra commas) with the exception that '#' comments are OK.
+
+# vis_defs are "Visualization Definitions" which define the default viusualization settings for
+#          a given experiment type.  Initially created to enable visualization on the UCSC
+#          browser, th definitions can be extended for alternate visualization tools.
+# vis_type, a short identifier, is the unique vis_def key.  An experiment's vis_type and vis_def
+#          vis_def is determined by a set of rules.
+# "rule"   If the vis_def contains a 'rule' property, then this alone defines the rule for
+#          assigning a vis_type/vis_def to a dataset.  More complicated rules for some vis_types
+#          are hard-coded into visualization.py.  If a datasets' vis_type cannot be determined,
+#          it is considered "opaque" and will used the default vis_def.
+{
+    "ChIP": {
+        "rule": "'{assay_term_name}' == 'ChIP-seq'",
+        "assay_composite": {
+            "longLabel":  "Collection of ENCODE ChIP-seq experiments",
+            "shortLabel": "ENCODE ChIP-seq"
+        },
+        "longLabel":  "{target} {assay_title} of {replicates.library.biosample.summary} - {accession}",
+        "shortLabel": "{target} {assay_title} of {biosample_term_name} {accession}",
+        "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
+        "Views":  {
+            "tag": "view",
+            "group_order": [ "Optimal IDR thresholded peaks", "Conservative IDR thresholded peaks",
+                            "Replicated peaks", "Peaks",  "Fold change over control", "Signal p-value", "Signal" ],
+            "groups": {
+                "Optimal IDR thresholded peaks": {
+                    "tag": "aOIDR",
+                    "visibility": "dense",
+                    "type": "bigBed",
+                    "file_format_type": [ "narrowPeak" ],
+                    "spectrum":"on",
+                    "scoreFilter": "100:1000",
+                    "output_type": [ "optimal idr thresholded peaks" ]
+                },
+                "Conservative IDR thresholded peaks": {
+                    "tag": "bCIDR",
+                    "visibility": "hide",
+                    "type": "bigBed",
+                    "file_format_type": [ "narrowPeak" ],
+                    "spectrum":"on",
+                    "scoreFilter": "0:1000",
+                    "output_type": [ "conservative idr thresholded peaks" ]
+                },
+                "Replicated peaks": {
+                    "tag": "cRPKS",
+                    "visibility": "dense",
+                    "type": "bigBed",
+                    "file_format_type": [ "narrowPeak" ],
+                    "spectrum":"on",
+                    "scoreFilter": "0:1000",
+                    "output_type": [ "replicated peaks" ]
+                },
+                "Peaks": {
+                    "tag": "dPKS",
+                    "visibility": "hide",
+                    "type": "bigBed",
+                    "file_format_type": [ "narrowPeak" ],
+                    "scoreFilter": "0",
+                    "output_type": [ "peaks" ]
+                    # Tim, how complicated would it be to exclude "peaks" if other files are there?
+                },
+                "Fold change over control": {
+                    "tag": "eFCOC",
+                    "visibility": "full",
+                    "type": "bigWig",
+                    "viewLimits": "0:10",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "fold change over control" ]
+                },
+                "Signal p-value": {
+                    "tag": "fSPV",
+                    "visibility": "hide",
+                    "type": "bigWig",
+                    "viewLimits": "0:10",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "signal p-value" ]
+                },
+                "Signal": {
+                    "tag": "gSIG",
+                    "visibility": "hide",
+                    "type": "bigWig",
+                    "viewLimits": "0:10",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "signal","signal of unique reads" ]
+                }
+            }
+        },
+        "other_groups":  {
+            "dimensions": { "Biosample": "dimY","Targets": "dimX","Replicates": "dimA" },
+            "dimensionAchecked": "first", # or "all"
+            "groups": {
+                "Replicates": {
+                    "tag": "REP",
+                    "groups": {
+                        "replicate": {
+                            "title_mask": "Replicate_{replicate_number}", # Optional
+                            "combined_title": "Pooled" # "Combined"
+                             #We only want pooled replicates on
+                        }
+                    }
+                },
+                "Biosample": {
+                    "tag": "BS",
+                    "groups": { "one": { "title_mask": "{biosample_term_name}"} }
+                },
+                "Targets": {
+                    "tag": "TARG",
+                    "groups": { "one": { "title_mask": "{target.label}", "url_mask": "targets/{target.name}"} }
+                }
+            }
+        },
+        "file_defs": {
+            "longLabel": "{target} {assay_title} of {biosample_term_name} {output_type} {replicate}",
+            "shortLabel": "{replicate} {output_type_short_label}"
+        }
+    }
+}
