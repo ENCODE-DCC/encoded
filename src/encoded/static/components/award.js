@@ -1,9 +1,17 @@
 import React from 'react';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
+import DataColors from './datacolors';
 import { FetchedItems } from './fetched';
 import globals from './globals';
 import { ProjectBadge } from './image';
 
+
+const labChartId = 'lab-chart'; // Lab chart <div> id attribute
+const assayChartId = 'assay-chart'; // Assay chart <div> id attribute
+const labColors = new DataColors(); // Get a list of colors to use for the lab chart
+const assayColors = new DataColors(); // Get a list of colors to use of the assay chart
+const labColorList = labColors.colorList();
+const assayColorList = assayColors.colorList();
 
 // Display and handle clicks in the menu-like area that lets the user choose experiment statuses to
 // view in the charts.
@@ -20,74 +28,86 @@ const LabChart = React.createClass({
         labs: React.PropTypes.array, // Array of labs facet data
     },
 
-    createChart: function (labs) {
-        // Draw the chart of search results given in this.props.data.facets. Since D3 doesn't work
-        // with the React virtual DOM, we have to load it separately using the webpack .ensure
-        // mechanism. Once the callback is called, it's loaded and can be referenced through
-        // require.
-        require.ensure(['chart.js'], (require) => {
-            let Chart = require('chart.js');
-            let colors = [];
-            let data = [];
-            let labels = [];
-            let selectedAssay = (this.props.assayCategory && this.props.assayCategory !== 'COMPPRED') ? this.props.assayCategory.replace(/\+/g, ' ') : '';
+    contextTypes: {
+        navigate: React.PropTypes.func,
+    },
 
-            // for each item, set doc count, add to total doc count, add proper label, and assign color
-            facetData.forEach((term, i) => {
-                data[i] = term.doc_count;
-                labels[i] = term.key;
-                colors[i] = selectedAssay ? (term.key === selectedAssay ? 'rgb(255,217,98)' : 'rgba(255,217,98,.4)') : '#FFD962';
+    componentDidMount: function () {
+        this.createChart(labChartId, this.props.labs);
+    },
+
+    createChart: function (chartId, data) {
+        require.ensure(['chart.js'], (require) => {
+            const Chart = require('chart.js');
+
+            // Generate the chart labels from the lab facet keys.
+            const values = [];
+            const labels = [];
+            data.forEach((item) => {
+                if (item.doc_count) {
+                    values.push(item.doc_count);
+                    labels.push(item.key);
+                }
             });
 
-            // Pass the counts to the charting library to render it.
-            let canvas = document.getElementById("myChart3");
-            let ctx = canvas.getContext("2d");
-            this.myPieChart = new Chart(ctx, {
-                type: 'bar',
+            // Make an array of colors from the labels. Make it a list of
+            const colors = labels.map((label, i) => labColorList[i % labColorList.length]);
+
+            // Create the chart.
+            const canvas = document.getElementById(`${chartId}-chart`);
+            const ctx = canvas.getContext('2d');
+            this.chart = new Chart(ctx, {
+                type: 'doughnut',
                 data: {
-                    labels: labels, // full labels
+                    labels: labels,
                     datasets: [{
-                        data: data,
-                        backgroundColor: colors
-                    }]
+                        data: values,
+                        backgroundColor: colors,
+                    }],
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     legend: {
-                        display: false // hiding automatically generated legend
+                        display: false,
                     },
                     animation: {
-                        duration: 200
+                        duration: 200,
                     },
-                    scales: {
-                        xAxes: [{
-                            gridLines: {
-                                display: false
-                            },
-                            ticks: {
-                                autoSkip: false
+                    legendCallback: (chart) => {
+                        const chartData = chart.data.datasets[0].data;
+                        const chartColors = chart.data.datasets[0].backgroundColor;
+                        const chartLabels = chart.data.labels;
+                        const text = [];
+                        text.push('<ul>');
+                        for (let i = 0; i < chartData.length; i += 1) {
+                            if (data[i]) {
+                                text.push('<li>');
+                                text.push(`<a href="/search/?type=Experiment&lab.title=${chartLabels[i]}">`);
+                                text.push(`<span class="chart-legend-chip" style="background-color:${chartColors[i]}"></span>`);
+                                if (chart.data.labels[i]) {
+                                    text.push(`<span class="chart-legend-label">${chartLabels[i]}</span>`);
+                                }
+                                text.push('</a></li>');
                             }
-                        }]
+                        }
+                        text.push('</ul>');
+                        return text.join('');
                     },
                     onClick: function (e) {
                         // React to clicks on pie sections
-                        var query = 'assay_slims=';
-                        var activePoints = this.myPieChart.getElementAtEvent(e);
-                        if (activePoints[0]) {
-                            let clickedElementIndex = activePoints[0]._index;
-                            var term = this.myPieChart.data.labels[clickedElementIndex];
-                            this.context.navigate('/matrix/' + this.props.query + '&' + query + term); // go to matrix view
+                        const activePoints = this.chart.getElementAtEvent(e);
+
+                        if (activePoints[0]) { // if click on wrong area, do nothing
+                            const clickedElementIndex = activePoints[0]._index;
+                            const term = this.chart.data.labels[clickedElementIndex];
+                            this.context.navigate(`/search/?type=Experiment&lab.title=${term}`);
                         }
-                    }.bind(this)
-                }
+                    }.bind(this),
+                },
             });
-
-            // Save height of wrapper div.
-            let chartWrapperDiv = document.getElementById('chart-wrapper-3');
-            this.wrapperHeight = chartWrapperDiv.clientHeight;
-        }.bind(this));
-
+            document.getElementById(`${chartId}-legend`).innerHTML = this.chart.generateLegend();
+        });
     },
 
     render: function () {
@@ -100,10 +120,11 @@ const LabChart = React.createClass({
                     <center><hr width="80%" position="static" color="blue" /></center>
                 </div>
                 {labs.length ?
-                    <div id="lab-chart" className="chart-wrapper">
-                        <div className="chart-container-assaycat">
-                            <canvas id="lab-chart-canvas"></canvas>
+                    <div>
+                        <div id={labChartId} className="chart-wrapper">
+                            <canvas id={`${labChartId}-chart`} />
                         </div>
+                        <div id={`${labChartId}-legend`} className="chart-legend" />
                     </div>
                 :
                     <div className="chart-no-data" style={{ height: this.wrapperHeight }}>No data to display</div>
@@ -129,7 +150,7 @@ const AssayChart = React.createClass({
 
 const ChartRenderer = React.createClass({
     propTypes: {
-        data: React.PropTypes.array, // Array of experiments under this award
+        data: React.PropTypes.object, // Array of experiments under this award
     },
 
     render: function () {
@@ -142,24 +163,25 @@ const ChartRenderer = React.createClass({
             // Get the array of lab data.
             const labFacet = data.facets.find(facet => facet.field === 'lab.title');
             if (labFacet) {
-                labs = labFacet.terms && labFacet.terms.length ? labFacet.terms : null;
+                labs = labFacet.terms && labFacet.terms.length ? labFacet.terms.sort((a, b) => (a.key < b.key ? -1 : (a.key > b.key ? 1 : 0))) : null;
             }
 
-            // Gett the array of assay types.
-            const assayFacet = data.facets.find(facet => facet.field === 'assay_slims');
+            // Get the array of assay types.
+            const assayFacet = data.facets.find(facet => facet.field === 'assay_title');
             if (assayFacet) {
                 assays = assayFacet.terms && assayFacet.terms.length ? assayFacet.terms : null;
             }
         }
 
-        // Find the array of assay types in the facet data
-
-        return (
-            <div>
-                <LabChart labs={labs} />
-                <AssayChart assays={assays} />
-            </div>
-        );
+        if (labs || assays) {
+            return (
+                <div>
+                    {labs ? <LabChart labs={labs} /> : null}
+                    {assays ? <AssayChart assays={assays} /> : null}
+                </div>
+            );
+        }
+        return <p className="browser-error">No labs nor assays reference this award</p>;
     },
 });
 
@@ -228,9 +250,7 @@ const Award = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                <Panel>
-                    <AwardCharts award={context} />
-                </Panel>
+                <AwardCharts award={context} />
             </div>
         );
     },

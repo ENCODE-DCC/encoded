@@ -1,4 +1,6 @@
 'use strict';
+import DataColors from './datacolors';
+
 var React = require('react');
 var jsonScriptEscape = require('../libs/jsonScriptEscape');
 var globals = require('./globals');
@@ -7,7 +9,6 @@ var Navigation = require('./navigation');
 var Footer = require('./footer');
 var url = require('url');
 var {Home} = require('./home');
-var DataColors = require('./datacolors');
 var {NewsHead} = require('./page');
 
 var portal = {
