@@ -20,6 +20,9 @@ from snovault.elasticsearch.interfaces import (
 )
 import copy
 
+#from .visualization import VISIBLE_DATASET_TYPES_LC
+VISIBLE_DATASET_TYPES_LC = ["experiment","annotation"]
+
 
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
 log = logging.getLogger(__name__)
@@ -115,8 +118,8 @@ def all_dataset_uuids(request):
     datasets = request.registry[COLLECTIONS]['datasets']
     return [uuid for uuid in datasets]
 
-def all_experiment_uuids(request):
-    return list(all_uuids(request.registry, types='experiment'))
+def all_visualizable_uuids(request):
+    return list(all_uuids(request.registry, types=VISIBLE_DATASET_TYPES_LC))
 
 
 def index_peaks(uuid, request):
@@ -199,7 +202,24 @@ def index_peaks(uuid, request):
 
         es.index(index=key, doc_type=assembly, body=doc, id=context['uuid'])
 
+# Temporary 'simple most efficient' solution, b4 separate index_trackhub process
+def object_indexer_done(registry,xmin):
+    es = registry[ELASTIC_SEARCH]
+    INDEX = registry.settings['snovault.elasticsearch.index']
+    try:
+        status = es.get(index=INDEX, doc_type='meta', id='indexing')
+    except NotFoundError:
+        return False
+    if 'last_result' in status:
+        if xmin == 0:
+            return True
+        elif 'xmin' in status['last_result'] and status['last_result']['xmin'] >= xmin:
+            return True
+    return False
 
+def index_visualizable(request,invalidated):
+    invalidated_visualizable_datasets = list(set(invalidated).intersection(all_visualizable_uuids(request)))
+    request.registry.notify(AfterIndexedExperimentsAndDatasets(invalidated_visualizable_datasets, request))
 
 @view_config(route_name='index_file', request_method='POST', permission="index")
 def index_file(request):
@@ -308,11 +328,23 @@ def index_file(request):
     if not dry_run:
         err = None
         uuid_current = None
+        th_indexer_run = False
         invalidated_files = list(set(invalidated).intersection(set(all_bed_file_uuids(request))))
         try:
+            files_indexed = 0
             for uuid in invalidated_files:
                 uuid_current = uuid
                 index_peaks(uuid, request)
+                if not th_indexer_run and files_indexed % 100 == 0:
+                    # Temporary 'simple most efficient' solution, b4 separate index_trackhub process
+                    try:
+                        if object_indexer_done(registry,xmin):
+                            index_visualizable(request,invalidated)
+                            th_indexer_run = True
+                    except Exception as e:
+                        log.error('Unhandled index_vis exception: ' + repr(e))
+
+                files_indexed += 1
         except Exception as e:
             log.error('Error indexing %s', uuid_current, exc_info=True)
             err = repr(e)
@@ -330,8 +362,8 @@ def index_file(request):
                         log.error('Indexing error for {}, error message: {}'.format(item['uuid'], item['error']))
                         item['error'] = "Error occured during indexing, check the logs"
                 result['errors'] = error_messages
-        invalidated_datasets_and_experiments = list(set(invalidated).intersection(set(all_dataset_uuids(request) + all_experiment_uuids(request))))
-        registry.notify(AfterIndexedExperimentsAndDatasets(invalidated_datasets_and_experiments, request))
+        if not th_indexer_run:
+            index_visualizable(request,invalidated)
 
     return result
 

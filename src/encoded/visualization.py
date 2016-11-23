@@ -14,7 +14,7 @@ from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
 import time
 from pkg_resources import resource_filename
 
-# TODO: uncomment when ready to try Bek's cache priming solution.
+# Note: Required for Bek's cache priming solution.
 from pyramid.events import subscriber
 from .peak_indexer import AfterIndexedExperimentsAndDatasets
 
@@ -22,7 +22,7 @@ import logging
 from .search import _ASSEMBLY_MAPPER
 
 log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
+#log.setLevel(logging.DEBUG)
 
 def includeme(config):
     config.add_route('batch_hub', '/batch_hub/{search_params}/{txt}')
@@ -42,6 +42,7 @@ BIGBED_FILE_TYPES = ['bigBed']
 VISIBLE_DATASET_STATUSES = ["released" ]
 VISIBLE_FILE_STATUSES = ["released" ]
 VISIBLE_DATASET_TYPES = ["Experiment","Annotation"]
+VISIBLE_DATASET_TYPES_LC = ["experiment","annotation"]
 
 # ASSEMBLY_MAPPINGS is needed to ensure that mm10 and mm10-minimal will get combined into the same trackHub.txt
 # This is necessary because mm10 and mm10-minimal are only mm10 at UCSC, so the 2 must be collapsed into one.
@@ -136,9 +137,6 @@ def lookup_token(token,dataset,a_file=None):
         else:
             sub_token = "label"
         return target.get(sub_token,"Unknown Target")
-        #if token == "{target.name}":
-        #    return target.get('name',"Unknown Target")
-        #return target.get('label',"Unknown Target")
     elif token in ["{target.name}"]:
         target = dataset.get('target',{})
         if isinstance(target,list):
@@ -252,13 +250,13 @@ def strip_comments(line,ws_too=False):
             return ''
         if line[ pound - 1 ] != '\\':
             line = line[ 0:pound ]
-            break  
+            break
         else: #if line[ pound - 1 ] == '\\': # ignore '#' and keep looking
             ix = pound + 1
-            #line = line[ 0:pound - 1 ] + line[ pound: ]           
+            #line = line[ 0:pound - 1 ] + line[ pound: ]
     if ws_too:
         line = line.strip()
-    return line 
+    return line
 
 def gulp_file_strip_comments(path):
     '''Reads in entire file stripping any # comments and returns string.'''
@@ -274,7 +272,7 @@ def gulp_file_strip_comments(path):
             blob += line + '\n'
     return blob
 
-    
+
 def load_vis_defs():
     '''Loads 'vis_defs' (visualization definitions by assay type) from a static file.'''
     global VIS_DEFS_FOLDER
@@ -294,7 +292,7 @@ def get_vis_type(dataset):
     global VIS_DEFS_BY_TYPE
     if not VIS_DEFS_BY_TYPE:
         load_vis_defs()
-        
+
     assay = dataset.get("assay_term_name",'none')
 
     if isinstance(assay,list):
@@ -303,7 +301,7 @@ def get_vis_type(dataset):
         else:
             log.warn("assay_term_name for %s is unexpectedly a list %s" % (dataset['accession'],str(assay)))
             return "opaque"
-            
+
     # simple rule defined in most vis_defs
     for vis_type in sorted(VIS_DEFS_BY_TYPE.keys(), reverse=True): # Reverse pushes anno to bottom
         if "rule" in VIS_DEFS_BY_TYPE[vis_type]:
@@ -1390,7 +1388,6 @@ def ucsc_trackDb_composite_blob(composite,title):
             if membership:
                 blob += "        subGroups"
                 for member_tag in sorted( membership ):
-                    #if member_tag in actual_group_tags: # TODO: remove when it is proved to be not needed.
                     blob += " %s=%s" % (member_tag,membership[member_tag])
                 blob += '\n'
             # metadata line?
@@ -1414,7 +1411,7 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False,
     ### LRNA: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR000AAA/@@hub/GRCh38/trackDb.txt
 
     # USE ES CACHE
-    USE_CACHE = True # Note: set to True when ready to try Bek's cache priming solution.
+    USE_CACHE = True # Use elasticsearch caching of individual acc_composite blobs
 
     acc_composite = None
     es_key = acc + "_" + assembly
@@ -1435,8 +1432,6 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False,
         acc_composite = make_acc_composite(dataset, assembly, host=request.host_url, hide=hide)
         if USE_CACHE:
             add_to_es(request,es_key,acc_composite)
-        #if not regen:
-        #    log.info("made acc_composite %s_%s" % (acc, assembly))
         found_or_made = "made"
 
         if request_dataset: # Manage meomory
@@ -1460,23 +1455,11 @@ def generate_trackDb(request, dataset, assembly, hide=False, regen=False):
         return json.dumps(acc_composite,indent=4,sort_keys=True)
     return ucsc_trackDb_composite_blob(acc_composite,acc)
 
-def make_set_key(param_list,assembly):
-    '''Returns a key for es cache for a set of search parameters'''
-    es_set_key = "assembly=%s" % assembly
-    for param_key in sorted( param_list.keys() ):  # Most important to sort, to ensure 2 identical (but different order) searches) resolve
-        params = sorted( param_list[param_key] )
-        es_set_key += ',,' + param_key + '=' + params[0]
-        if len(params) > 1:
-            for param in params[1:]:
-                es_set_key += '|' + str(param)
-    return es_set_key
-
 def generate_batch_trackDb(request, hide=False, regen=False):
 
-    ### local test: RNA-seq: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/batch_hub/type=Experiment,,assay_title=RNA-seq,,award.rfa=ENCODE3,,status=released,,assembly=GRCh38,,replicates.library.biosample.biosample_type=induced+pluripotent+stem+cell+line/GRCh38/trackDb.txt
+    ### local test: RNA-seq: curl https://../batch_hub/type=Experiment,,assay_title=RNA-seq,,award.rfa=ENCODE3,,status=released,,assembly=GRCh38,,replicates.library.biosample.biosample_type=induced+pluripotent+stem+cell+line/GRCh38/trackDb.txt
 
-    USE_CACHE = True # Note: set to True when ready to try Bek's cache priming solution.
-    CACHE_SETS = False  # NO CACHING OF set_composites!!!
+    USE_CACHE = True # Use elasticsearch caching of individual acc_composite blobs
 
     # Special logic to force remaking of trackDb
     if not regen:
@@ -1490,72 +1473,60 @@ def generate_batch_trackDb(request, hide=False, regen=False):
     param_list = parse_qs(request.matchdict['search_params'].replace(',,', '&'))
 
     set_composites = None
-    # Create an appropriate cache key
-    if USE_CACHE and CACHE_SETS:
-        set_composites = None
-        es_set_key = make_set_key(param_list,assembly)
 
-        # Find it?
-        if not regen: # Force regeneration?
-            set_composites = get_from_es(request,es_set_key)
-            if set_composites is not None:
-                log.debug("Found with key %s   %.3f secs" % (es_set_key,(time.time() - PROFILE_START_TIME)))
+    # Have to make it.
+    assemblies = ASSEMBLY_MAPPINGS.get(assembly,[assembly])
+    params = {
+        'files.file_format': BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES,
+    }
+    params.update(param_list)
+    params.update({
+        'assembly': assemblies,
+        'limit': ['all'],
+    })
+    if USE_CACHE:
+        params['frame'] = ['object']
+    else:
+        params['frame'] = ['embedded']
 
-    if set_composites is None:
+    view = 'search'
+    if 'region' in param_list:
+        view = 'region-search'
+    path = '/%s/?%s' % (view, urlencode(params, True))
+    results = request.embed(path, as_user=True)['@graph']
+    if not USE_CACHE:
+        log.debug("len(results) = %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))
+    else:
+        # Note: better memory usage to get acc array from non-embedded results, since acc_composites should be in cache
+        accs = [result['accession'] for result in results]
+        del results
 
-        # Have to make it.
-        assemblies = ASSEMBLY_MAPPINGS.get(assembly,[assembly])
-        params = {
-            'files.file_format': BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES,
-        }
-        params.update(param_list)
-        params.update({
-            'assembly': assemblies,
-            'limit': ['all'],
-        })
+    found = 0
+    made = 0
+    if USE_CACHE and not regen:
+        es_keys = [acc + "_" + assembly for acc in accs]
+        acc_composites = search_es(request, es_keys)
+        found = len(acc_composites)
+
+    if found == 0: # if 0 were found in cache try generating (for pre-primed-cache access)
+        acc_composites = {}
         if not USE_CACHE:
-            params['frame'] = ['embedded'] # Note: Poor memory usage, since acc_composites should all be in cache
-
-        view = 'search'
-        if 'region' in param_list:
-            view = 'region-search'
-        path = '/%s/?%s' % (view, urlencode(params, True))
-        results = request.embed(path, as_user=True)['@graph']
-        if not USE_CACHE:
-            log.debug("len(results) = %d   %.3f secs" % (len(results),(time.time() - PROFILE_START_TIME)))
+            for dataset in results:          # Note: Poor memory usage, since acc_composites should all be in cache
+                acc = dataset['accession']
+                (found_or_made, acc_composite) = find_or_make_acc_composite(request, assembly, acc, dataset, hide=hide, regen=True)
+                made += 1
+                acc_composites[acc] = acc_composite
         else:
-            # Note: better memory usage to get acc array from non-embedded results, since acc_composites should be in cache
-            accs = [result['accession'] for result in results]
-            del results
-
-        found = 0
-        made = 0
-        if USE_CACHE and not regen:
-            es_keys = [acc + "_" + assembly for acc in accs]
-            acc_composites = search_es(request, es_keys)
-            found = len(acc_composites)
-            
-        if found == 0: # if 0 were found in cache try generating (for pre-primed-cache access)
-            acc_composites = {}
-            if not USE_CACHE:
-                for dataset in results:          # Note: Poor memory usage, since acc_composites should all be in cache
-                    acc = dataset['accession']
-                    (found_or_made, acc_composite) = find_or_make_acc_composite(request, assembly, acc, dataset, hide=hide, regen=True)
+            for acc in accs:
+                (found_or_made, acc_composite) = find_or_make_acc_composite(request, assembly, acc, None, hide=hide, regen=regen)
+                if found_or_made == "made":
                     made += 1
-                    acc_composites[acc] = acc_composite
-            else:
-                for acc in accs:
-                    (found_or_made, acc_composite) = find_or_make_acc_composite(request, assembly, acc, None, hide=hide, regen=regen)
-                    if found_or_made == "made":
-                        made += 1
-                        #log.debug("%s composite %s" % (found_or_made,acc))
-                    else:
-                        found += 1
-                    acc_composites[acc] = acc_composite
+                    #log.debug("%s composite %s" % (found_or_made,acc))
+                else:
+                    found += 1
+                acc_composites[acc] = acc_composite
 
         set_composites = remodel_acc_to_set_composites(acc_composites, hide_after=100)
-        if USE_CACHE and CACHE_SETS:
-            add_to_es(request,es_set_key,set_composites)
         log.debug("%d acc_composites => %d set_composites (%s generated, %d found)   %.3f secs" % \
             ((made + found),len(set_composites),made,found,(time.time() - PROFILE_START_TIME)))
 
@@ -1570,12 +1541,14 @@ def generate_batch_trackDb(request, hide=False, regen=False):
 
     return blob
 
-# Note: uncomment when ready to try Bek's cache priming solution.
+# Note: Required for Bek's cache priming solution.
 @subscriber(AfterIndexedExperimentsAndDatasets)
 def prime_vis_es_cache(event):
     request = event.request
     uuids = event.object
-    
+    if not uuids:
+        return
+
     # NOTE: log.warn (not debug) to be seen, since this log is NOT in this module's scope
     #log.warn("Starting prime_vis_es_cache")
 
@@ -1598,11 +1571,12 @@ def prime_vis_es_cache(event):
                 count += 1
                 log.warn("primed vis_es_cache with acc_composite %s_%s '%s'" % \
                                             (acc,ucsc_assembly,acc_composite.get('vis_type','')))
+                # From [Mon Nov 21 12:14:45.082032 2016] to [Tue Nov 22 00:46:05.482191 2016] 12h32m
             #else:
             #    log.warn("prime_vis_es_cache for %s_%s unvisualizable '%s'" % \
             #                                (acc,ucsc_assembly,get_vis_type(dataset)))
-    if count == 0:
-        log.warn("prime_vis_es_cache made %d acc_composites" % (count))
+    #if count == 0:
+    log.warn("prime_vis_es_cache made %d acc_composites" % (count))
 
 def render(data):
     arr = []

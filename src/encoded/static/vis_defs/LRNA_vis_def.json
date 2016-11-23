@@ -22,7 +22,7 @@
             "tag": "view",
             "group_order": [ "Signal of unique reads", "Signal of all reads",
                             "Plus signal of unique reads", "Minus signal of unique reads",
-                            "Plus signal of all reads", "Minus signal of all reads" ],
+                            "Plus signal of all reads", "Minus signal of all reads", "Raw signal" ],
             "groups": {
                 "Signal of unique reads": {
                     "tag": "SIGBL",
@@ -91,6 +91,18 @@
                     "maxHeightPixels": "64:18:8",
                     "windowingFunction": "mean+whiskers",
                     "output_type": [ "minus strand signal of all reads" ]
+                },
+                "Raw signal": {
+                    "tag": "SIGRAW",
+                    "visibility": "full",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "transformFunc": "LOG",
+                    "autoScale": "off",
+                    "negateValues": "on",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "raw signal" ]
                 }
             }
         },
