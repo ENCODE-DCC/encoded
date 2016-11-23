@@ -505,39 +505,41 @@ def check_for_fastq_signature_conflicts(session,
                                         url,
                                         errors,
                                         item,
-                                        signature_to_check):
-    query = '/search/?type=File&status!=replaced&file_format=fastq&fastq_signature=' + \
-            signature_to_check
-    try:
-        r = session.get(urljoin(url, query))
-    except requests.exceptions.RequestException as e:  # This is the correct syntax
-        errors['lookup_for_fastq_signature'] = 'Network error occured, while looking for ' + \
-                                               'fastq signature conflict on the portal. ' + str(e)
-    else:
-        r_graph = r.json().get('@graph')
-        if len(r_graph) > 0:
-            conflicts = []
-            for entry in r_graph:
-                if 'accession' in entry and 'accession' in item and \
-                   entry['accession'] != item['accession']:
+                                        signatures_to_check):
+    conflicts = []
+    for entry in sorted(list(signatures_to_check)):
+        query = '/search/?type=File&status!=replaced&file_format=fastq&fastq_signature=' + \
+                entry
+        try:
+            r = session.get(urljoin(url, query))
+        except requests.exceptions.RequestException as e:  # This is the correct syntax
+            errors['lookup_for_fastq_signature'] = 'Network error occured, while looking for ' + \
+                                                   'fastq signature conflict on the portal. ' + \
+                                                   str(e)
+        else:
+            r_graph = r.json().get('@graph')
+            if len(r_graph) > 0:
+                for entry in r_graph:
+                    if 'accession' in entry and 'accession' in item and \
+                       entry['accession'] != item['accession']:
+                            conflicts.append(
+                                'checked %s is conflicting with fastq_signature of %s' % (
+                                    entry,
+                                    entry['accession']))
+                    elif 'accession' in entry and 'accession' not in item:
                         conflicts.append(
                             'checked %s is conflicting with fastq_signature of %s' % (
-                                signature_to_check,
+                                entry,
                                 entry['accession']))
-                elif 'accession' in entry and 'accession' not in item:
-                    conflicts.append(
-                        'checked %s is conflicting with fastq_signature of %s' % (
-                            signature_to_check,
-                            entry['accession']))
-                elif 'accession' not in entry and 'accession' not in item:
-                    conflicts.append(
-                        'checked %s is conflicting with fastq_signature of another ' % (
-                            signature_to_check) +
-                        'file on the portal.')
-            if len(conflicts) > 0:
-                errors['not_unique_flowcell_details'] = ', '.join(map(str, conflicts))
-                return False
-        return True
+                    elif 'accession' not in entry and 'accession' not in item:
+                        conflicts.append(
+                            'checked %s is conflicting with fastq_signature of another ' % (
+                                entry) +
+                            'file on the portal.')
+    if len(conflicts) > 0:
+        errors['not_unique_flowcell_details'] = ', '.join(map(str, conflicts))
+        return False
+    return True
 
 
 def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url):
