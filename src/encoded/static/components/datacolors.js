@@ -67,13 +67,13 @@ class DataColors {
                 } else {
                     outColor = rootColorList[i % rootColorList.length];
                 }
-                return options && options.shade && options.shade !== 0 ? this.shadeColor(outColor, options.shade) : outColor;
+                return options && options.shade && options.shade !== 0 ? DataColors.shadeColor(outColor, options.shade) : outColor;
             });
         } else {
             // No keys provided, just provide the list of colors for the caller to use as needed,
             // optionally modified by a shade value.
             colors = (options && options.shade && options.shade !== 0) ?
-                rootColorList.map(color => this.shadeColor(color, options.shade))
+                rootColorList.map(color => DataColors.shadeColor(color, options.shade))
             : rootColorList;
         }
         return colors;

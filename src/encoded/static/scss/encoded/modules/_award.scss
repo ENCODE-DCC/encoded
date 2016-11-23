@@ -1,0 +1,25 @@
+
+
+.award-charts {
+    display: block;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center;
+    }
+
+    @at-root #{&}__chart {
+        display: block;
+
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 50%;
+            width: 50%;
+        }
+    }
+
+    @at-root #{&}__canvas {
+        position: relative;
+        height: 250px;
+    }
+}

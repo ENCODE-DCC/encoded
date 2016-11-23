@@ -9,9 +9,7 @@ import { ProjectBadge } from './image';
 const labChartId = 'lab-chart'; // Lab chart <div> id attribute
 const assayChartId = 'assay-chart'; // Assay chart <div> id attribute
 const labColors = new DataColors(); // Get a list of colors to use for the lab chart
-const assayColors = new DataColors(); // Get a list of colors to use of the assay chart
 const labColorList = labColors.colorList();
-const assayColorList = assayColors.colorList();
 
 // Display and handle clicks in the menu-like area that lets the user choose experiment statuses to
 // view in the charts.
@@ -22,6 +20,75 @@ const StatusChooser = React.createClass({
 });
 
 
+// Create a chart in the div.
+//   chartId: Root HTML id of div to draw the chart into. Supply <divs> with `chartId`-chart for
+//            the chart itself, and `chartId`-legend for its legend.
+//   values: Array of values to chart.
+//   labels: Array of string labels corresponding to the values.
+//   colors: Array of hex colors corresponding to the values.
+//   baseSearchUri: Base URI to navigate to when clicking a doughnut slice or legend item. Clicked
+//                  item label gets appended to it.
+//   navigate: Called when when a doughnut slice gets clicked. Gets passed the URI to go to. Needed
+//             because this function can't access the navigation function.
+
+function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, navigate) {
+    require.ensure(['chart.js'], (require) => {
+        const Chart = require('chart.js');
+
+        // Create the chart.
+        const canvas = document.getElementById(`${chartId}-chart`);
+        const ctx = canvas.getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: colors,
+                }],
+            },
+            options: {
+                maintainAspectRatio: false,
+                legend: {
+                    display: false,
+                },
+                animation: {
+                    duration: 200,
+                },
+                legendCallback: (chartInstance) => {
+                    const chartData = chartInstance.data.datasets[0].data;
+                    const chartColors = chartInstance.data.datasets[0].backgroundColor;
+                    const chartLabels = chartInstance.data.labels;
+                    const text = [];
+                    text.push('<ul>');
+                    for (let i = 0; i < chartData.length; i += 1) {
+                        if (chartData[i]) {
+                            text.push(`<li><a href="${baseSearchUri}${chartLabels[i]}">`);
+                            text.push(`<span class="chart-legend-chip" style="background-color:${chartColors[i]}"></span>`);
+                            text.push(`<span class="chart-legend-label">${chartLabels[i]}</span>`);
+                            text.push('</a></li>');
+                        }
+                    }
+                    text.push('</ul>');
+                    return text.join('');
+                },
+                onClick: function (e) {
+                    // React to clicks on pie sections
+                    const activePoints = chart.getElementAtEvent(e);
+
+                    if (activePoints[0]) { // if click on wrong area, do nothing
+                        const clickedElementIndex = activePoints[0]._index;
+                        const term = chart.data.labels[clickedElementIndex];
+                        navigate(`${baseSearchUri}${term}`);
+                    }
+                },
+            },
+        });
+        document.getElementById(`${chartId}-legend`).innerHTML = chart.generateLegend();
+    });
+}
+
+
 // Display and handle clicks in the chart of labs.
 const LabChart = React.createClass({
     propTypes: {
@@ -30,98 +97,40 @@ const LabChart = React.createClass({
 
     contextTypes: {
         navigate: React.PropTypes.func,
+        assayTermNameColors: React.PropTypes.object,
     },
 
     componentDidMount: function () {
         this.createChart(labChartId, this.props.labs);
     },
 
-    createChart: function (chartId, data) {
-        require.ensure(['chart.js'], (require) => {
-            const Chart = require('chart.js');
-
-            // Generate the chart labels from the lab facet keys.
-            const values = [];
-            const labels = [];
-            data.forEach((item) => {
-                if (item.doc_count) {
-                    values.push(item.doc_count);
-                    labels.push(item.key);
-                }
-            });
-
-            // Make an array of colors from the labels. Make it a list of
-            const colors = labels.map((label, i) => labColorList[i % labColorList.length]);
-
-            // Create the chart.
-            const canvas = document.getElementById(`${chartId}-chart`);
-            const ctx = canvas.getContext('2d');
-            this.chart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: values,
-                        backgroundColor: colors,
-                    }],
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    legend: {
-                        display: false,
-                    },
-                    animation: {
-                        duration: 200,
-                    },
-                    legendCallback: (chart) => {
-                        const chartData = chart.data.datasets[0].data;
-                        const chartColors = chart.data.datasets[0].backgroundColor;
-                        const chartLabels = chart.data.labels;
-                        const text = [];
-                        text.push('<ul>');
-                        for (let i = 0; i < chartData.length; i += 1) {
-                            if (data[i]) {
-                                text.push('<li>');
-                                text.push(`<a href="/search/?type=Experiment&lab.title=${chartLabels[i]}">`);
-                                text.push(`<span class="chart-legend-chip" style="background-color:${chartColors[i]}"></span>`);
-                                if (chart.data.labels[i]) {
-                                    text.push(`<span class="chart-legend-label">${chartLabels[i]}</span>`);
-                                }
-                                text.push('</a></li>');
-                            }
-                        }
-                        text.push('</ul>');
-                        return text.join('');
-                    },
-                    onClick: function (e) {
-                        // React to clicks on pie sections
-                        const activePoints = this.chart.getElementAtEvent(e);
-
-                        if (activePoints[0]) { // if click on wrong area, do nothing
-                            const clickedElementIndex = activePoints[0]._index;
-                            const term = this.chart.data.labels[clickedElementIndex];
-                            this.context.navigate(`/search/?type=Experiment&lab.title=${term}`);
-                        }
-                    }.bind(this),
-                },
-            });
-            document.getElementById(`${chartId}-legend`).innerHTML = this.chart.generateLegend();
+    createChart: function (chartId, facetData) {
+        // Extract the non-zero values, and corresponding labels and colors for the data.
+        const values = [];
+        const labels = [];
+        facetData.forEach((item) => {
+            if (item.doc_count) {
+                values.push(item.doc_count);
+                labels.push(item.key);
+            }
         });
+        const colors = labels.map((label, i) => labColorList[i % labColorList.length]);
+
+        // Create the chart.
+        createDoughnutChart(chartId, values, labels, colors, '/search/?type=Experiment&lab.title=', (uri) => { this.context.navigate(uri); });
     },
 
     render: function () {
-        console.log('LAB: %o', this.props.labs);
         const { labs } = this.props;
         return (
-            <div>
+            <div className="award-charts__chart">
                 <div className="title">
                     Lab
                     <center><hr width="80%" position="static" color="blue" /></center>
                 </div>
                 {labs.length ?
                     <div>
-                        <div id={labChartId} className="chart-wrapper">
+                        <div id={labChartId} className="award-charts__canvas">
                             <canvas id={`${labChartId}-chart`} />
                         </div>
                         <div id={`${labChartId}-legend`} className="chart-legend" />
@@ -141,9 +150,51 @@ const AssayChart = React.createClass({
         assays: React.PropTypes.array, // Array of assay types facet data
     },
 
+    contextTypes: {
+        navigate: React.PropTypes.func,
+        assayTermNameColors: React.PropTypes.object,
+    },
+
+    componentDidMount: function () {
+        this.createChart(assayChartId, this.props.assays);
+    },
+
+    createChart: function (chartId, facetData) {
+        // Extract the non-zero values, and corresponding labels and colors for the data.
+        const values = [];
+        const labels = [];
+        facetData.forEach((item) => {
+            if (item.doc_count) {
+                values.push(item.doc_count);
+                labels.push(item.key);
+            }
+        });
+        const colors = this.context.assayTermNameColors.colorList(facetData.map(term => term.key), { shade: 10 });
+
+        // Create the chart.
+        createDoughnutChart(chartId, values, labels, colors, '/matrix/?type=Experiment&assay_title=', (uri) => { this.context.navigate(uri); });
+    },
+
     render: function () {
-        console.log('ASSAY: %o', this.props.assays);
-        return null;
+        const { assays } = this.props;
+        return (
+            <div className="award-charts__chart">
+                <div className="title">
+                    Assay Type
+                    <center><hr width="80%" position="static" color="blue" /></center>
+                </div>
+                {assays.length ?
+                    <div>
+                        <div id={assayChartId} className="award-charts__canvas">
+                            <canvas id={`${assayChartId}-chart`} />
+                        </div>
+                        <div id={`${assayChartId}-legend`} className="chart-legend" />
+                    </div>
+                :
+                    <div className="chart-no-data" style={{ height: this.wrapperHeight }}>No data to display</div>
+                }
+            </div>
+        );
     },
 });
 
@@ -175,7 +226,7 @@ const ChartRenderer = React.createClass({
 
         if (labs || assays) {
             return (
-                <div>
+                <div className="award-charts">
                     {labs ? <LabChart labs={labs} /> : null}
                     {assays ? <AssayChart assays={assays} /> : null}
                 </div>
