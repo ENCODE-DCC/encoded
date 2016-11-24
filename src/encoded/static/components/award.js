@@ -390,7 +390,7 @@ const AwardCharts = React.createClass({
                 <PanelBody>
                     <FetchedItems
                         award={award}
-                        url={`/search/?type=Experiment&limit=all&award.name=${award.name}${statusQuery}`}
+                        url={`/search/?type=Experiment&award.name=${award.name}${statusQuery}`}
                         Component={ChartRenderer}
                         ignoreErrors
                     />
