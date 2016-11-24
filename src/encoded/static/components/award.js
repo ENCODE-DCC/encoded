@@ -11,11 +11,53 @@ const assayChartId = 'assay-chart'; // Assay chart <div> id attribute
 const labColors = new DataColors(); // Get a list of colors to use for the lab chart
 const labColorList = labColors.colorList();
 
+
+// Renders each status-chooser button.
+const StatusChooserButton = React.createClass({
+    propTypes: {
+        title: React.PropTypes.string, // Title to display in button
+        selected: React.PropTypes.bool, // True if the button is selected
+        status: React.PropTypes.string, // Status being selected
+        clickHandler: React.PropTypes.func, // Function to call when this button is clicked
+    },
+
+    handleClick: function () {
+        this.props.clickHandler(this.props.status);
+    },
+
+    render: function () {
+        const { title, selected } = this.props;
+
+        return (
+            <button onClick={this.handleClick} className={`status-chooser__button${selected ? ' status-chooser__button--selected' : ''}`}>{title}</button>
+        );
+    },
+});
+
+
 // Display and handle clicks in the menu-like area that lets the user choose experiment statuses to
 // view in the charts.
 const StatusChooser = React.createClass({
+    propTypes: {
+        statuses: React.PropTypes.object, // Selection state of each status
+        clickHandler: React.PropTypes.func, // Function to call when a button is clicked
+    },
+
+    handleClick: function (status) {
+        this.props.clickHandler(status);
+    },
+
     render: function () {
-        return null;
+        const { statuses } = this.props;
+
+        return (
+            <div className="status-chooser">
+                <StatusChooserButton title="RELEASED" selected={statuses.released} status={'released'} clickHandler={this.handleClick} />
+                <StatusChooserButton title="UNRELEASED" selected={statuses.unreleased} status={'unreleased'} clickHandler={this.handleClick} />
+                <StatusChooserButton title="REVOKED" selected={statuses.revoked} status={'revoked'} clickHandler={this.handleClick} />
+                <StatusChooserButton title="ARCHIVED" selected={statuses.archived} status={'archived'} clickHandler={this.handleClick} />
+            </div>
+        );
     },
 });
 
@@ -32,59 +74,64 @@ const StatusChooser = React.createClass({
 //             because this function can't access the navigation function.
 
 function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, navigate) {
-    require.ensure(['chart.js'], (require) => {
-        const Chart = require('chart.js');
+    return new Promise((resolve) => {
+        require.ensure(['chart.js'], (require) => {
+            const Chart = require('chart.js');
 
-        // Create the chart.
-        const canvas = document.getElementById(`${chartId}-chart`);
-        const ctx = canvas.getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: values,
-                    backgroundColor: colors,
-                }],
-            },
-            options: {
-                maintainAspectRatio: false,
-                legend: {
-                    display: false,
+            // Create the chart.
+            const canvas = document.getElementById(`${chartId}-chart`);
+            const ctx = canvas.getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: colors,
+                    }],
                 },
-                animation: {
-                    duration: 200,
-                },
-                legendCallback: (chartInstance) => {
-                    const chartData = chartInstance.data.datasets[0].data;
-                    const chartColors = chartInstance.data.datasets[0].backgroundColor;
-                    const chartLabels = chartInstance.data.labels;
-                    const text = [];
-                    text.push('<ul>');
-                    for (let i = 0; i < chartData.length; i += 1) {
-                        if (chartData[i]) {
-                            text.push(`<li><a href="${baseSearchUri}${chartLabels[i]}">`);
-                            text.push(`<span class="chart-legend-chip" style="background-color:${chartColors[i]}"></span>`);
-                            text.push(`<span class="chart-legend-label">${chartLabels[i]}</span>`);
-                            text.push('</a></li>');
+                options: {
+                    maintainAspectRatio: false,
+                    legend: {
+                        display: false,
+                    },
+                    animation: {
+                        duration: 200,
+                    },
+                    legendCallback: (chartInstance) => {
+                        const chartData = chartInstance.data.datasets[0].data;
+                        const chartColors = chartInstance.data.datasets[0].backgroundColor;
+                        const chartLabels = chartInstance.data.labels;
+                        const text = [];
+                        text.push('<ul>');
+                        for (let i = 0; i < chartData.length; i += 1) {
+                            if (chartData[i]) {
+                                text.push(`<li><a href="${baseSearchUri}${chartLabels[i]}">`);
+                                text.push(`<span class="chart-legend-chip" style="background-color:${chartColors[i]}"></span>`);
+                                text.push(`<span class="chart-legend-label">${chartLabels[i]}</span>`);
+                                text.push('</a></li>');
+                            }
                         }
-                    }
-                    text.push('</ul>');
-                    return text.join('');
-                },
-                onClick: function (e) {
-                    // React to clicks on pie sections
-                    const activePoints = chart.getElementAtEvent(e);
+                        text.push('</ul>');
+                        return text.join('');
+                    },
+                    onClick: function (e) {
+                        // React to clicks on pie sections
+                        const activePoints = chart.getElementAtEvent(e);
 
-                    if (activePoints[0]) { // if click on wrong area, do nothing
-                        const clickedElementIndex = activePoints[0]._index;
-                        const term = chart.data.labels[clickedElementIndex];
-                        navigate(`${baseSearchUri}${term}`);
-                    }
+                        if (activePoints[0]) { // if click on wrong area, do nothing
+                            const clickedElementIndex = activePoints[0]._index;
+                            const term = chart.data.labels[clickedElementIndex];
+                            navigate(`${baseSearchUri}${term}`);
+                        }
+                    },
                 },
-            },
+            });
+            document.getElementById(`${chartId}-legend`).innerHTML = chart.generateLegend();
+
+            // Resolve the webpack loader promise with the chart instance.
+            resolve(chart);
         });
-        document.getElementById(`${chartId}-legend`).innerHTML = chart.generateLegend();
     });
 }
 
@@ -104,6 +151,12 @@ const LabChart = React.createClass({
         this.createChart(labChartId, this.props.labs);
     },
 
+    componentDidUpdate: function () {
+        if (this.chart) {
+            this.updateChart(this.chart, this.props.labs);
+        }
+    },
+
     createChart: function (chartId, facetData) {
         // Extract the non-zero values, and corresponding labels and colors for the data.
         const values = [];
@@ -117,7 +170,34 @@ const LabChart = React.createClass({
         const colors = labels.map((label, i) => labColorList[i % labColorList.length]);
 
         // Create the chart.
-        createDoughnutChart(chartId, values, labels, colors, '/search/?type=Experiment&lab.title=', (uri) => { this.context.navigate(uri); });
+        createDoughnutChart(chartId, values, labels, colors, '/search/?type=Experiment&lab.title=', (uri) => { this.context.navigate(uri); })
+            .then((chartInstance) => {
+                // Save the created chart instance.
+                this.chart = chartInstance;
+            });
+    },
+
+    // Update existing chart with new data.
+    updateChart: function (chart, facetData) {
+        // Extract the non-zero values, and corresponding labels and colors for the data.
+        const values = [];
+        const labels = [];
+        facetData.forEach((item) => {
+            if (item.doc_count) {
+                values.push(item.doc_count);
+                labels.push(item.key);
+            }
+        });
+        const colors = labels.map((label, i) => labColorList[i % labColorList.length]);
+
+        // Update chart data and redraw with the new data
+        chart.data.datasets[0].data = values;
+        chart.data.datasets[0].backgroundColor = colors;
+        chart.data.labels = labels;
+        chart.update();
+
+        // Redraw the updated legend.
+        document.getElementById(`${labChartId}-legend`).innerHTML = chart.generateLegend();
     },
 
     render: function () {
@@ -159,6 +239,12 @@ const AssayChart = React.createClass({
         this.createChart(assayChartId, this.props.assays);
     },
 
+    componentDidUpdate: function () {
+        if (this.chart) {
+            this.updateChart(this.chart, this.props.assays);
+        }
+    },
+
     createChart: function (chartId, facetData) {
         // Extract the non-zero values, and corresponding labels and colors for the data.
         const values = [];
@@ -172,7 +258,34 @@ const AssayChart = React.createClass({
         const colors = this.context.assayTermNameColors.colorList(facetData.map(term => term.key), { shade: 10 });
 
         // Create the chart.
-        createDoughnutChart(chartId, values, labels, colors, '/matrix/?type=Experiment&assay_title=', (uri) => { this.context.navigate(uri); });
+        createDoughnutChart(chartId, values, labels, colors, '/matrix/?type=Experiment&assay_title=', (uri) => { this.context.navigate(uri); })
+            .then((chartInstance) => {
+                // Save the created chart instance.
+                this.chart = chartInstance;
+            });
+    },
+
+    // Update existing chart with new data.
+    updateChart: function (chart, facetData) {
+        // Extract the non-zero values, and corresponding labels and colors for the data.
+        const values = [];
+        const labels = [];
+        facetData.forEach((item) => {
+            if (item.doc_count) {
+                values.push(item.doc_count);
+                labels.push(item.key);
+            }
+        });
+        const colors = this.context.assayTermNameColors.colorList(facetData.map(term => term.key), { shade: 10 });
+
+        // Update chart data and redraw with the new data
+        chart.data.datasets[0].data = values;
+        chart.data.datasets[0].backgroundColor = colors;
+        chart.data.labels = labels;
+        chart.update();
+
+        // Redraw the updated legend.
+        document.getElementById(`${assayChartId}-legend`).innerHTML = chart.generateLegend();
     },
 
     render: function () {
@@ -243,18 +356,41 @@ const AwardCharts = React.createClass({
         award: React.PropTypes.object, // Award represented by this chart
     },
 
+    getInitialState: function () {
+        return {
+            statuses: { // Each set to True if their button is selected in the UI
+                released: false,
+                unreleased: false,
+                revoked: false,
+                archived: false,
+            },
+        };
+    },
+
+    // Called when a status selection button gets clicked. The clicked status (either to enable or
+    // disable it) gets passed in `status`.
+    handleStatusSelection: function (status) {
+        const newStatuses = this.state.statuses;
+        newStatuses[status] = !newStatuses[status];
+        this.setState({ statuses: newStatuses });
+    },
+
     render: function () {
         const { award } = this.props;
+
+        // Convert statuses to a query string segment
+        const statusQuery = Object.keys(this.state.statuses).reduce((query, statusKey) =>
+            this.state.statuses[statusKey] ? query.concat(`&status=${statusKey}`) : query, '');
 
         return (
             <Panel>
                 <PanelHeading>
-                    <StatusChooser />
+                    <StatusChooser statuses={this.state.statuses} clickHandler={this.handleStatusSelection} />
                 </PanelHeading>
                 <PanelBody>
                     <FetchedItems
                         award={award}
-                        url={`/search/?type=Experiment&limit=all&award.name=${award.name}`}
+                        url={`/search/?type=Experiment&limit=all&award.name=${award.name}${statusQuery}`}
                         Component={ChartRenderer}
                         ignoreErrors
                     />

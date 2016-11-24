@@ -1,5 +1,3 @@
-
-
 .award-charts {
     display: block;
 
@@ -21,5 +19,40 @@
     @at-root #{&}__canvas {
         position: relative;
         height: 250px;
+    }
+}
+
+// Positions tabs with padding, hovering, and changing color if selected
+.status-chooser {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    @at-root #{&}__button {
+        display: block;
+        margin-left: 5px;
+        padding: 5px 20px !important;
+        flex: 0 1 auto;
+        font-size: 0.9rem;
+        font-weight: normal;
+        text-decoration: none;
+        color: #404040;
+        background-color: #c0beff;
+        border: 1px solid #0001ee;
+        text-transform: uppercase;
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        &:hover {
+            background-color: #adabf8;
+        }
+
+        #{&}--selected {
+            color: #000;
+            background-color: #7575f7;
+        }
     }
 }
