@@ -727,32 +727,35 @@ var Facet = search.Facet = React.createClass({
             }
         }
 
-        return (
-            <div className="facet" hidden={terms.length === 0} style={{width: this.props.width}}>
-                <h5>{title}</h5>
-                <ul className="facet-list nav">
-                    <div>
-                        {terms.slice(0, 5).map(function (term) {
-                            return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
-                        }.bind(this))}
-                    </div>
-                    {terms.length > 5 ?
-                        <div id={termID} className={moreSecClass}>
-                            {moreTerms.map(function (term) {
+        if (terms.length && terms.some(term => term.doc_count)) {
+            return (
+                <div className="facet">
+                    <h5>{title}</h5>
+                    <ul className="facet-list nav">
+                        <div>
+                            {terms.slice(0, 5).map(function (term) {
                                 return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
                             }.bind(this))}
                         </div>
-                    : null}
-                    {(terms.length > 5 && !moreTermSelected) ?
-                        <label className="pull-right">
-                                <small>
-                                    <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} onClick={this.handleClick} />
-                                </small>
-                        </label>
-                    : null}
-                </ul>
-            </div>
-        );
+                        {terms.length > 5 ?
+                            <div id={termID} className={moreSecClass}>
+                                {moreTerms.map(function (term) {
+                                    return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
+                                }.bind(this))}
+                            </div>
+                        : null}
+                        {(terms.length > 5 && !moreTermSelected) ?
+                            <label className="pull-right">
+                                    <small>
+                                        <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} onClick={this.handleClick} />
+                                    </small>
+                            </label>
+                        : null}
+                    </ul>
+                </div>
+            );
+        }
+        return null;
     }
 });
 
@@ -831,9 +834,6 @@ var FacetList = search.FacetList = React.createClass({
         } else {
             hideTypes = filters.filter(filter => filter.field === 'type').length === 1 && normalFacets.length > 1;
         }
-        if (this.props.orientation == 'horizontal') {
-            width = (100 / facets.length) + '%';
-        }
 
         // See if we need the Clear Filters link or not. context.clear_filters 
         var clearButton; // JSX for the clear button
@@ -855,21 +855,23 @@ var FacetList = search.FacetList = React.createClass({
         }
 
         return (
-            <div className={"box facets " + this.props.orientation}>
-                {clearButton ?
-                    <div className="clear-filters-control">
-                        <a href={context.clear_filters}>Clear Filters <i className="icon icon-times-circle"></i></a>
-                    </div>
-                : null}
-                {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
-                {facets.map(facet => {
-                    if ((hideTypes && facet.field == 'type') || (!loggedIn && this.context.hidePublicAudits && facet.field.substring(0, 6) === 'audit.')) {
-                        return <span key={facet.field} />;
-                    } else {
-                        return <Facet {...this.props} key={facet.field} facet={facet} filters={filters}
-                                        width={width} />;
-                    }
-                })}
+            <div className="box facets">
+                <div className={`orientation${this.props.orientation === 'horizontal' ? ' horizontal' : ''}`}>
+                    {clearButton ?
+                        <div className="clear-filters-control">
+                            <a href={context.clear_filters}>Clear Filters <i className="icon icon-times-circle"></i></a>
+                        </div>
+                    : null}
+                    {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
+                    {facets.map(facet => {
+                        if ((hideTypes && facet.field == 'type') || (!loggedIn && this.context.hidePublicAudits && facet.field.substring(0, 6) === 'audit.')) {
+                            return <span key={facet.field} />;
+                        } else {
+                            return <Facet {...this.props} key={facet.field} facet={facet} filters={filters}
+                                            width={width} />;
+                        }
+                    })}
+                </div>
             </div>
         );
     }
