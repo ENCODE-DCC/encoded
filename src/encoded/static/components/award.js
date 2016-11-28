@@ -213,7 +213,7 @@ const LabChart = React.createClass({
                         <div id={labChartId} className="award-charts__canvas">
                             <canvas id={`${labChartId}-chart`} />
                         </div>
-                        <div id={`${labChartId}-legend`} className="chart-legend" />
+                        <div id={`${labChartId}-legend`} className="award-charts__legend" />
                     </div>
                 :
                     <div className="chart-no-data" style={{ height: this.wrapperHeight }}>No data to display</div>
@@ -301,7 +301,7 @@ const AssayChart = React.createClass({
                         <div id={assayChartId} className="award-charts__canvas">
                             <canvas id={`${assayChartId}-chart`} />
                         </div>
-                        <div id={`${assayChartId}-legend`} className="chart-legend" />
+                        <div id={`${assayChartId}-legend`} className="award-charts__legend" />
                     </div>
                 :
                     <div className="chart-no-data" style={{ height: this.wrapperHeight }}>No data to display</div>

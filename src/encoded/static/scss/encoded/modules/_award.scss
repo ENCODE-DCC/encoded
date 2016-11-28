@@ -20,20 +20,58 @@
         position: relative;
         height: 250px;
     }
+
+    @at-root #{&}__legend {
+        margin: 50px auto;
+        width: 100%;
+
+        @media screen and (min-width: $screen-md-min) {
+            margin: 20px auto;
+            width: 60%;
+        }
+
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+
+            li {
+                @extend .clearfix;
+            }
+        }
+
+        a {
+            float: left;
+            height: 18px;
+            margin: 0;
+            padding: 3px;
+            color: black;
+            text-decoration: none;
+
+            &:hover {
+                background-color: #e0e0e0;
+            }
+        }
+    }
 }
 
 // Positions tabs with padding, hovering, and changing color if selected
 .status-chooser {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     justify-content: flex-start;
     align-items: flex-start;
+    margin: -5px;
+
+    @media screen and (min-width: $screen-sm-min) {
+        flex-wrap: nowrap;
+    }
 
     @at-root #{&}__button {
         display: block;
-        margin-left: 5px;
+        margin: 5px;
         padding: 5px 20px !important;
-        flex: 0 1 auto;
+        flex: 1 1 40%;
         font-size: 0.9rem;
         font-weight: normal;
         text-decoration: none;
@@ -42,8 +80,8 @@
         border: 1px solid #0001ee;
         text-transform: uppercase;
 
-        &:first-child {
-            margin-left: 0;
+        @media screen and (min-width: $screen-sm-min) {
+            flex: 0 1 auto;
         }
 
         &:hover {
