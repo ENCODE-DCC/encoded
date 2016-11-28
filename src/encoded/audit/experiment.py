@@ -175,7 +175,10 @@ def audit_experiment_missing_processed_files(value, system):
                 yield failure
 
 
-@audit_checker('Experiment', frame=['original_files'])
+@audit_checker('Experiment', frame=['original_files',
+                                    'original_files.analysis_step_version',
+                                    'original_files.analysis_step_version.analysis_step',
+                                    'original_files.analysis_step_version.analysis_step.pipelines'])
 def audit_experiment_missing_unfiltered_bams(value, system):
     if 'assay_term_id' not in value:  # unknown assay
         return
@@ -193,11 +196,13 @@ def audit_experiment_missing_unfiltered_bams(value, system):
         return
     # find out the pipeline
     pipelines = getPipelines(alignment_files)
+
     if len(pipelines) == 0:  # no pipelines detected
         return
 
     if 'Histone ChIP-seq' in pipelines or \
        'Transcription factor ChIP-seq' in pipelines:
+
         for filtered_file in alignment_files:
             if has_no_unfiltered(filtered_file, unfiltered_alignment_files):
                 detail = 'Experiment {} contains biological replicate '.format(value['@id']) + \
