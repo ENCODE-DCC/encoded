@@ -172,6 +172,7 @@ def lot_reviews(characterizations, targets, request):
     review_targets = set()
     primary_chars = []
     secondary_chars = []
+    at_least_one_active_primary = False
 
     # Since characterizations can only take one target (not an array) and primary characterizations
     # for histone modifications may be done in multiple species, we really need to check lane.organism
@@ -192,6 +193,8 @@ def lot_reviews(characterizations, targets, request):
         # Split into primary and secondary to treat separately
         if 'primary_characterization_method' in characterization:
             primary_chars.append(characterization)
+            if 'characterization_reviews' in characterization:
+                at_least_one_active_primary = True
         else:
             secondary_chars.append(characterization)
 
@@ -235,6 +238,7 @@ def lot_reviews(characterizations, targets, request):
                                     base_review,
                                     review_targets,
                                     is_histone_mod,
+                                    at_least_one_active_primary,
                                     target_organisms)
 
     return lot_reviews
@@ -257,6 +261,7 @@ def build_lot_reviews(primary_chars,
                       base_review,
                       review_targets,
                       is_histone_mod,
+                      active_primary,
                       target_organisms):
 
     if not primary_chars:
@@ -283,7 +288,7 @@ def build_lot_reviews(primary_chars,
             #
             #
             #
-            if 'characterization_reviews' not in primary:
+            if 'characterization_reviews' not in primary and not active_primary:
                 if primary['status'] and secondary_status in ['not reviewed']:
                     base_review['status'] = 'not characterized to standards',
                 if primary['status'] == 'not submitted for review by lab' and \
@@ -298,7 +303,7 @@ def build_lot_reviews(primary_chars,
                 if secondary_status == 'in progress':
                     base_review['detail'] = 'Secondary characterization(s) in progress.'
                 return [base_review]
-            else:
+            elif 'characterization_reviews' in primary:
                 for lane_review in primary.get('characterization_reviews', []):
                     # Get the organism information from the lane, not from the target since
                     # there are lanes
@@ -333,6 +338,11 @@ def build_lot_reviews(primary_chars,
                     rank = status_ranking[new_review.get('status')]
                     if rank > status_ranking[char_reviews[key].get('status')]:
                         char_reviews[key] = new_review
+            else:
+                # There is at mixture of active and inactive primaries, but there should be at least
+                # one active primary with characterization reviews to populate the
+                # antibody_lot.lot_reviews, so we can skip over those other inactive primaries.
+                pass
 
         # Go through and calculate the appropriate statuses
         for key in char_reviews:
