@@ -50,9 +50,14 @@
             background-color: #adabf8;
         }
 
-        #{&}--selected {
+        @at-root #{&}--selected {
             color: #000;
-            background-color: #7575f7;
+            background-color: #7575f7 !important;
+
+            &:hover {
+                color: #000;
+                background-color: #7575f7;
+            }
         }
     }
 }
