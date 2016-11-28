@@ -104,6 +104,23 @@
             ]
         }
     },
+    "columns": {
+        "title": {
+            "title": "Name"
+        },
+        "name": {
+            "title": "Number"
+        },
+        "project": {
+            "title": "BioProject"
+        },
+        "rfa": {
+            "title": "Phase"
+        },
+        "status": {
+            "title": "status"
+        }
+    },
     "boost_values": {
         "name": 1.0,
         "title": 1.0,

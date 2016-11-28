@@ -1,9 +1,11 @@
 import React from 'react';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
+import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
 import DataColors from './datacolors';
 import { FetchedItems } from './fetched';
 import globals from './globals';
 import { ProjectBadge } from './image';
+import { PickerActionsMixin } from './search';
 
 
 const labChartId = 'lab-chart'; // Lab chart <div> id attribute
@@ -444,3 +446,37 @@ const Award = React.createClass({
 });
 
 globals.content_views.register(Award, 'Award');
+
+
+const Listing = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object, // Object whose search result we're displaying
+    },
+
+    mixins: [PickerActionsMixin, AuditMixin],
+
+    render: function () {
+        const result = this.props.context;
+        return (
+            <li>
+                <div className="clearfix">
+                    {this.renderActions()}
+                    <div className="pull-right search-meta">
+                        <p className="type meta-title">Award</p>
+                        <p className="type">{` ${result.name}`}</p>
+                        <p className="type meta-status">{` ${result.status}`}</p>
+                        <AuditIndicators audits={result.audit} id={result['@id']} search />
+                    </div>
+                    <div className="accession">
+                        <a href={result['@id']}>{result.title}</a>
+                    </div>
+                    <div className="data-row">
+                        <div><strong>Project / RFA: </strong>{result.project} / {result.rfa}</div>
+                    </div>
+                </div>
+                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
+            </li>
+        );
+    }
+});
+globals.listing_views.register(Listing, 'Award');
