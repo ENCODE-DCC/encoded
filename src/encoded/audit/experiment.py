@@ -658,6 +658,12 @@ def check_experiment_dnase_seq_standards(value,
          'DNase-HS pipeline (single-end)'])
     if pipeline_title is False:
         return
+    for f in fastq_files:
+        for failure in check_file_read_length_rna(f, 36,
+                                                  pipeline_title,
+                                                  ' /data-standards/dnase-seq/ '):
+            yield failure
+
     pipelines = get_pipeline_objects(alignment_files)
     if pipelines is not None and len(pipelines) > 0:
         samtools_flagstat_metrics = get_metrics(alignment_files,
@@ -666,8 +672,7 @@ def check_experiment_dnase_seq_standards(value,
         if samtools_flagstat_metrics is not None and \
                 len(samtools_flagstat_metrics) > 0:
             for metric in samtools_flagstat_metrics:
-                if 'mapped' in metric and \
-                   metric['mapped'] < 5000000 and 'quality_metric_of' in metric:
+                if 'mapped' in metric and 'quality_metric_of' in metric:
                     alignment_file = metric['quality_metric_of'][0]
                     if 'assembly' in alignment_file:
                         detail = 'Alignment file {} '.format(alignment_file['@id']) + \
@@ -688,7 +693,12 @@ def check_experiment_dnase_seq_standards(value,
                                  'mapped reads. ' + \
                                  'The minimum ENCODE standard for each replicate in a DNase-seq ' + \
                                  'experiments is 5 million mapped reads.'
-                    yield AuditFailure('extremely low read depth', detail, level='ERROR')
+                    if 20000000 <= metric['mapped'] < 25000000:
+                        yield AuditFailure('low read depth', detail, level='WARNING')
+                    elif 5000000 <= metric['mapped'] < 20000000:
+                        yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
+                    elif metric['mapped'] < 5000000:
+                        yield AuditFailure('extremely low read depth', detail, level='ERROR')
         elif alignment_files is not None and len(alignment_files) > 0 and \
                 (samtools_flagstat_metrics is None or
                     len(samtools_flagstat_metrics) == 0):
@@ -1878,7 +1888,6 @@ def check_file_read_length_rna(file_to_check, threshold_length, pipeline_title, 
         yield AuditFailure('insufficient read length', detail,
                            level='NOT_COMPLIANT')
     return
-
 
 def get_organism_name(reps):
     for rep in reps:
