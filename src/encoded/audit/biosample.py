@@ -229,7 +229,13 @@ def audit_biosample_culture_date(value, system):
         raise AuditFailure('invalid dates', detail, level='ERROR')
 
 
-@audit_checker('biosample', frame=['organism', 'donor', 'donor.organism', 'donor.mutated_gene', 'donor.mutated_gene.organism'])
+@audit_checker('biosample', frame=[
+    'award',
+    'organism',
+    'donor',
+    'donor.organism',
+    'donor.mutated_gene',
+    'donor.mutated_gene.organism'])
 def audit_biosample_donor(value, system):
     '''
     A biosample should have a donor.
