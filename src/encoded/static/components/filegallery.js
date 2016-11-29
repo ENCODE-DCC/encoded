@@ -1152,6 +1152,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
                     derivedFromFiles[derivedFromId] = derivedFrom;
                     derivedFrom.missing = true;
                     derivedFrom.removed = false; // Clears previous value Redmine #4536
+                    allFiles[derivedFromId] = derivedFrom;
                 } else if (!derivedFromFiles[derivedFromId]) {
                     // The derived-from file was in the given file list but we haven't seen it in
                     // this loop before, so record the derived-from file in derivedFromFiles.
@@ -1351,14 +1352,11 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
             // group's hash value in a `coalescingGroup` property that step node can connnect to.
             group.forEach((contributingFile) => {
                 contributingFile.coalescingGroup = groupHash;
+
+                // Remove coalesced files from allFiles
+                delete allFiles[contributingFile['@id']];
             });
         } else {
-            // The number of files in the coalescing group isn't enough to coalesce them. Just add
-            // them to allFiles and add them to the graph as pretty much regular files.
-            group.forEach((contributingFile) => {
-                allFiles[contributingFile['@id']] = contributingFile;
-            });
-
             // Don't use this coalescingGroup anymore.
             coalescingGroups[groupHash] = [];
         }
