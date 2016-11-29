@@ -333,6 +333,36 @@ class File(Item):
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
 
+    @calculated_property(schema={
+        "title": "Libraries",
+        "description": "List of libraries this file is associated with.",
+        "type": "array",
+        "items": {
+            "title": "Library the file is associated with",
+            "description": "The library file is associated with",
+            "type": ['string', 'object']
+        },
+    })
+    def libraries(self, request, registry, dataset=None):
+
+        conn = registry[CONNECTION]
+        derived_from_closure = property_closure(request, 'derived_from', self.uuid)
+        dataset_uuid = self.__json__(request)['dataset']
+        obj_props = (conn.get_by_uuid(uuid).__json__(request) for uuid in derived_from_closure)
+        replicates = {
+            props['replicate']
+            for props in obj_props
+            if props['dataset'] == dataset_uuid and 'replicate' in props
+        }
+        library_ids = {
+            conn.get_by_uuid(uuid).__json__(request)['library']
+            for uuid in replicates
+        }
+        libraries_list = []
+        for lib_id in sorted(library_ids):
+            libraries_list.append(request.embed(lib_id, '@@object'))
+        return libraries_list
+
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):
         if properties.get('status') == 'uploading':
