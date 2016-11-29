@@ -546,9 +546,12 @@ def audit_experiment_standards_dispatcher(value, system):
     standards_version = 'ENC3'
 
     if value['assay_term_name'] in ['DNase-seq']:
+        hotspots = scanFilesForOutputType(value['original_files'],
+                                          'hotspots')
         for failure in check_experiment_dnase_seq_standards(value,
                                                             fastq_files,
                                                             alignment_files,
+                                                            hotspots,
                                                             desired_assembly,
                                                             desired_annotation):
             yield failure
@@ -649,6 +652,7 @@ def audit_modERN_experiment_standards_dispatcher(value, system):
 def check_experiment_dnase_seq_standards(value,
                                          fastq_files,
                                          alignment_files,
+                                         hotspots_files,
                                          desired_assembly,
                                          desired_annotation):
     pipeline_title = scanFilesForPipelineTitle_not_chipseq(
@@ -710,6 +714,31 @@ def check_experiment_dnase_seq_standards(value,
                      '( {} ) '.format(pipelines[0]['@id']) + \
                      'lack read depth information.'
             yield AuditFailure('missing read depth', detail, level='WARNING')
+
+        hotspot_quality_metrics = get_metrics(hotspots_files,
+                                              'HotspotQualityMetric',
+                                              desired_assembly)
+        if hotspot_quality_metrics is not None and \
+           len(hotspot_quality_metrics) > 0:
+            for metric in hotspot_quality_metrics:
+                if "SPOT score" in metric:
+                    file_names = []
+                    for f in metric['quality_metric_of']:
+                        file_names.append(f['@id'])
+                    file_names_string = str(file_names).replace('\'', ' ')
+
+                    detail = "Signal Portion of Tags (SPOT) is a measure of enrichment, " + \
+                             "analogous to the commonly used fraction of reads in peaks metric. " + \
+                             "ENCODE processed hotspots files {} ".format(file_names_string) + \
+                             "have a SPOT score of {0:.2f}. ".format(metric["SPOT score"]) + \
+                             "According to ENCODE standards, " + \
+                             "SPOT score of 0.4 or higher is considered a product of high quality " + \
+                             "data. A SPOT score of 0.2 is considered a minimally acceptable " + \
+                             "SPOT score for rare and hard to find primary tissues."
+                    if 0.2 <= metric["SPOT score"] < 0.4:
+                        yield AuditFailure('low spot score', detail, level='WARNING')
+                    elif metric["SPOT score"] < 0.2:
+                        yield AuditFailure('insufficient spot score', detail, level='NOT_COMPLIANT')
 
 
 def check_experiment_rna_seq_standards(value,
