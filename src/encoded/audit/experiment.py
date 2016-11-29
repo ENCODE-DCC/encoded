@@ -3326,19 +3326,21 @@ def audit_missing_construct(value, system):
             yield AuditFailure('missing biosample_type', detail, level='ERROR')
 
         for biosample in biosamples:
-            if (biosample['biosample_type'] != 'whole organisms') and (not biosample['constructs']):
+            if (biosample['biosample_type'] != 'whole organisms') and \
+               ('constructs' not in biosample):
                 missing_construct.append(biosample)
             elif (biosample['biosample_type'] == 'whole organisms') and \
-                    (not biosample['model_organism_donor_constructs']):
+                    ('model_organism_donor_constructs' not in biosample):
                     missing_construct.append(biosample)
-            elif (biosample['biosample_type'] != 'whole organisms') and (biosample['constructs']):
+            elif (biosample['biosample_type'] != 'whole organisms') and ('constructs' in biosample):
                 for construct in biosample['constructs']:
-                    if construct['target']['name'] != target['name']:
+                    if 'target' in construct and 'name' in construct['target'] and \
+                       'name' in target and construct['target']['name'] != target['name']:
                         tag_mismatch.append(construct)
             elif (biosample['biosample_type'] == 'whole organisms') and \
-                    (biosample['model_organism_donor_constructs']):
+                    ('model_organism_donor_constructs' in biosample):
                         for construct in biosample['model_organism_donor_constructs']:
-                            if 'name' in construct['target'] and \
+                            if 'target' in construct and 'name' in construct['target'] and \
                                'name' in target and construct['target']['name'] != target['name']:
                                 tag_mismatch.append(construct)
             else:
