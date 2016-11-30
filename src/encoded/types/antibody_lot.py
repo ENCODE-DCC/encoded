@@ -173,6 +173,7 @@ def lot_reviews(characterizations, targets, request):
     primary_chars = []
     secondary_chars = []
     at_least_one_active_primary = False
+    secondary_status = None
 
     # Since characterizations can only take one target (not an array) and primary characterizations
     # for histone modifications may be done in multiple species, we really need to check lane.organism
@@ -193,7 +194,10 @@ def lot_reviews(characterizations, targets, request):
         # Split into primary and secondary to treat separately
         if 'primary_characterization_method' in characterization:
             primary_chars.append(characterization)
-            if 'characterization_reviews' in characterization:
+            if characterization['status'] in ['compliant',
+                                              'not compliant',
+                                              'pending dcc revew',
+                                              'exempt from standards']:
                 at_least_one_active_primary = True
         else:
             secondary_chars.append(characterization)
@@ -230,8 +234,6 @@ def lot_reviews(characterizations, targets, request):
 
     if secondary_chars:
         secondary_status = get_secondary_status(secondary_chars, status_ranking)
-    else:
-        secondary_status = None
 
     # Now check the primaries and update their status accordingly
     lot_reviews = build_lot_reviews(primary_chars,
@@ -295,7 +297,8 @@ def build_lot_reviews(primary_chars,
                 if secondary_status == 'in progress':
                     base_review['detail'] = 'Secondary characterization(s) in progress.'
                 return [base_review]
-            elif 'characterization_reviews' in primary:
+            elif 'characterization_reviews' in primary and \
+                    primary['status'] != 'not submitted for review by lab':
                 for lane_review in primary.get('characterization_reviews', []):
                     # Get the organism information from the lane, not from the target since
                     # there are lanes
