@@ -228,8 +228,7 @@ def lot_reviews(characterizations, targets, request):
         'in progress': 0
     }
 
-    secondary_status = get_secondary_status(secondary_chars, status_ranking) \
-        if secondary_chars else None
+    secondary_status = get_secondary_status(secondary_chars, status_ranking) if secondary_chars else None
 
     # Now check the primaries and update their status accordingly
     lot_reviews = build_lot_reviews(primary_chars,
@@ -310,7 +309,7 @@ def build_lot_reviews(primary_chars,
                             sorted(review_targets) if is_histone_mod
                             else [primary['target']],
                         'status': 'not submitted for review by lab' if primary['status'] ==
-                            'not submitted for review by lab' else lane_review.get('lane_status'),
+                            'not pursued' else lane_review.get('lane_status'),
                         'detail': None
                     }
 
