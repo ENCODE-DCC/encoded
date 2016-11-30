@@ -288,9 +288,7 @@ describe('Experiment Graph', function() {
             files[2].derived_from = [require('../testdata/file/bam-vus')];
             files[2].biological_replicates = files[2].derived_from[0].biological_replicates = [ 2 ];
 
-            console.log('FILES %o', files);
             const graphRes = assembleGraph(context_graph, null, '', files);
-            console.log('GRAPH %o', graphRes.graph);
             graph = graphRes.graph;
         });
 
