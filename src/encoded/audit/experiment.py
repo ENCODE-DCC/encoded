@@ -178,7 +178,8 @@ def audit_experiment_missing_processed_files(value, system):
 @audit_checker('Experiment', frame=['original_files',
                                     'original_files.analysis_step_version',
                                     'original_files.analysis_step_version.analysis_step',
-                                    'original_files.analysis_step_version.analysis_step.pipelines'])
+                                    'original_files.analysis_step_version.analysis_step.pipelines',
+                                    'original_files.derived_from'])
 def audit_experiment_missing_unfiltered_bams(value, system):
     if 'assay_term_id' not in value:  # unknown assay
         return
@@ -204,13 +205,26 @@ def audit_experiment_missing_unfiltered_bams(value, system):
        'Transcription factor ChIP-seq' in pipelines:
 
         for filtered_file in alignment_files:
-            if has_no_unfiltered(filtered_file, unfiltered_alignment_files):
+            if has_only_raw_files_in_derived_from(filtered_file) and \
+               has_no_unfiltered(filtered_file, unfiltered_alignment_files):
                 detail = 'Experiment {} contains biological replicate '.format(value['@id']) + \
                          '{} '.format(filtered_file['biological_replicates']) + \
                          'with a filtered alignments file {}, mapped to '.format(filtered_file['@id']) + \
                          'a {} assembly, '.format(filtered_file['assembly']) + \
                          'but has no unfiltered alignments file.'
                 yield AuditFailure('missing unfiltered alignments', detail, level='INTERNAL_ACTION')
+
+
+def has_only_raw_files_in_derived_from(bam_file):
+    if 'derived_from' in bam_file:
+        if bam_file['derived_from'] == []:
+            return False
+        for f in bam_file['derived_from']:
+            if f['file_format'] not in ['fastq', 'tar', 'fasta']:
+                return False
+        return True
+    else:
+        return False
 
 
 def has_no_unfiltered(filtered_bam, unfiltered_bams):
