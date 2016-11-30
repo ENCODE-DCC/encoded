@@ -3369,7 +3369,8 @@ def audit_experiment_antibody_characterized(value, system):
                 # been characterized to standards
                 if lot_review['status'] in ['not characterized to standards',
                                             'pending dcc review',
-                                            'not pursued']:
+                                            'not pursued',
+                                            'awaiting characterization']:
                     for lot_organism in lot_review['organisms']:
                         if organism == lot_organism:
                             characterized_in_organism = True
@@ -3386,6 +3387,9 @@ def audit_experiment_antibody_characterized(value, system):
                                      'to the standard with exemption for {}'.format(organism)
                             yield AuditFailure('antibody characterized with exemption',
                                                detail, level='WARNING')
+                if lot_review['status'] == 'characterized to standards' and \
+                        organism == lot_organism:
+                    characterized_in_organism = True
             if not characterized_in_organism:
                 detail = '{} has not been '.format(antibody['@id']) + \
                     'characterized to the standard for {}: {}'.format(organism, lot_review['detail'])
