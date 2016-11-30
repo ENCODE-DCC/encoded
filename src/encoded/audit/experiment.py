@@ -382,6 +382,18 @@ def is_outdated_bams_replicate(bam_file):
     return False
 
 
+@audit_checker('Experiment', frame=['original_files'])
+def audit_experiment_with_uploading_files(value, system):
+    if 'original_files' not in value:
+        return
+    for f in value['original_files']:
+        if f['status'] in ['uploading', 'upload failed']:
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     'contains a file {} '.format(f['@id']) + \
+                     'with the status {}.'.format(f['status'])
+            yield AuditFailure('not uploaded files', detail, level='INTERNAL_ACTION')
+
+
 @audit_checker('Experiment', frame=['original_files',
                                     'original_files.replicate',
                                     'original_files.derived_from'])
