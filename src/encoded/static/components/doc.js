@@ -288,7 +288,7 @@ var DocumentDetail = module.exports.DocumentDetail = React.createClass({
                     {doc.award && doc.award.name ?
                         <div data-test="award">
                             <dt>Grant</dt>
-                            <dd>{doc.award.name}</dd>
+                            <dd><a href={doc.award['@id']}>{doc.award.name}</a></dd>
                         </div>
                     : null}
                 </dl>

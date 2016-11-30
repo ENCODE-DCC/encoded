@@ -17,6 +17,29 @@ const statusColors = new DataColors(); // Get a list of colors to use for the st
 const statusColorList = labColors.colorList();
 
 
+// Draw the total chart count in the middle of the donut.
+function drawDonutCenter (chart) {
+    const width = chart.chart.width;
+    const height = chart.chart.height;
+    const ctx = chart.chart.ctx;
+
+    ctx.fillStyle = '#000000';
+    ctx.restore();
+    const fontSize = (height / 114).toFixed(2);
+    ctx.font = `${fontSize}em sans-serif`;
+    ctx.textBaseline = 'middle';
+
+    const data = chart.data.datasets[0].data;
+    const total = data.reduce((prev, curr) => prev + curr);
+    const textX = Math.round((width - ctx.measureText(total).width) / 2);
+    const textY = height / 2;
+
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillText(total, textX, textY);
+    ctx.save();
+}
+
+
 // Create a chart in the div.
 //   chartId: Root HTML id of div to draw the chart into. Supply <divs> with `chartId`-chart for
 //            the chart itself, and `chartId`-legend for its legend.
@@ -32,6 +55,12 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
     return new Promise((resolve) => {
         require.ensure(['chart.js'], (require) => {
             const Chart = require('chart.js');
+
+            // adding total doc count to middle of donut
+            // http://stackoverflow.com/questions/20966817/how-to-add-text-inside-the-doughnut-chart-using-chart-js/24671908
+            Chart.pluginService.register({
+                beforeDraw: drawDonutCenter,
+            });
 
             // Create the chart.
             const canvas = document.getElementById(`${chartId}-chart`);
