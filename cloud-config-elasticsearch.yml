@@ -64,6 +64,7 @@ packages:
 - oracle-java8-installer
 - oracle-java8-set-default
 - python2.7-dev
+- python-virtualenv
 - unattended-upgrades
 - bsd-mailx
 
