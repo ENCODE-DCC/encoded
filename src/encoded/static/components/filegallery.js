@@ -184,7 +184,7 @@ function humanFileSize(size) {
         const i = Math.floor(Math.log(size) / Math.log(1024));
         const adjustedSize = (size / Math.pow(1024, i)).toPrecision(3) * 1;
         const units = ['B', 'kB', 'MB', 'GB', 'TB'][i];
-        return `${units} ${adjustedSize}`;
+        return `${adjustedSize} ${units}`;
     }
     return undefined;
 }
