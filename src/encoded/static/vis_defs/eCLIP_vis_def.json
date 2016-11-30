@@ -38,6 +38,7 @@
                     "visibility": "dense",
                     "type": "bigBed",
                     "spectrum": "on",
+                    "minGrayLevel": 4,
                     "scoreFilter": "100",
                     "output_type": [ "peaks" ]
                 }

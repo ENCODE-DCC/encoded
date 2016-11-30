@@ -22,7 +22,7 @@ import logging
 from .search import _ASSEMBLY_MAPPER
 
 log = logging.getLogger(__name__)
-#log.setLevel(logging.DEBUG)
+log.setLevel(logging.DEBUG)
 
 def includeme(config):
     config.add_route('batch_hub', '/batch_hub/{search_params}/{txt}')
@@ -83,6 +83,7 @@ SUPPORTED_MASK_TOKENS = [
     "{target}","{target.label}",            # Either is acceptible
     "{target.title}",
     "{target.name}",                        # Used in metadata URLs
+    "{target.investigated_as}",
     "{biosample_term_name}","{biosample_term_name|multiple}",  # "|multiple": none means multiple
     "{output_type_short_label}",                # hard-coded translation from output_type to very short version Do we want this in schema?
     "{replicates.library.biosample.summary}",   # Idan and Forrest and Cricket are conspiring to move this to dataset.biosample_summary and make it much shorter
@@ -137,14 +138,23 @@ def lookup_token(token,dataset,a_file=None):
         else:
             sub_token = "label"
         return target.get(sub_token,"Unknown Target")
-    elif token in ["{target.name}"]:
+    elif token in ["{target.name}","{target.investigated_as}"]:
         target = dataset.get('target',{})
         if isinstance(target,list):
             if len(target) > 0:
                 target = target[0]
             else:
                 target = {}
-        return target.get('label',"Unknown Target")
+        if token == "{target.name}":
+            return target.get('label',"Unknown Target")
+        elif token == "{target.investigated_as}":
+            investigated_as = target.get('investigated_as',"Unknown Target")
+            if not isinstance(investigated_as,list):
+                return investigated_as
+            elif len(investigated_as) > 0:
+                return investigated_as[0]
+            else:
+                return "Unknown Target"
     elif token in ["{replicates.library.biosample.summary}","{replicates.library.biosample.summary|multiple}"]:
         term = None
         replicates = dataset.get("replicates",[])
@@ -398,7 +408,7 @@ SUPPORTED_SUBGROUPS = [ "Biosample", "Targets", "Assay", "Replicates", "Views", 
 
 SUPPORTED_TRACK_SETTINGS = [
     "type","visibility","longLabel","shortLabel","color","altColor","allButtonPair","html"
-    "scoreFilter","spectrum",
+    "scoreFilter","spectrum","minGrayLevel","itemRgb",
     "viewLimits","autoScale","negateValues","maxHeightPixels","windowingFunction","transformFunc",
     ]
 COMPOSITE_SETTINGS = ["longLabel","shortLabel","visibility","pennantIcon","allButtonPair","html"]
@@ -1526,9 +1536,13 @@ def generate_batch_trackDb(request, hide=False, regen=False):
                     found += 1
                 acc_composites[acc] = acc_composite
 
-        set_composites = remodel_acc_to_set_composites(acc_composites, hide_after=100)
-        log.debug("%d acc_composites => %d set_composites (%s generated, %d found)   %.3f secs" % \
-            ((made + found),len(set_composites),made,found,(time.time() - PROFILE_START_TIME)))
+    if found == 0: # if 0 were found in cache try generating (for pre-primed-cache access)
+        log.warn("batch_trackDb Found no results   %.3f secs" % (time.time() - PROFILE_START_TIME))
+        return ""
+
+    set_composites = remodel_acc_to_set_composites(acc_composites, hide_after=100)
+    log.debug("%d acc_composites => %d set_composites (%s generated, %d found)   %.3f secs" % \
+        ((made + found),len(set_composites),made,found,(time.time() - PROFILE_START_TIME)))
 
     json_out = (request.url.find("jsonout") > -1) # ...&assembly=hg19&jsonout/hg19/trackDb.txt
     if json_out:

@@ -10,14 +10,14 @@
 #          are hard-coded into visualization.py.  If a datasets' vis_type cannot be determined,
 #          it is considered "opaque" and will used the default vis_def.
 {
-    "ChIP": {
-        "rule": "'{assay_term_name}' == 'ChIP-seq' and '{target.investigated_as}'.find('histone') == -1",
+    "HIST": {
+        "rule": "'{assay_term_name}' == 'ChIP-seq' and '{target.investigated_as}'.find('histone') != -1",
         "assay_composite": {
-            "longLabel":  "Collection of ENCODE ChIP-seq experiments",
-            "shortLabel": "ENCODE ChIP-seq"
+            "longLabel":  "Collection of ENCODE Histone ChIP-seq experiments",
+            "shortLabel": "ENCODE Histone ChIP"
         },
-        "longLabel":  "{target} {assay_title} of {replicates.library.biosample.summary} - {accession}",
-        "shortLabel": "{target} {assay_title} of {biosample_term_name} {accession}",
+        "longLabel":  "{target} {target.investigated_as} {assay_title} of {replicates.library.biosample.summary} - {accession}",
+        "shortLabel": "{target} {target.investigated_as} of {biosample_term_name} {accession}",
         "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
         "Views":  {
             "tag": "view",

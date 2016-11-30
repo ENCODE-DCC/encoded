@@ -21,9 +21,9 @@
         "sortOrder": [ "Biosample","Replicates", "Views" ],
         "Views":  {
             "tag": "view",
-            "group_order": [ "Candidate enhancers", "Candidate promoters",  "Chromatin state", "Peaks" ],
+            "group_order": [ "Candidate enhancers", "Candidate promoters",  "Chromatin state",
+                             "HMM predicted chromatin state", "Peaks" ],
             "groups": {
-
                 "Candidate enhancers": {
                     "tag": "aENHAN",
                     "type": "bigBed",
@@ -40,7 +40,14 @@
                     "tag": "cSTATE",
                     "type": "bigBed",
                     "visibility": "dense",
+                    "itemRgb": "on",
                     "output_type": [ "semi-automated genome annotation" ]
+                },
+                "HMM predicted chromatin state": {
+                    "tag": "hSTATE",
+                    "type": "bigBed",
+                    "visibility": "dense",
+                    "output_type": [ "HMM predicted chromatin state" ]
                 },
                 "Peaks": {
                     "tag": "sPKS",

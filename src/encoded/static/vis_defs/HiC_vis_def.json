@@ -26,20 +26,20 @@
                 "Topologically associated domains": {
                     "tag": "aTADS",
                     "visibility": "dense",
-                    "type": "bigBed 3+",
+                    "type": "bigBed 3 +",
                     "output_type": [ "topologically associated domains" ]
                 },
                 "Nested TADs": {
                     "tag": "bTADS",
                     "visibility": "hide",
-                    "type": "bigBed 3+",
+                    "type": "bigBed 3 +",
                     "output_type": [ "nested topologically associated domains" ]
                 },
                 "Genome compartments": {
                     "tag": "cCOMPART",
-                    "visibility": "hide",
+                    "visibility": "full",
                     "type": "bigWig",
-                    "viewLimits": "0:1",
+                    "viewLimits": "0:0.1",
                     "transformFunc": "LOG",
                     "autoScale": "off",
                     "maxHeightPixels": "64:18:8",

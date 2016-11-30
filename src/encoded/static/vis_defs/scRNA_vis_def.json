@@ -9,63 +9,64 @@
 #          assigning a vis_type/vis_def to a dataset.  More complicated rules for some vis_types
 #          are hard-coded into visualization.py.  If a datasets' vis_type cannot be determined,
 #          it is considered "opaque" and will used the default vis_def.
-
 {
-    "DNASE": {
-        "rule": "'{assay_term_name}' == 'DNase-seq'",
-        "assay_composite": {
-            "longLabel":  "Collection of ENCODE DNase-HS experiments",
-            "shortLabel": "ENCODE DNase-HS"
+    "scRNA": {
+         "rule": "'{assay_term_name}' == 'single cell RNA-seq'",
+       "assay_composite": {
+            "longLabel":  "Collection of ENCODE Single-Cell long-RNA-seq experiments",
+            "shortLabel": "ENCODE SC RNA-seq"
         },
         "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
         "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
         "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
-        "Views":  {
+        "Views": {
             "tag": "view",
-            "group_order": [ "Signal", "Peaks", "Hotspots" ],
+            "group_order": [ "Signal of unique reads", "Signal of all reads" ],
             "groups": {
-                "Signal": {
-                    "tag": "aSIG",
+                "Signal of unique reads": {
+                    "tag": "SIGBL",
                     "visibility": "full",
                     "type": "bigWig",
                     "viewLimits": "0:1",
+                    "transformFunc": "LOG",
                     "autoScale": "off",
-                    "maxHeightPixels": "32:16:8",
+                    "maxHeightPixels": "64:18:8",
                     "windowingFunction": "mean+whiskers",
                     "output_type": [ "signal of unique reads" ]
                 },
-                "Peaks": {
-                    "tag": "bPKS",
+                "Signal of all reads": {
+                    "tag": "SIGBM",
                     "visibility": "hide",
-                    "type": "bigBed",
-                    "spectrum": "on",
-                    "scoreFilter": "100",
-                    "output_type": [ "peaks" ]
-                },
-                "Hotspots": {
-                    "tag": "cHOT",
-                    "visibility": "hide",
-                    "type": "bigBed",
-                    "spectrum": "on",
-                    "output_type": [ "hotspots" ]
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "transformFunc": "LOG",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "signal of all reads" ]
                 }
             }
         },
-        "other_groups":  {
-            "dimensions": { "Biosample": "dimY", "Replicates": "dimA" },
+        "other_groups": {
+            "dimensions": { "Biosample": "dimY", "Targets": "dimX", "Replicates": "dimA" },
+            "dimensionAchecked": "first", # or "all"
             "groups": {
                 "Replicates": {
                     "tag": "REP",
                     "groups": {
-                        "replicate": {
-                            "title_mask": "Replicate_{replicate_number}",
-                            "combined_title": "Pooled"
+                    "replicate": {
+                        "title_mask": "Replicate_{replicate_number}"
+                        #"combined_title": "Pooled", # "Combined"
                         }
                     }
                 },
                 "Biosample": {
                     "tag": "BS",
                     "groups": { "one": { "title_mask": "{biosample_term_name}"} }
+                },
+                "Targets": {
+                    "tag": "TARG",
+                    "groups": { "one": { "title_mask": "{target.label}", "url_mask": "targets/{target.name}" } }
                 }
             }
         },
