@@ -58,12 +58,12 @@ bootcmd:
 package_upgrade: true
 
 packages:
+- git
 - build-essential
 - elasticsearch
 - libssl-dev
 - oracle-java8-installer
 - oracle-java8-set-default
-- git
 - python2.7-dev
 - python-software-properties
 - python-virtualenv
@@ -85,6 +85,11 @@ runcmd:
 - sudo bash /etc/elasticsearch/cluster.sh %(CLUSTER_NAME)s
 - sudo /usr/share/elasticsearch/bin/plugin install elasticsearch/elasticsearch-cloud-aws/2.7.1
 - service elasticsearch start
+- mkdir /srv/encoded
+- chown encoded:encoded /srv/encoded
+- cd /srv/encoded
+- sudo -u encoded git clone --no-checkout https://github.com/ENCODE-DCC/encoded.git .
+- sudo -u encoded git checkout %(COMMIT)s
 - mkdir /opt/cloudwatchmon
 - chown build:build /opt/cloudwatchmon
 - sudo -u build virtualenv --python=python2.7 /opt/cloudwatchmon
