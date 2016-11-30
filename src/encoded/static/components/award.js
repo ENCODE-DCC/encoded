@@ -10,58 +10,11 @@ import { PickerActionsMixin } from './search';
 
 const labChartId = 'lab-chart'; // Lab chart <div> id attribute
 const assayChartId = 'assay-chart'; // Assay chart <div> id attribute
+const statusChartId = 'status-chart'; // Status chart <div> id attribute
 const labColors = new DataColors(); // Get a list of colors to use for the lab chart
 const labColorList = labColors.colorList();
-
-
-// Renders each status-chooser button.
-const StatusChooserButton = React.createClass({
-    propTypes: {
-        title: React.PropTypes.string, // Title to display in button
-        selected: React.PropTypes.bool, // True if the button is selected
-        status: React.PropTypes.string, // Status being selected
-        clickHandler: React.PropTypes.func, // Function to call when this button is clicked
-    },
-
-    handleClick: function () {
-        this.props.clickHandler(this.props.status);
-    },
-
-    render: function () {
-        const { title, selected } = this.props;
-
-        return (
-            <button onClick={this.handleClick} className={`status-chooser__button${selected ? ' status-chooser__button--selected' : ''}`}>{title}</button>
-        );
-    },
-});
-
-
-// Display and handle clicks in the menu-like area that lets the user choose experiment statuses to
-// view in the charts.
-const StatusChooser = React.createClass({
-    propTypes: {
-        statuses: React.PropTypes.object, // Selection state of each status
-        clickHandler: React.PropTypes.func, // Function to call when a button is clicked
-    },
-
-    handleClick: function (status) {
-        this.props.clickHandler(status);
-    },
-
-    render: function () {
-        const { statuses } = this.props;
-
-        return (
-            <div className="status-chooser">
-                <StatusChooserButton title="RELEASED" selected={statuses.released} status={'released'} clickHandler={this.handleClick} />
-                <StatusChooserButton title="UNRELEASED" selected={statuses.unreleased} status={'unreleased'} clickHandler={this.handleClick} />
-                <StatusChooserButton title="REVOKED" selected={statuses.revoked} status={'revoked'} clickHandler={this.handleClick} />
-                <StatusChooserButton title="ARCHIVED" selected={statuses.archived} status={'archived'} clickHandler={this.handleClick} />
-            </div>
-        );
-    },
-});
+const statusColors = new DataColors(); // Get a list of colors to use for the status chart
+const statusColorList = labColors.colorList();
 
 
 // Create a chart in the div.
@@ -141,6 +94,7 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
 // Display and handle clicks in the chart of labs.
 const LabChart = React.createClass({
     propTypes: {
+        award: React.PropTypes.object, // Award being displayed
         labs: React.PropTypes.array, // Array of labs facet data
     },
 
@@ -172,7 +126,7 @@ const LabChart = React.createClass({
         const colors = labels.map((label, i) => labColorList[i % labColorList.length]);
 
         // Create the chart.
-        createDoughnutChart(chartId, values, labels, colors, '/search/?type=Experiment&lab.title=', (uri) => { this.context.navigate(uri); })
+        createDoughnutChart(chartId, values, labels, colors, `/matrix/?type=Experiment&award.name=${this.props.award.name}&lab.title=`, (uri) => { this.context.navigate(uri); })
             .then((chartInstance) => {
                 // Save the created chart instance.
                 this.chart = chartInstance;
@@ -229,6 +183,7 @@ const LabChart = React.createClass({
 // Display and handle clicks in the chart of assays.
 const AssayChart = React.createClass({
     propTypes: {
+        award: React.PropTypes.object, // Award being displayed
         assays: React.PropTypes.array, // Array of assay types facet data
     },
 
@@ -260,7 +215,7 @@ const AssayChart = React.createClass({
         const colors = this.context.assayTermNameColors.colorList(facetData.map(term => term.key), { shade: 10 });
 
         // Create the chart.
-        createDoughnutChart(chartId, values, labels, colors, '/matrix/?type=Experiment&assay_title=', (uri) => { this.context.navigate(uri); })
+        createDoughnutChart(chartId, values, labels, colors, `/matrix/?type=Experiment&award.name=${this.props.award.name}&assay_title=`, (uri) => { this.context.navigate(uri); })
             .then((chartInstance) => {
                 // Save the created chart instance.
                 this.chart = chartInstance;
@@ -314,15 +269,105 @@ const AssayChart = React.createClass({
 });
 
 
+// Display and handle clicks in the chart of labs.
+const StatusChart = React.createClass({
+    propTypes: {
+        award: React.PropTypes.object, // Award being displayed
+        statuses: React.PropTypes.array, // Array of status facet data
+    },
+
+    contextTypes: {
+        navigate: React.PropTypes.func,
+        assayTermNameColors: React.PropTypes.object,
+    },
+
+    componentDidMount: function () {
+        this.createChart(statusChartId, this.props.statuses);
+    },
+
+    componentDidUpdate: function () {
+        if (this.chart) {
+            this.updateChart(this.chart, this.props.statuses);
+        }
+    },
+
+    createChart: function (chartId, facetData) {
+        // Extract the non-zero values, and corresponding labels and colors for the data.
+        const values = [];
+        const labels = [];
+        facetData.forEach((item) => {
+            if (item.doc_count) {
+                values.push(item.doc_count);
+                labels.push(item.key);
+            }
+        });
+        const colors = labels.map((label, i) => statusColorList[i % statusColorList.length]);
+
+        // Create the chart.
+        createDoughnutChart(chartId, values, labels, colors, `/matrix/?type=Experiment&award.name=${this.props.award.name}&status=`, (uri) => { this.context.navigate(uri); })
+            .then((chartInstance) => {
+                // Save the created chart instance.
+                this.chart = chartInstance;
+            });
+    },
+
+    // Update existing chart with new data.
+    updateChart: function (chart, facetData) {
+        // Extract the non-zero values, and corresponding labels and colors for the data.
+        const values = [];
+        const labels = [];
+        facetData.forEach((item) => {
+            if (item.doc_count) {
+                values.push(item.doc_count);
+                labels.push(item.key);
+            }
+        });
+        const colors = labels.map((label, i) => statusColorList[i % statusColorList.length]);
+
+        // Update chart data and redraw with the new data
+        chart.data.datasets[0].data = values;
+        chart.data.datasets[0].backgroundColor = colors;
+        chart.data.labels = labels;
+        chart.update();
+
+        // Redraw the updated legend.
+        document.getElementById(`${statusChartId}-legend`).innerHTML = chart.generateLegend();
+    },
+
+    render: function () {
+        const { statuses } = this.props;
+        return (
+            <div className="award-charts__chart">
+                <div className="title">
+                    Status
+                    <center><hr width="80%" position="static" color="blue" /></center>
+                </div>
+                {statuses.length ?
+                    <div>
+                        <div id={statusChartId} className="award-charts__canvas">
+                            <canvas id={`${statusChartId}-chart`} />
+                        </div>
+                        <div id={`${statusChartId}-legend`} className="award-charts__legend" />
+                    </div>
+                :
+                    <div className="chart-no-data" style={{ height: this.wrapperHeight }}>No data to display</div>
+                }
+            </div>
+        );
+    },
+});
+
+
 const ChartRenderer = React.createClass({
     propTypes: {
         data: React.PropTypes.object, // Array of experiments under this award
     },
 
     render: function () {
-        const { data } = this.props;
+        const { data, award } = this.props;
         let labs; // Array of labs from facet data
         let assays; // Array of assay types from facet data
+        let statuses; // Array of statuses from facet data
 
         // Find the chart data in the returned facets.
         if (data && data.facets && data.facets.length) {
@@ -337,13 +382,20 @@ const ChartRenderer = React.createClass({
             if (assayFacet) {
                 assays = assayFacet.terms && assayFacet.terms.length ? assayFacet.terms : null;
             }
+
+            // Get the array of status data.
+            const statusFacet = data.facets.find(facet => facet.field === 'status');
+            if (statusFacet) {
+                statuses = statusFacet.terms && statusFacet.terms.length ? statusFacet.terms : null;
+            }
         }
 
-        if (labs || assays) {
+        if (labs || assays || statuses) {
             return (
                 <div className="award-charts">
-                    {labs ? <LabChart labs={labs} /> : null}
-                    {assays ? <AssayChart assays={assays} /> : null}
+                    {labs ? <LabChart award={award} labs={labs} /> : null}
+                    {assays ? <AssayChart award={award} assays={assays} /> : null}
+                    {statuses ? <StatusChart award={award} statuses={statuses} /> : null}
                 </div>
             );
         }
@@ -380,19 +432,12 @@ const AwardCharts = React.createClass({
     render: function () {
         const { award } = this.props;
 
-        // Convert statuses to a query string segment
-        const statusQuery = Object.keys(this.state.statuses).reduce((query, statusKey) =>
-            this.state.statuses[statusKey] ? query.concat(`&status=${statusKey}`) : query, '');
-
         return (
             <Panel>
-                <PanelHeading>
-                    <StatusChooser statuses={this.state.statuses} clickHandler={this.handleStatusSelection} />
-                </PanelHeading>
                 <PanelBody>
                     <FetchedItems
                         award={award}
-                        url={`/search/?type=Experiment&award.name=${award.name}${statusQuery}`}
+                        url={`/search/?type=Experiment&award.name=${award.name}`}
                         Component={ChartRenderer}
                         ignoreErrors
                     />
