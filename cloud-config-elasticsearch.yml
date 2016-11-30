@@ -58,6 +58,7 @@ bootcmd:
 package_upgrade: true
 
 packages:
+- git
 - build-essential
 - elasticsearch
 - libssl-dev
