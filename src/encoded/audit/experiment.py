@@ -207,6 +207,7 @@ def audit_experiment_missing_unfiltered_bams(value, system):
         for filtered_file in alignment_files:
             if has_only_raw_files_in_derived_from(filtered_file) and \
                has_no_unfiltered(filtered_file, unfiltered_alignment_files):
+
                 detail = 'Experiment {} contains biological replicate '.format(value['@id']) + \
                          '{} '.format(filtered_file['biological_replicates']) + \
                          'with a filtered alignments file {}, mapped to '.format(filtered_file['@id']) + \
@@ -233,7 +234,15 @@ def has_no_unfiltered(filtered_bam, unfiltered_bams):
             if 'assembly' in f:
                 if f['assembly'] == filtered_bam['assembly'] and \
                    f['biological_replicates'] == filtered_bam['biological_replicates']:
-                    if set(f['derived_from']) == set(filtered_bam['derived_from']):
+                    derived_candidate = set()
+                    derived_filtered = set()
+                    if 'derived_from' in f:
+                        for entry in f['derived_from']:
+                            derived_candidate.add(entry['uuid'])
+                    if 'derived_from' in filtered_bam:
+                        for entry in filtered_bam['derived_from']:
+                            derived_filtered.add(entry['uuid'])
+                    if derived_candidate == derived_filtered:
                         return False
         return True
     return False
