@@ -1734,7 +1734,7 @@ def check_file_chip_seq_read_depth(file_to_check,
             elif read_depth < 5000000:
                 yield AuditFailure('extremely low read depth',
                                    detail, level='ERROR')
-    elif 'transcription factor' in target_investigated_as:
+    else:
         if pipeline_title == 'Transcription factor ChIP-seq pipeline (modERN)':
             if read_depth < modERN_cutoff:
                 detail = 'modERN processed alignment file {} has {} '.format(file_to_check['@id'],
@@ -1747,7 +1747,8 @@ def check_file_chip_seq_read_depth(file_to_check,
                 yield AuditFailure('insufficient read depth',
                                    detail, level='NOT_COMPLIANT')
         else:
-            pipeline_object = get_pipeline_by_name(pipeline_objects, 'Transcription factor ChIP-seq')
+            pipeline_object = get_pipeline_by_name(pipeline_objects,
+                                                   'Transcription factor ChIP-seq')
             if pipeline_object:
                 if 'assembly' in file_to_check:
                     detail = 'Alignment file {} '.format(file_to_check['@id']) + \
@@ -1799,23 +1800,25 @@ def check_file_read_depth(file_to_check,
         return
 
     if read_depth is not False:
+        second_half_of_detail = 'The minimum ENCODE standard for each replicate in a ' + \
+            '{} assay is {} aligned reads. '.format(assay_term_name, middle_threshold) + \
+            'The recommended value is > {}. '.format(upper_threshold) + \
+            '(See {} )'.format(standards_link)
+        if middle_threshold == upper_threshold:
+            second_half_of_detail = 'The minimum ENCODE standard for each replicate in a ' + \
+                '{} assay is {} aligned reads. '.format(assay_term_name, middle_threshold) + \
+                '(See {} )'.format(standards_link)
         if 'assembly' in file_to_check:
             detail = 'Alignment file {} produced by {} '.format(file_to_check['@id'],
                                                                 pipeline_title) + \
                      'pipeline ( {} ) using the {} assembly has {} aligned reads. '.format(
                          pipeline['@id'], file_to_check['assembly'], read_depth) + \
-                     'The minimum ENCODE standard for each replicate in a ' + \
-                     '{} assay is {} aligned reads. '.format(assay_term_name, middle_threshold) + \
-                     'The recommended value is > {}. '.format(upper_threshold) + \
-                     '(See {} )'.format(standards_link)
+                     second_half_of_detail
         else:
             detail = 'Alignment file {} produced by {} '.format(file_to_check['@id'],
                                                                 pipeline_title) + \
                      'pipeline ( {} ) has {} aligned reads. '.format(pipeline['@id'], read_depth) + \
-                     'The minimum ENCODE standard for each replicate in a ' + \
-                     '{} assay is {} aligned reads. '.format(assay_term_name, middle_threshold) + \
-                     'The recommended value is > {}. '.format(upper_threshold) + \
-                     '(See {} )'.format(standards_link)
+                     second_half_of_detail
         if read_depth >= middle_threshold and read_depth < upper_threshold:
             yield AuditFailure('low read depth', detail, level='WARNING')
             return
