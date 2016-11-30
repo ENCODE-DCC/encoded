@@ -228,7 +228,10 @@ def lot_reviews(characterizations, targets, request):
         'in progress': 0
     }
 
-    secondary_status = get_secondary_status(secondary_chars, status_ranking) if secondary_chars else None
+    if secondary_chars:
+        secondary_status = get_secondary_status(secondary_chars, status_ranking)
+    else:
+        secondary_status = None
 
     # Now check the primaries and update their status accordingly
     lot_reviews = build_lot_reviews(primary_chars,
