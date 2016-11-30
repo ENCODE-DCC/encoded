@@ -354,13 +354,19 @@ class File(Item):
             for props in obj_props
             if props['dataset'] == dataset_uuid and 'replicate' in props
         }
-        library_ids = {
-            conn.get_by_uuid(uuid).__json__(request)['library']
-            for uuid in replicates
-        }
+        library_ids = set()
+        for uuid in replicates:
+            replicate = request.embed(uuid, '@@object')
+            if 'library' in replicate:
+                library_ids.add(replicate['library'])
+
         libraries_list = []
         for lib_id in sorted(library_ids):
-            libraries_list.append(request.embed(lib_id, '@@object'))
+            library_object = request.embed(lib_id, '@@object')
+            if 'biosample' in library_object:
+                biosample_uuid = library_object['biosample']
+                library_object['biosample'] = request.embed(biosample_uuid, '@@object')
+            libraries_list.append(library_object)
         return libraries_list
 
     @classmethod
