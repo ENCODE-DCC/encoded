@@ -3334,14 +3334,12 @@ def audit_missing_construct(value, system):
                     missing_construct.append(biosample)
             elif (biosample['biosample_type'] != 'whole organisms') and ('constructs' in biosample):
                 for construct in biosample['constructs']:
-                    if 'target' in construct and 'name' in construct['target'] and \
-                       'name' in target and construct['target']['name'] != target['name']:
+                    if construct['target']['name'] != target['name']:
                         tag_mismatch.append(construct)
             elif (biosample['biosample_type'] == 'whole organisms') and \
                     ('model_organism_donor_constructs' in biosample):
                         for construct in biosample['model_organism_donor_constructs']:
-                            if 'target' in construct and 'name' in construct['target'] and \
-                               'name' in target and construct['target']['name'] != target['name']:
+                            if construct['target']['name'] != target['name']:
                                 tag_mismatch.append(construct)
             else:
                 pass
