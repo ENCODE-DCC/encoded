@@ -635,3 +635,43 @@ class ReferenceEpigenome(Series):
     item_type = 'reference_epigenome'
     schema = load_schema('encoded:schemas/reference_epigenome.json')
     embedded = Series.embedded
+
+    @calculated_property(schema={
+        "title": "Donor diversity",
+        "description": "This specifies if samples from this reference epigenome all came from a single donor, or mulitple donors.",
+        "type": "string",
+        "enum": [
+            "single donor",
+            "composite"
+        ]
+    })
+    def donor_diversity(self, request, related_datasets):
+        donor_accessions = set()
+        if related_datasets is not None:
+            for experiment in related_datasets:
+                experimentObject = request.embed(experiment, '@@object')
+                if experimentObject['status'] == 'deleted':
+                    continue
+                if 'replicates' in experimentObject:
+                    replicateList = request.embed(experimentObject['replicates'], '@@object')
+                    for replicateObject in replicateList:
+                        if replicateObject['status'] == 'deleted':
+                            continue
+                        if 'library' in replicateObject:
+                            libraryObject = request.embed(replicateObject['library'], '@@object')
+                            if libraryObject['status'] == 'deleted':
+                                continue
+                            if 'biosample' in libraryObject:
+                                biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                                if biosampleObject['status'] == 'deleted':
+                                    continue
+                                if 'donor' in biosampleObject:
+                                    donorObject = request.embed(biosampleObject['donor'], '@@object')
+                                    if donorObject['status'] == 'deleted':
+                                        continue
+                                    if donorObject['accession'] not in donor_accessions:
+                                        donor_accessions.add(donorObject['accession'])
+            if len(donor_accessions) == 1:
+                return 'single donor'
+            else:
+                return 'composite'
