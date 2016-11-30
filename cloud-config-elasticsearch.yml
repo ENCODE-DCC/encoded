@@ -113,10 +113,7 @@ write_files:
     Unattended-Upgrade::Allowed-Origins {
         "${distro_id} ${distro_codename}-security";
     };
-<<<<<<< HEAD
     Unattended-Upgrade::Mail "gto389ho@gmail.com";
-=======
->>>>>>> 94f58b40894688f1a4684c0c226213bc24edb594
     Unattended-Upgrade::Automatic-Reboot "false";
 
 - path: /etc/cron.d/cloudwatchmon
