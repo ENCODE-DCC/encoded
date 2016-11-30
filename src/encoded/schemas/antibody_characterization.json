@@ -30,7 +30,7 @@
                             "minItems": 1
                         },
                         "status": {
-                            "enum": ["pending dcc review", "compliant", "not compliant", "exempt from standards"]
+                            "enum": ["pending dcc review", "not reviewed", "compliant", "not compliant", "exempt from standards"]
                         }
                     }
                 },
@@ -38,7 +38,7 @@
                     "not": {
                         "properties": {
                             "status": {
-                               "enum": ["pending dcc review", "compliant", "not compliant", "exempt from standards"]
+                               "enum": ["pending dcc review", "not reviewed", "compliant", "not compliant", "exempt from standards"]
                             }
                         }
                     }
@@ -171,6 +171,7 @@
                         "default": "pending dcc review",
                         "enum" : [
                             "pending dcc review",
+                            "not reviewed",
                             "compliant",
                             "not compliant",
                             "exempt from standards"
