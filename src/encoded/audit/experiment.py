@@ -3272,7 +3272,9 @@ def audit_library_RNA_size_range(value, system):
     if value['status'] in ['deleted']:
         return
 
-    RNAs = ['SO:0000356', 'SO:0000871']
+    RNAs = ['SO:0000356',
+            'SO:0000871',
+            'SO:0000276']
 
     for rep in value['replicates']:
         if 'library' not in rep:
