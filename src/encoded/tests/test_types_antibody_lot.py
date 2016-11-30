@@ -94,32 +94,39 @@ def test_awaiting_in_progress_primary_missing_secondary(testapp, immunoblot, ant
     assert ab['lot_reviews'][0]['status'] == 'awaiting characterization'
 
 
-def test_awaiting_missing_secondary(testapp,
-                                    immunoblot,
-                                    antibody_lot,
-                                    human,
-                                    target,
-                                    wrangler,
-                                    document):
+def test_have_primary_missing_secondary(testapp,
+                                        immunoblot,
+                                        antibody_lot,
+                                        human,
+                                        target,
+                                        wrangler,
+                                        document):
     char = testapp.post_json('/antibody_characterization', immunoblot).json['@graph'][0]
     characterization_review = {
         'biosample_term_name': 'K562',
         'biosample_term_id': 'EFO:0002067',
         'biosample_type': 'immortalized cell line',
         'organism': human['@id'],
-        'lane': 1,
-        'lane_status': 'pending dcc review'
+        'lane': 1
     }
 
+    # An in progress primary and no secondary should result in awaiting characterization
+    res = testapp.get(antibody_lot['@id'] + '@@index-data')
+    ab = res.json['object']
+    assert ab['lot_reviews'][0]['status'] == 'awaiting characterization'
+    assert ab['lot_reviews'][0]['detail'] == 'Primary characterization(s) in progress.'
+
     # Not yet reviewed primary and no secondary should result in ab status = pending dcc review
+    characterization_review['lane_status'] = 'pending dcc review'
+    testapp.put_json(char['@id'], immunoblot).json['@graph'][0]
     testapp.patch_json(char['@id'], {
         'characterization_reviews': [characterization_review],
         'status': 'pending dcc review'
     })
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
-    assert ab['lot_reviews'][0]['detail'] == 'One or more characterization(s) is pending review.'
     assert ab['lot_reviews'][0]['status'] == 'pending dcc review'
+    assert ab['lot_reviews'][0]['detail'] == 'One or more characterization(s) is pending review.'
 
     # No secondary and a primary that is not submitted for review should result in
     # ab status = not pursued
@@ -127,10 +134,11 @@ def test_awaiting_missing_secondary(testapp,
     testapp.patch_json(char['@id'], {'status': 'not submitted for review by lab'})
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
-    assert ab['lot_reviews'][0]['detail'] is None
     assert ab['lot_reviews'][0]['status'] == 'not pursued'
+    assert ab['lot_reviews'][0]['detail'] is None
 
-    # Compliant primary and no secondary should result in ab status = awaiting characterization
+    '''
+    # Compliant primary and no secondary should result in ab status = not characterized to standards
     characterization_review['lane_status'] = 'compliant'
 
     testapp.patch_json(char['@id'], {
@@ -142,25 +150,20 @@ def test_awaiting_missing_secondary(testapp,
 
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
-    assert ab['lot_reviews'][0]['status'] == 'awaiting characterization'
+    assert ab['lot_reviews'][0]['status'] == 'not characterized to standards'
     assert ab['lot_reviews'][0]['detail'] == 'Awaiting submission of secondary characterization(s).'
-
+    '''
 
 # An in progress secondary and no primary should have ab status = awaiting characterization
-# UNLESS, wranglers tell me regardless that if there's only one secondary and it's been reviewed
-# that it should be not characterized to standards no matter what
-#
-#
-#
-#
-def test_awaiting_missing_primary(testapp,
-                                  mass_spec,
-                                  motif_enrichment,
-                                  antibody_lot,
-                                  human,
-                                  target,
-                                  wrangler,
-                                  document):
+def test_have_secondary_missing_primary(testapp,
+                                        mass_spec,
+                                        motif_enrichment,
+                                        antibody_lot,
+                                        human,
+                                        target,
+                                        wrangler,
+                                        document):
+    # in progress secondary and no primary = awaiting characterization
     char1 = testapp.post_json('/antibody_characterization', mass_spec).json['@graph'][0]
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
@@ -174,13 +177,8 @@ def test_awaiting_missing_primary(testapp,
     assert ab['lot_reviews'][0]['status'] == 'pending dcc review'
     assert ab['lot_reviews'][0]['detail'] == 'Awaiting submission of primary characterization(s).'
 
-    # A compliant secondary without primaries should have ab status = awaiting characterization
-    #
-    #
-    #
-    #
-    #
-    # UNLESS CRICKET TELLS ME THAT THIS SHOULD BE NOT CHARACTERIZED TO STANDARDS
+    # A compliant secondary without primaries should be not characterized to standards as per Cricket's
+    # wishes
     testapp.patch_json(char1['@id'], {'status': 'compliant',
                                       'reviewed_by': wrangler['@id'],
                                       'documents': [document['@id']]})
@@ -189,9 +187,8 @@ def test_awaiting_missing_primary(testapp,
     assert ab['lot_reviews'][0]['status'] == 'not characterized to standards'
     assert ab['lot_reviews'][0]['detail'] == 'Awaiting submission of primary characterization(s).'
 
-    # Adding another secondary, regardless of status, should not change the ab status from awaiting
-    #
-    # UNLESS CRICKET TELLS ME THIS SHOULD BE NOT CHARACTERIZED TO STANDARDS
+    # Adding another secondary, regardless of status, should not change the ab status from
+    # not characterized to standards
     char2 = testapp.post_json('/antibody_characterization', motif_enrichment).json['@graph'][0]
     testapp.patch_json(char2['@id'], {'status': 'not compliant',
                                       'reviewed_by': wrangler['@id'],
@@ -202,7 +199,8 @@ def test_awaiting_missing_primary(testapp,
     assert ab['lot_reviews'][0]['detail'] == 'Awaiting submission of primary characterization(s).'
 
 
-# If there are multiple secondary characterizations, the one with the highest status ranking should prevail
+# If there are multiple secondary characterizations, the one with the highest status ranking should
+# prevail
 def test_multiple_secondary_one_primary(testapp,
                                         mass_spec,
                                         motif_enrichment,
@@ -256,11 +254,10 @@ def test_multiple_secondary_one_primary(testapp,
     assert ab['lot_reviews'][0]['status'] == 'characterized to standards'
     assert ab['lot_reviews'][0]['detail'] == 'Fully characterized.'
 
-'''
-An antibody against histone modifications with primaries in human (compliant) and mouse
-(not compliant) and an exempt secondary should yield exemption in human and not 
-charaterized to standards in mouse
-''' 
+
+# An antibody against histone modifications with primaries in human (compliant) and mouse
+# (not compliant) and an exempt secondary should yield exemption in human and not
+# charaterized to standards in mouse
 def test_histone_mod_characterizations(testapp,
                                        immunoblot,
                                        immunoprecipitation,

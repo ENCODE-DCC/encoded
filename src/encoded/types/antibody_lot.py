@@ -196,7 +196,7 @@ def lot_reviews(characterizations, targets, request):
             primary_chars.append(characterization)
             if characterization['status'] in ['compliant',
                                               'not compliant',
-                                              'pending dcc revew',
+                                              'pending dcc review',
                                               'exempt from standards']:
                 at_least_one_active_primary = True
         else:
@@ -315,7 +315,7 @@ def build_lot_reviews(primary_chars,
                             sorted(review_targets) if is_histone_mod
                             else [primary['target']],
                         'status': 'not submitted for review by lab' if primary['status'] ==
-                            'not pursued' else lane_review.get('lane_status'),
+                            'not pursued' else lane_review['lane_status'],
                         'detail': None
                     }
 
@@ -345,10 +345,10 @@ def build_lot_reviews(primary_chars,
             if secondary_status is None:
                 if char_reviews[key]['status'] in ['not reviewed', 'not submitted for review by lab']:
                     char_reviews[key]['status'] = 'not pursued'
-                elif char_reviews[key]['status'] == 'pending dcc review':
+                elif char_reviews[key]['status'] in ['pending dcc review']:
                     char_reviews[key]['detail'] = 'One or more characterization(s) is pending review.'
                 else:
-                    char_reviews[key]['status'] = 'awaiting characterization'
+                    char_reviews[key]['status'] = 'not characterized to standards'
                     char_reviews[key]['detail'] = 'Awaiting submission of secondary characterization(s).'
             elif secondary_status in ['not reviewed',
                                       'not compliant',

@@ -799,12 +799,18 @@ def test_audit_experiment_no_characterizations_antibody(testapp, base_experiment
     assert any(error['category'] == 'not characterized antibody' for error in errors_list)
 
 
-def test_audit_experiment_wrong_organism_histone_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, base_antibody, mouse_H3K9me3, base_antibody_characterization1, base_antibody_characterization2, human):
+def test_audit_experiment_wrong_organism_histone_antibody(testapp, base_experiment, wrangler, base_replicate, base_library, base_biosample, base_antibody, mouse_H3K9me3, base_antibody_characterization1, base_antibody_characterization2, human):
     base_antibody['targets'] = [mouse_H3K9me3['@id']]
     histone_antibody = testapp.post_json('/antibody_lot', base_antibody).json['@graph'][0]
     testapp.patch_json(base_biosample['@id'], {'organism': human['@id']})
-    testapp.patch_json(base_antibody_characterization1['@id'], {'target': mouse_H3K9me3['@id'], 'characterizes': histone_antibody['@id']})
-    testapp.patch_json(base_antibody_characterization2['@id'], {'target': mouse_H3K9me3['@id'], 'characterizes': histone_antibody['@id']})
+    testapp.patch_json(base_antibody_characterization1['@id'], {'target': mouse_H3K9me3['@id'],
+                                                                'characterizes': histone_antibody['@id'],
+                                                                'status': 'compliant',
+                                                                'reviewed_by': wrangler['@id']})
+    testapp.patch_json(base_antibody_characterization2['@id'], {'target': mouse_H3K9me3['@id'],
+                                                                'characterizes': histone_antibody['@id'],
+                                                                'status': 'not compliant',
+                                                                'reviewed_by': wrangler['@id']})
     testapp.patch_json(base_replicate['@id'], {'antibody': histone_antibody['@id'], 'library': base_library['@id']})
 <<<<<<< HEAD
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq', 'biosample_term_id': 'EFO:0002067', 'biosample_term_name': 'K562',  'biosample_type': 'immortalized cell line', 'target': 
