@@ -51,9 +51,9 @@ const FileAccessionButton = React.createClass({
         return (
             <span>
                 {buttonEnabled ?
-                    <span><button className="file-table-btn" onClick={this.onClick}>{file.accession}</button>&nbsp;</span>
+                    <span><button className="file-table-btn" onClick={this.onClick}>{file.title}</button>&nbsp;</span>
                 :
-                    <span>{file.accession}&nbsp;</span>
+                    <span>{file.title}&nbsp;</span>
                 }
             </span>
         );
@@ -628,7 +628,7 @@ const RawSequencingTable = React.createClass({
                         // them pass the filter, and record set their sort keys to the lower of
                         // the two accessions -- that's how pairs will sort within a biological
                         // replicate
-                        file.pairSortKey = partner.pairSortKey = file.accession < partner.accession ? file.accession : partner.accession;
+                        file.pairSortKey = partner.pairSortKey = file.title < partner.title ? file.title : partner.title;
                         file.pairSortKey += file.paired_end;
                         partner.pairSortKey += partner.paired_end;
                         return true;
@@ -875,7 +875,7 @@ const RawFileTable = React.createClass({
 
                                 // Render each file's row, with the biological replicate and library
                                 // cells only on the first row.
-                                return groupFiles.sort((a, b) => (a.accession < b.accession ? -1 : 1)).map((file, i) => {
+                                return groupFiles.sort((a, b) => (a.title < b.title ? -1 : 1)).map((file, i) => {
                                     let pairClass;
                                     if (i === 1) {
                                         pairClass = `align-pair2${(i === groupFiles.length - 1) && (j === pairedKeys.length - 1) ? '' : ' pair-bottom'}`;
@@ -1495,7 +1495,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
                             ref: fileAnalysisStep,
                             pipelines: pipelineInfo,
                             fileId: file['@id'],
-                            fileAccession: file.accession,
+                            fileAccession: file.title,
                             stepVersion: file.analysis_step_version,
                         });
                     }
@@ -1829,7 +1829,7 @@ function qcDetailsView(metrics) {
                 const match = id2accessionRE.exec(metricId);
 
                 // Return matches that *don't* match the file whose QC node we've clicked
-                if (match && (match[1] !== metrics.parent.accession)) {
+                if (match && (match[1] !== metrics.parent.title)) {
                     return match[1];
                 }
                 return '';
@@ -1867,7 +1867,7 @@ function qcDetailsView(metrics) {
 
         const header = (
             <div className="details-view-info">
-                <h4>{qcName} of {metrics.parent.accession}</h4>
+                <h4>{qcName} of {metrics.parent.title}</h4>
                 {filesOfMetric.length ? <h5>Shared with {filesOfMetric.join(', ')}</h5> : null}
             </div>
         );
@@ -2142,7 +2142,7 @@ const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
         const dateString = !!selectedFile.date_created && moment.utc(selectedFile.date_created).format('YYYY-MM-DD');
         header = (
             <div className="details-view-info">
-                <h4>{selectedFile.file_type} {selectedFile.accession}</h4>
+                <h4>{selectedFile.file_type} {selectedFile.title}</h4>
             </div>
         );
 
