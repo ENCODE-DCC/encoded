@@ -193,10 +193,7 @@ def lot_reviews(characterizations, targets, request):
         # Split into primary and secondary to treat separately
         if 'primary_characterization_method' in characterization:
             primary_chars.append(characterization)
-            if characterization['status'] in ['pending dcc review',
-                                              'compliant',
-                                              'not compliant',
-                                              'exempt from standards']:
+            if 'characterization_reviews' in characterization:
                 at_least_one_active_primary = True
         else:
             secondary_chars.append(characterization)
@@ -296,8 +293,7 @@ def build_lot_reviews(primary_chars,
                 if secondary_status == 'in progress':
                     base_review['detail'] = 'Secondary characterization(s) in progress.'
                 return [base_review]
-            elif 'characterization_reviews' in primary or primary['status'] != \
-                    'not submitted for review by lab':
+            elif 'characterization_reviews' in primary:
                 for lane_review in primary.get('characterization_reviews', []):
                     # Get the organism information from the lane, not from the target since
                     # there are lanes
@@ -313,7 +309,8 @@ def build_lot_reviews(primary_chars,
                         'targets':
                             sorted(review_targets) if is_histone_mod
                             else [primary['target']],
-                        'status': lane_review.get('lane_status'),
+                        'status': 'not submitted for review by lab' if primary['status'] ==
+                            'not submitted for review by lab' else lane_review.get('lane_status'),
                         'detail': None
                     }
 
