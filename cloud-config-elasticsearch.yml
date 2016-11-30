@@ -63,9 +63,10 @@ packages:
 - libssl-dev
 - oracle-java8-installer
 - oracle-java8-set-default
+- python2.7-dev
 - unattended-upgrades
 - bsd-mailx
-- python2.7-dev
+
 
 power_state:
   mode: reboot
