@@ -193,7 +193,10 @@ def lot_reviews(characterizations, targets, request):
         # Split into primary and secondary to treat separately
         if 'primary_characterization_method' in characterization:
             primary_chars.append(characterization)
-            if 'characterization_reviews' in characterization:
+            if characterization['status'] in ['pending dcc review',
+                                              'compliant',
+                                              'not compliant',
+                                              'exempt from standards']:
                 at_least_one_active_primary = True
         else:
             secondary_chars.append(characterization)
@@ -279,16 +282,7 @@ def build_lot_reviews(primary_chars,
     else:
         char_reviews = {}
         for primary in primary_chars:
-            # This is currently not working for the case where there are multiple primaries some
-            # of them without characterization_reviews. It can't just return the base review with
-            # nothing before getting to the characterizations with reviews.
-            #
-            #
-            #
-            #
-            #
-            #
-            if 'characterization_reviews' not in primary and not active_primary:
+            if not active_primary:
                 if primary['status'] and secondary_status in ['not reviewed']:
                     base_review['status'] = 'not characterized to standards',
                 if primary['status'] == 'not submitted for review by lab' and \
@@ -299,11 +293,11 @@ def build_lot_reviews(primary_chars,
                     base_review['detail'] = 'Awaiting submission of primary characterization(s).'
                 if primary['status'] == 'in progress':
                     base_review['detail'] = 'Primary characterization(s) in progress.'
-
                 if secondary_status == 'in progress':
                     base_review['detail'] = 'Secondary characterization(s) in progress.'
                 return [base_review]
-            elif 'characterization_reviews' in primary:
+            elif 'characterization_reviews' in primary or primary['status'] != \
+                    'not submitted for review by lab':
                 for lane_review in primary.get('characterization_reviews', []):
                     # Get the organism information from the lane, not from the target since
                     # there are lanes
@@ -361,7 +355,7 @@ def build_lot_reviews(primary_chars,
                                       'deleted']:
                 char_reviews[key]['status'] = 'not characterized to standards'
                 char_reviews[key]['detail'] = 'Awaiting a compliant secondary characterization.'
-            elif (char_reviews[key]['status'] or secondary_status) in ['pending dcc review']:
+            elif char_reviews[key]['status'] == 'pending dcc review' or secondary_status == 'pending dcc review':
                 char_reviews[key]['status'] = 'pending dcc review'
                 char_reviews[key]['detail'] = 'One or more characterization(s) is pending review.'
             elif char_reviews[key]['status'] == 'not compliant':
@@ -374,9 +368,6 @@ def build_lot_reviews(primary_chars,
             elif char_reviews[key]['status'] == 'compliant' and secondary_status == 'compliant':
 
                 # I think these checks can be removed for histones
-                #
-                #
-                #
                 #
                 if is_histone_mod:
                     if lane_organism not in target_organisms['all']:
