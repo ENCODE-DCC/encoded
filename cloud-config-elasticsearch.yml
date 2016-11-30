@@ -58,12 +58,19 @@ bootcmd:
 package_upgrade: true
 
 packages:
+- git
 - build-essential
 - elasticsearch
 - libssl-dev
 - oracle-java8-installer
 - oracle-java8-set-default
+- python2.7-dev
+- python3.4-dev
+- python-software-properties
+- python-virtualenv
 - unattended-upgrades
+- bsd-mailx
+
 
 power_state:
   mode: reboot
@@ -79,6 +86,11 @@ runcmd:
 - sudo bash /etc/elasticsearch/cluster.sh %(CLUSTER_NAME)s
 - sudo /usr/share/elasticsearch/bin/plugin install elasticsearch/elasticsearch-cloud-aws/2.7.1
 - service elasticsearch start
+- mkdir /srv/encoded
+- chown encoded:encoded /srv/encoded
+- cd /srv/encoded
+- sudo -u encoded git clone --no-checkout https://github.com/ENCODE-DCC/encoded/cloudwatchmon-requirements.txt .
+- sudo -u encoded git checkout %(COMMIT)s
 - mkdir /opt/cloudwatchmon
 - chown build:build /opt/cloudwatchmon
 - sudo -u build virtualenv --python=python2.7 /opt/cloudwatchmon
@@ -110,7 +122,8 @@ write_files:
     Unattended-Upgrade::Allowed-Origins {
         "${distro_id} ${distro_codename}-security";
     };
-    Unattended-Upgrade::Automatic-Reboot "true";
+    Unattended-Upgrade::Mail "gto389ho@gmail.com";
+    Unattended-Upgrade::Automatic-Reboot "false";
 
 - path: /etc/cron.d/cloudwatchmon
   content: |
