@@ -952,13 +952,13 @@ def check_control_read_depth_standards(value,
             elif read_depth < 5000000:
                 yield AuditFailure('control extremely low read depth', detail, level='ERROR')
 
-        elif 'transcription factor' in target_investigated_as:
+        else:
             if value['lab'] == '/labs/kevin-white/':
                 if read_depth < modERN_cutoff:
                     detail = 'Control modERN processed alignment file {} has {} '.format(
                         value['@id'], read_depth) + 'usable fragments. Control for ChIP-seq ' + \
                         'assays and target {} '.format(control_to_target) + \
-                        'investigated as transcription factor requires ' + \
+                        'and investigated as a transcription factor requires ' + \
                         '{} usable fragments, according to '.format(modERN_cutoff) + \
                         'the standards defined by the modERN project.'
                 yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
@@ -970,7 +970,7 @@ def check_control_read_depth_standards(value,
                     read_depth) + \
                     'usable fragments. ' + \
                     'The minimum ENCODE standard for a control of ChIP-seq assays targeting ' + \
-                    'transcription factor {} '.format(control_to_target) + \
+                    '{} and investigated as a transcription factor '.format(control_to_target) + \
                     'is 10 million usable fragments, the recommended number of usable ' + \
                     'fragments is > 20 million. (See /data-standards/chip-seq/ )'
             else:
@@ -979,7 +979,7 @@ def check_control_read_depth_standards(value,
                     read_depth) + \
                     'usable fragments. ' + \
                     'The minimum ENCODE standard for a control of ChIP-seq assays targeting ' + \
-                    'transcription factor {} '.format(control_to_target) + \
+                    '{} and investigated as a transcription factor '.format(control_to_target) + \
                     'is 10 million usable fragments, the recommended number of usable ' + \
                     'fragments is > 20 million. (See /data-standards/chip-seq/ )'
             if read_depth >= 10000000 and read_depth < marks['narrow']:
