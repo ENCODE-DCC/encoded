@@ -81,8 +81,6 @@ runcmd:
 - sudo bash /etc/elasticsearch/cluster.sh %(CLUSTER_NAME)s
 - sudo /usr/share/elasticsearch/bin/plugin install elasticsearch/elasticsearch-cloud-aws/2.7.1
 - service elasticsearch start
-- mkdir /srv/encoded
-- chown encoded:encoded /srv/encoded
 - sudo sed -i -e 's/inet_interfaces = all/inet_interfaces = loopback-only/g' /etc/postfix/main.cf
 - sudo service postfix restart
 - mkdir /opt/cloudwatchmon
