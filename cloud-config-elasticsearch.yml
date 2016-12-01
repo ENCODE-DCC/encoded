@@ -90,7 +90,6 @@ runcmd:
 - chown encoded:encoded /srv/encoded
 - cd /srv/encoded
 - sudo -u encoded git clone --no-checkout https://github.com/ENCODE-DCC/encoded/cloudwatchmon-requirements.txt .
-- sudo -u encoded git checkout %(COMMIT)s
 - mkdir /opt/cloudwatchmon
 - chown build:build /opt/cloudwatchmon
 - sudo -u build virtualenv --python=python2.7 /opt/cloudwatchmon
