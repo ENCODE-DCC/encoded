@@ -21,49 +21,41 @@
         "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
         "Views":  {
             "tag": "view",
-            "group_order": [ "Optimal IDR thresholded peaks", "Conservative IDR thresholded peaks",
-                            "Replicated peaks", "Peaks",  "Signal" ],
+            "group_order": [ "Methylation at CpG", "Methylation at CHG",
+                             "Methylation at CHH", "Signal" ],
             "groups": {
-                "Optimal IDR thresholded peaks": {
-                    "tag": "aOIDR",
+                "Methylation at CpG": {
+                    "tag": "aCpG",
                     "visibility": "dense",
                     "type": "bigBed",
-                    "file_format_type": [ "narrowPeak" ],
+                    "file_format_type": [ "bedMethyl" ],
                     "spectrum":"on",
                     "scoreFilter":"0:1000",
-                    "output_type": [ "optimal idr thresholded peaks" ]
+                    "output_type": [ "methylation state at CpG" ]
                 },
-                "Conservative IDR thresholded peaks": {
-                    "tag": "bCIDR",
+                "Methylation at CHG": {
+                    "tag": "mCHG",
                     "visibility": "hide",
                     "type": "bigBed",
-                    "file_format_type": [ "narrowPeak" ],
+                    "file_format_type": [ "bedMethyl" ],
                     "spectrum":"on",
-                    "scoreFilter": "0:1000",
-                    "output_type": [ "conservative idr thresholded peaks" ]
+                    "scoreFilter":"0:1000",
+                    "output_type": [ "methylation state at CHG" ]
                 },
-                "Replicated peaks": {
-                    "tag": "cRPKS",
-                    "visibility": "dense",
-                    "type": "bigBed",
-                    "file_format_type": [ "narrowPeak" ],
-                    "spectrum":"on",
-                    "scoreFilter": "0:1000",
-                    "output_type": [ "replicated peaks" ]
-                },
-                "Peaks": {
-                    "tag": "dPKS",
+                "Methylation at CHH": {
+                    "tag": "mCHH",
                     "visibility": "hide",
                     "type": "bigBed",
-                    "file_format_type": [ "narrowPeak" ],
-                    "scoreFilter": "0:1000",
-                    "output_type": [ "peaks" ]
+                    "file_format_type": [ "bedMethyl" ],
+                    "spectrum":"on",
+                    "scoreFilter":"0:1000",
+                    "output_type": [ "methylation state at CHH" ]
                 },
                 "Signal": {
                     "tag": "eSIG",
-                    "visibility": "hide",
+                    "visibility": "full",
                     "type": "bigWig",
-                    "viewLimits": "0:1",
+                    "viewLimits": "0:20",
                     "autoScale": "off",
                     "maxHeightPixels": "64:18:8",
                     "windowingFunction": "mean+whiskers",
