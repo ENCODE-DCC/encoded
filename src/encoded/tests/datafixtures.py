@@ -466,6 +466,15 @@ def publication_data(testapp, lab, award):
 
 
 @pytest.fixture
+def annotation_dataset(testapp, lab, award):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id']
+    }
+    return testapp.post_json('/annotation', item).json['@graph'][0]
+
+
+@pytest.fixture
 def publication(testapp, lab, award):
     item = {
         # upgrade/shared.py has a REFERENCES_UUID mapping.

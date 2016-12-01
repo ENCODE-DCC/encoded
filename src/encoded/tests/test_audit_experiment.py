@@ -1238,6 +1238,19 @@ def test_audit_experiment_with_biosample_type(testapp, base_experiment):
                'experiment missing biosample_type' for error in errors_list)
 
 
+def test_audit_experiment_not_uploaded_files(testapp, file_bam,
+                                             base_experiment,
+                                             base_replicate,
+                                             base_library):
+    testapp.patch_json(file_bam['@id'], {'status': 'upload failed'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'not uploaded files' for error in errors_list)
+
+
 def test_audit_experiment_replicate_with_no_fastq_files(testapp, file_bam,
                                                         base_experiment,
                                                         base_replicate,

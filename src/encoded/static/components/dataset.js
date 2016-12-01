@@ -1368,7 +1368,15 @@ var Series = module.exports.Series = React.createClass({
                 : null }
 
                 {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={globals.unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                <FetchedItems
+                    {...this.props}
+                    url={globals.unreleased_files_url(context)}
+                    Component={DatasetFiles}
+                    filePanelHeader={<FilePanelHeader context={context} />}
+                    encodevers={globals.encodeVersion(context)}
+                    session={this.context.session}
+                    ignoreErrors
+                />
 
                 <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
