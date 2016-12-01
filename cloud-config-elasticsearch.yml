@@ -49,12 +49,12 @@ bootcmd:
 - if [ "$MEMGIGS" -gt 12 ];
 - then
 -    echo "ES_HEAP_SIZE=8g" > /etc/default/elasticsearch
--    echo "MAX_LOCKED_MEMORY=unlimited" > /etc/default/elasticsearch
+-    echo "MAX_LOCKED_MEMORY=unlimited" >> /etc/default/elasticsearch
 -    sysctl "vm.swappiness=1"
 -    swapon /swapfile
 - else
 -    echo "ES_HEAP_SIZE=4g" > /etc/default/elasticsearch
--    echo "MAX_LOCKED_MEMORY=unlimited" > /etc/default/elasticsearch
+-    echo "MAX_LOCKED_MEMORY=unlimited" >> /etc/default/elasticsearch
 -    sysctl "vm.swappiness=1"
 -    swapon /swapfile
 - fi
