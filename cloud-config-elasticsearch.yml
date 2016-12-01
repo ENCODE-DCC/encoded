@@ -58,16 +58,11 @@ bootcmd:
 package_upgrade: true
 
 packages:
-- git
 - build-essential
 - elasticsearch
 - libssl-dev
 - oracle-java8-installer
 - oracle-java8-set-default
-- python2.7-dev
-- python3.4-dev
-- python-software-properties
-- python-virtualenv
 - unattended-upgrades
 - bsd-mailx
 
@@ -88,9 +83,6 @@ runcmd:
 - service elasticsearch start
 - mkdir /srv/encoded
 - chown encoded:encoded /srv/encoded
-- cd /srv/encoded
-- sudo -u encoded git clone --no-checkout https://github.com/ENCODE-DCC/encoded/cloudwatchmon-requirements.txt .
-- sudo -u encoded git checkout %(COMMIT)s
 - mkdir /opt/cloudwatchmon
 - chown build:build /opt/cloudwatchmon
 - sudo -u build virtualenv --python=python2.7 /opt/cloudwatchmon
@@ -163,3 +155,7 @@ write_files:
 
 - path: /etc/ssh/users_ca.pub
   content: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAv/ymOcnN4LhM4NACc3Or116XXJ6KytuOgB/+1qNkOFBqBosrn7cmJ35rsoNHRgYNrCsRE9ch74RKsN6H72FtSJgBhGh/9oUK7Os6Fqt3/ZZXxgxIx6ubs/MTgrxrAnujiBxUXMXQhLKMriNMpo8mt4nGYVtLk9PBjiyfncaS8H9ZKoNio9dhP8bmTuYvioAI35dqKdSlVLyzr/XkZxia8Ki+pQ0N6uuiEwMR3ToM+LSp8wpFOOAiu4PEAujRW7us/+1hlpKWfn0J7/V3826joHE+I967Vg/+ikcVhF77JjK1nib879VgCWfmn1HPQosIpk4yJfVgGvRVI7I2nfBPVw== encoded@demo-l.encodedcc.org
+
+- path: /etc/postfix/main.cf
+  content: |
+    inet_interfaces = loopback-only
