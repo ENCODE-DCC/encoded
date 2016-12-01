@@ -191,6 +191,7 @@
                     "replication timing profile",
                     "hotspots",
                     "long range chromatin interactions",
+                    "chromatin interactions",
                     "topologically associated domains",
                     "open chromatin regions",
                     "peaks",
