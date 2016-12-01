@@ -58,7 +58,6 @@ bootcmd:
 package_upgrade: true
 
 packages:
-- git
 - build-essential
 - elasticsearch
 - libssl-dev
@@ -69,7 +68,6 @@ packages:
 - python-software-properties
 - python-virtualenv
 - unattended-upgrades
-- bsd-mailx
 
 
 power_state:
