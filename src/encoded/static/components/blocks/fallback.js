@@ -1,8 +1,8 @@
 'use strict';
 var React = require('react');
+var form = require('../form');
 var globals = require('../globals');
 var item = require('../item');
-var noarg_memoize = require('../../libs/noarg-memoize');
 
 var FallbackBlockView = React.createClass({
     render: function() {
@@ -16,25 +16,56 @@ var FallbackBlockView = React.createClass({
     }
 });
 
-var FallbackBlockEdit = module.exports.FallbackBlockEdit = React.createClass({
+var JSONInput = React.createClass({
+
+    getInitialState: function() {
+        return { value: JSON.stringify(this.props.value, null, 4), error: false };
+    },
+
     render: function() {
-        var ReactForms = require('react-forms');
-        return <ReactForms.Form {...this.props} defaultValue={this.props.value} />;
+        return <div className={"rf-Field" + (this.state.error ? " rf-Field--invalid" : '')}>
+            <textarea rows="10" value={this.state.value} onChange={this.handleChange} />
+        </div>;
+    },
+
+    handleChange: function(e) {
+        var value = e.target.value;
+        this.setState({ value: value });
+        var error = false;
+        try {
+            value = JSON.parse(value);
+        } catch (e) {
+            error = true;
+        }
+        this.setState({ error });
+        if (!error) {
+            this.props.onChange(value);
+        }
     }
 });
 
+var fallbackSchema = {
+    type: 'object',
+    formInput: <JSONInput />
+}
+
+var FallbackBlockEdit = module.exports.FallbackBlockEdit = React.createClass({
+    render: function() {
+        var {schema, value, ...props} = this.props;
+        return <form.Field
+            schema={schema || fallbackSchema} value={value} updateChild={this.update} />;
+    },
+
+    update: function(name, value) {
+        this.props.onChange(value);
+    }
+});
 
 // Use this as a fallback for any block we haven't registered
 globals.blocks.fallback = function (obj) {
     return {
         label: obj['@type'].join(','),
-        schema: noarg_memoize(function() {
-            var JSONNode = require('../JSONNode');
-            return JSONNode.create({
-                label: 'JSON',
-                input: <textarea rows="15" cols="80" />,
-            });
-        }),
+        schema: fallbackSchema,
         view: FallbackBlockView
     };
 };

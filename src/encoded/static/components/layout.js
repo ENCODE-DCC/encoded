@@ -54,13 +54,12 @@ var BlockEditModal = React.createClass({
 
     render: function() {
         var blocktype = globals.blocks.lookup(this.props.value);
-        var schema = blocktype.schema();
         var BlockEdit = blocktype.edit || FallbackBlockEdit;
         return (
-            <Modal actuator={this.props.actuator}>
+            <Modal ref="modal" actuator={this.props.actuator}>
                 <ModalHeader title={'Edit ' + blocktype.label} closeModal={this.cancel} />
                 <ModalBody>
-                    <BlockEdit schema={schema} value={this.state.value} onChange={this.onChange} />
+                    <BlockEdit schema={blocktype.schema} value={this.state.value} onChange={this.onChange} />
                 </ModalBody>
                 <ModalFooter
                     closeBtn={<button className="btn btn-default" onClick={this.cancel}>Cancel</button>}
@@ -69,8 +68,11 @@ var BlockEditModal = React.createClass({
         );
     },
 
+    openModal: function () {
+        this.refs.modal.openModal();
+    },
+
     onChange: function(value) {
-        if (value.toJS !== undefined) value = value.toJS();
         this.setState({value: value});
     },
 
@@ -97,6 +99,7 @@ var Block = module.exports.Block = React.createClass({
 
     renderToolbar: function() {
         var modal = <BlockEditModal
+            ref="modal"
             modalcontext={_.pick(this.context, Object.keys(MODAL_CONTEXT))}
             value={this.props.value}
             onChange={this.onChange}
@@ -148,10 +151,10 @@ var Block = module.exports.Block = React.createClass({
     },
 
     componentDidMount: function() {
-        if (this.props.value.is_new) { this.refs.edit_trigger.show(); }
+        if (this.props.value.is_new) { this.refs.modal.openModal(); }
     },
     componentDidUpdate: function() {
-        if (this.props.value.is_new) { this.refs.edit_trigger.show(); }
+        if (this.props.value.is_new) { this.refs.modal.openModal(); }
     },
 
     mouseEnter: function() { this.setState({hover: true}); },
@@ -216,8 +219,7 @@ var LayoutToolbar = React.createClass({
 
     contextTypes: {
         canSave: React.PropTypes.func,
-        onTriggerSave: React.PropTypes.func,
-        formEvents: React.PropTypes.object
+        onTriggerSave: React.PropTypes.func
     },
 
     getInitialState: function() {
@@ -227,12 +229,10 @@ var LayoutToolbar = React.createClass({
     componentDidMount: function() {
         this.origTop = offset(this.getDOMNode()).top;
         globals.bindEvent(window, 'scroll', this.scrollspy);
-        this.context.formEvents.addListener('update', this.scrollspy)
     },
 
     componentWillUnmount: function() {
         globals.unbindEvent(window, 'scroll', this.scrollspy);
-        this.context.formEvents.removeListener('update', this.scrollspy)
     },
 
     scrollspy: function() {
@@ -245,7 +245,12 @@ var LayoutToolbar = React.createClass({
             <div className={'layout-toolbar navbar navbar-default'}>
               <div className="container-fluid">
                 <div className="navbar-left">
-                    {Object.keys(blocks).map(b => <BlockAddButton key={b} blocktype={b} blockprops={blocks[b]} /> )}
+                    {Object.keys(blocks).map(b => {
+                        var blockprops = blocks[b];
+                        if (blockprops.edit !== null) {
+                            return <BlockAddButton key={b} blocktype={b} blockprops={blocks[b]} />;
+                        }
+                    })}
                 </div>
                 <div className="navbar-right">
                     <a href="" className="btn btn-default navbar-btn">Cancel</a>
@@ -279,7 +284,7 @@ var Col = React.createClass({
         var pos = this.props.pos.concat([k]);
         if (typeof blockId == 'string') {
             var block = this.context.blocks[blockId];
-            return <Block value={block} key={k} pos={pos} />;
+            return <Block value={block} key={blockId} pos={pos} />;
         } else {
             var row = blockId;
             return <Row value={row} key={k} pos={pos} />;
@@ -347,7 +352,6 @@ var Layout = module.exports.Layout = React.createClass({
 
     stateFromProps: function(props) {
         var value = props.value;
-        if (value.toJS !== undefined) value = value.toJS();
 
         var blockMap = {};
         var nextBlockNum = 2;

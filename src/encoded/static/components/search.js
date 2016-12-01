@@ -976,7 +976,7 @@ var ResultTable = search.ResultTable = React.createClass({
                                 <h4>Showing {results.length} of {total} {label}</h4>
 
                                 <div className="results-table-control">
-                                    {context.views ?
+                                    {(context.views && this.props.mode !== 'picker') ?
                                         <div className="btn-attached">
                                             {context.views.map((view, i) =>
                                                 <a key={i} className="btn btn-info btn-sm btn-svgicon" href={view.href} title={view.title}>{SvgIcon(view2svg[view.icon])}</a>
