@@ -29,14 +29,14 @@ var columnChoices = function(schema, selected) {
         schemaColumns = {};
         Object.keys(defaultColumns).forEach((name) => {
             if (schema.properties[name] !== undefined) {
-                schemaColumns[name] = defaultColumns[name];
+                schemaColumns[name] = { title: defaultColumns[name], type: 'string' };
             }
         });
     }
     // add embedded columns
     _.each(schemaColumns, (column, path) => {
         columns[path] = {
-            title: column,
+            title: column.title,
             visible: !selected,
         };
     });
