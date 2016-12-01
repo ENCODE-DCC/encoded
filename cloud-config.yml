@@ -214,7 +214,7 @@ runcmd:
 - then
 -   sudo -i -u encoded bin/batchupgrade production.ini --app-name app
 - fi
-- sed -i -e 's/inet_interfaces = all/inet_interfaces = loopback-only/g' etc/postfix/main.rc
+- sed -i -e 's/inet_interfaces = all/inet_interfaces = loopback-only/g' /etc/postfix/main.cf
 # - sleep 10
 # - sudo -u postgres echo "include 'master.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
 # - pg_ctlcluster 9.3 main reload
