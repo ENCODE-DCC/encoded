@@ -133,7 +133,7 @@
         "internal_status": {
             "type": "string",
             "description": "The status of an experiment in the DCC process.",
-            "comment":"unreviewed:wrangler has not evaluated, unrunable:experiment requires more metadata to run, pipeline ready:experiment is ready for the pipeline, processing:pipeline is running, pipeline completed: pipeline has run through completion, requires lab review:there are QC concerns about this data, release ready:DCC feels that this is ready for release",
+            "comment":"unreviewed:wrangler has not evaluated, unrunable:experiment requires more metadata to run, pipeline ready:experiment is ready for the pipeline, processing:pipeline is running, pipeline completed: pipeline has run through completion, requires lab review:there are QC concerns about this data, release ready:DCC feels that this is ready for release, pipeline error:pipeline run was started but failed for a reason that should be noted in pipeline_error_message",
             "default": "unreviewed",
             "permission": "import_items",
             "title": "Internal status",
@@ -145,8 +145,16 @@
                 "processing",
                 "pipeline completed",
                 "requires lab review",
-                "release ready"
+                "release ready",
+                "pipeline error"
             ]
+        },
+        "pipeline_error_message": {
+            "type": "string",
+            "description": "Explanation of why the experiment failed pipeline analysis.",
+            "comment": "should be used on experiments with internal_status:pipeline error",
+            "permission": "import_items",
+            "title": "Pipeline error message"
         }
     },
     "facets": {

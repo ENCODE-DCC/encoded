@@ -680,6 +680,12 @@
             "comment": "For steps, see analysis_step_run.json (and analysis_step.json) - may be virtual",
             "type": "string",
              "linkTo": "AnalysisStepRun"
+        },
+        "upload_error_message": {
+            "title": "Upload error message",
+            "type": "string",
+            "permission": "import_items",
+            "description": "Explanation of why the file failed uploading."
         }
     },
     "columns": {
