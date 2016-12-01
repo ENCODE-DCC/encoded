@@ -26,6 +26,20 @@ BDM = [
         'NoDevice': "",
     },
 ]
+
+BDM_ES = [
+    {
+        'DeviceName': '/dev/sdb',
+        'VirtualName': 'ephemeral0'
+    },
+    {
+        'DeviceName': '/dev/sdf',
+        'VirtualName': 'ephemeral1'
+    }
+]
+
+
+
 class spot_client(object):
     def __init__(self):
         self._spotClient = None
@@ -309,6 +323,8 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         print("security_groups: %s" % security_groups)
         instances = spot_instances(ec2_spot, spot_price, count, image_id, instance_type, security_groups, user_data, iam_role, BDM)
     else:
+        if elasticsearch == 'yes':
+            BDM = BDM_ES
         instances = create_ec2_instances(ec2, image_id, count, instance_type, security_groups, user_data, BDM, iam_role)
 
     for i, instance in enumerate(instances):
