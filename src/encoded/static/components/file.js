@@ -189,6 +189,13 @@ const File = React.createClass({
                                         </div>
                                     : null}
 
+                                    {context.read_length ?
+                                        <div data-test="readlength">
+                                            <dt>Mapped read length</dt>
+                                            <dd>{context.read_length}</dd>
+                                        </div>
+                                    : null}
+
                                     {context.file_size ?
                                         <div data-test="filesize">
                                             <dt>File size</dt>
@@ -320,7 +327,17 @@ const SequenceFileInfo = React.createClass({
                         {file.flowcell_details && file.flowcell_details.length ?
                             <div data-test="flowcelldetails">
                                 <dt>Flowcell</dt>
-                                <dd><FlowcellDetails flowcells={file.flowcell_details} /></dd>
+                                <dd>
+                                    {file.flowcell_details.map((detail) => {
+                                        const items = [
+                                            detail.machine ? detail.machine : '',
+                                            detail.flowcell ? detail.flowcell : '',
+                                            detail.lane ? detail.lane : '',
+                                            detail.barcode ? detail.barcode : '',
+                                        ];
+                                        return <span className="line-item">{items.join(':')}</span>;
+                                    })}
+                                </dd>
                             </div>
                         : null}
 
@@ -334,21 +351,20 @@ const SequenceFileInfo = React.createClass({
                         {file.run_type ?
                             <div data-test="runtype">
                                 <dt>Run type</dt>
-                                <dd>{file.run_type}</dd>
-                            </div>
-                        : null}
-
-                        {file.read_length ?
-                            <div data-test="readlength">
-                                <dt>Mapped read length</dt>
-                                <dd>{file.read_length}</dd>
+                                <dd>
+                                    {file.run_type}
+                                    {file.read_length ? <span>{` ${file.read_length + file.read_length_units}`}</span> : null}
+                                </dd>
                             </div>
                         : null}
 
                         {file.paired_end ?
                             <div data-test="pairedend">
-                                <dt>Paired end identifier</dt>
-                                <dd>{file.paired_end}</dd>
+                                <dt>Read</dt>
+                                <dd>
+                                    {file.paired_end}
+                                    {file.paired_with ? <span> paired with <a href={file.paired_with} title={`View page for file ${pairedWithAccession}`}>{pairedWithAccession}</a></span> : null}
+                                </dd>
                             </div>
                         : null}
 
@@ -366,13 +382,6 @@ const SequenceFileInfo = React.createClass({
                                         );
                                     })}
                                 </dd>
-                            </div>
-                        : null}
-
-                        {file.paired_with ?
-                            <div data-test="pairedwith">
-                                <dt>File pairing</dt>
-                                <dd><a href={file.paired_with} title={`View page for file ${pairedWithAccession}`}>{pairedWithAccession}</a></dd>
                             </div>
                         : null}
                     </dl>
