@@ -149,6 +149,7 @@ packages:
 - update-notifier-common
 - zlib1g-dev
 - libffi-dev
+- bsd-mailx
 
 power_state:
   mode: reboot
@@ -213,6 +214,8 @@ runcmd:
 - then
 -   sudo -i -u encoded bin/batchupgrade production.ini --app-name app
 - fi
+- sudo sed -i -e 's/inet_interfaces = all/inet_interfaces = loopback-only/g' /etc/postfix/main.cf
+- sudo service postfix restart
 # - sleep 10
 # - sudo -u postgres echo "include 'master.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
 # - pg_ctlcluster 9.3 main reload
@@ -250,7 +253,8 @@ write_files:
     Unattended-Upgrade::Allowed-Origins {
         "${distro_id} ${distro_codename}-security";
     };
-    Unattended-Upgrade::Automatic-Reboot "true";
+    Unattended-Upgrade::Mail "encode-devops@lists.stanford.edu";
+    Unattended-Upgrade::Automatic-Reboot "false";
 
 - path: /etc/cron.d/cloudwatchmon
   content: |
