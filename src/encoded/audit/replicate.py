@@ -53,23 +53,24 @@ def audit_inconsistent_construct_tag(value, system):
     if 'library' in value and 'biosample' in value['library']:
         matching_flag = False
         tags_names = get_biosample_constructs_tags(value)
-        antibody_targets = get_ab_targets(value)
-        for ab_target in antibody_targets:
-            if 'recombinant protein' in ab_target['investigated_as']:
-                if ab_target['label'] in tags_names:
-                    matching_flag = True
-                    break
-        if not matching_flag:
-            detail = 'Replicate {}-{} in experiment {} '.format(
-                value['biological_replicate_number'],
-                value['technical_replicate_number'],
-                value['experiment']['@id']) + \
-                'specifies antibody {} that is inconsistent '.format(
-                value['antibody']['@id']) + \
-                'with biosample {} constructs tags {}.'.format(
-                value['library']['biosample']['@id'],
-                tags_names)
-            yield AuditFailure('inconsistent construct tag', detail, level='INTERNAL_ACTION')
+        if len(tags_names) > 0:
+            antibody_targets = get_ab_targets(value)
+            for ab_target in antibody_targets:
+                if 'recombinant protein' in ab_target['investigated_as']:
+                    if ab_target['label'] in tags_names:
+                        matching_flag = True
+                        break
+            if not matching_flag:
+                detail = 'Replicate {}-{} in experiment {} '.format(
+                    value['biological_replicate_number'],
+                    value['technical_replicate_number'],
+                    value['experiment']['@id']) + \
+                    'specifies antibody {} that is inconsistent '.format(
+                    value['antibody']['@id']) + \
+                    'with biosample {} constructs tags {}.'.format(
+                    value['library']['biosample']['@id'],
+                    tags_names)
+                yield AuditFailure('inconsistent construct tag', detail, level='INTERNAL_ACTION')
     return
 
 
