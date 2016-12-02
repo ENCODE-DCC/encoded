@@ -100,7 +100,6 @@ class File(Item):
     }
 
     embedded = [
-        'replicate.experiment.target',
         'derived_from',
         'derived_from.analysis_step_version.software_versions',
         'derived_from.analysis_step_version.software_versions.software',
