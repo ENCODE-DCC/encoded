@@ -34,7 +34,7 @@ def test_genomes(testapp, workbook, expected):
     "shortLabel chromatin state of IMR-90 ENCSR575ZXX",
     "visibility full",
     "pennantIcon https://www.encodeproject.org/static/img/pennant-encode.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the ENCODE files and metadata found at the ENCODE portal\"",
-    "subGroup1 view Views aENHAN=Candidate_enhancers bPROMO=Candidate_promoters cSTATE=Chromatin_state hSTATE=HMM predicted chromatin state sPKS=Peaks",
+    "subGroup1 view Views aENHAN=Candidate_enhancers bPROMO=Candidate_promoters cSTATE=Chromatin_state hSTATE=HMM_predicted_chromatin_state sPKS=Peaks",
     "subGroup2 BS Biosample IMR4590=IMR-90",
     "subGroup3 EXP Experiment ENCSR575ZXX=ENCSR575ZXX",
     "subGroup4 REP Replicates pool=Pooled",
