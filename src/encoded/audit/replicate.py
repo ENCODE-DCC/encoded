@@ -47,7 +47,8 @@ def audit_status_replicate(value, system):
 def audit_inconsistent_construct_tag(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
-    if value['experiment']['assay_term_id'] != 'OBI:0000716':
+    if 'assay_term_id' not in value['experiment'] or \
+       value['experiment']['assay_term_id'] != 'OBI:0000716':
         return  # not ChIP-seq
     if 'library' in value and 'biosample' in value['library']:
         matching_flag = False
@@ -66,7 +67,7 @@ def audit_inconsistent_construct_tag(value, system):
                 'specifies antibody {} that is inconsistent '.format(
                 value['antibody']['@id']) + \
                 'with biosample {} constructs tags {}.'.format(
-                value['biosample']['@id'],
+                value['library']['biosample']['@id'],
                 tags_names)
             yield AuditFailure('inconsistent construct tag', detail, level='INTERNAL_ACTION')
     return
