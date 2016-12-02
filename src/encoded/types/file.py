@@ -344,7 +344,6 @@ class File(Item):
         },
     })
     def libraries(self, request, registry, dataset=None):
-
         conn = registry[CONNECTION]
         derived_from_closure = property_closure(request, 'derived_from', self.uuid)
         dataset_uuid = self.__json__(request)['dataset']
@@ -365,9 +364,39 @@ class File(Item):
             library_object = request.embed(lib_id, '@@object')
             if 'biosample' in library_object:
                 biosample_uuid = library_object['biosample']
-                library_object['biosample'] = request.embed(biosample_uuid, '@@object')
-            libraries_list.append(library_object)
+                biosample_object = request.embed(biosample_uuid, '@@object')
+            to_append = minimize_object(library_object)
+            if biosample_object:
+                bs = minimize_object(biosample_object)
+                to_append['biosample'] = bs
+            libraries_list.append(to_append)
         return libraries_list
+
+
+def minimize_object(schema_object):
+    to_return = {}
+    if schema_object:
+        for k in schema_object:
+            if k not in ['award',
+                         'lab',
+                         'schema_version',
+                         '@type',
+                         '@id',
+                         'submitted_by',
+                         'age_display',
+                         'characterizations',
+                         'documents',
+                         'references',
+                         'biosample_synonyms',
+                         'system_slims',
+                         'constructs',
+                         'developmental_slims',
+                         'organ_slims',
+                         'age_display',
+                         'treatments',
+                         'genetic_modifications']:
+                to_return[k] = schema_object[k]
+    return to_return
 
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):
