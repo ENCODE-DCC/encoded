@@ -565,7 +565,8 @@ def audit_experiment_standards_dispatcher(value, system):
                                                             alignment_files,
                                                             hotspots,
                                                             desired_assembly,
-                                                            desired_annotation):
+                                                            desired_annotation,
+                                                            ' /data-standards/dnase-seq/ '):
             yield failure
         return
     if value['assay_term_name'] in ['RAMPAGE', 'RNA-seq', 'CAGE',
@@ -666,7 +667,8 @@ def check_experiment_dnase_seq_standards(value,
                                          alignment_files,
                                          hotspots_files,
                                          desired_assembly,
-                                         desired_annotation):
+                                         desired_annotation,
+                                         link_to_standards):
     pipeline_title = scanFilesForPipelineTitle_not_chipseq(
         alignment_files,
         ['GRCh38', 'mm10'],
@@ -677,7 +679,7 @@ def check_experiment_dnase_seq_standards(value,
     for f in fastq_files:
         for failure in check_file_read_length_rna(f, 36,
                                                   pipeline_title,
-                                                  ' /data-standards/dnase-seq/ '):
+                                                  link_to_standards):
             yield failure
 
     pipelines = get_pipeline_objects(alignment_files)
@@ -690,6 +692,15 @@ def check_experiment_dnase_seq_standards(value,
             for metric in samtools_flagstat_metrics:
                 if 'mapped' in metric and 'quality_metric_of' in metric:
                     alignment_file = metric['quality_metric_of'][0]
+                    suffix = 'According to ENCODE standards, conventional ' + \
+                             'DNase-seq profile, requires a minimum of 20 million uniquely mapped ' + \
+                             'reads to generate a reliable ' + \
+                             'SPOT (Signal Portion of Tags) score. ' + \
+                             'The recommended value is > 50 million, but > 40 million ' + \
+                             'is acceptable. For deep, foot-printing depth ' + \
+                             'DNase-seq 200-250 million uniquely mapped reads are ' + \
+                             'recommended. (See {} )'.format(
+                                 link_to_standards)
                     if 'assembly' in alignment_file:
                         detail = 'Alignment file {} '.format(alignment_file['@id']) + \
                                  'produced by {} '.format(pipelines[0]['title']) + \
@@ -697,23 +708,19 @@ def check_experiment_dnase_seq_standards(value,
                                  'for {} assembly has {} '.format(
                                      alignment_file['assembly'],
                                      metric['mapped']) + \
-                                 'mapped reads. ' + \
-                                 'The minimum ENCODE standard for each replicate in a DNase-seq ' + \
-                                 'experiments is 5 million mapped reads.'
+                                 'mapped reads. ' + suffix
                     else:
                         detail = 'Alignment file {} '.format(alignment_file['@id']) + \
                                  'produced by {} '.format(pipelines[0]['title']) + \
                                  '( {} ) '.format(pipelines[0]['@id']) + \
                                  'has {} '.format(
                                      metric['mapped']) + \
-                                 'mapped reads. ' + \
-                                 'The minimum ENCODE standard for each replicate in a DNase-seq ' + \
-                                 'experiments is 5 million mapped reads.'
-                    if 20000000 <= metric['mapped'] < 25000000:
+                                 'mapped reads. ' + suffix
+                    if 40000000 <= metric['mapped'] < 50000000:
                         yield AuditFailure('low read depth', detail, level='WARNING')
-                    elif 5000000 <= metric['mapped'] < 20000000:
+                    elif 20000000 <= metric['mapped'] < 40000000:
                         yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
-                    elif metric['mapped'] < 5000000:
+                    elif metric['mapped'] < 20000000:
                         yield AuditFailure('extremely low read depth', detail, level='ERROR')
         elif alignment_files is not None and len(alignment_files) > 0 and \
                 (samtools_flagstat_metrics is None or
@@ -746,7 +753,8 @@ def check_experiment_dnase_seq_standards(value,
                              "According to ENCODE standards, " + \
                              "SPOT score of 0.4 or higher is considered a product of high quality " + \
                              "data. A SPOT score of 0.2 is considered a minimally acceptable " + \
-                             "SPOT score for rare and hard to find primary tissues."
+                             "SPOT score for rare and hard to find primary tissues. ( {} )".format(
+                                 link_to_standards)
                     if 0.2 <= metric["SPOT score"] < 0.4:
                         yield AuditFailure('low spot score', detail, level='WARNING')
                     elif metric["SPOT score"] < 0.2:
@@ -1925,7 +1933,7 @@ def check_file_read_length_rna(file_to_check, threshold_length, pipeline_title, 
         detail = 'Fastq file {} '.format(file_to_check['@id']) + \
                  'has read length of {}bp. '.format(read_length) + \
                  'ENCODE uniform processing pipelines ({}) '.format(pipeline_title) + \
-                 'require sequencing reads to be at least {}bp long. ( {} )'.format(
+                 'require sequencing reads to be at least {}bp long. (See {} )'.format(
                      threshold_length,
                      standard_link)
 
