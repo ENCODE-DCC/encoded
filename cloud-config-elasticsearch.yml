@@ -129,6 +129,9 @@ write_files:
     index.mapper.dynamic: false
     bootstrap.mlockall: true
 
+    indices.store.throttle.max_bytes_per_sec: 50mb
+    indices.memory.index_buffer_size: 30%
+
     node.master: false
     node.data: true
 
