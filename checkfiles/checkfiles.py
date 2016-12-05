@@ -22,6 +22,7 @@ GZIP_TYPES = [
     "CEL",
     "bam",
     "bed",
+    "bedpe",
     "csfasta",
     "csqual",
     "fasta",
