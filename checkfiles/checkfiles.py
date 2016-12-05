@@ -32,7 +32,7 @@ GZIP_TYPES = [
     "tagAlign",
     "tar",
     "sam",
-    "wig",
+    "wig"
 ]
 
 
