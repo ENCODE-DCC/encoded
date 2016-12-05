@@ -38,6 +38,7 @@ def audit_status_replicate(value, system):
     'Replicate',
     frame=[
         'experiment',
+        'experiment.target',
         'library',
         'library.biosample',
         'library.biosample.constructs',
@@ -47,9 +48,12 @@ def audit_status_replicate(value, system):
 def audit_inconsistent_construct_tag(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
+    if 'target' not in value['experiment']:
+        return
     if 'assay_term_id' not in value['experiment'] or \
        value['experiment']['assay_term_id'] != 'OBI:0000716':
         return  # not ChIP-seq
+    exp_target = value['experiment']['target']
     if 'library' in value and 'biosample' in value['library']:
         matching_flag = False
         tags_names = get_biosample_constructs_tags(value)
@@ -61,6 +65,9 @@ def audit_inconsistent_construct_tag(value, system):
                     if ab_target['label'] in tags_names:
                         matching_flag = True
                         break
+                if ab_target['name'] == exp_target['name']:
+                    matching_flag = True
+                    break
             if not matching_flag:
                 detail = 'Replicate {}-{} in experiment {} '.format(
                     value['biological_replicate_number'],
