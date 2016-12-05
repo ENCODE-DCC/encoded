@@ -6,6 +6,7 @@ import sys
 import datetime
 import base64
 import json
+from pprint import pprint as pp
 
 
 BDM = [
@@ -285,6 +286,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
 
         user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config-elasticsearch.yml']).decode('utf-8')
         print(cluster_name)
+        pp(user_data)
         user_data = user_data % {
             'CLUSTER_NAME': cluster_name,
         }

@@ -77,7 +77,7 @@ runcmd:
 # Ideally this would build as a different user so encoded only has read
 # permissions
 - set -ex
-- sudo bash -c ulimit -l unlimited
+- sudo bash -c 'ulimit -l unlimited'
 - update-rc.d elasticsearch defaults
 - sudo bash /etc/elasticsearch/cluster.sh %(CLUSTER_NAME)s
 - sudo /usr/share/elasticsearch/bin/plugin install elasticsearch/elasticsearch-cloud-aws/2.7.1
@@ -130,7 +130,7 @@ write_files:
     bootstrap.mlockall: true
 
     indices.store.throttle.max_bytes_per_sec: 50mb
-    indices.memory.index_buffer_size: 30%
+    indices.memory.index_buffer_size: 30%%
 
     node.master: false
     node.data: true
