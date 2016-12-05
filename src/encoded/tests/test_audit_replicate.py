@@ -58,10 +58,11 @@ def test_audit_status_replicate(testapp, rep1):
 
 
 def test_audit_inconsistent_construct_tag(testapp, rep1,
-                                          experiment, antibody_lot,
+                                          experiment, antibody_lot, target_H3K27ac,
                                           target, base_biosample, construct,
                                           library_1):
-    testapp.patch_json(experiment['@id'], {'assay_term_id': 'OBI:0000716'})
+    testapp.patch_json(experiment['@id'], {'assay_term_id': 'OBI:0000716',
+                                           'target': target_H3K27ac['@id']})
     testapp.patch_json(target['@id'], {'investigated_as': ['recombinant protein'],
                                        'label': 'FLAG'})
     testapp.patch_json(rep1['@id'], {'antibody': antibody_lot['@id'],
@@ -80,7 +81,8 @@ def test_audit_consistent_construct_tag(testapp, rep1,
                                         experiment, antibody_lot,
                                         target, base_biosample, construct,
                                         library_1):
-    testapp.patch_json(experiment['@id'], {'assay_term_id': 'OBI:0000716'})
+    testapp.patch_json(experiment['@id'], {'assay_term_id': 'OBI:0000716',
+                                           'target': target['@id']})
     testapp.patch_json(target['@id'], {'investigated_as': ['recombinant protein'],
                                        'label': 'FLAG'})
     testapp.patch_json(rep1['@id'], {'antibody': antibody_lot['@id'],
