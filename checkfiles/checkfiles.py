@@ -435,24 +435,6 @@ def process_fastq_file(job, fastq_data_stream, session, url):
             else:
                 signatures_for_comparison = signatures_set
 
-        '''signature_conflicts = []
-        for unique_signature in signatures_for_comparison:
-            query = '/' + unique_signature + '?format=json'
-            try:
-                r = session.get(urljoin(url, query))
-            except requests.exceptions.RequestException as e:  # This is the correct syntax
-                errors['lookup_for_fastq_signature'] = 'Network error occured, while looking for ' + \
-                                                       'fastq signatures conflict on the portal. ' + \
-                                                       str(e) # + / ' Gathered information about the file was: {}.'.format(str(result))
-            else:
-                response = r.json()
-                if response is not None and 'File' in response['@type']:
-                    uniqueness_flag = False
-                    signature_conflicts.append(
-                        'specified unique identifier {} '.format(unique_signature) +
-                        'is conflicting with identifier of reads from ' +
-                        'file {}.'.format(response['accession']))
-        '''
         if check_for_fastq_signature_conflicts(
            session,
            url,
@@ -702,16 +684,8 @@ def check_file(config, session, url, job):
                 errors['fastq_information_extraction'] = 'Failed to extract information from ' + \
                                                          local_path
     if item['file_format'] == 'bed':
-        try:
-            unzipped_modified_bed_path = unzipped_modified_bed_path
-            if os.path.exists(unzipped_modified_bed_path):
-                try:
-                    os.remove(unzipped_modified_bed_path)
-                except OSError as e:
-                    errors['file_remove_error'] = 'OS could not remove the file ' + \
-                                                  unzipped_modified_bed_path
-        except NameError:
-            pass
+        remove_local_file(unzipped_original_bed_path)
+        remove_local_file(unzipped_modified_bed_path)
 
     if item['status'] != 'uploading':
         errors['status_check'] = \
@@ -719,8 +693,22 @@ def check_file(config, session, url, job):
     if errors:
         errors['gathered information'] = 'Gathered information about the file was: {}.'.format(
             str(result))
+        errors['content_error'] = 'new message'
 
     return job
+
+
+def remove_local_file(path_to_the_file, errors):
+    try:
+        path_to_the_file = path_to_the_file
+        if os.path.exists(path_to_the_file):
+            try:
+                os.remove(path_to_the_file)
+            except OSError:
+                errors['file_remove_error'] = 'OS could not remove the file ' + \
+                                              path_to_the_file
+    except NameError:
+        pass
 
 
 def fetch_files(session, url, search_query, out, include_unexpired_upload=False):
