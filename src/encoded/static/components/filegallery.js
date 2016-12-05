@@ -51,9 +51,9 @@ const FileAccessionButton = React.createClass({
         return (
             <span>
                 {buttonEnabled ?
-                    <span><button className="file-table-btn" onClick={this.onClick}>{file.accession}</button>&nbsp;</span>
+                    <span><button className="file-table-btn" onClick={this.onClick}>{file.title}</button>&nbsp;</span>
                 :
-                    <span>{file.accession}&nbsp;</span>
+                    <span>{file.title}&nbsp;</span>
                 }
             </span>
         );
@@ -184,7 +184,7 @@ function humanFileSize(size) {
         const i = Math.floor(Math.log(size) / Math.log(1024));
         const adjustedSize = (size / Math.pow(1024, i)).toPrecision(3) * 1;
         const units = ['B', 'kB', 'MB', 'GB', 'TB'][i];
-        return `${units} ${adjustedSize}`;
+        return `${adjustedSize} ${units}`;
     }
     return undefined;
 }
@@ -628,7 +628,7 @@ const RawSequencingTable = React.createClass({
                         // them pass the filter, and record set their sort keys to the lower of
                         // the two accessions -- that's how pairs will sort within a biological
                         // replicate
-                        file.pairSortKey = partner.pairSortKey = file.accession < partner.accession ? file.accession : partner.accession;
+                        file.pairSortKey = partner.pairSortKey = file.title < partner.title ? file.title : partner.title;
                         file.pairSortKey += file.paired_end;
                         partner.pairSortKey += partner.paired_end;
                         return true;
@@ -875,7 +875,7 @@ const RawFileTable = React.createClass({
 
                                 // Render each file's row, with the biological replicate and library
                                 // cells only on the first row.
-                                return groupFiles.sort((a, b) => (a.accession < b.accession ? -1 : 1)).map((file, i) => {
+                                return groupFiles.sort((a, b) => (a.title < b.title ? -1 : 1)).map((file, i) => {
                                     let pairClass;
                                     if (i === 1) {
                                         pairClass = `align-pair2${(i === groupFiles.length - 1) && (j === pairedKeys.length - 1) ? '' : ' pair-bottom'}`;
@@ -1092,7 +1092,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
             let nextFileList;
 
             if (file) {
-                if (!file.removed) {
+                if (!file.filtered) {
                     // This file gets included. Include everything it derives from
                     if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
                         nextFileList = getSubFileList(file.derived_from);
@@ -1100,7 +1100,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
                     }
                 } else if (include) {
                     // Unremove the file if this branch is to be included based on files that derive from it
-                    file.removed = false;
+                    file.filtered = false;
                     if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
                         nextFileList = getSubFileList(file.derived_from);
                         processFiltering(nextFileList, assemblyFilter, annotationFilter, allFiles, allContributing, true);
@@ -1127,7 +1127,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
     // to de-dup the file array since there can be repeated files in it.
     files.forEach((file) => {
         if (!allFiles[file['@id']]) {
-            file.removed = false;
+            file.removed = file.missing = file.filtered = false;
             allFiles[file['@id']] = file;
         }
     });
@@ -1152,6 +1152,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
                     derivedFromFiles[derivedFromId] = derivedFrom;
                     derivedFrom.missing = true;
                     derivedFrom.removed = false; // Clears previous value Redmine #4536
+                    allFiles[derivedFromId] = derivedFrom;
                 } else if (!derivedFromFiles[derivedFromId]) {
                     // The derived-from file was in the given file list but we haven't seen it in
                     // this loop before, so record the derived-from file in derivedFromFiles.
@@ -1251,6 +1252,35 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         }
     });
 
+    // Remove files based on the filtering options
+    if (filterAssembly) {
+        // First remove all raw files, and all other files with mismatched filtering options
+        Object.keys(allFiles).forEach((fileId) => {
+            const file = allFiles[fileId];
+
+            if (file.output_category === 'raw data') {
+                // File is raw data; just remove it
+                file.filtered = true;
+            } else if ((file.assembly !== filterAssembly) || ((file.genome_annotation || filterAnnotation) && (file.genome_annotation !== filterAnnotation))) {
+                file.filtered = true;
+            }
+        });
+
+        // For all files matching the filtering options that derive from others, go up the
+        // derivation chain and re-include everything there.
+        processFiltering(allFiles, filterAssembly, filterAnnotation, allFiles, allContributing);
+
+        // Any files removed because of filtering get removed from allFiles and derivedFromFiles
+        // to make subsequent processing easier.
+        Object.keys(allFiles).forEach((fileId) => {
+            const file = allFiles[fileId];
+            if (file.filtered) {
+                delete allFiles[fileId];
+                delete derivedFromFiles[fileId];
+            }
+        });
+    }
+
     // Check whether any files that others derive from are missing (usually because they're
     // unreleased and we're logged out).
     Object.keys(derivedFromFiles).forEach((derivedFromFileId) => {
@@ -1275,24 +1305,6 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
             }
         } // else the derived_from file is in files array (allFiles object); normal case
     });
-
-    // Remove files based on the filtering options
-    if (filterAssembly) {
-        // First remove all raw files, and all other files with mismatched filtering options
-        Object.keys(allFiles).forEach((fileId) => {
-            const file = allFiles[fileId];
-
-            if (file.output_category === 'raw data') {
-                // File is raw data; just remove it
-                file.removed = true;
-            } else if ((file.assembly !== filterAssembly) || ((file.genome_annotation || filterAnnotation) && (file.genome_annotation !== filterAnnotation))) {
-                file.removed = true;
-            }
-        });
-
-        // For all files matching the filtering options that derive from others, go up the derivation chain and re-include everything there.
-        processFiltering(allFiles, filterAssembly, filterAnnotation, allFiles, allContributing);
-    }
 
     // Map all contributing files to arrays of the files that derive from them. At the end of this
     // loop, all contributing files in the allContributing object have a derivedFiles property with
@@ -1340,14 +1352,11 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
             // group's hash value in a `coalescingGroup` property that step node can connnect to.
             group.forEach((contributingFile) => {
                 contributingFile.coalescingGroup = groupHash;
+
+                // Remove coalesced files from allFiles
+                delete allFiles[contributingFile['@id']];
             });
         } else {
-            // The number of files in the coalescing group isn't enough to coalesce them. Just add
-            // them to allFiles and add them to the graph as pretty much regular files.
-            group.forEach((contributingFile) => {
-                allFiles[contributingFile['@id']] = contributingFile;
-            });
-
             // Don't use this coalescingGroup anymore.
             coalescingGroups[groupHash] = [];
         }
@@ -1495,7 +1504,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
                             ref: fileAnalysisStep,
                             pipelines: pipelineInfo,
                             fileId: file['@id'],
-                            fileAccession: file.accession,
+                            fileAccession: file.title,
                             stepVersion: file.analysis_step_version,
                         });
                     }
@@ -1829,7 +1838,7 @@ function qcDetailsView(metrics) {
                 const match = id2accessionRE.exec(metricId);
 
                 // Return matches that *don't* match the file whose QC node we've clicked
-                if (match && (match[1] !== metrics.parent.accession)) {
+                if (match && (match[1] !== metrics.parent.title)) {
                     return match[1];
                 }
                 return '';
@@ -1867,7 +1876,7 @@ function qcDetailsView(metrics) {
 
         const header = (
             <div className="details-view-info">
-                <h4>{qcName} of {metrics.parent.accession}</h4>
+                <h4>{qcName} of {metrics.parent.title}</h4>
                 {filesOfMetric.length ? <h5>Shared with {filesOfMetric.join(', ')}</h5> : null}
             </div>
         );
@@ -2142,7 +2151,7 @@ const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
         const dateString = !!selectedFile.date_created && moment.utc(selectedFile.date_created).format('YYYY-MM-DD');
         header = (
             <div className="details-view-info">
-                <h4>{selectedFile.file_type} {selectedFile.accession}</h4>
+                <h4>{selectedFile.file_type} {selectedFile.title}</h4>
             </div>
         );
 
