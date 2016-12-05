@@ -284,6 +284,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
             sys.exit(1)
 
         user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config-elasticsearch.yml']).decode('utf-8')
+        print(cluster_name)
         user_data = user_data % {
             'CLUSTER_NAME': cluster_name,
         }
