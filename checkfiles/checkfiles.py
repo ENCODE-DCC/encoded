@@ -612,6 +612,7 @@ def check_file(config, session, url, job):
         file_stat = os.stat(local_path)
     except FileNotFoundError:
         errors['file_not_found'] = 'File has not been uploaded yet.'
+        update_content_error(errors, 'File was not uploaded to S3')
         if job['run'] < job['upload_expiration']:
             job['skip'] = True
         return job
@@ -619,6 +620,9 @@ def check_file(config, session, url, job):
     if 'file_size' in item and file_stat.st_size != item['file_size']:
         errors['file_size'] = 'uploaded {} does not match item {}'.format(
             file_stat.st_size, item['file_size'])
+        update_content_error(errors, 'Fastq metadata-specified file size {} '.format(
+            item['file_size']) +
+            'doesn’t match the calculated file size {}'.format(file_stat.st_size))
 
     result["file_size"] = file_stat.st_size
     result["last_modified"] = datetime.datetime.utcfromtimestamp(
@@ -639,7 +643,9 @@ def check_file(config, session, url, job):
         if result['md5sum'] != item['md5sum']:
             errors['md5sum'] = \
                 'checked %s does not match item %s' % (result['md5sum'], item['md5sum'])
-
+            update_content_error(errors,
+                                 'Fastq file metadata-specified md5sum {} '.format(item['md5sum']) +
+                                 'does not match the calculated md5sum {}'.format(result['md5sum']))
     is_gzipped = is_path_gzipped(local_path)
     if item['file_format'] not in GZIP_TYPES:
         if is_gzipped:
