@@ -560,6 +560,7 @@ def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url
         int(result['content_md5sum'], 16)
     except ValueError:
         errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
+        update_content_error(errors, 'Fastq file content md5sum format error')
     else:
         query = '/search/?type=File&status!=replaced&content_md5sum=' + result[
             'content_md5sum']
@@ -576,16 +577,24 @@ def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url
                     if 'accession' in entry and 'accession' in item:
                         if entry['accession'] != item['accession']:
                             conflicts.append(
-                                'checked %s is conflicting with content_md5sum of %s' % (
+                                '%s in file %s ' % (
                                     result['content_md5sum'],
                                     entry['accession']))
-                    else:
+                    elif 'accession' in entry:
                         conflicts.append(
-                            'checked %s is conflicting with content_md5sum of %s' % (
+                            '%s in file %s ' % (
                                 result['content_md5sum'],
                                 entry['accession']))
+                    elif 'accession' not in entry and 'accession' not in item:
+                        conflicts.append(
+                            '%s ' % (
+                                result['content_md5sum']))
                 if len(conflicts) > 0:
                     errors['content_md5sum'] = str(conflicts)
+                    update_content_error(errors,
+                                         'Fastq file content md5sum conflicts with content ' +
+                                         'md5sum of existing file(s) {}'.format(
+                                             ', '.join(map(str, conflicts))))
 
 
 def check_file(config, session, url, job):
