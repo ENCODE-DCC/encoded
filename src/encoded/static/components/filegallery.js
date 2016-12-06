@@ -416,7 +416,6 @@ export const FileTable = React.createClass({
         let selectedAnnotation;
         const loggedIn = !!(session && session['auth.userid']);
 
-
         let datasetFiles = _((items && items.length) ? items : []).uniq(file => file['@id']);
         if (datasetFiles.length) {
             const unfilteredCount = datasetFiles.length;
@@ -955,14 +954,13 @@ const RawFileTable = React.createClass({
 // unreleased files.
 export const DatasetFiles = React.createClass({
     propTypes: {
-        context: React.PropTypes.object, // Dataset whose files we're getting
         items: React.PropTypes.array, // Array of files retrieved
     },
 
     render: function () {
-        const { context, items } = this.props;
+        const { items } = this.props;
 
-        const files = _.uniq(((context.files && context.files.length) ? context.files : []).concat((items && items.length) ? items : []));
+        const files = _.uniq((items && items.length) ? items : []);
         if (files.length) {
             return <FileTable {...this.props} items={files} />;
         }
@@ -1574,6 +1572,58 @@ const FileGalleryRenderer = React.createClass({
             infoNodeId: '', // @id of node whose info panel is open
             infoModalOpen: false, // True if info modal is open
         };
+    },
+
+    componentWillMount: function () {
+        // Get the array of the dataset's related_files.
+        const chunkSize = 2; // Maximum of related files to search for at once
+        const { context, data } = this.props;
+        let relatedFileIds = context.related_files && context.related_files.length ? context.related_files : [];
+        if (relatedFileIds.length) {
+            const searchedFileIds = {};
+
+            // Make a searchable object of file IDs for files obtained through search.
+            const searchedFiles = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
+            if (searchedFiles.length) {
+                searchedFiles.forEach((searchedFile) => {
+                    searchedFileIds[searchedFile['@id']] = searchedFile;
+                });
+            }
+
+            // Filter the related file @ids to exclude those files we already have in data.@graph,
+            // just so we don't use bandwidth getting things we already have.
+            relatedFileIds = relatedFileIds.filter(fileId => !searchedFileIds[fileId]);
+
+            // Break relatedFileIds into an array of arrays to break the array into <= `chunkSize`
+            // arrays so we don't generate search URLs that are too long for the server to handle.
+            const relatedFileChunks = [];
+            for (let start = 0, chunkIndex = 0; start < relatedFileIds.length; start += chunkSize, chunkIndex += 1) {
+                relatedFileChunks[chunkIndex] = relatedFileIds.slice(start, start + chunkSize);
+            }
+
+            // Going to send out all search chunk GET requests at once, and then wait for all of
+            // them to complete.
+            Promise.all(relatedFileChunks.map((fileChunk) => {
+                // Build URL containing file search for specific files for each chunk of files.
+                const url = '/search/?type=File&limit=all'.concat(fileChunk.reduce((combined, current) => `${combined}&@id=${current}`, ''));
+                return fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        Accept: 'application/json',
+                    },
+                }).then((response) => {
+                    // Convert response to JSON
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    return Promise.resolve(null);
+                });
+            })).then((results) => {
+                // All search chunks have resolved or errored. We get an array of search results --
+                // one per chunk. Now collect their files from their @graphs.
+                console.log('RES: %o', results);
+            });
+        }
     },
 
     // Set the default filter after the graph has been analayzed once.
