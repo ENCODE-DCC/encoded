@@ -42,6 +42,13 @@ def is_path_gzipped(path):
     return magic_number == b'\x1f\x8b'
 
 
+def update_content_error(errors, error_message):
+    if 'content_error' not in errors:
+        errors['content_error'] = error_message
+    else:
+        errors['content_error'] += ', ' + error_message
+
+
 def check_format(encValData, job, path):
     """ Local validation
     """
@@ -60,8 +67,10 @@ def check_format(encValData, job, path):
     if item['file_format'] == 'bam' and item.get('output_type') == 'transcriptome alignments':
         if 'assembly' not in item:
             errors['assembly'] = 'missing assembly'
+            update_content_error(errors, 'File metadata lacks assembly information')
         if 'genome_annotation' not in item:
             errors['genome_annotation'] = 'missing genome_annotation'
+            update_content_error(errors, 'File metadata lacks genome annotation information')
         if errors:
             return errors
         chromInfo = '-chromInfo=%s/%s/%s/chrom.sizes' % (
@@ -174,6 +183,7 @@ def check_format(encValData, job, path):
 
     if chromInfo in validate_args and 'assembly' not in item:
         errors['assembly'] = 'missing assembly'
+        update_content_error(errors, 'File metadata lacks assembly information')
         return
 
     result['validateFiles_args'] = ' '.join(validate_args)
@@ -183,6 +193,7 @@ def check_format(encValData, job, path):
             ['validateFiles'] + validate_args + [path], stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
         errors['validateFiles'] = e.output.decode(errors='replace').rstrip('\n')
+        update_content_error(errors, 'File failed file format specific validation (encValData)')
     else:
         result['validateFiles'] = output.decode(errors='replace').rstrip('\n')
 
@@ -315,10 +326,8 @@ def process_read_name_line(read_name_line,
                         signatures_set,
                         old_illumina_current_prefix)
                 else:
-                    errors['fastq_format_readname'] = \
-                        'submitted fastq file does not ' + \
-                        'comply with illumina fastq read name format, ' + \
-                        'read name was : {}'.format(read_name)
+                    errors['fastq_format_readname'] = read_name
+                    # the only case to skip update content error - due to the changing nature of read names 
 
     else:  # found a match to the regex of "almost" illumina read_name
         process_illumina_read_name_pattern(
@@ -396,6 +405,8 @@ def process_fastq_file(job, fastq_data_stream, session, url):
             errors['inconsistent_read_numbers'] = \
                 'fastq file contains mixed read numbers ' + \
                 '{}.'.format(', '.join(sorted(list(read_numbers_set))))
+            update_content_error(errors,
+                                 'Fastq file contains a mixture of read1 and read2 sequences')
 
         # read_length
         read_lengths_list = []
@@ -414,6 +425,10 @@ def process_fastq_file(job, fastq_data_stream, session, url):
             errors['read_length'] = 'no specified read length in the uploaded fastq file, ' + \
                                     'while read length(s) found in the file were {}. '.format(
                                     ', '.join(map(str, read_lengths_list)))
+            update_content_error(errors,
+                                 'Fastq file metadata lacks read length information, ' +
+                                 'but the file contains read length(s) {}'.format(
+                                     ', '.join(map(str, read_lengths_list))))
         # signatures
         signatures_for_comparison = set()
         is_UMI = False
@@ -788,8 +803,16 @@ def patch_file(session, url, job):
                'fastq_information_extraction']:
                 to_patch = False
                 break
-        if to_patch:
+        if to_patch:  # will change into if 'content_error' in errors
+            if 'fastq_format_readname' in errors:
+                update_content_error(errors,
+                                     'Fastq file contains read names that don’t follow ' +
+                                     'the Illumina standard naming schema; for example {}'.format(
+                                         errors['fastq_format_readname']))
             data = {
+                # place holder for content_error patching
+                # 'content_error': errors['content_error'],
+                #
                 'status': 'upload failed'
                 }
     if data:
@@ -831,7 +854,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
     except multiprocessing.NotImplmentedError:
         nprocesses = 1
 
-    version = '1.02'
+    version = '1.03'
 
     out.write("STARTING Checkfiles version %s (%s): with %d processes %s at %s\n" %
               (version, search_query, nprocesses, dr, datetime.datetime.now()))
