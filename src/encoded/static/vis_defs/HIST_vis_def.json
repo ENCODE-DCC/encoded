@@ -11,7 +11,7 @@
 #          it is considered "opaque" and will used the default vis_def.
 {
     "HIST": {
-        "rule": "'{assay_term_name}' == 'ChIP-seq' and '{target.investigated_as}'.find('histone') != -1",
+        "rule": "'{assay_term_name}' == 'ChIP-seq' and 'histone' in '{target.investigated_as}'",
         "assay_composite": {
             "longLabel":  "Collection of ENCODE Histone ChIP-seq experiments",
             "shortLabel": "ENCODE Histone ChIP"

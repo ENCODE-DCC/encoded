@@ -23,9 +23,10 @@ from .search import _ASSEMBLY_MAPPER
 
 log = logging.getLogger(__name__)
 #log.setLevel(logging.DEBUG)
+log.setLevel(logging.INFO)
 
 # NOTE: Caching is turned on and off with this global AND TRACKHUB_CACHING in peak_indexer.py
-USE_CACHE = False # Use elasticsearch caching of individual acc_composite blobs
+USE_CACHE = True # Use elasticsearch caching of individual acc_composite blobs
 
 
 def includeme(config):
@@ -1418,21 +1419,12 @@ def ucsc_trackDb_composite_blob(composite,title):
     return blob
 
 def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False, regen=False):
-
-    ### local test: bigBed: curl http://localhost:8000/experiments/ENCSR000DZQ/@@hub/hg19/trackDb.txt
-    ###             bigWig: curl http://localhost:8000/experiments/ENCSR000ADH/@@hub/mm9/trackDb.txt
-    ### CHIP: https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR645BCH/@@hub/GRCh38/trackDb.txt
-    ### LRNA: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR000AAA/@@hub/GRCh38/trackDb.txt
-
+    '''Returns json for a single experiment 'acc_composite'.'''
     acc_composite = None
     es_key = acc + "_" + assembly
     found_or_made = "found"
-    if USE_CACHE:
-        if not regen:
-            regen = (request.url.find("regenvis") > -1) # @@hub/GRCh38/regenvis/trackDb.txt  regenvis/GRCh38 causes and error
-
-        if not regen: # Find composite?
-            acc_composite = get_from_es(request,es_key)
+    if USE_CACHE and not regen: # Find composite?
+        acc_composite = get_from_es(request,es_key)
 
     if acc_composite is None:
         request_dataset = (dataset is None)
@@ -1452,13 +1444,25 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False,
 
 
 def generate_trackDb(request, dataset, assembly, hide=False, regen=False):
+    '''Returns string content for a requested  single experiment trackDb.txt.'''
+    ### local test: bigBed: curl http://localhost:8000/experiments/ENCSR000DZQ/@@hub/hg19/trackDb.txt
+    ###             bigWig: curl http://localhost:8000/experiments/ENCSR000ADH/@@hub/mm9/trackDb.txt
+    ### CHIP: https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR645BCH/@@hub/GRCh38/trackDb.txt
+    ### LRNA: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR000AAA/@@hub/GRCh38/trackDb.txt
 
+    if not regen:
+        regen = ("regenvis" in request.url) # @@hub/GRCh38/regenvis/trackDb.txt  regenvis/GRCh38 causes and error
     acc = dataset['accession']
     ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
     (found_or_made, acc_composite) = find_or_make_acc_composite(request, ucsc_assembly, \
                                             dataset["accession"], dataset, hide=hide, regen=regen)
+
     vis_type = acc_composite.get("vis_type",get_vis_type(dataset))
-    log.debug("%s composite %s_%s %s len:%d %.3f" % (found_or_made,dataset['accession'], \
+    if regen: # Want to see message if regen was requested
+        log.info("%s composite %s_%s %s len(json):%d %.3f" % (found_or_made,dataset['accession'], \
+          ucsc_assembly,vis_type,len(json.dumps(acc_composite)),(time.time() - PROFILE_START_TIME)))
+    else:
+        log.debug("%s composite %s_%s %s len(json):%d %.3f" % (found_or_made,dataset['accession'], \
           ucsc_assembly,vis_type,len(json.dumps(acc_composite)),(time.time() - PROFILE_START_TIME)))
     #del dataset
     json_out = (request.url.find("jsonout") > -1) # @@hub/GRCh38/jsonout/trackDb.txt  regenvis/GRCh38 causes and error
@@ -1467,7 +1471,7 @@ def generate_trackDb(request, dataset, assembly, hide=False, regen=False):
     return ucsc_trackDb_composite_blob(acc_composite,acc)
 
 def generate_batch_trackDb(request, hide=False, regen=False):
-
+    '''Returns string content for a requested multi-experiment trackDb.txt.'''
     ### local test: RNA-seq: curl https://../batch_hub/type=Experiment,,assay_title=RNA-seq,,award.rfa=ENCODE3,,status=released,,assembly=GRCh38,,replicates.library.biosample.biosample_type=induced+pluripotent+stem+cell+line/GRCh38/trackDb.txt
 
     # Special logic to force remaking of trackDb
@@ -1522,12 +1526,14 @@ def generate_batch_trackDb(request, hide=False, regen=False):
         if not USE_CACHE:
             for dataset in results:
                 acc = dataset['accession']
-                (found_or_made, acc_composite) = find_or_make_acc_composite(request, assembly, acc, dataset, hide=hide, regen=True)
+                (found_or_made, acc_composite) = find_or_make_acc_composite(request, assembly, acc, \
+                                                                    dataset, hide=hide, regen=True)
                 made += 1
                 acc_composites[acc] = acc_composite
         else:
             for acc in accs:
-                (found_or_made, acc_composite) = find_or_make_acc_composite(request, assembly, acc, None, hide=hide, regen=regen)
+                (found_or_made, acc_composite) = find_or_make_acc_composite(request, assembly, acc, \
+                                                                    None, hide=hide, regen=regen)
                 if found_or_made == "made":
                     made += 1
                     #log.debug("%s composite %s" % (found_or_made,acc))
@@ -1535,36 +1541,69 @@ def generate_batch_trackDb(request, hide=False, regen=False):
                     found += 1
                 acc_composites[acc] = acc_composite
 
-    if found == 0:
-        log.warn("batch_trackDb Found no results   %.3f secs" % (time.time() - PROFILE_START_TIME))
-        return ""
-    
-    set_composites = remodel_acc_to_set_composites(acc_composites, hide_after=100)
-    log.debug("%d acc_composites => %d set_composites (%s generated, %d found)   %.3f secs" % \
-        ((made + found),len(set_composites),made,found,(time.time() - PROFILE_START_TIME)))
-
-    json_out = (request.url.find("jsonout") > -1) # ...&assembly=hg19&jsonout/hg19/trackDb.txt
-    if json_out:
-        return json.dumps(set_composites,indent=4,sort_keys=True)
-
     blob = ""
-    for composite_tag in sorted( set_composites.keys() ):
-        blob += ucsc_trackDb_composite_blob(set_composites[composite_tag],composite_tag)
-    log.debug("Length of trackDb %d   %.3f secs" % (len(blob),(time.time() - PROFILE_START_TIME)))
+    set_composites = {}
+    if found > 0 or made > 0:
+        set_composites = remodel_acc_to_set_composites(acc_composites, hide_after=100)
+
+        json_out = (request.url.find("jsonout") > -1) # ...&assembly=hg19&jsonout/hg19/trackDb.txt
+        if json_out:
+            blob = json.dumps(set_composites,indent=4,sort_keys=True)
+        else:
+            for composite_tag in sorted( set_composites.keys() ):
+                blob += ucsc_trackDb_composite_blob(set_composites[composite_tag],composite_tag)
+        
+    if regen: # Want to see message if regen was requested
+        log.info("acc_composites: %s generated, %d found, %d set(s). len(txt):%s  %.3f secs" % \
+                (made,found,len(set_composites),len(blob),(time.time() - PROFILE_START_TIME)))
+    else:
+        log.debug("acc_composites: %s generated, %d found, %d set(s). len(txt):%s  %.3f secs" % \
+                (made,found,len(set_composites),len(blob),(time.time() - PROFILE_START_TIME)))
 
     return blob
 
+def readable_time(secs_float):    
+    '''Return string of days, hours, minutes, seconds'''
+    intervals = [ 1, 60, 60*60, 60*60*24]
+    terms = [('second', 'seconds'),('minute', 'minutes'),('hour', 'hours'),('day', 'days')]
+
+    amount = int(secs_float)
+    msecs = int(round(secs_float * 1000) - (amount * 1000))
+
+    result = ""
+    for ix in range(len(terms)-1, -1, -1): # 3,2,1,0
+        interval = intervals[ix]
+        a = amount // interval
+        if a > 0 or interval == 1: 
+            result += "%d %s, " % (a, terms[ix][a % 1])
+            amount -= a * interval
+    if msecs > 0:
+        result += "%d msecs" % (msecs)
+    else:
+        result = result[:-2]
+
+    return result
+    
 # Note: Required for Bek's cache priming solution.
 @subscriber(AfterIndexedExperimentsAndDatasets)
 def prime_vis_es_cache(event):
+    '''Priming occurs whenever es objects are invalidated but after _indexer is done with them.'''
+    global PROFILE_START_TIME
+    PROFILE_START_TIME = time.time()
     # NOTE: should not be called unless peak_indexer.py::TRACKHUB_CACHING == True
     request = event.request
-    uuids = event.object
+    uuids = event.object # unordered set of unique ids that have been invalidated
     if not uuids:
         return
     
-    # NOTE: log.warn (not debug) to be seen, since this log is NOT in this module's scope
-    #log.warn("Starting prime_vis_es_cache")
+    # logging is not at visualization.py module level.  The logger is the scubscribed to one.
+    log.setLevel(logging.INFO) # NOTE: Change here to show debug messages
+    verbose_threshold = 100    # Only be verbose if this is a big set
+    raw_count = len(uuids)
+    if raw_count >= verbose_threshold: # If enough, then want this framed
+        log.info("Starting prime_vis_es_cache: %d uuids" % (raw_count))
+    else:
+        log.debug("Starting prime_vis_es_cache: %d uuids" % (raw_count))
 
     visualizabe_types = set(VISIBLE_DATASET_TYPES)
     count = 0
@@ -1579,18 +1618,25 @@ def prime_vis_es_cache(event):
         assemblies = dataset.get('assembly',[])
         for assembly in assemblies:
             ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
-            (found_or_made, acc_composite) = find_or_make_acc_composite(request, ucsc_assembly, \
+            (made, acc_composite) = find_or_make_acc_composite(request, ucsc_assembly, \
                                                                         acc, dataset, regen=True)
             if acc_composite:
                 count += 1
-                log.debug("primed vis_es_cache with acc_composite %s_%s '%s'" % \
-                                            (acc,ucsc_assembly,acc_composite.get('vis_type','')))
-                # From [Mon Nov 21 12:14:45.082032 2016] to [Tue Nov 22 00:46:05.482191 2016] 12h32m
+                log.debug("primed vis_es_cache with acc_composite %s_%s '%s'  %.3f secs" % \
+                                    (acc,ucsc_assembly,acc_composite.get('vis_type',''), \
+                                    (time.time() - PROFILE_START_TIME)))
+                # Took 12h32m on initial
             #else:
             #    log.debug("prime_vis_es_cache for %s_%s unvisualizable '%s'" % \
             #                                (acc,ucsc_assembly,get_vis_type(dataset)))
     #if count == 0:
-    log.warn("prime_vis_es_cache made %d acc_composites" % (count))
+    if raw_count >= verbose_threshold or count >= verbose_threshold/10:
+        log.info("prime_vis_es_cache made %d acc_composites  %s" % \
+                                        (count,readable_time(time.time() - PROFILE_START_TIME)))
+    else:
+        log.debug("prime_vis_es_cache made %d acc_composites  %s" % \
+                                        (count,readable_time(time.time() - PROFILE_START_TIME)))
+    log.setLevel(logging.NOTSET) # Not sure if this is needed.
 
 def render(data):
     arr = []
