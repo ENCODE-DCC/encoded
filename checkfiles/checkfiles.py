@@ -497,6 +497,11 @@ def process_read_lengths(read_lengths_dict,
             'in file metadata the read_length is {}, '.format(submitted_read_length) + \
             'however the uploaded fastq file contains reads of following length(s) ' + \
             '{}. '.format(', '.join(map(str, lengths_list)))
+        update_content_error(errors_to_report,
+                             'Fastq file metadata specified read length was {}, '.format(
+                                 submitted_read_length) +
+                             'but the file contains read length(s) {}'.format(
+                                 ', '.join(map(str, lengths_list))))
 
 
 def check_for_fastq_signature_conflicts(session,
