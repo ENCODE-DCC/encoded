@@ -510,9 +510,9 @@ def check_for_fastq_signature_conflicts(session,
                                         item,
                                         signatures_to_check):
     conflicts = []
-    for entry in sorted(list(signatures_to_check)):
+    for signature in sorted(list(signatures_to_check)):
         query = '/search/?type=File&status!=replaced&file_format=fastq&fastq_signature=' + \
-                entry
+                signature
         try:
             r = session.get(urljoin(url, query))
         except requests.exceptions.RequestException as e:  # This is the correct syntax
@@ -526,21 +526,30 @@ def check_for_fastq_signature_conflicts(session,
                     if 'accession' in entry and 'accession' in item and \
                        entry['accession'] != item['accession']:
                             conflicts.append(
-                                'checked %s is conflicting with fastq_signature of %s' % (
-                                    entry,
+                                '%s in file %s ' % (
+                                    signature,
                                     entry['accession']))
                     elif 'accession' in entry and 'accession' not in item:
                         conflicts.append(
-                            'checked %s is conflicting with fastq_signature of %s' % (
-                                entry,
+                            '%s in file %s ' % (
+                                signature,
                                 entry['accession']))
                     elif 'accession' not in entry and 'accession' not in item:
                         conflicts.append(
-                            'checked %s is conflicting with fastq_signature of another ' % (
-                                entry) +
+                            '%s ' % (
+                                signature) +
                             'file on the portal.')
+    # "Fastq file contains read name signatures that conflict with signatures from file X”]
+
     if len(conflicts) > 0:
-        errors['not_unique_flowcell_details'] = ', '.join(map(str, conflicts))
+        errors['not_unique_flowcell_details'] = 'Fastq file contains read name signature ' + \
+                                                'that conflict with signature of existing ' + \
+                                                'file(s): {}'.format(
+                                                ', '.join(map(str, conflicts)))
+        update_content_error(errors, 'Fastq file contains read name signature ' +
+                                     'that conflict with signature of existing ' +
+                                     'file(s): {}'.format(
+                                         ', '.join(map(str, conflicts))))
         return False
     return True
 
