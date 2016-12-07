@@ -382,6 +382,18 @@ def is_outdated_bams_replicate(bam_file):
     return False
 
 
+@audit_checker('Experiment', frame=['original_files'])
+def audit_experiment_with_uploading_files(value, system):
+    if 'original_files' not in value:
+        return
+    for f in value['original_files']:
+        if f['status'] in ['uploading', 'upload failed']:
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     'contains a file {} '.format(f['@id']) + \
+                     'with the status {}.'.format(f['status'])
+            yield AuditFailure('not uploaded files', detail, level='INTERNAL_ACTION')
+
+
 @audit_checker('Experiment', frame=['original_files',
                                     'original_files.replicate',
                                     'original_files.derived_from'])
@@ -1734,7 +1746,7 @@ def check_file_chip_seq_read_depth(file_to_check,
             elif read_depth < 5000000:
                 yield AuditFailure('extremely low read depth',
                                    detail, level='ERROR')
-    elif 'transcription factor' in target_investigated_as:
+    else:
         if pipeline_title == 'Transcription factor ChIP-seq pipeline (modERN)':
             if read_depth < modERN_cutoff:
                 detail = 'modERN processed alignment file {} has {} '.format(file_to_check['@id'],
@@ -1747,7 +1759,8 @@ def check_file_chip_seq_read_depth(file_to_check,
                 yield AuditFailure('insufficient read depth',
                                    detail, level='NOT_COMPLIANT')
         else:
-            pipeline_object = get_pipeline_by_name(pipeline_objects, 'Transcription factor ChIP-seq')
+            pipeline_object = get_pipeline_by_name(pipeline_objects,
+                                                   'Transcription factor ChIP-seq')
             if pipeline_object:
                 if 'assembly' in file_to_check:
                     detail = 'Alignment file {} '.format(file_to_check['@id']) + \
@@ -1799,23 +1812,25 @@ def check_file_read_depth(file_to_check,
         return
 
     if read_depth is not False:
+        second_half_of_detail = 'The minimum ENCODE standard for each replicate in a ' + \
+            '{} assay is {} aligned reads. '.format(assay_term_name, middle_threshold) + \
+            'The recommended value is > {}. '.format(upper_threshold) + \
+            '(See {} )'.format(standards_link)
+        if middle_threshold == upper_threshold:
+            second_half_of_detail = 'The minimum ENCODE standard for each replicate in a ' + \
+                '{} assay is {} aligned reads. '.format(assay_term_name, middle_threshold) + \
+                '(See {} )'.format(standards_link)
         if 'assembly' in file_to_check:
             detail = 'Alignment file {} produced by {} '.format(file_to_check['@id'],
                                                                 pipeline_title) + \
                      'pipeline ( {} ) using the {} assembly has {} aligned reads. '.format(
                          pipeline['@id'], file_to_check['assembly'], read_depth) + \
-                     'The minimum ENCODE standard for each replicate in a ' + \
-                     '{} assay is {} aligned reads. '.format(assay_term_name, middle_threshold) + \
-                     'The recommended value is > {}. '.format(upper_threshold) + \
-                     '(See {} )'.format(standards_link)
+                     second_half_of_detail
         else:
             detail = 'Alignment file {} produced by {} '.format(file_to_check['@id'],
                                                                 pipeline_title) + \
                      'pipeline ( {} ) has {} aligned reads. '.format(pipeline['@id'], read_depth) + \
-                     'The minimum ENCODE standard for each replicate in a ' + \
-                     '{} assay is {} aligned reads. '.format(assay_term_name, middle_threshold) + \
-                     'The recommended value is > {}. '.format(upper_threshold) + \
-                     '(See {} )'.format(standards_link)
+                     second_half_of_detail
         if read_depth >= middle_threshold and read_depth < upper_threshold:
             yield AuditFailure('low read depth', detail, level='WARNING')
             return
@@ -3291,7 +3306,9 @@ def audit_library_RNA_size_range(value, system):
     if value['status'] in ['deleted']:
         return
 
-    RNAs = ['SO:0000356', 'SO:0000871']
+    RNAs = ['SO:0000356',
+            'SO:0000871',
+            'SO:0000276']
 
     for rep in value['replicates']:
         if 'library' not in rep:
@@ -3345,17 +3362,18 @@ def audit_missing_construct(value, system):
             yield AuditFailure('missing biosample_type', detail, level='ERROR')
 
         for biosample in biosamples:
-            if (biosample['biosample_type'] != 'whole organisms') and (not biosample['constructs']):
+            if (biosample['biosample_type'] != 'whole organisms') and \
+               (not biosample['constructs']):
                 missing_construct.append(biosample)
             elif (biosample['biosample_type'] == 'whole organisms') and \
-                    (not biosample['model_organism_donor_constructs']):
+                    ('model_organism_donor_constructs' not in biosample):
                     missing_construct.append(biosample)
-            elif (biosample['biosample_type'] != 'whole organisms') and (biosample['constructs']):
+            elif (biosample['biosample_type'] != 'whole organisms') and biosample['constructs']:
                 for construct in biosample['constructs']:
                     if construct['target']['name'] != target['name']:
                         tag_mismatch.append(construct)
             elif (biosample['biosample_type'] == 'whole organisms') and \
-                    (biosample['model_organism_donor_constructs']):
+                    ('model_organism_donor_constructs' in biosample):
                         for construct in biosample['model_organism_donor_constructs']:
                             if construct['target']['name'] != target['name']:
                                 tag_mismatch.append(construct)
@@ -3364,15 +3382,21 @@ def audit_missing_construct(value, system):
 
         if missing_construct:
             for b in missing_construct:
-                detail = 'Recombinant protein target {} requires '.format(value['target']['@id']) + \
-                    'a fusion protein construct associated with the biosample {} '.format(b['@id']) + \
-                    'or donor {} (for whole organism biosamples) to specify '.format(b['donor']['@id']) + \
-                    'the relevant tagging details.'
+                if 'donor' in b:
+                    detail = 'Recombinant protein target {} requires '.format(value['target']['@id']) + \
+                        'a fusion protein construct associated with the biosample {} '.format(b['@id']) + \
+                        'or donor {} (for whole organism biosamples) to specify '.format(b['donor']['@id']) + \
+                        'the relevant tagging details.'
+                else:
+                    detail = 'Recombinant protein target {} requires '.format(value['target']['@id']) + \
+                        'a fusion protein construct associated with the biosample {} '.format(b['@id']) + \
+                        'to specify the relevant tagging details.'
                 yield AuditFailure('missing tag construct', detail, level='WARNING')
 
         # Continue audit because only some linked biosamples may have missing constructs, not all.
         if tag_mismatch:
             for c in tag_mismatch:
                 detail = 'The target of this assay {} does not'.format(value['target']['@id']) + \
-                    ' match that of the linked construct {}, {}.'.format(c['@id'], c['target']['@id'])
+                    ' match that of the linked construct {}, {}.'.format(c['@id'],
+                                                                         c['target']['@id'])
                 yield AuditFailure('mismatched construct target', detail, level='ERROR')
