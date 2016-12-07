@@ -1670,7 +1670,6 @@ const FileGalleryRenderer = React.createClass({
         const { context, data } = this.props;
         const relatedFileIds = context.related_files && context.related_files.length ? context.related_files : [];
         if (relatedFileIds.length) {
-            console.log('LENGTHS: %s:%s', relatedFileIds.length, this.state.relatedFiles.length);
             const searchedFiles = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
             requestRelatedFiles(relatedFileIds, searchedFiles).then((relatedFiles) => {
                 if (relatedFiles.length !== this.state.relatedFiles.length) {
