@@ -1550,6 +1550,70 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
 }
 
 
+// Here we, in addition to the files that have `dataset` properties pointing at this
+// dataset that we searched for earlier, do a search of the specific files whose @ids are
+// listed in the `related_files` property of the dataset. Because we have to specify the
+// @id of each file in the URL of the GET request, the URL can get quite long, so if the
+// number of `related_file` @ids goes beyond the `chunkSize` constant, we break the
+// searches into chunks, and the maximum number of @ids in each chunk is `chunkSize`. We
+// then send out all the search GET requests at once, combine them into one array of
+// related files returned as a promise.
+//
+// relatedFileIds: array of related_file @ids.
+// searchedFiles: Array of files returned from a search of files with dataset pointing at this one.
+function requestRelatedFiles(relatedFileIds, searchedFiles) {
+    const chunkSize = 2; // Maximum of related files to search for at once
+    const searchedFileIds = {};
+
+    // Make a searchable object of file IDs for files obtained through search.
+    if (searchedFiles.length) {
+        searchedFiles.forEach((searchedFile) => {
+            searchedFileIds[searchedFile['@id']] = searchedFile;
+        });
+    }
+
+    // Filter the related file @ids to exclude those files we already have in data.@graph,
+    // just so we don't use bandwidth getting things we already have.
+    const filteredFileIds = relatedFileIds.filter(fileId => !searchedFileIds[fileId]);
+
+    // Break relatedFileIds into an array of arrays of <= `chunkSize` @ids so we don't
+    // generate search URLs that are too long for the server to handle.
+    const relatedFileChunks = [];
+    for (let start = 0, chunkIndex = 0; start < filteredFileIds.length; start += chunkSize, chunkIndex += 1) {
+        relatedFileChunks[chunkIndex] = filteredFileIds.slice(start, start + chunkSize);
+    }
+
+    // Going to send out all search chunk GET requests at once, and then wait for all of
+    // them to complete.
+    return Promise.all(relatedFileChunks.map((fileChunk) => {
+        // Build URL containing file search for specific files for each chunk of files.
+        const url = '/search/?type=File&limit=all&status!=deleted&status!=revoked&status!=replaced'.concat(fileChunk.reduce((combined, current) => `${combined}&@id=${current}`, ''));
+        return fetch(url, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+            },
+        }).then((response) => {
+            // Convert each response response to JSON
+            if (response.ok) {
+                return response.json();
+            }
+            return Promise.resolve(null);
+        });
+    })).then((chunks) => {
+        // All search chunks have resolved or errored. We get an array of search results in
+        // `chunks` -- one per chunk. Now collect their files from their @graphs into one
+        // array of related files and set the component state with them to trigger a
+        // redrawing of the file gallery with these files in addition to the earlier
+        // searched files
+        if (chunks && chunks.length) {
+            return chunks.reduce((files, chunk) => (chunk && chunk['@graph'].length ? files.concat(chunk['@graph']) : files), []);
+        }
+        return [];
+    });
+}
+
+
 // Function to render the file gallery, and it gets called after the file search results (for files associated with
 // the displayed experiment) return.
 const FileGalleryRenderer = React.createClass({
@@ -1571,57 +1635,17 @@ const FileGalleryRenderer = React.createClass({
             selectedFilterValue: '', // <select> value of selected filter
             infoNodeId: '', // @id of node whose info panel is open
             infoModalOpen: false, // True if info modal is open
+            relatedFiles: [], // List of related files
         };
     },
 
     componentWillMount: function () {
-        // Get the array of the dataset's related_files.
-        const chunkSize = 2; // Maximum of related files to search for at once
         const { context, data } = this.props;
-        let relatedFileIds = context.related_files && context.related_files.length ? context.related_files : [];
+        const relatedFileIds = context.related_files && context.related_files.length ? context.related_files : [];
         if (relatedFileIds.length) {
-            const searchedFileIds = {};
-
-            // Make a searchable object of file IDs for files obtained through search.
             const searchedFiles = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
-            if (searchedFiles.length) {
-                searchedFiles.forEach((searchedFile) => {
-                    searchedFileIds[searchedFile['@id']] = searchedFile;
-                });
-            }
-
-            // Filter the related file @ids to exclude those files we already have in data.@graph,
-            // just so we don't use bandwidth getting things we already have.
-            relatedFileIds = relatedFileIds.filter(fileId => !searchedFileIds[fileId]);
-
-            // Break relatedFileIds into an array of arrays to break the array into <= `chunkSize`
-            // arrays so we don't generate search URLs that are too long for the server to handle.
-            const relatedFileChunks = [];
-            for (let start = 0, chunkIndex = 0; start < relatedFileIds.length; start += chunkSize, chunkIndex += 1) {
-                relatedFileChunks[chunkIndex] = relatedFileIds.slice(start, start + chunkSize);
-            }
-
-            // Going to send out all search chunk GET requests at once, and then wait for all of
-            // them to complete.
-            Promise.all(relatedFileChunks.map((fileChunk) => {
-                // Build URL containing file search for specific files for each chunk of files.
-                const url = '/search/?type=File&limit=all'.concat(fileChunk.reduce((combined, current) => `${combined}&@id=${current}`, ''));
-                return fetch(url, {
-                    method: 'GET',
-                    headers: {
-                        Accept: 'application/json',
-                    },
-                }).then((response) => {
-                    // Convert response to JSON
-                    if (response.ok) {
-                        return response.json();
-                    }
-                    return Promise.resolve(null);
-                });
-            })).then((results) => {
-                // All search chunks have resolved or errored. We get an array of search results --
-                // one per chunk. Now collect their files from their @graphs.
-                console.log('RES: %o', results);
+            requestRelatedFiles(relatedFileIds, searchedFiles).then((relatedFiles) => {
+                this.setState({ relatedFiles: relatedFiles });
             });
         }
     },
@@ -1630,6 +1654,20 @@ const FileGalleryRenderer = React.createClass({
     componentDidMount: function () {
         if (!this.props.altFilterDefault) {
             this.setFilter('0');
+        }
+    },
+
+    componentDidUpdate: function () {
+        const { context, data } = this.props;
+        const relatedFileIds = context.related_files && context.related_files.length ? context.related_files : [];
+        if (relatedFileIds.length) {
+            console.log('LENGTHS: %s:%s', relatedFileIds.length, this.state.relatedFiles.length);
+            const searchedFiles = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
+            requestRelatedFiles(relatedFileIds, searchedFiles).then((relatedFiles) => {
+                if (relatedFiles.length !== this.state.relatedFiles.length) {
+                    this.setState({ relatedFiles: relatedFiles });
+                }
+            });
         }
     },
 
@@ -1659,7 +1697,7 @@ const FileGalleryRenderer = React.createClass({
         let selectedAnnotation = '';
         let jsonGraph;
         let allGraphedFiles;
-        const items = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
+        const items = (data ? data['@graph'] : []).concat(this.state.relatedFiles); // Array of searched files arrives in data.@graph result
 
         // Combined object's files and search results files for display
         const files = _.uniq(((context.files && context.files.length) ? context.files : []).concat((items && items.length) ? items : []));
@@ -1737,45 +1775,23 @@ const FileGalleryRenderer = React.createClass({
                 {/* If logged in and dataset is released, need to combine search of files that reference
                     this dataset to get released and unreleased ones. If not logged in, then just get
                     files from dataset.files */}
-                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
-                    <FetchedItems
-                        {...this.props}
-                        url={globals.unreleased_files_url(context)}
-                        adminUser={!!this.context.session_properties.admin}
-                        Component={DatasetFiles}
-                        selectedFilterValue={this.state.selectedFilterValue}
-                        filterOptions={filterOptions}
-                        graphedFiles={allGraphedFiles}
-                        handleFilterChange={this.handleFilterChange}
-                        encodevers={globals.encodeVersion(context)}
-                        session={this.context.session}
-                        infoNodeId={this.state.infoNodeId}
-                        setInfoNodeId={this.setInfoNodeId}
-                        infoNodeVisible={this.state.infoNodeVisible}
-                        setInfoNodeVisible={this.setInfoNodeVisible}
-                        showFileCount
-                        ignoreErrors
-                        noDefaultClasses
-                    />
-                :
-                    <FileTable
-                        {...this.props}
-                        items={context.files}
-                        selectedFilterValue={this.state.selectedFilterValue}
-                        filterOptions={filterOptions}
-                        graphedFiles={allGraphedFiles}
-                        handleFilterChange={this.handleFilterChange}
-                        encodevers={globals.encodeVersion(context)}
-                        session={this.context.session}
-                        infoNodeId={this.state.infoNodeId}
-                        setInfoNodeId={this.setInfoNodeId}
-                        infoNodeVisible={this.state.infoNodeVisible}
-                        setInfoNodeVisible={this.setInfoNodeVisible}
-                        showFileCount
-                        noDefaultClasses
-                        adminUser={!!this.context.session_properties.admin}
-                    />
-                }
+                <FileTable
+                    {...this.props}
+                    items={files}
+                    selectedFilterValue={this.state.selectedFilterValue}
+                    filterOptions={filterOptions}
+                    graphedFiles={allGraphedFiles}
+                    handleFilterChange={this.handleFilterChange}
+                    encodevers={globals.encodeVersion(context)}
+                    session={this.context.session}
+                    infoNodeId={this.state.infoNodeId}
+                    setInfoNodeId={this.setInfoNodeId}
+                    infoNodeVisible={this.state.infoNodeVisible}
+                    setInfoNodeVisible={this.setInfoNodeVisible}
+                    showFileCount
+                    noDefaultClasses
+                    adminUser={!!this.context.session_properties.admin}
+                />
             </Panel>
         );
     },
