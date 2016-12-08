@@ -25,6 +25,25 @@ paired_end_assays = [
     ]
 
 
+@audit_checker('File', frame=[
+    'analysis_step_version',
+    'analysis_step_version.analysis_step',
+    'analysis_step_version.analysis_step.pipelines'])
+def audit_file_pipeline_status(value, system):
+    if value['status'] not in ['released']:
+        return
+    if 'analysis_step_version' in value and \
+       'analysis_step' in value['analysis_step_version'] and \
+       'pipelines' in value['analysis_step_version']['analysis_step']:
+        for p in value['analysis_step_version']['analysis_step']['pipelines']:
+            if p['status'] not in ['active']:
+                detail = 'File {} with a status {} '.format(value['@id'], value['status']) + \
+                         'is assosiated with a pipeline {}, '.format(p['@id']) + \
+                         'that has a status {}.'.format(p['status'])
+                yield AuditFailure('inconsistent pipeline status',
+                                   detail, level='INTERNAL_ACTION')
+
+
 @audit_checker('File', frame=['derived_from'])
 def audit_file_md5sum_integrity(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
