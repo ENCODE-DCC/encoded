@@ -314,10 +314,6 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms)
         'organism',
         'targets',
         'files.dataset',
-        'files.derived_from',
-        'files.derived_from.analysis_step_version.software_versions',
-        'files.derived_from.analysis_step_version.software_versions.software',
-        'files.derived_from.replicate',
         'files.analysis_step_version.analysis_step',
         'files.analysis_step_version.analysis_step.documents',
         'files.analysis_step_version.analysis_step.documents.award',
@@ -337,7 +333,7 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms)
         'files.quality_metrics.step_run',
         'files.quality_metrics.step_run.analysis_step_version.analysis_step',
         'files.replicate.library',
-        'supersedes'
+        'supersedes',
     ]
     rev = Dataset.rev.copy()
     rev.update({
@@ -522,8 +518,6 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'files.lab',
         'files.platform',
         'files.lab',
-        'files.derived_from',
-        'files.derived_from.replicate',
         'files.analysis_step_version.analysis_step',
         'files.analysis_step_version.analysis_step.pipelines',
         'files.analysis_step_version.analysis_step.versions',
@@ -537,7 +531,6 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'files.quality_metrics.step_run.analysis_step_version.analysis_step',
         'contributing_files.platform',
         'contributing_files.lab',
-        'contributing_files.derived_from',
         'contributing_files.analysis_step_version.analysis_step',
         'contributing_files.analysis_step_version.analysis_step.pipelines',
         'contributing_files.analysis_step_version.software_versions',
