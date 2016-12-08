@@ -100,18 +100,11 @@ class File(Item):
     }
 
     embedded = [
-        'replicate',
-        'replicate.experiment',
-        'replicate.experiment.lab',
-        'replicate.experiment.target',
-        'replicate.library',
         'replicate.experiment.lab',
         'replicate.experiment.target',
         'lab',
         'submitted_by',
-        'analysis_step_version.analysis_step',
         'analysis_step_version.analysis_step.pipelines',
-        'analysis_step_version.software_versions',
         'analysis_step_version.software_versions.software',
         'quality_metrics.step_run.analysis_step_version.analysis_step',
         'step_run',
@@ -122,8 +115,6 @@ class File(Item):
         'replicate.experiment.lab',
         'replicate.experiment.target',
         'replicate.library',
-        'replicate.experiment.lab',
-        'replicate.experiment.target',
         'lab',
         'submitted_by',
         'analysis_step_version.analysis_step',
