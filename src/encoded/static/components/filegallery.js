@@ -1382,7 +1382,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
 
                 // These two just for debugging a unrendered graph
                 if (derivedGone) {
-                    throw new GraphException(`file0 derives from file1 which is ${(orgDerivedFromFile.missing ? 'missing' : 'removed')}`, fileId, derivedFromFile['@id']);
+                    throw new GraphException('file0 derives from file1 which is removed', fileId, orgDerivedFromFile['@id']);
                 }
             });
         }
@@ -1689,10 +1689,7 @@ const FileGalleryRenderer = React.createClass({
         let selectedAnnotation = '';
         let jsonGraph;
         let allGraphedFiles;
-        const items = (data ? data['@graph'] : []).concat(this.state.relatedFiles); // Array of searched files arrives in data.@graph result
-
-        // Combined object's files and search results files for display
-        const files = _.uniq(((context.files && context.files.length) ? context.files : []).concat((items && items.length) ? items : []));
+        const files = (data ? data['@graph'] : []).concat(this.state.relatedFiles); // Array of searched files arrives in data.@graph result
         if (files.length === 0) {
             return null;
         }
