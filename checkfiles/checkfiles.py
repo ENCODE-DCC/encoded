@@ -266,7 +266,9 @@ def process_old_illumina_read_name_pattern(read_name,
             if (flowcell.find('-') != -1 or
                flowcell.find('_') != -1):
                 flowcell = 'TEMP'
-            lane_number = arr[1]
+            lane_number = '0'
+            if arr[1].isdigit():
+                lane_number = arr[1]
             signatures_set.add(
                 flowcell + ':' + lane_number + ':' +
                 read_number + '::' + read_name)
