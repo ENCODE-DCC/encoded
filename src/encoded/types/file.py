@@ -100,10 +100,15 @@ class File(Item):
     }
 
     embedded = [
+        'replicate',
+        'replicate.experiment',
         'replicate.experiment.lab',
         'replicate.experiment.target',
+        'replicate.library',
         'lab',
         'submitted_by',
+        'analysis_step_version',
+        'analysis_step_version.analysis_step',
         'analysis_step_version.analysis_step.pipelines',
         'analysis_step_version.software_versions.software',
         'quality_metrics.step_run.analysis_step_version.analysis_step',
