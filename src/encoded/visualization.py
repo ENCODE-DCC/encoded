@@ -1113,14 +1113,18 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
 
             # plumbing for ihec:
             if 'pipeline' not in composite:
-                pipelines = a_file.get("analysis_step_version",{}).get("analysis_step",{}).get("pipelines")
-                if pipelines and len(pipelines) > 0:
-                    pipeline = pipelines[0].get("title")
-                    pipeline_group = pipelines[0].get("lab")
-                    if pipeline:
-                        composite['pipeline'] = pipeline 
-                        if pipeline_group: 
-                            composite['pipeline_group'] = pipeline_group
+                as_ver = a_file.get("analysis_step_version") # Warning: this embedding could evaporate
+                if as_ver and isinstance(as_ver,dict):
+                    a_step = as_ver.get("analysis_step")
+                    if a_step and isinstance(a_step,dict):
+                        pipelines = a_step.get("pipelines")
+                        if pipelines and isinstance(pipelines,list) and len(pipelines) > 0:
+                            pipeline = pipelines[0].get("title")
+                            pipeline_group = pipelines[0].get("lab")
+                            if pipeline:
+                                composite['pipeline'] = pipeline 
+                                if pipeline_group: 
+                                    composite['pipeline_group'] = pipeline_group
             track['md5sum'] = a_file['md5sum']
 
             track["membership"] = membership
