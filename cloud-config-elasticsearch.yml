@@ -124,6 +124,9 @@ write_files:
     index.search.slowlog.threshold.query.warn: 8s
     index.search.slowlog.threshold.fetch.warn: 1s
     index.indexing.slowlog.threshold.index.warn: 25s
+
+    index.refresh_interval: 60s
+
     network.host: 0.0.0.0
     action.auto_create_index: false
     index.mapper.dynamic: false

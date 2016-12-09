@@ -262,6 +262,8 @@ write_files:
     index.search.slowlog.threshold.fetch.warn: 1s
     index.indexing.slowlog.threshold.index.warn: 25s
 
+    index.refresh_interval: 60s
+
 - path: /etc/postgresql/9.3/main/custom.conf
   content: |
     hot_standby = on
