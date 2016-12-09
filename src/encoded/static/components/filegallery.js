@@ -1216,11 +1216,6 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         // File gets removed if doesn’t derive from other files AND no files derive from it.
         const islandFile = !(file.derived_from && file.derived_from.length) && !derivedFromFiles[fileId];
         file.removed = file.removed || islandFile;
-
-        // Add to the filtering options to generate a <select>; don't include island files
-        if (!islandFile && file.output_category !== 'raw data' && file.assembly) {
-            filterOptions.push({ assembly: file.assembly, annotation: file.genome_annotation });
-        }
     });
 
     // Remove any replicates containing only removed files from the last step.
@@ -1254,8 +1249,17 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         Object.keys(allFiles).forEach((fileId) => {
             const file = allFiles[fileId];
             if (file.filtered) {
+                // File's filtered out. Remove from our tracking objects.
                 delete allFiles[fileId];
                 delete derivedFromFiles[fileId];
+
+                // If the file belonged to a single replicate, delete it from there too
+                if (file.biological_replicates && file.biological_replicates.length === 1) {
+                    const doomedFileIndex = allReplicates[file.biological_replicates[0]].findIndex(repFile => repFile['@id'] === file['@id']);
+                    if (doomedFileIndex !== -1) {
+                        allReplicates[file.biological_replicates[0]].splice(doomedFileIndex, 1);
+                    }
+                }
             }
         });
     }
@@ -1538,7 +1542,6 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         }
     });
 
-    jsonGraph.filterOptions = filterOptions.length ? _(filterOptions).uniq(option => `${option.assembly}!${option.annotation ? option.annotation : ''}`) : [];
     return { graph: jsonGraph, graphedFiles: graphedFiles };
 }
 
