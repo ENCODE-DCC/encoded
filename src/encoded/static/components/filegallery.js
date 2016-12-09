@@ -1184,7 +1184,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         }
 
         // File is derived; collect any QC info that applies to this file
-        if (file.quality_metrics && file.quality_metrics.length) {
+        if (!allContributing[file['@id']] && file.quality_metrics && file.quality_metrics.length) {
             const matchingQc = [];
 
             // Search file's quality_metrics array to find one with a quality_metric_of field referring to this file.
@@ -2305,7 +2305,7 @@ const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
                         </div>
                     : null}
 
-                    {selectedFile.quality_metrics && selectedFile.quality_metrics.length ?
+                    {selectedFile.quality_metrics && selectedFile.quality_metrics.length && typeof selectedFile.quality_metrics[0] !== 'string' ?
                         <div data-test="fileqc">
                             <dt>File quality metrics</dt>
                             <dd className="file-qc-buttons">
