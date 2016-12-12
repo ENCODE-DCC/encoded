@@ -1075,40 +1075,51 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         return `qc:${metric['@id'] + file['@id']}`;
     }
 
-    const derivedFromFiles = {}; // List of all files that other files derived from
-    const allContributing = {}; // All contributing files that other files derive from
     const allPipelines = {}; // List of all pipelines indexed by step @id
-    const fileQcMetrics = {}; // List of all file QC metrics indexed by file ID
-    const filterOptions = []; // List of graph filters; annotations and assemblies
     const derivedFileIds = _.memoize(rDerivedFileIds, file => file['@id']);
     const genQcId = _.memoize(rGenQcId, (metric, file) => metric['@id'] + file['@id']);
-    let stepExists = false; // True if at least one file has an analysis_step
-    let fileOutsideReplicate = false; // True if at least one file exists outside a replicate
-    let abortGraph = false; // True if graph shouldn't be drawn
 
     const allFiles = {}; // All files, keyed by file@id
     let matchingFiles = {}; // All files that match the current assembly/annotation, keyed by file @id
-    const allReplicates = {}; // All file's replicates as keys; each key references an array of files
+    const fileQcMetrics = {}; // List of all file QC metrics indexed by file ID
+    let stepExists;
     files.forEach((file) => {
         // allFiles gets all file regardless of filtering.
         allFiles[file['@id']] = file;
-
-        // If the file is part of a single biological replicate, add it to an array of files, where
-        // the arrays are in an object keyed by their relevant biological replicate number.
-        const replicateNum = (file.biological_replicates && file.biological_replicates.length === 1) ? file.biological_replicates[0] : undefined;
-        if (replicateNum) {
-            if (allReplicates[replicateNum]) {
-                allReplicates[replicateNum].push(file);
-            } else {
-                allReplicates[replicateNum] = [file];
-            }
-        }
 
         // allMatchingFiles gets just the files matching the given filtering assembly/annotation.
         // Note that if all assemblies and annotations are selected, this function isn't called
         // because no graph gets displayed in that case.
         if ((file.assembly === filterAssembly) && ((!file.genome_annotation && !filterAnnotation) || (file.genome_annotation === filterAnnotation))) {
-            matchingFiles[file['@id']] = file;
+
+            // Note whether any files have an analysis step
+            const fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
+            if (!fileAnalysisStep || (file.derived_from && file.derived_from.length)) {
+                // File has no analysis step or derives from other files, so it can be included in
+                // the graph.
+                matchingFiles[file['@id']] = file;
+
+                // Collect any QC info that applies to this file.
+                if (file.quality_metrics && file.quality_metrics.length) {
+                    const matchingQc = [];
+
+                    // Search file's quality_metrics array to find one with a quality_metric_of field referring to this file.
+                    file.quality_metrics.forEach((metric) => {
+                        const matchingFile = _(metric.quality_metric_of).find(appliesFile => file['@id'] === appliesFile);
+                        if (matchingFile) {
+                            matchingQc.push(metric);
+                        }
+                    });
+                    if (matchingQc.length) {
+                        fileQcMetrics[file['@id']] = matchingQc;
+                    }
+                }
+
+                // Save the pipeline array used for each step used by the file.
+                if (fileAnalysisStep) {
+                    allPipelines[fileAnalysisStep['@id']] = fileAnalysisStep.pipelines;
+                }
+            } // else file has analysis step but no derived from -- can't include in graph.
         }
     });
 
@@ -1158,9 +1169,44 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         });
         return noIslandFiles;
     }());
+    if (Object.keys(matchingFiles).length === 0) {
+        throw new GraphException('No graph: no file relationships for the selected assembly/annotation');
+    }
     // At this stage, any files in matchingFiles will be rendered. We just have to figure out what
     // other files need rendering, like raw sequencing files, contributing files, and derived-from
     // files that have a non-matching annotation and assembly.
+
+    const allReplicates = {}; // All file's replicates as keys; each key references an array of files
+    Object.keys(matchingFiles).forEach((matchingFileId) => {
+        // If the file is part of a single biological replicate, add it to an array of files, where
+        // the arrays are in an object keyed by their relevant biological replicate number.
+        const matchingFile = matchingFiles[matchingFileId];
+        let replicateNum = (matchingFile.biological_replicates && matchingFile.biological_replicates.length === 1) ? matchingFile.biological_replicates[0] : undefined;
+        if (replicateNum) {
+            if (allReplicates[replicateNum]) {
+                allReplicates[replicateNum].push(matchingFile);
+            } else {
+                allReplicates[replicateNum] = [matchingFile];
+            }
+        }
+
+        // Add each file that a matching file derives from to the replicates.
+        if (matchingFile.derived_from && matchingFile.derived_from.length) {
+            matchingFile.derived_from.forEach((derivedFromAtId) => {
+                const file = allFiles[derivedFromAtId];
+                if (file) {
+                    replicateNum = (file.biological_replicates && file.biological_replicates.length === 1) ? file.biological_replicates[0] : undefined;
+                    if (replicateNum) {
+                        if (allReplicates[replicateNum]) {
+                            allReplicates[replicateNum].push(matchingFile);
+                        } else {
+                            allReplicates[replicateNum] = [matchingFile];
+                        }
+                    }
+                }
+            });
+        }
+    });
 
     // Make a list of contributing files that matchingFiles files derive from.
     const usedContributingFiles = context.contributing_files.filter(contributingFile => contributingFile['@id'] in allDerivedFroms);
@@ -1216,6 +1262,18 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
     // Create an empty graph architecture that we fill in next.
     const jsonGraph = new JsonGraph(context.accession);
 
+    // Create nodes for the replicates
+    Object.keys(allReplicates).forEach((replicateNum) => {
+        if (allReplicates[replicateNum] && allReplicates[replicateNum].length) {
+            jsonGraph.addNode(`rep:${replicateNum}`, `Replicate ${replicateNum}`, {
+                cssClass: 'pipeline-replicate',
+                type: 'Rep',
+                shape: 'rect',
+                cornerRadius: 0,
+            });
+        }
+    });
+
     // Go through each file matching the currently selected assembly/annotation and add it to our
     // graph.
     Object.keys(matchingFiles).forEach((fileId) => {
@@ -1224,14 +1282,88 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         const fileNodeLabel = `${file.title} (${file.output_type})`;
         const fileCssClass = `pipeline-node-file${infoNodeId === fileNodeId ? ' active' : ''}`;
         const fileRef = file;
+        const replicateNode = (file.biological_replicates && file.biological_replicates.length === 1) ? jsonGraph.getNode(`rep:${file.biological_replicates[0]}`) : null;
+        let metricsInfo;
+
+        // Add QC metrics info from the file to the list to generate the nodes later
+        if (fileQcMetrics[fileId] && fileQcMetrics[fileId].length && file.step_run) {
+            metricsInfo = fileQcMetrics[fileId].map((metric) => {
+                const qcId = genQcId(metric, file);
+                return { id: qcId, label: 'QC', '@type': ['QualityMetric'], class: `pipeline-node-qc-metric${infoNodeId === qcId ? ' active' : ''}`, ref: metric, parent: file };
+            });
+        }
 
         jsonGraph.addNode(fileNodeId, fileNodeLabel, {
             cssClass: fileCssClass,
             type: 'File',
             shape: 'rect',
             cornerRadius: 16,
+            parentNode: replicateNode,
             ref: fileRef,
-        });
+        }, metricsInfo);
+
+        let stepId;
+        let label;
+        let pipelineInfo;
+        let error;
+        const fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
+        if (fileAnalysisStep) {
+            // Make an ID and label for the step
+            stepId = `step:${derivedFileIds(file) + fileAnalysisStep['@id']}`;
+            label = fileAnalysisStep.analysis_step_types;
+            pipelineInfo = allPipelines[fileAnalysisStep['@id']];
+            error = false;
+        } else if (derivedFileIds(file)) {
+            // File derives from others, but no analysis step; make dummy step
+            stepId = `error:${derivedFileIds(file)}`;
+            label = 'Software unknown';
+            pipelineInfo = null;
+            error = true;
+        } else {
+            // No analysis step and no derived_from; don't add a step
+            stepId = '';
+        }
+
+        if (stepId) {
+            // Add the step to the graph only if we haven't for this derived-from set already
+            if (!jsonGraph.getNode(stepId)) {
+                jsonGraph.addNode(stepId, label, {
+                    cssClass: `pipeline-node-analysis-step${(infoNodeId === stepId ? ' active' : '') + (error ? ' error' : '')}`,
+                    type: 'Step',
+                    shape: 'rect',
+                    cornerRadius: 4,
+                    parentNode: replicateNode,
+                    ref: fileAnalysisStep,
+                    pipelines: pipelineInfo,
+                    fileId: file['@id'],
+                    fileAccession: file.title,
+                    stepVersion: file.analysis_step_version,
+                });
+            }
+
+            // Connect the file to the step, and the step to the derived_from files
+            jsonGraph.addEdge(stepId, fileNodeId);
+            file.derived_from.forEach((derivedFromAtId) => {
+                const derivedFromFile = allFiles[derivedFromAtId];
+                if (derivedFromFile) {
+                    // Not derived from a contributing file; just add edges normally.
+                    const derivedFileId = `file:${derivedFromAtId}`;
+                    if (!jsonGraph.getEdge(derivedFileId, stepId)) {
+                        jsonGraph.addEdge(derivedFileId, stepId);
+                    }
+                } else {
+                    // File derived from a contributing file; add edges to a coalesced node
+                    // that we'll add to the graph later.
+                    const contributingFile = usedContributingFiles.find(contributing => contributing['@id'] === derivedFromAtId);
+                    if (contributingFile && contributingFile.coalescingGroup) {
+                        const derivedFileId = `coalesced:${contributingFile.coalescingGroup}`;
+                        if (!jsonGraph.getEdge(derivedFileId, stepId)) {
+                            jsonGraph.addEdge(derivedFileId, stepId);
+                        }
+                    }
+                }
+            });
+        }
     });
 
     // Go through each derived-from file and add it to our graph.
@@ -1242,12 +1374,14 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
             const fileNodeLabel = `${file.title} (${file.output_type})`;
             const fileCssClass = `pipeline-node-file${infoNodeId === fileNodeId ? ' active' : ''}`;
             const fileRef = file;
+            const replicateNode = (file.biological_replicates && file.biological_replicates.length === 1) ? jsonGraph.getNode(`rep:${file.biological_replicates[0]}`) : null;
 
             jsonGraph.addNode(fileNodeId, fileNodeLabel, {
                 cssClass: fileCssClass,
                 type: 'File',
                 shape: 'rect',
                 cornerRadius: 16,
+                parentNode: replicateNode,
                 ref: fileRef,
             });
         }
@@ -1440,15 +1574,15 @@ const FileGalleryRenderer = React.createClass({
 
         // Build node graph of the files and analysis steps with this experiment
         if (graphFiles && graphFiles.length) {
-            // try {
+            try {
                 const { graph, graphedFiles } = assembleGraph(context, this.context.session, this.state.infoNodeId, graphFiles, selectedAssembly, selectedAnnotation);
                 jsonGraph = graph;
                 allGraphedFiles = (selectedAssembly || selectedAnnotation) ? graphedFiles : {};
-            // } catch (e) {
-            //     jsonGraph = null;
-            //     allGraphedFiles = {};
-            //     console.warn(e.message + (e.file0 ? ` -- file0:${e.file0}` : '') + (e.file1 ? ` -- file1:${e.file1}` : ''));
-            // }
+            } catch (e) {
+                jsonGraph = null;
+                allGraphedFiles = {};
+                console.warn(e.message + (e.file0 ? ` -- file0:${e.file0}` : '') + (e.file1 ? ` -- file1:${e.file1}` : ''));
+            }
         }
 
         return (
@@ -1870,7 +2004,7 @@ const FileGraph = React.createClass({
                 }
                 return <p className="browser-error">Choose an assembly to see file association graph</p>;
             }
-            return <p className="browser-error">Graph not applicable to this experiment’s files.</p>;
+            return <p className="browser-error">Graph not applicable for the selected assembly/annotation.</p>;
         }
         return null;
     },
@@ -1958,29 +2092,19 @@ const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
                         </div>
                     : null}
 
-                    {selectedFile.replicate ?
+                    {selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
                         <div data-test="bioreplicate">
                             <dt>Biological replicate(s)</dt>
-                            <dd>{`[${selectedFile.replicate.biological_replicate_number}]`}</dd>
+                            <dd>{`[${selectedFile.biological_replicates.join(',')}]`}</dd>
                         </div>
-                    : (selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
-                        <div data-test="bioreplicate">
-                            <dt>Biological replicate(s)</dt>
-                            <dd>{`[${selectedFile.biological_replicates.join(', ')}]`}</dd>
-                        </div>
-                    : null)}
+                    : null}
 
-                    {selectedFile.replicate ?
+                    {selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
                         <div data-test="techreplicate">
-                            <dt>Technical replicate</dt>
-                            <dd>{selectedFile.replicate.technical_replicate_number}</dd>
+                            <dt>Technical replicate(s)</dt>
+                            <dd>{`[${selectedFile.technical_replicates.join(',')}]`}</dd>
                         </div>
-                    : (selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
-                        <div data-test="techreplicate">
-                            <dt>Technical replicate</dt>
-                            <dd>{'-'}</dd>
-                        </div>
-                    : null)}
+                    : null}
 
                     {selectedFile.mapped_read_length !== undefined ?
                         <div data-test="mappedreadlength">
