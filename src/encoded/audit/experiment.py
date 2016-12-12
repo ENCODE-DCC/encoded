@@ -3310,6 +3310,7 @@ def audit_experiment_biosample_term(value, system):
         'replicates',
         'replicates.antibody',
         'replicates.antibody.targets',
+        'replicates.antibody.characterizations',
         'replicates.antibody.lot_reviews'
         'replicates.antibody.lot_reviews.organisms',
         'replicates.library',
@@ -3349,6 +3350,11 @@ def audit_experiment_antibody_characterized(value, system):
         if 'biosample' not in lib:
             continue
 
+        if not antibody['characterizations']:
+            detail = '{} has not yet been characterized in any cell type or tissue.'.format(
+                antibody['@id'])
+            yield AuditFailure('not characterized antibody', detail, level='NOT_COMPLIANT')
+
         biosample = lib['biosample']
         organism = biosample['organism']['@id']
         antibody_targets = antibody['targets']
@@ -3358,8 +3364,8 @@ def audit_experiment_antibody_characterized(value, system):
                 ab_targets_investigated_as.add(i)
 
         # We only want the audit raised if the organism in lot reviews matches that of the biosample
-        # and if has not been characterized to standards. Otherwise, it doesn't apply and we shouldn't
-        # raise a stink
+        # and if has not been characterized to standards. Otherwise, it doesn't apply and we
+        # shouldn't raise a stink
 
         characterized_in_organism = False
         if 'histone modification' in ab_targets_investigated_as:
@@ -3375,7 +3381,8 @@ def audit_experiment_antibody_characterized(value, system):
                         if organism == lot_organism:
                             characterized_in_organism = True
                             detail = '{} has characterization attempts '.format(antibody['@id']) + \
-                                     'that do not meet the standard in {}: {}'.format(
+                                     'but does not have the full complement of characterizations ' + \
+                                     'meeting the standard in {}: {}'.format(
                                 organism, lot_review['detail'])
                             yield AuditFailure('partially characterized antibody',
                                                detail, level='NOT_COMPLIANT')
@@ -3421,9 +3428,9 @@ def audit_experiment_antibody_characterized(value, system):
                 yield AuditFailure('not characterized antibody', detail, level='NOT_COMPLIANT')
             else:
                 detail = '{} has characterization attempts '.format(antibody['@id']) + \
-                         'that do not meet the standard in {}: {}'.format(biosample_term_name,
-                                                                          organism)
-                yield AuditFailure('partially characterized antibody', detail, level='NOT_COMPLIANT')
+                         'but does not have the full complement of characterizations ' + \
+                         'meeting the standard in {}: {}'.format(
+                    organism, lot_review['detail'])
 
 
 @audit_checker(

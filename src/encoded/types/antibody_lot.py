@@ -227,6 +227,7 @@ def lot_reviews(characterizations, targets, request):
         'not compliant': 0,
         'not reviewed': 0,
         'not submitted for review by lab': 0,
+        'not pursued': 0,
         'deleted': 0,
         'not characterized to standards': 0,
         'in progress': 0
@@ -287,8 +288,13 @@ def build_lot_reviews(primary_chars,
                 if primary['status'] and secondary_status in ['not reviewed']:
                     base_review['status'] = 'not characterized to standards',
                 if primary['status'] == 'not submitted for review by lab' and \
-                        (secondary_status == 'not submitted for review by lab' or secondary_status is None):
+                        (secondary_status == 'not submitted for review by lab' or
+                            secondary_status is None):
                     base_review['status'] = 'not pursued'
+                if primary['status'] in ['not submitted for review by lab', 'not reviewed'] and \
+                        secondary_status in ['compliant', 'exempt from standards',
+                                             'not compliant', 'not reviewed']:
+                        base_review['status'] = 'not characterized to standards'
                 if secondary_status == 'pending dcc review':
                     base_review['status'] = 'pending dcc review'
                     base_review['detail'] = 'Awaiting submission of primary characterization(s).'
@@ -297,8 +303,7 @@ def build_lot_reviews(primary_chars,
                 if secondary_status == 'in progress':
                     base_review['detail'] = 'Secondary characterization(s) in progress.'
                 return [base_review]
-            elif 'characterization_reviews' in primary and \
-                    primary['status'] != 'not submitted for review by lab':
+            elif 'characterization_reviews' in primary:
                 for lane_review in primary.get('characterization_reviews', []):
                     # Get the organism information from the lane, not from the target since
                     # there are lanes
@@ -315,7 +320,7 @@ def build_lot_reviews(primary_chars,
                             sorted(review_targets) if is_histone_mod
                             else [primary['target']],
                         'status': 'not submitted for review by lab' if primary['status'] ==
-                            'not pursued' else lane_review['lane_status'],
+                            'not submitted for review by lab' else lane_review['lane_status'],
                         'detail': None
                     }
 
