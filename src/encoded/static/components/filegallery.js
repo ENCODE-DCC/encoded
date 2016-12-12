@@ -1107,7 +1107,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         // allMatchingFiles gets just the files matching the given filtering assembly/annotation.
         // Note that if all assemblies and annotations are selected, this function isn't called
         // because no graph gets displayed in that case.
-        if (file.assembly === filterAssembly && (filterAnnotation ? (file.genome_annotation === filterAnnotation) : true)) {
+        if ((file.assembly === filterAssembly) && ((!file.genome_annotation && !filterAnnotation) || (file.genome_annotation === filterAnnotation))) {
             matchingFiles[file['@id']] = file;
         }
     });
@@ -1123,7 +1123,6 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
     //     /files/<missing accession>: [matching file, matching file],
     // }
     const allDerivedFroms = {};
-    const missingDerivedFroms = {};
     Object.keys(matchingFiles).forEach((matchingFileId) => {
         const matchingFile = matchingFiles[matchingFileId];
         if (matchingFile.derived_from && matchingFile.derived_from.length) {
@@ -1214,7 +1213,66 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
     console.log('CONTRIBUTING: %o', usedContributingFiles);
     console.log('COALESCING: %o', coalescingGroups);
 
-    return { graph: null, graphedFiles: null };
+    // Create an empty graph architecture that we fill in next.
+    const jsonGraph = new JsonGraph(context.accession);
+
+    // Go through each file matching the currently selected assembly/annotation and add it to our
+    // graph.
+    Object.keys(matchingFiles).forEach((fileId) => {
+        const file = matchingFiles[fileId];
+        const fileNodeId = `file:${file['@id']}`;
+        const fileNodeLabel = `${file.title} (${file.output_type})`;
+        const fileCssClass = `pipeline-node-file${infoNodeId === fileNodeId ? ' active' : ''}`;
+        const fileRef = file;
+
+        jsonGraph.addNode(fileNodeId, fileNodeLabel, {
+            cssClass: fileCssClass,
+            type: 'File',
+            shape: 'rect',
+            cornerRadius: 16,
+            ref: fileRef,
+        });
+    });
+
+    // Go through each derived-from file and add it to our graph.
+    Object.keys(allDerivedFroms).forEach((fileId) => {
+        const file = allFiles[fileId];
+        if (file) {
+            const fileNodeId = `file:${file['@id']}`;
+            const fileNodeLabel = `${file.title} (${file.output_type})`;
+            const fileCssClass = `pipeline-node-file${infoNodeId === fileNodeId ? ' active' : ''}`;
+            const fileRef = file;
+
+            jsonGraph.addNode(fileNodeId, fileNodeLabel, {
+                cssClass: fileCssClass,
+                type: 'File',
+                shape: 'rect',
+                cornerRadius: 16,
+                ref: fileRef,
+            });
+        }
+    });
+
+    // Now add coalesced nodes to the graph.
+    Object.keys(coalescingGroups).forEach((groupHash) => {
+        const coalescingGroup = coalescingGroups[groupHash];
+        if (coalescingGroup.length) {
+            // Check if any files that derive from this coalesced node group aren't removed. If at
+            // least one isn't, then we can add this coalesced node.
+            const fileNodeId = `coalesced:${groupHash}`;
+            const fileCssClass = `pipeline-node-file contributing${infoNodeId === fileNodeId ? ' active' : ''}`;
+            jsonGraph.addNode(fileNodeId, `${coalescingGroup.length} contributing files`, {
+                cssClass: fileCssClass,
+                type: 'File',
+                shape: 'stack',
+                cornerRadius: 16,
+                contributing: true,
+                ref: coalescingGroup,
+            });
+        }
+    });
+
+    return { graph: jsonGraph, graphedFiles: {} };
 }
 
 
@@ -1382,15 +1440,15 @@ const FileGalleryRenderer = React.createClass({
 
         // Build node graph of the files and analysis steps with this experiment
         if (graphFiles && graphFiles.length) {
-            try {
+            // try {
                 const { graph, graphedFiles } = assembleGraph(context, this.context.session, this.state.infoNodeId, graphFiles, selectedAssembly, selectedAnnotation);
                 jsonGraph = graph;
                 allGraphedFiles = (selectedAssembly || selectedAnnotation) ? graphedFiles : {};
-            } catch (e) {
-                jsonGraph = null;
-                allGraphedFiles = {};
-                console.warn(e.message + (e.file0 ? ` -- file0:${e.file0}` : '') + (e.file1 ? ` -- file1:${e.file1}` : ''));
-            }
+            // } catch (e) {
+            //     jsonGraph = null;
+            //     allGraphedFiles = {};
+            //     console.warn(e.message + (e.file0 ? ` -- file0:${e.file0}` : '') + (e.file1 ? ` -- file1:${e.file1}` : ''));
+            // }
         }
 
         return (
