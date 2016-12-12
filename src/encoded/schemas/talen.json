@@ -44,7 +44,18 @@
             "title": "Description",
             "description": "A plain text description of the TALEN construct.",
             "type": "string",
-            "default": ""
+            "default": "",
+            "elasticsearch_mapping_index_type": {
+                "title": "Field mapping index type",
+                "description": "Defines one of three types of indexing available",
+                "type": "string",
+                "default": "analyzed",
+                "enum": [
+                    "analyzed",
+                    "not_analyzed",
+                    "no"
+                ]
+            }
         },
         "url": {
             "title": "URL",
@@ -173,20 +184,16 @@
     },
     "facets": {
         "talen_platform": {
-            "title": "TALEN platform",
-            "type": "string"
+            "title": "TALEN platform"
         },
         "status": {
-            "title": "TALEN status",
-            "type": "string"
+            "title": "TALEN status"
         },
         "lab.title": {
-            "title": "Lab",
-            "type": "string"
+            "title": "Lab"
         },
         "award.project": {
-            "title": "Project",
-            "type": "string"
+            "title": "Project"
         }
     },
     "columns": {

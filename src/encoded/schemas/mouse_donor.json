@@ -19,11 +19,13 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/strains"}
+        { "$ref": "mixins.json#/documents" },
+        { "$ref": "mixins.json#/strains"},
+        { "$ref": "mixins.json#/genetic_modifications" }
     ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "littermates": {
             "title": "Littermates",
@@ -53,6 +55,38 @@
                 "preliminary",
                 "proposed"
             ]
+        },
+        "parent_strains": {
+            "title": "Parent strains",
+            "description": "Donor IDs of parent strains, if known.",
+            "type":  "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "Parent strain",
+                "description": "A donor ID of a parent strain, if known.",
+                "comment": "For mouse biosamples, see mouse_donor.json for available identifiers.",
+                "type": "string",
+                "linkTo": "MouseDonor"
+            }
+        },
+        "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string",
+                "pattern": "^((GEO:SAMN\\d+)|(MGI.D:[A-Z0-9]+))$"
+            }
         }
+    },
+    "boost_values": {
+        "internal_tags": 1.0
     }
 }

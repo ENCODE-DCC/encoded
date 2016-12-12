@@ -1,11 +1,11 @@
-from contentbase import (
+from snovault import (
     collection,
     load_schema,
 )
 from .base import (
     Item,
 )
-from contentbase.attachment import ItemWithAttachment
+from snovault.attachment import ItemWithAttachment
 
 
 @collection(

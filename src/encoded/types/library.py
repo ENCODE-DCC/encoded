@@ -1,4 +1,4 @@
-from contentbase import (
+from snovault import (
     calculated_property,
     collection,
     load_schema,
@@ -42,7 +42,6 @@ class Library(Item):
             return term_lookup.get(nucleic_acid_term_name)
         else:
             return 'Term ID unknown'
-
 
     @calculated_property(condition='depleted_in_term_name', schema={
         "title": "depleted_in_term_id",

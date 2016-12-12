@@ -16,6 +16,8 @@ The Browser accessible frontend is written in ReactJS_ and uses the same Pyramid
 SOURCE CODE ORGANIZATION
 ------------------------
 
+	*** WARNING THIS IS OUT OF DATE SINCE snovault SPLIT OFF -- REWRITE WHEN IT'S TOTALLY DIVORCED ***
+
 	* Root - the root directory contains configuration files and install scripts along with other accessory directories
 		- *bin* - command line excutables (see src/commmands) from buildout (see PyramidDocs_)
 		- *develop* & *develop-eggs* - source and python eggs (created by buildout)
@@ -49,9 +51,9 @@ views
 		access_key.py - generation/modification of access keys for programatic access
 		search.py - constructs ES query and passes though to :9200
 
-contentbase.py
+snovault.py
 --------------
-	contentbase.py defines the core Collection and Item classes which are the python representation of linked JSON objects and groups (collections) of linked JSON objects.   It contains the business logic for updating JSON objects via PATCH and the recursive GETs necessary for embedded objects.
+	snovault.py defines the core Collection and Item classes which are the python representation of linked JSON objects and groups (collections) of linked JSON objects.   It contains the business logic for updating JSON objects via PATCH and the recursive GETs necessary for embedded objects.
 
 AuthZ
 -----

@@ -1,4 +1,4 @@
-from contentbase import upgrade_step
+from snovault import upgrade_step
 
 
 @upgrade_step('software', '', '2')

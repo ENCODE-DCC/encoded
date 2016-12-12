@@ -3,7 +3,7 @@
     "id": "/profiles/fastqc_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step_run"],
+    "required": ["step_run", "award", "lab"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
@@ -12,16 +12,18 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/submitted"},
         { "$ref": "mixins.json#/standard_status"},
-        { "$ref": "mixins.json#/assay" }
+        { "$ref": "mixins.json#/assay" },
+        { "$ref": "mixins.json#/attribution" }
    ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "attachment": {
             "title": "QC metric document metadata",
             "type": "object",
             "additionalProperties": false,
+            "attachment": true,
             "formInput": "file",
             "properties": {
                 "download": {
@@ -51,40 +53,47 @@
             }
         },
         "Total Sequences": {
+            "title": "Total sequences",
             "type": "number",
-            "description": "FastQC Summary metric"
+            "description": "A count of the total number of sequences processed"
         },
         "Sequences flagged as poor quality": {
+            "title": "# of poor quality sequences",
             "type": "number",
-            "description": "FastQC Summary metric"
+            "description": "Sequences flagged to be filtered and removed from all analyses in Casava mode."
         },
         "Sequence length": {
+            "title": "Sequence length",
             "type": "number",
-            "description": "FastQC Summary metric"
+            "description": "The length of the shortest and longest sequence in the set. If all sequences are the same length only one value is reported"
         },
         "%GC": {
+            "title": "%GC",
             "type": "number",
-            "description": "FastQC Summary metric"
+            "description": "GC content"
         },
         "Per base sequence quality": {
+            "title": "Per base sequence quality flag",
             "type": "string",
             "enum": [
                 "PASS",
                 "FAIL",
                 "WARN"
             ],
-            "description": "FastQC metric"
+            "description": "Pass/fail and warning based on the per base sequence quality score thresholds set"
         },
         "Per base sequence content": {
+            "title": "Per base sequence content flag",
             "type": "string",
             "enum": [
                 "PASS",
                 "FAIL",
                 "WARN"
             ],
-            "description": "FastQC metric"
+            "description": "Warning if difference between A and T or G and C is greater than 10% at any position"
         },
         "Basic Statistics": {
+            "title": "Basic statistics",
             "type": "string",
             "enum": [
                 "PASS",
@@ -94,6 +103,7 @@
             "description": "FastQC metric"
         },
         "Kmer Content": {
+            "title": "Kmer content",
             "type": "string",
             "enum": [
                 "PASS",
@@ -103,6 +113,7 @@
             "description": "FastQC metric"
         },
         "Sequence Duplication Levels": {
+            "title": "Sequence duplication levels",
             "type": "string",
             "enum": [
                 "PASS",
@@ -112,6 +123,7 @@
             "description": "FastQC metric"
         },
         "Sequence Length Distribution": {
+            "title": "Sequence length distribution",
             "type": "string",
             "enum": [
                 "PASS",
@@ -121,6 +133,7 @@
             "description": "FastQC metric"
         },
         "Overrepresented sequences": {
+            "title": "Overrepresented sequences",
             "type": "string",
             "enum": [
                 "PASS",
@@ -130,6 +143,7 @@
             "description": "FastQC metric"
         },
         "Per sequence GC content": {
+            "title": "Per sequence GC content",
             "type": "string",
             "enum": [
                 "PASS",
@@ -139,6 +153,7 @@
             "description": "FastQC metric"
         },
         "Adapter Content": {
+            "title": "Adapter content",
             "type": "string",
             "enum": [
                 "PASS",
@@ -148,6 +163,7 @@
             "description": "FastQC metric"
         },
         "Per tile sequence quality": {
+            "title": "Per tile sequence quality",
             "type": "string",
             "enum": [
                 "PASS",
@@ -157,6 +173,7 @@
             "description": "FastQC metric"
         },
         "Per base N content": {
+            "title": "Per base N content",
             "type": "string",
             "enum": [
                 "PASS",
@@ -166,6 +183,7 @@
             "description": "FastQC metric"
         },
         "Per sequence quality scores": {
+            "title": "Per sequence quality scores",
             "type": "string",
             "enum": [
                 "PASS",
@@ -174,5 +192,6 @@
             ],
             "description": "FastQC metric"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/fastqc_quality_metric.md"
 }

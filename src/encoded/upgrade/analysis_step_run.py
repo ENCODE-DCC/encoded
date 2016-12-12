@@ -1,4 +1,4 @@
-from contentbase import (
+from snovault import (
     ROOT,
     upgrade_step,
 )

@@ -2,12 +2,12 @@
 var React = require('react');
 var _ = require('underscore');
 var globals = require('./globals');
-var navbar = require('./navbar');
+var navigation = require('./navigation');
 var dataset = require('./dataset');
 var dbxref = require('./dbxref');
 var item = require('./item');
 
-var Breadcrumbs = navbar.Breadcrumbs;
+var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var ExperimentTable = dataset.ExperimentTable;
@@ -16,16 +16,17 @@ var RelatedItems = item.RelatedItems;
 var Target = module.exports.Target = React.createClass({
     render: function() {
         var context = this.props.context;
-        var itemClass = globals.itemClass(context, 'view-detail panel key-value');
+        var itemClass = globals.itemClass(context, 'view-detail key-value');
         var geneLink, geneRef, baseName, sep;
 
         if (context.organism.name == "human") {
             geneLink = globals.dbxref_prefix_map.HGNC + context.gene_name;
         } else if (context.organism.name == "mouse") {
-            var uniProtValue = JSON.stringify(context.dbxref);
-            sep = uniProtValue.indexOf(":") + 1;
-            var uniProtID = uniProtValue.substring(sep, uniProtValue.length - 2);
-            geneLink = globals.dbxref_prefix_map.UniProtKB + uniProtID;
+            var mgiRef = _(context.dbxref).find(ref => ref.substr(0,4) === 'MGI:');
+            if (mgiRef) {
+                var base = globals.dbxref_prefix_map['MGI'];
+                geneLink = base + mgiRef;
+            }
         } else if (context.organism.name == 'dmelanogaster' || context.organism.name == 'celegans') {
             var organismPrefix = context.organism.name == 'dmelanogaster' ? 'FBgn': 'WBGene';
             var baseUrl = context.organism.name == 'dmelanogaster' ? globals.dbxref_prefix_map.FlyBase : globals.dbxref_prefix_map.WormBase;
@@ -59,20 +60,30 @@ var Target = module.exports.Target = React.createClass({
                     </div>
                 </header>
 
-                <dl className={itemClass}>
-                    <dt>Target name</dt>
-                    <dd>{context.label}</dd>
+                <div className="panel">
+                    <dl className={itemClass}>
+                        <div data-test="name">
+                            <dt>Target name</dt>
+                            <dd>{context.label}</dd>
+                        </div>
 
-                    {context.gene_name && geneLink ? <dt>Target gene</dt> : null}
-                    {context.gene_name && geneLink ? <dd><a href={geneLink}>{context.gene_name}</a></dd> : null}
+                        {context.gene_name && geneLink ?
+                            <div data-test="gene">
+                                <dt>Target gene</dt>
+                                <dd><a href={geneLink}>{context.gene_name}</a></dd>
+                            </div>
+                        : null}
 
-                    <dt>External resources</dt>
-                    <dd>
-                        {context.dbxref.length ?
-                            <DbxrefList values={context.dbxref} target_gene={context.gene_name} />
-                        : <em>None submitted</em> }
-                    </dd>
-                </dl>
+                        <div data-test="external">
+                            <dt>External resources</dt>
+                            <dd>
+                                {context.dbxref.length ?
+                                    <DbxrefList values={context.dbxref} target_gene={context.gene_name} target_ref />
+                                : <em>None submitted</em> }
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
 
                 <RelatedItems title={'Experiments using target ' + context.label}
                               url={'/search/?type=experiment&target.uuid=' + context.uuid}

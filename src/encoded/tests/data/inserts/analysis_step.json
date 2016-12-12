@@ -226,6 +226,19 @@
             "lambda C methylated in CHH context"
         ],
         "analysis_step_types": ["signal generation", "QA calculation"]
+    },
+    {
+        "name": "variant_calling",
+        "title": "Variant calling",
+        "input_file_types": [
+            "alignments", 
+            "reference variants"
+        ],
+        "output_file_types": [
+            "variant calls"
+        ],
+        "analysis_step_types": [
+            "variant annotation"
+        ]
     }
-
 ]

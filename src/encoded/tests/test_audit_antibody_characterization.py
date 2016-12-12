@@ -135,10 +135,10 @@ def test_audit_antibody_mismatched_in_review(testapp, base_antibody_characteriza
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched term_name' for error in errors_list)
+    assert any(error['category'] == 'inconsistent ontology term' for error in errors_list)
 
 
-def test_audit_antibody_invalid_term_in_review(testapp, base_antibody_characterization):
+def test_audit_antibody_biosample_invalid_term_in_review(testapp, base_antibody_characterization):
     characterization_review_list = base_antibody_characterization.get('characterization_reviews')
     characterization_review_list[0]['biosample_term_id'] = 'UBERON:0001264'
     characterization_review_list[0]['biosample_term_name'] = 'pancreas'
@@ -150,6 +150,21 @@ def test_audit_antibody_invalid_term_in_review(testapp, base_antibody_characteri
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] ==
+               'characterization review with biosample term-type mismatch' for error in errors_list)
+
+
+def test_audit_antibody_biosample_ntr_term_in_review(testapp, base_antibody_characterization):
+    characterization_review_list = base_antibody_characterization.get('characterization_reviews')
+    characterization_review_list[0]['biosample_term_id'] = 'NTR:0001264'
+    characterization_review_list[0]['biosample_term_name'] = 'pancreas'
+    testapp.patch_json(base_antibody_characterization['@id'],
+                       {'characterization_reviews': characterization_review_list})
+    res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] !=
                'characterization review with invalid biosample term id' for error in errors_list)
 
 
@@ -172,7 +187,7 @@ def test_audit_antibody_target_mismatch(testapp, base_antibody_characterization,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched target' for error in errors_list)
+    assert any(error['category'] == 'inconsistent target' for error in errors_list)
 
 
 def test_audit_antibody_not_tag_antibody(testapp, base_antibody_characterization, recombinant_target):
@@ -232,42 +247,3 @@ def test_audit_antibody_lane_status_compliant_mismatch(testapp, base_antibody_ch
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'mismatched lane status' for error in errors_list)
-
-
-def test_audit_unapproved_antibody_characterization_method1(testapp, base_antibody_characterization, ENCODE3_award, target, lab, antibody_lot):
-    item = {
-        'award': ENCODE3_award['uuid'],
-        'target': target['uuid'],
-        'lab': lab['uuid'],
-        'characterizes': antibody_lot['uuid'],
-        'attachment': {'download': 'red-dot.png', 'href': RED_DOT},
-        'secondary_characterization_method': 'motif enrichment',
-        'status': 'pending dcc review'
-    }
-    testapp.put_json(base_antibody_characterization['@id'], item)
-    res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'unapproved char method' for error in errors_list)
-
-
-def test_audit_unapproved_antibody_characterization_method2(testapp, base_antibody_characterization, ENCODE3_award, target, lab, antibody_lot):
-    testapp.patch_json(target['@id'], {'investigated_as': ['histone modification']})
-    item = {
-        'award': ENCODE3_award['uuid'],
-        'target': target['uuid'],
-        'lab': lab['uuid'],
-        'characterizes': antibody_lot['uuid'],
-        'attachment': {'download': 'red-dot.png', 'href': RED_DOT},
-        'secondary_characterization_method': 'ChIP-seq comparison',
-        'status': 'pending dcc review'
-    }
-    testapp.put_json(base_antibody_characterization['@id'], item)
-    res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'unapproved char method' for error in errors_list)

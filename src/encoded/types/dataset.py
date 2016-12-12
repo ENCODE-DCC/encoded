@@ -1,4 +1,4 @@
-from contentbase import (
+from snovault import (
     abstract_collection,
     calculated_property,
     collection,
@@ -25,10 +25,33 @@ from .shared_calculated_properties import (
 
 from itertools import chain
 import datetime
+from ..search import _ASSEMBLY_MAPPER
 
 
 def item_is_revoked(request, path):
     return request.embed(path, '@@object').get('status') == 'revoked'
+
+
+def calculate_assembly(request, files_list, status):
+    assembly = set()
+    viewable_file_formats = ['bigWig',
+                             'bigBed',
+                             'narrowPeak',
+                             'broadPeak',
+                             'bedRnaElements',
+                             'bedMethyl',
+                             'bedLogR']
+    viewable_file_status = ['released']
+    if status not in ['released']:
+        viewable_file_status.extend(['in progress'])
+
+    for path in files_list:
+        properties = request.embed(path, '@@object')
+        if properties['file_format'] in viewable_file_formats and \
+                properties['status'] in viewable_file_status:
+            if 'assembly' in properties:
+                assembly.add(properties['assembly'])
+    return list(assembly)
 
 
 @abstract_collection(
@@ -128,10 +151,10 @@ class Dataset(Item):
         },
     })
     def files(self, request, original_files, status):
-        if status in ('release ready', 'released'):
+        if status in ('release ready', 'released', 'archived'):
             return paths_filtered_by_status(
                 request, original_files,
-                include=('released',),
+                include=('released', 'archived'),
             )
         else:
             return paths_filtered_by_status(
@@ -160,15 +183,8 @@ class Dataset(Item):
             "type": "string",
         },
     })
-    def assembly(self, request, original_files):
-        assembly = []
-        for path in original_files:
-            properties = request.embed(path, '@@object')
-            if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak', 'bedRnaElements', 'bedMethyl', 'bedLogR'] and \
-                    properties['status'] in ['released']:
-                if 'assembly' in properties:
-                    assembly.append(properties['assembly'])
-        return list(set(assembly))
+    def assembly(self, request, original_files, status):
+        return calculate_assembly(request, original_files, status)
 
     @calculated_property(condition='assembly', schema={
         "title": "Hub",
@@ -181,14 +197,19 @@ class Dataset(Item):
         "title": "Visualize at UCSC",
         "type": "string",
     })
-    def visualize_ucsc(self, request, hub):
+    def visualize_ucsc(self, request, hub, assembly, status):
+        if status  != 'released':
+            return {}
         hub_url = urljoin(request.resource_url(request.root), hub)
-        return (
-            'http://genome.ucsc.edu/cgi-bin/hgHubConnect'
-            '?hgHub_do_redirect=on'
-            '&hgHubConnect.remakeTrackHub=on'
-            '&hgHub_do_firstDb=1&hubUrl='
-        ) + quote_plus(hub_url, ':/@')
+        viz = {}
+        for assembly_hub in assembly:
+            ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly_hub, assembly_hub)
+            ucsc_url = (
+                'http://genome.ucsc.edu/cgi-bin/hgTracks'
+                '?hubClear='
+            ) + quote_plus(hub_url, ':/@') + '&db=' + ucsc_assembly
+            viz[assembly_hub] = ucsc_url
+        return viz
 
     @calculated_property(condition='date_released', schema={
         "title": "Month released",
@@ -273,19 +294,8 @@ class FileSet(Dataset):
             "type": "string",
         },
     })
-    def assembly(self, request, original_files, related_files):
-        assembly = []
-        count = 1
-        for path in chain(original_files, related_files):
-            # Need to cap this due to the large numbers of files in related_files
-            if count < 100:
-                properties = request.embed(path, '@@object')
-                count = count + 1
-                if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak', 'bedRnaElements', 'bedMethyl', 'bedLogR'] and \
-                        properties['status'] in ['released']:
-                    if 'assembly' in properties:
-                        assembly.append(properties['assembly'])
-        return list(set(assembly))
+    def assembly(self, request, original_files, related_files, status):
+        return calculate_assembly(request, list(chain(original_files, related_files))[:101], status)
 
 
 @collection(
@@ -298,7 +308,77 @@ class FileSet(Dataset):
 class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
     item_type = 'annotation'
     schema = load_schema('encoded:schemas/annotation.json')
-    embedded = FileSet.embedded + ['software_used', 'software_used.software', 'organism', 'targets', 'files.dataset']
+    embedded = FileSet.embedded + [
+        'software_used',
+        'software_used.software',
+        'organism',
+        'targets',
+        'files.dataset',
+        'files.derived_from',
+        'files.derived_from.analysis_step_version.software_versions',
+        'files.derived_from.analysis_step_version.software_versions.software',
+        'files.derived_from.replicate',
+        'files.analysis_step_version.analysis_step',
+        'files.analysis_step_version.analysis_step.documents',
+        'files.analysis_step_version.analysis_step.documents.award',
+        'files.analysis_step_version.analysis_step.documents.lab',
+        'files.analysis_step_version.analysis_step.documents.submitted_by',
+        'files.analysis_step_version.analysis_step.pipelines',
+        'files.analysis_step_version.analysis_step.pipelines.documents',
+        'files.analysis_step_version.analysis_step.pipelines.documents.award',
+        'files.analysis_step_version.analysis_step.pipelines.documents.lab',
+        'files.analysis_step_version.analysis_step.pipelines.documents.submitted_by',
+        'files.analysis_step_version.analysis_step.versions',
+        'files.analysis_step_version.analysis_step.versions.software_versions',
+        'files.analysis_step_version.analysis_step.versions.software_versions.software',
+        'files.analysis_step_version.software_versions',
+        'files.analysis_step_version.software_versions.software',
+        'files.quality_metrics',
+        'files.quality_metrics.step_run',
+        'files.quality_metrics.step_run.analysis_step_version.analysis_step',
+        'files.replicate.library',
+        'supersedes'
+    ]
+    rev = Dataset.rev.copy()
+    rev.update({
+        'superseded_by': ('Annotation', 'supersedes')
+    })
+
+    matrix = {
+        'y': {
+            'facets': [
+                'organism.scientific_name',
+                'biosample_type',
+                'organ_slims',
+                'award.project',
+                'assembly',
+                'encyclopedia_version'
+            ],
+            'group_by': ['biosample_type', 'biosample_term_name'],
+            'label': 'Biosample',
+        },
+        'x': {
+            'facets': [
+                'annotation_type',
+                'month_released',
+                'targets.label',
+                'files.file_type',
+            ],
+            'group_by': 'annotation_type',
+            'label': 'Type',
+        },
+    }
+
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Annotation.supersedes",
+        },
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
 
 
 @collection(
@@ -311,7 +391,12 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms)
 class PublicationData(FileSet, CalculatedFileSetBiosample, CalculatedFileSetAssay, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms, CalculatedAssaySynonyms):
     item_type = 'publication_data'
     schema = load_schema('encoded:schemas/publication_data.json')
-    embedded = FileSet.embedded + ['files.dataset', 'files.replicate.experiment.target', 'organism']
+    embedded = FileSet.embedded + [
+        'files.dataset',
+        'files.replicate.library',
+        'files.replicate.experiment.target',
+        'organism'
+    ]
 
 
 @collection(
@@ -337,7 +422,11 @@ class Reference(FileSet):
 class UcscBrowserComposite(FileSet, CalculatedFileSetAssay, CalculatedAssaySynonyms):
     item_type = 'ucsc_browser_composite'
     schema = load_schema('encoded:schemas/ucsc_browser_composite.json')
-    embedded = FileSet.embedded + ['organism', 'files.dataset']
+    embedded = FileSet.embedded + [
+        'organism',
+        'files.dataset',
+        'files.replicate.library'
+    ]
 
     @calculated_property(condition='files', schema={
         "title": "Organism",
@@ -378,9 +467,21 @@ class UcscBrowserComposite(FileSet, CalculatedFileSetAssay, CalculatedAssaySynon
 class Project(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms, CalculatedAssaySynonyms):
     item_type = 'project'
     schema = load_schema('encoded:schemas/project.json')
-    embedded = FileSet.embedded + ['files.dataset', 'files.replicate.experiment.target', 'organism']
+    embedded = FileSet.embedded + [
+        'files.dataset',
+        'files.replicate.library',
+        'files.replicate.experiment.target',
+        'organism'
+    ]
 
 
+@abstract_collection(
+    name='series',
+    unique_key='accession',
+    properties={
+        'title': "Series",
+        'description': 'Listing of all types of series datasets.',
+    })
 class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms, CalculatedSeriesTarget, CalculatedSeriesTreatment, CalculatedAssaySynonyms):
     item_type = 'series'
     base_types = ['Series'] + Dataset.base_types
@@ -456,21 +557,6 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
             path for path in related_datasets
             if item_is_revoked(request, path)
         ]
-
-    @calculated_property(define=True, schema={
-        "title": "Assembly",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def assembly(self, request, related_datasets):
-        assembly = []
-        for path in related_datasets:
-            properties = request.embed(path, '@@object')
-            if 'assembly' in properties:
-                assembly.extend(properties['assembly'])
-        return list(set(assembly))
 
 
 @collection(

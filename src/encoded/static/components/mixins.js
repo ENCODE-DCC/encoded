@@ -7,7 +7,6 @@ var origin = require('../libs/origin');
 var serialize = require('form-serialize');
 var ga = require('google-analytics');
 
-
 var parseError = module.exports.parseError = function (response) {
     if (response instanceof Error) {
         return Promise.resolve({
@@ -33,8 +32,8 @@ var parseAndLogError = module.exports.parseAndLogError = function (cause, respon
     var promise = parseError(response);
     promise.then(data => {
         ga('send', 'exception', {
-        'exDescription': '' + cause + ':' + data.code + ':' + data.title,
-        'location': window.location.href
+            'exDescription': '' + cause + ':' + data.code + ':' + data.title,
+            'location': window.location.href
         });
     });
     return promise;
@@ -66,7 +65,7 @@ module.exports.RenderLess = {
             }
         }
         return false;
-    },
+    }
 };
 
 class Timeout {
@@ -76,7 +75,7 @@ class Timeout {
 }
 
 
-module.exports.Persona = {
+module.exports.Auth0 = {
     childContextTypes: {
         fetch: React.PropTypes.func,
         session: React.PropTypes.object,
@@ -99,8 +98,8 @@ module.exports.Persona = {
     },
 
     componentDidMount: function () {
-        // Login / logout actions must be deferred until persona is ready.
-        var session_cookie = this.extractSessionCookie()
+        // Login / logout actions must be deferred until Auth0 is ready.
+        var session_cookie = this.extractSessionCookie();
         var session = this.parseSessionCookie(session_cookie);
         if (session['auth.userid']) {
             this.fetchSessionProperties();
@@ -109,6 +108,32 @@ module.exports.Persona = {
             href: window.location.href,
             session_cookie: session_cookie
         });
+
+        // Make a URL for the logo.
+        const hrefInfo = url.parse(this.props.href);
+        const logoHrefInfo = {
+            hostname: hrefInfo.hostname,
+            port: hrefInfo.port,
+            protocol: hrefInfo.protocol,
+            pathname: '/static/img/encode-logo-small-2x.png'
+        };
+        const logoUrl = url.format(logoHrefInfo);
+
+        var lock_ = require('auth0-lock');
+        this.lock = new lock_.default('WIOr638GdDdEGPJmABPhVzMn6SYUIdIH', 'encode.auth0.com', {
+            auth: {
+                redirect: false
+            },
+            theme: {
+                logo: logoUrl
+            },
+            socialButtonStyle: 'big',
+            languageDictionary: {
+                title: "Log in to ENCODE"
+            },
+            allowedConnections: ['github', 'google-oauth2', 'facebook', 'linkedin']
+        });
+        this.lock.on("authenticated", this.handleAuth0Login.bind(this));
     },
 
     fetch: function (url, options) {
@@ -216,8 +241,9 @@ module.exports.Persona = {
         });
     },
 
-    handlePersonaLogin: function (assertion, retrying) {
-        if (!assertion) return;
+    handleAuth0Login: function (authResult, retrying) {
+        var accessToken = authResult.accessToken;
+        if (!accessToken) return;
         this.sessionPropertiesRequest = true;
         this.fetch('/login', {
             method: 'POST',
@@ -225,9 +251,10 @@ module.exports.Persona = {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({assertion: assertion}),
+            body: JSON.stringify({accessToken: accessToken})
         })
         .then(response => {
+            this.lock.hide();
             if (!response.ok) throw response;
             return response.json();
         })
@@ -245,7 +272,7 @@ module.exports.Persona = {
                 // Server session creds might have changed.
                 if (data.code === 400 && data.detail.indexOf('CSRF') !== -1) {
                     if (!retrying) {
-                        window.setTimeout(this.handlePersonaLogin.bind(this, assertion, true));
+                        window.setTimeout(this.handleAuth0Login.bind(this, accessToken, true));
                         return;
                     }
                 }
@@ -256,19 +283,14 @@ module.exports.Persona = {
     },
 
     triggerLogin: function (event) {
-        var $script = require('scriptjs');
-        console.log('Logging in (persona) ');
         if (this.state.session && !this.state.session._csrft_) {
             this.fetch('/session');
         }
-        $script.ready('persona', () => {
-            var request_params = {}; // could be site name
-            navigator.id.get(this.handlePersonaLogin, request_params);
-        });
+        this.lock.show();
     },
 
     triggerLogout: function (event) {
-        console.log('Logging out (persona)');
+        console.log('Logging out (Auth0)');
         var session = this.state.session;
         if (!(session && session['auth.userid'])) return;
         this.fetch('/logout?redirect=false', {
@@ -341,7 +363,8 @@ module.exports.HistoryAndTriggers = {
 
     getInitialState: function () {
         return {
-            unsavedChanges: []
+            unsavedChanges: [],
+            promisePending: false
         };
     },
 
@@ -361,6 +384,24 @@ module.exports.HistoryAndTriggers = {
                 // Might fail due to too large data
                 window.history.replaceState(null, '', window.location.href);
             }
+
+            // If it looks like an anchor target link, scroll to it, plus an offset for the fixed navbar
+            // Hints from https://dev.opera.com/articles/fixing-the-scrolltop-bug/
+            if (this.props.href) {
+                var splitHref = this.props.href.split('#');
+                if (splitHref.length >= 2 && splitHref[1][0] !== '!') {
+                    // URL has hash tag, but not the '#!edit' type
+                    var hashTarget = splitHref[1];
+                    var domTarget = document.getElementById(hashTarget);
+                    if (domTarget) {
+                        // DOM has a matching anchor; scroll to it
+                        var elTop = domTarget.getBoundingClientRect().top;
+                        var docTop = document.documentElement.scrollTop || document.body.scrollTop;
+                        document.documentElement.scrollTop = document.body.scrollTop = elTop + docTop - (window.innerWidth >= 960 ? 75 : 0);
+                    }
+                }
+            }
+
             // Avoid popState on load, see: http://stackoverflow.com/q/6421769/199100
             var register = window.addEventListener.bind(window, 'popstate', this.handlePopState, true);
             if (window._onload_event_fired) {
@@ -504,7 +545,13 @@ module.exports.HistoryAndTriggers = {
         var href = window.location.href;
         if (event.state) {
             // Abort inflight xhr before setProps
-            if (request) request.abort();
+            if (request && this.requestCurrent) {
+                // Abort the current request, then remember we've aborted it so that we don't render
+                // the Network Request Error page.
+                request.abort();
+                this.requestAborted = true;
+                this.requestCurrent = false;
+            }
             this.setProps({
                 context: event.state,
                 href: href  // href should be consistent with context
@@ -539,7 +586,7 @@ module.exports.HistoryAndTriggers = {
         }
 
         // options.skipRequest only used by collection search form
-        // options.replace only used handleSubmit, handlePopState, handlePersonaLogin
+        // options.replace only used handleSubmit, handlePopState, handleAuth0Login
         options = options || {};
         href = url.resolve(this.props.href, href);
 
@@ -566,8 +613,12 @@ module.exports.HistoryAndTriggers = {
 
         var request = this.props.contextRequest;
 
-        if (request) {
+        if (request && this.requestCurrent) {
+            // Abort the current request, then remember we've aborted the request so that we
+            // don't render the Network Request Error page.
             request.abort();
+            this.requestAborted = true;
+            this.requestCurrent = false;
         }
 
         if (options.skipRequest) {
@@ -583,14 +634,23 @@ module.exports.HistoryAndTriggers = {
         request = this.fetch(href, {
             headers: {'Accept': 'application/json'}
         });
+        this.requestCurrent = true; // Remember we have an outstanding GET request
 
         var timeout = new Timeout(this.SLOW_REQUEST_TIME);
 
         Promise.race([request, timeout.promise]).then(v => {
-            if (v instanceof Timeout) this.setProps({'slow': true});
+            if (v instanceof Timeout) {
+                this.setProps({'slow': true});
+            } else {
+                // Request has returned data
+                this.requestCurrent = false;
+            }
         });
 
         var promise = request.then(response => {
+            // Request has returned data
+            this.requestCurrent = false;
+
             // navigate normally to URL of unexpected non-JSON response so back button works.
             if (!contentTypeIsJSON(response.headers.get('Content-Type'))) {
                 if (options.replace) {
@@ -639,11 +699,21 @@ module.exports.HistoryAndTriggers = {
             // Might fail due to too large data
             window.history.replaceState(null, '', window.location.href);
         }
-        this.setProps({
-            context: data,
-            slow: false
-        });
 
+        // Set up new properties for the page after a navigation click. First disable slow now that we've
+        // gotten a response. If the requestAborted flag is set, then a request was aborted and so we have
+        // the data for a Network Request Error. Don't render that, but clear the requestAboerted flag.
+        // Otherwise we have good page data to render.
+        var newProps = {slow: false};
+        if (!this.requestAborted) {
+            // Real page to render
+            newProps.context = data;
+        } else {
+            // data holds network error. Don't render that, but clear the requestAborted flag so we're ready
+            // for the next navigation click.
+            this.requestAborted = false;
+        }
+        this.setProps(newProps);
     },
 
     componentDidUpdate: function () {

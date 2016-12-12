@@ -37,6 +37,11 @@ def test_home_json(testapp):
     assert res.json['@type']
 
 
+def test_home_app_version(testapp):
+    res = testapp.get('/', status=200)
+    assert 'app_version' in res.json
+
+
 def test_vary_html(anonhtmltestapp):
     res = anonhtmltestapp.get('/', status=200)
     assert res.vary is not None
@@ -78,9 +83,9 @@ def test_html_pages(workbook, testapp, htmltestapp, item_type):
 
 @pytest.mark.slow
 @pytest.mark.parametrize('item_type', [k for k in TYPE_LENGTH if k != 'user'])
-def test_html_server_pages(workbook, item_type, server):
+def test_html_server_pages(workbook, item_type, wsgi_server):
     from webtest import TestApp
-    testapp = TestApp(server)
+    testapp = TestApp(wsgi_server)
     res = testapp.get(
         '/%s?limit=all' % item_type,
         headers={'Accept': 'application/json'},
@@ -318,11 +323,18 @@ def test_page_collection_default(workbook, anontestapp):
     assert res.json['default_page']['@id'] == '/pages/images/'
 
 
-def test_antibody_redirect(testapp, antibody_approval):
-    res = testapp.get('/antibodies/%s/?frame=edit' % antibody_approval['uuid'], status=200)
+def test_antibody_redirect(testapp, antibody_approval, anontestapp):
+    assert antibody_approval['@id'].startswith('/antibody-approvals/')
+
+    res = testapp.get(antibody_approval['@id'], status=200)
     assert 'antibody' in res.json
+
+    anontestapp.get(antibody_approval['@id'], status=403)
+
     res = testapp.get('/antibodies/%s/' % antibody_approval['uuid']).follow(status=200)
     assert res.json['@type'] == ['AntibodyLot', 'Item']
+
+    assert anontestapp.get('/antibodies/%s/' % antibody_approval['uuid'], status=301)
 
 
 def test_jsonld_context(testapp):
@@ -345,7 +357,7 @@ def test_index_data_workbook(workbook, testapp, indexer_testapp, item_type):
 
 @pytest.mark.parametrize('item_type', TYPE_LENGTH)
 def test_profiles(testapp, item_type):
-    from jsonschema import Draft4Validator
+    from jsonschema_serialize_fork import Draft4Validator
     res = testapp.get('/profiles/%s.json' % item_type).maybe_follow(status=200)
     errors = Draft4Validator.check_schema(res.json)
     assert not errors

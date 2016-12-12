@@ -1,6 +1,7 @@
 from pyramid.decorator import reify
-from contentbase import (
+from snovault import (
     Root,
+    calculated_property,
     root,
 )
 from .schema_formats import is_accession
@@ -52,14 +53,17 @@ class EncodedRoot(Root):
     @reify
     def __acl__(self):
         acl = acl_from_settings(self.registry.settings) + [
-            (Allow, Everyone, ['list', 'search']),
-            (Allow, 'group.submitter', ['search_audit', 'audit']),
+            (Allow, Everyone, ['list', 'search', 'search_audit', 'audit']),
             (Allow, 'group.admin', ALL_PERMISSIONS),
-            (Allow, 'group.forms', ('forms',)),
             # Avoid schema validation errors during audit
             (Allow, 'remoteuser.EMBED', 'import_items'),
         ] + Root.__acl__
         return acl
+
+    # BBB
+    def get_by_uuid(self, uuid, default=None):
+        return self.connection.get_by_uuid(uuid, default)
+
 
     def get(self, name, default=None):
         resource = super(EncodedRoot, self).get(name, None)
@@ -77,3 +81,10 @@ class EncodedRoot(Root):
             if resource is not None:
                 return resource
         return default
+
+    @calculated_property(schema={
+        "title": "Application version",
+        "type": "string",
+    })
+    def app_version(self, registry):
+        return registry.settings['snovault.app_version']

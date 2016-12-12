@@ -17,7 +17,8 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/documents" },
-        { "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/submitter_comment" }
     ],
     "properties": {
         "schema_version": {
@@ -30,7 +31,18 @@
             "title": "Description",
             "description": "A plain text description of the dataset.",
             "type": "string",
-            "default": ""
+            "default": "",
+            "elasticsearch_mapping_index_type": {
+                "title": "Field mapping index type",
+                "description": "Defines one of three types of indexing available",
+                "type": "string",
+                "default": "analyzed",
+                "enum": [
+                    "analyzed",
+                    "not_analyzed",
+                    "no"
+                ]
+            }
         },
         "dbxrefs": {
             "@type": "@id",
@@ -44,7 +56,7 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^((UCSC-GB-mm9|UCSC-GB-hg19):\\S+|GEO:(GSM|GSE)\\d+|UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+)$"
+                "pattern": "^((UCSC-GB-mm9|UCSC-GB-hg19):\\S+|GEO:(GSM|GSE)\\d+|UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+|IHEC:IHECRE\\d{8}\\.\\d)$"
             }
         },
         "date_released": {
@@ -57,24 +69,37 @@
             ],
             "permission": "import_items"
         },
+        "internal_tags": {
+            "title": "Internal tags",
+            "description": "Some datasets are part of particular data collections",
+            "type": "array",
+            "permission": "import_items",
+            "uniqueItems": true,
+            "default": [],
+            "items": {
+                "type": "string",
+                "enum": [
+                    "DREAM",
+                    "ENCORE",
+                    "ENTEx",
+                    "SESCC",
+                    "dbGaP"]
+            }
+        },
         "status": {
             "title": "Status",
             "type": "string",
             "default": "proposed",
             "enum" : [
-                "in progress",
-                "started",
-                "verified",
-                "submitted",
-                "preliminary",
                 "proposed",
-                "release ready",
-                "released",
-                "deleted",
-                "replaced",
-                "revoked",
+                "started",
+                "submitted",
                 "ready for review",
-                "in review"
+                "deleted",
+                "released",
+                "revoked",
+                "archived",
+                "replaced"
             ]
         }
     },
@@ -108,6 +133,9 @@
         "award.project": {
             "title": "Project"
         },
+        "award.rfa": {
+            "title": "RFA"
+        },
         "status": {
             "title": "Status"
         }
@@ -131,6 +159,8 @@
         "files.file_format": 1.0,
         "files.output_type": 1.0,
         "files.md5sum": 1.0,
-        "references.title": 1.0
-    }
+        "references.title": 1.0,
+        "internal_tags": 1.0
+    },
+    "changelog": "/profiles/changelogs/dataset.md"
 }

@@ -61,15 +61,68 @@
 var React = require('react');
 var _ = require('underscore');
 var moment = require('moment');
+var panel = require('../libs/bootstrap/panel');
+
+var {Panel, PanelHeading} = panel;
 
 
 // Required sortable table wrapper component. Takes no parameters but puts the table in a Bootstrap panel
 // and makes it responsive. You can place multiple <SortTable />s as children of this component.
 var SortTablePanel = module.exports.SortTablePanel = React.createClass({
+    propTypes: {
+        // Note: `title` overrides `header`
+        title: React.PropTypes.oneOfType([ // Title to display in table panel header
+            React.PropTypes.string, // When title is a simple string
+            React.PropTypes.object // When title is JSX
+        ]),
+        header: React.PropTypes.object, // React component to render inside header
+        noDefaultClasses: React.PropTypes.bool // T to skip default <Panel> classes
+    },
+
+    render: function() {
+        var {title, header, noDefaultClasses} = this.props;
+
+        return (
+            <Panel addClasses={'table-file' + (noDefaultClasses ? '' : ' table-panel')} noDefaultClasses={noDefaultClasses}>
+                {this.props.title ?
+                    <PanelHeading key="heading">
+                        <h4>{this.props.title ? <span>{this.props.title}</span> : null}</h4>
+                    </PanelHeading>
+                : (this.props.header ?
+                    <PanelHeading key="heading" addClasses="clearfix">{this.props.header}</PanelHeading>
+                : null)}
+
+                <div className="table-responsive" key="table">
+                    {this.props.children}
+                </div>
+            </Panel>
+        );
+    }
+});
+
+
+var SortTableComponent = module.exports.SortTableComponent = React.createClass({
+    propTypes: {
+        // Note: `title` overrides `header`
+        title: React.PropTypes.oneOfType([ // Title to display in table panel header
+            React.PropTypes.string, // When title is a simple string
+            React.PropTypes.object // When title is JSX
+        ]),
+        header: React.PropTypes.object // React component to render inside header
+    },
+
     render: function() {
         return (
-            <div className="table-panel table-file">
-                <div className="table-responsive">
+            <div className="tableFiles">
+                {this.props.title ?
+                    <PanelHeading key="heading">
+                        <h4>{this.props.title ? <span>{this.props.title}</span> : null}</h4>
+                    </PanelHeading>
+                : (this.props.header ?
+                    <PanelHeading key="heading" addClasses="clearfix">{this.props.header}</PanelHeading>
+                : null)}
+
+                <div className="table-responsive" key="table">
                     {this.props.children}
                 </div>
             </div>
@@ -87,8 +140,10 @@ var SortTable = module.exports.SortTable = React.createClass({
         ]),
         list: React.PropTypes.array, // Array of objects to display in the table
         columns: React.PropTypes.object.isRequired, // Defines the columns of the table
+        rowClasses: React.PropTypes.func, // If provided, gets called for each row of table to generate per-row CSS classes
         sortColumn: React.PropTypes.string, // ID of column to sort by default; first column if not given
-        footer: React.PropTypes.object // Optional component to display in the footer
+        footer: React.PropTypes.object, // Optional component to display in the footer
+        collapsed: React.PropTypes.bool // T if only title bar should be displayed
     },
 
     getInitialState: function() {
@@ -154,16 +209,15 @@ var SortTable = module.exports.SortTable = React.createClass({
     },
 
     render: function() {
-        var list = this.props.list;
-        var columns = this.props.columns;
-        var meta = this.props.meta;
+        var {list, columns, rowClasses, meta} = this.props;
         var columnIds = Object.keys(columns);
         var hiddenColumns = {};
         var hiddenCount = 0;
+        var widthStyle = {};
 
         // See if any columns hidden by making an array keyed by column ID that's true for each hidden column.
         // Also keep a count of hidden columns so we can calculate colspan later.
-        columnIds.forEach(function(columnId) {
+        columnIds.forEach(columnId => {
             var hidden = !!(columns[columnId].hide && columns[columnId].hide(list, columns, meta));
             hiddenColumns[columnId] = hidden;
             hiddenCount += hidden ? 1 : 0;
@@ -175,69 +229,74 @@ var SortTable = module.exports.SortTable = React.createClass({
         // Now display the table, but only if we were passed a non-empty list
         if (list && list.length) {
             return (
-                <table className="table table-striped">
+                <table className="table table-sortable">
 
                     <thead>
-                        {this.props.title ? <tr className="table-section"><th colSpan={colCount}>{this.props.title}</th></tr> : null}
-                        <tr>
-                            {columnIds.map(columnId => {
-                                if (!hiddenColumns[columnId]) {
-                                    var columnClass;
+                        {this.props.title ? <tr className="table-section" key="title"><th colSpan={colCount}>{this.props.title}</th></tr> : null}
 
-                                    if (columns[columnId].sorter !== false) {
-                                        columnClass = columnId === this.state.sortColumn ? (this.state.reversed ? 'tcell-desc' : 'tcell-asc') : 'tcell-sort';
-                                    } else {
-                                        columnClass = null;
+                        {!this.props.collapsed ?
+                            <tr key="header">
+                                {columnIds.map(columnId => {
+                                    if (!hiddenColumns[columnId]) {
+                                        var columnClass;
+
+                                        if (columns[columnId].sorter !== false) {
+                                            columnClass = columnId === this.state.sortColumn ? (this.state.reversed ? 'tcell-desc' : 'tcell-asc') : 'tcell-sort';
+                                        } else {
+                                            columnClass = null;
+                                        }
+                                        var title = (typeof columns[columnId].title === 'function') ? columns[columnId].title(list, columns, meta) : columns[columnId].title;
+                                        var thClass = (columns[columnId].sorter !== false) ? 'tcell-sortable' : null;
+
+                                        return (
+                                            <th key={columnId} className={thClass} onClick={this.sortDir.bind(null, columnId)}>
+                                                <span>{title}<i className={columnClass}></i></span>
+                                            </th>
+                                        );
                                     }
-                                    var title = (typeof columns[columnId].title === 'function') ? columns[columnId].title(list, columns, meta) : columns[columnId].title;
-                                    var thClass = (columns[columnId].sorter !== false) ? 'tcell-sortable' : null;
 
-                                    return (
-                                        <th key={columnId} className={thClass} onClick={this.sortDir.bind(null, columnId)}>
-                                            <span>{title}<i className={columnClass}></i></span>
-                                        </th>
-                                    );
-                                }
-
-                                // Column hidden
-                                return null;
-                            })}
-                        </tr>
+                                    // Column hidden
+                                    return null;
+                                })}
+                            </tr>
+                        : null}
                     </thead>
 
-                    <tbody>
-                        {list.sort(this.sortColumn).map(item => {
-                            return (
-                                <tr key={item['@id']}>
-                                    {columnIds.map(columnId => {
-                                        if (!hiddenColumns[columnId]) {
-                                            if (columns[columnId].display) {
-                                                return <td key={columnId}>{columns[columnId].display(item)}</td>;
+                    {!this.props.collapsed ?
+                        <tbody>
+                            {list.sort(this.sortColumn).map((item, i) => {
+                                let rowClassStr = rowClasses ? rowClasses(item, i) : '';
+                                return (
+                                    <tr key={i} className={rowClassStr}>
+                                        {columnIds.map(columnId => {
+                                            if (!hiddenColumns[columnId]) {
+                                                if (columns[columnId].display) {
+                                                    return <td key={columnId}>{columns[columnId].display(item, meta)}</td>;
+                                                }
+
+                                                // No custom display function; just display the standard way
+                                                var itemValue = columns[columnId].getValue ? columns[columnId].getValue(item, meta) : item[columnId];
+                                                return (
+                                                    <td key={columnId}>{itemValue}</td>
+                                                );
                                             }
 
-                                            // No custom display function; just display the standard way
-                                            var itemValue = columns[columnId].getValue ? columns[columnId].getValue(item) : item[columnId];
-                                            return (
-                                                <td key={columnId}>{itemValue}</td>
-                                            );
-                                        }
-
-                                        // Column hidden
-                                        return null;
-                                    })}
-                                </tr>
-                            );
-                        })}
-                    </tbody>
+                                            // Column hidden
+                                            return null;
+                                        })}
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    : null}
 
                     <tfoot>
                         <tr>
-                            <td colSpan={colCount}>
+                            <td className={'file-table-footer' + (this.props.collapsed ? ' hiding' : '')} colSpan={colCount}>
                                 {this.props.footer}
                             </td>
                         </tr>
                     </tfoot>
-
                 </table>
             );
         }

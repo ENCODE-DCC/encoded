@@ -52,6 +52,37 @@ We define an `__acl__` method on the EncodedRoot object (root.py_), Collection a
 The `__acl__` method for an Item returns a different ACL list depending on the object's 'status'.
 This way we allow lab submitters to edit their own 'in progress' objects but not 'released' objects.
 
+Schema-Based Restrictions
+=========================
+
+If you specify in the JSON schema for a property of an an object:  "permissions": "import-items" then only admins may change these values independend of submitter.
+
 
 .. _base.py: ../src/encoded/types/base.py
 .. _root.py: ../src/encoded/root.py
+
+Permissions
+===========
+
+* add
+* add_unvalidated (admin)
+* audit - view audits on an individual content item
+* edit
+* edit_unvalidated (admin)
+* expand (system)
+* forms - who can see forms
+* impersonate (admin)
+* import_items (admin)
+* index (system)
+* list
+* search
+* search_audit - global permission to see audits in search results
+* submit_for_any (admin)
+* view
+* view_details - protection of user contact information
+* view_raw (admin)
+* visible_for_edit - hiding deleted child objects from edit
+
+This gnu grep expression will extract a list of permissions (brew tap homebrew/dupes; brew install grep)::
+
+    $ ggrep --no-filename -roP "(?<=permission[=(]['\"])[^'\"]+" src/ | sort | uniq

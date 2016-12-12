@@ -14,7 +14,10 @@
         { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
-        { "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/documents" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/genetic_modifications" }
+
     ],
     "properties": {
         "schema_version": {
@@ -30,25 +33,30 @@
             "type": "string",
             "linkTo": "Organism"
         },
-        "donor_documents": {
-            "title": "Donor documents",
-            "description": "Documents that are related to the donor.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Donor document",
-                "description": "A document that relates to the donor.",
-                "comment": "See document.json for available identifiers.",
-                "type": "string",
-                "linkTo": "Document"
-            }
-        },
         "url": {
             "title": "URL",
             "description": "An external resource with additional information about the donor.",
             "type": "string",
             "format": "uri"
+        },
+        "internal_tags": {
+            "title": "Internal tags",
+            "description": "Some donors are part of particular data collections",
+            "type": "array",
+            "default": [],
+            "permission": "import_items",
+            "uniqueItems": true,
+            "items": {
+                "type": "string",
+                "enum": [
+                    "DREAM",
+                    "ENCORE",
+                    "ENTEx",
+                    "SESCC"]
+            }
         }
+    },
+    "boost_values": {
+        "internal_tags": 1.0
     }
 }

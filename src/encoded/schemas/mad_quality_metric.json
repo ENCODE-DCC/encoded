@@ -3,7 +3,7 @@
     "id": "/profiles/mad_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step_run","quality_metric_of"],
+    "required": ["step_run","quality_metric_of", "award", "lab"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
@@ -12,17 +12,19 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/submitted"},
         { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status"},
         { "$ref": "mixins.json#/assay" }
    ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "attachment": {
             "title": "QC metric document metadata",
             "type": "object",
             "additionalProperties": false,
+            "attachment": true,
             "formInput": "file",
             "properties": {
                 "download": {
@@ -60,20 +62,25 @@
             }
         },
         "SD of log ratios": {
+            "title": "SD of log ratios",
             "type": "number",
             "description": "Standard Deviation of replicate log ratios from quantification"
         },
         "Pearson correlation": {
+            "title": "Pearson correlation",
             "type": "number",
             "description": "Pearson correlation coefficient of replicates from quantification"
         },
         "Spearman correlation": {
+            "title": "Spearman correlation",
             "type": "number",
             "description": "Spearman correlation coefficient of replicates from quantification"
         },
         "MAD of log ratios": {
+            "title": "MAD of log ratios",
             "type": "number",
             "description": "Mean-Average-Deviation (MAD) of replicate log ratios from quantification"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/mad_quality_metric.md"
 }

@@ -9,7 +9,7 @@ SCHEMA_FILES = [
 
 @pytest.mark.parametrize('schema', SCHEMA_FILES)
 def test_load_schema(schema):
-    from contentbase.schema_utils import load_schema
+    from snovault.schema_utils import load_schema
     assert load_schema('encoded:schemas/%s' % schema)
 
 
@@ -19,7 +19,7 @@ def test_linkTo_saves_uuid(root, submitter, lab):
 
 
 def test_mixinProperties():
-    from contentbase.schema_utils import load_schema
+    from snovault.schema_utils import load_schema
     schema = load_schema('encoded:schemas/access_key.json')
     assert schema['properties']['uuid']['type'] == 'string'
 
@@ -39,10 +39,16 @@ def test_page_schema_validates_parent_is_not_collection_default_page(testapp):
 
 
 def test_changelogs(testapp, registry):
-    from contentbase import TYPES
+    from snovault import TYPES
     for typeinfo in registry[TYPES].by_item_type.values():
         changelog = typeinfo.schema.get('changelog')
         if changelog is not None:
             res = testapp.get(changelog)
             assert res.status_int == 200, changelog
             assert res.content_type == 'text/markdown'
+
+
+def test_schemas_etag(testapp):
+    etag = testapp.get('/profiles/', status=200).etag
+    assert etag
+    testapp.get('/profiles/', headers={'If-None-Match': etag}, status=304)

@@ -10,16 +10,33 @@ from pyramid.security import (
 )
 from .base import (
     Item,
-    paths_filtered_by_status,
 )
-from contentbase import (
+from snovault import (
+    CONNECTION,
     calculated_property,
     collection,
     load_schema,
 )
-from contentbase.calculated import calculate_properties
-from contentbase.resource_views import item_view_object
-from contentbase.util import expand_path
+from snovault.calculated import calculate_properties
+from snovault.resource_views import item_view_object
+from snovault.util import expand_path
+
+
+ONLY_ADMIN_VIEW_DETAILS = [
+    (Allow, 'group.admin', ['view', 'view_details', 'edit']),
+    (Allow, 'group.read-only-admin', ['view', 'view_details']),
+    (Allow, 'remoteuser.INDEXER', ['view']),
+    (Allow, 'remoteuser.EMBED', ['view']),
+    (Deny, Everyone, ['view', 'view_details', 'edit']),
+]
+
+USER_ALLOW_CURRENT = [
+    (Allow, Everyone, 'view'),
+] + ONLY_ADMIN_VIEW_DETAILS
+
+USER_DELETED = [
+    (Deny, Everyone, 'visible_for_edit')
+] + ONLY_ADMIN_VIEW_DETAILS
 
 
 @collection(
@@ -29,25 +46,20 @@ from contentbase.util import expand_path
         'title': 'DCC Users',
         'description': 'Listing of current ENCODE DCC users',
     },
-    acl=[
-        (Allow, 'group.admin', ['list', 'view_details']),
-        (Allow, 'group.read-only-admin', ['list', 'view_details']),
-        (Allow, 'role.owner', ['edit', 'view_details']),
-        (Allow, 'remoteuser.INDEXER', ['list', 'view']),
-        (Allow, 'remoteuser.EMBED', ['list', 'view']),
-        (Allow, Everyone, ['view']),
-        (Deny, Everyone, ['list', 'view_details']),
-    ])
+    acl=[])
 class User(Item):
     item_type = 'user'
     schema = load_schema('encoded:schemas/user.json')
-    rev = {
-        'access_keys': ('AccessKey', 'user'),
-    }
-    embedded = (
+    # Avoid access_keys reverse link so editing access keys does not reindex content.
+    embedded = [
         'lab',
-        'access_keys',
-    )
+    ]
+    STATUS_ACL = {
+        'current': [(Allow, 'role.owner', ['edit', 'view_details'])] + USER_ALLOW_CURRENT,
+        'deleted': USER_DELETED,
+        'replaced': USER_DELETED,
+        'disabled': ONLY_ADMIN_VIEW_DETAILS,
+    }
 
     @calculated_property(schema={
         "title": "Title",
@@ -67,9 +79,13 @@ class User(Item):
             "type": ['string', 'object'],
             "linkFrom": "AccessKey.user",
         },
-    })
-    def access_keys(self, request, access_keys):
-        return paths_filtered_by_status(request, access_keys)
+    }, category='page')
+    def access_keys(self, request):
+        if not request.has_permission('view_details'):
+            return
+        uuids = self.registry[CONNECTION].get_rev_links(self.model, 'user', 'AccessKey')
+        objects = (request.embed('/', str(uuid), '@@object') for uuid in uuids)
+        return [obj for obj in objects if obj['status'] not in ('deleted', 'replaced')]
 
 
 @view_config(context=User, permission='view', request_method='GET', name='page')

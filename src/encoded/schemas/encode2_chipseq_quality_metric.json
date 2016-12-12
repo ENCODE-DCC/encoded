@@ -3,7 +3,7 @@
     "id": "/profiles/encode2_chipseq_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step_run"],
+    "required": ["step_run", "award", "lab"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
@@ -12,22 +12,26 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/submitted"},
         { "$ref": "mixins.json#/aliases"},
+        { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status"},
         { "$ref": "mixins.json#/assay" }
    ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "NSC": {
+            "title": "Normalized strand cross-correlation",
             "type": "number",
-            "description": ""
+            "description": "Normalized strand cross-correlation = FRAGLEN_CC / MIN_CC. Ratio of strand cross-correlation at estimated fragment length to the minimum cross-correlation over all shifts."
         },
         "RSC": {
+            "title": "Relative cross-correlation coefficient",
             "type": "number",
-            "description": ""
+            "description": "Relative cross correlation coefficient. Ratio of strand cross-correlation at fragment length  and at read length"
         },
         "SPOT": {
+            "title": "SPOT score",
             "type": "number",
             "description": ""
         }

@@ -2,24 +2,35 @@
 .panel {
     background-color: #fff;
     border: 1px solid #a0a0a0;
-    @include border-radius($border-radius-base);
-    @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
-    margin-top: 10px;
-    margin-bottom: 20px;
+    border-radius: $border-radius-base;
+    margin-top: 15px;
+    margin-bottom: 15px;
     padding: 15px 20px;
     overflow: visible;
 
     &.panel-default {
         padding: 0;
 
-        .panel-body {
-            border-top: 1px solid #e0e0e0;
+        & > .panel-heading {
+            background-color: #d8d8d8;
 
-            &:first-child {
-                border-top: none;
+            h1, h2, h3, h4, h5, h6 {
+                margin: 0;
             }
         }
     }
+}
+
+.panel-heading {
+    padding: 10px;
+}
+
+.panel-body {
+    padding: 10px;
+}
+
+.panel-body-with-header {
+    padding-top: 0;
 }
 
 .item-row {
@@ -37,10 +48,10 @@
 }
 
 .panel-blue {
-background-color: #4284d8;
-border: 1px solid #3276ca;
-    @include border-radius($border-radius-base);
-    @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
+    background-color: #4284d8;
+    border: 1px solid #3276ca;
+    border-radius: $border-radius-base;
+    box-shadow: 0 0 6px rgba(195, 202, 211, 0.5);
     margin: 10px 0 20px;
     padding: 15px 30px;
     overflow: hidden;
@@ -67,14 +78,11 @@ border: 1px solid #3276ca;
 
     /* sprites.less reset */
     display: inline;
-    width: auto;
-    height: auto;
     line-height: normal;
     vertical-align: baseline;
     background-image: none;
     background-position: 0% 0%;
     background-repeat: repeat;
-    margin-top: 0;
 }
 /* remove external-link icon if there is no text in link <a></a>
 Note does not work in =<IE8, oh well */
@@ -133,7 +141,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     .icon {
         position: relative;
         top: 3px;
-        @include font-size(1.4);
+        font-size: 1.4rem;
         margin-right: 5px;
 
         @media screen and (min-width: $screen-sm-min) {
@@ -144,8 +152,223 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     }
 }
 
-.sub-panel {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    border: 1px solid #e0e0e0;
+// Styles for the panel that has documents or characterizations as subpanels
+.panel-docs-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.panel-doc {
+    order: 0;
+    flex: 0 1 auto;
+    align-self: auto;
+    margin: 0;
+    padding: 0 5px;
+}
+
+.panel-body-doc {
+    padding: 10px;
+}
+
+.doc-panel-outer {
+    padding-bottom: 0;
+}
+
+.doc-panel-inner {
+    padding: 0 5px;
+}
+
+.panel-attachment {
+    padding: 0 5px;
+}
+
+.attachment-panel-outer {
+    padding-bottom: 0;
+}
+
+.attachment-panel-inner {
+    padding: 0 5px;
+    flex-wrap: wrap;
+}
+
+.attachment-panel {
+    flex: 0 1 48%;
+    margin: 5px;
+}
+
+.type-QualityMetric.view-detail {
+    margin: 0;
+}
+
+// Holds documents, but as a panel within a panel
+.panel-body-doc-interior {
+    @extend .panel-body-doc;
+    padding-left: 0;
+    margin-right: -10px;
+}
+
+// Styles for the File Gallery component that displays the file tables and graphs
+.file-gallery-heading {
+    position: relative;
+}
+
+.file-gallery-controls {
+    margin-top: 5px;
+
+    @media screen and (min-width: $screen-sm-min) {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        bottom: 5px;
+        margin-top: 0;
+    }
+}
+
+.file-gallery-control {
+    display: inline-block;
+    position: relative;
+    vertical-align: bottom;
+    margin-right: 5px;
+
+    @media screen and (min-width: $screen-sm-min) {
+        margin-right: 0;
+        margin-left: 5px;
+    }
+
+    select {
+        height: 30px;
+        padding-right: 30px;
+        font-size: 0.9rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+
+    &.file-gallery-control-select:after {
+        content: '\f0dc';
+        font-family: FontAwesome;
+        padding: 8px;
+        position: absolute;
+        right: 10px;
+        top: 5px;
+        z-index: 1;
+        width: 10px;
+        line-height: 50%;
+        font-size: 0.86rem;
+        color: #428bca;
+        pointer-events: none;
+    }
+}
+
+// File gallery title bars that collapse
+.collapsing-title-icon {
+    position: relative;
+    top: 0;
+}
+
+.file-gallery-counts {
+    padding: 2px 10px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #606060;
+    background-color: #d8d8d8;
+    border-top: 1px solid #a0a0a0;
+    border-bottom: 1px solid #a0a0a0;
+}
+
+.file-gallery-graph-header {
+    padding: 10px;
+    background-color: #d8e0e8;
+
+    h4 {
+        margin: 0;
+        padding: 0;
+    }
+}
+
+.file-gallery-graph-footer {
+    padding: 8px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: auto 40%;
+
+    &.hiding {
+        background-image: url('data:image/svg+xml;utf8,<svg data-name="Hiding Dots" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760.67 139.33"><defs><style>.cls-1{fill:#808080;}</style></defs><title>Indicates hiddent content</title><circle class="cls-1" cx="380.33" cy="69.67" r="64.11"/><circle class="cls-1" cx="692.4" cy="69.67" r="64.11"/><circle class="cls-1" cx="68.27" cy="69.67" r="64.11"/></svg>');
+    }
+}
+
+// Collapsing title bar
+.collapsing-title {
+    position: relative;
+    display: block;
+    padding: 10px;
+    height: 100%;
+
+    h4 {
+        margin: 0 0 0 40px;
+    }
+
+    &:focus, &:active {
+        text-decoration: none;
+    }
+}
+
+// Control for collapsing panel title bars
+.collapsing-title-control {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    pointer-events: all;
+
+    a {
+        cursor: pointer;
+    }
+
+    .bg {
+        fill: white;
+        stroke-width: 6px;
+        stroke: #000;
+    }
+
+    .content-line {
+        fill: none;
+        stroke: #000;
+        stroke-miterlimit: 10;
+        stroke-width: 60px;
+    }
+}
+
+.collapsing-title-trigger {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 41px;
+    padding: 10px;
+    border-top: none;
+    border-right: 1px solid #fff;
+    border-bottom: none;
+    border-left: none;
+    background-color: transparent;
+
+    &:hover {
+        background-color: darken(#d8e0e8, 10%);
+        text-decoration: none;
+    }
+}
+
+.subpanel {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top: 1px solid #eee;
+
+    &:first-child {
+        padding-top: 0;
+        border-top: none;
+    }
 }

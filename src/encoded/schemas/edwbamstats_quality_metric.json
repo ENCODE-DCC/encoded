@@ -3,7 +3,7 @@
     "id": "/profiles/edwbamstats_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step_run","quality_metric_of"],
+    "required": ["step_run","quality_metric_of", "award", "lab"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
@@ -12,76 +12,93 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/submitted"},
         { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status"},
         { "$ref": "mixins.json#/assay" }
    ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "alignedBy": {
+            "title": "Aligner used",
             "type": "string",
-            "description": "edwBamStats: alignedBy"
+            "description": "The aligner used"
         },
         "isPaired": {
+            "title": "Is paired end flag",
             "type": "number",
-            "description": "edwBamStats: isPaired"
+            "description": "If alignment is from paired-end reads this will be set to 1"
         },
         "isSortedByTarget": {
+            "title": "Is sorted by target flag",
             "type": "number",
-            "description": "edwBamStats: isSortedByTarget"
+            "description": "If the bam is sorted by target location, this is set to 1; if sorted by name, this is set to 0"
         },
         "mappedCount": {
+            "title": "# of mapped reads",
             "type": "number",
-            "description": "edwBamStats: mappedCount"
+            "description": "Count of mapped reads"
         },
         "readBaseCount": {
+            "title": "# of bases in reads",
             "type": "number",
-            "description": "edwBamStats: readBaseCount"
+            "description": "Count of total bases in reads"
         },
         "readCount": {
+            "title": "# of reads",
             "type": "number",
-            "description": "edwBamStats: readCount"
+            "description": "Count of all reads"
         },
         "readSizeMax": {
+            "title": "Longest read length",
             "type": "number",
-            "description": "edwBamStats: readSizeMax"
+            "description": "Longest read"
         },
         "readSizeMean": {
+            "title": "Mean read length",
             "type": "number",
-            "description": "edwBamStats: readSizeMean"
+            "description": "Mean size of all reads"
         },
         "readSizeMin": {
+            "title": "Shortest read length",
             "type": "number",
-            "description": "edwBamStats: readSizeMin"
+            "description": "Shortest read"
         },
         "readSizeStd": {
+            "title": "SD of read length",
             "type": "number",
-            "description": "edwBamStats: readSizeStd"
+            "description": "Standard deviation of read size"
         },
         "targetBaseCount": {
+            "title": "# of covered bases in target",
             "type": "number",
-            "description": "edwBamStats: targetBaseCount"
+            "description": "Number of bases covered in target (e.g. on chromosomes)"
         },
         "targetSeqCount": {
+            "title": "# of target sequences",
             "type": "number",
-            "description": "edwBamStats: targetSeqCount"
+            "description": "Count of target sequences (e.g. chromosomes)"
         },
         "u4mReadCount": {
+            "title": "# of random sampled unique reads",
             "type": "number",
-            "description": "edwBamStats: u4mReadCount"
+            "description": "Number of randomly sampled uniquely mapped items used in complexity calculation"
         },
         "u4mUniquePos": {
+            "title": "# of positions sampled unique reads map to",
             "type": "number",
-            "description": "edwBamStats: u4mUniquePos"
+            "description": "Number of unique positions that sampled uniquely mapped reads were mapped to"
         },
         "u4mUniqueRatio": {
+            "title": "Ratio of unique positions to uniquely mapped reads",
             "type": "number",
-            "description": "edwBamStats: u4mUniqueRatio"
+            "description": "Ratio of unique positions to uniquely mapped reads"
         },
         "uniqueMappedCount": {
+            "title": "# of uniquely mapped reads",
             "type": "number",
-            "description": "edwBamStats: uniqueMappedCount"
+            "description": "Count of reads uniquely mapped"
         }
     }
 }

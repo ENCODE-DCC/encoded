@@ -19,12 +19,14 @@ from pyramid.traversal import (
     _join_path_tuple,
 )
 
-from contentbase.validation import CSRFTokenError
+from snovault.validation import CSRFTokenError
 from subprocess_middleware.tween import SubprocessTween
+from urllib.parse import parse_qs
 import logging
 import os
 import psutil
 import time
+
 
 
 log = logging.getLogger(__name__)
@@ -33,7 +35,7 @@ log = logging.getLogger(__name__)
 def includeme(config):
     config.add_tween(
         '.renderers.fix_request_method_tween_factory',
-        under='contentbase.stats.stats_tween_factory')
+        under='snovault.stats.stats_tween_factory')
     config.add_tween(
         '.renderers.normalize_cookie_tween_factory',
         under='.renderers.fix_request_method_tween_factory')
@@ -112,7 +114,7 @@ def security_tween_factory(handler, registry):
             login = request.authenticated_userid
         if login is not None:
             namespace, userid = login.split('.', 1)
-            if namespace not in ('mailto', 'persona'):
+            if namespace not in ('mailto', 'auth0'):
                 return handler(request)
         raise CSRFTokenError('Missing CSRF token')
 
@@ -189,13 +191,17 @@ def canonical_redirect(event):
         return
     canonical_path, _, canonical_qs = canonical.partition('?')
 
-    request_path = _join_path_tuple(('',) + split_path_info(request.path_info))
+    request_path = _join_path_tuple(('',) + split_path_info(request.path_info))   
     if (request_path == canonical_path.rstrip('/') and
             request.path_info.endswith('/') == canonical_path.endswith('/') and
             (canonical_qs in ('', request.query_string))):
         return
 
     if '/@@' in request.path_info:
+        return
+
+    if (parse_qs(canonical_qs) == parse_qs(request.query_string) and
+            '/suggest' in request_path):
         return
 
     qs = canonical_qs or request.query_string
@@ -269,7 +275,7 @@ page_or_json = SubprocessTween(
     should_transform=should_transform,
     after_transform=after_transform,
     reload_process=reload_process,
-    args=['node', resource_filename(__name__, 'static/build/renderer.js')],
+    args=['node', resource_filename(__name__, 'static/build-server/renderer.js')],
     env=node_env,
 )
 

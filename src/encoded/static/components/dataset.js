@@ -1,10 +1,12 @@
 'use strict';
 var React = require('react/addons');
+var panel = require('../libs/bootstrap/panel');
+var button = require('../libs/bootstrap/button');
+var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
+var {SvgIcon} = require('../libs/svg-icons');
 var _ = require('underscore');
-var cx = require('react/lib/cx');
-var moment = require('moment');
 var globals = require('./globals');
-var navbar = require('./navbar');
+var navigation = require('./navigation');
 var dbxref = require('./dbxref');
 var fetched = require('./fetched');
 var audit = require('./audit');
@@ -12,22 +14,26 @@ var statuslabel = require('./statuslabel');
 var graph = require('./graph');
 var reference = require('./reference');
 var software = require('./software');
-var sortTable = require('./sorttable');
+var {SortTablePanel, SortTable} = require('./sorttable');
+var image = require('./image');
+var doc = require('./doc');
+var {DatasetFiles} = require('./filegallery');
+var {FileGallery} = require('./filegallery');
 
-var Breadcrumbs = navbar.Breadcrumbs;
+var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
-var Dbxref = dbxref.Dbxref;
 var FetchedItems = fetched.FetchedItems;
 var StatusLabel = statuslabel.StatusLabel;
 var PubReferenceList = reference.PubReferenceList;
-var SoftwareVersionList = software.SoftwareVersionList;
-var AuditIndicators = audit.AuditIndicators;
-var AuditDetail = audit.AuditDetail;
-var AuditMixin = audit.AuditMixin;
-var SortTablePanel = sortTable.SortTablePanel;
-var SortTable = sortTable.SortTable;
+var softwareVersionList = software.softwareVersionList;
+var DocumentsPanel = doc.DocumentsPanel;
+var {AuditIndicators, AuditDetail, AuditIcon, AuditMixin} = audit;
+var ProjectBadge = image.ProjectBadge;
+var {Panel, PanelBody, PanelHeading} = panel;
+var DropdownButton = button.DropdownButton;
+var DropdownMenu = dropdownMenu.DropdownMenu;
 
-var Panel = function (props) {
+var PanelLookup = function (props) {
     // XXX not all panels have the same markup
     var context;
     if (props['@id']) {
@@ -37,121 +43,6 @@ var Panel = function (props) {
     var PanelView = globals.panel_views.lookup(props.context);
     return <PanelView {...props} />;
 };
-
-var Dataset = module.exports.Dataset = React.createClass({
-    mixins: [AuditMixin],
-    render: function() {
-        var context = this.props.context;
-        var itemClass = globals.itemClass(context, 'view-item');
-        var experiments = {};
-        var statuses = [{status: context.status, title: "Status"}];
-        context.files.forEach(function(file) {
-            var experiment = file.replicate && file.replicate.experiment;
-            if (experiment) {
-                experiments[experiment['@id']] = experiment;
-            }
-        });
-        experiments = _.values(experiments);
-
-        // Set up the breadcrumbs
-        var crumbs = [
-            {id: 'Datasets'},
-            {id: context.dataset_type, query: 'dataset_type=' + context.dataset_type, tip: context.dataset_type}
-        ];
-
-        // Build up array of documents attached to this dataset
-        var datasetDocuments = {};
-        context.documents.forEach(function (document, i) {
-            datasetDocuments[document['@id']] = Panel({context: document, key: i});
-        }, this);
-
-        // Make string of alternate accessions
-        var altacc = context.alternate_accessions.join(', ');
-
-        return (
-            <div className={itemClass}>
-                <header className="row">
-                    <div className="col-sm-12">
-                        <Breadcrumbs root='/search/?@type=Dataset' crumbs={crumbs} />
-                        <h2>Dataset {context.accession}</h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
-                        <div className="status-line">
-                            <div className="characterization-status-labels">
-                                <StatusLabel status={statuses} />
-                            </div>
-                            <AuditIndicators audits={context.audit} id="dataset-audit" />
-                        </div>
-                    </div>
-                </header>
-                <AuditDetail context={context} id="dataset-audit" />
-                <div className="panel data-display">
-                    <dl className="key-value">
-                        <dt>Accession</dt>
-                        <dd>{context.accession}</dd>
-
-                        {context.description ? <dt>Description</dt> : null}
-                        {context.description ? <dd>{context.description}</dd> : null}
-
-                        {context.dataset_type ? <dt>Dataset type</dt> : null}
-                        {context.dataset_type ? <dd className="sentence-case">{context.dataset_type}</dd> : null}
-                        
-                        {context.lab ? <dt>Lab</dt> : null}
-                        {context.lab ? <dd>{context.lab.title}</dd> : null}
-                        
-                        {context.aliases.length ? <dt>Aliases</dt> : null}
-                        {context.aliases.length ? <dd>
-                            <DbxrefList values={context.aliases} />
-                         </dd> : null}
-                        
-                        <dt>External resources</dt>
-                        <dd>
-                            {context.dbxrefs.length ?
-                                <DbxrefList values={context.dbxrefs} />
-                            : <em>None submitted</em> }
-                        </dd>
-
-                        {context.references && context.references.length ?
-                            <div data-test="references">
-                                <dt>References</dt>
-                                <dd><PubReferenceList values={context.references} /></dd>
-                            </div>
-                        : null}
-                    </dl>
-                </div>
-
-                {Object.keys(datasetDocuments).length ?
-                    <div>
-                        <h3>Dataset documents</h3>
-                        <div className="row">
-                            {datasetDocuments}
-                        </div>
-                    </div>
-                : null}
-
-                {experiments.length ?
-                    <ExperimentTable
-                        items={experiments}
-                        title={'Related experiments for dataset ' + context.accession} />
-                : null }
-
-                {context.files.length ?
-                    <div>
-                        <h3>Files for dataset {context.accession}</h3>
-                        <FileTable items={context.files} />
-                    </div>
-                : null }
-
-                {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={UnreleasedFiles} />
-                : null}
-
-            </div>
-        );
-    }
-});
-
-globals.content_views.register(Dataset, 'Dataset');
-
 
 // Return a summary of the given biosamples, ready to be displayed in a React component.
 var annotationBiosampleSummary = module.exports.annotationBiosampleSummary = function(annotation) {
@@ -178,19 +69,25 @@ var annotationBiosampleSummary = module.exports.annotationBiosampleSummary = fun
 // Display Annotation page, a subtype of Dataset.
 var Annotation = React.createClass({
     mixins: [AuditMixin],
+
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var statuses = [{status: context.status, title: "Status"}];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
 
         // Build up array of documents attached to this dataset
-        var datasetDocuments = {};
-        context.documents.forEach(function (document, i) {
-            datasetDocuments[document['@id']] = Panel({context: document, key: i});
-        }, this);
+        var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
 
         // Make a biosample summary string
         var biosampleSummary = annotationBiosampleSummary(context);
+
+        // Determine this experiment's ENCODE version
+        var encodevers = globals.encodeVersion(context);
 
         // Set up the breadcrumbs
         var datasetType = context['@type'][1];
@@ -204,6 +101,21 @@ var Annotation = React.createClass({
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
 
+        // Make array of superseded_by accessions
+        let supersededBys = [];
+        if (context.superseded_by && context.superseded_by.length) {
+            supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
+        }
+
+        // Get a list of reference links, if any
+        var references = PubReferenceList(context.references);
+
+        // Render tags badges
+        var tagBadges;
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
+
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -211,6 +123,7 @@ var Annotation = React.createClass({
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for annotation file set {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -219,134 +132,132 @@ var Annotation = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
-                <div className="panel data-display">
-                    <dl className="key-value">
-                        {context.assay_term_name && context.assay_term_name.length ?
-                            <div data-test="assaytermname">
-                                <dt>Assay(s)</dt>
-                                <dd>{context.assay_term_name.join(', ')}</dd>
-                            </div>
-                        : null}
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
+                <Panel addClasses="data-display">
+                    <PanelBody addClasses="panel-body-with-header">
+                        <div className="flexrow">
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
+                                <dl className="key-value">
+                                    <div data-test="accession">
+                                        <dt>Accession</dt>
+                                        <dd>{context.accession}</dd>
+                                    </div>
 
-                        <div data-test="accession">
-                            <dt>Accession</dt>
-                            <dd>{context.accession}</dd>
+                                    {context.description ?
+                                        <div data-test="description">
+                                            <dt>Description</dt>
+                                            <dd>{context.description}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.biosample_term_name || biosampleSummary ?
+                                        <div data-test="biosample">
+                                            <dt>Biosample summary</dt>
+                                            <dd>
+                                                {context.biosample_term_name}
+                                                {context.biosample_term_name ? <span>{' '}</span> : null}
+                                                {biosampleSummary ? <span>({biosampleSummary})</span> : null}
+                                            </dd>
+                                        </div>
+                                    : null}
+
+                                    {context.biosample_type ?
+                                        <div data-test="biosampletype">
+                                            <dt>Biosample type</dt>
+                                            <dd>{context.biosample_type}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.organism ?
+                                        <div data-test="organism">
+                                            <dt>Organism</dt>
+                                            <dd>{context.organism.name}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.annotation_type ?
+                                        <div data-test="type">
+                                            <dt>Annotation type</dt>
+                                            <dd className="sentence-case">{context.annotation_type}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.target ?
+                                        <div data-test="target">
+                                            <dt>Target</dt>
+                                            <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
+                                        </div>
+                                    : null}
+
+                                    {context.software_used && context.software_used.length ?
+                                        <div data-test="softwareused">
+                                            <dt>Software used</dt>
+                                            <dd>{softwareVersionList(context.software_used)}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
+
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading">
+                                    <h4>Attribution</h4>
+                                    <ProjectBadge award={context.award} addClasses="badge-heading" />
+                                </div>
+                                <dl className="key-value">
+                                    {context.encyclopedia_version ?
+                                        <div data-test="encyclopediaversion">
+                                            <dt>Encyclopedia version</dt>
+                                            <dd>{context.encyclopedia_version}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.lab ?
+                                        <div data-test="lab">
+                                            <dt>Lab</dt>
+                                            <dd>{context.lab.title}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.aliases.length ?
+                                        <div data-test="aliases">
+                                            <dt>Aliases</dt>
+                                            <dd><DbxrefList values={context.aliases} /></dd>
+                                        </div>
+                                    : null}
+
+                                    <div data-test="externalresources">
+                                        <dt>External resources</dt>
+                                        <dd>
+                                            {context.dbxrefs && context.dbxrefs.length ?
+                                                <DbxrefList values={context.dbxrefs} />
+                                            : <em>None submitted</em> }
+                                        </dd>
+                                    </div>
+
+                                    {references ?
+                                        <div data-test="references">
+                                            <dt>Publications</dt>
+                                            <dd>{references}</dd>
+                                        </div>
+                                    : null}
+
+                                    {tagBadges ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd>{tagBadges}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
                         </div>
+                    </PanelBody>
+                </Panel>
 
-                        {context.description ?
-                            <div data-test="description">
-                                <dt>Description</dt>
-                                <dd>{context.description}</dd>
-                            </div>
-                        : null}
+                {/* Display the file widget with the facet, graph, and tables */}
+                <FileGallery context={context} encodevers={encodevers} />
 
-                        {context.biosample_term_name || biosampleSummary ?
-                            <div data-test="biosample">
-                                <dt>Biosample summary</dt>
-                                <dd>
-                                    {context.biosample_term_name}
-                                    {context.biosample_term_name ? <span>{' '}</span> : null}
-                                    {biosampleSummary ? <span>({biosampleSummary})</span> : null}
-                                </dd>
-                            </div>
-                        : null}
-
-                        {context.biosample_type ?
-                            <div data-test="biosampletype">
-                                <dt>Biosample type</dt>
-                                <dd>{context.biosample_type}</dd>
-                            </div>
-                        : null}
-
-                        {context.organism ?
-                            <div data-test="organism">
-                                <dt>Organism</dt>
-                                <dd>{context.organism.name}</dd>
-                            </div>
-                        : null}
-
-                        {context.annotation_type ?
-                            <div data-test="type">
-                                <dt>Annotation type</dt>
-                                <dd className="sentence-case">{context.annotation_type}</dd>
-                            </div>
-                        : null}
-
-                        {context.target ?
-                            <div data-test="target">
-                                <dt>Target</dt>
-                                <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
-                            </div>
-                        : null}
-
-                        {context.software_used && context.software_used.length ?
-                            <div>
-                                <dt>Software used</dt>
-                                <dd>{SoftwareVersionList(context.software_used)}</dd>
-                            </div>
-                        : null}
-
-                        {context.lab ?
-                            <div data-type="lab">
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
-                            </div>
-                        : null}
-                        
-                        {context.aliases.length ?
-                            <div data-type="aliases">
-                                <dt>Aliases</dt>
-                                <dd><DbxrefList values={context.aliases} /></dd>
-                            </div>
-                        : null}
-
-                        <div data-type="externalresources">
-                            <dt>External resources</dt>
-                            <dd>
-                                {context.dbxrefs.length ?
-                                    <DbxrefList values={context.dbxrefs} />
-                                : <em>None submitted</em> }
-                            </dd>
-                        </div>
-
-                        {context.references && context.references.length ?
-                            <div data-test="references">
-                                <dt>Publications</dt>
-                                <dd>
-                                    <PubReferenceList values={context.references} />
-                                </dd>
-                            </div>
-                        : null}
-                    </dl>
-                </div>
-
-                {Object.keys(datasetDocuments).length ?
-                    <div>
-                        <h3>Dataset documents</h3>
-                        <div className="row">
-                            {datasetDocuments}
-                        </div>
-                    </div>
-                : null}
-
-                {context.visualize_ucsc  && context.status == "released" ?
-                    <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
-                    </span>
-                : null }
-
-                {context.files.length ?
-                    <div>
-                        <h3>Files in annotation file set {context.accession}</h3>
-                        <FileTable context={context} items={context.files} originating />
-                    </div>
-                : null }
-
-                {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={UnreleasedFiles} />
-                : null}
-
+                <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
         );
     }
@@ -358,17 +269,20 @@ globals.content_views.register(Annotation, 'Annotation');
 // Display Annotation page, a subtype of Dataset.
 var PublicationData = React.createClass({
     mixins: [AuditMixin],
+
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     render: function() {
         var context = this.props.context;
         var files = context.files;
         var itemClass = globals.itemClass(context, 'view-item');
         var statuses = [{status: context.status, title: "Status"}];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
 
         // Build up array of documents attached to this dataset
-        var datasetDocuments = {};
-        context.documents.forEach(function (document, i) {
-            datasetDocuments[document['@id']] = Panel({context: document, key: i});
-        }, this);
+        var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
 
         // Set up the breadcrumbs
         var datasetType = context['@type'][1];
@@ -381,6 +295,15 @@ var PublicationData = React.createClass({
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
+
+        // Render the publication links
+        var referenceList = PubReferenceList(context.references);
+
+        // Render tags badges
+        var tagBadges;
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
 
         return (
             <div className={itemClass}>
@@ -397,102 +320,100 @@ var PublicationData = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
-                <div className="panel data-display">
-                    <dl className="key-value">
-                        {context.assay_term_name && context.assay_term_name.length ?
-                            <div data-test="assaytermname">
-                                <dt>Assay(s)</dt>
-                                <dd>{context.assay_term_name.join(', ')}</dd>
-                            </div>
-                        : null}
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
+                <Panel addClasses="data-display">
+                    <PanelBody addClasses="panel-body-with-header">
+                        <div className="flexrow">
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
+                                <dl className="key-value">
+                                    {context.assay_term_name && context.assay_term_name.length ?
+                                        <div data-test="assaytermname">
+                                            <dt>Assay(s)</dt>
+                                            <dd>{context.assay_term_name.join(', ')}</dd>
+                                        </div>
+                                    : null}
 
-                        <div data-test="accession">
-                            <dt>Accession</dt>
-                            <dd>{context.accession}</dd>
+                                    <div data-test="accession">
+                                        <dt>Accession</dt>
+                                        <dd>{context.accession}</dd>
+                                    </div>
+
+                                    {context.description ?
+                                        <div data-test="description">
+                                            <dt>Description</dt>
+                                            <dd>{context.description}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.biosample_term_name && context.biosample_term_name.length ?
+                                        <div data-test="biosampletermname">
+                                            <dt>Biosample term name</dt>
+                                            <dd>{context.biosample_term_name.join(', ')}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.biosample_type && context.biosample_type.length ?
+                                        <div data-test="biosampletype">
+                                            <dt>Biosample type</dt>
+                                            <dd>{context.biosample_type.join(', ')}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.dataset_type ?
+                                        <div data-test="type">
+                                            <dt>Dataset type</dt>
+                                            <dd className="sentence-case">{context.dataset_type}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
+
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading">
+                                    <h4>Attribution</h4>
+                                    <ProjectBadge award={context.award} addClasses="badge-heading" />
+                                </div>
+                                <dl className="key-value">
+                                    {context.lab ?
+                                        <div data-test="lab">
+                                            <dt>Lab</dt>
+                                            <dd>{context.lab.title}</dd>
+                                        </div>
+                                    : null}
+
+                                    <div data-test="externalresources">
+                                        <dt>External resources</dt>
+                                        <dd>
+                                            {context.dbxrefs && context.dbxrefs.length ?
+                                                <DbxrefList values={context.dbxrefs} />
+                                            : <em>None submitted</em> }
+                                        </dd>
+                                    </div>
+
+                                    {referenceList ?
+                                        <div data-test="references">
+                                            <dt>Publications</dt>
+                                            <dd>{referenceList}</dd>
+                                        </div>
+                                    : null}
+
+                                    {tagBadges ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd>{tagBadges}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
                         </div>
+                    </PanelBody>
+                </Panel>
 
-                        {context.description ?
-                            <div data-test="description">
-                                <dt>Description</dt>
-                                <dd>{context.description}</dd>
-                            </div>
-                        : null}
+                {/* Display the file widget with the facet, graph, and tables */}
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
-                        {context.biosample_term_name && context.biosample_term_name.length ?
-                            <div data-test="biosampletermname">
-                                <dt>Biosample term name</dt>
-                                <dd>{context.biosample_term_name.join(', ')}</dd>
-                            </div>
-                        : null}
-
-                        {context.biosample_type && context.biosample_type.length ?
-                            <div data-test="biosampletype">
-                                <dt>Biosample type</dt>
-                                <dd>{context.biosample_type.join(', ')}</dd>
-                            </div>
-                        : null}
-
-                        {context.dataset_type ?
-                            <div data-test="type">
-                                <dt>Dataset type</dt>
-                                <dd className="sentence-case">{context.dataset_type}</dd>
-                            </div>
-                        : null}
-
-                        {context.lab ?
-                            <div data-type="lab">
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
-                            </div>
-                        : null}
-                        
-                        <div data-type="externalresources">
-                            <dt>External resources</dt>
-                            <dd>
-                                {context.dbxrefs.length ?
-                                    <DbxrefList values={context.dbxrefs} />
-                                : <em>None submitted</em> }
-                            </dd>
-                        </div>
-
-                        {context.references && context.references.length ?
-                            <div data-test="references">
-                                <dt>Publications</dt>
-                                <dd>
-                                    <PubReferenceList values={context.references} />
-                                </dd>
-                            </div>
-                        : null}
-                    </dl>
-                </div>
-
-                {Object.keys(datasetDocuments).length ?
-                    <div>
-                        <h3>Dataset documents</h3>
-                        <div className="row">
-                            {datasetDocuments}
-                        </div>
-                    </div>
-                : null}
-
-                {context.visualize_ucsc  && context.status == "released" ?
-                    <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
-                    </span>
-                : null }
-
-                {context.files.length ?
-                    <div>
-                        <h3>Files for publication file set {context.accession}</h3>
-                        <FileTable context={context} items={context.files} originating />
-                    </div>
-                : null }
-
-                {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={UnreleasedFiles} />
-                : null}
-
+                <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
         );
     }
@@ -504,16 +425,19 @@ globals.content_views.register(PublicationData, 'PublicationData');
 // Display Annotation page, a subtype of Dataset.
 var Reference = React.createClass({
     mixins: [AuditMixin],
+
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var statuses = [{status: context.status, title: "Status"}];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
 
         // Build up array of documents attached to this dataset
-        var datasetDocuments = {};
-        context.documents.forEach(function (document, i) {
-            datasetDocuments[document['@id']] = Panel({context: document, key: i});
-        }, this);
+        var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
 
         // Set up the breadcrumbs
         var datasetType = context['@type'][1];
@@ -526,6 +450,15 @@ var Reference = React.createClass({
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
+
+        // Get a list of reference links, if any
+        var references = PubReferenceList(context.references);
+
+        // Render tags badges
+        var tagBadges;
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
 
         return (
             <div className={itemClass}>
@@ -542,96 +475,100 @@ var Reference = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
-                <div className="panel data-display">
-                    <dl className="key-value">
-                        <div data-test="accession">
-                            <dt>Accession</dt>
-                            <dd>{context.accession}</dd>
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
+                <Panel addClasses="data-display">
+                    <PanelBody addClasses="panel-body-with-header">
+                        <div className="flexrow">
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
+                                <dl className="key-value">
+                                    <div data-test="accession">
+                                        <dt>Accession</dt>
+                                        <dd>{context.accession}</dd>
+                                    </div>
+
+                                    {context.description ?
+                                        <div data-test="description">
+                                            <dt>Description</dt>
+                                            <dd>{context.description}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.reference_type ?
+                                        <div data-test="type">
+                                            <dt>Reference type</dt>
+                                            <dd>{context.reference_type}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.organism ?
+                                        <div data-test="organism">
+                                            <dt>Organism</dt>
+                                            <dd>{context.organism.name}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.software_used && context.software_used.length ?
+                                        <div data-test="softwareused">
+                                            <dt>Software used</dt>
+                                            <dd>{softwareVersionList(context.software_used)}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
+
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading">
+                                    <h4>Attribution</h4>
+                                    <ProjectBadge award={context.award} addClasses="badge-heading" />
+                                </div>
+                                <dl className="key-value">
+                                    {context.lab ?
+                                        <div data-test="lab">
+                                            <dt>Lab</dt>
+                                            <dd>{context.lab.title}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.aliases.length ?
+                                        <div data-test="aliases">
+                                            <dt>Aliases</dt>
+                                            <dd><DbxrefList values={context.aliases} /></dd>
+                                        </div>
+                                    : null}
+
+                                    <div data-test="externalresources">
+                                        <dt>External resources</dt>
+                                        <dd>
+                                            {context.dbxrefs && context.dbxrefs.length ?
+                                                <DbxrefList values={context.dbxrefs} />
+                                            : <em>None submitted</em> }
+                                        </dd>
+                                    </div>
+
+                                    {references ?
+                                        <div data-test="references">
+                                            <dt>Publications</dt>
+                                            <dd>{references}</dd>
+                                        </div>
+                                    : null}
+
+                                    {tagBadges ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd>{tagBadges}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
                         </div>
+                    </PanelBody>
+                </Panel>
 
-                        {context.description ?
-                            <div data-test="description">
-                                <dt>Description</dt>
-                                <dd>{context.description}</dd>
-                            </div>
-                        : null}
+                {/* Display the file widget with the facet, graph, and tables */}
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph altFilterDefault />
 
-                        {context.reference_type ?
-                            <div data-test="type">
-                                <dt>Reference type</dt>
-                                <dd>{context.reference_type}</dd>
-                            </div>
-                        : null}
-
-                        {context.organism ?
-                            <div data-test="organism">
-                                <dt>Organism</dt>
-                                <dd>{context.organism.name}</dd>
-                            </div>
-                        : null}
-
-                        {context.software_used && context.software_used.length ?
-                            <div>
-                                <dt>Software used</dt>
-                                <dd>{SoftwareVersionList(context.software_used)}</dd>
-                            </div>
-                        : null}
-
-                        {context.lab ?
-                            <div data-type="lab">
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
-                            </div>
-                        : null}
-                        
-                        {context.aliases.length ?
-                            <div data-type="aliases">
-                                <dt>Aliases</dt>
-                                <dd><DbxrefList values={context.aliases} /></dd>
-                            </div>
-                        : null}
-
-                        <div data-type="externalresources">
-                            <dt>External resources</dt>
-                            <dd>
-                                {context.dbxrefs.length ?
-                                    <DbxrefList values={context.dbxrefs} />
-                                : <em>None submitted</em> }
-                            </dd>
-                        </div>
-
-                        {context.references && context.references.length ?
-                            <div data-test="references">
-                                <dt>Publications</dt>
-                                <dd>
-                                    <PubReferenceList values={context.references} />
-                                </dd>
-                            </div>
-                        : null}
-                    </dl>
-                </div>
-
-                {Object.keys(datasetDocuments).length ?
-                    <div>
-                        <h3>Dataset documents</h3>
-                        <div className="row">
-                            {datasetDocuments}
-                        </div>
-                    </div>
-                : null}
-
-                {context.files.length ?
-                    <div>
-                        <h3>Files in reference file set {context.accession}</h3>
-                        <FileTable context={context} items={context.files} originating />
-                    </div>
-                : null }
-
-                {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={UnreleasedFiles} />
-                : null}
-
+                <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
         );
     }
@@ -643,16 +580,19 @@ globals.content_views.register(Reference, 'Reference');
 // Display Annotation page, a subtype of Dataset.
 var Project = React.createClass({
     mixins: [AuditMixin],
+
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var statuses = [{status: context.status, title: "Status"}];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
 
         // Build up array of documents attached to this dataset
-        var datasetDocuments = {};
-        context.documents.forEach(function (document, i) {
-            datasetDocuments[document['@id']] = Panel({context: document, key: i});
-        }, this);
+        var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
 
         // Collect organisms
         var organisms = context.organism && context.organism.map(function(organism) {
@@ -671,6 +611,15 @@ var Project = React.createClass({
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
+
+        // Get a list of reference links
+        var references = PubReferenceList(context.references);
+
+        // Render tags badges
+        var tagBadges;
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
 
         return (
             <div className={itemClass}>
@@ -687,123 +636,121 @@ var Project = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
-                <div className="panel data-display">
-                    <dl className="key-value">
-                        {context.assay_term_name && context.assay_term_name.length ?
-                            <div data-test="assaytermname">
-                                <dt>Assay(s)</dt>
-                                <dd>{context.assay_term_name.join(', ')}</dd>
-                            </div>
-                        : null}
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
+                <Panel addClasses="data-display">
+                    <PanelBody addClasses="panel-body-with-header">
+                        <div className="flexrow">
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
+                                <dl className="key-value">
+                                    {context.assay_term_name && context.assay_term_name.length ?
+                                        <div data-test="assaytermname">
+                                            <dt>Assay(s)</dt>
+                                            <dd>{context.assay_term_name.join(', ')}</dd>
+                                        </div>
+                                    : null}
 
-                        <div data-test="accession">
-                            <dt>Accession</dt>
-                            <dd>{context.accession}</dd>
+                                    <div data-test="accession">
+                                        <dt>Accession</dt>
+                                        <dd>{context.accession}</dd>
+                                    </div>
+
+                                    {context.description ?
+                                        <div data-test="description">
+                                            <dt>Description</dt>
+                                            <dd>{context.description}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.project_type ?
+                                        <div data-test="type">
+                                            <dt>Project type</dt>
+                                            <dd className="sentence-case">{context.project_type}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.biosample_term_name && context.biosample_term_name.length ?
+                                        <div data-test="biosampletermname">
+                                            <dt>Biosample term name</dt>
+                                            <dd>{context.biosample_term_name.join(', ')}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.biosample_type && context.biosample_type.length ?
+                                        <div data-test="biosampletype">
+                                            <dt>Biosample type</dt>
+                                            <dd>{context.biosample_type.join(', ')}</dd>
+                                        </div>
+                                    : null}
+
+                                    {organisms.length ?
+                                        <div data-test="organism">
+                                            <dt>Organism</dt>
+                                            <dd>{organisms.join(', ')}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.software_used && context.software_used.length ?
+                                        <div data-test="softwareused">
+                                            <dt>Software used</dt>
+                                            <dd>{softwareVersionList(context.software_used)}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
+
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading">
+                                    <h4>Attribution</h4>
+                                    <ProjectBadge award={context.award} addClasses="badge-heading" />
+                                </div>
+                                <dl className="key-value">
+                                    {context.lab ?
+                                        <div data-test="lab">
+                                            <dt>Lab</dt>
+                                            <dd>{context.lab.title}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.aliases.length ?
+                                        <div data-test="aliases">
+                                            <dt>Aliases</dt>
+                                            <dd><DbxrefList values={context.aliases} /></dd>
+                                        </div>
+                                    : null}
+
+                                    <div data-test="externalresources">
+                                        <dt>External resources</dt>
+                                        <dd>
+                                            {context.dbxrefs && context.dbxrefs.length ?
+                                                <DbxrefList values={context.dbxrefs} />
+                                            : <em>None submitted</em> }
+                                        </dd>
+                                    </div>
+
+                                    {references ?
+                                        <div data-test="references">
+                                            <dt>Publications</dt>
+                                            <dd>{references}</dd>
+                                        </div>
+                                    : null}
+
+                                    {tagBadges ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd>{tagBadges}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
                         </div>
+                    </PanelBody>
+                </Panel>
 
-                        {context.description ?
-                            <div data-test="description">
-                                <dt>Description</dt>
-                                <dd>{context.description}</dd>
-                            </div>
-                        : null}
+                {/* Display the file widget with the facet, graph, and tables */}
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
-                        {context.project_type ?
-                            <div data-test="type">
-                                <dt>Project type</dt>
-                                <dd className="sentence-case">{context.project_type}</dd>
-                            </div>
-                        : null}
-
-                        {context.biosample_term_name && context.biosample_term_name.length ?
-                            <div data-test="biosampletermname">
-                                <dt>Biosample term name</dt>
-                                <dd>{context.biosample_term_name.join(', ')}</dd>
-                            </div>
-                        : null}
-
-                        {context.biosample_type && context.biosample_type.length ?
-                            <div data-test="biosampletype">
-                                <dt>Biosample type</dt>
-                                <dd>{context.biosample_type.join(', ')}</dd>
-                            </div>
-                        : null}
-
-                        {organisms.length ?
-                            <div data-test="organism">
-                                <dt>Organism</dt>
-                                <dd>{organisms.join(', ')}</dd>
-                            </div>
-                        : null}
-
-                        {context.software_used && context.software_used.length ?
-                            <div>
-                                <dt>Software used</dt>
-                                <dd>{SoftwareVersionList(context.software_used)}</dd>
-                            </div>
-                        : null}
-
-                        {context.lab ?
-                            <div data-type="lab">
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
-                            </div>
-                        : null}
-                        
-                        {context.aliases.length ?
-                            <div data-type="aliases">
-                                <dt>Aliases</dt>
-                                <dd><DbxrefList values={context.aliases} /></dd>
-                            </div>
-                        : null}
-
-                        <div data-type="externalresources">
-                            <dt>External resources</dt>
-                            <dd>
-                                {context.dbxrefs.length ?
-                                    <DbxrefList values={context.dbxrefs} />
-                                : <em>None submitted</em> }
-                            </dd>
-                        </div>
-
-                        {context.references && context.references.length ?
-                            <div data-test="references">
-                                <dt>Publications</dt>
-                                <dd>
-                                    <PubReferenceList values={context.references} />
-                                </dd>
-                            </div>
-                        : null}
-                    </dl>
-                </div>
-
-                {Object.keys(datasetDocuments).length ?
-                    <div>
-                        <h3>Dataset documents</h3>
-                        <div className="row">
-                            {datasetDocuments}
-                        </div>
-                    </div>
-                : null}
-
-                {context.visualize_ucsc  && context.status == "released" ?
-                    <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
-                    </span>
-                : null }
-
-                {context.files.length ?
-                    <div>
-                        <h3>Files in project file set {context.accession}</h3>
-                        <FileTable context={context} items={context.files} originating />
-                    </div>
-                : null }
-
-                {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={UnreleasedFiles} />
-                : null}
-
+                <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
         );
     }
@@ -815,17 +762,20 @@ globals.content_views.register(Project, 'Project');
 // Display Annotation page, a subtype of Dataset.
 var UcscBrowserComposite = React.createClass({
     mixins: [AuditMixin],
+
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     render: function() {
         var context = this.props.context;
         var files = context.files;
         var itemClass = globals.itemClass(context, 'view-item');
         var statuses = [{status: context.status, title: "Status"}];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
 
         // Build up array of documents attached to this dataset
-        var datasetDocuments = {};
-        context.documents.forEach(function (document, i) {
-            datasetDocuments[document['@id']] = Panel({context: document, key: i});
-        }, this);
+        var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
 
         // Collect organisms
         var organisms = context.organism && context.organism.map(function(organism) {
@@ -845,6 +795,15 @@ var UcscBrowserComposite = React.createClass({
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
 
+        // Get a list of reference links, if any
+        var references = PubReferenceList(context.references);
+
+        // Render tags badges
+        var tagBadges;
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
+
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -860,109 +819,107 @@ var UcscBrowserComposite = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
-                <div className="panel data-display">
-                    <dl className="key-value">
-                        {context.assay_term_name && context.assay_term_name.length ?
-                            <div data-test="assays">
-                                <dt>Assay(s)</dt>
-                                <dd>{context.assay_term_name.join(', ')}</dd>
-                            </div>
-                        : null}
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
+                <Panel addClasses="data-display">
+                    <PanelBody addClasses="panel-body-with-header">
+                        <div className="flexrow">
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
+                                <dl className="key-value">
+                                    {context.assay_term_name && context.assay_term_name.length ?
+                                        <div data-test="assays">
+                                            <dt>Assay(s)</dt>
+                                            <dd>{context.assay_term_name.join(', ')}</dd>
+                                        </div>
+                                    : null}
 
-                        <div data-test="accession">
-                            <dt>Accession</dt>
-                            <dd>{context.accession}</dd>
+                                    <div data-test="accession">
+                                        <dt>Accession</dt>
+                                        <dd>{context.accession}</dd>
+                                    </div>
+
+                                    {context.description ?
+                                        <div data-test="description">
+                                            <dt>Description</dt>
+                                            <dd>{context.description}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.dataset_type ?
+                                        <div data-test="type">
+                                            <dt>Dataset type</dt>
+                                            <dd className="sentence-case">{context.dataset_type}</dd>
+                                        </div>
+                                    : null}
+
+                                    {organisms.length ?
+                                        <div data-test="organism">
+                                            <dt>Organism</dt>
+                                            <dd>{organisms.join(', ')}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.software_used && context.software_used.length ?
+                                        <div data-test="software-used">
+                                            <dt>Software used</dt>
+                                            <dd>{softwareVersionList(context.software_used)}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
+
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading">
+                                    <h4>Attribution</h4>
+                                    <ProjectBadge award={context.award} addClasses="badge-heading" />
+                                </div>
+                                <dl className="key-value">
+                                    {context.lab ?
+                                        <div data-test="lab">
+                                            <dt>Lab</dt>
+                                            <dd>{context.lab.title}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.aliases.length ?
+                                        <div data-test="aliases">
+                                            <dt>Aliases</dt>
+                                            <dd><DbxrefList values={context.aliases} /></dd>
+                                        </div>
+                                    : null}
+
+                                    <div data-test="externalresources">
+                                        <dt>External resources</dt>
+                                        <dd>
+                                            {context.dbxrefs && context.dbxrefs.length ?
+                                                <DbxrefList values={context.dbxrefs} />
+                                            : <em>None submitted</em> }
+                                        </dd>
+                                    </div>
+
+                                    {references ?
+                                        <div data-test="references">
+                                            <dt>Publications</dt>
+                                            <dd>{references}</dd>
+                                        </div>
+                                    : null}
+
+                                    {tagBadges ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd>{tagBadges}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
                         </div>
+                    </PanelBody>
+                </Panel>
 
-                        {context.description ?
-                            <div data-test="description">
-                                <dt>Description</dt>
-                                <dd>{context.description}</dd>
-                            </div>
-                        : null}
+                {/* Display the file widget with the facet, graph, and tables */}
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
-                        {context.dataset_type ?
-                            <div data-test="type">
-                                <dt>Dataset type</dt>
-                                <dd className="sentence-case">{context.dataset_type}</dd>
-                            </div>
-                        : null}
-
-                        {organisms.length ?
-                            <div data-test="organism">
-                                <dt>Organism</dt>
-                                <dd>{organisms.join(', ')}</dd>
-                            </div>
-                        : null}
-
-                        {context.software_used && context.software_used.length ?
-                            <div>
-                                <dt>Software used</dt>
-                                <dd>{SoftwareVersionList(context.software_used)}</dd>
-                            </div>
-                        : null}
-
-                        {context.lab ?
-                            <div data-type="lab">
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
-                            </div>
-                        : null}
-                        
-                        {context.aliases.length ?
-                            <div data-type="aliases">
-                                <dt>Aliases</dt>
-                                <dd><DbxrefList values={context.aliases} /></dd>
-                            </div>
-                        : null}
-
-                        <div data-type="externalresources">
-                            <dt>External resources</dt>
-                            <dd>
-                                {context.dbxrefs.length ?
-                                    <DbxrefList values={context.dbxrefs} />
-                                : <em>None submitted</em> }
-                            </dd>
-                        </div>
-
-                        {context.references && context.references.length ?
-                            <div data-test="references">
-                                <dt>Publications</dt>
-                                <dd>
-                                    <PubReferenceList values={context.references} />
-                                </dd>
-                            </div>
-                        : null}
-                    </dl>
-                </div>
-
-                {Object.keys(datasetDocuments).length ?
-                    <div>
-                        <h3>Dataset documents</h3>
-                        <div className="row">
-                            {datasetDocuments}
-                        </div>
-                    </div>
-                : null}
-
-                {context.visualize_ucsc  && context.status == "released" ?
-                    <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
-                    </span>
-                : null }
-
-                {context.files.length ?
-                    <div>
-                        <h3>Files in UCSC browser composite file set {context.accession}</h3>
-                        <FileTable context={context} items={context.files} originating />
-                    </div>
-                : null }
-
-                {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={UnreleasedFiles} />
-                : null}
-
+                <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
         );
     }
@@ -971,215 +928,27 @@ var UcscBrowserComposite = React.createClass({
 globals.content_views.register(UcscBrowserComposite, 'UcscBrowserComposite');
 
 
-var SeriesTable = React.createClass({
+var FilePanelHeader = module.exports.FilePanelHeader = React.createClass({
     render: function() {
-        var experiments = this.props.experiments;
+        var context = this.props.context;
 
         return (
-            <table className="table table-panel table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Accession</th>
-                        <th>Assay</th>
-                        <th>Target</th>
-                        <th>Description</th>
-                        <th>Lab</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {experiments.map(function (experiment) {
-                    // Ensure this can work with search result columns too
-                    return (
-                        <tr key={experiment['@id']}>
-                            <td><a href={experiment['@id']}>{experiment.accession}</a></td>
-                            <td>{experiment.assay_term_name}</td>
-                            <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
-                            <td>{experiment.description}</td>
-                            <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
-                        </tr>
-                    );
-                })}
-                </tbody>
-            </table>
-        );
-    }
-});
-
-var TreatmentSeriesTable = React.createClass({
-    render: function() {
-        var experiments = this.props.experiments;
-
-        return (
-            <table className="table table-panel table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Accession</th>
-                        <th>Possible controls</th>
-                        <th>Assay</th>
-                        <th>Target</th>
-                        <th>Treatment term name</th>
-                        <th>Treatment duration</th>
-                        <th>Treatment concentration</th>
-                        <th>Description</th>
-                        <th>Lab</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {experiments.map(function (experiment) {
-                    // Get an array of all treatments in all replicates
-                    var treatments = [];
-                    if (experiment.replicates && experiment.replicates.length) {
-                        experiment.replicates.forEach(function(replicate) {
-                            var biosampleTreatments = replicate.library && replicate.library.biosample && replicate.library.biosample.treatments && replicate.library.biosample.treatments;
-                            treatments = treatments.concat(biosampleTreatments);
-                        });
-                    }
-                    var treatmentTermNames = _.uniq(treatments.map(function(treatment) {
-                        return treatment.treatment_term_name;
-                    }));
-                    var treatmentDurations = _.chain(treatments.map(function(treatment) {
-                        return (treatment.duration && treatment.duration_units) ? treatment.duration + ' ' + treatment.duration_units : '';
-                    })).compact().uniq().value();
-                    var treatmentConcentrations = _.chain(treatments.map(function(treatment) {
-                        return (treatment.concentration && treatment.concentration_units) ? treatment.concentration + ' ' + treatment.concentration_units : '';
-                    })).compact().uniq().value();
-                    var possibleControls = experiment.possible_controls.map(function(control, i) {
-                        return <span>{i > 0 ? ', ' : ''}<a key={control.uuid} href={control['@id']}>{control.accession}</a></span>;
-                    });
-                    return (
-                        <tr key={experiment['@id']}>
-                            <td><a href={experiment['@id']}>{experiment.accession}</a></td>
-                            <td>{possibleControls}</td>
-                            <td>{experiment.assay_term_name}</td>
-                            <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
-                            <td>{treatmentTermNames[0]} {treatmentTermNames.length > 1 ? <abbr title={'Multiple term names: ' + treatmentTermNames.join(', ')}>*</abbr> : null}</td>
-                            <td>{treatmentDurations[0]} {treatmentDurations.length > 1 ? <abbr title={'Multiple durations: ' + treatmentDurations.join(', ')}>*</abbr> : null}</td>
-                            <td>{treatmentConcentrations[0]} {treatmentConcentrations.length > 1 ? <abbr title={'Multiple concentrations: ' + treatmentConcentrations.join(', ')}>*</abbr> : null}</td>
-                            <td>{experiment.description}</td>
-                            <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
-                        </tr>
-                    );
-                })}
-                </tbody>
-            </table>
-        );
-    }
-});
-
-var ReplicationTimingSeriesTable = React.createClass({
-    render: function() {
-        var experiments = this.props.experiments;
-
-        return (
-            <table className="table table-panel table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Accession</th>
-                        <th>Possible controls</th>
-                        <th>Assay</th>
-                        <th>Biosample phase</th>
-                        <th>Target</th>
-                        <th>Description</th>
-                        <th>Lab</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {experiments.map(function (experiment) {
-                    // Get an array of all treatments in all replicates
-                    var biosamples;
-                    if (experiment.replicates && experiment.replicates.length) {
-                        biosamples = experiment.replicates.map(function(replicate) {
-                            return replicate.library && replicate.library.biosample;
-                        });
-                    }
-                    var phases = _.chain(biosamples.map(function(biosample) {
-                        return biosample.phase;
-                    })).compact().uniq().value();
-                    var possibleControls = experiment.possible_controls.map(function(control, i) {
-                        return <span>{i > 0 ? ', ' : ''}<a key={control.uuid} href={control['@id']}>{control.accession}</a></span>;
-                    });
-                    return (
-                        <tr key={experiment['@id']}>
-                            <td><a href={experiment['@id']}>{experiment.accession}</a></td>
-                            <td>{possibleControls}</td>
-                            <td>{experiment.assay_term_name}</td>
-                            <td>{phases.join(', ')}</td>
-                            <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
-                            <td>{experiment.description}</td>
-                            <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
-                        </tr>
-                    );
-                })}
-                </tbody>
-            </table>
-        );
-    }
-});
-
-var OrganismDevelopmentSeriesTable = React.createClass({
-    render: function() {
-        var experiments = this.props.experiments;
-
-        return (
-            <table className="table table-panel table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Accession</th>
-                        <th>Possible controls</th>
-                        <th>Assay</th>
-                        <th>Relative age</th>
-                        <th>Life stage</th>
-                        <th>Target</th>
-                        <th>Description</th>
-                        <th>Lab</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {experiments.map(function (experiment) {
-                    // Get an array of all treatments in all replicates
-                    var biosamples, synchronizationBiosample, lifeStageBiosample, ages;
-                    if (experiment.replicates && experiment.replicates.length) {
-                        biosamples = experiment.replicates.map(function(replicate) {
-                            return replicate.library && replicate.library.biosample;
-                        });
-                    }
-                    if (biosamples && biosamples.length) {
-                        synchronizationBiosample = _(biosamples).find(function(biosample) {
-                            return biosample.synchronization;
-                        });
-                        lifeStageBiosample = _(biosamples).find(function(biosample) {
-                            return biosample.life_stage;
-                        });
-                        if (!synchronizationBiosample) {
-                            ages = _.chain(biosamples.map(function(biosample) {
-                                return biosample.age_display;
-                            })).compact().uniq().value();
-                        }
-                    }
-                    var possibleControls = experiment.possible_controls.map(function(control, i) {
-                        return <span>{i > 0 ? ', ' : ''}<a key={control.uuid} href={control['@id']}>{control.accession}</a></span>;
-                    });
-                    return (
-                        <tr key={experiment['@id']}>
-                            <td><a href={experiment['@id']}>{experiment.accession}</a></td>
-                            <td>{possibleControls}</td>
-                            <td>{experiment.assay_term_name}</td>
-                            <td>
-                                {synchronizationBiosample ?
-                                    <span>{synchronizationBiosample.synchronization + ' + ' + synchronizationBiosample.age_display}</span>
-                                :
-                                    <span>{ages.length ? <span>{ages.join(', ')}</span> : null}</span>
-                                }
-                            </td>
-                            <td>{lifeStageBiosample && lifeStageBiosample.life_stage}</td>
-                            <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
-                            <td>{experiment.description}</td>
-                            <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
-                        </tr>
-                    );
-                })}
-                </tbody>
-            </table>
+            <div>
+                {context.visualize_ucsc && context.status == "released" ?
+                    <span className="pull-right">
+                        <DropdownButton title='Visualize Data' label="filepaneheader">
+                            <DropdownMenu>
+                                {Object.keys(context.visualize_ucsc).map(assembly =>
+                                    <a key={assembly} data-bypass="true" target="_blank" href={context.visualize_ucsc[assembly]}>
+                                        {assembly}
+                                    </a>
+                                )}
+                            </DropdownMenu>
+                        </DropdownButton>
+                    </span>
+                : null}
+                <h4>File summary</h4>
+            </div>
         );
     }
 });
@@ -1408,6 +1177,10 @@ var organismDevelopmentSeriesTableColumns = {
 var Series = module.exports.Series = React.createClass({
     mixins: [AuditMixin],
 
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     // Map series @id to title and table columns
     seriesComponents: {
         'MatchedSet': {title: 'matched set series', table: basicTableColumns},
@@ -1432,10 +1205,7 @@ var Series = module.exports.Series = React.createClass({
         experiments = _.values(experiments);
 
         // Build up array of documents attached to this dataset
-        var datasetDocuments = {};
-        context.documents.forEach(function (document, i) {
-            datasetDocuments[document['@id']] = Panel({context: document, key: i});
-        }, this);
+        var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
 
         // Set up the breadcrumbs
         var datasetType = context['@type'][1];
@@ -1448,6 +1218,9 @@ var Series = module.exports.Series = React.createClass({
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
+
+        // Get a list of reference links, if any
+        var references = PubReferenceList(context.references);
 
         // Make the series title
         var seriesComponent = this.seriesComponents[context['@type'][0]];
@@ -1463,9 +1236,9 @@ var Series = module.exports.Series = React.createClass({
                 <span>
                     {speciesList.map((species, i) => {
                         return (
-                            <span>
+                            <span key={i}>
                                 {i > 0 ? <span> and </span> : null}
-                                <i key={i}>{species}</i>
+                                <i>{species}</i>
                             </span>
                         );
                     })}
@@ -1473,6 +1246,12 @@ var Series = module.exports.Series = React.createClass({
             );
         }
         var terms = (context.biosample_term_name && context.biosample_term_name.length) ? _.uniq(context.biosample_term_name) : [];
+
+        // Render tags badges
+        var tagBadges;
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
 
         return (
             <div className={itemClass}>
@@ -1489,130 +1268,123 @@ var Series = module.exports.Series = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
-                <div className="panel data-display">
-                    <dl className="key-value">
-                        {context.description ?
-                            <div data-test="description">
-                                <dt>Description</dt>
-                                <dd>{context.description}</dd>
-                            </div>
-                        : null}
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
+                <Panel addClasses="data-display">
+                    <PanelBody addClasses="panel-body-with-header">
+                        <div className="flexrow">
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
+                                <dl className="key-value">
+                                    {context.description ?
+                                        <div data-test="description">
+                                            <dt>Description</dt>
+                                            <dd>{context.description}</dd>
+                                        </div>
+                                    : null}
 
-                        {context.assay_term_name && context.assay_term_name.length ?
-                            <div data-test="description">
-                                <dt>Assay</dt>
-                                <dd>{context.assay_term_name.join(', ')}</dd>
-                            </div>
-                        : null}
+                                    {context.assay_term_name && context.assay_term_name.length ?
+                                        <div data-test="description">
+                                            <dt>Assay</dt>
+                                            <dd>{context.assay_term_name.join(', ')}</dd>
+                                        </div>
+                                    : null}
 
-                        {terms.length || speciesRender ?
-                            <div data-test="biosamplesummary">
-                                <dt>Biosample summary</dt>
-                                <dd>
-                                    {terms.length ? <span>{terms.join(' and ')} </span> : null}
-                                    {speciesRender ? <span>({speciesRender})</span> : null}
-                                </dd>
+                                    {terms.length || speciesRender ?
+                                        <div data-test="biosamplesummary">
+                                            <dt>Biosample summary</dt>
+                                            <dd>
+                                                {terms.length ? <span>{terms.join(' and ')} </span> : null}
+                                                {speciesRender ? <span>({speciesRender})</span> : null}
+                                            </dd>
+                                        </div>
+                                    : null}
+                                </dl>
                             </div>
-                        : null}
 
-                        <div data-test="lab">
-                            <dt>Lab</dt>
-                            <dd>{context.lab.title}</dd>
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading">
+                                    <h4>Attribution</h4>
+                                    <ProjectBadge award={context.award} addClasses="badge-heading" />
+                                </div>
+                                <dl className="key-value">
+                                    <div data-test="lab">
+                                        <dt>Lab</dt>
+                                        <dd>{context.lab.title}</dd>
+                                    </div>
+
+                                    <div data-test="project">
+                                        <dt>Project</dt>
+                                        <dd>{context.award.project}</dd>
+                                    </div>
+
+                                    {context.aliases.length ?
+                                        <div data-test="aliases">
+                                            <dt>Aliases</dt>
+                                            <dd>{context.aliases.join(", ")}</dd>
+                                        </div>
+                                    : null}
+
+                                    <div data-test="externalresources">
+                                        <dt>External resources</dt>
+                                        <dd>
+                                            {context.dbxrefs && context.dbxrefs.length ?
+                                                <DbxrefList values={context.dbxrefs} />
+                                            : <em>None submitted</em> }
+                                        </dd>
+                                    </div>
+
+                                    {references ?
+                                        <div data-test="references">
+                                            <dt>References</dt>
+                                            <dd>{references}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.submitter_comment ?
+                                        <div data-test="submittercomment">
+                                            <dt>Submitter comment</dt>
+                                            <dd>{context.submitter_comment}</dd>
+                                        </div>
+                                    : null}
+
+                                    {tagBadges ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd>{tagBadges}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
                         </div>
-
-                        <div data-test="project">
-                            <dt>Project</dt>
-                            <dd>{context.award.project}</dd>
-                        </div>
-
-                        {context.aliases.length ?
-                            <div data-test="aliases">
-                                <dt>Aliases</dt>
-                                <dd>{context.aliases.join(", ")}</dd>
-                            </div>
-                        : null}
-
-                        <div data-type="externalresources">
-                            <dt>External resources</dt>
-                            <dd>
-                                {context.dbxrefs.length ?
-                                    <DbxrefList values={context.dbxrefs} />
-                                : <em>None submitted</em> }
-                            </dd>
-                        </div>
-
-                        {context.references && context.references.length ?
-                            <div data-test="references">
-                                <dt>References</dt>
-                                <dd><PubReferenceList values={context.references} /></dd>
-                            </div>
-                        : null}
-                    </dl>
-                </div>
-
-                {Object.keys(datasetDocuments).length ?
-                    <div>
-                        <h3>Dataset documents</h3>
-                        <div className="row">
-                            {datasetDocuments}
-                        </div>
-                    </div>
-                : null}
+                    </PanelBody>
+                </Panel>
 
                 {context.related_datasets.length ?
                     <div>
-                        <h3>{'Experiments in ' + seriesTitle + ' ' + context.accession}</h3>
-                        <SortTablePanel>
+                        <SortTablePanel title={'Experiments in ' + seriesTitle + ' ' + context.accession}>
                             <SortTable list={context.related_datasets} columns={seriesComponent.table} />
                         </SortTablePanel>
                     </div>
                 : null }
 
-                {context.visualize_ucsc  && context.status == "released" ?
-                    <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
-                    </span>
-                : null }
+                {/* Display list of released and unreleased files */}
+                <FetchedItems
+                    {...this.props}
+                    url={globals.unreleased_files_url(context)}
+                    Component={DatasetFiles}
+                    filePanelHeader={<FilePanelHeader context={context} />}
+                    encodevers={globals.encodeVersion(context)}
+                    session={this.context.session}
+                    ignoreErrors
+                />
 
-                {context.files && context.files.length ?
-                    <div>
-                        <h3>Original files in {seriesTitle} {context.accession}</h3>
-                        <FileTable items={context.files} />
-                    </div>
-                : null }
-
+                <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
             </div>
         );
     }
 });
 
 globals.content_views.register(Series, 'Series');
-
-
-var unreleased_files_url = module.exports.unreleased_files_url = function (context) {
-    var file_states = [
-        '',
-        "uploading",
-        "uploaded",
-        "upload failed",
-        "format check failed",
-        "in progress"
-    ].map(encodeURIComponent).join('&status=');
-    return '/search/?limit=all&frame=embedded&type=file&dataset=' + context['@id'] + file_states;
-};
-
-var UnreleasedFiles = module.exports.UnreleasedFiles = React.createClass({
-    render: function () {
-        var context = this.props.context;
-        return (
-            <div>
-                <h3>Unreleased files linked to {context.accession}</h3>
-                <FileTable {...this.props} />
-            </div>
-        );
-    }
-});
 
 
 // Display a count of experiments in the footer, with a link to the corresponding search if needed
@@ -1676,220 +1448,10 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
 
         return (
             <div>
-                {this.props.title ? <h3>{this.props.title}</h3> : null}
-                <SortTablePanel>
+                <SortTablePanel title={this.props.title}>
                     <SortTable list={experiments} columns={this.tableColumns} footer={<ExperimentTableFooter items={experiments} total={this.props.total} url={this.props.url} />} />
                 </SortTablePanel>
             </div>
-        );
-    }
-});
-
-
-function humanFileSize(size) {
-    if (size === undefined) return undefined;
-    var i = Math.floor( Math.log(size) / Math.log(1024) );
-    return ( size / Math.pow(1024, i) ).toPrecision(3) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
-}
-
-
-var FileTable = module.exports.FileTable = React.createClass({
-    propTypes: {
-        context: React.PropTypes.object, // Optional parent object of file list
-        items: React.PropTypes.array.isRequired, // Array of files to appear in the table
-        originating: React.PropTypes.bool // TRUE to display originating dataset column
-    },
-
-    // Configuration for raw file table
-    rawTableColumns: {
-        'accession': {
-            title: 'Accession',
-            display: function(item) {
-                return (
-                    <span>
-                        {item.title}<br />
-                        <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
-                        {humanFileSize(item.file_size)}
-                    </span>
-                );
-            }
-        },
-        'file_type': {title: 'File type'},
-        'biological_replicates': {
-            title: function(list, columns, meta) {
-                return (
-                    <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>
-                );
-            },
-            getValue: function(item) {
-                return item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : '';
-            }
-        },
-        'technical_replicate_number': {
-            title: 'Technical replicate',
-            getValue: function(item) {
-                return item.replicate ? item.replicate.technical_replicate_number : null;
-            }
-        },
-        'read_length': {
-            title: 'Read length',
-            display: function(item) {
-                return <span>{item.read_length ? <span>{item.read_length + ' ' + item.read_length_units}</span> : null}</span>;
-            }
-        },
-        'run_type': {title: 'Run type'},
-        'paired_end': {title: 'Paired end'},
-        'assembly': {title: 'Mapping assembly'},
-        'title': {
-            title: 'Lab',
-            getValue: function(item) {
-                return item.lab && item.lab.title ? item.lab.title : null;
-            }
-        },
-        'date_created': {
-            title: 'Date added',
-            getValue: function(item) {
-                return moment.utc(item.date_created).format('YYYY-MM-DD');
-            },
-            objSorter: function(a, b) {
-                if (a.date_created && b.date_created) {
-                    return Date.parse(a.date_created) - Date.parse(b.date_created);
-                }
-                return a.date_created ? -1 : (b.date_created ? 1 : 0);
-            }
-        },
-        'status': {
-            title: 'Validation status',
-            display: function(item) {
-                return <div className="characterization-meta-data"><StatusLabel status="pending" /></div>;
-            },
-            hide: function(list, columns, meta) {
-                return meta.encodevers !== '3';
-            },
-            sorter: false
-        }
-    },
-
-    // Configuration for process file table
-    procTableColumns: {
-        'accession': {
-            title: 'Accession',
-            display: function(item) {
-                return (
-                    <span>
-                        {item.title}<br />
-                        <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
-                        {humanFileSize(item.file_size)}
-                    </span>
-                );
-            }
-        },
-        'file_type': {title: 'File type'},
-        'output_type': {title: 'Output type'},
-        'biological_replicates': {
-            title: function(list, columns, meta) {
-                return (
-                    <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>
-                );
-            },
-            getValue: function(item) {
-                return item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : '';
-            }
-        },
-        'technical_replicate_number': {
-            title: 'Technical replicate',
-            getValue: function(item) {
-                return item.replicate ? item.replicate.technical_replicate_number : null;
-            }
-        },
-        'assembly': {title: 'Mapping assembly'},
-        'genome_annotation': {title: 'Genome annotation'},
-        'title': {
-            title: 'Lab',
-            getValue: function(item) {
-                return item.lab && item.lab.title ? item.lab.title : null;
-            }
-        },
-        'date_created': {
-            title: 'Date added',
-            getValue: function(item) {
-                return moment.utc(item.date_created).format('YYYY-MM-DD');
-            },
-            sorter: function(a, b) {
-                if (a.date_created && b.date_created) {
-                    return Date.parse(a.date_created) - Date.parse(b.date_created);
-                }
-                return a.date_created ? -1 : (b.date_created ? 1 : 0);
-            }
-        },
-        'status': {
-            title: 'Validation status',
-            display: function(item) {
-                return <div className="characterization-meta-data"><StatusLabel status="pending" /></div>;
-            },
-            hide: function(list, columns, meta) {
-                return meta.encodevers !== '3';
-            },
-            sorter: false
-        }
-    },
-
-    // Configuration for reference file table
-    refTableColumns: {
-        'accession': {
-            title: 'Accession',
-            display: function(item) {
-                return (
-                    <span>
-                        {item.title}<br />
-                        <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
-                        {humanFileSize(item.file_size)}
-                    </span>
-                );
-            }
-        },
-        'file_type': {title: 'File type'},
-        'output_type': {title: 'Output type'},
-        'assembly': {title: 'Mapping assembly'},
-        'genome_annotation': {title: 'Genome annotation'},
-        'title': {
-            title: 'Lab',
-            getValue: function(item) {
-                return item.lab && item.lab.title ? item.lab.title : null;
-            }
-        },
-        'date_created': {
-            title: 'Date added',
-            getValue: function(item) {
-                return moment.utc(item.date_created).format('YYYY-MM-DD');
-            },
-            sorter: function(a, b) {
-                if (a.date_created && b.date_created) {
-                    return Date.parse(a.date_created) - Date.parse(b.date_created);
-                }
-                return a.date_created ? -1 : (b.date_created ? 1 : 0);
-            }
-        }
-    },
-
-    render: function() {
-        // Extract three kinds of file arrays
-        var files = _(this.props.items).groupBy(function(file) {
-            if (file.output_category === 'raw data') {
-                return 'raw';
-            } else if (file.output_category === 'reference') {
-                return 'ref';
-            } else {
-                return 'proc';
-            }
-        });
-
-        return (
-            <SortTablePanel>
-                <SortTable title="Raw data" list={files.raw} columns={this.rawTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
-                <SortTable title="Processed data" list={files.proc} columns={this.procTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
-                <SortTable title="Reference data" list={files.ref} columns={this.refTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
-            </SortTablePanel>
         );
     }
 });

@@ -6,16 +6,21 @@ pytest_plugins = [
 ]
 
 
+@pytest.fixture
+def external_tx():
+    pass
+
+
 @pytest.fixture(scope='session')
-def app_settings(server_host_port, elasticsearch_server, postgresql_server):
+def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
     from .. import test_indexing
-    return test_indexing.app_settings(server_host_port, elasticsearch_server, postgresql_server)
+    return test_indexing.app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
 
 
 @pytest.yield_fixture(scope='session')
 def app(app_settings):
     from .. import test_indexing
-    from contentbase.elasticsearch import create_mapping
+    from snovault.elasticsearch import create_mapping
     for app in test_indexing.app(app_settings):
         create_mapping.run(app)
         yield app
@@ -43,8 +48,25 @@ def workbook(app):
 
 
 @pytest.fixture(scope='session')
-def base_url(_server):
-    return _server
+def wsgi_server_app(app):
+    from http.cookies import SimpleCookie
+
+    def wsgi_filter(environ, start_response):
+        # set REMOTE_USER from cookie
+        cookies = SimpleCookie()
+        cookies.load(environ.get('HTTP_COOKIE', ''))
+        if 'REMOTE_USER' in cookies:
+            user = cookies['REMOTE_USER'].value
+        else:
+            user = 'TEST_AUTHENTICATED'
+        environ['REMOTE_USER'] = user
+        return app(environ, start_response)
+    return wsgi_filter
+
+
+@pytest.fixture(scope='session')
+def base_url(wsgi_server):
+    return wsgi_server
 
 
 @pytest.fixture(scope='session')

@@ -1,4 +1,4 @@
-from contentbase.auditor import (
+from snovault.auditor import (
     audit_checker,
     AuditFailure,
 )

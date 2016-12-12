@@ -18,6 +18,7 @@ def fastq_no_replicate(award, experiment, lab):
         'dataset': experiment['@id'],
         'lab': lab['@id'],
         'file_format': 'fastq',
+        'run_type': 'paired-ended',
         'md5sum': '0123456789abcdef0123456789abcdef',
         'output_type': 'raw data',
         'status': 'in progress',
@@ -37,6 +38,44 @@ def test_file_post_fastq_no_replicate(testapp, fastq_no_replicate):
 
 def test_file_post_fastq_with_replicate(testapp, fastq):
     testapp.post_json('/file', fastq, status=201)
+
+
+@pytest.fixture
+def mapped_run_type_on_fastq(award, experiment, lab):
+    return {
+        'award': award['@id'],
+        'dataset': experiment['@id'],
+        'lab': lab['@id'],
+        'file_format': 'fastq',
+        'run_type': 'paired-ended',
+        'mapped_run_type': 'single-ended',
+        'md5sum': '01234567890123456789abcdefabcdef',
+        'output_type': 'raw data',
+        'status': 'in progress',
+    }
+
+
+@pytest.fixture
+def mapped_run_type_on_bam(award, experiment, lab):
+    return {
+        'award': award['@id'],
+        'dataset': experiment['@id'],
+        'lab': lab['@id'],
+        'file_format': 'bam',
+        'assembly': 'mm10',
+        'mapped_run_type': 'single-ended',
+        'md5sum': 'abcdef01234567890123456789abcdef',
+        'output_type': 'alignments',
+        'status': 'in progress',
+    }
+
+
+def test_file_post_mapped_run_type_on_fastq(testapp, mapped_run_type_on_fastq):
+    testapp.post_json('/file', mapped_run_type_on_fastq, status=422)
+
+
+def test_file_post_mapped_run_type_on_bam(testapp, mapped_run_type_on_bam):
+    testapp.post_json('/file', mapped_run_type_on_bam, status=201)
 
 
 @pytest.fixture
@@ -130,3 +169,10 @@ def test_file_external_accession(testapp, external_accession):
     item = testapp.get(res.location).json
     assert 'accession' not in item
     assert item['@id'] == '/files/EXTERNAL/'
+
+
+def test_file_technical_replicates(testapp, fastq_pair_1):
+    res = testapp.post_json('/file', fastq_pair_1, status=201)
+    location1 = res.json['@graph'][0]['@id']
+    res = testapp.get(location1)
+    assert res.json['technical_replicates'] == ['1_1']

@@ -21,12 +21,11 @@ from pyramid.settings import (
 )
 from sqlalchemy import engine_from_config
 from webob.cookies import JSONSerializer
-from contentbase.elasticsearch import (
+from snovault.elasticsearch import (
     PyramidJSONSerializer,
     TimedUrllib3HttpConnection,
 )
-from contentbase.elasticsearch.interfaces import SNP_SEARCH_ES
-from contentbase.json_renderer import json_renderer
+from snovault.json_renderer import json_renderer
 from elasticsearch import Elasticsearch
 STATIC_MAX_AGE = 0
 
@@ -107,23 +106,23 @@ def set_postgresql_statement_timeout(engine, timeout=20 * 1000):
 
 
 def configure_dbsession(config):
-    from contentbase import DBSESSION
+    from snovault import DBSESSION
     settings = config.registry.settings
     DBSession = settings.pop(DBSESSION, None)
     if DBSession is None:
         engine = configure_engine(settings)
 
         if asbool(settings.get('create_tables', False)):
-            from contentbase.storage import Base
+            from snovault.storage import Base
             Base.metadata.create_all(engine)
 
-        import contentbase.storage
+        import snovault.storage
         import zope.sqlalchemy
         from sqlalchemy import orm
 
         DBSession = orm.scoped_session(orm.sessionmaker(bind=engine))
         zope.sqlalchemy.register(DBSession)
-        contentbase.storage.register(DBSession)
+        snovault.storage.register(DBSession)
 
     config.registry[DBSESSION] = DBSession
 
@@ -173,36 +172,44 @@ def session(config):
     config.set_session_factory(session_factory)
 
 
+def app_version(config):
+    import hashlib
+    import os
+    import subprocess
+    version = subprocess.check_output(
+        ['git', '-C', os.path.dirname(__file__), 'describe']).decode('utf-8').strip()
+    diff = subprocess.check_output(
+        ['git', '-C', os.path.dirname(__file__), 'diff', '--no-ext-diff'])
+    if diff:
+        version += '-patch' + hashlib.sha1(diff).hexdigest()[:7]
+    config.registry.settings['snovault.app_version'] = version
+
+
 def main(global_config, **local_config):
     """ This function returns a Pyramid WSGI application.
     """
     settings = global_config
     settings.update(local_config)
 
-    settings['contentbase.jsonld.namespaces'] = json_asset('encoded:schemas/namespaces.json')
-    settings['contentbase.jsonld.terms_namespace'] = 'https://www.encodeproject.org/terms/'
-    settings['contentbase.jsonld.terms_prefix'] = 'encode'
-    settings['contentbase.elasticsearch.index'] = 'encoded'
-    hostname_command = settings.get('hostname_command', '').strip()
-    if hostname_command:
-        hostname = subprocess.check_output(hostname_command, shell=True).strip()
-        settings.setdefault('persona.audiences', '')
-        settings['persona.audiences'] += '\nhttp://%s' % hostname
-        settings['persona.audiences'] += '\nhttp://%s:6543' % hostname
+    settings['snovault.jsonld.namespaces'] = json_asset('encoded:schemas/namespaces.json')
+    settings['snovault.jsonld.terms_namespace'] = 'https://www.encodeproject.org/terms/'
+    settings['snovault.jsonld.terms_prefix'] = 'encode'
+    settings['snovault.elasticsearch.index'] = 'snovault'
 
     config = Configurator(settings=settings)
-    from contentbase.elasticsearch import APP_FACTORY
+    from snovault.elasticsearch import APP_FACTORY
     config.registry[APP_FACTORY] = main  # used by mp_indexer
+    config.include(app_version)
 
     config.include('pyramid_multiauth')  # must be before calling set_authorization_policy
     from pyramid_localroles import LocalRolesAuthorizationPolicy
     # Override default authz policy set by pyramid_multiauth
     config.set_authorization_policy(LocalRolesAuthorizationPolicy())
     config.include(session)
-    config.include('.persona')
+    config.include('.auth0')
 
     config.include(configure_dbsession)
-    config.include('contentbase')
+    config.include('snovault')
     config.commit()  # commit so search can override listing
 
     # Render an HTML page to browsers and a JSON document for API clients
@@ -215,16 +222,18 @@ def main(global_config, **local_config):
     config.include('.visualization')
 
     if 'elasticsearch.server' in config.registry.settings:
-        config.include('contentbase.elasticsearch')
+        config.include('snovault.elasticsearch')
         config.include('.search')
 
     if 'snp_search.server' in config.registry.settings:
         addresses = aslist(config.registry.settings['snp_search.server'])
-        config.registry[SNP_SEARCH_ES] = Elasticsearch(
+        config.registry['snp_search'] = Elasticsearch(
             addresses,
             serializer=PyramidJSONSerializer(json_renderer),
             connection_class=TimedUrllib3HttpConnection,
             retry_on_timeout=True,
+            timeout=60,
+            maxsize=50
         )
         config.include('.region_search')
         config.include('.peak_indexer')

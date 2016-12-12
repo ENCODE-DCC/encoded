@@ -1,5 +1,5 @@
-from contentbase import calculated_property
-from contentbase.util import ensurelist
+from snovault import calculated_property
+from snovault.util import ensurelist
 
 
 class CalculatedBiosampleSlims:

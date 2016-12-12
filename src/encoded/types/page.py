@@ -1,5 +1,5 @@
-from contentbase.schema_utils import VALIDATOR_REGISTRY
-from contentbase import (
+from snovault.schema_utils import VALIDATOR_REGISTRY
+from snovault import (
     COLLECTIONS,
     CONNECTION,
     Collection,
@@ -9,10 +9,10 @@ from contentbase import (
     collection,
     load_schema,
 )
-from contentbase.resource_views import item_view_page
+from snovault.resource_views import item_view_page
 from .base import (
     ALLOW_EVERYONE_VIEW,
-    Item,
+    SharedItem,
     ONLY_ADMIN_VIEW,
 )
 from pyramid.location import lineage
@@ -21,6 +21,7 @@ from pyramid.traversal import (
     find_resource,
 )
 from pyramid.view import view_config
+import dateutil.parser
 
 
 @collection(
@@ -30,18 +31,14 @@ from pyramid.view import view_config
         'title': 'Pages',
         'description': 'Portal pages',
     })
-class Page(Item):
+class Page(SharedItem):
     item_type = 'page'
     schema = load_schema('encoded:schemas/page.json')
     name_key = 'name'
-    STATUS_ACL = {
-        'in progress': ONLY_ADMIN_VIEW,
-        'released': ALLOW_EVERYONE_VIEW,
-        'deleted': ONLY_ADMIN_VIEW,
-    }
 
     embedded = [
         'layout.blocks.image',
+        'award',
     ]
 
     def unique_keys(self, properties):
@@ -62,6 +59,13 @@ class Page(Item):
         if name == 'homepage':
             return '/'
         return '/%s/' % name
+
+    @calculated_property(condition='date_created', schema={
+        "title": "Date",
+        "type": "string",
+    })
+    def month_released(self, date_created):
+        return dateutil.parser.parse(date_created).strftime('%B, %Y')
 
     @property
     def __parent__(self):

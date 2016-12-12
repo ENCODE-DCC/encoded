@@ -1,7 +1,7 @@
 Demo Machines
 =============
 
-To launch a demo machine you need an access key (log into AWS console to create one under IAM) which you place in ``~/.aws/credentials`` which is shared with the aws cli utility::
+To launch a demo machine you need an access key (log into AWS console to create one under IAM) which you place in ``~/.aws/credentials`` (see _aws getting started) which is shared with the aws cli utility::
 
     [default]
     aws_access_key_id=AKIA...
@@ -14,13 +14,21 @@ In ``~/.boto`` configure your default region::
 
 To deploy your currently checked out branch, run::
 
-    $ bin/deploy
+    $ bin/deploy   --instance-type m4.xlarge
 
 After a few moments, it will return the domain name of your instance::
+
+For faster indexing you can use c4.4xlarge, but after indexing stop instance at console and restart it with an m4.xlarge or t2.large
 
     branchname-789abc-username.instance.encodedcc.org
 
 The deployment can take some time, especially if it's been a while since the last full database backup.
+
+Once the demo is indexed ratchet down the instance size
+  * Login to https://us-west-2.console.aws.amazon.com/ec2/v2/home?region=us-west-2#Instances:sort=instanceState
+  * Select your instance
+  * Select Action - Instance State - Stop
+  * Select Action - Instance Settings - Change Instance Type
 
 To login to a demo machine, we first need to `sign your ssh public key`_ (the one uploaded to github, normally ~/.ssh/id_rsa.pub) with the demo_users_ca private key. This creates an id_rsa-cert.pub which you should place in your ~/.ssh/ alongside your keypair::
 
@@ -37,6 +45,8 @@ You can then follow the deployment progress with::
     $ tail -f /var/log/cloud-init-output.log
 
 .. _sign your ssh public key: https://www.digitalocean.com/community/articles/how-to-create-an-ssh-ca-to-validate-hosts-and-clients-with-ubuntu
+
+.. _aws getting started: http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html
 
 
 Authorization of Demo Machines

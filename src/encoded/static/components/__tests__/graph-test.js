@@ -13,8 +13,8 @@ describe('Experiment Graph', function() {
     React = require('react');
     TestUtils = require('react/lib/ReactTestUtils');
     _ = require('underscore');
-    assembleGraph = require('../experiment').assembleGraph;
-    graphException = require('../experiment').graphException;
+    assembleGraph = require('../filegallery').assembleGraph;
+    graphException = require('../filegallery').graphException;
     context = require('../testdata/experiment');
     collectNodes = _.memoize(_collectNodes);
 
@@ -60,13 +60,14 @@ describe('Experiment Graph', function() {
 
     // One file derived from two files, through one step.
     describe('Basic graph display', function() {
-        var experimentGraph, graph, files;
+        var graph, files;
 
         beforeEach(function() {
             var context_graph = _.clone(context);
             context_graph.accession = 'ENCTS000BGR';
             context_graph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bed-2cos')];
-            graph = assembleGraph(context_graph, '', files);
+            const graphRes = assembleGraph(context_graph, null, '', files);
+            graph = graphRes.graph;
         });
         it('Has the correct number of nodes and edges', function() {
             expect(graph.nodes.length).toEqual(4);
@@ -87,13 +88,14 @@ describe('Experiment Graph', function() {
     // There should be two copies of the step with different file
     // accessions in their IDs.
     describe('Basic graph step duplication display', function() {
-        var experimentGraph, graph, files;
+        var graph, files;
 
         beforeEach(function() {
             var context_graph = _.clone(context);
             context_graph.accession = 'ENCTS000BDD';
             context_graph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bed-3cos'), require('../testdata/file/bed-4cos')];
-            graph = assembleGraph(context_graph, '', files);
+            const graphRes = assembleGraph(context_graph, null, '', files);
+            graph = graphRes.graph
         });
 
         it('Has the correct number of nodes and edges', function() {
@@ -116,13 +118,14 @@ describe('Experiment Graph', function() {
     // Two files each deriving from one file they share; and they share a step.
     // There should be one copy of the step.
     describe('Basic graph step no duplication display', function() {
-        var experimentGraph, graph, files;
+        var graph, files;
 
         beforeEach(function() {
             var context_graph = _.clone(context);
             context_graph.accession = 'ENCTS000NDD';
             context_graph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bed-5cos'), require('../testdata/file/bed-6cos')];
-            graph = assembleGraph(context_graph, '', files);
+            const graphRes = assembleGraph(context_graph, null, '', files);
+            graph = graphRes.graph;
         });
 
         it('Has the correct number of nodes and edges', function() {
@@ -144,13 +147,14 @@ describe('Experiment Graph', function() {
     // Two files derive from the same two files and share a step.
     // There should be one copy of the step.
     describe('Two files derived from same two files', function() {
-        var experimentGraph, graph, files;
+        var graph, files;
 
         beforeEach(function() {
             var context_graph = _.clone(context);
             context_graph.accession = 'ENCTS000TFS';
             context_graph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bed-7cos'), require('../testdata/file/bed-8cos')];
-            graph = assembleGraph(context_graph, '', files);
+            const graphRes = assembleGraph(context_graph, null, '', files);
+            graph = graphRes.graph;
         });
 
         it('Has the correct number of nodes and edges', function() {
@@ -172,13 +176,14 @@ describe('Experiment Graph', function() {
     // Two files derive from two overlapping sets of files. The analysis
     // step should get duplicated, one for each set of derived_from files.
     describe('Two files derived from overlapping set of files', function() {
-        var experimentGraph, graph, files;
+        var graph, files;
 
         beforeEach(function() {
             var context_graph = _.clone(context);
             context_graph.accession = 'ENCTS000TOV';
             context_graph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bam-vuz'), require('../testdata/file/bed-10cos'), require('../testdata/file/bed-11cos')];
-            graph = assembleGraph(context_graph, '', files);
+            const graphRes = assembleGraph(context_graph, null, '', files);
+            graph = graphRes.graph;
         });
 
         it('Has the correct number of nodes and edges', function() {
@@ -201,13 +206,14 @@ describe('Experiment Graph', function() {
     // One file derived from two files, through one step.
     // Another file not derived from, and doesn't derive from others; it should vanish.
     describe('Basic graph with detached node', function() {
-        var experimentGraph, graph, files;
+        var graph, files;
 
         beforeEach(function() {
             var context_graph = _.clone(context);
             context_graph.accession = 'ENCTS000DET';
             context_graph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bam-vuz'), require('../testdata/file/bed-2cos')];
-            graph = assembleGraph(context_graph, '', files);
+            const graphRes = assembleGraph(context_graph, null, '', files);
+            graph = graphRes.graph;
         });
 
         it('Has the correct number of nodes and edges', function() {
@@ -227,26 +233,10 @@ describe('Experiment Graph', function() {
         });
     });
 
-    // One file derived from two files, through one step.
-    // One derived-from file is missing, and no graph should be generated.
-    describe('Basic graph with missing derived from file', function() {
-        var experimentGraph, graph, files;
-        var context_graph = _.clone(context);
-
-        beforeEach(function() {
-            context_graph.accession = 'ENCTS000MDF';
-            context_graph.files = files = [require('../testdata/file/bam-vuq'),require('../testdata/file/bed-2cos')];
-        });
-
-        it('No graph generated at all', function() {
-            expect(function() { assembleGraph(context_graph, '', files); }).toThrow(new graphException('No graph: derived_from file outside replicate (or in multiple replicates) missing'));
-        });
-    });
-
     // Two files derive from one file each through a shared step. Each file and derived from files in a replicate.
     // Total of two replicates with three nodes each
     describe('Two graphs in two replicates', function() {
-        var experimentGraph, graph, files;
+        var graph, files;
 
         beforeEach(function() {
             var context_graph = _.clone(context);
@@ -255,7 +245,8 @@ describe('Experiment Graph', function() {
             files[0].biological_replicates = files[2].biological_replicates = [ 1 ];
             files[1].biological_replicates = files[3].biological_replicates = [ 2 ];
 
-            graph = assembleGraph(context_graph, '', files);
+            const graphRes = assembleGraph(context_graph, null, '', files);
+            graph = graphRes.graph;
         });
 
         it('Has the correct number of nodes and edges', function() {
@@ -285,7 +276,7 @@ describe('Experiment Graph', function() {
     // Two files derive from one file each through a shared step. Each file and derived from files in a replicate.
     // Total of two replicates with three nodes each
     describe('Two graphs in two replicates; one derived-from missing', function() {
-        var experimentGraph, graph, files;
+        var graph, files;
     
         beforeEach(function() {
             var context_graph = _.clone(context);
@@ -297,13 +288,14 @@ describe('Experiment Graph', function() {
             files[2].derived_from = [require('../testdata/file/bam-vus')];
             files[2].biological_replicates = files[2].derived_from[0].biological_replicates = [ 2 ];
 
-            graph = assembleGraph(context_graph, '', files);
+            const graphRes = assembleGraph(context_graph, null, '', files);
+            graph = graphRes.graph;
         });
 
         it('Has the correct number of nodes and edges', function() {
             var subNodes = 0;
 
-            expect(graph.nodes.length).toEqual(1);
+            expect(graph.nodes.length).toEqual(2);
             graph.nodes.forEach(function(node) {
                 subNodes += node.nodes.length;
             });

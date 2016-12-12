@@ -3,7 +3,7 @@
     "id": "/profiles/hotspot_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step_run","quality_metric_of"],
+    "required": ["step_run","quality_metric_of", "award", "lab"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
@@ -12,24 +12,28 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/submitted"},
         { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status"},
         { "$ref": "mixins.json#/assay" }
    ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
-        "SPOT": {
+        "SPOT score": {
+            "title": "SPOT score",
             "type": "number",
-            "description": "SPOT"
+            "description": "SPOT score as calculated by hotspot2"
         },
-        "hotspot tags": {
+        "hotspot count": {
+            "title": "# of hotspots",
             "type": "number",
-            "description": "Count of read tags in hotspots"
+            "description": "Count of hotspots discovered by hotspot2"
         },
-        "total tags": {
+        "peaks count": {
+            "title": "# of peaks",
             "type": "number",
-            "description": "Count of all read tags"
+            "description": "Count of peaks discovered by hotspot2"
         }
     }
 }
