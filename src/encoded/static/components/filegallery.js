@@ -9,7 +9,7 @@ import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
 import { StatusLabel } from './statuslabel';
 import { Graph, JsonGraph } from './graph';
 import { softwareVersionList } from './software';
-import { FetchedItems, FetchedData, Param } from './fetched';
+import { FetchedData, Param } from './fetched';
 import { collapseIcon } from '../libs/svg-icons';
 import { SortTablePanel, SortTable } from './sorttable';
 import { AttachmentPanel } from './doc';
@@ -1082,7 +1082,6 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
     const allFiles = {}; // All files, keyed by file@id
     let matchingFiles = {}; // All files that match the current assembly/annotation, keyed by file @id
     const fileQcMetrics = {}; // List of all file QC metrics indexed by file ID
-    let stepExists;
     files.forEach((file) => {
         // allFiles gets all file regardless of filtering.
         allFiles[file['@id']] = file;
@@ -1091,7 +1090,6 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         // Note that if all assemblies and annotations are selected, this function isn't called
         // because no graph gets displayed in that case.
         if ((file.assembly === filterAssembly) && ((!file.genome_annotation && !filterAnnotation) || (file.genome_annotation === filterAnnotation))) {
-
             // Note whether any files have an analysis step
             const fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
             if (!fileAnalysisStep || (file.derived_from && file.derived_from.length)) {
@@ -1258,6 +1256,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
     console.log('REPS: %o', allReplicates);
     console.log('CONTRIBUTING: %o', usedContributingFiles);
     console.log('COALESCING: %o', coalescingGroups);
+    console.log('QC: %o', fileQcMetrics);
 
     // Create an empty graph architecture that we fill in next.
     const jsonGraph = new JsonGraph(context.accession);
@@ -1562,7 +1561,6 @@ const FileGalleryRenderer = React.createClass({
         }
 
         const filterOptions = files.length ? collectAssembliesAnnotations(files) : [];
-        const loggedIn = this.context.session && this.context.session['auth.userid'];
 
         if (this.state.selectedFilterValue && filterOptions[this.state.selectedFilterValue]) {
             selectedAssembly = filterOptions[this.state.selectedFilterValue].assembly;
