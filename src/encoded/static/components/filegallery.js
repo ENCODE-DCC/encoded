@@ -1063,7 +1063,7 @@ export function GraphException(message, file0, file1) {
 
 
 export function assembleGraph(context, session, infoNodeId, files, filterAssembly, filterAnnotation) {
-    // Calculate a step ID from a file's derived_from array
+    // Calculate a step ID from a file's derived_from array.
     function rDerivedFileIds(file) {
         if (file.derived_from && file.derived_from.length) {
             return file.derived_from.sort().join();
@@ -1071,22 +1071,25 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         return '';
     }
 
+    // Calculate a QC node ID.
     function rGenQcId(metric, file) {
         return `qc:${metric['@id'] + file['@id']}`;
     }
 
-    const allPipelines = {}; // List of all pipelines indexed by step @id
     const derivedFileIds = _.memoize(rDerivedFileIds, file => file['@id']);
     const genQcId = _.memoize(rGenQcId, (metric, file) => metric['@id'] + file['@id']);
 
-    const allFiles = {}; // All files, keyed by file@id
+    // Begin collecting up information about the files from the search result, and gathering their
+    // QC and analysis pipeline information.
+    const allFiles = {}; // All searched files, keyed by file @id
     let matchingFiles = {}; // All files that match the current assembly/annotation, keyed by file @id
-    const fileQcMetrics = {}; // List of all file QC metrics indexed by file ID
+    const fileQcMetrics = {}; // List of all file QC metrics indexed by file @id
+    const allPipelines = {}; // List of all pipelines indexed by step @id
     files.forEach((file) => {
-        // allFiles gets all file regardless of filtering.
+        // allFiles gets all files from search regardless of filtering.
         allFiles[file['@id']] = file;
 
-        // allMatchingFiles gets just the files matching the given filtering assembly/annotation.
+        // matchingFiles gets just the files matching the given filtering assembly/annotation.
         // Note that if all assemblies and annotations are selected, this function isn't called
         // because no graph gets displayed in that case.
         if ((file.assembly === filterAssembly) && ((!file.genome_annotation && !filterAnnotation) || (file.genome_annotation === filterAnnotation))) {
@@ -1097,20 +1100,10 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
                 // the graph.
                 matchingFiles[file['@id']] = file;
 
-                // Collect any QC info that applies to this file.
+                // Collect any QC info that applies to this file and make it searchable by file
+                // @id.
                 if (file.quality_metrics && file.quality_metrics.length) {
-                    const matchingQc = [];
-
-                    // Search file's quality_metrics array to find one with a quality_metric_of field referring to this file.
-                    file.quality_metrics.forEach((metric) => {
-                        const matchingFile = _(metric.quality_metric_of).find(appliesFile => file['@id'] === appliesFile);
-                        if (matchingFile) {
-                            matchingQc.push(metric);
-                        }
-                    });
-                    if (matchingQc.length) {
-                        fileQcMetrics[file['@id']] = matchingQc;
-                    }
+                    fileQcMetrics[file['@id']] = file.quality_metrics;
                 }
 
                 // Save the pipeline array used for each step used by the file.
@@ -1211,6 +1204,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
 
     // Go through each used contributing file and set a property within it showing which files
     // derive from it. We'll need that for coalescing contributing files.
+    const allCoalesced = {};
     let coalescingGroups = {};
     if (usedContributingFiles.length) {
         usedContributingFiles.forEach((usedContributingFile) => {
@@ -1224,7 +1218,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         // coalescing nodes. `coalescingGroups` gets assigned an object keyed by dataset file ids
         // hashed to a stringified 32-bit integer, and mapped to an array of contributing files they
         // derive from.
-        coalescingGroups = _(usedContributingFiles).groupBy(contributingFile => globals.hashCode(contributingFile.derivedFiles.join(',')).toString());
+        coalescingGroups = _(usedContributingFiles).groupBy(contributingFile => globals.hashCode(contributingFile.derivedFiles.map(derivedFile => derivedFile['@id']).join(',')).toString());
 
         // Set a `coalescingGroup` property in each contributing file with its coalescing group's hash
         // value. That'll be important when we add step nodes.
@@ -1234,34 +1228,31 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
                 const group = coalescingGroups[groupHash];
                 if (group.length >= MINIMUM_COALESCE_COUNT) {
                     // Number of files in the coalescing group is at least the minimum number of files we
-                    // allow in a coalescig group. Mark every contributing file in the group with the
+                    // allow in a coalescing group. Mark every contributing file in the group with the
                     // group's hash value in a `coalescingGroup` property that step node can connnect to.
                     group.forEach((contributingFile) => {
                         contributingFile.coalescingGroup = groupHash;
+                        allCoalesced[contributingFile['@id']] = contributingFile;
 
-                        // Remove coalesced files from allFiles
-                        delete allFiles[contributingFile['@id']];
+                        // Remove coalesced files from usedContributingFiles because we don't want
+                        // to render individual files that have been coalesced.
+                        const contributingIndex = usedContributingFiles.findIndex(file => file['@id'] === contributingFile['@id']);
+                        usedContributingFiles.splice(contributingIndex, 1);
                     });
                 } else {
-                    // Don't use this coalescingGroup anymore.
-                    coalescingGroups[groupHash] = [];
+                    // The number of contributing files in a coalescing group isn't above our
+                    // threshold. Don't use this coalescingGroup anymore and just render them the
+                    // same as normal files.
+                    delete coalescingGroups[groupHash];
                 }
             });
         }
     }
 
-    console.log('ALL: %o', allFiles);
-    console.log('MATCHING: %o', matchingFiles);
-    console.log('DERIVED: %o', allDerivedFroms);
-    console.log('REPS: %o', allReplicates);
-    console.log('CONTRIBUTING: %o', usedContributingFiles);
-    console.log('COALESCING: %o', coalescingGroups);
-    console.log('QC: %o', fileQcMetrics);
-
     // Create an empty graph architecture that we fill in next.
     const jsonGraph = new JsonGraph(context.accession);
 
-    // Create nodes for the replicates
+    // Create nodes for the replicates.
     Object.keys(allReplicates).forEach((replicateNum) => {
         if (allReplicates[replicateNum] && allReplicates[replicateNum].length) {
             jsonGraph.addNode(`rep:${replicateNum}`, `Replicate ${replicateNum}`, {
@@ -1292,6 +1283,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
             });
         }
 
+        // Add a node for a regular searched file.
         jsonGraph.addNode(fileNodeId, fileNodeLabel, {
             cssClass: fileCssClass,
             type: 'File',
@@ -1301,6 +1293,8 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
             ref: fileRef,
         }, metricsInfo);
 
+        // Figure out the analysis step we need to render between the node we just rendered and its
+        // derived_from.
         let stepId;
         let label;
         let pipelineInfo;
@@ -1323,6 +1317,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
             stepId = '';
         }
 
+        // If we have a step to render, do that here.
         if (stepId) {
             // Add the step to the graph only if we haven't for this derived-from set already
             if (!jsonGraph.getNode(stepId)) {
@@ -1353,11 +1348,21 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
                 } else {
                     // File derived from a contributing file; add edges to a coalesced node
                     // that we'll add to the graph later.
-                    const contributingFile = usedContributingFiles.find(contributing => contributing['@id'] === derivedFromAtId);
-                    if (contributingFile && contributingFile.coalescingGroup) {
-                        const derivedFileId = `coalesced:${contributingFile.coalescingGroup}`;
+                    const coalescedContributing = allCoalesced[derivedFromAtId];
+                    if (coalescedContributing) {
+                        // Rendering a coalesced contributing file.
+                        const derivedFileId = `coalesced:${coalescedContributing.coalescingGroup}`;
                         if (!jsonGraph.getEdge(derivedFileId, stepId)) {
                             jsonGraph.addEdge(derivedFileId, stepId);
+                        }
+                    } else {
+                        // Renderig an individual contributing file.
+                        const derivedContributing = usedContributingFiles.find(usedContributingFile => usedContributingFile['@id'] === derivedFromAtId);
+                        if (derivedContributing) {
+                            const derivedFileId = `file:${derivedFromAtId}`;
+                            if (!jsonGraph.getEdge(derivedFileId, stepId)) {
+                                jsonGraph.addEdge(derivedFileId, stepId);
+                            }
                         }
                     }
                 }
@@ -1386,6 +1391,25 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         }
     });
 
+    // Go through each derived-from file and add it to our graph.
+    usedContributingFiles.forEach((file) => {
+        const fileNodeId = `file:${file['@id']}`;
+        const fileNodeLabel = `${file.title} (${file.output_type})`;
+        const fileCssClass = `pipeline-node-file${infoNodeId === fileNodeId ? ' active' : ''}`;
+        const fileRef = file;
+        const replicateNode = (file.biological_replicates && file.biological_replicates.length === 1) ? jsonGraph.getNode(`rep:${file.biological_replicates[0]}`) : null;
+
+        jsonGraph.addNode(fileNodeId, fileNodeLabel, {
+            cssClass: fileCssClass,
+            type: 'File',
+            shape: 'rect',
+            cornerRadius: 16,
+            parentNode: replicateNode,
+            contributing: true,
+            ref: fileRef,
+        });
+    });
+
     // Now add coalesced nodes to the graph.
     Object.keys(coalescingGroups).forEach((groupHash) => {
         const coalescingGroup = coalescingGroups[groupHash];
@@ -1405,7 +1429,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         }
     });
 
-    return { graph: jsonGraph, graphedFiles: {} };
+    return { graph: jsonGraph, graphedFiles: matchingFiles };
 }
 
 
