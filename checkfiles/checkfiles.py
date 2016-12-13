@@ -730,8 +730,8 @@ def check_file(config, session, url, job):
                 errors['fastq_information_extraction'] = 'Failed to extract information from ' + \
                                                          local_path
     if item['file_format'] == 'bed':
-        remove_local_file(unzipped_original_bed_path)
-        remove_local_file(unzipped_modified_bed_path)
+        remove_local_file(unzipped_original_bed_path, errors)
+        remove_local_file(unzipped_modified_bed_path, errors)
 
     if item['status'] != 'uploading':
         errors['status_check'] = \
