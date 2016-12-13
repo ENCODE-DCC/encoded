@@ -352,6 +352,13 @@ var Biosample = module.exports.Biosample = React.createClass({
                                         </div>
                                     : null}
 
+                                    {context.submitter_comment ?
+                                        <div data-test="submittercomment">
+                                            <dt>Submitter comment</dt>
+                                            <dd>{context.submitter_comment}</dd>
+                                        </div>
+                                    : null}
+
                                     {tagBadges ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>

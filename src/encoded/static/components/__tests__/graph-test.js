@@ -295,7 +295,7 @@ describe('Experiment Graph', function() {
         it('Has the correct number of nodes and edges', function() {
             var subNodes = 0;
 
-            expect(graph.nodes.length).toEqual(1);
+            expect(graph.nodes.length).toEqual(2);
             graph.nodes.forEach(function(node) {
                 subNodes += node.nodes.length;
             });
