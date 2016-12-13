@@ -499,9 +499,13 @@ const Award = React.createClass({
                         <ProjectBadge award={context} addClasses="badge-heading" />
                     </PanelHeading>
                     <PanelBody>
-                        <div className="two-column-long-text two-column-long-text--gap">
-                            {context.description ? <p>{context.description}</p> : <p className="browser-error">Award has no description</p>}
-                        </div>
+                        {context.description ?
+                            <div className="two-column-long-text two-column-long-text--gap">
+                                <p>{context.description}</p>
+                            </div>
+                        :
+                            <p className="browser-error">Award has no description</p>
+                        }
                         {context.pi && context.pi.lab ?
                             <dl className="key-value">
                                 <div data-test="pi">
