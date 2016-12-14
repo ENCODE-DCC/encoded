@@ -271,7 +271,6 @@ describe('Experiment Graph', () => {
         });
     });
 
-/* Comment out until I figure out how to configure this test
     // Two files derive from one file each through a shared step. Each file and derived from files in a replicate.
     // Total of two replicates with three nodes each
     describe('Two graphs in two replicates; one derived-from missing', () => {
@@ -282,10 +281,9 @@ describe('Experiment Graph', () => {
             const contextGraph = _.clone(context);
             contextGraph.accession = 'ENCTS000RPM';
             contextGraph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bed-3cos'), require('../testdata/file/bed-4cos')];
-            files[0].biological_replicates = files[1].biological_replicates = [ 1 ];
+            files[0].biological_replicates = files[1].biological_replicates = [1];
             files[2].derived_from = [require('../testdata/file/bam-vus')['@id']];
-            files[2].biological_replicates = [ 2 ];
-
+            files[2].biological_replicates = [2];
             const graphRes = assembleGraph(contextGraph, null, '', files);
             graph = graphRes.graph;
         });
@@ -293,23 +291,23 @@ describe('Experiment Graph', () => {
         it('Has the correct number of nodes and edges', () => {
             let subNodes = 0;
 
-            expect(graph.nodes.length).toEqual(2);
+            expect(graph.nodes.length).toEqual(3);
             graph.nodes.forEach((node) => {
                 subNodes += node.nodes.length;
             });
-            expect(subNodes).toEqual(3);
-            expect(graph.edges.length).toEqual(2);
+            expect(subNodes).toEqual(5);
+            expect(graph.edges.length).toEqual(4);
         });
 
         it('has the right nodes', () => {
             expect(containsNodes(graph, ['rep:1', 'file:/files/ENCFF000VUQ/', 'file:/files/ENCFF003COS/',
                 'step:/files/ENCFF000VUQ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/'])).toBeTruthy();
-            expect(containsNodes(graph, ['rep:2'])).toBeFalsy();
+            expect(containsNodes(graph, ['rep:2'])).toBeTruthy();
         });
 
-        it('has the right relationships between edges and nodes', function() {
+        it('has the right relationships between edges and nodes', () => {
             expect(hasParents(graph, 'step:/files/ENCFF000VUQ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/', ['file:/files/ENCFF000VUQ/'])).toBeTruthy();
             expect(hasParents(graph, 'file:/files/ENCFF003COS/', ['step:/files/ENCFF000VUQ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/'])).toBeTruthy();
         });
-    }); */
+    });
 });

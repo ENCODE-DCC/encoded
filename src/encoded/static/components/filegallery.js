@@ -1249,6 +1249,20 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         }
     }
 
+    // See if we have any derived_from files that we have no information on, likely because they're
+    // not released and we're not logged in. We'll render them with information-less dummy nodes.
+    const allMissingFiles = [];
+    Object.keys(allDerivedFroms).forEach((derivedFromFileAtId) => {
+        if (!allFiles[derivedFromFileAtId] && !allCoalesced[derivedFromFileAtId]) {
+            // The derived-from file isn't in our dataset file list, nor in coalesced contributing
+            // files. Now see if it's in non-coalesced contributing files.
+            const derivedContributing = usedContributingFiles.some(contributingFile => contributingFile['@id'] === derivedFromFileAtId);
+            if (!derivedContributing) {
+                allMissingFiles.push(derivedFromFileAtId);
+            }
+        }
+    });
+
     // Create an empty graph architecture that we fill in next.
     const jsonGraph = new JsonGraph(context.accession);
 
@@ -1307,13 +1321,13 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
             pipelineInfo = allPipelines[fileAnalysisStep['@id']];
             error = false;
         } else if (derivedFileIds(file)) {
-            // File derives from others, but no analysis step; make dummy step
+            // File derives from others, but no analysis step; make dummy step.
             stepId = `error:${derivedFileIds(file)}`;
             label = 'Software unknown';
             pipelineInfo = null;
             error = true;
         } else {
-            // No analysis step and no derived_from; don't add a step
+            // No analysis step and no derived_from; don't add a step.
             stepId = '';
         }
 
@@ -1338,7 +1352,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
             // Connect the file to the step, and the step to the derived_from files
             jsonGraph.addEdge(stepId, fileNodeId);
             file.derived_from.forEach((derivedFromAtId) => {
-                const derivedFromFile = allFiles[derivedFromAtId];
+                const derivedFromFile = allFiles[derivedFromAtId] || allMissingFiles.some(missingFileId => missingFileId === derivedFromAtId);
                 if (derivedFromFile) {
                     // Not derived from a contributing file; just add edges normally.
                     const derivedFileId = `file:${derivedFromAtId}`;
@@ -1391,7 +1405,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         }
     });
 
-    // Go through each derived-from file and add it to our graph.
+    // Go through each derived-from contributing file and add it to our graph.
     usedContributingFiles.forEach((file) => {
         const fileNodeId = `file:${file['@id']}`;
         const fileNodeLabel = `${file.title} (${file.output_type})`;
@@ -1427,6 +1441,21 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
                 ref: coalescingGroup,
             });
         }
+    });
+
+    // Add missing-file nodes to the graph.
+    allMissingFiles.forEach((missingFileAtId) => {
+        const fileNodeAccession = globals.atIdToAccession(missingFileAtId);
+        const fileNodeId = `file:${missingFileAtId}`;
+        const fileNodeLabel = `${fileNodeAccession} (unknown)`;
+        const fileCssClass = 'pipeline-node-file error';
+
+        jsonGraph.addNode(fileNodeId, fileNodeLabel, {
+            cssClass: fileCssClass,
+            type: 'File',
+            shape: 'rect',
+            cornerRadius: 16,
+        });
     });
 
     return { graph: jsonGraph, graphedFiles: matchingFiles };
