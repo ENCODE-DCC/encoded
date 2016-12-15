@@ -68,7 +68,7 @@ def file1_2(file_exp, award, lab, file_rep1_2, testapp):
         'dataset': file_exp['uuid'],
         'replicate': file_rep1_2['uuid'],
         'file_format': 'fastq',
-        'md5sum': '100d8c998f00b204e9r800998ecf8427e',
+        'md5sum': '540fff83502bcacee1b38082b418e8d6',
         'output_type': 'raw data',
         'run_type': 'single-ended',
         'award': award['uuid'],
@@ -119,7 +119,7 @@ def file3(file_exp, award, lab, file_rep, testapp):
         'dataset': file_exp['uuid'],
         'replicate': file_rep['uuid'],
         'file_format': 'fastq',
-        'md5sum': '100d8c998f11b204e9800998ecf8427e',
+        'md5sum': '1b843a3ee2a3f4114a9f85c381e28e17',
         'output_type': 'reads',
         'run_type': 'single-ended',
         'award': award['uuid'],
@@ -168,7 +168,7 @@ def file7(file_exp2, award, encode_lab, testapp, analysis_step_run_bam):
         'dataset': file_exp2['uuid'],
         'file_format': 'tsv',
         'file_size': 3,
-        'md5sum': '100d8c998f00b2204e9800998ecf8428b',
+        'md5sum': '2e2d41d1a2adb23df3e03d7a08ebd757',
         'output_type': 'gene quantifications',
         'award': award['uuid'],
         'lab': encode_lab['uuid'],
@@ -659,15 +659,4 @@ def test_audit_file_bam_derived_from_different_experiment(testapp, file6, file4,
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent derived_from'
-               for error in errors_list)
-
-
-def test_audit_file_md5sum(testapp, file1):
-    testapp.patch_json(file1['@id'], {'md5sum': 'some_random_text'})
-    res = testapp.get(file1['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent md5sum'
                for error in errors_list)

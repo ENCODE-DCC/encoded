@@ -269,7 +269,7 @@ def fastq_file(testapp, lab, award, experiment, replicate):
     item = {
         'dataset': experiment['@id'],
         'file_format': 'fastq',
-        'md5sum': 'd41d8cd9f00b204e9800998ecf8427e',
+        'md5sum': '4decbb66b151a86761e9e6b6537f373e',
         'replicate': replicate['@id'],
         'output_type': 'reads',
         'run_type': 'single-ended',
@@ -285,7 +285,7 @@ def bam_file(testapp, lab, award, experiment):
     item = {
         'dataset': experiment['@id'],
         'file_format': 'bam',
-        'md5sum': 'd41d8cd9f00b204e9800998ecf86674427e',
+        'md5sum': '256f81e44d3586c5d7eb4337679dfae4',
         'output_type': 'alignments',
         'assembly': 'hg19',
         'lab': lab['@id'],
@@ -386,9 +386,9 @@ def treatment(testapp, organism):
     item = {
         'treatment_term_name': 'ethanol',
         'treatment_type': 'chemical'
-       
     }
     return testapp.post_json('/treatment', item).json['@graph'][0]
+
 
 @pytest.fixture
 def attachment():
