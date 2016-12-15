@@ -742,7 +742,6 @@ def check_file(config, session, url, job):
     if errors:
         errors['gathered information'] = 'Gathered information about the file was: {}.'.format(
             str(result))
-        errors['content_error'] = 'new message'
 
     return job
 
