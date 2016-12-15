@@ -211,7 +211,6 @@ def biosample(testapp, source, lab, award, organism):
 @pytest.fixture
 def library(testapp, lab, award, biosample):
     item = {
-        'nucleic_acid_term_id': 'SO:0000352',
         'nucleic_acid_term_name': 'DNA',
         'lab': lab['@id'],
         'award': award['@id'],
@@ -696,7 +695,6 @@ def library_1(testapp, lab, award, base_biosample):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'nucleic_acid_term_id': 'SO:0000352',
         'nucleic_acid_term_name': 'DNA',
         'biosample': base_biosample['uuid']
     }
@@ -708,7 +706,6 @@ def library_2(testapp, lab, award, base_biosample):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'nucleic_acid_term_id': 'SO:0000352',
         'nucleic_acid_term_name': 'DNA',
         'biosample': base_biosample['uuid']
     }
