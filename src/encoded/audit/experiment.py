@@ -128,7 +128,7 @@ def audit_experiment_pipeline_assay_details(value, system):
                          'contains file(s) associated with ' + \
                          'pipeline {} '.format(p['@id']) + \
                          'which assay_term_id does not match experiments\'s asssay_term_id.'
-                yield AuditFailure('inconsistent assay_term_id', detail, level='INTERNAL_ACTION')
+                yield AuditFailure('inconsistent assay_term_name', detail, level='INTERNAL_ACTION')
 
 
 @audit_checker('Experiment', frame=['original_files',
@@ -3287,15 +3287,15 @@ def audit_library_RNA_size_range(value, system):
     if value['status'] in ['deleted']:
         return
 
-    RNAs = ['SO:0000356',
-            'SO:0000871',
-            'SO:0000276']
+    RNAs = ['RNA',
+            'polyadenylated mRNA',
+            'miRNA']
 
     for rep in value['replicates']:
         if 'library' not in rep:
             continue
         lib = rep['library']
-        if (lib['nucleic_acid_term_id'] in RNAs) and ('size_range' not in lib):
+        if (lib['nucleic_acid_term_name'] in RNAs) and ('size_range' not in lib):
             detail = 'Metadata of RNA library {} lacks information on '.format(rep['library']['@id']) + \
                      'the size range of fragments used to construct the library.'
             yield AuditFailure('missing RNA fragment size', detail, level='NOT_COMPLIANT')
