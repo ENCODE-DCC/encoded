@@ -1369,13 +1369,10 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
                         if (!jsonGraph.getEdge(derivedFileId, stepId)) {
                             jsonGraph.addEdge(derivedFileId, stepId);
                         }
-                    } else {
-                        // Renderig an individual contributing file.
-                        if (usedContributingFiles[derivedFromAtId]) {
-                            const derivedFileId = `file:${derivedFromAtId}`;
-                            if (!jsonGraph.getEdge(derivedFileId, stepId)) {
-                                jsonGraph.addEdge(derivedFileId, stepId);
-                            }
+                    } else if (usedContributingFiles[derivedFromAtId]) {
+                        const derivedFileId = `file:${derivedFromAtId}`;
+                        if (!jsonGraph.getEdge(derivedFileId, stepId)) {
+                            jsonGraph.addEdge(derivedFileId, stepId);
                         }
                     }
                 }
@@ -1415,7 +1412,8 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
             type: 'File',
             shape: 'rect',
             cornerRadius: 16,
-            contributing: true,
+            contributing: fileAtId,
+            ref: {},
         });
     });
 
@@ -1466,31 +1464,35 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
 //
 // relatedFileIds: array of related_file @ids.
 // searchedFiles: Array of files returned from a search of files with dataset pointing at this one.
-function requestRelatedFiles(relatedFileIds, searchedFiles) {
-    const chunkSize = 2; // Maximum of related files to search for at once
-    const searchedFileIds = {};
+function requestFiles(relatedFileIds, searchedFiles) {
+    const chunkSize = 100; // Maximum # of files to search for at once
+    const searchedFileIds = {}; // @ids of files we've searched for and don't need retrieval
+    let filteredFileIds = {}; // @ids of files we need to retrieve
 
     // Make a searchable object of file IDs for files obtained through search.
-    if (searchedFiles.length) {
+    if (searchedFiles && searchedFiles.length) {
         searchedFiles.forEach((searchedFile) => {
             searchedFileIds[searchedFile['@id']] = searchedFile;
         });
-    }
 
-    // Filter the related file @ids to exclude those files we already have in data.@graph,
-    // just so we don't use bandwidth getting things we already have.
-    const filteredFileIds = relatedFileIds.filter(fileId => !searchedFileIds[fileId]);
+        // Filter the given file @ids to exclude those files we already have in data.@graph,
+        // just so we don't use bandwidth getting things we already have.
+        filteredFileIds = relatedFileIds.filter(fileId => !searchedFileIds[fileId]);
+    } else {
+        // We have *no* files already, so filtered files are just all of them.
+        filteredFileIds = relatedFileIds;
+    }
 
     // Break relatedFileIds into an array of arrays of <= `chunkSize` @ids so we don't
     // generate search URLs that are too long for the server to handle.
-    const relatedFileChunks = [];
+    const fileChunks = [];
     for (let start = 0, chunkIndex = 0; start < filteredFileIds.length; start += chunkSize, chunkIndex += 1) {
-        relatedFileChunks[chunkIndex] = filteredFileIds.slice(start, start + chunkSize);
+        fileChunks[chunkIndex] = filteredFileIds.slice(start, start + chunkSize);
     }
 
     // Going to send out all search chunk GET requests at once, and then wait for all of
     // them to complete.
-    return Promise.all(relatedFileChunks.map((fileChunk) => {
+    return Promise.all(fileChunks.map((fileChunk) => {
         // Build URL containing file search for specific files for each chunk of files.
         const url = '/search/?type=File&limit=all&status!=deleted&status!=revoked&status!=replaced'.concat(fileChunk.reduce((combined, current) => `${combined}&@id=${current}`, ''));
         return fetch(url, {
@@ -1549,7 +1551,7 @@ const FileGalleryRenderer = React.createClass({
         const relatedFileIds = context.related_files && context.related_files.length ? context.related_files : [];
         if (relatedFileIds.length) {
             const searchedFiles = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
-            requestRelatedFiles(relatedFileIds, searchedFiles).then((relatedFiles) => {
+            requestFiles(relatedFileIds, searchedFiles).then((relatedFiles) => {
                 this.setState({ relatedFiles: relatedFiles });
             });
         }
@@ -1567,7 +1569,7 @@ const FileGalleryRenderer = React.createClass({
         const relatedFileIds = context.related_files && context.related_files.length ? context.related_files : [];
         if (relatedFileIds.length) {
             const searchedFiles = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
-            requestRelatedFiles(relatedFileIds, searchedFiles).then((relatedFiles) => {
+            requestFiles(relatedFileIds, searchedFiles).then((relatedFiles) => {
                 if (relatedFiles.length !== this.state.relatedFiles.length) {
                     this.setState({ relatedFiles: relatedFiles });
                 }
@@ -1944,6 +1946,7 @@ const FileGraph = React.createClass({
 
     getInitialState: function () {
         return {
+            contributingFiles: {}, // List of contributing file objects we've requested; acts as a cache too
             infoModalOpen: false, // Graph information modal open
             collapsed: false, // T if graphing panel is collapsed
         };
@@ -1972,11 +1975,32 @@ const FileGraph = React.createClass({
                     meta.type = 'File';
                 }
             } else {
-                // A regular file.
+                // A regular or contributing file.
                 const node = jsonGraph.getNode(infoNodeId);
                 if (node) {
-                    meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, loggedIn, adminUser);
-                    meta.type = node['@type'][0];
+                    if (node.metadata.contributing) {
+                        // This is a contributing file, and its @id is in node.metadata.ref. See if
+                        // the file is in the cache.
+                        const currContributing = this.state.contributingFiles;
+                        if (currContributing[node.metadata.contributing]) {
+                            // We have this file's object in the cache, so just display it.
+                            node.metadata.ref = currContributing[node.metadata.contributing];
+                            meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, loggedIn, adminUser);
+                            meta.type = node['@type'][0];
+                        } else {
+                            // We don't have this file's object in the cache, so request it from
+                            // the DB.
+                            requestFiles([node.metadata.contributing]).then((contributingFile) => {
+                                currContributing[node.metadata.contributing] = contributingFile[0];
+                                this.setState({ contributingFiles: currContributing });
+                            });
+                        }
+                    } else {
+                        // Regular File data in the node from when we generated the graph. Just
+                        // display the file data from there.
+                        meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, loggedIn, adminUser);
+                        meta.type = node['@type'][0];
+                    }
                 }
             }
         }
