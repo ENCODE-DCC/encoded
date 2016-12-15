@@ -1409,7 +1409,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
     usedContributingFiles.forEach((file) => {
         const fileNodeId = `file:${file['@id']}`;
         const fileNodeLabel = `${file.title} (${file.output_type})`;
-        const fileCssClass = `pipeline-node-file${infoNodeId === fileNodeId ? ' active' : ''}`;
+        const fileCssClass = `pipeline-node-file contributing${infoNodeId === fileNodeId ? ' active' : ''}`;
         const fileRef = file;
         const replicateNode = (file.biological_replicates && file.biological_replicates.length === 1) ? jsonGraph.getNode(`rep:${file.biological_replicates[0]}`) : null;
 
