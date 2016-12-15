@@ -1,6 +1,11 @@
 Change log for library.json
 ===========================
 
+Schema version 5
+----------------
+
+* nucleic_acid_term_id will no longer be allowed to be submitted, it will be automatically calculated based on the term_name
+* depleted_in_term_id will no longer be allowed to be submitted, it will be automatically calculated based on the term_name
 
 Schema version 4
 ----------------
