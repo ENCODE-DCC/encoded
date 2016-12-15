@@ -7,7 +7,9 @@ from .base import (
     Item,
     paths_filtered_by_status,
 )
-
+from .shared_calculated_properties import (
+    CalculatedAssayTermID
+)
 
 @collection(
     name='pipelines',
@@ -16,7 +18,7 @@ from .base import (
         'title': 'Pipelines',
         'description': 'Listing of Pipelines',
     })
-class Pipeline(Item):
+class Pipeline(Item, CalculatedAssayTermID):
     item_type = 'pipeline'
     schema = load_schema('encoded:schemas/pipeline.json')
     name_key = 'accession'
