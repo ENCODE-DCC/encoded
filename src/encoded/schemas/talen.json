@@ -38,7 +38,7 @@
             "description": "The name of the TALEN construct.",
             "type": "string",
             "default": "",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$",
             "uniqueKey": true
         },
         "description": {
@@ -57,7 +57,7 @@
                     "no"
                 ]
             },
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
         "url": {
             "title": "URL",

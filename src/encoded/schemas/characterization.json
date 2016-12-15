@@ -32,7 +32,7 @@
             "type": "string",
             "default": "",
             "formInput": "textarea",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
         "date": {
             "title": "Date",

@@ -29,8 +29,7 @@
         "last_name": {
             "title": "Last name",
             "description": "The user's last (family) name.",
-            "type": "string",
-            "pattern": "^\\S+$"
+            "type": "string"
         },
         "lab": {
             "title": "Affiliation",

@@ -77,7 +77,7 @@
                     "no"
                 ]
             },
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
         "urls": {
             "rdfs:subPropertyOf": "rdfs:seeAlso",
