@@ -607,6 +607,9 @@ def check_file(config, session, url, job):
 
     upload_url = job['upload_url']
     local_path = os.path.join(config['mirror'], upload_url[len('s3://'):])
+    local_file_flag = False
+    if item['file_format'] == 'bed':
+        unzipped_modified_bed_path = local_path[-18:-7] + '_modified.bed'
 
     try:
         file_stat = os.stat(local_path)
@@ -655,35 +658,35 @@ def check_file(config, session, url, job):
         errors['gzip'] = 'Expected gzipped file'
         update_content_error(errors, 'Expected gzipped file')
     else:
-        if item['file_format'] == 'bed':
+        # May want to replace this with something like:
+        # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
+        # or http://stackoverflow.com/a/15343686/199100
+        try:
+            output = subprocess.check_output(
+                'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
+                shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError as e:
+            errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
+        else:
+            check_for_contentmd5sum_conflicts(item, result, output, errors, session, url)
 
+        if item['file_format'] == 'bed':
+            unzipped_modified_bed_path = local_path[-18:-7] + '_modified.bed'
             # try to count comment lines
             try:
                 output = subprocess.check_output(
                     'gunzip --stdout {} | grep -c \'^#\''.format(local_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
-            except:
-                errors['bed_unzip_failure'] = e.output.decode(errors='replace').rstrip('\n')
-            else:
-                #  if count of comments is zero - proceed as with normal file
-                #  else go into special comment removal routine
-                print ("THE OUTPUT OF COMMENTs COUNTING")
-                print (output)
-
-
-            try:
-                unzipped_original_bed_path = local_path[-18:-7] + '_original.bed'
-                output = subprocess.check_output(
-                    'gunzip --stdout {} > {}'.format(local_path,
-                                                     unzipped_original_bed_path),
-                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
-                unzipped_modified_bed_path = local_path[-18:-7] + '_modified.bed'
             except subprocess.CalledProcessError as e:
-                errors['bed_unzip_failure'] = e.output.decode(errors='replace').rstrip('\n')
-            else:
+                if e.returncode > 1:  # empty file, or other type of error
+                    errors['grep_bed_problem'] = e.output.decode(errors='replace').rstrip('\n')
+            else:  # comments lines found, need to calculate content md5sum as usual
+                #  remove the comments and create modified.bed to give validateFiles scritp
+                # not forget to remove the modified.bed after finishing
                 try:
+                    local_file_flag = True
                     subprocess.check_output(
-                        'grep -v \'^#\' {} > {}'.format(unzipped_original_bed_path,
+                        'grep -v \'^#\' {} > {}'.format(local_path,
                                                         unzipped_modified_bed_path),
                         shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
                 except subprocess.CalledProcessError as e:
@@ -692,37 +695,11 @@ def check_file(config, session, url, job):
                     else:
                         errors['bed_comments_remove_failure'] = e.output.decode(
                             errors='replace').rstrip('\n')
-                try:
-                    output = subprocess.check_output(
-                        'set -o pipefail; md5sum {}'.format(unzipped_original_bed_path),
-                        shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
-                except subprocess.CalledProcessError as e:
-                    errors['content_md5sum_calculation'] = e.output.decode(
-                        errors='replace').rstrip('\n')
-                else:
-                    check_for_contentmd5sum_conflicts(item, result, output, errors, session, url)
 
-                    if os.path.exists(unzipped_original_bed_path):
-                        try:
-                            os.remove(unzipped_original_bed_path)
-                        except OSError as e:
-                            errors['file_remove_error'] = 'OS could not remove the file ' + \
-                                                          unzipped_original_bed_path
-        else:
-            # May want to replace this with something like:
-            # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
-            # or http://stackoverflow.com/a/15343686/199100
-            try:
-                output = subprocess.check_output(
-                    'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
-                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
-            except subprocess.CalledProcessError as e:
-                errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
-            else:
-                check_for_contentmd5sum_conflicts(item, result, output, errors, session, url)
     if not errors:
-        if item['file_format'] == 'bed':
+        if local_file_flag:
             check_format(config['encValData'], job, unzipped_modified_bed_path)
+            remove_local_file(unzipped_modified_bed_path, errors)
         else:
             check_format(config['encValData'], job, local_path)
         if item['file_format'] == 'fastq':
@@ -738,10 +715,6 @@ def check_file(config, session, url, job):
             except subprocess.CalledProcessError as e:
                 errors['fastq_information_extraction'] = 'Failed to extract information from ' + \
                                                          local_path
-    if item['file_format'] == 'bed':
-        remove_local_file(unzipped_original_bed_path, errors)
-        remove_local_file(unzipped_modified_bed_path, errors)
-
     if item['status'] != 'uploading':
         errors['status_check'] = \
             "status '{}' is not 'uploading'".format(item['status'])
