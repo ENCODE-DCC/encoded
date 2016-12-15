@@ -656,6 +656,21 @@ def check_file(config, session, url, job):
         update_content_error(errors, 'Expected gzipped file')
     else:
         if item['file_format'] == 'bed':
+
+            # try to count comment lines
+            try:
+                output = subprocess.check_output(
+                    'gunzip --stdout {} | grep -c \'^#\''.format(local_path),
+                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+            except:
+                errors['bed_unzip_failure'] = e.output.decode(errors='replace').rstrip('\n')
+            else:
+                #  if count of comments is zero - proceed as with normal file
+                #  else go into special comment removal routine
+                print ("THE OUTPUT OF COMMENTs COUNTING")
+                print (output)
+
+
             try:
                 unzipped_original_bed_path = local_path[-18:-7] + '_original.bed'
                 output = subprocess.check_output(
@@ -698,15 +713,9 @@ def check_file(config, session, url, job):
             # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
             # or http://stackoverflow.com/a/15343686/199100
             try:
-                if item['file_format'] == 'fastq':
-                    output = subprocess.check_output(
-                        'set -o pipefail; gunzip --stdout {} | md5sum'.format(
-                            local_path),
-                        shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
-                else:
-                    output = subprocess.check_output(
-                        'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
-                        shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                output = subprocess.check_output(
+                    'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
+                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
             except subprocess.CalledProcessError as e:
                 errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
             else:
@@ -742,7 +751,6 @@ def check_file(config, session, url, job):
     if errors:
         errors['gathered information'] = 'Gathered information about the file was: {}.'.format(
             str(result))
-        errors['content_error'] = 'new message'
 
     return job
 
