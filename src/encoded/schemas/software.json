@@ -55,7 +55,8 @@
         "title": {
             "title": "Title",
             "description": "The preferred viewable name of the software.",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
         "bug_tracker_url": {
             "title": "Bug tracker URL",
@@ -118,7 +119,8 @@
         "description": {
             "title": "Description",
             "description": "A plain text description of the software.",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         }
     },
     "facets": {

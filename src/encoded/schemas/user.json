@@ -29,7 +29,8 @@
         "last_name": {
             "title": "Last name",
             "description": "The user's last (family) name.",
-            "type": "string"
+            "type": "string",
+            "pattern": "^\\S+$"
         },
         "lab": {
             "title": "Affiliation",
@@ -81,7 +82,8 @@
         },
         "job_title": {
             "title": "Job title",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
         "phone1": {
             "title": "Primary phone number",
@@ -103,11 +105,13 @@
         },
         "skype": {
             "title": "Skype ID",
-            "type": "string"
+            "type": "string",
+            "pattern": "^\\S+$"
         },
         "google": {
             "title": "Google ID",
-            "type": "string"
+            "type": "string",
+            "pattern": "^\\S+$"
         },
         "timezone": {
             "title": "Timezone",
