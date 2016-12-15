@@ -37,9 +37,9 @@ def audit_file_pipeline_status(value, system):
        'pipelines' in value['analysis_step_version']['analysis_step']:
         for p in value['analysis_step_version']['analysis_step']['pipelines']:
             if p['status'] not in ['active']:
-                detail = 'File {} with a status {} '.format(value['@id'], value['status']) + \
-                         'is assosiated with a pipeline {}, '.format(p['@id']) + \
-                         'that has a status {}.'.format(p['status'])
+                detail = 'File {} with a status of {} '.format(value['@id'], value['status']) + \
+                         'is associated with a pipeline {} '.format(p['@id']) + \
+                         'that has a status of {}.'.format(p['status'])
                 yield AuditFailure('inconsistent pipeline status',
                                    detail, level='INTERNAL_ACTION')
 
