@@ -675,7 +675,7 @@ def check_file(config, session, url, job):
             # try to count comment lines
             try:
                 output = subprocess.check_output(
-                    'gunzip --stdout {} | grep -c \'^#\''.format(local_path),
+                    'set -o pipefail; gunzip --stdout {} | grep -c \'^#\''.format(local_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
             except subprocess.CalledProcessError as e:
                 if e.returncode > 1:  # empty file, or other type of error
@@ -686,8 +686,9 @@ def check_file(config, session, url, job):
                 try:
                     local_file_flag = True
                     subprocess.check_output(
-                        'grep -v \'^#\' {} > {}'.format(local_path,
-                                                        unzipped_modified_bed_path),
+                        'set -o pipefail; gunzip --stdout {} | grep -v \'^#\' > {}'.format(
+                            local_path,
+                            unzipped_modified_bed_path),
                         shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
                 except subprocess.CalledProcessError as e:
                     if e.returncode > 1:  # empty file
