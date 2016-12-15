@@ -1290,7 +1290,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         let metricsInfo;
 
         // Add QC metrics info from the file to the list to generate the nodes later
-        if (fileQcMetrics[fileId] && fileQcMetrics[fileId].length && file.step_run) {
+        if (fileQcMetrics[fileId] && fileQcMetrics[fileId].length) {
             metricsInfo = fileQcMetrics[fileId].map((metric) => {
                 const qcId = genQcId(metric, file);
                 return { id: qcId, label: 'QC', '@type': ['QualityMetric'], class: `pipeline-node-qc-metric${infoNodeId === qcId ? ' active' : ''}`, ref: metric, parent: file };
@@ -1387,7 +1387,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
     // Go through each derived-from file and add it to our graph.
     Object.keys(allDerivedFroms).forEach((fileId) => {
         const file = allFiles[fileId];
-        if (file) {
+        if (file && !matchingFiles[fileId]) {
             const fileNodeId = `file:${file['@id']}`;
             const fileNodeLabel = `${file.title} (${file.output_type})`;
             const fileCssClass = `pipeline-node-file${infoNodeId === fileNodeId ? ' active' : ''}`;
