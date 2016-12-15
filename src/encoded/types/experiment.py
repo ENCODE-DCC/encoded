@@ -8,12 +8,14 @@ from .base import (
     ALLOW_SUBMITTER_ADD,
     Item,
     paths_filtered_by_status,
+    SharedItem
 )
 from .dataset import Dataset
 from .shared_calculated_properties import (
     CalculatedBiosampleSlims,
     CalculatedBiosampleSynonyms,
-    CalculatedAssaySynonyms
+    CalculatedAssaySynonyms,
+    CalculatedAssayTermID
 )
 
 # importing biosample function to allow calculation of experiment biosample property
@@ -30,7 +32,11 @@ from .biosample import (
         'title': 'Experiments',
         'description': 'Listing of Experiments',
     })
-class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms, CalculatedAssaySynonyms):
+class Experiment(Dataset,
+                 CalculatedBiosampleSlims,
+                 CalculatedBiosampleSynonyms,
+                 CalculatedAssaySynonyms,
+                 CalculatedAssayTermID):
     item_type = 'experiment'
     schema = load_schema('encoded:schemas/experiment.json')
     embedded = Dataset.embedded + [
