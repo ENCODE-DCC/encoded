@@ -1880,51 +1880,63 @@ function qcDetailsView(metrics) {
 
 
 function coalescedDetailsView(node) {
-    // Configuration for reference file table
-    const coalescedFileColumns = {
-        accession: {
-            title: 'Accession',
-            display: item =>
-                <span>
-                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf('/') + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
-                </span>,
-        },
-        file_type: { title: 'File type' },
-        output_type: { title: 'Output type' },
-        assembly: { title: 'Mapping assembly' },
-        genome_annotation: {
-            title: 'Genome annotation',
-            hide: list => _(list).all(item => !item.genome_annotation),
-        },
-        title: {
-            title: 'Lab',
-            getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
-        },
-        date_created: {
-            title: 'Date added',
-            getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
-            sorter: (a, b) => {
-                if (a && b) {
-                    return Date.parse(a) - Date.parse(b);
-                }
-                const bTest = b ? 1 : 0;
-                return a ? -1 : bTest;
-            },
-        },
-    };
+    let header;
+    let body;
 
-    const header = (
-        <h4>Selected contributing files</h4>
-    );
-    const body = (
-        <div className="coalesced-table">
-            <SortTable
-                list={node.metadata.coalescedFiles}
-                columns={coalescedFileColumns}
-                sortColumn="accession"
-            />
-        </div>
-    );
+    if (node.metadata.coalescedFiles && node.metadata.coalescedFiles.length) {
+        // Configuration for reference file table
+        const coalescedFileColumns = {
+            accession: {
+                title: 'Accession',
+                display: item =>
+                    <span>
+                        {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf('/') + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                    </span>,
+            },
+            file_type: { title: 'File type' },
+            output_type: { title: 'Output type' },
+            assembly: { title: 'Mapping assembly' },
+            genome_annotation: {
+                title: 'Genome annotation',
+                hide: list => _(list).all(item => !item.genome_annotation),
+            },
+            title: {
+                title: 'Lab',
+                getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
+            },
+            date_created: {
+                title: 'Date added',
+                getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
+                sorter: (a, b) => {
+                    if (a && b) {
+                        return Date.parse(a) - Date.parse(b);
+                    }
+                    const bTest = b ? 1 : 0;
+                    return a ? -1 : bTest;
+                },
+            },
+        };
+
+        header = (
+            <h4>Selected contributing files</h4>
+        );
+        body = (
+            <div className="coalesced-table">
+                <SortTable
+                    list={node.metadata.coalescedFiles}
+                    columns={coalescedFileColumns}
+                    sortColumn="accession"
+                />
+            </div>
+        );
+    } else {
+        header = (
+            <div className="details-view-info">
+                <h4>Unknown files</h4>
+            </div>
+        );
+        body = <p className="browser-error">No information available</p>;
+    }
     return { header: header, body: body };
 }
 
@@ -1979,11 +1991,17 @@ const FileGraph = React.createClass({
                         node.metadata.coalescedFiles = currCoalescedFiles[node.metadata.contributing];
                         meta = coalescedDetailsView(node);
                         meta.type = 'File';
-                    } else {
+                    } else if (!this.contributingRequestOutstanding) {
                         // We don't have the requested coalesced files in the cache, so we have to
                         // request them from the DB.
+                        this.contributingRequestOutstanding = true;
                         requestFiles(node.metadata.ref).then((contributingFiles) => {
+                            this.contributingRequestOutstanding = false;
                             currCoalescedFiles[node.metadata.contributing] = contributingFiles;
+                            this.setState({ coalescedFiles: currCoalescedFiles });
+                        }).catch(() => {
+                            this.contributingRequestOutstanding = false;
+                            currCoalescedFiles[node.metadata.contributing] = [];
                             this.setState({ coalescedFiles: currCoalescedFiles });
                         });
                     }
@@ -2001,11 +2019,17 @@ const FileGraph = React.createClass({
                             node.metadata.ref = currContributing[node.metadata.contributing];
                             meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, loggedIn, adminUser);
                             meta.type = node['@type'][0];
-                        } else {
+                        } else if (!this.contributingRequestOutstanding) {
                             // We don't have this file's object in the cache, so request it from
                             // the DB.
+                            this.contributingRequestOutstanding = true;
                             requestFiles([node.metadata.contributing]).then((contributingFile) => {
+                                this.contributingRequestOutstanding = false;
                                 currContributing[node.metadata.contributing] = contributingFile[0];
+                                this.setState({ contributingFiles: currContributing });
+                            }).catch(() => {
+                                this.contributingRequestOutstanding = false;
+                                currContributing[node.metadata.contributing] = {};
                                 this.setState({ contributingFiles: currContributing });
                             });
                         }
@@ -2135,7 +2159,7 @@ const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
     let body = null;
     let header = null;
 
-    if (selectedFile) {
+    if (selectedFile && Object.keys(selectedFile).length) {
         let contributingAccession;
 
         if (node.metadata.contributing) {
