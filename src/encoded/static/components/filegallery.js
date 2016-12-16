@@ -1428,7 +1428,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
                 type: 'File',
                 shape: 'stack',
                 cornerRadius: 16,
-                contributing: true,
+                contributing: groupHash,
                 ref: coalescingGroup,
             });
         }
@@ -1919,7 +1919,7 @@ function coalescedDetailsView(node) {
     const body = (
         <div className="coalesced-table">
             <SortTable
-                list={node.metadata.ref}
+                list={node.metadata.coalescedFiles}
                 columns={coalescedFileColumns}
                 sortColumn="accession"
             />
@@ -1947,6 +1947,7 @@ const FileGraph = React.createClass({
     getInitialState: function () {
         return {
             contributingFiles: {}, // List of contributing file objects we've requested; acts as a cache too
+            coalescedFiles: {}, // List of coalesced files we've requested; acts as a cache too
             infoModalOpen: false, // Graph information modal open
             collapsed: false, // T if graphing panel is collapsed
         };
@@ -1971,16 +1972,29 @@ const FileGraph = React.createClass({
                 // Coalesced contributing files.
                 const node = jsonGraph.getNode(infoNodeId);
                 if (node) {
-                    meta = coalescedDetailsView(node);
-                    meta.type = 'File';
+                    const currCoalescedFiles = this.state.coalescedFiles;
+                    if (currCoalescedFiles[node.metadata.contributing]) {
+                        // We have the requested coalesced files in the cache, so just display
+                        // them.
+                        node.metadata.coalescedFiles = currCoalescedFiles[node.metadata.contributing];
+                        meta = coalescedDetailsView(node);
+                        meta.type = 'File';
+                    } else {
+                        // We don't have the requested coalesced files in the cache, so we have to
+                        // request them from the DB.
+                        requestFiles(node.metadata.ref).then((contributingFiles) => {
+                            currCoalescedFiles[node.metadata.contributing] = contributingFiles;
+                            this.setState({ coalescedFiles: currCoalescedFiles });
+                        });
+                    }
                 }
             } else {
                 // A regular or contributing file.
                 const node = jsonGraph.getNode(infoNodeId);
                 if (node) {
                     if (node.metadata.contributing) {
-                        // This is a contributing file, and its @id is in node.metadata.ref. See if
-                        // the file is in the cache.
+                        // This is a contributing file, and its @id is in
+                        // node.metadata.contributing. See if the file is in the cache.
                         const currContributing = this.state.contributingFiles;
                         if (currContributing[node.metadata.contributing]) {
                             // We have this file's object in the cache, so just display it.
