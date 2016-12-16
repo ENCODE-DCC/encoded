@@ -98,3 +98,8 @@ def library_4_5(value, system):
 
     if 'documents' in value:
         value['documents'] = list(set(value['documents']))
+
+
+@upgrade_step('file', '5', '6')
+def library_5_6(value, system):
+    return

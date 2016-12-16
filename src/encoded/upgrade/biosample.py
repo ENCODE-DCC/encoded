@@ -220,3 +220,8 @@ def biosample_12_13(value, system):
     if 'protocol_documents' in value:
         value['documents'] = value['protocol_documents']
         value.pop('protocol_documents')
+
+
+@upgrade_step('file', '13', '14')
+def biosample_13_14(value, system):
+    return

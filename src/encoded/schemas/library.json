@@ -34,7 +34,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "accession": {
             "accessionType": "LB"
