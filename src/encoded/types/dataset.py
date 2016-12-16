@@ -641,9 +641,9 @@ class ReferenceEpigenome(Series):
         "description": "This specifies if samples from this reference epigenome all came from a single donor, or mulitple donors.",
         "type": "string",
         "enum": [
-            "single donor",
+            "single",
             "composite",
-            "no donor"
+            "none"
         ]
     })
     def donor_diversity(self, request, related_datasets):
@@ -673,6 +673,6 @@ class ReferenceEpigenome(Series):
         if len(donor_accessions) > 1:
             return 'composite'
         elif len(donor_accessions) == 1:
-            return 'single donor'
+            return 'single'
         else:
-            return 'no donor'
+            return 'none'

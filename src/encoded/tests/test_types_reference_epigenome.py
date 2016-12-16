@@ -41,7 +41,7 @@ def test_single_donor(testapp, base_reference_epigenome, donor_1, biosample_1, b
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id'], 'experiment': base_experiment_2['@id']})
     testapp.patch_json(base_reference_epigenome['@id'], {'related_datasets': [base_experiment_1['@id'], base_experiment_2['@id']]})
     res = testapp.get(base_reference_epigenome['@id']+'@@index-data')
-    assert res.json['object']['donor_diversity']=='single donor'
+    assert res.json['object']['donor_diversity']=='single'
 
 
 def test_composite(testapp, base_reference_epigenome, donor_1, donor_2, biosample_1, biosample_2, library_1, library_2, replicate_1_1, replicate_2_1, base_experiment_1, base_experiment_2 ):
@@ -63,4 +63,4 @@ def test_no_donors(testapp, base_reference_epigenome, donor_1, donor_2, biosampl
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id'], 'experiment': base_experiment_2['@id']})
     testapp.patch_json(base_reference_epigenome['@id'], {'related_datasets': [base_experiment_1['@id'], base_experiment_2['@id']]})
     res = testapp.get(base_reference_epigenome['@id']+'@@index-data')
-    assert res.json['object']['donor_diversity']=='no donor'
+    assert res.json['object']['donor_diversity']=='none'
