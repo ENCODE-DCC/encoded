@@ -1081,6 +1081,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
 
     // Begin collecting up information about the files from the search result, and gathering their
     // QC and analysis pipeline information.
+    const graphedFiles = {}; // All files in the graph, so table can link to it.
     const allFiles = {}; // All searched files, keyed by file @id
     let matchingFiles = {}; // All files that match the current assembly/annotation, keyed by file @id
     const fileQcMetrics = {}; // List of all file QC metrics indexed by file @id
@@ -1307,6 +1308,9 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
             ref: fileRef,
         }, metricsInfo);
 
+        // Add the matching file to our list of "all" graphed files.
+        graphedFiles[fileId] = file;
+
         // Figure out the analysis step we need to render between the node we just rendered and its
         // derived_from.
         let stepId;
@@ -1398,6 +1402,9 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
                 parentNode: replicateNode,
                 ref: fileRef,
             });
+
+            // Add the derived-from file to our list of "all" graphed files.
+            graphedFiles[fileId] = file;
         }
     });
 
@@ -1449,7 +1456,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         });
     });
 
-    return { graph: jsonGraph, graphedFiles: matchingFiles };
+    return { graph: jsonGraph, graphedFiles: graphedFiles };
 }
 
 
