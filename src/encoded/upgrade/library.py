@@ -100,6 +100,6 @@ def library_4_5(value, system):
         value['documents'] = list(set(value['documents']))
 
 
-@upgrade_step('file', '5', '6')
+@upgrade_step('library', '5', '6')
 def library_5_6(value, system):
     return

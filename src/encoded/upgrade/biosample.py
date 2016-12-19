@@ -222,6 +222,6 @@ def biosample_12_13(value, system):
         value.pop('protocol_documents')
 
 
-@upgrade_step('file', '13', '14')
+@upgrade_step('biosample', '13', '14')
 def biosample_13_14(value, system):
     return
