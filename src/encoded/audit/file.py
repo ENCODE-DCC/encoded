@@ -304,7 +304,8 @@ def check_presence(file_to_check, files_list):
                       'controlled_by.dataset',
                       'controlled_by.paired_with',
                       'controlled_by.platform'],
-               condition=rfa('ENCODE2',
+               condition=rfa('Roadmap',
+                             'ENCODE2',
                              'ENCODE2-Mouse',
                              'ENCODE',
                              'ENCODE3',
@@ -429,7 +430,6 @@ def audit_file_controlled_by(value, system):
                 yield AuditFailure('inconsistent control', detail, level='ERROR')
                 return
 
-
             if (run_type is None) or (control_run is None):
                 continue
 
@@ -465,7 +465,7 @@ def audit_file_controlled_by(value, system):
                 return
 
 
-@audit_checker('file', frame='object', condition=rfa('modERN', 'GGR', 'ENCODE3'))
+@audit_checker('file', frame='object')
 def audit_file_flowcells(value, system):
     '''
     A fastq file could have its flowcell details.

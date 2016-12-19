@@ -2323,9 +2323,7 @@ def audit_experiment_biosample_term_id(value, system):
 
 
 @audit_checker('experiment',
-               frame=['replicates', 'original_files', 'original_files.replicate'],
-               condition=rfa("ENCODE3", "modERN", "ENCODE2", "GGR",
-                             "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
+               frame=['replicates', 'original_files', 'original_files.replicate'])
 def audit_experiment_consistent_sequencing_runs(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
