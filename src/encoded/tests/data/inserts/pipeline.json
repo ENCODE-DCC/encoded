@@ -2,7 +2,6 @@
 [
      {
         "accession": "ENCPL001MQC",
-        "assay_term_id": "OBI:0001863",
         "assay_term_name": "whole-genome shotgun bisulfite sequencing",
         "uuid": "9e3f23ae-716a-4fe0-a238-b9bbd98508d5",
         "title": "WGBS Methlyation Pipeline - QC",
@@ -16,7 +15,6 @@
     },
     {
         "accession": "ENCPL000MEG",
-        "assay_term_id": "OBI:0001863",
         "assay_term_name": "whole-genome shotgun bisulfite sequencing",
         "uuid": "23b2f12c-8a55-4860-b013-423b5de9de0d",
         "title": "WGBS Methlyation Pipeline - Genome Conversion",
@@ -34,7 +32,6 @@
     },
     {
         "accession": "ENCPL002BIS",
-        "assay_term_id": "OBI:0001863",
         "assay_term_name": "whole-genome shotgun bisulfite sequencing",
         "uuid": "b0636cbe-e2f4-4606-b68b-faf6bbda5959",
         "title": "WGBS Methlyation Pipeline",
@@ -49,7 +46,6 @@
     },
     {
         "accession": "ENCPL003RNA",
-        "assay_term_id": "OBI:0001271",
         "assay_term_name": "RNA-seq",
         "uuid": "007ba3be-87cd-418c-8eb0-2ba2bf3e57a9",
         "title": "long-rna-seq-pipeline-pe",
@@ -70,7 +66,6 @@
     },
     {
         "accession": "ENCPL001GRV",
-        "assay_term_id": "OBI:0001271",
         "assay_term_name": "RNA-seq",
         "analysis_steps": [
             "alignment-test-step-1",
@@ -87,7 +82,6 @@
     },
     {
         "accession": "ENCPL001CRG",
-        "assay_term_id": "OBI:0001271",
         "assay_term_name": "RNA-seq",
         "analysis_steps": [
             "alignment-test-step-2",
@@ -105,7 +99,6 @@
     },
     {
         "accession": "ENCPL001ENC",
-        "assay_term_id": "OBI:0000716",
         "assay_term_name": "ChIP-seq",
         "analysis_steps": [
             "encode-2-step",
@@ -123,7 +116,6 @@
     },
     {
         "accession": "ENCPL001CLP",
-        "assay_term_id": "NTR:0003027",
         "assay_term_name": "eCLIP",
         "analysis_steps": [
             "alignment-test-step-3",
@@ -140,6 +132,7 @@
     },
     {
         "accession": "ENCPL001FVD",
+        "assay_term_name": "RNA-seq",
         "analysis_steps": [
             "fastqc"
         ],
