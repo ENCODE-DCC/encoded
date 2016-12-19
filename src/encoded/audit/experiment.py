@@ -2725,11 +2725,12 @@ def audit_experiment_assay(value, system):
     if value['status'] == 'deleted':
         return
 
-    if 'assay_term_id' not in value:
+    if 'assay_term_id' is None:
+        # This means we need to add an assay to the enum list. It should not happen
+        # though since the term enum list is limited.
         detail = 'Experiment {} is missing assay_term_id'.format(value['@id'])
         yield AuditFailure('missing assay information', detail, level='ERROR')
         return
-        # This should be a dependancy
 
     ontology = system['registry']['ontology']
     term_id = value.get('assay_term_id')

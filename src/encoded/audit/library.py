@@ -3,6 +3,7 @@ from snovault import (
     audit_checker,
 )
 
+# These audits should no longer be needed as the term id is now a calculated property.
 
 moleculeDict = {
     'DNA': 'SO:0000352',

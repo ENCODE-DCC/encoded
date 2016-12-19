@@ -51,7 +51,7 @@ def test_biosample_depleted_in(testapp, biosample_depleted_in):
 
 
 def test_biosample_depleted_in_name_required(testapp, biosample_depleted_in):
-    del biosample_depleted_in['depleted_in_term_name']
+    biosample_depleted_in.update({'depleted_in_term_id': ['UBERON:0000033']})
     testapp.post_json('/biosample', biosample_depleted_in,  status=422)
 
 
