@@ -204,12 +204,9 @@ class Library(Item):
             'miRNA': 'SO:0000276',
             'protein': 'SO:0000104'
         }
-        term_id = list()
-        for term_name in nucleic_acid_term_name:
-            if term_name in term_lookup:
-                term_id.append(term_lookup.get(term_name))
-            else:
-                term_id.append('Term ID unknown')
+        term_id = None
+        if nucleic_acid_term_name in term_lookup:
+            term_id = term_lookup.get(nucleic_acid_term_name)
         return term_id
 
     @calculated_property(condition='depleted_in_term_name', schema={

@@ -303,10 +303,7 @@ class CalculatedAssayTermID:
             '5\' RLM RACE': 'NTR:0001684',
             'MNase-seq': 'OBI:0001924'
         }
-        term_id = list()
-        for term_name in assay_term_name:
-            if term_name in term_lookup:
-                term_id.append(term_lookup.get(term_name))
-            else:
-                term_id.append('Term ID unknown')
+        term_id = None
+        if assay_term_name in term_lookup:
+            term_id = term_lookup.get(assay_term_name)
         return term_id
