@@ -1092,7 +1092,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
             let nextFileList;
 
             if (file) {
-                if (!file.removed) {
+                if (!file.filtered) {
                     // This file gets included. Include everything it derives from
                     if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
                         nextFileList = getSubFileList(file.derived_from);
@@ -1100,7 +1100,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
                     }
                 } else if (include) {
                     // Unremove the file if this branch is to be included based on files that derive from it
-                    file.removed = false;
+                    file.filtered = false;
                     if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
                         nextFileList = getSubFileList(file.derived_from);
                         processFiltering(nextFileList, assemblyFilter, annotationFilter, allFiles, allContributing, true);
@@ -1127,7 +1127,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
     // to de-dup the file array since there can be repeated files in it.
     files.forEach((file) => {
         if (!allFiles[file['@id']]) {
-            file.removed = false;
+            file.removed = file.missing = file.filtered = false;
             allFiles[file['@id']] = file;
         }
     });
@@ -1152,6 +1152,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
                     derivedFromFiles[derivedFromId] = derivedFrom;
                     derivedFrom.missing = true;
                     derivedFrom.removed = false; // Clears previous value Redmine #4536
+                    allFiles[derivedFromId] = derivedFrom;
                 } else if (!derivedFromFiles[derivedFromId]) {
                     // The derived-from file was in the given file list but we haven't seen it in
                     // this loop before, so record the derived-from file in derivedFromFiles.
@@ -1251,6 +1252,35 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         }
     });
 
+    // Remove files based on the filtering options
+    if (filterAssembly) {
+        // First remove all raw files, and all other files with mismatched filtering options
+        Object.keys(allFiles).forEach((fileId) => {
+            const file = allFiles[fileId];
+
+            if (file.output_category === 'raw data') {
+                // File is raw data; just remove it
+                file.filtered = true;
+            } else if ((file.assembly !== filterAssembly) || ((file.genome_annotation || filterAnnotation) && (file.genome_annotation !== filterAnnotation))) {
+                file.filtered = true;
+            }
+        });
+
+        // For all files matching the filtering options that derive from others, go up the
+        // derivation chain and re-include everything there.
+        processFiltering(allFiles, filterAssembly, filterAnnotation, allFiles, allContributing);
+
+        // Any files removed because of filtering get removed from allFiles and derivedFromFiles
+        // to make subsequent processing easier.
+        Object.keys(allFiles).forEach((fileId) => {
+            const file = allFiles[fileId];
+            if (file.filtered) {
+                delete allFiles[fileId];
+                delete derivedFromFiles[fileId];
+            }
+        });
+    }
+
     // Check whether any files that others derive from are missing (usually because they're
     // unreleased and we're logged out).
     Object.keys(derivedFromFiles).forEach((derivedFromFileId) => {
@@ -1275,24 +1305,6 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
             }
         } // else the derived_from file is in files array (allFiles object); normal case
     });
-
-    // Remove files based on the filtering options
-    if (filterAssembly) {
-        // First remove all raw files, and all other files with mismatched filtering options
-        Object.keys(allFiles).forEach((fileId) => {
-            const file = allFiles[fileId];
-
-            if (file.output_category === 'raw data') {
-                // File is raw data; just remove it
-                file.removed = true;
-            } else if ((file.assembly !== filterAssembly) || ((file.genome_annotation || filterAnnotation) && (file.genome_annotation !== filterAnnotation))) {
-                file.removed = true;
-            }
-        });
-
-        // For all files matching the filtering options that derive from others, go up the derivation chain and re-include everything there.
-        processFiltering(allFiles, filterAssembly, filterAnnotation, allFiles, allContributing);
-    }
 
     // Map all contributing files to arrays of the files that derive from them. At the end of this
     // loop, all contributing files in the allContributing object have a derivedFiles property with
@@ -1340,14 +1352,11 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
             // group's hash value in a `coalescingGroup` property that step node can connnect to.
             group.forEach((contributingFile) => {
                 contributingFile.coalescingGroup = groupHash;
+
+                // Remove coalesced files from allFiles
+                delete allFiles[contributingFile['@id']];
             });
         } else {
-            // The number of files in the coalescing group isn't enough to coalesce them. Just add
-            // them to allFiles and add them to the graph as pretty much regular files.
-            group.forEach((contributingFile) => {
-                allFiles[contributingFile['@id']] = contributingFile;
-            });
-
             // Don't use this coalescingGroup anymore.
             coalescingGroups[groupHash] = [];
         }
