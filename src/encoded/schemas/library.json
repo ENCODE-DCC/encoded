@@ -233,7 +233,6 @@
             "type": "array",
             "title": "Depleted in term",
             "description": "SO (Sequence Ontology) term best matching the nucleic acid that was diminished from the library.",
-            "default": [],
             "items": {
                 "type": "string",
                 "enum": [
