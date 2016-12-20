@@ -24,6 +24,7 @@ from .biosample import (
     generate_summary_dictionary
 )
 
+from .assay_data import assay_terms
 
 @collection(
     name='experiments',
@@ -398,25 +399,27 @@ class Experiment(Dataset,
         if len(dictionaries_of_phrases) > 0:
             return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
 
-    @calculated_property(condition='assay_term_id', schema={
+    @calculated_property(condition='assay_term_name', schema={
         "title": "Assay type",
         "type": "array",
         "items": {
             "type": "string",
         },
     })
-    def assay_slims(self, registry, assay_term_id):
+    def assay_slims(self, registry, assay_term_name):
+        assay_term_id = assay_terms.get(assay_term_name, None)
         if assay_term_id in registry['ontology']:
             return registry['ontology'][assay_term_id]['assay']
         return []
 
-    @calculated_property(condition='assay_term_id', schema={
+    @calculated_property(condition='assay_term_name', schema={
         "title": "Assay title",
         "type": "string",
     })
-    def assay_title(self, request, registry, assay_term_id, assay_term_name,
+    def assay_title(self, request, registry, assay_term_name,
                     replicates=None, target=None):
         # This is the preferred name in generate_ontology.py if exists
+        assay_term_id = assay_terms.get(assay_term_name, None)
         if assay_term_id in registry['ontology']:
             preferred_name = registry['ontology'][assay_term_id].get('preferred_name',
                                                                      assay_term_name)
@@ -442,38 +445,41 @@ class Experiment(Dataset,
             return preferred_name or assay_term_name
         return assay_term_name
 
-    @calculated_property(condition='assay_term_id', schema={
+    @calculated_property(condition='assay_term_name', schema={
         "title": "Assay category",
         "type": "array",
         "items": {
             "type": "string",
         },
     })
-    def category_slims(self, registry, assay_term_id):
+    def category_slims(self, registry, assay_term_name):
+        assay_term_id = assay_terms.get(assay_term_name, None)
         if assay_term_id in registry['ontology']:
             return registry['ontology'][assay_term_id]['category']
         return []
 
-    @calculated_property(condition='assay_term_id', schema={
+    @calculated_property(condition='assay_term_name', schema={
         "title": "Assay type",
         "type": "array",
         "items": {
             "type": "string",
         },
     })
-    def type_slims(self, registry, assay_term_id):
+    def type_slims(self, registry, assay_term_name):
+        assay_term_id = assay_terms.get(assay_term_name, None)
         if assay_term_id in registry['ontology']:
             return registry['ontology'][assay_term_id]['types']
         return []
 
-    @calculated_property(condition='assay_term_id', schema={
+    @calculated_property(condition='assay_term_name', schema={
         "title": "Assay objective",
         "type": "array",
         "items": {
             "type": "string",
         },
     })
-    def objective_slims(self, registry, assay_term_id):
+    def objective_slims(self, registry, assay_term_name):
+        assay_term_id = assay_terms.get(assay_term_name, None)
         if assay_term_id in registry['ontology']:
             return registry['ontology'][assay_term_id]['objectives']
         return []
