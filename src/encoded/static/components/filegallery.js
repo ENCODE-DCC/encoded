@@ -1062,6 +1062,42 @@ export function GraphException(message, file0, file1) {
 }
 
 
+// Map a QC object to its corresponding two-letter abbreviation for the graph.
+function qcAbbr(qc) {
+    // As we add more QC object types, add to this object.
+    const qcAbbrMap = {
+        BigwigcorrelateQualityMetric: 'BC',
+        BismarkQualityMetric: 'BK',
+        ChipSeqFilterQualityMetric: 'CF',
+        ComplexityXcorrQualityMetric: 'CX',
+        CorrelationQualityMetric: 'CN',
+        CpgCorrelationQualityMetric: 'CC',
+        DuplicatesQualityMetric: 'DS',
+        EdwbamstatsQualityMetric: 'EB',
+        EdwcomparepeaksQualityMetric: 'EP',
+        Encode2ChipSeqQualityMetric: 'EC',
+        FastqcQualityMetric: 'FQ',
+        FilteringQualityMetric: 'FG',
+        GenericQualityMetric: 'GN',
+        HotspotQualityMetric: 'HS',
+        IDRQualityMetric: 'ID',
+        IdrSummaryQualityMetric: 'IS',
+        MadQualityMetric: 'MD',
+        SamtoolsFlagstatsQualityMetric: 'SF',
+        SamtoolsStatsQualityMetric: 'SS',
+        StarQualityMetric: 'SR',
+        TrimmingQualityMetric: 'TG',
+    };
+
+    let abbr = qcAbbrMap[qc['@type'][0]];
+    if (!abbr) {
+        // 'QC' is the generic, unmatched abbreviation if qcAbbrMap doesn't have a match.
+        abbr = 'QC';
+    }
+    return abbr;
+}
+
+
 export function assembleGraph(context, session, infoNodeId, files, filterAssembly, filterAnnotation) {
     // Calculate a step ID from a file's derived_from array.
     function rDerivedFileIds(file) {
@@ -1292,9 +1328,17 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
 
         // Add QC metrics info from the file to the list to generate the nodes later
         if (fileQcMetrics[fileId] && fileQcMetrics[fileId].length) {
-            metricsInfo = fileQcMetrics[fileId].map((metric) => {
+            const sortedMetrics = fileQcMetrics[fileId].sort((a, b) => a['@type'][0] > b['@type'][0] ? 1 : (a['@type'][0] < b['@type'][0] ? -1 : 0));
+            metricsInfo = sortedMetrics.map((metric) => {
                 const qcId = genQcId(metric, file);
-                return { id: qcId, label: 'QC', '@type': ['QualityMetric'], class: `pipeline-node-qc-metric${infoNodeId === qcId ? ' active' : ''}`, ref: metric, parent: file };
+                return {
+                    id: qcId,
+                    label: qcAbbr(metric),
+                    '@type': ['QualityMetric'],
+                    class: `pipeline-node-qc-metric${infoNodeId === qcId ? ' active' : ''}`,
+                    ref: metric,
+                    parent: file,
+                };
             });
         }
 
@@ -2059,6 +2103,18 @@ const FileGraph = React.createClass({
         this.props.setInfoNodeVisible(true);
     },
 
+    handleHoverIn: function (nodeId) {
+        const graph = this.props.graph;
+        const node = graph.getNode(nodeId);
+        console.log('HOVER IN: %o', nodeId);
+    },
+
+    handleHoverOut: function (nodeId) {
+        const graph = this.props.graph;
+        const node = graph.getNode(nodeId);
+        console.log('HOVER OUT: %o', nodeId);
+    },
+
     handleCollapse: function () {
         // Handle click on panel collapse icon
         this.setState({ collapsed: !this.state.collapsed });
@@ -2097,7 +2153,7 @@ const FileGraph = React.createClass({
                             </div>
                             {!this.state.collapsed ?
                                 <div>
-                                    <Graph graph={graph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw />
+                                    <Graph graph={graph} nodeClickHandler={this.handleNodeClick} nodeMouseenterHandler={this.handleHoverIn} nodeMouseleaveHandler={this.handleHoverOut} noDefaultClasses forceRedraw />
                                 </div>
                             : null}
                             <div className={`file-gallery-graph-footer${this.state.collapsed ? ' hiding' : ''}`} />
