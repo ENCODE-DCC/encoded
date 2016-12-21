@@ -374,16 +374,13 @@ export const Graph = React.createClass({
         nodes.on('click', (nodeId) => {
             this.props.nodeClickHandler(nodeId);
         });
-        subnodes.on('mouseenter', (subnode, i) => {
-            const circ = subnodes[0][i];
-            const boundingRect = circ.getBoundingClientRect();
-            console.log('RECT %s:%s', boundingRect.top, boundingRect.left);
+        subnodes.on('mouseenter', (subnode) => {
             d3.event.stopPropagation();
-            this.props.nodeMouseenterHandler(subnode);
+            this.props.nodeMouseenterHandler(subnode.id);
         });
         subnodes.on('mouseleave', (subnode) => {
             d3.event.stopPropagation();
-            this.props.nodeMouseleaveHandler(subnode);
+            this.props.nodeMouseleaveHandler(subnode.id);
         });
     },
 
