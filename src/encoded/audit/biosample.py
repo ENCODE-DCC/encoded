@@ -202,10 +202,13 @@ def audit_biosample_term(value, system):
     ontology_term_name = ontology[term_id]['name']
     if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
         detail = 'Biosample {} has '.format(value['@id']) + \
-                 'a mismatch between biosample_term_id {} '.format(term_id) + \
-                 'and biosample_term_name {}'.format(term_name)
+                 'a mismatch between biosample term_id ({}) '.format(term_id) + \
+                 'and term_name ({}), ontology term_name for term_id {} '.format(
+                     term_name, term_id) + \
+                 'is {}.'.format(ontology_term_name)
         yield AuditFailure('inconsistent ontology term', detail, level='ERROR')
         return
+
 
 @audit_checker('biosample', frame='object')
 def audit_biosample_culture_date(value, system):

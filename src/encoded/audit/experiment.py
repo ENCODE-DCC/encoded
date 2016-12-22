@@ -3207,17 +3207,18 @@ def audit_experiment_biosample_term(value, system):
                                level='INTERNAL_ACTION')
 
         elif term_id not in ontology:
-            detail = '{} has term_id {} which is not in ontology'.format(value['@id'], term_id)
+            detail = 'Experiment {} has term_id {} which is not in ontology'.format(
+                value['@id'], term_id)
             yield AuditFailure('term_id not in ontology', term_id, level='INTERNAL_ACTION')
         else:
             ontology_name = ontology[term_id]['name']
             if ontology_name != term_name and term_name not in ontology[term_id]['synonyms']:
-                detail = '{} has a biosample mismatch {} - {} but ontology says {}'.format(
+                detail = 'Experiment {} has a mismatch between biosample term_id ({}) '.format(
                     value['@id'],
-                    term_id,
-                    term_name,
-                    ontology_name
-                    )
+                    term_id) + \
+                    'and term_name ({}), ontology term_name for term_id {} '.format(
+                        term_name, term_id) + \
+                    'is {}.'.format(ontology_name)
                 yield AuditFailure('inconsistent ontology term', detail, level='ERROR')
 
     if 'replicates' in value:
