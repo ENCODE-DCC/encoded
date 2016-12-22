@@ -2638,6 +2638,33 @@ def test_audit_experiment_missing_construct(testapp,
     assert any(error['category'] == 'missing tag construct' for error in errors_list)
 
 
+def test_audit_experiment_missing_unfiltered_bams(testapp,
+                                                  base_experiment,
+                                                  replicate_1_1,
+                                                  replicate_2_1,
+                                                  file_fastq_3,
+                                                  file_bam_1_1,
+                                                  file_bam_2_1,
+                                                  analysis_step_run_bam,
+                                                  analysis_step_version_bam,
+                                                  analysis_step_bam,
+                                                  pipeline_bam):
+
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
+                                                'assay_term_id': 'OBI:0000716'
+                                                })
+    testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_3['@id']],
+                                             'assembly': 'hg19',
+                                             'output_type': 'unfiltered alignments'})
+    testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing unfiltered alignments' for error in errors_list)
+
+
 def test_audit_experiment_wrong_construct(testapp,
                                           base_experiment,
                                           base_target,

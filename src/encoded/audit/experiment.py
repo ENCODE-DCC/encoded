@@ -148,7 +148,7 @@ def audit_experiment_missing_processed_files(value, system):
                                                                   'unfiltered alignments'))
     alignment_files.extend(scan_files_for_file_format_output_type(value['original_files'],
                                                                   'bam',
-                                                                  'transcrptome alignments'))
+                                                                  'transcriptome alignments'))
 
     # if there are no bam files - we don't know what pipeline, exit
     if len(alignment_files) == 0:
@@ -173,6 +173,79 @@ def audit_experiment_missing_processed_files(value, system):
                                                               'modERN')
             for failure in check_structures(replicate_structures, False, value):
                 yield failure
+
+
+@audit_checker('Experiment', frame=['original_files',
+                                    'original_files.analysis_step_version',
+                                    'original_files.analysis_step_version.analysis_step',
+                                    'original_files.analysis_step_version.analysis_step.pipelines',
+                                    'original_files.derived_from'])
+def audit_experiment_missing_unfiltered_bams(value, system):
+    if 'assay_term_id' not in value:  # unknown assay
+        return
+    if value['assay_term_id'] != 'OBI:0000716':  # not a ChIP-seq
+        return
+
+    alignment_files = scan_files_for_file_format_output_type(value['original_files'],
+                                                             'bam', 'alignments')
+
+    unfiltered_alignment_files = scan_files_for_file_format_output_type(value['original_files'],
+                                                                        'bam',
+                                                                        'unfiltered alignments')
+    # if there are no bam files - we don't know what pipeline, exit
+    if len(alignment_files) == 0:
+        return
+    # find out the pipeline
+    pipelines = getPipelines(alignment_files)
+
+    if len(pipelines) == 0:  # no pipelines detected
+        return
+
+    if 'Histone ChIP-seq' in pipelines or \
+       'Transcription factor ChIP-seq' in pipelines:
+
+        for filtered_file in alignment_files:
+            if has_only_raw_files_in_derived_from(filtered_file) and \
+               has_no_unfiltered(filtered_file, unfiltered_alignment_files):
+
+                detail = 'Experiment {} contains biological replicate '.format(value['@id']) + \
+                         '{} '.format(filtered_file['biological_replicates']) + \
+                         'with a filtered alignments file {}, mapped to '.format(filtered_file['@id']) + \
+                         'a {} assembly, '.format(filtered_file['assembly']) + \
+                         'but has no unfiltered alignments file.'
+                yield AuditFailure('missing unfiltered alignments', detail, level='INTERNAL_ACTION')
+
+
+def has_only_raw_files_in_derived_from(bam_file):
+    if 'derived_from' in bam_file:
+        if bam_file['derived_from'] == []:
+            return False
+        for f in bam_file['derived_from']:
+            if f['file_format'] not in ['fastq', 'tar', 'fasta']:
+                return False
+        return True
+    else:
+        return False
+
+
+def has_no_unfiltered(filtered_bam, unfiltered_bams):
+    if 'assembly' in filtered_bam:
+        for f in unfiltered_bams:
+            if 'assembly' in f:
+                if f['assembly'] == filtered_bam['assembly'] and \
+                   f['biological_replicates'] == filtered_bam['biological_replicates']:
+                    derived_candidate = set()
+                    derived_filtered = set()
+                    if 'derived_from' in f:
+                        for entry in f['derived_from']:
+                            derived_candidate.add(entry['uuid'])
+                    if 'derived_from' in filtered_bam:
+                        for entry in filtered_bam['derived_from']:
+                            derived_filtered.add(entry['uuid'])
+                    if derived_candidate == derived_filtered:
+                        return False
+        return True
+    return False
 
 
 def check_structures(replicate_structures, control_flag, experiment):
