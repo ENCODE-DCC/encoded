@@ -12,7 +12,7 @@ const audit = require('./audit');
 const image = require('./image');
 const item = require('./item');
 const reference = require('./reference');
-const {TreatmentDisplay, SingleTreatment} = require('./objectutils');
+const { treatmentDisplay } = require('./objectutils');
 const doc = require('./doc');
 const {BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable} = require('./typeutils');
 const {GeneticModificationSummary} = require('./genetic_modification');
@@ -389,11 +389,11 @@ var Biosample = module.exports.Biosample = React.createClass({
                             <section>
                                 <hr />
                                 <h4>Treatment details</h4>
-                                {context.treatments.map(treatment => TreatmentDisplay(treatment))}
+                                {context.treatments.map(treatment => treatmentDisplay(treatment))}
                             </section>
                         : null}
 
-                        {constructs.length ?
+                        {constructs.length || (context.genetic_modifications && context.genetic_modifications.length) ?
                             <section>
                                 <hr />
                                 <h4>Construct details</h4>
@@ -416,6 +416,10 @@ var Biosample = module.exports.Biosample = React.createClass({
                         : null}
                     </PanelBody>
                 </Panel>
+
+                {context.genetic_modifications && context.genetic_modifications.length ?
+                    <GeneticModificationSummary geneticModifications={context.genetic_modifications} />
+                : null}
 
                 {context.donor ?
                     <div>
@@ -442,10 +446,6 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                 {combinedDocs.length ?
                     <DocumentsPanel documentSpecs={[{documents: combinedDocs}]} />
-                : null}
-
-                {context.genetic_modifications && context.genetic_modifications.length ?
-                    <GeneticModificationSummary geneticModifications={context.genetic_modifications} />
                 : null}
             </div>
         );

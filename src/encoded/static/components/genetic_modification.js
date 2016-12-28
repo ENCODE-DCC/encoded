@@ -1,44 +1,46 @@
-'use strict';
-const React = require('react');
-const _ = require('underscore');
-const url = require('url');
-const {Panel, PanelHeading, PanelBody} = require('../libs/bootstrap/panel');
-const {SvgIcon, collapseIcon} = require('../libs/svg-icons');
-const {SortTable} = require('./sorttable');
-const globals = require('./globals');
-const {StatusLabel} = require('./statuslabel');
-const {ProjectBadge, Attachment} = require('./image');
-const {AuditIndicators, AuditDetail, AuditMixin} = require('./audit');
-const {RelatedItems} = require('./item');
-const {DbxrefList} = require('./dbxref');
-const {FetchedItems} = require('./fetched');
-const {Breadcrumbs} = require('./navigation');
-const {TreatmentDisplay, SingleTreatment} = require('./objectutils');
-const {BiosampleTable} = require('./typeutils');
-const {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile} = require('./doc');
-const {PickerActionsMixin} = require('./search');
+import React from 'react';
+import _ from 'underscore';
+import url from 'url';
+import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
+import { collapseIcon } from '../libs/svg-icons';
+import { SortTable } from './sorttable';
+import globals from './globals';
+import { StatusLabel } from './statuslabel';
+import { ProjectBadge, Attachment } from './image';
+import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
+import { RelatedItems } from './item';
+import { DbxrefList } from './dbxref';
+import { Breadcrumbs } from './navigation';
+import { treatmentDisplay, singleTreatment } from './objectutils';
+import { BiosampleTable } from './typeutils';
+import { DocumentsPanel } from './doc';
+import { PickerActionsMixin } from './search';
 
 
 // Map GM techniques to a presentable string
 const GM_TECHNIQUE_MAP = {
-    'Crispr': 'CRISPR',
-    'Tale': 'TALE'
+    Crispr: 'CRISPR',
+    Tale: 'TALE',
 };
 
 
 const GeneticModification = module.exports.GeneticModification = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object, // GM object being displayed
+    },
+
     mixins: [AuditMixin],
 
-    render: function() {
+    render: function () {
         const context = this.props.context;
-        let itemClass = globals.itemClass(context, 'view-detail key-value');
-        let coords = context.modified_site;
+        const itemClass = globals.itemClass(context, 'view-detail key-value');
+        const coords = context.modified_site;
 
         // Configure breadcrumbs for the page.
         const crumbs = [
-            {id: 'Genetic Modifications'},
-            {id: context.target && context.target.label, query: 'target.label=' + (context.target && context.target.label), tip: context.target && context.target.label},
-            {id: context.modification_type, query: 'modification_type=' + context.modification_type, tip: context.modification_type}
+            { id: 'Genetic Modifications' },
+            { id: context.target && context.target.label, query: `target.label=${context.target && context.target.label}`, tip: context.target && context.target.label },
+            { id: context.modification_type, query: `modification_type=${context.modification_type}`, tip: context.modification_type },
         ];
 
         // Collect and combine documents, including from genetic modification characterizations.
@@ -50,21 +52,21 @@ const GeneticModification = module.exports.GeneticModification = React.createCla
             modDocs = context.documents;
         }
         if (context.characterizations && context.characterizations.length) {
-            context.characterizations.forEach(characterization => {
+            context.characterizations.forEach((characterization) => {
                 if (characterization.documents && characterization.documents.length) {
                     charDocs = charDocs.concat(characterization.documents);
                 }
             });
         }
         if (context.modification_techniques && context.modification_techniques.length) {
-            context.modification_techniques.forEach(technique => {
+            context.modification_techniques.forEach((technique) => {
                 if (technique.documents && technique.documents.length) {
                     techDocs = techDocs.concat(technique.documents);
                 }
             });
         }
         if (context.biosamples_modified && context.biosamples_modified) {
-            context.biosamples_modified.forEach(biosample => {
+            context.biosamples_modified.forEach((biosample) => {
                 if (biosample.documents && biosample.documents.length) {
                     biosampleDocs = biosampleDocs.concat(biosample.documents);
                 }
@@ -87,7 +89,7 @@ const GeneticModification = module.exports.GeneticModification = React.createCla
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs root='/search/?type=GeneticModification' crumbs={crumbs} />
+                        <Breadcrumbs root="/search/?type=GeneticModification" crumbs={crumbs} />
                         <h2>{context.modification_type}</h2>
                         <div className="status-line">
                             <div className="characterization-status-labels">
@@ -158,7 +160,7 @@ const GeneticModification = module.exports.GeneticModification = React.createCla
                                     <section className="data-display-array">
                                         <hr />
                                         <h4>Treatment details</h4>
-                                        {context.treatments.map(treatment => TreatmentDisplay(treatment))}
+                                        {context.treatments.map(treatment => treatmentDisplay(treatment))}
                                     </section>
                                 : null}
 
@@ -556,7 +558,7 @@ function _calcGMSummarySentence(gm) {
     // Collect up an array of strings with techniques and treatments.
     let techniques = getGMTechniques(gm);
     if (gm.treatments && gm.treatments.length) {
-        treatments = gm.treatments.map(treatment => SingleTreatment(treatment));
+        treatments = gm.treatments.map(treatment => singleTreatment(treatment));
     }
     let techtreat = techniques.concat(treatments).join(', ');
 
