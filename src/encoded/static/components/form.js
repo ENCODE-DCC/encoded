@@ -97,9 +97,9 @@ const RepeatingItem = React.createClass({
     },
 
     onRemove(e) {
+        e.preventDefault();
         // eslint-disable-next-line no-alert
         if (!confirm('Are you sure you want to remove this item?')) {
-            e.preventDefault();
             return;
         }
         if (this.props.onRemove) {
@@ -305,7 +305,10 @@ const FetchedFieldset = React.createClass({
 
         return (
             <div className="collapsible">
-                <button className="collapsible-trigger" onClick={this.toggleCollapsed}>{this.state.collapsed ? '▶ ' : '▼ '}</button>
+                <button
+                    type="button" className="collapsible-trigger"
+                    onClick={this.toggleCollapsed}
+                >{this.state.collapsed ? '▶ ' : '▼ '}</button>
                 {this.state.collapsed ? preview : fieldset}
             </div>
         );

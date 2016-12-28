@@ -148,7 +148,10 @@ const Block = module.exports.Block = React.createClass({
             <div className="block-toolbar">
                 {modal}
                 {' '}
-                <button className="remove" onClick={this.remove}><i className="icon icon-trash-o" /></button>
+                <button
+                    type="button" className="remove"
+                    onClick={this.remove}
+                ><i className="icon icon-trash-o" /></button>
             </div>
         );
     },
