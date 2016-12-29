@@ -12,7 +12,7 @@ const audit = require('./audit');
 const image = require('./image');
 const item = require('./item');
 const reference = require('./reference');
-const { treatmentDisplay } = require('./objectutils');
+const { singleTreatment, treatmentDisplay } = require('./objectutils');
 const doc = require('./doc');
 const {BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable} = require('./typeutils');
 const {GeneticModificationSummary} = require('./genetic_modification');
@@ -920,7 +920,7 @@ var Treatment = module.exports.Treatment = React.createClass({
         var context = this.props.context;
         var treatmentText = '';
 
-        treatmentText = SingleTreatment(context);
+        treatmentText = singleTreatment(context);
         return (
             <dl className="key-value">
                 <div data-test="treatment">
