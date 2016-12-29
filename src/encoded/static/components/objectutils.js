@@ -1,13 +1,14 @@
 import React from 'react';
 
 
+// Display a summary sentence for a single treatment.
 export function singleTreatment(treatment) {
     let treatmentText = '';
 
     if (treatment.amount) {
         treatmentText += `${treatment.amount}${treatment.amount_units ? ` ${treatment.amount_units}` : ''} `;
     }
-    treatmentText += `${treatment.treatment_term_name}${treatment.treatment_term_id ? ` ${treatment.treatment_term_id})` : ''} `;
+    treatmentText += `${treatment.treatment_term_name}${treatment.treatment_term_id ? ` (${treatment.treatment_term_id})` : ''} `;
     if (treatment.duration) {
         treatmentText += `for ${treatment.duration} ${treatment.duration_units ? treatment.duration_units : ''}`;
     }
@@ -15,6 +16,7 @@ export function singleTreatment(treatment) {
 }
 
 
+// Display a treatment definition list.
 export function treatmentDisplay(treatment) {
     const treatmentText = singleTreatment(treatment);
     return (
