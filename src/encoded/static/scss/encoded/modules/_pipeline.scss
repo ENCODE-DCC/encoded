@@ -11,10 +11,11 @@ $pipeline-node-types:
         &.active {
             fill: desaturate(darken($color, 20%), 30%);
 
-            rect, ellipse {
+            > rect, > ellipse {
                 stroke: #606060;
                 stroke-width: 3px;
             }
+
             line {
                 stroke: #606060;
                 stroke-width: 1px;
@@ -29,7 +30,7 @@ $pipeline-node-types:
             cursor: pointer;
         }
 
-        text {
+        & > text {
             fill: #000;
         }
     }
@@ -47,7 +48,7 @@ g.label {
 }
 
 g.node {
-    rect, ellipse {
+    > rect, > ellipse {
         stroke: #a0a0a0;
         stroke-width: 1.5px;
     }
@@ -242,5 +243,19 @@ g.pipeline-node-qc-metric {
 
     h5 {
         margin-top: 0;
+    }
+}
+
+.qc-tooltip {
+    pointer-events: none;
+
+    rect {
+        fill: #000;
+    }
+
+    text {
+        fill: #fff;
+        font-size: 0.8rem;
+        font-weight: bold;
     }
 }
