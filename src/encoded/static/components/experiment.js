@@ -863,23 +863,19 @@ var RelatedSeriesItem = React.createClass({
         return (
             <span>
                 <a href={series['@id']} title={'View page for series dataset ' + series.accession}>{series.accession}</a>&nbsp;
-                <Tooltip>
-                    <TooltipTrigger>
-                        <i className="icon icon-info-circle"
-                            onMouseEnter={this.props.handleInfoHover.bind(null, series, true)}
-                            onMouseLeave={this.props.handleInfoHover.bind(null, series, false)}
-                            onClick={this.props.handleInfoClick.bind(null, series, false)}
-                            onTouchStart={this.touchStart.bind(null, series)}></i>
-                    </TooltipTrigger>
-                    <TooltipBody>
-                        <div className={'tooltip bottom' + (detailOpen ? ' tooltip-open' : '')}>
-                            <div className="tooltip-arrow"></div>
-                            <div className="tooltip-inner">
-                                {series.description ? <span>{series.description}</span> : <em>No description available</em>}
-                            </div>
+                <div className="tooltip-trigger">
+                    <i className="icon icon-info-circle"
+                        onMouseEnter={this.props.handleInfoHover.bind(null, series, true)}
+                        onMouseLeave={this.props.handleInfoHover.bind(null, series, false)}
+                        onClick={this.props.handleInfoClick.bind(null, series, false)}
+                        onTouchStart={this.touchStart.bind(null, series)}></i>
+                    <div className={'tooltip bottom' + (detailOpen ? ' tooltip-open' : '')}>
+                        <div className="tooltip-arrow"></div>
+                        <div className="tooltip-inner">
+                            {series.description ? <span>{series.description}</span> : <em>No description available</em>}
                         </div>
-                    </TooltipBody>
-                </Tooltip>
+                    </div>
+                </div>
             </span>
         );
     }
