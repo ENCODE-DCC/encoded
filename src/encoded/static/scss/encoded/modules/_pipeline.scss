@@ -30,7 +30,7 @@ $pipeline-node-types:
             cursor: pointer;
         }
 
-        & > text {
+        > text {
             fill: #000;
         }
     }
@@ -54,7 +54,7 @@ g.node {
     }
 
     &.contributing {
-        stroke-dasharray: 4,2; 
+        stroke-dasharray: 4,2;
     }
 
     line {
@@ -66,7 +66,6 @@ g.node {
 g.subnodes {
     text {
         font-size: 10px;
-        font-weight: bold;
         pointer-events: none;
     }
 }
@@ -136,26 +135,33 @@ g.edgePath {
 }
 
 g.pipeline-node-qc-metric {
-    circle {
+    > circle {
         stroke-width: 2px;
         stroke: #a0a0a0;
         fill: #80ffc0;
     }
 
-    text {
+    > text {
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-weight: bold;
         fill: #000;
     }
 
     &.active {
-        circle {
+        > circle {
             stroke: #404040;
             fill: darken(#80ffc0, 50%);
         }
 
-        text {
+        > text {
             fill: #fff;
+        }
+    }
+
+    // Handle hovering over the QC circle to bring up the tooltip.
+    > circle:hover {
+        + text + g {
+            display: block;
         }
     }
 }
@@ -247,6 +253,7 @@ g.pipeline-node-qc-metric {
 }
 
 .qc-tooltip {
+    display: none;
     pointer-events: none;
 
     rect {
@@ -256,6 +263,6 @@ g.pipeline-node-qc-metric {
     text {
         fill: #fff;
         font-size: 0.8rem;
-        font-weight: bold;
+        font-weight: normal;
     }
 }

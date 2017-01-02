@@ -1336,7 +1336,7 @@ export function assembleGraph(context, session, infoNodeId, tooltipNodeId, files
                     label: qcAbbr(metric),
                     '@type': ['QualityMetric'],
                     class: `pipeline-node-qc-metric${infoNodeId === qcId ? ' active' : ''}`,
-                    tooltip: qcId === tooltipNodeId,
+                    tooltip: true,
                     ref: metric,
                     parent: file,
                 };
