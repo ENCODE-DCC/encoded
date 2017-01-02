@@ -1098,7 +1098,7 @@ function qcAbbr(qc) {
 }
 
 
-export function assembleGraph(context, session, infoNodeId, tooltipNodeId, files, filterAssembly, filterAnnotation) {
+export function assembleGraph(context, session, infoNodeId, files, filterAssembly, filterAnnotation) {
     // Calculate a step ID from a file's derived_from array.
     function rDerivedFileIds(file) {
         if (file.derived_from && file.derived_from.length) {
@@ -1594,7 +1594,6 @@ const FileGalleryRenderer = React.createClass({
             selectedFilterValue: '', // <select> value of selected filter
             infoNodeId: '', // @id of node whose info panel is open
             infoModalOpen: false, // True if info modal is open
-            tooltipNodeId: '', // ID of the QC node displaying a tooltip
             relatedFiles: [], // List of related files
         };
     },
@@ -1639,12 +1638,6 @@ const FileGalleryRenderer = React.createClass({
         this.setState({ infoNodeVisible: visible });
     },
 
-    setTooltipNodeId: function (nodeId, visible) {
-        if (this.state.tooltipNodeId !== nodeId || !visible) {
-            this.setState({ tooltipNodeId: visible ? nodeId : '' });
-        }
-    },
-
     // Set the graph filter based on the given <option> value
     setFilter: function (value) {
         const stateValue = value === 'default' ? '' : value;
@@ -1680,7 +1673,7 @@ const FileGalleryRenderer = React.createClass({
         // Build node graph of the files and analysis steps with this experiment
         if (graphFiles && graphFiles.length) {
             try {
-                const { graph, graphedFiles } = assembleGraph(context, this.context.session, this.state.infoNodeId, this.state.tooltipNodeId, graphFiles, selectedAssembly, selectedAnnotation);
+                const { graph, graphedFiles } = assembleGraph(context, this.context.session, this.state.infoNodeId, graphFiles, selectedAssembly, selectedAnnotation);
                 jsonGraph = graph;
                 allGraphedFiles = (selectedAssembly || selectedAnnotation) ? graphedFiles : {};
             } catch (e) {
@@ -1728,7 +1721,6 @@ const FileGalleryRenderer = React.createClass({
                         setInfoNodeId={this.setInfoNodeId}
                         infoNodeVisible={this.state.infoNodeVisible}
                         setInfoNodeVisible={this.setInfoNodeVisible}
-                        setTooltipNodeId={this.setTooltipNodeId}
                         adminUser={!!this.context.session_properties.admin}
                         forceRedraw
                     />
@@ -2008,7 +2000,6 @@ const FileGraph = React.createClass({
         selectedAnnotation: React.PropTypes.string, // Currently selected annotation
         setInfoNodeId: React.PropTypes.func, // Function to call to set the currently selected node ID
         setInfoNodeVisible: React.PropTypes.func, // Function to call to set the visibility of the node's modal
-        setTooltipNodeId: React.PropTypes.func, // Called when a tooltip is hovered over
         infoNodeId: React.PropTypes.string, // ID of selected node in graph
         infoNodeVisible: React.PropTypes.bool, // True if node's modal is vibible
         session: React.PropTypes.object, // Current user's login information
@@ -2111,16 +2102,6 @@ const FileGraph = React.createClass({
     handleNodeClick: function (nodeId) {
         this.props.setInfoNodeId(nodeId);
         this.props.setInfoNodeVisible(true);
-    },
-
-    // Handle the mouse when it starts hovering over a QC node
-    handleHoverIn: function (nodeId) {
-        this.props.setTooltipNodeId(nodeId, true);
-    },
-
-    // Handle the mouse when it stops hovering over a QC node
-    handleHoverOut: function (nodeId) {
-        this.props.setTooltipNodeId(nodeId, false);
     },
 
     handleCollapse: function () {

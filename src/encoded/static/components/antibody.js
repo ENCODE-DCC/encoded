@@ -4,6 +4,7 @@ var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
 var panel = require('../libs/bootstrap/panel');
+var { collapseIcon } = require('../libs/svg-icons');
 var globals = require('./globals');
 var navigation = require('./navigation');
 var dataset = require('./dataset');
