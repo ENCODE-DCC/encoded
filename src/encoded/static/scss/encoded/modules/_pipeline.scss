@@ -256,13 +256,13 @@ g.pipeline-node-qc-metric {
     display: none;
     pointer-events: none;
 
-    rect {
+    rect, polygon {
         fill: #000;
     }
 
     text {
         fill: #fff;
-        font-size: 0.8rem;
+        font-size: 0.9rem;
         font-weight: normal;
     }
 }
