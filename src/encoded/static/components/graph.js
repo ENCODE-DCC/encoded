@@ -408,7 +408,7 @@ export const Graph = React.createClass({
             // Insert the collected SVG styles into a new style element
             const styleEl = document.createElement('style');
             styleEl.setAttribute('type', 'text/css');
-            styleEl.innerHTML = `/* <![CDATA[ */\n"${stylesText}\n/* ]]> */`;
+            styleEl.innerHTML = `/* <![CDATA[ */\n${stylesText}\n/* ]]> */`;
 
             // Insert the new style element into the beginning of the given SVG element
             el.insertBefore(styleEl, el.firstChild);
