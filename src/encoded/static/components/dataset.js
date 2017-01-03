@@ -1282,6 +1282,13 @@ var Series = module.exports.Series = React.createClass({
                                         </div>
                                     : null}
 
+                                    {context.donor_diversity ?
+                                        <div data-test="donordiversity">
+                                            <dt>Donor diversity</dt>
+                                            <dd>{context.donor_diversity}</dd>
+                                        </div>
+                                    : null}
+
                                     {context.assay_term_name && context.assay_term_name.length ?
                                         <div data-test="description">
                                             <dt>Assay</dt>
