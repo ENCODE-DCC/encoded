@@ -369,9 +369,14 @@ export const Graph = React.createClass({
         // Add click event listeners to each node rendering. Node's ID is its ENCODE object ID
         const svg = d3.select(el);
         const nodes = svg.selectAll('g.node');
+        const subnodes = svg.selectAll('g.subnode circle');
 
         nodes.on('click', (nodeId) => {
             this.props.nodeClickHandler(nodeId);
+        });
+        subnodes.on('click', (subnode) => {
+            d3.event.stopPropagation();
+            this.props.nodeClickHandler(subnode.id);
         });
     },
 
