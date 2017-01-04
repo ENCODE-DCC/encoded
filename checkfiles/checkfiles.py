@@ -607,7 +607,7 @@ def check_file(config, session, url, job):
 
     upload_url = job['upload_url']
     local_path = os.path.join(config['mirror'], upload_url[len('s3://'):])
-    local_file_flag = False
+    is_local_bed_present = False  # boolean standing for local .bed file creation
     if item['file_format'] == 'bed':
         unzipped_modified_bed_path = local_path[-18:-7] + '_modified.bed'
 
@@ -684,7 +684,7 @@ def check_file(config, session, url, job):
                 #  remove the comments and create modified.bed to give validateFiles scritp
                 # not forget to remove the modified.bed after finishing
                 try:
-                    local_file_flag = True
+                    is_local_bed_present = True
                     subprocess.check_output(
                         'set -o pipefail; gunzip --stdout {} | grep -v \'^#\' > {}'.format(
                             local_path,
@@ -698,7 +698,7 @@ def check_file(config, session, url, job):
                             errors='replace').rstrip('\n')
 
     if not errors:
-        if local_file_flag:
+        if is_local_bed_present:
             check_format(config['encValData'], job, unzipped_modified_bed_path)
             remove_local_file(unzipped_modified_bed_path, errors)
         else:
