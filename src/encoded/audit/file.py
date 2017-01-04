@@ -365,7 +365,8 @@ def audit_file_controlled_by(value, system):
                          'from experiment {} '.format(value['dataset']['@id']) + \
                          'contains in controlled_by list PE fastq file ' + \
                          '{} with missing paired_with property.'.format(pe_file['@id'])
-                yield AuditFailure('missing paired_with in controlled_by', detail, level='ERROR')
+                yield AuditFailure('missing paired_with in controlled_by',
+                                   detail, level='INTERNAL_ACTION')
             elif check_presence(pe_file['paired_with'], pe_files) is False:
                 detail = 'Fastq file {} '.format(value['@id']) + \
                          'from experiment {} '.format(value['dataset']['@id']) + \
