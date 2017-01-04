@@ -609,6 +609,7 @@ def check_file(config, session, url, job):
     local_path = os.path.join(config['mirror'], upload_url[len('s3://'):])
     is_local_bed_present = False  # boolean standing for local .bed file creation
     if item['file_format'] == 'bed':
+        #  local_path[-18:-7] retreives the file accession from the path
         unzipped_modified_bed_path = local_path[-18:-7] + '_modified.bed'
 
     try:
@@ -671,7 +672,6 @@ def check_file(config, session, url, job):
             check_for_contentmd5sum_conflicts(item, result, output, errors, session, url)
 
         if item['file_format'] == 'bed':
-            unzipped_modified_bed_path = local_path[-18:-7] + '_modified.bed'
             # try to count comment lines
             try:
                 output = subprocess.check_output(
