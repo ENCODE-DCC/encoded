@@ -799,37 +799,18 @@ def patch_file(session, url, job):
         if 'fastq_signature' in result and \
            result['fastq_signature'] != []:
             data['fastq_signature'] = result['fastq_signature']
-
         if 'content_md5sum' in result:
             data['content_md5sum'] = result['content_md5sum']
     else:
-        to_patch = True
-        for e in errors.keys():
-            if e in [
-               'unzipped_fastq_streaming',
-               'lookup_for_fastq_signature',
-               'lookup_for_content_md5sum',
-               'file_not_found',
-               'bed_unzip_failure',
-               'grep_bed_problem',
-               'bed_comments_remove_failure',
-               'content_md5sum_calculation',
-               'file_remove_error',
-               'lookup_for_fastq_signature',
-               'fastq_information_extraction']:
-                to_patch = False
-                break
-        if to_patch:  # will change into if 'content_error' in errors
-            if 'fastq_format_readname' in errors:
-                update_content_error(errors,
-                                     'Fastq file contains read names that don’t follow ' +
-                                     'the Illumina standard naming schema; for example {}'.format(
-                                         errors['fastq_format_readname']))
+        if 'fastq_format_readname' in errors:
+            update_content_error(errors,
+                                 'Fastq file contains read names that don’t follow ' +
+                                 'the Illumina standard naming schema; for example {}'.format(
+                                     errors['fastq_format_readname']))
+        if 'content_error' in errors:
             data = {
-                # place holder for content_error patching
-                # 'content_error': errors['content_error'],
-                #
-                'status': 'upload failed'
+                'status': 'content error',
+                'content_error_detail': errors['content_error']
                 }
     if data:
         item_url = urljoin(url, job['@id'])
