@@ -635,3 +635,28 @@ class ReferenceEpigenome(Series):
     item_type = 'reference_epigenome'
     schema = load_schema('encoded:schemas/reference_epigenome.json')
     embedded = Series.embedded
+
+    matrix = {
+        'y': {
+            'facets': [
+                'organism.scientific_name',
+                'biosample_type',
+                'organ_slims',
+                'award.project',
+                'assembly',
+                'encyclopedia_version'
+            ],
+            'group_by': ['biosample_type', 'biosample_term_name'],
+            'label': 'Biosample',
+        },
+        'x': {
+            'facets': [
+                'annotation_type',
+                'month_released',
+                'targets.label',
+                'files.file_type',
+            ],
+            'group_by': 'annotation_type',
+            'label': 'Type',
+        },
+    }

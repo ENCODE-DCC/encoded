@@ -1,5 +1,5 @@
 [
-	{
+    {
         "_test": "reference epigenome",
         "accession": "ENCSR300EPI",
         "award": "ENCODE2",
@@ -20,5 +20,62 @@
         ],
         "uuid": "7ae7b199-e881-4906-b977-2b1b62de70f7",
         "date_released": "2016-01-01"
+    },
+    {
+        "uuid": "f4fc8b82-e36b-41cc-a23e-0b64e983028d",
+        "description": "Reference Epigenome for mouse cerebellum (adult, 8 weeks old)",
+        "status": "released",
+        "lab": "bradley-bernstein",
+        "accession": "ENCSR738IWZ",
+        "related_datasets": [
+            "/experiments/ENCSR751YPU/",
+            "/experiments/ENCSR706IDL/"
+        ],
+        "dbxrefs": [
+            "IHEC:IHECRE00001827.1"
+        ],
+        "award": "ENCODE2",
+        "date_released": "2016-07-27",
+        "submitted_by": "facilisi.tristique@potenti.vivamus"
+    },
+    {
+        "uuid": "b5d59cbf-cccb-4ebc-9d94-d4fb033dddf4",
+        "dbxrefs": [
+            "IHEC:IHECRE00001854.1"
+        ],
+        "notes": "Under 'proposed' because a majority of this dataset's experiments are under 'submitted'",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "lab": "bradley-bernstein",
+        "award": "ENCODE2",
+        "description": "Reference Epigenome of fibroblast of arm",
+        "status": "released",
+        "related_datasets": [
+            "/experiments/ENCSR000ACT/",
+            "/experiments/ENCSR000ACY/",
+            "/experiments/ENCSR706IDL/"
+        ],
+        "date_released": "2016-08-19",
+        "accession": "ENCSR300AUZ"
+    },
+    {
+        "dbxrefs": [
+            "IHEC:IHECRE00001000.1"
+        ],
+        "date_released": "2013-07-31",
+        "notes": "donor 60 = ENCBS401QZO..  all donors are missing RNAseq, bisulfiteseq.  H3K9ac- (35593= ENCBS412HHB. 40340=ENCBS593HOC)",
+        "description": "REMC Epigenome (Class 4) for ES-I3 Cells using donors/samples:60;31436;35589;35592;35593;35594;40338;40339;40340;40585;40586;42133",
+        "status": "released",
+        "uuid": "3467ca73-3514-4b2d-bb4f-0ab650853819",
+        "related_datasets": [
+            "/experiments/ENCSR787DGZ/",
+            "/experiments/ENCSR862BAF/",
+            "/experiments/ENCSR374GSQ/",
+            "/experiments/ENCSR000ACT/",
+            "/experiments/ENCSR000ACY/"
+        ],
+        "award": "ENCODE2",
+        "accession": "ENCSR747ULU",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "lab": "bradley-bernstein"
     }
 ]
