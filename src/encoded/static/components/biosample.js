@@ -393,7 +393,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                             </section>
                         : null}
 
-                        {constructs.length || (context.genetic_modifications && context.genetic_modifications.length) ?
+                        {constructs.length ?
                             <section>
                                 <hr />
                                 <h4>Construct details</h4>

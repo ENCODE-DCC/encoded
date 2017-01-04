@@ -514,12 +514,12 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {Object.keys(condensedReplicates).length ?
-                    <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
-                : null}
-
                 {geneticModifications.length ?
                     <GeneticModificationSummary geneticModifications={geneticModifications} />
+                : null}
+
+                {Object.keys(condensedReplicates).length ?
+                    <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
                 : null}
 
                 {/* Display the file widget with the facet, graph, and tables */}
