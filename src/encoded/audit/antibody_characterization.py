@@ -42,10 +42,12 @@ def audit_antibody_characterization_review(value, system):
             ontology_term_name = ontology[term_id]['name']
             if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
                 detail = 'Antibody characterization {} '.format(value['@id']) + \
-                         'has a mismatched term {} - {} expected {}'.format(term_id,
-                                                                            term_name,
-                                                                            ontology_term_name)
-
+                         'has a mismatch between biosample term_id ({}) '.format(
+                             term_id) + \
+                         'and term_name ({}), ontology term_name for term_id {} '.format(
+                             term_name,
+                             term_id) + \
+                         'is {}.'.format(ontology_term_name)
                 yield AuditFailure('inconsistent ontology term', detail, level='ERROR')
                 return
             biosample_prefix = term_id.split(':')[0]
@@ -55,9 +57,11 @@ def audit_antibody_characterization_review(value, system):
                          'and has biosample_term_id {} '.format(term_id) + \
                          'that is not one of ' + \
                          '{}'.format(biosampleType_ontologyPrefix[term_type])
-                yield AuditFailure('characterization review with biosample term-type mismatch', detail,
+                yield AuditFailure('characterization review with biosample term-type mismatch',
+                                   detail,
                                    level='INTERNAL_ACTION')
                 return
+
 
 @audit_checker('antibody_characterization', frame=[
     'characterization_reviews',
