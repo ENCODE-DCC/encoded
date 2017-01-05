@@ -2151,7 +2151,7 @@ const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
         const dateString = !!selectedFile.date_created && moment.utc(selectedFile.date_created).format('YYYY-MM-DD');
         header = (
             <div className="details-view-info">
-                <h4>{selectedFile.file_type} {selectedFile.title}</h4>
+                <h4>{selectedFile.file_type} <a href={selectedFile['@id']}>{selectedFile.title}</a></h4>
             </div>
         );
 
