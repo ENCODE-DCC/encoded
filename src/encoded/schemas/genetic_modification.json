@@ -129,7 +129,8 @@
                 "deletion",
                 "insertion",
                 "replacement",
-                "mutagenesis"
+                "mutagenesis",
+                "interference"
             ]
         },
         "purpose":{
@@ -140,8 +141,7 @@
                 "repression",
                 "activation",
                 "overexpression",
-                "tagging",
-                "interference"
+                "tagging"                
             ]
         },
         "zygosity":{
