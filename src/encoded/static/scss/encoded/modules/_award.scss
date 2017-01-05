@@ -11,8 +11,8 @@
         display: block;
 
         @media screen and (min-width: $screen-md-min) {
-            flex: 0 1 50%;
-            width: 50%;
+            flex: 0 1 auto;
+            width: 33.3333%;
         }
     }
 

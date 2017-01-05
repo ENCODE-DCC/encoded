@@ -75,7 +75,7 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                     }],
                 },
                 options: {
-                    maintainAspectRatio: false,
+                    maintainAspectRatio: true,
                     legend: {
                         display: false,
                     },
