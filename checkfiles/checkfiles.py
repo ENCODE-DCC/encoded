@@ -616,7 +616,6 @@ def check_file(config, session, url, job):
         file_stat = os.stat(local_path)
     except FileNotFoundError:
         errors['file_not_found'] = 'File has not been uploaded yet.'
-        update_content_error(errors, 'File was not uploaded to S3')
         if job['run'] < job['upload_expiration']:
             job['skip'] = True
         return job
@@ -811,6 +810,10 @@ def patch_file(session, url, job):
             data = {
                 'status': 'content error',
                 'content_error_detail': errors['content_error']
+                }
+        if 'file_not_found' in errors:
+            data = {
+                'status': 'upload failed'
                 }
     if data:
         item_url = urljoin(url, job['@id'])
