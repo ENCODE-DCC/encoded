@@ -474,14 +474,18 @@ const AttachmentPanel = module.exports.AttachmentPanel = React.createClass({
 
 
 const Listing = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object, // GM Object being searched
+    },
+
     mixins: [PickerActionsMixin, AuditMixin],
 
-    render: function() {
+    render: function () {
         const result = this.props.context;
 
         let techniques = [];
         if (result.modification_techniques && result.modification_techniques.length) {
-            techniques = _.uniq(result.modification_techniques.map(technique => {
+            techniques = _.uniq(result.modification_techniques.map((technique) => {
                 if (technique['@type'][0] === 'Crispr') {
                     return 'CRISPR';
                 }
@@ -498,7 +502,7 @@ const Listing = React.createClass({
                     {this.renderActions()}
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Genetic modifications</p>
-                        <p className="type meta-status">{' ' + result.status}</p>
+                        <p className="type meta-status">{` ${result.status}`}</p>
                         <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                     </div>
                     <div className="accession"><a href={result['@id']}>{result.modification_type}</a></div>
@@ -506,7 +510,7 @@ const Listing = React.createClass({
                         {techniques.length ? <div><strong>Modification techniques: </strong>{techniques.join(', ')}</div> : null}
                     </div>
                 </div>
-                <AuditDetail audits={context.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
+                <AuditDetail audits={result.audit} except={result['@id']} id={result['@id']} forcedEditLink />
             </li>
         );
     }
