@@ -506,6 +506,7 @@ var Dataset = module.exports.Dataset = React.createClass({
                     <div className="data-row">
                         {result['dataset_type'] ? <div><strong>Dataset type: </strong>{result['dataset_type']}</div> : null}
                         {targets && targets.length ? <div><strong>Targets: </strong>{targets.join(', ')}</div> : null}
+                        {result.donor_diversity ? <div><strong>Donor diversity: </strong>{result.donor_diversity}</div> : null}
                         <div><strong>Lab: </strong>{result.lab.title}</div>
                         <div><strong>Project: </strong>{result.award.project}</div>
                     </div>
