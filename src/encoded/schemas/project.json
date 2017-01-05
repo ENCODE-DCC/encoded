@@ -82,9 +82,6 @@
         "organ_slims": {
             "title": "Organ"
         },
-        "files.analysis_step_version.analysis_step.pipelines.title": {
-            "title": "Pipeline"
-        },
         "files.file_type": {
             "title": "Available data"
         },
