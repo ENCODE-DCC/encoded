@@ -174,7 +174,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                     // Just track @id for deciding if all values are the same or not. Rendering handled in libraryComponents
                     if (spikeins && spikeins.length) {
-                        return spikeins.map(spikein => spikein.accession).sort().join();
+                        return spikeins.sort().join();
                     }
                     return undefined;
                 }
@@ -188,18 +188,16 @@ var Experiment = module.exports.Experiment = React.createClass({
                 },
                 strand_specificity: library => <span>{library.strand_specificity ? 'Strand-specific' : 'Non-strand-specific'}</span>,
                 spikeins_used: library => {
-                    var spikeins = library.spikeins_used;
+                    const spikeins = library.spikeins_used;
                     if (spikeins && spikeins.length) {
                         return (
                             <span>
-                                {spikeins.map(function(dataset, i) {
-                                    return (
-                                        <span key={dataset.uuid}>
-                                            {i > 0 ? ', ' : ''}
-                                            <a href={dataset['@id']}>{dataset.accession}</a>
-                                        </span>
-                                    );
-                                })}
+                                {spikeins.map((spikeinsAtId, i) =>
+                                    <span key={i}>
+                                        {i > 0 ? ', ' : ''}
+                                        <a href={spikeinsAtId}>{globals.atIdToAccession(spikeinsAtId)}</a>
+                                    </span>
+                                )}
                             </span>
                         );
                     }
@@ -245,13 +243,6 @@ var Experiment = module.exports.Experiment = React.createClass({
         }
         analysisStepDocs = analysisStepDocs.length ? globals.uniqueObjectsArray(analysisStepDocs) : [];
         pipelineDocs = pipelineDocs.length ? globals.uniqueObjectsArray(pipelineDocs) : [];
-
-        var antibodies = {};
-        replicates.forEach(replicate => {
-            if (replicate.antibody) {
-                antibodies[replicate.antibody['@id']] = replicate.antibody;
-            }
-        });
 
         // Determine this experiment's ENCODE version
         var encodevers = globals.encodeVersion(context);
