@@ -29,7 +29,7 @@ var Param = fetched.Param;
 var StatusLabel = statuslabel.StatusLabel;
 var {AuditMixin, AuditIndicators, AuditDetail} = audit;
 var PubReferenceList = reference.PubReferenceList;
-var SingleTreatment = objectutils.SingleTreatment;
+var singleTreatment = objectutils.singleTreatment;
 var softwareVersionList = software.softwareVersionList;
 var {SortTablePanel, SortTable} = sortTable;
 var ProjectBadge = image.ProjectBadge;
@@ -141,12 +141,12 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                     // First get the treatments in the library
                     if (library.treatments && library.treatments.length) {
-                        treatments = library.treatments.map(treatment => SingleTreatment(treatment));
+                        treatments = library.treatments.map(treatment => singleTreatment(treatment));
                     }
 
                     // Now get the treatments in the biosamples
                     if (library.biosample && library.biosample.treatments && library.biosample.treatments.length) {
-                        treatments = treatments.concat(library.biosample.treatments.map(treatment => SingleTreatment(treatment)));
+                        treatments = treatments.concat(library.biosample.treatments.map(treatment => singleTreatment(treatment)));
                     }
 
                     if (treatments.length) {
@@ -504,6 +504,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </PanelBody>
                 </Panel>
 
+                {geneticModifications.length ?
+                    <GeneticModificationSummary geneticModifications={geneticModifications} />
+                : null}
+
                 {Object.keys(condensedReplicates).length ?
                     <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
                 : null}
@@ -514,10 +518,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} ignoreErrors />
 
                 {combinedDocuments.length ? <DocumentsPanel documentSpecs={[{documents: combinedDocuments}]} /> : null}
-
-                {geneticModifications.length ?
-                    <GeneticModificationSummary geneticModifications={geneticModifications} />
-                : null}
             </div>
         );
     }
