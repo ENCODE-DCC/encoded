@@ -1093,6 +1093,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
 
     // Begin collecting up information about the files from the search result, and gathering their
     // QC and analysis pipeline information.
+    const graphedFiles = {}; // All files in the graph, so table can link to it.
     const allFiles = {}; // All searched files, keyed by file @id
     let matchingFiles = {}; // All files that match the current assembly/annotation, keyed by file @id
     const fileQcMetrics = {}; // List of all file QC metrics indexed by file @id
@@ -1212,25 +1213,28 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
     });
 
     // Make a list of contributing files that matchingFiles files derive from.
-    const usedContributingFiles = context.contributing_files.filter(contributingFile => contributingFile['@id'] in allDerivedFroms);
+    const usedContributingFiles = {};
+    if (context.contributing_files && context.contributing_files.length) {
+        context.contributing_files.forEach((contributingFileAtId) => {
+            if (contributingFileAtId in allDerivedFroms) {
+                usedContributingFiles[contributingFileAtId] = allDerivedFroms[contributingFileAtId];
+            }
+        });
+    }
 
     // Go through each used contributing file and set a property within it showing which files
     // derive from it. We'll need that for coalescing contributing files.
     const allCoalesced = {};
     let coalescingGroups = {};
-    if (usedContributingFiles.length) {
-        usedContributingFiles.forEach((usedContributingFile) => {
-            const contributingId = usedContributingFile['@id'];
-            if (allDerivedFroms[contributingId]) {
-                usedContributingFile.derivedFiles = allDerivedFroms[contributingId];
-            }
-        });
-
+    if (Object.keys(usedContributingFiles).length) {
         // Now use the derivedFiles property of every contributing file to group them into potential
         // coalescing nodes. `coalescingGroups` gets assigned an object keyed by dataset file ids
         // hashed to a stringified 32-bit integer, and mapped to an array of contributing files they
         // derive from.
-        coalescingGroups = _(usedContributingFiles).groupBy(contributingFile => globals.hashCode(contributingFile.derivedFiles.map(derivedFile => derivedFile['@id']).join(',')).toString());
+        coalescingGroups = _(Object.keys(usedContributingFiles)).groupBy((contributingFileAtId) => {
+            const derivedFiles = usedContributingFiles[contributingFileAtId];
+            return globals.hashCode(derivedFiles.map(derivedFile => derivedFile['@id']).join(',')).toString();
+        });
 
         // Set a `coalescingGroup` property in each contributing file with its coalescing group's hash
         // value. That'll be important when we add step nodes.
@@ -1242,14 +1246,12 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
                     // Number of files in the coalescing group is at least the minimum number of files we
                     // allow in a coalescing group. Mark every contributing file in the group with the
                     // group's hash value in a `coalescingGroup` property that step node can connnect to.
-                    group.forEach((contributingFile) => {
-                        contributingFile.coalescingGroup = groupHash;
-                        allCoalesced[contributingFile['@id']] = contributingFile;
+                    group.forEach((contributingFileAtId) => {
+                        allCoalesced[contributingFileAtId] = groupHash;
 
                         // Remove coalesced files from usedContributingFiles because we don't want
                         // to render individual files that have been coalesced.
-                        const contributingIndex = usedContributingFiles.findIndex(file => file['@id'] === contributingFile['@id']);
-                        usedContributingFiles.splice(contributingIndex, 1);
+                        delete usedContributingFiles[contributingFileAtId];
                     });
                 } else {
                     // The number of contributing files in a coalescing group isn't above our
@@ -1268,8 +1270,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         if (!allFiles[derivedFromFileAtId] && !allCoalesced[derivedFromFileAtId]) {
             // The derived-from file isn't in our dataset file list, nor in coalesced contributing
             // files. Now see if it's in non-coalesced contributing files.
-            const derivedContributing = usedContributingFiles.some(contributingFile => contributingFile['@id'] === derivedFromFileAtId);
-            if (!derivedContributing) {
+            if (!usedContributingFiles[derivedFromFileAtId]) {
                 allMissingFiles.push(derivedFromFileAtId);
             }
         }
@@ -1318,6 +1319,9 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
             parentNode: replicateNode,
             ref: fileRef,
         }, metricsInfo);
+
+        // Add the matching file to our list of "all" graphed files.
+        graphedFiles[fileId] = file;
 
         // Figure out the analysis step we need to render between the node we just rendered and its
         // derived_from.
@@ -1377,18 +1381,14 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
                     const coalescedContributing = allCoalesced[derivedFromAtId];
                     if (coalescedContributing) {
                         // Rendering a coalesced contributing file.
-                        const derivedFileId = `coalesced:${coalescedContributing.coalescingGroup}`;
+                        const derivedFileId = `coalesced:${coalescedContributing}`;
                         if (!jsonGraph.getEdge(derivedFileId, stepId)) {
                             jsonGraph.addEdge(derivedFileId, stepId);
                         }
-                    } else {
-                        // Renderig an individual contributing file.
-                        const derivedContributing = usedContributingFiles.find(usedContributingFile => usedContributingFile['@id'] === derivedFromAtId);
-                        if (derivedContributing) {
-                            const derivedFileId = `file:${derivedFromAtId}`;
-                            if (!jsonGraph.getEdge(derivedFileId, stepId)) {
-                                jsonGraph.addEdge(derivedFileId, stepId);
-                            }
+                    } else if (usedContributingFiles[derivedFromAtId]) {
+                        const derivedFileId = `file:${derivedFromAtId}`;
+                        if (!jsonGraph.getEdge(derivedFileId, stepId)) {
+                            jsonGraph.addEdge(derivedFileId, stepId);
                         }
                     }
                 }
@@ -1414,25 +1414,25 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
                 parentNode: replicateNode,
                 ref: fileRef,
             });
+
+            // Add the derived-from file to our list of "all" graphed files.
+            graphedFiles[fileId] = file;
         }
     });
 
     // Go through each derived-from contributing file and add it to our graph.
-    usedContributingFiles.forEach((file) => {
-        const fileNodeId = `file:${file['@id']}`;
-        const fileNodeLabel = `${file.title} (${file.output_type})`;
+    Object.keys(usedContributingFiles).forEach((fileAtId) => {
+        const fileNodeId = `file:${fileAtId}`;
+        const fileNodeLabel = `${globals.atIdToAccession(fileAtId)}`;
         const fileCssClass = `pipeline-node-file contributing${infoNodeId === fileNodeId ? ' active' : ''}`;
-        const fileRef = file;
-        const replicateNode = (file.biological_replicates && file.biological_replicates.length === 1) ? jsonGraph.getNode(`rep:${file.biological_replicates[0]}`) : null;
 
         jsonGraph.addNode(fileNodeId, fileNodeLabel, {
             cssClass: fileCssClass,
             type: 'File',
             shape: 'rect',
             cornerRadius: 16,
-            parentNode: replicateNode,
-            contributing: true,
-            ref: fileRef,
+            contributing: fileAtId,
+            ref: {},
         });
     });
 
@@ -1440,8 +1440,6 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
     Object.keys(coalescingGroups).forEach((groupHash) => {
         const coalescingGroup = coalescingGroups[groupHash];
         if (coalescingGroup.length) {
-            // Check if any files that derive from this coalesced node group aren't removed. If at
-            // least one isn't, then we can add this coalesced node.
             const fileNodeId = `coalesced:${groupHash}`;
             const fileCssClass = `pipeline-node-file contributing${infoNodeId === fileNodeId ? ' active' : ''}`;
             jsonGraph.addNode(fileNodeId, `${coalescingGroup.length} contributing files`, {
@@ -1449,7 +1447,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
                 type: 'File',
                 shape: 'stack',
                 cornerRadius: 16,
-                contributing: true,
+                contributing: groupHash,
                 ref: coalescingGroup,
             });
         }
@@ -1470,7 +1468,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         });
     });
 
-    return { graph: jsonGraph, graphedFiles: matchingFiles };
+    return { graph: jsonGraph, graphedFiles: graphedFiles };
 }
 
 
@@ -1485,31 +1483,35 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
 //
 // relatedFileIds: array of related_file @ids.
 // searchedFiles: Array of files returned from a search of files with dataset pointing at this one.
-function requestRelatedFiles(relatedFileIds, searchedFiles) {
-    const chunkSize = 30; // Maximum of related files to search for at once
-    const searchedFileIds = {};
+function requestFiles(relatedFileIds, searchedFiles) {
+    const chunkSize = 100; // Maximum # of files to search for at once
+    const searchedFileIds = {}; // @ids of files we've searched for and don't need retrieval
+    let filteredFileIds = {}; // @ids of files we need to retrieve
 
     // Make a searchable object of file IDs for files obtained through search.
-    if (searchedFiles.length) {
+    if (searchedFiles && searchedFiles.length) {
         searchedFiles.forEach((searchedFile) => {
             searchedFileIds[searchedFile['@id']] = searchedFile;
         });
-    }
 
-    // Filter the related file @ids to exclude those files we already have in data.@graph,
-    // just so we don't use bandwidth getting things we already have.
-    const filteredFileIds = relatedFileIds.filter(fileId => !searchedFileIds[fileId]);
+        // Filter the given file @ids to exclude those files we already have in data.@graph,
+        // just so we don't use bandwidth getting things we already have.
+        filteredFileIds = relatedFileIds.filter(fileId => !searchedFileIds[fileId]);
+    } else {
+        // We have *no* files already, so filtered files are just all of them.
+        filteredFileIds = relatedFileIds;
+    }
 
     // Break relatedFileIds into an array of arrays of <= `chunkSize` @ids so we don't
     // generate search URLs that are too long for the server to handle.
-    const relatedFileChunks = [];
+    const fileChunks = [];
     for (let start = 0, chunkIndex = 0; start < filteredFileIds.length; start += chunkSize, chunkIndex += 1) {
-        relatedFileChunks[chunkIndex] = filteredFileIds.slice(start, start + chunkSize);
+        fileChunks[chunkIndex] = filteredFileIds.slice(start, start + chunkSize);
     }
 
     // Going to send out all search chunk GET requests at once, and then wait for all of
     // them to complete.
-    return Promise.all(relatedFileChunks.map((fileChunk) => {
+    return Promise.all(fileChunks.map((fileChunk) => {
         // Build URL containing file search for specific files for each chunk of files.
         const url = '/search/?type=File&limit=all&status!=deleted&status!=revoked&status!=replaced'.concat(fileChunk.reduce((combined, current) => `${combined}&@id=${current}`, ''));
         return fetch(url, {
@@ -1568,7 +1570,7 @@ const FileGalleryRenderer = React.createClass({
         const relatedFileIds = context.related_files && context.related_files.length ? context.related_files : [];
         if (relatedFileIds.length) {
             const searchedFiles = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
-            requestRelatedFiles(relatedFileIds, searchedFiles).then((relatedFiles) => {
+            requestFiles(relatedFileIds, searchedFiles).then((relatedFiles) => {
                 this.setState({ relatedFiles: relatedFiles });
             });
         }
@@ -1586,7 +1588,7 @@ const FileGalleryRenderer = React.createClass({
         const relatedFileIds = context.related_files && context.related_files.length ? context.related_files : [];
         if (relatedFileIds.length) {
             const searchedFiles = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
-            requestRelatedFiles(relatedFileIds, searchedFiles).then((relatedFiles) => {
+            requestFiles(relatedFileIds, searchedFiles).then((relatedFiles) => {
                 if (relatedFiles.length !== this.state.relatedFiles.length) {
                     this.setState({ relatedFiles: relatedFiles });
                 }
@@ -1897,51 +1899,63 @@ function qcDetailsView(metrics) {
 
 
 function coalescedDetailsView(node) {
-    // Configuration for reference file table
-    const coalescedFileColumns = {
-        accession: {
-            title: 'Accession',
-            display: item =>
-                <span>
-                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf('/') + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
-                </span>,
-        },
-        file_type: { title: 'File type' },
-        output_type: { title: 'Output type' },
-        assembly: { title: 'Mapping assembly' },
-        genome_annotation: {
-            title: 'Genome annotation',
-            hide: list => _(list).all(item => !item.genome_annotation),
-        },
-        title: {
-            title: 'Lab',
-            getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
-        },
-        date_created: {
-            title: 'Date added',
-            getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
-            sorter: (a, b) => {
-                if (a && b) {
-                    return Date.parse(a) - Date.parse(b);
-                }
-                const bTest = b ? 1 : 0;
-                return a ? -1 : bTest;
-            },
-        },
-    };
+    let header;
+    let body;
 
-    const header = (
-        <h4>Selected contributing files</h4>
-    );
-    const body = (
-        <div className="coalesced-table">
-            <SortTable
-                list={node.metadata.ref}
-                columns={coalescedFileColumns}
-                sortColumn="accession"
-            />
-        </div>
-    );
+    if (node.metadata.coalescedFiles && node.metadata.coalescedFiles.length) {
+        // Configuration for reference file table
+        const coalescedFileColumns = {
+            accession: {
+                title: 'Accession',
+                display: item =>
+                    <span>
+                        {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf('/') + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                    </span>,
+            },
+            file_type: { title: 'File type' },
+            output_type: { title: 'Output type' },
+            assembly: { title: 'Mapping assembly' },
+            genome_annotation: {
+                title: 'Genome annotation',
+                hide: list => _(list).all(item => !item.genome_annotation),
+            },
+            title: {
+                title: 'Lab',
+                getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
+            },
+            date_created: {
+                title: 'Date added',
+                getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
+                sorter: (a, b) => {
+                    if (a && b) {
+                        return Date.parse(a) - Date.parse(b);
+                    }
+                    const bTest = b ? 1 : 0;
+                    return a ? -1 : bTest;
+                },
+            },
+        };
+
+        header = (
+            <h4>Selected contributing files</h4>
+        );
+        body = (
+            <div className="coalesced-table">
+                <SortTable
+                    list={node.metadata.coalescedFiles}
+                    columns={coalescedFileColumns}
+                    sortColumn="accession"
+                />
+            </div>
+        );
+    } else {
+        header = (
+            <div className="details-view-info">
+                <h4>Unknown files</h4>
+            </div>
+        );
+        body = <p className="browser-error">No information available</p>;
+    }
     return { header: header, body: body };
 }
 
@@ -1963,6 +1977,8 @@ const FileGraph = React.createClass({
 
     getInitialState: function () {
         return {
+            contributingFiles: {}, // List of contributing file objects we've requested; acts as a cache too
+            coalescedFiles: {}, // List of coalesced files we've requested; acts as a cache too
             infoModalOpen: false, // Graph information modal open
             collapsed: false, // T if graphing panel is collapsed
         };
@@ -1987,15 +2003,61 @@ const FileGraph = React.createClass({
                 // Coalesced contributing files.
                 const node = jsonGraph.getNode(infoNodeId);
                 if (node) {
-                    meta = coalescedDetailsView(node);
-                    meta.type = 'File';
+                    const currCoalescedFiles = this.state.coalescedFiles;
+                    if (currCoalescedFiles[node.metadata.contributing]) {
+                        // We have the requested coalesced files in the cache, so just display
+                        // them.
+                        node.metadata.coalescedFiles = currCoalescedFiles[node.metadata.contributing];
+                        meta = coalescedDetailsView(node);
+                        meta.type = 'File';
+                    } else if (!this.contributingRequestOutstanding) {
+                        // We don't have the requested coalesced files in the cache, so we have to
+                        // request them from the DB.
+                        this.contributingRequestOutstanding = true;
+                        requestFiles(node.metadata.ref).then((contributingFiles) => {
+                            this.contributingRequestOutstanding = false;
+                            currCoalescedFiles[node.metadata.contributing] = contributingFiles;
+                            this.setState({ coalescedFiles: currCoalescedFiles });
+                        }).catch(() => {
+                            this.contributingRequestOutstanding = false;
+                            currCoalescedFiles[node.metadata.contributing] = [];
+                            this.setState({ coalescedFiles: currCoalescedFiles });
+                        });
+                    }
                 }
             } else {
-                // A regular file.
+                // A regular or contributing file.
                 const node = jsonGraph.getNode(infoNodeId);
                 if (node) {
-                    meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, loggedIn, adminUser);
-                    meta.type = node['@type'][0];
+                    if (node.metadata.contributing) {
+                        // This is a contributing file, and its @id is in
+                        // node.metadata.contributing. See if the file is in the cache.
+                        const currContributing = this.state.contributingFiles;
+                        if (currContributing[node.metadata.contributing]) {
+                            // We have this file's object in the cache, so just display it.
+                            node.metadata.ref = currContributing[node.metadata.contributing];
+                            meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, loggedIn, adminUser);
+                            meta.type = node['@type'][0];
+                        } else if (!this.contributingRequestOutstanding) {
+                            // We don't have this file's object in the cache, so request it from
+                            // the DB.
+                            this.contributingRequestOutstanding = true;
+                            requestFiles([node.metadata.contributing]).then((contributingFile) => {
+                                this.contributingRequestOutstanding = false;
+                                currContributing[node.metadata.contributing] = contributingFile[0];
+                                this.setState({ contributingFiles: currContributing });
+                            }).catch(() => {
+                                this.contributingRequestOutstanding = false;
+                                currContributing[node.metadata.contributing] = {};
+                                this.setState({ contributingFiles: currContributing });
+                            });
+                        }
+                    } else {
+                        // Regular File data in the node from when we generated the graph. Just
+                        // display the file data from there.
+                        meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, loggedIn, adminUser);
+                        meta.type = node['@type'][0];
+                    }
                 }
             }
         }
@@ -2116,7 +2178,7 @@ const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
     let body = null;
     let header = null;
 
-    if (selectedFile) {
+    if (selectedFile && Object.keys(selectedFile).length) {
         let contributingAccession;
 
         if (node.metadata.contributing) {

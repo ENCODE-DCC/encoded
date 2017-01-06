@@ -77,17 +77,6 @@ class Dataset(Item):
         'revoked_files.replicate.experiment.lab',
         'revoked_files.replicate.experiment.target',
         'revoked_files.submitted_by',
-        'contributing_files',
-        'contributing_files.platform',
-        'contributing_files.lab',
-        'contributing_files.analysis_step_version.analysis_step',
-        'contributing_files.analysis_step_version.analysis_step.pipelines',
-        'contributing_files.analysis_step_version.software_versions',
-        'contributing_files.analysis_step_version.software_versions.software',
-        'contributing_files.replicate.experiment',
-        'contributing_files.replicate.experiment.lab',
-        'contributing_files.replicate.experiment.target',
-        'contributing_files.submitted_by',
         'submitted_by',
         'lab',
         'award',
@@ -535,12 +524,6 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'files.quality_metrics',
         'files.quality_metrics.step_run',
         'files.quality_metrics.step_run.analysis_step_version.analysis_step',
-        'contributing_files.platform',
-        'contributing_files.lab',
-        'contributing_files.analysis_step_version.analysis_step',
-        'contributing_files.analysis_step_version.analysis_step.pipelines',
-        'contributing_files.analysis_step_version.software_versions',
-        'contributing_files.analysis_step_version.software_versions.software'
     ]
 
     @calculated_property(schema={
