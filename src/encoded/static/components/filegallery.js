@@ -7,6 +7,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/mo
 import { DropdownButton } from '../libs/bootstrap/button';
 import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
 import { StatusLabel } from './statuslabel';
+import { requestFiles } from './objectutils';
 import { Graph, JsonGraph } from './graph';
 import { softwareVersionList } from './software';
 import { FetchedData, Param } from './fetched';
@@ -1469,74 +1470,6 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
     });
 
     return { graph: jsonGraph, graphedFiles: graphedFiles };
-}
-
-
-// Here we, in addition to the files that have `dataset` properties pointing at this
-// dataset that we searched for earlier, do a search of the specific files whose @ids are
-// listed in the `related_files` property of the dataset. Because we have to specify the
-// @id of each file in the URL of the GET request, the URL can get quite long, so if the
-// number of `related_file` @ids goes beyond the `chunkSize` constant, we break the
-// searches into chunks, and the maximum number of @ids in each chunk is `chunkSize`. We
-// then send out all the search GET requests at once, combine them into one array of
-// related files returned as a promise.
-//
-// relatedFileIds: array of related_file @ids.
-// searchedFiles: Array of files returned from a search of files with dataset pointing at this one.
-function requestFiles(relatedFileIds, searchedFiles) {
-    const chunkSize = 100; // Maximum # of files to search for at once
-    const searchedFileIds = {}; // @ids of files we've searched for and don't need retrieval
-    let filteredFileIds = {}; // @ids of files we need to retrieve
-
-    // Make a searchable object of file IDs for files obtained through search.
-    if (searchedFiles && searchedFiles.length) {
-        searchedFiles.forEach((searchedFile) => {
-            searchedFileIds[searchedFile['@id']] = searchedFile;
-        });
-
-        // Filter the given file @ids to exclude those files we already have in data.@graph,
-        // just so we don't use bandwidth getting things we already have.
-        filteredFileIds = relatedFileIds.filter(fileId => !searchedFileIds[fileId]);
-    } else {
-        // We have *no* files already, so filtered files are just all of them.
-        filteredFileIds = relatedFileIds;
-    }
-
-    // Break relatedFileIds into an array of arrays of <= `chunkSize` @ids so we don't
-    // generate search URLs that are too long for the server to handle.
-    const fileChunks = [];
-    for (let start = 0, chunkIndex = 0; start < filteredFileIds.length; start += chunkSize, chunkIndex += 1) {
-        fileChunks[chunkIndex] = filteredFileIds.slice(start, start + chunkSize);
-    }
-
-    // Going to send out all search chunk GET requests at once, and then wait for all of
-    // them to complete.
-    return Promise.all(fileChunks.map((fileChunk) => {
-        // Build URL containing file search for specific files for each chunk of files.
-        const url = '/search/?type=File&limit=all&status!=deleted&status!=revoked&status!=replaced'.concat(fileChunk.reduce((combined, current) => `${combined}&@id=${current}`, ''));
-        return fetch(url, {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-            },
-        }).then((response) => {
-            // Convert each response response to JSON
-            if (response.ok) {
-                return response.json();
-            }
-            return Promise.resolve(null);
-        });
-    })).then((chunks) => {
-        // All search chunks have resolved or errored. We get an array of search results in
-        // `chunks` -- one per chunk. Now collect their files from their @graphs into one
-        // array of related files and set the component state with them to trigger a
-        // redrawing of the file gallery with these files in addition to the earlier
-        // searched files
-        if (chunks && chunks.length) {
-            return chunks.reduce((files, chunk) => (chunk && chunk['@graph'].length ? files.concat(chunk['@graph']) : files), []);
-        }
-        return [];
-    });
 }
 
 

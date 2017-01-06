@@ -5,6 +5,7 @@ import globals from './globals';
 import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
 import { DbxrefList } from './dbxref';
 import { FetchedItems } from './fetched';
+import { requestFiles } from './objectutils';
 import { ProjectBadge } from './image';
 import { PickerActionsMixin } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
@@ -88,57 +89,6 @@ const DerivedFromFiles = React.createClass({
 });
 
 
-// Here we, in addition to the files that have `dataset` properties pointing at this
-// dataset that we searched for earlier, do a search of the specific files whose @ids are
-// listed in the `related_files` property of the dataset. Because we have to specify the
-// @id of each file in the URL of the GET request, the URL can get quite long, so if the
-// number of `related_file` @ids goes beyond the `chunkSize` constant, we break the
-// searches into chunks, and the maximum number of @ids in each chunk is `chunkSize`. We
-// then send out all the search GET requests at once, combine them into one array of
-// related files returned as a promise.
-//
-// relatedFileIds: array of related_file @ids.
-// searchedFiles: Array of files returned from a search of files with dataset pointing at this one.
-function requestDerivedFromFiles(derivedFromFileIds) {
-    const chunkSize = 30; // Maximum of related files to search for at once
-
-    // Break relatedFileIds into an array of arrays of <= `chunkSize` @ids so we don't
-    // generate search URLs that are too long for the server to handle.
-    const derivedFromFileChunks = [];
-    for (let start = 0, chunkIndex = 0; start < derivedFromFileIds.length; start += chunkSize, chunkIndex += 1) {
-        derivedFromFileChunks[chunkIndex] = derivedFromFileIds.slice(start, start + chunkSize);
-    }
-
-    // Going to send out all search chunk GET requests at once, and then wait for all of
-    // them to complete.
-    return Promise.all(derivedFromFileChunks.map((fileChunk) => {
-        // Build URL containing file search for specific files for each chunk of files.
-        const url = '/search/?type=File&limit=all&status!=deleted&status!=revoked&status!=replaced'.concat(fileChunk.reduce((combined, current) => `${combined}&@id=${current}`, ''));
-        return fetch(url, {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-            },
-        }).then((response) => {
-            // Convert each response response to JSON
-            if (response.ok) {
-                return response.json();
-            }
-            return Promise.resolve(null);
-        });
-    })).then((chunks) => {
-        // All search chunks have resolved or errored. We get an array of search results in
-        // `chunks` -- one per chunk. Now collect their files from their @graphs into one
-        // array of derived-from files and set the component state with them to trigger a
-        // redrawing of the page with these files.
-        if (chunks && chunks.length) {
-            return chunks.reduce((files, chunk) => (chunk && chunk['@graph'].length ? files.concat(chunk['@graph']) : files), []);
-        }
-        return [];
-    });
-}
-
-
 const File = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // File object being displayed
@@ -160,7 +110,7 @@ const File = React.createClass({
         const { context } = this.props;
         const derivedFromFileIds = context.derived_from && context.derived_from.length ? context.derived_from : [];
         if (derivedFromFileIds.length) {
-            requestDerivedFromFiles(derivedFromFileIds).then((derivedFromFiles) => {
+            requestFiles(derivedFromFileIds).then((derivedFromFiles) => {
                 this.setState({ derivedFromFiles: derivedFromFiles });
             });
         }
