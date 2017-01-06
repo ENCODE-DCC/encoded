@@ -156,7 +156,7 @@ const File = React.createClass({
         };
     },
 
-    componentWillMount: function () {
+    componentDidMount: function () {
         const { context } = this.props;
         const derivedFromFileIds = context.derived_from && context.derived_from.length ? context.derived_from : [];
         if (derivedFromFileIds.length) {
