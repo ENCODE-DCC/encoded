@@ -38,25 +38,11 @@ const assemblyPriority = [
 const FileAccessionButton = React.createClass({
     propTypes: {
         file: React.PropTypes.object.isRequired, // File whose button is being rendered
-        buttonEnabled: React.PropTypes.bool, // True if accession should be a button
-        clickHandler: React.PropTypes.func, // Function to call when the button is clicked
-    },
-
-    onClick: function () {
-        this.props.clickHandler(`file:${this.props.file['@id']}`);
     },
 
     render: function () {
-        const { file, buttonEnabled } = this.props;
-        return (
-            <span>
-                {buttonEnabled ?
-                    <span><button className="file-table-btn" onClick={this.onClick}>{file.title}</button>&nbsp;</span>
-                :
-                    <span>{file.title}&nbsp;</span>
-                }
-            </span>
-        );
+        const { file } = this.props;
+        return <a href={file['@id']} title={`Go to page for ${file.title}`}>{file.title}&nbsp;</a>;
     },
 });
 
@@ -1474,7 +1460,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
 // relatedFileIds: array of related_file @ids.
 // searchedFiles: Array of files returned from a search of files with dataset pointing at this one.
 function requestRelatedFiles(relatedFileIds, searchedFiles) {
-    const chunkSize = 2; // Maximum of related files to search for at once
+    const chunkSize = 30; // Maximum of related files to search for at once
     const searchedFileIds = {};
 
     // Make a searchable object of file IDs for files obtained through search.

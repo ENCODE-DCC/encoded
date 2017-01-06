@@ -69,15 +69,16 @@ const DerivedFiles = React.createClass({
 const DerivedFromFiles = React.createClass({
     propTypes: {
         file: React.PropTypes.object.isRequired, // File being analyzed
+        derivedFromFiles: React.PropTypes.array.isRequired, // Array of derived-from files
     },
 
     render: function () {
-        const { file } = this.props;
+        const { file, derivedFromFiles } = this.props;
 
         return (
             <SortTablePanel header={<h4>{`Files ${file.accession} derives from`}</h4>}>
                 <SortTable
-                    list={file.derived_from}
+                    list={derivedFromFiles}
                     columns={derivingCols}
                     sortColumn="accession"
                 />
@@ -85,6 +86,57 @@ const DerivedFromFiles = React.createClass({
         );
     },
 });
+
+
+// Here we, in addition to the files that have `dataset` properties pointing at this
+// dataset that we searched for earlier, do a search of the specific files whose @ids are
+// listed in the `related_files` property of the dataset. Because we have to specify the
+// @id of each file in the URL of the GET request, the URL can get quite long, so if the
+// number of `related_file` @ids goes beyond the `chunkSize` constant, we break the
+// searches into chunks, and the maximum number of @ids in each chunk is `chunkSize`. We
+// then send out all the search GET requests at once, combine them into one array of
+// related files returned as a promise.
+//
+// relatedFileIds: array of related_file @ids.
+// searchedFiles: Array of files returned from a search of files with dataset pointing at this one.
+function requestDerivedFromFiles(derivedFromFileIds) {
+    const chunkSize = 30; // Maximum of related files to search for at once
+
+    // Break relatedFileIds into an array of arrays of <= `chunkSize` @ids so we don't
+    // generate search URLs that are too long for the server to handle.
+    const derivedFromFileChunks = [];
+    for (let start = 0, chunkIndex = 0; start < derivedFromFileIds.length; start += chunkSize, chunkIndex += 1) {
+        derivedFromFileChunks[chunkIndex] = derivedFromFileIds.slice(start, start + chunkSize);
+    }
+
+    // Going to send out all search chunk GET requests at once, and then wait for all of
+    // them to complete.
+    return Promise.all(derivedFromFileChunks.map((fileChunk) => {
+        // Build URL containing file search for specific files for each chunk of files.
+        const url = '/search/?type=File&limit=all&status!=deleted&status!=revoked&status!=replaced'.concat(fileChunk.reduce((combined, current) => `${combined}&@id=${current}`, ''));
+        return fetch(url, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+            },
+        }).then((response) => {
+            // Convert each response response to JSON
+            if (response.ok) {
+                return response.json();
+            }
+            return Promise.resolve(null);
+        });
+    })).then((chunks) => {
+        // All search chunks have resolved or errored. We get an array of search results in
+        // `chunks` -- one per chunk. Now collect their files from their @graphs into one
+        // array of derived-from files and set the component state with them to trigger a
+        // redrawing of the page with these files.
+        if (chunks && chunks.length) {
+            return chunks.reduce((files, chunk) => (chunk && chunk['@graph'].length ? files.concat(chunk['@graph']) : files), []);
+        }
+        return [];
+    });
+}
 
 
 const File = React.createClass({
@@ -97,6 +149,22 @@ const File = React.createClass({
     },
 
     mixins: [AuditMixin],
+
+    getInitialState: function () {
+        return {
+            derivedFromFiles: [], // List of derived-from files
+        };
+    },
+
+    componentWillMount: function () {
+        const { context } = this.props;
+        const derivedFromFileIds = context.derived_from && context.derived_from.length ? context.derived_from : [];
+        if (derivedFromFileIds.length) {
+            requestDerivedFromFiles(derivedFromFileIds).then((derivedFromFiles) => {
+                this.setState({ derivedFromFiles: derivedFromFiles });
+            });
+        }
+    },
 
     render: function () {
         const { context } = this.props;
@@ -281,7 +349,7 @@ const File = React.createClass({
                     <SequenceFileInfo file={context} />
                 : null}
 
-                {context.derived_from && context.derived_from.length ? <DerivedFromFiles file={context} /> : null}
+                {this.state.derivedFromFiles && this.state.derivedFromFiles.length ? <DerivedFromFiles file={context} derivedFromFiles={this.state.derivedFromFiles} /> : null}
 
                 <FetchedItems
                     {...this.props}
@@ -392,67 +460,6 @@ const SequenceFileInfo = React.createClass({
 });
 
 
-// Render an array of flow cell details into a <dd>
-const FlowcellDetails = React.createClass({
-    propTypes: {
-        flowcells: React.PropTypes.array, // Array of flowcell_detail objects
-    },
-
-    render: function () {
-        const { flowcells } = this.props;
-
-        return (
-            <div className="flowcell-details">
-                {flowcells.map(flowcell =>
-                    <Panel addClasses="flowcell-details__panel">
-                        <PanelHeading addClasses="flowcell-details__header">
-                            {flowcell.machine ? <h5>{flowcell.machine}</h5> : <h5>Unspecified machine</h5>}
-                        </PanelHeading>
-                        <PanelBody addClasses="flowcell-details__body">
-                            {flowcell.flowcell ?
-                                <div className="flowcell-details__item">
-                                    <strong>ID: </strong>{flowcell.flowcell}
-                                </div>
-                            : null}
-
-                            {flowcell.lane ?
-                                <div className="flowcell-details__item">
-                                    <strong>Lane: </strong> {flowcell.lane}
-                                </div>
-                            : null}
-
-                            {flowcell.barcode ?
-                                <div className="flowcell-details__item">
-                                    <strong>Barcode: </strong> {flowcell.barcode}
-                                </div>
-                            : null}
-
-                            {flowcell.barcode_in_read ?
-                                <div className="flowcell-details__item">
-                                    <strong>Barcode in read: </strong> {flowcell.barcode_in_read}
-                                </div>
-                            : null}
-
-                            {flowcell.barcode_position ?
-                                <div className="flowcell-details__item">
-                                    <strong>Barcode position: </strong> {flowcell.barcode_position}
-                                </div>
-                            : null}
-
-                            {flowcell.chunk ?
-                                <div className="flowcell-details__item">
-                                    <strong>Chunk: </strong> {flowcell.chunk}
-                                </div>
-                            : null}
-                        </PanelBody>
-                    </Panel>
-                )}
-            </div>
-        );
-    },
-});
-
-
 const Listing = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // File object being rendered
@@ -462,7 +469,6 @@ const Listing = React.createClass({
 
     render: function () {
         const result = this.props.context;
-        const aliasList = (result.aliases && result.aliases.length) ? result.aliases.join(', ') : '';
 
         return (
             <li>
@@ -470,8 +476,8 @@ const Listing = React.createClass({
                     {this.renderActions()}
                     <div className="pull-right search-meta">
                         <p className="type meta-title">File</p>
-                        <p className="type">{' ' + result.accession}</p>
-                        <p className="type meta-status">{' ' + result.status}</p>
+                        <p className="type">{` ${result.accession}`}</p>
+                        <p className="type meta-status">{` ${result.status}`}</p>
                         <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                     </div>
                     <div className="accession"><a href={result['@id']}>{`${result.file_format}${result.file_format_type ? ` (${result.file_format_type})` : ''}`}</a></div>
