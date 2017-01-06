@@ -42,7 +42,32 @@ const FileAccessionButton = React.createClass({
 
     render: function () {
         const { file } = this.props;
-        return <a href={file['@id']} title={`Go to page for ${file.title}`}>{file.title}&nbsp;</a>;
+        return <a href={file['@id']} title={`Go to page for ${file.title}`}>{file.title}</a>;
+    },
+});
+
+
+// Display a button to open the file information modal.
+const FileInfoButton = React.createClass({
+    propTypes: {
+        file: React.PropTypes.object.isRequired, // File whose information is to be displayed
+        clickHandler: React.PropTypes.func, // Function to call when the info button is clicked
+    },
+
+    onClick: function () {
+        this.props.clickHandler(`file:${this.props.file['@id']}`);
+    },
+
+    render: function () {
+        const { file } = this.props;
+
+        return (
+            <button className="file-table-btn" onClick={this.onClick}>
+                <i className="icon icon-info-circle">
+                    <span className="sr-only">Open file information</span>
+                </i>
+            </button>
+        );
     },
 });
 
@@ -156,6 +181,7 @@ const DownloadableAccession = React.createClass({
         return (
             <span className="file-table-accession">
                 <FileAccessionButton file={file} buttonEnabled={buttonEnabled} clickHandler={clickHandler} />
+                {buttonEnabled ? <FileInfoButton file={file} clickHandler={clickHandler} /> : null}
                 <RestrictedDownloadButton file={file} loggedIn={loggedIn} adminUser={adminUser} />
             </span>
         );
