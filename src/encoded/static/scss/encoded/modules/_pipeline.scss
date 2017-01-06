@@ -55,6 +55,11 @@ g.node {
 
     &.contributing {
         stroke-dasharray: 4,2;
+
+        rect, ellipse {
+            stroke: #a0a0a0;
+            stroke-width: 1.5px;
+        }
     }
 
     line {
