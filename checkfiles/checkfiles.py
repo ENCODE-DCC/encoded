@@ -718,9 +718,6 @@ def check_file(config, session, url, job):
     if item['status'] != 'uploading':
         errors['status_check'] = \
             "status '{}' is not 'uploading'".format(item['status'])
-        update_content_error(errors, 'Submitted file status was {} '.format(
-            item['status']) +
-            'instead of \'uploading\'.')
     if errors:
         errors['gathered information'] = 'Gathered information about the file was: {}.'.format(
             str(result))
