@@ -982,6 +982,26 @@ var displayPossibleControls = function(item) {
     return null;
 };
 
+
+// Given a dataset (for now, only ReferenceEpigenome), return the donor diversity of that dataset.
+function donorDiversity(dataset) {
+    let donors = {};
+    let donorDiversity = '';
+
+    if (dataset.related_datasets && dataset.related_datasets.length) {
+        dataset.related_datasets.forEach((dataset) => {
+            if (dataset.replicates && dataset.replicates.length) {
+                dataset.replicates.forEach((replicate) => {
+                    if (replicate.library && replicate.library.biosample && replicate.library.biosample.donor) {
+                        donors[replicate.library.biosample.donor['@id']] = replicate.library.biosample.donor;
+                    }
+                });
+            }
+        });
+    }
+}
+
+
 var basicTableColumns = {
     'accession': {
         title: 'Accession',
@@ -1223,7 +1243,7 @@ var Series = module.exports.Series = React.createClass({
         var references = PubReferenceList(context.references);
 
         // Make the series title
-        var seriesComponent = this.seriesComponents[context['@type'][0]];
+        var seriesComponent = this.seriesComponents[seriesType];
         var seriesTitle = seriesComponent ? seriesComponent.title : 'series';
 
         // Calculate the biosample summary
