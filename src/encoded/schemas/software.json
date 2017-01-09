@@ -94,6 +94,9 @@
                     "FAIRE-seq",
                     "RIP-seq", 
                     "CAGE",
+                    "ChIA-PET",
+                    "ATAC-seq",
+                    "eCLIP-seq",
                     "integrative analysis",
                     "variant analysis",
                     "community resource"
