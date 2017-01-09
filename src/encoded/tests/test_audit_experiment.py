@@ -2140,7 +2140,6 @@ def test_audit_experiment_dnase_low_spot_score(testapp,
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(base_experiment['@id'], {'status': 'released',
                                                 'date_released': '2016-01-01',
-                                                'assay_term_id': 'OBI:0001853',
                                                 'assay_term_name': 'DNase-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -2696,9 +2695,7 @@ def test_audit_experiment_missing_unfiltered_bams(testapp,
                                                   analysis_step_bam,
                                                   pipeline_bam):
 
-    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
-                                                'assay_term_id': 'OBI:0000716'
-                                                })
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
     testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_3['@id']],
                                              'assembly': 'hg19',
                                              'output_type': 'unfiltered alignments'})
