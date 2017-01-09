@@ -99,6 +99,7 @@
             "type": "string",
             "enum": [
                 "ENCODE",
+                "ENCODE4",
                 "GGR",
                 "REMC"
             ]
