@@ -317,7 +317,10 @@ table.table-raw {
 }
 
 .file-qc-btn {
-    @extend .file-table-btn;
+    border: 1px solid #a0a0a0;
+    border-radius: 15px;
+    font-weight: bold;
+    font-size: 0.8rem;
     background-color: #80ffc0;
 }
 

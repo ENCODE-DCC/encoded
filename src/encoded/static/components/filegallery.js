@@ -1798,7 +1798,7 @@ function qcDetailsView(metrics) {
                         <dl className="key-value">
                             {sortedKeys.map(key =>
                                 ((typeof metrics.ref[key] === 'string' || typeof metrics.ref[key] === 'number') ?
-                                    <div key={key}>
+                                    <div data-test={key} key={key}>
                                         <dt>{key}</dt>
                                         <dd>{metrics.ref[key]}</dd>
                                     </div>
