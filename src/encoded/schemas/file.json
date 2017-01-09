@@ -499,6 +499,7 @@
 
                         "optimal idr thresholded peaks",
                         "conservative idr thresholded peaks",
+                        "pseudoreplicated idr thresholded peaks",
 
                         "enhancer validation",
                         "semi-automated genome annotation",
@@ -895,6 +896,7 @@
         "proximal peaks": "annotation",
         "optimal idr thresholded peaks": "annotation",
         "conservative idr thresholded peaks": "annotation",
+        "pseudoreplicated idr thresholded peaks": "annotation",
         "predicted forebrain enhancers": "annotation",
         "predicted heart enhancers": "annotation",
         "predicted whole brain enhancers": "annotation",

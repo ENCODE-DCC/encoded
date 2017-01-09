@@ -64,7 +64,9 @@
                      "transcriptome assembly",
                      "variant annotation",
                      "read trimming",
-                     "interaction calling"
+                     "interaction calling",
+                     "topologically associated domain identification",
+                     "chromatin loop identification"
                  ]
              }
         },
