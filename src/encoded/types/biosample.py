@@ -707,6 +707,9 @@ def generate_summary_dictionary(
                 term_phrase += ' ' + w
 
         term_phrase += ' ' + term_type
+        if term_phrase.startswith(' of'):
+            term_phrase = ' ' + term_phrase[3:]
+
         if len(term_phrase) > 0:
             dict_of_phrases['term_phrase'] = term_phrase[1:]
 

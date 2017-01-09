@@ -1,23 +1,24 @@
-'use strict';
-var React = require('react');
+import React from 'react';
 
 
-var SingleTreatment = module.exports.SingleTreatment = function(treatment) {
-    var treatmentText = '';
+// Display a summary sentence for a single treatment.
+export function singleTreatment(treatment) {
+    let treatmentText = '';
 
     if (treatment.amount) {
-        treatmentText += treatment.amount + (treatment.amount_units ? ' ' + treatment.amount_units : '') + ' ';
+        treatmentText += `${treatment.amount}${treatment.amount_units ? ` ${treatment.amount_units}` : ''} `;
     }
-    treatmentText += treatment.treatment_term_name + (treatment.treatment_term_id ? ' (' + treatment.treatment_term_id + ')' : '') + ' ';
+    treatmentText += `${treatment.treatment_term_name}${treatment.treatment_term_id ? ` (${treatment.treatment_term_id})` : ''} `;
     if (treatment.duration) {
-        treatmentText += 'for ' + treatment.duration + ' ' + (treatment.duration_units ? treatment.duration_units : '');
+        treatmentText += `for ${treatment.duration} ${treatment.duration_units ? treatment.duration_units : ''}`;
     }
     return treatmentText;
-};
+}
 
 
-var TreatmentDisplay = module.exports.TreatmentDisplay = function(treatment) {
-    var treatmentText = SingleTreatment(treatment);
+// Display a treatment definition list.
+export function treatmentDisplay(treatment) {
+    const treatmentText = singleTreatment(treatment);
     return (
         <dl key={treatment.uuid} className="key-value">
             <div data-test="treatment">
@@ -31,4 +32,4 @@ var TreatmentDisplay = module.exports.TreatmentDisplay = function(treatment) {
             </div>
         </dl>
     );
-};
+}
