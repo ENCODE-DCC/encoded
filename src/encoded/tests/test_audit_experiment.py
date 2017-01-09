@@ -2186,6 +2186,7 @@ def test_audit_experiment_dnase_seq_low_read_depth(testapp,
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'extremely low read depth' for error in errors_list)
 
+
 def test_audit_experiment_dnase_low_read_length(testapp,
                                                 base_experiment,
                                                 replicate_1_1,
@@ -2215,7 +2216,6 @@ def test_audit_experiment_dnase_low_read_length(testapp,
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(base_experiment['@id'], {'status': 'released',
                                                 'date_released': '2016-01-01',
-                                                'assay_term_id': 'OBI:0001853',
                                                 'assay_term_name': 'DNase-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
