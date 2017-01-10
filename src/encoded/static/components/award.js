@@ -13,12 +13,11 @@ const assayChartId = 'assay-chart'; // Assay chart <div> id attribute
 const statusChartId = 'status-chart'; // Status chart <div> id attribute
 const labColors = new DataColors(); // Get a list of colors to use for the lab chart
 const labColorList = labColors.colorList();
-const statusColors = new DataColors(); // Get a list of colors to use for the status chart
 const statusColorList = labColors.colorList();
 
 
 // Draw the total chart count in the middle of the donut.
-function drawDonutCenter (chart) {
+function drawDonutCenter(chart) {
     const width = chart.chart.width;
     const height = chart.chart.height;
     const ctx = chart.chart.ctx;
@@ -390,6 +389,7 @@ const StatusChart = React.createClass({
 const ChartRenderer = React.createClass({
     propTypes: {
         data: React.PropTypes.object, // Array of experiments under this award
+        award: React.PropTypes.object, // Award being displayed
     },
 
     render: function () {
@@ -555,6 +555,6 @@ const Listing = React.createClass({
                 <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
-    }
+    },
 });
 globals.listing_views.register(Listing, 'Award');
