@@ -12,7 +12,7 @@ const audit = require('./audit');
 const image = require('./image');
 const item = require('./item');
 const reference = require('./reference');
-const {TreatmentDisplay, SingleTreatment} = require('./objectutils');
+const { singleTreatment, treatmentDisplay } = require('./objectutils');
 const doc = require('./doc');
 const {BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable} = require('./typeutils');
 const {GeneticModificationSummary} = require('./genetic_modification');
@@ -389,7 +389,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                             <section>
                                 <hr />
                                 <h4>Treatment details</h4>
-                                {context.treatments.map(treatment => TreatmentDisplay(treatment))}
+                                {context.treatments.map(treatment => treatmentDisplay(treatment))}
                             </section>
                         : null}
 
@@ -417,6 +417,10 @@ var Biosample = module.exports.Biosample = React.createClass({
                     </PanelBody>
                 </Panel>
 
+                {context.genetic_modifications && context.genetic_modifications.length ?
+                    <GeneticModificationSummary geneticModifications={context.genetic_modifications} />
+                : null}
+
                 {context.donor ?
                     <div>
                         {PanelLookup({context: context.donor, biosample: context, panelTitle: donorPanelTitle})}
@@ -442,10 +446,6 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                 {combinedDocs.length ?
                     <DocumentsPanel documentSpecs={[{documents: combinedDocs}]} />
-                : null}
-
-                {context.genetic_modifications && context.genetic_modifications.length ?
-                    <GeneticModificationSummary geneticModifications={context.genetic_modifications} />
                 : null}
             </div>
         );
@@ -920,7 +920,7 @@ var Treatment = module.exports.Treatment = React.createClass({
         var context = this.props.context;
         var treatmentText = '';
 
-        treatmentText = SingleTreatment(context);
+        treatmentText = singleTreatment(context);
         return (
             <dl className="key-value">
                 <div data-test="treatment">

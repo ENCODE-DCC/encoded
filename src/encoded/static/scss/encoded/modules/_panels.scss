@@ -309,6 +309,8 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     display: block;
     padding: 10px;
     height: 100%;
+    background-color: #fff;
+    border: none;
 
     h4 {
         margin: 0 0 0 40px;
@@ -316,6 +318,8 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
     &:focus, &:active {
         text-decoration: none;
+        outline: 0;
+        box-shadow: 0 0 3px #0000ff inset;
     }
 }
 
@@ -326,7 +330,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     width: 20px;
     pointer-events: all;
 
-    a {
+    a, button {
         cursor: pointer;
     }
 
