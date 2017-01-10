@@ -168,3 +168,37 @@ export const BiosampleTableFooter = React.createClass({
         );
     },
 });
+
+
+// Display a reference to an award page as a definition list item.
+export const AwardRef = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object, // Object containing the award property
+        loggedIn: React.PropTypes.bool, // True if user's logged in
+    },
+
+    render: function () {
+        const { context, loggedIn } = this.props;
+
+        if (context.award) {
+            return (
+                <div data-test="awardpi">
+                    <dt>Award</dt>
+                    <dd>
+                        {context.award.status === 'current' || loggedIn ?
+                            <a href={context.award['@id']}>
+                                {context.award.name}
+                            </a>
+                        :
+                            <span>{context.award.name}</span>
+                        }
+                        {context.award.pi && context.award.pi.lab ?
+                            <span> ({context.award.pi.lab.title})</span>
+                        : null}
+                    </dd>
+                </div>
+            );
+        }
+        return null;
+    },
+});

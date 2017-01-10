@@ -19,6 +19,7 @@ var image = require('./image');
 var doc = require('./doc');
 var {DatasetFiles} = require('./filegallery');
 var {FileGallery} = require('./filegallery');
+var { AwardRef } = require('./typeutils');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -219,6 +220,8 @@ var Annotation = React.createClass({
                                         </div>
                                     : null}
 
+                                    <AwardRef context={context} loggedIn={loggedIn} />
+
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
@@ -382,6 +385,8 @@ var PublicationData = React.createClass({
                                         </div>
                                     : null}
 
+                                    <AwardRef context={context} loggedIn={loggedIn} />
+
                                     <div data-test="externalresources">
                                         <dt>External resources</dt>
                                         <dd>
@@ -529,6 +534,8 @@ var Reference = React.createClass({
                                             <dd>{context.lab.title}</dd>
                                         </div>
                                     : null}
+
+                                    <AwardRef context={context} loggedIn={loggedIn} />
 
                                     {context.aliases.length ?
                                         <div data-test="aliases">
@@ -712,6 +719,8 @@ var Project = React.createClass({
                                         </div>
                                     : null}
 
+                                    <AwardRef context={context} loggedIn={loggedIn} />
+
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
@@ -880,6 +889,8 @@ var UcscBrowserComposite = React.createClass({
                                             <dd>{context.lab.title}</dd>
                                         </div>
                                     : null}
+
+                                    <AwardRef context={context} loggedIn={loggedIn} />
 
                                     {context.aliases.length ?
                                         <div data-test="aliases">
@@ -1194,6 +1205,7 @@ var Series = module.exports.Series = React.createClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
         var experiments = {};
         var statuses = [{status: context.status, title: "Status"}];
         context.files.forEach(function(file) {
@@ -1311,6 +1323,8 @@ var Series = module.exports.Series = React.createClass({
                                         <dt>Lab</dt>
                                         <dd>{context.lab.title}</dd>
                                     </div>
+
+                                    <AwardRef context={context} loggedIn={loggedIn} />
 
                                     <div data-test="project">
                                         <dt>Project</dt>

@@ -21,7 +21,7 @@ var objectutils = require('./objectutils');
 var doc = require('./doc');
 var {FileGallery} = require('./filegallery');
 var {GeneticModificationSummary} = require('./genetic_modification');
-var {BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs} = require('./typeutils');
+var { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef } = require('./typeutils');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -448,12 +448,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                                         <dd>{context.lab.title}</dd>
                                     </div>
 
-                                    {context.award.pi && context.award.pi.lab ?
-                                        <div data-test="awardpi">
-                                            <dt>Award PI</dt>
-                                            <dd>{context.award.pi.lab.title}</dd>
-                                        </div>
-                                    : null}
+                                    <AwardRef context={context} loggedIn={loggedIn} />
 
                                     <div data-test="project">
                                         <dt>Project</dt>
