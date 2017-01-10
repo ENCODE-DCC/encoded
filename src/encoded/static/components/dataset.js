@@ -580,7 +580,7 @@ const Project = React.createClass({
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
 
         // Collect organisms
-        const organisms = context.organism && _.uniq(context.organism.map(organism => organism.name));
+        const organisms = (context.organism && context.organism.length) ? _.uniq(context.organism.map(organism => organism.name)) : [];
 
         // Set up the breadcrumbs
         const datasetType = context['@type'][1];
@@ -758,7 +758,7 @@ const UcscBrowserComposite = React.createClass({
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
 
         // Collect organisms
-        const organisms = context.organism && _.uniq(context.organism.map(organism => organism.name));
+        const organisms = (context.organism && context.organism.length) ? _.uniq(context.organism.map(organism => organism.name)) : [];
 
         // Set up the breadcrumbs
         const datasetType = context['@type'][1];
