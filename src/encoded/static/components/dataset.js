@@ -991,7 +991,7 @@ function donorDiversity(dataset) {
 
                         // If we have two, we know have a composite, and we can exit the loop by
                         // returning false, which makes the replicates.every function end.
-                        return !donorAtIdCollection.length === 2;
+                        return donorAtIdCollection.length !== 2;
                     }
 
                     // No donor to examine in this replicate. Keep the `every` loop going.
@@ -1267,7 +1267,8 @@ export const Series = React.createClass({
             tagBadges = context.internal_tags.map(tag => <img src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
         }
 
-        donorDiversity(context);
+        // Calculate the donor diversity.
+        const diversity = donorDiversity(context);
 
         return (
             <div className={itemClass}>
@@ -1298,12 +1299,10 @@ export const Series = React.createClass({
                                         </div>
                                     : null}
 
-                                    {context.donor_diversity ?
-                                        <div data-test="donordiversity">
-                                            <dt>Donor diversity</dt>
-                                            <dd>{context.donor_diversity}</dd>
-                                        </div>
-                                    : null}
+                                    <div data-test="donordiversity">
+                                        <dt>Donor diversity</dt>
+                                        <dd>{diversity}</dd>
+                                    </div>
 
                                     {context.assay_term_name && context.assay_term_name.length ?
                                         <div data-test="description">

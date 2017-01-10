@@ -68,9 +68,6 @@
         "biosample_type": {
             "title": "Biosample type"
         },
-        "donor_diversity":{
-            "title": "Donor diversity"
-        },
         "organ_slims": {
             "title": "Organ"
         },
@@ -144,10 +141,6 @@
         },
         "description": {
             "title": "Description",
-            "type": "string"
-        },
-        "donor_diversity": {
-            "title": "Donor diversity",
             "type": "string"
         },
         "lab.title": {
@@ -226,7 +219,6 @@
         "related_datasets.assay_term_id": 1.0,
         "dbxrefs": 1.0,
         "aliases": 1.0,
-        "donor_diversity": 1.0,
         "related_datasets.biosample_term_id": 1.0,
         "related_datasets.biosample_term_name": 1.0,
         "related_datasets.biosample_type": 1.0,
