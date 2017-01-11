@@ -1922,25 +1922,33 @@ def generate_batch_trackDb(request, hide=False, regen=False):
         accs = [result['accession'] for result in results]
         del results
 
+    acc_composites = {}
     found = 0
     made = 0
     if USE_CACHE and not regen:
         es_keys = [acc + "_" + assembly for acc in accs]
         acc_composites = search_es(request, es_keys)
-        found = len(acc_composites)
+        found = len(acc_composites.keys())
 
-    if found == 0:  # if 0 were found in cache try generating (for pre-primed-cache access)
-        acc_composites = {}
-        if not USE_CACHE:
+    missing_accs = []
+    if found == 0:
+        missing_accs = accs
+    elif found < (len(accs) * 3 / 4):  # some huristic to decide when too few means regenerate
+        missing_accs = [acc for acc in accs if not in acc_composites.keys]
+
+    if len(missing_accs) > 0:  # if 0 were found in cache try generating (for pre-primed-cache access)
+        if not USE_CACHE: # already have dataset
             for dataset in results:
                 acc = dataset['accession']
+                if acc not in missing_accs:
+                    continue
                 (found_or_made, acc_composite) = find_or_make_acc_composite(request, assembly, acc,
                                                                             dataset, hide=hide,
                                                                             regen=True)
                 made += 1
                 acc_composites[acc] = acc_composite
-        else:
-            for acc in accs:
+        else:       # will have to fetch embedded dataset
+            for acc in missing_accs:
                 (found_or_made, acc_composite) = find_or_make_acc_composite(request, assembly, acc,
                                                                             None, hide=hide,
                                                                             regen=regen)
