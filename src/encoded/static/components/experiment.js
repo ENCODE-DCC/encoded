@@ -30,7 +30,7 @@ var Param = fetched.Param;
 var StatusLabel = statuslabel.StatusLabel;
 var {AuditMixin, AuditIndicators, AuditDetail} = audit;
 var PubReferenceList = reference.PubReferenceList;
-var SingleTreatment = objectutils.SingleTreatment;
+var singleTreatment = objectutils.singleTreatment;
 var softwareVersionList = software.softwareVersionList;
 var {SortTablePanel, SortTable} = sortTable;
 var ProjectBadge = image.ProjectBadge;
@@ -142,12 +142,12 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                     // First get the treatments in the library
                     if (library.treatments && library.treatments.length) {
-                        treatments = library.treatments.map(treatment => SingleTreatment(treatment));
+                        treatments = library.treatments.map(treatment => singleTreatment(treatment));
                     }
 
                     // Now get the treatments in the biosamples
                     if (library.biosample && library.biosample.treatments && library.biosample.treatments.length) {
-                        treatments = treatments.concat(library.biosample.treatments.map(treatment => SingleTreatment(treatment)));
+                        treatments = treatments.concat(library.biosample.treatments.map(treatment => singleTreatment(treatment)));
                     }
 
                     if (treatments.length) {
@@ -174,7 +174,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                     // Just track @id for deciding if all values are the same or not. Rendering handled in libraryComponents
                     if (spikeins && spikeins.length) {
-                        return spikeins.map(spikein => spikein.accession).sort().join();
+                        return spikeins.sort().join();
                     }
                     return undefined;
                 }
@@ -188,18 +188,16 @@ var Experiment = module.exports.Experiment = React.createClass({
                 },
                 strand_specificity: library => <span>{library.strand_specificity ? 'Strand-specific' : 'Non-strand-specific'}</span>,
                 spikeins_used: library => {
-                    var spikeins = library.spikeins_used;
+                    const spikeins = library.spikeins_used;
                     if (spikeins && spikeins.length) {
                         return (
                             <span>
-                                {spikeins.map(function(dataset, i) {
-                                    return (
-                                        <span key={dataset.uuid}>
-                                            {i > 0 ? ', ' : ''}
-                                            <a href={dataset['@id']}>{dataset.accession}</a>
-                                        </span>
-                                    );
-                                })}
+                                {spikeins.map((spikeinsAtId, i) =>
+                                    <span key={i}>
+                                        {i > 0 ? ', ' : ''}
+                                        <a href={spikeinsAtId}>{globals.atIdToAccession(spikeinsAtId)}</a>
+                                    </span>
+                                )}
                             </span>
                         );
                     }
@@ -245,13 +243,6 @@ var Experiment = module.exports.Experiment = React.createClass({
         }
         analysisStepDocs = analysisStepDocs.length ? globals.uniqueObjectsArray(analysisStepDocs) : [];
         pipelineDocs = pipelineDocs.length ? globals.uniqueObjectsArray(pipelineDocs) : [];
-
-        var antibodies = {};
-        replicates.forEach(replicate => {
-            if (replicate.antibody) {
-                antibodies[replicate.antibody['@id']] = replicate.antibody;
-            }
-        });
 
         // Determine this experiment's ENCODE version
         var encodevers = globals.encodeVersion(context);
@@ -514,6 +505,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </PanelBody>
                 </Panel>
 
+                {geneticModifications.length ?
+                    <GeneticModificationSummary geneticModifications={geneticModifications} />
+                : null}
+
                 {Object.keys(condensedReplicates).length ?
                     <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
                 : null}
@@ -524,10 +519,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} ignoreErrors />
 
                 {combinedDocuments.length ? <DocumentsPanel documentSpecs={[{documents: combinedDocuments}]} /> : null}
-
-                {geneticModifications.length ?
-                    <GeneticModificationSummary geneticModifications={geneticModifications} />
-                : null}
             </div>
         );
     }

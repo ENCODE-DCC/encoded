@@ -241,14 +241,16 @@
         "product_id": {
             "title": "Product ID",
             "description": "The product identifier provided by the originating lab or vendor.",
-            "type": "string"
+            "type": "string",
+            "pattern": "^\\S+$"
         }
     },
     "lot_id": {
         "lot_id":{
     	    "title": "Lot ID",
     	    "description": "The lot identifier provided by the originating lab or vendor.",
-    	    "type": "string"
+    	    "type": "string",
+            "pattern": "^\\S+$"
         }
     },
     "source": {
@@ -265,6 +267,7 @@
             "title": "Notes",
             "description": "DCC internal notes.",
             "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
             "permission": "import_items"
         }
     },
@@ -272,7 +275,8 @@
         "submitter_comment": {
             "title": "Submitter comment",
             "description": "Additional information specified by the submitter to be displayed as a comment on the portal.",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         }
     },
     "reviewer_comment": {
@@ -280,6 +284,7 @@
             "title": "Reviewer comment",
             "description": "Comments from the reviewer to justify the assigned review status of a characterization.",
             "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
             "permission": "import_items"
         }
     },

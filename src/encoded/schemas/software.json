@@ -55,7 +55,8 @@
         "title": {
             "title": "Title",
             "description": "The preferred viewable name of the software.",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
         "bug_tracker_url": {
             "title": "Bug tracker URL",
@@ -93,6 +94,9 @@
                     "FAIRE-seq",
                     "RIP-seq", 
                     "CAGE",
+                    "ChIA-PET",
+                    "ATAC-seq",
+                    "eCLIP-seq",
                     "integrative analysis",
                     "variant analysis",
                     "community resource"
@@ -118,7 +122,8 @@
         "description": {
             "title": "Description",
             "description": "A plain text description of the software.",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         }
     },
     "facets": {
