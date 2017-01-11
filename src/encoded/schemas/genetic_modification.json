@@ -119,7 +119,8 @@
         "description": {
             "title": "Description",
             "description": "A plain text description of the genetic modification.",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
         "modification_type": {
             "title": "Modification type",
