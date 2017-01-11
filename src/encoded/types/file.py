@@ -96,10 +96,13 @@ class File(Item):
     rev = {
         'paired_with': ('File', 'paired_with'),
         'quality_metrics': ('QualityMetric', 'quality_metric_of'),
-        'superseded_by': ('File', 'supersedes')
+        'superseded_by': ('File', 'supersedes'),
     }
 
     embedded = [
+        'award',
+        'award.pi',
+        'award.pi.lab',
         'replicate',
         'replicate.experiment',
         'replicate.experiment.lab',

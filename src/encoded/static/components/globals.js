@@ -154,7 +154,7 @@ module.exports.hashCode = function (src) {
         }
     }
     return hash;
-}
+};
 
 // Convert the number `n` to a string, zero-filled to `digits` digits. Maximum of four zeroes.
 // http://stackoverflow.com/questions/2998784/how-to-output-integers-with-leading-zeros-in-javascript#answer-2998822
