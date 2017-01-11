@@ -485,6 +485,14 @@ const Field = module.exports.Field = React.createClass({
         if (value === null || value === '') {
             value = undefined;
         }
+        const type = this.props.schema.type;
+        if (value && (type === 'integer' || type === 'number')) {
+            try {
+                value = parseFloat(value);
+            } catch (err) {
+                // Keep string, which should fail schema validation
+            }
+        }
         // Record that this field was modified.
         this.setState({ isDirty: true });
         // Pass the new value to the parent.
