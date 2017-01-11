@@ -72,17 +72,11 @@ const biosampleTypeList = [
 ];
 
 
-// See https://github.com/facebook/react/issues/2323
+// See https://github.com/facebook/react/issues/2323 for an IE8 fix removed for Redmine #4755.
 var Title = React.createClass({
     render: function() {
         return <title {...this.props}>{this.props.children}</title>;
     },
-    componentDidMount: function() {
-        var node = document.querySelector('title');
-        if (node && !node.getAttribute('data-reactid')) {
-            node.setAttribute('data-reactid', this._rootNodeID);
-        }
-    }
 });
 
 
