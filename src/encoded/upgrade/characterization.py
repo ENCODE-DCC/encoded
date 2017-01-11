@@ -138,7 +138,6 @@ def characterization_4_5(value, system):
         value['references'] = new_references
 
 
-@upgrade_step('antibody_characterization', '5', '6')
 @upgrade_step('biosample_characterization', '5', '6')
 @upgrade_step('donor_characterization', '5', '6')
 @upgrade_step('rnai_characterization', '5', '6')
@@ -156,11 +155,24 @@ def characterization_5_6(value, system):
 
 
 @upgrade_step('antibody_characterization', '6', '7')
+def antibody_characterization_6_7(value, system):
+    # http://redmine.encodedcc.org/issues/3063
+    if 'aliases' in value:
+        value['aliases'] = list(set(value['aliases']))
+
+    if 'references' in value:
+        value['references'] = list(set(value['references']))
+
+    if 'documents' in value:
+        value['documents'] = list(set(value['documents']))
+
+
 @upgrade_step('biosample_characterization', '6', '7')
 @upgrade_step('donor_characterization', '6', '7')
 @upgrade_step('rnai_characterization', '6', '7')
 @upgrade_step('construct_characterization', '6', '7')
-def antibody_characterization_6_7(value, system):
+def characterization_6_7(value, system):
+    # Let's get all the characterizations objects back in sync on version numbers
     return
 
 
@@ -169,7 +181,7 @@ def antibody_characterization_6_7(value, system):
 @upgrade_step('donor_characterization', '7', '8')
 @upgrade_step('rnai_characterization', '7', '8')
 @upgrade_step('construct_characterization', '7', '8')
-def antibody_characterization_7_8(value, system):
+def characterization_7_8(value, system):
     # http://redmine.encodedcc.org/issues/1384
     if 'notes' in value:
         if value['notes']:
