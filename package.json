@@ -68,7 +68,7 @@
     "marked": "^0.3.3",
     "moment": "^2.8.2",
     "query-string": "^4.1.0",
-    "react": "^0.12.2",
+    "react": "^15.4.2",
     "scriptjs": "^2.5.7",
     "source-map-support": "^0.2.7",
     "subprocess-middleware": "^0.1.0",
