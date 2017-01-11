@@ -26,6 +26,7 @@ from .biosample import (
 
 from .assay_data import assay_terms
 
+
 @collection(
     name='experiments',
     unique_key='accession',
@@ -211,7 +212,6 @@ class Experiment(Dataset,
     })
     def replicates(self, request, replicates):
         return paths_filtered_by_status(request, replicates)
-
 
     @calculated_property(schema={
         "title": "Biosample summary",

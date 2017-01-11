@@ -103,7 +103,9 @@ def library_4_5(value, system):
 @upgrade_step('library', '5', '6')
 def library_5_6(value, system):
     # http://redmine.encodedcc.org/issues/2491
-    if not value['depleted_in_term_id']:
-        del value['depleted_in_term_id']
     if not value['depleted_in_term_name']:
         del value['depleted_in_term_name']
+    if 'nucleic_acid_term_id' in value:
+        del value['nucleic_acid_term_id']
+    if 'depleted_in_term_id' in value:
+        del value['depleted_in_term_id']
