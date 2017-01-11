@@ -75,4 +75,6 @@ $tooltip-color: #000;
 
 .dl-tooltip-trigger {
     @extend .tooltip-trigger;
+
+    padding-left: 5px;
 }
