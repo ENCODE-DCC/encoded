@@ -16,6 +16,7 @@ require('./footer');
 require('./globals');
 require('./graph');
 require('./doc');
+require('./file');
 require('./item');
 require('./page');
 require('./mixins');
