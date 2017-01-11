@@ -138,6 +138,7 @@ def characterization_4_5(value, system):
         value['references'] = new_references
 
 
+@upgrade_step('antibody_characterization', '5', '6')
 @upgrade_step('biosample_characterization', '5', '6')
 @upgrade_step('donor_characterization', '5', '6')
 @upgrade_step('rnai_characterization', '5', '6')
@@ -155,13 +156,38 @@ def characterization_5_6(value, system):
 
 
 @upgrade_step('antibody_characterization', '6', '7')
+@upgrade_step('biosample_characterization', '6', '7')
+@upgrade_step('donor_characterization', '6', '7')
+@upgrade_step('rnai_characterization', '6', '7')
+@upgrade_step('construct_characterization', '6', '7')
 def antibody_characterization_6_7(value, system):
-    # http://redmine.encodedcc.org/issues/3063
-    if 'aliases' in value:
-        value['aliases'] = list(set(value['aliases']))
+    return
 
-    if 'references' in value:
-        value['references'] = list(set(value['references']))
 
-    if 'documents' in value:
-        value['documents'] = list(set(value['documents']))
+@upgrade_step('antibody_characterization', '7', '8')
+@upgrade_step('biosample_characterization', '7', '8')
+@upgrade_step('donor_characterization', '7', '8')
+@upgrade_step('rnai_characterization', '7', '8')
+@upgrade_step('construct_characterization', '7', '8')
+def antibody_characterization_7_8(value, system):
+    # http://redmine.encodedcc.org/issues/1384
+    if 'notes' in value:
+        if value['notes']:
+            value['notes'].strip()
+        else:
+            del value['notes']
+    if 'caption' in value:
+        if value['caption']:
+            value['caption'].strip()
+        else:
+            del value['caption']
+    if 'comment' in value:
+        if value['comment']:
+            value['comment'].strip()
+        else:
+            del value['comment']
+    if 'submitter_comment' in value:
+        if value['submitter_comment']:
+            value['submitter_comment'].strip()
+        else:
+            del value['submitter_comment']

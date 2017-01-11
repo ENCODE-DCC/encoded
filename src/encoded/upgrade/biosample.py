@@ -220,3 +220,18 @@ def biosample_12_13(value, system):
     if 'protocol_documents' in value:
         value['documents'] = value['protocol_documents']
         value.pop('protocol_documents')
+
+
+@upgrade_step('biosample', '13', '14')
+def biosample_13_14(value, system):
+    # http://redmine.encodedcc.org/issues/1384
+    if 'notes' in value:
+        value['notes'].strip()
+    if 'description' in value:
+        value['description'].strip()
+    if 'submitter_comment' in value:
+        value['submitter_comment'].strip()
+
+
+
+

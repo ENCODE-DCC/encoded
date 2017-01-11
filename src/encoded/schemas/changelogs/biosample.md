@@ -2,6 +2,11 @@
 Change log for biosample.json
 =========================
 
+Schema version 14
+-----------------
+
+* *notes*, *description*, *submitter_comment*, *product_id* and *lot_id* are no longer allowed to have any leading or trailing whitespace.
+
 Schema version 13
 -----------------
 
