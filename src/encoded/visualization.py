@@ -1933,8 +1933,8 @@ def generate_batch_trackDb(request, hide=False, regen=False):
     missing_accs = []
     if found == 0:
         missing_accs = accs
-    elif found < (len(accs) * 3 / 4):  # some huristic to decide when too few means regenerate
-        missing_accs = [acc for acc in accs if not in acc_composites.keys]
+    elif found < (len(accs) * 3 / 4):  # some heuristic to decide when too few means regenerate
+        missing_accs = list(set(accs) - set(acc_composites.keys()))
 
     if len(missing_accs) > 0:  # if 0 were found in cache try generating (for pre-primed-cache access)
         if not USE_CACHE: # already have dataset
