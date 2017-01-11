@@ -130,6 +130,39 @@
                     }
                 }
             ]
+        },
+        "status": {
+            "oneOf": [
+                {
+                    "required": ["content_error_detail"],
+                    "properties": {
+                        "status": {
+                            "enum": ["content error"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "oneOf": [
+                            {
+                                "required": ["content_error_detail"],
+                                "properties": {
+                                    "status": {
+                                        "enum": ["uploading", "uploaded", "upload failed", "format check failed", "in progress", "deleted", "replaced", "revoked", "archived", "released"]
+                                    }
+                                }
+                            },
+                            {
+                                "properties": {
+                                    "status": {
+                                        "enum": ["content error"]
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
         }
     },
     "properties": {
@@ -657,7 +690,8 @@
                 "replaced",
                 "revoked",
                 "archived",
-                "released"
+                "released",
+                "content error"
                 ]
         },
         "dbxrefs": {
@@ -681,6 +715,12 @@
             "comment": "For steps, see analysis_step_run.json (and analysis_step.json) - may be virtual",
             "type": "string",
              "linkTo": "AnalysisStepRun"
+        },
+        "content_error_detail": {
+            "title": "Content error detail",
+            "type": "string",
+            "permission": "import_items",
+            "description": "Explanation of why the file failed the automated content checks."
         }
     },
     "columns": {
