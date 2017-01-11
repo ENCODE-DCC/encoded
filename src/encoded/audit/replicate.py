@@ -68,7 +68,7 @@ def audit_inconsistent_construct_tag(value, system):
                 if ab_target['name'] == exp_target['name']:
                     matching_flag = True
                     break
-            if not matching_flag:
+            if len(antibody_targets) > 0 and not matching_flag:
                 detail = 'Replicate {}-{} in experiment {} '.format(
                     value['biological_replicate_number'],
                     value['technical_replicate_number'],
