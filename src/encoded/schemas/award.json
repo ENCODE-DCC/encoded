@@ -104,6 +104,17 @@
             ]
         }
     },
+    "facets": {
+        "pi.lab.title": {
+            "title": "Lab"
+        },
+        "rfa": {
+            "title": "RFA"
+        },
+        "project": {
+            "title": "Project"
+        }
+    },
     "columns": {
         "title": {
             "title": "Name"
