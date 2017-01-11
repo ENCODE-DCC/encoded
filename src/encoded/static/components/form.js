@@ -24,6 +24,28 @@ validator.attributes.pattern = function validatePattern(instance, schema) {
     return error;
 };
 
+// Parse object and property from `linkFrom`.
+// Backrefs have a linkFrom property in the form
+// (object type).(property name)
+const parseLinkFrom = function (linkFrom) {
+    const parts = linkFrom.split('.');
+    return {
+        type: parts[0],
+        prop: parts[1],
+    };
+};
+
+// Validate `linkFrom`
+validator.attributes.linkFrom = function validateLinkFrom(instance, schema, options, ctx) {
+    let result;
+    if (instance !== undefined && instance instanceof Object) {
+        const linkFrom = parseLinkFrom(schema.linkFrom);
+        const subschema = options.schemas[linkFrom.type];
+        result = this.attributes.properties.call(this, instance, subschema, options, ctx);
+    }
+    return result;
+};
+
 // Recursively filter an object to remove `schema_version`.
 // This is used before sending the value to the server.
 const filterValue = function (value) {
@@ -204,12 +226,10 @@ const RepeatingFieldset = React.createClass({
             // This is an array of backreferences from separate objects of a different type.
             // We need to construct the default value for that type,
             // and also add a reference to the object being edited.
-            const a = subschema.linkFrom.split('.');
-            const linkType = a[0];
-            const linkProp = a[1];
-            subschema = this.context.schemas[linkType];
+            const linkFrom = parseLinkFrom(subschema.linkFrom);
+            subschema = this.context.schemas[linkFrom.type];
             newValue = defaultValue(subschema);
-            newValue[linkProp] = this.context.id;
+            newValue[linkFrom.prop] = this.context.id;
         } else {
             // Simple subitem; construct default value from schema.
             newValue = defaultValue(subschema);
@@ -287,12 +307,8 @@ const FetchedFieldset = React.createClass({
         // We need to construct a modified schema for the child type,
         // to avoid showing the field that links back to the main object being edited.
 
-        // Backrefs have a linkFrom property in the form
-        // (object type).(property name)
-        const a = schema.linkFrom.split('.');
-        const linkType = a[0];
-        const linkProp = a[1];
-        let subschema = this.context.schemas[linkType];
+        const linkFrom = parseLinkFrom(schema.linkFrom);
+        let subschema = this.context.schemas[linkFrom.type];
         // FIXME Handle linkFrom abstract type.
         if (subschema !== undefined) {
             // The linkProp is the one that refers to the parent object.
@@ -301,7 +317,7 @@ const FetchedFieldset = React.createClass({
             subschema = Object.assign({}, subschema, {
                 properties: Object.assign({}, subschema.properties),
             });
-            delete subschema.properties[linkProp];
+            delete subschema.properties[linkFrom.prop];
         }
 
         const value = this.props.value;
@@ -329,7 +345,7 @@ const FetchedFieldset = React.createClass({
 
     render() {
         const schema = this.state.schema;
-        const value = this.props.value;
+        const { path, value } = this.props;
         let preview;
         let fieldset;
 
@@ -347,7 +363,7 @@ const FetchedFieldset = React.createClass({
             fieldset = (
                 <fetched.FetchedData>
                     <fetched.Param name="value" url={`${this.state.url}?frame=edit`} />
-                    <Field schema={schema} updateChild={this.updateChild} />
+                    <Field path={path} schema={schema} updateChild={this.updateChild} />
                 </fetched.FetchedData>
             );
         } else {
@@ -362,7 +378,7 @@ const FetchedFieldset = React.createClass({
             );
             // When expanded, render form fields (but there's no edit frame to fetch)
             fieldset = (<Field
-                value={value} schema={schema}
+                path={path} value={value} schema={schema}
                 updateChild={this.updateChild}
             />);
         }
@@ -686,7 +702,9 @@ const Form = module.exports.Form = React.createClass({
 
     validate(value) {
         // Get validation errors from jsonschema validator.
-        const validation = validator.validate(value, this.props.schema);
+        const validation = validator.validate(value, this.props.schema, {
+            schemas: this.props.schemas,
+        });
 
         // for debugging:
         // console.log(validation);
@@ -815,7 +833,7 @@ const Form = module.exports.Form = React.createClass({
                 if (match) {
                     path = `${path}.${match[1]}`;
                 }
-                errors[path] = error.description;
+                errors[path] = err.description;
             });
         } else if (data.description) {
             // This is a form-wide error rather than a field-specific one.
