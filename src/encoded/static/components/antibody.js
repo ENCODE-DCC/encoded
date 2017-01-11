@@ -1,6 +1,5 @@
 'use strict';
 var React = require('react');
-var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
 var panel = require('../libs/bootstrap/panel');

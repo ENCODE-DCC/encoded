@@ -1,5 +1,4 @@
 import React from 'react';
-import cloneWithProps from 'react/lib/cloneWithProps';
 
 
 // Display a modal dialog box that blocks all other page input until the user dismisses it. The
@@ -181,7 +180,7 @@ export const ModalFooter = React.createClass({
             if (closeModal.props.onClick) {
                 this.chainedCloseModal = closeModal.props.onClick;
             }
-            closeModal = cloneWithProps(closeModal, { onClick: this.closeModal });
+            closeModal = React.cloneElement(closeModal, { onClick: this.closeModal });
         } else if (typeof closeModal === 'function') {
             this.chainedCloseModal = closeModal;
         }
@@ -299,13 +298,13 @@ export const Modal = React.createClass({
         // We don't require/allow a click handler for the actuator, so we attach the one from
         // ModalMixin here. You can't add attributes to an existing component in React, but React
         // has no issue adding attributes while cloning a component.
-        const actuator = this.props.actuator ? cloneWithProps(this.props.actuator, { onClick: this.openModal }) : null;
+        const actuator = this.props.actuator ? React.cloneElement(this.props.actuator, { onClick: this.openModal }) : null;
 
         // Pass important Modal states and functions to child objects without the parent component
         // needing to do it explicitly.
         this.modalChildren = React.Children.map(this.props.children, (child) => {
-            if (child.type === ModalHeader.type || child.type === ModalBody.type || child.type === ModalFooter.type) {
-                return cloneWithProps(child, { c_closeModal: this.closeModal, c_modalOpen: this.state.modalOpen });
+            if (child.type === ModalHeader || child.type === ModalBody || child.type === ModalFooter) {
+                return React.cloneElement(child, { c_closeModal: this.closeModal, c_modalOpen: this.state.modalOpen });
             }
             return child;
         });

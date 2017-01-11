@@ -1,7 +1,6 @@
 'use strict';
 const React = require('react');
 const offset = require('../libs/offset');
-const cloneWithProps = require('react/lib/cloneWithProps');
 
 module.exports = React.createClass({
     render() {

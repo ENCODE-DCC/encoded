@@ -7,7 +7,6 @@ var audit = require('./audit');
 var form = require('./form');
 var _ = require('underscore');
 
-var cx = require('react/lib/cx');
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;

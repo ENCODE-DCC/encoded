@@ -104,7 +104,6 @@ var App = React.createClass({
         listActionsFor: React.PropTypes.func,
         currentResource: React.PropTypes.func,
         location_href: React.PropTypes.string,
-        onDropdownChange: React.PropTypes.func,
         portal: React.PropTypes.object,
         hidePublicAudits: React.PropTypes.bool,
         projectColors: React.PropTypes.object,
@@ -122,7 +121,6 @@ var App = React.createClass({
             listActionsFor: this.listActionsFor,
             currentResource: this.currentResource,
             location_href: this.props.href,
-            onDropdownChange: this.handleDropdownChange, // Function to process dropdown state change
             portal: portal,
             hidePublicAudits: false, // True if audits should be hidden on the UI while logged out
             projectColors: projectColors,
@@ -169,52 +167,6 @@ var App = React.createClass({
             name = hash.slice(2);
         }
         return name;
-    },
-
-    // When current dropdown changes; componentID is _rootNodeID of newly dropped-down component
-    handleDropdownChange: function(componentID) {
-        // Use React _rootNodeID to uniquely identify a dropdown menu;
-        // It's passed in as componentID
-        this.setState({dropdownComponent: componentID});
-    },
-
-    handleAutocompleteChosenChange: function(chosen) {
-        this.setState({autocompleteTermChosen: chosen});
-    },
-
-    handleAutocompleteFocusChange: function(focused) {
-        this.setState({autocompleteFocused: focused});
-    },
-
-    handleAutocompleteHiddenChange: function(hidden) {
-        this.setState({autocompleteHidden: hidden});
-    },
-
-    // Handle a click outside a dropdown menu by clearing currently dropped down menu
-    handleLayoutClick: function(e) {
-        if (this.state.dropdownComponent !== undefined) {
-            this.setState({dropdownComponent: undefined});
-        }
-    },
-
-    // If ESC pressed while drop-down menu open, close the menu
-    handleKey: function(e) {
-        if (e.which === 27) {
-            if (this.state.dropdownComponent !== undefined) {
-                e.preventDefault();
-                this.handleDropdownChange(undefined);
-            } else if (!this.state.autocompleteHidden) {
-                e.preventDefault();
-                this.handleAutocompleteHiddenChange(true);
-            }
-        } else if (e.which === 13 && this.state.autocompleteFocused && !this.state.autocompleteTermChosen) {
-            e.preventDefault();
-        }
-    },
-
-    // Once the app component is mounted, bind keydowns to handleKey function
-    componentDidMount: function() {
-        globals.bindEvent(window, 'keydown', this.handleKey);
     },
 
     render: function() {
@@ -295,7 +247,7 @@ var App = React.createClass({
 
                         <div className="loading-spinner"></div>
 
-                            <div id="layout" onClick={this.handleLayoutClick} onKeyPress={this.handleKey}>
+                            <div id="layout">
                                 <Navigation isHomePage={isHomePage} />
                                 <div id="content" className={containerClass} key={key}>
                                     {content}

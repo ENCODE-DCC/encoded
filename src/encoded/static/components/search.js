@@ -1,12 +1,10 @@
 'use strict';
 var React = require('react');
-var cloneWithProps = require('react/lib/cloneWithProps');
 var queryString = require('query-string');
 var button = require('../libs/bootstrap/button');
 var {Modal, ModalHeader, ModalBody, ModalFooter} = require('../libs/bootstrap/modal');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var SvgIcon = require('../libs/svg-icons').SvgIcon;
-var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
 var globals = require('./globals');
@@ -83,7 +81,7 @@ var PickerActionsMixin = module.exports.PickerActionsMixin = {
         if (this.context.actions && this.context.actions.length) {
             return (
                 <div className="pull-right">
-                    {this.context.actions.map(action => cloneWithProps(action, {id: this.props.context['@id']}))}
+                    {this.context.actions.map(action => React.cloneElement(action, { id: this.props.context['@id'] }))}
                 </div>
             );
         } else {
@@ -172,12 +170,12 @@ var StatusIndicator = React.createClass({
     },
 
     render: function() {
-        var classes = {tooltipopen: this.state.tipOpen};
+        var classes = this.state.tipOpen ? ' tooltipopen' : '';
 
         return (
             <span className="tooltip-status-trigger">
                 <i className={globals.statusClass(this.props.status, 'indicator icon icon-circle')} ref="indicator" onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}></i>
-                <div className={"tooltip-status sentence-case " + cx(classes)} style={this.state.tipStyles}>
+                <div className={`tooltip-status sentence-case${classes}`} style={this.state.tipStyles}>
                     {this.props.status}<br /><span>{this.props.terms.join(', ')}</span>
                 </div>
             </span>

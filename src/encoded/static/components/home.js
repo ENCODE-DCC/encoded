@@ -4,7 +4,6 @@ var _ = require('underscore');
 var moment = require('moment');
 var globals = require('./globals');
 var {FetchedData, FetchedItems, Param} = require('./fetched');
-var cloneWithProps = require('react/lib/cloneWithProps');
 var panel = require('../libs/bootstrap/panel');
 var {Panel, PanelBody, PanelHeading} = panel;
 

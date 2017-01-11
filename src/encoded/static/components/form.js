@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-for */
 
 const React = require('react');
-const cloneWithProps = require('react/lib/cloneWithProps');
 const parseAndLogError = require('./mixins').parseAndLogError;
 const offset = require('../libs/offset');
 const fetched = require('./fetched');
@@ -505,7 +504,7 @@ const Field = module.exports.Field = React.createClass({
             } else {
                 // We were passed an arbitrary custom input,
                 // which we need to clone to specify the correct props.
-                input = cloneWithProps(input, inputProps);
+                input = React.cloneElement(input, inputProps);
             }
         } else if (schema.linkFrom) {
             input = (<FetchedFieldset

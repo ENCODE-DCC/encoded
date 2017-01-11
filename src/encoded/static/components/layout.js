@@ -6,7 +6,6 @@ const offset = require('../libs/offset');
 const { Modal, ModalHeader, ModalBody, ModalFooter } = require('../libs/bootstrap/modal');
 const _ = require('underscore');
 
-const cx = require('react/lib/cx');
 
 const LAYOUT_CONTEXT = {
     dragStart: React.PropTypes.func,
@@ -34,7 +33,6 @@ const MODAL_CONTEXT = {
     listActionsFor: React.PropTypes.func,
     currentResource: React.PropTypes.func,
     location_href: React.PropTypes.string,
-    onDropdownChange: React.PropTypes.func,
     portal: React.PropTypes.object,
 };
 
@@ -175,8 +173,9 @@ const Block = module.exports.Block = React.createClass({
         if (_.isEqual(this.props.pos, this.context.dst_pos)) {
             classes[`drop-${this.context.dst_quad}`] = true;
         }
+        const classStr = Object.keys(classes).join(' ');
         return (<div
-            className={`${block['@type'][0]} ${cx(classes)}`}
+            className={`${block['@type'][0]} ${classStr}`}
             data-pos={this.props.pos}
             draggable={this.context.editable && !this.state.focused}
             onDragStart={this.dragStart}
@@ -324,8 +323,9 @@ const Col = React.createClass({
             classes[`drop-${this.context.dst_quad}`] = true;
         }
         const blocks = this.props.value.blocks;
+        const classStr = Object.keys(classes).join(' ');
         return (
-            <div className={cx(classes)} onDragOver={this.dragOver}>
+            <div className={classStr} onDragOver={this.dragOver}>
                 {blocks.map((blockId, k) => this.renderBlock(blockId, k))}
             </div>
         );
@@ -349,6 +349,7 @@ const Row = React.createClass({
         if (_.isEqual(this.props.pos, this.context.dst_pos)) {
             classes[`drop-${this.context.dst_quad}`] = true;
         }
+        const classStr = Object.keys(classes).join(' ');
         const cols = this.props.value.cols;
         let colClass;
         switch (cols.length) {
@@ -362,7 +363,7 @@ const Row = React.createClass({
             colClass = 'col-md-12'; break;
         }
         return (
-            <div className={cx(classes)} onDragOver={this.dragOver}>
+            <div className={classStr} onDragOver={this.dragOver}>
                 {cols.map((col, j) => <Col
                     value={col} className={col.className || colClass}
                     key={j} pos={this.props.pos.concat([j])}
@@ -680,8 +681,9 @@ module.exports.Layout = React.createClass({
         if (_.isEqual(this.state.dst_pos, [])) {
             classes[`drop-${this.state.dst_quad}`] = true;
         }
+        const classStr = Object.keys(classes).join(' ');
         return (
-            <div className={cx(classes)} onDragOver={this.dragOver} onDrop={this.drop}>
+            <div className={classStr} onDragOver={this.dragOver} onDrop={this.drop}>
                 {this.props.editable ? <LayoutToolbar /> : ''}
                 {this.state.value.rows.map((row, i) => <Row value={row} key={i} pos={[i]} />)}
                 <canvas id="drag-marker" height="1" width="1" />
