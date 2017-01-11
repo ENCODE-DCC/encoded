@@ -95,7 +95,50 @@ a[href^="http"]:empty:after {
 /* downloads */
 a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     content: none !important;
-} 
+}
+
+
+.split-panel {
+    display: block;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+        flex-wrap: nowrap;
+    }
+
+    @at-root #{&}__part {
+        padding-left: 10px;
+        padding-right: 10px;
+
+        @media screen and (min-width: $screen-md-min) {
+            flex-grow: 0;
+            flex-shrink: 1;
+            border-left: 1px solid #c0c0c0;
+
+            &:first-child {
+                border-left: 0;
+            }
+        }
+
+        @at-root #{&}--p50 {
+            @media screen and (min-width: $screen-md-min) {
+                flex-basis: 50%;
+            }
+        }
+    }
+
+    @at-root #{&}__heading {
+        position: relative;
+        margin-right: -10px;
+        margin-left: -10px;
+        padding: 10px;
+        background-color: #d8d8d8;
+
+        h4 {
+            margin: 0;
+        }
+    }
+}
 
 
 // Antibody Status Panels
@@ -309,11 +352,13 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     display: block;
     padding: 10px;
     height: 100%;
-    background-color: #fff;
-    border: none;
 
     h4 {
         margin: 0 0 0 40px;
+    }
+
+    h5 {
+        margin: 0;
     }
 
     &:focus, &:active {
