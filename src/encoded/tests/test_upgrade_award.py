@@ -39,8 +39,8 @@ def test_award_upgrade_url(upgrader, award_1):
 
 
 @pytest.fixture
-def award_2(award):
-    item = award.copy()
+def award_2(award_1):
+    item = award_1.copy()
     item.update({
         'schema_version': '3',
         'viewing_group': 'ENCODE',
