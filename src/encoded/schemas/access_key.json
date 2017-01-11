@@ -32,7 +32,8 @@
         "description": {
             "title": "Description",
             "type": "string",
-            "default": ""
+            "default": "",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
         "access_key_id": {
             "title": "Access key ID",
