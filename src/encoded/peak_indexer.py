@@ -21,7 +21,7 @@ from snovault.elasticsearch.interfaces import (
 import copy
 
 # NOTE: Trackhub caching is turned on and off with this global AND USE_CACHE in visualization.py
-TRACKHUB_CACHING = False
+TRACKHUB_CACHING = True
 
 # from .visualization import VISIBLE_DATASET_TYPES_LC
 VISIBLE_DATASET_TYPES_LC = ["experiment", "annotation"]
