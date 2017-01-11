@@ -463,6 +463,10 @@ const AwardCharts = React.createClass({
 
         return (
             <Panel>
+                <PanelHeading>
+                    <h4>{award.pi && award.pi.lab ? <span>{award.pi.lab.title}</span> : <span>No PI indicated</span>}</h4>
+                    <ProjectBadge award={award} addClasses="badge-heading" />
+                </PanelHeading>
                 <PanelBody>
                     <FetchedItems
                         award={award}
@@ -493,10 +497,11 @@ const Award = React.createClass({
                     </div>
                 </header>
 
+                <AwardCharts award={context} />
+
                 <Panel>
                     <PanelHeading>
                         <h4>Description</h4>
-                        <ProjectBadge award={context} addClasses="badge-heading" />
                     </PanelHeading>
                     <PanelBody>
                         {context.description ?
@@ -506,18 +511,8 @@ const Award = React.createClass({
                         :
                             <p className="browser-error">Award has no description</p>
                         }
-                        {context.pi && context.pi.lab ?
-                            <dl className="key-value">
-                                <div data-test="pi">
-                                    <dt>Main PI contact</dt>
-                                    <dd>{context.pi.lab.title}</dd>
-                                </div>
-                            </dl>
-                        : null}
                     </PanelBody>
                 </Panel>
-
-                <AwardCharts award={context} />
             </div>
         );
     },
