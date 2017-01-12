@@ -19,7 +19,8 @@
             "rdfs:subPropertyOf": "dc:title",
             "title": "Name",
             "description": "The grant name from the NIH database, if applicable.",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
         "name": {
             "title": "Number",
@@ -31,7 +32,8 @@
         "description": {
             "rdfs:subPropertyOf": "dc:description",
             "title": "Description",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
         "start_date": {
             "title": "Start date",

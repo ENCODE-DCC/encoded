@@ -33,6 +33,9 @@
         "file_format_type": {
             "title": "Specific file format type"
         },
+        "award.project": {
+            "title": "Project"
+        },
         "lab.title": {
             "title": "Lab"
         }
@@ -127,6 +130,39 @@
                                 "enum": ["fastq", "gff", "gtf", "bed", "bigBed", "bam", "sam"]
                             }
                         }
+                    }
+                }
+            ]
+        },
+        "status": {
+            "oneOf": [
+                {
+                    "required": ["content_error_detail"],
+                    "properties": {
+                        "status": {
+                            "enum": ["content error"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "oneOf": [
+                            {
+                                "required": ["content_error_detail"],
+                                "properties": {
+                                    "status": {
+                                        "enum": ["uploading", "uploaded", "upload failed", "format check failed", "in progress", "deleted", "replaced", "revoked", "archived", "released"]
+                                    }
+                                }
+                            },
+                            {
+                                "properties": {
+                                    "status": {
+                                        "enum": ["content error"]
+                                    }
+                                }
+                            }
+                        ]
                     }
                 }
             ]
@@ -657,7 +693,8 @@
                 "replaced",
                 "revoked",
                 "archived",
-                "released"
+                "released",
+                "content error"
                 ]
         },
         "dbxrefs": {
@@ -681,6 +718,12 @@
             "comment": "For steps, see analysis_step_run.json (and analysis_step.json) - may be virtual",
             "type": "string",
              "linkTo": "AnalysisStepRun"
+        },
+        "content_error_detail": {
+            "title": "Content error detail",
+            "type": "string",
+            "permission": "import_items",
+            "description": "Explanation of why the file failed the automated content checks."
         }
     },
     "columns": {
@@ -707,6 +750,9 @@
         },
         "file_type": {
             "title": "File type"
+        },
+        "file_format_type": {
+            "title": "Specific file format type"
         },
         "file_size": {
             "title": "File size"
@@ -756,11 +802,11 @@
         "lab": {
             "title": "Lab"
         },
+        "award.project": {
+            "title": "BioProject"
+        },
         "step_run": {
             "title": "Analysis step run"
-        },
-        "lab": {
-            "title": "Lab"
         },
         "date_created": {
             "title": "Date added"
