@@ -80,7 +80,7 @@ const defaultValue = function (schema) {
         });
         return (Object.keys(value).length ? value : undefined);
     } else if (schema.items !== undefined) {
-        return schema.default || [];
+        return schema.default;
     }
     return schema.default || undefined;
 };
@@ -207,7 +207,10 @@ const RepeatingFieldset = React.createClass({
 
         // Remove the specified index from the current value.
         const oldValue = this.props.value;
-        const value = oldValue.slice(0, index).concat(oldValue.slice(index + 1));
+        let value = oldValue.slice(0, index).concat(oldValue.slice(index + 1));
+        if (value.length === 0) {
+            value = undefined;
+        }
 
         // Increment `this.state.generation` (see explanation in getInitialState)
         this.setState({ generation: this.state.generation + 1 });
