@@ -1,0 +1,74 @@
+{
+    "ChIA": {
+        "rule": "'{assay_term_name}' == 'ChIA-PET'",
+        "assay_composite": {
+            "longLabel":  "Collection of ENCODE ChIA-PET experiments",
+            "shortLabel": "ENCODE ChIA-PET"
+        },
+        "longLabel":  "{target} {assay_title} of {replicates.library.biosample.summary} - {accession}",
+        "shortLabel": "{target} {assay_title} of {biosample_term_name} {accession}",
+        "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
+        "Views": {
+            "tag": "view",
+            "group_order": [ "Long range interactions", "Signal of unique reads", "Signal of all reads" ],
+            "groups": {
+                "Long range interactions": {
+                    "tag": "LRCI",
+                    "type": "bigBed",
+                    "visibility": "dense",
+                    "output_type": [ "long range chromatin interactions" ]
+                },
+                "Signal of unique reads": {
+                    "tag": "SIGBL",
+                    "visibility": "full",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "transformFunc": "LOG",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "signal of unique reads" ]
+                },
+                "Signal of all reads": {
+                    "tag": "SIGBM",
+                    "visibility": "hide",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "transformFunc": "LOG",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "signal of all reads","signal" ]
+                }
+            }
+        },
+        "other_groups": {
+            "dimensions": { "Biosample": "dimY", "Targets": "dimX", "Replicates": "dimA" },
+            "dimensionAchecked": "first",
+            "groups": {
+                "Replicates": {
+                    "tag": "REP",
+                    "group_order": "sort",
+                    "groups": {
+                    "replicate": {
+                        "title_mask": "Replicate_{replicate_number}",
+                        "combined_title": "Pooled"
+                        }
+                    }
+                },
+                "Biosample": {
+                    "tag": "BS",
+                    "groups": { "one": { "title_mask": "{biosample_term_name}"} }
+                },
+                "Targets": {
+                    "tag": "TARG",
+                    "groups": { "one": { "title_mask": "{target.label}" } }
+                }
+            }
+        },
+        "file_defs": {
+            "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate}",
+            "shortLabel": "{replicate} {output_type_short_label}"
+        }
+    }
+}
