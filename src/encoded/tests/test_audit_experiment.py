@@ -796,29 +796,96 @@ def test_audit_experiment_no_characterizations_antibody(testapp, base_experiment
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'not characterized antibody' for error in errors_list)
+    assert any(error['category'] == 'uncharacterized antibody' for error in errors_list)
 
 
-def test_audit_experiment_wrong_organism_histone_antibody(testapp, base_experiment, wrangler, base_replicate, base_library, base_biosample, base_antibody, mouse_H3K9me3, base_antibody_characterization1, base_antibody_characterization2, human):
-    base_antibody['targets'] = [mouse_H3K9me3['@id']]
+def test_audit_experiment_wrong_organism_histone_antibody(testapp, base_experiment, wrangler, base_antibody, base_replicate, base_library, base_biosample, mouse_H3K9me3, target_H3K9me3, base_antibody_characterization1, base_antibody_characterization2, mouse, human):
+    # Mouse biosample in mouse ChIP-seq experiment but supporting antibody characterizations are compliant in human but not mouse.
+    base_antibody['targets'] = [mouse_H3K9me3['@id'], target_H3K9me3['@id']]
     histone_antibody = testapp.post_json('/antibody_lot', base_antibody).json['@graph'][0]
-    testapp.patch_json(base_biosample['@id'], {'organism': human['@id']})
-    testapp.patch_json(base_antibody_characterization1['@id'], {'target': mouse_H3K9me3['@id'],
+    testapp.patch_json(base_biosample['@id'], {'organism': mouse['@id']})
+    characterization_reviews = [
+        {
+            'biosample_term_name': 'MEL cell line',
+            'biosample_term_id': 'EFO:0003971',
+            'biosample_type': 'immortalized cell line',
+            'organism': mouse['@id'],
+            'lane_status': 'not compliant',
+            'lane': 1
+        },
+        {
+            'biosample_term_name': 'K562',
+            'biosample_term_id': 'EFO:0002067',
+            'biosample_type': 'immortalized cell line',
+            'organism': human['@id'],
+            'lane_status': 'compliant',
+            'lane': 2
+        }
+    ]
+    testapp.patch_json(base_antibody_characterization1['@id'], {'target': target_H3K9me3['@id'],
+                                                                'characterizes': histone_antibody['@id'],
+                                                                'status': 'compliant',
+                                                                'reviewed_by': wrangler['@id'],
+                                                                'characterization_reviews': characterization_reviews})
+    testapp.patch_json(base_antibody_characterization2['@id'], {'target': target_H3K9me3['@id'],
                                                                 'characterizes': histone_antibody['@id'],
                                                                 'status': 'compliant',
                                                                 'reviewed_by': wrangler['@id']})
-    testapp.patch_json(base_antibody_characterization2['@id'], {'target': mouse_H3K9me3['@id'],
-                                                                'characterizes': histone_antibody['@id'],
-                                                                'status': 'not compliant',
-                                                                'reviewed_by': wrangler['@id']})
-    testapp.patch_json(base_replicate['@id'], {'antibody': histone_antibody['@id'], 'library': base_library['@id']})
-<<<<<<< HEAD
-    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq', 'biosample_term_id': 'EFO:0002067', 'biosample_term_name': 'K562',  'biosample_type': 'immortalized cell line', 'target': 
-                                                histone_target['@id']})
-=======
-    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'biosample_term_id': 'EFO:0002067', 'biosample_term_name': 'K562',  'biosample_type': 'immortalized cell line', 'target': 
-                                                mouse_H3K9me3['@id']})
->>>>>>> Update experiment ab audits
+    testapp.patch_json(base_replicate['@id'], {'antibody': histone_antibody['@id'],
+                                               'library': base_library['@id'],
+                                               'experiment': base_experiment['@id']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716',
+                                                'assay_term_name': 'ChIP-seq',
+                                                'biosample_term_id': 'EFO:0003971',
+                                                'biosample_term_name': 'MEL cell line',
+                                                'biosample_type': 'immortalized cell line',
+                                                'target': mouse_H3K9me3['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'antibody not characterized to standard' for error in errors_list)
+
+
+def test_audit_experiment_partially_characterized_antibody(testapp, base_experiment, wrangler, base_target, base_antibody, base_replicate, base_library, base_biosample, base_antibody_characterization1, base_antibody_characterization2, human):
+    # K562 biosample in ChIP-seq experiment with exempt primary in K562 and in progress secondary - leading to partial characterization.
+    base_antibody['targets'] = [base_target['@id']]
+    TF_antibody = testapp.post_json('/antibody_lot', base_antibody).json['@graph'][0]
+    characterization_reviews = [
+        {
+            'biosample_term_name': 'HepG2',
+            'biosample_term_id': 'EFO:0001187',
+            'biosample_type': 'immortalized cell line',
+            'organism': human['@id'],
+            'lane_status': 'not compliant',
+            'lane': 1
+        },
+        {
+            'biosample_term_name': 'K562',
+            'biosample_term_id': 'EFO:0002067',
+            'biosample_type': 'immortalized cell line',
+            'organism': human['@id'],
+            'lane_status': 'exempt from standards',
+            'lane': 2
+        }
+    ]
+    testapp.patch_json(base_antibody_characterization1['@id'], {'target': base_target['@id'],
+                                                                'characterizes': TF_antibody['@id'],
+                                                                'status': 'compliant',
+                                                                'reviewed_by': wrangler['@id'],
+                                                                'characterization_reviews': characterization_reviews})
+
+    testapp.patch_json(base_replicate['@id'], {'antibody': TF_antibody['@id'],
+                                               'library': base_library['@id'],
+                                               'experiment': base_experiment['@id']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716',
+                                                'assay_term_name': 'ChIP-seq',
+                                                'biosample_term_id': 'EFO:0002067',
+                                                'biosample_term_name': 'K562',
+                                                'biosample_type': 'immortalized cell line',
+                                                'target': base_target['@id']})
+
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []

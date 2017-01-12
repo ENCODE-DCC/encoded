@@ -3353,7 +3353,7 @@ def audit_experiment_antibody_characterized(value, system):
         if not antibody['characterizations']:
             detail = '{} has not yet been characterized in any cell type or tissue.'.format(
                 antibody['@id'])
-            yield AuditFailure('not characterized antibody', detail, level='NOT_COMPLIANT')
+            yield AuditFailure('uncharacterized antibody', detail, level='NOT_COMPLIANT')
 
         biosample = lib['biosample']
         organism = biosample['organism']['@id']
@@ -3367,70 +3367,86 @@ def audit_experiment_antibody_characterized(value, system):
         # and if has not been characterized to standards. Otherwise, it doesn't apply and we
         # shouldn't raise a stink
 
-        characterized_in_organism = False
+        match_found = False
         if 'histone modification' in ab_targets_investigated_as:
             for lot_review in antibody['lot_reviews']:
-                # Exclude awaiting characterization from this list since no
-                # characterizations submitted would also mean the ab has not
-                # been characterized to standards
-                if lot_review['status'] in ['not characterized to standards',
-                                            'pending dcc review',
-                                            'not pursued',
-                                            'awaiting characterization']:
-                    for lot_organism in lot_review['organisms']:
-                        if organism == lot_organism:
-                            characterized_in_organism = True
+                if organism == lot_review['organisms'][0]:
+                    match_found = True
+                    if lot_review['status'] == 'characterized to standards with exemption':
+                        detail = '{} has been characterized '.format(antibody['@id']) + \
+                                 'to the standard with exemption for {}'.format(organism)
+                        yield AuditFailure('antibody characterized with exemption',
+                                           detail, level='WARNING')
+                    elif lot_review['status'] == 'awaiting characterization':
+                        detail = '{} has not been characterized at al for any cell type or ' + \
+                            'tissue in {}'.format(antibody['@id'], organism)
+                        yield AuditFailure('uncharacterized antibody',
+                                           detail, level='NOT_COMPLIANT')
+                    elif lot_review['status'] in ['not characterized to standards', 'pending dcc review']:
+                        if lot_review['detail'] in ['Awaiting submission of primary characterization(s).',
+                                                    'Awaiting submission of secondary characterization(s).',
+                                                    'One or more characterization(s) is pending review.',
+                                                    'Pending review of a secondary characterization.']:
                             detail = '{} has characterization attempts '.format(antibody['@id']) + \
                                      'but does not have the full complement of characterizations ' + \
                                      'meeting the standard in {}: {}'.format(
                                 organism, lot_review['detail'])
                             yield AuditFailure('partially characterized antibody',
                                                detail, level='NOT_COMPLIANT')
-                if lot_review['status'] == 'characterized to standards with exemption':
-                    for lot_organism in lot_review['organisms']:
-                        if organism == lot_organism:
-                            characterized_in_organism = True
-                            detail = '{} has been characterized '.format(antibody['@id']) + \
-                                     'to the standard with exemption for {}'.format(organism)
-                            yield AuditFailure('antibody characterized with exemption',
-                                               detail, level='WARNING')
-                if lot_review['status'] == 'characterized to standards' and \
-                        organism == lot_organism:
-                    characterized_in_organism = True
-            if not characterized_in_organism:
-                detail = '{} has not been '.format(antibody['@id']) + \
-                    'characterized to the standard for {}: {}'.format(organism, lot_review['detail'])
-                yield AuditFailure('not characterized antibody', detail, level='NOT_COMPLIANT')
+                        else:
+                            detail = '{} has not been '.format(antibody['@id']) + \
+                                'characterized to the standard for {}: {}'.format(organism, lot_review['detail'])
+                            yield AuditFailure('antibody not characterized to standard', detail,
+                                               level='NOT_COMPLIANT')
+                    else:
+                        # This should only leave the characterized to standards case
+                        pass
         else:
             biosample_term_id = value['biosample_term_id']
             biosample_term_name = value['biosample_term_name']
             experiment_biosample = (biosample_term_id, organism)
-            eligible_biosamples = set()
-            exempt_biosamples = set()
+
             for lot_review in antibody['lot_reviews']:
-                if lot_review['status'] in ['characterized to standards',
-                                            'characterized to standards with exemption']:
-                    for lot_organism in lot_review['organisms']:
-                        eligible_biosample = (lot_review['biosample_term_id'], lot_organism)
-                        if lot_review['status'] == 'characterized to standards with exemption':
-                            exempt_biosamples.add(eligible_biosample)
-                        eligible_biosamples.add(eligible_biosample)
-
-            if experiment_biosample in exempt_biosamples:
-                detail = '{} has been characterized to the '.format(antibody['@id']) + \
-                         'standard with exemption ' + \
-                         'for {} in {}'.format(biosample_term_name, organism)
-                yield AuditFailure('antibody characterized with exemption', detail, level='WARNING')
-
-            elif experiment_biosample not in eligible_biosamples:
-                detail = '{} has not been characterized to the standard for {} in {}: {}'.format(
-                    antibody['@id'], biosample_term_name, organism, lot_review['detail'])
-                yield AuditFailure('not characterized antibody', detail, level='NOT_COMPLIANT')
-            else:
-                detail = '{} has characterization attempts '.format(antibody['@id']) + \
-                         'but does not have the full complement of characterizations ' + \
-                         'meeting the standard in {}: {}'.format(
-                    organism, lot_review['detail'])
+                biosample_key = (lot_review['biosample_term_id'], lot_review['organisms'][0])
+                if experiment_biosample == biosample_key:
+                    match_found = True
+                    if lot_review['status'] == 'characterized to standards with exemption':
+                        detail = '{} has been characterized to the '.format(antibody['@id']) + \
+                            'standard with exemption for {} in {}'.format(biosample_term_name,
+                                                                          organism)
+                        yield AuditFailure('antibody characterized with exemption', detail,
+                                           level='WARNING')
+                    elif lot_review['status'] == 'awaiting characterization':
+                        detail = '{} has not been characterized at al for {} in {}'.format(
+                            antibody['@id'], biosample_term_name, organism)
+                        yield AuditFailure('uncharacterized antibody',
+                                           detail, level='NOT_COMPLIANT')
+                    elif lot_review['status'] in ['not characterized to standards', 'pending dcc review']:
+                        if lot_review['detail'] in ['Awaiting submission of primary characterization(s).',
+                                                    'Awaiting submission of secondary characterization(s).',
+                                                    'One or more characterization(s) is pending review.',
+                                                    'Pending review of a secondary characterization.']:
+                            detail = '{} has characterization attempts '.format(antibody['@id']) + \
+                                     'but does not have the full complement of characterizations ' + \
+                                     'meeting the standard in {}: {}'.format(
+                                organism, lot_review['detail'])
+                            yield AuditFailure('partially characterized antibody',
+                                               detail, level='NOT_COMPLIANT')
+                        else:
+                            detail = '{} has not been '.format(antibody['@id']) + \
+                                'characterized to the standard for {}: {}'.format(organism, lot_review['detail'])
+                            yield AuditFailure('antibody not characterized to standard', detail,
+                                               level='NOT_COMPLIANT')
+                    else:
+                        # This should only leave the characterized to standards case
+                        pass
+        '''
+        if not match_found:
+            detail = '{} has characterization attempts '.format(antibody['@id']) + \
+                     'but does not have the full complement of characterizations ' + \
+                     'meeting the standard in {}'.format(organism)
+            yield AuditFailure('partially characterized antibody', detail, level='NOT_COMPLIANT') 
+        '''   
 
 
 @audit_checker(

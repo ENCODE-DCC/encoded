@@ -218,18 +218,18 @@ def lot_reviews(characterizations, targets, request):
     # Go through the secondary characterizations first
 
     status_ranking = {
-        'characterized to standards': 6,
-        'characterized to standards with exemption': 5,
-        'compliant': 4,
-        'exempt from standards': 3,
-        'pending dcc review': 2,
-        'awaiting characterization': 1,
+        'characterized to standards': 8,
+        'characterized to standards with exemption': 7,
+        'compliant': 6,
+        'exempt from standards': 5,
+        'pending dcc review': 4,
+        'awaiting characterization': 3,
+        'not characterized to standards': 2,
+        'not pursued': 1,
         'not compliant': 0,
         'not reviewed': 0,
         'not submitted for review by lab': 0,
-        'not pursued': 0,
         'deleted': 0,
-        'not characterized to standards': 0,
         'in progress': 0
     }
 
@@ -316,9 +316,7 @@ def build_lot_reviews(primary_chars,
                         'biosample_term_id': 'NTR:99999999' if is_histone_mod
                             else lane_review['biosample_term_id'],
                         'organisms': [lane_organism],
-                        'targets':
-                            sorted(review_targets) if is_histone_mod
-                            else [primary['target']],
+                        'targets': [target_organisms[lane_organism]],
                         'status': 'not submitted for review by lab' if primary['status'] ==
                             'not submitted for review by lab' else lane_review['lane_status'],
                         'detail': None
@@ -361,11 +359,16 @@ def build_lot_reviews(primary_chars,
                                       'in progress',
                                       'deleted']:
                 char_reviews[key]['status'] = 'not characterized to standards'
-                char_reviews[key]['detail'] = 'Awaiting a compliant secondary characterization.'
-            elif char_reviews[key]['status'] == 'pending dcc review' or secondary_status == 'pending dcc review':
+                if secondary_status == 'in progress':
+                    char_reviews[key]['detail'] = 'Awaiting submission of secondary characterization(s).'
+                else:
+                    char_reviews[key]['detail'] = 'Awaiting a compliant secondary characterization.'
+            elif char_reviews[key]['status'] == 'pending dcc review' or secondary_status == \
+                    'pending dcc review':
                 char_reviews[key]['status'] = 'pending dcc review'
                 char_reviews[key]['detail'] = 'One or more characterization(s) is pending review.'
-            elif char_reviews[key]['status'] == 'not compliant':
+            elif char_reviews[key]['status'] == 'not compliant' or char_reviews[key]['status'] == \
+                    'not submitted for review by lab':
                 if secondary_status == 'pending dcc review':
                     char_reviews[key]['status'] = 'pending dcc review'
                     char_reviews[key]['detail'] = 'Pending review of a secondary characterization.'
