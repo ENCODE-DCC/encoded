@@ -739,23 +739,22 @@ var AssayDetails = function (replicates, libraryValues, librarySpecials, library
                     <dt>{libraryEntry.title}</dt>
                     <dd>
                         {libraryEntry.value !== undefined ?
-                            /* Single value for this property; render it or its React component */
                             <span>{(libraryEntry.component && Object.keys(libraryEntry.component).length) ? <span>{libraryEntry.component}</span> : <span>{libraryEntry.value}</span>}</span>
                         :
-                            /* Multiple values for this property */
                             <span>
                                 {Object.keys(libraryEntry.values).map((replicateId) => {
                                     var value = libraryEntry.values[replicateId];
                                     if (libraryEntry.component && libraryEntry.component[replicateId]) {
-                                        /* Display the pre-rendered component */
+                                        // Display the pre-rendered component
                                         return <span key={replicateId} className="line-item">{libraryEntry.component[replicateId]} [{replicateId}]</span>;
-                                    } else if (value) {
-                                        /* Display the simple value */
-                                        return <span key={replicateId} className="line-item">{value} [{replicateId}]</span>;
-                                    } else {
-                                        /* No value to display; happens when at least one replicate had a value for this property, but this one doesn't */
-                                        return null;
                                     }
+                                    if (value) {
+                                        // Display the simple value
+                                        return <span key={replicateId} className="line-item">{value} [{replicateId}]</span>;
+                                    }
+
+                                    // No value to display; happens when at least one replicate had a value for this property, but this one doesn't
+                                    return null;
                                 })}
                             </span>
                         }

@@ -19,8 +19,10 @@ var React = require('react');
 // <li><a href="#">Third</a></li>
 
 module.exports.DropdownMenu = React.createClass({
+    // One might think `label` should be isRequired. But we can't because of:
+    // https://github.com/facebook/react/issues/4494#issuecomment-125068868
     propTypes: {
-        label: React.PropTypes.string.isRequired // id attribute value for the button that controls this menu
+        label: React.PropTypes.string, // id attribute value for the button that controls this menu
     },
 
     render: function() {
