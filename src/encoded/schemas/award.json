@@ -13,7 +13,7 @@
     "type": "object",
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "title": {
             "rdfs:subPropertyOf": "dc:title",
@@ -100,7 +100,8 @@
             "description": "The group that determines which set of data the user has permission to view.",
             "type": "string",
             "enum": [
-                "ENCODE",
+                "ENCODE3",
+                "ENCODE4",
                 "GGR",
                 "REMC"
             ]

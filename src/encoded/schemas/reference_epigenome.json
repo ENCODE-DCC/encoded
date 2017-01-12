@@ -175,6 +175,10 @@
             "title": "Age display",
             "type": "string"
         },
+        "related_datasets.replicates.library.biosample.donor.accession": {
+            "title": "Accession",
+            "type": "string"
+        },
         "related_datasets.replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Treatment",
             "type": "string"
