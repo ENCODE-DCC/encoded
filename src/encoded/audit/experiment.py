@@ -769,9 +769,8 @@ def check_experiment_dnase_seq_standards(value,
                              'DNase-seq profile, requires a minimum of 20 million uniquely mapped ' + \
                              'reads to generate a reliable ' + \
                              'SPOT (Signal Portion of Tags) score. ' + \
-                             'The recommended value is > 50 million, but > 40 million ' + \
-                             'is acceptable. For deep, foot-printing depth ' + \
-                             'DNase-seq 200-250 million uniquely mapped reads are ' + \
+                             'The recommended value is > 50 million. For deep, foot-printing depth ' + \
+                             'DNase-seq 150-200 million uniquely mapped reads are ' + \
                              'recommended. (See {} )'.format(
                                  link_to_standards)
                     if 'assembly' in alignment_file:
@@ -789,10 +788,8 @@ def check_experiment_dnase_seq_standards(value,
                                  'has {} '.format(
                                      metric['mapped']) + \
                                  'mapped reads. ' + suffix
-                    if 40000000 <= metric['mapped'] < 50000000:
-                        yield AuditFailure('low read depth', detail, level='WARNING')
-                    elif 20000000 <= metric['mapped'] < 40000000:
-                        yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
+                    if 20000000 <= metric['mapped'] < 50000000:
+                        yield AuditFailure('insufficient read depth', detail, level='WARNING')
                     elif metric['mapped'] < 20000000:
                         yield AuditFailure('extremely low read depth', detail, level='ERROR')
         elif alignment_files is not None and len(alignment_files) > 0 and \
@@ -825,13 +822,18 @@ def check_experiment_dnase_seq_standards(value,
                              "have a SPOT score of {0:.2f}. ".format(metric["SPOT score"]) + \
                              "According to ENCODE standards, " + \
                              "SPOT score of 0.4 or higher is considered a product of high quality " + \
-                             "data. A SPOT score of 0.2 is considered a minimally acceptable " + \
-                             "SPOT score for rare and hard to find primary tissues. ( {} )".format(
+                             "data. " + \
+                             "Any sample with a SPOT score <0.3 should be targeted for replacement " + \
+                             "with a higher quality sample, and a " + \
+                             "SPOT score of 0.25 is considered minimally acceptable " + \
+                             "for rare and hard to find primary tissues. ( {} )".format(
                                  link_to_standards)
-                    if 0.2 <= metric["SPOT score"] < 0.4:
+                    if 0.3 <= metric["SPOT score"] < 0.4:
                         yield AuditFailure('low spot score', detail, level='WARNING')
-                    elif metric["SPOT score"] < 0.2:
+                    elif 0.25 <= metric["SPOT score"] < 0.3:
                         yield AuditFailure('insufficient spot score', detail, level='NOT_COMPLIANT')
+                    elif metric["SPOT score"] < 0.25:
+                        yield AuditFailure('extremely low spot score', detail, level='ERROR')
 
 
 def check_experiment_rna_seq_standards(value,
