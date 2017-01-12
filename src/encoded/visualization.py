@@ -265,45 +265,6 @@ def convert_mask(mask, dataset, a_file=None):
     return working_on
 
 
-def strip_comments(line, ws_too=False):
-    """
-    Strips comments from a line (and opptionally leading/trailing whitespace).
-    """
-    pound = -1
-    ix = 0
-    while True:
-        pound = line[ix:].find('#', pound + 1)
-        if pound == -1:
-            break
-        pound = ix + pound
-        if pound == 0:
-            return ''
-        if line[pound - 1] != '\\':
-            line = line[0: pound]
-            break
-        else:  # if line[ pound - 1 ] == '\\': # ignore '#' and keep looking
-            ix = pound + 1
-            # line = line[ 0:pound - 1 ] + line[ pound: ]
-    if ws_too:
-        line = line.strip()
-    return line
-
-
-def gulp_file_strip_comments(path):
-    '''Reads in entire file stripping any # comments and returns string.'''
-    blob = ''
-    with open(path) as fh:
-        for line in fh:
-            line = line.rstrip('\n')
-            while line.endswith('\\'):  # Support for continuation lines
-                line = line[:-1] + next(fh).strip()
-            line = strip_comments(line, False)
-            if line == '':
-                continue
-            blob += line + '\n'
-    return blob
-
-
 def load_vis_defs():
     '''Loads 'vis_defs' (visualization definitions by assay type) from a static file.'''
     global VIS_DEFS_FOLDER
@@ -313,10 +274,11 @@ def load_vis_defs():
     files = os.listdir(folder)
     for filename in files:
         if filename.endswith('.json'):
-            log.debug('Preparing to load %s' % (filename))
-            vis_def = json.loads(gulp_file_strip_comments(folder + filename))
-            if vis_def:
-                VIS_DEFS_BY_TYPE.update(vis_def)
+            with open(folder + filename) as fh:
+                log.debug('Preparing to load %s' % (filename))
+                vis_def = json.load(fh)
+                if vis_def:
+                    VIS_DEFS_BY_TYPE.update(vis_def)
 
 
 def get_vis_type(dataset):
@@ -1933,8 +1895,9 @@ def generate_batch_trackDb(request, hide=False, regen=False):
     missing_accs = []
     if found == 0:
         missing_accs = accs
-    elif found < (len(accs) * 3 / 4):  # some heuristic to decide when too few means regenerate
-        missing_accs = list(set(accs) - set(acc_composites.keys()))
+    # Don't bother if cache is primed.
+    # elif found < (len(accs) * 3 / 4):  # some heuristic to decide when too few means regenerate
+    #     missing_accs = list(set(accs) - set(acc_composites.keys()))
 
     if len(missing_accs) > 0:  # if 0 were found in cache try generating (for pre-primed-cache access)
         if not USE_CACHE: # already have dataset
