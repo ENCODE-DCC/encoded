@@ -1,0 +1,65 @@
+{
+    "HiC": {
+        "rule": "'{assay_term_name}' == 'HiC'",
+        "assay_composite": {
+            "longLabel":  "Collection of ENCODE Hi-C experiments",
+            "shortLabel": "ENCODE HI-C"
+        },
+        "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
+        "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
+        "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
+        "Views": {
+            "tag": "view",
+            "group_order": [ "Topologically associated domains", "Nested TADs", "Genome compartments" ],
+            "groups": {
+                "Topologically associated domains": {
+                    "tag": "aTADS",
+                    "visibility": "dense",
+                    "type": "bigBed 3 +",
+                    "output_type": [ "topologically associated domains" ]
+                },
+                "Nested TADs": {
+                    "tag": "bTADS",
+                    "visibility": "hide",
+                    "type": "bigBed 3 +",
+                    "output_type": [ "nested topologically associated domains" ]
+                },
+                "Genome compartments": {
+                    "tag": "cCOMPART",
+                    "visibility": "full",
+                    "type": "bigWig",
+                    "viewLimits": "0:0.1",
+                    "transformFunc": "LOG",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "genome compartments" ]
+                }
+            }
+        },
+        "other_groups": {
+            "dimensions": { "Biosample": "dimY", "Replicates": "dimA" },
+            "dimensionAchecked": "first",
+            "groups": {
+                "Replicates": {
+                    "tag": "REP",
+                    "group_order": "sort",
+                    "groups": {
+                    "replicate": {
+                        "title_mask": "Replicate_{replicate_number}",
+                        "combined_title": "Pooled"
+                        }
+                    }
+                },
+                "Biosample": {
+                    "tag": "BS",
+                    "groups": { "one": { "title_mask": "{biosample_term_name}"} }
+                }
+            }
+        },
+        "file_defs": {
+            "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate}",
+            "shortLabel": "{replicate} {output_type_short_label}"
+        }
+    }
+}

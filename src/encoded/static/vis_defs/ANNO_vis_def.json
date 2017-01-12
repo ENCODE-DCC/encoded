@@ -1,0 +1,75 @@
+{
+    "ANNO": {
+        "rule": "'{@id}'.startswith('/annotations/')",
+        "assay_composite": {
+            "longLabel":  "Collection of ENCODE annotations",
+            "shortLabel": "ENCODE annotations"
+        },
+        "longLabel":  "Encyclopedia annotation of {annotation_type} for {biosample_term_name|multiple} - {accession}",
+        "shortLabel": "{annotation_type} of {biosample_term_name|multiple} {accession}",
+        "sortOrder": [ "Biosample","Replicates", "Views" ],
+        "Views":  {
+            "tag": "view",
+            "group_order": [ "Candidate enhancers", "Candidate promoters",  "Chromatin state",
+                             "HMM predicted chromatin state", "Peaks" ],
+            "groups": {
+                "Candidate enhancers": {
+                    "tag": "aENHAN",
+                    "type": "bigBed",
+                    "visibility": "dense",
+                    "output_type": [ "candidate enhancers" ]
+                },
+                "Candidate promoters": {
+                    "tag": "bPROMO",
+                    "type": "bigBed",
+                    "visibility": "dense",
+                    "output_type": [ "candidate promoters" ]
+                },
+                "Chromatin state": {
+                    "tag": "cSTATE",
+                    "type": "bigBed",
+                    "visibility": "dense",
+                    "itemRgb": "on",
+                    "output_type": [ "semi-automated genome annotation" ]
+                },
+                "HMM predicted chromatin state": {
+                    "tag": "hSTATE",
+                    "type": "bigBed",
+                    "visibility": "dense",
+                    "output_type": [ "HMM predicted chromatin state" ]
+                },
+                "Peaks": {
+                    "tag": "sPKS",
+                    "visibility": "hide",
+                    "type": "bigBed",
+                    "file_format_type": [ "narrowPeak" ],
+                    "scoreFilter": "0:1000",
+                    "output_type": [ "peaks" ]
+                }
+            }
+        },
+        "other_groups":  {
+            "dimensions": { "Biosample": "dimY","Replicates": "dimA" },
+            "dimensionAchecked": "all",
+            "groups": {
+                "Replicates": {
+                    "tag": "REP",
+                    "groups": {
+                        "replicate": {
+                            "title_mask": "Replicate_{replicate_number}",
+                            "combined_title": "Pooled"
+                        }
+                    }
+                },
+                "Biosample": {
+                    "tag": "BS",
+                    "groups": { "one": { "title_mask": "{biosample_term_name}"} }
+                }
+            }
+        },
+        "file_defs": {
+            "longLabel": "Encyclopedia annotation of {biosample_term_name} {output_type} {replicate}",
+            "shortLabel": "{replicate} {output_type_short_label}"
+        }
+    }
+}
