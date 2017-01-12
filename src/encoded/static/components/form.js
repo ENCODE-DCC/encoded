@@ -78,7 +78,7 @@ const defaultValue = function (schema) {
                 }
             }
         });
-        return value;
+        return (Object.keys(value).length ? value : undefined);
     } else if (schema.items !== undefined) {
         return schema.default || [];
     }
@@ -339,7 +339,7 @@ const FetchedFieldset = React.createClass({
 
     updateChild(name, value) {
         // Pass new value up to our parent.
-        this.setState({ url: null });
+        value['@id'] = this.state.url;
         this.props.updateChild(this.props.name, value);
     },
 
@@ -360,12 +360,16 @@ const FetchedFieldset = React.createClass({
                 </fetched.FetchedData>
             );
             // When expanded, fetch the edit frame and render form fields.
-            fieldset = (
-                <fetched.FetchedData>
-                    <fetched.Param name="value" url={`${this.state.url}?frame=edit`} />
-                    <Field path={path} schema={schema} updateChild={this.updateChild} />
-                </fetched.FetchedData>
-            );
+            if (typeof value === 'string') {
+                fieldset = (
+                    <fetched.FetchedData>
+                        <fetched.Param name="value" url={`${this.state.url}?frame=edit`} />
+                        <Field path={path} schema={schema} updateChild={this.updateChild} />
+                    </fetched.FetchedData>
+                );
+            } else {
+                fieldset = <Field path={path} schema={schema} value={value} updateChild={this.updateChild} />;
+            }
         } else {
             // We don't have a URI yet (it's a new object).
             // When collapsed, render a placeholder.
@@ -712,10 +716,14 @@ const Form = module.exports.Form = React.createClass({
         // Get validation errors from jsonschema validator.
         const validation = validator.validate(value, this.props.schema, {
             schemas: this.props.schemas,
+            // Don't validate `dependencies` in schema,
+            // because the errors don't get reported at the correct path.
+            // These should still be reported by server-side validation on form submit.
+            skipAttributes: ['dependencies'],
         });
 
         // for debugging:
-        // console.log(validation);
+        console.log(validation);
 
         // `jsonschema` uses field paths like
         //   `instance.aliases[0]`
