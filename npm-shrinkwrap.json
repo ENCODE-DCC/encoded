@@ -357,8 +357,8 @@
     },
     "dagre-d3": {
       "version": "0.4.3-pre",
-      "from": "git+https://github.com/ENCODE-DCC/dagre-d3.git#coalesced-nodes",
-      "resolved": "git+https://github.com/ENCODE-DCC/dagre-d3.git#51502eaa962ce57596d39f7aa46d78a9f1e65620",
+      "from": "git+https://github.com/ENCODE-DCC/dagre-d3.git#v1.2.0",
+      "resolved": "git+https://github.com/ENCODE-DCC/dagre-d3.git#aecd13a26ba47e4d36dce52a39af6ed942456488",
       "dependencies": {
         "dagre": {
           "version": "0.7.4",
