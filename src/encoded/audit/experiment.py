@@ -633,10 +633,13 @@ def audit_experiment_standards_dispatcher(value, system):
     if value['assay_term_name'] in ['DNase-seq']:
         hotspots = scanFilesForOutputType(value['original_files'],
                                           'hotspots')
+        signal_files = scanFilesForOutputType(value['original_files'],
+                                              'signal of unique reads')
         for failure in check_experiment_dnase_seq_standards(value,
                                                             fastq_files,
                                                             alignment_files,
                                                             hotspots,
+                                                            signal_files,
                                                             desired_assembly,
                                                             desired_annotation,
                                                             ' /data-standards/dnase-seq/ '):
@@ -735,10 +738,11 @@ def audit_modERN_experiment_standards_dispatcher(value, system):
                 yield failure
 
 
-def check_experiment_dnase_seq_standards(value,
+def check_experiment_dnase_seq_standards(experiment,
                                          fastq_files,
                                          alignment_files,
                                          hotspots_files,
+                                         signal_files,
                                          desired_assembly,
                                          desired_annotation,
                                          link_to_standards):
@@ -834,6 +838,43 @@ def check_experiment_dnase_seq_standards(value,
                         yield AuditFailure('insufficient spot score', detail, level='NOT_COMPLIANT')
                     elif metric["SPOT score"] < 0.25:
                         yield AuditFailure('extremely low spot score', detail, level='ERROR')
+
+        if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
+            return
+
+        signal_quality_metrics = get_metrics(signal_files,
+                                             'CorrelationQualityMetrics',
+                                             desired_assembly)
+        if signal_quality_metrics is not None and \
+           len(signal_quality_metrics) > 0:
+            for metric in signal_quality_metrics:
+                if 'Pearson correlation' in metric:
+                    file_names = []
+                    for f in metric['quality_metric_of']:
+                        file_names.append(f['@id'])
+                    file_names_string = str(file_names).replace('\'', ' ')
+
+                    detail = ""
+
+
+                            'Replicate concordance in DNase-seq expriments is measured by ' + \
+                            'calculating the Pearson correlation between gene level quantification ' + \
+                            'of the replicates. ' + \
+                         'ENCODE processed gene quantification files {} '.format(file_names_string) + \
+                         'have a Spearman correlation of {0:.2f}. '.format(spearman_correlation) + \
+                         'According to ENCODE standards, in an {} '.format(replication_type) + \
+                         'assay analyzed using the {} pipeline, '.format(pipeline) + \
+                         'a Spearman correlation value > {} '.format(threshold) + \
+                         'is recommended.'
+
+                    if experiment['replication_type'] == 'isogenic' and \
+                       metric['Pearson correlation'] < 0.9:
+                        yield AuditFailure('insufficient replicate concordance',
+                                           detail, level='NOT_COMPLIANT')
+                    elif experiment['replication_type'] == 'anisogenic' and \
+                            metric['Pearson correlation'] < 0.85:
+                        yield AuditFailure('insufficient replicate concordance',
+                                           detail, level='NOT_COMPLIANT')
 
 
 def check_experiment_rna_seq_standards(value,
