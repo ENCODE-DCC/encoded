@@ -421,6 +421,10 @@ const Reference = React.createClass({
         context: React.PropTypes.object, // Reference object to display
     },
 
+    contextTypes: {
+        session: React.PropTypes.object, // Login session information
+    },
+
     mixins: [AuditMixin],
 
     render: function () {
@@ -576,6 +580,10 @@ globals.content_views.register(Reference, 'Reference');
 const Project = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // Project object to display
+    },
+
+    contextTypes: {
+        session: React.PropTypes.object, // Login session information
     },
 
     mixins: [AuditMixin],
@@ -757,6 +765,10 @@ globals.content_views.register(Project, 'Project');
 const UcscBrowserComposite = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // UCSC browser composite object to display
+    },
+
+    contextTypes: {
+        session: React.PropTypes.object, // Login session information
     },
 
     mixins: [AuditMixin],
