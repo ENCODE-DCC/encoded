@@ -1,6 +1,6 @@
 'use strict';
 var React = require('react');
-var SvgIcon = require('../libs/svg-icons').SvgIcon;
+var svgIcon = require('../libs/svg-icons').svgIcon;
 var fetched = require('./fetched');
 var search = require('./search');
 var url = require('url');
@@ -354,7 +354,7 @@ var Report = React.createClass({
                                         delete parsedUrl.query.field;
                                         delete parsedUrl.search;
                                         var href = url.format(parsedUrl);
-                                        return <a href={href} className="btn btn-info btn-sm btn-svgicon" title={view.title} key={i}>{SvgIcon(view2svg[view.icon])}</a>;
+                                        return <a href={href} className="btn btn-info btn-sm btn-svgicon" title={view.title} key={i}>{svgIcon(view2svg[view.icon])}</a>;
                                     })}
                                 </div>
                                 <ColumnSelector columns={columns} toggleColumn={this.toggleColumn} />

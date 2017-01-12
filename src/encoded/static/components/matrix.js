@@ -1,7 +1,7 @@
 'use strict';
 var React = require('react');
 var color = require('color');
-var SvgIcon = require('../libs/svg-icons').SvgIcon;
+var svgIcon = require('../libs/svg-icons').svgIcon;
 var globals = require('./globals');
 var search = require('./search');
 var url = require('url');
@@ -153,7 +153,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                       {matrix.doc_count} results 
                                                     </h3>
                                                     <div className="btn-attached">
-                                                        {matrix.doc_count && context.views ? context.views.map(view => <a href={view.href} key={view.icon} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{SvgIcon(view2svg[view.icon])}</a>) : ''}
+                                                        {matrix.doc_count && context.views ? context.views.map(view => <a href={view.href} key={view.icon} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{svgIcon(view2svg[view.icon])}</a>) : ''}
                                                     </div>
                                                     {context.filters.length ?
                                                         <div className="clear-filters-control-matrix">
