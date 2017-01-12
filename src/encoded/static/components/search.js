@@ -12,6 +12,7 @@ var _ = require('underscore');
 var globals = require('./globals');
 var image = require('./image');
 var search = module.exports;
+var { donorDiversity } = require('./objectutils');
 var dbxref = require('./dbxref');
 var audit = require('./audit');
 var objectutils = require('./objectutils');
@@ -473,6 +474,12 @@ var Dataset = module.exports.Dataset = React.createClass({
         var haveSeries = result['@type'].indexOf('Series') >= 0;
         var haveFileSet = result['@type'].indexOf('FileSet') >= 0;
 
+        // For ReferenceEpigenome, calculate the donor diversity.
+        let diversity = '';
+        if (result['@type'][0] === 'ReferenceEpigenome') {
+            diversity = donorDiversity(result);
+        }
+
         return (
             <li>
                 <div className="clearfix">
@@ -506,6 +513,7 @@ var Dataset = module.exports.Dataset = React.createClass({
                     <div className="data-row">
                         {result['dataset_type'] ? <div><strong>Dataset type: </strong>{result['dataset_type']}</div> : null}
                         {targets && targets.length ? <div><strong>Targets: </strong>{targets.join(', ')}</div> : null}
+                        {diversity ? <div><strong>Donor diversity: </strong>{diversity}</div> : null}
                         <div><strong>Lab: </strong>{result.lab.title}</div>
                         <div><strong>Project: </strong>{result.award.project}</div>
                     </div>
