@@ -67,7 +67,9 @@ const filterValue = function (value) {
 // for any property that defines one,
 // with the exception of read-only and calculated properties.
 const defaultValue = function (schema) {
-    if (schema.properties !== undefined) {
+    if (schema.default !== undefined) {
+        return schema.default || undefined;
+    } else if (schema.properties !== undefined) {
         const value = {};
         _.each(schema.properties, (property, name) => {
             if (property.calculatedProperty) return;
@@ -79,8 +81,6 @@ const defaultValue = function (schema) {
             }
         });
         return (Object.keys(value).length ? value : undefined);
-    } else if (schema.items !== undefined) {
-        return schema.default;
     }
     return schema.default || undefined;
 };
