@@ -236,18 +236,18 @@ def dataset_9_10(value, system):
     # http://redmine.encodedcc.org/issues/1384
     if 'description' in value:
         if value['description']:
-            value['description'].strip()
+            value['description'] = value['description'].strip()
         else:
             del value['description']
 
     if 'notes' in value:
         if value['notes']:
-            value['notes'].strip()
+            value['notes'] = value['notes'].strip()
         else:
             del value['notes']
 
     if 'submitter_comment' in value:
         if value['submitter_comment']:
-            value['submitter_comment'].strip()
+            value['submitter_comment'] = value['submitter_comment'].strip()
         else:
             del value['submitter_comment']

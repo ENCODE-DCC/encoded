@@ -86,12 +86,12 @@ def antibody_lot_5_6(value, system):
     # http://redmine.encodedcc.org/issues/1384
     if 'notes' in value:
         if value['notes']:
-            value['notes'].strip()
+            value['notes'] = value['notes'].strip()
         else:
             del value['notes']
 
     if 'antigen_description' in value:
         if value['antigen_description']:
-            value['antigen_description'].strip()
+            value['antigen_description'] = value['antigen_description'].strip()
         else:
             del value['antigen_description']

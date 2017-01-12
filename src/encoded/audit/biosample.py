@@ -307,34 +307,6 @@ def audit_biosample_subcellular_term_match(value, system):
 
 
 @audit_checker('biosample', frame='object')
-def audit_biosample_depleted_term_match(value, system):
-    '''
-    The depleted_in_term_name and depleted_in_term_name
-    should be concordant. This should be a calcualted field.
-    If one exists, the other should.  This should be handled in the schema.
-    '''
-    if value['status'] == 'deleted':
-        return
-
-    if 'depleted_in_term_name' not in value:
-        return
-
-    if len(value['depleted_in_term_name']) != len(value['depleted_in_term_id']):
-        detail = 'Biosample {} has a depleted_in_term_name array and depleted_in_term_id array of differing lengths'.format(
-            value['@id'])
-        raise AuditFailure('inconsistent depleted_in_term length', detail, level='INTERNAL_ACTION')
-        return
-
-    for i, dep_term in enumerate(value['depleted_in_term_name']):
-        if (term_mapping[dep_term]) != (value['depleted_in_term_id'][i]):
-            detail = 'Biosample {} has a mismatch between {} and {}'.format(
-                value['@id'],
-                dep_term,
-                value['depleted_in_term_id'][i])
-            raise AuditFailure('inconsistent depleted_in_term', detail, level='ERROR')
-
-
-@audit_checker('biosample', frame='object')
 def audit_biosample_transfection_type(value, system):
     '''
     A biosample with constructs or rnais should have a

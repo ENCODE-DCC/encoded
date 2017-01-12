@@ -185,21 +185,21 @@ def characterization_7_8(value, system):
     # http://redmine.encodedcc.org/issues/1384
     if 'notes' in value:
         if value['notes']:
-            value['notes'].strip()
+            value['notes'] = value['notes'].strip()
         else:
             del value['notes']
     if 'caption' in value:
         if value['caption']:
-            value['caption'].strip()
+            value['caption'] = value['caption'].strip()
         else:
             del value['caption']
     if 'comment' in value:
         if value['comment']:
-            value['comment'].strip()
+            value['comment'] = value['comment'].strip()
         else:
             del value['comment']
     if 'submitter_comment' in value:
         if value['submitter_comment']:
-            value['submitter_comment'].strip()
+            value['submitter_comment'] = value['submitter_comment'].strip()
         else:
             del value['submitter_comment']

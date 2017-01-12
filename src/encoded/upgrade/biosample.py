@@ -226,12 +226,12 @@ def biosample_12_13(value, system):
 def biosample_13_14(value, system):
     # http://redmine.encodedcc.org/issues/1384
     if 'notes' in value:
-        value['notes'].strip()
+        value['notes'] = value['notes'].strip()
     if 'description' in value:
-        value['description'].strip()
+        value['description'] = value['description'].strip()
     if 'submitter_comment' in value:
-        value['submitter_comment'].strip()
-
-
-
-
+        value['submitter_comment'] = value['submitter_comment'].strip()
+    if 'product_id' in value:
+        value['product_id'] = value['product_id'].strip()
+    if 'lot_id' in value:
+        value['product_id'] = value['lot_id'].strip()
