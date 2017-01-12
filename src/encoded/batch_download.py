@@ -15,7 +15,7 @@ from .search import list_visible_columns_for_schemas
 import csv
 import io
 import json
-
+import pprint
 
 
 def includeme(config):
@@ -38,7 +38,8 @@ _tsv_mapping = OrderedDict([
     ('Biosample type', ['biosample_type']),
     ('Biosample life stage', ['replicates.library.biosample.life_stage']),
     ('Biosample sex', ['replicates.library.biosample.sex']),
-    ('Biosample age', ['replicates.library.biosample.age']),
+    ('Biosample age', ['replicates.library.biosample.age',
+                       'replicates.library.biosample.age_units']),
     ('Biosample organism', ['replicates.library.biosample.organism.scientific_name']),
     ('Biosample treatments', ['replicates.library.biosample.treatments.treatment_term_name']),
     ('Biosample subcellular fraction term name', ['replicates.library.biosample.subcellular_fraction_term_name']),
@@ -261,8 +262,14 @@ def metadata_tsv(context, request):
                         continue
                     path = prop[6:]
                     temp = []
-                    for value in simple_path_ids(f, path):
-                        temp.append(str(value))
+                    try:
+                        for value in simple_path_ids(f, path):
+                            temp.append(str(value))
+                    except:
+                        print ("=====START======")
+                        pprint.pprint(f)
+                        print ("=====FINISH======")
+
                     if prop == 'files.replicate.rbns_protein_concentration':
                         if 'replicate' in f and 'rbns_protein_concentration_units' in f['replicate']:
                             temp[0] = temp[0] + ' ' + f['replicate']['rbns_protein_concentration_units']
