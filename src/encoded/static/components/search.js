@@ -4,7 +4,7 @@ var queryString = require('query-string');
 var button = require('../libs/bootstrap/button');
 var {Modal, ModalHeader, ModalBody, ModalFooter} = require('../libs/bootstrap/modal');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
-var SvgIcon = require('../libs/svg-icons').SvgIcon;
+var svgIcon = require('../libs/svg-icons').svgIcon;
 var url = require('url');
 var _ = require('underscore');
 var globals = require('./globals');
@@ -974,10 +974,10 @@ var ResultTable = search.ResultTable = React.createClass({
                                 <h4>Showing {results.length} of {total} {label}</h4>
 
                                 <div className="results-table-control">
-                                    {(context.views && this.props.mode !== 'picker') ?
+                                    {context.views ?
                                         <div className="btn-attached">
                                             {context.views.map((view, i) =>
-                                                <a key={i} className="btn btn-info btn-sm btn-svgicon" href={view.href} title={view.title}>{SvgIcon(view2svg[view.icon])}</a>
+                                                <a key={i} className="btn btn-info btn-sm btn-svgicon" href={view.href} title={view.title}>{svgIcon(view2svg[view.icon])}</a>
                                             )}
                                         </div>
                                     : null}

@@ -11,7 +11,7 @@ var icons = {
 };
 
 
-var SvgIcon = module.exports.SvgIcon = function(icon) {
+var svgIcon = module.exports.svgIcon = function(icon) {
     return icons[icon];
 };
 
