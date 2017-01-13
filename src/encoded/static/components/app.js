@@ -1,4 +1,6 @@
 'use strict';
+import DataColors from './datacolors';
+
 var React = require('react');
 var jsonScriptEscape = require('../libs/jsonScriptEscape');
 var globals = require('./globals');
@@ -7,7 +9,6 @@ var Navigation = require('./navigation');
 var Footer = require('./footer');
 var url = require('url');
 var {Home} = require('./home');
-var DataColors = require('./datacolors');
 var {NewsHead} = require('./page');
 
 var portal = {
@@ -70,6 +71,50 @@ const biosampleTypeList = [
     'in vitro differentiated cells',
     'induced pluripotent stem cell line'
 ];
+const assayTermNameList = [
+    'ChIP-seq',
+    'DNase-seq',
+    'polyA mRNA RNA-seq',
+    'shRNA RNA-seq',
+    'RNA-seq',
+    'eCLIP',
+    'RNA microarray',
+    'WGBS',
+    'RRBS',
+    'small RNA-seq',
+    'microRNA-seq',
+    'RAMPAGE',
+    'RNA Bind-n-Seq',
+    'genotyping array',
+    'CAGE',
+    'single cell RNA-seq',
+    'DNAme array',
+    'siRNA RNA-seq',
+    'Repli-seq',
+    'microRNA counts',
+    'RIP-seq',
+    'MRE-seq',
+    'Repli-chip',
+    'MeDIP-seq',
+    'ATAC-seq',
+    'ChIA-PET',
+    'FAIRE-seq',
+    'PAS-seq',
+    'RIP-chip',
+    'polyA depleted RNA-seq',
+    'RNA-PET',
+    'genotyping HTS',
+    'CRISPR RNA-seq',
+    'MS-MS',
+    '5C',
+    'Hi-C',
+    'TAB-seq',
+    'iCLIP',
+    'DNA-PET',
+    '5\' RLM RACE',
+    'MNase-seq',
+    'Switchgear',
+];
 
 
 // See https://github.com/facebook/react/issues/2323
@@ -114,14 +159,16 @@ var App = React.createClass({
         portal: React.PropTypes.object,
         hidePublicAudits: React.PropTypes.bool,
         projectColors: React.PropTypes.object,
-        biosampleTypeColors: React.PropTypes.object
+        biosampleTypeColors: React.PropTypes.object,
+        assayTermNameColors: React.PropTypes.object,
     },
 
     // Retrieve current React context
     getChildContext: function() {
         // Make `project` and `biosample_type` color mappings for downstream modules to use.
-        let projectColors = new DataColors(projectList);
-        let biosampleTypeColors = new DataColors(biosampleTypeList);
+        const projectColors = new DataColors(projectList);
+        const biosampleTypeColors = new DataColors(biosampleTypeList);
+        const assayTermNameColors = new DataColors(assayTermNameList);
 
         return {
             dropdownComponent: this.state.dropdownComponent, // ID of component with visible dropdown
@@ -132,7 +179,8 @@ var App = React.createClass({
             portal: portal,
             hidePublicAudits: false, // True if audits should be hidden on the UI while logged out
             projectColors: projectColors,
-            biosampleTypeColors: biosampleTypeColors
+            biosampleTypeColors: biosampleTypeColors,
+            assayTermNameColors: assayTermNameColors,
         };
     },
 

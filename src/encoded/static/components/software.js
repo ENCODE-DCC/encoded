@@ -4,7 +4,7 @@ var globals = require('./globals');
 var navigation = require('./navigation');
 var search = require('./search');
 var fetched = require('./fetched');
-var reference = require('./reference');
+var { pubReferenceList } = require('./reference');
 var StatusLabel = require('./statuslabel').StatusLabel;
 var audit = require('./audit');
 var _ = require('underscore');
@@ -12,7 +12,6 @@ var url = require('url');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var FetchedItems = fetched.FetchedItems;
-var PubReferenceList = reference.PubReferenceList;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
@@ -58,7 +57,7 @@ var Software = module.exports.Software = React.createClass({
         }
 
         // Get a list of reference links, if any
-        var references = PubReferenceList(context.references);
+        var references = pubReferenceList(context.references);
 
         return (
             <div className={itemClass}>
