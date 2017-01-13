@@ -229,3 +229,5 @@ def biosample_13_14(value, system):
         del value['subcellular_fraction_term_id']
     if 'depleted_in_term_id' in value:
         del value['depleted_in_term_id']
+    if 'depleted_in_term_name' in value:
+        value['depleted_in_term_name'] = list(set(value['depleted_in_term_name']))

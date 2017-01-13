@@ -303,6 +303,7 @@
         "depleted_in_term_name": {
             "title": "Depleted in term",
             "type": "array",
+            "uniqueItems": true,
             "description": "UBERON (Uber Anatomy Ontology) term best matching the tissue(s)/body part(s) that were removed from the biosample.",
             "items": {
                 "type": "string",

@@ -7,6 +7,7 @@ Schema version 14
 
 * *depleted_in_term_id* is no longer allowed to be submitted, it will be automatically calculated based on the term_name
 * *subcellular_fraction_term_id* is not longer allowed to be submitted, it will be automatically calculated based on the term_name
+* *depleted_in_term_name* array can now only contain unique elements
 
 Schema version 13
 -----------------
