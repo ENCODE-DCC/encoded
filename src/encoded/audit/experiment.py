@@ -843,10 +843,13 @@ def check_experiment_dnase_seq_standards(experiment,
             return
 
         signal_quality_metrics = get_metrics(signal_files,
-                                             'CorrelationQualityMetrics',
+                                             'CorrelationQualityMetric',
                                              desired_assembly)
         if signal_quality_metrics is not None and \
            len(signal_quality_metrics) > 0:
+            threshold = 0.9
+            if experiment['replication_type'] == 'anisogenic':
+                threshold = 0.85
             for metric in signal_quality_metrics:
                 if 'Pearson correlation' in metric:
                     file_names = []
@@ -854,25 +857,16 @@ def check_experiment_dnase_seq_standards(experiment,
                         file_names.append(f['@id'])
                     file_names_string = str(file_names).replace('\'', ' ')
 
-                    detail = ""
+                    detail = 'Replicate concordance in DNase-seq expriments is measured by ' + \
+                        'calculating the Pearson correlation between signal quantification ' + \
+                        'of the replicates. ' + \
+                        'ENCODE processed signal files {} '.format(file_names_string) + \
+                        'have a Pearson correlation of {0:.2f}. '.format(metric['Pearson correlation']) + \
+                        'According to ENCODE standards, in an {} '.format(experiment['replication_type']) + \
+                        'assay a Pearson correlation value > {} '.format(threshold) + \
+                        'is recommended.'
 
-
-                            'Replicate concordance in DNase-seq expriments is measured by ' + \
-                            'calculating the Pearson correlation between gene level quantification ' + \
-                            'of the replicates. ' + \
-                         'ENCODE processed gene quantification files {} '.format(file_names_string) + \
-                         'have a Spearman correlation of {0:.2f}. '.format(spearman_correlation) + \
-                         'According to ENCODE standards, in an {} '.format(replication_type) + \
-                         'assay analyzed using the {} pipeline, '.format(pipeline) + \
-                         'a Spearman correlation value > {} '.format(threshold) + \
-                         'is recommended.'
-
-                    if experiment['replication_type'] == 'isogenic' and \
-                       metric['Pearson correlation'] < 0.9:
-                        yield AuditFailure('insufficient replicate concordance',
-                                           detail, level='NOT_COMPLIANT')
-                    elif experiment['replication_type'] == 'anisogenic' and \
-                            metric['Pearson correlation'] < 0.85:
+                    if metric['Pearson correlation'] < threshold:
                         yield AuditFailure('insufficient replicate concordance',
                                            detail, level='NOT_COMPLIANT')
 
