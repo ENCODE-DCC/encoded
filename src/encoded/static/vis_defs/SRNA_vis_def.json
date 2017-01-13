@@ -1,0 +1,85 @@
+{
+    "SRNA": {
+        "assay_composite": {
+            "longLabel":  "Collection of ENCODE small-RNA-seq experiments",
+            "shortLabel": "ENCODE small-RNA-seq"
+        },
+        "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
+        "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
+        "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
+        "Views": {
+            "tag": "view",
+            "group_order": [ "Plus signal of unique reads", "Minus signal of unique reads", "Plus signal of all reads", "Minus signal of all reads" ],
+            "groups": {
+                "Minus signal of unique reads": {
+                    "tag": "SIGLR",
+                    "visibility": "full",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "transformFunc": "LOG",
+                    "autoScale": "off",
+                    "negateValues": "on",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "minus strand signal of unique reads" ]
+                },
+                "Plus signal of unique reads": {
+                    "tag": "SIGLF",
+                    "visibility": "full",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "transformFunc": "LOG",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "plus strand signal of unique reads" ]
+                },
+                "Plus signal of all reads": {
+                    "tag": "SIGMF",
+                    "visibility": "hide",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "transformFunc": "LOG",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "plus strand signal of all reads" ]
+                },
+                "Minus signal of all reads": {
+                    "tag": "SIGMR",
+                    "visibility": "hide",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "transformFunc": "LOG",
+                    "autoScale": "off",
+                    "negateValues": "on",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "minus strand signal of all reads" ]
+                }
+            }
+        },
+        "other_groups": {
+            "dimensions": { "Biosample": "dimY", "Replicates": "dimA" },
+            "dimensionAchecked": "first",
+            "groups": {
+                "Replicates": {
+                    "tag": "REP",
+                    "groups": {
+                    "replicate": {
+                        "title_mask": "Replicate_{replicate_number}"
+                        }
+                    }
+                },
+                "Biosample": {
+                    "tag": "BS",
+                    "groups": { "one": { "title_mask": "{biosample_term_name}"} }
+                }
+            }
+        },
+        "file_defs": {
+            "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate}",
+            "shortLabel": "{replicate} {output_type_short_label}"
+        }
+    }
+}

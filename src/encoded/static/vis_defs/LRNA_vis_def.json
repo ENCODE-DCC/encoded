@@ -1,0 +1,125 @@
+{
+    "LRNA": {
+        "assay_composite": {
+            "longLabel":  "Collection of ENCODE long-RNA-seq experiments",
+            "shortLabel": "ENCODE long-RNA-seq"
+        },
+        "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
+        "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
+        "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
+        "Views": {
+            "tag": "view",
+            "group_order": [ "Signal of unique reads", "Signal of all reads",
+                            "Plus signal of unique reads", "Minus signal of unique reads",
+                            "Plus signal of all reads", "Minus signal of all reads", "Raw signal" ],
+            "groups": {
+                "Signal of unique reads": {
+                    "tag": "SIGBL",
+                    "visibility": "full",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "transformFunc": "LOG",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "signal of unique reads" ]
+                },
+                "Signal of all reads": {
+                    "tag": "SIGBM",
+                    "visibility": "hide",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "transformFunc": "LOG",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "signal of all reads" ]
+                },
+                "Minus signal of unique reads": {
+                    "tag": "SIGLR",
+                    "visibility": "full",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "transformFunc": "LOG",
+                    "autoScale": "off",
+                    "negateValues": "on",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "minus strand signal of unique reads" ]
+                },
+                "Plus signal of unique reads": {
+                    "tag": "SIGLF",
+                    "visibility": "full",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "transformFunc": "LOG",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "plus strand signal of unique reads" ]
+                },
+                "Plus signal of all reads": {
+                    "tag": "SIGMF",
+                    "visibility": "hide",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "transformFunc": "LOG",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "plus strand signal of all reads" ]
+                },
+                "Minus signal of all reads": {
+                    "tag": "SIGMR",
+                    "visibility": "hide",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "transformFunc": "LOG",
+                    "autoScale": "off",
+                    "negateValues": "on",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "minus strand signal of all reads" ]
+                },
+                "Raw signal": {
+                    "tag": "SIGRAW",
+                    "visibility": "full",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "transformFunc": "LOG",
+                    "autoScale": "off",
+                    "negateValues": "on",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "raw signal" ]
+                }
+            }
+        },
+        "other_groups": {
+            "dimensions": { "Biosample": "dimY", "Targets": "dimX", "Replicates": "dimA" },
+            "dimensionAchecked": "first",
+            "groups": {
+                "Replicates": {
+                    "tag": "REP",
+                    "groups": {
+                    "replicate": {
+                        "title_mask": "Replicate_{replicate_number}"
+                        }
+                    }
+                },
+                "Biosample": {
+                    "tag": "BS",
+                    "groups": { "one": { "title_mask": "{biosample_term_name}"} }
+                },
+                "Targets": {
+                    "tag": "TARG",
+                    "groups": { "one": { "title_mask": "{target.label}", "url_mask": "targets/{target.name}" } }
+                }
+            }
+        },
+        "file_defs": {
+            "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate}",
+            "shortLabel": "{replicate} {output_type_short_label}"
+        }
+    }
+}
