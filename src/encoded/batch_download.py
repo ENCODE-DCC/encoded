@@ -267,7 +267,7 @@ def metadata_tsv(context, request):
                     if prop == 'files.replicate.rbns_protein_concentration':
                         if 'replicate' in f and 'rbns_protein_concentration_units' in f['replicate']:
                             temp[0] = temp[0] + ' ' + f['replicate']['rbns_protein_concentration_units']
-                    if prop == 'files.paired_with':
+                    if prop in ['files.paired_with', 'files.derived_from']:
                         # chopping of path to just accession
                         if len(temp):
                             new_values = [t[7:-1] for t in temp]
