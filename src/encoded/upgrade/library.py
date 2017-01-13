@@ -109,3 +109,5 @@ def library_5_6(value, system):
         del value['nucleic_acid_term_id']
     if 'depleted_in_term_id' in value:
         del value['depleted_in_term_id']
+    if 'depleted_in_term_name' in value:
+        value['depleted_in_term_name'] = list(set(value['depleted_in_term_name']))
