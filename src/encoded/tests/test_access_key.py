@@ -68,7 +68,7 @@ def test_access_key_principals(anontestapp, execute_counter, access_key, submitt
         'system.Authenticated',
         'system.Everyone',
         'userid.%s' % submitter['uuid'],
-        'viewing_group.ENCODE',
+        'viewing_group.ENCODE3',
     ]
 
 

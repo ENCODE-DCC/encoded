@@ -19,7 +19,6 @@ def audit_reference_epigenome_donor_biosample(value, system):
 
     treatments_set = set()
     biosample_name_set = set()
-    donor_set = set()
     for assay in value['related_datasets']:
         if assay['status'] not in ['deleted', 'replaced', 'revoked']:
             if 'replicates' in assay:
@@ -29,8 +28,6 @@ def audit_reference_epigenome_donor_biosample(value, system):
                         biosample_object = rep['library']['biosample']
                         if 'biosample_term_name' in biosample_object:
                             biosample_name_set.add(biosample_object['biosample_term_name'])
-                        if 'donor' in biosample_object:
-                            donor_set.add(biosample_object['donor']['accession'])
                         if 'treatments' in biosample_object:
                             if len(biosample_object['treatments']) == 0:
                                 treatments_set.add('untreated')
@@ -53,10 +50,6 @@ def audit_reference_epigenome_donor_biosample(value, system):
                  ' has multiple biosample term names {}.'.format(biosample_name_set)
         yield AuditFailure('multiple biosample term names in reference epigenome',
                            detail, level='WARNING')
-    if len(donor_set) > 1:
-        detail = 'Reference Epigenome {} '.format(value['@id']) + \
-                 ' has multiple donors {}.'.format(donor_set)
-        yield AuditFailure('multiple donors in reference epigenome', detail, level='WARNING')
     return
 
 
