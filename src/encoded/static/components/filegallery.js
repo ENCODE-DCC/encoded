@@ -60,8 +60,6 @@ const FileInfoButton = React.createClass({
     },
 
     render: function () {
-        const { file } = this.props;
-
         return (
             <button className="file-table-btn" onClick={this.onClick}>
                 <i className="icon icon-info-circle">
@@ -195,7 +193,7 @@ const DownloadableAccession = React.createClass({
 function humanFileSize(size) {
     if (size >= 0) {
         const i = Math.floor(Math.log(size) / Math.log(1024));
-        const adjustedSize = (size / Math.pow(1024, i)).toPrecision(3) * 1;
+        const adjustedSize = (size / (1024 ** i)).toPrecision(3) * 1;
         const units = ['B', 'kB', 'MB', 'GB', 'TB'][i];
         return `${adjustedSize} ${units}`;
     }
@@ -2270,7 +2268,7 @@ const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
                             <dt>File quality metrics</dt>
                             <dd className="file-qc-buttons">
                                 {selectedFile.quality_metrics.map(qc =>
-                                    <FileQCButton qc={qc} file={selectedFile} handleClick={qcClick} />
+                                    <FileQCButton key={qc.uuid} qc={qc} file={selectedFile} handleClick={qcClick} />
                                 )}
                             </dd>
                         </div>
