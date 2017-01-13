@@ -234,4 +234,4 @@ def biosample_13_14(value, system):
     if 'product_id' in value:
         value['product_id'] = value['product_id'].strip()
     if 'lot_id' in value:
-        value['product_id'] = value['lot_id'].strip()
+        value['lot_id'] = value['lot_id'].strip()
