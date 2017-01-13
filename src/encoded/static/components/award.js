@@ -128,7 +128,6 @@ const LabChart = React.createClass({
 
     contextTypes: {
         navigate: React.PropTypes.func,
-        assayTermNameColors: React.PropTypes.object,
     },
 
     componentDidMount: function () {
@@ -213,11 +212,11 @@ const AssayChart = React.createClass({
     propTypes: {
         award: React.PropTypes.object, // Award being displayed
         assays: React.PropTypes.array, // Array of assay types facet data
+        colors: React.PropTypes.object, // Colors for the assay chart
     },
 
     contextTypes: {
         navigate: React.PropTypes.func,
-        assayTermNameColors: React.PropTypes.object,
     },
 
     componentDidMount: function () {
@@ -240,7 +239,7 @@ const AssayChart = React.createClass({
                 labels.push(item.key);
             }
         });
-        const colors = this.context.assayTermNameColors.colorList(facetData.map(term => term.key), { shade: 10 });
+        const colors = this.props.colors.colorList(facetData.map(term => term.key), { shade: 10 });
 
         // Create the chart.
         createDoughnutChart(chartId, values, labels, colors, `/matrix/?type=Experiment&award.name=${this.props.award.name}&assay_title=`, (uri) => { this.context.navigate(uri); })
@@ -261,7 +260,7 @@ const AssayChart = React.createClass({
                 labels.push(item.key);
             }
         });
-        const colors = this.context.assayTermNameColors.colorList(facetData.map(term => term.key), { shade: 10 });
+        const colors = this.props.colors.colorList(facetData.map(term => term.key), { shade: 10 });
 
         // Update chart data and redraw with the new data
         chart.data.datasets[0].data = values;
@@ -306,7 +305,6 @@ const StatusChart = React.createClass({
 
     contextTypes: {
         navigate: React.PropTypes.func,
-        assayTermNameColors: React.PropTypes.object,
     },
 
     componentDidMount: function () {
@@ -390,16 +388,17 @@ const ChartRenderer = React.createClass({
     propTypes: {
         data: React.PropTypes.object, // Array of experiments under this award
         award: React.PropTypes.object, // Award being displayed
+        colors: React.PropTypes.object, // Color object for assay term names
     },
 
     render: function () {
-        const { data, award } = this.props;
+        const { data, award, colors } = this.props;
         let labs; // Array of labs from facet data
         let assays; // Array of assay types from facet data
         let statuses; // Array of statuses from facet data
 
         // Find the chart data in the returned facets.
-        if (data && data.facets && data.facets.length) {
+        if (data && data.facets && data.facets.length && colors) {
             // Get the array of lab data.
             const labFacet = data.facets.find(facet => facet.field === 'lab.title');
             if (labFacet) {
@@ -423,7 +422,7 @@ const ChartRenderer = React.createClass({
             return (
                 <div className="award-charts">
                     {labs ? <LabChart award={award} labs={labs} /> : null}
-                    {assays ? <AssayChart award={award} assays={assays} /> : null}
+                    {assays ? <AssayChart award={award} assays={assays} colors={colors} /> : null}
                     {statuses ? <StatusChart award={award} statuses={statuses} /> : null}
                 </div>
             );
@@ -447,7 +446,34 @@ const AwardCharts = React.createClass({
                 revoked: false,
                 archived: false,
             },
+            assayTermNameColors: null,
         };
+    },
+
+    // Get the list of available assay_titles by doing a search of experiments and getting the
+    // array of returned assay_titles.
+    componentDidMount: function () {
+        return fetch('/search/?type=Experiment&field=@id', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+            },
+        }).then((response) => {
+            // Convert each response response to JSON
+            if (response.ok) {
+                return response.json();
+            }
+            return Promise.resolve(null);
+        }).then((result) => {
+            // Look for the assay_title facet
+            const assayTitleFacet = result.facets.find(facet => facet.field === 'assay_title');
+            if (assayTitleFacet) {
+                const assayTitleList = assayTitleFacet.terms.map(term => term.key);
+                const assayTitleColors = new DataColors(assayTitleList);
+                this.setState({ assayTermNameColors: assayTitleColors });
+            }
+            return null;
+        });
     },
 
     // Called when a status selection button gets clicked. The clicked status (either to enable or
@@ -470,6 +496,7 @@ const AwardCharts = React.createClass({
                 <PanelBody>
                     <FetchedItems
                         award={award}
+                        colors={this.state.assayTermNameColors}
                         url={`/search/?type=Experiment&award.name=${award.name}`}
                         Component={ChartRenderer}
                         ignoreErrors
