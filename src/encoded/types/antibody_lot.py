@@ -316,7 +316,8 @@ def build_lot_reviews(primary_chars,
                         'biosample_term_id': 'NTR:99999999' if is_histone_mod
                             else lane_review['biosample_term_id'],
                         'organisms': [lane_organism],
-                        'targets': [target_organisms[lane_organism]],
+                        'targets': sorted(review_targets) if is_histone_mod
+                            else [primary['target']],
                         'status': 'not submitted for review by lab' if primary['status'] ==
                             'not submitted for review by lab' else lane_review['lane_status'],
                         'detail': None
