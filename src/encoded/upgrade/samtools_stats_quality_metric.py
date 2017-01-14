@@ -16,3 +16,8 @@ def samtools_stats_quality_metric_2_3(value, system):
     lab = conn.get_by_uuid(lab_uuid)
     value['award'] = '/awards/'+str(award.properties['name'])+'/'
     value['lab'] = '/labs/'+str(lab.properties['name'])+'/'
+
+
+@upgrade_step('samtools_stats_quality_metric', '3', '4')
+def samtools_stats_quality_metric_3_4(value, system):
+    return

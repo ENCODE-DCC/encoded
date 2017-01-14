@@ -28,7 +28,8 @@ def audit_pipeline_assay(value, system):
     if value['status'] == 'deleted':
         return
 
-    # This should be a dependancy
+    # Term name is required and term id is calculated, so we probably don't need this
+    # audit anymore.
     if 'assay_term_id' not in value:
         detail = 'Pipeline {} is missing assay_term_id'.format(value['@id'])
         yield AuditFailure('missing assay information', detail, level='ERROR')

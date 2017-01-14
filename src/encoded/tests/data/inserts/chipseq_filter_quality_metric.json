@@ -6,7 +6,6 @@
         "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
         "uuid": "517e4338-c02c-47a8-8728-4827592fe8db",
         "assay_term_name": "ChIP-seq",
-        "assay_term_id": "OBI:0000716",
         "quality_metric_of": [ "956cba28-ccff-4cbd-b1c8-39db4e3de572" ],
         "NSC": 1.02,
         "RSC": 0.98,

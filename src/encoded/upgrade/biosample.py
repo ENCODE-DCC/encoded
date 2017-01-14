@@ -224,6 +224,7 @@ def biosample_12_13(value, system):
 
 @upgrade_step('biosample', '13', '14')
 def biosample_13_14(value, system):
+
     # http://redmine.encodedcc.org/issues/1384
     if 'notes' in value:
         if value['notes']:
@@ -250,3 +251,11 @@ def biosample_13_14(value, system):
             value['lot_id'] = value['lot_id'].strip()
         else:
             del value['lot_id']
+
+    # http://redmine.encodedcc.org/issues/2491
+    if 'subcellular_fraction_term_id' in value:
+        del value['subcellular_fraction_term_id']
+    if 'depleted_in_term_id' in value:
+        del value['depleted_in_term_id']
+    if 'depleted_in_term_name' in value:
+        value['depleted_in_term_name'] = list(set(value['depleted_in_term_name']))

@@ -251,3 +251,7 @@ def dataset_9_10(value, system):
             value['submitter_comment'] = value['submitter_comment'].strip()
         else:
             del value['submitter_comment']
+
+    # http://redmine.encodedcc.org/issues/2491
+    if 'assay_term_id' in value:
+        del value['assay_term_id']
