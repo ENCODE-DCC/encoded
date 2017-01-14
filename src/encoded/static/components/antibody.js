@@ -484,7 +484,7 @@ var CharacterizationDetail = React.createClass({
 
                     <div data-test="grant">
                         <dt>Grant</dt>
-                        <dd>{doc.award.name}</dd>
+                        <dd><a href={doc.award['@id']}>{doc.award.name}</a></dd>
                     </div>
 
                     <div data-test="download">
