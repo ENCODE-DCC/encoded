@@ -55,6 +55,12 @@ const FileInfoButton = React.createClass({
         clickHandler: React.PropTypes.func, // Function to call when the info button is clicked
     },
 
+    getDefaultProps: function () {
+        return {
+            clickHandler: null,
+        };
+    },
+
     onClick: function () {
         this.props.clickHandler(`file:${this.props.file['@id']}`);
     },
@@ -77,6 +83,13 @@ const RestrictedDownloadButton = React.createClass({
     propTypes: {
         file: React.PropTypes.object, // File containing `href` to use as download link
         adminUser: React.PropTypes.bool, // True if logged in user is admin
+    },
+
+    getDefaultProps: function () {
+        return {
+            file: {},
+            adminUser: false,
+        };
     },
 
     getInitialState: function () {
@@ -175,6 +188,15 @@ const DownloadableAccession = React.createClass({
         adminUser: React.PropTypes.bool, // True if current user is logged in and admin
     },
 
+    getDefaultProps: function () {
+        return {
+            buttonEnabled: false,
+            clickHandler: null,
+            loggedIn: false,
+            adminUser: false,
+        };
+    },
+
     render: function () {
         const { file, buttonEnabled, clickHandler, loggedIn, adminUser } = this.props;
         return (
@@ -193,7 +215,7 @@ const DownloadableAccession = React.createClass({
 function humanFileSize(size) {
     if (size >= 0) {
         const i = Math.floor(Math.log(size) / Math.log(1024));
-        const adjustedSize = (size / (1024 ** i)).toPrecision(3) * 1;
+        const adjustedSize = (size / Math.pow(1024, i)).toPrecision(3) * 1;
         const units = ['B', 'kB', 'MB', 'GB', 'TB'][i];
         return `${adjustedSize} ${units}`;
     }
@@ -725,7 +747,7 @@ const RawSequencingTable = React.createClass({
                                     const buttonEnabled = !!meta.graphedFiles[file['@id']];
 
                                     return (
-                                        <tr key={i} className={file.restricted ? 'file-restricted' : ''}>
+                                        <tr key={file.uuid} className={file.restricted ? 'file-restricted' : ''}>
                                             {i === 0 ? { spanned } : null}
                                             <td className={pairClass}>
                                                 <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
@@ -759,7 +781,7 @@ const RawSequencingTable = React.createClass({
                                 const buttonEnabled = !!meta.graphedFiles[file['@id']];
 
                                 return (
-                                    <tr key={i} className={rowClasses.join(' ')}>
+                                    <tr key={file.uuid} className={rowClasses.join(' ')}>
                                         <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : ''}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
                                         <td>
@@ -898,7 +920,7 @@ const RawFileTable = React.createClass({
 
                                     // Prepare for run_type display
                                     return (
-                                        <tr key={i} className={file.restricted ? 'file-restricted' : ''}>
+                                        <tr key={pairedKey} className={file.restricted ? 'file-restricted' : ''}>
                                             {i === 0 ? { spanned } : null}
                                             <td className={pairClass}>
                                                 <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
@@ -926,7 +948,7 @@ const RawFileTable = React.createClass({
                                 const buttonEnabled = !!meta.graphedFiles[file['@id']];
 
                                 return (
-                                    <tr key={i} className={rowClasses.join(' ')}>
+                                    <tr key={file.uuid} className={rowClasses.join(' ')}>
                                         <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : ''}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
                                         <td>
@@ -1638,7 +1660,7 @@ const FileGalleryRenderer = React.createClass({
                                         {Object.keys(context.visualize_ucsc).map(assembly =>
                                             <a key={assembly} data-bypass="true" target="_blank" rel="noopener noreferrer" href={context.visualize_ucsc[assembly]}>
                                                 {assembly}
-                                            </a>
+                                            </a>,
                                         )}
                                     </DropdownMenu>
                                 </DropdownButton>
@@ -1743,7 +1765,7 @@ const FilterMenu = React.createClass({
                 <option value="default" key="title">All Assemblies and Annotations</option>
                 <option disabled="disabled" />
                 {filterOptions.map((option, i) =>
-                    <option key={i} value={i}>{`${option.assembly + (option.annotation ? ` ${option.annotation}` : '')}`}</option>
+                    <option key={`${option.assembly}${option.annotation}`} value={i}>{`${option.assembly + (option.annotation ? ` ${option.annotation}` : '')}`}</option>,
                 )}
             </select>
         );
@@ -1845,7 +1867,7 @@ function qcDetailsView(metrics) {
                                         <dt>{key}</dt>
                                         <dd>{metrics.ref[key]}</dd>
                                     </div>
-                                : null)
+                                : null),
                             )}
                         </dl>
                     </div>
@@ -2268,7 +2290,7 @@ const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
                             <dt>File quality metrics</dt>
                             <dd className="file-qc-buttons">
                                 {selectedFile.quality_metrics.map(qc =>
-                                    <FileQCButton key={qc.uuid} qc={qc} file={selectedFile} handleClick={qcClick} />
+                                    <FileQCButton key={qc.uuid} qc={qc} file={selectedFile} handleClick={qcClick} />,
                                 )}
                             </dd>
                         </div>
