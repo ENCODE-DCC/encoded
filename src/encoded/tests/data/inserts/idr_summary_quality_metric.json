@@ -4,7 +4,6 @@
         "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
         "uuid": "38b4e407-0901-4e82-800e-957efb3570c8",
         "assay_term_name": "RNA-seq",
-        "assay_term_id": "OBI:0001271",
         "quality_metric_of": [ "46e82a90-49e5-4c33-afab-9ec90d65faf3", "e6addc7e-0320-4e11-8351-69e9b9cc08dc" ],
         "attachment": "generic_from_mad_plot.png",
         "Final parameter values (mu, sigma, rho, and mix)": [ 1.32, 1.02, 0.94, 0.91 ],
