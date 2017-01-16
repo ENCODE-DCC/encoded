@@ -22,7 +22,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "accession": {
             "accessionType": "AB"
@@ -31,7 +31,8 @@
             "title": "Lot ID",
             "description": "The lot identifier provided by the originating lab or vendor.",
             "default": "unknown",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
         "lot_id_alias": {
             "title": "Lot ID aliases",
