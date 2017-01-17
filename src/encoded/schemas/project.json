@@ -45,7 +45,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "10"
         },
         "project_type": {
             "title": "Type",
@@ -81,9 +81,6 @@
         },
         "organ_slims": {
             "title": "Organ"
-        },
-        "files.analysis_step_version.analysis_step.pipelines.title": {
-            "title": "Pipeline"
         },
         "files.file_type": {
             "title": "Available data"

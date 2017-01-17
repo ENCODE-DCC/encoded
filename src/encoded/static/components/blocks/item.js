@@ -1,9 +1,8 @@
 'use strict';
 var React = require('react');
 var fetched = require('../fetched');
+var inputs = require('../inputs');
 var globals = require('../globals');
-var noarg_memoize = require('../../libs/noarg-memoize');
-var ObjectPicker = require('../inputs').ObjectPicker;
 
 
 var ItemBlockView = module.exports.ItemBlockView = React.createClass({
@@ -41,12 +40,19 @@ var FetchedItemBlockView = React.createClass({
 globals.blocks.register({
     label: 'item block',
     icon: 'icon icon-paperclip',
-    schema: noarg_memoize(function() {
-        var ReactForms = require('react-forms');
-        return ReactForms.schema.Mapping({}, {
-            item: ReactForms.schema.Scalar({label: 'Item', input: <ObjectPicker />}),
-            className: ReactForms.schema.Scalar({label: 'CSS Class'}),
-        });
-    }),
+    schema: {
+        type: 'object',
+        properties: {
+            item: {
+                title: 'Item',
+                type: 'string',
+                formInput: <inputs.ObjectPicker />
+            },
+            className: {
+                title: 'CSS Class',
+                type: 'string'
+            }
+        }
+    },
     view: FetchedItemBlockView
 }, 'itemblock');

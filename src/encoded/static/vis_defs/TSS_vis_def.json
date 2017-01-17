@@ -1,0 +1,119 @@
+{
+    "TSS": {
+        "rule": "'{assay_term_name}' in ['RAMPAGE','CAGE']",
+        "assay_composite": {
+            "longLabel":  "Collection of ENCODE RAMPAGE/CAGE experiments",
+            "shortLabel": "ENCODE RAMPAGE/CAGE"
+        },
+        "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
+        "shortLabel": "{assay_title} of {biosample_term_name} - {accession}",
+        "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
+        "Views":  {
+            "tag": "view",
+            "group_order": [ "Replicated TSSs", "TSSs",
+                             "Signal of unique reads", "Signal of all reads",
+                             "Plus signal of unique reads", "Minus signal of unique reads",
+                             "Plus signal of all reads", "Minus signal of all reads" ],
+            "groups": {
+              "Replicated TSSs": {
+                    "tag": "ARTSS",
+                    "visibility": "dense",
+                    "spectrum": "on",
+                    "type": "bigBed",
+                    "file_format_type": ["idr_peak"]
+               },
+              "TSSs": {
+                    "tag": "AZTSS",
+                    "visibility": "hide",
+                    "spectrum": "on",
+                    "type": "bigBed",
+                    "file_format_type": ["tss_peak"]
+                },
+                "Signal of unique reads": {
+                    "tag": "SIGBL",
+                    "visibility": "hide",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "autoScale": "off",
+                    "maxHeightPixels": "32:16:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "signal of unique reads" ]
+                },
+                "Signal of all reads": {
+                    "tag": "SIGBM",
+                    "visibility": "hide",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "autoScale": "off",
+                    "maxHeightPixels": "32:16:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "signal of all reads" ]
+                },
+                "Plus signal of unique reads": {
+                    "tag": "SIGLF",
+                    "visibility": "hide",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "autoScale": "off",
+                    "maxHeightPixels": "32:16:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "plus strand signal of unique reads" ]
+                },
+                "Minus signal of unique reads": {
+                    "tag": "SIGLR",
+                    "visibility": "hide",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "autoScale": "off",
+                    "negateValues": "on",
+                    "maxHeightPixels": "32:16:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "minus strand signal of unique reads" ]
+                },
+                "Plus signal of all reads": {
+                    "tag": "SIGMF",
+                    "visibility": "hide",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "autoScale": "off",
+                    "maxHeightPixels": "32:16:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "plus strand signal of all reads" ]
+                },
+                "Minus signal of all reads": {
+                    "tag": "SIGMR",
+                    "visibility": "hide",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "autoScale": "off",
+                    "negateValues": "on",
+                    "maxHeightPixels": "32:16:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "minus strand signal of all reads" ]
+                }
+            }
+        },
+        "other_groups":  {
+            "dimensions": { "Biosample": "dimY", "Replicates": "dimA" },
+            "groups": {
+                "Replicates": {
+                    "tag": "REP",
+                    "groups": {
+                        "replicate": {
+                            "title_mask": "Replicate_{replicate_number}",
+                            "combined_title": "Pooled"
+                        }
+                    }
+                },
+                "Biosample": {
+                    "tag": "BS",
+                    "groups": { "one": { "title_mask": "{biosample_term_name}"} }
+                }
+            }
+        },
+        "file_defs": {
+            "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate}",
+            "shortLabel": "{replicate} {output_type_short_label}"
+        }
+    }
+}

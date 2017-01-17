@@ -21,7 +21,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "8"
         },
         "characterizes": {
             "title": "Construct characterized",

@@ -9,6 +9,8 @@ from .base import (
     Item,
 )
 
+from .shared_calculated_properties import CalculatedAssayTermID
+
 
 @abstract_collection(
     name='quality-metrics',
@@ -16,7 +18,7 @@ from .base import (
         'title': "Quality metrics",
         'description': 'Listing of all types of quality metric.',
     })
-class QualityMetric(ItemWithAttachment, Item):
+class QualityMetric(ItemWithAttachment, CalculatedAssayTermID, Item):
     base_types = ['QualityMetric'] + Item.base_types
 
 
@@ -26,7 +28,7 @@ class QualityMetric(ItemWithAttachment, Item):
         'title': "STAR mapping Quality Metrics",
         'description': 'A set of QC metrics from STAR RNA-seq mapping',
     })
-class StarQualityMetric(QualityMetric):
+class StarQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'star_quality_metric'
     schema = load_schema('encoded:schemas/star_quality_metric.json')
 
@@ -37,7 +39,7 @@ class StarQualityMetric(QualityMetric):
         'title': "FastQC mapping quality metrics",
         'description': 'A set of QC metrics from FastQC',
     })
-class FastqcQualityMetric(QualityMetric):
+class FastqcQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'fastqc_quality_metric'
     schema = load_schema('encoded:schemas/fastqc_quality_metric.json')
 
@@ -48,7 +50,7 @@ class FastqcQualityMetric(QualityMetric):
         'title': "Bismark (WGBS) mapping quality metrics",
         'description': 'A set of QC metrics from Bismark mapping for WGBS',
     })
-class BismarkQualityMetric(QualityMetric):
+class BismarkQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'bismark_quality_metric'
     schema = load_schema('encoded:schemas/bismark_quality_metric.json')
 
@@ -59,7 +61,7 @@ class BismarkQualityMetric(QualityMetric):
         'title': "WGBS replicate correlation CpG quality metrics",
         'description': 'A set of QC metrics from WGBS replicate CpG correlations',
     })
-class CpgCorrelationQualityMetric(QualityMetric):
+class CpgCorrelationQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'cpg_correlation_quality_metric'
     schema = load_schema('encoded:schemas/cpg_correlation_quality_metric.json')
 
@@ -70,7 +72,7 @@ class CpgCorrelationQualityMetric(QualityMetric):
         'title': "Quality metrics for ChIP-seq (ENCODE2)",
         'description': 'A set of QC metrics used for ENCODE2 ChIP-seq experiments',
     })
-class Encode2ChipSeqQualityMetric(QualityMetric):
+class Encode2ChipSeqQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'encode2_chipseq_quality_metric'
     schema = load_schema('encoded:schemas/encode2_chipseq_quality_metric.json')
 
@@ -81,7 +83,7 @@ class Encode2ChipSeqQualityMetric(QualityMetric):
         'title': "Quality metrics for ChIP-seq (filtering step)",
         'description': 'A set of QC metrics used ChIP-seq experiments (filtering step)',
     })
-class ChipSeqFilterQualityMetric(QualityMetric):
+class ChipSeqFilterQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'chipseq_filter_quality_metric'
     schema = load_schema('encoded:schemas/chipseq_filter_quality_metric.json')
 
@@ -92,7 +94,7 @@ class ChipSeqFilterQualityMetric(QualityMetric):
         'title': "Pearson's Correlation of two bigWig Signal Files.",
         'description': "A set of signal replicate QC metrics from 'bigWigCorrelate'",
     })
-class BigwigcorrelateQualityMetric(QualityMetric):
+class BigwigcorrelateQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'bigwigcorrelate_quality_metric'
     schema = load_schema('encoded:schemas/bigwigcorrelate_quality_metric.json')
 
@@ -103,7 +105,7 @@ class BigwigcorrelateQualityMetric(QualityMetric):
         'title': "Correlation of two replicate datasets",
         'description': 'Correlation QC metrics for two replicate sets of items',
     })
-class CorrelationQualityMetric(QualityMetric):
+class CorrelationQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'correlation_quality_metric'
     schema = load_schema('encoded:schemas/correlation_quality_metric.json')
 
@@ -114,7 +116,7 @@ class CorrelationQualityMetric(QualityMetric):
         'title': "Mapping Quality Metrics from 'edwBamStats'",
         'description': "A set of mapping QC metrics from 'edwBamStats'",
     })
-class EdwbamstatsQualityMetric(QualityMetric):
+class EdwbamstatsQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'edwbamstats_quality_metric'
     schema = load_schema('encoded:schemas/edwbamstats_quality_metric.json')
 
@@ -125,7 +127,7 @@ class EdwbamstatsQualityMetric(QualityMetric):
         'title': "Comparison of two sets of Called Peaks from 'edwComparePeaks'",
         'description': "A set of peak replicate QC metrics from 'edwComparePeaks'",
     })
-class EdwcomparepeaksQualityMetric(QualityMetric):
+class EdwcomparepeaksQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'edwcomparepeaks_quality_metric'
     schema = load_schema('encoded:schemas/edwcomparepeaks_quality_metric.json')
 
@@ -136,7 +138,7 @@ class EdwcomparepeaksQualityMetric(QualityMetric):
         'title': "Peak Quality Metrics from the 'HotSpot' package",
         'description': "A set of peak QC metrics from the 'HotSpot' package",
     })
-class HotspotQualityMetric(QualityMetric):
+class HotspotQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'hotspot_quality_metric'
     schema = load_schema('encoded:schemas/hotspot_quality_metric.json')
 
@@ -147,7 +149,7 @@ class HotspotQualityMetric(QualityMetric):
         'title': "Irreproducible Discovery Rate (IDR) Summary Quality Metrics",
         'description': "A set of Peak Replicate QC metrics from 'idr'",
     })
-class IdrSummaryQualityMetric(QualityMetric):
+class IdrSummaryQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'idr_summary_quality_metric'
     schema = load_schema('encoded:schemas/idr_summary_quality_metric.json')
 
@@ -159,7 +161,7 @@ class IdrSummaryQualityMetric(QualityMetric):
         'description': 'A set of QC metrics comparing two quantificiations '
                        'from replicates',
     })
-class MadQualityMetric(QualityMetric):
+class MadQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'mad_quality_metric'
     schema = load_schema('encoded:schemas/mad_quality_metric.json')
 
@@ -170,7 +172,7 @@ class MadQualityMetric(QualityMetric):
         'title': "Quality Metrics for library complexity and cross-correlation of Mapping Sample",
         'description': 'A set of sampled mapping QC metrics',
     })
-class ComplexityXcorrQualityMetric(QualityMetric):
+class ComplexityXcorrQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'complexity_xcorr_quality_metric'
     schema = load_schema('encoded:schemas/complexity_xcorr_quality_metric.json')
 
@@ -181,7 +183,7 @@ class ComplexityXcorrQualityMetric(QualityMetric):
         'title': "Quality Metrics for duplicates as counted by Picard (non-UMI) or stampipes (UMI).",
         'description': "A set of duplicate read QC metrics as detected by 'picard mark_duplicates' or 'stampipes mark_umi_dups'",
     })
-class DuplicatesQualityMetric(QualityMetric):
+class DuplicatesQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'duplicates_quality_metric'
     schema = load_schema('encoded:schemas/duplicates_quality_metric.json')
 
@@ -192,7 +194,7 @@ class DuplicatesQualityMetric(QualityMetric):
         'title': "Read Filtering Quality Metrics",
         'description': 'QC metrics documenting bam file read filtering',
     })
-class FilteringQualityMetric(QualityMetric):
+class FilteringQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'filtering_quality_metric'
     schema = load_schema('encoded:schemas/filtering_quality_metric.json')
 
@@ -203,7 +205,7 @@ class FilteringQualityMetric(QualityMetric):
         'title': "Read Trimming Quality Metrics",
         'description': 'QC metrics for documenting fastq file read trimming',
     })
-class TrimmingQualityMetric(QualityMetric):
+class TrimmingQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'trimming_quality_metric'
     schema = load_schema('encoded:schemas/trimming_quality_metric.json')
 
@@ -214,7 +216,7 @@ class TrimmingQualityMetric(QualityMetric):
         'title': "Mapping Quality Metrics from 'samtools --flagstats'",
         'description': "A set of mapping QC metrics from 'samtools --flagstats'",
     })
-class SamtoolsFlagstatsQualityMetric(QualityMetric):
+class SamtoolsFlagstatsQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'samtools_flagstats_quality_metric'
     schema = load_schema('encoded:schemas/samtools_flagstats_quality_metric.json')
 
@@ -225,7 +227,7 @@ class SamtoolsFlagstatsQualityMetric(QualityMetric):
         'title': "Mapping Quality Metrics from the Summary of 'samtools --stats'",
         'description': "A set of mapping QC metrics from 'samtools --stats'",
     })
-class SamtoolsStatsQualityMetric(QualityMetric):
+class SamtoolsStatsQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'samtools_stats_quality_metric'
     schema = load_schema('encoded:schemas/samtools_stats_quality_metric.json')
 
@@ -236,7 +238,7 @@ class SamtoolsStatsQualityMetric(QualityMetric):
         'title': "IDR Metrics",
         'description': "Quality metrics from Irreproducible Discovery Rate (IDR) analysis",
     })
-class IDRQualityMetric(QualityMetric):
+class IDRQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'idr_quality_metric'
     schema = load_schema('encoded:schemas/idr_quality_metric.json')
 
@@ -247,6 +249,6 @@ class IDRQualityMetric(QualityMetric):
         'title': "Generic Quality Metric",
         'description': "Generic quality metric",
     })
-class GenericQualityMetric(QualityMetric):
+class GenericQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'generic_quality_metric'
     schema = load_schema('encoded:schemas/generic_quality_metric.json')

@@ -43,10 +43,9 @@ var preLoaders = [
 var loaders = [
     // add babel to load .js files as ES6 and transpile JSX
     {
-        test: /(\.js)$/,
+        test: /\.js$/,
         include: [
-            path.resolve(__dirname, 'src/encoded/static'),
-            path.resolve(__dirname, 'node_modules/react-forms'),
+            PATHS.static,
             path.resolve(__dirname, 'node_modules/dalliance'),
         ],
         loader: 'babel',
@@ -81,7 +80,6 @@ module.exports = [
             chunkFilename: chunkFilename,
         },
         module: {
-            preLoaders: preLoaders,
             loaders: loaders,
         },
         devtool: 'source-map',
@@ -136,7 +134,6 @@ module.exports = [
             chunkFilename: chunkFilename,
         },
         module: {
-            preLoaders: preLoaders,
             loaders: loaders,
         },
         devtool: 'source-map',

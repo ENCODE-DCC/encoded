@@ -26,7 +26,8 @@
             "title": "Binomial name",
             "description": "The genus species for the organism (e.g. 'Mus musculus').",
             "type": "string",
-            "default": ""
+            "default": "",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
         "taxon_id": {
             "title": "Taxon ID",

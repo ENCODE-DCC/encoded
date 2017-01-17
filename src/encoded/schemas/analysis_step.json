@@ -64,7 +64,9 @@
                      "transcriptome assembly",
                      "variant annotation",
                      "read trimming",
-                     "interaction calling"
+                     "interaction calling",
+                     "topologically associated domain identification",
+                     "chromatin loop identification"
                  ]
              }
         },
@@ -112,6 +114,7 @@
                     "replication timing profile",
                     "hotspots",
                     "long range chromatin interactions",
+                    "chromatin interactions",
                     "peaks",
                     "RNA-binding protein associated mRNAs",           
                     "splice junctions",
@@ -190,6 +193,8 @@
                     "replication timing profile",
                     "hotspots",
                     "long range chromatin interactions",
+                    "chromatin interactions",
+                    "topologically associated domains",
                     "open chromatin regions",
                     "peaks",
                     "RNA-binding protein associated mRNAs",           

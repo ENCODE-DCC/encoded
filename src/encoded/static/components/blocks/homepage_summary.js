@@ -4,7 +4,7 @@ var fetched = require('../fetched');
 var globals = require('../globals');
 var search = require('../search');
 var url = require('url');
-var { svgIcon } = require('../../libs/svg-icons');
+var svgIcon = require('../../libs/svg-icons').svgIcon;
 
 var Facet = search.Facet;
 
@@ -86,5 +86,6 @@ var HomepageSummaryLoader = React.createClass({
 globals.blocks.register({
     label: 'homepage summary',
     icon: 'icon icon-house',
-    view: HomepageSummaryLoader
+    view: HomepageSummaryLoader,
+    edit: null
 }, 'homepage-summary-block');

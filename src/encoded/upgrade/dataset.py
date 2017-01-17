@@ -219,3 +219,39 @@ def dataset_8_9(value, system):
             value['annotation_type'] = 'enhancer-like regions'
         elif value['annotation_type'] == 'candidate promoters':
             value['annotation_type'] = 'promoter-like regions'
+
+
+@upgrade_step('experiment', '9', '10')
+@upgrade_step('annotation', '9', '10')
+@upgrade_step('reference', '9', '10')
+@upgrade_step('project', '9', '10')
+@upgrade_step('publication_data', '9', '10')
+@upgrade_step('ucsc_browser_composite', '9', '10')
+@upgrade_step('organism_development_series', '9', '10')
+@upgrade_step('reference_epigenome', '9', '10')
+@upgrade_step('replication_timing_series', '9', '10')
+@upgrade_step('treatment_time_series', '9', '10')
+@upgrade_step('treatment_concentration_series', '9', '10')
+def dataset_9_10(value, system):
+    # http://redmine.encodedcc.org/issues/1384
+    if 'description' in value:
+        if value['description']:
+            value['description'] = value['description'].strip()
+        else:
+            del value['description']
+
+    if 'notes' in value:
+        if value['notes']:
+            value['notes'] = value['notes'].strip()
+        else:
+            del value['notes']
+
+    if 'submitter_comment' in value:
+        if value['submitter_comment']:
+            value['submitter_comment'] = value['submitter_comment'].strip()
+        else:
+            del value['submitter_comment']
+
+    # http://redmine.encodedcc.org/issues/2491
+    if 'assay_term_id' in value:
+        del value['assay_term_id']

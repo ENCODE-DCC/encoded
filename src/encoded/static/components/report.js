@@ -1,6 +1,6 @@
 'use strict';
 var React = require('react');
-var { svgIcon } = require('../libs/svg-icons');
+var svgIcon = require('../libs/svg-icons').svgIcon;
 var fetched = require('./fetched');
 var search = require('./search');
 var url = require('url');
@@ -24,11 +24,12 @@ var columnChoices = function(schema, selected) {
     // are found in the schema's properties
     // (note, this has to match the defaults sent from the server)
     var schemaColumns = schema.columns;
+    const defaultColumns = { title: 'Title', description: 'Description', name: 'Name', accession: 'Accession', aliases: 'Aliases' };
     if (schemaColumns === undefined) {
         schemaColumns = {};
-        _.each(['title', 'description', 'name', 'accession', 'aliases'], name => {
+        Object.keys(defaultColumns).forEach((name) => {
             if (schema.properties[name] !== undefined) {
-                schemaColumns[name] = 1;
+                schemaColumns[name] = { title: defaultColumns[name], type: 'string' };
             }
         });
     }
@@ -36,7 +37,7 @@ var columnChoices = function(schema, selected) {
     _.each(schemaColumns, (column, path) => {
         columns[path] = {
             title: column.title,
-            visible: !selected
+            visible: !selected,
         };
     });
 
