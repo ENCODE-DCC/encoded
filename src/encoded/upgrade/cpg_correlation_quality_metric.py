@@ -24,3 +24,8 @@ def cpg_correlation_quality_metric_2_3(value, system):
     if 'Pearson Correlation Coefficient' in value:
         value['Pearson correlation'] = value['Pearson Correlation Coefficient']
         value.pop('Pearson Correlation Coefficient')
+
+
+@upgrade_step('cpg_correlation_quality_metric', '3', '4')
+def cpg_correlation_quality_metric_3_4(value, system):
+    return

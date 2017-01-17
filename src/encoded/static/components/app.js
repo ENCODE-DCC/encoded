@@ -1,4 +1,6 @@
 'use strict';
+import DataColors from './datacolors';
+
 var React = require('react');
 var jsonScriptEscape = require('../libs/jsonScriptEscape');
 var globals = require('./globals');
@@ -7,7 +9,6 @@ var Navigation = require('./navigation');
 var Footer = require('./footer');
 var url = require('url');
 var {Home} = require('./home');
-var DataColors = require('./datacolors');
 var {NewsHead} = require('./page');
 
 var portal = {
@@ -100,6 +101,7 @@ var App = React.createClass({
     getInitialState: function() {
         return {
             errors: [],
+            assayTermNameColors: null,
             dropdownComponent: undefined
         };
     },
@@ -114,14 +116,14 @@ var App = React.createClass({
         portal: React.PropTypes.object,
         hidePublicAudits: React.PropTypes.bool,
         projectColors: React.PropTypes.object,
-        biosampleTypeColors: React.PropTypes.object
+        biosampleTypeColors: React.PropTypes.object,
     },
 
     // Retrieve current React context
     getChildContext: function() {
         // Make `project` and `biosample_type` color mappings for downstream modules to use.
-        let projectColors = new DataColors(projectList);
-        let biosampleTypeColors = new DataColors(biosampleTypeList);
+        const projectColors = new DataColors(projectList);
+        const biosampleTypeColors = new DataColors(biosampleTypeList);
 
         return {
             dropdownComponent: this.state.dropdownComponent, // ID of component with visible dropdown
@@ -132,7 +134,7 @@ var App = React.createClass({
             portal: portal,
             hidePublicAudits: false, // True if audits should be hidden on the UI while logged out
             projectColors: projectColors,
-            biosampleTypeColors: biosampleTypeColors
+            biosampleTypeColors: biosampleTypeColors,
         };
     },
 

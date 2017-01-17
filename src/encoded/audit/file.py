@@ -155,8 +155,8 @@ def audit_file_assembly(value, system):
         return
     else:  # not row data file
         # special treatment of RNA-Bind-n-Seq
-        if 'assay_term_id' in value['dataset'] and \
-           value['dataset']['assay_term_id'] == 'OBI:0002044':
+        if 'assay_term_name' in value['dataset'] and \
+           value['dataset']['assay_term_name'] == 'RNA Bind-n-Seq':
             if 'assembly' in value:
                 detail = 'RNA Bind-n-Seq file {} '.format(value['@id']) + \
                          'has improperly specified assembly value.'
@@ -564,7 +564,7 @@ def audit_modERN_ChIP_pipeline_steps(value, system):
     if 'Experiment' not in expt['@type']:
         return
 
-    if expt['assay_term_id'] != 'OBI:0000716':
+    if expt['assay_term_name'] != 'ChIP-seq':
         return
 
     if value['status'] in ['archived', 'revoked', 'deleted', 'replaced']:

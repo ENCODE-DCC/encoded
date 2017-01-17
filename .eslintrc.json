@@ -10,6 +10,7 @@
             4
         ],
         "max-len": 0,
+        "no-bitwise": 0,
         "no-console": 0,
         "no-nested-ternary": 0,
         "no-param-reassign": [
@@ -18,6 +19,7 @@
                 "props": false
             }
         ],
+        "no-underscore-dangle": 0,
         "object-shorthand": 0,
         "import/no-named-as-default-member": 0,
         "react/forbid-prop-types": 0,
