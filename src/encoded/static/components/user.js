@@ -195,14 +195,23 @@ var User = module.exports.User = React.createClass({
 globals.content_views.register(User, 'User');
 
 
+var ImpersonateUserSchema = {
+    type: 'object',
+    properties: {
+        userid: {
+            title: 'User',
+            description: 'Enter the email of the user you want to impersonate.'
+        }
+    }
+};
+
+
 var ImpersonateUserForm = React.createClass({
     contextTypes: {
         navigate: React.PropTypes.func
     },
 
     render: function() {
-        var ReactForms = require('react-forms');
-        var ImpersonateUserSchema = require('./ImpersonateUserSchema');
         return (
             <div>
                 <h2>Impersonate User</h2>

@@ -16,3 +16,8 @@ def mad_quality_metric_1_2(value, system):
     lab = conn.get_by_uuid(lab_uuid)
     value['award'] = '/awards/'+str(award.properties['name'])+'/'
     value['lab'] = '/labs/'+str(lab.properties['name'])+'/'
+
+
+@upgrade_step('mad_quality_metric', '2', '3')
+def mad_quality_metric_2_3(value, system):
+    return

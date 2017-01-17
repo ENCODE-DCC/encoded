@@ -9,14 +9,14 @@ import { DbxrefList } from './dbxref';
 import { FetchedItems } from './fetched';
 import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
 import { StatusLabel } from './statuslabel';
-import { PubReferenceList } from './reference';
+import { pubReferenceList } from './reference';
 import { donorDiversity } from './objectutils';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
 import { DocumentsPanel } from './doc';
 import { FileGallery, DatasetFiles } from './filegallery';
-
+import { AwardRef } from './typeutils';
 
 // Return a summary of the given biosamples, ready to be displayed in a React component.
 export function annotationBiosampleSummary(annotation) {
@@ -63,6 +63,7 @@ const Annotation = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
+        const loggedIn = this.context.session && this.context.session['auth.userid'];
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -93,7 +94,7 @@ const Annotation = React.createClass({
         }
 
         // Get a list of reference links, if any
-        const references = PubReferenceList(context.references);
+        const references = pubReferenceList(context.references);
 
         // Render tags badges
         let tagBadges;
@@ -204,6 +205,8 @@ const Annotation = React.createClass({
                                         </div>
                                     : null}
 
+                                    <AwardRef context={context} loggedIn={loggedIn} />
+
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
@@ -266,6 +269,7 @@ const PublicationData = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
+        const loggedIn = this.context.session && this.context.session['auth.userid'];
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -284,7 +288,7 @@ const PublicationData = React.createClass({
         const altacc = context.alternate_accessions.join(', ');
 
         // Render the publication links
-        const referenceList = PubReferenceList(context.references);
+        const referenceList = pubReferenceList(context.references);
 
         // Render tags badges
         let tagBadges;
@@ -369,6 +373,8 @@ const PublicationData = React.createClass({
                                         </div>
                                     : null}
 
+                                    <AwardRef context={context} loggedIn={loggedIn} />
+
                                     <div data-test="externalresources">
                                         <dt>External resources</dt>
                                         <dd>
@@ -415,11 +421,16 @@ const Reference = React.createClass({
         context: React.PropTypes.object, // Reference object to display
     },
 
+    contextTypes: {
+        session: React.PropTypes.object, // Login session information
+    },
+
     mixins: [AuditMixin],
 
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
+        const loggedIn = this.context.session && this.context.session['auth.userid'];
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -438,7 +449,7 @@ const Reference = React.createClass({
         const altacc = context.alternate_accessions.join(', ');
 
         // Get a list of reference links, if any
-        const references = PubReferenceList(context.references);
+        const references = pubReferenceList(context.references);
 
         // Render tags badges
         let tagBadges;
@@ -516,6 +527,8 @@ const Reference = React.createClass({
                                         </div>
                                     : null}
 
+                                    <AwardRef context={context} loggedIn={loggedIn} />
+
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
@@ -569,11 +582,16 @@ const Project = React.createClass({
         context: React.PropTypes.object, // Project object to display
     },
 
+    contextTypes: {
+        session: React.PropTypes.object, // Login session information
+    },
+
     mixins: [AuditMixin],
 
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
+        const loggedIn = this.context.session && this.context.session['auth.userid'];
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -595,7 +613,7 @@ const Project = React.createClass({
         const altacc = context.alternate_accessions.join(', ');
 
         // Get a list of reference links
-        const references = PubReferenceList(context.references);
+        const references = pubReferenceList(context.references);
 
         // Render tags badges
         let tagBadges;
@@ -694,6 +712,8 @@ const Project = React.createClass({
                                         </div>
                                     : null}
 
+                                    <AwardRef context={context} loggedIn={loggedIn} />
+
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
@@ -747,11 +767,16 @@ const UcscBrowserComposite = React.createClass({
         context: React.PropTypes.object, // UCSC browser composite object to display
     },
 
+    contextTypes: {
+        session: React.PropTypes.object, // Login session information
+    },
+
     mixins: [AuditMixin],
 
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
+        const loggedIn = this.context.session && this.context.session['auth.userid'];
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -773,7 +798,7 @@ const UcscBrowserComposite = React.createClass({
         const altacc = context.alternate_accessions.join(', ');
 
         // Get a list of reference links, if any
-        const references = PubReferenceList(context.references);
+        const references = pubReferenceList(context.references);
 
         // Render tags badges
         let tagBadges;
@@ -857,6 +882,8 @@ const UcscBrowserComposite = React.createClass({
                                             <dd>{context.lab.title}</dd>
                                         </div>
                                     : null}
+
+                                    <AwardRef context={context} loggedIn={loggedIn} />
 
                                     {context.aliases.length ?
                                         <div data-test="aliases">
@@ -1152,6 +1179,7 @@ export const Series = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
+        const loggedIn = this.context.session && this.context.session['auth.userid'];
         let experiments = {};
         const statuses = [{ status: context.status, title: 'Status' }];
         context.files.forEach((file) => {
@@ -1178,7 +1206,7 @@ export const Series = React.createClass({
         const altacc = context.alternate_accessions.join(', ');
 
         // Get a list of reference links, if any
-        const references = PubReferenceList(context.references);
+        const references = pubReferenceList(context.references);
 
         // Make the series title
         const seriesComponent = this.seriesComponents[seriesType];
@@ -1273,6 +1301,8 @@ export const Series = React.createClass({
                                         <dt>Lab</dt>
                                         <dd>{context.lab.title}</dd>
                                     </div>
+
+                                    <AwardRef context={context} loggedIn={loggedIn} />
 
                                     <div data-test="project">
                                         <dt>Project</dt>

@@ -35,3 +35,8 @@ def bismark_quality_metric_3_4(value, system):
     lab = conn.get_by_uuid(lab_uuid)
     value['award'] = '/awards/'+str(award.properties['name'])+'/'
     value['lab'] = '/labs/'+str(lab.properties['name'])+'/'
+
+
+@upgrade_step('bismark_quality_metric', '4', '5')
+def bismark_quality_metric_4_5(value, system):
+    return

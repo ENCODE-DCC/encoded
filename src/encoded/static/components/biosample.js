@@ -11,7 +11,7 @@ const statuslabel = require('./statuslabel');
 const audit = require('./audit');
 const image = require('./image');
 const item = require('./item');
-const reference = require('./reference');
+const { pubReferenceList } = require('./reference');
 const { singleTreatment, treatmentDisplay } = require('./objectutils');
 const doc = require('./doc');
 const {BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable} = require('./typeutils');
@@ -25,7 +25,6 @@ const AuditDetail = audit.AuditDetail;
 const AuditMixin = audit.AuditMixin;
 const {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile} = doc;
 const ExperimentTable = dataset.ExperimentTable;
-const PubReferenceList = reference.PubReferenceList;
 const RelatedItems = item.RelatedItems;
 const ProjectBadge = image.ProjectBadge;
 const {Panel, PanelBody, PanelHeading} = panel;
@@ -86,7 +85,7 @@ var Biosample = module.exports.Biosample = React.createClass({
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
         // Get a list of reference links, if any
-        var references = PubReferenceList(context.references);
+        var references = pubReferenceList(context.references);
 
         // Render tags badges
         var tagBadges;
@@ -511,7 +510,7 @@ var BiosampleTermId = React.createClass({
 var HumanDonor = module.exports.HumanDonor = React.createClass({
     render: function() {
         var {context, biosample, panelTitle} = this.props;
-        var references = PubReferenceList(context.references);
+        var references = pubReferenceList(context.references);
 
         // Render tags badges
         var tagBadges;
@@ -617,7 +616,7 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
         var context = this.props.context;
         var biosample = this.props.biosample;
         var donorUrlDomain;
-        var references = PubReferenceList(context.references);
+        var references = pubReferenceList(context.references);
 
         // Get the domain name of the donor URL
         if (biosample && biosample.donor && biosample.donor.url) {
@@ -714,7 +713,7 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                             {context.references && context.references.length ?
                                 <div data-test="references">
                                     <dt>References</dt>
-                                    <dd>{PubReferenceList(context.references)}</dd>
+                                    <dd>{pubReferenceList(context.references)}</dd>
                                 </div>
                             : null}
 
@@ -1179,7 +1178,7 @@ var CharacterizationDetail = React.createClass({
                     {doc.award && doc.award.name ?
                         <div data-test="award">
                             <dt>Grant</dt>
-                            <dd>{doc.award.name}</dd>
+                            <dd><a href={doc.award['@id']}>{doc.award.name}</a></dd>
                         </div>
                     : null}
                 </dl>
