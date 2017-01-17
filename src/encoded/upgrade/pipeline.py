@@ -42,5 +42,6 @@ def pipeline_3_4(value, system):
 @upgrade_step('pipeline', '4', '5')
 def pipeline_4_5(value, system):
     # http://redmine.encodedcc.org/issues/2491
+    # There shouldn't be any pipelines with just assay_term_ids and not names at the time of this upgrade
     if 'assay_term_id' in value:
         del value['assay_term_id']
