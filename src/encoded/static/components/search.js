@@ -980,6 +980,7 @@ const ResultTable = search.ResultTable = React.createClass({
         assemblies: React.PropTypes.array, // List of assemblies of all 'File' objects in search results
         searchBase: React.PropTypes.string,
         onChange: React.PropTypes.func,
+        mode: React.PropTypes.string,
     },
 
     childContextTypes: { actions: React.PropTypes.array },
@@ -1119,7 +1120,7 @@ const ResultTable = search.ResultTable = React.createClass({
                             <div>
                                 <h4>Showing {results.length} of {total} {label}</h4>
                                 <div className="results-table-control">
-                                    {context.views ?
+                                    {(context.views && this.props.mode !== 'picker') ?
                                         <div className="btn-attached">
                                             {context.views.map((view, i) =>
                                                 <a key={i} className="btn btn-info btn-sm btn-svgicon" href={view.href} title={view.title}>{svgIcon(view2svg[view.icon])}</a>
