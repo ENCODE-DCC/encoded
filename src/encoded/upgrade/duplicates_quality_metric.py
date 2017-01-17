@@ -4,7 +4,7 @@ from snovault import (
 )
 
 
-@upgrade_step('duplicates_correlation_quality_metric', '3', '4')
+@upgrade_step('duplicates_quality_metric', '3', '4')
 def duplicates_quality_metric_3_4(value, system):
     # http://redmine.encodedcc.org/issues/2491
     if 'assay_term_id' in value:
