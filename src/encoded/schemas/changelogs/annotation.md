@@ -2,11 +2,6 @@
 Change log for annotation.json
 =========================
 
-Schema version 10
------------------
-
-* *description*, *notes*, and *submitter_comment* are now not allowed to have any leading or trailing whitespace
-
 Schema version 9
 ----------------
 
