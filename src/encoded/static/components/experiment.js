@@ -20,7 +20,7 @@ var objectutils = require('./objectutils');
 var doc = require('./doc');
 var {FileGallery} = require('./filegallery');
 var {GeneticModificationSummary} = require('./genetic_modification');
-var { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef } = require('./typeutils');
+var { BiosampleSummaryString, biosampleOrganismNames, CollectBiosampleDocs, AwardRef } = require('./typeutils');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
