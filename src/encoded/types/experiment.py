@@ -8,12 +8,14 @@ from .base import (
     ALLOW_SUBMITTER_ADD,
     Item,
     paths_filtered_by_status,
+    SharedItem
 )
 from .dataset import Dataset
 from .shared_calculated_properties import (
     CalculatedBiosampleSlims,
     CalculatedBiosampleSynonyms,
-    CalculatedAssaySynonyms
+    CalculatedAssaySynonyms,
+    CalculatedAssayTermID
 )
 
 # importing biosample function to allow calculation of experiment biosample property
@@ -21,6 +23,8 @@ from .biosample import (
     construct_biosample_summary,
     generate_summary_dictionary
 )
+
+from .assay_data import assay_terms
 
 
 @collection(
@@ -30,17 +34,15 @@ from .biosample import (
         'title': 'Experiments',
         'description': 'Listing of Experiments',
     })
-class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms, CalculatedAssaySynonyms):
+class Experiment(Dataset,
+                 CalculatedBiosampleSlims,
+                 CalculatedBiosampleSynonyms,
+                 CalculatedAssaySynonyms,
+                 CalculatedAssayTermID):
     item_type = 'experiment'
     schema = load_schema('encoded:schemas/experiment.json')
     embedded = Dataset.embedded + [
-        'files.lab',
         'files.platform',
-        'files.lab',
-        'files.derived_from',
-        'files.derived_from.analysis_step_version.software_versions',
-        'files.derived_from.analysis_step_version.software_versions.software',
-        'files.derived_from.replicate',
         'files.analysis_step_version.analysis_step',
         'files.analysis_step_version.analysis_step.documents',
         'files.analysis_step_version.analysis_step.documents.award',
@@ -51,26 +53,9 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         'files.analysis_step_version.analysis_step.pipelines.documents.award',
         'files.analysis_step_version.analysis_step.pipelines.documents.lab',
         'files.analysis_step_version.analysis_step.pipelines.documents.submitted_by',
-        'files.analysis_step_version.analysis_step.versions',
-        'files.analysis_step_version.analysis_step.versions.software_versions',
-        'files.analysis_step_version.analysis_step.versions.software_versions.software',
-        'files.analysis_step_version.software_versions',
-        'files.analysis_step_version.software_versions.software',
-        'files.replicate.library.biosample',
-        'files.quality_metrics',
-        'files.quality_metrics.step_run',
-        'files.quality_metrics.step_run.analysis_step_version.analysis_step',
-        'contributing_files.platform',
-        'contributing_files.lab',
-        'contributing_files.derived_from',
-        'contributing_files.analysis_step_version.analysis_step',
-        'contributing_files.analysis_step_version.analysis_step.pipelines',
-        'contributing_files.analysis_step_version.software_versions',
-        'contributing_files.analysis_step_version.software_versions.software',
         'award.pi.lab',
         'related_series',
         'replicates.antibody',
-        'replicates.antibody.targets',
         'replicates.library',
         'replicates.library.documents.lab',
         'replicates.library.documents.submitted_by',
@@ -108,7 +93,6 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         'replicates.library.biosample.donor.characterizations.lab',
         'replicates.library.biosample.donor.characterizations.submitted_by',
         'replicates.library.biosample.donor.organism',
-        'replicates.library.biosample.donor.mutated_gene',
         'replicates.library.biosample.genetic_modifications',
         'replicates.library.biosample.genetic_modifications.target',
         'replicates.library.biosample.genetic_modifications.modification_techniques',
@@ -149,11 +133,8 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         'replicates.library.biosample.treatments.documents.award',
         'replicates.library.biosample.treatments.documents.lab',
         'replicates.library.biosample.treatments.documents.submitted_by',
-        'replicates.library.spikeins_used',
         'replicates.library.treatments',
         'possible_controls',
-        'possible_controls.target',
-        'possible_controls.lab',
         'target.organism',
         'references',
         'supersedes',
@@ -204,7 +185,6 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
     })
     def replicates(self, request, replicates):
         return paths_filtered_by_status(request, replicates)
-
 
     @calculated_property(schema={
         "title": "Biosample summary",
@@ -392,25 +372,27 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         if len(dictionaries_of_phrases) > 0:
             return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
 
-    @calculated_property(condition='assay_term_id', schema={
+    @calculated_property(condition='assay_term_name', schema={
         "title": "Assay type",
         "type": "array",
         "items": {
             "type": "string",
         },
     })
-    def assay_slims(self, registry, assay_term_id):
+    def assay_slims(self, registry, assay_term_name):
+        assay_term_id = assay_terms.get(assay_term_name, None)
         if assay_term_id in registry['ontology']:
             return registry['ontology'][assay_term_id]['assay']
         return []
 
-    @calculated_property(condition='assay_term_id', schema={
+    @calculated_property(condition='assay_term_name', schema={
         "title": "Assay title",
         "type": "string",
     })
-    def assay_title(self, request, registry, assay_term_id, assay_term_name,
+    def assay_title(self, request, registry, assay_term_name,
                     replicates=None, target=None):
         # This is the preferred name in generate_ontology.py if exists
+        assay_term_id = assay_terms.get(assay_term_name, None)
         if assay_term_id in registry['ontology']:
             preferred_name = registry['ontology'][assay_term_id].get('preferred_name',
                                                                      assay_term_name)
@@ -436,38 +418,41 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
             return preferred_name or assay_term_name
         return assay_term_name
 
-    @calculated_property(condition='assay_term_id', schema={
+    @calculated_property(condition='assay_term_name', schema={
         "title": "Assay category",
         "type": "array",
         "items": {
             "type": "string",
         },
     })
-    def category_slims(self, registry, assay_term_id):
+    def category_slims(self, registry, assay_term_name):
+        assay_term_id = assay_terms.get(assay_term_name, None)
         if assay_term_id in registry['ontology']:
             return registry['ontology'][assay_term_id]['category']
         return []
 
-    @calculated_property(condition='assay_term_id', schema={
+    @calculated_property(condition='assay_term_name', schema={
         "title": "Assay type",
         "type": "array",
         "items": {
             "type": "string",
         },
     })
-    def type_slims(self, registry, assay_term_id):
+    def type_slims(self, registry, assay_term_name):
+        assay_term_id = assay_terms.get(assay_term_name, None)
         if assay_term_id in registry['ontology']:
             return registry['ontology'][assay_term_id]['types']
         return []
 
-    @calculated_property(condition='assay_term_id', schema={
+    @calculated_property(condition='assay_term_name', schema={
         "title": "Assay objective",
         "type": "array",
         "items": {
             "type": "string",
         },
     })
-    def objective_slims(self, registry, assay_term_id):
+    def objective_slims(self, registry, assay_term_name):
+        assay_term_id = assay_terms.get(assay_term_name, None)
         if assay_term_id in registry['ontology']:
             return registry['ontology'][assay_term_id]['objectives']
         return []

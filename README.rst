@@ -120,6 +120,18 @@ The development bundles are not minified, to speed up building. The above comman
 in your terminal window and watches for changes in Javascript and SCSS files, rebuilding the
 bundles as you make changes.
 
+Creating a demo machine
+========================
+
+After buildout you (if you have the correct permissions) can run for a single-node "cluster":
+
+     $ bin/deploy --instance-size c4.8xlarge
+
+To initiate a server in the AWS cloud with the current branch, and with a computed nameserver alias based on the branch and AWS username.  Note that this retrieves a Postgres database from the current backup, so "as is" only applies specifically to the ENCODE Project (forkers beware!).   There are options to use a different branch and/or different name and also AWS spotinstnaces.  
+
+      $ bin/deploy --help 
+      
+For all options, including setting up ES clusters (needed for full production).  After indexing (currently 8+hrs) the machine can be downsized at AWS to an m4.2xlarge, unless you are planning to submit significant data to it.
 
 Linting your code within your code editor
 =========================================

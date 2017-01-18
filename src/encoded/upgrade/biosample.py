@@ -220,3 +220,14 @@ def biosample_12_13(value, system):
     if 'protocol_documents' in value:
         value['documents'] = value['protocol_documents']
         value.pop('protocol_documents')
+
+
+@upgrade_step('biosample', '13', '14')
+def biosample_13_14(value, system):
+    # http://redmine.encodedcc.org/issues/2491
+    if 'subcellular_fraction_term_id' in value:
+        del value['subcellular_fraction_term_id']
+    if 'depleted_in_term_id' in value:
+        del value['depleted_in_term_id']
+    if 'depleted_in_term_name' in value:
+        value['depleted_in_term_name'] = list(set(value['depleted_in_term_name']))

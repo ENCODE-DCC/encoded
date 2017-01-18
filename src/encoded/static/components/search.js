@@ -5,13 +5,14 @@ var queryString = require('query-string');
 var button = require('../libs/bootstrap/button');
 var {Modal, ModalHeader, ModalBody, ModalFooter} = require('../libs/bootstrap/modal');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
-var SvgIcon = require('../libs/svg-icons').SvgIcon;
+var svgIcon = require('../libs/svg-icons').svgIcon;
 var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
 var globals = require('./globals');
 var image = require('./image');
 var search = module.exports;
+var { donorDiversity } = require('./objectutils');
 var dbxref = require('./dbxref');
 var audit = require('./audit');
 var objectutils = require('./objectutils');
@@ -473,6 +474,12 @@ var Dataset = module.exports.Dataset = React.createClass({
         var haveSeries = result['@type'].indexOf('Series') >= 0;
         var haveFileSet = result['@type'].indexOf('FileSet') >= 0;
 
+        // For ReferenceEpigenome, calculate the donor diversity.
+        let diversity = '';
+        if (result['@type'][0] === 'ReferenceEpigenome') {
+            diversity = donorDiversity(result);
+        }
+
         return (
             <li>
                 <div className="clearfix">
@@ -506,6 +513,7 @@ var Dataset = module.exports.Dataset = React.createClass({
                     <div className="data-row">
                         {result['dataset_type'] ? <div><strong>Dataset type: </strong>{result['dataset_type']}</div> : null}
                         {targets && targets.length ? <div><strong>Targets: </strong>{targets.join(', ')}</div> : null}
+                        {diversity ? <div><strong>Donor diversity: </strong>{diversity}</div> : null}
                         <div><strong>Lab: </strong>{result.lab.title}</div>
                         <div><strong>Project: </strong>{result.award.project}</div>
                     </div>
@@ -976,10 +984,10 @@ var ResultTable = search.ResultTable = React.createClass({
                                 <h4>Showing {results.length} of {total} {label}</h4>
 
                                 <div className="results-table-control">
-                                    {context.views ?
+                                    {(context.views && this.props.mode !== 'picker') ?
                                         <div className="btn-attached">
                                             {context.views.map((view, i) =>
-                                                <a key={i} className="btn btn-info btn-sm btn-svgicon" href={view.href} title={view.title}>{SvgIcon(view2svg[view.icon])}</a>
+                                                <a key={i} className="btn btn-info btn-sm btn-svgicon" href={view.href} title={view.title}>{svgIcon(view2svg[view.icon])}</a>
                                             )}
                                         </div>
                                     : null}

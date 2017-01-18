@@ -3,7 +3,7 @@ var React = require('react');
 var _ = require('underscore');
 var url = require('url');
 var panel = require('../libs/bootstrap/panel');
-var {SvgIcon, collapseIcon} = require('../libs/svg-icons');
+var { collapseIcon } = require('../libs/svg-icons');
 var globals = require('./globals');
 var image = require('./image');
 var {StatusLabel} = require('./statuslabel');
@@ -288,7 +288,7 @@ var DocumentDetail = module.exports.DocumentDetail = React.createClass({
                     {doc.award && doc.award.name ?
                         <div data-test="award">
                             <dt>Grant</dt>
-                            <dd>{doc.award.name}</dd>
+                            <dd><a href={doc.award['@id']}>{doc.award.name}</a></dd>
                         </div>
                     : null}
                 </dl>

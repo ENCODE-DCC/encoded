@@ -1,11 +1,10 @@
-'use strict';
+import DataColors from '../datacolors';
 
 jest.autoMockOff();
-
+jest.unmock('../datacolors');
 
 describe('DataColor Module', function() {
     var React, TestUtils, assembleGraph, graphException, context, _, collectNodes;
-    var DataColors = require('../datacolors');
 
     describe('Returns correct colors for keys', function() {
         var testKeys = [

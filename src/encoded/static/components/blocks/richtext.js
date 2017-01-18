@@ -1,7 +1,6 @@
 'use strict';
 var React = require('react');
 var globals = require('../globals');
-var noarg_memoize = require('../../libs/noarg-memoize');
 
 
 var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
@@ -67,13 +66,20 @@ var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
 globals.blocks.register({
     label: 'rich text block',
     icon: 'icon icon-file-text',
-    schema: noarg_memoize(function() {
-        var ReactForms = require('react-forms');
-        return ReactForms.schema.Mapping({}, {
-            body: ReactForms.schema.Scalar({label: 'HTML Source', input: <textarea rows="15" cols="80" />}),
-            className: ReactForms.schema.Scalar({label: 'CSS Class'}),
-        });
-    }),
+    schema: {
+        type: 'object',
+        properties: {
+            body: {
+                title: 'HTML Source',
+                type: 'string',
+                formInput: <textarea rows="10" />
+            },
+            className: {
+                title: 'CSS Class',
+                type: 'string'
+            }
+        }
+    },
     view: RichTextBlockView,
     initial: {
         'body': '<p>This is a new block.</p>'

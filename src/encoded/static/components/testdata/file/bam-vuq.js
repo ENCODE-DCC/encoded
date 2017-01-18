@@ -4,7 +4,7 @@ module.exports = {
     "accession": "ENCFF000VUQ",
     "assembly": "hg19",
     "award": "U54HG004558",
-    "dataset": require('../experiment'),
+    "dataset": require('../experiment')['@id'],
     "file_format": "bam",
     "file_size": 456470369,
     "lab": "michael-snyder",

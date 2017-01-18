@@ -42,7 +42,7 @@ dl.key-value, dl.key-value-doc {
 
     [data-test] {
         clear: both;
-        margin: 6px 0;
+        margin: 8px 0;
     }
 }
 
@@ -50,12 +50,8 @@ dl.key-value, dl.key-value-doc {
     dl.key-value {
         display: block;
 
-        dt, dd {
-            display: table-cell;
-        }
-
         dt {
-            min-width: 140px;
+            flex: 0 0 140px;
             padding: 8px 0;
 
             .modal-body & {
@@ -64,6 +60,7 @@ dl.key-value, dl.key-value-doc {
         }
 
         dd {
+            flex: 1 1 100%;
             padding: 8px 0 8px 10px;
 
             .modal-body & {
@@ -72,8 +69,8 @@ dl.key-value, dl.key-value-doc {
         }
 
         [data-test] {
-            clear: none;
-            display: table-row;
+            display: flex;
+            margin: 0;
         }
     }
 }

@@ -13,7 +13,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "email": {
             "title": "Email",
@@ -73,7 +73,8 @@
             "items": {
                 "type": "string",
                 "enum": [
-                    "ENCODE",
+                    "ENCODE3",
+                    "ENCODE4",
                     "GGR",
                     "REMC"
                 ]
@@ -81,7 +82,8 @@
         },
         "job_title": {
             "title": "Job title",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
         "phone1": {
             "title": "Primary phone number",
@@ -103,11 +105,13 @@
         },
         "skype": {
             "title": "Skype ID",
-            "type": "string"
+            "type": "string",
+            "pattern": "^\\S+$"
         },
         "google": {
             "title": "Google ID",
-            "type": "string"
+            "type": "string",
+            "pattern": "^\\S+$"
         },
         "timezone": {
             "title": "Timezone",

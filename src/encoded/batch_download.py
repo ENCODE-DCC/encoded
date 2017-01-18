@@ -70,6 +70,7 @@ _tsv_mapping = OrderedDict([
     ('Size', ['files.file_size']),
     ('Lab', ['files.lab.title']),
     ('md5sum', ['files.md5sum']),
+    ('dbxrefs', ['files.dbxrefs']),
     ('File download URL', ['files.href']),
     ('Assembly', ['files.assembly']),
     ('Platform', ['files.platform.title']),

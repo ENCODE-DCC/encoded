@@ -4,7 +4,7 @@ var fetched = require('../fetched');
 var globals = require('../globals');
 var search = require('../search');
 var url = require('url');
-var SvgIcon = require('../../libs/svg-icons').SvgIcon;
+var svgIcon = require('../../libs/svg-icons').svgIcon;
 
 var Facet = search.Facet;
 
@@ -38,9 +38,9 @@ var HomepageSummary = React.createClass({
                 <div className="homepage-summary-count">
                     <h2>{data.total} experiment{data.total === 1 ? '' : 's'} found.</h2>
                     <div>
-                        <a className="btn btn-info" href={'/search/' + searchBase}>{SvgIcon('search')} List</a>
-                        {' '}<a className="btn btn-info" href={'/report/' + searchBase}>{SvgIcon('table')} Table</a>
-                        {' '}<a className="btn btn-info" href={'/matrix/' + searchBase}>{SvgIcon('matrix')} Matrix</a>
+                        <a className="btn btn-info" href={'/search/' + searchBase}>{svgIcon('search')} List</a>
+                        {' '}<a className="btn btn-info" href={'/report/' + searchBase}>{svgIcon('table')} Table</a>
+                        {' '}<a className="btn btn-info" href={'/matrix/' + searchBase}>{svgIcon('matrix')} Matrix</a>
                     </div>
                 </div>
                 <div className="homepage-summary-row">
@@ -86,5 +86,6 @@ var HomepageSummaryLoader = React.createClass({
 globals.blocks.register({
     label: 'homepage summary',
     icon: 'icon icon-house',
-    view: HomepageSummaryLoader
+    view: HomepageSummaryLoader,
+    edit: null
 }, 'homepage-summary-block');
