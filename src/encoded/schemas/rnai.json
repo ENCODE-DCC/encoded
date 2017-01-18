@@ -61,7 +61,7 @@
             "title": "Target sequence",
             "description": "Genomic sequence targeted by the RNA.",
             "type": "string",
-            "pattern": "^[ACTG]+$"
+            "pattern": "^[ACTG]+|non-mammalian target$"
         }
     },
     "boost_values": {
