@@ -1,61 +1,60 @@
-'use strict';
-var React = require('react');
-var _ = require('underscore');
-var globals = require('./globals');
-var {SortTablePanel, SortTable} = require('./sorttable');
+import React from 'react';
+import _ from 'underscore';
+import globals from './globals';
+import { SortTablePanel, SortTable } from './sorttable';
 
 
 // BIOSAMPLE UTILITIES
 
 // Construct a biosample summary string from the biosample's organism object.
-module.exports.BiosampleSummaryString = function(biosample, supressOrganism) {
-    var organismName = biosample.organism.scientific_name;
-    var organismlessSummary = biosample.summary.replace(organismName + ' ', '');
+export function BiosampleSummaryString(biosample, supressOrganism) {
+    const organismName = biosample.organism.scientific_name;
+    const organismlessSummary = biosample.summary.replace(`${organismName} `, '');
     if (supressOrganism) {
         return <span>{organismlessSummary}</span>;
     }
     return <span><i>{biosample.organism.scientific_name}</i> {organismlessSummary}</span>;
-};
+}
 
 // Some biosample-specific utilities
 //   Return an array of biosample scientific names from the given array of biosamples.
-module.exports.BiosampleOrganismNames = function(biosamples) {
+export function BiosampleOrganismNames(biosamples) {
     return _.uniq(biosamples.map(biosample => biosample.organism.scientific_name));
-};
+}
 
 
 // Collect up all the documents associated with the given biosample. They get combined all into one array of
 // documents (with @type of Document or Characterization). If the given biosample has no documdents, this
 // function returns null. Protocol documents, characterizations, construct documents, and RNAi documents
 // all get included.
-module.exports.CollectBiosampleDocs = function(biosample) {
+export function CollectBiosampleDocs(biosample) {
     // Collect up the various biosample documents
-    var protocolDocuments = [];
+    let protocolDocuments = [];
     if (biosample.documents && biosample.documents.length) {
         protocolDocuments = globals.uniqueObjectsArray(biosample.documents);
     }
-    var characterizations = [];
+    let characterizations = [];
     if (biosample.characterizations && biosample.characterizations.length) {
         characterizations = globals.uniqueObjectsArray(biosample.characterizations);
     }
-    var constructDocuments = [];
+    let constructDocuments = [];
     if (biosample.constructs && biosample.constructs.length) {
-        biosample.constructs.forEach(construct => {
+        biosample.constructs.forEach((construct) => {
             if (construct.documents && construct.documents.length) {
                 constructDocuments = constructDocuments.concat(construct.documents);
             }
         });
     }
-    var rnaiDocuments = [];
+    let rnaiDocuments = [];
     if (biosample.rnais && biosample.rnais.length) {
-        biosample.rnais.forEach(rnai => {
+        biosample.rnais.forEach((rnai) => {
             if (rnai.documents && rnai.documents.length) {
                 rnaiDocuments = rnaiDocuments.concat(rnai.documents);
             }
         });
     }
-    var donorDocuments = [];
-    var donorCharacterizations = [];
+    let donorDocuments = [];
+    let donorCharacterizations = [];
     if (biosample.donor) {
         if (biosample.donor.characterizations && biosample.donor.characterizations.length) {
             donorCharacterizations = biosample.donor.characterizations;
@@ -64,30 +63,30 @@ module.exports.CollectBiosampleDocs = function(biosample) {
             donorDocuments = biosample.donor.documents;
         }
     }
-    var donorConstructs = [];
+    let donorConstructs = [];
     if (biosample.model_organism_donor_constructs && biosample.model_organism_donor_constructs.length) {
-        biosample.model_organism_donor_constructs.forEach(construct => {
+        biosample.model_organism_donor_constructs.forEach((construct) => {
             if (construct.documents && construct.documents.length) {
                 donorConstructs = donorConstructs.concat(construct.documents);
             }
         });
     }
-    var talenDocuments = [];
+    let talenDocuments = [];
     if (biosample.talens && biosample.talens.length) {
-        biosample.talens.forEach(talen => {
+        biosample.talens.forEach((talen) => {
             talenDocuments = talenDocuments.concat(talen.documents);
         });
     }
-    var treatmentDocuments = [];
+    let treatmentDocuments = [];
     if (biosample.treatments && biosample.treatments.length) {
-        biosample.treatments.forEach(treatment => {
+        biosample.treatments.forEach((treatment) => {
             treatmentDocuments = treatmentDocuments.concat(treatment.protocols);
         });
     }
 
     // Put together the document list for rendering
     // Compile the document list
-    var combinedDocuments = _([].concat(
+    const combinedDocuments = _([].concat(
         protocolDocuments,
         characterizations,
         constructDocuments,
@@ -97,52 +96,69 @@ module.exports.CollectBiosampleDocs = function(biosample) {
         donorConstructs,
         talenDocuments,
         treatmentDocuments
-    )).chain().uniq(doc => doc ? doc.uuid : null).compact().value();
+    )).chain().uniq(doc => (doc ? doc.uuid : null)).compact()
+    .value();
 
     return combinedDocuments;
-};
+}
 
 
 // Display a table of retrieved biosamples related to the displayed biosample
-var BiosampleTable = module.exports.BiosampleTable = React.createClass({
-    columns: {
-        'accession': {
-            title: 'Accession',
-            display: function(biosample) {
-                return <a href={biosample['@id']}>{biosample.accession}</a>;
-            }
-        },
-        'biosample_type': {title: 'Type'},
-        'biosample_term_name': {title: 'Term'},
-        'summary': {title: 'Summary', sorter: false}
+export const BiosampleTable = React.createClass({
+    propTypes: {
+        items: React.PropTypes.array, // Array of biosamples to display
+        total: React.PropTypes.number, // Total number of biosamples matching search criteria (can be more than biosamples in `items`)
+        limit: React.PropTypes.number, // Maximum number of biosamples to display in the table
+        title: React.PropTypes.oneOf([ // Title to display in table header, as string or component
+            React.PropTypes.string,
+            React.PropTypes.node,
+        ]),
+        url: React.PropTypes.string, // URL to go to full search results
     },
 
-    render: function() {
-        var biosamples;
+    columns: {
+        accession: {
+            title: 'Accession',
+            display: biosample => <a href={biosample['@id']}>{biosample.accession}</a>,
+        },
+        biosample_type: { title: 'Type' },
+        biosample_term_name: { title: 'Term' },
+        summary: { title: 'Summary', sorter: false },
+    },
+
+    render: function () {
+        const { items, limit, total, url, title } = this.props;
+        let biosamples;
 
         // If there's a limit on entries to display and the array is greater than that
         // limit, then clone the array with just that specified number of elements
-        if (this.props.limit && (this.props.limit < this.props.items.length)) {
+        if (limit && (limit < items.length)) {
             // Limit the experiment list by cloning first {limit} elements
-            biosamples = this.props.items.slice(0, this.props.limit);
+            biosamples = items.slice(0, limit);
         } else {
             // No limiting; just reference the original array
-            biosamples = this.props.items;
+            biosamples = items;
         }
 
         return (
-            <SortTablePanel title={this.props.title}>
-                <SortTable list={this.props.items} columns={this.columns} footer={<BiosampleTableFooter items={biosamples} total={this.props.total} url={this.props.url} />} />
+            <SortTablePanel title={title}>
+                <SortTable list={items} columns={this.columns} footer={<BiosampleTableFooter items={biosamples} total={total} url={url} />} />
             </SortTablePanel>
         );
-    }
+    },
 });
 
 
 // Display a count of biosamples in the footer, with a link to the corresponding search if needed
-var BiosampleTableFooter = React.createClass({
-    render: function() {
-        var {items, total, url} = this.props;
+export const BiosampleTableFooter = React.createClass({
+    propTypes: {
+        items: React.PropTypes.array, // List of biosamples in the table
+        total: React.PropTypes.number, // Total number of biosamples matching search criteria
+        url: React.PropTypes.string, // URI to get full search results
+    },
+
+    render: function () {
+        const { items, total, url } = this.props;
 
         return (
             <div>
@@ -150,5 +166,39 @@ var BiosampleTableFooter = React.createClass({
                 {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
             </div>
         );
-    }
+    },
+});
+
+
+// Display a reference to an award page as a definition list item.
+export const AwardRef = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object, // Object containing the award property
+        loggedIn: React.PropTypes.bool, // True if user's logged in
+    },
+
+    render: function () {
+        const { context, loggedIn } = this.props;
+
+        if (context.award) {
+            return (
+                <div data-test="awardpi">
+                    <dt>Award</dt>
+                    <dd>
+                        {context.award.status === 'current' || loggedIn ?
+                            <a href={context.award['@id']}>
+                                {context.award.name}
+                            </a>
+                        :
+                            <span>{context.award.name}</span>
+                        }
+                        {context.award.pi && context.award.pi.lab ?
+                            <span> ({context.award.pi.lab.title})</span>
+                        : null}
+                    </dd>
+                </div>
+            );
+        }
+        return null;
+    },
 });
