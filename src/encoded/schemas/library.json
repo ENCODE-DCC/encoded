@@ -4,7 +4,7 @@
     "id": "/profiles/library.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab", "nucleic_acid_term_id"],
+    "required": [ "award", "lab", "nucleic_acid_term_name"],
     "identifyingProperties": ["uuid","accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -27,18 +27,14 @@
         }
     },
     "dependencies": {
-        "nucleic_acid_term_id": ["nucleic_acid_term_name"],
-        "nucleic_acid_term_name": ["nucleic_acid_term_id"],
         "nucleic_acid_starting_quantity_units": ["nucleic_acid_starting_quantity"],
         "nucleic_acid_starting_quantity": ["nucleic_acid_starting_quantity_units"],
-        "depleted_in_term_name": ["depleted_in_term_id"],
-        "depleted_in_term_id": ["depleted_in_term_name"],
         "product_id": ["source"],
         "lot_id": ["source", "product_id"]
     },
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "accession": {
             "accessionType": "LB"
@@ -83,20 +79,6 @@
                 "polyadenylated mRNA",
                 "miRNA",
                 "protein"
-            ]
-        },
-        "nucleic_acid_term_id": {
-            "@type": "@id",
-            "title": "Molecule ID",
-            "description": "SO (Sequence Ontology) identifier best matching the nucleic acid isolated to generate the library",
-            "comment": "Based on the choice in nucleic_acid_term_name use the following guide: DNA - SO:0000352, RNA - SO:0000356,  polyadenylated mRNA - SO:0000871, miRNA - SO:0000276 or protein - SO:0000104" ,
-            "type": "string",
-            "enum": [
-                "SO:0000352",
-                "SO:0000356",
-                "SO:0000871",
-                "SO:0000276",
-                "SO:0000104"
             ]
         },
         "dbxrefs": {
@@ -251,29 +233,13 @@
             "type": "array",
             "title": "Depleted in term",
             "description": "SO (Sequence Ontology) term best matching the nucleic acid that was diminished from the library.",
-            "default": [],
+            "uniqueItems": true,
             "items": {
                 "type": "string",
                 "enum": [
                     "rRNA",
                     "polyadenylated mRNA",
                     "capped mRNA"
-                ]
-            }
-        },
-        "depleted_in_term_id": {
-            "@type": "@id",
-            "type": "array",
-            "title": "Depleted in ID",
-            "description": "SO (Sequence Ontology) identifier best matching the nucleic acid that was diminished from the library.",
-            "comment": "Based on the choice in depleted_in_term_name use the following guide: rRNA - SO:0000252,  polyadenylated mRNA - SO:0000871 or capped mRNA - SO:0000862" ,
-            "default": [],
-            "items": {
-                "type": "string",
-                "enum": [
-                    "SO:0000252",
-                    "SO:0000871",
-                    "SO:0000862"
                 ]
             }
         }

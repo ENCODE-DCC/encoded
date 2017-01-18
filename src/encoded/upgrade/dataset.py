@@ -219,3 +219,10 @@ def dataset_8_9(value, system):
             value['annotation_type'] = 'enhancer-like regions'
         elif value['annotation_type'] == 'candidate promoters':
             value['annotation_type'] = 'promoter-like regions'
+
+
+@upgrade_step('experiment', '9', '10')
+def experiment_9_10(value, system):
+    # http://redmine.encodedcc.org/issues/2491
+    if 'assay_term_id' in value:
+        del value['assay_term_id']

@@ -13,14 +13,14 @@ var statuslabel = require('./statuslabel');
 var audit = require('./audit');
 var fetched = require('./fetched');
 var pipeline = require('./pipeline');
-var reference = require('./reference');
+var { pubReferenceList } = require('./reference');
 var software = require('./software');
 var sortTable = require('./sorttable');
 var objectutils = require('./objectutils');
 var doc = require('./doc');
 var {FileGallery} = require('./filegallery');
 var {GeneticModificationSummary} = require('./genetic_modification');
-var {BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs} = require('./typeutils');
+var { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef } = require('./typeutils');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -28,7 +28,6 @@ var FetchedItems = fetched.FetchedItems;
 var Param = fetched.Param;
 var StatusLabel = statuslabel.StatusLabel;
 var {AuditMixin, AuditIndicators, AuditDetail} = audit;
-var PubReferenceList = reference.PubReferenceList;
 var singleTreatment = objectutils.singleTreatment;
 var softwareVersionList = software.softwareVersionList;
 var {SortTablePanel, SortTable} = sortTable;
@@ -301,7 +300,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
 
         // Make a list of reference links, if any
-        var references = PubReferenceList(context.references);
+        var references = pubReferenceList(context.references);
 
         // Render tags badges
         var tagBadges;
@@ -438,12 +437,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                                         <dd>{context.lab.title}</dd>
                                     </div>
 
-                                    {context.award.pi && context.award.pi.lab ?
-                                        <div data-test="awardpi">
-                                            <dt>Award PI</dt>
-                                            <dd>{context.award.pi.lab.title}</dd>
-                                        </div>
-                                    : null}
+                                    <AwardRef context={context} loggedIn={loggedIn} />
 
                                     <div data-test="project">
                                         <dt>Project</dt>

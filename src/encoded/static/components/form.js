@@ -23,6 +23,28 @@ validator.attributes.pattern = function validatePattern(instance, schema) {
     return error;
 };
 
+// Parse object and property from `linkFrom`.
+// Backrefs have a linkFrom property in the form
+// (object type).(property name)
+const parseLinkFrom = function (linkFrom) {
+    const parts = linkFrom.split('.');
+    return {
+        type: parts[0],
+        prop: parts[1],
+    };
+};
+
+// Validate `linkFrom`
+validator.attributes.linkFrom = function validateLinkFrom(instance, schema, options, ctx) {
+    let result;
+    if (instance !== undefined && instance instanceof Object) {
+        const linkFrom = parseLinkFrom(schema.linkFrom);
+        const subschema = options.schemas[linkFrom.type];
+        result = this.attributes.properties.call(this, instance, subschema, options, ctx);
+    }
+    return result;
+};
+
 // Recursively filter an object to remove `schema_version`.
 // This is used before sending the value to the server.
 const filterValue = function (value) {
@@ -44,7 +66,9 @@ const filterValue = function (value) {
 // for any property that defines one,
 // with the exception of read-only and calculated properties.
 const defaultValue = function (schema) {
-    if (schema.properties !== undefined) {
+    if (schema.default !== undefined) {
+        return schema.default || undefined;
+    } else if (schema.properties !== undefined) {
         const value = {};
         _.each(schema.properties, (property, name) => {
             if (property.calculatedProperty) return;
@@ -55,9 +79,7 @@ const defaultValue = function (schema) {
                 }
             }
         });
-        return value;
-    } else if (schema.items !== undefined) {
-        return schema.default || [];
+        return (Object.keys(value).length ? value : undefined);
     }
     return schema.default || undefined;
 };
@@ -184,7 +206,10 @@ const RepeatingFieldset = React.createClass({
 
         // Remove the specified index from the current value.
         const oldValue = this.props.value;
-        const value = oldValue.slice(0, index).concat(oldValue.slice(index + 1));
+        let value = oldValue.slice(0, index).concat(oldValue.slice(index + 1));
+        if (value.length === 0) {
+            value = undefined;
+        }
 
         // Increment `this.state.generation` (see explanation in getInitialState)
         this.setState({ generation: this.state.generation + 1 });
@@ -203,12 +228,10 @@ const RepeatingFieldset = React.createClass({
             // This is an array of backreferences from separate objects of a different type.
             // We need to construct the default value for that type,
             // and also add a reference to the object being edited.
-            const a = subschema.linkFrom.split('.');
-            const linkType = a[0];
-            const linkProp = a[1];
-            subschema = this.context.schemas[linkType];
+            const linkFrom = parseLinkFrom(subschema.linkFrom);
+            subschema = this.context.schemas[linkFrom.type];
             newValue = defaultValue(subschema);
-            newValue[linkProp] = this.context.id;
+            newValue[linkFrom.prop] = this.context.id;
         } else {
             // Simple subitem; construct default value from schema.
             newValue = defaultValue(subschema);
@@ -286,12 +309,8 @@ const FetchedFieldset = React.createClass({
         // We need to construct a modified schema for the child type,
         // to avoid showing the field that links back to the main object being edited.
 
-        // Backrefs have a linkFrom property in the form
-        // (object type).(property name)
-        const a = schema.linkFrom.split('.');
-        const linkType = a[0];
-        const linkProp = a[1];
-        let subschema = this.context.schemas[linkType];
+        const linkFrom = parseLinkFrom(schema.linkFrom);
+        let subschema = this.context.schemas[linkFrom.type];
         // FIXME Handle linkFrom abstract type.
         if (subschema !== undefined) {
             // The linkProp is the one that refers to the parent object.
@@ -300,7 +319,7 @@ const FetchedFieldset = React.createClass({
             subschema = Object.assign({}, subschema, {
                 properties: Object.assign({}, subschema.properties),
             });
-            delete subschema.properties[linkProp];
+            delete subschema.properties[linkFrom.prop];
         }
 
         const value = this.props.value;
@@ -322,13 +341,13 @@ const FetchedFieldset = React.createClass({
 
     updateChild(name, value) {
         // Pass new value up to our parent.
-        this.setState({ url: null });
+        value['@id'] = this.state.url;
         this.props.updateChild(this.props.name, value);
     },
 
     render() {
         const schema = this.state.schema;
-        const value = this.props.value;
+        const { path, value } = this.props;
         let preview;
         let fieldset;
 
@@ -343,12 +362,16 @@ const FetchedFieldset = React.createClass({
                 </fetched.FetchedData>
             );
             // When expanded, fetch the edit frame and render form fields.
-            fieldset = (
-                <fetched.FetchedData>
-                    <fetched.Param name="value" url={`${this.state.url}?frame=edit`} />
-                    <Field schema={schema} updateChild={this.updateChild} />
-                </fetched.FetchedData>
-            );
+            if (typeof value === 'string') {
+                fieldset = (
+                    <fetched.FetchedData>
+                        <fetched.Param name="value" url={`${this.state.url}?frame=edit`} />
+                        <Field path={path} schema={schema} updateChild={this.updateChild} />
+                    </fetched.FetchedData>
+                );
+            } else {
+                fieldset = <Field path={path} schema={schema} value={value} updateChild={this.updateChild} />;
+            }
         } else {
             // We don't have a URI yet (it's a new object).
             // When collapsed, render a placeholder.
@@ -361,7 +384,7 @@ const FetchedFieldset = React.createClass({
             );
             // When expanded, render form fields (but there's no edit frame to fetch)
             fieldset = (<Field
-                value={value} schema={schema}
+                path={path} value={value} schema={schema}
                 updateChild={this.updateChild}
             />);
         }
@@ -467,6 +490,14 @@ const Field = module.exports.Field = React.createClass({
         // Remove empty and null values so they won't pass validation for required fields.
         if (value === null || value === '') {
             value = undefined;
+        }
+        const type = this.props.schema.type;
+        if (value && (type === 'integer' || type === 'number')) {
+            try {
+                value = parseFloat(value);
+            } catch (err) {
+                // Keep string, which should fail schema validation
+            }
         }
         // Record that this field was modified.
         this.setState({ isDirty: true });
@@ -685,10 +716,16 @@ const Form = module.exports.Form = React.createClass({
 
     validate(value) {
         // Get validation errors from jsonschema validator.
-        const validation = validator.validate(value, this.props.schema);
+        const validation = validator.validate(value, this.props.schema, {
+            schemas: this.props.schemas,
+            // Don't validate `dependencies` in schema,
+            // because the errors don't get reported at the correct path.
+            // These should still be reported by server-side validation on form submit.
+            skipAttributes: ['dependencies'],
+        });
 
         // for debugging:
-        // console.log(validation);
+        console.log(validation);
 
         // `jsonschema` uses field paths like
         //   `instance.aliases[0]`
@@ -814,7 +851,7 @@ const Form = module.exports.Form = React.createClass({
                 if (match) {
                     path = `${path}.${match[1]}`;
                 }
-                errors[path] = error.description;
+                errors[path] = err.description;
             });
         } else if (data.description) {
             // This is a form-wide error rather than a field-specific one.
