@@ -457,13 +457,13 @@ def process_fastq_file(job, fastq_data_stream, session, url):
             else:
                 signatures_for_comparison = signatures_set
 
-        if check_for_fastq_signature_conflicts(
-           session,
-           url,
-           errors,
-           item,
-           signatures_for_comparison):
-            result['fastq_signature'] = sorted(list(signatures_for_comparison))
+        result['fastq_signature'] = sorted(list(signatures_for_comparison))
+        check_for_fastq_signature_conflicts(
+            session,
+            url,
+            errors,
+            item,
+            signatures_for_comparison)
 
 
 def process_barcodes(signatures_set):
@@ -877,7 +877,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
     except multiprocessing.NotImplmentedError:
         nprocesses = 1
 
-    version = '1.04'
+    version = '1.05'
 
     out.write("STARTING Checkfiles version %s (%s): with %d processes %s at %s\n" %
               (version, search_query, nprocesses, dr, datetime.datetime.now()))
