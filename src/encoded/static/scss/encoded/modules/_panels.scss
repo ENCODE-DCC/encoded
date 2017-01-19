@@ -22,6 +22,7 @@
 }
 
 .panel-heading {
+    position: relative;
     padding: 10px;
 }
 
@@ -419,5 +420,19 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     &:first-child {
         padding-top: 0;
         border-top: none;
+    }
+}
+
+.two-column-long-text {
+    column-count: 1;
+    line-height: 1.7;
+
+    @media screen and (min-width: $screen-md-min) {
+        column-count: 2;
+        column-gap: 50px;
+    }
+
+    @at-root #{&}--gap {
+        margin-bottom: 20px;
     }
 }

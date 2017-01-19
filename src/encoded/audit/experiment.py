@@ -128,7 +128,7 @@ def audit_experiment_pipeline_assay_details(value, system):
                          'contains file(s) associated with ' + \
                          'pipeline {} '.format(p['@id']) + \
                          'which assay_term_id does not match experiments\'s asssay_term_id.'
-                yield AuditFailure('inconsistent assay_term_id', detail, level='INTERNAL_ACTION')
+                yield AuditFailure('inconsistent assay_term_name', detail, level='INTERNAL_ACTION')
 
 
 @audit_checker('Experiment', frame=['original_files',
@@ -2879,11 +2879,12 @@ def audit_experiment_assay(value, system):
     if value['status'] == 'deleted':
         return
 
-    if 'assay_term_id' not in value:
+    if 'assay_term_id' is None:
+        # This means we need to add an assay to the enum list. It should not happen
+        # though since the term enum list is limited.
         detail = 'Experiment {} is missing assay_term_id'.format(value['@id'])
         yield AuditFailure('missing assay information', detail, level='ERROR')
         return
-        # This should be a dependancy
 
     ontology = system['registry']['ontology']
     term_id = value.get('assay_term_id')
@@ -3442,15 +3443,15 @@ def audit_library_RNA_size_range(value, system):
     if value['status'] in ['deleted']:
         return
 
-    RNAs = ['SO:0000356',
-            'SO:0000871',
-            'SO:0000276']
+    RNAs = ['RNA',
+            'polyadenylated mRNA',
+            'miRNA']
 
     for rep in value['replicates']:
         if 'library' not in rep:
             continue
         lib = rep['library']
-        if (lib['nucleic_acid_term_id'] in RNAs) and ('size_range' not in lib):
+        if (lib['nucleic_acid_term_name'] in RNAs) and ('size_range' not in lib):
             detail = 'Metadata of RNA library {} lacks information on '.format(rep['library']['@id']) + \
                      'the size range of fragments used to construct the library.'
             yield AuditFailure('missing RNA fragment size', detail, level='NOT_COMPLIANT')
