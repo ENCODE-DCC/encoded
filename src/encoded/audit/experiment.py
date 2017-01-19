@@ -808,9 +808,20 @@ def check_experiment_dnase_seq_standards(experiment,
                      'lack read depth information.'
             yield AuditFailure('missing read depth', detail, level='WARNING')
 
+        hotspot_assemblies = {}
+        for hotspot_file in hotspots_files:
+            if 'assembly' in hotspot_file:
+                hotspot_assemblies[hotspot_file['accession']] = hotspot_file['assembly']
+
+        signal_assemblies = {}
+        for signal_file in signal_files:
+            if 'assembly' in signal_file:
+                signal_assemblies[signal_file['accession']] = signal_file['assembly']
+
         hotspot_quality_metrics = get_metrics(hotspots_files,
                                               'HotspotQualityMetric',
                                               desired_assembly)
+
         if hotspot_quality_metrics is not None and \
            len(hotspot_quality_metrics) > 0:
             for metric in hotspot_quality_metrics:
@@ -825,6 +836,7 @@ def check_experiment_dnase_seq_standards(experiment,
                              "ENCODE processed hotspots files {} ".format(file_names_string) + \
                              "produced by {} ".format(pipelines[0]['title']) + \
                              "( {} ) ".format(pipelines[0]['@id']) + \
+                             assemblies_detail(get_assemblies(hotspot_assemblies, file_names)) + \
                              "have a SPOT score of {0:.2f}. ".format(metric["SPOT score"]) + \
                              "According to ENCODE standards, " + \
                              "SPOT score of 0.4 or higher is considered a product of high quality " + \
@@ -834,6 +846,7 @@ def check_experiment_dnase_seq_standards(experiment,
                              "SPOT score of 0.25 is considered minimally acceptable " + \
                              "for rare and hard to find primary tissues. (See {} )".format(
                                  link_to_standards)
+
                     if 0.3 <= metric["SPOT score"] < 0.4:
                         yield AuditFailure('low spot score', detail, level='WARNING')
                     elif 0.25 <= metric["SPOT score"] < 0.3:
@@ -858,13 +871,13 @@ def check_experiment_dnase_seq_standards(experiment,
                     for f in metric['quality_metric_of']:
                         file_names.append(f['@id'])
                     file_names_string = str(file_names).replace('\'', ' ')
-
                     detail = 'Replicate concordance in DNase-seq expriments is measured by ' + \
                         'calculating the Pearson correlation between signal quantification ' + \
                         'of the replicates. ' + \
                         'ENCODE processed signal files {} '.format(file_names_string) + \
                         'produced by {} '.format(pipelines[0]['title']) + \
                         '( {} ) '.format(pipelines[0]['@id']) + \
+                        assemblies_detail(get_assemblies(signal_assemblies, file_names)) + \
                         'have a Pearson correlation of {0:.2f}. '.format(metric['Pearson correlation']) + \
                         'According to ENCODE standards, in an {} '.format(experiment['replication_type']) + \
                         'assay a Pearson correlation value > {} '.format(threshold) + \
@@ -874,6 +887,18 @@ def check_experiment_dnase_seq_standards(experiment,
                     if metric['Pearson correlation'] < threshold:
                         yield AuditFailure('insufficient replicate concordance',
                                            detail, level='NOT_COMPLIANT')
+
+
+def assemblies_detail(assemblies):
+    assemblies_detail = ''
+    if assemblies:
+        if len(assemblies) > 1:
+            assemblies_detail = "for {} assemblies ".format(
+                str(assemblies).replace('\'', ' '))
+        else:
+            assemblies_detail = "for {} assembly ".format(
+                assemblies[0])
+    return assemblies_detail
 
 
 def check_experiment_rna_seq_standards(value,
