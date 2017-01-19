@@ -1,15 +1,16 @@
-'use strict';
-var React = require('react');
-var globals = require('./globals');
+import React from 'react';
+import globals from './globals';
 
-var Dbxref = module.exports.Dbxref = function (props) {
-    var value = props.value || '';
-    var sep = value.indexOf(':');
-    var prefix = props.prefix;
-    var local, id;
+export function dbxref(attributes) {
+    const value = attributes.value || '';
+    const sep = value.indexOf(':');
+    let prefix = attributes.prefix;
+    let local;
+    let id;
+
     if (prefix) {
         local = value;
-    } else if (sep != -1) {
+    } else if (sep !== -1) {
         prefix = value.slice(0, sep);
         local = globals.encodedURIComponent(value.slice(sep + 1), '_');
     }
@@ -20,47 +21,50 @@ var Dbxref = module.exports.Dbxref = function (props) {
     }
 
     // Handle two different kinds of WormBase IDs -- Target vs Strain
-    if (prefix === 'WormBase' && props.target_ref) {
+    if (prefix === 'WormBase' && attributes.target_ref) {
         prefix = 'WormBaseTargets';
     }
 
     // Handle two different kinds of FlyBase IDs -- Target vs Stock
-    if (prefix === 'FlyBase' && !props.target_ref) {
+    if (prefix === 'FlyBase' && !attributes.target_ref) {
         prefix = 'FlyBaseStock';
     }
 
-    var base = prefix && globals.dbxref_prefix_map[prefix];
+    const base = prefix && globals.dbxref_prefix_map[prefix];
     if (!base) {
         return <span>{value}</span>;
     }
-    if (prefix === "HGNC") {
-        local = props.target_gene;
+    if (prefix === 'HGNC') {
+        local = attributes.target_gene;
+
     // deal with UCSC links
-    } else if (prefix === "UCSC-ENCODE-cv") {
-        local = '"' + local + '"';
-    } else if (prefix === "MGI") {
+    } else if (prefix === 'UCSC-ENCODE-cv') {
+        local = `"${local}"`;
+    } else if (prefix === 'MGI') {
         local = value;
     } else if (prefix === 'MGI.D') {
         id = value.substr(sep + 1);
-        local = id + '.shtml';
-    } else if (prefix === "CGC") {
+        local = `${id}.shtml`;
+    } else if (prefix === 'CGC') {
         id = value.substr(sep + 1);
-        local = id + '&field=all&exst=&exfield=all';
-    } else if (prefix === "DSSC") {
+        local = `${id}&field=all&exst=&exfield=all`;
+    } else if (prefix === 'DSSC') {
         id = value.substr(sep + 1);
-        local = id + '&table=Species&submit=Search';
+        local = `${id}&table=Species&submit=Search`;
     }
 
     return <a href={base + local}>{value}</a>;
-};
+}
 
-module.exports.DbxrefList = React.createClass({
+export const DbxrefList = React.createClass({
     render: function () {
-        var props = this.props;
+        const props = this.props;
         return (
-            <ul className={props.className}>{props.values.map(function (value, index) {
-                return <li key={index}>{Dbxref({value: value, prefix: props.prefix, target_gene: props.target_gene, target_ref: props.target_ref})}</li>;
-            })}</ul>
+            <ul className={props.className}>
+                {props.values.map((value, index) =>
+                    <li key={index}>{dbxref({ value: value, prefix: props.prefix, target_gene: props.target_gene, target_ref: props.target_ref })}</li>,
+                )}
+            </ul>
         );
-    }
+    },
 });
