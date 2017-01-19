@@ -44,11 +44,11 @@ var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
             format_cite: { name: 'Citation', element: 'cite'},
             allowedContent: true
         });
-        this.editor.on('change', function() {
+        this.editor.on('change', () => {
             this.state.value.body = this.editor.getData();
             this.setState(this.state);
             this.props.onChange(this.state.value);
-        }.bind(this));
+        });
     },
 
     shouldComponentUpdate: function(nextProps, nextState) {

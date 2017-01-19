@@ -694,7 +694,7 @@ const RawSequencingTable = React.createClass({
                         </tr>
 
                         {!this.state.collapsed ?
-                            <tr key="header">
+                            <tr>
                                 <th>Biological replicate</th>
                                 <th>Library</th>
                                 <th>Accession</th>
@@ -721,8 +721,8 @@ const RawSequencingTable = React.createClass({
                                 // the first row of files, spanned to all rows for that replicate and
                                 // library
                                 const spanned = [
-                                    <td key="br" rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>{groupFiles[0].biological_replicates[0]}</td>,
-                                    <td key="lib" rowSpan={groupFiles.length} className={`${bottomClass} merge-right + table-raw-merged`}>{groupFiles[0].replicate.library.accession}</td>,
+                                    <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>{groupFiles[0].biological_replicates[0]}</td>,
+                                    <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right + table-raw-merged`}>{groupFiles[0].replicate.library.accession}</td>,
                                 ];
 
                                 // Render each file's row, with the biological replicate and library
@@ -747,7 +747,7 @@ const RawSequencingTable = React.createClass({
                                     const buttonEnabled = !!meta.graphedFiles[file['@id']];
 
                                     return (
-                                        <tr key={file.uuid} className={file.restricted ? 'file-restricted' : ''}>
+                                        <tr key={file['@id']} className={file.restricted ? 'file-restricted' : ''}>
                                             {i === 0 ? { spanned } : null}
                                             <td className={pairClass}>
                                                 <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
@@ -781,7 +781,7 @@ const RawSequencingTable = React.createClass({
                                 const buttonEnabled = !!meta.graphedFiles[file['@id']];
 
                                 return (
-                                    <tr key={file.uuid} className={rowClasses.join(' ')}>
+                                    <tr key={file['@id']} className={rowClasses.join(' ')}>
                                         <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : ''}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
                                         <td>
@@ -874,7 +874,7 @@ const RawFileTable = React.createClass({
                         </tr>
 
                         {!this.state.collapsed ?
-                            <tr key="header">
+                            <tr>
                                 <th>Biological replicate</th>
                                 <th>Library</th>
                                 <th>Accession</th>
@@ -901,8 +901,8 @@ const RawFileTable = React.createClass({
                                 // the first row of files, spanned to all rows for that replicate and
                                 // library
                                 const spanned = [
-                                    <td key="br" rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>{groupFiles[0].biological_replicates[0]}</td>,
-                                    <td key="lib" rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged`}>{groupFiles[0].replicate.library.accession}</td>,
+                                    <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>{groupFiles[0].biological_replicates[0]}</td>,
+                                    <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged`}>{groupFiles[0].replicate.library.accession}</td>,
                                 ];
 
                                 // Render each file's row, with the biological replicate and library
@@ -948,7 +948,7 @@ const RawFileTable = React.createClass({
                                 const buttonEnabled = !!meta.graphedFiles[file['@id']];
 
                                 return (
-                                    <tr key={file.uuid} className={rowClasses.join(' ')}>
+                                    <tr key={file['@id']} className={rowClasses.join(' ')}>
                                         <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : ''}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
                                         <td>
@@ -1762,7 +1762,7 @@ const FilterMenu = React.createClass({
 
         return (
             <select className="form-control" defaultValue="0" value={selectedFilterValue} onChange={handleFilterChange}>
-                <option value="default" key="title">All Assemblies and Annotations</option>
+                <option value="default">All Assemblies and Annotations</option>
                 <option disabled="disabled" />
                 {filterOptions.map((option, i) =>
                     <option key={`${option.assembly}${option.annotation}`} value={i}>{`${option.assembly + (option.annotation ? ` ${option.annotation}` : '')}`}</option>,
@@ -2290,7 +2290,7 @@ const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
                             <dt>File quality metrics</dt>
                             <dd className="file-qc-buttons">
                                 {selectedFile.quality_metrics.map(qc =>
-                                    <FileQCButton key={qc.uuid} qc={qc} file={selectedFile} handleClick={qcClick} />,
+                                    <FileQCButton key={qc['@id']} qc={qc} file={selectedFile} handleClick={qcClick} />,
                                 )}
                             </dd>
                         </div>

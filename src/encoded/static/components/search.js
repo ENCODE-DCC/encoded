@@ -391,7 +391,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                             {organismNames.length ?
                                 <span>
                                     {organismNames.map((organism, i) => 
-                                        <span>
+                                        <span key={organism}>
                                             {i > 0 ? <span>and </span> : null}
                                             <i>{organism} </i>
                                         </span>
@@ -933,14 +933,14 @@ var ResultTable = search.ResultTable = React.createClass({
         var searchBase = this.props.searchBase;
         var trimmedSearchBase = searchBase.replace(/[\?|\&]limit=all/, "");
 
-        var facets = context['facets'].map(function(facet) {
+        var facets = context['facets'].map((facet) => {
             if (this.props.restrictions[facet.field] !== undefined) {
                 facet = _.clone(facet);
                 facet.restrictions = this.props.restrictions[facet.field];
                 facet.terms = facet.terms.filter(term => _.contains(facet.restrictions, term.key));
             }
             return facet;
-        }.bind(this));
+        });
 
         // See if a specific result type was requested ('type=x')
         // Satisfied iff exactly one type is in the search

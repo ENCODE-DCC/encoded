@@ -63,7 +63,7 @@ const Annotation = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const loggedIn = this.context.session && this.context.session['auth.userid'];
+        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -269,7 +269,7 @@ const PublicationData = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const loggedIn = this.context.session && this.context.session['auth.userid'];
+        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -430,7 +430,7 @@ const Reference = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const loggedIn = this.context.session && this.context.session['auth.userid'];
+        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -591,7 +591,7 @@ const Project = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const loggedIn = this.context.session && this.context.session['auth.userid'];
+        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -776,7 +776,7 @@ const UcscBrowserComposite = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const loggedIn = this.context.session && this.context.session['auth.userid'];
+        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -1179,7 +1179,7 @@ export const Series = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const loggedIn = this.context.session && this.context.session['auth.userid'];
+        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
         let experiments = {};
         const statuses = [{ status: context.status, title: 'Status' }];
         context.files.forEach((file) => {

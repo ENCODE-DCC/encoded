@@ -133,7 +133,7 @@ module.exports.Auth0 = {
             },
             allowedConnections: ['github', 'google-oauth2', 'facebook', 'linkedin']
         });
-        this.lock.on("authenticated", this.handleAuth0Login.bind(this));
+        this.lock.on("authenticated", this.handleAuth0Login);
     },
 
     fetch: function (url, options) {

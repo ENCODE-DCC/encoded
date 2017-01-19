@@ -41,14 +41,14 @@ var FileInput = module.exports.FileInput = React.createClass({
             file = input.files[0];
         }
         var reader = new FileReader();
-        reader.onloadend = function() {
+        reader.onloadend = () => {
             var value = {
                 download: file.name,
                 type: file.type || undefined,
                 href: reader.result
             };
             this.props.onChange(value);
-        }.bind(this);
+        };
         if (file) {
             reader.readAsDataURL(file);
         }

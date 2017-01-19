@@ -310,7 +310,7 @@ let HomepageChart = React.createClass({
     // Draw the Project chart, for initial load, or when the previous load had no data for this
     // chart.
     createChart: function (facetData) {
-        require.ensure(['chart.js'], function (require) {
+        require.ensure(['chart.js'], (require) => {
             let Chart = require('chart.js');
 
             // for each item, set doc count, add to total doc count, add proper label, and assign color.
@@ -352,7 +352,7 @@ let HomepageChart = React.createClass({
                     animation: {
                         duration: 200
                     },
-                    legendCallback: function (chart) { // allows for legend clicking
+                    legendCallback: (chart) => { // allows for legend clicking
                         let data = chart.data.datasets[0].data;
                         let text = [];
                         text.push('<ul>');
@@ -369,8 +369,8 @@ let HomepageChart = React.createClass({
                         }
                         text.push('</ul>');
                         return text.join('');
-                    }.bind(this),
-                    onClick: function (e) {
+                    },
+                    onClick: (e) => {
                         // React to clicks on pie sections
                         var activePoints = this.myPieChart.getElementAtEvent(e);
 
@@ -379,8 +379,8 @@ let HomepageChart = React.createClass({
                             var term = this.myPieChart.data.labels[clickedElementIndex];
                             this.context.navigate('/matrix/' + this.props.query + '&award.project=' + term);
                         }
-                    }.bind(this)
-                }
+                    },
+                },
             });
 
             // Have chartjs draw the legend into the DOM.
@@ -389,7 +389,7 @@ let HomepageChart = React.createClass({
             // Save the chart <div> height so we can set it to that value when no data's available.
             let chartWrapperDiv = document.getElementById('chart-wrapper-1');
             this.wrapperHeight = chartWrapperDiv.clientHeight;
-        }.bind(this));
+        });
     },
 
     // Update existing chart with new data.
@@ -496,7 +496,7 @@ var HomepageChart2 = React.createClass({
         // with the React virtual DOM, we have to load it separately using the webpack .ensure
         // mechanism. Once the callback is called, it's loaded and can be referenced through
         // require.
-        require.ensure(['chart.js'], function (require) {
+        require.ensure(['chart.js'], (require) => {
             var Chart = require('chart.js');
             var colors = this.context.biosampleTypeColors.colorList(facetData.map(term => term.key), { shade: 10 });
             var data = [];
@@ -529,12 +529,12 @@ var HomepageChart2 = React.createClass({
                     responsive: true,
                     maintainAspectRatio: false,
                     legend: {
-                        display: false // hiding automatically generated legend
+                        display: false, // hiding automatically generated legend
                     },
                     animation: {
-                        duration: 200
+                        duration: 200,
                     },
-                    legendCallback: function (chart) { // allows for legend clicking
+                    legendCallback: (chart) => { // allows for legend clicking
                         let data = chart.data.datasets[0].data;
                         let text = [];
                         let query = this.computationalPredictions ? 'biosample_type=' : 'replicates.library.biosample.biosample_type=';
@@ -552,8 +552,8 @@ var HomepageChart2 = React.createClass({
                         }
                         text.push('</ul>');
                         return text.join('');
-                    }.bind(this),
-                    onClick: function (e) {
+                    },
+                    onClick: (e) => {
                         // React to clicks on pie sections
                         let query = this.computationalPredictions ? 'biosample_type=' : 'replicates.library.biosample.biosample_type=';
                         let activePoints = this.myPieChart.getElementAtEvent(e);
@@ -562,8 +562,8 @@ var HomepageChart2 = React.createClass({
                             let term = this.myPieChart.data.labels[clickedElementIndex];
                             this.context.navigate('/matrix/' + this.props.query + '&' + query + term); // go to matrix view
                         }
-                    }.bind(this)
-                }
+                    },
+                },
             });
 
             // Have chartjs draw the legend into the DOM.
@@ -572,7 +572,7 @@ var HomepageChart2 = React.createClass({
             // Save the chart <div> height so we can set it to that value when no data's available.
             let chartWrapperDiv = document.getElementById('chart-wrapper-2');
             this.wrapperHeight = chartWrapperDiv.clientHeight;
-        }.bind(this));
+        });
     },
 
     updateChart: function (Chart, facetData) {
@@ -681,7 +681,7 @@ let HomepageChart3 = React.createClass({
         // with the React virtual DOM, we have to load it separately using the webpack .ensure
         // mechanism. Once the callback is called, it's loaded and can be referenced through
         // require.
-        require.ensure(['chart.js'], function (require) {
+        require.ensure(['chart.js'], (require) => {
             let Chart = require('chart.js');
             let colors = [];
             let data = [];
@@ -726,7 +726,7 @@ let HomepageChart3 = React.createClass({
                             }
                         }]
                     },
-                    onClick: function (e) {
+                    onClick: (e) => {
                         // React to clicks on pie sections
                         var query = 'assay_slims=';
                         var activePoints = this.myPieChart.getElementAtEvent(e);
@@ -735,14 +735,14 @@ let HomepageChart3 = React.createClass({
                             var term = this.myPieChart.data.labels[clickedElementIndex];
                             this.context.navigate('/matrix/' + this.props.query + '&' + query + term); // go to matrix view
                         }
-                    }.bind(this)
-                }
+                    },
+                },
             });
 
             // Save height of wrapper div.
             let chartWrapperDiv = document.getElementById('chart-wrapper-3');
             this.wrapperHeight = chartWrapperDiv.clientHeight;
-        }.bind(this));
+        });
 
     },
 

@@ -262,7 +262,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
         // Get a list of related datasets, possibly filtering on their status
         var seriesList = [];
-        var loggedIn = this.context.session && this.context.session['auth.userid'];
+        var loggedIn = !!(this.context.session && this.context.session['auth.userid']);
         if (context.related_series && context.related_series.length) {
             seriesList = _(context.related_series).filter(dataset => loggedIn || dataset.status === 'released');
         }
@@ -733,7 +733,15 @@ var AssayDetails = function (replicates, libraryValues, librarySpecials, library
                     <dt>{libraryEntry.title}</dt>
                     <dd>
                         {libraryEntry.value !== undefined ?
-                            <span>{(libraryEntry.component && Object.keys(libraryEntry.component).length) ? <span>{libraryEntry.component}</span> : <span>{libraryEntry.value}</span>}</span>
+                            <span>
+                                {(libraryEntry.component && Object.keys(libraryEntry.component).length) ?
+                                    <span>
+                                        {Object.keys(libraryEntry.component).map(componentKey => <span key={componentKey}>{libraryEntry.component[componentKey]}</span>)}
+                                    </span>
+                                :
+                                    <span>{libraryEntry.value}</span>
+                                }
+                            </span>
                         :
                             <span>
                                 {Object.keys(libraryEntry.values).map((replicateId) => {
