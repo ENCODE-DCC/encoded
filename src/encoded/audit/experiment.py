@@ -770,7 +770,7 @@ def check_experiment_dnase_seq_standards(experiment,
                 if 'mapped' in metric and 'quality_metric_of' in metric:
                     alignment_file = metric['quality_metric_of'][0]
                     suffix = 'According to ENCODE standards, conventional ' + \
-                             'DNase-seq profile, requires a minimum of 20 million uniquely mapped ' + \
+                             'DNase-seq profile requires a minimum of 20 million uniquely mapped ' + \
                              'reads to generate a reliable ' + \
                              'SPOT (Signal Portion of Tags) score. ' + \
                              'The recommended value is > 50 million. For deep, foot-printing depth ' + \
@@ -823,6 +823,8 @@ def check_experiment_dnase_seq_standards(experiment,
                     detail = "Signal Portion of Tags (SPOT) is a measure of enrichment, " + \
                              "analogous to the commonly used fraction of reads in peaks metric. " + \
                              "ENCODE processed hotspots files {} ".format(file_names_string) + \
+                             "produced by {} ".format(pipelines[0]['title']) + \
+                             "( {} ) ".format(pipelines[0]['@id']) + \
                              "have a SPOT score of {0:.2f}. ".format(metric["SPOT score"]) + \
                              "According to ENCODE standards, " + \
                              "SPOT score of 0.4 or higher is considered a product of high quality " + \
@@ -830,7 +832,7 @@ def check_experiment_dnase_seq_standards(experiment,
                              "Any sample with a SPOT score <0.3 should be targeted for replacement " + \
                              "with a higher quality sample, and a " + \
                              "SPOT score of 0.25 is considered minimally acceptable " + \
-                             "for rare and hard to find primary tissues. ( {} )".format(
+                             "for rare and hard to find primary tissues. (See {} )".format(
                                  link_to_standards)
                     if 0.3 <= metric["SPOT score"] < 0.4:
                         yield AuditFailure('low spot score', detail, level='WARNING')
@@ -861,10 +863,13 @@ def check_experiment_dnase_seq_standards(experiment,
                         'calculating the Pearson correlation between signal quantification ' + \
                         'of the replicates. ' + \
                         'ENCODE processed signal files {} '.format(file_names_string) + \
+                        'produced by {} '.format(pipelines[0]['title']) + \
+                        '( {} ) '.format(pipelines[0]['@id']) + \
                         'have a Pearson correlation of {0:.2f}. '.format(metric['Pearson correlation']) + \
                         'According to ENCODE standards, in an {} '.format(experiment['replication_type']) + \
                         'assay a Pearson correlation value > {} '.format(threshold) + \
-                        'is recommended.'
+                        'is recommended. (See {} )'.format(
+                            link_to_standards)
 
                     if metric['Pearson correlation'] < threshold:
                         yield AuditFailure('insufficient replicate concordance',
