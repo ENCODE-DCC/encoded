@@ -227,5 +227,7 @@ module.exports.dbxref_prefix_map = {
     "PMCID": "http://www.ncbi.nlm.nih.gov/pmc/articles/",
     "doi": "http://dx.doi.org/doi:",
     // Antibody RRids
-    "AR": "http://antibodyregistry.org/search.php?q="
+    "AR": "http://antibodyregistry.org/search.php?q=",
+    // NIH stem cell
+    "NIH": "https://search.usa.gov/search?utf8=%E2%9C%93&affiliate=grants.nih.gov&query=",
 };
