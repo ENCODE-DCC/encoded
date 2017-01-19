@@ -2,14 +2,24 @@ import React from 'react';
 import moment from 'moment';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import globals from './globals';
-import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
 import { DbxrefList } from './dbxref';
 import { FetchedItems } from './fetched';
 import { requestFiles } from './objectutils';
 import { ProjectBadge } from './image';
-import { PickerActionsMixin } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import { StatusLabel } from './statuslabel';
+
+
+const auditControl = ControlledComponent => class extends React.Component {
+    constructor() {
+        super();
+        this.state = { data: null };
+    }
+
+    render() {
+        return <ControlledComponent {...this.props} data={this.state.data} />;
+    }
+};
 
 
 // Columns to display in Deriving/Derived From file tables
@@ -41,13 +51,8 @@ const derivingCols = {
 
 // Display a table of files deriving from the one being displayed. This component gets called once
 // a GET request's data returns.
-const DerivedFiles = React.createClass({
-    propTypes: {
-        items: React.PropTypes.array, // Array of files from the GET request
-        context: React.PropTypes.object, // File that requested this list
-    },
-
-    render: function () {
+class DerivedFiles extends React.Component {
+    render() {
         const { items, context } = this.props;
 
         if (items.length) {
@@ -62,18 +67,18 @@ const DerivedFiles = React.createClass({
             );
         }
         return null;
-    },
-});
+    }
+}
+
+DerivedFiles.propTypes = {
+    items: React.PropTypes.array, // Array of files from the GET request
+    context: React.PropTypes.object, // File that requested this list
+};
 
 
 // Display a table of files the current file derives from.
-const DerivedFromFiles = React.createClass({
-    propTypes: {
-        file: React.PropTypes.object.isRequired, // File being analyzed
-        derivedFromFiles: React.PropTypes.array.isRequired, // Array of derived-from files
-    },
-
-    render: function () {
+class DerivedFromFiles extends React.Component {
+    render() {
         const { file, derivedFromFiles } = this.props;
 
         return (
@@ -85,28 +90,24 @@ const DerivedFromFiles = React.createClass({
                 />
             </SortTablePanel>
         );
-    },
-});
+    }
+}
+
+DerivedFromFiles.propTypes = {
+    file: React.PropTypes.object.isRequired, // File being analyzed
+    derivedFromFiles: React.PropTypes.array.isRequired, // Array of derived-from files
+};
 
 
-const File = React.createClass({
-    propTypes: {
-        context: React.PropTypes.object, // File object being displayed
-    },
-
-    contextTypes: {
-        session: React.PropTypes.object, // Login information
-    },
-
-    mixins: [AuditMixin],
-
-    getInitialState: function () {
-        return {
+class File extends React.Component {
+    constructor() {
+        super();
+        this.state = {
             derivedFromFiles: [], // List of derived-from files
         };
-    },
+    }
 
-    componentDidMount: function () {
+    componentDidMount() {
         const { context } = this.props;
         const derivedFromFileIds = context.derived_from && context.derived_from.length ? context.derived_from : [];
         if (derivedFromFileIds.length) {
@@ -114,9 +115,9 @@ const File = React.createClass({
                 this.setState({ derivedFromFiles: derivedFromFiles });
             });
         }
-    },
+    }
 
-    render: function () {
+    render() {
         const { context } = this.props;
         const itemClass = globals.itemClass(context, 'view-item');
         const altacc = (context.alternate_accessions && context.alternate_accessions.length) ? context.alternate_accessions.join(', ') : null;
@@ -148,11 +149,9 @@ const File = React.createClass({
                                     <StatusLabel title="Status" status={context.status} />
                                 </div>
                             : null}
-                            {context.audit ? <AuditIndicators audits={context.audit} id="file-audit" /> : null}
                         </div>
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} except={context['@id']} id="file-audit" />
                 <Panel addClasses="data-display">
                     <div className="split-panel">
                         <div className="split-panel__part split-panel__part--p50">
@@ -179,10 +178,10 @@ const File = React.createClass({
                                             <dt>Pipelines</dt>
                                             <dd>
                                                 {pipelines.map((pipeline, i) =>
-                                                    <span key={i}>
+                                                    <span key={pipeline['@id']}>
                                                         {i > 0 ? <span>{','}<br /></span> : null}
                                                         <a href={pipeline['@id']} title="View page for this pipeline">{pipeline.title}</a>
-                                                    </span>
+                                                    </span>,
                                                 )}
                                             </dd>
                                         </div>
@@ -311,19 +310,23 @@ const File = React.createClass({
                 />
             </div>
         );
-    },
-});
+    }
+}
+
+File.propTypes = {
+    context: React.PropTypes.object, // File object being displayed
+};
+
+File.contextTypes = {
+    session: React.PropTypes.object, // Login information
+};
 
 globals.content_views.register(File, 'File');
 
 
 // Display the sequence file summary panel for fastq files.
-const SequenceFileInfo = React.createClass({
-    propTypes: {
-        file: React.PropTypes.object.isRequired, // File being displayed
-    },
-
-    render: function () {
+class SequenceFileInfo extends React.Component {
+    render() {
         const { file } = this.props;
         const pairedWithAccession = file.paired_with ? globals.atIdToAccession(file.paired_with) : '';
 
@@ -406,29 +409,25 @@ const SequenceFileInfo = React.createClass({
                 </PanelBody>
             </Panel>
         );
-    },
-});
+    }
+}
+
+SequenceFileInfo.propTypes = {
+    file: React.PropTypes.object.isRequired, // File being displayed
+};
 
 
-const Listing = React.createClass({
-    propTypes: {
-        context: React.PropTypes.object, // File object being rendered
-    },
-
-    mixins: [PickerActionsMixin, AuditMixin],
-
-    render: function () {
+class Listing extends React.Component {
+    render() {
         const result = this.props.context;
 
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
                     <div className="pull-right search-meta">
                         <p className="type meta-title">File</p>
                         <p className="type">{` ${result.accession}`}</p>
                         <p className="type meta-status">{` ${result.status}`}</p>
-                        <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                     </div>
                     <div className="accession"><a href={result['@id']}>{`${result.file_format}${result.file_format_type ? ` (${result.file_format_type})` : ''}`}</a></div>
                     <div className="data-row">
@@ -436,10 +435,13 @@ const Listing = React.createClass({
                         {result.award.project ? <div><strong>Project: </strong>{result.award.project}</div> : null}
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
-    },
-});
+    }
+}
+
+Listing.propTypes = {
+    context: React.PropTypes.object, // File object being rendered
+};
 
 globals.listing_views.register(Listing, 'File');
