@@ -242,7 +242,7 @@
             "title": "Product ID",
             "description": "The product identifier provided by the originating lab or vendor.",
             "type": "string",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
+            "pattern": "^\\S+$"
         }
     },
     "lot_id": {
@@ -250,7 +250,7 @@
     	    "title": "Lot ID",
     	    "description": "The lot identifier provided by the originating lab or vendor.",
     	    "type": "string",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
+            "pattern": "^\\S+$"
         }
     },
     "source": {
