@@ -13,13 +13,52 @@ import { StatusLabel } from './statuslabel';
 const audit = AuditComponent => class extends React.Component {
     constructor() {
         super();
-        this.state = { data: null };
+        this.state = { auditDetailOpen: false };
+        this.toggleAuditDetail = this.toggleAuditDetail.bind(this);
+    }
+
+    toggleAuditDetail() {
+        this.setState({ auditDetailOpen: !this.state.auditDetailOpen });
     }
 
     render() {
-        return <AuditComponent {...this.props} data={this.state.data} />;
+        return (
+            <AuditComponent
+                {...this.props}
+                toggleAuditDetail={this.toggleAuditDetail}
+                auditDetailOpen={this.state.auditDetailOpen}
+            />
+        );
     }
 };
+
+
+class AuditIndicatorComponent extends React.Component {
+    render() {
+        return (
+            <button onClick={this.props.toggleAuditDetail}>Audit</button>
+        );
+    }
+}
+
+const AuditIndicator = audit(AuditIndicatorComponent);
+
+
+class AuditDetailComponent extends React.Component {
+    render() {
+        console.log('DETAILOPEN: %s', !this.props.auditDetailOpen);
+        if (this.props.auditDetailOpen) {
+            return (
+                <div>
+                    Audit Details
+                </div>
+            );
+        }
+        return null;
+    }
+}
+
+const AuditDetail = audit(AuditDetailComponent);
 
 
 // Columns to display in Deriving/Derived From file tables
@@ -143,6 +182,7 @@ class FileComponent extends React.Component {
                         <h2>{context.accession}{' / '}<span className="sentence-case">{`${context.file_format}${context.file_format_type ? ` (${context.file_format_type})` : ''}`}</span></h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
+                        <AuditIndicator />
                         <div className="status-line">
                             {context.status ?
                                 <div className="characterization-status-labels">
@@ -150,6 +190,7 @@ class FileComponent extends React.Component {
                                 </div>
                             : null}
                         </div>
+                        <AuditDetail />
                     </div>
                 </header>
                 <Panel addClasses="data-display">
@@ -302,7 +343,7 @@ class FileComponent extends React.Component {
 
                 <FetchedItems
                     {...this.props}
-                    url={`/search/?type=File&limit=all&derived_from.accession=${context.accession}`}
+                    url={`/search/?type=File&limit=all&derived_from=${context['@id']}`}
                     Component={DerivedFiles}
                     encodevers={globals.encodeVersion(context)}
                     session={this.context.session}

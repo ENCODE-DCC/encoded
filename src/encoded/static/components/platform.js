@@ -3,7 +3,7 @@ var React = require('react');
 var globals = require('./globals');
 var { DbxrefList, dbxref } = require('./dbxref');
 
-var Panel = module.exports.Panel = React.createClass({
+var Platform = module.exports.Platform = React.createClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-detail key-value');
@@ -34,4 +34,4 @@ var Panel = module.exports.Panel = React.createClass({
     }
 });
 
-globals.panel_views.register(Panel, 'Platform');
+globals.panel_views.register(Platform, 'Platform');
