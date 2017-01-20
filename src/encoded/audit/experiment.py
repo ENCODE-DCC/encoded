@@ -836,7 +836,7 @@ def check_experiment_dnase_seq_standards(experiment,
                              "ENCODE processed hotspots files {} ".format(file_names_string) + \
                              "produced by {} ".format(pipelines[0]['title']) + \
                              "( {} ) ".format(pipelines[0]['@id']) + \
-                             assemblies_detail(get_assemblies(hotspot_assemblies, file_names)) + \
+                             assemblies_detail(extract_assemblies(hotspot_assemblies, file_names)) + \
                              "have a SPOT score of {0:.2f}. ".format(metric["SPOT score"]) + \
                              "According to ENCODE standards, " + \
                              "SPOT score of 0.4 or higher is considered a product of high quality " + \
@@ -877,7 +877,7 @@ def check_experiment_dnase_seq_standards(experiment,
                         'ENCODE processed signal files {} '.format(file_names_string) + \
                         'produced by {} '.format(pipelines[0]['title']) + \
                         '( {} ) '.format(pipelines[0]['@id']) + \
-                        assemblies_detail(get_assemblies(signal_assemblies, file_names)) + \
+                        assemblies_detail(extract_assemblies(signal_assemblies, file_names)) + \
                         'have a Pearson correlation of {0:.2f}. '.format(metric['Pearson correlation']) + \
                         'According to ENCODE standards, in an {} '.format(experiment['replication_type']) + \
                         'assay a Pearson correlation value > {} '.format(threshold) + \
@@ -887,6 +887,14 @@ def check_experiment_dnase_seq_standards(experiment,
                     if metric['Pearson correlation'] < threshold:
                         yield AuditFailure('insufficient replicate concordance',
                                            detail, level='NOT_COMPLIANT')
+
+
+def extract_assemblies(assemblies, file_names):
+    to_return = set()
+    for f_name in file_names:
+        if f_name in assemblies:
+            to_return.add(assemblies[f_name])
+    return sorted(list(to_return))
 
 
 def assemblies_detail(assemblies):
