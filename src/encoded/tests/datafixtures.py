@@ -295,21 +295,6 @@ def bam_file(testapp, lab, award, experiment):
 
 
 @pytest.fixture
-def bigWig_file(testapp, lab, award, experiment):
-    item = {
-        'dataset': experiment['@id'],
-        'file_format': 'bigWig',
-        'md5sum': 'd41d8cd9sf00b204e9800998ecf86674427e',
-        'output_type': 'signal of unique reads',
-        'assembly': 'mm10',
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
 def file_ucsc_browser_composite(testapp, lab, award, ucsc_browser_composite):
     item = {
         'dataset': ucsc_browser_composite['@id'],
