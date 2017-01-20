@@ -10,14 +10,14 @@ import { SortTablePanel, SortTable } from './sorttable';
 import { StatusLabel } from './statuslabel';
 
 
-const auditControl = ControlledComponent => class extends React.Component {
+const audit = AuditComponent => class extends React.Component {
     constructor() {
         super();
         this.state = { data: null };
     }
 
     render() {
-        return <ControlledComponent {...this.props} data={this.state.data} />;
+        return <AuditComponent {...this.props} data={this.state.data} />;
     }
 };
 
@@ -99,7 +99,7 @@ DerivedFromFiles.propTypes = {
 };
 
 
-class File extends React.Component {
+class FileComponent extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -313,13 +313,15 @@ class File extends React.Component {
     }
 }
 
-File.propTypes = {
+FileComponent.propTypes = {
     context: React.PropTypes.object, // File object being displayed
 };
 
-File.contextTypes = {
+FileComponent.contextTypes = {
     session: React.PropTypes.object, // Login information
 };
+
+const File = audit(FileComponent);
 
 globals.content_views.register(File, 'File');
 
@@ -329,6 +331,7 @@ class SequenceFileInfo extends React.Component {
     render() {
         const { file } = this.props;
         const pairedWithAccession = file.paired_with ? globals.atIdToAccession(file.paired_with) : '';
+        const platformAccession = file.platform ? decodeURIComponent(globals.atIdToAccession(file.platform)) : '';
 
         return (
             <Panel>
@@ -341,7 +344,7 @@ class SequenceFileInfo extends React.Component {
                         {file.platform ?
                             <div data-test="platform">
                                 <dt>Platform</dt>
-                                <dd><a href={file.platform['@id']} title="View page for this platform">{file.platform.title ? file.platform.title : file.platform.term_id}</a></dd>
+                                <dd><a href={file.platform} title="View page for this platform">{platformAccession}</a></dd>
                             </div>
                         : null}
 
