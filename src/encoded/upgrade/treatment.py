@@ -62,13 +62,3 @@ def treatment_4_5(value, system):
         value['amount_units'] = value['concentration_units']
         value.pop('concentration')
         value.pop('concentration_units')
-
-
-@upgrade_step('treatment', '5', '6')
-def treatment_5_6(value, system):
-    # http://redmine.encodedcc.org/issues/1384
-    if 'notes' in value:
-        if value['notes']:
-            value['notes'] = value['notes'].strip()
-        else:
-            del value['notes']

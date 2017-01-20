@@ -62,19 +62,3 @@ def document_4_5(value, system):
 
     if 'references' in value:
         value['references'] = list(set(value['references']))
-
-
-@upgrade_step('document', '5', '6')
-def document_5_6(value, system):
-    # http://redmine.encodedcc.org/issues/1384
-    if 'description' in value:
-        if value['description']:
-            value['description'] = value['description'].strip()
-        else:
-            del value['description']
-
-    if 'notes' in value:
-        if value['notes']:
-            value['notes'] = value['notes'].strip()
-        else:
-            del value['notes']

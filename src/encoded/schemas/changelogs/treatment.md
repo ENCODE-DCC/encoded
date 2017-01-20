@@ -2,11 +2,6 @@
  Change log for treatment.json
 =========================
 
-Schema version 6
-----------------
-
-* *notes* field is no longer allowed to have any leading or trailing whitespace
-
 Schema version 5
 ----------------
  
