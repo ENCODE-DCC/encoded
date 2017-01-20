@@ -95,14 +95,3 @@ def antibody_lot_5_6(value, system):
             value['antigen_description'] = value['antigen_description'].strip()
         else:
             del value['antigen_description']
-
-    if 'product_id' in value:
-        if value['product_id']:
-            value['product_id'] = value['product_id'].strip()
-        else:
-            del value['product_id']
-    if 'lot_id' in value:
-        if value['lot_id']:
-            value['lot_id'] = value['lot_id'].strip()
-        else:
-            del value['lot_id']
