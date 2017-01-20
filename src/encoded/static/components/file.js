@@ -303,7 +303,7 @@ const File = React.createClass({
 
                 <FetchedItems
                     {...this.props}
-                    url={`/search/?type=File&limit=all&derived_from.accession=${context.accession}`}
+                    url={`/search/?type=File&limit=all&derived_from=${context['@id']}`}
                     Component={DerivedFiles}
                     encodevers={globals.encodeVersion(context)}
                     session={this.context.session}
