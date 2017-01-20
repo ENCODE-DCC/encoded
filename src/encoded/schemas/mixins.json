@@ -405,7 +405,13 @@
                 "DNA-PET",
                 "Switchgear",
                 "5' RLM RACE",
-                "MNase-seq"
+                "MNase-seq",
+                "5' RACE",
+                "3' RACE",
+                "small RNA-seq",
+                "Bru-seq",
+                "BruChase-seq",
+                "genetic modification followed by DNase-seq"
             ]
         }
     },
