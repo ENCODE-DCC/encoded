@@ -70,6 +70,7 @@
     "query-string": "^4.1.0",
     "react": "^0.13.3",
     "scriptjs": "^2.5.7",
+    "shortid": "^2.2.6",
     "source-map-support": "^0.2.7",
     "subprocess-middleware": "^0.1.0",
     "underscore": "^1.8.3",
