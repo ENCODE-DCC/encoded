@@ -7,7 +7,7 @@ from snovault import (
 )
 from snovault.schema_utils import validate
 from snovault.util import simple_path_ids
-
+import re
 
 @audit_checker('Item', frame='object')
 def audit_item_schema(value, system):
@@ -152,6 +152,18 @@ def audit_item_relations_status(value, system):
                             'mismatched status',
                             detail,
                             level='INTERNAL_ACTION')
+
+
+@audit_checker('Item', frame='object')
+def audit_item_aliases(value, system):
+    if 'aliases' not in value:
+        return
+
+    alias_pattern = re.compile('^[a-zA-Z\d-]+:[\sa-zA-Z\d-_.+!\*\(\)\']+')
+    for a in value['aliases']:
+        if alias_pattern.match(a) is None:
+            detail = 'Found \"bad\" alias: {}.'.format(a)
+            yield AuditFailure('flagged alias', detail, level='INTERNAL_ACTION')
 
 
 @audit_checker('Item', frame='object')
