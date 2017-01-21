@@ -156,14 +156,15 @@ def audit_item_relations_status(value, system):
 
 @audit_checker('Item', frame='object')
 def audit_item_aliases(value, system):
-    if 'aliases' not in value:
-        return
-
-    alias_pattern = re.compile('^[a-zA-Z\d-]+:[\sa-zA-Z\d-_.+!\*\(\)\']+')
-    for a in value['aliases']:
-        if alias_pattern.match(a) is None:
-            detail = 'Found \"bad\" alias: {}.'.format(a)
-            yield AuditFailure('flagged alias', detail, level='INTERNAL_ACTION')
+    aliases = value.get('aliases')
+    if aliases:
+        alias_pattern = re.compile('^([a-zA-Z\d-]+:[\sa-zA-Z\d_.+!\*\(\)\'-]+)$')
+        for a in aliases:
+            if alias_pattern.match(a) is None:
+                detail = 'Found \"bad\" alias: {}.'.format(a)
+                yield AuditFailure('flagged alias', detail, level='INTERNAL_ACTION')
+            else:
+                print (alias_pattern.match(a))
 
 
 @audit_checker('Item', frame='object')

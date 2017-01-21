@@ -64,3 +64,16 @@ def test_audit_item_schema_permission(testapp, file, embed_testapp):
     res = embed_testapp.get(file['@id'] + '/@@audit-self')
     errors_list = res.json['audit']
     assert not any(error['name'] == 'audit_item_schema' for error in errors_list)
+
+
+def test_audit_item_aliases(testapp, file):
+    patch = {
+        'aliases': ['encode:some?weird_&alias']
+    }
+    testapp.patch_json(file['@id'], patch)
+    res = testapp.get(file['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+        assert any(error['category'] == 'flagged alias' for error in errors_list)
