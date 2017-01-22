@@ -138,9 +138,9 @@ class FileComponent extends React.Component {
                                     <StatusLabel title="Status" status={context.status} />
                                 </div>
                             : null}
-                            {this.props.auditIndicators(context.audit, 'file-audit', this.context.session)}
+                            {this.props.auditIndicators(context.audit, 'file-audit', { session: this.context.session })}
                         </div>
-                        {this.props.auditDetail(context.audit, context['@id'], 'file-audit', false, this.context.session)}
+                        {this.props.auditDetail(context.audit, context['@id'], 'file-audit', { session: this.context.session })}
                     </div>
                 </header>
                 <Panel addClasses="data-display">

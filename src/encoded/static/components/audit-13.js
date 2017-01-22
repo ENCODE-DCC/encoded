@@ -4,7 +4,94 @@ import _ from 'underscore';
 import { collapseIcon } from '../libs/svg-icons';
 import { Panel } from '../libs/bootstrap/panel';
 
-// This 
+// This module supports the display of an object's audits in the form of an indicator button that
+// shows a summary of the categories of audits in the current object. Currently, we have four
+// categories: ERROR, NOT_COMPLIANT, WARNING, and INTERNAL_ACTION. This module needs no
+// modification if we change the number or meanings of audit categories though. Clicking the button
+// causes a panel of audit details to appear. It contains one row per audit type -- basically
+// groupings of audits of the same kind. The left of each audit detail row has a disclosure icon.
+// Clicking that reveals details of individual audits.
+//
+// This module hides all that functionality into two rendering functions that the modules using
+// this audit module place into their rendering code wherever they want them to appear: one
+// function to render the audit indicator button, and one to render the audit details panel.
+//
+// To add this functionality to existing ENCODE object rendering modules, they have to import this
+// module's audit component function, auditDecor:
+//
+// import auditDecor from './audit';
+//
+// As its name might imply, this function acts as a decorator on your existing object rendering
+// modules. Wrapping your modules in this component gives your module the ability to display its
+// audits. As an example, if you have a component that can have audits called `Blaine`, we change
+// the name of that component to something non-conflicting. In ENCODE, we use the standard of
+// adding `Component` to the module name, then make the real module name the result of the audit
+// decorator, like:
+//
+//     const BlaineComponent extends React.Component {
+//         ...
+//     }
+//
+//     const Blaine = auditDecor(BlaineComponent);
+//
+//     <Blaine />
+//
+// The two audit rendering components get added to the wrapped component's properties, so they also
+// have to add them to their propTypes. The two functions are called auditIndicators and
+// auditDetail:
+//
+//     BlaineComponent.propTypes = {
+//         ...
+//         blaineData: React.PropTypes.object,
+//         auditIndicators: React.PropTypes.func,
+//         auditDetail: React.PropTypes.func,
+//         ...
+//     };
+//
+// Finally, to insert the indicator and detail rendering components into the wrapped component's
+// render function, just call these functions, e.g.:
+//
+//     render() {
+//         const { auditIndicators, auditDetail } = this.props;
+//         return (
+//             ...
+//             <h1>Blaine Fitzgerald</h1>
+//             {auditIndicators(...)}
+//             <div />
+//             {auditDetail(...)}
+//             <span />
+//             ...
+//         );
+//     }
+//
+// These are the parameters needed/allowed by these two functions:
+//
+// auditIndicators
+// ---------------
+// * audits (Required object): the `audit` object from the wrapped component's object data.
+//
+// * id (Required string): Arbitrary text used for to identify the button/panel accessibility
+// arias. ENCODE has the standard of the lowercase wrapped component name and `-audit`. In the
+// above example, that would be `blaine-audit`.
+//
+// * options (Optional object):
+//   * options.session (object): session object from app context
+//   * options.search (boolean): `true` if audit displayed on a search result page, so styling's
+//                               different
+//
+// auditDetail
+// -----------
+// * audits (Required object): the `audit` object from the wrapped component's object data.
+//
+// * id (Required string): Arbitrary text used for to identify the button/panel accessibility
+//                         arias. ENCODE has the standard of the lowercase wrapped component name
+//                         and `-audit`. In the above example, that would be `blaine-audit`.
+// 
+// * options (Optional object):
+//   * options.session (object): session object from app context
+//   * options.except (string): @id to *not* make into a link in the detail text
+//   * options.forcedEditLink (boolean): `true` to make the `except` string a link anyway
+
 
 // Display an audit icon within the audit indicator button. The type of icon depends on the given
 // audit level.
@@ -141,6 +228,10 @@ AuditGroup.defaultProps = {
 };
 
 
+// No necessarily distinguishing information for each audit, making it impossible to reliably key
+// them as React components. This takes an audit object as it arrives in a parent data object and
+// adds a unique id to each one that we can use as a key when rendering each one. Uses an npm
+// module that generates guaranteed unique values.
 function idAudits(audits) {
     Object.keys(audits).forEach((auditType) => {
         const typeAudits = audits[auditType];
@@ -165,20 +256,21 @@ const auditDecor = AuditComponent => class extends React.Component {
     }
 
     auditIndicators(audits, id, options) {
-        const { session, search } = options ? options : {};
+        const { session, search } = options || {};
         const loggedIn = session && session['auth.userid'];
 
         if (audits && Object.keys(audits).length) {
             // Attach unique IDs to each audit to use as React keys.
             idAudits(audits);
 
-            // Sort the audit levels by their level number, using the first element of each warning category
+            // Sort the audit levels by their level number, using the first element of each warning
+            // category.
             const sortedAuditLevels = _(Object.keys(audits)).sortBy(level => -audits[level][0].level);
 
-            const indicatorClass = `audit-indicators btn btn-info${this.context.auditDetailOpen ? ' active' : ''}${search ? ' audit-search' : ''}`;
+            const indicatorClass = `audit-indicators btn btn-info${this.state.auditDetailOpen ? ' active' : ''}${search ? ' audit-search' : ''}`;
             if (loggedIn || !(sortedAuditLevels.length === 1 && sortedAuditLevels[0] === 'INTERNAL_ACTION')) {
                 return (
-                    <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.context.auditDetailOpen} aria-controls={id} onClick={this.toggleAuditDetail}>
+                    <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.state.auditDetailOpen} aria-controls={id} onClick={this.toggleAuditDetail}>
                         {sortedAuditLevels.map((level) => {
                             if (loggedIn || level !== 'INTERNAL_ACTION') {
                                 // Calculate the CSS class for the icon
@@ -199,7 +291,7 @@ const auditDecor = AuditComponent => class extends React.Component {
                 );
             }
 
-            // Logged out and the only audit level is DCC action, so don't show a button
+            // Logged out and the only audit level is DCC action, so don't show a button.
             return null;
         }
 
@@ -207,9 +299,11 @@ const auditDecor = AuditComponent => class extends React.Component {
         return null;
     }
 
-    auditDetail(audits, except, id, forcedEditLink, session) {
+    auditDetail(audits, id, options) {
+        const { except, forcedEditLink, session } = options || {};
         if (audits && this.state.auditDetailOpen) {
-            // Sort the audit levels by their level number, using the first element of each warning category
+            // Sort the audit levels by their level number, using the first element of each warning
+            // category.
             const sortedAuditLevelNames = _(Object.keys(audits)).sortBy(level => -audits[level][0].level);
             const loggedIn = session && session['auth.userid'];
 
