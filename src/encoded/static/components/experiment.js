@@ -4,7 +4,7 @@ var panel = require('../libs/bootstrap/panel');
 var button = require('../libs/bootstrap/button');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var _ = require('underscore');
-import auditDecor from './audit-13';
+import { auditDecor } from './audit-13';
 var navigation = require('./navigation');
 var globals = require('./globals');
 var dbxref = require('./dbxref');

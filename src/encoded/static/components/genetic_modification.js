@@ -3,7 +3,7 @@ import _ from 'underscore';
 import url from 'url';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { collapseIcon } from '../libs/svg-icons';
-import auditDecor from './audit-13';
+import { auditDecor } from './audit-13';
 import { SortTable } from './sorttable';
 import globals from './globals';
 import { StatusLabel } from './statuslabel';

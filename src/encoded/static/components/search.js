@@ -7,7 +7,7 @@ var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var svgIcon = require('../libs/svg-icons').svgIcon;
 var url = require('url');
 var _ = require('underscore');
-import auditDecor from './audit-13';
+import { auditDecor } from './audit-13';
 var globals = require('./globals');
 var image = require('./image');
 var search = module.exports;

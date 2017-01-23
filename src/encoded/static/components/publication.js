@@ -1,6 +1,6 @@
 'use strict';
 var React = require('react');
-import auditDecor from './audit-13';
+import { auditDecor } from './audit-13';
 var globals = require('./globals');
 var navigation = require('./navigation');
 var dbxref = require('./dbxref');

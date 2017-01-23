@@ -19,7 +19,7 @@ import { Panel } from '../libs/bootstrap/panel';
 // To add this functionality to existing ENCODE object rendering modules, they have to import this
 // module's audit component function, auditDecor:
 //
-// import auditDecor from './audit';
+// import { auditDecor } from './audit';
 //
 // As its name might imply, this function acts as a decorator on your existing object rendering
 // modules. Wrapping your modules in this component gives your module the ability to display its
@@ -95,7 +95,7 @@ import { Panel } from '../libs/bootstrap/panel';
 
 // Display an audit icon within the audit indicator button. The type of icon depends on the given
 // audit level.
-class AuditIcon extends React.Component {
+export class AuditIcon extends React.Component {
     render() {
         const { level, addClasses } = this.props;
         const levelName = level.toLowerCase();
@@ -242,7 +242,7 @@ function idAudits(audits) {
 }
 
 
-const auditDecor = AuditComponent => class extends React.Component {
+export const auditDecor = AuditComponent => class extends React.Component {
     constructor() {
         super();
         this.state = { auditDetailOpen: false };
@@ -347,5 +347,3 @@ const auditDecor = AuditComponent => class extends React.Component {
         );
     }
 };
-
-export default auditDecor;

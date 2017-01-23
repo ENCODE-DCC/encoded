@@ -3,7 +3,7 @@ const React = require('react');
 const panel = require('../libs/bootstrap/panel');
 const _ = require('underscore');
 const url = require('url');
-import auditDecor from './audit-13';
+import { auditDecor } from './audit-13';
 const globals = require('./globals');
 const navigation = require('./navigation');
 const dataset = require('./dataset');

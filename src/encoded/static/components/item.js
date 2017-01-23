@@ -3,7 +3,7 @@ var React = require('react');
 var collection = require('./collection');
 var fetched = require('./fetched');
 var globals = require('./globals');
-import auditDecor from './audit-13';
+import { auditDecor } from './audit-13';
 var form = require('./form');
 var _ = require('underscore');
 

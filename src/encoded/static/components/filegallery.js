@@ -6,6 +6,7 @@ import { Panel, PanelHeading } from '../libs/bootstrap/panel';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import { DropdownButton } from '../libs/bootstrap/button';
 import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
+import { auditDecor, AuditIcon } from './audit-13';
 import { StatusLabel } from './statuslabel';
 import { requestFiles } from './objectutils';
 import { Graph, JsonGraph } from './graph';
@@ -14,7 +15,6 @@ import { FetchedData, Param } from './fetched';
 import { collapseIcon } from '../libs/svg-icons';
 import { SortTablePanel, SortTable } from './sorttable';
 import { AttachmentPanel } from './doc';
-import { AuditMixin, AuditIndicators, AuditDetail, AuditIcon } from './audit';
 
 
 const MINIMUM_COALESCE_COUNT = 5; // Minimum number of files in a coalescing group
@@ -1961,7 +1961,7 @@ function coalescedDetailsView(node) {
     return { header: header, body: body };
 }
 
-const FileGraph = React.createClass({
+const FileGraphComponent = React.createClass({
     propTypes: {
         items: React.PropTypes.array, // Array of files we're graphing
         graph: React.PropTypes.object, // JsonGraph object generated from files
@@ -1973,9 +1973,9 @@ const FileGraph = React.createClass({
         infoNodeVisible: React.PropTypes.bool, // True if node's modal is vibible
         session: React.PropTypes.object, // Current user's login information
         adminUser: React.PropTypes.bool, // True if logged in user is an admin
+        auditIndicators: React.PropTypes.func, // Inherited from auditDecor HOC
+        auditDetail: React.PropTypes.func, // Inherited from auditDecor HOC
     },
-
-    mixins: [AuditMixin],
 
     getInitialState: function () {
         return {
@@ -2038,7 +2038,7 @@ const FileGraph = React.createClass({
                         if (currContributing[node.metadata.contributing]) {
                             // We have this file's object in the cache, so just display it.
                             node.metadata.ref = currContributing[node.metadata.contributing];
-                            meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, loggedIn, adminUser);
+                            meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, this.loggedIn, adminUser);
                             meta.type = node['@type'][0];
                         } else if (!this.contributingRequestOutstanding) {
                             // We don't have this file's object in the cache, so request it from
@@ -2057,7 +2057,7 @@ const FileGraph = React.createClass({
                     } else {
                         // Regular File data in the node from when we generated the graph. Just
                         // display the file data from there.
-                        meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, loggedIn, adminUser);
+                        meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, loggedIn, adminUser);
                         meta.type = node['@type'][0];
                     }
                 }
@@ -2081,7 +2081,6 @@ const FileGraph = React.createClass({
     closeModal: function () {
         // Called when user wants to close modal somehow
         this.props.setInfoNodeVisible(false);
-        this.auditStateClosed();
     },
 
     render: function () {
@@ -2137,6 +2136,8 @@ const FileGraph = React.createClass({
     },
 });
 
+const FileGraph = auditDecor(FileGraphComponent);
+
 
 // Extract a displayable string from a QualityMetric object passed in the `qc` parameter.
 function qcIdToDisplay(qc) {
@@ -2174,7 +2175,7 @@ const FileQCButton = React.createClass({
 
 
 // Display the metadata of the selected file in the graph
-const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
+const FileDetailView = function (node, qcClick, auditIndicators, auditDetail, loggedIn, adminUser) {
     // The node is for a file
     const selectedFile = node.metadata.ref;
     let body = null;
@@ -2305,8 +2306,8 @@ const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
                     <div className="row graph-modal-audits">
                         <div className="col-xs-12">
                             <h5>File audits:</h5>
-                            <AuditIndicators audits={selectedFile.audit} id="qc-audit" />
-                            <AuditDetail audits={selectedFile.audit} except={selectedFile['@id']} id="qc-audit" />
+                            {auditIndicators(selectedFile.audit, 'file-audit')}
+                            {auditDetail(selectedFile.audit, 'file-audit', { except: selectedFile['@id'] })}
                         </div>
                     </div>
                 : null}
