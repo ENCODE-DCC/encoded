@@ -204,15 +204,14 @@ def process_illumina_read_name_pattern(read_name,
                                        signatures_set,
                                        signatures_no_barcode_set):
     read_array = re.split(r'[\s_]', read_name)
-    prefix = read_array[0]
-    suffix = read_array[1]
-    #read_name_array = re.split(r'[:\s_]', read_name)
+    prefix = read_array[0].split(':')
+    suffix = read_array[1].split(':')
+    # read_name_array = re.split(r'[:\s_]', read_name)
     flowcell = prefix[-5]
     lane_number = prefix[-4]
     read_number = suffix[-4]
     read_numbers_set.add(read_number)
     barcode_index = suffix[-1]
-    
     signatures_set.add(
         flowcell + ':' + lane_number + ':' +
         read_number + ':' + barcode_index + ':')
@@ -301,6 +300,7 @@ def process_old_illumina_read_name_pattern(read_name,
 def process_read_name_line(read_name_line,
                            read_name_prefix,
                            read_name_pattern,
+                           extended_read_name_pattern,
                            special_read_name_pattern,
                            old_illumina_current_prefix,
                            read_numbers_set,
@@ -311,7 +311,7 @@ def process_read_name_line(read_name_line,
     read_name = read_name_line.strip()
     words_array = re.split(r'\s', read_name)
     if read_name_pattern.match(read_name) is None and \
-       extended_read_name_prefix.match(read_name) is None:
+       extended_read_name_pattern.match(read_name) is None:
         if special_read_name_pattern.match(read_name) is not None:
             process_special_read_name_pattern(read_name,
                                               words_array,
@@ -380,9 +380,9 @@ def process_fastq_file(job, fastq_data_stream, session, url):
         '+:\d+:\d+:\d+:\d+[/1|/2]*[\s_][12]:[YXN]:[0-9]+:([ACNTG\+]*|[0-9]*))$'
     )
 
-    extended_read_name_prefix = re.compile(
+    extended_read_name_pattern = re.compile(
         '^(@[a-zA-Z\d]+[a-zA-Z\d_-]*:[a-zA-Z\d-]+:[a-zA-Z\d-]+:[a-zA-Z\d_-]' +
-        '+:\d+:\d+:\d+:\d+)$')
+        '+:\d+:\d+:\d+:\d+[\s_][12]:[YXN]:[0-9]+:([ACNTG\+]*|[0-9]*))$')
 
     read_numbers_set = set()
     signatures_set = set()
@@ -401,6 +401,7 @@ def process_fastq_file(job, fastq_data_stream, session, url):
                         line,
                         read_name_prefix,
                         read_name_pattern,
+                        extended_read_name_pattern,
                         special_read_name_pattern,
                         old_illumina_current_prefix,
                         read_numbers_set,
@@ -462,6 +463,7 @@ def process_fastq_file(job, fastq_data_stream, session, url):
                 signatures_for_comparison.add(entry + 'UMI:')
         else:
             if old_illumina_current_prefix == 'empty' and len(signatures_set) > 100:
+                # print (signatures_set)
                 signatures_for_comparison = process_barcodes(signatures_set)
                 if len(signatures_for_comparison) == 0:
                     for entry in signatures_no_barcode_set:
