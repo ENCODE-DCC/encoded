@@ -3,7 +3,6 @@ var React = require('react');
 var fetched = require('../fetched');
 var globals = require('../globals');
 var item = require('./item');
-var noarg_memoize = require('../../libs/noarg-memoize');
 var richtext = require('./richtext');
 var _ = require('underscore');
 
@@ -113,16 +112,33 @@ var imagePicker = <ObjectPicker searchBase={"?mode=picker&type=image"} />;
 globals.blocks.register({
     label: 'teaser block',
     icon: 'icon icon-image',
-    schema: noarg_memoize(function() {
-        var ReactForms = require('react-forms');
-        var Scalar = ReactForms.schema.Scalar;
-        return ReactForms.schema.Mapping({}, {
-            display: Scalar({label: "Display Layout", input: displayModeSelect, defaultValue: "search"}),
-            image: Scalar({label: "Image", input: imagePicker}),
-            body: Scalar({label: "Caption", input: <RichEditor />}),
-            href: Scalar({label: "Link URL"}),
-            className: Scalar({label: 'CSS Class'}),
-        });
-    }),
+    schema: {
+        type: 'object',
+        properties: {
+            display: {
+                title: 'Display Layout',
+                type: 'string',
+                formInput: displayModeSelect
+            },
+            image: {
+                title: 'Image',
+                type: 'string',
+                formInput: imagePicker
+            },
+            body: {
+                title: 'Caption',
+                type: 'string',
+                formInput: <RichEditor />
+            },
+            href: {
+                title: 'Link URL',
+                type: 'string'
+            },
+            className: {
+                title: 'CSS Class',
+                type: 'string'
+            }
+        }
+    },
     view: TeaserBlockView
 }, 'teaserblock');

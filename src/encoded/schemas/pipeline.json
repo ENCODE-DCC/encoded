@@ -21,7 +21,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "accession": {
             "accessionType": "PL"
@@ -41,7 +41,8 @@
         "title": {
             "title": "Title",
             "description": "The preferred viewable name of the pipeline.",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
         "description": {
             "title": "Description",
@@ -59,7 +60,8 @@
                     "not_analyzed",
                     "no"
                 ]
-            }
+            },
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
         "analysis_steps": {
             "title": "Analysis steps",

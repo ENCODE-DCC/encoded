@@ -375,6 +375,59 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             )
         return None
 
+    @calculated_property(condition='depleted_in_term_name', schema={
+        "title": "depleted_in_term_id",
+        "type": "string",
+    })
+    def depleted_in_term_id(self, request, depleted_in_term_name):
+
+        term_lookup = {
+            'head': 'UBERON:0000033',
+            'limb': 'UBERON:0002101',
+            'salivary gland': 'UBERON:0001044',
+            'male accessory sex gland': 'UBERON:0010147',
+            'testis': 'UBERON:0000473',
+            'female gonad': 'UBERON:0000992',
+            'digestive system': 'UBERON:0001007',
+            'arthropod fat body': 'UBERON:0003917',
+            'antenna': 'UBERON:0000972',
+            'adult maxillary segment': 'FBbt:00003016',
+            'female reproductive system': 'UBERON:0000474',
+            'male reproductive system': 'UBERON:0000079'
+        }
+
+        term_id = list()
+        for term_name in depleted_in_term_name:
+            if term_name in term_lookup:
+                term_id.append(term_lookup.get(term_name))
+            else:
+                term_id.append('Term ID unknown')
+
+        return term_id
+
+    @calculated_property(condition='subcellular_fraction_term_name', schema={
+        "title": "subcellular_fraction_term_id",
+        "type": "string",
+    })
+    def subcellular_fraction_term_id(self, request, subcellular_fraction_term_name):
+        term_lookup = {
+            'nucleus': 'GO:0005634',
+            'cytosol': 'GO:0005829',
+            'chromatin': 'GO:0000785',
+            'membrane': 'GO:0016020',
+            'mitochondria': 'GO:0005739',
+            'nuclear matrix': 'GO:0016363',
+            'nucleolus': 'GO:0005730',
+            'nucleoplasm': 'GO:0005654',
+            'polysome': 'GO:0005844',
+            'insoluble cytoplasmic fraction': 'NTR:0002594'
+        }
+
+        if subcellular_fraction_term_name in term_lookup:
+            return term_lookup.get(subcellular_fraction_term_name)
+        else:
+            return 'Term ID unknown'
+
     @calculated_property(schema={
         "title": "Summary",
         "type": "string",
@@ -654,6 +707,9 @@ def generate_summary_dictionary(
                 term_phrase += ' ' + w
 
         term_phrase += ' ' + term_type
+        if term_phrase.startswith(' of'):
+            term_phrase = ' ' + term_phrase[3:]
+
         if len(term_phrase) > 0:
             dict_of_phrases['term_phrase'] = term_phrase[1:]
 

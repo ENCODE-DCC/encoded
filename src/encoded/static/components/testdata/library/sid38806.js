@@ -16,7 +16,7 @@ module.exports = {
     "nucleic_acid_term_id": "SO:0000871",
     "nucleic_acid_term_name": "polyadenylated mRNA",
     "size_range": ">200",
-    "spikeins_used": [require('../dataset/ENCSR000AJW')],
+    "spikeins_used": [require('../dataset/ENCSR000AJW')['@id']],
     "strand_specificity": true,
     "submitted_by": "/users/0abbd494-b852-433c-b360-93996f679dae/",
     "uuid": "7013e140-dc14-4893-b0b1-0d7bb293730c"

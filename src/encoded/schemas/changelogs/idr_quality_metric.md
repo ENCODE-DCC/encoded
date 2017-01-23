@@ -2,6 +2,11 @@
 Change log for idr_quality_metric.json
 =========================
 
+Schema version 3
+-----------------
+
+* *assay_term_id* is no longer allowed to be submitted, it will be automatically calculated based on the term_name
+
 Schema version 2
 ----------------
 

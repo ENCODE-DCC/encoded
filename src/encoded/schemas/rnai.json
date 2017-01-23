@@ -48,17 +48,20 @@
         "vector_backbone_name": {
             "title": "Backbone name",
             "description": "The name of the vector backbone used for the construct.",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
         "rnai_sequence": {
             "title": "RNAi sequence",
             "description": "Sequence of the inhibitory RNA.",
-            "type": "string"
+            "type": "string",
+            "pattern": "^[ACUNTG-]+$"
         },
         "rnai_target_sequence": {
             "title": "Target sequence",
             "description": "Genomic sequence targeted by the RNA.",
-            "type": "string"
+            "type": "string",
+            "pattern": "^[ACTG]+|non-mammalian target$"
         }
     },
     "boost_values": {

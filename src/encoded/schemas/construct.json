@@ -43,7 +43,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "construct_type": {
             "title": "Type",
@@ -68,7 +68,8 @@
                     "not_analyzed",
                     "no"
                 ]
-            }
+            },
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
         "url": {
             "title": "URL",
@@ -127,7 +128,8 @@
         "vector_backbone_name": {
             "title": "Backbone name",
             "description": "The name of the vector backbone used for the construct.",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
         "genomic_integration_site": {
             "title": "Integration site",

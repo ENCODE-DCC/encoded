@@ -130,10 +130,7 @@ var ObjectPicker = module.exports.ObjectPicker = React.createClass({
     },
 
     handleSearch: function(e) {
-        if (this.state.searchInput) {
-            this.setState({search: this.state.searchInput, browsing: true});
-        }
-        this.props.onBlur();
+        this.setState({search: this.state.searchInput, browsing: true});
     },
 
     handleBrowse: function(e) {
@@ -152,7 +149,6 @@ var ObjectPicker = module.exports.ObjectPicker = React.createClass({
     },
 
     handleClear: function(e) {
-        this.props.onBlur();
         this.props.onChange(null);
         this.setState({browsing: false, searchInput: '', search: '', searchParams: null});
         e.preventDefault();

@@ -7,9 +7,10 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/mo
 import { DropdownButton } from '../libs/bootstrap/button';
 import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
 import { StatusLabel } from './statuslabel';
+import { requestFiles } from './objectutils';
 import { Graph, JsonGraph } from './graph';
 import { softwareVersionList } from './software';
-import { FetchedItems, FetchedData, Param } from './fetched';
+import { FetchedData, Param } from './fetched';
 import { collapseIcon } from '../libs/svg-icons';
 import { SortTablePanel, SortTable } from './sorttable';
 import { AttachmentPanel } from './doc';
@@ -38,8 +39,20 @@ const assemblyPriority = [
 const FileAccessionButton = React.createClass({
     propTypes: {
         file: React.PropTypes.object.isRequired, // File whose button is being rendered
-        buttonEnabled: React.PropTypes.bool, // True if accession should be a button
-        clickHandler: React.PropTypes.func, // Function to call when the button is clicked
+    },
+
+    render: function () {
+        const { file } = this.props;
+        return <a href={file['@id']} title={`Go to page for ${file.title}`}>{file.title}</a>;
+    },
+});
+
+
+// Display a button to open the file information modal.
+const FileInfoButton = React.createClass({
+    propTypes: {
+        file: React.PropTypes.object.isRequired, // File whose information is to be displayed
+        clickHandler: React.PropTypes.func, // Function to call when the info button is clicked
     },
 
     onClick: function () {
@@ -47,15 +60,14 @@ const FileAccessionButton = React.createClass({
     },
 
     render: function () {
-        const { file, buttonEnabled } = this.props;
+        const { file } = this.props;
+
         return (
-            <span>
-                {buttonEnabled ?
-                    <span><button className="file-table-btn" onClick={this.onClick}>{file.title}</button>&nbsp;</span>
-                :
-                    <span>{file.title}&nbsp;</span>
-                }
-            </span>
+            <button className="file-table-btn" onClick={this.onClick}>
+                <i className="icon icon-info-circle">
+                    <span className="sr-only">Open file information</span>
+                </i>
+            </button>
         );
     },
 });
@@ -170,6 +182,7 @@ const DownloadableAccession = React.createClass({
         return (
             <span className="file-table-accession">
                 <FileAccessionButton file={file} buttonEnabled={buttonEnabled} clickHandler={clickHandler} />
+                {buttonEnabled ? <FileInfoButton file={file} clickHandler={clickHandler} /> : null}
                 <RestrictedDownloadButton file={file} loggedIn={loggedIn} adminUser={adminUser} />
             </span>
         );
@@ -415,7 +428,6 @@ export const FileTable = React.createClass({
         let selectedAssembly;
         let selectedAnnotation;
         const loggedIn = !!(session && session['auth.userid']);
-
 
         let datasetFiles = _((items && items.length) ? items : []).uniq(file => file['@id']);
         if (datasetFiles.length) {
@@ -869,8 +881,12 @@ const RawFileTable = React.createClass({
                                 // the first row of files, spanned to all rows for that replicate and
                                 // library
                                 const spanned = [
-                                    <td key="br" rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>{groupFiles[0].biological_replicates[0]}</td>,
-                                    <td key="lib" rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged`}>{groupFiles[0].replicate.library.accession}</td>,
+                                    <td key="br" rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>
+                                        {groupFiles[0].biological_replicates.length ? <span>{groupFiles[0].biological_replicates[0]}</span> : <i>N/A</i>}
+                                    </td>,
+                                    <td key="lib" rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged`}>
+                                        {groupFiles[0].replicate && groupFiles[0].replicate.library ? <span>{groupFiles[0].replicate.library.accession}</span> : <i>N/A</i>}
+                                    </td>,
                                 ];
 
                                 // Render each file's row, with the biological replicate and library
@@ -955,14 +971,13 @@ const RawFileTable = React.createClass({
 // unreleased files.
 export const DatasetFiles = React.createClass({
     propTypes: {
-        context: React.PropTypes.object, // Dataset whose files we're getting
         items: React.PropTypes.array, // Array of files retrieved
     },
 
     render: function () {
-        const { context, items } = this.props;
+        const { items } = this.props;
 
-        const files = _.uniq(((context.files && context.files.length) ? context.files : []).concat((items && items.length) ? items : []));
+        const files = _.uniq((items && items.length) ? items : []);
         if (files.length) {
             return <FileTable {...this.props} items={files} />;
         }
@@ -1064,352 +1079,248 @@ export function GraphException(message, file0, file1) {
 }
 
 
+// Map a QC object to its corresponding two-letter abbreviation for the graph.
+function qcAbbr(qc) {
+    // As we add more QC object types, add to this object.
+    const qcAbbrMap = {
+        BigwigcorrelateQualityMetric: 'BC',
+        BismarkQualityMetric: 'BK',
+        ChipSeqFilterQualityMetric: 'CF',
+        ComplexityXcorrQualityMetric: 'CX',
+        CorrelationQualityMetric: 'CN',
+        CpgCorrelationQualityMetric: 'CC',
+        DuplicatesQualityMetric: 'DS',
+        EdwbamstatsQualityMetric: 'EB',
+        EdwcomparepeaksQualityMetric: 'EP',
+        Encode2ChipSeqQualityMetric: 'EC',
+        FastqcQualityMetric: 'FQ',
+        FilteringQualityMetric: 'FG',
+        GenericQualityMetric: 'GN',
+        HotspotQualityMetric: 'HS',
+        IDRQualityMetric: 'ID',
+        IdrSummaryQualityMetric: 'IS',
+        MadQualityMetric: 'MD',
+        SamtoolsFlagstatsQualityMetric: 'SF',
+        SamtoolsStatsQualityMetric: 'SS',
+        StarQualityMetric: 'SR',
+        TrimmingQualityMetric: 'TG',
+    };
+
+    let abbr = qcAbbrMap[qc['@type'][0]];
+    if (!abbr) {
+        // 'QC' is the generic, unmatched abbreviation if qcAbbrMap doesn't have a match.
+        abbr = 'QC';
+    }
+    return abbr;
+}
+
+
 export function assembleGraph(context, session, infoNodeId, files, filterAssembly, filterAnnotation) {
-    // Calculate a step ID from a file's derived_from array
+    // Calculate a step ID from a file's derived_from array.
     function rDerivedFileIds(file) {
-        if (file.derived_from) {
-            return file.derived_from.map(derived => derived['@id']).sort().join();
+        if (file.derived_from && file.derived_from.length) {
+            return file.derived_from.sort().join();
         }
         return '';
     }
 
+    // Calculate a QC node ID.
     function rGenQcId(metric, file) {
         return `qc:${metric['@id'] + file['@id']}`;
     }
 
-    function processFiltering(fileList, assemblyFilter, annotationFilter, allFiles, allContributing, include) {
-        function getSubFileList(filesArray) {
-            const subFileList = {};
-            filesArray.forEach((file) => {
-                subFileList[file['@id']] = allFiles[file['@id']];
-            });
-            return subFileList;
-        }
-
-        const fileKeys = Object.keys(fileList);
-        for (let i = 0; i < fileKeys.length; i += 1) {
-            const file = fileList[fileKeys[i]];
-            let nextFileList;
-
-            if (file) {
-                if (!file.filtered) {
-                    // This file gets included. Include everything it derives from
-                    if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
-                        nextFileList = getSubFileList(file.derived_from);
-                        processFiltering(nextFileList, assemblyFilter, annotationFilter, allFiles, allContributing, true);
-                    }
-                } else if (include) {
-                    // Unremove the file if this branch is to be included based on files that derive from it
-                    file.filtered = false;
-                    if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
-                        nextFileList = getSubFileList(file.derived_from);
-                        processFiltering(nextFileList, assemblyFilter, annotationFilter, allFiles, allContributing, true);
-                    }
-                }
-            }
-        }
-    }
-
-    const derivedFromFiles = {}; // List of all files that other files derived from
-    const allFiles = {}; // All files' accessions as keys
-    const allReplicates = {}; // All file's replicates as keys; each key references an array of files
-    const allPipelines = {}; // List of all pipelines indexed by step @id
-    const fileQcMetrics = {}; // List of all file QC metrics indexed by file ID
-    const filterOptions = []; // List of graph filters; annotations and assemblies
     const derivedFileIds = _.memoize(rDerivedFileIds, file => file['@id']);
     const genQcId = _.memoize(rGenQcId, (metric, file) => metric['@id'] + file['@id']);
-    let stepExists = false; // True if at least one file has an analysis_step
-    let fileOutsideReplicate = false; // True if at least one file exists outside a replicate
-    let abortGraph = false; // True if graph shouldn't be drawn
 
-    // Collect all files keyed by their ID as a single source of truth for files.
-    // Every reference to a file object should get it from this object. Also serves
-    // to de-dup the file array since there can be repeated files in it.
+    // Begin collecting up information about the files from the search result, and gathering their
+    // QC and analysis pipeline information.
+    const graphedFiles = {}; // All files in the graph, so table can link to it.
+    const allFiles = {}; // All searched files, keyed by file @id
+    let matchingFiles = {}; // All files that match the current assembly/annotation, keyed by file @id
+    const fileQcMetrics = {}; // List of all file QC metrics indexed by file @id
+    const allPipelines = {}; // List of all pipelines indexed by step @id
     files.forEach((file) => {
-        if (!allFiles[file['@id']]) {
-            file.removed = file.missing = file.filtered = false;
-            allFiles[file['@id']] = file;
+        // allFiles gets all files from search regardless of filtering.
+        allFiles[file['@id']] = file;
+
+        // matchingFiles gets just the files matching the given filtering assembly/annotation.
+        // Note that if all assemblies and annotations are selected, this function isn't called
+        // because no graph gets displayed in that case.
+        if ((file.assembly === filterAssembly) && ((!file.genome_annotation && !filterAnnotation) || (file.genome_annotation === filterAnnotation))) {
+            // Note whether any files have an analysis step
+            const fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
+            if (!fileAnalysisStep || (file.derived_from && file.derived_from.length)) {
+                // File has no analysis step or derives from other files, so it can be included in
+                // the graph.
+                matchingFiles[file['@id']] = file;
+
+                // Collect any QC info that applies to this file and make it searchable by file
+                // @id.
+                if (file.quality_metrics && file.quality_metrics.length) {
+                    fileQcMetrics[file['@id']] = file.quality_metrics;
+                }
+
+                // Save the pipeline array used for each step used by the file.
+                if (fileAnalysisStep) {
+                    allPipelines[fileAnalysisStep['@id']] = fileAnalysisStep.pipelines;
+                }
+            } // else file has analysis step but no derived from -- can't include in graph.
         }
     });
 
-    // Collect derived_from files, used replicates, and used pipelines. allFiles has all files
-    // directly involved with this experiment if we're logged in, or just released files directly
-    // involved with experiment if we're not.
-    Object.keys(allFiles).forEach((fileId) => {
-        const file = allFiles[fileId];
-
-        // Build an object keyed with all files that other files derive from. If the file is
-        // contributed, we don't care about its derived_from because we don't render that.
-        if (file.derived_from && file.derived_from.length) {
-            file.derived_from.forEach((derivedFrom, i) => {
-                const derivedFromId = derivedFrom['@id'];
-                const derivedFile = allFiles[derivedFromId];
-                if (!derivedFile) {
-                    // The derived-from file wasn't in the given file list. Copy the file object
-                    // from the file's derived_from so we can examine it later -- and mark it as
-                    // missing. It could be because a derived-from file isn't released and we're
-                    // not logged in, or because it's a contributing file.
-                    derivedFromFiles[derivedFromId] = derivedFrom;
-                    derivedFrom.missing = true;
-                    derivedFrom.removed = false; // Clears previous value Redmine #4536
-                    allFiles[derivedFromId] = derivedFrom;
-                } else if (!derivedFromFiles[derivedFromId]) {
-                    // The derived-from file was in the given file list but we haven't seen it in
-                    // this loop before, so record the derived-from file in derivedFromFiles.
-                    derivedFromFiles[derivedFromId] = derivedFile;
+    // Generate a list of file @ids that other files (matching the current assembly and annotation)
+    // derive from (i.e. files referenced in other files' derived_from). allDerivedFroms is keyed
+    // by the derived-from file @id (whether it matches the current assembly and annotation or not)
+    // and has an array of all files that derive from it for its value. So for example:
+    //
+    // allDerivedFroms = {
+    //     /files/<matching accession>: [matching file, matching file],
+    //     /files/<contributing accession>: [matching file, matching file],
+    //     /files/<missing accession>: [matching file, matching file],
+    // }
+    const allDerivedFroms = {};
+    Object.keys(matchingFiles).forEach((matchingFileId) => {
+        const matchingFile = matchingFiles[matchingFileId];
+        if (matchingFile.derived_from && matchingFile.derived_from.length) {
+            matchingFile.derived_from.forEach((derivedFromAtId) => {
+                // Copy reference to allFiles copy of file. Will be undefined for missing and
+                // contributing files.
+                if (allDerivedFroms[derivedFromAtId]) {
+                    // Already saw a file derive from this one, so add the new reference to the end
+                    // of the array of derived-from files.
+                    allDerivedFroms[derivedFromAtId].push(matchingFile);
                 } else {
-                    // File was in the file list *and* the derived-from file list because some
-                    // other file we've seen has already derived from it. Modify this file's
-                    // derived_from so that it points to the exact same object in memory.
-                    file.derived_from[i] = derivedFile;
+                    // Never saw a file derive from this one, so make a new array with a reference
+                    // to it.
+                    allDerivedFroms[derivedFromAtId] = [matchingFile];
                 }
             });
         }
-
-        // Keep track of all used replicates by keeping track of all file objects for each
-        // replicate. Each key is a replicate number, and each references an array of file objects
-        // using that replicate.
-        if (file.biological_replicates && file.biological_replicates.length === 1) {
-            const bioRep = file.biological_replicates[0];
-            if (!allReplicates[bioRep]) {
-                // Place a new array in allReplicates if needed
-                allReplicates[bioRep] = [];
-            }
-            allReplicates[bioRep].push(file);
-        }
-
-        // Note whether any files have an analysis step
-        const fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
-        stepExists = stepExists || fileAnalysisStep;
-        if (fileAnalysisStep && !(file.derived_from && file.derived_from.length)) {
-            // File has an analysis step but no derived_from. We can't include the file in the graph
-            file.removed = true;
-        }
-
-        // Save the pipeline array used for each step used by the file.
-        if (fileAnalysisStep) {
-            allPipelines[fileAnalysisStep['@id']] = fileAnalysisStep.pipelines;
-        }
-
-        // File is derived; collect any QC info that applies to this file
-        if (file.quality_metrics && file.quality_metrics.length) {
-            const matchingQc = [];
-
-            // Search file's quality_metrics array to find one with a quality_metric_of field referring to this file.
-            file.quality_metrics.forEach((metric) => {
-                const matchingFile = _(metric.quality_metric_of).find(appliesFile => file['@id'] === appliesFile);
-                if (matchingFile) {
-                    matchingQc.push(metric);
-                }
-            });
-            if (matchingQc.length) {
-                fileQcMetrics[fileId] = matchingQc;
-            }
-        }
-
-        // Keep track of whether files exist outside replicates. That could mean it has no
-        // replicate information, or it has more than one replicate.
-        fileOutsideReplicate = fileOutsideReplicate || (file.biological_replicates && file.biological_replicates.length !== 1);
     });
-    // At this stage, allFiles, allReplicates, and derivedFromFiles point to the same file objects;
-    // allPipelines points to pipelines.
+    // Remember, at this stage allDerivedFroms includes keys for missing files, files not matching
+    // the chosen assembly/annotation, and contributing files.
 
-    // Now find contributing files that the dataset's own files derive from. Note: derivedFromFiles
-    // is an object keyed by each file's @id. allContributingArray is an array of file objects.
-    let allContributingArray = _(derivedFromFiles).filter((derivedFromFile, derivedFromId) => _(context.contributing_files).any(contributingFile => contributingFile['@id'] === derivedFromId));
-
-    // We have an array of contributing files from the last step that this dataset's files derive
-    // from. Convert that to a keyed object by each contributing file's @id.
-    const allContributing = {};
-    allContributingArray.forEach((contributingFile) => {
-        // Convert array of contributing files to a keyed object to help with searching later.
-        contributingFile.missing = false;
-        allContributing[contributingFile['@id']] = contributingFile;
-    });
-
-    // Now that we know at least some files derive from each other through analysis steps, mark
-    // file objects that don't derive from other files — and that no files derive from them — as
-    // removed from the graph. Also build the filtering menu here; it genomic annotations and
-    // assemblies that ARE involved in the graph.
-    Object.keys(allFiles).forEach((fileId) => {
-        const file = allFiles[fileId];
-
-        // File gets removed if doesn’t derive from other files AND no files derive from it.
-        const islandFile = !(file.derived_from && file.derived_from.length) && !derivedFromFiles[fileId];
-        file.removed = file.removed || islandFile;
-
-        // Add to the filtering options to generate a <select>; don't include island files
-        if (!islandFile && file.output_category !== 'raw data' && file.assembly) {
-            filterOptions.push({ assembly: file.assembly, annotation: file.genome_annotation });
-        }
-    });
-
-    // Remove any replicates containing only removed files from the last step.
-    Object.keys(allReplicates).forEach((repNum) => {
-        const onlyRemovedFiles = _(allReplicates[repNum]).all(file => file.removed && file.missing === true);
-        if (onlyRemovedFiles) {
-            allReplicates[repNum] = [];
-        }
-    });
-
-    // Remove files based on the filtering options
-    if (filterAssembly) {
-        // First remove all raw files, and all other files with mismatched filtering options
-        Object.keys(allFiles).forEach((fileId) => {
-            const file = allFiles[fileId];
-
-            if (file.output_category === 'raw data') {
-                // File is raw data; just remove it
-                file.filtered = true;
-            } else if ((file.assembly !== filterAssembly) || ((file.genome_annotation || filterAnnotation) && (file.genome_annotation !== filterAnnotation))) {
-                file.filtered = true;
+    // Filter any "island" files out of matchingFiles -- that is, files that derive from no other
+    // files, and no other files derive from it.
+    matchingFiles = (function () {
+        const noIslandFiles = {};
+        Object.keys(matchingFiles).forEach((matchingFileId) => {
+            const matchingFile = matchingFiles[matchingFileId];
+            if ((matchingFile.derived_from && matchingFile.derived_from.length) || allDerivedFroms[matchingFileId]) {
+                // This file either has derived_from set, or other files derive from it. Copy it to
+                // our destination object.
+                noIslandFiles[matchingFileId] = matchingFile;
             }
         });
-
-        // For all files matching the filtering options that derive from others, go up the
-        // derivation chain and re-include everything there.
-        processFiltering(allFiles, filterAssembly, filterAnnotation, allFiles, allContributing);
-
-        // Any files removed because of filtering get removed from allFiles and derivedFromFiles
-        // to make subsequent processing easier.
-        Object.keys(allFiles).forEach((fileId) => {
-            const file = allFiles[fileId];
-            if (file.filtered) {
-                delete allFiles[fileId];
-                delete derivedFromFiles[fileId];
-            }
-        });
+        return noIslandFiles;
+    }());
+    if (Object.keys(matchingFiles).length === 0) {
+        throw new GraphException('No graph: no file relationships for the selected assembly/annotation');
     }
+    // At this stage, any files in matchingFiles will be rendered. We just have to figure out what
+    // other files need rendering, like raw sequencing files, contributing files, and derived-from
+    // files that have a non-matching annotation and assembly.
 
-    // Check whether any files that others derive from are missing (usually because they're
-    // unreleased and we're logged out).
-    Object.keys(derivedFromFiles).forEach((derivedFromFileId) => {
-        const derivedFromFile = derivedFromFiles[derivedFromFileId];
-        if (derivedFromFile.removed || derivedFromFile.missing) {
-            // A file others derive from doesn't exist or was removed; check if it's in a replicate
-            // or not. Note the derived_from file object exists even if it doesn't exist in given
-            // files array.
-            if (derivedFromFile.biological_replicates && derivedFromFile.biological_replicates.length === 1) {
-                // Missing derived-from file in a replicate; remove the replicate's files and
-                // remove itself.
-                const derivedFromRep = derivedFromFile.biological_replicates[0];
-                if (allReplicates[derivedFromRep]) {
-                    allReplicates[derivedFromRep].forEach((file) => {
-                        file.removed = true;
-                    });
-                }
+    const allReplicates = {}; // All file's replicates as keys; each key references an array of files
+    Object.keys(matchingFiles).forEach((matchingFileId) => {
+        // If the file is part of a single biological replicate, add it to an array of files, where
+        // the arrays are in an object keyed by their relevant biological replicate number.
+        const matchingFile = matchingFiles[matchingFileId];
+        let replicateNum = (matchingFile.biological_replicates && matchingFile.biological_replicates.length === 1) ? matchingFile.biological_replicates[0] : undefined;
+        if (replicateNum) {
+            if (allReplicates[replicateNum]) {
+                allReplicates[replicateNum].push(matchingFile);
             } else {
-                // Missing derived-from file not in a replicate or in multiple replicates; don't
-                // draw any graph.
-                throw new GraphException('No graph: derived_from file outside replicate (or in multiple replicates) missing', derivedFromFileId);
+                allReplicates[replicateNum] = [matchingFile];
             }
-        } // else the derived_from file is in files array (allFiles object); normal case
-    });
+        }
 
-    // Map all contributing files to arrays of the files that derive from them. At the end of this
-    // loop, all contributing files in the allContributing object have a derivedFiles property with
-    // an array of all files that derive from these contributing files. If no files are derived
-    // from a particular contributing file, its derivedFiles property is just [] (should never
-    // happen; `allContributingArray` generated above only contains contributing files that other
-    // files derive from). Also rebuild `allContributingArray` to point at the same objects in
-    // memory as allContributing, to make things easier for the next step.
-    allContributingArray = [];
-    Object.keys(allContributing).forEach((contributingFileKey) => {
-        const contributingFile = allContributing[contributingFileKey];
-        allContributingArray.push(contributingFile);
-
-        // Find all files that are derived from this contributing file.
-        const derivedFiles = Object.keys(allFiles).filter((fileKey) => {
-            const file = allFiles[fileKey];
-
-            // Find any derived_from matching contributingFile.
-            if (!file.removed && file.derived_from && file.derived_from.length) {
-                return file.derived_from.some(derivedFile => derivedFile['@id'] === contributingFile['@id']);
-            }
-
-            // No derived_from, so definitely no matching contributingFile.
-            return false;
-        });
-
-        // Set a property in the contributing file with array of files that derive from it, sorted
-        // joined into one comma-separated string so we can group them.
-        contributingFile.derivedFiles = derivedFiles.sort();
-    });
-
-    // Now use the derivedFiles property of every contributing file to group them into potential
-    // coalescing nodes. `coalescingGroups` gets assigned an object keyed by dataset file ids
-    // hashed to a stringified 32-bit integer, and mapped to an array of contributing files they
-    // derive from.
-    const coalescingGroups = _(allContributingArray).groupBy(contributingFile => globals.hashCode(contributingFile.derivedFiles.join(',')).toString());
-
-    // Set a `coalescingGroup` property in each contributing file with its coalescing group's hash
-    // value. That'll be important when we add step nodes.
-    Object.keys(coalescingGroups).forEach((groupHash) => {
-        const group = coalescingGroups[groupHash];
-        if (group.length >= MINIMUM_COALESCE_COUNT) {
-            // Number of files in the coalescing group is at least the minimum number of files we
-            // allow in a coalescig group. Mark every contributing file in the group with the
-            // group's hash value in a `coalescingGroup` property that step node can connnect to.
-            group.forEach((contributingFile) => {
-                contributingFile.coalescingGroup = groupHash;
-
-                // Remove coalesced files from allFiles
-                delete allFiles[contributingFile['@id']];
+        // Add each file that a matching file derives from to the replicates.
+        if (matchingFile.derived_from && matchingFile.derived_from.length) {
+            matchingFile.derived_from.forEach((derivedFromAtId) => {
+                const file = allFiles[derivedFromAtId];
+                if (file) {
+                    replicateNum = (file.biological_replicates && file.biological_replicates.length === 1) ? file.biological_replicates[0] : undefined;
+                    if (replicateNum) {
+                        if (allReplicates[replicateNum]) {
+                            allReplicates[replicateNum].push(matchingFile);
+                        } else {
+                            allReplicates[replicateNum] = [matchingFile];
+                        }
+                    }
+                }
             });
-        } else {
-            // Don't use this coalescingGroup anymore.
-            coalescingGroups[groupHash] = [];
         }
     });
 
-    // See if removing files by filtering have emptied a replicate.
-    if (Object.keys(allReplicates).length) {
-        Object.keys(allReplicates).forEach((replicateId) => {
-            const emptied = _(allReplicates[replicateId]).all(file => file.removed);
-
-            // If all files removed from a replicate, remove the replicate
-            if (emptied) {
-                allReplicates[replicateId] = [];
+    // Make a list of contributing files that matchingFiles files derive from.
+    const usedContributingFiles = {};
+    if (context.contributing_files && context.contributing_files.length) {
+        context.contributing_files.forEach((contributingFileAtId) => {
+            if (contributingFileAtId in allDerivedFroms) {
+                usedContributingFiles[contributingFileAtId] = allDerivedFroms[contributingFileAtId];
             }
         });
     }
 
-    // Check whether all files have been removed
-    abortGraph = _(Object.keys(allFiles)).all(fileId => allFiles[fileId].removed);
-    if (abortGraph) {
-        throw new GraphException('No graph: all files removed');
-    }
+    // Go through each used contributing file and set a property within it showing which files
+    // derive from it. We'll need that for coalescing contributing files.
+    const allCoalesced = {};
+    let coalescingGroups = {};
+    if (Object.keys(usedContributingFiles).length) {
+        // Now use the derivedFiles property of every contributing file to group them into potential
+        // coalescing nodes. `coalescingGroups` gets assigned an object keyed by dataset file ids
+        // hashed to a stringified 32-bit integer, and mapped to an array of contributing files they
+        // derive from.
+        coalescingGroups = _(Object.keys(usedContributingFiles)).groupBy((contributingFileAtId) => {
+            const derivedFiles = usedContributingFiles[contributingFileAtId];
+            return globals.hashCode(derivedFiles.map(derivedFile => derivedFile['@id']).join(',')).toString();
+        });
 
-    // No files exist outside replicates, and all replicates are removed
-    const replicateIds = Object.keys(allReplicates);
-    if (!fileOutsideReplicate && replicateIds.length && _(replicateIds).all(replicateNum => !allReplicates[replicateNum].length)) {
-        throw new GraphException('No graph: All replicates removed and no files outside replicates exist');
-    }
+        // Set a `coalescingGroup` property in each contributing file with its coalescing group's hash
+        // value. That'll be important when we add step nodes.
+        const coalescingGroupKeys = Object.keys(coalescingGroups);
+        if (coalescingGroupKeys && coalescingGroupKeys.length) {
+            coalescingGroupKeys.forEach((groupHash) => {
+                const group = coalescingGroups[groupHash];
+                if (group.length >= MINIMUM_COALESCE_COUNT) {
+                    // Number of files in the coalescing group is at least the minimum number of files we
+                    // allow in a coalescing group. Mark every contributing file in the group with the
+                    // group's hash value in a `coalescingGroup` property that step node can connnect to.
+                    group.forEach((contributingFileAtId) => {
+                        allCoalesced[contributingFileAtId] = groupHash;
 
-    // Last check; see if any files derive from files now missing. This test is child-file based, where the last test
-    // was based on the derived-from files.
-    Object.keys(allFiles).forEach((fileId) => {
-        const file = allFiles[fileId];
-
-        if (!file.removed && !allContributing[fileId] && file.derived_from && file.derived_from.length) {
-            // A file still in the graph derives from others. See if any of the files it derives from have been removed
-            // or are missing.
-            file.derived_from.forEach((derivedFromFile) => {
-                const orgDerivedFromFile = derivedFromFiles[derivedFromFile['@id']];
-                const derivedGone = orgDerivedFromFile.missing || orgDerivedFromFile.removed;
-
-                // These two just for debugging a unrendered graph
-                if (derivedGone) {
-                    throw new GraphException(`file0 derives from file1 which is ${(orgDerivedFromFile.missing ? 'missing' : 'removed')}`, fileId, derivedFromFile['@id']);
+                        // Remove coalesced files from usedContributingFiles because we don't want
+                        // to render individual files that have been coalesced.
+                        delete usedContributingFiles[contributingFileAtId];
+                    });
+                } else {
+                    // The number of contributing files in a coalescing group isn't above our
+                    // threshold. Don't use this coalescingGroup anymore and just render them the
+                    // same as normal files.
+                    delete coalescingGroups[groupHash];
                 }
             });
+        }
+    }
+
+    // See if we have any derived_from files that we have no information on, likely because they're
+    // not released and we're not logged in. We'll render them with information-less dummy nodes.
+    const allMissingFiles = [];
+    Object.keys(allDerivedFroms).forEach((derivedFromFileAtId) => {
+        if (!allFiles[derivedFromFileAtId] && !allCoalesced[derivedFromFileAtId]) {
+            // The derived-from file isn't in our dataset file list, nor in coalesced contributing
+            // files. Now see if it's in non-coalesced contributing files.
+            if (!usedContributingFiles[derivedFromFileAtId]) {
+                allMissingFiles.push(derivedFromFileAtId);
+            }
         }
     });
 
     // Create an empty graph architecture that we fill in next.
     const jsonGraph = new JsonGraph(context.accession);
 
-    // Create nodes for the replicates
+    // Create nodes for the replicates.
     Object.keys(allReplicates).forEach((replicateNum) => {
         if (allReplicates[replicateNum] && allReplicates[replicateNum].length) {
             jsonGraph.addNode(`rep:${replicateNum}`, `Replicate ${replicateNum}`, {
@@ -1421,142 +1332,192 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         }
     });
 
-    // Go through each file (released or unreleased) to add it and associated steps to the graph
-    const graphedFiles = {};
-    Object.keys(allFiles).forEach((fileId) => {
-        const file = allFiles[fileId];
+    // Go through each file matching the currently selected assembly/annotation and add it to our
+    // graph.
+    Object.keys(matchingFiles).forEach((fileId) => {
+        const file = matchingFiles[fileId];
+        const fileNodeId = `file:${file['@id']}`;
+        const fileNodeLabel = `${file.title} (${file.output_type})`;
+        const fileCssClass = `pipeline-node-file${infoNodeId === fileNodeId ? ' active' : ''}`;
+        const fileRef = file;
+        const replicateNode = (file.biological_replicates && file.biological_replicates.length === 1) ? jsonGraph.getNode(`rep:${file.biological_replicates[0]}`) : null;
+        let metricsInfo;
 
-        // Only add files derived from others, or that others derive from,
-        // and that aren't part of a removed replicate
-        if (!file.removed) {
-            let stepId;
-            let label;
-            let pipelineInfo;
-            let error;
-            let metricsInfo;
-            const fileNodeId = `file:${file['@id']}`;
-            const replicateNode = (file.biological_replicates && file.biological_replicates.length === 1) ? jsonGraph.getNode(`rep:${file.biological_replicates[0]}`) : null;
+        // Add QC metrics info from the file to the list to generate the nodes later.
+        if (fileQcMetrics[fileId] && fileQcMetrics[fileId].length) {
+            const sortedMetrics = fileQcMetrics[fileId].sort((a, b) => (a['@type'][0] > b['@type'][0] ? 1 : (a['@type'][0] < b['@type'][0] ? -1 : 0)));
+            metricsInfo = sortedMetrics.map((metric) => {
+                const qcId = genQcId(metric, file);
+                return {
+                    id: qcId,
+                    label: qcAbbr(metric),
+                    '@type': ['QualityMetric'],
+                    class: `pipeline-node-qc-metric${infoNodeId === qcId ? ' active' : ''}`,
+                    tooltip: true,
+                    ref: metric,
+                    parent: file,
+                };
+            });
+        }
 
-            // Add QC metrics info from the file to the list to generate the nodes later
-            if (fileQcMetrics[fileId] && fileQcMetrics[fileId].length && file.step_run) {
-                metricsInfo = fileQcMetrics[fileId].map((metric) => {
-                    const qcId = genQcId(metric, file);
-                    return { id: qcId, label: 'QC', '@type': ['QualityMetric'], class: `pipeline-node-qc-metric${infoNodeId === qcId ? ' active' : ''}`, ref: metric, parent: file };
+        // Add a node for a regular searched file.
+        jsonGraph.addNode(fileNodeId, fileNodeLabel, {
+            cssClass: fileCssClass,
+            type: 'File',
+            shape: 'rect',
+            cornerRadius: 16,
+            parentNode: replicateNode,
+            ref: fileRef,
+        }, metricsInfo);
+
+        // Add the matching file to our list of "all" graphed files.
+        graphedFiles[fileId] = file;
+
+        // Figure out the analysis step we need to render between the node we just rendered and its
+        // derived_from.
+        let stepId;
+        let label;
+        let pipelineInfo;
+        let error;
+        const fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
+        if (fileAnalysisStep) {
+            // Make an ID and label for the step
+            stepId = `step:${derivedFileIds(file) + fileAnalysisStep['@id']}`;
+            label = fileAnalysisStep.analysis_step_types;
+            pipelineInfo = allPipelines[fileAnalysisStep['@id']];
+            error = false;
+        } else if (derivedFileIds(file)) {
+            // File derives from others, but no analysis step; make dummy step.
+            stepId = `error:${derivedFileIds(file)}`;
+            label = 'Software unknown';
+            pipelineInfo = null;
+            error = true;
+        } else {
+            // No analysis step and no derived_from; don't add a step.
+            stepId = '';
+        }
+
+        // If we have a step to render, do that here.
+        if (stepId) {
+            // Add the step to the graph only if we haven't for this derived-from set already
+            if (!jsonGraph.getNode(stepId)) {
+                jsonGraph.addNode(stepId, label, {
+                    cssClass: `pipeline-node-analysis-step${(infoNodeId === stepId ? ' active' : '') + (error ? ' error' : '')}`,
+                    type: 'Step',
+                    shape: 'rect',
+                    cornerRadius: 4,
+                    parentNode: replicateNode,
+                    ref: fileAnalysisStep,
+                    pipelines: pipelineInfo,
+                    fileId: file['@id'],
+                    fileAccession: file.title,
+                    stepVersion: file.analysis_step_version,
                 });
             }
 
-            // Add file to the graph as a node
-            let fileNodeLabel;
-            let fileCssClass;
-            let fileRef;
-            const loggedIn = session && session['auth.userid'];
-            const fileContributed = allContributing[fileId];
-            if (fileContributed && fileContributed.status !== 'released' && !loggedIn) {
-                // A contributed file isn't released and we're not logged in
-                fileNodeLabel = 'Unreleased';
-                fileCssClass = `pipeline-node-file contributing error${infoNodeId === fileNodeId ? ' active' : ''}`;
-                fileRef = null;
-            } else {
-                fileNodeLabel = `${file.title} (${file.output_type})`;
-                fileCssClass = `pipeline-node-file${fileContributed ? ' contributing' : ''}${file.restricted ? ' restricted' : ''}${infoNodeId === fileNodeId ? ' active' : ''}`;
-                fileRef = file;
-            }
+            // Connect the file to the step, and the step to the derived_from files
+            jsonGraph.addEdge(stepId, fileNodeId);
+            file.derived_from.forEach((derivedFromAtId) => {
+                const derivedFromFile = allFiles[derivedFromAtId] || allMissingFiles.some(missingFileId => missingFileId === derivedFromAtId);
+                if (derivedFromFile) {
+                    // Not derived from a contributing file; just add edges normally.
+                    const derivedFileId = `file:${derivedFromAtId}`;
+                    if (!jsonGraph.getEdge(derivedFileId, stepId)) {
+                        jsonGraph.addEdge(derivedFileId, stepId);
+                    }
+                } else {
+                    // File derived from a contributing file; add edges to a coalesced node
+                    // that we'll add to the graph later.
+                    const coalescedContributing = allCoalesced[derivedFromAtId];
+                    if (coalescedContributing) {
+                        // Rendering a coalesced contributing file.
+                        const derivedFileId = `coalesced:${coalescedContributing}`;
+                        if (!jsonGraph.getEdge(derivedFileId, stepId)) {
+                            jsonGraph.addEdge(derivedFileId, stepId);
+                        }
+                    } else if (usedContributingFiles[derivedFromAtId]) {
+                        const derivedFileId = `file:${derivedFromAtId}`;
+                        if (!jsonGraph.getEdge(derivedFileId, stepId)) {
+                            jsonGraph.addEdge(derivedFileId, stepId);
+                        }
+                    }
+                }
+            });
+        }
+    });
+
+    // Go through each derived-from file and add it to our graph.
+    Object.keys(allDerivedFroms).forEach((fileId) => {
+        const file = allFiles[fileId];
+        if (file && !matchingFiles[fileId]) {
+            const fileNodeId = `file:${file['@id']}`;
+            const fileNodeLabel = `${file.title} (${file.output_type})`;
+            const fileCssClass = `pipeline-node-file${infoNodeId === fileNodeId ? ' active' : ''}`;
+            const fileRef = file;
+            const replicateNode = (file.biological_replicates && file.biological_replicates.length === 1) ? jsonGraph.getNode(`rep:${file.biological_replicates[0]}`) : null;
+
             jsonGraph.addNode(fileNodeId, fileNodeLabel, {
                 cssClass: fileCssClass,
                 type: 'File',
                 shape: 'rect',
                 cornerRadius: 16,
                 parentNode: replicateNode,
-                contributing: !!fileContributed,
                 ref: fileRef,
-            }, metricsInfo);
-            graphedFiles[file['@id']] = file;
+            });
 
-            // If the file has an analysis step, prepare it for graph insertion
-            if (!fileContributed) {
-                const fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
-                if (fileAnalysisStep) {
-                    // Make an ID and label for the step
-                    stepId = `step:${derivedFileIds(file) + fileAnalysisStep['@id']}`;
-                    label = fileAnalysisStep.analysis_step_types;
-                    pipelineInfo = allPipelines[fileAnalysisStep['@id']];
-                    error = false;
-                } else if (derivedFileIds(file)) {
-                    // File derives from others, but no analysis step; make dummy step
-                    stepId = `error:${derivedFileIds(file)}`;
-                    label = 'Software unknown';
-                    pipelineInfo = null;
-                    error = true;
-                } else {
-                    // No analysis step and no derived_from; don't add a step
-                    stepId = '';
-                }
-
-                if (stepId) {
-                    // Add the step to the graph only if we haven't for this derived-from set already
-                    if (!jsonGraph.getNode(stepId)) {
-                        jsonGraph.addNode(stepId, label, {
-                            cssClass: `pipeline-node-analysis-step${(infoNodeId === stepId ? ' active' : '') + (error ? ' error' : '')}`,
-                            type: 'Step',
-                            shape: 'rect',
-                            cornerRadius: 4,
-                            parentNode: replicateNode,
-                            ref: fileAnalysisStep,
-                            pipelines: pipelineInfo,
-                            fileId: file['@id'],
-                            fileAccession: file.title,
-                            stepVersion: file.analysis_step_version,
-                        });
-                    }
-
-                    // Connect the file to the step, and the step to the derived_from files
-                    jsonGraph.addEdge(stepId, fileNodeId);
-                    file.derived_from.forEach((derived) => {
-                        const derivedFromFile = allFiles[derived['@id']];
-                        if (derivedFromFile) {
-                            // Not derived from a contributing file; just add edges normally.
-                            const derivedFileId = `file:${derivedFromFile['@id']}`;
-                            if (!jsonGraph.getEdge(derivedFileId, stepId)) {
-                                jsonGraph.addEdge(derivedFileId, stepId);
-                            }
-                        } else {
-                            // File derived from a contributing file; add edges to a coalesced node
-                            // that we'll add to the graph later.
-                            const contributingFile = allContributing[derived['@id']];
-                            const derivedFileId = `coalesced:${contributingFile.coalescingGroup}`;
-                            if (!jsonGraph.getEdge(derivedFileId, stepId)) {
-                                jsonGraph.addEdge(derivedFileId, stepId);
-                            }
-                        }
-                    });
-                }
-            }
+            // Add the derived-from file to our list of "all" graphed files.
+            graphedFiles[fileId] = file;
         }
-    }, this);
+    });
+
+    // Go through each derived-from contributing file and add it to our graph.
+    Object.keys(usedContributingFiles).forEach((fileAtId) => {
+        const fileNodeId = `file:${fileAtId}`;
+        const fileNodeLabel = `${globals.atIdToAccession(fileAtId)}`;
+        const fileCssClass = `pipeline-node-file contributing${infoNodeId === fileNodeId ? ' active' : ''}`;
+
+        jsonGraph.addNode(fileNodeId, fileNodeLabel, {
+            cssClass: fileCssClass,
+            type: 'File',
+            shape: 'rect',
+            cornerRadius: 16,
+            contributing: fileAtId,
+            ref: {},
+        });
+    });
 
     // Now add coalesced nodes to the graph.
     Object.keys(coalescingGroups).forEach((groupHash) => {
         const coalescingGroup = coalescingGroups[groupHash];
         if (coalescingGroup.length) {
-            // Check if any files that derive from this coalesced node group aren't removed. If at
-            // least one isn't, then we can add this coalesced node.
             const fileNodeId = `coalesced:${groupHash}`;
-            const filesExist = coalescingGroup.some(contributingFile => contributingFile.derivedFiles.some(derivedFileId => !allFiles[derivedFileId].removed));
-            if (filesExist) {
-                const fileCssClass = `pipeline-node-file contributing${infoNodeId === fileNodeId ? ' active' : ''}`;
-                jsonGraph.addNode(fileNodeId, `${coalescingGroup.length} contributing files`, {
-                    cssClass: fileCssClass,
-                    type: 'File',
-                    shape: 'stack',
-                    cornerRadius: 16,
-                    contributing: true,
-                    ref: coalescingGroup,
-                });
-            }
+            const fileCssClass = `pipeline-node-file contributing${infoNodeId === fileNodeId ? ' active' : ''}`;
+            jsonGraph.addNode(fileNodeId, `${coalescingGroup.length} contributing files`, {
+                cssClass: fileCssClass,
+                type: 'File',
+                shape: 'stack',
+                cornerRadius: 16,
+                contributing: groupHash,
+                ref: coalescingGroup,
+            });
         }
     });
 
-    jsonGraph.filterOptions = filterOptions.length ? _(filterOptions).uniq(option => `${option.assembly}!${option.annotation ? option.annotation : ''}`) : [];
+    // Add missing-file nodes to the graph.
+    allMissingFiles.forEach((missingFileAtId) => {
+        const fileNodeAccession = globals.atIdToAccession(missingFileAtId);
+        const fileNodeId = `file:${missingFileAtId}`;
+        const fileNodeLabel = `${fileNodeAccession} (unknown)`;
+        const fileCssClass = 'pipeline-node-file error';
+
+        jsonGraph.addNode(fileNodeId, fileNodeLabel, {
+            cssClass: fileCssClass,
+            type: 'File',
+            shape: 'rect',
+            cornerRadius: 16,
+        });
+    });
+
     return { graph: jsonGraph, graphedFiles: graphedFiles };
 }
 
@@ -1582,13 +1543,38 @@ const FileGalleryRenderer = React.createClass({
             selectedFilterValue: '', // <select> value of selected filter
             infoNodeId: '', // @id of node whose info panel is open
             infoModalOpen: false, // True if info modal is open
+            relatedFiles: [], // List of related files
         };
+    },
+
+    componentWillMount: function () {
+        const { context, data } = this.props;
+        const relatedFileIds = context.related_files && context.related_files.length ? context.related_files : [];
+        if (relatedFileIds.length) {
+            const searchedFiles = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
+            requestFiles(relatedFileIds, searchedFiles).then((relatedFiles) => {
+                this.setState({ relatedFiles: relatedFiles });
+            });
+        }
     },
 
     // Set the default filter after the graph has been analayzed once.
     componentDidMount: function () {
         if (!this.props.altFilterDefault) {
             this.setFilter('0');
+        }
+    },
+
+    componentDidUpdate: function () {
+        const { context, data } = this.props;
+        const relatedFileIds = context.related_files && context.related_files.length ? context.related_files : [];
+        if (relatedFileIds.length) {
+            const searchedFiles = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
+            requestFiles(relatedFileIds, searchedFiles).then((relatedFiles) => {
+                if (relatedFiles.length !== this.state.relatedFiles.length) {
+                    this.setState({ relatedFiles: relatedFiles });
+                }
+            });
         }
     },
 
@@ -1618,16 +1604,12 @@ const FileGalleryRenderer = React.createClass({
         let selectedAnnotation = '';
         let jsonGraph;
         let allGraphedFiles;
-        const items = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
-
-        // Combined object's files and search results files for display
-        const files = _.uniq(((context.files && context.files.length) ? context.files : []).concat((items && items.length) ? items : []));
+        const files = (data ? data['@graph'] : []).concat(this.state.relatedFiles); // Array of searched files arrives in data.@graph result
         if (files.length === 0) {
             return null;
         }
 
         const filterOptions = files.length ? collectAssembliesAnnotations(files) : [];
-        const loggedIn = this.context.session && this.context.session['auth.userid'];
 
         if (this.state.selectedFilterValue && filterOptions[this.state.selectedFilterValue]) {
             selectedAssembly = filterOptions[this.state.selectedFilterValue].assembly;
@@ -1696,45 +1678,23 @@ const FileGalleryRenderer = React.createClass({
                 {/* If logged in and dataset is released, need to combine search of files that reference
                     this dataset to get released and unreleased ones. If not logged in, then just get
                     files from dataset.files */}
-                {loggedIn && (context.status === 'released' || context.status === 'release ready') ?
-                    <FetchedItems
-                        {...this.props}
-                        url={globals.unreleased_files_url(context)}
-                        adminUser={!!this.context.session_properties.admin}
-                        Component={DatasetFiles}
-                        selectedFilterValue={this.state.selectedFilterValue}
-                        filterOptions={filterOptions}
-                        graphedFiles={allGraphedFiles}
-                        handleFilterChange={this.handleFilterChange}
-                        encodevers={globals.encodeVersion(context)}
-                        session={this.context.session}
-                        infoNodeId={this.state.infoNodeId}
-                        setInfoNodeId={this.setInfoNodeId}
-                        infoNodeVisible={this.state.infoNodeVisible}
-                        setInfoNodeVisible={this.setInfoNodeVisible}
-                        showFileCount
-                        ignoreErrors
-                        noDefaultClasses
-                    />
-                :
-                    <FileTable
-                        {...this.props}
-                        items={context.files}
-                        selectedFilterValue={this.state.selectedFilterValue}
-                        filterOptions={filterOptions}
-                        graphedFiles={allGraphedFiles}
-                        handleFilterChange={this.handleFilterChange}
-                        encodevers={globals.encodeVersion(context)}
-                        session={this.context.session}
-                        infoNodeId={this.state.infoNodeId}
-                        setInfoNodeId={this.setInfoNodeId}
-                        infoNodeVisible={this.state.infoNodeVisible}
-                        setInfoNodeVisible={this.setInfoNodeVisible}
-                        showFileCount
-                        noDefaultClasses
-                        adminUser={!!this.context.session_properties.admin}
-                    />
-                }
+                <FileTable
+                    {...this.props}
+                    items={files}
+                    selectedFilterValue={this.state.selectedFilterValue}
+                    filterOptions={filterOptions}
+                    graphedFiles={allGraphedFiles}
+                    handleFilterChange={this.handleFilterChange}
+                    encodevers={globals.encodeVersion(context)}
+                    session={this.context.session}
+                    infoNodeId={this.state.infoNodeId}
+                    setInfoNodeId={this.setInfoNodeId}
+                    infoNodeVisible={this.state.infoNodeVisible}
+                    setInfoNodeVisible={this.setInfoNodeVisible}
+                    showFileCount
+                    noDefaultClasses
+                    adminUser={!!this.context.session_properties.admin}
+                />
             </Panel>
         );
     },
@@ -1887,7 +1847,7 @@ function qcDetailsView(metrics) {
                         <dl className="key-value">
                             {sortedKeys.map(key =>
                                 ((typeof metrics.ref[key] === 'string' || typeof metrics.ref[key] === 'number') ?
-                                    <div key={key}>
+                                    <div data-test={key} key={key}>
                                         <dt>{key}</dt>
                                         <dd>{metrics.ref[key]}</dd>
                                     </div>
@@ -1921,51 +1881,63 @@ function qcDetailsView(metrics) {
 
 
 function coalescedDetailsView(node) {
-    // Configuration for reference file table
-    const coalescedFileColumns = {
-        accession: {
-            title: 'Accession',
-            display: item =>
-                <span>
-                    {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf('/') + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
-                </span>,
-        },
-        file_type: { title: 'File type' },
-        output_type: { title: 'Output type' },
-        assembly: { title: 'Mapping assembly' },
-        genome_annotation: {
-            title: 'Genome annotation',
-            hide: list => _(list).all(item => !item.genome_annotation),
-        },
-        title: {
-            title: 'Lab',
-            getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
-        },
-        date_created: {
-            title: 'Date added',
-            getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
-            sorter: (a, b) => {
-                if (a && b) {
-                    return Date.parse(a) - Date.parse(b);
-                }
-                const bTest = b ? 1 : 0;
-                return a ? -1 : bTest;
-            },
-        },
-    };
+    let header;
+    let body;
 
-    const header = (
-        <h4>Selected contributing files</h4>
-    );
-    const body = (
-        <div className="coalesced-table">
-            <SortTable
-                list={node.metadata.ref}
-                columns={coalescedFileColumns}
-                sortColumn="accession"
-            />
-        </div>
-    );
+    if (node.metadata.coalescedFiles && node.metadata.coalescedFiles.length) {
+        // Configuration for reference file table
+        const coalescedFileColumns = {
+            accession: {
+                title: 'Accession',
+                display: item =>
+                    <span>
+                        {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf('/') + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                    </span>,
+            },
+            file_type: { title: 'File type' },
+            output_type: { title: 'Output type' },
+            assembly: { title: 'Mapping assembly' },
+            genome_annotation: {
+                title: 'Genome annotation',
+                hide: list => _(list).all(item => !item.genome_annotation),
+            },
+            title: {
+                title: 'Lab',
+                getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
+            },
+            date_created: {
+                title: 'Date added',
+                getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
+                sorter: (a, b) => {
+                    if (a && b) {
+                        return Date.parse(a) - Date.parse(b);
+                    }
+                    const bTest = b ? 1 : 0;
+                    return a ? -1 : bTest;
+                },
+            },
+        };
+
+        header = (
+            <h4>Selected contributing files</h4>
+        );
+        body = (
+            <div className="coalesced-table">
+                <SortTable
+                    list={node.metadata.coalescedFiles}
+                    columns={coalescedFileColumns}
+                    sortColumn="accession"
+                />
+            </div>
+        );
+    } else {
+        header = (
+            <div className="details-view-info">
+                <h4>Unknown files</h4>
+            </div>
+        );
+        body = <p className="browser-error">No information available</p>;
+    }
     return { header: header, body: body };
 }
 
@@ -1987,6 +1959,8 @@ const FileGraph = React.createClass({
 
     getInitialState: function () {
         return {
+            contributingFiles: {}, // List of contributing file objects we've requested; acts as a cache too
+            coalescedFiles: {}, // List of coalesced files we've requested; acts as a cache too
             infoModalOpen: false, // Graph information modal open
             collapsed: false, // T if graphing panel is collapsed
         };
@@ -2011,15 +1985,61 @@ const FileGraph = React.createClass({
                 // Coalesced contributing files.
                 const node = jsonGraph.getNode(infoNodeId);
                 if (node) {
-                    meta = coalescedDetailsView(node);
-                    meta.type = 'File';
+                    const currCoalescedFiles = this.state.coalescedFiles;
+                    if (currCoalescedFiles[node.metadata.contributing]) {
+                        // We have the requested coalesced files in the cache, so just display
+                        // them.
+                        node.metadata.coalescedFiles = currCoalescedFiles[node.metadata.contributing];
+                        meta = coalescedDetailsView(node);
+                        meta.type = 'File';
+                    } else if (!this.contributingRequestOutstanding) {
+                        // We don't have the requested coalesced files in the cache, so we have to
+                        // request them from the DB.
+                        this.contributingRequestOutstanding = true;
+                        requestFiles(node.metadata.ref).then((contributingFiles) => {
+                            this.contributingRequestOutstanding = false;
+                            currCoalescedFiles[node.metadata.contributing] = contributingFiles;
+                            this.setState({ coalescedFiles: currCoalescedFiles });
+                        }).catch(() => {
+                            this.contributingRequestOutstanding = false;
+                            currCoalescedFiles[node.metadata.contributing] = [];
+                            this.setState({ coalescedFiles: currCoalescedFiles });
+                        });
+                    }
                 }
             } else {
-                // A regular file.
+                // A regular or contributing file.
                 const node = jsonGraph.getNode(infoNodeId);
                 if (node) {
-                    meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, loggedIn, adminUser);
-                    meta.type = node['@type'][0];
+                    if (node.metadata.contributing) {
+                        // This is a contributing file, and its @id is in
+                        // node.metadata.contributing. See if the file is in the cache.
+                        const currContributing = this.state.contributingFiles;
+                        if (currContributing[node.metadata.contributing]) {
+                            // We have this file's object in the cache, so just display it.
+                            node.metadata.ref = currContributing[node.metadata.contributing];
+                            meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, loggedIn, adminUser);
+                            meta.type = node['@type'][0];
+                        } else if (!this.contributingRequestOutstanding) {
+                            // We don't have this file's object in the cache, so request it from
+                            // the DB.
+                            this.contributingRequestOutstanding = true;
+                            requestFiles([node.metadata.contributing]).then((contributingFile) => {
+                                this.contributingRequestOutstanding = false;
+                                currContributing[node.metadata.contributing] = contributingFile[0];
+                                this.setState({ contributingFiles: currContributing });
+                            }).catch(() => {
+                                this.contributingRequestOutstanding = false;
+                                currContributing[node.metadata.contributing] = {};
+                                this.setState({ contributingFiles: currContributing });
+                            });
+                        }
+                    } else {
+                        // Regular File data in the node from when we generated the graph. Just
+                        // display the file data from there.
+                        meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, loggedIn, adminUser);
+                        meta.type = node['@type'][0];
+                    }
                 }
             }
         }
@@ -2071,7 +2091,7 @@ const FileGraph = React.createClass({
                             </div>
                             {!this.state.collapsed ?
                                 <div>
-                                    <Graph graph={graph} nodeClickHandler={this.handleNodeClick} noDefaultClasses forceRedraw />
+                                    <Graph graph={graph} nodeClickHandler={this.handleNodeClick} nodeMouseenterHandler={this.handleHoverIn} nodeMouseleaveHandler={this.handleHoverOut} noDefaultClasses forceRedraw />
                                 </div>
                             : null}
                             <div className={`file-gallery-graph-footer${this.state.collapsed ? ' hiding' : ''}`} />
@@ -2091,7 +2111,7 @@ const FileGraph = React.createClass({
                 }
                 return <p className="browser-error">Choose an assembly to see file association graph</p>;
             }
-            return <p className="browser-error">Graph not applicable to this experiment’s files.</p>;
+            return <p className="browser-error">Graph not applicable for the selected assembly/annotation.</p>;
         }
         return null;
     },
@@ -2140,7 +2160,7 @@ const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
     let body = null;
     let header = null;
 
-    if (selectedFile) {
+    if (selectedFile && Object.keys(selectedFile).length) {
         let contributingAccession;
 
         if (node.metadata.contributing) {
@@ -2151,7 +2171,7 @@ const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
         const dateString = !!selectedFile.date_created && moment.utc(selectedFile.date_created).format('YYYY-MM-DD');
         header = (
             <div className="details-view-info">
-                <h4>{selectedFile.file_type} {selectedFile.title}</h4>
+                <h4>{selectedFile.file_type} <a href={selectedFile['@id']}>{selectedFile.title}</a></h4>
             </div>
         );
 
@@ -2179,29 +2199,19 @@ const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
                         </div>
                     : null}
 
-                    {selectedFile.replicate ?
+                    {selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
                         <div data-test="bioreplicate">
                             <dt>Biological replicate(s)</dt>
-                            <dd>{`[${selectedFile.replicate.biological_replicate_number}]`}</dd>
+                            <dd>{`[${selectedFile.biological_replicates.join(',')}]`}</dd>
                         </div>
-                    : (selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
-                        <div data-test="bioreplicate">
-                            <dt>Biological replicate(s)</dt>
-                            <dd>{`[${selectedFile.biological_replicates.join(', ')}]`}</dd>
-                        </div>
-                    : null)}
+                    : null}
 
-                    {selectedFile.replicate ?
+                    {selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
                         <div data-test="techreplicate">
-                            <dt>Technical replicate</dt>
-                            <dd>{selectedFile.replicate.technical_replicate_number}</dd>
+                            <dt>Technical replicate(s)</dt>
+                            <dd>{`[${selectedFile.technical_replicates.join(',')}]`}</dd>
                         </div>
-                    : (selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
-                        <div data-test="techreplicate">
-                            <dt>Technical replicate</dt>
-                            <dd>{'-'}</dd>
-                        </div>
-                    : null)}
+                    : null}
 
                     {selectedFile.mapped_read_length !== undefined ?
                         <div data-test="mappedreadlength">
@@ -2259,7 +2269,7 @@ const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
                         </div>
                     : null}
 
-                    {selectedFile.quality_metrics && selectedFile.quality_metrics.length ?
+                    {selectedFile.quality_metrics && selectedFile.quality_metrics.length && typeof selectedFile.quality_metrics[0] !== 'string' ?
                         <div data-test="fileqc">
                             <dt>File quality metrics</dt>
                             <dd className="file-qc-buttons">

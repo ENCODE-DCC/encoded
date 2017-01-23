@@ -64,7 +64,9 @@
                      "transcriptome assembly",
                      "variant annotation",
                      "read trimming",
-                     "interaction calling"
+                     "interaction calling",
+                     "topologically associated domain identification",
+                     "chromatin loop identification"
                  ]
              }
         },
@@ -138,6 +140,7 @@
                     "predicted transcription start sites",
                     "optimal idr thresholded peaks",
                     "conservative idr thresholded peaks",
+                    "pseudoreplicated idr thresholded peaks",
                     "signal p-value",
                     "fold change over control",
                     "replicated peaks",
@@ -219,6 +222,7 @@
                     "predicted transcription start sites",
                     "optimal idr thresholded peaks",
                     "conservative idr thresholded peaks",
+                    "pseudoreplicated idr thresholded peaks",
                     "signal p-value",
                     "fold change over control",
                     "replicated peaks",

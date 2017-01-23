@@ -10,7 +10,7 @@
     display: flex;
     flex-wrap: nowrap;
     justify-content: flex-start;
-    align-items: flex-start;
+    align-items: center;
     align-content: stretch;
 }
 
@@ -18,14 +18,13 @@
     flex: 0 1 40px;
     min-height: 40px;
     align-self: stretch;
-    margin-right: 10px;
     border-right: 1px solid #a0a0a0;
 }
 
 .gm-detail-sentence {
-    flex: 1 1 auto;
-    align-self: flex-start;
-    line-height: 40px;
+    flex: 0 1 auto;
+    align-self: center;
+    padding: 5px 10px;
 }
 
 .gm-detail-table {

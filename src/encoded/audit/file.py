@@ -25,6 +25,25 @@ paired_end_assays = [
     ]
 
 
+@audit_checker('File', frame=[
+    'analysis_step_version',
+    'analysis_step_version.analysis_step',
+    'analysis_step_version.analysis_step.pipelines'])
+def audit_file_pipeline_status(value, system):
+    if value['status'] not in ['released']:
+        return
+    if 'analysis_step_version' in value and \
+       'analysis_step' in value['analysis_step_version'] and \
+       'pipelines' in value['analysis_step_version']['analysis_step']:
+        for p in value['analysis_step_version']['analysis_step']['pipelines']:
+            if p['status'] not in ['active']:
+                detail = 'File {} with a status of {} '.format(value['@id'], value['status']) + \
+                         'is associated with a pipeline {} '.format(p['@id']) + \
+                         'that has a status of {}.'.format(p['status'])
+                yield AuditFailure('inconsistent pipeline status',
+                                   detail, level='INTERNAL_ACTION')
+
+
 @audit_checker('File', frame=['derived_from'])
 def audit_file_md5sum_integrity(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
@@ -136,8 +155,8 @@ def audit_file_assembly(value, system):
         return
     else:  # not row data file
         # special treatment of RNA-Bind-n-Seq
-        if 'assay_term_id' in value['dataset'] and \
-           value['dataset']['assay_term_id'] == 'OBI:0002044':
+        if 'assay_term_name' in value['dataset'] and \
+           value['dataset']['assay_term_name'] == 'RNA Bind-n-Seq':
             if 'assembly' in value:
                 detail = 'RNA Bind-n-Seq file {} '.format(value['@id']) + \
                          'has improperly specified assembly value.'
@@ -304,7 +323,8 @@ def check_presence(file_to_check, files_list):
                       'controlled_by.dataset',
                       'controlled_by.paired_with',
                       'controlled_by.platform'],
-               condition=rfa('ENCODE2',
+               condition=rfa('Roadmap',
+                             'ENCODE2',
                              'ENCODE2-Mouse',
                              'ENCODE',
                              'ENCODE3',
@@ -364,7 +384,8 @@ def audit_file_controlled_by(value, system):
                          'from experiment {} '.format(value['dataset']['@id']) + \
                          'contains in controlled_by list PE fastq file ' + \
                          '{} with missing paired_with property.'.format(pe_file['@id'])
-                yield AuditFailure('missing paired_with in controlled_by', detail, level='ERROR')
+                yield AuditFailure('missing paired_with in controlled_by',
+                                   detail, level='INTERNAL_ACTION')
             elif check_presence(pe_file['paired_with'], pe_files) is False:
                 detail = 'Fastq file {} '.format(value['@id']) + \
                          'from experiment {} '.format(value['dataset']['@id']) + \
@@ -429,7 +450,6 @@ def audit_file_controlled_by(value, system):
                 yield AuditFailure('inconsistent control', detail, level='ERROR')
                 return
 
-
             if (run_type is None) or (control_run is None):
                 continue
 
@@ -465,7 +485,7 @@ def audit_file_controlled_by(value, system):
                 return
 
 
-@audit_checker('file', frame='object', condition=rfa('modERN', 'GGR', 'ENCODE3'))
+@audit_checker('file', frame='object')
 def audit_file_flowcells(value, system):
     '''
     A fastq file could have its flowcell details.
@@ -544,7 +564,7 @@ def audit_modERN_ChIP_pipeline_steps(value, system):
     if 'Experiment' not in expt['@type']:
         return
 
-    if expt['assay_term_id'] != 'OBI:0000716':
+    if expt['assay_term_name'] != 'ChIP-seq':
         return
 
     if value['status'] in ['archived', 'revoked', 'deleted', 'replaced']:

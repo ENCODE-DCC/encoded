@@ -83,9 +83,6 @@
         "related_datasets.replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Biosample treatment"
         },
-        "related_datasets.files.analysis_step_version.analysis_step.pipelines.title": {
-            "title": "Pipeline"
-        },
         "related_datasets.files.file_type": {
             "title": "Available data"
         },

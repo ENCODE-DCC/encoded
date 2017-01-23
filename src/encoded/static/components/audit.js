@@ -2,7 +2,7 @@
 var React = require('react');
 var _ = require('underscore');
 var {Panel} = require('../libs/bootstrap/panel');
-var {SvgIcon, collapseIcon} = require('../libs/svg-icons');
+var { collapseIcon } = require('../libs/svg-icons');
 
 var editTargetMap = {
     'experiments': 'Experiment',

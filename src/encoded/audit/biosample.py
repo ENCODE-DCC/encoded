@@ -8,32 +8,6 @@ from .gtex_data import gtexDonorsList
 from .gtex_data import gtexParentsList
 
 
-
-term_mapping = {
-    "head": "UBERON:0000033",
-    "limb": "UBERON:0002101",
-    "salivary gland": "UBERON:0001044",
-    "male accessory sex gland": "UBERON:0010147",
-    "testis": "UBERON:0000473",
-    "female gonad": "UBERON:0000992",
-    "digestive system": "UBERON:0001007",
-    "arthropod fat body": "UBERON:0003917",
-    "antenna": "UBERON:0000972",
-    "adult maxillary segment": "FBbt:00003016",
-    "female reproductive system": "UBERON:0000474",
-    "male reproductive system": "UBERON:0000079",
-    "nucleus": "GO:0005634",
-    "cytosol": "GO:0005829",
-    "chromatin": "GO:0000785",
-    "membrane": "GO:0016020",
-    "mitochondria": "GO:0005739",
-    "nuclear matrix": "GO:0016363",
-    "nucleolus": "GO:0005730",
-    "nucleoplasm": "GO:0005654",
-    "polysome": "GO:0005844",
-    "insoluble cytoplasmic fraction": "NTR:0002594"
-}
-
 model_organism_terms = ['model_organism_mating_status',
                         'model_organism_sex',
                         'mouse_life_stage',
@@ -202,10 +176,13 @@ def audit_biosample_term(value, system):
     ontology_term_name = ontology[term_id]['name']
     if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
         detail = 'Biosample {} has '.format(value['@id']) + \
-                 'a mismatch between biosample_term_id {} '.format(term_id) + \
-                 'and biosample_term_name {}'.format(term_name)
+                 'a mismatch between biosample term_id ({}) '.format(term_id) + \
+                 'and term_name ({}), ontology term_name for term_id {} '.format(
+                     term_name, term_id) + \
+                 'is {}.'.format(ontology_term_name)
         yield AuditFailure('inconsistent ontology term', detail, level='ERROR')
         return
+
 
 @audit_checker('biosample', frame='object')
 def audit_biosample_culture_date(value, system):
@@ -280,55 +257,6 @@ def audit_biosample_donor(value, system):
                 donor['@id'],
                 donor['mutated_gene']['name'])
             raise AuditFailure('invalid donor mutated_gene', detail, level='ERROR')
-
-@audit_checker('biosample', frame='object')
-def audit_biosample_subcellular_term_match(value, system):
-    '''
-    The subcellular_fraction_term_name and subcellular_fraction_term_id
-    should be concordant. This should be a calculated field
-    If one exists the other should. This should be handled in the schema.
-    '''
-    if value['status'] in ['deleted']:
-        return
-
-    if ('subcellular_fraction_term_name' not in value) or ('subcellular_fraction_term_id' not in value):
-        return
-
-    expected_name = term_mapping[value['subcellular_fraction_term_name']]
-    if expected_name != (value['subcellular_fraction_term_id']):
-        detail = 'Biosample {} has a mismatch between subcellular_fraction_term_name "{}" and subcellular_fraction_term_id "{}"'.format(
-            value['@id'],
-            value['subcellular_fraction_term_name'],
-            value['subcellular_fraction_term_id'])
-        raise AuditFailure('inconsistent subcellular_fraction_term', detail, level='ERROR')
-
-
-@audit_checker('biosample', frame='object')
-def audit_biosample_depleted_term_match(value, system):
-    '''
-    The depleted_in_term_name and depleted_in_term_name
-    should be concordant. This should be a calcualted field.
-    If one exists, the other should.  This should be handled in the schema.
-    '''
-    if value['status'] == 'deleted':
-        return
-
-    if 'depleted_in_term_name' not in value:
-        return
-
-    if len(value['depleted_in_term_name']) != len(value['depleted_in_term_id']):
-        detail = 'Biosample {} has a depleted_in_term_name array and depleted_in_term_id array of differing lengths'.format(
-            value['@id'])
-        raise AuditFailure('inconsistent depleted_in_term length', detail, level='INTERNAL_ACTION')
-        return
-
-    for i, dep_term in enumerate(value['depleted_in_term_name']):
-        if (term_mapping[dep_term]) != (value['depleted_in_term_id'][i]):
-            detail = 'Biosample {} has a mismatch between {} and {}'.format(
-                value['@id'],
-                dep_term,
-                value['depleted_in_term_id'][i])
-            raise AuditFailure('inconsistent depleted_in_term', detail, level='ERROR')
 
 
 @audit_checker('biosample', frame='object')

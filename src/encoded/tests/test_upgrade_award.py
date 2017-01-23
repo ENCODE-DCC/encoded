@@ -36,3 +36,19 @@ def test_award_upgrade_url(upgrader, award_1):
     value = upgrader.upgrade('award', award_1, target_version='2')
     assert value['schema_version'] == '2'
     assert 'url' not in value
+
+
+@pytest.fixture
+def award_2(award_1):
+    item = award_1.copy()
+    item.update({
+        'schema_version': '3',
+        'viewing_group': 'ENCODE',
+    })
+    return item
+
+
+def test_award_upgrade_viewing_group(upgrader, award_2):
+    value = upgrader.upgrade('award', award_2, target_version='3')
+    assert value['schema_version'] == '3'
+    assert value['viewing_group'] == 'ENCODE3'
