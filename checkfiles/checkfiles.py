@@ -203,12 +203,16 @@ def process_illumina_read_name_pattern(read_name,
                                        read_numbers_set,
                                        signatures_set,
                                        signatures_no_barcode_set):
-    read_name_array = re.split(r'[:\s_]', read_name)
-    flowcell = read_name_array[2]
-    lane_number = read_name_array[3]
-    read_number = read_name_array[-4]
+    read_array = re.split(r'[\s_]', read_name)
+    prefix = read_array[0]
+    suffix = read_array[1]
+    #read_name_array = re.split(r'[:\s_]', read_name)
+    flowcell = prefix[-5]
+    lane_number = prefix[-4]
+    read_number = suffix[-4]
     read_numbers_set.add(read_number)
-    barcode_index = read_name_array[-1]
+    barcode_index = suffix[-1]
+    
     signatures_set.add(
         flowcell + ':' + lane_number + ':' +
         read_number + ':' + barcode_index + ':')
@@ -306,7 +310,8 @@ def process_read_name_line(read_name_line,
                            errors):
     read_name = read_name_line.strip()
     words_array = re.split(r'\s', read_name)
-    if read_name_pattern.match(read_name) is None:
+    if read_name_pattern.match(read_name) is None and \
+       extended_read_name_prefix.match(read_name) is None:
         if special_read_name_pattern.match(read_name) is not None:
             process_special_read_name_pattern(read_name,
                                               words_array,
@@ -336,6 +341,8 @@ def process_read_name_line(read_name_line,
                 else:
                     errors['fastq_format_readname'] = read_name
                     # the only case to skip update content error - due to the changing nature of read names 
+            else:  # read name with "unrecognizable" signature add to errors
+                errors['fastq_format_readname'] = read_name
 
     else:  # found a match to the regex of "almost" illumina read_name
         process_illumina_read_name_pattern(
@@ -372,6 +379,11 @@ def process_fastq_file(job, fastq_data_stream, session, url):
         '^(@[a-zA-Z\d]+[a-zA-Z\d_-]*:[a-zA-Z\d-]+:[a-zA-Z\d_-]' +
         '+:\d+:\d+:\d+:\d+[/1|/2]*[\s_][12]:[YXN]:[0-9]+:([ACNTG\+]*|[0-9]*))$'
     )
+
+    extended_read_name_prefix = re.compile(
+        '^(@[a-zA-Z\d]+[a-zA-Z\d_-]*:[a-zA-Z\d-]+:[a-zA-Z\d-]+:[a-zA-Z\d_-]' +
+        '+:\d+:\d+:\d+:\d+)$')
+
     read_numbers_set = set()
     signatures_set = set()
     signatures_no_barcode_set = set()
