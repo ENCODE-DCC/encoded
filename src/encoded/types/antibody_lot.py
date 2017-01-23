@@ -377,28 +377,13 @@ def build_lot_reviews(primary_chars,
                     char_reviews[key]['status'] = 'not characterized to standards'
                     char_reviews[key]['detail'] = 'Awaiting a compliant primary characterization.'
             elif char_reviews[key]['status'] == 'compliant' and secondary_status == 'compliant':
-
-                # I think these checks can be removed for histones
-                #
-                if is_histone_mod:
-                    if lane_organism not in target_organisms['all']:
-                        char_reviews[key]['detail'] = 'Organism was not found in the list ' + \
-                            'of organism targets in antibody lot metadata.'
                 char_reviews[key]['status'] = 'characterized to standards'
                 char_reviews[key]['detail'] = 'Fully characterized.'
             elif char_reviews[key]['status'] == 'compliant' and secondary_status == 'exempt from standards':
-                if is_histone_mod:
-                    if lane_organism not in target_organisms['all']:
-                        char_reviews[key]['detail'] = 'Organism was not found in the list ' + \
-                            'of organism targets in antibody lot metadata.'
                 char_reviews[key]['status'] = 'characterized to standards with exemption'
                 char_reviews[key]['detail'] = 'Fully characterized with exemption.'
             elif (char_reviews[key]['status'] == 'exempt from standards') and \
                     secondary_status in ['compliant', 'exempt from standards']:
-                    if is_histone_mod:
-                        if lane_organism not in target_organisms['all']:
-                            char_reviews[key]['detail'] = 'Organism was not found in the list ' + \
-                                'of organism targets in antibody lot metadata.'
                     char_reviews[key]['status'] = 'characterized to standards with exemption'
                     char_reviews[key]['detail'] = 'Fully characterized with exemption.'
             else:
