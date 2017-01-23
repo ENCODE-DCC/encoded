@@ -4,8 +4,7 @@ Change log for pipeline.json
 Schema version 5
 ----------------
 
-* *assay_term_id* is no longer allowed to be submitted, it will be automatically calculated based on the term_name
-* *assay_term_name* is now required
+* *assay_term_id* is no longer allowed to be submitted, it will be automatically calculated based on the term_name, if present
 
 Schema version 4
 ----------------
