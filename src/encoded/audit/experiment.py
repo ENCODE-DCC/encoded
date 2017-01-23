@@ -3367,19 +3367,17 @@ def audit_experiment_antibody_characterized(value, system):
         # and if has not been characterized to standards. Otherwise, it doesn't apply and we
         # shouldn't raise a stink
 
-        match_found = False
         if 'histone modification' in ab_targets_investigated_as:
             for lot_review in antibody['lot_reviews']:
                 if organism == lot_review['organisms'][0]:
-                    match_found = True
                     if lot_review['status'] == 'characterized to standards with exemption':
                         detail = '{} has been characterized '.format(antibody['@id']) + \
                                  'to the standard with exemption for {}'.format(organism)
                         yield AuditFailure('antibody characterized with exemption',
                                            detail, level='WARNING')
                     elif lot_review['status'] == 'awaiting characterization':
-                        detail = '{} has not been characterized at al for any cell type or ' + \
-                            'tissue in {}'.format(antibody['@id'], organism)
+                        detail = '{} has not been characterized at all for '.format(antibody['@id']) + \
+                            ' any cell type or tissue in {}'.format(antibody['@id'], organism)
                         yield AuditFailure('uncharacterized antibody',
                                            detail, level='NOT_COMPLIANT')
                     elif lot_review['status'] in ['not characterized to standards', 'pending dcc review']:
@@ -3409,7 +3407,6 @@ def audit_experiment_antibody_characterized(value, system):
             for lot_review in antibody['lot_reviews']:
                 biosample_key = (lot_review['biosample_term_id'], lot_review['organisms'][0])
                 if experiment_biosample == biosample_key:
-                    match_found = True
                     if lot_review['status'] == 'characterized to standards with exemption':
                         detail = '{} has been characterized to the '.format(antibody['@id']) + \
                             'standard with exemption for {} in {}'.format(biosample_term_name,
@@ -3440,13 +3437,6 @@ def audit_experiment_antibody_characterized(value, system):
                     else:
                         # This should only leave the characterized to standards case
                         pass
-        '''
-        if not match_found:
-            detail = '{} has characterization attempts '.format(antibody['@id']) + \
-                     'but does not have the full complement of characterizations ' + \
-                     'meeting the standard in {}'.format(organism)
-            yield AuditFailure('partially characterized antibody', detail, level='NOT_COMPLIANT') 
-        '''   
 
 
 @audit_checker(
