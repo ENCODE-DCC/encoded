@@ -7,21 +7,18 @@ var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var svgIcon = require('../libs/svg-icons').svgIcon;
 var url = require('url');
 var _ = require('underscore');
+import auditDecor from './audit-13';
 var globals = require('./globals');
 var image = require('./image');
 var search = module.exports;
 var { donorDiversity } = require('./objectutils');
 var dbxref = require('./dbxref');
-var audit = require('./audit');
 var objectutils = require('./objectutils');
 var {BiosampleSummaryString, BiosampleOrganismNames} = require('./typeutils');
 
 var DbxrefList = dbxref.DbxrefList;
 var statusOrder = globals.statusOrder;
 var SingleTreatment = objectutils.SingleTreatment;
-var AuditIndicators = audit.AuditIndicators;
-var AuditDetail = audit.AuditDetail;
-var AuditMixin = audit.AuditMixin;
 var DropdownButton = button.DropdownButton;
 var DropdownMenu = dropdownMenu.DropdownMenu;
 
@@ -91,8 +88,8 @@ var PickerActionsMixin = module.exports.PickerActionsMixin = {
     }
 };
 
-var Item = module.exports.Item = React.createClass({
-    mixins: [PickerActionsMixin, AuditMixin],
+var ItemComponent = React.createClass({
+    mixins: [PickerActionsMixin],
     render: function() {
         var result = this.props.context;
         var title = globals.listing_titles.lookup(result)({context: result});
@@ -104,7 +101,7 @@ var Item = module.exports.Item = React.createClass({
                     {result.accession ?
                         <div className="pull-right type sentence-case search-meta">
                             <p>{item_type}: {' ' + result['accession']}</p>
-                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
+                            {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
                         </div>
                     : null}
                     <div className="accession">
@@ -114,12 +111,16 @@ var Item = module.exports.Item = React.createClass({
                         {result.description}
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
+                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
             </li>
         );
     }
 });
+
+const Item = module.exports.Item = auditDecor(ItemComponent);
+
 globals.listing_views.register(Item, 'Item');
+
 
 // Display one antibody status indicator
 var StatusIndicator = React.createClass({
@@ -204,8 +205,8 @@ var StatusIndicators = React.createClass({
     }
 });
 
-var Antibody = module.exports.Antibody = React.createClass({
-    mixins: [PickerActionsMixin, AuditMixin],
+var AntibodyComponent = React.createClass({
+    mixins: [PickerActionsMixin],
     render: function() {
         var result = this.props.context;
 
@@ -248,7 +249,7 @@ var Antibody = module.exports.Antibody = React.createClass({
                         <p className="type meta-title">Antibody</p>
                         <p className="type">{' ' + result.accession}</p>
                         <p className="type meta-status">{' ' + result['status']}</p>
-                        <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
+                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
                     </div>
                     <div className="accession">
                         {Object.keys(targetTree).map(function(target) {
@@ -268,15 +269,19 @@ var Antibody = module.exports.Antibody = React.createClass({
                         <div><strong>Product ID / Lot ID: </strong>{result.product_id} / {result.lot_id}</div>
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
+                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
             </li>
         );
     }
 });
+
+const Antibody = module.exports.Antibody = auditDecor(AntibodyComponent);
+
 globals.listing_views.register(Antibody, 'AntibodyLot');
 
-var Biosample = module.exports.Biosample = React.createClass({
-    mixins: [PickerActionsMixin, AuditMixin],
+
+var BiosampleComponent = React.createClass({
+    mixins: [PickerActionsMixin],
     render: function() {
         var result = this.props.context;
         var lifeStage = (result['life_stage'] && result['life_stage'] != 'unknown') ? ' ' + result['life_stage'] : '';
@@ -310,7 +315,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <p className="type meta-title">Biosample</p>
                         <p className="type">{' ' + result['accession']}</p>
                         <p className="type meta-status">{' ' + result['status']}</p>
-                        <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
+                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
@@ -332,16 +337,19 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <div><strong>Source: </strong>{result.source.title}</div>
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
+                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
             </li>
         );
     }
 });
+
+const Biosample = module.exports.Biosample = auditDecor(BiosampleComponent);
+
 globals.listing_views.register(Biosample, 'Biosample');
 
 
-var Experiment = module.exports.Experiment = React.createClass({
-    mixins: [PickerActionsMixin, AuditMixin],
+var ExperimentComponent = React.createClass({
+    mixins: [PickerActionsMixin],
     render: function() {
         var result = this.props.context;
 
@@ -374,7 +382,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <p className="type meta-title">Experiment</p>
                         <p className="type">{' ' + result['accession']}</p>
                         <p className="type meta-status">{' ' + result['status']}</p>
-                        <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
+                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
@@ -414,15 +422,19 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <div><strong>Project: </strong>{result.award.project}</div>
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
+                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
             </li>
         );
     }
 });
+
+const Experiment = module.exports.Experiment = auditDecor(ExperimentComponent);
+
 globals.listing_views.register(Experiment, 'Experiment');
 
-var Dataset = module.exports.Dataset = React.createClass({
-    mixins: [PickerActionsMixin, AuditMixin],
+
+var DatasetComponent =  React.createClass({
+    mixins: [PickerActionsMixin],
     render: function() {
         var result = this.props.context;
         var biosampleTerm, organism, lifeSpec, targets, lifeStages = [], ages = [];
@@ -486,7 +498,7 @@ var Dataset = module.exports.Dataset = React.createClass({
                         <p className="type meta-title">{haveSeries ? 'Series' : (haveFileSet ? 'FileSet' : 'Dataset')}</p>
                         <p className="type">{' ' + result['accession']}</p>
                         <p className="type meta-status">{' ' + result['status']}</p>
-                        <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
+                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
@@ -516,15 +528,19 @@ var Dataset = module.exports.Dataset = React.createClass({
                         <div><strong>Project: </strong>{result.award.project}</div>
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
+                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
             </li>
         );
     }
 });
+
+const Dataset = module.exports.Dataset = auditDecor(DatasetComponent);
+
 globals.listing_views.register(Dataset, 'Dataset');
 
-var Target = module.exports.Target = React.createClass({
-    mixins: [PickerActionsMixin, AuditMixin],
+
+var TargetComponent = React.createClass({
+    mixins: [PickerActionsMixin],
     render: function() {
         var result = this.props.context;
         return (
@@ -533,7 +549,7 @@ var Target = module.exports.Target = React.createClass({
                     {this.renderActions()}
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Target</p>
-                        <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
+                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
@@ -548,11 +564,14 @@ var Target = module.exports.Target = React.createClass({
                         : <em>None submitted</em> }
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
+                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
             </li>
         );
     }
 });
+
+const Target = module.exports.Target = auditDecor(TargetComponent);
+
 globals.listing_views.register(Target, 'Target');
 
 
@@ -567,7 +586,6 @@ var Image = module.exports.Image = React.createClass({
                     {this.renderActions()}
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Image</p>
-                        <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>{result.caption}</a>
@@ -576,11 +594,11 @@ var Image = module.exports.Image = React.createClass({
                         <Attachment context={result} attachment={result.attachment} />
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     }
 });
+
 globals.listing_views.register(Image, 'Image');
 
 

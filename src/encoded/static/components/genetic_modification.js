@@ -3,11 +3,11 @@ import _ from 'underscore';
 import url from 'url';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { collapseIcon } from '../libs/svg-icons';
+import auditDecor from './audit-13';
 import { SortTable } from './sorttable';
 import globals from './globals';
 import { StatusLabel } from './statuslabel';
 import { ProjectBadge, Attachment } from './image';
-import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
 import { RelatedItems } from './item';
 import { DbxrefList } from './dbxref';
 import { Breadcrumbs } from './navigation';
@@ -63,12 +63,10 @@ function geneticModificationTechniques(techniques) {
 }
 
 
-export const GeneticModification = React.createClass({
+export const GeneticModificationComponent = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // GM object being displayed
     },
-
-    mixins: [AuditMixin],
 
     render: function () {
         const context = this.props.context;
@@ -134,11 +132,11 @@ export const GeneticModification = React.createClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel title="Status" status={context.status} />
                             </div>
-                            <AuditIndicators audits={context.audit} id="genetic-modification-audit" />
+                            {this.props.auditIndicators(context.audit, 'genetic-modification-audit')}
                         </div>
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} except={context['@id']} id="genetic-modification-audit" />
+                {this.props.auditDetail(context.audit, 'genetic-modification-audit', { except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -296,6 +294,8 @@ export const GeneticModification = React.createClass({
         );
     },
 });
+
+const GeneticModification = auditDecor(GeneticModificationComponent);
 
 globals.content_views.register(GeneticModification, 'GeneticModification');
 
@@ -479,12 +479,12 @@ export const AttachmentPanel = React.createClass({
 });
 
 
-const Listing = React.createClass({
+const ListingComponent = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // Search results object
     },
 
-    mixins: [PickerActionsMixin, AuditMixin],
+    mixins: [PickerActionsMixin],
 
     render: function () {
         const result = this.props.context;
@@ -508,19 +508,21 @@ const Listing = React.createClass({
                     {this.renderActions()}
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Genetic modifications</p>
-                        <p className="type meta-status">` ${result.status}`</p>
-                        <AuditIndicators audits={result.audit} id={result['@id']} search />
+                        <p className="type meta-status">{` ${result.status}`}</p>
+                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
                     </div>
                     <div className="accession"><a href={result['@id']}>{result.modification_type}</a></div>
                     <div className="data-row">
                         {techniques.length ? <div><strong>Modification techniques: </strong>{techniques.join(', ')}</div> : null}
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} except={result['@id']} id={result['@id']} forcedEditLink />
+                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
             </li>
         );
     },
 });
+
+const Listing = auditDecor(ListingComponent);
 
 globals.listing_views.register(Listing, 'GeneticModification');
 

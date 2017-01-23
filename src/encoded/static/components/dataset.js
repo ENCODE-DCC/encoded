@@ -7,7 +7,7 @@ import globals from './globals';
 import { Breadcrumbs } from './navigation';
 import { DbxrefList } from './dbxref';
 import { FetchedItems } from './fetched';
-import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
+import auditDecor from './audit-13';
 import { StatusLabel } from './statuslabel';
 import { pubReferenceList } from './reference';
 import { donorDiversity } from './objectutils';
@@ -49,7 +49,7 @@ function breakSetName(name) {
 
 
 // Display Annotation page, a subtype of Dataset.
-const Annotation = React.createClass({
+const AnnotationComponent = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // Annotation being displayed
     },
@@ -57,8 +57,6 @@ const Annotation = React.createClass({
     contextTypes: {
         session: React.PropTypes.object, // Login session information
     },
-
-    mixins: [AuditMixin],
 
     render: function () {
         const context = this.props.context;
@@ -114,11 +112,11 @@ const Annotation = React.createClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
                             </div>
-                            <AuditIndicators audits={context.audit} id="dataset-audit" />
+                            {this.props.auditIndicators(context.audit, 'annotation-audit', { session: this.context.session })}
                         </div>
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
+                {this.props.auditDetail(context.audit, 'annotation-audit', { session: this.context.session, except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -251,11 +249,13 @@ const Annotation = React.createClass({
     },
 });
 
+const Annotation = auditDecor(AnnotationComponent);
+
 globals.content_views.register(Annotation, 'Annotation');
 
 
 // Display Annotation page, a subtype of Dataset.
-const PublicationData = React.createClass({
+const PublicationDataComponent = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // PublicationData object to display
     },
@@ -263,8 +263,6 @@ const PublicationData = React.createClass({
     contextTypes: {
         session: React.PropTypes.object, // Login session information
     },
-
-    mixins: [AuditMixin],
 
     render: function () {
         const context = this.props.context;
@@ -307,11 +305,11 @@ const PublicationData = React.createClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
                             </div>
-                            <AuditIndicators audits={context.audit} id="dataset-audit" />
+                            {this.props.auditIndicators(context.audit, 'publicationdata-audit', { session: this.context.session })}
                         </div>
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
+                {this.props.auditDetail(context.audit, 'publicationdata-audit', { session: this.context.session, except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -412,11 +410,13 @@ const PublicationData = React.createClass({
     },
 });
 
+const PublicationData = auditDecor(PublicationDataComponent);
+
 globals.content_views.register(PublicationData, 'PublicationData');
 
 
 // Display Annotation page, a subtype of Dataset.
-const Reference = React.createClass({
+const ReferenceComponent = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // Reference object to display
     },
@@ -424,8 +424,6 @@ const Reference = React.createClass({
     contextTypes: {
         session: React.PropTypes.object, // Login session information
     },
-
-    mixins: [AuditMixin],
 
     render: function () {
         const context = this.props.context;
@@ -468,11 +466,11 @@ const Reference = React.createClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
                             </div>
-                            <AuditIndicators audits={context.audit} id="dataset-audit" />
+                            {this.props.auditIndicators(context.audit, 'reference-audit', { session: this.context.session })}
                         </div>
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
+                {this.props.auditDetail(context.audit, 'reference-audit', { session: this.context.session, except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -573,11 +571,13 @@ const Reference = React.createClass({
     },
 });
 
+const Reference = auditDecor(ReferenceComponent);
+
 globals.content_views.register(Reference, 'Reference');
 
 
 // Display Annotation page, a subtype of Dataset.
-const Project = React.createClass({
+const ProjectComponent = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // Project object to display
     },
@@ -585,8 +585,6 @@ const Project = React.createClass({
     contextTypes: {
         session: React.PropTypes.object, // Login session information
     },
-
-    mixins: [AuditMixin],
 
     render: function () {
         const context = this.props.context;
@@ -632,11 +630,11 @@ const Project = React.createClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
                             </div>
-                            <AuditIndicators audits={context.audit} id="dataset-audit" />
+                            {this.props.auditIndicators(context.audit, 'project-audit', { session: this.context.session })}
                         </div>
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
+                {this.props.auditDetail(context.audit, 'project-audit', { session: this.context.session, except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -758,11 +756,13 @@ const Project = React.createClass({
     },
 });
 
+const Project = auditDecor(ProjectComponent);
+
 globals.content_views.register(Project, 'Project');
 
 
 // Display Annotation page, a subtype of Dataset.
-const UcscBrowserComposite = React.createClass({
+const UcscBrowserCompositeComponent = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // UCSC browser composite object to display
     },
@@ -770,8 +770,6 @@ const UcscBrowserComposite = React.createClass({
     contextTypes: {
         session: React.PropTypes.object, // Login session information
     },
-
-    mixins: [AuditMixin],
 
     render: function () {
         const context = this.props.context;
@@ -817,11 +815,11 @@ const UcscBrowserComposite = React.createClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
                             </div>
-                            <AuditIndicators audits={context.audit} id="dataset-audit" />
+                            {this.props.auditIndicators(context.audit, 'ucscbrowsercomposite-audit', { session: this.context.session })}
                         </div>
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
+                {this.props.auditDetail(context.audit, 'ucscbrowsercomposite-audit', { session: this.context.session, except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -928,6 +926,8 @@ const UcscBrowserComposite = React.createClass({
         );
     },
 });
+
+const UcscBrowserComposite = auditDecor(UcscBrowserCompositeComponent);
 
 globals.content_views.register(UcscBrowserComposite, 'UcscBrowserComposite');
 
@@ -1155,7 +1155,7 @@ const organismDevelopmentSeriesTableColumns = {
     },
 };
 
-export const Series = React.createClass({
+export const SeriesComponent = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // Series object to display
     },
@@ -1163,8 +1163,6 @@ export const Series = React.createClass({
     contextTypes: {
         session: React.PropTypes.object,
     },
-
-    mixins: [AuditMixin],
 
     // Map series @id to title and table columns
     seriesComponents: {
@@ -1249,11 +1247,11 @@ export const Series = React.createClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
                             </div>
-                            <AuditIndicators audits={context.audit} id="dataset-audit" />
+                            {this.props.auditIndicators(context.audit, 'series-audit', { session: this.context.session })}
                         </div>
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
+                {this.props.auditDetail(context.audit, 'series-audit', { session: this.context.session, except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -1375,6 +1373,8 @@ export const Series = React.createClass({
         );
     },
 });
+
+const Series = auditDecor(SeriesComponent);
 
 globals.content_views.register(Series, 'Series');
 

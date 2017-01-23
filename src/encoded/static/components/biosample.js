@@ -3,12 +3,12 @@ const React = require('react');
 const panel = require('../libs/bootstrap/panel');
 const _ = require('underscore');
 const url = require('url');
+import auditDecor from './audit-13';
 const globals = require('./globals');
 const navigation = require('./navigation');
 const dataset = require('./dataset');
 const dbxref = require('./dbxref');
 const statuslabel = require('./statuslabel');
-const audit = require('./audit');
 const image = require('./image');
 const item = require('./item');
 const { pubReferenceList } = require('./reference');
@@ -20,9 +20,6 @@ const {GeneticModificationSummary} = require('./genetic_modification');
 const Breadcrumbs = navigation.Breadcrumbs;
 const DbxrefList = dbxref.DbxrefList;
 const StatusLabel = statuslabel.StatusLabel;
-const AuditIndicators = audit.AuditIndicators;
-const AuditDetail = audit.AuditDetail;
-const AuditMixin = audit.AuditMixin;
 const {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile} = doc;
 const ExperimentTable = dataset.ExperimentTable;
 const RelatedItems = item.RelatedItems;
@@ -42,8 +39,7 @@ var PanelLookup = function (props) {
 };
 
 
-var Biosample = module.exports.Biosample = React.createClass({
-    mixins: [AuditMixin],
+var BiosampleComponent = module.exports.Biosample = React.createClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -112,11 +108,11 @@ var Biosample = module.exports.Biosample = React.createClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel title="Status" status={context.status} />
                             </div>
-                            <AuditIndicators audits={context.audit} id="biosample-audit" />
+                            {this.props.auditIndicators(context.audit, 'biosample-audit', { session: this.context.session })}
                         </div>
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} except={context['@id']} id="biosample-audit" />
+                {this.props.auditDetail(context.audit, 'biosample-audit', { session: this.context.session, except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -450,6 +446,8 @@ var Biosample = module.exports.Biosample = React.createClass({
         );
     }
 });
+
+const Biosample = auditDecor(BiosampleComponent);
 
 globals.content_views.register(Biosample, 'Biosample');
 

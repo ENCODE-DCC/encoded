@@ -28,11 +28,11 @@ import { Panel } from '../libs/bootstrap/panel';
 // adding `Component` to the module name, then make the real module name the result of the audit
 // decorator, like:
 //
-//     const BlaineComponent extends React.Component {
+//     class BlaineComponent extends React.Component {
 //         ...
 //     }
 //
-//     const Blaine = auditDecor(BlaineComponent);
+//     class Blaine = auditDecor(BlaineComponent);
 //
 //     <Blaine />
 //

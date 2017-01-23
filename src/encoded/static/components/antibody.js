@@ -2,6 +2,7 @@
 var React = require('react');
 var url = require('url');
 var _ = require('underscore');
+import auditDecor from './audit-13';
 var panel = require('../libs/bootstrap/panel');
 var { collapseIcon } = require('../libs/svg-icons');
 var globals = require('./globals');
@@ -10,14 +11,10 @@ var dataset = require('./dataset');
 var dbxref = require('./dbxref');
 var image = require('./image');
 var item = require('./item');
-var audit = require('./audit');
 var statuslabel = require('./statuslabel');
 var doc = require('./doc');
 
 var Breadcrumbs = navigation.Breadcrumbs;
-var AuditIndicators = audit.AuditIndicators;
-var AuditDetail = audit.AuditDetail;
-var AuditMixin = audit.AuditMixin;
 var DbxrefList = dbxref.DbxrefList;
 var ExperimentTable = dataset.ExperimentTable;
 var StatusLabel = statuslabel.StatusLabel;
@@ -27,8 +24,7 @@ var {Panel, PanelBody} = panel;
 var {DocumentsPanel, Document, DocumentPreview, DocumentFile} = doc;
 
 
-var Lot = module.exports.Lot = React.createClass({
-    mixins: [AuditMixin],
+var LotComponent = React.createClass({
     render: function() {
         var context = this.props.context;
 
@@ -113,11 +109,11 @@ var Lot = module.exports.Lot = React.createClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel title="Status" status={context.status} />
                             </div>
-                            <AuditIndicators audits={context.audit} id="antibody-audit" />
+                            {this.props.auditIndicators(context.audit, 'antibody-audit', { session: this.context.session })}
                         </div>
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} except={context['@id']} id="antibody-audit" />
+                {this.props.auditDetail(context.audit, 'antibody-audit', { except: context['@id'], session: this.context.session })}
 
                 {context.lot_reviews && context.lot_reviews.length ?
                     <div className="antibody-statuses">
@@ -219,7 +215,6 @@ var Lot = module.exports.Lot = React.createClass({
                                     <dd><DbxrefList values={context.dbxrefs} /></dd>
                                 </div>
                             : null}
-
                         </dl>
                     </PanelBody>
                 </Panel>
@@ -233,6 +228,8 @@ var Lot = module.exports.Lot = React.createClass({
         );
     }
 });
+
+const Lot = module.exports.Lot = auditDecor(LotComponent);
 
 globals.content_views.register(Lot, 'AntibodyLot');
 

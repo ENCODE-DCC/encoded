@@ -1,21 +1,16 @@
 'use strict';
 var React = require('react');
+import auditDecor from './audit-13';
 var globals = require('./globals');
 var navigation = require('./navigation');
 var dbxref = require('./dbxref');
 var search = require('./search');
-var audit = require('./audit');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
-var AuditIndicators = audit.AuditIndicators;
-var AuditDetail = audit.AuditDetail;
-var AuditMixin = audit.AuditMixin;
 
 
-var Publication = module.exports.Panel = React.createClass({
-    mixins: [AuditMixin],
-
+var PublicationComponent = React.createClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -34,8 +29,8 @@ var Publication = module.exports.Panel = React.createClass({
             <div className={itemClass}>
                 <Breadcrumbs root='/search/?type=publication' crumbs={crumbs} />
                 <h2>{context.title}</h2>
-                <AuditIndicators audits={context.audit} id="publication-audit" />
-                <AuditDetail audits={context.audit} except={context['@id']} id="publication-audit" />
+                {this.props.auditIndicators(context.audit, 'publication-audit')}
+                {this.props.auditDetail(context.audit, 'publication-audit', { except: context['@id'] })}
                 {context.authors ? <div className="authors">{context.authors}.</div> : null}
                 <div className="journal">
                     <Citation {...this.props} />
@@ -61,6 +56,8 @@ var Publication = module.exports.Panel = React.createClass({
         );
     }
 });
+
+const Publication = auditDecor(PublicationComponent);
 
 globals.content_views.register(Publication, 'Publication');
 
@@ -215,8 +212,8 @@ var SupplementaryDataListing = React.createClass({
 });
 
 
-var Listing = React.createClass({
-    mixins: [search.PickerActionsMixin, AuditMixin],
+var ListingComponent = React.createClass({
+    mixins: [search.PickerActionsMixin],
     render: function() {
         var result = this.props.context;
         var authorList = result.authors && result.authors.length ? result.authors.split(', ', 4) : [];
@@ -229,7 +226,7 @@ var Listing = React.createClass({
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Publication</p>
                         <p className="type meta-status">{' ' + result.status}</p>
-                        <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
+                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
                     </div>
                     <div className="accession"><a href={result['@id']}>{result.title}</a></div>
                     <div className="data-row">
@@ -245,10 +242,12 @@ var Listing = React.createClass({
                         : null}
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
+                {this.props.auditDetail(result.audit, result['@id'], { forcedEditLink: true })}
             </li>
         );
     }
 });
+
+const Listing = auditDecor(ListingComponent);
 
 globals.listing_views.register(Listing, 'Publication');

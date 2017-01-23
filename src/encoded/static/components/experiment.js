@@ -4,13 +4,13 @@ var panel = require('../libs/bootstrap/panel');
 var button = require('../libs/bootstrap/button');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var _ = require('underscore');
+import auditDecor from './audit-13';
 var navigation = require('./navigation');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
 var image = require('./image');
 var statuslabel = require('./statuslabel');
-var audit = require('./audit');
 var fetched = require('./fetched');
 var pipeline = require('./pipeline');
 var { pubReferenceList } = require('./reference');
@@ -27,7 +27,6 @@ var DbxrefList = dbxref.DbxrefList;
 var FetchedItems = fetched.FetchedItems;
 var Param = fetched.Param;
 var StatusLabel = statuslabel.StatusLabel;
-var {AuditMixin, AuditIndicators, AuditDetail} = audit;
 var singleTreatment = objectutils.singleTreatment;
 var softwareVersionList = software.softwareVersionList;
 var {SortTablePanel, SortTable} = sortTable;
@@ -59,9 +58,7 @@ var PanelLookup = function (props) {
 };
 
 
-var Experiment = module.exports.Experiment = React.createClass({
-    mixins: [AuditMixin],
-
+var ExperimentComponent = React.createClass({
     contextTypes: {
         session: React.PropTypes.object
     },
@@ -320,11 +317,11 @@ var Experiment = module.exports.Experiment = React.createClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
                             </div>
-                            <AuditIndicators audits={context.audit} id="experiment-audit" />
+                            {this.props.auditIndicators(context.audit, 'experiment-audit')}
                         </div>
                    </div>
                 </header>
-                <AuditDetail audits={context.audit} except={context['@id']} id="experiment-audit" />
+                {this.props.auditDetail(context.audit, 'experiment-audit', { except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -516,6 +513,8 @@ var Experiment = module.exports.Experiment = React.createClass({
         );
     }
 });
+
+const Experiment = module.exports.Experiment = auditDecor(ExperimentComponent);
 
 globals.content_views.register(Experiment, 'Experiment');
 

@@ -12,16 +12,13 @@ var search = require('./search');
 var software = require('./software');
 var StatusLabel = require('./statuslabel').StatusLabel;
 var Citation = require('./publication').Citation;
-var audit = require('./audit');
+import auditDecor from './audit-13';
 var doc = require('./doc');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
 var softwareVersionList = software.softwareVersionList;
-var AuditIndicators = audit.AuditIndicators;
-var AuditDetail = audit.AuditDetail;
-var AuditMixin = audit.AuditMixin;
 var DocumentsPanel = doc.DocumentsPanel;
 var {Panel, PanelBody, PanelHeading} = panel;
 
@@ -41,9 +38,7 @@ var PanelLookup = function (props) {
 
 
 
-var Pipeline = module.exports.Pipeline = React.createClass({
-    mixins: [AuditMixin],
-
+var PipelineComponent = React.createClass({
     getInitialState: function() {
         return {
             infoNodeId: '', // ID of node whose info panel is open
@@ -211,11 +206,11 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel title="Status" status={context.status} />
                             </div>
-                            <AuditIndicators audits={context.audit} id="biosample-audit" />
+                            {this.props.auditIndicators(context.audit, 'pipeline-audit')}
                         </div>
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} except={context['@id']} id="biosample-audit" />
+                {this.props.auditDetail(context.audit, 'pipeline-audit', { except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody>
                         <dl className="key-value">
@@ -283,6 +278,9 @@ var Pipeline = module.exports.Pipeline = React.createClass({
         );
     }
 });
+
+const Pipeline = module.exports.Pipeline = auditDecor(PipelineComponent);
+
 globals.content_views.register(Pipeline, 'Pipeline');
 
 
@@ -437,8 +435,8 @@ var StepDetailView = module.exports.StepDetailView = function(node) {
 globals.graph_detail.register(StepDetailView, 'Step');
 
 
-var Listing = React.createClass({
-    mixins: [search.PickerActionsMixin, AuditMixin],
+var ListingComponent = React.createClass({
+    mixins: [search.PickerActionsMixin],
     render: function() {
         var result = this.props.context;
         var publishedBy = [];
@@ -468,7 +466,7 @@ var Listing = React.createClass({
                         <p className="type meta-title">Pipeline</p>
                         <p className="type">{' ' + result['accession']}</p>
                         {result.status ? <p className="type meta-status">{' ' + result.status}</p> : ''}
-                        <AuditIndicators audits={result.audit} id={result['@id']} search />
+                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>{result['title']}</a>
@@ -483,9 +481,12 @@ var Listing = React.createClass({
                         : null}
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
+                {this.props.auditDetail(result.audit, result['@id'], { forcedEditLink: true })}
             </li>
         );
     }
 });
+
+const Listing = auditDecor(ListingComponent);
+
 globals.listing_views.register(Listing, 'Pipeline');

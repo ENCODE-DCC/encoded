@@ -1,6 +1,5 @@
 import React from 'react';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
-import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
 import DataColors from './datacolors';
 import { FetchedItems } from './fetched';
 import globals from './globals';
@@ -553,7 +552,7 @@ const Listing = React.createClass({
         context: React.PropTypes.object, // Object whose search result we're displaying
     },
 
-    mixins: [PickerActionsMixin, AuditMixin],
+    mixins: [PickerActionsMixin],
 
     render: function () {
         const result = this.props.context;
@@ -565,7 +564,6 @@ const Listing = React.createClass({
                         <p className="type meta-title">Award</p>
                         <p className="type">{` ${result.name}`}</p>
                         <p className="type meta-status">{` ${result.status}`}</p>
-                        <AuditIndicators audits={result.audit} id={result['@id']} search />
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>{result.title}</a>
@@ -574,9 +572,9 @@ const Listing = React.createClass({
                         <div><strong>Project / RFA: </strong>{result.project} / {result.rfa}</div>
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     },
 });
+
 globals.listing_views.register(Listing, 'Award');

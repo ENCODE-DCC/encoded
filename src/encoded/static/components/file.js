@@ -140,7 +140,7 @@ class FileComponent extends React.Component {
                             : null}
                             {this.props.auditIndicators(context.audit, 'file-audit', { session: this.context.session })}
                         </div>
-                        {this.props.auditDetail(context.audit, context['@id'], 'file-audit', { session: this.context.session })}
+                        {this.props.auditDetail(context.audit, 'file-audit', { session: this.context.session, except: context['@id'] })}
                     </div>
                 </header>
                 <Panel addClasses="data-display">
