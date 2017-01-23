@@ -141,6 +141,20 @@ def biosample_12(biosample_0, document):
     return item
 
 
+@pytest.fixture
+def biosample_13(biosample_0, document):
+    item = biosample_0.copy()
+    item.update({
+        'schema_version': '13',
+        'notes': ' leading and trailing whitespace ',
+        'description': ' leading and trailing whitespace ',
+        'submitter_comment': ' leading and trailing whitespace ',
+        'product_id': ' leading and trailing whitespace ',
+        'lot_id': ' leading and trailing whitespace '
+    })
+    return item
+
+
 def test_biosample_upgrade(upgrader, biosample_1):
     value = upgrader.upgrade('biosample', biosample_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -418,3 +432,15 @@ def test_upgrade_biosample_12_to_13(root, upgrader, biosample, biosample_12, dum
     assert 'starting_amount' not in value
     assert 'protocol_documents' not in value
     assert 'documents' in value
+
+
+def test_upgrade_biosample_13_to_14(root, upgrader, biosample, biosample_13, dummy_request):
+    context = root.get_by_uuid(biosample['uuid'])
+    dummy_request.context = context
+    value = upgrader.upgrade('biosample', biosample_13, target_version='14', context=context)
+    assert value['schema_version'] == '14'
+    assert value['notes'] == ' leading and trailing whitespace '.strip()
+    assert value['submitter_comment'] == ' leading and trailing whitespace '.strip()
+    assert value['description'] == ' leading and trailing whitespace '.strip()
+    assert value['product_id'] == ' leading and trailing whitespace '.strip()
+    assert value['lot_id'] == ' leading and trailing whitespace '.strip()

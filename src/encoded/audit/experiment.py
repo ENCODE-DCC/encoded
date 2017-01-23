@@ -633,10 +633,13 @@ def audit_experiment_standards_dispatcher(value, system):
     if value['assay_term_name'] in ['DNase-seq']:
         hotspots = scanFilesForOutputType(value['original_files'],
                                           'hotspots')
+        signal_files = scanFilesForOutputType(value['original_files'],
+                                              'signal of unique reads')
         for failure in check_experiment_dnase_seq_standards(value,
                                                             fastq_files,
                                                             alignment_files,
                                                             hotspots,
+                                                            signal_files,
                                                             desired_assembly,
                                                             desired_annotation,
                                                             ' /data-standards/dnase-seq/ '):
@@ -735,10 +738,11 @@ def audit_modERN_experiment_standards_dispatcher(value, system):
                 yield failure
 
 
-def check_experiment_dnase_seq_standards(value,
+def check_experiment_dnase_seq_standards(experiment,
                                          fastq_files,
                                          alignment_files,
                                          hotspots_files,
+                                         signal_files,
                                          desired_assembly,
                                          desired_annotation,
                                          link_to_standards):
@@ -766,12 +770,11 @@ def check_experiment_dnase_seq_standards(value,
                 if 'mapped' in metric and 'quality_metric_of' in metric:
                     alignment_file = metric['quality_metric_of'][0]
                     suffix = 'According to ENCODE standards, conventional ' + \
-                             'DNase-seq profile, requires a minimum of 20 million uniquely mapped ' + \
+                             'DNase-seq profile requires a minimum of 20 million uniquely mapped ' + \
                              'reads to generate a reliable ' + \
                              'SPOT (Signal Portion of Tags) score. ' + \
-                             'The recommended value is > 50 million, but > 40 million ' + \
-                             'is acceptable. For deep, foot-printing depth ' + \
-                             'DNase-seq 200-250 million uniquely mapped reads are ' + \
+                             'The recommended value is > 50 million. For deep, foot-printing depth ' + \
+                             'DNase-seq 150-200 million uniquely mapped reads are ' + \
                              'recommended. (See {} )'.format(
                                  link_to_standards)
                     if 'assembly' in alignment_file:
@@ -789,10 +792,8 @@ def check_experiment_dnase_seq_standards(value,
                                  'has {} '.format(
                                      metric['mapped']) + \
                                  'mapped reads. ' + suffix
-                    if 40000000 <= metric['mapped'] < 50000000:
-                        yield AuditFailure('low read depth', detail, level='WARNING')
-                    elif 20000000 <= metric['mapped'] < 40000000:
-                        yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
+                    if 20000000 <= metric['mapped'] < 50000000:
+                        yield AuditFailure('insufficient read depth', detail, level='WARNING')
                     elif metric['mapped'] < 20000000:
                         yield AuditFailure('extremely low read depth', detail, level='ERROR')
         elif alignment_files is not None and len(alignment_files) > 0 and \
@@ -807,6 +808,16 @@ def check_experiment_dnase_seq_standards(value,
                      'lack read depth information.'
             yield AuditFailure('missing read depth', detail, level='WARNING')
 
+        hotspot_assemblies = {}
+        for hotspot_file in hotspots_files:
+            if 'assembly' in hotspot_file:
+                hotspot_assemblies[hotspot_file['accession']] = hotspot_file['assembly']
+
+        signal_assemblies = {}
+        for signal_file in signal_files:
+            if 'assembly' in signal_file:
+                signal_assemblies[signal_file['accession']] = signal_file['assembly']
+
         hotspot_quality_metrics = get_metrics(hotspots_files,
                                               'HotspotQualityMetric',
                                               desired_assembly)
@@ -816,22 +827,84 @@ def check_experiment_dnase_seq_standards(value,
                 if "SPOT score" in metric:
                     file_names = []
                     for f in metric['quality_metric_of']:
-                        file_names.append(f['@id'])
+                        file_names.append(f['@id'].split('/')[2])
                     file_names_string = str(file_names).replace('\'', ' ')
-
                     detail = "Signal Portion of Tags (SPOT) is a measure of enrichment, " + \
                              "analogous to the commonly used fraction of reads in peaks metric. " + \
                              "ENCODE processed hotspots files {} ".format(file_names_string) + \
+                             "produced by {} ".format(pipelines[0]['title']) + \
+                             "( {} ) ".format(pipelines[0]['@id']) + \
+                             assemblies_detail(extract_assemblies(hotspot_assemblies, file_names)) + \
                              "have a SPOT score of {0:.2f}. ".format(metric["SPOT score"]) + \
                              "According to ENCODE standards, " + \
                              "SPOT score of 0.4 or higher is considered a product of high quality " + \
-                             "data. A SPOT score of 0.2 is considered a minimally acceptable " + \
-                             "SPOT score for rare and hard to find primary tissues. ( {} )".format(
+                             "data. " + \
+                             "Any sample with a SPOT score <0.3 should be targeted for replacement " + \
+                             "with a higher quality sample, and a " + \
+                             "SPOT score of 0.25 is considered minimally acceptable " + \
+                             "for rare and hard to find primary tissues. (See {} )".format(
                                  link_to_standards)
-                    if 0.2 <= metric["SPOT score"] < 0.4:
+
+                    if 0.3 <= metric["SPOT score"] < 0.4:
                         yield AuditFailure('low spot score', detail, level='WARNING')
-                    elif metric["SPOT score"] < 0.2:
+                    elif 0.25 <= metric["SPOT score"] < 0.3:
                         yield AuditFailure('insufficient spot score', detail, level='NOT_COMPLIANT')
+                    elif metric["SPOT score"] < 0.25:
+                        yield AuditFailure('extremely low spot score', detail, level='ERROR')
+
+        if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
+            return
+
+        signal_quality_metrics = get_metrics(signal_files,
+                                             'CorrelationQualityMetric',
+                                             desired_assembly)
+        if signal_quality_metrics is not None and \
+           len(signal_quality_metrics) > 0:
+            threshold = 0.9
+            if experiment['replication_type'] == 'anisogenic':
+                threshold = 0.85
+            for metric in signal_quality_metrics:
+                if 'Pearson correlation' in metric:
+                    file_names = []
+                    for f in metric['quality_metric_of']:
+                        file_names.append(f['@id'].split('/')[2])
+                    file_names_string = str(file_names).replace('\'', ' ')
+                    detail = 'Replicate concordance in DNase-seq expriments is measured by ' + \
+                        'calculating the Pearson correlation between signal quantification ' + \
+                        'of the replicates. ' + \
+                        'ENCODE processed signal files {} '.format(file_names_string) + \
+                        'produced by {} '.format(pipelines[0]['title']) + \
+                        '( {} ) '.format(pipelines[0]['@id']) + \
+                        assemblies_detail(extract_assemblies(signal_assemblies, file_names)) + \
+                        'have a Pearson correlation of {0:.2f}. '.format(metric['Pearson correlation']) + \
+                        'According to ENCODE standards, in an {} '.format(experiment['replication_type']) + \
+                        'assay a Pearson correlation value > {} '.format(threshold) + \
+                        'is recommended. (See {} )'.format(
+                            link_to_standards)
+
+                    if metric['Pearson correlation'] < threshold:
+                        yield AuditFailure('insufficient replicate concordance',
+                                           detail, level='NOT_COMPLIANT')
+
+
+def extract_assemblies(assemblies, file_names):
+    to_return = set()
+    for f_name in file_names:
+        if f_name in assemblies:
+            to_return.add(assemblies[f_name])
+    return sorted(list(to_return))
+
+
+def assemblies_detail(assemblies):
+    assemblies_detail = ''
+    if assemblies:
+        if len(assemblies) > 1:
+            assemblies_detail = "for {} assemblies ".format(
+                str(assemblies).replace('\'', ' '))
+        else:
+            assemblies_detail = "for {} assembly ".format(
+                assemblies[0])
+    return assemblies_detail
 
 
 def check_experiment_rna_seq_standards(value,
