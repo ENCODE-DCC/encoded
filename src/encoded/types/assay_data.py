@@ -3,7 +3,7 @@ assay_terms = {
       'ChIP-seq': 'OBI:0000716',
       'RNA-seq': 'OBI:0001271',
       'DNase-seq': 'OBI:0001853',
-      'eCLIP': 'NTR:0003027',
+      'eCLIP': 'OBI:0002111',
       'shRNA knockdown followed by RNA-seq': 'NTR:0000762',
       'RNA Bind-n-Seq': 'OBI:0002044',
       'transcription profiling by array assay': 'OBI:0001463',
@@ -33,10 +33,16 @@ assay_terms = {
       'protein sequencing by tandem mass spectrometry assay': 'OBI:0001923',
       '5C': 'OBI:0001919',
       'HiC': 'OBI:0002042',
-      'TAB-seq': 'NTR:0002490',
+      'TAB-seq': 'OBI:0002086',
       'iCLIP': 'OBI:0002043',
       'DNA-PET': 'OBI:0001849',
       'Switchgear': 'NTR:0000612',
-      '5\' RLM RACE': 'NTR:0001684',
-      'MNase-seq': 'OBI:0001924'
+      '5\' RLM RACE': 'OBI:0002093',
+      'MNase-seq': 'OBI:0001924',
+      '5\' RACE': 'OBI:0002091',
+      '3\' RACE': 'OBI:0002092',
+      'small RNA-seq': 'OBI:0002112',
+      'Bru-seq': 'OBI:0002113',
+      'BruChase-seq': 'OBI:0002114',
+      'genetic modification followed by DNase-seq': 'NTR:0004774'
 }
