@@ -821,16 +821,14 @@ def check_experiment_dnase_seq_standards(experiment,
         hotspot_quality_metrics = get_metrics(hotspots_files,
                                               'HotspotQualityMetric',
                                               desired_assembly)
-
         if hotspot_quality_metrics is not None and \
            len(hotspot_quality_metrics) > 0:
             for metric in hotspot_quality_metrics:
                 if "SPOT score" in metric:
                     file_names = []
                     for f in metric['quality_metric_of']:
-                        file_names.append(f['@id'])
+                        file_names.append(f['@id'].split('/')[2])
                     file_names_string = str(file_names).replace('\'', ' ')
-
                     detail = "Signal Portion of Tags (SPOT) is a measure of enrichment, " + \
                              "analogous to the commonly used fraction of reads in peaks metric. " + \
                              "ENCODE processed hotspots files {} ".format(file_names_string) + \
@@ -869,7 +867,7 @@ def check_experiment_dnase_seq_standards(experiment,
                 if 'Pearson correlation' in metric:
                     file_names = []
                     for f in metric['quality_metric_of']:
-                        file_names.append(f['@id'])
+                        file_names.append(f['@id'].split('/')[2])
                     file_names_string = str(file_names).replace('\'', ' ')
                     detail = 'Replicate concordance in DNase-seq expriments is measured by ' + \
                         'calculating the Pearson correlation between signal quantification ' + \
