@@ -15,6 +15,7 @@ import subprocess
 import re
 from urllib.parse import urljoin
 import requests
+import copy
 
 EPILOG = __doc__
 
@@ -748,12 +749,27 @@ def remove_local_file(path_to_the_file, errors):
         pass
 
 
-def fetch_files(session, url, search_query, out, include_unexpired_upload=False):
-    r = session.get(
-        urljoin(url, '/search/?field=@id&limit=all&type=File&' + search_query))
+def fetch_files(session, url, search_query, out, include_unexpired_upload=False, file_list=None):
+    graph = []
+    if file_list:
+        r = None
+        ACCESSIONS = []
+        if os.path.isfile(file_list):
+            ACCESSIONS = [line.rstrip('\n') for line in open(file_list)]
+        for acc in ACCESSIONS:
+            r = session.get(
+                urljoin(url, '/search/?field=@id&limit=all&type=File&accession=' + acc))
+            local = copy.deepcopy(r.json()['@graph'])
+            graph.extend(local)
+
+    else:
+        r = session.get(
+            urljoin(url, '/search/?field=@id&limit=all&type=File&' + search_query))
+
     r.raise_for_status()
     out.write("PROCESSING: %d files in query: %s\n" % (len(r.json()['@graph']), search_query))
-    for result in r.json()['@graph']:
+
+    for result in graph:
         job = {
             '@id': result['@id'],
             'errors': {},
@@ -854,7 +870,8 @@ def patch_file(session, url, job):
             job['patched'] = True
     return
 
-def run(out, err, url, username, password, encValData, mirror, search_query,
+
+def run(out, err, url, username, password, encValData, mirror, search_query, file_list=None,
         processes=None, include_unexpired_upload=False, dry_run=False, json_out=False):
     import functools
     import multiprocessing
@@ -887,7 +904,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
         pool = multiprocessing.Pool(processes=processes)
         imap = pool.imap_unordered
 
-    jobs = fetch_files(session, url, search_query, out, include_unexpired_upload)
+    jobs = fetch_files(session, url, search_query, out, include_unexpired_upload, file_list)
     if not json_out:
         headers = '\t'.join(['Accession', 'Lab', 'Errors', 'Aliases', 'Upload URL',
                              'Upload Expiration'])
@@ -951,6 +968,9 @@ def main():
     parser.add_argument(
         '--search-query', default='status=uploading',
         help="override the file search query, e.g. 'accession=ENCFF000ABC'")
+    parser.add_argument(
+        '--file-list', default='',
+        help="list of file accessions to check")
     parser.add_argument('url', help="server to post to")
     args = parser.parse_args()
     run(**vars(args))
