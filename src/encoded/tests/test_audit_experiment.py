@@ -834,8 +834,7 @@ def test_audit_experiment_wrong_organism_histone_antibody(testapp, base_experime
     testapp.patch_json(base_replicate['@id'], {'antibody': histone_antibody['@id'],
                                                'library': base_library['@id'],
                                                'experiment': base_experiment['@id']})
-    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716',
-                                                'assay_term_name': 'ChIP-seq',
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
                                                 'biosample_term_id': 'EFO:0003971',
                                                 'biosample_term_name': 'MEL cell line',
                                                 'biosample_type': 'immortalized cell line',
@@ -879,8 +878,7 @@ def test_audit_experiment_partially_characterized_antibody(testapp, base_experim
     testapp.patch_json(base_replicate['@id'], {'antibody': TF_antibody['@id'],
                                                'library': base_library['@id'],
                                                'experiment': base_experiment['@id']})
-    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716',
-                                                'assay_term_name': 'ChIP-seq',
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
                                                 'biosample_term_id': 'EFO:0002067',
                                                 'biosample_term_name': 'K562',
                                                 'biosample_type': 'immortalized cell line',
