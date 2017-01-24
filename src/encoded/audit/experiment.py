@@ -445,9 +445,13 @@ def is_outdated_bams_replicate(bam_file):
                     break
 
     replicate_fastq_accessions = get_file_accessions(bio_rep_fastqs)
-    for f_accession in replicate_fastq_accessions:
-        if f_accession not in derived_from_fastq_accessions:
-            return True
+    for file_object in bio_rep_fastqs:
+        file_acc = file_object['accession']
+        if file_acc not in derived_from_fastq_accessions:
+            paired_file_id = file_object.get('paired_with')
+            if paired_file_id and \
+               (paired_file_id.split('/')[2] not in derived_from_fastq_accessions):
+                return True
 
     for f_accession in derived_from_fastq_accessions:
         if f_accession not in replicate_fastq_accessions:
@@ -484,6 +488,8 @@ def audit_experiment_out_of_date_analysis(value, system):
         return  # probably needs pipeline, since there are no processed files
 
     uniform_pipeline_flag = False
+    
+>>> TOTO modify this mess of a conditions >>>>>    
     for bam_file in alignment_files:
         if bam_file['lab'] == '/labs/encode-processing-pipeline/':
             uniform_pipeline_flag = True
