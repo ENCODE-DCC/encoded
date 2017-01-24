@@ -407,15 +407,18 @@ def audit_experiment_control_out_of_date_analysis(value, system):
     for bam_file in derived_from_bams:
         if bam_file['dataset']['accession'] != value['accession'] and \
            is_outdated_bams_replicate(bam_file):
+            assembly_detail = ''
+            if bam_file.get('assembly'):
+                assembly_detail = ' for {} assembly '.format(bam_file['assembly'])
             detail = 'Experiment {} '.format(value['@id']) + \
-                     'processed files are using alignment files from a control ' + \
-                     'replicate that is out of date.'
+                     'processed files are using alignment file {} '.format(
+                         bam_file['@id']) + assembly_detail + \
+                     'from a control replicate that is out of date.'
             yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
             return
 
 
 def is_outdated_bams_replicate(bam_file):
-
     if 'lab' not in bam_file or bam_file['lab'] != '/labs/encode-processing-pipeline/' or \
        'dataset' not in bam_file or 'original_files' not in bam_file['dataset']:
         return False
@@ -491,9 +494,8 @@ def audit_experiment_out_of_date_analysis(value, system):
         return  # probably needs pipeline, since there are no processed files
 
     uniform_pipeline_flag = False
-    
-    #>>> TOTO modify this mess of a conditions >>>>>    
-    for bam_file in alignment_files:
+
+    '''for bam_file in alignment_files:
         if bam_file['lab'] == '/labs/encode-processing-pipeline/':
             uniform_pipeline_flag = True
             break
@@ -505,6 +507,12 @@ def audit_experiment_out_of_date_analysis(value, system):
         if bam_file['lab'] == '/labs/encode-processing-pipeline/':
             uniform_pipeline_flag = True
             break
+            '''
+    for bam_file in alignment_files + transcriptome_alignments + not_filtered_alignments:
+        if bam_file['lab'] == '/labs/encode-processing-pipeline/':
+            uniform_pipeline_flag = True
+            break
+
     if uniform_pipeline_flag is False:
         return
     alignment_derived_from = get_derived_from_files_set(alignment_files, 'fastq', False)
