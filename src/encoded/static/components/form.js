@@ -434,7 +434,7 @@ const Field = module.exports.Field = React.createClass({
     propTypes: {
         name: React.PropTypes.any,
         path: React.PropTypes.string,
-        schema: React.PropTypes.object.isRequired,
+        schema: React.PropTypes.object,
         value: React.PropTypes.any,
         className: React.PropTypes.string,
         updateChild: React.PropTypes.func,
@@ -507,6 +507,10 @@ const Field = module.exports.Field = React.createClass({
 
     render() {
         const { name, path, schema, value } = this.props;
+        // FIXME Redmine #3413
+        if (schema === undefined) {
+            return null;
+        }
         const errors = this.context.errors;
         const isValid = !errors[path];
         const type = schema.type || 'string';
