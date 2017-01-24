@@ -512,7 +512,7 @@ def file_bed_methyl(base_experiment, award, encode_lab, testapp, analysis_step_r
         "file_format_type": "bedMethyl",
         "file_size": 66569,
         "assembly": "mm10",
-        "md5sum": "100d8c998f00bfdf2204e9800998ecf8428b",
+        "md5sum": "100d8c998f00bfdf2204e980ecf8",
         "output_type": "methylation state at CpG",
         "award": award["uuid"],
         "lab": encode_lab["uuid"],

@@ -1700,7 +1700,7 @@
         "award": "/awards/U41HG007355/",
         "platform": "/platforms/OBI%3A0002003/",
         "run_type": "single-ended",
-        "md5sum": "c321bb52bad46e43b5d196f6fed8ce76",
+        "md5sum": "c321be52bad46e43b5d196f6fed8ce76",
         "lab": "/labs/robert-waterston/",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "file_size": 17262936,
@@ -1730,7 +1730,7 @@
         "status": "released",
         "output_type": "reads",
         "dataset": "/experiments/ENCSR003EPI/",
-        "content_md5sum": "d217768b26f6b7734d0304e5b221fc6bd",
+        "content_md5sum": "d217768b26f6b7734d0304e5b221fc6b",
         "accession": "ENCFF005EPI",
         "aliases": [
             "robert-waterston:fastq1:MiSeq_RB884_80_1_1_1_p0_H3K4me1"
@@ -1753,7 +1753,7 @@
         "status": "released",
         "output_type": "reads",
         "dataset": "/experiments/ENCSR004EPI/",
-        "content_md5sum": "d217768b36f6b7734d0304e5b221fc6bd",
+        "content_md5sum": "d217768b36f6b7734d034e5b221fc6bd",
         "accession": "ENCFF006EPI",
         "aliases": [
             "robert-waterston:fastq1:MiSeq_RB884_80_1_1_1_p0_H3K4me3"
@@ -1762,7 +1762,7 @@
         "award": "/awards/U41HG007355/",
         "platform": "/platforms/OBI%3A0002003/",
         "run_type": "single-ended",
-        "md5sum": "c321bb52ba446e43b25d196f6fed8ce76",
+        "md5sum": "c321bb52ba446e43b25d19f6fed8ce76",
         "lab": "/labs/robert-waterston/",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "file_size": 17262936,
@@ -1776,7 +1776,7 @@
         "status": "released",
         "output_type": "reads",
         "dataset": "/experiments/ENCSR005EPI/",
-        "content_md5sum": "d2177682b6f6b7734d0304e5b221fc6bd",
+        "content_md5sum": "d2177682b6f6b734d0304e5b221fc6bd",
         "accession": "ENCFF007EPI",
         "aliases": [
             "robert-waterston:fastq1:MiSeq_RB884_80_1_1_1_p0_H3K27ac"
@@ -1785,7 +1785,7 @@
         "award": "/awards/U41HG007355/",
         "platform": "/platforms/OBI%3A0002003/",
         "run_type": "single-ended",
-        "md5sum": "c3213bb52bad46e43b5d196f6fed8ce76",
+        "md5sum": "c321bb52bad46e43b5d196f6fed8ce76",
         "lab": "/labs/robert-waterston/",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "file_size": 17262936,
@@ -1800,7 +1800,7 @@
         "file_format": "bam",
         "file_size": 473944988,
         "lab": "/labs/robert-waterston/",
-        "md5sum": "91d0d5d2e0df439dd6599914b5375e7b2",
+        "md5sum": "91d0d5d2e0df439dd659914b5375e7b2",
         "output_type": "alignments",
         "status": "released",
         "submitted_by": "amet.fusce@est.fermentum",

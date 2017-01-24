@@ -299,7 +299,7 @@ def bigWig_file(testapp, lab, award, experiment):
     item = {
         'dataset': experiment['@id'],
         'file_format': 'bigWig',
-        'md5sum': 'd41d8cd9sf00b204e9800998ecf86674427e',
+        'md5sum': 'd41d8cd9sf00b204e9800998ecf86674',
         'output_type': 'signal of unique reads',
         'assembly': 'mm10',
         'lab': lab['@id'],
