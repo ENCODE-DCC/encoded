@@ -86,15 +86,16 @@ import { Panel } from '../libs/bootstrap/panel';
 // * id (Required string): Arbitrary text used for to identify the button/panel accessibility
 //                         arias. ENCODE has the standard of the lowercase wrapped component name
 //                         and `-audit`. In the above example, that would be `blaine-audit`.
-// 
+//
 // * options (Optional object):
 //   * options.session (object): session object from app context
 //   * options.except (string): @id to *not* make into a link in the detail text
 //   * options.forcedEditLink (boolean): `true` to make the `except` string a link anyway
 
 
-// Display an audit icon within the audit indicator button. The type of icon depends on the given
-// audit level.
+// Display an audit icon. This normally gets displayed within the audit indicator button, but it
+// doesn't rely on much so you could use it anywhere you want to display the icon associated with
+// the audit with the level passed in the `level` property.
 export class AuditIcon extends React.Component {
     render() {
         const { level, addClasses } = this.props;
@@ -242,6 +243,27 @@ function idAudits(audits) {
 }
 
 
+// Determine whether audits should be displayed or not, given the audits object from a data object,
+// and an optional session to determine logged-in state. It follows this logic:
+//
+// if audits exist
+//     if logged out
+//         if only one audit level and it's INTERNAL_ACTION
+//             return do display audits
+//         return don't display audits
+//     return do display audits
+// return don't display audits
+export function auditsDisplayed(audits, session) {
+    const loggedIn = !!(session && session['auth.userid']);
+
+    return (audits && Object.keys(audits).length) && (loggedIn || !(Object.keys(audits).length === 1 && audits['INTERNAL_ACTION']));
+}
+
+
+// Audit decorator function. For any component that displays audits, pass this component as the
+// parameter to this function. This decorator returns a component that's the original component
+// plus the audit rendering functions. These functions get added to the original component's
+// properties. See the documentation at the top of this file for details.
 export const auditDecor = AuditComponent => class extends React.Component {
     constructor() {
         super();
@@ -257,9 +279,9 @@ export const auditDecor = AuditComponent => class extends React.Component {
 
     auditIndicators(audits, id, options) {
         const { session, search } = options || {};
-        const loggedIn = session && session['auth.userid'];
+        const loggedIn = !!(session && session['auth.userid']);
 
-        if (audits && Object.keys(audits).length) {
+        if (auditsDisplayed(audits, session)) {
             // Attach unique IDs to each audit to use as React keys.
             idAudits(audits);
 
@@ -267,32 +289,30 @@ export const auditDecor = AuditComponent => class extends React.Component {
             // category.
             const sortedAuditLevels = _(Object.keys(audits)).sortBy(level => -audits[level][0].level);
 
+            // Calculate the class of the indicator button based on whether the audit detail panel
+            // is open or not.
             const indicatorClass = `audit-indicators btn btn-info${this.state.auditDetailOpen ? ' active' : ''}${search ? ' audit-search' : ''}`;
-            if (loggedIn || !(sortedAuditLevels.length === 1 && sortedAuditLevels[0] === 'INTERNAL_ACTION')) {
-                return (
-                    <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.state.auditDetailOpen} aria-controls={id} onClick={this.toggleAuditDetail}>
-                        {sortedAuditLevels.map((level) => {
-                            if (loggedIn || level !== 'INTERNAL_ACTION') {
-                                // Calculate the CSS class for the icon
-                                const levelName = level.toLowerCase();
-                                const btnClass = `btn-audit btn-audit-${levelName} audit-level-${levelName}`;
-                                const groupedAudits = _(audits[level]).groupBy('category');
 
-                                return (
-                                    <span className={btnClass} key={level}>
-                                        <AuditIcon level={level} />
-                                        {Object.keys(groupedAudits).length}
-                                    </span>
-                                );
-                            }
-                            return null;
-                        })}
-                    </button>
-                );
-            }
+            return (
+                <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.state.auditDetailOpen} aria-controls={id} onClick={this.toggleAuditDetail}>
+                    {sortedAuditLevels.map((level) => {
+                        if (loggedIn || level !== 'INTERNAL_ACTION') {
+                            // Calculate the CSS class for the icon
+                            const levelName = level.toLowerCase();
+                            const btnClass = `btn-audit btn-audit-${levelName} audit-level-${levelName}`;
+                            const groupedAudits = _(audits[level]).groupBy('category');
 
-            // Logged out and the only audit level is DCC action, so don't show a button.
-            return null;
+                            return (
+                                <span className={btnClass} key={level}>
+                                    <AuditIcon level={level} />
+                                    {Object.keys(groupedAudits).length}
+                                </span>
+                            );
+                        }
+                        return null;
+                    })}
+                </button>
+            );
         }
 
         // No audits provided.

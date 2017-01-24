@@ -6,7 +6,7 @@ import { Panel, PanelHeading } from '../libs/bootstrap/panel';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import { DropdownButton } from '../libs/bootstrap/button';
 import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
-import { auditDecor, AuditIcon } from './audit-13';
+import { auditDecor, auditsDisplayed, AuditIcon } from './audit-13';
 import { StatusLabel } from './statuslabel';
 import { requestFiles } from './objectutils';
 import { Graph, JsonGraph } from './graph';
@@ -2302,7 +2302,7 @@ const FileDetailView = function (node, qcClick, auditIndicators, auditDetail, lo
                     : null}
                 </dl>
 
-                {fileAudits ?
+                {auditsDisplayed(selectedFile.audit) ?
                     <div className="row graph-modal-audits">
                         <div className="col-xs-12">
                             <h5>File audits:</h5>
