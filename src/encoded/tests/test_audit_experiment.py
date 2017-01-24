@@ -2432,17 +2432,18 @@ def test_audit_experiment_no_out_of_date_analysis(testapp,
     assert all(error['category'] != 'out of date analysis' for error in errors_list)
 
 
-def test_audit_experiment_control_out_of_date_analysis_paired_fastqs(testapp,
-                                                       base_experiment,
-                                                       replicate_1_1,
-                                                       replicate_2_1,
-                                                       file_fastq_3,
-                                                       file_fastq_4,
-                                                       file_bam_1_1,
-                                                       file_bam_2_1,
-                                                       control_target,
-                                                       ctrl_experiment
-                                                       ):
+def test_audit_experiment_control_out_of_date_analysis_paired_fastqs(
+    testapp,
+    base_experiment,
+    replicate_1_1,
+    replicate_2_1,
+    file_fastq_3,
+    file_fastq_4,
+    file_bam_1_1,
+    file_bam_2_1,
+    control_target,
+    ctrl_experiment
+):
 
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
     testapp.patch_json(ctrl_experiment['@id'], {'target': control_target['@id']})

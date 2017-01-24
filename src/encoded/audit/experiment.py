@@ -479,7 +479,8 @@ def audit_experiment_with_uploading_files(value, system):
 
 @audit_checker('Experiment', frame=['original_files',
                                     'original_files.replicate',
-                                    'original_files.derived_from'])
+                                    'original_files.derived_from',
+                                    'original_files.dataset'])
 def audit_experiment_out_of_date_analysis(value, system):
     alignment_files = scan_files_for_file_format_output_type(value['original_files'],
                                                              'bam', 'alignments')
@@ -493,69 +494,17 @@ def audit_experiment_out_of_date_analysis(value, system):
        len(not_filtered_alignments) == 0:
         return  # probably needs pipeline, since there are no processed files
 
-    uniform_pipeline_flag = False
-
-    '''for bam_file in alignment_files:
+    for bam_file in (alignment_files + transcriptome_alignments + not_filtered_alignments):
         if bam_file['lab'] == '/labs/encode-processing-pipeline/':
-            uniform_pipeline_flag = True
-            break
-    for bam_file in transcriptome_alignments:
-        if bam_file['lab'] == '/labs/encode-processing-pipeline/':
-            uniform_pipeline_flag = True
-            break
-    for bam_file in not_filtered_alignments:
-        if bam_file['lab'] == '/labs/encode-processing-pipeline/':
-            uniform_pipeline_flag = True
-            break
-            '''
-    for bam_file in alignment_files + transcriptome_alignments + not_filtered_alignments:
-        if bam_file['lab'] == '/labs/encode-processing-pipeline/':
-            uniform_pipeline_flag = True
-            break
-
-    if uniform_pipeline_flag is False:
-        return
-    alignment_derived_from = get_derived_from_files_set(alignment_files, 'fastq', False)
-    transcriptome_alignment_derived_from = get_derived_from_files_set(
-        transcriptome_alignments, 'fastq', False)
-    not_filtered_alignment_derived_from = get_derived_from_files_set(
-        not_filtered_alignments, 'fastq', False)
-
-    derived_from_set = alignment_derived_from | \
-        not_filtered_alignment_derived_from | \
-        transcriptome_alignment_derived_from
-
-    fastq_files = scan_files_for_file_format_output_type(value['original_files'],
-                                                         'fastq', 'reads')
-    fastq_accs = get_file_accessions(fastq_files)
-
-    orfan_fastqs = set()
-    for f_accession in fastq_accs:
-        if f_accession not in derived_from_set:
-            orfan_fastqs.add(f_accession)
-    lost_fastqs = set()
-    for f_accession in derived_from_set:
-        if f_accession not in fastq_accs:
-            lost_fastqs.add(f_accession)
-
-    if len(orfan_fastqs) > 0:
-        orfan_bio_reps = set()
-
-        for fastq_f in fastq_files:
-            if fastq_f['accession'] in orfan_fastqs:
-                if 'replicate' in fastq_f:
-                    orfan_bio_reps.add(fastq_f['replicate']['biological_replicate_number'])
-        detail = 'Experiment {} '.format(value['@id']) + \
-                 'biological replicates {} '.format(orfan_bio_reps) + \
-                 'contain FASTQ files {} '.format(orfan_fastqs) + \
-                 ' that have not been processed.'
-        yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
-
-    if len(lost_fastqs) > 0:
-        detail = 'Experiment {} '.format(value['@id']) + \
-                 'processed files contain in derived_from list FASTQ files {} '.format(lost_fastqs) + \
-                 ' that are no longer eligible for analysis.'
-        yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
+            if is_outdated_bams_replicate(bam_file):
+                assembly_detail = ''
+                if bam_file.get('assembly'):
+                    assembly_detail = ' for {} assembly '.format(bam_file['assembly'])
+                detail = 'Experiment {} '.format(value['@id']) + \
+                         'alignment file {} '.format(
+                             bam_file['@id']) + assembly_detail + \
+                         'is out of date.'
+                yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
 
 
 def get_file_accessions(list_of_files):
