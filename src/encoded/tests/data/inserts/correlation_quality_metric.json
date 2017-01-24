@@ -4,7 +4,6 @@
         "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
         "uuid": "e4b43604-edd1-4cca-801a-8bc2c31ac3d5",
         "assay_term_name": "DNase-seq",
-        "assay_term_id": "OBI:0001853",
         "quality_metric_of": [ "95befcc1-9f85-415a-8eb5-e0f69756f053", "46e82a90-49e5-4c33-afab-9ec90d65faf3" ],
         "attachment": "generic_from_star_final_out.txt",
         "lab": "/labs/john-stamatoyannopoulos/",

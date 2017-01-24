@@ -1,40 +1,89 @@
-'use strict';
-var React = require('react');
-var globals = require('../globals');
-var item = require('../item');
-var noarg_memoize = require('../../libs/noarg-memoize');
+const React = require('react');
+const form = require('../form');
+const globals = require('../globals');
+const item = require('../item');
 
-var FallbackBlockView = React.createClass({
-    render: function() {
-        var Panel = item.Panel;
+const FallbackBlockView = React.createClass({
+    propTypes: {
+        blocktype: React.PropTypes.object,
+        value: React.PropTypes.any,
+    },
+
+    render() {
+        const Panel = item.Panel;
         return (
             <div>
             <h2>{this.props.blocktype.label}</h2>
                 <Panel context={this.props.value} />
             </div>
         );
-    }
+    },
 });
 
-var FallbackBlockEdit = module.exports.FallbackBlockEdit = React.createClass({
-    render: function() {
-        var ReactForms = require('react-forms');
-        return <ReactForms.Form {...this.props} defaultValue={this.props.value} />;
-    }
+const JSONInput = React.createClass({
+
+    propTypes: {
+        value: React.PropTypes.any,
+        onChange: React.PropTypes.func,
+    },
+
+    getInitialState() {
+        return { value: JSON.stringify(this.props.value, null, 4), error: false };
+    },
+
+    handleChange(event) {
+        let value = event.target.value;
+        this.setState({ value: value });
+        let error = false;
+        try {
+            value = JSON.parse(value);
+        } catch (e) {
+            error = true;
+        }
+        this.setState({ error });
+        if (!error) {
+            this.props.onChange(value);
+        }
+    },
+
+    render() {
+        return (
+            <div className={`rf-Field${this.state.error ? ' rf-Field--invalid' : ''}`}>
+                <textarea rows="10" value={this.state.value} onChange={this.handleChange} />
+            </div>
+        );
+    },
 });
 
+const fallbackSchema = {
+    type: 'object',
+    formInput: <JSONInput />,
+};
+
+module.exports.FallbackBlockEdit = React.createClass({
+    propTypes: {
+        schema: React.PropTypes.object,
+        value: React.PropTypes.any,
+        onChange: React.PropTypes.func,
+    },
+
+    update(name, value) {
+        this.props.onChange(value);
+    },
+
+    render() {
+        const { schema, value } = this.props;
+        return (<form.Field
+            schema={schema || fallbackSchema} value={value} updateChild={this.update}
+        />);
+    },
+});
 
 // Use this as a fallback for any block we haven't registered
 globals.blocks.fallback = function (obj) {
     return {
         label: obj['@type'].join(','),
-        schema: noarg_memoize(function() {
-            var JSONNode = require('../JSONNode');
-            return JSONNode.create({
-                label: 'JSON',
-                input: <textarea rows="15" cols="80" />,
-            });
-        }),
-        view: FallbackBlockView
+        schema: fallbackSchema,
+        view: FallbackBlockView,
     };
 };

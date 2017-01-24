@@ -4,7 +4,7 @@ var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
 var panel = require('../libs/bootstrap/panel');
-var {SvgIcon, collapseIcon} = require('../libs/svg-icons');
+var { collapseIcon } = require('../libs/svg-icons');
 var globals = require('./globals');
 var navigation = require('./navigation');
 var dataset = require('./dataset');
@@ -484,7 +484,7 @@ var CharacterizationDetail = React.createClass({
 
                     <div data-test="grant">
                         <dt>Grant</dt>
-                        <dd>{doc.award.name}</dd>
+                        <dd><a href={doc.award['@id']}>{doc.award.name}</a></dd>
                     </div>
 
                     <div data-test="download">

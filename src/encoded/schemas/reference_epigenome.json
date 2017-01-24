@@ -46,7 +46,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "10"
         }
     },
     "facets": {
@@ -173,6 +173,10 @@
         },
         "related_datasets.replicates.library.biosample.age_display": {
             "title": "Age display",
+            "type": "string"
+        },
+        "related_datasets.replicates.library.biosample.donor.accession": {
+            "title": "Accession",
             "type": "string"
         },
         "related_datasets.replicates.library.biosample.treatments.treatment_term_name": {

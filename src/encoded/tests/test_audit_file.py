@@ -7,7 +7,6 @@ def file_exp(lab, award, testapp, experiment):
         'lab': lab['uuid'],
         'award': award['uuid'],
         'assay_term_name': 'RAMPAGE',
-        'assay_term_id': 'OBI:0001864',
         'biosample_term_id': 'NTR:000012',
         'biosample_term_name': 'Some body part',
         'possible_controls': [experiment['uuid']],
@@ -33,7 +32,6 @@ def file_exp2(lab, award, testapp):
         'lab': lab['uuid'],
         'award': award['uuid'],
         'assay_term_name': 'RAMPAGE',
-        'assay_term_id': 'OBI:0001864',
         'biosample_term_id': 'NTR:000013',
         'biosample_term_name': 'Some other body part',
         'status': 'released',
@@ -301,7 +299,7 @@ def test_audit_file_read_length_controlled_by(testapp, file1_2,
                                       'run_type': 'single-ended'})
     testapp.patch_json(file1_2['@id'], {'controlled_by': [file2['@id']]})
     testapp.patch_json(file_exp['@id'], {'possible_controls': [file_exp2['@id']]})
-    testapp.patch_json(file_exp2['@id'], {'assay_term_id': 'OBI:0001864',
+    testapp.patch_json(file_exp2['@id'], {'assay_term_name': 'RAMPAGE',
                                           'biosample_term_id': 'NTR:000012',
                                           'biosample_term_name': 'Some body part'})
     res = testapp.get(file1_2['@id'] + '@@index-data')
@@ -321,7 +319,7 @@ def test_audit_file_read_length_controlled_by_exclusion(testapp, file1_2,
                                       'run_type': 'single-ended'})
     testapp.patch_json(file1_2['@id'], {'controlled_by': [file2['@id']]})
     testapp.patch_json(file_exp['@id'], {'possible_controls': [file_exp2['@id']]})
-    testapp.patch_json(file_exp2['@id'], {'assay_term_id': 'OBI:0001864',
+    testapp.patch_json(file_exp2['@id'], {'assay_term_name': 'RAMPAGE',
                                           'biosample_term_id': 'NTR:000012',
                                           'biosample_term_name': 'Some body part'})
     res = testapp.get(file1_2['@id'] + '@@index-data')
@@ -460,7 +458,7 @@ def test_audit_file_insufficient_control_read_depth_chip_seq_paired_end(
 
 def test_audit_modERN_missing_step_run(testapp, file_exp, file3, award):
     testapp.patch_json(award['@id'], {'rfa': 'modERN'})
-    testapp.patch_json(file_exp['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq'})
+    testapp.patch_json(file_exp['@id'], {'assay_term_name': 'ChIP-seq'})
     testapp.patch_json(file3['@id'], {'dataset': file_exp['@id'], 'file_format': 'bam',
                                       'assembly': 'ce10', 'output_type': 'alignments'})
     res = testapp.get(file3['@id'] + '@@index-data')
@@ -473,7 +471,7 @@ def test_audit_modERN_missing_step_run(testapp, file_exp, file3, award):
 
 def test_audit_modERN_missing_derived_from(testapp, file_exp, file3, award, analysis_step_version_bam, analysis_step_bam, analysis_step_run_bam):
     testapp.patch_json(award['@id'], {'rfa': 'modERN'})
-    testapp.patch_json(file_exp['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq'})
+    testapp.patch_json(file_exp['@id'], {'assay_term_name': 'ChIP-seq'})
     testapp.patch_json(file3['@id'], {'dataset': file_exp['@id'], 'file_format': 'bam', 'assembly': 'ce10',
                                       'output_type': 'alignments', 'step_run': analysis_step_run_bam['@id']})
     res = testapp.get(file3['@id'] + '@@index-data')
@@ -486,7 +484,7 @@ def test_audit_modERN_missing_derived_from(testapp, file_exp, file3, award, anal
 
 def test_audit_modERN_wrong_step_run(testapp, file_exp, file3, file4, award, analysis_step_version_bam, analysis_step_bam, analysis_step_run_bam):
     testapp.patch_json(award['@id'], {'rfa': 'modERN'})
-    testapp.patch_json(file_exp['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq'})
+    testapp.patch_json(file_exp['@id'], {'assay_term_name': 'ChIP-seq'})
     testapp.patch_json(file3['@id'], {'dataset': file_exp['@id'], 'file_format': 'bed',
                                       'file_format_type': 'narrowPeak', 'output_type': 'peaks',
                                       'step_run': analysis_step_run_bam['@id'], 'assembly': 'ce11',
@@ -501,7 +499,7 @@ def test_audit_modERN_wrong_step_run(testapp, file_exp, file3, file4, award, ana
 
 def test_audit_modERN_unexpected_step_run(testapp, file_exp, file2, award, analysis_step_run_bam):
     testapp.patch_json(award['@id'], {'rfa': 'modERN'})
-    testapp.patch_json(file_exp['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq'})
+    testapp.patch_json(file_exp['@id'], {'assay_term_name': 'ChIP-seq'})
     testapp.patch_json(file2['@id'], {'dataset': file_exp['@id'], 'step_run': analysis_step_run_bam['@id']})
     res = testapp.get(file2['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -556,7 +554,7 @@ def test_audit_file_fasta_assembly(testapp, file4):
 
 
 def test_audit_file_rbns_assembly(testapp, file4, file_exp):
-    testapp.patch_json(file_exp['@id'], {'assay_term_id': 'OBI:0002044'})
+    testapp.patch_json(file_exp['@id'], {'assay_term_name': 'RNA Bind-n-Seq'})
     testapp.patch_json(file4['@id'], {'assembly': 'GRCh38',
                                       'dataset': file_exp['@id'],
                                       'file_format': 'bam',

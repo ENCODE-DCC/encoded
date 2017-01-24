@@ -11,8 +11,8 @@ const statuslabel = require('./statuslabel');
 const audit = require('./audit');
 const image = require('./image');
 const item = require('./item');
-const reference = require('./reference');
-const {TreatmentDisplay, SingleTreatment} = require('./objectutils');
+const { pubReferenceList } = require('./reference');
+const { singleTreatment, treatmentDisplay } = require('./objectutils');
 const doc = require('./doc');
 const {BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable} = require('./typeutils');
 const {GeneticModificationSummary} = require('./genetic_modification');
@@ -25,7 +25,6 @@ const AuditDetail = audit.AuditDetail;
 const AuditMixin = audit.AuditMixin;
 const {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile} = doc;
 const ExperimentTable = dataset.ExperimentTable;
-const PubReferenceList = reference.PubReferenceList;
 const RelatedItems = item.RelatedItems;
 const ProjectBadge = image.ProjectBadge;
 const {Panel, PanelBody, PanelHeading} = panel;
@@ -86,7 +85,7 @@ var Biosample = module.exports.Biosample = React.createClass({
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
         // Get a list of reference links, if any
-        var references = PubReferenceList(context.references);
+        var references = pubReferenceList(context.references);
 
         // Render tags badges
         var tagBadges;
@@ -389,7 +388,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                             <section>
                                 <hr />
                                 <h4>Treatment details</h4>
-                                {context.treatments.map(treatment => TreatmentDisplay(treatment))}
+                                {context.treatments.map(treatment => treatmentDisplay(treatment))}
                             </section>
                         : null}
 
@@ -417,9 +416,13 @@ var Biosample = module.exports.Biosample = React.createClass({
                     </PanelBody>
                 </Panel>
 
+                {context.genetic_modifications && context.genetic_modifications.length ?
+                    <GeneticModificationSummary geneticModifications={context.genetic_modifications} />
+                : null}
+
                 {context.donor ?
                     <div>
-                        {PanelLookup({context: context.donor, biosample: context, panelTitle: donorPanelTitle})}
+                        {PanelLookup({ context: context.donor, biosample: context })}
                     </div>
                 : null}
 
@@ -442,10 +445,6 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                 {combinedDocs.length ?
                     <DocumentsPanel documentSpecs={[{documents: combinedDocs}]} />
-                : null}
-
-                {context.genetic_modifications && context.genetic_modifications.length ?
-                    <GeneticModificationSummary geneticModifications={context.genetic_modifications} />
                 : null}
             </div>
         );
@@ -509,9 +508,14 @@ var BiosampleTermId = React.createClass({
 
 
 var HumanDonor = module.exports.HumanDonor = React.createClass({
-    render: function() {
-        var {context, biosample, panelTitle} = this.props;
-        var references = PubReferenceList(context.references);
+    propTypes: {
+        context: React.PropTypes.object.isRequired, // Donor being displayed
+        biosample: React.PropTypes.object, // Biosample this donor is associated with
+    },
+
+    render: function () {
+        const { context, biosample } = this.props;
+        var references = pubReferenceList(context.references);
 
         // Render tags badges
         var tagBadges;
@@ -523,7 +527,7 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
             <div>
                 <Panel>
                     <PanelHeading>
-                        <h4>{panelTitle}</h4>
+                        <h4>Donor information</h4>
                     </PanelHeading>
                     <PanelBody>
                         <dl className="key-value">
@@ -617,7 +621,7 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
         var context = this.props.context;
         var biosample = this.props.biosample;
         var donorUrlDomain;
-        var references = PubReferenceList(context.references);
+        var references = pubReferenceList(context.references);
 
         // Get the domain name of the donor URL
         if (biosample && biosample.donor && biosample.donor.url) {
@@ -634,6 +638,9 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
         return (
             <div>
                 <Panel>
+                    <PanelHeading>
+                        <h4>Strain information</h4>
+                    </PanelHeading>
                     <PanelBody>
                         <dl className="key-value">
                             <div data-test="accession">
@@ -714,7 +721,7 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                             {context.references && context.references.length ?
                                 <div data-test="references">
                                     <dt>References</dt>
-                                    <dd>{PubReferenceList(context.references)}</dd>
+                                    <dd>{pubReferenceList(context.references)}</dd>
                                 </div>
                             : null}
 
@@ -760,6 +767,9 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
         return (
             <div>
                 <Panel>
+                    <PanelHeading>
+                        <h4>Strain information</h4>
+                    </PanelHeading>
                     <PanelBody>
                         <dl className="key-value">
                             <div data-test="accession">
@@ -920,7 +930,7 @@ var Treatment = module.exports.Treatment = React.createClass({
         var context = this.props.context;
         var treatmentText = '';
 
-        treatmentText = SingleTreatment(context);
+        treatmentText = singleTreatment(context);
         return (
             <dl className="key-value">
                 <div data-test="treatment">
@@ -1179,7 +1189,7 @@ var CharacterizationDetail = React.createClass({
                     {doc.award && doc.award.name ?
                         <div data-test="award">
                             <dt>Grant</dt>
-                            <dd>{doc.award.name}</dd>
+                            <dd><a href={doc.award['@id']}>{doc.award.name}</a></dd>
                         </div>
                     : null}
                 </dl>

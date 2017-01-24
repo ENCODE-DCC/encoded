@@ -25,3 +25,18 @@ def construct_2_3(value, system):
 
     if 'documents' in value:
         value['documents'] = list(set(value['documents']))
+
+
+@upgrade_step('construct', '3', '4')
+def construct_3_4(value, system):
+    # http://redmine.encodedcc.org/issues/2491
+    if 'description' in value:
+        if value['description']:
+            value['description'] = value['description'].strip()
+        else:
+            del value['description']
+    if 'notes' in value:
+        if value['notes']:
+            value['notes'] = value['notes'].strip()
+        else:
+            del value['notes']

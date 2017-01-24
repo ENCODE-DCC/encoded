@@ -8,7 +8,6 @@ AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
 @pytest.fixture
 def library_no_biosample(testapp, lab, award):
     item = {
-        'nucleic_acid_term_id': 'SO:0000352',
         'nucleic_acid_term_name': 'DNA',
         'lab': lab['@id'],
         'award': award['@id']
@@ -21,7 +20,6 @@ def base_library(testapp, lab, award, base_biosample):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'nucleic_acid_term_id': 'SO:0000352',
         'nucleic_acid_term_name': 'DNA',
         'biosample': base_biosample['uuid']
     }
@@ -179,8 +177,7 @@ def ctrl_experiment(testapp, lab, award, control_target):
         'award': award['uuid'],
         'lab': lab['uuid'],
         'status': 'started',
-        'assay_term_name': 'ChIP-seq',
-        'assay_term_id': 'OBI:0000716'
+        'assay_term_name': 'ChIP-seq'
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
@@ -202,7 +199,6 @@ def library_1(testapp, lab, award, base_biosample):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'nucleic_acid_term_id': 'SO:0000352',
         'nucleic_acid_term_name': 'DNA',
         'biosample': base_biosample['uuid']
     }
@@ -214,7 +210,6 @@ def library_2(testapp, lab, award, base_biosample):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'nucleic_acid_term_id': 'SO:0000352',
         'nucleic_acid_term_name': 'DNA',
         'biosample': base_biosample['uuid']
     }
@@ -445,7 +440,7 @@ def chip_seq_quality_metric(testapp, analysis_step_run_bam, file_bam_1_1, award,
 @pytest.fixture
 def hotspot_quality_metric(testapp, analysis_step_run_bam, file_tsv_1_1, award, encode_lab):
     item = {
-        'SPOT score': 0.2345,
+        'SPOT score': 0.3345,
         'step_run': analysis_step_run_bam['@id'],
         'quality_metric_of': [file_tsv_1_1['@id']],
         'award': award['@id'],
@@ -481,6 +476,19 @@ def mad_quality_metric_1_2(testapp, analysis_step_run_bam, file_tsv_1_2, award, 
     }
 
     return testapp.post_json('/mad_quality_metric', item).json['@graph'][0]
+
+
+@pytest.fixture
+def correlation_quality_metric(testapp, analysis_step_run_bam, file_tsv_1_2, award, lab):
+    item = {
+        'step_run': analysis_step_run_bam['@id'],
+        'quality_metric_of': [file_tsv_1_2['@id']],
+        'Pearson correlation': 0.1,
+        'award': award['@id'],
+        'lab': lab['@id']
+    }
+
+    return testapp.post_json('/correlation_quality_metric', item).json['@graph'][0]
 
 
 @pytest.fixture
@@ -582,8 +590,7 @@ def test_audit_experiment_released_with_unreleased_files(testapp, base_experimen
 
 def test_ChIP_possible_control(testapp, base_experiment, ctrl_experiment, IgG_ctrl_rep):
     testapp.patch_json(base_experiment['@id'], {'possible_controls': [ctrl_experiment['@id']],
-                                                'assay_term_name': 'ChIP-seq',
-                                                'assay_term_id': 'OBI:0000716'})
+                                                'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -596,8 +603,7 @@ def test_ChIP_possible_control_roadmap(testapp, base_experiment, ctrl_experiment
                                        award):
     testapp.patch_json(award['@id'], {'rfa': 'Roadmap'})
     testapp.patch_json(base_experiment['@id'], {'possible_controls': [ctrl_experiment['@id']],
-                                                'assay_term_name': 'ChIP-seq',
-                                                'assay_term_id': 'OBI:0000716'})
+                                                'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -611,8 +617,7 @@ def test_audit_input_control(testapp, base_experiment,
                              control_target):
     testapp.patch_json(ctrl_experiment['@id'], {'target': control_target['@id']})
     testapp.patch_json(base_experiment['@id'], {'possible_controls': [ctrl_experiment['@id']],
-                                                'assay_term_name': 'ChIP-seq',
-                                                'assay_term_id': 'OBI:0000716'})
+                                                'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -622,8 +627,7 @@ def test_audit_input_control(testapp, base_experiment,
 
 
 def test_audit_experiment_target(testapp, base_experiment):
-    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716',
-                                                'assay_term_name': 'ChIP-seq'})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -735,7 +739,7 @@ def test_audit_experiment_roadmap_replicated(testapp, base_experiment, base_repl
 
 
 def test_audit_experiment_spikeins(testapp, base_experiment, base_replicate, base_library):
-    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0001271', 'assay_term_name': 'RNA-seq'})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
     testapp.patch_json(base_library['@id'], {'size_range': '>200'})
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
@@ -749,7 +753,7 @@ def test_audit_experiment_spikeins(testapp, base_experiment, base_replicate, bas
 def test_audit_experiment_not_tag_antibody(testapp, base_experiment, base_replicate, organism, antibody_lot):
     other_target = testapp.post_json('/target', {'organism': organism['uuid'], 'label': 'eGFP-AVCD', 'investigated_as': ['recombinant protein']}).json['@graph'][0]
     testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['uuid']})
-    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'target': other_target['@id']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq', 'target': other_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -763,7 +767,7 @@ def test_audit_experiment_target_tag_antibody(testapp, base_experiment, base_rep
     base_antibody['targets'] = [tag_target['@id']]
     tag_antibody = testapp.post_json('/antibody_lot', base_antibody).json['@graph'][0]
     testapp.patch_json(base_replicate['@id'], {'antibody': tag_antibody['@id']})
-    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'target': ha_target['@id']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq', 'target': ha_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -774,7 +778,7 @@ def test_audit_experiment_target_tag_antibody(testapp, base_experiment, base_rep
 
 def test_audit_experiment_target_mismatch(testapp, base_experiment, base_replicate, base_target, antibody_lot):
     testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['uuid']})
-    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'target': base_target['@id']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq', 'target': base_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -785,7 +789,7 @@ def test_audit_experiment_target_mismatch(testapp, base_experiment, base_replica
 
 def test_audit_experiment_characterized_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, antibody_lot, target, base_antibody_characterization1, base_antibody_characterization2):
     testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['@id'], 'library': base_library['@id']})
-    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'biosample_term_id': 'EFO:0002067', 'biosample_term_name': 'K562',  'biosample_type': 'immortalized cell line', 
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq', 'biosample_term_id': 'EFO:0002067', 'biosample_term_name': 'K562',  'biosample_type': 'immortalized cell line', 
                                                 'target': target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -802,7 +806,7 @@ def test_audit_experiment_characterized_histone_antibody(testapp, base_experimen
     testapp.patch_json(base_antibody_characterization1['@id'], {'target': histone_target['@id'], 'characterizes': histone_antibody['@id']})
     testapp.patch_json(base_antibody_characterization2['@id'], {'target': histone_target['@id'], 'characterizes': histone_antibody['@id']})
     testapp.patch_json(base_replicate['@id'], {'antibody': histone_antibody['@id'], 'library': base_library['@id']})
-    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'biosample_term_id': 'EFO:0002067', 'biosample_term_name': 'K562',  'biosample_type': 'immortalized cell line', 'target': 
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq', 'biosample_term_id': 'EFO:0002067', 'biosample_term_name': 'K562',  'biosample_type': 'immortalized cell line', 'target': 
                                                 histone_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -976,8 +980,7 @@ def test_audit_experiment_with_library_without_biosample(testapp, base_experimen
 
 def test_audit_experiment_with_RNA_library_no_size_range(testapp, base_experiment, base_replicate,
                                                          base_library):
-    testapp.patch_json(base_library['@id'], {'nucleic_acid_term_id':
-                                             'SO:0000356', 'nucleic_acid_term_name': 'RNA'})
+    testapp.patch_json(base_library['@id'], {'nucleic_acid_term_name': 'RNA'})
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -989,8 +992,7 @@ def test_audit_experiment_with_RNA_library_no_size_range(testapp, base_experimen
 
 def test_audit_experiment_with_RNA_library_with_size_range(testapp, base_experiment, base_replicate,
                                                            base_library):
-    testapp.patch_json(base_library['@id'], {'nucleic_acid_term_id': 'SO:0000356',
-                                             'nucleic_acid_term_name': 'RNA', 'size_range': '>200'})
+    testapp.patch_json(base_library['@id'], {'nucleic_acid_term_name': 'RNA', 'size_range': '>200'})
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -1003,8 +1005,7 @@ def test_audit_experiment_with_RNA_library_with_size_range(testapp, base_experim
 def test_audit_experiment_with_RNA_library_array_size_range(testapp, base_experiment,
                                                             base_replicate,
                                                             base_library):
-    testapp.patch_json(base_library['@id'], {'nucleic_acid_term_id': 'SO:0000356',
-                                             'nucleic_acid_term_name': 'RNA'})
+    testapp.patch_json(base_library['@id'], {'nucleic_acid_term_name': 'RNA'})
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name':
                                                 'transcription profiling by array assay'})
@@ -1074,7 +1075,7 @@ def test_audit_experiment_replicate_with_file(testapp, file_fastq,
     assert all((error['category'] != 'missing raw data in replicate') for error in errors_list)
 
 
-def test_audit_experiment_pipeline_assay_term_id_consistency(
+def test_audit_experiment_pipeline_assay_term_name_consistency(
         testapp,
         experiment, bam_file,
         analysis_step_run_bam,
@@ -1085,16 +1086,14 @@ def test_audit_experiment_pipeline_assay_term_id_consistency(
     testapp.patch_json(bam_file['@id'], {'step_run': analysis_step_run_bam['@id']})
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'RNA-seq of long RNAs (single-end, unstranded)',
-                                             'assay_term_id': 'OBI:0000716',
                                              'assay_term_name': 'RNA-seq'})
-    testapp.patch_json(experiment['@id'], {'assay_term_name': 'RNA-seq',
-                                           'assay_term_id': 'OBI:0001271'})
+    testapp.patch_json(experiment['@id'], {'assay_term_name': 'ChIP-seq'})
     res = testapp.get(experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent assay_term_id' for error in errors_list)
+    assert any(error['category'] == 'inconsistent assay_term_name' for error in errors_list)
 
 
 def test_audit_experiment_needs_pipeline_and_has_one(testapp,  replicate, library,
@@ -1498,7 +1497,6 @@ def test_audit_experiment_rampage_standards(testapp,
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
     testapp.patch_json(base_experiment['@id'], {'status': 'released',
                                                 'date_released': '2016-01-01',
-                                                'assay_term_id': 'OBI:0001864',
                                                 'assay_term_name': 'RAMPAGE'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -1559,7 +1557,6 @@ def test_audit_experiment_small_rna_standards(testapp,
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
     testapp.patch_json(base_experiment['@id'], {'status': 'released',
                                                 'date_released': '2016-01-01',
-                                                'assay_term_id': 'OBI:0001864',
                                                 'assay_term_name': 'RNA-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -1619,7 +1616,6 @@ def test_audit_experiment_MAD_long_rna_standards(testapp,
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
     testapp.patch_json(base_experiment['@id'], {'status': 'released',
                                                 'date_released': '2016-01-01',
-                                                'assay_term_id': 'OBI:0001864',
                                                 'assay_term_name': 'RNA-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -1681,7 +1677,6 @@ def test_audit_experiment_long_rna_standards_crispr(testapp,
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
     testapp.patch_json(base_experiment['@id'], {'status': 'released',
                                                 'date_released': '2016-01-01',
-                                                'assay_term_id': 'OBI:0001864',
                                                 'assay_term_name': 'CRISPR genome editing followed by RNA-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -1746,7 +1741,6 @@ def test_audit_experiment_long_rna_standards(testapp,
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
     testapp.patch_json(base_experiment['@id'], {'status': 'released',
                                                 'date_released': '2016-01-01',
-                                                'assay_term_id': 'OBI:0001864',
                                                 'assay_term_name': 'RNA-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -1811,7 +1805,6 @@ def test_audit_experiment_long_rna_standards_encode2(testapp,
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
     testapp.patch_json(base_experiment['@id'], {'status': 'released',
                                                 'date_released': '2016-01-01',
-                                                'assay_term_id': 'OBI:0001864',
                                                 'assay_term_name': 'RNA-seq',
                                                 'award': encode2_award['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
@@ -1874,7 +1867,6 @@ def test_audit_experiment_chip_seq_standards_depth(testapp,
     testapp.patch_json(base_experiment['@id'], {'target': target_H3K27ac['@id'],
                                                 'status': 'released',
                                                 'date_released': '2016-01-01',
-                                                'assay_term_id': 'OBI:0001864',
                                                 'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -1935,7 +1927,6 @@ def test_audit_experiment_chip_seq_standards(testapp,
     testapp.patch_json(base_experiment['@id'], {'target': target_H3K9me3['@id'],
                                                 'status': 'released',
                                                 'date_released': '2016-01-01',
-                                                'assay_term_id': 'OBI:0001864',
                                                 'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -1997,7 +1988,6 @@ def test_audit_experiment_chip_seq_standards_encode2(testapp,
     testapp.patch_json(base_experiment['@id'], {'target': target_H3K9me3['@id'],
                                                 'status': 'released',
                                                 'date_released': '2016-01-01',
-                                                'assay_term_id': 'OBI:0001864',
                                                 'assay_term_name': 'ChIP-seq',
                                                 'award': encode2_award['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
@@ -2062,7 +2052,6 @@ def test_audit_experiment_chip_seq_no_target_standards(testapp,
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
     testapp.patch_json(base_experiment['@id'], {'status': 'released',
                                                 'date_released': '2016-01-01',
-                                                'assay_term_id': 'OBI:0001864',
                                                 'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -2125,7 +2114,6 @@ def test_audit_experiment_chip_seq_library_complexity_standards(testapp,
     testapp.patch_json(base_experiment['@id'], {'target': target_H3K9me3['@id'],
                                                 'status': 'released',
                                                 'date_released': '2016-01-01',
-                                                'assay_term_id': 'OBI:0001864',
                                                 'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -2165,7 +2153,6 @@ def test_audit_experiment_dnase_low_spot_score(testapp,
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(base_experiment['@id'], {'status': 'released',
                                                 'date_released': '2016-01-01',
-                                                'assay_term_id': 'OBI:0001853',
                                                 'assay_term_name': 'DNase-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -2204,7 +2191,6 @@ def test_audit_experiment_dnase_seq_low_read_depth(testapp,
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(base_experiment['@id'], {'status': 'released',
                                                 'date_released': '2016-01-01',
-                                                'assay_term_id': 'OBI:0001853',
                                                 'assay_term_name': 'DNase-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -2212,6 +2198,7 @@ def test_audit_experiment_dnase_seq_low_read_depth(testapp,
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'extremely low read depth' for error in errors_list)
+
 
 def test_audit_experiment_dnase_low_read_length(testapp,
                                                 base_experiment,
@@ -2242,7 +2229,6 @@ def test_audit_experiment_dnase_low_read_length(testapp,
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(base_experiment['@id'], {'status': 'released',
                                                 'date_released': '2016-01-01',
-                                                'assay_term_id': 'OBI:0001853',
                                                 'assay_term_name': 'DNase-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -2250,6 +2236,52 @@ def test_audit_experiment_dnase_low_read_length(testapp,
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'insufficient read length' for error in errors_list)
+
+
+def test_audit_experiment_dnase_low_correlation(testapp,
+                                                base_experiment,
+                                                replicate_1_1,
+                                                replicate_2_1,
+                                                library_1,
+                                                library_2,
+                                                biosample_1,
+                                                mouse_donor_1,
+                                                file_fastq_3,
+                                                bigWig_file,
+                                                file_bam_1_1,
+                                                correlation_quality_metric,
+                                                chip_seq_quality_metric,
+                                                analysis_step_run_bam,
+                                                analysis_step_version_bam,
+                                                analysis_step_bam,
+                                                pipeline_bam):
+    testapp.patch_json(bigWig_file['@id'], {'dataset': base_experiment['@id']})
+    testapp.patch_json(
+        correlation_quality_metric['@id'], {'quality_metric_of': [bigWig_file['@id']],
+                                            'Pearson correlation': 0.15})
+    testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'assembly': 'mm10',
+                                             'output_type': 'alignments',
+                                             'derived_from': [file_fastq_3['@id']]})
+    testapp.patch_json(pipeline_bam['@id'], {'title':
+                                             'DNase-HS pipeline (single-end)'})
+    testapp.patch_json(chip_seq_quality_metric['@id'], {'mapped': 23})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
+    testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released',
+                                                'date_released': '2016-01-01',
+                                                'assay_term_name': 'DNase-seq'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'insufficient replicate concordance' for error in errors_list)
 
 
 def test_audit_experiment_dnase_seq_missing_read_depth(testapp,
@@ -2279,7 +2311,6 @@ def test_audit_experiment_dnase_seq_missing_read_depth(testapp,
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(base_experiment['@id'], {'status': 'released',
                                                 'date_released': '2016-01-01',
-                                                'assay_term_id': 'OBI:0001853',
                                                 'assay_term_name': 'DNase-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -2337,7 +2368,6 @@ def test_audit_experiment_chip_seq_unfiltered_missing_read_depth(testapp,
     testapp.patch_json(base_experiment['@id'], {'target': target_H3K9me3['@id'],
                                                 'status': 'released',
                                                 'date_released': '2016-01-01',
-                                                'assay_term_id': 'OBI:0001864',
                                                 'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -2485,7 +2515,6 @@ def test_audit_experiment_modERN_control_missing_files(testapp,
     testapp.patch_json(base_experiment['@id'], {'target': target_control['@id'],
                                                 'status': 'released',
                                                 'date_released': '2016-01-01',
-                                                "assay_term_id": "OBI:0001271",
                                                 "assay_term_name": "ChIP-seq"})
     testapp.patch_json(award['@id'], {'rfa': 'modERN'})
     testapp.patch_json(file_fastq_4['@id'], {'replicate': replicate_1_1['@id']})
@@ -2536,7 +2565,6 @@ def test_audit_experiment_modERN_experiment_missing_files(testapp,
     testapp.patch_json(base_experiment['@id'], {'target': target_H3K9me3['@id'],
                                                 'status': 'released',
                                                 'date_released': '2016-01-01',
-                                                'assay_term_id': 'OBI:0001864',
                                                 'assay_term_name': 'ChIP-seq'})
 
     testapp.patch_json(file_fastq_4['@id'], {'replicate': replicate_1_1['@id']})
@@ -2608,7 +2636,6 @@ def test_audit_experiment_wgbs_standards(testapp,
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
     testapp.patch_json(base_experiment['@id'], {'status': 'released',
                                                 'date_released': '2016-01-01',
-                                                'assay_term_id': 'OBI:0001863',
                                                 'assay_term_name': 'whole-genome shotgun bisulfite sequencing'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -2616,17 +2643,6 @@ def test_audit_experiment_wgbs_standards(testapp,
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'high lambda C methylation ratio' for error in errors_list)
-
-
-def test_audit_experiment_ntr_term_id_mismatch(testapp, base_experiment):
-    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'NTR:0000763',
-                                                'assay_term_name': 'ChIP-seq'})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched assay_term_name' for error in errors_list)
 
 
 def test_audit_experiment_modern_chip_seq_standards(testapp,
@@ -2681,7 +2697,6 @@ def test_audit_experiment_modern_chip_seq_standards(testapp,
     testapp.patch_json(base_experiment['@id'], {'target': target['@id'],
                                                 'status': 'released',
                                                 'date_released': '2016-01-01',
-                                                'assay_term_id': 'OBI:0001864',
                                                 'assay_term_name': 'ChIP-seq',
                                                 'award': award_modERN['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
@@ -2718,7 +2733,6 @@ def test_audit_experiment_missing_construct(testapp,
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
-                                                'assay_term_id': 'OBI:0000716',
                                                 'target': recombinant_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -2740,9 +2754,7 @@ def test_audit_experiment_missing_unfiltered_bams(testapp,
                                                   analysis_step_bam,
                                                   pipeline_bam):
 
-    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
-                                                'assay_term_id': 'OBI:0000716'
-                                                })
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
     testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_3['@id']],
                                              'assembly': 'hg19',
                                              'output_type': 'unfiltered alignments'})
@@ -2786,7 +2798,6 @@ def test_audit_experiment_wrong_construct(testapp,
     testapp.patch_json(biosample_1['@id'], {'constructs': [construct['@id']]})
     testapp.patch_json(biosample_2['@id'], {'constructs': [construct['@id']]})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
-                                                'assay_term_id': 'OBI:0000716',
                                                 'target': recombinant_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']

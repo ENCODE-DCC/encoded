@@ -18,7 +18,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "5"
         },
         "% of reads mapped to multiple loci": {
             "title": "% reads mapped to multiple loci",

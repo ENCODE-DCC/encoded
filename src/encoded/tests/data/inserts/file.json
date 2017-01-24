@@ -520,17 +520,36 @@
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19",
         "file_format": "fastq",
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        },
-        {
-            "flowcell": "C5WA6ACUU",
-            "lane": "8",
-            "machine": "HWI-ST382"
-        }],
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            },
+            {
+                "flowcell": "C5WA6ACUU",
+                "lane": "8",
+                "machine": "HWI-ST382"
+            },
+            {
+                "flowcell": "C5WA6ACUA",
+                "lane": "1",
+                "machine": "HiSeq 4000",
+                "barcode": "ABCDEFG",
+                "barcode_in_read": "1",
+                "barcode_position": 3,
+                "chunk": "HIJKLM"
+            },
+            {
+                "flowcell": "C5WA6ACUB",
+                "lane": "2",
+                "machine": "HiSeq 4000",
+                "barcode": "ABCDEFG",
+                "barcode_in_read": "2",
+                "barcode_position": 1,
+                "chunk": "HIJKLM"
+            }
+        ],
         "lab":"j-michael-cherry",
         "md5sum": "3541f1a048453b65ab01a673b743a573",
         "output_type": "reads",
@@ -921,7 +940,7 @@
         "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
         "flowcell_details": [],
-        "alternate_accessions": [],
+        "alternate_accessions": ["ENCFF020HBG", "ENCFF021HBG"],
         "file_size": 5836340790,
         "lab":"j-michael-cherry",
         "output_type": "female genome index",
@@ -929,7 +948,7 @@
         "derived_from": ["ENCFF019HGN"]
     },
     {
-        "status": "released",
+        "status": "replaced",
         "submitted_file_name": "female.hg19.bisulfite.tgz",
         "uuid": "b9cb0beb-2568-4a5c-a89b-ea4728ce5dbb",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -947,7 +966,7 @@
         "derived_from": ["ENCFF019HGN"]
     },
     {
-        "status": "released",
+        "status": "replaced",
         "submitted_file_name": "female.hg19.bisulfite.tgz",
         "uuid": "b15f5034-2a8f-4f92-aa0f-0fdb524aa450",
         "submitted_by": "facilisi.tristique@potenti.vivamus",

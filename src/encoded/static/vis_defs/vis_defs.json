@@ -1,0 +1,84 @@
+{
+    "opaque": {
+        "_comment": [
+            "Default visualization definition when no other rules apply                                     ",
+            "                                                                                               ",
+            "(USE this as a simple example for writing other vis_defs, but strip out '_comment' properties).",
+            "                                                                                               ",
+            "vis_defs are 'Visualization Definitions' which define the default viusualization settings for  ",
+            "         a given experiment type.  Initially created to enable visualization on the UCSC       ",
+            "         browser, th definitions can be extended for alternate visualization tools.            ",
+            " vis_type, a short identifier, is the unique vis_def key.  An experiment's vis_type and vis_def",
+            "         vis_def is determined by a set of rules.                                              ",
+            "         In this example 'opaque' is the vis_type and all properties are contained within it.  ",
+            " 'rule'  If the vis_def contains a 'rule' property, then this alone defines the rule for       ",
+            "         assigning a vis_type/vis_def to a dataset.  More complicated rules for some vis_types ",
+            "         are hard-coded into visualization.py.  If a datasets' vis_type cannot be determined,  ",
+            "         it is considered 'opaque' and will used the default vis_def.                          ",
+            "example: rule: '{assay_term_name}' == 'ChIP-seq' and 'histone' in '{target.investigated_as}'   "
+                        ],
+        "assay_composite": {
+            "longLabel":  "Collection of Miscellaneous ENCODE datasets",
+            "shortLabel": "ENCODE Misc."
+        },
+        "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
+        "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
+        "_comment1": {
+                        "_comment": "Incude allButtonPair if there are going to be few tracks and no dimensions",
+                        "_allButtonPair": "off"
+        },
+        "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
+        "Views":  {
+            "tag": "view",
+            "group_order": [ "Peaks", "Signals" ],
+            "groups": {
+                "Peaks": {
+                    "tag": "PK",
+                    "visibility": "dense",
+                    "type": "bigBed",
+                    "spectrum": "on"
+                },
+                "Signals": {
+                    "tag": "SIG",
+                    "visibility": "full",
+                    "type": "bigWig",
+                    "autoScale": "on",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers"
+                }
+            }
+        },
+        "other_groups":  {
+            "dimensions": { "Biosample": "dimY", "Targets": "dimX", "Replicates": "dimA" },
+            "dimensionAchecked": "first",
+            "_comment": "dimensionAChecked could be 'all'",
+            "groups": {
+                "Replicates": {
+                    "tag": "REP",
+                    "groups": {
+                        "replicate": {
+                            "title_mask": "Replicate_{replicate_number}",
+                            "combined_title": "Pooled",
+                            "_comment": [ "'title_mask' is optional",
+                                           "'tag_mask' is implicit as '{replicate}'",
+                                           "'combined_title' might be more accurate as 'combined'"
+                            ]
+                        }
+                    }
+                },
+                "Biosample": {
+                    "tag": "BS",
+                    "groups": { "one": { "title_mask": "{biosample_term_name}" } }
+                },
+                "Targets": {
+                    "tag": "TARG",
+                    "groups": { "one": { "title_mask": "{target.label}", "url_mask": "targets/{target.name}" } }
+                }
+            }
+        },
+        "file_defs": {
+            "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate}",
+            "shortLabel": "{replicate} {output_type_short_label}"
+        }
+    }
+}

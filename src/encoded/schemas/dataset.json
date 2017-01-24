@@ -42,7 +42,8 @@
                     "not_analyzed",
                     "no"
                 ]
-            }
+            },
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
         "dbxrefs": {
             "@type": "@id",
@@ -83,7 +84,10 @@
                     "ENCORE",
                     "ENTEx",
                     "SESCC",
-                    "dbGaP"]
+                    "dbGaP",
+                    "ENCYCLOPEDIAv3",
+                    "ENCYCLOPEDIAv4"
+                ]
             }
         },
         "status": {

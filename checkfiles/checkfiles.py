@@ -278,7 +278,14 @@ def process_old_illumina_read_name_pattern(read_name,
             if (flowcell.find('-') != -1 or
                flowcell.find('_') != -1):
                 flowcell = 'TEMP'
-            lane_number = arr[1]
+            # at this point we assume the read name is following old illumina format template
+            # however sometimes the read names are following some different template
+            # in case the lane variable is different from number (i.e contains letters)
+            # we will default it to 0, the information is not lost, since the whole read name is
+            # at the end of the signature string
+            lane_number = '0'
+            if arr[1].isdigit():
+                lane_number = arr[1]
             signatures_set.add(
                 flowcell + ':' + lane_number + ':' +
                 read_number + '::' + read_name)

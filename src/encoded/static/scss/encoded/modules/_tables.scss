@@ -306,15 +306,21 @@ table.table-raw {
 }
 
 .file-table-btn {
-    background-color: #fff5ba;
+    padding: 0 0 0 5px;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+
+    i {
+        font-size: 1.1rem;
+    }
+}
+
+.file-qc-btn {
     border: 1px solid #a0a0a0;
     border-radius: 15px;
     font-weight: bold;
     font-size: 0.8rem;
-}
-
-.file-qc-btn {
-    @extend .file-table-btn;
     background-color: #80ffc0;
 }
 

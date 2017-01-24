@@ -30,7 +30,7 @@ We lookup the user object and add groups based on the properties:
 
 * groups [<string>..] - global groups like 'admin'. Generates: `group.admin`.
 * submits_for: [lab..] - allow editing based on object.lab property. Generates: `submits_for.<lab-uuid>`.
-* viewing_groups: [<string..>] - allow viewing of in progress data based on object.award.viewing_group (ENCODE, GGR, REMC.) Generates: `viewing_group.ENCODE`.
+* viewing_groups: [<string..>] - allow viewing of in progress data based on object.award.viewing_group (ENCODE3, ENCODE4, GGR, REMC.) Generates: `viewing_group.ENCODE`.
 
 .. _authorization.py: ../src/encoded/authorization.py
 

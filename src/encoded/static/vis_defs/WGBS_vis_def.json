@@ -1,0 +1,83 @@
+{
+    "WGBS": {
+        "rule": "'{assay_term_name}' in ['whole-genome shotgun bisulfite sequencing','shotgun bisulfite-seq assay','RRBS']",
+        "assay_composite": {
+            "longLabel":  "Collection of ENCODE WGBS experiments",
+            "shortLabel": "ENCODE WGBS"
+        },
+        "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
+        "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
+        "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
+        "Views":  {
+            "tag": "view",
+            "group_order": [ "Methylation at CpG", "Methylation at CHG",
+                             "Methylation at CHH", "Signal" ],
+            "groups": {
+                "Methylation at CpG": {
+                    "tag": "aCpG",
+                    "visibility": "dense",
+                    "type": "bigBed",
+                    "file_format_type": [ "bedMethyl" ],
+                    "spectrum":"on",
+                    "scoreFilter":"0:1000",
+                    "output_type": [ "methylation state at CpG" ]
+                },
+                "Methylation at CHG": {
+                    "tag": "mCHG",
+                    "visibility": "hide",
+                    "type": "bigBed",
+                    "file_format_type": [ "bedMethyl" ],
+                    "spectrum":"on",
+                    "scoreFilter":"0:1000",
+                    "output_type": [ "methylation state at CHG" ]
+                },
+                "Methylation at CHH": {
+                    "tag": "mCHH",
+                    "visibility": "hide",
+                    "type": "bigBed",
+                    "file_format_type": [ "bedMethyl" ],
+                    "spectrum":"on",
+                    "scoreFilter":"0:1000",
+                    "output_type": [ "methylation state at CHH" ]
+                },
+                "Signal": {
+                    "tag": "eSIG",
+                    "visibility": "full",
+                    "type": "bigWig",
+                    "viewLimits": "0:20",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "signal" ]
+                }
+            }
+        },
+        "other_groups":  {
+            "dimensions": { "Biosample": "dimY","Targets": "dimX","Replicates": "dimA" },
+            "dimensionAchecked": "first",
+            "groups": {
+                "Replicates": {
+                    "tag": "REP",
+                    "groups": {
+                        "replicate": {
+                            "title_mask": "Replicate_{replicate_number}",
+                            "combined_title": "Pooled"
+                        }
+                    }
+                },
+                "Biosample": {
+                    "tag": "BS",
+                    "groups": { "one": { "title_mask": "{biosample_term_name}"} }
+                },
+                "Targets": {
+                    "tag": "TARG",
+                    "groups": { "one": { "title_mask": "{target.label}"} }
+                }
+            }
+        },
+        "file_defs": {
+            "longLabel": "{target} {assay_title} of {biosample_term_name} {output_type} {replicate}",
+            "shortLabel": "{replicate} {output_type_short_label}"
+        }
+    }
+}

@@ -4,6 +4,7 @@
 require('./lib');
 require('./antibody');
 require('./app');
+require('./award');
 require('./image');
 require('./biosample');
 require('./collection');
@@ -16,6 +17,7 @@ require('./footer');
 require('./globals');
 require('./graph');
 require('./doc');
+require('./file');
 require('./item');
 require('./page');
 require('./mixins');

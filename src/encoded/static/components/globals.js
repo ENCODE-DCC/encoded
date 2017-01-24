@@ -154,7 +154,7 @@ module.exports.hashCode = function (src) {
         }
     }
     return hash;
-}
+};
 
 // Convert the number `n` to a string, zero-filled to `digits` digits. Maximum of four zeroes.
 // http://stackoverflow.com/questions/2998784/how-to-output-integers-with-leading-zeros-in-javascript#answer-2998822
@@ -227,5 +227,7 @@ module.exports.dbxref_prefix_map = {
     "PMCID": "http://www.ncbi.nlm.nih.gov/pmc/articles/",
     "doi": "http://dx.doi.org/doi:",
     // Antibody RRids
-    "AR": "http://antibodyregistry.org/search.php?q="
+    "AR": "http://antibodyregistry.org/search.php?q=",
+    // NIH stem cell
+    "NIH": "https://search.usa.gov/search?utf8=%E2%9C%93&affiliate=grants.nih.gov&query=",
 };

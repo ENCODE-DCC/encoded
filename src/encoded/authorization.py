@@ -17,7 +17,7 @@ def groupfinder(login, request):
         elif localname in ['TEST_SUBMITTER']:
             return ['group.submitter']
         elif localname in ['TEST_AUTHENTICATED']:
-            return ['viewing_group.ENCODE']
+            return ['viewing_group.ENCODE3']
 
     if namespace in ('mailto', 'remoteuser', 'auth0'):
         users = collections.by_item_type['user']
