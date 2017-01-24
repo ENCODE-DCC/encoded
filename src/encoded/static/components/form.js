@@ -467,7 +467,7 @@ const Field = module.exports.Field = React.createClass({
 
     getChildContext() {
         // Allow contained fields to tell whether they are inside a readonly field.
-        return { readonly: this.context.readonly || this.props.schema.readonly };
+        return { readonly: !!(this.context.readonly || this.props.schema.readonly) };
     },
 
     // Propagate updates from children to parent

@@ -674,10 +674,10 @@ module.exports.Layout = React.createClass({
     },
 
     render() {
-        const classes = {
-            layout: true,
-            editable: this.props.editable,
-        };
+        const classes = [
+            'layout',
+            this.props.editable ? 'editable' : '',
+        ];
         if (_.isEqual(this.state.dst_pos, [])) {
             classes[`drop-${this.state.dst_quad}`] = true;
         }
