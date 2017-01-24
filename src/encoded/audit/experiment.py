@@ -415,6 +415,7 @@ def audit_experiment_control_out_of_date_analysis(value, system):
 
 
 def is_outdated_bams_replicate(bam_file):
+
     if 'lab' not in bam_file or bam_file['lab'] != '/labs/encode-processing-pipeline/' or \
        'dataset' not in bam_file or 'original_files' not in bam_file['dataset']:
         return False
@@ -450,7 +451,9 @@ def is_outdated_bams_replicate(bam_file):
         if file_acc not in derived_from_fastq_accessions:
             paired_file_id = file_object.get('paired_with')
             if paired_file_id and \
-               (paired_file_id.split('/')[2] not in derived_from_fastq_accessions):
+               paired_file_id.split('/')[2] not in derived_from_fastq_accessions:
+                    return True
+            elif not paired_file_id:
                 return True
 
     for f_accession in derived_from_fastq_accessions:
@@ -489,7 +492,7 @@ def audit_experiment_out_of_date_analysis(value, system):
 
     uniform_pipeline_flag = False
     
->>> TOTO modify this mess of a conditions >>>>>    
+    #>>> TOTO modify this mess of a conditions >>>>>    
     for bam_file in alignment_files:
         if bam_file['lab'] == '/labs/encode-processing-pipeline/':
             uniform_pipeline_flag = True
