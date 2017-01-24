@@ -435,11 +435,9 @@ def is_outdated_bams_replicate(bam_file):
             for entry in fastq_file['biological_replicates']:
                 bio_rep.append(entry)
             break
-
     fastq_files = scan_files_for_file_format_output_type(
         bam_file['dataset']['original_files'],
         'fastq', 'reads')
-
     bio_rep_fastqs = []
     for fastq_file in fastq_files:
         if 'biological_replicates' in fastq_file:
@@ -480,7 +478,8 @@ def audit_experiment_with_uploading_files(value, system):
 @audit_checker('Experiment', frame=['original_files',
                                     'original_files.replicate',
                                     'original_files.derived_from',
-                                    'original_files.dataset'])
+                                    'original_files.dataset',
+                                    'original_files.dataset.original_files'])
 def audit_experiment_out_of_date_analysis(value, system):
     alignment_files = scan_files_for_file_format_output_type(value['original_files'],
                                                              'bam', 'alignments')
@@ -495,6 +494,7 @@ def audit_experiment_out_of_date_analysis(value, system):
         return  # probably needs pipeline, since there are no processed files
 
     for bam_file in (alignment_files + transcriptome_alignments + not_filtered_alignments):
+
         if bam_file['lab'] == '/labs/encode-processing-pipeline/':
             if is_outdated_bams_replicate(bam_file):
                 assembly_detail = ''
