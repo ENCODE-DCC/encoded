@@ -132,6 +132,9 @@ slim_shims = {
         'OBI:0001923': 'Proteomics',  # OBI:0000615': 'MS-MS'
         'OBI:0001849': 'Genotyping',  # OBI:0000435 (DNA-PET)
         'OBI:0002044': 'RNA binding',  # OBI:0001854 (RNA-Bind-N-Seq)
+        'OBI:0002091': 'Transcription',
+        'OBI:0002092': 'Transcription',
+        'OBI:0002093': 'Transcription'
     }
 
 }
