@@ -508,7 +508,7 @@ const Listing = React.createClass({
                     {this.renderActions()}
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Genetic modifications</p>
-                        <p className="type meta-status">` ${result.status}`</p>
+                        <p className="type meta-status">{` ${result.status}`}</p>
                         <AuditIndicators audits={result.audit} id={result['@id']} search />
                     </div>
                     <div className="accession"><a href={result['@id']}>{result.modification_type}</a></div>

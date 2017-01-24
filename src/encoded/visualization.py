@@ -1089,9 +1089,9 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
                 track["longLabel"] = track["longLabel"] + " (" + addendum[0:-1] + ")"
 
             metadata_pairs = {}
-            metadata_pairs['file&#32;download'] = ('"<a href=\'%s%s\' title=\'Download this file " \
-                                                   "from the ENCODE portal\'>%s</a>"' %
-                                                   (host, a_file["href"], a_file["accession"]))
+            metadata_pairs['file&#32;download'] = ( \
+                '"<a href=\'%s%s\' title=\'Download this file from the ENCODE portal\'>%s</a>"' %
+                (host, a_file["href"], a_file["accession"]))
             lab = convert_mask("{lab.title}", dataset)
             if len(lab) > 0 and not lab.startswith('unknown'):
                 metadata_pairs['laboratory'] = '"' + sanitize_label(lab) + '"'  # 'lab' is UCSC word
@@ -1130,11 +1130,9 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
                     for (subgroup_tag, subgroup) in subgroups.items():
                         membership[group_tag] = subgroup["tag"]
                         if "url" in subgroup:
-                            metadata_pairs[group_title] = ('"<a href=\'%s/%s/\' TARGET=\'_blank\' " \
-                                                           "title=\'%s details at the ENCODE " \
-                                                           "portal\'>%s</a>"' %
-                                                           (host, subgroup["url"], group_title,
-                                                            subgroup["title"]))
+                            metadata_pairs[group_title] = ( \
+                                '"<a href=\'%s/%s/\' TARGET=\'_blank\' title=\'%s details at the ENCODE portal\'>%s</a>"' %
+                                (host, subgroup["url"], group_title, subgroup["title"]))
                         elif group_title == "Biosample":
                             bs_value = sanitize_label(dataset.get("biosample_summary", ""))
                             if len(bs_value) == 0:
@@ -1142,9 +1140,9 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
                             biosamples = biosamples_for_file(a_file, dataset)
                             if len(biosamples) > 0:
                                 for bs_acc in sorted(biosamples.keys()):
-                                    bs_value += (" <a href=\'%s%s\' TARGET=\'_blank\' title=\'"
-                                                 "%s details at the ENCODE portal\'>%s</a>" %
-                                                 (host, biosamples[bs_acc]["@id"], group_title,
+                                    bs_value += ( \
+                                        " <a href=\'%s%s\' TARGET=\'_blank\' title=\' %s details at the ENCODE portal\'>%s</a>" %
+                                        (host, biosamples[bs_acc]["@id"], group_title,
                                                   bs_acc))
                             metadata_pairs[group_title] = '"%s"' % (bs_value)
                         else:
