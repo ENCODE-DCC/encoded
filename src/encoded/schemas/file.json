@@ -316,7 +316,7 @@
             "comment": "This can vary for files of same content gzipped at different times",
             "type": "string",
             "format": "hex",
-            "pattern": "[a-fA-F0-9]{32}"
+            "pattern": "^[a-fA-F0-9]{32}$"
         },
         "content_md5sum": {
             "title": "Content MD5sum",
@@ -324,7 +324,7 @@
             "comment": "This is only relavant for gzipped files.",
             "type": "string",
             "format": "hex",
-            "pattern": "[a-fA-F0-9]{32}"
+            "pattern": "^[a-fA-F0-9]{32}$"
         },
         "file_size": {
             "title": "File size",
