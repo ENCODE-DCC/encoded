@@ -2,7 +2,7 @@
 var React = require('react');
 var panel = require('../libs/bootstrap/panel');
 var globals = require('./globals');
-var search = require('./search');
+var { PickerActions } = require('./search');
 var statuslabel = require('./statuslabel');
 var navigation = require('./navigation');
 var doc = require('./doc');
@@ -124,8 +124,6 @@ globals.panel_views.register(Talen, 'TALEN');
 
 // Search result page output
 var Listing = React.createClass({
-    mixins: [search.PickerActionsMixin],
-
     render: function() {
         var result = this.props.context;
         var coordinates = result.target_genomic_coordinates;
@@ -133,7 +131,7 @@ var Listing = React.createClass({
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
+                    <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">TALEN</p>
                         {result.status ? <p className="type meta-status">{' ' + result.status}</p> : ''}

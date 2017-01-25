@@ -4,7 +4,7 @@ import DataColors from './datacolors';
 import { FetchedItems } from './fetched';
 import globals from './globals';
 import { ProjectBadge } from './image';
-import { PickerActionsMixin } from './search';
+import { PickerActions } from './search';
 
 
 const labChartId = 'lab-chart'; // Lab chart <div> id attribute
@@ -552,14 +552,12 @@ const Listing = React.createClass({
         context: React.PropTypes.object, // Object whose search result we're displaying
     },
 
-    mixins: [PickerActionsMixin],
-
     render: function () {
         const result = this.props.context;
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
+                    <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Award</p>
                         <p className="type">{` ${result.name}`}</p>

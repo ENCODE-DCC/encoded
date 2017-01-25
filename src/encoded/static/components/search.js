@@ -7,7 +7,7 @@ var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var svgIcon = require('../libs/svg-icons').svgIcon;
 var url = require('url');
 var _ = require('underscore');
-import { auditDecor } from './audit-13';
+import { auditDecor } from './audit';
 var globals = require('./globals');
 var image = require('./image');
 var search = module.exports;
@@ -73,9 +73,12 @@ var Listing = module.exports.Listing = function (props) {
     return <ListingView {...props} />;
 };
 
-var PickerActionsMixin = module.exports.PickerActionsMixin = {
-    contextTypes: {actions: React.PropTypes.array},
-    renderActions: function() {
+const PickerActions = module.exports.PickerActions = React.createClass ({
+    contextTypes: {
+        actions: React.PropTypes.array,
+    },
+
+    render: function () {
         if (this.context.actions && this.context.actions.length) {
             return (
                 <div className="pull-right">
@@ -83,13 +86,12 @@ var PickerActionsMixin = module.exports.PickerActionsMixin = {
                 </div>
             );
         } else {
-            return <span/>;
+            return <span />;
         }
-    }
-};
+    },
+});
 
 var ItemComponent = React.createClass({
-    mixins: [PickerActionsMixin],
     render: function() {
         var result = this.props.context;
         var title = globals.listing_titles.lookup(result)({context: result});
@@ -97,7 +99,7 @@ var ItemComponent = React.createClass({
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
+                    <PickerActions {...this.props} />
                     {result.accession ?
                         <div className="pull-right type sentence-case search-meta">
                             <p>{item_type}: {' ' + result['accession']}</p>
@@ -206,7 +208,6 @@ var StatusIndicators = React.createClass({
 });
 
 var AntibodyComponent = React.createClass({
-    mixins: [PickerActionsMixin],
     render: function() {
         var result = this.props.context;
 
@@ -244,7 +245,7 @@ var AntibodyComponent = React.createClass({
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
+                    <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Antibody</p>
                         <p className="type">{' ' + result.accession}</p>
@@ -281,7 +282,6 @@ globals.listing_views.register(Antibody, 'AntibodyLot');
 
 
 var BiosampleComponent = React.createClass({
-    mixins: [PickerActionsMixin],
     render: function() {
         var result = this.props.context;
         var lifeStage = (result['life_stage'] && result['life_stage'] != 'unknown') ? ' ' + result['life_stage'] : '';
@@ -310,7 +310,7 @@ var BiosampleComponent = React.createClass({
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
+                    <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Biosample</p>
                         <p className="type">{' ' + result['accession']}</p>
@@ -349,7 +349,6 @@ globals.listing_views.register(Biosample, 'Biosample');
 
 
 var ExperimentComponent = React.createClass({
-    mixins: [PickerActionsMixin],
     render: function() {
         var result = this.props.context;
 
@@ -377,7 +376,7 @@ var ExperimentComponent = React.createClass({
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
+                    <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Experiment</p>
                         <p className="type">{' ' + result['accession']}</p>
@@ -434,7 +433,6 @@ globals.listing_views.register(Experiment, 'Experiment');
 
 
 var DatasetComponent =  React.createClass({
-    mixins: [PickerActionsMixin],
     render: function() {
         var result = this.props.context;
         var biosampleTerm, organism, lifeSpec, targets, lifeStages = [], ages = [];
@@ -493,7 +491,7 @@ var DatasetComponent =  React.createClass({
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
+                    <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">{haveSeries ? 'Series' : (haveFileSet ? 'FileSet' : 'Dataset')}</p>
                         <p className="type">{' ' + result['accession']}</p>
@@ -540,13 +538,12 @@ globals.listing_views.register(Dataset, 'Dataset');
 
 
 var TargetComponent = React.createClass({
-    mixins: [PickerActionsMixin],
     render: function() {
         var result = this.props.context;
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
+                    <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Target</p>
                         {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
@@ -576,14 +573,13 @@ globals.listing_views.register(Target, 'Target');
 
 
 var Image = module.exports.Image = React.createClass({
-    mixins: [PickerActionsMixin],
     render: function() {
         var result = this.props.context;
         var Attachment = image.Attachment;
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
+                    <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Image</p>
                     </div>

@@ -3,7 +3,7 @@ import _ from 'underscore';
 import url from 'url';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { collapseIcon } from '../libs/svg-icons';
-import { auditDecor } from './audit-13';
+import { auditDecor } from './audit';
 import { SortTable } from './sorttable';
 import globals from './globals';
 import { StatusLabel } from './statuslabel';
@@ -14,7 +14,7 @@ import { Breadcrumbs } from './navigation';
 import { treatmentDisplay, singleTreatment } from './objectutils';
 import { BiosampleTable } from './typeutils';
 import { DocumentsPanel } from './doc';
-import { PickerActionsMixin } from './search';
+import { PickerActions } from './search';
 
 
 // Map GM techniques to a presentable string
@@ -484,8 +484,6 @@ const ListingComponent = React.createClass({
         context: React.PropTypes.object, // Search results object
     },
 
-    mixins: [PickerActionsMixin],
-
     render: function () {
         const result = this.props.context;
 
@@ -505,7 +503,7 @@ const ListingComponent = React.createClass({
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
+                    <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Genetic modifications</p>
                         <p className="type meta-status">{` ${result.status}`}</p>

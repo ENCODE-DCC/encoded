@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
-import { auditDecor } from './audit-13';
+import { auditDecor } from './audit';
 import { DbxrefList } from './dbxref';
 import { FetchedItems } from './fetched';
 import globals from './globals';

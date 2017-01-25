@@ -6,7 +6,7 @@ import { Panel, PanelHeading } from '../libs/bootstrap/panel';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import { DropdownButton } from '../libs/bootstrap/button';
 import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
-import { auditDecor, auditsDisplayed, AuditIcon } from './audit-13';
+import { auditDecor, auditsDisplayed, AuditIcon } from './audit';
 import { StatusLabel } from './statuslabel';
 import { requestFiles } from './objectutils';
 import { Graph, JsonGraph } from './graph';
