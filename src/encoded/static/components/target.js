@@ -4,12 +4,10 @@ var _ = require('underscore');
 var globals = require('./globals');
 var navigation = require('./navigation');
 var dataset = require('./dataset');
-var dbxref = require('./dbxref');
+var { DbxrefList } = require('./dbxref');
 var item = require('./item');
 
 var Breadcrumbs = navigation.Breadcrumbs;
-var DbxrefList = dbxref.DbxrefList;
-var Dbxref = dbxref.Dbxref;
 var ExperimentTable = dataset.ExperimentTable;
 var RelatedItems = item.RelatedItems;
 
