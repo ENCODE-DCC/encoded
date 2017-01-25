@@ -393,27 +393,33 @@ def process_fastq_file(job, fastq_data_stream, session, url):
     try:
         line_index = 0
         for encoded_line in fastq_data_stream.stdout:
-            line = encoded_line.decode('utf-8')
-            line_index += 1
-            if line_index == 1:
-                old_illumina_current_prefix = \
-                    process_read_name_line(
-                        line,
-                        read_name_prefix,
-                        read_name_pattern,
-                        extended_read_name_pattern,
-                        special_read_name_pattern,
-                        old_illumina_current_prefix,
-                        read_numbers_set,
-                        signatures_no_barcode_set,
-                        signatures_set,
-                        read_lengths_dictionary,
-                        errors)
-            if line_index == 2:
-                read_count += 1
-                process_sequence_line(line, read_lengths_dictionary)
+            try:
+                line = encoded_line.decode('utf-8')
+            except UnicodeDecodeError:
+                errors['fastq line decoding error'] = 'Error occured, while decoding fastq line : ' + \
+                                                      encoded_line + ' in file ' + item['accession']
+                break
+            else:
+                line_index += 1
+                if line_index == 1:
+                    old_illumina_current_prefix = \
+                        process_read_name_line(
+                            line,
+                            read_name_prefix,
+                            read_name_pattern,
+                            extended_read_name_pattern,
+                            special_read_name_pattern,
+                            old_illumina_current_prefix,
+                            read_numbers_set,
+                            signatures_no_barcode_set,
+                            signatures_set,
+                            read_lengths_dictionary,
+                            errors)
+                if line_index == 2:
+                    read_count += 1
+                    process_sequence_line(line, read_lengths_dictionary)
 
-            line_index = line_index % 4
+                line_index = line_index % 4
     except IOError:
         errors['unzipped_fastq_streaming'] = 'Error occured, while streaming unzipped fastq.'
     else:
@@ -592,31 +598,36 @@ def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url
             errors['lookup_for_content_md5sum'] = 'Network error occured, while looking for ' + \
                                                   'content md5sum conflict on the portal. ' + str(e)
         else:
-            r_graph = r.json().get('@graph')
-            if len(r_graph) > 0:
-                conflicts = []
-                for entry in r_graph:
-                    if 'accession' in entry and 'accession' in item:
-                        if entry['accession'] != item['accession']:
+            try:
+                r_graph = r.json().get('@graph')
+            except ValueError:
+                errors['content_md5sum_value_error'] = 'Problem searching for content_md5sum ' + \
+                                                       str(result['content_md5sum']) + ' ' + str(r)
+            else:
+                if len(r_graph) > 0:
+                    conflicts = []
+                    for entry in r_graph:
+                        if 'accession' in entry and 'accession' in item:
+                            if entry['accession'] != item['accession']:
+                                conflicts.append(
+                                    '%s in file %s ' % (
+                                        result['content_md5sum'],
+                                        entry['accession']))
+                        elif 'accession' in entry:
                             conflicts.append(
                                 '%s in file %s ' % (
                                     result['content_md5sum'],
                                     entry['accession']))
-                    elif 'accession' in entry:
-                        conflicts.append(
-                            '%s in file %s ' % (
-                                result['content_md5sum'],
-                                entry['accession']))
-                    elif 'accession' not in entry and 'accession' not in item:
-                        conflicts.append(
-                            '%s ' % (
-                                result['content_md5sum']))
-                if len(conflicts) > 0:
-                    errors['content_md5sum'] = str(conflicts)
-                    update_content_error(errors,
-                                         'Fastq file content md5sum conflicts with content ' +
-                                         'md5sum of existing file(s) {}'.format(
-                                             ', '.join(map(str, conflicts))))
+                        elif 'accession' not in entry and 'accession' not in item:
+                            conflicts.append(
+                                '%s ' % (
+                                    result['content_md5sum']))
+                    if len(conflicts) > 0:
+                        errors['content_md5sum'] = str(conflicts)
+                        update_content_error(errors,
+                                             'Fastq file content md5sum conflicts with content ' +
+                                             'md5sum of existing file(s) {}'.format(
+                                                 ', '.join(map(str, conflicts))))
 
 
 def check_file(config, session, url, job):
@@ -795,13 +806,16 @@ def fetch_files(session, url, search_query, out, include_unexpired_upload=False,
         r = session.get(item_url + '@@upload?datastore=database')
         if r.ok:
             upload_credentials = r.json()['@graph'][0]['upload_credentials']
-            job['upload_url'] = upload_credentials['upload_url']
-            # Files grandfathered from EDW have no upload expiration.
-            job['upload_expiration'] = upload_credentials.get('expiration', '')
-            # Only check files that will not be changed during the check.
-            if job['run'] < job['upload_expiration']:
-                if not include_unexpired_upload:
-                    continue
+            if not upload_credentials:
+                errors['upload_credentials_error'] = 'Upload credentials problem with the file url : ' + item_url
+            else:
+                job['upload_url'] = upload_credentials['upload_url']
+                # Files grandfathered from EDW have no upload expiration.
+                job['upload_expiration'] = upload_credentials.get('expiration', '')
+                # Only check files that will not be changed during the check.
+                if job['run'] < job['upload_expiration']:
+                    if not include_unexpired_upload:
+                        continue
         else:
             job['errors']['get_upload_url_request'] = \
                 '{} {}\n{}'.format(r.status_code, r.reason, r.text)
