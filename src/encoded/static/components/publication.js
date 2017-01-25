@@ -213,7 +213,6 @@ var SupplementaryDataListing = React.createClass({
 
 
 var ListingComponent = React.createClass({
-    mixins: [search.PickerActionsMixin],
     render: function() {
         var result = this.props.context;
         var authorList = result.authors && result.authors.length ? result.authors.split(', ', 4) : [];
@@ -222,7 +221,7 @@ var ListingComponent = React.createClass({
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
+                    <search.PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Publication</p>
                         <p className="type meta-status">{' ' + result.status}</p>

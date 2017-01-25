@@ -436,7 +436,6 @@ globals.graph_detail.register(StepDetailView, 'Step');
 
 
 var ListingComponent = React.createClass({
-    mixins: [search.PickerActionsMixin],
     render: function() {
         var result = this.props.context;
         var publishedBy = [];
@@ -461,7 +460,7 @@ var ListingComponent = React.createClass({
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
+                    <search.PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Pipeline</p>
                         <p className="type">{' ' + result['accession']}</p>

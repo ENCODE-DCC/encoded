@@ -6,20 +6,15 @@ var search = require('./search');
 var fetched = require('./fetched');
 var { pubReferenceList } = require('./reference');
 var StatusLabel = require('./statuslabel').StatusLabel;
-var audit = require('./audit');
+var { auditDecor } = require('./audit-13');
 var _ = require('underscore');
 var url = require('url');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var FetchedItems = fetched.FetchedItems;
-var AuditIndicators = audit.AuditIndicators;
-var AuditDetail = audit.AuditDetail;
-var AuditMixin = audit.AuditMixin;
 
 
 var Software = module.exports.Software = React.createClass({
-    mixins: [AuditMixin],
-
     contextTypes: {
         location_href: React.PropTypes.string
     },
@@ -68,10 +63,10 @@ var Software = module.exports.Software = React.createClass({
                         <div className="characterization-status-labels">
                             <StatusLabel title="Status" status={context.status} />
                         </div>
-                        <AuditIndicators audits={context.audit} id="publication-audit" />
+                        {this.props.auditIndicators(context.audit, 'software-audit')}
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} except={context['@id']} id="publication-audit" />
+                {this.props.auditDetail(context.audit, 'software-audit', { except: context['@id'] })}
 
                 <div className="panel">
                     <dl className="key-value">
@@ -163,18 +158,17 @@ var SoftwareVersionTable = module.exports.SoftwareVersionTable = React.createCla
 });
 
 
-var Listing = React.createClass({
-    mixins: [search.PickerActionsMixin, AuditMixin],
+var ListingComponent = React.createClass({
     render: function() {
         var result = this.props.context;
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
+                    <search.PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Software</p>
                         {result.status ? <p className="type meta-status">{' ' + result.status}</p> : ''}
-                        <AuditIndicators audits={result.audit} id={result['@id']} search />
+                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>{result.title}</a>
@@ -191,11 +185,14 @@ var Listing = React.createClass({
 
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} except={result['@id']} id={result['@id']} forcedEditLink />
+                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
             </li>
         );
     }
 });
+
+const Listing = auditDecor(ListingComponent);
+
 globals.listing_views.register(Listing, 'Software');
 
 

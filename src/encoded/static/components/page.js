@@ -2,7 +2,7 @@
 var React = require('react');
 var moment = require('moment');
 var {Panel} = require('../libs/bootstrap/panel');
-var {PickerActionsMixin} = require('./search');
+var { PickerActions } = require('./search');
 var Layout = require('./layout').Layout;
 var globals = require('./globals');
 var _ = require('underscore');
@@ -44,13 +44,12 @@ globals.content_views.register(Page, 'Page');
 
 
 var Listing = React.createClass({
-    mixins: [PickerActionsMixin],
     render: function() {
         var result = this.props.context;
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
+                    <PickerActions {...this.props} />
                     <div className="accession">
                         <a href={result['@id']}>{result.title}</a> <span className="page-listing-date">{moment.utc(result.date_created).format('MMMM D, YYYY')}</span>
                     </div>
