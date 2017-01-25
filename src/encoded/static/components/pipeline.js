@@ -12,7 +12,7 @@ var search = require('./search');
 var software = require('./software');
 var StatusLabel = require('./statuslabel').StatusLabel;
 var Citation = require('./publication').Citation;
-import { auditDecor } from './audit-13';
+import { auditDecor } from './audit';
 var doc = require('./doc');
 
 var Breadcrumbs = navigation.Breadcrumbs;

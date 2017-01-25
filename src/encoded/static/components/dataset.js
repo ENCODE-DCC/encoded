@@ -7,7 +7,7 @@ import globals from './globals';
 import { Breadcrumbs } from './navigation';
 import { DbxrefList } from './dbxref';
 import { FetchedItems } from './fetched';
-import { auditDecor } from './audit-13';
+import { auditDecor } from './audit';
 import { StatusLabel } from './statuslabel';
 import { pubReferenceList } from './reference';
 import { donorDiversity } from './objectutils';

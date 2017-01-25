@@ -6,7 +6,7 @@ var search = require('./search');
 var fetched = require('./fetched');
 var { pubReferenceList } = require('./reference');
 var StatusLabel = require('./statuslabel').StatusLabel;
-var { auditDecor } = require('./audit-13');
+var { auditDecor } = require('./audit');
 var _ = require('underscore');
 var url = require('url');
 
