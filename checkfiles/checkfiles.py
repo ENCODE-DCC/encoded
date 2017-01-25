@@ -704,25 +704,24 @@ def check_file(config, session, url, job):
                         errors['bed_comments_remove_failure'] = e.output.decode(
                             errors='replace').rstrip('\n')
 
-    if not errors:
-        if is_local_bed_present:
-            check_format(config['encValData'], job, unzipped_modified_bed_path)
-            remove_local_file(unzipped_modified_bed_path, errors)
-        else:
-            check_format(config['encValData'], job, local_path)
-        if item['file_format'] == 'fastq':
-            try:
-                print ('checking file ' + local_path[-20:-9])
-                process_fastq_file(job,
-                                   subprocess.Popen(['gunzip --stdout {}'.format(
-                                                    local_path)],
-                                                    shell=True,
-                                                    executable='/bin/bash',
-                                                    stdout=subprocess.PIPE),
-                                   session, url)
-            except subprocess.CalledProcessError as e:
-                errors['fastq_information_extraction'] = 'Failed to extract information from ' + \
-                                                         local_path
+    if is_local_bed_present:
+        check_format(config['encValData'], job, unzipped_modified_bed_path)
+        remove_local_file(unzipped_modified_bed_path, errors)
+    else:
+        check_format(config['encValData'], job, local_path)
+
+    if item['file_format'] == 'fastq':
+        try:
+            process_fastq_file(job,
+                               subprocess.Popen(['gunzip --stdout {}'.format(
+                                                local_path)],
+                                                shell=True,
+                                                executable='/bin/bash',
+                                                stdout=subprocess.PIPE),
+                               session, url)
+        except subprocess.CalledProcessError as e:
+            errors['fastq_information_extraction'] = 'Failed to extract information from ' + \
+                                                     local_path
     if item['status'] != 'uploading':
         errors['status_check'] = \
             "status '{}' is not 'uploading'".format(item['status'])
@@ -877,7 +876,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
     except multiprocessing.NotImplmentedError:
         nprocesses = 1
 
-    version = '1.05'
+    version = '1.06'
 
     out.write("STARTING Checkfiles version %s (%s): with %d processes %s at %s\n" %
               (version, search_query, nprocesses, dr, datetime.datetime.now()))
