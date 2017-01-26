@@ -725,7 +725,8 @@
             "title": "Content error detail",
             "type": "string",
             "permission": "import_items",
-            "description": "Explanation of why the file failed the automated content checks."
+            "description": "Explanation of why the file failed the automated content checks.",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         }
     },
     "columns": {
