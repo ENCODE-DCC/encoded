@@ -270,15 +270,18 @@ def build_lot_reviews(primary_chars,
                       target_organisms):
 
     if not primary_chars:
+        base_review['detail'] = 'Awaiting submission of primary characterization(s) and a ' + \
+            'compliant secondary characterization.'
         if secondary_status in ['not reviewed', 'not submitted for review by lab']:
             base_review['status'] = 'not pursued'
-        elif secondary_status in ['pending dcc review']:
+        elif secondary_status == 'pending dcc review':
             base_review['status'] = 'pending dcc review'
-        elif secondary_status in ['in progress']:
+        elif secondary_status == 'in progress':
             base_review['status'] = 'awaiting characterization'
         else:
             base_review['status'] = 'not characterized to standards'
-        base_review['detail'] = 'Awaiting submission of primary characterization(s).'
+            if secondary_status == 'compliant':
+                base_review['detail'] = 'Awaiting submission of primary characterization(s).'
         return [base_review]
 
     else:
