@@ -597,7 +597,8 @@ def audit_experiment_standards_dispatcher(value, system):
                                         'siRNA knockdown followed by RNA-seq',
                                         'CRISPR genome editing followed by RNA-seq',
                                         'single cell isolation followed by RNA-seq',
-                                        'whole-genome shotgun bisulfite sequencing']:
+                                        'whole-genome shotgun bisulfite sequencing',
+                                        'genetic modification followed by DNase-seq']:
         return
     if 'original_files' not in value or len(value['original_files']) == 0:
         return
@@ -630,7 +631,7 @@ def audit_experiment_standards_dispatcher(value, system):
 
     standards_version = 'ENC3'
 
-    if value['assay_term_name'] in ['DNase-seq']:
+    if value['assay_term_name'] in ['DNase-seq', 'genetic modification followed by DNase-seq']:
         hotspots = scanFilesForOutputType(value['original_files'],
                                           'hotspots')
         signal_files = scanFilesForOutputType(value['original_files'],
