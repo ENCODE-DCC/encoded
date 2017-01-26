@@ -12,54 +12,7 @@ $characterization-figure-width: 64px;
 $characterization-figure-height: 64px;
 $qualitymetric-figure-width: 96px;
 $qualitymetric-figure-height: 96px;
-
-
-.type-Document.view-detail {
-    padding: 0;
-    overflow: hidden;
-
-    figure {
-        margin: 14px;
-        padding: 10px;
-        text-align: center;
-    }
-
-    figcaption {
-        font-weight: bold;
-        text-align: center;
-        padding: 5px;
-    }
-}
-
-
-.type-Characterization.view-detail {
-    @extend .type-Document.view-detail;
-
-    header {
-        margin: 0 15px;
-
-        h3 {
-            margin-bottom: 0;
-        }
-    }
-}
-
-
-.type-QualityMetric.view-detail {
-    padding: 0;
-
-    figure {
-        margin: 14px;
-        padding: 10px;
-        text-align: center;
-    }
-
-    figcaption {
-        font-weight: bold;
-        text-align: center;
-        padding: 5px;
-    }
-}
+$attachment-button-margin: 3px;
 
 
 .document-title {
@@ -70,20 +23,6 @@ $qualitymetric-figure-height: 96px;
     font-weight: bold;
     text-align: left;
     font-size: 1rem;
-}
-
-.document-label {
-    display: inline-block;
-    padding: 0 5px;
-    font-size: 0.9rem;
-    color: #fff;
-    background-color: #808080;
-    border-radius: 4px;
-}
-
-.characterization-title {
-    @extend .document-title;
-    padding: 10px;
 }
 
 
@@ -102,8 +41,7 @@ $qualitymetric-figure-height: 96px;
     @include status-colors($state-success-bg, $state-success-text);
 }
 
-.type-Characterization.view-detail.status-not-compliant,
-.type-Document.view-detail.status-deleted {
+.type-Characterization.view-detail.status-not-compliant {
     @include status-colors($state-danger-bg, $state-danger-text);
 }
 
@@ -113,8 +51,7 @@ $qualitymetric-figure-height: 96px;
 
 .type-Characterization.view-detail.status-in-progress,
 .type-Characterization.view-detail.status-not-submitted-for-review-by-lab,
-.type-Characterization.view-detail.status-not-reviewed,
-.type-Document.view-detail.status-none {
+.type-Characterization.view-detail.status-not-reviewed {
     @include status-colors($bg: #f7f7f9, $text: #333);
 }
 
@@ -154,6 +91,10 @@ $qualitymetric-figure-height: 96px;
     .label {
         display: inline-block;
         font-size: 0.8rem;
+    }
+
+    @media screen and (min-width: $screen-sm-min) {
+        flex: 1 1 auto;
     }
 }
 
@@ -377,8 +318,8 @@ $qualitymetric-figure-height: 96px;
 %file-icon {
     @include img-responsive();
     @include text-hide;
-    width: 80%;
-    height: 80%;
+    width: 100%;
+    height: 100%;
     background-position: center center;
     background-repeat: no-repeat;
     background-size: 80% 80%;
@@ -387,28 +328,16 @@ $qualitymetric-figure-height: 96px;
 .file-pdf {
     @extend %file-icon;
     background-image: url(/static/img/file-pdf.svg);
-
-    .no-svg & {
-        background-image: url(/static/img/file-pdf.png);
-    }
 }
 
 .file-generic {
     @extend %file-icon;
     background-image: url(/static/img/file.svg);
-
-    .no-svg & {
-        background-image: url(/static/img/file.png);
-    }
 }
 
 .file-missing {
     @extend %file-icon;
     background-image: url(/static/img/file-broken.svg);
-
-    .no-svg & {
-        background-image: url(/static/img/file-broken.png);
-    }
 }
 
 .status-indicators {
@@ -422,12 +351,15 @@ $qualitymetric-figure-height: 96px;
 
 
 @mixin type-panel($figure-width, $figure-height) {
-    $attachment-button-margin: 3px;
 
     margin-top: 0;
 
     &.view-detail {
         padding: 0;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: flex;
+        }
 
         figure {
             position: relative;
@@ -482,8 +414,7 @@ $qualitymetric-figure-height: 96px;
             }
 
             @media screen and (min-width: $screen-sm-min) {
-                width: $figure-width;
-                float: right;
+                flex: 0 0 $figure-width;
                 margin: 0 0 0 5px;
             }
 
@@ -497,8 +428,32 @@ $qualitymetric-figure-height: 96px;
 
 
 .attachment {
-    display: table-cell;
-    vertical-align: middle;
+    padding: $attachment-button-margin;
+
+    @at-root #{&}__button {
+        display: block;
+        position: relative;
+        padding: $attachment-button-margin;
+        height: $document-figure-height - (2 * $attachment-button-margin);
+        width: $document-figure-width - (2 * $attachment-button-margin);
+        border-radius: 5px;
+        border: 1px solid #a0a0a0;
+        overflow: hidden;
+    }
+
+    @at-root #{&}__hover {
+        position : absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: transparent;
+        z-index: 1;
+
+        &:hover {
+            background-color:rgba(0,0,0,0.2);
+        }
+    }
 }
 
 
@@ -524,55 +479,46 @@ $qualitymetric-figure-height: 96px;
     word-break: break-all;
 }
 
-.type-Document {
-    @include type-panel($document-figure-width, $document-figure-height);
-
-    .panel-body {
-        padding: 0;
-    }
-}
-
-.type-Characterization {
-    @include type-panel($document-figure-width, $document-figure-height);
-
-    .panel-body {
-        padding: 0;
-    }
-}
-
-.type-Characterization.type-AntibodyCharacterization {
-    @include type-panel($characterization-figure-width, $characterization-figure-height);
-}
-
 .type-QualityMetric {
     @include type-panel($qualitymetric-figure-width, $qualitymetric-figure-width);
 }
 
-@mixin panel-header($figure-height) {
-    height: auto;
-    border-bottom: 1px solid #e8e8e8;
-    overflow: hidden;
+// Document styles, normally added to a <Panel> component's classes.
+.document {
+    margin-top: 0;
 
-    @media screen and (min-width: $screen-sm-min) {
-        height: $figure-height;
+    // Document header; normally a document type and/or label
+    @at-root #{&}__header {
+        padding: 5px;
+        border-bottom: 1px solid #c0c0c0;
+        font-weight: bold;
+        text-transform: capitalize;
     }
-}
 
-.document-header {
-    @include panel-header($document-figure-height);
-}
-
-.characterization-header {
-    @include panel-header($characterization-figure-height);
-
-    &.panel-body {
-        padding: 0;
+    @at-root #{&}__intro {
+        display: flex;
+        margin: -10px;
+        border-bottom: 1px solid #c0c0c0;
     }
+
+    @at-root #{&}__caption {
+        flex: 1 1 auto;
+        margin: 5px;
+    }
+
+    @at-root #{&}__preview {
+        flex: 0 0 $document-figure-width;
+        margin: 0;
+        height: $document-figure-height;
+        border-left: 1px solid #c0c0c0;
+    }
+
 }
+
 
 .quality-metric-header {
     height: auto;
-    overflow: hidden;
+    overflow: visible;
 }
 
 %panel-intro {

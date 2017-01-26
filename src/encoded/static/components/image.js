@@ -110,7 +110,8 @@ var Attachment = module.exports.Attachment = React.createClass({
                     return (
                         <div>
                             <div className="attachment">
-                                <a className="attachment-button" data-bypass="true" href={attachmentHref} onClick={this.lightboxClick.bind(this, attachmentType)} title="View attachment image in this window">
+                                <a className="attachment__button" data-bypass="true" href={attachmentHref} onClick={this.lightboxClick.bind(this, attachmentType)} title="View attachment image in this window">
+                                    <div className="attachment__hover" />
                                     <img className={imgClass} src={src} height={height} width={width} alt={alt} />
                                 </a>
                             </div>
@@ -121,20 +122,28 @@ var Attachment = module.exports.Attachment = React.createClass({
             } else if (attachment.type == "application/pdf"){
                 return (
                     <div className="attachment">
-                        <a data-bypass="true" href={attachmentHref} className="attachment-button file-pdf" target="_blank" title="Open attachment in a new window">Attachment PDF Icon</a>
+                        <a data-bypass="true" href={attachmentHref} className="attachment__button" target="_blank" title="Open attachment in a new window">
+                            <div className="attachment__hover" />
+                            <div className="file-pdf">Attachment PDF Icon</div>
+                        </a>
                     </div>
                 );
             } else {
                 return (
                     <div className="attachment">
-                        <a data-bypass="true" href={attachmentHref} className="attachment-button file-generic" target="_blank" title="Open attachment in a new window">Attachment Icon</a>
+                        <a data-bypass="true" href={attachmentHref} className="attachment__button" target="_blank" title="Open attachment in a new window">
+                            <div className="attachment__hover" />
+                            <div clasName="file-generic">Attachment Icon</div>
+                        </a>
                     </div>
                 );
             }
         } else {
             return (
                 <div className="attachment">
-                    <div className="file-missing">Attachment file broken icon</div>
+                    <div className="attachment__button">
+                        <div className="file-missing">Attachment file broken icon</div>
+                    </div>
                 </div>
             );
         }

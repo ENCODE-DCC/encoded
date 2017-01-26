@@ -133,12 +133,12 @@ var Document = module.exports.Document = React.createClass({
 
         return (
             <section className="flexcol panel-doc">
-                <Panel addClasses={globals.itemClass(context, 'view-detail')}>
+                <Panel addClasses={globals.itemClass(context, 'document')}>
                     <DocumentHeaderView doc={context} label={this.props.label} />
                     <PanelBody>
-                        <div className="document-header">
-                            <DocumentPreviewView doc={context} />
+                        <div className="document__intro">
                             <DocumentCaptionView doc={context} />
+                            <DocumentPreviewView doc={context} />
                         </div>
                         <DocumentFileView doc={context} detailOpen={this.state.panelOpen} detailSwitch={this.handleClick} />
                         <DocumentDetailView doc={context} detailOpen={this.state.panelOpen} id={context['@id']} />
@@ -160,8 +160,8 @@ var DocumentHeader = module.exports.DocumentHeader = React.createClass({
         var {doc, label} = this.props;
 
         return (
-            <div className="panel-header document-title sentence-case">
-                {doc.document_type} {label ? <span className="document-label">{label}</span> : null}
+            <div className="document__header">
+                {doc.document_type} {label ? <span>{label}</span> : null}
             </div>
         );
     }
@@ -181,7 +181,7 @@ var DocumentCaption = module.exports.DocumentCaption = React.createClass({
         }
 
         return (
-            <div className="document-intro document-meta-data">
+            <div className="document__caption">
                 {excerpt || caption ?
                     <div data-test="caption">
                         <strong>{excerpt ? 'Description excerpt: ' : 'Description: '}</strong>
@@ -201,7 +201,7 @@ var DocumentPreview = module.exports.DocumentPreview = React.createClass({
 
     render: function() {
         return (
-            <figure>
+            <figure className="document__preview">
                 <Attachment context={this.props.doc} attachment={this.props.doc.attachment} className="characterization" />
             </figure>
         );
@@ -225,7 +225,7 @@ var DocumentFile = module.exports.DocumentFile = React.createClass({
             var dlFileTitle = "Download file " + doc.attachment.download;
 
             return (
-                <div className="dl-bar">
+                <div className="document__file">
                     <i className="icon icon-download"></i>&nbsp;
                     <a data-bypass="true" title={dlFileTitle} href={attachmentHref} download={doc.attachment.download}>
                         {doc.attachment.download}
@@ -260,7 +260,7 @@ var DocumentDetail = module.exports.DocumentDetail = React.createClass({
 
     render: function() {
         var doc = this.props.doc;
-        var keyClass = 'document-slider' + (this.props.detailOpen ? ' active' : '');
+        var keyClass = 'document__detail' + (this.props.detailOpen ? ' active' : '');
         var excerpt = doc.description && doc.description.length > EXCERPT_LENGTH;
 
         return (
@@ -346,9 +346,6 @@ var AttachmentPanel = module.exports.AttachmentPanel = React.createClass({
         return (
             <section className="attachment-panel">
                 <Panel addClasses={globals.itemClass(context, 'view-detail quality-metric-header')}>
-                    <figure>
-                        <Attachment context={context} attachment={attachment} className="characterization" />
-                    </figure>
                     <div className="document-intro document-meta-data">
                         {title ?
                             <div data-test="attachments">
@@ -358,6 +355,9 @@ var AttachmentPanel = module.exports.AttachmentPanel = React.createClass({
                         : null}
                         {download}
                     </div>
+                    <figure>
+                        <Attachment context={context} attachment={attachment} className="characterization" />
+                    </figure>
                 </Panel>
             </section>
         );
