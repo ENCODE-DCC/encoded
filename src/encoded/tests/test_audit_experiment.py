@@ -787,9 +787,19 @@ def test_audit_experiment_target_mismatch(testapp, base_experiment, base_replica
     assert any(error['category'] == 'inconsistent target' for error in errors_list)
 
 
-def test_audit_experiment_no_characterizations_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, antibody_lot, target):
-    testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['@id'], 'library': base_library['@id']})
-    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq', 'biosample_term_id': 'EFO:0002067', 'biosample_term_name': 'K562',  'biosample_type': 'immortalized cell line', 
+def test_audit_experiment_no_characterizations_antibody(testapp,
+                                                        base_experiment,
+                                                        base_replicate,
+                                                        base_library,
+                                                        base_biosample,
+                                                        antibody_lot,
+                                                        target):
+    testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['@id'],
+                                               'library': base_library['@id']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
+                                                'biosample_term_id': 'EFO:0002067',
+                                                'biosample_term_name': 'K562',
+                                                'biosample_type': 'immortalized cell line',
                                                 'target': target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -799,8 +809,21 @@ def test_audit_experiment_no_characterizations_antibody(testapp, base_experiment
     assert any(error['category'] == 'uncharacterized antibody' for error in errors_list)
 
 
-def test_audit_experiment_wrong_organism_histone_antibody(testapp, base_experiment, wrangler, base_antibody, base_replicate, base_library, base_biosample, mouse_H3K9me3, target_H3K9me3, base_antibody_characterization1, base_antibody_characterization2, mouse, human):
-    # Mouse biosample in mouse ChIP-seq experiment but supporting antibody characterizations are compliant in human but not mouse.
+def test_audit_experiment_wrong_organism_histone_antibody(testapp,
+                                                          base_experiment,
+                                                          wrangler,
+                                                          base_antibody,
+                                                          base_replicate,
+                                                          base_library,
+                                                          base_biosample,
+                                                          mouse_H3K9me3,
+                                                          target_H3K9me3,
+                                                          base_antibody_characterization1,
+                                                          base_antibody_characterization2,
+                                                          mouse,
+                                                          human):
+    # Mouse biosample in mouse ChIP-seq experiment but supporting antibody characterizations
+    # are compliant in human but not mouse.
     base_antibody['targets'] = [mouse_H3K9me3['@id'], target_H3K9me3['@id']]
     histone_antibody = testapp.post_json('/antibody_lot', base_antibody).json['@graph'][0]
     testapp.patch_json(base_biosample['@id'], {'organism': mouse['@id']})
@@ -847,8 +870,19 @@ def test_audit_experiment_wrong_organism_histone_antibody(testapp, base_experime
     assert any(error['category'] == 'antibody not characterized to standard' for error in errors_list)
 
 
-def test_audit_experiment_partially_characterized_antibody(testapp, base_experiment, wrangler, base_target, base_antibody, base_replicate, base_library, base_biosample, base_antibody_characterization1, base_antibody_characterization2, human):
-    # K562 biosample in ChIP-seq experiment with exempt primary in K562 and in progress secondary - leading to partial characterization.
+def test_audit_experiment_partially_characterized_antibody(testapp,
+                                                           base_experiment,
+                                                           wrangler,
+                                                           base_target,
+                                                           base_antibody,
+                                                           base_replicate,
+                                                           base_library,
+                                                           base_biosample,
+                                                           base_antibody_characterization1,
+                                                           base_antibody_characterization2,
+                                                           human):
+    # K562 biosample in ChIP-seq experiment with exempt primary in K562 and in progress
+    # secondary - leading to partial characterization.
     base_antibody['targets'] = [base_target['@id']]
     TF_antibody = testapp.post_json('/antibody_lot', base_antibody).json['@graph'][0]
     characterization_reviews = [
