@@ -812,7 +812,7 @@ def patch_file(session, url, job):
         if 'content_error' in errors:
             data = {
                 'status': 'content error',
-                'content_error_detail': errors['content_error']
+                'content_error_detail': errors['content_error'].strip()
                 }
         if 'file_not_found' in errors:
             data = {
@@ -857,7 +857,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
     except multiprocessing.NotImplmentedError:
         nprocesses = 1
 
-    version = '1.06'
+    version = '1.07'
 
     out.write("STARTING Checkfiles version %s (%s): with %d processes %s at %s\n" %
               (version, search_query, nprocesses, dr, datetime.datetime.now()))
