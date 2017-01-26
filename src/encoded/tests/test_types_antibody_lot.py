@@ -154,6 +154,7 @@ def test_have_primary_missing_secondary(testapp,
     assert ab['lot_reviews'][0]['detail'] == 'Awaiting submission of secondary characterization(s).'
     '''
 
+
 # An in progress secondary and no primary should have ab status = awaiting characterization
 def test_have_secondary_missing_primary(testapp,
                                         mass_spec,
@@ -168,17 +169,19 @@ def test_have_secondary_missing_primary(testapp,
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
     assert ab['lot_reviews'][0]['status'] == 'awaiting characterization'
-    assert ab['lot_reviews'][0]['detail'] == 'Awaiting submission of primary characterization(s).'
+    assert ab['lot_reviews'][0]['detail'] == 'Awaiting submission of primary characterization(s) ' + \
+        'and a compliant secondary characterization.'
 
     # Set the secondary for review and the ab status should be pending dcc review
     testapp.patch_json(char1['@id'], {'status': 'pending dcc review'})
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
     assert ab['lot_reviews'][0]['status'] == 'pending dcc review'
-    assert ab['lot_reviews'][0]['detail'] == 'Awaiting submission of primary characterization(s).'
+    assert ab['lot_reviews'][0]['detail'] == 'Awaiting submission of primary characterization(s) ' + \
+        'and a compliant secondary characterization.'
 
-    # A compliant secondary without primaries should be not characterized to standards as per Cricket's
-    # wishes
+    # A compliant secondary without primaries should be not characterized to standards as per
+    # Cricket's wishes
     testapp.patch_json(char1['@id'], {'status': 'compliant',
                                       'reviewed_by': wrangler['@id'],
                                       'documents': [document['@id']]})

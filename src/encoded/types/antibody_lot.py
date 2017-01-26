@@ -270,15 +270,18 @@ def build_lot_reviews(primary_chars,
                       target_organisms):
 
     if not primary_chars:
+        base_review['detail'] = 'Awaiting submission of primary characterization(s) and a ' + \
+            'compliant secondary characterization.'
         if secondary_status in ['not reviewed', 'not submitted for review by lab']:
             base_review['status'] = 'not pursued'
-        elif secondary_status in ['pending dcc review']:
+        elif secondary_status == 'pending dcc review':
             base_review['status'] = 'pending dcc review'
-        elif secondary_status in ['in progress']:
+        elif secondary_status == 'in progress':
             base_review['status'] = 'awaiting characterization'
         else:
             base_review['status'] = 'not characterized to standards'
-        base_review['detail'] = 'Awaiting submission of primary characterization(s).'
+            if secondary_status == 'compliant':
+                base_review['detail'] = 'Awaiting submission of primary characterization(s).'
         return [base_review]
 
     else:
@@ -377,30 +380,15 @@ def build_lot_reviews(primary_chars,
                     char_reviews[key]['status'] = 'not characterized to standards'
                     char_reviews[key]['detail'] = 'Awaiting a compliant primary characterization.'
             elif char_reviews[key]['status'] == 'compliant' and secondary_status == 'compliant':
-
-                # I think these checks can be removed for histones
-                #
-                if is_histone_mod:
-                    if lane_organism not in target_organisms['all']:
-                        char_reviews[key]['detail'] = 'Organism was not found in the list ' + \
-                            'of organism targets in antibody lot metadata.'
                 char_reviews[key]['status'] = 'characterized to standards'
                 char_reviews[key]['detail'] = 'Fully characterized.'
             elif char_reviews[key]['status'] == 'compliant' and secondary_status == 'exempt from standards':
-                if is_histone_mod:
-                    if lane_organism not in target_organisms['all']:
-                        char_reviews[key]['detail'] = 'Organism was not found in the list ' + \
-                            'of organism targets in antibody lot metadata.'
                 char_reviews[key]['status'] = 'characterized to standards with exemption'
                 char_reviews[key]['detail'] = 'Fully characterized with exemption.'
             elif (char_reviews[key]['status'] == 'exempt from standards') and \
                     secondary_status in ['compliant', 'exempt from standards']:
-                    if is_histone_mod:
-                        if lane_organism not in target_organisms['all']:
-                            char_reviews[key]['detail'] = 'Organism was not found in the list ' + \
-                                'of organism targets in antibody lot metadata.'
-                    char_reviews[key]['status'] = 'characterized to standards with exemption'
-                    char_reviews[key]['detail'] = 'Fully characterized with exemption.'
+                        char_reviews[key]['status'] = 'characterized to standards with exemption'
+                        char_reviews[key]['detail'] = 'Fully characterized with exemption.'
             else:
                 pass
 
