@@ -18,25 +18,30 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "5"
         },
         "aBaseCount": {
+            "title": "First file base count",
             "type": "number",
             "description": "Base count of first file"
         },
         "bBaseCount": {
+            "title": "Second file base count",
             "type": "number",
             "description": "Base count of second file"
         },
         "intersectionSize": {
+            "title": "Intersection size",
             "type": "number",
             "description": "Size of intersection"
         },
         "iuRatio": {
+            "title": "Instersection:Union ratio",
             "type": "number",
             "description": "Intersection to Union Ratio"
         },
         "unionSize": {
+            "title": "Union size",
             "type": "number",
             "description": "Size of Union"
         }

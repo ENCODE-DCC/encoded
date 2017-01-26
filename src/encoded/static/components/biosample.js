@@ -1,37 +1,33 @@
 'use strict';
-var React = require('react');
-var panel = require('../libs/bootstrap/panel');
-var _ = require('underscore');
-var url = require('url');
-var globals = require('./globals');
-var navigation = require('./navigation');
-var dataset = require('./dataset');
-var dbxref = require('./dbxref');
-var statuslabel = require('./statuslabel');
-var audit = require('./audit');
-var image = require('./image');
-var item = require('./item');
-var reference = require('./reference');
-var objectutils = require('./objectutils');
-var sortTable = require('./sorttable');
-var doc = require('./doc');
-var {BiosampleSummaryString, CollectBiosampleDocs} = require('./typeutils');
+const React = require('react');
+const panel = require('../libs/bootstrap/panel');
+const _ = require('underscore');
+const url = require('url');
+const globals = require('./globals');
+const navigation = require('./navigation');
+const dataset = require('./dataset');
+const dbxref = require('./dbxref');
+const statuslabel = require('./statuslabel');
+const audit = require('./audit');
+const image = require('./image');
+const item = require('./item');
+const { pubReferenceList } = require('./reference');
+const { singleTreatment, treatmentDisplay } = require('./objectutils');
+const doc = require('./doc');
+const {BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable} = require('./typeutils');
+const {GeneticModificationSummary} = require('./genetic_modification');
 
-var Breadcrumbs = navigation.Breadcrumbs;
-var DbxrefList = dbxref.DbxrefList;
-var StatusLabel = statuslabel.StatusLabel;
-var AuditIndicators = audit.AuditIndicators;
-var AuditDetail = audit.AuditDetail;
-var AuditMixin = audit.AuditMixin;
-var {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile} = doc;
-var ExperimentTable = dataset.ExperimentTable;
-var PubReferenceList = reference.PubReferenceList;
-var RelatedItems = item.RelatedItems;
-var SingleTreatment = objectutils.SingleTreatment;
-var SortTablePanel = sortTable.SortTablePanel;
-var SortTable = sortTable.SortTable;
-var ProjectBadge = image.ProjectBadge;
-var {Panel, PanelBody, PanelHeading} = panel;
+const Breadcrumbs = navigation.Breadcrumbs;
+const DbxrefList = dbxref.DbxrefList;
+const StatusLabel = statuslabel.StatusLabel;
+const AuditIndicators = audit.AuditIndicators;
+const AuditDetail = audit.AuditDetail;
+const AuditMixin = audit.AuditMixin;
+const {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile} = doc;
+const ExperimentTable = dataset.ExperimentTable;
+const RelatedItems = item.RelatedItems;
+const ProjectBadge = image.ProjectBadge;
+const {Panel, PanelBody, PanelHeading} = panel;
 
 
 var PanelLookup = function (props) {
@@ -44,56 +40,6 @@ var PanelLookup = function (props) {
     var PanelView = globals.panel_views.lookup(props.context);
     return <PanelView key={props.context.uuid} {...props} />;
 };
-
-
-// Display a table of retrieved biosamples related to the displayed biosample
-var BiosampleTable = React.createClass({
-    columns: {
-        'accession': {
-            title: 'Accession',
-            display: function(biosample) {
-                return <a href={biosample['@id']}>{biosample.accession}</a>;
-            }
-        },
-        'biosample_type': {title: 'Type'},
-        'biosample_term_name': {title: 'Term'},
-        'summary': {title: 'Summary', sorter: false}
-    },
-
-    render: function() {
-        var biosamples;
-
-        // If there's a limit on entries to display and the array is greater than that
-        // limit, then clone the array with just that specified number of elements
-        if (this.props.limit && (this.props.limit < this.props.items.length)) {
-            // Limit the experiment list by cloning first {limit} elements
-            biosamples = this.props.items.slice(0, this.props.limit);
-        } else {
-            // No limiting; just reference the original array
-            biosamples = this.props.items;
-        }
-
-        return (
-            <SortTablePanel title={this.props.title}>
-                <SortTable list={this.props.items} columns={this.columns} footer={<BiosampleTableFooter items={biosamples} total={this.props.total} url={this.props.url} />} />
-            </SortTablePanel>
-        );
-    }
-});
-
-// Display a count of biosamples in the footer, with a link to the corresponding search if needed
-var BiosampleTableFooter = React.createClass({
-    render: function() {
-        var {items, total, url} = this.props;
-
-        return (
-            <div>
-                <span>Displaying {items.length} of {total} </span>
-                {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
-            </div>
-        );
-    }
-});
 
 
 var Biosample = module.exports.Biosample = React.createClass({
@@ -131,14 +77,6 @@ var Biosample = module.exports.Biosample = React.createClass({
         }
         combinedDocs = globals.uniqueObjectsArray(combinedDocs);
 
-        // Set up TALENs panel for multiple TALENs
-        var talens = null;
-        if (context.talens && context.talens.length) {
-            talens = context.talens.map(talen => {
-                return PanelLookup({context: talen});
-            });
-        }
-
         // Collect up biosample and model organism donor constructs
         var constructs = ((context.constructs && context.constructs.length) ? context.constructs : [])
             .concat((context.model_organism_donor_constructs && context.model_organism_donor_constructs.length) ? context.model_organism_donor_constructs : []);
@@ -147,12 +85,18 @@ var Biosample = module.exports.Biosample = React.createClass({
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
         // Get a list of reference links, if any
-        var references = PubReferenceList(context.references);
+        var references = pubReferenceList(context.references);
 
         // Render tags badges
         var tagBadges;
         if (context.internal_tags && context.internal_tags.length) {
             tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+        }
+
+        // Make the donor panel (if any) title
+        var donorPanelTitle;
+        if (context.donor) {
+            donorPanelTitle = (context.donor.organism.name === 'human' ? 'Donor' : 'Strain') + ' information';
         }
 
         return (
@@ -172,7 +116,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="biosample-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="biosample-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -407,6 +351,13 @@ var Biosample = module.exports.Biosample = React.createClass({
                                         </div>
                                     : null}
 
+                                    {context.submitter_comment ?
+                                        <div data-test="submittercomment">
+                                            <dt>Submitter comment</dt>
+                                            <dd>{context.submitter_comment}</dd>
+                                        </div>
+                                    : null}
+
                                     {tagBadges ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
@@ -437,7 +388,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                             <section>
                                 <hr />
                                 <h4>Treatment details</h4>
-                                {context.treatments.map(PanelLookup)}
+                                {context.treatments.map(treatment => treatmentDisplay(treatment))}
                             </section>
                         : null}
 
@@ -465,42 +416,32 @@ var Biosample = module.exports.Biosample = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {context.donor ?
-                    <div>
-                        <h3>{context.donor.organism.name === 'human' ? 'Donor' : 'Strain'} information</h3>
-                        <div className="data-display">
-                            {PanelLookup({context: context.donor, biosample: context})}
-                        </div>
-                    </div>
+                {context.genetic_modifications && context.genetic_modifications.length ?
+                    <GeneticModificationSummary geneticModifications={context.genetic_modifications} />
                 : null}
 
-                {talens ?
+                {context.donor ?
                     <div>
-                        <h3>TALENs</h3>
-                        <Panel>
-                            <div className="data-display">
-                                {talens}
-                            </div>
-                        </Panel>
+                        {PanelLookup({ context: context.donor, biosample: context })}
                     </div>
                 : null}
 
                 <RelatedItems
                     title="Experiments using this biosample"
                     url={'/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid}
-                    Component={ExperimentTable} />
+                    Component={ExperimentTable} ignoreErrors />
 
                 <RelatedItems title="Biosamples that are part of this biosample"
                               url={'/search/?type=biosample&part_of.uuid=' + context.uuid}
-                              Component={BiosampleTable} />
+                              Component={BiosampleTable} ignoreErrors />
 
                 <RelatedItems title="Biosamples that are derived from this biosample"
                               url={'/search/?type=biosample&derived_from.uuid=' + context.uuid}
-                              Component={BiosampleTable} />
+                              Component={BiosampleTable} ignoreErrors />
 
                 <RelatedItems title="Biosamples that are pooled from this biosample"
                               url={'/search/?type=biosample&pooled_from.uuid=' + context.uuid}
-                              Component={BiosampleTable} />
+                              Component={BiosampleTable} ignoreErrors />
 
                 {combinedDocs.length ?
                     <DocumentsPanel documentSpecs={[{documents: combinedDocs}]} />
@@ -567,10 +508,14 @@ var BiosampleTermId = React.createClass({
 
 
 var HumanDonor = module.exports.HumanDonor = React.createClass({
-    render: function() {
-        var context = this.props.context;
-        var biosample = this.props.biosample;
-        var references = PubReferenceList(context.references);
+    propTypes: {
+        context: React.PropTypes.object.isRequired, // Donor being displayed
+        biosample: React.PropTypes.object, // Biosample this donor is associated with
+    },
+
+    render: function () {
+        const { context, biosample } = this.props;
+        var references = pubReferenceList(context.references);
 
         // Render tags badges
         var tagBadges;
@@ -581,6 +526,9 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
         return (
             <div>
                 <Panel>
+                    <PanelHeading>
+                        <h4>Donor information</h4>
+                    </PanelHeading>
                     <PanelBody>
                         <dl className="key-value">
                             <div data-test="accession">
@@ -673,7 +621,7 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
         var context = this.props.context;
         var biosample = this.props.biosample;
         var donorUrlDomain;
-        var references = PubReferenceList(context.references);
+        var references = pubReferenceList(context.references);
 
         // Get the domain name of the donor URL
         if (biosample && biosample.donor && biosample.donor.url) {
@@ -690,6 +638,9 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
         return (
             <div>
                 <Panel>
+                    <PanelHeading>
+                        <h4>Strain information</h4>
+                    </PanelHeading>
                     <PanelBody>
                         <dl className="key-value">
                             <div data-test="accession">
@@ -770,7 +721,7 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                             {context.references && context.references.length ?
                                 <div data-test="references">
                                     <dt>References</dt>
-                                    <dd>{PubReferenceList(context.references)}</dd>
+                                    <dd>{pubReferenceList(context.references)}</dd>
                                 </div>
                             : null}
 
@@ -816,6 +767,9 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
         return (
             <div>
                 <Panel>
+                    <PanelHeading>
+                        <h4>Strain information</h4>
+                    </PanelHeading>
                     <PanelBody>
                         <dl className="key-value">
                             <div data-test="accession">
@@ -976,7 +930,7 @@ var Treatment = module.exports.Treatment = React.createClass({
         var context = this.props.context;
         var treatmentText = '';
 
-        treatmentText = SingleTreatment(context);
+        treatmentText = singleTreatment(context);
         return (
             <dl className="key-value">
                 <div data-test="treatment">
@@ -1212,7 +1166,7 @@ var CharacterizationDetail = React.createClass({
 
         return (
             <div className={keyClass}>
-                <dl className='key-value-doc' id={'panel' + this.props.key} aria-labeledby={'tab' + this.props.key} role="tabpanel">
+                <dl className='key-value-doc' id={'panel' + this.props.id} aria-labeledby={'tab' + this.props.id} role="tabpanel">
                     {excerpt ?
                         <div data-test="caption">
                             <dt>Caption</dt>
@@ -1235,7 +1189,7 @@ var CharacterizationDetail = React.createClass({
                     {doc.award && doc.award.name ?
                         <div data-test="award">
                             <dt>Grant</dt>
-                            <dd>{doc.award.name}</dd>
+                            <dd><a href={doc.award['@id']}>{doc.award.name}</a></dd>
                         </div>
                     : null}
                 </dl>

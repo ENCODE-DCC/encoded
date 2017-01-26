@@ -7,7 +7,6 @@ var origin = require('../libs/origin');
 var serialize = require('form-serialize');
 var ga = require('google-analytics');
 
-
 var parseError = module.exports.parseError = function (response) {
     if (response instanceof Error) {
         return Promise.resolve({
@@ -76,7 +75,7 @@ class Timeout {
 }
 
 
-module.exports.Persona = {
+module.exports.Auth0 = {
     childContextTypes: {
         fetch: React.PropTypes.func,
         session: React.PropTypes.object,
@@ -99,7 +98,7 @@ module.exports.Persona = {
     },
 
     componentDidMount: function () {
-        // Login / logout actions must be deferred until persona is ready.
+        // Login / logout actions must be deferred until Auth0 is ready.
         var session_cookie = this.extractSessionCookie();
         var session = this.parseSessionCookie(session_cookie);
         if (session['auth.userid']) {
@@ -109,6 +108,32 @@ module.exports.Persona = {
             href: window.location.href,
             session_cookie: session_cookie
         });
+
+        // Make a URL for the logo.
+        const hrefInfo = url.parse(this.props.href);
+        const logoHrefInfo = {
+            hostname: hrefInfo.hostname,
+            port: hrefInfo.port,
+            protocol: hrefInfo.protocol,
+            pathname: '/static/img/encode-logo-small-2x.png'
+        };
+        const logoUrl = url.format(logoHrefInfo);
+
+        var lock_ = require('auth0-lock');
+        this.lock = new lock_.default('WIOr638GdDdEGPJmABPhVzMn6SYUIdIH', 'encode.auth0.com', {
+            auth: {
+                redirect: false
+            },
+            theme: {
+                logo: logoUrl
+            },
+            socialButtonStyle: 'big',
+            languageDictionary: {
+                title: "Log in to ENCODE"
+            },
+            allowedConnections: ['github', 'google-oauth2', 'facebook', 'linkedin']
+        });
+        this.lock.on("authenticated", this.handleAuth0Login.bind(this));
     },
 
     fetch: function (url, options) {
@@ -216,8 +241,9 @@ module.exports.Persona = {
         });
     },
 
-    handlePersonaLogin: function (assertion, retrying) {
-        if (!assertion) return;
+    handleAuth0Login: function (authResult, retrying) {
+        var accessToken = authResult.accessToken;
+        if (!accessToken) return;
         this.sessionPropertiesRequest = true;
         this.fetch('/login', {
             method: 'POST',
@@ -225,9 +251,10 @@ module.exports.Persona = {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({assertion: assertion})
+            body: JSON.stringify({accessToken: accessToken})
         })
         .then(response => {
+            this.lock.hide();
             if (!response.ok) throw response;
             return response.json();
         })
@@ -245,7 +272,7 @@ module.exports.Persona = {
                 // Server session creds might have changed.
                 if (data.code === 400 && data.detail.indexOf('CSRF') !== -1) {
                     if (!retrying) {
-                        window.setTimeout(this.handlePersonaLogin.bind(this, assertion, true));
+                        window.setTimeout(this.handleAuth0Login.bind(this, accessToken, true));
                         return;
                     }
                 }
@@ -256,19 +283,14 @@ module.exports.Persona = {
     },
 
     triggerLogin: function (event) {
-        var $script = require('scriptjs');
-        console.log('Logging in (persona) ');
         if (this.state.session && !this.state.session._csrft_) {
             this.fetch('/session');
         }
-        $script.ready('persona', () => {
-            var request_params = {}; // could be site name
-            navigator.id.get(this.handlePersonaLogin, request_params);
-        });
+        this.lock.show();
     },
 
     triggerLogout: function (event) {
-        console.log('Logging out (persona)');
+        console.log('Logging out (Auth0)');
         var session = this.state.session;
         if (!(session && session['auth.userid'])) return;
         this.fetch('/logout?redirect=false', {
@@ -564,7 +586,7 @@ module.exports.HistoryAndTriggers = {
         }
 
         // options.skipRequest only used by collection search form
-        // options.replace only used handleSubmit, handlePopState, handlePersonaLogin
+        // options.replace only used handleSubmit, handlePopState, handleAuth0Login
         options = options || {};
         href = url.resolve(this.props.href, href);
 

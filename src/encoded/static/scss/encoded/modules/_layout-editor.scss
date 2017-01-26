@@ -44,6 +44,10 @@
 				text-decoration: none;
 				cursor: pointer;
 			}
+			.remove {
+				border: 0;
+				background: none;
+			}
 		}
 
 	}
@@ -100,8 +104,4 @@
 	.col-md-12 {
 		outline: 0;
 	}
-}
-
-.modal-dialog {
-	width: $modal-lg;
 }

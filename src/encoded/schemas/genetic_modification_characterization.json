@@ -35,7 +35,7 @@
             "enum": [
                 "PCR analysis",
                 "Sanger sequencing",
-                "High throughput sequencing",
+                "high-throughput sequencing",
                 "restriction digest",
                 "immunoblot"
             ]
@@ -87,6 +87,5 @@
                 }
             }
         }
-
     }
 }

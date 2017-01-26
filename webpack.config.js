@@ -27,27 +27,11 @@ if (env === 'production') {
     styleFilename = "./css/[name].[chunkhash].css";
 }
 
-var preLoaders = [
-    // Strip @jsx pragma in react-forms, which makes babel abort
-    {
-        test: /\.js$/,
-        include: path.resolve(__dirname, 'node_modules/react-forms'),
-        loader: 'string-replace',
-        query: {
-            search: '@jsx',
-            replace: 'jsx'
-        }
-    }
-];
-
 var loaders = [
     // add babel to load .js files as ES6 and transpile JSX
     {
         test: /\.js$/,
-        include: [
-            path.resolve(__dirname, 'src/encoded/static'),
-            path.resolve(__dirname, 'node_modules/react-forms')
-        ],
+        include: PATHS.static,
         loader: 'babel'
     },
     {
@@ -80,7 +64,6 @@ module.exports = [
             chunkFilename: chunkFilename
         },
         module: {
-            preLoaders: preLoaders,
             loaders: loaders
         },
         devtool: 'source-map',
@@ -122,6 +105,7 @@ module.exports = [
             'brace/theme/solarized_light',
             'd3',
             'dagre-d3',
+            'chart.js',
             // avoid bundling babel transpiler, which is not used at runtime
             'babel-core/register'
         ],
@@ -133,7 +117,6 @@ module.exports = [
             chunkFilename: chunkFilename
         },
         module: {
-            preLoaders: preLoaders,
             loaders: loaders
         },
         devtool: 'source-map',

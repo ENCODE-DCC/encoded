@@ -78,7 +78,9 @@
                 "deleted",
                 "released",
                 "preliminary",
-                "proposed"
+                "proposed",
+                "archived",
+                "revoked"
             ]
         }
     },

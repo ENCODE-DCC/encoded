@@ -4,7 +4,7 @@ var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
 var panel = require('../libs/bootstrap/panel');
-var {SvgIcon, CollapseIcon} = require('../libs/svg-icons');
+var { collapseIcon } = require('../libs/svg-icons');
 var globals = require('./globals');
 var navigation = require('./navigation');
 var dataset = require('./dataset');
@@ -118,7 +118,7 @@ var Lot = module.exports.Lot = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="antibody-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="antibody-audit" />
 
                 {context.lot_reviews && context.lot_reviews.length ?
                     <div className="antibody-statuses">
@@ -353,11 +353,11 @@ var CharacterizationHeader = React.createClass({
                 </div>
                 {doc.characterization_reviews && doc.characterization_reviews.length ?
                     <div className="characterization-biosample-terms">
-                        {doc.characterization_reviews.map(review => {
+                        {doc.characterization_reviews.map((review, i) => {
                             var flexItem = {
                                 flex: review.biosample_term_name.length + ' 1 auto'
                             };
-                            return <span className="characterization-biosample-term" style={flexItem}>{review.biosample_term_name}</span>;
+                            return <span key={i} className="characterization-biosample-term" style={flexItem}>{review.biosample_term_name}</span>;
                         })}
                     </div>
                 : null}
@@ -408,7 +408,7 @@ var CharacterizationFile = React.createClass({
                 {detailSwitch ?
                     <div className="detail-switch">
                         <a href="#" data-trigger onClick={detailSwitch} className="collapsing-doc">
-                            {CollapseIcon(!this.props.detailOpen)}
+                            {collapseIcon(!this.props.detailOpen)}
                         </a>
                     </div>
                 : null}
@@ -448,7 +448,7 @@ var CharacterizationDetail = React.createClass({
 
         return (
             <div className={keyClass}>
-                <dl className='key-value-doc' id={'panel' + this.props.key} aria-labeledby={'tab' + this.props.key} role="tabpanel">
+                <dl className='key-value-doc' id={'panel' + this.props.id} aria-labeledby={'tab' + this.props.id} role="tabpanel">
                     {excerpt ?
                         <div data-test="caption">
                             <dt>Caption</dt>
@@ -484,7 +484,7 @@ var CharacterizationDetail = React.createClass({
 
                     <div data-test="grant">
                         <dt>Grant</dt>
-                        <dd>{doc.award.name}</dd>
+                        <dd><a href={doc.award['@id']}>{doc.award.name}</a></dd>
                     </div>
 
                     <div data-test="download">

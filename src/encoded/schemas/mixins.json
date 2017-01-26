@@ -241,14 +241,16 @@
         "product_id": {
             "title": "Product ID",
             "description": "The product identifier provided by the originating lab or vendor.",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         }
     },
     "lot_id": {
         "lot_id":{
     	    "title": "Lot ID",
     	    "description": "The lot identifier provided by the originating lab or vendor.",
-    	    "type": "string"
+    	    "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         }
     },
     "source": {
@@ -265,6 +267,7 @@
             "title": "Notes",
             "description": "DCC internal notes.",
             "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
             "permission": "import_items"
         }
     },
@@ -272,7 +275,8 @@
         "submitter_comment": {
             "title": "Submitter comment",
             "description": "Additional information specified by the submitter to be displayed as a comment on the portal.",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         }
     },
     "reviewer_comment": {
@@ -280,6 +284,7 @@
             "title": "Reviewer comment",
             "description": "Comments from the reviewer to justify the assigned review status of a characterization.",
             "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
             "permission": "import_items"
         }
     },
@@ -400,55 +405,13 @@
                 "DNA-PET",
                 "Switchgear",
                 "5' RLM RACE",
-                "MNase-seq"
-            ]
-        },
-        "assay_term_id": {
-            "@type": "@id",
-            "title": "Assay ID",
-            "description": "OBI (Ontology for Biomedical Investigations) ontology identifier for the assay.",
-            "type": "string",
-            "comment": "Based on the choice in assay_term_name use the corresponding identifier",
-            "enum": [
-                "OBI:0000716",
-                "OBI:0001271",
-                "OBI:0001853",
-                "NTR:0003027",
-                "NTR:0000762",
-                "OBI:0002044",
-                "OBI:0001463",
-                "OBI:0001332",
-                "OBI:0001863",
-                "OBI:0001862",
-                "NTR:0000763",
-                "OBI:0001864",
-                "OBI:0001393",
-                "OBI:0001674",
-                "NTR:0003082",
-                "OBI:0001920",
-                "OBI:0001922",
-                "NTR:0003660",
-                "OBI:0001861",
-                "OBI:0001857",
-                "OBI:0001915",
-                "OBI:0000693",
-                "OBI:0001848",
-                "OBI:0001859",
-                "OBI:0002039",
-                "OBI:0002045",
-                "OBI:0001918",
-                "OBI:0001850",
-                "OBI:0001247",
-                "NTR:0003814",
-                "OBI:0001923",
-                "OBI:0001919",
-                "OBI:0002042",
-                "NTR:0002490",
-                "OBI:0002043",
-                "OBI:0001849",
-                "NTR:0000612",
-                "NTR:0001684",
-                "OBI:0001924"
+                "MNase-seq",
+                "5' RACE",
+                "3' RACE",
+                "small RNA-seq",
+                "Bru-seq",
+                "BruChase-seq",
+                "genetic modification followed by DNase-seq"
             ]
         }
     },

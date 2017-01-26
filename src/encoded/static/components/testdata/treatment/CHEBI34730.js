@@ -1,8 +1,8 @@
 module.exports = {
     "@id": "/treatments/3280b708-0f05-40fa-bff2-54e2b6505c13/",
     "@type": ["Treatment", "Item"],
-    "concentration": 97.2,
-    "concentration_units": "nM",
+    "amount": 97.2,
+    "amount_units": "nM",
     "duration": 6,
     "duration_units": "hour",
     "dbxrefs": [

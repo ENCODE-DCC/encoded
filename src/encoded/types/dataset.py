@@ -32,6 +32,28 @@ def item_is_revoked(request, path):
     return request.embed(path, '@@object').get('status') == 'revoked'
 
 
+def calculate_assembly(request, files_list, status):
+    assembly = set()
+    viewable_file_formats = ['bigWig',
+                             'bigBed',
+                             'narrowPeak',
+                             'broadPeak',
+                             'bedRnaElements',
+                             'bedMethyl',
+                             'bedLogR']
+    viewable_file_status = ['released']
+    if status not in ['released']:
+        viewable_file_status.extend(['in progress'])
+
+    for path in files_list:
+        properties = request.embed(path, '@@object')
+        if properties['file_format'] in viewable_file_formats and \
+                properties['status'] in viewable_file_status:
+            if 'assembly' in properties:
+                assembly.add(properties['assembly'])
+    return list(assembly)
+
+
 @abstract_collection(
     name='datasets',
     unique_key='accession',
@@ -55,11 +77,6 @@ class Dataset(Item):
         'revoked_files.replicate.experiment.lab',
         'revoked_files.replicate.experiment.target',
         'revoked_files.submitted_by',
-        'contributing_files',
-        'contributing_files.replicate.experiment',
-        'contributing_files.replicate.experiment.lab',
-        'contributing_files.replicate.experiment.target',
-        'contributing_files.submitted_by',
         'submitted_by',
         'lab',
         'award',
@@ -161,15 +178,8 @@ class Dataset(Item):
             "type": "string",
         },
     })
-    def assembly(self, request, original_files):
-        assembly = []
-        for path in original_files:
-            properties = request.embed(path, '@@object')
-            if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak', 'bedRnaElements', 'bedMethyl', 'bedLogR'] and \
-                    properties['status'] in ['released']:
-                if 'assembly' in properties:
-                    assembly.append(properties['assembly'])
-        return list(set(assembly))
+    def assembly(self, request, original_files, status):
+        return calculate_assembly(request, original_files, status)
 
     @calculated_property(condition='assembly', schema={
         "title": "Hub",
@@ -182,7 +192,9 @@ class Dataset(Item):
         "title": "Visualize at UCSC",
         "type": "string",
     })
-    def visualize_ucsc(self, request, hub, assembly):
+    def visualize_ucsc(self, request, hub, assembly, status):
+        if status  != 'released':
+            return {}
         hub_url = urljoin(request.resource_url(request.root), hub)
         viz = {}
         for assembly_hub in assembly:
@@ -277,19 +289,8 @@ class FileSet(Dataset):
             "type": "string",
         },
     })
-    def assembly(self, request, original_files, related_files):
-        assembly = []
-        count = 1
-        for path in chain(original_files, related_files):
-            # Need to cap this due to the large numbers of files in related_files
-            if count < 100:
-                properties = request.embed(path, '@@object')
-                count = count + 1
-                if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak', 'bedRnaElements', 'bedMethyl', 'bedLogR'] and \
-                        properties['status'] in ['released']:
-                    if 'assembly' in properties:
-                        assembly.append(properties['assembly'])
-        return list(set(assembly))
+    def assembly(self, request, original_files, related_files, status):
+        return calculate_assembly(request, list(chain(original_files, related_files))[:101], status)
 
 
 @collection(
@@ -308,10 +309,6 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms)
         'organism',
         'targets',
         'files.dataset',
-        'files.derived_from',
-        'files.derived_from.analysis_step_version.software_versions',
-        'files.derived_from.analysis_step_version.software_versions.software',
-        'files.derived_from.replicate',
         'files.analysis_step_version.analysis_step',
         'files.analysis_step_version.analysis_step.documents',
         'files.analysis_step_version.analysis_step.documents.award',
@@ -331,7 +328,7 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms)
         'files.quality_metrics.step_run',
         'files.quality_metrics.step_run.analysis_step_version.analysis_step',
         'files.replicate.library',
-        'supersedes'
+        'supersedes',
     ]
     rev = Dataset.rev.copy()
     rev.update({
@@ -516,8 +513,6 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'files.lab',
         'files.platform',
         'files.lab',
-        'files.derived_from',
-        'files.derived_from.replicate',
         'files.analysis_step_version.analysis_step',
         'files.analysis_step_version.analysis_step.pipelines',
         'files.analysis_step_version.analysis_step.versions',
@@ -529,13 +524,6 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'files.quality_metrics',
         'files.quality_metrics.step_run',
         'files.quality_metrics.step_run.analysis_step_version.analysis_step',
-        'contributing_files.platform',
-        'contributing_files.lab',
-        'contributing_files.derived_from',
-        'contributing_files.analysis_step_version.analysis_step',
-        'contributing_files.analysis_step_version.analysis_step.pipelines',
-        'contributing_files.analysis_step_version.software_versions',
-        'contributing_files.analysis_step_version.software_versions.software'
     ]
 
     @calculated_property(schema={

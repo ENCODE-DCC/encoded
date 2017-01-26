@@ -52,11 +52,11 @@
             "format": "target_label"
         },
         "investigated_as": {
+            "title": "Target project investigation context",
+            "description": "The context(s) the target was investigated in",
             "type": "array",
             "uniqueItems": true,
             "items": {
-                "title": "Target project investigation context",
-                "description": "The context(s) the target was investigated in",
                 "type": "string",
                 "enum": [
                     "histone modification",

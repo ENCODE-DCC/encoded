@@ -144,7 +144,6 @@ def biosample_8_9(value, system):
             value['model_organism_age'] = new_age
 
 
-
 @upgrade_step('biosample', '9', '10')
 def biosample_9_10(value, system):
     # http://redmine.encodedcc.org/issues/2591
@@ -199,3 +198,64 @@ def biosample_11_12(value, system):
 
     if 'references' in value:
         value['references'] = list(set(value['references']))
+
+
+@upgrade_step('biosample', '12', '13')
+def biosample_12_13(value, system):
+    # http://redmine.encodedcc.org/issues/3921
+    if 'note' in value:
+        if 'submitter_comment' in value:
+            if value['note'] != value['submitter_comment']:
+                value['submitter_comment'] = value['submitter_comment'] + '; ' + value['note']
+        else:
+            value['submitter_comment'] = value['note']
+        value.pop('note')
+    # http://redmine.encodedcc.org/issues/1483#note-20
+    if 'starting_amount' in value and value['starting_amount'] == 'unknown':
+            value.pop('starting_amount')
+            value.pop('starting_amount_units')
+    if 'starting_amount_units' in value and 'starting_amount' not in value:
+        value.pop('starting_amount_units')
+    # http://redmine.encodedcc.org/issues/4448
+    if 'protocol_documents' in value:
+        value['documents'] = value['protocol_documents']
+        value.pop('protocol_documents')
+
+
+@upgrade_step('biosample', '13', '14')
+def biosample_13_14(value, system):
+
+    # http://redmine.encodedcc.org/issues/1384
+    if 'notes' in value:
+        if value['notes']:
+            value['notes'] = value['notes'].strip()
+        else:
+            del value['notes']
+    if 'description' in value:
+        if value['description']:
+            value['description'] = value['description'].strip()
+        else:
+            del value['description']
+    if 'submitter_comment' in value:
+        if value['submitter_comment']:
+            value['submitter_comment'] = value['submitter_comment'].strip()
+        else:
+            del value['submitter_comment']
+    if 'product_id' in value:
+        if value['product_id']:
+            value['product_id'] = value['product_id'].strip()
+        else:
+            del value['product_id']
+    if 'lot_id' in value:
+        if value['lot_id']:
+            value['lot_id'] = value['lot_id'].strip()
+        else:
+            del value['lot_id']
+
+    # http://redmine.encodedcc.org/issues/2491
+    if 'subcellular_fraction_term_id' in value:
+        del value['subcellular_fraction_term_id']
+    if 'depleted_in_term_id' in value:
+        del value['depleted_in_term_id']
+    if 'depleted_in_term_name' in value:
+        value['depleted_in_term_name'] = list(set(value['depleted_in_term_name']))

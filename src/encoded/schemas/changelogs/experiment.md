@@ -6,93 +6,7 @@ Schema version 10
 -----------------
 
 * *assay_term_name* is now a required property
-* *assay_term_name* is now limited to the following set of possible values:
-
-    "enum": [
-        "ChIP-seq",
-        "RNA-seq",
-        "DNase-seq",
-        "eCLIP",
-        "shRNA knockdown followed by RNA-seq",
-        "RNA Bind-n-Seq",
-        "transcription profiling by array assay",
-        "DNA methylation profiling by array assay",
-        "whole-genome shotgun bisulfite sequencing",
-        "RRBS",
-        "siRNA knockdown followed by RNA-seq",
-        "RAMPAGE",
-        "comparative genomic hybridization by array",
-        "CAGE",
-        "single cell isolation followed by RNA-seq",
-        "Repli-seq",
-        "microRNA-seq",
-        "microRNA counts",
-        "MRE-seq",
-        "RIP-seq",
-        "Repli-chip",
-        "MeDIP-seq",
-        "ChIA-PET",
-        "FAIRE-seq",
-        "ATAC-seq",
-        "PAS-seq",
-        "RIP-chip",
-        "RNA-PET",
-        "genotyping by high throughput sequencing assay",
-        "CRISPR genome editing followed by RNA-seq",
-        "protein sequencing by tandem mass spectrometry assay",
-        "5C",
-        "HiC",
-        "TAB-seq",
-        "iCLIP",
-        "DNA-PET",
-        "Switchgear",
-        "5' RLM RACE",
-        "MNase-seq"
-    ]
-* *assay_term_id* is now limited to the following set of possible values to match with their corresponding *assay_term_names*:
-
-    "enum": [
-        "OBI:0000716",
-        "OBI:0001271",
-        "OBI:0001853",
-        "NTR:0003027",
-        "NTR:0000762",
-        "OBI:0002044",
-        "OBI:0001463",
-        "OBI:0001332",
-        "OBI:0001863",
-        "OBI:0001862",
-        "NTR:0000763",
-        "OBI:0001864",
-        "OBI:0001393",
-        "OBI:0001674",
-        "NTR:0003082",
-        "OBI:0001920",
-        "OBI:0001922",
-        "NTR:0003660",
-        "OBI:0001861",
-        "OBI:0001857",
-        "OBI:0001915",
-        "OBI:0000693",
-        "OBI:0001848",
-        "OBI:0001859",
-        "OBI:0002039",
-        "OBI:0002045",
-        "OBI:0001918",
-        "OBI:0001850",
-        "OBI:0001247",
-        "NTR:0003814",
-        "OBI:0001923",
-        "OBI:0001919",
-        "OBI:0002042",
-        "NTR:0002490",
-        "OBI:0002043",
-        "OBI:0001849",
-        "NTR:0000612",
-        "NTR:0001684",
-        "OBI:0001924"
-    ]
-
+* *assay_term_id* is no longer allowed to be submitted, it will be automatically calculated based on the term_name
 
 Schema version 9
 ----------------
@@ -109,7 +23,6 @@ Schema version 9
         "archived",
         "replaced"
     ]
-
 
 Schema version 8
 ----------------

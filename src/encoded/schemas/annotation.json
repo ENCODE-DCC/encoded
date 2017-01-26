@@ -48,7 +48,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "10"
         },
         "annotation_type": {
             "title": "Type",
@@ -63,8 +63,10 @@
                 "long-range chromatin interactions",
                 "promoter-like regions",
                 "enhancer predictions",
+                "in vivo enhancer evaluations",
                 "DNase master peaks",
                 "transcription factor motifs",
+                "transcript expression",
                 "validated enhancers",
                 "overlap",
                 "other"
@@ -176,64 +178,61 @@
     },
     "facets": {
         "annotation_type": {
-            "title": "Annotation type",
-            "type": "string"
+            "title": "Annotation type"
         },
         "files.replicate.experiment.assay_term_name": {
-            "title": "Assay",
-            "type": "string"
+            "title": "Assay"
+        },
+        "files.file_type": {
+            "title": "Available data"
+        },
+        "files.run_type": {
+            "title": "Run type"
+        },
+        "files.read_length": {
+            "title": "Read length (nt)"
+        },
+        "files.mapped_read_length": {
+            "title": "Mapped read length (nt)"
         },
         "status": {
-            "title": "File set status",
-            "type": "string"
+            "title": "File set status"
         },
         "assembly": {
-            "title": "Genome assembly (visualization)",
-            "type": "string"
+            "title": "Genome assembly (visualization)"
         },
         "organism.scientific_name": {
-            "title": "Organism",
-            "type": "string"
+            "title": "Organism"
         },
         "targets.investigated_as": {
-            "title": "Target(s) of assay",
-            "type": "array"
+            "title": "Target(s) of assay"
         },
          "targets.label": {
-            "title": "Target(s) of assay",
-            "type": "array"
+            "title": "Target(s) of assay"
         },
        "biosample_type": {
-            "title": "Biosample type",
-            "type": "string"
+            "title": "Biosample type"
         },
         "organ_slims": {
-            "title": "Organ",
-            "type": "array"
+            "title": "Organ"
         },
         "relevant_life_stage": {
-            "title": "Life stage",
-            "type": "string"
+            "title": "Life stage"
         },
         "month_released": {
-            "title": "Date released",
-            "type": "string"
+            "title": "Date released"
         },
         "software_used.software.name": {
-            "title": "Software used",
-            "type": "array"
+            "title": "Software used"
         },
         "encyclopedia_version": {
-            "title": "Encyclopedia version",
-            "type": "string"
+            "title": "Encyclopedia version"
         },
         "lab.title": {
-            "title": "Lab",
-            "type": "string"
+            "title": "Lab"
         },
         "award.project": {
-            "title": "Project",
-            "type": "string"
+            "title": "Project"
         },
         "award.rfa": {
             "title": "RFA"

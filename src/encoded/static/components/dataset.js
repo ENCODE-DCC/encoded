@@ -1,114 +1,105 @@
-'use strict';
-var React = require('react/addons');
-var panel = require('../libs/bootstrap/panel');
-var button = require('../libs/bootstrap/button');
-var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
-var {SvgIcon, CollapseIcon} = require('../libs/svg-icons');
-var _ = require('underscore');
-var moment = require('moment');
-var globals = require('./globals');
-var navigation = require('./navigation');
-var dbxref = require('./dbxref');
-var fetched = require('./fetched');
-var audit = require('./audit');
-var statuslabel = require('./statuslabel');
-var graph = require('./graph');
-var reference = require('./reference');
-var software = require('./software');
-var {SortTablePanel, SortTable} = require('./sorttable');
-var image = require('./image');
-var doc = require('./doc');
-var {FileTable, DatasetFiles} = require('./filegallery');
-var {FileGallery} = require('./filegallery');
-
-var Breadcrumbs = navigation.Breadcrumbs;
-var DbxrefList = dbxref.DbxrefList;
-var FetchedItems = fetched.FetchedItems;
-var StatusLabel = statuslabel.StatusLabel;
-var PubReferenceList = reference.PubReferenceList;
-var SoftwareVersionList = software.SoftwareVersionList;
-var DocumentsPanel = doc.DocumentsPanel;
-var {AuditIndicators, AuditDetail, AuditIcon, AuditMixin} = audit;
-var ProjectBadge = image.ProjectBadge;
-var {Panel, PanelBody, PanelHeading} = panel;
-var DropdownButton = button.DropdownButton;
-var DropdownMenu = dropdownMenu.DropdownMenu;
-
-var PanelLookup = function (props) {
-    // XXX not all panels have the same markup
-    var context;
-    if (props['@id']) {
-        context = props;
-        props = {context: context};
-    }
-    var PanelView = globals.panel_views.lookup(props.context);
-    return <PanelView {...props} />;
-};
+import React from 'react/addons';
+import _ from 'underscore';
+import { Panel, PanelBody } from '../libs/bootstrap/panel';
+import { DropdownButton } from '../libs/bootstrap/button';
+import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
+import globals from './globals';
+import { Breadcrumbs } from './navigation';
+import { DbxrefList } from './dbxref';
+import { FetchedItems } from './fetched';
+import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
+import { StatusLabel } from './statuslabel';
+import { pubReferenceList } from './reference';
+import { donorDiversity } from './objectutils';
+import { softwareVersionList } from './software';
+import { SortTablePanel, SortTable } from './sorttable';
+import { ProjectBadge } from './image';
+import { DocumentsPanel } from './doc';
+import { FileGallery, DatasetFiles } from './filegallery';
+import { AwardRef } from './typeutils';
 
 // Return a summary of the given biosamples, ready to be displayed in a React component.
-var annotationBiosampleSummary = module.exports.annotationBiosampleSummary = function(annotation) {
-    var organismName = (annotation.organism && annotation.organism.scientific_name) ? <i>{annotation.organism.scientific_name}</i> : null;
-    var lifeStageString = (annotation.relevant_life_stage && annotation.relevant_life_stage !== 'unknown') ? <span>{annotation.relevant_life_stage}</span> : null;
-    var timepointString = annotation.relevant_timepoint ? <span>{annotation.relevant_timepoint + (annotation.relevant_timepoint_units ? ' ' +  annotation.relevant_timepoint_units : '')}</span> : null;
+export function annotationBiosampleSummary(annotation) {
+    const organismName = (annotation.organism && annotation.organism.scientific_name) ? <i>{annotation.organism.scientific_name}</i> : null;
+    const lifeStageString = (annotation.relevant_life_stage && annotation.relevant_life_stage !== 'unknown') ? <span>{annotation.relevant_life_stage}</span> : null;
+    const timepointString = annotation.relevant_timepoint ? <span>{annotation.relevant_timepoint + (annotation.relevant_timepoint_units ? ` ${annotation.relevant_timepoint_units}` : '')}</span> : null;
 
     // Build an array of strings we can join, not including empty strings
-    var summaryStrings = _.compact([organismName, lifeStageString, timepointString]);
+    const summaryStrings = _.compact([organismName, lifeStageString, timepointString]);
 
     if (summaryStrings.length) {
         return (
             <span className="biosample-summary">
-                {summaryStrings.map(function(summaryString, i) {
-                    return <span key={i}>{i > 0 ? <span>{', '}{summaryString}</span> : <span>{summaryString}</span>}</span>;
-                })}
+                {summaryStrings.map((summaryString, i) =>
+                    <span key={i}>
+                        {i > 0 ? <span>{', '}{summaryString}</span> : <span>{summaryString}</span>}
+                    </span>,
+                )}
             </span>
         );
     }
     return null;
-};
+}
+
+
+// Break the given camel-cased name into space-separated words just before the interior capital letters.
+function breakSetName(name) {
+    return name.replace(/(\S)([A-Z])/g, '$1 $2');
+}
 
 
 // Display Annotation page, a subtype of Dataset.
-var Annotation = React.createClass({
-    mixins: [AuditMixin],
-
-    contextTypes: {
-        session: React.PropTypes.object
+const Annotation = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object, // Annotation being displayed
     },
 
-    render: function() {
-        var context = this.props.context;
-        var itemClass = globals.itemClass(context, 'view-item');
-        var statuses = [{status: context.status, title: "Status"}];
-        var loggedIn = this.context.session && this.context.session['auth.userid'];
+    contextTypes: {
+        session: React.PropTypes.object, // Login session information
+    },
+
+    mixins: [AuditMixin],
+
+    render: function () {
+        const context = this.props.context;
+        const itemClass = globals.itemClass(context, 'view-item');
+        const loggedIn = this.context.session && this.context.session['auth.userid'];
+        const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
-        var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
+        const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
 
         // Make a biosample summary string
-        var biosampleSummary = annotationBiosampleSummary(context);
+        const biosampleSummary = annotationBiosampleSummary(context);
 
         // Determine this experiment's ENCODE version
-        var encodevers = globals.encodeVersion(context);
+        const encodevers = globals.encodeVersion(context);
 
         // Set up the breadcrumbs
-        var datasetType = context['@type'][1];
-        var filesetType = context['@type'][0];
-        var crumbs = [
-            {id: 'Datasets'},
-            {id: datasetType, uri: '/search/?type=' + datasetType, wholeTip: 'Search for ' + datasetType},
-            {id: breakSetName(filesetType), uri: '/search/?type=' + filesetType, wholeTip: 'Search for ' + filesetType}
+        const datasetType = context['@type'][1];
+        const filesetType = context['@type'][0];
+        const crumbs = [
+            { id: 'Datasets' },
+            { id: datasetType, uri: `/search/?type=${datasetType}`, wholeTip: `Search for ${datasetType}` },
+            { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
         ];
 
         // Make string of alternate accessions
-        var altacc = context.alternate_accessions.join(', ');
+        const altacc = context.alternate_accessions.join(', ');
+
+        // Make array of superseded_by accessions
+        let supersededBys = [];
+        if (context.superseded_by && context.superseded_by.length) {
+            supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
+        }
 
         // Get a list of reference links, if any
-        var references = PubReferenceList(context.references);
+        const references = pubReferenceList(context.references);
 
         // Render tags badges
-        var tagBadges;
+        let tagBadges;
         if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+            tagBadges = context.internal_tags.map(tag => <img src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
         }
 
         return (
@@ -118,6 +109,7 @@ var Annotation = React.createClass({
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for annotation file set {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -126,7 +118,7 @@ var Annotation = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -187,7 +179,7 @@ var Annotation = React.createClass({
                                     {context.software_used && context.software_used.length ?
                                         <div data-test="softwareused">
                                             <dt>Software used</dt>
-                                            <dd>{SoftwareVersionList(context.software_used)}</dd>
+                                            <dd>{softwareVersionList(context.software_used)}</dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -212,7 +204,9 @@ var Annotation = React.createClass({
                                             <dd>{context.lab.title}</dd>
                                         </div>
                                     : null}
-                                    
+
+                                    <AwardRef context={context} loggedIn={loggedIn} />
+
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
@@ -251,52 +245,55 @@ var Annotation = React.createClass({
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={encodevers} />
 
-                <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
+                <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
         );
-    }
+    },
 });
 
 globals.content_views.register(Annotation, 'Annotation');
 
 
 // Display Annotation page, a subtype of Dataset.
-var PublicationData = React.createClass({
-    mixins: [AuditMixin],
-
-    contextTypes: {
-        session: React.PropTypes.object
+const PublicationData = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object, // PublicationData object to display
     },
 
-    render: function() {
-        var context = this.props.context;
-        var files = context.files;
-        var itemClass = globals.itemClass(context, 'view-item');
-        var statuses = [{status: context.status, title: "Status"}];
-        var loggedIn = this.context.session && this.context.session['auth.userid'];
+    contextTypes: {
+        session: React.PropTypes.object, // Login session information
+    },
+
+    mixins: [AuditMixin],
+
+    render: function () {
+        const context = this.props.context;
+        const itemClass = globals.itemClass(context, 'view-item');
+        const loggedIn = this.context.session && this.context.session['auth.userid'];
+        const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
-        var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
+        const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
 
         // Set up the breadcrumbs
-        var datasetType = context['@type'][1];
-        var filesetType = context['@type'][0];
-        var crumbs = [
-            {id: 'Datasets'},
-            {id: datasetType, uri: '/search/?type=' + datasetType, wholeTip: 'Search for ' + datasetType},
-            {id: breakSetName(filesetType), uri: '/search/?type=' + filesetType, wholeTip: 'Search for ' + filesetType}
+        const datasetType = context['@type'][1];
+        const filesetType = context['@type'][0];
+        const crumbs = [
+            { id: 'Datasets' },
+            { id: datasetType, uri: `/search/?type=${datasetType}`, wholeTip: `Search for ${datasetType}` },
+            { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
         ];
 
         // Make string of alternate accessions
-        var altacc = context.alternate_accessions.join(', ');
+        const altacc = context.alternate_accessions.join(', ');
 
         // Render the publication links
-        var referenceList = PubReferenceList(context.references);
+        const referenceList = pubReferenceList(context.references);
 
         // Render tags badges
-        var tagBadges;
+        let tagBadges;
         if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+            tagBadges = context.internal_tags.map(tag => <img src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
         }
 
         return (
@@ -314,7 +311,7 @@ var PublicationData = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -376,6 +373,8 @@ var PublicationData = React.createClass({
                                         </div>
                                     : null}
 
+                                    <AwardRef context={context} loggedIn={loggedIn} />
+
                                     <div data-test="externalresources">
                                         <dt>External resources</dt>
                                         <dd>
@@ -407,51 +406,55 @@ var PublicationData = React.createClass({
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
-                <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
+                <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
         );
-    }
+    },
 });
 
 globals.content_views.register(PublicationData, 'PublicationData');
 
 
 // Display Annotation page, a subtype of Dataset.
-var Reference = React.createClass({
-    mixins: [AuditMixin],
-
-    contextTypes: {
-        session: React.PropTypes.object
+const Reference = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object, // Reference object to display
     },
 
-    render: function() {
-        var context = this.props.context;
-        var itemClass = globals.itemClass(context, 'view-item');
-        var statuses = [{status: context.status, title: "Status"}];
-        var loggedIn = this.context.session && this.context.session['auth.userid'];
+    contextTypes: {
+        session: React.PropTypes.object, // Login session information
+    },
+
+    mixins: [AuditMixin],
+
+    render: function () {
+        const context = this.props.context;
+        const itemClass = globals.itemClass(context, 'view-item');
+        const loggedIn = this.context.session && this.context.session['auth.userid'];
+        const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
-        var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
+        const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
 
         // Set up the breadcrumbs
-        var datasetType = context['@type'][1];
-        var filesetType = context['@type'][0];
-        var crumbs = [
-            {id: 'Datasets'},
-            {id: datasetType, uri: '/search/?type=' + datasetType, wholeTip: 'Search for ' + datasetType},
-            {id: breakSetName(filesetType), uri: '/search/?type=' + filesetType, wholeTip: 'Search for ' + filesetType}
+        const datasetType = context['@type'][1];
+        const filesetType = context['@type'][0];
+        const crumbs = [
+            { id: 'Datasets' },
+            { id: datasetType, uri: `/search/?type=${datasetType}`, wholeTip: `Search for ${datasetType}` },
+            { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
         ];
 
         // Make string of alternate accessions
-        var altacc = context.alternate_accessions.join(', ');
+        const altacc = context.alternate_accessions.join(', ');
 
         // Get a list of reference links, if any
-        var references = PubReferenceList(context.references);
+        const references = pubReferenceList(context.references);
 
         // Render tags badges
-        var tagBadges;
+        let tagBadges;
         if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+            tagBadges = context.internal_tags.map(tag => <img src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
         }
 
         return (
@@ -469,7 +472,7 @@ var Reference = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -505,7 +508,7 @@ var Reference = React.createClass({
                                     {context.software_used && context.software_used.length ?
                                         <div data-test="softwareused">
                                             <dt>Software used</dt>
-                                            <dd>{SoftwareVersionList(context.software_used)}</dd>
+                                            <dd>{softwareVersionList(context.software_used)}</dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -523,7 +526,9 @@ var Reference = React.createClass({
                                             <dd>{context.lab.title}</dd>
                                         </div>
                                     : null}
-                                    
+
+                                    <AwardRef context={context} loggedIn={loggedIn} />
+
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
@@ -562,57 +567,58 @@ var Reference = React.createClass({
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph altFilterDefault />
 
-                <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
+                <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
         );
-    }
+    },
 });
 
 globals.content_views.register(Reference, 'Reference');
 
 
 // Display Annotation page, a subtype of Dataset.
-var Project = React.createClass({
-    mixins: [AuditMixin],
-
-    contextTypes: {
-        session: React.PropTypes.object
+const Project = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object, // Project object to display
     },
 
-    render: function() {
-        var context = this.props.context;
-        var itemClass = globals.itemClass(context, 'view-item');
-        var statuses = [{status: context.status, title: "Status"}];
-        var loggedIn = this.context.session && this.context.session['auth.userid'];
+    contextTypes: {
+        session: React.PropTypes.object, // Login session information
+    },
+
+    mixins: [AuditMixin],
+
+    render: function () {
+        const context = this.props.context;
+        const itemClass = globals.itemClass(context, 'view-item');
+        const loggedIn = this.context.session && this.context.session['auth.userid'];
+        const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
-        var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
+        const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
 
         // Collect organisms
-        var organisms = context.organism && context.organism.map(function(organism) {
-            return organism.name;
-        });
-        organisms = _.uniq(organisms);
+        const organisms = (context.organism && context.organism.length) ? _.uniq(context.organism.map(organism => organism.name)) : [];
 
         // Set up the breadcrumbs
-        var datasetType = context['@type'][1];
-        var filesetType = context['@type'][0];
-        var crumbs = [
-            {id: 'Datasets'},
-            {id: datasetType, uri: '/search/?type=' + datasetType, wholeTip: 'Search for ' + datasetType},
-            {id: breakSetName(filesetType), uri: '/search/?type=' + filesetType, wholeTip: 'Search for ' + filesetType}
+        const datasetType = context['@type'][1];
+        const filesetType = context['@type'][0];
+        const crumbs = [
+            { id: 'Datasets' },
+            { id: datasetType, uri: `/search/?type=${datasetType}`, wholeTip: `Search for ${datasetType}` },
+            { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
         ];
 
         // Make string of alternate accessions
-        var altacc = context.alternate_accessions.join(', ');
+        const altacc = context.alternate_accessions.join(', ');
 
         // Get a list of reference links
-        var references = PubReferenceList(context.references);
+        const references = pubReferenceList(context.references);
 
         // Render tags badges
-        var tagBadges;
+        let tagBadges;
         if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+            tagBadges = context.internal_tags.map(tag => <img src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
         }
 
         return (
@@ -630,7 +636,7 @@ var Project = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -687,7 +693,7 @@ var Project = React.createClass({
                                     {context.software_used && context.software_used.length ?
                                         <div data-test="softwareused">
                                             <dt>Software used</dt>
-                                            <dd>{SoftwareVersionList(context.software_used)}</dd>
+                                            <dd>{softwareVersionList(context.software_used)}</dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -705,7 +711,9 @@ var Project = React.createClass({
                                             <dd>{context.lab.title}</dd>
                                         </div>
                                     : null}
-                                    
+
+                                    <AwardRef context={context} loggedIn={loggedIn} />
+
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
@@ -744,58 +752,58 @@ var Project = React.createClass({
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
-                <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
+                <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
         );
-    }
+    },
 });
 
 globals.content_views.register(Project, 'Project');
 
 
 // Display Annotation page, a subtype of Dataset.
-var UcscBrowserComposite = React.createClass({
-    mixins: [AuditMixin],
-
-    contextTypes: {
-        session: React.PropTypes.object
+const UcscBrowserComposite = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object, // UCSC browser composite object to display
     },
 
-    render: function() {
-        var context = this.props.context;
-        var files = context.files;
-        var itemClass = globals.itemClass(context, 'view-item');
-        var statuses = [{status: context.status, title: "Status"}];
-        var loggedIn = this.context.session && this.context.session['auth.userid'];
+    contextTypes: {
+        session: React.PropTypes.object, // Login session information
+    },
+
+    mixins: [AuditMixin],
+
+    render: function () {
+        const context = this.props.context;
+        const itemClass = globals.itemClass(context, 'view-item');
+        const loggedIn = this.context.session && this.context.session['auth.userid'];
+        const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
-        var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
+        const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
 
         // Collect organisms
-        var organisms = context.organism && context.organism.map(function(organism) {
-            return organism.name;
-        });
-        organisms = _.uniq(organisms);
+        const organisms = (context.organism && context.organism.length) ? _.uniq(context.organism.map(organism => organism.name)) : [];
 
         // Set up the breadcrumbs
-        var datasetType = context['@type'][1];
-        var filesetType = context['@type'][0];
-        var crumbs = [
-            {id: 'Datasets'},
-            {id: datasetType, uri: '/search/?type=' + datasetType, wholeTip: 'Search for ' + datasetType},
-            {id: breakSetName(filesetType), uri: '/search/?type=' + filesetType, wholeTip: 'Search for ' + filesetType}
+        const datasetType = context['@type'][1];
+        const filesetType = context['@type'][0];
+        const crumbs = [
+            { id: 'Datasets' },
+            { id: datasetType, uri: `/search/?type=${datasetType}`, wholeTip: `Search for ${datasetType}` },
+            { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
         ];
 
         // Make string of alternate accessions
-        var altacc = context.alternate_accessions.join(', ');
+        const altacc = context.alternate_accessions.join(', ');
 
         // Get a list of reference links, if any
-        var references = PubReferenceList(context.references);
+        const references = pubReferenceList(context.references);
 
         // Render tags badges
-        var tagBadges;
+        let tagBadges;
         if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+            tagBadges = context.internal_tags.map(tag => <img src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
         }
 
         return (
@@ -813,7 +821,7 @@ var UcscBrowserComposite = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -856,7 +864,7 @@ var UcscBrowserComposite = React.createClass({
                                     {context.software_used && context.software_used.length ?
                                         <div data-test="software-used">
                                             <dt>Software used</dt>
-                                            <dd>{SoftwareVersionList(context.software_used)}</dd>
+                                            <dd>{softwareVersionList(context.software_used)}</dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -874,7 +882,9 @@ var UcscBrowserComposite = React.createClass({
                                             <dd>{context.lab.title}</dd>
                                         </div>
                                     : null}
-                                    
+
+                                    <AwardRef context={context} loggedIn={loggedIn} />
+
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
@@ -913,29 +923,33 @@ var UcscBrowserComposite = React.createClass({
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
-                <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
+                <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
         );
-    }
+    },
 });
 
 globals.content_views.register(UcscBrowserComposite, 'UcscBrowserComposite');
 
 
-var FilePanelHeader = module.exports.FilePanelHeader = React.createClass({
-    render: function() {
-        var context = this.props.context;
+export const FilePanelHeader = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object, // Object being displayed
+    },
+
+    render: function () {
+        const context = this.props.context;
 
         return (
             <div>
-                {context.visualize_ucsc  && context.status == "released" ?
+                {context.visualize_ucsc && context.status === 'released' ?
                     <span className="pull-right">
-                        <DropdownButton title='Visualize Data' label="filepaneheader">
+                        <DropdownButton title="Visualize Data" label="filepaneheader">
                             <DropdownMenu>
                                 {Object.keys(context.visualize_ucsc).map(assembly =>
-                                    <a key={assembly} data-bypass="true" target="_blank" href={context.visualize_ucsc[assembly]}>
+                                    <a key={assembly} data-bypass="true" target="_blank" rel="noopener noreferrer" href={context.visualize_ucsc[assembly]}>
                                         {assembly}
-                                    </a>
+                                    </a>,
                                 )}
                             </DropdownMenu>
                         </DropdownButton>
@@ -944,254 +958,232 @@ var FilePanelHeader = module.exports.FilePanelHeader = React.createClass({
                 <h4>File summary</h4>
             </div>
         );
-    }
+    },
 });
 
 
-var getValuePossibleControls = function(item) {
-    if (item.possible_controls && item.possible_controls.length) {
-        return item.possible_controls.map(function(control) {
-            return control.accession;
-        }).join(', ');
-    }
-    return null;
-};
-
-
-var displayPossibleControls = function(item) {
+function displayPossibleControls(item) {
     if (item.possible_controls && item.possible_controls.length) {
         return (
             <span>
-                {item.possible_controls.map(function(control, i) {
-                    return (
-                        <span key={control.uuid}>
-                            {i > 0 ? <span>, </span> : null}
-                            <a href={control['@id']}>{control.accession}</a>
-                        </span>
-                    );
-                })}
+                {item.possible_controls.map((control, i) =>
+                    <span key={control.uuid}>
+                        {i > 0 ? <span>, </span> : null}
+                        <a href={control['@id']}>{control.accession}</a>
+                    </span>,
+                )}
             </span>
         );
     }
     return null;
-};
+}
 
-var basicTableColumns = {
-    'accession': {
+
+const basicTableColumns = {
+    accession: {
         title: 'Accession',
-        display: function(experiment) {
-            return <a href={experiment['@id']} title={'View page for experiment ' + experiment.accession}>{experiment.accession}</a>;
-        }
+        display: experiment => <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>,
     },
-    'assay_term_name': {
-        title: 'Assay'
+
+    assay_term_name: {
+        title: 'Assay',
     },
-    'target': {
+
+    target: {
         title: 'Target',
-        getValue: function(experiment) {
-            return experiment.target ? experiment.target.label : null;
-        }
+        getValue: experiment => (experiment.target ? experiment.target.label : null),
     },
-    'description': {
-        title: 'Description'
+
+    description: {
+        title: 'Description',
     },
-    'lab': {
+
+    lab: {
         title: 'Lab',
-        getValue: function(experiment) {
-            return experiment.lab ? experiment.lab.title : null;
-        }
-    }
+        getValue: experiment => (experiment.lab ? experiment.lab.title : null),
+    },
 };
 
-var treatmentSeriesTableColumns = {
-    'accession': {
+const treatmentSeriesTableColumns = {
+    accession: {
         title: 'Accession',
-        display: function(experiment) {
-            return <a href={experiment['@id']} title={'View page for experiment ' + experiment.accession}>{experiment.accession}</a>;
-        }
+        display: experiment => <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>,
     },
-    'possible_controls': {
+
+    possible_controls: {
         title: 'Possible controls',
         display: displayPossibleControls,
-        sorter: false
+        sorter: false,
     },
-    'assay_term_name': {
-        title: 'Assay'
+
+    assay_term_name: {
+        title: 'Assay',
     },
-    'target': {
+
+    target: {
         title: 'Target',
-        getValue: function(experiment) {
-            return experiment.target ? experiment.target.label : null;
-        }
+        getValue: experiment => (experiment.target ? experiment.target.label : null),
     },
-    'description': {
-        title: 'Description'
+
+    description: {
+        title: 'Description',
     },
-    'lab': {
+
+    lab: {
         title: 'Lab',
-        getValue: function(experiment) {
-            return experiment.lab ? experiment.lab.title : null;
-        }
-    }
+        getValue: experiment => (experiment.lab ? experiment.lab.title : null),
+    },
 };
 
-var replicationTimingSeriesTableColumns = {
-    'accession': {
+const replicationTimingSeriesTableColumns = {
+    accession: {
         title: 'Accession',
-        display: function(item) {
-            return <a href={item['@id']} title={'View page for experiment ' + item.accession}>{item.accession}</a>;
-        }
+        display: item => <a href={item['@id']} title={`View page for experiment ${item.accession}`}>{item.accession}</a>,
     },
-    'possible_controls': {
+
+    possible_controls: {
         title: 'Possible controls',
         display: displayPossibleControls,
-        sorter: false
+        sorter: false,
     },
-    'assay_term_name': {
-        title: 'Assay'
+
+    assay_term_name: {
+        title: 'Assay',
     },
-    'phase': {
+
+    phase: {
         title: 'Biosample phase',
-        display: function(experiment) {
-            var phases = [];
+        display: (experiment) => {
+            let phases = [];
 
             if (experiment.replicates && experiment.replicates.length) {
-                var biosamples = experiment.replicates.map(function(replicate) {
-                    return replicate.library && replicate.library.biosample;
-                });
-                phases = _.chain(biosamples.map(function(biosample) {
-                    return biosample.phase;
-                })).compact().uniq().value();
+                const biosamples = experiment.replicates.map(replicate => replicate.library && replicate.library.biosample);
+                phases = _.chain(biosamples.map(biosample => biosample.phase)).compact().uniq().value();
             }
             return phases.join(', ');
         },
-        sorter: false
+        sorter: false,
     },
-    'target': {
+
+    target: {
         title: 'Target',
-        getValue: function(experiment) {
-            return experiment.target ? experiment.target.label : null;
-        }
+        getValue: experiment => (experiment.target ? experiment.target.label : null),
     },
-    'description': {
-        title: 'Description'
+
+    description: {
+        title: 'Description',
     },
-    'lab': {
+
+    lab: {
         title: 'Lab',
-        getValue: function(experiment) {
-            return experiment.lab ? experiment.lab.title : null;
-        }
-    }
+        getValue: experiment => (experiment.lab ? experiment.lab.title : null),
+    },
 };
 
-var organismDevelopmentSeriesTableColumns = {
-    'accession': {
+const organismDevelopmentSeriesTableColumns = {
+    accession: {
         title: 'Accession',
-        display: function(experiment) {
-            return <a href={experiment['@id']} title={'View page for experiment ' + experiment.accession}>{experiment.accession}</a>;
-        }
+        display: experiment => <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>,
     },
-    'possible_controls': {
+
+    possible_controls: {
         title: 'Possible controls',
         display: displayPossibleControls,
-        sorter: false
+        sorter: false,
     },
-    'assay_term_name': {
-        title: 'Assay'
+    assay_term_name: {
+        title: 'Assay',
     },
-    'relative_age': {
+
+    relative_age: {
         title: 'Relative age',
-        display: function(experiment) {
-            var biosamples, synchronizationBiosample, lifeStageBiosample, ages;
+        display: (experiment) => {
+            let biosamples;
+            let synchronizationBiosample;
+            let ages;
+
             if (experiment.replicates && experiment.replicates.length) {
-                biosamples = experiment.replicates.map(function(replicate) {
-                    return replicate.library && replicate.library.biosample;
-                });
+                biosamples = experiment.replicates.map(replicate => replicate.library && replicate.library.biosample);
             }
             if (biosamples && biosamples.length) {
-                synchronizationBiosample = _(biosamples).find(function(biosample) {
-                    return biosample.synchronization;
-                });
-                lifeStageBiosample = _(biosamples).find(function(biosample) {
-                    return biosample.life_stage;
-                });
+                synchronizationBiosample = _(biosamples).find(biosample => biosample.synchronization);
                 if (!synchronizationBiosample) {
-                    ages = _.chain(biosamples.map(function(biosample) {
-                        return biosample.age_display;
-                    })).compact().uniq().value();
+                    ages = _.chain(biosamples.map(biosample => biosample.age_display)).compact().uniq().value();
                 }
             }
             return (
                 <span>
                     {synchronizationBiosample ?
-                        <span>{synchronizationBiosample.synchronization + ' + ' + synchronizationBiosample.age_display}</span>
+                        <span>{`${synchronizationBiosample.synchronization} + ${synchronizationBiosample.age_display}`}</span>
                     :
                         <span>{ages.length ? <span>{ages.join(', ')}</span> : null}</span>
                     }
                 </span>
             );
         },
-        sorter: false
+        sorter: false,
     },
-    'life_stage': {
+
+    life_stage: {
         title: 'Life stage',
-        getValue: function(experiment) {
-            var biosamples, lifeStageBiosample;
+        getValue: (experiment) => {
+            let biosamples;
+            let lifeStageBiosample;
 
             if (experiment.replicates && experiment.replicates.length) {
-                biosamples = experiment.replicates.map(function(replicate) {
-                    return replicate.library && replicate.library.biosample;
-                });
+                biosamples = experiment.replicates.map(replicate => replicate.library && replicate.library.biosample);
             }
             if (biosamples && biosamples.length) {
-                lifeStageBiosample = _(biosamples).find(function(biosample) {
-                    return biosample.life_stage;
-                });
+                lifeStageBiosample = _(biosamples).find(biosample => biosample.life_stage);
             }
             return lifeStageBiosample.life_stage;
-        }
+        },
     },
-    'target': {
+
+    target: {
         title: 'Target',
-        getValue: function(item) {
-            return item.target ? item.target.label : null;
-        }
+        getValue: item => (item.target ? item.target.label : null),
     },
-    'description': {
-        title: 'Description'
+
+    description: {
+        title: 'Description',
     },
-    'lab': {
+
+    lab: {
         title: 'Lab',
-        getValue: function(item) {
-            return item.lab ? item.lab.title : null;
-        }
-    }
+        getValue: item => (item.lab ? item.lab.title : null),
+    },
 };
 
-var Series = module.exports.Series = React.createClass({
-    mixins: [AuditMixin],
+export const Series = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object, // Series object to display
+    },
 
     contextTypes: {
-        session: React.PropTypes.object
+        session: React.PropTypes.object,
     },
+
+    mixins: [AuditMixin],
 
     // Map series @id to title and table columns
     seriesComponents: {
-        'MatchedSet': {title: 'matched set series', table: basicTableColumns},
-        'OrganismDevelopmentSeries': {title: 'organism development series', table: organismDevelopmentSeriesTableColumns},
-        'ReferenceEpigenome': {title: 'reference epigenome series', table: basicTableColumns},
-        'ReplicationTimingSeries': {title: 'replication timing series', table: replicationTimingSeriesTableColumns},
-        'TreatmentConcentrationSeries': {title: 'treatment concentration series', table: treatmentSeriesTableColumns},
-        'TreatmentTimeSeries': {title: 'treatment time series', table: treatmentSeriesTableColumns}
+        MatchedSet: { title: 'matched set series', table: basicTableColumns },
+        OrganismDevelopmentSeries: { title: 'organism development series', table: organismDevelopmentSeriesTableColumns },
+        ReferenceEpigenome: { title: 'reference epigenome series', table: basicTableColumns },
+        ReplicationTimingSeries: { title: 'replication timing series', table: replicationTimingSeriesTableColumns },
+        TreatmentConcentrationSeries: { title: 'treatment concentration series', table: treatmentSeriesTableColumns },
+        TreatmentTimeSeries: { title: 'treatment time series', table: treatmentSeriesTableColumns },
     },
 
-    render: function() {
-        var context = this.props.context;
-        var itemClass = globals.itemClass(context, 'view-item');
-        var experiments = {};
-        var statuses = [{status: context.status, title: "Status"}];
-        context.files.forEach(function(file) {
-            var experiment = file.replicate && file.replicate.experiment;
+    render: function () {
+        const context = this.props.context;
+        const itemClass = globals.itemClass(context, 'view-item');
+        const loggedIn = this.context.session && this.context.session['auth.userid'];
+        let experiments = {};
+        const statuses = [{ status: context.status, title: 'Status' }];
+        context.files.forEach((file) => {
+            const experiment = file.replicate && file.replicate.experiment;
             if (experiment) {
                 experiments[experiment['@id']] = experiment;
             }
@@ -1199,53 +1191,52 @@ var Series = module.exports.Series = React.createClass({
         experiments = _.values(experiments);
 
         // Build up array of documents attached to this dataset
-        var datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
+        const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
 
         // Set up the breadcrumbs
-        var datasetType = context['@type'][1];
-        var seriesType = context['@type'][0];
-        var crumbs = [
-            {id: 'Datasets'},
-            {id: datasetType, uri: '/search/?type=' + datasetType, wholeTip: 'Search for ' + datasetType},
-            {id: breakSetName(seriesType), uri: '/search/?type=' + seriesType, wholeTip: 'Search for ' + seriesType}
+        const datasetType = context['@type'][1];
+        const seriesType = context['@type'][0];
+        const crumbs = [
+            { id: 'Datasets' },
+            { id: datasetType, uri: `/search/?type=${datasetType}`, wholeTip: `Search for ${datasetType}` },
+            { id: breakSetName(seriesType), uri: `/search/?type=${seriesType}`, wholeTip: `Search for ${seriesType}` },
         ];
 
         // Make string of alternate accessions
-        var altacc = context.alternate_accessions.join(', ');
+        const altacc = context.alternate_accessions.join(', ');
 
         // Get a list of reference links, if any
-        var references = PubReferenceList(context.references);
+        const references = pubReferenceList(context.references);
 
         // Make the series title
-        var seriesComponent = this.seriesComponents[context['@type'][0]];
-        var seriesTitle = seriesComponent ? seriesComponent.title : 'series';
+        const seriesComponent = this.seriesComponents[seriesType];
+        const seriesTitle = seriesComponent ? seriesComponent.title : 'series';
 
         // Calculate the biosample summary
-        var speciesRender = null;
+        let speciesRender = null;
         if (context.organism && context.organism.length) {
-            var speciesList = _.uniq(context.organism.map(organism => {
-                return organism.scientific_name;
-            }));
+            const speciesList = _.uniq(context.organism.map(organism => organism.scientific_name));
             speciesRender = (
                 <span>
-                    {speciesList.map((species, i) => {
-                        return (
-                            <span key={i}>
-                                {i > 0 ? <span> and </span> : null}
-                                <i>{species}</i>
-                            </span>
-                        );
-                    })}
+                    {speciesList.map((species, i) =>
+                        <span key={i}>
+                            {i > 0 ? <span> and </span> : null}
+                            <i>{species}</i>
+                        </span>,
+                    )}
                 </span>
             );
         }
-        var terms = (context.biosample_term_name && context.biosample_term_name.length) ? _.uniq(context.biosample_term_name) : [];
+        const terms = (context.biosample_term_name && context.biosample_term_name.length) ? _.uniq(context.biosample_term_name) : [];
 
         // Render tags badges
-        var tagBadges;
+        let tagBadges;
         if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
+            tagBadges = context.internal_tags.map(tag => <img src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
         }
+
+        // Calculate the donor diversity.
+        const diversity = donorDiversity(context);
 
         return (
             <div className={itemClass}>
@@ -1262,7 +1253,7 @@ var Series = module.exports.Series = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="dataset-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="dataset-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -1275,6 +1266,11 @@ var Series = module.exports.Series = React.createClass({
                                             <dd>{context.description}</dd>
                                         </div>
                                     : null}
+
+                                    <div data-test="donordiversity">
+                                        <dt>Donor diversity</dt>
+                                        <dd>{diversity}</dd>
+                                    </div>
 
                                     {context.assay_term_name && context.assay_term_name.length ?
                                         <div data-test="description">
@@ -1306,6 +1302,8 @@ var Series = module.exports.Series = React.createClass({
                                         <dd>{context.lab.title}</dd>
                                     </div>
 
+                                    <AwardRef context={context} loggedIn={loggedIn} />
+
                                     <div data-test="project">
                                         <dt>Project</dt>
                                         <dd>{context.award.project}</dd>
@@ -1314,7 +1312,7 @@ var Series = module.exports.Series = React.createClass({
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
-                                            <dd>{context.aliases.join(", ")}</dd>
+                                            <dd>{context.aliases.join(', ')}</dd>
                                         </div>
                                     : null}
 
@@ -1355,28 +1353,42 @@ var Series = module.exports.Series = React.createClass({
 
                 {context.related_datasets.length ?
                     <div>
-                        <SortTablePanel title={'Experiments in ' + seriesTitle + ' ' + context.accession}>
+                        <SortTablePanel title={`Experiments in ${seriesTitle} ${context.accession}`}>
                             <SortTable list={context.related_datasets} columns={seriesComponent.table} />
                         </SortTablePanel>
                     </div>
                 : null }
 
                 {/* Display list of released and unreleased files */}
-                <FetchedItems {...this.props} url={globals.unreleased_files_url(context)} Component={DatasetFiles} filePanelHeader={<FilePanelHeader context={context} />} encodevers={globals.encodeVersion(context)} session={this.context.session} ignoreErrors />
+                <FetchedItems
+                    {...this.props}
+                    url={globals.unreleased_files_url(context)}
+                    Component={DatasetFiles}
+                    filePanelHeader={<FilePanelHeader context={context} />}
+                    encodevers={globals.encodeVersion(context)}
+                    session={this.context.session}
+                    ignoreErrors
+                />
 
-                <DocumentsPanel documentSpecs={[{documents: datasetDocuments}]} />
+                <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
         );
-    }
+    },
 });
 
 globals.content_views.register(Series, 'Series');
 
 
 // Display a count of experiments in the footer, with a link to the corresponding search if needed
-var ExperimentTableFooter = React.createClass({
-    render: function() {
-        var {items, total, url} = this.props;
+const ExperimentTableFooter = React.createClass({
+    propTypes: {
+        items: React.PropTypes.array, // Array of experiments that were displayed in the table
+        total: React.PropTypes.number, // Total number of experiments
+        url: React.PropTypes.string, // URL to link to equivalent experiment search results
+    },
+
+    render: function () {
+        const { items, total, url } = this.props;
 
         return (
             <div>
@@ -1384,43 +1396,53 @@ var ExperimentTableFooter = React.createClass({
                 {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
             </div>
         );
-    }
+    },
 });
 
 
-var ExperimentTable = module.exports.ExperimentTable = React.createClass({
-    tableColumns: {
-        'accession': {
-            title: 'Accession',
-            display: function(item) {
-                return <a href={item['@id']} title={'View page for experiment ' + item.accession}>{item.accession}</a>;
-            }
-        },
-        'assay_term_name': {
-            title: 'Assay'
-        },
-        'biosample_term_name': {
-            title: 'Biosample term name'
-        },
-        'target': {
-            title: 'Target',
-            getValue: function(item) {
-                return item.target && item.target.label;
-            }
-        },
-        'description': {
-            title: 'Description'
-        },
-        'title': {
-            title: 'Lab',
-            getValue: function(item) {
-                return item.lab && item.lab.title ? item.lab.title : null;
-            }
-        }
+export const ExperimentTable = React.createClass({
+    propTypes: {
+        items: React.PropTypes.array, // List of experiments to display in the table
+        limit: React.PropTypes.number, // Maximum number of experiments to display in the table
+        total: React.PropTypes.number, // Total number of experiments
+        url: React.PropTypes.string, // URI to go to equivalent search results
+        title: React.PropTypes.oneOfType([ // Title for the table of experiments; can be string or component
+            React.PropTypes.string,
+            React.PropTypes.node,
+        ]),
     },
 
-    render: function() {
-        var experiments;
+    tableColumns: {
+        accession: {
+            title: 'Accession',
+            display: item => <a href={item['@id']} title={`View page for experiment ${item.accession}`}>{item.accession}</a>,
+        },
+
+        assay_term_name: {
+            title: 'Assay',
+        },
+
+        biosample_term_name: {
+            title: 'Biosample term name',
+        },
+
+        target: {
+            title: 'Target',
+            getValue: item => item.target && item.target.label,
+        },
+
+        description: {
+            title: 'Description',
+        },
+
+        title: {
+            title: 'Lab',
+            getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
+        },
+    },
+
+    render: function () {
+        let experiments;
 
         // If there's a limit on entries to display and the array is greater than that
         // limit, then clone the array with just that specified number of elements
@@ -1439,11 +1461,5 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
                 </SortTablePanel>
             </div>
         );
-    }
+    },
 });
-
-
-// Break the given camel-cased name into space-separated words just before the interior capital letters.
-function breakSetName(name) {
-    return name.replace(/(\S)([A-Z])/g, '$1 $2');
-}

@@ -18,7 +18,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "4"
         },
         "attachment": {
             "title": "QC metric document metadata",
@@ -62,18 +62,22 @@
             }
         },
         "SD of log ratios": {
+            "title": "SD of log ratios",
             "type": "number",
             "description": "Standard Deviation of replicate log ratios from quantification"
         },
         "Pearson correlation": {
+            "title": "Pearson correlation",
             "type": "number",
             "description": "Pearson correlation coefficient of replicates from quantification"
         },
         "Spearman correlation": {
+            "title": "Spearman correlation",
             "type": "number",
             "description": "Spearman correlation coefficient of replicates from quantification"
         },
         "MAD of log ratios": {
+            "title": "MAD of log ratios",
             "type": "number",
             "description": "Mean-Average-Deviation (MAD) of replicate log ratios from quantification"
         }

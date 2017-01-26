@@ -18,45 +18,55 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "6"
         },
         "Sequences analysed in total": {
+            "title": "Sequences analysed in total",
             "type": "number",
             "description": "Total number of reads analysed by Bismark for WGBS"
         },
         "lambda Sequences analysed in total": {
+            "title": "lambda Sequences analysed in total",
             "type": "number",
             "description": "Total number of reads analysed by Bismark for WGBS vs. lambda phage genome"
         },
         "Mapping efficiency": {
+            "title": "Mapping efficiency",
             "type": "string",
             "description": "Bismark mapping efficiency for WGBS vs. reference genome"
         },
         "lambda Mapping efficiency": {
+            "title": "lambda Mapping efficiency",
             "type": "string",
             "description": "Bismark mapping efficiency for WGBS vs. lambda phage genome"
         },
         "lambda C methylated in CpG context": {
+            "title": "lambda C methylated in CpG context",
             "type": "string",
             "description": "Bismark mapping efficiency for WGBS vs. lambda phage genome"
         },
         "lambda C methylated in CHG context": {
+            "title": "lambda C methylated in CHG context",
             "type": "string",
             "description": "Bismark mapping efficiency for WGBS vs. lambda phage genome"
         },
         "lambda C methylated in CHH context": {
+            "title": "lambda C methylated in CHH context",
             "type": "string",
             "description": "Bismark mapping efficiency for WGBS vs. lambda phage genome"
         },
         "C methylated in CHH context": {
+            "title": "C methylated in CHH context",
             "type": "string",
             "description": "Bismark mapping efficiency for WGBS vs. reference genome"
         },
         "C methylated in CHG context": {
+            "title": "C methylated in CHG context",
             "type": "string",
             "description": "Bismark mapping efficiency for WGBS vs. reference genome"
         },
         "C methylated in CpG context": {
+            "title": "C methylated in CpG context",
             "type": "string",
             "description": "Bismark mapping efficiency for WGBS vs. reference genome"
         }

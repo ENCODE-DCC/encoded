@@ -1,20 +1,17 @@
-'use strict';
-var React = require('react');
-var _ = require('underscore');
+import React from 'react';
+import _ from 'underscore';
 
 
-var PubReferenceList = module.exports.PubReferenceList = function(values) {
+module.exports.pubReferenceList = function (values) {
     // Render each of the links, with null for each value without an identifier property
     if (values && values.length) {
-        var links = _.compact(values.map((value, index) => {
+        const links = _.compact(values.map((value) => {
             if (value.identifiers) {
-                return value.identifiers.map((identifier, index) => {
-                    return (
-                        <li key={index}>
-                            <a href={value['@id']}>{identifier}</a>
-                        </li>
-                    );
-                });
+                return value.identifiers.map((identifier, index) =>
+                    <li key={index}>
+                        <a href={value['@id']}>{identifier}</a>
+                    </li>
+                );
             }
             return null;
         }));

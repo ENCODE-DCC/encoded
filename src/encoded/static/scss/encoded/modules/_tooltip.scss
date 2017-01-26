@@ -1,5 +1,5 @@
 $tooltip-width: 300px;
-$tooltip-color: desaturate(lighten(#0a253d,30%),30%);
+$tooltip-color: #000;
 
 
 // Generic tooltips with clickable triggers
@@ -9,44 +9,6 @@ $tooltip-color: desaturate(lighten(#0a253d,30%),30%);
     cursor: default;
 }
 
-.tooltip {
-    position: absolute;
-    left: 50%;
-    margin-right: -$tooltip-width;
-    visibility: hidden;
-    transform: translateX(-50%);
-    white-space: normal;
-    text-align: center;
-    opacity: 1;
-    z-index: 100;
-
-    .no-csstransforms & {
-        left: 0;
-        padding: 0;
-    }
-
-    &.tooltip-open {
-        visibility: visible;
-    }
-}
-
-.tooltip-inner {
-    padding: 2px 5px;
-    border-right: 1px solid #fff;
-    border-bottom: 1px solid #fff;
-    border-left: 1px solid #fff;
-    background-color: $tooltip-color;
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
-    max-width: $tooltip-width;
-    cursor: auto;
-    font-family: $font-family-sans-serif;
-}
-
-.tooltip.bottom .tooltip-arrow {
-    border-bottom-color: $tooltip-color;
-}
-
-
 // Tooltips specifically for antibody statuses
 .tooltip-status {
     position: absolute;
@@ -55,9 +17,7 @@ $tooltip-color: desaturate(lighten(#0a253d,30%),30%);
     left: 15px;
     padding: 2px 5px;
     z-index: 100;
-    border: 1px solid #fff;
     background-color: $tooltip-color;
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
     color: #fff;
     text-align: center;
     white-space: nowrap;
@@ -80,6 +40,41 @@ $tooltip-color: desaturate(lighten(#0a253d,30%),30%);
     cursor: default;
 }
 
-.no-csstransforms .tooltip-arrow {
-    display: none;
+.tooltip {
+    visibility: hidden;
+
+    &.right {
+        transform: translateY(-50%);
+        left: 100%;
+        top: 50%;
+        white-space: nowrap;
+
+        .tooltip-inner {
+            text-align: left;
+            max-width: none; 
+        }
+    }
+
+    &.bottom {
+        transform: translateX(-50%);
+        left: 50%;
+        top: 100%;
+        white-space: normal;
+
+        .tooltip-inner {
+            text-align: center;
+            min-width: 250px; 
+        }
+    }
+}
+
+.tooltip-open {
+    visibility: visible;
+    opacity: 1;
+}
+
+.dl-tooltip-trigger {
+    @extend .tooltip-trigger;
+
+    padding-left: 5px;
 }

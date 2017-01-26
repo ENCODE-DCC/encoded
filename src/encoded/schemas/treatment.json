@@ -13,36 +13,30 @@
         { "$ref": "mixins.json#/shared_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/treatment_classification"}
+        { "$ref": "mixins.json#/treatment_classification"},
+        { "$ref": "mixins.json#/documents"}
     ],
     "dependencies": {
         "temperature": ["temperature_units"],
-        "temperature_units": ["temperature"]
+        "temperature_units": ["temperature"],
+        "amount": ["amount_units"],
+        "amount_units": ["amount"],
+        "duration": ["duration_units"],
+        "duration_units": ["duration"]
     },
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "6"
         },
         "lab": {
             "title": "Lab",
-             "description": "Lab associated with the submission.",
+            "description": "Lab associated with the submission.",
             "comment": "See lab.json for list of available identifiers.",
             "type": "string",
             "linkTo": "Lab"
         },
-        "protocols": {
-            "title": "Protocol documents",
-            "description": "Documents that describe the treatment protocol.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Protocol document",
-                "description": "A document that describes the treatment protocol.",
-                "comment": "See document.json for available identifiers.",
-                "type": "string",
-                "linkTo": "Document"
-            }
+        "documents": {
+            "description": "Documents that describe the treatment protocol."
         },
         "dbxrefs": {
             "@type": "@id",
@@ -59,12 +53,12 @@
                 "pattern": "^(UCSC-ENCODE-cv:[\\S\\s\\d\\-\\(\\)\\+]+)$"
             }
         },
-        "concentration": {
-            "title": "Concentration",
+        "amount": {
+            "title": "Amount of treatment applied",
             "type": "number"
         },
-        "concentration_units": {
-            "title": "Concentration units",
+        "amount_units": {
+            "title": "Amount units",
             "type": "string",
             "enum": [
                 "pM",
@@ -125,7 +119,7 @@
                  "linkTo": "Biosample"
              }
          },
-        "antibodies": {
+        "antibodies_used": {
              "title": "Treatment antibodies",
              "description": "Antibodies used in this treatment.",
              "type": "array",

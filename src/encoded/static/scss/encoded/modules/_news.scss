@@ -1,0 +1,149 @@
+.news-listing {
+    padding: 0;
+}
+
+.news-listing-item {
+    padding: 10px;
+    border-top: 1px solid rgba(15,70,100,.12);
+
+    h3 {
+        margin: 0 0 5px;
+        color: #000;
+        font-weight: normal;
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        margin-top: 0;
+        color: #808080;
+        font-style: italic;
+        font-weight: normal;
+        font-size: 0.9rem;
+    }
+
+    &:first-child {
+        border-top: none;
+    }
+}
+
+.news-listing-readmore {
+    margin-top: 5px;
+}
+
+.news-excerpt {
+    color: #000;
+    font-size: 1rem;
+}
+
+.news-post-header {
+    padding: 20px;
+
+    @media screen and (min-width: $screen-md-min) {
+        padding: 20px 10% 0;
+    }
+
+    h1 {
+        margin-bottom: 0;
+        font-weight: normal;
+        font-size: 2.5rem;
+    }
+
+    h2 {
+        margin-top: 0;
+        color: #808080;
+        font-style: italic;
+        font-weight: normal;
+        font-size: 0.9rem;
+    }
+}
+
+.news-post {
+    .block {
+        margin-bottom: 0;
+        box-shadow: none;
+    }
+}
+
+.news-empty {
+    padding: 50px 10px;
+    text-align: center;
+    color: #808080;
+    font-style: italic;
+}
+
+.news-keyword-section {
+    padding: 0 20px 20px;
+
+    @media screen and (min-width: $screen-md-min) {
+        padding: 0 10% 20px;
+    }
+}
+
+.news-keyword-list {
+    p {
+        margin: 0;
+        font-size: 0.9rem;
+        font-style: italic;
+        color: #808080;
+    }
+}
+
+.news-keyword {
+    @extend .btn;
+    @extend .btn-sm;
+    @extend .btn-info;
+    margin-right: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.news-share-list {
+    display: inline-block;
+    position: relative;
+    top: 4px;
+}
+
+%share-button {
+    @extend .icon;
+    display: inline-block;
+    margin-right: 5px;
+    font-size: 1.8rem;
+
+    &:after {
+        content: "" !important;
+    }
+
+    &:hover, &:active, &:focus {
+        text-decoration: none;
+    }
+}
+
+.share-twitter {
+    @extend %share-button;
+    @extend .icon-twitter-square;
+    color: #1da1f2;
+
+    &:hover, &:active, &:focus {
+        color: #1da1f2;
+    }
+}
+
+.share-facebook {
+    @extend %share-button;
+    @extend .icon-facebook-square;
+    color: #3b5998;
+
+    &:hover, &:active, &:focus {
+        color: #3b5998;
+    }
+}
+
+.share-googleplus {
+    @extend %share-button;
+    @extend .icon-google-plus-square;
+    color: #dd4b39;
+
+    &:hover, &:active, &:focus {
+        color: #dd4b39;
+    }
+}

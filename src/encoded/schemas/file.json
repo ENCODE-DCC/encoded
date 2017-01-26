@@ -33,6 +33,9 @@
         "file_format_type": {
             "title": "Specific file format type"
         },
+        "award.project": {
+            "title": "Project"
+        },
         "lab.title": {
             "title": "Lab"
         }
@@ -41,6 +44,13 @@
         "external_accession": {
             "not": {
                 "required": ["accession"]
+            }
+        },
+        "mapped_run_type": {
+            "properties": {
+                "file_format": {
+                    "enum": ["bam"]
+                }
             }
         },
         "paired_end": {
@@ -123,6 +133,39 @@
                     }
                 }
             ]
+        },
+        "status": {
+            "oneOf": [
+                {
+                    "required": ["content_error_detail"],
+                    "properties": {
+                        "status": {
+                            "enum": ["content error"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "oneOf": [
+                            {
+                                "required": ["content_error_detail"],
+                                "properties": {
+                                    "status": {
+                                        "enum": ["uploading", "uploaded", "upload failed", "format check failed", "in progress", "deleted", "replaced", "revoked", "archived", "released"]
+                                    }
+                                }
+                            },
+                            {
+                                "properties": {
+                                    "status": {
+                                        "enum": ["content error"]
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
         }
     },
     "properties": {
@@ -138,6 +181,28 @@
             "type": "string",
             "permission": "import_items",
             "uniqueKey": "accession"
+        },
+        "read_count": {
+            "title": "Read count",
+            "description": "Number of reads in fastq file.",
+            "comment": "Only admins are allowed to set or update this value.",
+            "permission": "import_items",
+            "type": "integer"
+        },
+        "fastq_signature": {
+            "title": "Fastq file flowcell based signature",
+            "description": "Fastq file flowcell based unique signature to reference a file.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "permission": "import_items",
+            "items": {
+                "title": "Flowcell based fastq siganture part",
+                "description": "Fastq file flowcell based unique signature to reference a file.",
+                "comment": "Current convention is based on the Illumina unique sequence identifier, colon separated flowcell, lane, read_end(1/2) and barcode.",
+                "type":  "string",
+                "pattern": "^[a-zA-Z0-9_-]+:[0-9]+:[12]:.*:.*$"
+            }
         },
         "file_format": {
             "title": "File format",
@@ -155,6 +220,7 @@
                         "gff",
                         "gtf",
                         "hdf5",
+                        "hic",
                         "idat",
                         "rcc",
                         "CEL",
@@ -165,7 +231,9 @@
                         "tagAlign",
                         "vcf",
                         "wig",
-                        "bedpe"
+                        "bedpe",
+                        "PWM",
+                        "chain"
                     ]
                 },
                 {
@@ -279,6 +347,17 @@
             "comment": "This is used when the original sequenced read length needed to be adjusted to match a replicate, or to match experiments and controls.",
             "type": "integer"
         },
+        "mapped_run_type": {
+            "title": "Mapped run type for bam files",
+            "description": "The mapped run type of the alignment file which may differ from the fastqs it is derived from.",
+            "comment": "When the control and experiment run types do not match, one may be changed in order to meet pipeline requirements.",
+            "type": "string",
+            "enum": [
+                "single-ended",
+                "paired-ended",
+                "unknown"
+            ]
+        },
         "flowcell_details": {
             "title": "Flowcells",
             "description": "For high-throughput sequencing, the flowcells used for the sequencing of the replicate.",
@@ -345,6 +424,8 @@
                         "alignments",
                         "unfiltered alignments",
                         "transcriptome alignments",
+                        "maternal haplotype mapping",
+                        "paternal haplotype mapping",
 
                         "minus strand signal of all reads",
                         "plus strand signal of all reads",
@@ -372,9 +453,12 @@
                         "methylation state at CHH",
                         "enrichment",
                         "replication timing profile",
+                        "maternal variant calls",
+                        "paternal variant calls",
                         "variant calls",
                         "filtered SNPs",
                         "filtered indels",
+                        "motif model",
 
                         "hotspots",
                         "long range chromatin interactions",
@@ -398,6 +482,7 @@
                         "predicted heart enhancers",
                         "predicted whole brain enhancers",
                         "candidate regulatory elements",
+                        "sequence alignability",
                         
                         "genome reference",
                         "transcriptome reference",
@@ -417,6 +502,7 @@
 
                         "optimal idr thresholded peaks",
                         "conservative idr thresholded peaks",
+                        "pseudoreplicated idr thresholded peaks",
 
                         "enhancer validation",
                         "semi-automated genome annotation",
@@ -454,9 +540,7 @@
                         "transcribed fragments",
                         "filtered transcribed fragments",
                         "valleys",
-                        "sequence alignability",
                         "sequence uniqueness",
-                        
 
                         "primer sequence",
                         "reference",
@@ -609,7 +693,8 @@
                 "replaced",
                 "revoked",
                 "archived",
-                "released"
+                "released",
+                "content error"
                 ]
         },
         "dbxrefs": {
@@ -633,6 +718,12 @@
             "comment": "For steps, see analysis_step_run.json (and analysis_step.json) - may be virtual",
             "type": "string",
              "linkTo": "AnalysisStepRun"
+        },
+        "content_error_detail": {
+            "title": "Content error detail",
+            "type": "string",
+            "permission": "import_items",
+            "description": "Explanation of why the file failed the automated content checks."
         }
     },
     "columns": {
@@ -659,6 +750,9 @@
         },
         "file_type": {
             "title": "File type"
+        },
+        "file_format_type": {
+            "title": "Specific file format type"
         },
         "file_size": {
             "title": "File size"
@@ -687,6 +781,9 @@
         "read_length": {
             "title": "Read length"
         },
+        "mapped_read_length": {
+            "title": "Mapped read length"
+        },
         "read_length_units": {
             "title": "Read length units"
         },
@@ -705,17 +802,20 @@
         "lab": {
             "title": "Lab"
         },
+        "award.project": {
+            "title": "BioProject"
+        },
         "step_run": {
             "title": "Analysis step run"
-        },
-        "lab": {
-            "title": "Lab"
         },
         "date_created": {
             "title": "Date added"
         },
         "analysis_step_version": {
             "title": "Analysis Step Version"
+        },
+        "restricted": {
+            "title": "Restricted file"
         },
         "status": {
             "title": "File status"
@@ -734,6 +834,8 @@
         "unfiltered alignments": "alignment",
         "transcriptome alignments": "alignment",
         "spike-in alignments": "alignment",
+        "maternal haplotype mapping": "alignment",
+        "paternal haplotype mapping": "alignment",
 
         "minus strand signal of all reads": "signal",
         "plus strand signal of all reads": "signal",
@@ -772,6 +874,7 @@
         "filtered peptide quantification": "quantification",
         "unfiltered peptide quantification": "quantification",
         "replication timing profile": "quantification",
+        "motif model": "quantification",
 
         "hotspots": "annotation",
         "long range chromatin interactions": "annotation",
@@ -793,14 +896,13 @@
         "transcribed fragments": "annotation",
         "filtered transcribed fragments": "annotation",
         "valleys": "annotation",
-        "sequence alignability": "annotation",
-        "sequence uniqueness": "annotation",
         "blacklisted regions": "annotation",
         "mitochondria blacklisted regions": "annotation",
         "distal peaks": "annotation",
         "proximal peaks": "annotation",
         "optimal idr thresholded peaks": "annotation",
         "conservative idr thresholded peaks": "annotation",
+        "pseudoreplicated idr thresholded peaks": "annotation",
         "predicted forebrain enhancers": "annotation",
         "predicted heart enhancers": "annotation",
         "predicted whole brain enhancers": "annotation",
@@ -811,6 +913,8 @@
         "transcription start sites": "annotation",
         "candidate regulatory elements": "annotation",
         "variant calls": "annotation",
+        "maternal variant calls": "annotation",
+        "paternal variant calls": "annotation",
         "filtered SNPs": "annotation",
         "filtered indels": "annotation",
 
@@ -831,6 +935,8 @@
         "primer sequence": "reference",
         "spike-in sequence": "reference",
         "reference": "reference",
+        "sequence alignability": "reference",
+        "sequence uniqueness": "reference",
 
         "enhancer validation": "validation",
         "validation": "validation",
@@ -844,6 +950,8 @@
         "CEL": ".cel.gz",
         "bam": ".bam",
         "bed": ".bed.gz",
+        "bedpe": ".bedpe.gz",
+        "chain": ".chain",
         "bigBed": ".bigBed",
         "bigWig": ".bigWig",
         "btr": ".btr",
@@ -853,8 +961,10 @@
         "fastq": ".fastq.gz",
         "gff": ".gff.gz",
         "gtf": ".gtf.gz",
+        "hic": ".hic",
         "hdf5": ".h5",
         "idat": ".idat",
+        "PWM":".pwm",
         "rcc": ".rcc",
         "tagAlign": ".tagAlign.gz",
         "tar": ".tar.gz",

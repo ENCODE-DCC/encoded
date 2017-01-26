@@ -41,6 +41,44 @@ def test_file_post_fastq_with_replicate(testapp, fastq):
 
 
 @pytest.fixture
+def mapped_run_type_on_fastq(award, experiment, lab):
+    return {
+        'award': award['@id'],
+        'dataset': experiment['@id'],
+        'lab': lab['@id'],
+        'file_format': 'fastq',
+        'run_type': 'paired-ended',
+        'mapped_run_type': 'single-ended',
+        'md5sum': '01234567890123456789abcdefabcdef',
+        'output_type': 'raw data',
+        'status': 'in progress',
+    }
+
+
+@pytest.fixture
+def mapped_run_type_on_bam(award, experiment, lab):
+    return {
+        'award': award['@id'],
+        'dataset': experiment['@id'],
+        'lab': lab['@id'],
+        'file_format': 'bam',
+        'assembly': 'mm10',
+        'mapped_run_type': 'single-ended',
+        'md5sum': 'abcdef01234567890123456789abcdef',
+        'output_type': 'alignments',
+        'status': 'in progress',
+    }
+
+
+def test_file_post_mapped_run_type_on_fastq(testapp, mapped_run_type_on_fastq):
+    testapp.post_json('/file', mapped_run_type_on_fastq, status=422)
+
+
+def test_file_post_mapped_run_type_on_bam(testapp, mapped_run_type_on_bam):
+    testapp.post_json('/file', mapped_run_type_on_bam, status=201)
+
+
+@pytest.fixture
 def file(testapp, award, experiment, lab, replicate):
     item = {
         'award': award['@id'],

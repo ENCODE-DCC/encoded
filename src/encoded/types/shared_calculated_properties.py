@@ -1,5 +1,6 @@
 from snovault import calculated_property
 from snovault.util import ensurelist
+from .assay_data import assay_terms
 
 
 class CalculatedBiosampleSlims:
@@ -252,3 +253,17 @@ class CalculatedSeriesTarget:
     })
     def target(self, request, related_datasets):
         return request.select_distinct_values('target', *related_datasets)
+
+
+class CalculatedAssayTermID:
+    @calculated_property(condition='assay_term_name', schema={
+        "title": "Assay ID",
+        "description": "OBI (Ontology for Biomedical Investigations) ontology identifier for the assay.",
+        "type": "string",
+        "comment": "Calculated based on the choice of assay_term_name"
+    })
+    def assay_term_id(self, request, assay_term_name):
+        term_id = None
+        if assay_term_name in assay_terms:
+            term_id = assay_terms.get(assay_term_name)
+        return term_id

@@ -1,0 +1,105 @@
+{
+    "description": "Schema for reporting library complexity and cross-correlation ('PCR bottleneck coefficient' and 'phantumpeakqualtools run_spp.R') quality metric",
+    "id": "/profiles/complexity_xcorr_quality_metric.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["step_run", "award", "lab"],
+    "additionalProperties": false,
+    "identifyingProperties": ["uuid"],
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "quality_metric.json#/properties" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/assay" }
+   ],
+    "properties": {
+        "schema_version": {
+            "default": "5"
+        },
+        "sample size": {
+            "title": "Sample size",
+            "type": "number",
+            "description": "Total reads sampled (pairs if applicable)"
+        },
+        "paired-end": {
+            "title": "Paired-end",
+            "type": "boolean",
+            "description": "Reads are paired-ended"
+        },
+        "read length": {
+            "title": "Read length",
+            "type": "number",
+            "description": "Read length"
+        },
+         "fragment length": {
+            "title": "Fragment length",
+            "type": "number",
+            "description": "Fragment length/strandshift. This is the estimated fragment length/strand shift for each dataset as estimated by strand cross-correlation analysis"
+        },
+        "NRF": {
+            "title": "Non-redundant fraction",
+            "type": "number",
+            "description": "Non redundant fraction (indicates library complexity).  Distinct Locations Mapped / Sampled Reads"
+        },
+        "PBC1": {
+            "title": "PCR bottlenecking coefficient 1",
+            "type": "number",
+            "description": "PCR Bottlenecking coefficient 1 = Single-read Locations / Distinct Locations"
+        },
+        "PBC2": {
+            "title": "PCR bottlenecking coefficient 2",
+            "type": ["number", "string"],
+            "minimum":0,
+            "pattern": "^Infinity$",
+            "description": "PCR Bottlenecking coefficient 2 (indicates library complexity) = Single-read Locations / Multi-read Locations"
+        },
+        "NSC": {
+            "title": "Normalized strand cross-correlation",
+            "type": "number",
+            "description": "Normalized strand cross-correlation = FRAGLEN_CC / MIN_CC. Ratio of strand cross-correlation at estimated fragment length to the minimum cross-correlation over all shifts."
+        },
+        "RSC": {
+            "title": "Relative cross correlation coefficient",
+            "type": "number",
+            "description": "Relative cross correlation coefficient. Ratio of strand cross-correlation at fragment length and at read length"
+        },
+        "cross_correlation_plot": {
+            "title": "QC metric document metadata",
+            "description": "Cross-correlation plot",
+            "type": "object",
+            "additionalProperties": false,
+            "attachment": true,
+            "formInput": "file",
+            "properties": {
+                "download": {
+                    "title": "File Name",
+                    "type": "string"
+                },
+                "href": {
+                    "comment": "Internal webapp URL for document file",
+                    "type": "string"
+                },
+                "type": {
+                    "title": "MIME type",
+                    "type": "string",
+                    "enum": [
+                        "application/pdf"
+                    ]
+                },
+                "size": {
+                    "title": "File size",
+                    "type": "integer"
+                },
+                "md5sum": {
+                    "format": "md5sum",
+                    "type": "string",
+                    "title": "MD5sum"
+                }
+            }
+        }
+    }
+}

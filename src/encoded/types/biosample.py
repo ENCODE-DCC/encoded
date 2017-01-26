@@ -43,6 +43,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'donor.references',
         'model_organism_donor_constructs',
         'model_organism_donor_constructs.submitted_by',
+        'model_organism_donor_constructs.promoter_used',
         'model_organism_donor_constructs.target',
         'model_organism_donor_constructs.documents',
         'model_organism_donor_constructs.documents.award',
@@ -54,23 +55,23 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'award.pi.lab',
         'source',
         'treatments',
-        'treatments.protocols.submitted_by',
-        'treatments.protocols.lab',
-        'treatments.protocols.award',
+        'treatments.documents.submitted_by',
+        'treatments.documents.lab',
+        'treatments.documents.award',
         'constructs',
         'constructs.documents.submitted_by',
         'constructs.documents.award',
         'constructs.documents.lab',
         'constructs.target',
-        'protocol_documents.lab',
-        'protocol_documents.award',
-        'protocol_documents.submitted_by',
+        'documents.lab',
+        'documents.award',
+        'documents.submitted_by',
         'derived_from',
         'part_of',
-        'part_of.protocol_documents',
-        'part_of.protocol_documents.award',
-        'part_of.protocol_documents.lab',
-        'part_of.protocol_documents.submitted_by',
+        'part_of.documents',
+        'part_of.documents.award',
+        'part_of.documents.lab',
+        'part_of.documents.submitted_by',
         'part_of.characterizations.documents',
         'part_of.characterizations.documents.award',
         'part_of.characterizations.documents.lab',
@@ -82,7 +83,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'part_of.rnais.documents.award',
         'part_of.rnais.documents.lab',
         'part_of.rnais.documents.submitted_by',
-        'part_of.treatments.protocols',
+        'part_of.treatments.documents',
         'part_of.talens.documents',
         'parent_of',
         'pooled_from',
@@ -103,6 +104,12 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'talens.documents.award',
         'talens.documents.lab',
         'talens.documents.submitted_by',
+        'genetic_modifications',
+        'genetic_modifications.award',
+        'genetic_modifications.lab',
+        'genetic_modifications.modification_techniques',
+        'genetic_modifications.treatments',
+        'genetic_modifications.target'
     ]
     audit_inherit = [
         'donor',
@@ -130,17 +137,17 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'award.pi.lab',
         'source',
         'treatments',
-        'treatments.protocols.submitted_by',
-        'treatments.protocols.lab',
-        'treatments.protocols.award',
+        'treatments.documents.submitted_by',
+        'treatments.documents.lab',
+        'treatments.documents.award',
         'constructs',
         'constructs.documents.submitted_by',
         'constructs.documents.award',
         'constructs.documents.lab',
         'constructs.target',
-        'protocol_documents.lab',
-        'protocol_documents.award',
-        'protocol_documents.submitted_by',
+        'documents.lab',
+        'documents.award',
+        'documents.submitted_by',
         'derived_from',
         'pooled_from',
         'characterizations.submitted_by',
@@ -159,7 +166,13 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'talens.documents',
         'talens.documents.award',
         'talens.documents.lab',
-        'talens.documents.submitted_by'
+        'talens.documents.submitted_by',
+        'genetic_modifications',
+        'genetic_modifications.award',
+        'genetic_modifications.lab',
+        'genetic_modifications.modification_techniques',
+        'genetic_modifications.treatments',
+        'genetic_modifications.target'
     ]
 
     @calculated_property(define=True,
@@ -362,6 +375,59 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             )
         return None
 
+    @calculated_property(condition='depleted_in_term_name', schema={
+        "title": "depleted_in_term_id",
+        "type": "string",
+    })
+    def depleted_in_term_id(self, request, depleted_in_term_name):
+
+        term_lookup = {
+            'head': 'UBERON:0000033',
+            'limb': 'UBERON:0002101',
+            'salivary gland': 'UBERON:0001044',
+            'male accessory sex gland': 'UBERON:0010147',
+            'testis': 'UBERON:0000473',
+            'female gonad': 'UBERON:0000992',
+            'digestive system': 'UBERON:0001007',
+            'arthropod fat body': 'UBERON:0003917',
+            'antenna': 'UBERON:0000972',
+            'adult maxillary segment': 'FBbt:00003016',
+            'female reproductive system': 'UBERON:0000474',
+            'male reproductive system': 'UBERON:0000079'
+        }
+
+        term_id = list()
+        for term_name in depleted_in_term_name:
+            if term_name in term_lookup:
+                term_id.append(term_lookup.get(term_name))
+            else:
+                term_id.append('Term ID unknown')
+
+        return term_id
+
+    @calculated_property(condition='subcellular_fraction_term_name', schema={
+        "title": "subcellular_fraction_term_id",
+        "type": "string",
+    })
+    def subcellular_fraction_term_id(self, request, subcellular_fraction_term_name):
+        term_lookup = {
+            'nucleus': 'GO:0005634',
+            'cytosol': 'GO:0005829',
+            'chromatin': 'GO:0000785',
+            'membrane': 'GO:0016020',
+            'mitochondria': 'GO:0005739',
+            'nuclear matrix': 'GO:0016363',
+            'nucleolus': 'GO:0005730',
+            'nucleoplasm': 'GO:0005654',
+            'polysome': 'GO:0005844',
+            'insoluble cytoplasmic fraction': 'NTR:0002594'
+        }
+
+        if subcellular_fraction_term_name in term_lookup:
+            return term_lookup.get(subcellular_fraction_term_name)
+        else:
+            return 'Term ID unknown'
+
     @calculated_property(schema={
         "title": "Summary",
         "type": "string",
@@ -379,6 +445,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 starting_amount_units=None,
                 depleted_in_term_name=None,
                 phase=None,
+                synchronization=None,
                 subcellular_fraction_term_name=None,
                 post_synchronization_time=None,
                 post_synchronization_time_units=None,
@@ -389,7 +456,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 derived_from=None,
                 transfection_method=None,
                 transfection_type=None,
-                talens=None,
+                genetic_modifications=None,
                 constructs=None,
                 model_organism_donor_constructs=None,
                 rnais=None):
@@ -402,12 +469,12 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             'fractionated',
             'sex_stage_age',
             'synchronization',
+            'modifications_list',
             'derived_from',
             'transfection_type',
             'rnais',
             'treatments_phrase',
             'depleted_in',
-            'talens',
             'constructs',
             'model_organism_constructs'
         ]
@@ -432,11 +499,16 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         if derived_from is not None:
             derived_from_object = request.embed(derived_from, '@@object')
 
-        talen_objects_list = None
-        if talens is not None and len(talens) > 0:
-            talen_objects_list = []
-            for t in talens:
-                talen_objects_list.append(request.embed(t, '@@object'))
+        modifications_list = None
+        if genetic_modifications is not None and len(genetic_modifications) > 0:
+            modifications_list = []
+            for gm in genetic_modifications:
+                gm_object = request.embed(gm, '@@object')
+                if 'modification_techniques' in gm_object and \
+                   len(gm_object['modification_techniques']) > 0:
+                    for gmt in gm_object['modification_techniques']:
+                        modifications_list.append((gm_object['modification_type'],
+                                                  request.embed(gmt, '@@object')))
 
         construct_objects_list = None
         if constructs is not None and len(constructs) > 0:
@@ -444,7 +516,17 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             for c in constructs:
                 construct_object = request.embed(c, '@@object')
                 target_name = construct_object['target']
-                construct_objects_list.append(request.embed(target_name, '@@object'))
+                if 'promoter_used' in construct_object and \
+                   construct_object['promoter_used'] is not None:
+                    promo = construct_object['promoter_used']
+                    item_to_add = (construct_object,
+                                   request.embed(target_name, '@@object'),
+                                   request.embed(promo, '@@object'))
+                else:
+                    item_to_add = (construct_object,
+                                   request.embed(target_name, '@@object'),
+                                   None)
+                construct_objects_list.append(item_to_add)
 
         model_construct_objects_list = None
         if model_organism_donor_constructs is not None and len(model_organism_donor_constructs) > 0:
@@ -452,7 +534,17 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             for c in model_organism_donor_constructs:
                 construct_object = request.embed(c, '@@object')
                 target_name = construct_object['target']
-                model_construct_objects_list.append(request.embed(target_name, '@@object'))
+                if 'promoter_used' in construct_object and \
+                   construct_object['promoter_used'] is not None:
+                    promo = construct_object['promoter_used']
+                    item_to_add = (construct_object,
+                                   request.embed(target_name, '@@object'),
+                                   request.embed(promo, '@@object'))
+                else:
+                    item_to_add = (construct_object,
+                                   request.embed(target_name, '@@object'),
+                                   None)
+                model_construct_objects_list.append(item_to_add)
 
         rnai_objects = None
         if rnais is not None and len(rnais) > 0:
@@ -478,6 +570,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             depleted_in_term_name,
             phase,
             subcellular_fraction_term_name,
+            synchronization,
             post_synchronization_time,
             post_synchronization_time_units,
             post_treatment_time,
@@ -486,7 +579,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             treatment_objects_list,
             part_of_object,
             derived_from_object,
-            talen_objects_list,
+            modifications_list,
             construct_objects_list,
             model_construct_objects_list,
             rnai_objects)
@@ -509,6 +602,7 @@ def generate_summary_dictionary(
     depleted_in_term_name=None,
     phase=None,
     subcellular_fraction_term_name=None,
+    synchronization=None,
     post_synchronization_time=None,
     post_synchronization_time_units=None,
     post_treatment_time=None,
@@ -517,10 +611,11 @@ def generate_summary_dictionary(
     treatment_objects_list=None,
     part_of_object=None,
     derived_from_object=None,
-    talen_objects_list=None,
+    modifications_list=None,
     construct_objects_list=None,
     model_construct_objects_list=None,
-    rnai_objects=None
+    rnai_objects=None,
+    experiment_flag=False
 ):
         dict_of_phrases = {
             'organism_name': '',
@@ -535,9 +630,11 @@ def generate_summary_dictionary(
             'rnais': '',
             'treatments_phrase': '',
             'depleted_in': '',
-            'talens': '',
+            'modifications_list': '',
             'constructs': '',
-            'model_organism_constructs': ''
+            'model_organism_constructs': '',
+            'strain_background': '',
+            'experiment_term_phrase': ''
         }
 
         if organismObject is not None:
@@ -545,10 +642,10 @@ def generate_summary_dictionary(
                 dict_of_phrases['organism_name'] = organismObject['scientific_name']
                 if organismObject['scientific_name'] != 'Homo sapiens':  # model organism
                     if donorObject is not None:
-                        if 'strain_name' in donorObject:
+                        if 'strain_name' in donorObject and donorObject['strain_name'].lower() != 'unknown':
                             dict_of_phrases['genotype_strain'] = 'strain ' + \
                                                                  donorObject['strain_name']
-                        if 'genotype' in donorObject:
+                        if 'genotype' in donorObject and donorObject['genotype'].lower() != 'unknown':
                             d_genotype = donorObject['genotype']
                             if organismObject['scientific_name'].find('Drosophila') == -1:
                                 if d_genotype[-1] == '.':
@@ -557,7 +654,11 @@ def generate_summary_dictionary(
                                 else:
                                     dict_of_phrases['genotype_strain'] += ' (' + \
                                                                           d_genotype + ')'
-
+                        if 'strain_background' in donorObject and \
+                           donorObject['strain_background'].lower() != 'unknown':
+                            dict_of_phrases['strain_background'] = donorObject['strain_background']
+                        else:
+                            dict_of_phrases['strain_background'] = dict_of_phrases['genotype_strain']
         if age is not None and age_units is not None:
             dict_of_phrases['age_display'] = str(age) + ' ' + age_units + 's'
 
@@ -565,7 +666,12 @@ def generate_summary_dictionary(
             dict_of_phrases['life_stage'] = life_stage
 
         if sex is not None and sex != 'unknown':
-            dict_of_phrases['sex'] = sex
+            if experiment_flag is True:
+                if sex != 'mixed':
+                    dict_of_phrases['sex'] = sex
+
+            else:
+                dict_of_phrases['sex'] = sex
 
         if biosample_term_name is not None:
             dict_of_phrases['sample_term_name'] = biosample_term_name
@@ -581,6 +687,8 @@ def generate_summary_dictionary(
                 term_name += 'whole organisms'
             else:
                 term_name += dict_of_phrases['sample_term_name']
+
+        dict_of_phrases['experiment_term_phrase'] = term_name
 
         term_type = ''
 
@@ -599,6 +707,9 @@ def generate_summary_dictionary(
                 term_phrase += ' ' + w
 
         term_phrase += ' ' + term_type
+        if term_phrase.startswith(' of'):
+            term_phrase = ' ' + term_phrase[3:]
+
         if len(term_phrase) > 0:
             dict_of_phrases['term_phrase'] = term_phrase[1:]
 
@@ -639,12 +750,21 @@ def generate_summary_dictionary(
             if subcellular_fraction_term_name == 'insoluble cytoplasmic fraction':
                 dict_of_phrases['fractionated'] = 'insoluble cytoplasmic fraction'
 
-        if post_synchronization_time is not None and post_synchronization_time_units is not None:
+        if post_synchronization_time is not None and \
+           post_synchronization_time_units is not None:
             dict_of_phrases['synchronization'] = (post_synchronization_time +
                                                   ' ' + post_synchronization_time_units +
                                                   's post synchronization')
+        if synchronization is not None:
+            if synchronization.startswith('puff'):
+                dict_of_phrases['synchronization'] += ' at ' + synchronization
+            elif synchronization == 'egg bleaching':
+                dict_of_phrases['synchronization'] += ' using ' + synchronization
+            else:
+                dict_of_phrases['synchronization'] += ' at ' + synchronization + ' stage'
 
-        if post_treatment_time is not None and post_treatment_time_units is not None:
+        if post_treatment_time is not None and \
+           post_treatment_time_units is not None:
             dict_of_phrases['post_treatment'] = (post_treatment_time +
                                                  ' ' + post_treatment_time_units +
                                                  's after the sample was ')
@@ -653,6 +773,7 @@ def generate_summary_dictionary(
             dict_of_phrases['sample_type'] != 'immortalized cell line') or \
            ('sample_type' not in dict_of_phrases):
             phrase = ''
+
             if 'sex' in dict_of_phrases:
                 if dict_of_phrases['sex'] == 'mixed':
                     phrase += dict_of_phrases['sex'] + ' sex'
@@ -673,20 +794,25 @@ def generate_summary_dictionary(
             treatments_list = []
             for treatmentObject in treatment_objects_list:
                 to_add = ''
-                if 'concentration' in treatmentObject and \
-                   'concentration_units' in treatmentObject:
-                    to_add += str(treatmentObject['concentration']) + ' ' + \
-                        treatmentObject['concentration_units'] + ' '
-                if 'treatment_term_name' in treatmentObject:
-                    to_add += treatmentObject['treatment_term_name'] + ' '
-                if 'duration' in treatmentObject and \
-                   'duration_units' in treatmentObject:
-                    if treatmentObject['duration_units'][-1] == 's':
-                        to_add += 'for ' + str(treatmentObject['duration']) + ' ' + \
-                            treatmentObject['duration_units']
-                    else:
-                        to_add += 'for ' + str(treatmentObject['duration']) + ' ' + \
-                            treatmentObject['duration_units'] + 's'
+
+                if experiment_flag is True:
+                    if 'treatment_term_name' in treatmentObject:
+                        to_add = treatmentObject['treatment_term_name'] + ' '
+                else:
+                    if 'amount' in treatmentObject and \
+                       'amount_units' in treatmentObject:
+                        to_add += str(treatmentObject['amount']) + ' ' + \
+                            treatmentObject['amount_units'] + ' '
+                    if 'treatment_term_name' in treatmentObject:
+                        to_add += treatmentObject['treatment_term_name'] + ' '
+                    if 'duration' in treatmentObject and \
+                       'duration_units' in treatmentObject:
+                        if treatmentObject['duration_units'][-1] == 's':
+                            to_add += 'for ' + str(treatmentObject['duration']) + ' ' + \
+                                treatmentObject['duration_units']
+                        else:
+                            to_add += 'for ' + str(treatmentObject['duration']) + ' ' + \
+                                treatmentObject['duration_units'] + 's'
                 if to_add != '':
                     treatments_list.append(to_add)
 
@@ -720,43 +846,110 @@ def generate_summary_dictionary(
             else:
                 dict_of_phrases['transfection_type'] = transfection_type + 'ly'
 
-        if talen_objects_list is not None and len(talen_objects_list) > 0:
-            talens_list = []
-            for talenObject in talen_objects_list:
-                if 'name' in talenObject:
-                    talens_list.append(talenObject['name'])
-            dict_of_phrases['talens'] = 'with talens: '+str(talens_list)
+        if modifications_list is not None and len(modifications_list) > 0:
+            result_set = set()
+            talen_flag = False
+            for (gm_type, gm_technique) in modifications_list:
+                if 'Tale' in gm_technique['@type']:
+                    result_set.add(gm_type)
+                    talen_flag = True
+            if experiment_flag is True:
+                if talen_flag is True:
+                    dict_of_phrases['modifications_list'] = 'genetically modified using TALEs '
+            else:
+                if talen_flag is True:
+                    tale_string = ''
+                    for x in sorted(list(result_set)):
+                        tale_string += str(x) + ', '
+                    dict_of_phrases['modifications_list'] = 'genetically modified (' + \
+                                                            tale_string[:-2] + ') using TALEs '
 
         if construct_objects_list is not None and len(construct_objects_list) > 0:
             constructs_list = []
-            for target in construct_objects_list:
-                constructs_list.append(target['label'])
-
-            if len(constructs_list) == 1:
-                dict_of_phrases['constructs'] = 'expressing ' + constructs_list[0]
+            construct_types = set()
+            for construct_data in construct_objects_list:
+                cons = construct_data[0]
+                tar = construct_data[1]
+                promoter = construct_data[2]
+                if 'tags' in cons:
+                    for tag in cons['tags']:
+                        addition = ''
+                        if experiment_flag is True:
+                            addition += tar['label'] + ' ' + \
+                                cons['construct_type']
+                        else:
+                            if tag['location'] in ['N-terminal', 'C-terminal']:
+                                addition += tag['location'] + ' '
+                            if promoter is not None:
+                                addition += tar['label'] + ' ' + \
+                                    cons['construct_type'] + \
+                                    ' under ' + promoter['label'] + \
+                                    ' promoter'
+                            else:
+                                addition += tar['label'] + ' ' + \
+                                    cons['construct_type']
+                        constructs_list.append(addition)
+                        construct_types.add(cons['construct_type'])
+                else:
+                    constructs_list.append(tar['label'])
+            if experiment_flag is True:
+                dict_of_phrases['constructs'] = 'expressing ' + ', '.join(
+                    sorted(list(construct_types)))
             else:
-                if len(constructs_list) > 1:
+                if len(constructs_list) == 1:
+                    dict_of_phrases['constructs'] = 'expressing ' + constructs_list[0]
+                elif len(constructs_list) > 1:
                     dict_of_phrases['constructs'] = 'expressing ' + \
                         ', '.join(map(str, list(set(constructs_list))))
 
         if model_construct_objects_list is not None and len(model_construct_objects_list) > 0:
             constructs_list = []
-            for target in model_construct_objects_list:
-                constructs_list.append(target['label'])
-
-            if len(constructs_list) == 1:
-                dict_of_phrases['model_organism_constructs'] = 'expressing ' + constructs_list[0]
+            construct_types = set()
+            for construct_data in model_construct_objects_list:
+                cons = construct_data[0]
+                tar = construct_data[1]
+                promoter = construct_data[2]
+                if 'tags' in cons:
+                    for tag in cons['tags']:
+                        addition = ''
+                        if experiment_flag is True:
+                            addition += tar['label'] + ' ' + \
+                                cons['construct_type']
+                        else:
+                            if tag['location'] in ['N-terminal', 'C-terminal']:
+                                addition += tag['location'] + ' '
+                            if promoter is not None:
+                                addition += tar['label'] + ' ' + \
+                                    cons['construct_type'] + \
+                                    ' under ' + promoter['label'] + \
+                                    ' promoter'
+                            else:
+                                addition += tar['label'] + ' ' + \
+                                    cons['construct_type']
+                        constructs_list.append(addition)
+                        construct_types.add(cons['construct_type'])
+                else:
+                    constructs_list.append(tar['label'])
+            if experiment_flag is True:
+                dict_of_phrases['model_organism_constructs'] = 'expressing ' + ', '.join(
+                    sorted(list(construct_types)))
             else:
-                if len(constructs_list) > 1:
+
+                if len(constructs_list) == 1:
+                    dict_of_phrases['model_organism_constructs'] = 'expressing ' + constructs_list[0]
+                elif len(constructs_list) > 1:
                     dict_of_phrases['model_organism_constructs'] = 'expressing ' + \
                         ', '.join(map(str, list(set(constructs_list))))
 
         if rnai_objects is not None and len(rnai_objects) > 0:
-            rnais_list = []
-            for rnaiObject in rnai_objects:
-                    rnais_list.append(rnaiObject['rnai_type'] + ' ' + rnaiObject['target'])
-
-            dict_of_phrases['rnais'] = ', '.join(map(str, list(set(rnais_list))))
+            if experiment_flag is True:
+                dict_of_phrases['rnais'] = 'expressing RNAi '
+            else:
+                rnais_list = []
+                for rnaiObject in rnai_objects:
+                    rnais_list.append('expressing ' + rnaiObject['rnai_type'] +
+                                      ' targeting ' + rnaiObject['target'])
+                dict_of_phrases['rnais'] = ', '.join(map(str, list(set(rnais_list))))
 
         return dict_of_phrases
 
@@ -787,7 +980,7 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
         'rnais': 'no RNAis',
         'treatments_phrase': 'not treated',
         'depleted_in': 'not depleted',
-        'talens': 'no TALENs',
+        'genetic_modifications': 'not modified',
         'constructs': 'no constructs',
         'model_organism_constructs': 'no constructs',
     }

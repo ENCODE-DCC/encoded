@@ -37,25 +37,22 @@
         "talen_platform": {
             "title": "TALEN platform",
             "description": "The TALEN platform used to make the construct. E.g. Golden Gate",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         }
     },
     "facets": {
         "talen_platform": {
-            "title": "TALEN platform",
-            "type": "string"
+            "title": "TALEN platform"
         },
         "status": {
-            "title": "TALEN status",
-            "type": "string"
+            "title": "TALEN status"
         },
         "lab.title": {
-            "title": "Lab",
-            "type": "string"
+            "title": "Lab"
         },
         "award.project": {
-            "title": "Project",
-            "type": "string"
+            "title": "Project"
         }
     },
     "columns": {

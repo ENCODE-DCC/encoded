@@ -140,6 +140,7 @@ var SortTable = module.exports.SortTable = React.createClass({
         ]),
         list: React.PropTypes.array, // Array of objects to display in the table
         columns: React.PropTypes.object.isRequired, // Defines the columns of the table
+        rowClasses: React.PropTypes.func, // If provided, gets called for each row of table to generate per-row CSS classes
         sortColumn: React.PropTypes.string, // ID of column to sort by default; first column if not given
         footer: React.PropTypes.object, // Optional component to display in the footer
         collapsed: React.PropTypes.bool // T if only title bar should be displayed
@@ -208,9 +209,7 @@ var SortTable = module.exports.SortTable = React.createClass({
     },
 
     render: function() {
-        var list = this.props.list;
-        var columns = this.props.columns;
-        var meta = this.props.meta;
+        var {list, columns, rowClasses, meta} = this.props;
         var columnIds = Object.keys(columns);
         var hiddenColumns = {};
         var hiddenCount = 0;
@@ -230,7 +229,7 @@ var SortTable = module.exports.SortTable = React.createClass({
         // Now display the table, but only if we were passed a non-empty list
         if (list && list.length) {
             return (
-                <table className="table table-striped table-sortable">
+                <table className="table table-sortable">
 
                     <thead>
                         {this.props.title ? <tr className="table-section" key="title"><th colSpan={colCount}>{this.props.title}</th></tr> : null}
@@ -266,16 +265,17 @@ var SortTable = module.exports.SortTable = React.createClass({
                     {!this.props.collapsed ?
                         <tbody>
                             {list.sort(this.sortColumn).map((item, i) => {
+                                let rowClassStr = rowClasses ? rowClasses(item, i) : '';
                                 return (
-                                    <tr key={i}>
+                                    <tr key={i} className={rowClassStr}>
                                         {columnIds.map(columnId => {
                                             if (!hiddenColumns[columnId]) {
                                                 if (columns[columnId].display) {
-                                                    return <td key={columnId}>{columns[columnId].display(item)}</td>;
+                                                    return <td key={columnId}>{columns[columnId].display(item, meta)}</td>;
                                                 }
 
                                                 // No custom display function; just display the standard way
-                                                var itemValue = columns[columnId].getValue ? columns[columnId].getValue(item) : item[columnId];
+                                                var itemValue = columns[columnId].getValue ? columns[columnId].getValue(item, meta) : item[columnId];
                                                 return (
                                                     <td key={columnId}>{itemValue}</td>
                                                 );

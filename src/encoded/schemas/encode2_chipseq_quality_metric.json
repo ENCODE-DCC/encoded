@@ -18,17 +18,20 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "5"
         },
         "NSC": {
+            "title": "Normalized strand cross-correlation",
             "type": "number",
-            "description": ""
+            "description": "Normalized strand cross-correlation = FRAGLEN_CC / MIN_CC. Ratio of strand cross-correlation at estimated fragment length to the minimum cross-correlation over all shifts."
         },
         "RSC": {
+            "title": "Relative cross-correlation coefficient",
             "type": "number",
-            "description": ""
+            "description": "Relative cross correlation coefficient. Ratio of strand cross-correlation at fragment length  and at read length"
         },
         "SPOT": {
+            "title": "SPOT score",
             "type": "number",
             "description": ""
         }

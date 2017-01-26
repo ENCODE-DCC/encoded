@@ -46,7 +46,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "10"
         },
         "reference_type": {
             "title": "Type",
@@ -80,52 +80,40 @@
     },
     "facets": {
         "reference_type": {
-            "title": "Reference type",
-            "type": "string"
+            "title": "Reference type"
         },
         "status": {
-            "title": "Reference file set status",
-            "type": "string"
+            "title": "Reference file set status"
         },
         "assembly": {
-            "title": "Genome assembly (visualization)",
-            "type": "string"
+            "title": "Genome assembly (visualization)"
         },
         "organism.scientific_name": {
-            "title": "Organism",
-            "type": "string"
+            "title": "Organism"
         },
         "files.file_type": {
-            "title": "Available data",
-            "type": "string"
+            "title": "Available data"
         },
         "files.run_type": {
-            "title": "Run type",
-            "type": "string"
+            "title": "Run type"
         },
         "files.read_length": {
-            "title": "Read length",
-            "type": "string"
+            "title": "Read length"
         },
         "files.mapped_read_length": {
-            "title": "Mapped read length",
-            "type": "string"
+            "title": "Mapped read length"
         },
         "month_released": {
-            "title": "Date released",
-            "type": "string"
+            "title": "Date released"
         },
         "software_used.software.name": {
-            "title": "Software used",
-            "type": "array"
+            "title": "Software used"
         },
         "lab.title": {
-            "title": "Lab",
-            "type": "string"
+            "title": "Lab"
         },
         "award.project": {
-            "title": "Project",
-            "type": "string"
+            "title": "Project"
         },
         "award.rfa": {
             "title": "RFA"

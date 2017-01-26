@@ -1,7 +1,7 @@
 'use strict';
 var React = require('react');
 var color = require('color');
-var SvgIcon = require('../libs/svg-icons').SvgIcon;
+var svgIcon = require('../libs/svg-icons').svgIcon;
 var globals = require('./globals');
 var search = require('./search');
 var url = require('url');
@@ -37,7 +37,8 @@ var Matrix = module.exports.Matrix = React.createClass({
 
     contextTypes: {
         location_href: React.PropTypes.string,
-        navigate: React.PropTypes.func
+        navigate: React.PropTypes.func,
+        biosampleTypeColors: React.PropTypes.object // DataColor instance for experiment project
     },
 
     // Called when the Visualize button dropdown menu gets opened or closed. `dropdownEl` is the DOM node for the dropdown menu.
@@ -98,6 +99,9 @@ var Matrix = module.exports.Matrix = React.createClass({
                 'table': 'table'
             };
 
+            // Make an array of colors corresponding to the ordering of biosample_type
+            var biosampleTypeColors = this.context.biosampleTypeColors.colorList(y_groups.map(y_group => y_group.key));
+
             return (
                 <div>
                     <div className="panel data-display main-panel">
@@ -149,7 +153,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                       {matrix.doc_count} results 
                                                     </h3>
                                                     <div className="btn-attached">
-                                                        {matrix.doc_count && context.views ? context.views.map(view => <a href={view.href} key={view.icon} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{SvgIcon(view2svg[view.icon])}</a>) : ''}
+                                                        {matrix.doc_count && context.views ? context.views.map(view => <a href={view.href} key={view.icon} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{svgIcon(view2svg[view.icon])}</a>) : ''}
                                                     </div>
                                                     {context.filters.length ?
                                                         <div className="clear-filters-control-matrix">
@@ -172,17 +176,18 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                     }
                                                 })}
                                             </tr>
-                                            {y_groups.map(function(group) {
+                                            {y_groups.map(function(group, i) {
                                                 var seriesIndex = y_group_options.indexOf(group.key);
-                                                var seriesColor = color(COLORS[seriesIndex % COLORS.length]);
+                                                var groupColor = biosampleTypeColors[i];
+                                                var seriesColor = color(groupColor);
                                                 var parsed = url.parse(matrix_base, true);
                                                 parsed.query[primary_y_grouping] = group.key;
                                                 parsed.query['y.limit'] = null;
                                                 delete parsed.search; // this makes format compose the search string out of the query object
                                                 var group_href = url.format(parsed);
                                                 var rows = [<tr key={group.key}>
-                                                    <th colSpan={colCount + 1} style={{textAlign: 'left', backgroundColor: seriesColor.hexString()}}>
-                                                        <a href={group_href} style={{color: '#000'}}>{group.key}</a>
+                                                    <th colSpan={colCount + 1} style={{textAlign: 'left', backgroundColor: groupColor}}>
+                                                        <a href={group_href} style={{color: '#fff'}}>{group.key}</a>
                                                     </th>
                                                 </tr>];
                                                 var group_buckets = group[secondary_y_grouping].buckets;
@@ -198,11 +203,12 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                                     var color = seriesColor.clone();
                                                                     // scale color between white and the series color
                                                                     color.lightness(color.lightness() + (1 - value / matrix.max_cell_doc_count) * (100 - color.lightness()));
+                                                                    let textColor = color.luminosity() > .5 ? '#000' : '#fff';
                                                                     var href = search_base + '&' + secondary_y_grouping + '=' + globals.encodedURIComponent(yb.key)
                                                                                            + '&' + x_grouping + '=' + globals.encodedURIComponent(xb.key);
                                                                     var title = yb.key + ' / ' + xb.key + ': ' + value;
                                                                     return <td key={xb.key} style={{backgroundColor: color.hexString()}}>
-                                                                        {value ? <a href={href} style={{color: '#000'}} title={title}>{value}</a> : ''}
+                                                                        {value ? <a href={href} style={{color: textColor}} title={title}>{value}</a> : ''}
                                                                     </td>;
                                                                 } else {
                                                                     return null;

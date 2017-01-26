@@ -13,13 +13,15 @@
         { "$ref": "mixins.json#/submitted"},
         { "$ref": "mixins.json#/aliases"},
         { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/standard_status"}
+        { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/assay" }
    ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "5"
         },
         "name": {
+            "title": "Name",
             "description": "The name of the quality metric",
             "type": "string"
         },

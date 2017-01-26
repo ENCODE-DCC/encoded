@@ -1,0 +1,12 @@
+{
+  "ImageId": "ami-1c1eff2f",
+  "KeyName": "cherry-lab-power-users",
+  "SecurityGroupIds": [ "sg-022ea667" ],
+  "InstanceType": "c4.4xlarge",
+  "Placement": {
+    "AvailabilityZone": "us-west-2c"
+  },
+  "IamInstanceProfile": {
+      "Arn": "arn:aws:iam::618537831167:instance-profile/demo-instance"
+  }
+}

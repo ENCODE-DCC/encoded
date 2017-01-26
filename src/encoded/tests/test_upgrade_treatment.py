@@ -31,6 +31,19 @@ def treatment_2(treatment):
     return item
 
 
+@pytest.fixture
+def treatment_4(treatment, document, antibody_lot):
+    item = treatment.copy()
+    item.update({
+        'schema_version': '4',
+        'protocols': list(document),
+        'antibodies': list(antibody_lot),
+        'concentration': 0.25,
+        'concentration_units': 'mg/mL'
+    })
+    return item
+
+
 def test_treatment_upgrade(upgrader, treatment_1):
     value = upgrader.upgrade('treatment', treatment_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -52,3 +65,16 @@ def test_treatment_upgrade_status(upgrader, treatment_2):
     value = upgrader.upgrade('treatment', treatment_2, target_version='3')
     assert value['schema_version'] == '3'
     assert value['status'] == 'current'
+
+
+def test_treatment_upgrade_4_to_5(upgrader, treatment_4):
+    value = upgrader.upgrade('treatment', treatment_4, target_version='5')
+    assert value['schema_version'] == '5'
+    assert 'protocols' not in value
+    assert 'documents' in value
+    assert 'antibodies' not in value
+    assert 'antibodies_used' in value
+    assert 'concentation' not in value
+    assert 'amount' in value
+    assert 'concentation_units' not in value
+    assert 'amount_units' in value

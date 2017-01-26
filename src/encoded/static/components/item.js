@@ -65,7 +65,7 @@ var Item = module.exports.Item = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} key="biosample-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} key="biosample-audit" />
                 <div className="row item-row">
                     <div className="col-sm-12">
                         {context.description ? <p className="description">{context.description}</p> : null}
@@ -187,7 +187,7 @@ var FetchedRelatedItems = React.createClass({
         var {Component, context, title, url, ...props} = this.props;
         if (context === undefined) return null;
         var items = context['@graph'];
-        if (!items.length) return null;
+        if (!items || !items.length) return null;
 
         return (
             <Component {...props} title={title} context={context} total={context.total} items={items} url={url} showControls={false} />
@@ -207,7 +207,7 @@ var RelatedItems = module.exports.RelatedItems = React.createClass({
         var limited_url = url + '&limit=' + this.props.limit;
         var unlimited_url = url + '&limit=all';
         return (
-            <fetched.FetchedData>
+            <fetched.FetchedData ignoreErrors={this.props.ignoreErrors}>
                 <fetched.Param name="context" url={limited_url} />
                 <FetchedRelatedItems {...this.props} url={unlimited_url} />
             </fetched.FetchedData>

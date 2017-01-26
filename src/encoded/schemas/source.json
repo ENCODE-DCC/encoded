@@ -22,14 +22,17 @@
             "title": "Description",
             "description": "A plain text description of the source.",
             "type": "string",
-            "default": ""
+            "default": "",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
         "title": {
-            "title": "Name",
+            "title": "Name of lab or vendor",
             "description": "The complete name of the originating lab or vendor. ",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
         "name": {
+            "title": "Auto-generated name",
             "comment": "Do not submit, value is auto generated from the title as lower cased and hyphen delimited.",
             "type": "string",
             "pattern": "^[a-z0-9\\-]+$",

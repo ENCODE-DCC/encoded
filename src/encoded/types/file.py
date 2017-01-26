@@ -96,30 +96,25 @@ class File(Item):
     rev = {
         'paired_with': ('File', 'paired_with'),
         'quality_metrics': ('QualityMetric', 'quality_metric_of'),
-        'superseded_by': ('File', 'supersedes')
+        'superseded_by': ('File', 'supersedes'),
     }
 
     embedded = [
+        'award',
+        'award.pi',
+        'award.pi.lab',
         'replicate',
         'replicate.experiment',
         'replicate.experiment.lab',
         'replicate.experiment.target',
         'replicate.library',
-        'replicate.experiment.lab',
-        'replicate.experiment.target',
         'lab',
-        'derived_from',
-        'derived_from.analysis_step_version.software_versions',
-        'derived_from.analysis_step_version.software_versions.software',
         'submitted_by',
         'analysis_step_version.analysis_step',
         'analysis_step_version.analysis_step.pipelines',
-        'analysis_step_version.analysis_step.versions',
-        'analysis_step_version.analysis_step.versions.software_versions',
-        'analysis_step_version.analysis_step.versions.software_versions.software',
         'analysis_step_version.software_versions',
         'analysis_step_version.software_versions.software',
-        'quality_metrics.step_run.analysis_step_version.analysis_step',
+        'quality_metrics',
         'step_run',
     ]
     audit_inherit = [
@@ -190,12 +185,13 @@ class File(Item):
         return request.resource_path(self, '@@download', filename)
 
     @calculated_property(condition=show_upload_credentials, schema={
+        "title": "Upload Credentials",
         "type": "object",
     })
     def upload_credentials(self):
         external = self.propsheets.get('external', None)
         if external is not None:
-            return external['upload_credentials']
+            return external.get('upload_credentials', None)
 
     @calculated_property(schema={
         "title": "Read length units",

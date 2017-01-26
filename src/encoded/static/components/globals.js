@@ -79,7 +79,7 @@ module.exports.truncateString = function (str, len) {
 
 // Given an array of objects with @id properties, this returns the same array but with any
 // duplicate @id objects removed.
-module.exports.uniqueObjectsArray = objects => _(objects).uniq(object =>  object['@id']);
+module.exports.uniqueObjectsArray = objects => _(objects).uniq(object => object['@id']);
 
 module.exports.bindEvent = function (el, eventName, eventHandler) {
     if (el.addEventListener) {
@@ -124,17 +124,43 @@ var encodedURIComponent = module.exports.encodedURIComponent = function(str, spa
     return encodeURIComponent(str).replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/%20/g, spaceReplace);
 };
 
+
+// Take an @id and return the corresponding accession. If no accession could be found in the @id,
+// the empty string is returned.
+module.exports.atIdToAccession = function (atId) {
+    const matched = atId.match(/^\/.+\/(.+)\/$/);
+    if (matched && matched.length === 2) {
+        return matched[1];
+    }
+    return '';
+};
+
+
 // Make the first character of the given string uppercase. Can be less fiddly than CSS text-transform.
 // http://stackoverflow.com/questions/1026069/capitalize-the-first-letter-of-string-in-javascript#answer-1026087
 String.prototype.uppercaseFirstChar = function(string) {
     return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
+// Convert a string to a 32-bit hash.
+// http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
+module.exports.hashCode = function (src) {
+    let hash = 0;
+    if (src.length > 0) {
+        for (let i = 0; i < src.length; i += 1) {
+            const char = src.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char; // eslint-disable-line no-bitwise
+            hash &= hash; // eslint-disable-line no-bitwise
+        }
+    }
+    return hash;
+};
+
 // Convert the number `n` to a string, zero-filled to `digits` digits. Maximum of four zeroes.
 // http://stackoverflow.com/questions/2998784/how-to-output-integers-with-leading-zeros-in-javascript#answer-2998822
-module.exports.zeroFill = function(n) {
+module.exports.zeroFill = function(n, digits) {
     var filled = '0000' + n;
-    return filled.substr(filled.length - 4);
+    return filled.substr(filled.length - digits);
 };
 
 // Order that antibody statuses should be displayed
@@ -201,5 +227,7 @@ module.exports.dbxref_prefix_map = {
     "PMCID": "http://www.ncbi.nlm.nih.gov/pmc/articles/",
     "doi": "http://dx.doi.org/doi:",
     // Antibody RRids
-    "AR": "http://antibodyregistry.org/search.php?q="
+    "AR": "http://antibodyregistry.org/search.php?q=",
+    // NIH stem cell
+    "NIH": "https://search.usa.gov/search?utf8=%E2%9C%93&affiliate=grants.nih.gov&query=",
 };

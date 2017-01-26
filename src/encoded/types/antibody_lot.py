@@ -127,12 +127,13 @@ class AntibodyLot(SharedItem):
                     "Do not submit, the value is assigned by server. "
                     "The status is updated by the DCC.",
                 "type": "string",
-                "default": "awaiting lab characterization",
+                "default": "awaiting characterization",
                 "enum": [
-                    "awaiting lab characterization",
+                    "awaiting characterization",
                     "pending dcc review",
-                    "eligible for new data",
-                    "not eligible for new data",
+                    "characterized to standards",
+                    "characterized to standards with exemption",
+                    "not characterized to standards",
                     "not pursued"
                 ]
             }
@@ -156,14 +157,14 @@ def lot_reviews(characterizations, targets, request):
     target_organisms['all'] = tmp
 
     if not characterizations:
-        # If there are no characterizations, then default to awaiting lab characterization.
+        # If there are no characterizations, then default to awaiting characterization.
         return [{
             'biosample_term_name': 'any cell type or tissues',
             'biosample_term_id': 'NTR:99999999',
             'organisms': sorted(target_organisms['all']),
             'targets': sorted(targets),  # Copy to prevent modification of original data
-            'status': 'eligible for new data' if is_control else 'awaiting lab characterization',
-            'detail': None if is_control else 'No characterizations submitted for this antibody lot yet.'
+            'status': 'characterized to standards with exemption' if is_control else 'awaiting characterization',
+            'detail': 'IgG does not require further characterization.' if is_control else 'No characterizations submitted for this antibody lot yet.'
         }]
 
     histone_mod_target = False
@@ -220,7 +221,7 @@ def lot_reviews(characterizations, targets, request):
         'biosample_term_id': 'NTR:00000000',
         'organisms': sorted(target_organisms['all']),
         'targets': sorted(review_targets),
-        'status': 'awaiting lab characterization',
+        'status': 'awaiting characterization',
         'detail': None
     }
 
@@ -231,7 +232,7 @@ def lot_reviews(characterizations, targets, request):
         return [base_review]
 
     if not_reviewed_chars == total_characterizations and total_characterizations > 0:
-        base_review['status'] = 'not eligible for new data'
+        base_review['status'] = 'not characterized to standards'
         base_review['detail'] = 'Characterizations not reviewed.'
         return [base_review]
 
@@ -271,23 +272,19 @@ def lot_reviews(characterizations, targets, request):
         elif secondary['status'] == 'exempt from standards':
             exempted_secondary = True
             break
-        elif secondary['status'] == 'pending dcc review':
-            if not (compliant_secondary or exempted_secondary):
-                pending_secondary = True
-        elif secondary['status'] == 'not compliant':
-            if not (compliant_secondary or exempted_secondary):
-                not_compliant_secondary = True
-        elif secondary['status'] == 'in progress':
-            in_progress_secondary += 1
-        elif secondary['status'] == 'not reviwed':
-            not_reviewed_secondary += 1
         else:
-            pass
+            if not (compliant_secondary or exempted_secondary):
+                if secondary['status'] == 'pending dcc review':
+                    pending_secondary = True
+                if secondary['status'] == 'not compliant':
+                    not_compliant_secondary = True
+                if secondary['status'] == 'in progress':
+                    in_progress_secondary += 1
+                if secondary['status'] == 'not reviwed':
+                    not_reviewed_secondary += 1
 
     # Now check the primaries and update their status accordingly
     char_reviews = {}
-    # characterized_organisms = set()
-    # exempted_organisms = set()
 
     for primary in primary_chars:
         if primary['status'] in ['not reviewed', 'not submitted for review by lab']:
@@ -307,7 +304,7 @@ def lot_reviews(characterizations, targets, request):
                 'targets':
                     sorted(review_targets) if histone_mod_target
                     else [primary['target']],
-                'status': 'awaiting lab characterization',
+                'status': 'awaiting characterization',
                 'detail': None
             }
 
@@ -322,7 +319,7 @@ def lot_reviews(characterizations, targets, request):
             elif lane_review['lane_status'] == 'not compliant':
                 if not_compliant_secondary or len(secondary_chars) == 0 or \
                         (not_reviewed_secondary == len(secondary_chars)):
-                    new_review['status'] = 'not eligible for new data'
+                    new_review['status'] = 'not characterized to standards'
                     new_review['detail'] = 'Awaiting compliant primary and secondary characterizations.'
                 else:
                     if histone_mod_target:
@@ -332,7 +329,7 @@ def lot_reviews(characterizations, targets, request):
             elif lane_review['lane_status'] == 'exempt from standards':
                 if not histone_mod_target:
                     if compliant_secondary or exempted_secondary:
-                        new_review['status'] = 'eligible for new data (via exemption)'
+                        new_review['status'] = 'characterized to standards with exemption'
                         new_review['detail'] = 'Fully characterized.'
                     if not secondary_chars or (not_reviewed_secondary == len(secondary_chars)):
                         new_review['detail'] = 'Awaiting submission of secondary characterization(s).'
@@ -345,7 +342,7 @@ def lot_reviews(characterizations, targets, request):
                     if lane_organism in target_organisms:
                         new_review['targets'] = [target_organisms[lane_organism]]
                         if compliant_secondary or exempted_secondary:
-                            new_review['status'] = 'eligible for new data (via exemption)'
+                            new_review['status'] = 'characterized to standards with exemption'
                             new_review['detail'] = 'Fully characterized.'
                     else:
                         new_review['detail'] = 'Characterized organism not in antibody target list.'
@@ -353,10 +350,10 @@ def lot_reviews(characterizations, targets, request):
             elif lane_review['lane_status'] == 'compliant':
                 if not histone_mod_target:
                     if compliant_secondary:
-                        new_review['status'] = 'eligible for new data'
+                        new_review['status'] = 'characterized to standards'
                         new_review['detail'] = 'Fully characterized.'
                     elif exempted_secondary:
-                        new_review['status'] = 'eligible for new data (via exemption)'
+                        new_review['status'] = 'characterized to standards with exemption'
                         new_review['detail'] = 'Fully characterized.'
                     else:
                         new_review['detail'] = 'Awaiting a compliant secondary characterization.'
@@ -370,10 +367,10 @@ def lot_reviews(characterizations, targets, request):
                         # characterized_organisms.add(lane_organism)
                         new_review['targets'] = [target_organisms[lane_organism]]
                         if compliant_secondary:
-                            new_review['status'] = 'eligible for new data'
+                            new_review['status'] = 'characterized to standards'
                             new_review['detail'] = 'Fully characterized.'
                         elif exempted_secondary:
-                            new_review['status'] = 'eligible for new data (via exemption)'
+                            new_review['status'] = 'characterized to standards with exemption'
                             new_review['detail'] = 'Fully characterized.'
                         else:
                             new_review['detail'] = 'Awaiting a compliant secondary characterization.'
@@ -399,17 +396,17 @@ def lot_reviews(characterizations, targets, request):
                 continue
 
             status_ranking = {
-                'eligible for new data': 6,
-                'eligible for new data (via exemption)': 5,
+                'characterized to standards': 6,
+                'characterized to standards with exemption': 5,
                 'compliant': 4,
                 'exempt from standards': 3,
                 'pending dcc review': 2,
-                'awaiting lab characterization': 1,
+                'awaiting characterization': 1,
                 'not compliant': 0,
                 'not reviewed': 0,
                 'not submitted for review by lab': 0,
                 'deleted': 0,
-                'not eligible for new data': 0
+                'not characterized to standards': 0
             }
 
             rank = status_ranking[new_review['status']]

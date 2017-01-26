@@ -37,9 +37,8 @@ Feature: Edit forms
         When I visit "/antibodies/ENCAB728YTO/#!edit"
         And I wait for an element with the css selector "form.rf-Form" to load
         And I fill in "date_created" with "bogus"
-        And I press "Save"
-        And I wait for an element with the css selector "input[name=date_created] + .rf-Message" to load
-        Then I should see "'bogus' is not valid under any of the given schemas" within 2 seconds
+        And I wait for an element with the css selector ".rf-Message + input[name=date_created]" to load
+        Then I should see "is not any of" within 2 seconds
         # Make sure we don't leave a dirty form that will interfere with subsequent tests
         When I click the link with text "ENCODE"
         And I accept the alert

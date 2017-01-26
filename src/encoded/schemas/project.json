@@ -45,7 +45,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "10"
         },
         "project_type": {
             "title": "Type",
@@ -59,68 +59,49 @@
     },
     "facets": {
         "project_type": {
-            "title": "Project type",
-            "type": "string"
+            "title": "Project type"
         },
         "assay_term_name": {
-            "title": "Assay",
-            "type": "string"
+            "title": "Assay"
         },
         "status": {
-            "title": "Project status",
-            "type": "string"
+            "title": "Project status"
         },
         "assembly": {
-            "title": "Genome assembly (visualization)",
-            "type": "string"
+            "title": "Genome assembly (visualization)"
         },
         "organism.scientific_name": {
-            "title": "Organism",
-            "type": "string"
+            "title": "Organism"
         },
         "files.replicate.experiment.target.investigated_as": {
-            "title": "Target of assay",
-            "type": "string"
+            "title": "Target of assay"
         },
         "biosample_type": {
-            "title": "Biosample type",
-            "type": "string"
+            "title": "Biosample type"
         },
         "organ_slims": {
-            "title": "Organ",
-            "type": "array"
-        },
-        "files.analysis_step_version.analysis_step.pipelines.title": {
-            "title": "Pipeline",
-            "type": "string"
+            "title": "Organ"
         },
         "files.file_type": {
-            "title": "Available data",
-            "type": "string"
+            "title": "Available data"
         },
         "files.run_type": {
-            "title": "Run type",
-            "type": "string"
+            "title": "Run type"
         },
         "files.read_length": {
-            "title": "Read length",
-            "type": "string"
+            "title": "Read length"
         },
         "files.mapped_read_length": {
-            "title": "Mapped read length",
-            "type": "string"
+            "title": "Mapped read length"
         },
         "month_released": {
-            "title": "Date released",
-            "type": "string"
+            "title": "Date released"
         },
         "lab.title": {
-            "title": "Lab",
-            "type": "string"
+            "title": "Lab"
         },
         "award.project": {
-            "title": "Project",
-            "type": "string"
+            "title": "Project"
         },
         "award.rfa": {
             "title": "RFA"

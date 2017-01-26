@@ -4,25 +4,78 @@
     "id": "/profiles/page.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "name", "title" ],
-    "identifyingProperties": ["uuid", "name" ],
+    "required": [
+        "name",
+        "title"
+    ],
+    "identifyingProperties": [
+        "uuid",
+        "name"
+    ],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/standard_status" },
-        { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/attribution" }
+        {
+            "$ref": "mixins.json#/schema_version"
+        },
+        {
+            "$ref": "mixins.json#/uuid"
+        },
+        {
+            "$ref": "mixins.json#/standard_status"
+        },
+        {
+            "$ref": "mixins.json#/submitted"
+        },
+        {
+            "$ref": "mixins.json#/attribution"
+        }
     ],
+    "dependencies": {
+        "news": {
+            "oneOf": [
+                {
+                    "required": [
+                        "news_excerpt"
+                    ],
+                    "properties": {
+                        "news": {
+                            "enum": [
+                                true
+                            ]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "required": [
+                            "news_excerpt"
+                        ]
+                    },
+                    "properties": {
+                        "news": {
+                            "enum": [
+                                false
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    },
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "parent": {
             "title": "Parent Page",
-            "type": ["string", "null"],
+            "type": [
+                "string",
+                "null"
+            ],
             "linkTo": "Page",
-            "validators": ["isNotCollectionDefaultPage"]
+            "validators": [
+                "isNotCollectionDefaultPage"
+            ]
         },
         "name": {
             "title": "URL Name",
@@ -34,6 +87,39 @@
             "title": "Title",
             "description": "The name shown in the browser's title bar and tabs.",
             "type": "string"
+        },
+        "news": {
+            "title": "News post",
+            "type": "boolean",
+            "description": "Page is a news post"
+        },
+        "news_excerpt": {
+            "title": "Excerpt of news post to display on lists of news posts",
+            "type": "string",
+            "description": "News post excerpt"
+        },
+        "news_keywords": {
+            "title": "News keywords",
+            "type": "array",
+            "description": "Keywords to filter news posts.",
+            "default": [],
+            "items": {
+                "title": "News keyword",
+                "description": "A keyword for news post filtering.",
+                "type": "string",
+                "enum": [
+                    "3D chromatin structure",
+                    "DNA accessibility",
+                    "DNA binding",
+                    "DNA methylation",
+                    "Transcription",
+                    "RNA binding",
+                    "Genotyping",
+                    "Proteomics",
+                    "Conferences",
+                    "Encyclopedia"
+                ]
+            }
         },
         "layout": {
             "title": "Page Layout",
@@ -81,7 +167,9 @@
                     {
                         "cols": [
                             {
-                                "blocks": ["#block1"]
+                                "blocks": [
+                                    "#block1"
+                                ]
                             }
                         ]
                     }
@@ -96,12 +184,29 @@
             }
         }
     },
+    "facets": {
+        "news_keywords": {
+            "title": "Topics"
+        },
+        "month_released": {
+            "title": "Date"
+        },
+        "award.project": {
+            "title": "Project"
+        }
+    },
     "columns": {
         "@id": {
             "title": "Path"
         },
         "title": {
             "title": "Title"
+        },
+        "news": {
+            "title": "News post"
+        },
+        "news_excerpt": {
+            "title": "News excerpt"
         },
         "date_created": {
             "title": "Created"
@@ -113,6 +218,7 @@
     "boost_values": {
         "name": 2.0,
         "title": 2.0,
+        "news_keywords": 2.0,
         "layout.blocks.body": 1.0
     }
 }

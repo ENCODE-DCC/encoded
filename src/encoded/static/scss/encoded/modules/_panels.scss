@@ -3,7 +3,6 @@
     background-color: #fff;
     border: 1px solid #a0a0a0;
     border-radius: $border-radius-base;
-    box-shadow: 0 0 6px rgba(195, 202, 211, 0.5);
     margin-top: 15px;
     margin-bottom: 15px;
     padding: 15px 20px;
@@ -23,6 +22,7 @@
 }
 
 .panel-heading {
+    position: relative;
     padding: 10px;
 }
 
@@ -79,14 +79,11 @@
 
     /* sprites.less reset */
     display: inline;
-    width: auto;
-    height: auto;
     line-height: normal;
     vertical-align: baseline;
     background-image: none;
     background-position: 0% 0%;
     background-repeat: repeat;
-    margin-top: 0;
 }
 /* remove external-link icon if there is no text in link <a></a>
 Note does not work in =<IE8, oh well */
@@ -98,7 +95,50 @@ a[href^="http"]:empty:after {
 /* downloads */
 a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     content: none !important;
-} 
+}
+
+
+.split-panel {
+    display: block;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+        flex-wrap: nowrap;
+    }
+
+    @at-root #{&}__part {
+        padding-left: 10px;
+        padding-right: 10px;
+
+        @media screen and (min-width: $screen-md-min) {
+            flex-grow: 0;
+            flex-shrink: 1;
+            border-left: 1px solid #c0c0c0;
+
+            &:first-child {
+                border-left: 0;
+            }
+        }
+
+        @at-root #{&}--p50 {
+            @media screen and (min-width: $screen-md-min) {
+                flex-basis: 50%;
+            }
+        }
+    }
+
+    @at-root #{&}__heading {
+        position: relative;
+        margin-right: -10px;
+        margin-left: -10px;
+        padding: 10px;
+        background-color: #d8d8d8;
+
+        h4 {
+            margin: 0;
+        }
+    }
+}
 
 
 // Antibody Status Panels
@@ -170,21 +210,42 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     order: 0;
     flex: 0 1 auto;
     align-self: auto;
-    width: 100%;
-    margin: 0 10px 0 0;
-    margin-right: 10px;
-
-    @media screen and (min-width: $screen-md-min) {
-        width: 48.9%;
-    }
-
-    @media screen and (min-width: $screen-lg-min) {
-        width: 32.4%;
-    }
+    margin: 0;
+    padding: 0 5px;
 }
 
 .panel-body-doc {
-    padding: 10px 0 0 10px;
+    padding: 10px;
+}
+
+.doc-panel-outer {
+    padding-bottom: 0;
+}
+
+.doc-panel-inner {
+    padding: 0 5px;
+}
+
+.panel-attachment {
+    padding: 0 5px;
+}
+
+.attachment-panel-outer {
+    padding-bottom: 0;
+}
+
+.attachment-panel-inner {
+    padding: 0 5px;
+    flex-wrap: wrap;
+}
+
+.attachment-panel {
+    flex: 0 1 48%;
+    margin: 5px;
+}
+
+.type-QualityMetric.view-detail {
+    margin: 0;
 }
 
 // Holds documents, but as a panel within a panel
@@ -281,7 +342,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     background-size: auto 40%;
 
     &.hiding {
-        background-image: inline-image('../img/hiding-dots.svg');
+        background-image: url('data:image/svg+xml;utf8,<svg data-name="Hiding Dots" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760.67 139.33"><defs><style>.cls-1{fill:#808080;}</style></defs><title>Indicates hiddent content</title><circle class="cls-1" cx="380.33" cy="69.67" r="64.11"/><circle class="cls-1" cx="692.4" cy="69.67" r="64.11"/><circle class="cls-1" cx="68.27" cy="69.67" r="64.11"/></svg>');
     }
 }
 
@@ -290,13 +351,20 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     position: relative;
     display: block;
     padding: 10px;
+    height: 100%;
 
     h4 {
         margin: 0 0 0 40px;
     }
 
+    h5 {
+        margin: 0;
+    }
+
     &:focus, &:active {
         text-decoration: none;
+        outline: 0;
+        box-shadow: 0 0 3px #0000ff inset;
     }
 }
 
@@ -307,7 +375,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     width: 20px;
     pointer-events: all;
 
-    a {
+    a, button {
         cursor: pointer;
     }
 
@@ -332,7 +400,11 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     left: 0;
     width: 41px;
     padding: 10px;
+    border-top: none;
     border-right: 1px solid #fff;
+    border-bottom: none;
+    border-left: none;
+    background-color: transparent;
 
     &:hover {
         background-color: darken(#d8e0e8, 10%);
@@ -348,5 +420,19 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     &:first-child {
         padding-top: 0;
         border-top: none;
+    }
+}
+
+.two-column-long-text {
+    column-count: 1;
+    line-height: 1.7;
+
+    @media screen and (min-width: $screen-md-min) {
+        column-count: 2;
+        column-gap: 50px;
+    }
+
+    @at-root #{&}--gap {
+        margin-bottom: 20px;
     }
 }

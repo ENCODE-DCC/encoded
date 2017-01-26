@@ -8,8 +8,55 @@
         "caption": "This is an example genetic modification characterization",
         "characterization_method": "Sanger sequencing",
         "characterizes": "encode:modification-test-1",
+        "documents": [
+            "kevin-white:K562_BAC_transfection_White_protocol",
+            "kevin-white:pBACGK1.1_BAC_vector"
+        ],
         "lab": "/labs/robert-waterston/",
         "notes": "This is just an example.",
-        "uuid": "39ac4822-4265-42b8-9d21-e6b699beabf3"
+        "uuid": "39ac4822-4265-42b8-9d21-e6b699beabf3",
+        "status": "released"
+    },
+    {
+        "aliases": [
+            "encode:modification_characterization_2"
+        ],
+        "attachment": "diffProtB_6hr_protocol.txt",
+        "award": "U54HG006996",
+        "caption": "This is an example genetic modification characterization",
+        "characterization_method": "Sanger sequencing",
+        "characterizes": "encode:modification-test-1",
+        "lab": "/labs/robert-waterston/",
+        "notes": "This is just an example.",
+        "uuid": "a6cc19fc-a09e-4d05-979f-b97db3a62022",
+        "status": "released"
+    },
+    {
+        "aliases": [
+            "encode:modification_characterization_3"
+        ],
+        "attachment": "diffProtB_6hr_protocol.txt",
+        "award": "U54HG006996",
+        "caption": "This is an example genetic modification characterization",
+        "characterization_method": "Sanger sequencing",
+        "characterizes": "encode:modification-test-1",
+        "lab": "/labs/robert-waterston/",
+        "notes": "This is just an example.",
+        "uuid": "b021b492-1d67-4ca8-abf2-f930fa366175",
+        "status": "released"
+    },
+    {
+        "aliases": [
+            "encode:modification_characterization_4"
+        ],
+        "attachment": "diffProtB_6hr_protocol.txt",
+        "award": "U54HG006996",
+        "caption": "This is an example genetic modification characterization",
+        "characterization_method": "Sanger sequencing",
+        "characterizes": "encode:modification-test-1",
+        "lab": "/labs/robert-waterston/",
+        "notes": "This is just an example.",
+        "uuid": "526d0b24-bdd0-4e5f-8e1f-fb6360a704e1",
+        "status": "released"
     }
 ]

@@ -1,7 +1,7 @@
 $pipeline-node-types:
     (file, #FFF5BA),
     (analysis-step, #D3E9FF),
-    (quality-metric, #f0e0f8);
+    (quality-metric, #80ffc0);
 
 @each $node-type, $color in $pipeline-node-types {
     // Audit icons
@@ -11,17 +11,18 @@ $pipeline-node-types:
         &.active {
             fill: desaturate(darken($color, 20%), 30%);
 
-            rect, ellipse {
+            > rect, > ellipse {
                 stroke: #606060;
                 stroke-width: 3px;
             }
+
             line {
                 stroke: #606060;
                 stroke-width: 1px;
             }
         }
 
-        &.error {
+        &.error, &.restricted {
             fill: #ffc0c0;
         }
 
@@ -29,9 +30,13 @@ $pipeline-node-types:
             cursor: pointer;
         }
 
-        text {
+        > text {
             fill: #000;
         }
+    }
+
+    .graph-modal-#{$node-type} {
+        background-color: $color;
     }
 }
 
@@ -43,13 +48,18 @@ g.label {
 }
 
 g.node {
-    rect, ellipse {
+    > rect, > ellipse {
         stroke: #a0a0a0;
         stroke-width: 1.5px;
     }
 
     &.contributing {
-        stroke-dasharray: 4,2; 
+        stroke-dasharray: 4,2;
+
+        rect, ellipse {
+            stroke: #a0a0a0;
+            stroke-width: 1.5px;
+        }
     }
 
     line {
@@ -61,7 +71,6 @@ g.node {
 g.subnodes {
     text {
         font-size: 10px;
-        font-weight: bold;
         pointer-events: none;
     }
 }
@@ -131,27 +140,40 @@ g.edgePath {
 }
 
 g.pipeline-node-qc-metric {
-    circle {
+    > circle {
         stroke-width: 2px;
         stroke: #a0a0a0;
         fill: #80ffc0;
     }
 
-    text {
+    > text {
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-weight: bold;
         fill: #000;
     }
 
     &.active {
-        circle {
+        > circle {
             stroke: #404040;
             fill: darken(#80ffc0, 50%);
         }
 
-        text {
+        > text {
             fill: #fff;
         }
+    }
+
+    // Handle hovering over the QC circle to bring up the tooltip.
+    > circle:hover {
+        + text + g {
+            display: block;
+        }
+    }
+}
+
+.file-qc-buttons {
+    .btn {
+        margin-right: 5px;
     }
 }
 
@@ -171,12 +193,9 @@ g.pipeline-node-qc-metric {
         width: 60%;
     }
 
-    h4 {
-        margin-bottom: 5px;
-    }
-
     h5 {
-        margin-top: 0;
+        margin-top: 5px;
+        margin-bottom: 0;
         font-size: 1rem;
         font-weight: normal;
         color: #808080;
@@ -228,4 +247,27 @@ g.pipeline-node-qc-metric {
     font-size: 1.5rem;
     font-weight: bold;
     vertical-align: middle;
+}
+
+.graph-modal-audits {
+    margin-top: 4px;
+
+    h5 {
+        margin-top: 0;
+    }
+}
+
+g.qc-tooltip {
+    display: none;
+    pointer-events: none;
+
+    rect, polygon {
+        fill: #000;
+    }
+
+    text {
+        fill: #fff;
+        font-size: 0.8rem;
+        font-weight: normal;
+    }
 }

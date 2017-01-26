@@ -1,0 +1,101 @@
+.award-charts {
+    display: block;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center;
+    }
+
+    @at-root #{&}__chart {
+        display: block;
+
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 auto;
+            width: 33.3333%;
+        }
+    }
+
+    @at-root #{&}__canvas {
+        position: relative;
+        height: 250px;
+    }
+
+    @at-root #{&}__legend {
+        margin: 50px auto;
+        width: 100%;
+
+        @media screen and (min-width: $screen-md-min) {
+            margin: 20px auto;
+            width: 80%;
+        }
+
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+
+            li {
+                @extend .clearfix;
+            }
+        }
+
+        a {
+            float: left;
+            height: 18px;
+            margin: 0;
+            padding: 3px;
+            color: black;
+            text-decoration: none;
+
+            &:hover {
+                background-color: #e0e0e0;
+            }
+        }
+    }
+}
+
+// Positions tabs with padding, hovering, and changing color if selected
+.status-chooser {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin: -5px;
+
+    @media screen and (min-width: $screen-sm-min) {
+        flex-wrap: nowrap;
+    }
+
+    @at-root #{&}__button {
+        display: block;
+        margin: 5px;
+        padding: 5px 20px !important;
+        flex: 1 1 40%;
+        font-size: 0.9rem;
+        font-weight: normal;
+        text-decoration: none;
+        color: #404040;
+        background-color: #c0beff;
+        border: 1px solid #0001ee;
+        text-transform: uppercase;
+
+        @media screen and (min-width: $screen-sm-min) {
+            flex: 0 1 auto;
+        }
+
+        &:hover {
+            background-color: #adabf8;
+        }
+
+        @at-root #{&}--selected {
+            color: #000;
+            background-color: #7575f7 !important;
+
+            &:hover {
+                color: #000;
+                background-color: #7575f7;
+            }
+        }
+    }
+}

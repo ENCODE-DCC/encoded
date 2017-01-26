@@ -114,7 +114,7 @@ def security_tween_factory(handler, registry):
             login = request.authenticated_userid
         if login is not None:
             namespace, userid = login.split('.', 1)
-            if namespace not in ('mailto', 'persona'):
+            if namespace not in ('mailto', 'auth0'):
                 return handler(request)
         raise CSRFTokenError('Missing CSRF token')
 

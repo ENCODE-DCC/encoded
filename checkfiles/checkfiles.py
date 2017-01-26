@@ -12,7 +12,9 @@ import json
 import sys
 from shlex import quote
 import subprocess
+import re
 from urllib.parse import urljoin
+import requests
 
 EPILOG = __doc__
 
@@ -20,6 +22,7 @@ GZIP_TYPES = [
     "CEL",
     "bam",
     "bed",
+    "bedpe",
     "csfasta",
     "csqual",
     "fasta",
@@ -29,7 +32,7 @@ GZIP_TYPES = [
     "tagAlign",
     "tar",
     "sam",
-    "wig",
+    "wig"
 ]
 
 
@@ -37,6 +40,13 @@ def is_path_gzipped(path):
     with open(path, 'rb') as f:
         magic_number = f.read(2)
     return magic_number == b'\x1f\x8b'
+
+
+def update_content_error(errors, error_message):
+    if 'content_error' not in errors:
+        errors['content_error'] = error_message
+    else:
+        errors['content_error'] += ', ' + error_message
 
 
 def check_format(encValData, job, path):
@@ -57,8 +67,10 @@ def check_format(encValData, job, path):
     if item['file_format'] == 'bam' and item.get('output_type') == 'transcriptome alignments':
         if 'assembly' not in item:
             errors['assembly'] = 'missing assembly'
+            update_content_error(errors, 'File metadata lacks assembly information')
         if 'genome_annotation' not in item:
             errors['genome_annotation'] = 'missing genome_annotation'
+            update_content_error(errors, 'File metadata lacks genome annotation information')
         if errors:
             return errors
         chromInfo = '-chromInfo=%s/%s/%s/chrom.sizes' % (
@@ -159,6 +171,7 @@ def check_format(encValData, job, path):
         ('sam', None): None,
         ('wig', None): None,
         ('hdf5', None): None,
+        ('hic', None): None,
         ('gff', None): None,
         ('vcf', None): None,
         ('btr', None): None
@@ -170,6 +183,7 @@ def check_format(encValData, job, path):
 
     if chromInfo in validate_args and 'assembly' not in item:
         errors['assembly'] = 'missing assembly'
+        update_content_error(errors, 'File metadata lacks assembly information')
         return
 
     result['validateFiles_args'] = ' '.join(validate_args)
@@ -179,8 +193,372 @@ def check_format(encValData, job, path):
             ['validateFiles'] + validate_args + [path], stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
         errors['validateFiles'] = e.output.decode(errors='replace').rstrip('\n')
+        update_content_error(errors, 'File failed file format specific validation (encValData)')
     else:
         result['validateFiles'] = output.decode(errors='replace').rstrip('\n')
+
+
+def process_illumina_read_name_pattern(read_name,
+                                       read_numbers_set,
+                                       signatures_set,
+                                       signatures_no_barcode_set):
+    read_name_array = re.split(r'[:\s_]', read_name)
+    flowcell = read_name_array[2]
+    lane_number = read_name_array[3]
+    read_number = read_name_array[-4]
+    read_numbers_set.add(read_number)
+    barcode_index = read_name_array[-1]
+    signatures_set.add(
+        flowcell + ':' + lane_number + ':' +
+        read_number + ':' + barcode_index + ':')
+    signatures_no_barcode_set.add(
+        flowcell + ':' + lane_number + ':' +
+        read_number + ':')
+
+
+def process_special_read_name_pattern(read_name,
+                                      words_array,
+                                      signatures_set,
+                                      signatures_no_barcode_set,
+                                      read_numbers_set):
+    read_number = 'not initialized'
+    if len(words_array[0]) > 3 and \
+       words_array[0][-2:] in ['/1', '/2']:
+        read_number = words_array[0][-1]
+        read_numbers_set.add(read_number)
+    read_name_array = re.split(r'[:\s_]', read_name)
+    flowcell = read_name_array[2]
+    lane_number = read_name_array[3]
+    barcode_index = read_name_array[-1]
+    signatures_set.add(
+        flowcell + ':' + lane_number + ':' +
+        read_number + ':' + barcode_index + ':')
+    signatures_no_barcode_set.add(
+        flowcell + ':' + lane_number + ':' +
+        read_number + ':')
+
+
+def process_new_illumina_prefix(read_name,
+                                signatures_set,
+                                old_illumina_current_prefix,
+                                read_numbers_set):
+    read_number = '1'
+    read_numbers_set.add(read_number)
+    read_name_array = re.split(r':', read_name)
+
+    if len(read_name_array) > 3:
+        flowcell = read_name_array[2]
+        lane_number = read_name_array[3]
+
+        prefix = flowcell + ':' + lane_number
+        if prefix != old_illumina_current_prefix:
+            old_illumina_current_prefix = prefix
+
+            signatures_set.add(
+                flowcell + ':' + lane_number + ':' +
+                read_number + '::' + read_name)
+
+    return old_illumina_current_prefix
+
+
+def process_old_illumina_read_name_pattern(read_name,
+                                           read_numbers_set,
+                                           signatures_set,
+                                           old_illumina_current_prefix):
+    read_number = '1'
+    if read_name[-2:] in ['/1', '/2']:
+        read_numbers_set.add(read_name[-1])
+        read_number = read_name[-1]
+    arr = re.split(r':', read_name)
+    if len(arr) > 1:
+        prefix = arr[0] + ':' + arr[1]
+        if prefix != old_illumina_current_prefix:
+            old_illumina_current_prefix = prefix
+            flowcell = arr[0][1:]
+            if (flowcell.find('-') != -1 or
+               flowcell.find('_') != -1):
+                flowcell = 'TEMP'
+            # at this point we assume the read name is following old illumina format template
+            # however sometimes the read names are following some different template
+            # in case the lane variable is different from number (i.e contains letters)
+            # we will default it to 0, the information is not lost, since the whole read name is
+            # at the end of the signature string
+            lane_number = '0'
+            if arr[1].isdigit():
+                lane_number = arr[1]
+            signatures_set.add(
+                flowcell + ':' + lane_number + ':' +
+                read_number + '::' + read_name)
+
+    return old_illumina_current_prefix
+
+
+def process_read_name_line(read_name_line,
+                           read_name_prefix,
+                           read_name_pattern,
+                           special_read_name_pattern,
+                           old_illumina_current_prefix,
+                           read_numbers_set,
+                           signatures_no_barcode_set,
+                           signatures_set,
+                           read_lengths_dictionary,
+                           errors):
+    read_name = read_name_line.strip()
+    words_array = re.split(r'\s', read_name)
+    if read_name_pattern.match(read_name) is None:
+        if special_read_name_pattern.match(read_name) is not None:
+            process_special_read_name_pattern(read_name,
+                                              words_array,
+                                              signatures_set,
+                                              signatures_no_barcode_set,
+                                              read_numbers_set)
+        else:
+            # unrecognized read_name_format
+            # current convention is to include WHOLE 
+            # readname at the end of the signature
+            if len(words_array) == 1:
+                if read_name_prefix.match(read_name) is not None:
+                    # new illumina without second part
+                    old_illumina_current_prefix = process_new_illumina_prefix(
+                        read_name,
+                        signatures_set,
+                        old_illumina_current_prefix,
+                        read_numbers_set)
+
+                elif len(read_name) > 3 and read_name.count(':') > 2:
+                    # assuming old illumina format
+                    old_illumina_current_prefix = process_old_illumina_read_name_pattern(
+                        read_name,
+                        read_numbers_set,
+                        signatures_set,
+                        old_illumina_current_prefix)
+                else:
+                    errors['fastq_format_readname'] = read_name
+                    # the only case to skip update content error - due to the changing nature of read names 
+
+    else:  # found a match to the regex of "almost" illumina read_name
+        process_illumina_read_name_pattern(
+            read_name,
+            read_numbers_set,
+            signatures_set,
+            signatures_no_barcode_set)
+
+    return old_illumina_current_prefix
+
+
+def process_sequence_line(sequence_line, read_lengths_dictionary):
+    length = len(sequence_line.strip())
+    if length not in read_lengths_dictionary:
+        read_lengths_dictionary[length] = 0
+    read_lengths_dictionary[length] += 1
+
+
+def process_fastq_file(job, fastq_data_stream, session, url):
+    item = job['item']
+    errors = job['errors']
+    result = job['result']
+
+    read_name_prefix = re.compile(
+        '^(@[a-zA-Z\d]+[a-zA-Z\d_-]*:[a-zA-Z\d-]+:[a-zA-Z\d_-]' +
+        '+:\d+:\d+:\d+:\d+)$')
+
+    read_name_pattern = re.compile(
+        '^(@[a-zA-Z\d]+[a-zA-Z\d_-]*:[a-zA-Z\d-]+:[a-zA-Z\d_-]' +
+        '+:\d+:\d+:\d+:\d+[\s_][12]:[YXN]:[0-9]+:([ACNTG\+]*|[0-9]*))$'
+    )
+
+    special_read_name_pattern = re.compile(
+        '^(@[a-zA-Z\d]+[a-zA-Z\d_-]*:[a-zA-Z\d-]+:[a-zA-Z\d_-]' +
+        '+:\d+:\d+:\d+:\d+[/1|/2]*[\s_][12]:[YXN]:[0-9]+:([ACNTG\+]*|[0-9]*))$'
+    )
+    read_numbers_set = set()
+    signatures_set = set()
+    signatures_no_barcode_set = set()
+    read_lengths_dictionary = {}
+    read_count = 0
+    old_illumina_current_prefix = 'empty'
+    try:
+        line_index = 0
+        for encoded_line in fastq_data_stream.stdout:
+            line = encoded_line.decode('utf-8')
+            line_index += 1
+            if line_index == 1:
+                old_illumina_current_prefix = \
+                    process_read_name_line(
+                        line,
+                        read_name_prefix,
+                        read_name_pattern,
+                        special_read_name_pattern,
+                        old_illumina_current_prefix,
+                        read_numbers_set,
+                        signatures_no_barcode_set,
+                        signatures_set,
+                        read_lengths_dictionary,
+                        errors)
+            if line_index == 2:
+                read_count += 1
+                process_sequence_line(line, read_lengths_dictionary)
+
+            line_index = line_index % 4
+    except IOError:
+        errors['unzipped_fastq_streaming'] = 'Error occured, while streaming unzipped fastq.'
+    else:
+
+        # read_count update
+        result['read_count'] = read_count
+
+        # read1/read2
+        if len(read_numbers_set) > 1:
+            errors['inconsistent_read_numbers'] = \
+                'fastq file contains mixed read numbers ' + \
+                '{}.'.format(', '.join(sorted(list(read_numbers_set))))
+            update_content_error(errors,
+                                 'Fastq file contains a mixture of read1 and read2 sequences')
+
+        # read_length
+        read_lengths_list = []
+        for k in sorted(read_lengths_dictionary.keys()):
+            read_lengths_list.append((k, read_lengths_dictionary[k]))
+
+        if 'read_length' in item and item['read_length'] > 2:
+            process_read_lengths(read_lengths_dictionary,
+                                 read_lengths_list,
+                                 item['read_length'],
+                                 read_count,
+                                 0.95,
+                                 errors,
+                                 result)
+        else:
+            errors['read_length'] = 'no specified read length in the uploaded fastq file, ' + \
+                                    'while read length(s) found in the file were {}. '.format(
+                                    ', '.join(map(str, read_lengths_list)))
+            update_content_error(errors,
+                                 'Fastq file metadata lacks read length information, ' +
+                                 'but the file contains read length(s) {}'.format(
+                                     ', '.join(map(str, read_lengths_list))))
+        # signatures
+        signatures_for_comparison = set()
+        is_UMI = False
+        if 'flowcell_details' in item and len(item['flowcell_details']) > 0:
+            for entry in item['flowcell_details']:
+                if 'barcode' in entry and entry['barcode'] == 'UMI':
+                    is_UMI = True
+                    break
+        if old_illumina_current_prefix == 'empty' and is_UMI:
+            for entry in signatures_no_barcode_set:
+                signatures_for_comparison.add(entry + 'UMI:')
+        else:
+            if old_illumina_current_prefix == 'empty' and len(signatures_set) > 100:
+                signatures_for_comparison = process_barcodes(signatures_set)
+                if len(signatures_for_comparison) == 0:
+                    for entry in signatures_no_barcode_set:
+                        signatures_for_comparison.add(entry + 'mixed:')
+
+            else:
+                signatures_for_comparison = signatures_set
+
+        result['fastq_signature'] = sorted(list(signatures_for_comparison))
+        check_for_fastq_signature_conflicts(
+            session,
+            url,
+            errors,
+            item,
+            signatures_for_comparison)
+
+
+def process_barcodes(signatures_set):
+    set_to_return = set()
+    flowcells_dict = {}
+    for entry in signatures_set:
+        (f, l, r, b, rest) = entry.split(':')
+        if (f, l, r) not in flowcells_dict:
+            flowcells_dict[(f, l, r)] = {}
+        if b not in flowcells_dict[(f, l, r)]:
+            flowcells_dict[(f, l, r)][b] = 0
+        flowcells_dict[(f, l, r)][b] += 1
+    for key in flowcells_dict.keys():
+        barcodes_dict = flowcells_dict[key]
+        total = 0
+        for b in barcodes_dict.keys():
+            total += barcodes_dict[b]
+        for b in barcodes_dict.keys():
+            if ((float(total)/float(barcodes_dict[b])) < 100):
+                set_to_return.add(key[0] + ':' +
+                                  key[1] + ':' +
+                                  key[2] + ':' +
+                                  b + ':')
+    return set_to_return
+
+
+def process_read_lengths(read_lengths_dict,
+                         lengths_list,
+                         submitted_read_length,
+                         read_count,
+                         threshold_percentage,
+                         errors_to_report,
+                         result):
+    reads_quantity = sum([count for length, count in read_lengths_dict.items()
+                          if (submitted_read_length - 2) <= length <= (submitted_read_length + 2)])
+    if ((threshold_percentage * read_count) > reads_quantity):
+        errors_to_report['read_length'] = \
+            'in file metadata the read_length is {}, '.format(submitted_read_length) + \
+            'however the uploaded fastq file contains reads of following length(s) ' + \
+            '{}. '.format(', '.join(map(str, lengths_list)))
+        update_content_error(errors_to_report,
+                             'Fastq file metadata specified read length was {}, '.format(
+                                 submitted_read_length) +
+                             'but the file contains read length(s) {}'.format(
+                                 ', '.join(map(str, lengths_list))))
+
+
+def check_for_fastq_signature_conflicts(session,
+                                        url,
+                                        errors,
+                                        item,
+                                        signatures_to_check):
+    conflicts = []
+    for signature in sorted(list(signatures_to_check)):
+        query = '/search/?type=File&status!=replaced&file_format=fastq&fastq_signature=' + \
+                signature
+        try:
+            r = session.get(urljoin(url, query))
+        except requests.exceptions.RequestException as e:  # This is the correct syntax
+            errors['lookup_for_fastq_signature'] = 'Network error occured, while looking for ' + \
+                                                   'fastq signature conflict on the portal. ' + \
+                                                   str(e)
+        else:
+            r_graph = r.json().get('@graph')
+            if len(r_graph) > 0:
+                for entry in r_graph:
+                    if 'accession' in entry and 'accession' in item and \
+                       entry['accession'] != item['accession']:
+                            conflicts.append(
+                                '%s in file %s ' % (
+                                    signature,
+                                    entry['accession']))
+                    elif 'accession' in entry and 'accession' not in item:
+                        conflicts.append(
+                            '%s in file %s ' % (
+                                signature,
+                                entry['accession']))
+                    elif 'accession' not in entry and 'accession' not in item:
+                        conflicts.append(
+                            '%s ' % (
+                                signature) +
+                            'file on the portal.')
+    # "Fastq file contains read name signatures that conflict with signatures from file X”]
+
+    if len(conflicts) > 0:
+        errors['not_unique_flowcell_details'] = 'Fastq file contains read name signature ' + \
+                                                'that conflict with signature of existing ' + \
+                                                'file(s): {}'.format(
+                                                ', '.join(map(str, conflicts)))
+        update_content_error(errors, 'Fastq file contains read name signature ' +
+                                     'that conflict with signature of existing ' +
+                                     'file(s): {}'.format(
+                                         ', '.join(map(str, conflicts))))
+        return False
+    return True
 
 
 def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url):
@@ -189,27 +567,41 @@ def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url
         int(result['content_md5sum'], 16)
     except ValueError:
         errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
+        update_content_error(errors, 'Fastq file content md5sum format error')
     else:
         query = '/search/?type=File&status!=replaced&content_md5sum=' + result[
             'content_md5sum']
-        r = session.get(urljoin(url, query))
-        r_graph = r.json().get('@graph')
-        if len(r_graph) > 0:
-            conflicts = []
-            for entry in r_graph:
-                if 'accession' in entry and 'accession' in item:
-                    if entry['accession'] != item['accession']:
+        try:
+            r = session.get(urljoin(url, query))
+        except requests.exceptions.RequestException as e:  # This is the correct syntax
+            errors['lookup_for_content_md5sum'] = 'Network error occured, while looking for ' + \
+                                                  'content md5sum conflict on the portal. ' + str(e)
+        else:
+            r_graph = r.json().get('@graph')
+            if len(r_graph) > 0:
+                conflicts = []
+                for entry in r_graph:
+                    if 'accession' in entry and 'accession' in item:
+                        if entry['accession'] != item['accession']:
+                            conflicts.append(
+                                '%s in file %s ' % (
+                                    result['content_md5sum'],
+                                    entry['accession']))
+                    elif 'accession' in entry:
                         conflicts.append(
-                            'checked %s is conflicting with content_md5sum of %s' % (
+                            '%s in file %s ' % (
                                 result['content_md5sum'],
                                 entry['accession']))
-                else:
-                    conflicts.append(
-                        'checked %s is conflicting with content_md5sum of %s' % (
-                            result['content_md5sum'],
-                            entry['accession']))
-            if len(conflicts) > 0:
-                errors['content_md5sum'] = str(conflicts)
+                    elif 'accession' not in entry and 'accession' not in item:
+                        conflicts.append(
+                            '%s ' % (
+                                result['content_md5sum']))
+                if len(conflicts) > 0:
+                    errors['content_md5sum'] = str(conflicts)
+                    update_content_error(errors,
+                                         'Fastq file content md5sum conflicts with content ' +
+                                         'md5sum of existing file(s) {}'.format(
+                                             ', '.join(map(str, conflicts))))
 
 
 def check_file(config, session, url, job):
@@ -222,11 +614,16 @@ def check_file(config, session, url, job):
 
     upload_url = job['upload_url']
     local_path = os.path.join(config['mirror'], upload_url[len('s3://'):])
+    is_local_bed_present = False  # boolean standing for local .bed file creation
+    if item['file_format'] == 'bed':
+        #  local_path[-18:-7] retreives the file accession from the path
+        unzipped_modified_bed_path = local_path[-18:-7] + '_modified.bed'
 
     try:
         file_stat = os.stat(local_path)
     except FileNotFoundError:
         errors['file_not_found'] = 'File has not been uploaded yet.'
+        update_content_error(errors, 'File was not uploaded to S3')
         if job['run'] < job['upload_expiration']:
             job['skip'] = True
         return job
@@ -234,6 +631,9 @@ def check_file(config, session, url, job):
     if 'file_size' in item and file_stat.st_size != item['file_size']:
         errors['file_size'] = 'uploaded {} does not match item {}'.format(
             file_stat.st_size, item['file_size'])
+        update_content_error(errors, 'Fastq metadata-specified file size {} '.format(
+            item['file_size']) +
+            'doesn’t match the calculated file size {}'.format(file_stat.st_size))
 
     result["file_size"] = file_stat.st_size
     result["last_modified"] = datetime.datetime.utcfromtimestamp(
@@ -254,77 +654,98 @@ def check_file(config, session, url, job):
         if result['md5sum'] != item['md5sum']:
             errors['md5sum'] = \
                 'checked %s does not match item %s' % (result['md5sum'], item['md5sum'])
-
+            update_content_error(errors,
+                                 'Fastq file metadata-specified md5sum {} '.format(item['md5sum']) +
+                                 'does not match the calculated md5sum {}'.format(result['md5sum']))
     is_gzipped = is_path_gzipped(local_path)
     if item['file_format'] not in GZIP_TYPES:
         if is_gzipped:
             errors['gzip'] = 'Expected un-gzipped file'
+            update_content_error(errors, 'Expected un-gzipped file')
     elif not is_gzipped:
         errors['gzip'] = 'Expected gzipped file'
+        update_content_error(errors, 'Expected gzipped file')
     else:
-        if item['file_format'] == 'bed':
-            try:
-                unzipped_original_bed_path = local_path[-18:-7] + '_original.bed'
-                output = subprocess.check_output(
-                    'gunzip --stdout {} > {}'.format(local_path,
-                                                     unzipped_original_bed_path),
-                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
-                unzipped_modified_bed_path = local_path[-18:-7] + '_modified.bed'
-                subprocess.check_output(
-                    'grep -v \'^#\' {} > {}'.format(unzipped_original_bed_path,
-                                                    unzipped_modified_bed_path),
-                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
-
-                output = subprocess.check_output(
-                    'set -o pipefail; md5sum {}'.format(unzipped_original_bed_path),
-                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
-
-            except subprocess.CalledProcessError as e:
-                errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
-            else:
-                check_for_contentmd5sum_conflicts(item, result, output, errors, session, url)
-
-                if os.path.exists(unzipped_original_bed_path):
-                    try:
-                        os.remove(unzipped_original_bed_path)
-                    except OSError as e:
-                        errors['file_remove_error'] = 'OS could not remove the file ' + \
-                                                      unzipped_original_bed_path
+        # May want to replace this with something like:
+        # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
+        # or http://stackoverflow.com/a/15343686/199100
+        try:
+            output = subprocess.check_output(
+                'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
+                shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError as e:
+            errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
         else:
-            # May want to replace this with something like:
-            # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
-            # or http://stackoverflow.com/a/15343686/199100
+            check_for_contentmd5sum_conflicts(item, result, output, errors, session, url)
+
+        if item['file_format'] == 'bed':
+            # try to count comment lines
             try:
                 output = subprocess.check_output(
-                    'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
+                    'set -o pipefail; gunzip --stdout {} | grep -c \'^#\''.format(local_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
             except subprocess.CalledProcessError as e:
-                errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
-            else:
-                check_for_contentmd5sum_conflicts(item, result, output, errors, session, url)
-    if not errors:
-        if item['file_format'] == 'bed':
-            check_format(config['encValData'], job, unzipped_modified_bed_path)
-        else:
-            check_format(config['encValData'], job, local_path)
-    else:
-        if item['file_format'] == 'bed':
-            try:
-                unzipped_modified_bed_path = unzipped_modified_bed_path
-                if os.path.exists(unzipped_modified_bed_path):
-                    try:
-                        os.remove(unzipped_modified_bed_path)
-                    except OSError as e:
-                        errors['file_remove_error'] = 'OS could not remove the file ' + \
-                                                      unzipped_modified_bed_path
-            except NameError:
-                pass
+                if e.returncode > 1:  # empty file, or other type of error
+                    errors['grep_bed_problem'] = e.output.decode(errors='replace').rstrip('\n')
+            else:  # comments lines found, need to calculate content md5sum as usual
+                #  remove the comments and create modified.bed to give validateFiles scritp
+                # not forget to remove the modified.bed after finishing
+                try:
+                    is_local_bed_present = True
+                    subprocess.check_output(
+                        'set -o pipefail; gunzip --stdout {} | grep -v \'^#\' > {}'.format(
+                            local_path,
+                            unzipped_modified_bed_path),
+                        shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                except subprocess.CalledProcessError as e:
+                    if e.returncode > 1:  # empty file
+                        errors['grep_bed_problem'] = e.output.decode(errors='replace').rstrip('\n')
+                    else:
+                        errors['bed_comments_remove_failure'] = e.output.decode(
+                            errors='replace').rstrip('\n')
 
+    if is_local_bed_present:
+        check_format(config['encValData'], job, unzipped_modified_bed_path)
+        remove_local_file(unzipped_modified_bed_path, errors)
+    else:
+        check_format(config['encValData'], job, local_path)
+
+    if item['file_format'] == 'fastq':
+        try:
+            process_fastq_file(job,
+                               subprocess.Popen(['gunzip --stdout {}'.format(
+                                                local_path)],
+                                                shell=True,
+                                                executable='/bin/bash',
+                                                stdout=subprocess.PIPE),
+                               session, url)
+        except subprocess.CalledProcessError as e:
+            errors['fastq_information_extraction'] = 'Failed to extract information from ' + \
+                                                     local_path
     if item['status'] != 'uploading':
         errors['status_check'] = \
             "status '{}' is not 'uploading'".format(item['status'])
+        update_content_error(errors, 'Submitted file status was {} '.format(
+            item['status']) +
+            'instead of \'uploading\'.')
+    if errors:
+        errors['gathered information'] = 'Gathered information about the file was: {}.'.format(
+            str(result))
 
     return job
+
+
+def remove_local_file(path_to_the_file, errors):
+    try:
+        path_to_the_file = path_to_the_file
+        if os.path.exists(path_to_the_file):
+            try:
+                os.remove(path_to_the_file)
+            except OSError:
+                errors['file_remove_error'] = 'OS could not remove the file ' + \
+                                              path_to_the_file
+    except NameError:
+        pass
 
 
 def fetch_files(session, url, search_query, out, include_unexpired_upload=False):
@@ -370,20 +791,54 @@ def fetch_files(session, url, search_query, out, include_unexpired_upload=False)
 
 
 def patch_file(session, url, job):
-    item = job['item']
     result = job['result']
     errors = job['errors']
-    if errors:
-        return
-    item_url = urljoin(url, job['@id'])
+    data = None
 
     if not errors:
         data = {
             'status': 'in progress',
-            'file_size': result['file_size'],
+            'file_size': result['file_size']
         }
+        if 'read_count' in result:
+            data['read_count'] = result['read_count']
+        if 'fastq_signature' in result and \
+           result['fastq_signature'] != []:
+            data['fastq_signature'] = result['fastq_signature']
+
         if 'content_md5sum' in result:
             data['content_md5sum'] = result['content_md5sum']
+    else:
+        to_patch = True
+        for e in errors.keys():
+            if e in [
+               'unzipped_fastq_streaming',
+               'lookup_for_fastq_signature',
+               'lookup_for_content_md5sum',
+               'file_not_found',
+               'bed_unzip_failure',
+               'grep_bed_problem',
+               'bed_comments_remove_failure',
+               'content_md5sum_calculation',
+               'file_remove_error',
+               'lookup_for_fastq_signature',
+               'fastq_information_extraction']:
+                to_patch = False
+                break
+        if to_patch:  # will change into if 'content_error' in errors
+            if 'fastq_format_readname' in errors:
+                update_content_error(errors,
+                                     'Fastq file contains read names that don’t follow ' +
+                                     'the Illumina standard naming schema; for example {}'.format(
+                                         errors['fastq_format_readname']))
+            data = {
+                # place holder for content_error patching
+                # 'content_error': errors['content_error'],
+                #
+                'status': 'upload failed'
+                }
+    if data:
+        item_url = urljoin(url, job['@id'])
         r = session.patch(
             item_url,
             data=json.dumps(data),
@@ -397,13 +852,13 @@ def patch_file(session, url, job):
                 '{} {}\n{}'.format(r.status_code, r.reason, r.text)
         else:
             job['patched'] = True
-
+    return
 
 def run(out, err, url, username, password, encValData, mirror, search_query,
         processes=None, include_unexpired_upload=False, dry_run=False, json_out=False):
     import functools
     import multiprocessing
-    import requests
+
     session = requests.Session()
     session.auth = (username, password)
     session.headers['Accept'] = 'application/json'
@@ -421,8 +876,10 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
     except multiprocessing.NotImplmentedError:
         nprocesses = 1
 
-    out.write("STARTING Checkfiles (%s): with %d processes %s at %s\n" %
-             (search_query, nprocesses, dr, datetime.datetime.now()))
+    version = '1.06'
+
+    out.write("STARTING Checkfiles version %s (%s): with %d processes %s at %s\n" %
+              (version, search_query, nprocesses, dr, datetime.datetime.now()))
     if processes == 0:
         # Easier debugging without multiprocessing.
         imap = map

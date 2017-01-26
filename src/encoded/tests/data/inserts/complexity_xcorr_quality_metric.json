@@ -1,0 +1,20 @@
+[
+    {
+        "status": "in progress",
+        "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
+        "uuid": "e97dae31-6250-4cbd-a534-3f0244480f95",
+        "assay_term_name": "DNase-seq",
+        "quality_metric_of": [ "9558830f-154f-449f-814b-fd3435417edf" ],
+        "attachment": "generic_from_star_final_out.txt",
+        "lab": "/labs/robert-waterston/",
+        "award": "/awards/U41HG007355/",
+        "sample size": 15000000,
+        "paired-end": true,
+        "read length": 36,
+        "NRF": 0.851224,
+        "PBC1": 0.881151,
+        "PBC2": 9.486023,
+        "NSC": 1.962623,
+        "RSC": 1.04969
+    }
+]

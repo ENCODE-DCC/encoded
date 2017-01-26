@@ -3,7 +3,6 @@ var React = require('react');
 var fetched = require('../fetched');
 var collection = require('../collection');
 var globals = require('../globals');
-var noarg_memoize = require('../../libs/noarg-memoize');
 var search = require('../search');
 
 var Listing = search.Listing;
@@ -84,13 +83,25 @@ var displayModeSelect = (
 globals.blocks.register({
     label: 'search block',
     icon: 'icon icon-search',
-    schema: noarg_memoize(function() {
-        var ReactForms = require('react-forms');
-        return ReactForms.schema.Mapping({}, {
-            display: ReactForms.schema.Scalar({label: 'Display Layout', input: displayModeSelect, defaultValue: 'search'}),
-            search: ReactForms.schema.Scalar({label: 'Search Criteria', input: <SearchBlock mode="edit" />}),
-            className: ReactForms.schema.Scalar({label: 'CSS Class'}),
-        });
-    }),
+    schema: {
+        type: 'object',
+        properties: {
+            display: {
+                title: 'Display Layout',
+                type: 'string',
+                default: 'search',
+                formInput: displayModeSelect
+            },
+            search: {
+                title: 'Search Criteria',
+                type: 'string',
+                formInput: <SearchBlock mode="edit" />
+            },
+            className: {
+                title: 'CSS Class',
+                type: 'string'
+            }
+        }
+    },
     view: SearchBlock
 }, 'searchblock');

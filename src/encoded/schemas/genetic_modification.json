@@ -24,7 +24,7 @@
             "anyOf":[
                 {
                     "properties": {
-                        "modification_treatments": {
+                        "treatments": {
                             "minItems": 0
                         },
                         "modification_techniques": {
@@ -34,7 +34,7 @@
                 },
                 {
                     "properties": {
-                        "modification_treatments": {
+                        "treatments": {
                             "minItems": 1
                         },
                         "modification_techniques": {
@@ -45,7 +45,7 @@
                 {                 
 
                     "properties": {
-                        "modification_treatments": {
+                        "treatments": {
                             "minItems": 1
                         },
                         "modification_techniques": {
@@ -59,7 +59,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "url": {
             "title": "URL",
@@ -74,11 +74,12 @@
             "type": "string",
             "linkTo": "Target"
         },
-        "modification_genome_coordinates": {
-            "title": "Modification genome coordinates",
+        "modified_site": {
+            "title": "Modified site",
             "description": "Genomic coordinates of the modification.",
             "type": "object",
             "additionalProperties": false,
+            "required":["assembly", "chromosome", "start", "end"],
             "properties": {
                 "assembly": {
                     "title": "Mapping assembly",
@@ -115,10 +116,11 @@
                 }
             }
         },
-        "modification_description": {
+        "description": {
             "title": "Description",
             "description": "A plain text description of the genetic modification.",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
         "modification_type": {
             "title": "Modification type",
@@ -128,24 +130,24 @@
                 "deletion",
                 "insertion",
                 "replacement",
-                "mutagenesis"
+                "mutagenesis",
+                "interference"
             ]
         },
-        "modification_purpose":{
-            "title": "Modification purpose",
+        "purpose":{
+            "title": "Purpose",
             "description": "The purpose of the genetic modification.",
             "type": "string",
             "enum": [
                 "repression",
                 "activation",
                 "overexpression",
-                "tagging",
-                "interference"
+                "tagging"                
             ]
         },
-        "modification_zygocity":{
-            "title": "Modification zygocity",
-            "description": "The zygocity of the genetic modification.",
+        "zygosity":{
+            "title": "Modification zygosity",
+            "description": "The zygosity of the genetic modification.",
             "type": "string",
             "enum": [
                 "homozygous",
@@ -167,8 +169,8 @@
                 "linkTo": "ModificationTechnique"
             }
         },
-        "modification_treatments": {
-            "title": "Modification treatments",
+        "treatments": {
+            "title": "Treatments",
             "description": "Treatment(s) used to perform the genetic modification.",
             "type": "array",
             "default": [],
@@ -181,6 +183,28 @@
                 "type":  "string",
                 "linkTo": "Treatment"
             }
+        }
+    },
+    "columns": {
+        "aliases": {
+            "title": "Lab aliases"
+        },
+        "modification_type": {
+            "title": "Modification type"
+        },
+        "status": {
+            "title": "Genetic modification status"
+        }
+    },
+    "facets": {
+        "modification_type": {
+            "title": "Modification type"
+        },
+        "target.label": {
+            "title": "Target"
+        },
+        "status": {
+            "title": "Genetic modification status"
         }
     }
 }

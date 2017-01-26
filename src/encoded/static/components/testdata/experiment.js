@@ -10,6 +10,7 @@ module.exports = {
     "biosample_term_id": "EFO:0002067",
     "biosample_term_name": "K562",
     "biosample_type": "immortalized cell line",
+    "contributing_files": [],
     "dataset_type": "experiment",
     "date_released": "2011-10-29",
     "dbxrefs": ["UCSC-ENCODE-hg19:wgEncodeEH003317", "GEO:GSM1010811"],

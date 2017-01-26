@@ -2,17 +2,17 @@
 var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
 var queryString = require('query-string');
-var Modal = require('react-bootstrap/lib/Modal');
-var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var button = require('../libs/bootstrap/button');
+var {Modal, ModalHeader, ModalBody, ModalFooter} = require('../libs/bootstrap/modal');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
-var SvgIcon = require('../libs/svg-icons').SvgIcon;
+var svgIcon = require('../libs/svg-icons').svgIcon;
 var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
 var globals = require('./globals');
 var image = require('./image');
 var search = module.exports;
+var { donorDiversity } = require('./objectutils');
 var dbxref = require('./dbxref');
 var audit = require('./audit');
 var objectutils = require('./objectutils');
@@ -116,7 +116,7 @@ var Item = module.exports.Item = React.createClass({
                         {result.description}
                     </div>
                 </div>
-                <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
+                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     }
@@ -270,7 +270,7 @@ var Antibody = module.exports.Antibody = React.createClass({
                         <div><strong>Product ID / Lot ID: </strong>{result.product_id} / {result.lot_id}</div>
                     </div>
                 </div>
-                <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
+                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     }
@@ -334,7 +334,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <div><strong>Source: </strong>{result.source.title}</div>
                     </div>
                 </div>
-                <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
+                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     }
@@ -416,7 +416,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <div><strong>Project: </strong>{result.award.project}</div>
                     </div>
                 </div>
-                <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
+                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     }
@@ -474,6 +474,12 @@ var Dataset = module.exports.Dataset = React.createClass({
         var haveSeries = result['@type'].indexOf('Series') >= 0;
         var haveFileSet = result['@type'].indexOf('FileSet') >= 0;
 
+        // For ReferenceEpigenome, calculate the donor diversity.
+        let diversity = '';
+        if (result['@type'][0] === 'ReferenceEpigenome') {
+            diversity = donorDiversity(result);
+        }
+
         return (
             <li>
                 <div className="clearfix">
@@ -507,11 +513,12 @@ var Dataset = module.exports.Dataset = React.createClass({
                     <div className="data-row">
                         {result['dataset_type'] ? <div><strong>Dataset type: </strong>{result['dataset_type']}</div> : null}
                         {targets && targets.length ? <div><strong>Targets: </strong>{targets.join(', ')}</div> : null}
+                        {diversity ? <div><strong>Donor diversity: </strong>{diversity}</div> : null}
                         <div><strong>Lab: </strong>{result.lab.title}</div>
                         <div><strong>Project: </strong>{result.award.project}</div>
                     </div>
                 </div>
-                <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
+                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     }
@@ -543,7 +550,7 @@ var Target = module.exports.Target = React.createClass({
                         : <em>None submitted</em> }
                     </div>
                 </div>
-                <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
+                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     }
@@ -571,7 +578,7 @@ var Image = module.exports.Image = React.createClass({
                         <Attachment context={result} attachment={result.attachment} />
                     </div>
                 </div>
-                <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
+                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     }
@@ -580,20 +587,32 @@ globals.listing_views.register(Image, 'Image');
 
 
 // If the given term is selected, return the href for the term
-function termSelected(term, field, filters) {
-    for (var filter in filters) {
-        if (filters[filter]['field'] == field && filters[filter]['term'] == term) {
-            return url.parse(filters[filter]['remove']).search;
+function termSelected(term, facet, filters) {
+    var selected = false;
+    var filter;
+    for (var filterName in filters) {
+        filter = filters[filterName];
+        if (facet.type === 'exists') {
+            if ((filter.field === facet.field + '!' && term === 'no') ||
+                (filter.field === facet.field && term === 'yes')) {
+                selected = true; break;
+            } 
+        } else if (filter.field == facet.field && filter.term == term) {
+            selected = true; break;
         }
     }
-    return null;
+    if (selected) {
+        return url.parse(filter.remove).search;
+    } else {
+        return null;
+    }
 }
 
 // Determine whether any of the given terms are selected
-function countSelectedTerms(terms, field, filters) {
+function countSelectedTerms(terms, facet, filters) {
     var count = 0;
     for(var oneTerm in terms) {
-        if(termSelected(terms[oneTerm].key, field, filters)) {
+        if(termSelected(terms[oneTerm].key, facet, filters)) {
             count++;
         }
     }
@@ -606,21 +625,30 @@ var Term = search.Term = React.createClass({
         var term = this.props.term['key'];
         var count = this.props.term['doc_count'];
         var title = this.props.title || term;
-        var field = this.props.facet['field'];
+        var facet = this.props.facet;
+        var field = facet['field'];
         var em = field === 'target.organism.scientific_name' ||
                     field === 'organism.scientific_name' ||
                     field === 'replicates.library.biosample.donor.organism.scientific_name';
         var barStyle = {
             width:  Math.ceil( (count/this.props.total) * 100) + "%"
         };
-        var selected = termSelected(term, field, filters);
+        var selected = termSelected(term, facet, filters);
         var href;
         if (selected && !this.props.canDeselect) {
             href = null;
         } else if (selected) {
             href = selected;
         } else {
-            href = this.props.searchBase + field + '=' + globals.encodedURIComponent(term);
+            if (facet.type === 'exists') {
+                if (term === 'yes') {
+                    href = this.props.searchBase + field + '=*';
+                } else {
+                    href = this.props.searchBase + field + '!=*';
+                }
+            } else {
+                href = this.props.searchBase + field + '=' + globals.encodedURIComponent(term);
+            }
         }
         return (
             <li id={selected ? "selected" : null} key={term}>
@@ -707,32 +735,35 @@ var Facet = search.Facet = React.createClass({
             }
         }
 
-        return (
-            <div className="facet" hidden={terms.length === 0} style={{width: this.props.width}}>
-                <h5>{title}</h5>
-                <ul className="facet-list nav">
-                    <div>
-                        {terms.slice(0, 5).map(function (term) {
-                            return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
-                        }.bind(this))}
-                    </div>
-                    {terms.length > 5 ?
-                        <div id={termID} className={moreSecClass}>
-                            {moreTerms.map(function (term) {
+        if (terms.length && terms.some(term => term.doc_count)) {
+            return (
+                <div className="facet">
+                    <h5>{title}</h5>
+                    <ul className="facet-list nav">
+                        <div>
+                            {terms.slice(0, 5).map(function (term) {
                                 return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
                             }.bind(this))}
                         </div>
-                    : null}
-                    {(terms.length > 5 && !moreTermSelected) ?
-                        <label className="pull-right">
-                                <small>
-                                    <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} onClick={this.handleClick} />
-                                </small>
-                        </label>
-                    : null}
-                </ul>
-            </div>
-        );
+                        {terms.length > 5 ?
+                            <div id={termID} className={moreSecClass}>
+                                {moreTerms.map(function (term) {
+                                    return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
+                                }.bind(this))}
+                            </div>
+                        : null}
+                        {(terms.length > 5 && !moreTermSelected) ?
+                            <label className="pull-right">
+                                    <small>
+                                        <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} onClick={this.handleClick} />
+                                    </small>
+                            </label>
+                        : null}
+                    </ul>
+                </div>
+            );
+        }
+        return null;
     }
 });
 
@@ -811,9 +842,6 @@ var FacetList = search.FacetList = React.createClass({
         } else {
             hideTypes = filters.filter(filter => filter.field === 'type').length === 1 && normalFacets.length > 1;
         }
-        if (this.props.orientation == 'horizontal') {
-            width = (100 / facets.length) + '%';
-        }
 
         // See if we need the Clear Filters link or not. context.clear_filters 
         var clearButton; // JSX for the clear button
@@ -835,71 +863,48 @@ var FacetList = search.FacetList = React.createClass({
         }
 
         return (
-            <div className={"box facets " + this.props.orientation}>
-                {clearButton ?
-                    <div className="clear-filters-control">
-                        <a href={context.clear_filters}>Clear Filters <i className="icon icon-times-circle"></i></a>
-                    </div>
-                : null}
-                {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
-                {facets.map(facet => {
-                    if ((hideTypes && facet.field == 'type') || (!loggedIn && this.context.hidePublicAudits && facet.field.substring(0, 6) === 'audit.')) {
-                        return <span key={facet.field} />;
-                    } else {
-                        return <Facet {...this.props} key={facet.field} facet={facet} filters={filters}
-                                        width={width} />;
-                    }
-                })}
+            <div className="box facets">
+                <div className={`orientation${this.props.orientation === 'horizontal' ? ' horizontal' : ''}`}>
+                    {clearButton ?
+                        <div className="clear-filters-control">
+                            <a href={context.clear_filters}>Clear Filters <i className="icon icon-times-circle"></i></a>
+                        </div>
+                    : null}
+                    {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
+                    {facets.map(facet => {
+                        if ((hideTypes && facet.field == 'type') || (!loggedIn && this.context.hidePublicAudits && facet.field.substring(0, 6) === 'audit.')) {
+                            return <span key={facet.field} />;
+                        } else {
+                            return <Facet {...this.props} key={facet.field} facet={facet} filters={filters}
+                                            width={width} />;
+                        }
+                    })}
+                </div>
             </div>
         );
     }
 });
 
 var BatchDownload = search.BatchDownload = React.createClass({
-    mixins: [OverlayMixin],
-
-    getInitialState: function () {
-        return {
-            isModalOpen: false
-        };
-    },
-
-    handleToggle: function () {
-        this.setState({
-            isModalOpen: !this.state.isModalOpen
-        });
-    },
-
     render: function () {
-        return (
-            <a className="btn btn-info btn-sm" onClick={this.handleToggle}>Download</a>
-        );
-    },
-
-    renderOverlay: function () {
         var link = this.props.context['batch_download'];
-        if (!this.state.isModalOpen) {
-            return <span/>;
-        }
         return (
-            <Modal title="Using batch download" onRequestHide={this.handleToggle}>
-                <div className="modal-body">
-                <p>Click the "Download" button below to download a "files.txt" file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
-                The first line of the file will always be the URL to download the metadata file. <br />
-                Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.</p><br />
-
-                <p>The "files.txt" file can be copied to any server.<br />
-                The following command using cURL can be used to download all the files in the list:</p><br />
-                <code>xargs -n 1 curl -O -L &lt; files.txt</code><br />
-                </div>
-                <div className="modal-footer">
-                    <a className="btn btn-info btn-sm" onClick={this.handleToggle}>Close</a>
-                    <a data-bypass="true" target="_self" className="btn btn-info btn-sm"
-                        href={link}>{'Download'}</a>
-                </div>
+            <Modal actuator={<button className="btn btn-info btn-sm">Download</button>}>
+                <ModalHeader title="Using batch download" closeModal />
+                <ModalBody>
+                    <p>Click the "Download" button below to download a "files.txt" file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
+                    The first line of the file will always be the URL to download the metadata file. <br />
+                    Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.</p><br />
+                    <p>The "files.txt" file can be copied to any server.<br />
+                    The following command using cURL can be used to download all the files in the list:</p><br />
+                    <code>xargs -n 1 curl -O -L &lt; files.txt</code><br />
+                </ModalBody>
+                <ModalFooter closeModal={<a className="btn btn-info btn-sm">Close</a>}
+                    submitBtn={<a data-bypass="true" target="_self" className="btn btn-info btn-sm" href={link}>{'Download'}</a>}
+                    dontClose />
             </Modal>
         );
-    }
+    },
 });
 
 var ResultTable = search.ResultTable = React.createClass({
@@ -979,10 +984,10 @@ var ResultTable = search.ResultTable = React.createClass({
                                 <h4>Showing {results.length} of {total} {label}</h4>
 
                                 <div className="results-table-control">
-                                    {context.views ?
+                                    {(context.views && this.props.mode !== 'picker') ?
                                         <div className="btn-attached">
                                             {context.views.map((view, i) =>
-                                                <a key={i} className="btn btn-info btn-sm btn-svgicon" href={view.href} title={view.title}>{SvgIcon(view2svg[view.icon])}</a>
+                                                <a key={i} className="btn btn-info btn-sm btn-svgicon" href={view.href} title={view.title}>{svgIcon(view2svg[view.icon])}</a>
                                             )}
                                         </div>
                                     : null}

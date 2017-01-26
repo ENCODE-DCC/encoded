@@ -18,37 +18,43 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "5"
         },
         "NSC": {
+            "title": "Normalized strand cross-correlation",
             "type": "number",
             "description": "Normalized strand cross-correlation = FRAGLEN_CC / MIN_CC. Ratio of strand cross-correlation at estimated fragment length to the minimum cross-correlation over all shifts."
         },
         "RSC": {
+            "title": "Relative cross-correlation coefficient",
             "type": "number",
             "description": "Relative cross correlation coefficient. Ratio of strand cross-correlation at fragment length  and at read length"
         },
         "PBC1": {
+            "title": "PCR bottlenecking coefficient 1",
             "type": "number",
             "description": "PCR Bottlenecking coefficient 1 = M1/M_DISTINCT where M1: number of genomic locations where exactly one read maps uniquely, M_DISTINCT: number of distinct genomic locations to which some read maps uniquely"
         },
         "PBC2": {
+            "title": "PCR bottlenecking coefficient 2",
             "type": ["number", "string"],
             "minimum":0,
             "pattern": "^Infinity$",
             "description": "PCR Bottlenecking coefficient 2 (indicates library complexity) = M1/M2 where M1: number of genomic locations where only one read maps uniquely and M2: number of genomic locations where 2 reads map uniquely"
         },
-         "fragment length": {
+        "fragment length": {
+            "title": "fragment length",
             "type": "number",
             "description": "Fragment length/strandshift. This is the estimated fragment length/strand shift for each dataset as estimated by strand cross-correlation analysis"
         },
-       "NRF": {
+        "NRF": {
+            "title": "Non-redundant fraction",
             "type": "number",
             "description": "Non redundant fraction (indicates library complexity).  Number of distinct unique mapping reads (i.e. after removing duplicates) / Total number of reads"
         },
         "cross_correlation_plot": {
-            "description": "Cross-correlation plot",
             "title": "QC metric document metadata",
+            "description": "Cross-correlation plot",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,

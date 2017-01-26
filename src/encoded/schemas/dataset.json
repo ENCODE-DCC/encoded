@@ -42,7 +42,8 @@
                     "not_analyzed",
                     "no"
                 ]
-            }
+            },
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
         "dbxrefs": {
             "@type": "@id",
@@ -82,7 +83,11 @@
                     "DREAM",
                     "ENCORE",
                     "ENTEx",
-                    "SESCC"]
+                    "SESCC",
+                    "dbGaP",
+                    "ENCYCLOPEDIAv3",
+                    "ENCYCLOPEDIAv4"
+                ]
             }
         },
         "status": {

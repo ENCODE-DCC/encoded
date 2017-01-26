@@ -207,6 +207,15 @@
         "uuid": "6049cceb-3703-47d8-be52-0747fb6680aa"
     },
     {
+        "_test": "test - user patch file",
+        "biological_replicate_number": 2,
+        "experiment": "ENCSR000ACT",
+        "library": "27ad2ec3-d1ff-49df-a1f7-2cf1d9cfa816",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "technical_replicate_number": 1,
+        "uuid": "57978a32-ecb3-4921-898f-d25cda26fc11"
+    },
+    {
         "_test": "RBNS protein concentrations part 1",
         "biological_replicate_number": 1,
         "experiment": "ENCSR666EMD",
@@ -534,5 +543,35 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "library": "ENCLB003REP",
         "uuid": "3ed9da01-3ca5-4102-89d9-4933fa49f7e4"
+    },
+    {
+        "_test": "replication for RCC",
+        "experiment": "/experiments/ENCSR000AAL/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB000RCC",
+        "uuid": "2911ca44-d783-4d76-9d22-f9a4d0a8b5de"
+    },
+    {
+        "_test": "replication for RCC",
+        "experiment": "/experiments/ENCSR000AAL/",
+        "technical_replicate_number": 2,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB001RCC",
+        "uuid": "d52a3aaf-5fa7-4bea-ac08-a5e70c6e7dbd"
+    },
+    {
+        "_test": "replication for idat",
+        "experiment": "/experiments/ENCSR000AAL/",
+        "biological_replicate_number": 2,
+        "technical_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB000DAT",
+        "uuid": "0f427e79-556e-4125-8102-f6723471807e"
     }
 ]

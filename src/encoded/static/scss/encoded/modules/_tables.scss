@@ -1,5 +1,7 @@
 /*  TABLES    */
 
+$file-restricted-bg: #ffdcda; // Background color of restricted files
+
 table {
     font-size: 0.9rem;
 }
@@ -175,9 +177,20 @@ form.table-filter {
             td {
                 height: 4em;
             }
+
+            &.file-restricted {
+                td {
+                    background-color: $file-restricted-bg;
+
+                    &.table-raw-merged {
+                        background-color: #fff;
+                    }
+                }
+            }
         }
     }
 }
+
 
 .table-section {
     font-size: 1.3rem;
@@ -281,4 +294,36 @@ table.table-raw {
 .file-audit-status {
     height: 13px !important;
     line-height: 13px !important;
+}
+
+.restricted-accession {
+    display: inline-block;
+    position: relative;
+}
+
+.file-table-accession {
+    white-space: nowrap;
+}
+
+.file-table-btn {
+    padding: 0 0 0 5px;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+
+    i {
+        font-size: 1.1rem;
+    }
+}
+
+.file-qc-btn {
+    border: 1px solid #a0a0a0;
+    border-radius: 15px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    background-color: #80ffc0;
+}
+
+.coalesced-table {
+    margin: -20px -20px -55px -20px;
 }

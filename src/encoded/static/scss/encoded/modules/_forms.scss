@@ -120,6 +120,10 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 	input[type="file"] {
 		display: inline;
 	}
+	&.disabled {
+	    cursor: not-allowed;
+	    background-color: $input-bg-disabled;
+	}
 }
 
 .item-picker {
@@ -153,5 +157,7 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 		top: 12px;
 		left: 0;
 		cursor: pointer;
+		border: 0;
+		background: none;
 	}
 }

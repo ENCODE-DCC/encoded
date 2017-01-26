@@ -1,0 +1,382 @@
+// Allows page to be within the proper width in the middle
+.container-homepage {
+    @include container-fixed();
+
+    @media (min-width: $screen-sm-min) {
+        width: $container-sm;
+    }
+    @media (min-width: $screen-md-min) {
+        width: $container-md;
+    }
+    @media (min-width: $screen-lg-min) {
+        width: $container-lg;
+    }
+}
+
+
+// Fluid container
+//
+// Utilizes the mixin meant for fixed width containers, but without any defined
+// width for fluid, full width layouts.
+
+.container-fluid {
+    @include container-fixed();
+}
+
+// Makes background color gray
+.whole-page {
+    background-color: #E8ECEF;
+}
+
+.twitter-widget {
+    padding-right: 20px;
+    border-left: 1px solid #a0a0a0;
+}
+
+// Positions overall classic with pic and rectangles
+.overall-classic {
+    position: relative;
+    padding-bottom: 0px;
+
+    h1 {
+        margin: 0;
+        padding: 20px 10px;
+        text-align: center;
+        font-weight: normal;
+        font-size: 1.6rem;
+        border-bottom: 1px solid #e0e0e0;
+
+        @media screen and (min-width: $screen-md-min) {
+            padding: 30px 10px;
+            font-size: 2.5rem;
+        }
+    }
+}
+
+// Overrride styling within the Twitter widget iframe. Hopefully Twitter never changes the name of
+// this class. Weird styles here prevent the Twitter widget from overflowing on the right side on
+// iOS Safari.
+#twitter-widget-0 {
+    width: 1px !important;
+    min-width: 100% !important;
+}
+
+.site-banner {
+    display: block;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-items: stretch;
+        align-content: stretch;
+    }
+}
+
+.site-banner-img {
+    position: relative;
+
+    @media screen and (min-width: $screen-md-min) {
+        flex: 0 1 70%;
+    }
+
+    @media screen and (min-width: $screen-lg-min) {
+        flex: 0 1 60%;
+    }
+
+    img {
+        height: auto;
+        max-width: 100%;
+    }
+}
+
+.site-banner-intro {
+    padding: 10px 20px;
+    line-height: 1.8;
+    font-size: 1.2rem;
+    line-height: 1.8;
+
+    @media screen and (min-width: $screen-md-min) {
+        flex: 0 1 30%;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        border-left: 1px solid #e0e0e0;
+    }
+
+    @media screen and (min-width: $screen-lg-min) {
+        flex: 0 1 40%;
+        font-size: 1.2rem;
+        line-height: 1.8;
+    }
+}
+
+.site-banner-intro-content {
+    position: static;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: flex-start;
+        align-content: stretch;
+
+        p {
+            flex: 0 1 100%;
+            align-self: auto;
+        }
+    }
+}
+
+.getting-started-button {
+    text-align: center;
+
+    @media screen and (min-width: $screen-md-min) {
+        flex: 0 1 auto;
+        align-self: flex-end;
+    }
+}
+
+// Positions rectangles for classic pic
+.classic-svg {
+    position: absolute;
+    visibility: visible;
+    display: block;
+    padding-bottom: 0px;
+    max-width: 100%;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+// Adds blue outline to rectangles 
+.rectangle-box {
+    stroke-width: 6px;
+    stroke: #0000EE;
+    fill: #0000EE;
+    fill-opacity: 0;
+
+    &:hover {
+        fill-opacity: 0.1;
+        cursor: pointer;
+    }
+
+    &.selected {
+        fill-opacity: 0.4;
+    }
+}
+
+// Graph titles
+.title {
+    width: 100%;
+    padding-top: 10px;
+    text-align: center;
+    color: #808080;
+    font-size: 1.6rem;
+    font-weight: normal;
+}
+
+
+// Positions tabs with padding, hovering, and changing color if selected
+.organism-selector {
+    display: flex;
+    flex-wrap: nonwrap;
+    padding: 5px 0;
+    justify-content: flex-start;
+    align-items: flex-start;
+    border-top: 1px solid #a0a0a0;
+    background-color: #f0f0f0;
+
+    a.single-tab {
+        display: block;
+        margin-left: 5px;
+        padding: 5px 20px !important;
+        flex: 0 1 auto;
+        font-size: 0.9rem;
+        font-weight: normal;
+        text-decoration: none;
+        color: #404040;
+        background-color: #c0beff;
+        border: 1px solid #0001ee;
+        text-transform: uppercase;
+
+        &:hover {
+            background-color: #adabf8;
+        }
+
+        &.selected {
+            color: #000;
+            background-color: #7575f7;
+        }
+    }
+    
+}
+
+// Gives graphs white background color
+.graphs {
+    background-color: white;
+}
+
+.chart-gallery{
+    display: block;
+    padding: 20px;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: stretch;
+    }
+}
+
+.chart-single {
+    @media screen and (min-width: $screen-md-min) {
+        width: 33.33333%;
+        flex: 1 1 auto;
+    }
+}
+
+.chart-container {
+    height: 180px;
+}
+
+.chart-container-assaycat {
+    height: 280px;
+}
+
+.chart-no-data {
+    font-size: 1.2rem;
+    text-align: center;
+    color: #808080;
+    font-style: italic;
+}
+
+// Positions legends
+.chart-legend {
+    margin-top: 20px;
+
+    ul {
+        margin: 0;
+        list-style: none;
+
+        li {
+            @extend .clearfix;
+        }
+    }
+
+    a {
+        float: left;
+        height: 18px;
+        margin: 0;
+        padding: 3px;
+        color: black;
+        text-decoration: none;
+
+        &:hover {
+            background-color: #e0e0e0;
+        }
+    }
+}
+
+.chart-legend-chip {
+    display: inline-block;
+    width: 32px;
+    height: 100%;
+    margin-right: 5px;
+    vertical-align: top;
+}
+
+.chart-legend-label {
+    display: inline-block;
+    position: relative;
+    top: -3px;
+}
+
+// Positions error message when charts empty
+.empty-chart {
+    width: 100%;
+    height: 183px;
+    text-align: center;
+    color: black;
+    padding-top: 60px;
+    font-size: 30px;
+    font-weight: 100;
+}
+
+.getting-started-image-wrapper {
+    position: relative;
+}
+
+.getting-started {
+    position: relative;
+    padding: 15px;
+}
+
+// Positions getting started pic
+.getting-started-image {
+    padding-top: 0px;
+    background-color: #E8ECEF;
+    height: auto;
+    max-width: 100%;
+    z-index: 0;
+
+}
+
+
+// Positions View All
+.view-all {
+    text-align: center;
+}
+
+// Positions view all buttonn
+.view-all-button {
+    display: inline-block;
+}
+
+.social {
+    border-top: 1px solid #a0a0a0;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-items: stretch;
+        align-content: stretch;
+    }
+
+    h2 {
+        margin-top: 0;
+        font-weight: normal;
+        font-size: 2.5rem;
+    }
+}
+
+.social-news {
+    @media screen and (min-width: $screen-md-min) {
+        flex: 0 1 70%;
+        order: 1;
+        border-left: 1px solid #a0a0a0;
+    }
+}
+
+.social-twitter {
+    @media screen and (min-width: $screen-md-min) {
+        flex: 0 1 30%;
+        order: 0;
+    }
+}
+
+.twitter-header {
+    padding: 10px 10px 0 10px;
+}
+
+.twitter-ref {
+    display: inline;
+    font-size: 1rem;
+}
+
+.news-header {
+    @extend .twitter-header;
+    border-bottom: 1px solid #e0e0e0;
+}

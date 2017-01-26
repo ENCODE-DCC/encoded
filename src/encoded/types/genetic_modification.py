@@ -19,12 +19,39 @@ from .base import (
 class GeneticModification(Item):
     item_type = 'genetic_modification'
     schema = load_schema('encoded:schemas/genetic_modification.json')
+    embedded = [
+        'award',
+        'award.pi',
+        'award.pi.lab',
+        'lab',
+        'source',
+        'submitted_by',
+        'target',
+        'documents',
+        'documents.award',
+        'documents.lab',
+        'documents.submitted_by',
+        'characterizations.documents',
+        'characterizations.documents.award',
+        'characterizations.documents.lab',
+        'characterizations.documents.submitted_by',
+        'modification_techniques',
+        'modification_techniques.award.pi.lab',
+        'modification_techniques.lab',
+        'modification_techniques.source',
+        'modification_techniques.documents',
+        'modification_techniques.documents.award',
+        'modification_techniques.documents.lab',
+        'modification_techniques.documents.submitted_by',
+        'biosamples_modified.documents',
+        'donors_modified.documents',
+        'treatments'
+    ]
 
     rev = {
         'biosamples_modified': ('Biosample', 'genetic_modifications'),
         'donors_modified': ('Donor', 'genetic_modifications'),
-        'characterizations': ('BiosampleCharacterization', 'characterizes'),
-
+        'characterizations': ('GeneticModificationCharacterization', 'characterizes')
     }
 
     @calculated_property(schema={
@@ -43,7 +70,7 @@ class GeneticModification(Item):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "Biosample.genetic_modifications",
+            "linkFrom": "Donor.genetic_modifications",
         },
     })
     def donors_modified(self, request, donors_modified):

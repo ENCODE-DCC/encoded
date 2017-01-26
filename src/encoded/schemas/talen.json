@@ -38,6 +38,7 @@
             "description": "The name of the TALEN construct.",
             "type": "string",
             "default": "",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$",
             "uniqueKey": true
         },
         "description": {
@@ -55,7 +56,8 @@
                     "not_analyzed",
                     "no"
                 ]
-            }
+            },
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
         "url": {
             "title": "URL",
@@ -66,7 +68,8 @@
         "vector_backbone_name": {
             "title": "Backbone name",
             "description": "The cloning vector used to make the construct. E.g. PEGFP (delGFP-TAL2-truncNLS)",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
         "RVD_sequence": {
             "title": "RVD sequence",
@@ -83,7 +86,8 @@
         "talen_platform": {
             "title": "TALEN platform",
             "description": "The TALEN platform used to make the construct. E.g. Golden Gate",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
         "target_genomic_coordinates": {
             "title": "Target genomic coordinates",
@@ -184,20 +188,16 @@
     },
     "facets": {
         "talen_platform": {
-            "title": "TALEN platform",
-            "type": "string"
+            "title": "TALEN platform"
         },
         "status": {
-            "title": "TALEN status",
-            "type": "string"
+            "title": "TALEN status"
         },
         "lab.title": {
-            "title": "Lab",
-            "type": "string"
+            "title": "Lab"
         },
         "award.project": {
-            "title": "Project",
-            "type": "string"
+            "title": "Project"
         }
     },
     "columns": {

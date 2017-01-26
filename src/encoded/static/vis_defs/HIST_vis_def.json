@@ -1,0 +1,111 @@
+{
+    "HIST": {
+        "rule": "'{assay_term_name}' == 'ChIP-seq' and 'histone' in '{target.investigated_as}'",
+        "assay_composite": {
+            "longLabel":  "Collection of ENCODE Histone ChIP-seq experiments",
+            "shortLabel": "ENCODE Histone ChIP"
+        },
+        "longLabel":  "{target} {target.investigated_as} {assay_title} of {replicates.library.biosample.summary} - {accession}",
+        "shortLabel": "{target} {target.investigated_as} of {biosample_term_name} {accession}",
+        "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
+        "Views":  {
+            "tag": "view",
+            "group_order": [ "Optimal IDR thresholded peaks", "Conservative IDR thresholded peaks",
+                            "Replicated peaks", "Peaks",  "Fold change over control", "Signal p-value", "Signal" ],
+            "groups": {
+                "Optimal IDR thresholded peaks": {
+                    "tag": "aOIDR",
+                    "visibility": "dense",
+                    "type": "bigBed",
+                    "file_format_type": [ "narrowPeak" ],
+                    "spectrum":"on",
+                    "scoreFilter": "100:1000",
+                    "output_type": [ "optimal idr thresholded peaks" ]
+                },
+                "Conservative IDR thresholded peaks": {
+                    "tag": "bCIDR",
+                    "visibility": "hide",
+                    "type": "bigBed",
+                    "file_format_type": [ "narrowPeak" ],
+                    "spectrum":"on",
+                    "scoreFilter": "0:1000",
+                    "output_type": [ "conservative idr thresholded peaks" ]
+                },
+                "Replicated peaks": {
+                    "tag": "cRPKS",
+                    "visibility": "dense",
+                    "type": "bigBed",
+                    "file_format_type": [ "narrowPeak" ],
+                    "spectrum":"on",
+                    "scoreFilter": "0:1000",
+                    "output_type": [ "replicated peaks" ]
+                },
+                "Peaks": {
+                    "tag": "dPKS",
+                    "visibility": "hide",
+                    "type": "bigBed",
+                    "file_format_type": [ "narrowPeak" ],
+                    "scoreFilter": "0",
+                    "output_type": [ "peaks" ]
+                },
+                "Fold change over control": {
+                    "tag": "eFCOC",
+                    "visibility": "full",
+                    "type": "bigWig",
+                    "viewLimits": "0:10",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "fold change over control" ]
+                },
+                "Signal p-value": {
+                    "tag": "fSPV",
+                    "visibility": "hide",
+                    "type": "bigWig",
+                    "viewLimits": "0:10",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "signal p-value" ]
+                },
+                "Signal": {
+                    "tag": "gSIG",
+                    "visibility": "hide",
+                    "type": "bigWig",
+                    "viewLimits": "0:10",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "signal","signal of unique reads" ]
+                }
+            }
+        },
+        "other_groups":  {
+            "dimensions": { "Biosample": "dimY","Targets": "dimX","Replicates": "dimA" },
+            "dimensionAchecked": "first",
+            "groups": {
+                "Replicates": {
+                    "tag": "REP",
+                    "groups": {
+                        "replicate": {
+                            "title_mask": "Replicate_{replicate_number}",
+                            "combined_title": "Pooled"
+                        }
+                    }
+                },
+                "Biosample": {
+                    "tag": "BS",
+                    "groups": { "one": { "title_mask": "{biosample_term_name}"} }
+                },
+                "Targets": {
+                    "tag": "TARG",
+                    "groups": { "one": { "title_mask": "{target.label}", "url_mask": "targets/{target.name}"} }
+                }
+            }
+        },
+        "file_defs": {
+            "longLabel": "{target} {assay_title} of {biosample_term_name} {output_type} {replicate}",
+            "shortLabel": "{replicate} {output_type_short_label}"
+        }
+    }
+}

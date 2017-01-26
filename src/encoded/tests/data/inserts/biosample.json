@@ -17,7 +17,7 @@
             "ENCBS492ENC",
             "ENCBS493ENC"
         ],
-        "protocol_documents": [
+        "documents": [
             "ENCODE:PanIsletD_Crawford_protocol"
         ],
         "source": "ndri",
@@ -44,7 +44,7 @@
         ],
         "host": "ENCBS356AAA",
         "lab": "richard-myers",
-        "note": "(PMID: 4357757)",
+        "submitter_comment": "(PMID: 4357757)",
         "organism": "human",
         "references": [
             "4cb65ec0-bd49-11e4-bb52-0800200c9a66",
@@ -52,7 +52,7 @@
         ],
         "passage_number": 5,
         "product_id": "HTB-22",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:MCF-7_Farnham_growth_protocol"
         ],
         "source": "atcc",
@@ -77,11 +77,11 @@
             "UCSC-ENCODE-cv:MCF-7"
         ],
         "lab": "richard-myers",
-        "note": "(PMID: 4357757)",
+        "submitter_comment": "(PMID: 4357757)",
         "organism": "human",
         "passage_number": 5,
         "product_id": "HTB-22",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:MCF-7_Farnham_growth_protocol"
         ],
         "source": "atcc",
@@ -105,7 +105,7 @@
         "model_organism_health_status": "Healthy",
         "mouse_life_stage": "embryonic",
         "model_organism_sex": "mixed",
-        "note": "C57BL/6 mice from Taconic Farms, Inc and Charles River Lab interbred.  Tissue extracted from 34 embryos. 1 vial collected.",
+        "submitter_comment": "C57BL/6 mice from Taconic Farms, Inc and Charles River Lab interbred.  Tissue extracted from 34 embryos. 1 vial collected.",
         "organism": "mouse",
         "source": "len-pennacchio",
         "starting_amount": 0.6365,
@@ -134,7 +134,7 @@
         "mouse_life_stage": "embryonic",
         "model_organism_sex": "male",
         "organism": "mouse",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:EPC_Stam_protocol"
         ],
         "source": "michael-bender",
@@ -155,7 +155,7 @@
         "lab": "encode2-project",
         "organism": "human",
         "product_id": "CCL-243",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:K562_protocol"
         ],
         "source": "atcc",
@@ -176,6 +176,7 @@
         ],
         "lab": "sherman-weissman",
         "model_organism_age": "unknown",
+        "model_organism_age_units": "day",
         "model_organism_health_status": "unknown",
         "mouse_life_stage": "unknown",
         "model_organism_sex": "unknown",
@@ -275,7 +276,7 @@
         "donor": "ENCDO000HUM",
         "lab": "brenton-graveley",
         "lot_id": "59300853",
-        "note": "K562 cell line replicate 1 used inENCODE3 RNA-seq evaluation",
+        "submitter_comment": "K562 cell line replicate 1 used inENCODE3 RNA-seq evaluation",
         "organism": "human",
         "passage_number": 5,
         "product_id": "CCL-243",
@@ -301,7 +302,7 @@
         "donor": "ENCDO000HUM",
         "lab": "brenton-graveley",
         "lot_id": "59300853",
-        "note": "K562 cell line replicate 2 used inENCODE3 RNA-seq evaluation",
+        "submitter_comment": "K562 cell line replicate 2 used inENCODE3 RNA-seq evaluation",
         "organism": "human",
         "passage_number": 5,
         "product_id": "CCL-243",
@@ -330,7 +331,7 @@
         "lab": "gregory-crawford",
         "organism": "human",
         "product_id": "86012803",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:MCF-7_Crawford_growth_protocol"
         ],
         "rnais": [
@@ -359,7 +360,7 @@
         "lab": "peggy-farnham",
         "organism": "human",
         "product_id": "HTB-22",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:MCF-7_Farnham_growth_protocol"
         ],
         "source": "atcc",
@@ -386,7 +387,7 @@
         "mouse_life_stage": "unknown",
         "model_organism_sex": "unknown",
         "organism": "mouse",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:C2C12_Wold_growth_protocol"
         ],
         "source": "barbara-wold",
@@ -408,7 +409,7 @@
         "mouse_life_stage": "unknown",
         "model_organism_sex": "unknown",
         "organism": "mouse",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:C2C12_Wold_differentiation_protocol"
         ],
         "source": "barbara-wold",
@@ -427,7 +428,7 @@
         "model_organism_health_status": "unknown",
         "mouse_life_stage": "embryonic",
         "organism": "mouse",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:ZhBTc4_Stam_protocol"
         ],
         "source": "dana-levasseur",
@@ -453,7 +454,7 @@
         "organism": "human",
         "phase": "S4",
         "product_id": "GM06990",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:Stam_15_protocols"
         ],
         "source": "coriell",
@@ -475,7 +476,7 @@
         "lab": "john-stamatoyannopoulos",
         "organism": "human",
         "product_id": "CC-2547",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:SAEC_Stam_protocol"
         ],
         "source": "lonza",
@@ -502,7 +503,6 @@
         "lot_id": "58483235",
         "organism": "human",
         "source": "encode",
-        "subcellular_fraction_term_id": "GO:0005634",
         "subcellular_fraction_term_name": "nucleus",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "12d82da3-6ee1-4919-9026-4ebdd8079ba1"
@@ -551,11 +551,11 @@
         "donor": "ENCDO017AAA",
         "lab": "thomas-gingeras",
         "lot_id": "8121902.2P",
-        "note": "Purchased as total RNA",
+        "submitter_comment": "Purchased as total RNA",
         "organism": "human",
         "passage_number": 2,
         "product_id": "C-14053",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:HAoSMC_PC_8121902.2P_certificate_of_analysis",
             "ENCODE:HAoSMC_PC_8121902.2P_general_protocol"
         ],
@@ -585,7 +585,7 @@
 
         "lab": "thomas-gingeras",
         "organism": "human",
-        "protocol_documents": [
+        "documents": [
             "ENCODE:Heart_STL003_excision_protocol",
             "ENCODE:Heart_STL003_general_protocol"
         ],
@@ -610,7 +610,6 @@
         "model_organism_age_units": "day",
         "model_organism_sex": "mixed",
         "depleted_in_term_name": ["head"],
-        "depleted_in_term_id": ["UBERON:0000033"],
         "submitted_by": "ipsum.mi@torquent.eleifend",
         "uuid": "45cf28e8-c017-42a6-a0bf-726f633c13e1"
     },
@@ -699,7 +698,7 @@
         "donor": "ENCDO568ESC",
         "lab": "thomas-gingeras",
         "organism": "human",
-        "protocol_documents": [],
+        "documents": [],
         "source": "michael-snyder",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "51ddff9b-a477-41bb-91ad-7f6c97380cbe"
@@ -1003,14 +1002,21 @@
         "biosample_type": "whole organisms",
         "donor": "/mouse-donors/ENCDO242AAA/",
         "lab": "/labs/michael-snyder",
+        "documents": [
+            "ENCODE:EPC_Stam_protocol"
+        ],
         "organism": "/organisms/mouse/",
         "source": "/sources/atcc",
         "product_id": "CRL-1740",
-        "status": "in progress",
+        "status": "released",
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6",
         "uuid": "9e9f3352-ed7f-426e-961f-3b43feed715b",
         "genetic_modifications": [
-            "encode:modification-test-1"
+            "encode:modification-test-1",
+            "encode:modification-test-2",
+            "ef12855f-5d3e-4da5-8684-3a594c60505a",
+            "2f33a486-e3d9-4633-8682-a363b48ba67d",
+            "b9264c83-2222-4678-a82f-4915af941fa4"
         ]
     }
 ]

@@ -7,7 +7,7 @@ var globals = require('./globals');
 var _ = require('underscore');
 var parseAndLogError = require('./mixins').parseAndLogError;
 var navigation = require('./navigation');
-var Modal = require('react-bootstrap/lib/Modal');
+var {Modal, ModalHeader, ModalBody, ModalFooter, ModalMixin} = require('../libs/bootstrap/modal');
 var ItemStore = require('./lib/store').ItemStore;
 var Form = require('./form').Form;
 var ObjectPicker = require('./inputs').ObjectPicker;
@@ -25,6 +25,7 @@ class AccessKeyStore extends ItemStore {
 
 
 var AccessKeyTable = React.createClass({
+    mixins: [ModalMixin],
 
     contextTypes: {
         fetch: React.PropTypes.func,
@@ -43,25 +44,25 @@ var AccessKeyTable = React.createClass({
                 <a className="btn btn-success" onClick={this.create}>Add Access Key</a>
                 {this.state.access_keys.length ?
                     <table className="table">
-                      <thead>
-                        <tr>
-                          <th>Access Key ID</th>
-                          <th>Description</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {this.state.access_keys.map(k =>
+                        <thead>
                             <tr>
-                              <td>{k.access_key_id}</td>
-                              <td>{k.description}</td>
-                              <td>
-                                <a href="" onClick={this.doAction.bind(this, 'resetSecret', k['@id'])}>reset</a>
-                                {' '}<a href="" onClick={this.doAction.bind(this, 'delete', k['@id'])}>delete</a>
-                              </td>
+                                <th>Access Key ID</th>
+                                <th>Description</th>
+                                <th></th>
                             </tr>
+                        </thead>
+                        <tbody>
+                            {this.state.access_keys.map(k =>
+                                <tr key={k.access_key_id}>
+                                    <td>{k.access_key_id}</td>
+                                    <td>{k.description}</td>
+                                    <td>
+                                        <a href="" onClick={this.doAction.bind(this, 'resetSecret', k['@id'])}>reset</a>
+                                        {' '}<a href="" onClick={this.doAction.bind(this, 'delete', k['@id'])}>delete</a>
+                                    </td>
+                                </tr>
                             )}
-                      </tbody>
+                        </tbody>
                     </table>
                 : ''}
                 {this.state.modal}
@@ -91,34 +92,45 @@ var AccessKeyTable = React.createClass({
     },
     showNewSecret: function(title, response) {
         this.setState({modal:
-            <Modal title={title} onRequestHide={this.hideModal}>
-                <div className="modal-body">
+            <Modal closeModal={this.hideModal}>
+                <ModalHeader title={title} closeModal={this.hideModal} />
+                <ModalBody>
                     Please make a note of the new secret access key.
                     This is the last time you will be able to view it.
                     <dl className="key-value">
-                        <dt>Access Key ID</dt>
-                        <dd>{response.access_key_id}</dd>
-                        <dt>Secret Access Key</dt>
-                        <dd>{response.secret_access_key}</dd>
+                        <div data-test="accesskeyid">
+                            <dt>Access Key ID</dt>
+                            <dd>{response.access_key_id}</dd>
+                        </div>
+                        <div data-test="secretaccesskey">
+                            <dt>Secret Access Key</dt>
+                            <dd>{response.secret_access_key}</dd>
+                        </div>
                     </dl>
-                </div>
+                </ModalBody>
             </Modal>
         });
     },
 
     onDelete: function(item) {
         this.setState({modal:
-            <Modal title={'Access key ' + item['access_key_id'] + ' has been deleted.'} onRequestHide={this.hideModal} />
+            <Modal closeModal={this.hideModal}>
+                <ModalHeader title={'Access key deleted.'} closeModal={this.hideModal} />
+                <ModalBody>
+                    <p>{'Access key ' + item['access_key_id'] + ' has been deleted.'}</p>
+                </ModalBody>
+            </Modal>
         });
     },
 
     onError: function(error) {
         var View = globals.content_views.lookup(error);
-        this.setState({modal: 
-            <Modal title="Error" onRequestHide={this.hideModal}>
-                <div className="modal-body">
+        this.setState({modal:
+            <Modal closeModal={this.hideModal}>
+                <ModalHeader title="Error" closeModal={this.hideModal} />
+                <ModalBody>
                     <View context={error} loadingComplete={true} />
-                </div>
+                </ModalBody>
             </Modal>
         });
     },
@@ -183,14 +195,23 @@ var User = module.exports.User = React.createClass({
 globals.content_views.register(User, 'User');
 
 
+var ImpersonateUserSchema = {
+    type: 'object',
+    properties: {
+        userid: {
+            title: 'User',
+            description: 'Enter the email of the user you want to impersonate.'
+        }
+    }
+};
+
+
 var ImpersonateUserForm = React.createClass({
     contextTypes: {
         navigate: React.PropTypes.func
     },
 
     render: function() {
-        var ReactForms = require('react-forms');
-        var ImpersonateUserSchema = require('./ImpersonateUserSchema');
         return (
             <div>
                 <h2>Impersonate User</h2>

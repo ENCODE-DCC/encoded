@@ -76,7 +76,7 @@ def audit_antibody_missing_characterizations(value, system):
             yield AuditFailure('need compliant primaries', detail,
                                level='NOT_COMPLIANT')
 
-        if lot_review['detail'] is None and lot_review['status'] == 'awaiting lab characterization':
+        if lot_review['detail'] is None and lot_review['status'] == 'awaiting characterization':
             detail = '{} needs a compliant primary characterization for one or more cell ' + \
                 'types/tissues.'.format(value['@id'])
             yield AuditFailure('need compliant primaries', detail,

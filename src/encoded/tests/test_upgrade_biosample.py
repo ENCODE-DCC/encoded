@@ -18,7 +18,8 @@ def biosample_1(biosample_0):
     item = biosample_0.copy()
     item.update({
         'schema_version': '1',
-        'starting_amount': '1000',
+        'starting_amount': 1000,
+        'starting_amount_units': 'g'
     })
     return item
 
@@ -124,6 +125,34 @@ def biosample_11(root, biosample):
         'aliases': ['testing:123', 'testing:123']
     })
     return properties
+
+
+@pytest.fixture
+def biosample_12(biosample_0, document):
+    item = biosample_0.copy()
+    item.update({
+        'schema_version': '12',
+        'starting_amount': 'unknown',
+        'starting_amount_units': 'g',
+        'note': 'Value in note.',
+        'submitter_comment': 'Different value in submitter_comment.',
+        'protocol_documents': list(document)
+    })
+    return item
+
+
+@pytest.fixture
+def biosample_13(biosample_0, document):
+    item = biosample_0.copy()
+    item.update({
+        'schema_version': '13',
+        'notes': ' leading and trailing whitespace ',
+        'description': ' leading and trailing whitespace ',
+        'submitter_comment': ' leading and trailing whitespace ',
+        'product_id': ' leading and trailing whitespace ',
+        'lot_id': ' leading and trailing whitespace '
+    })
+    return item
 
 
 def test_biosample_upgrade(upgrader, biosample_1):
@@ -268,16 +297,82 @@ def test_biosample_upgrade_inline(testapp, biosample_1):
     assert res.json['schema_version'] == schema['properties']['schema_version']['default']
 
 
-def test_biosample_upgrade_inline_unknown(testapp, biosample_1):
+def test_biosample_upgrade_starting_amount_dep(testapp, biosample_1):
     from snovault.schema_utils import load_schema
     schema = load_schema('encoded:schemas/biosample.json')
-    biosample_1['starting_amount'] = 'Unknown'
+    biosample_1['starting_amount'] = 666
+    biosample_1['starting_amount_units'] = 'g'
     res = testapp.post_json('/biosample?validate=false&render=uuid', biosample_1)
     location = res.location
+
+    # The properties are stored un-upgraded.
+    res = testapp.get(location + '?frame=raw&upgrade=false').maybe_follow()
+    assert res.json['schema_version'] == '1'
+
+    # When the item is fetched, it is upgraded automatically.
+    res = testapp.get(location).maybe_follow()
+    assert res.json['schema_version'] == schema['properties']['schema_version']['default']
+
     res = testapp.patch_json(location, {})
+
+    # The stored properties are now upgraded.
     res = testapp.get(location + '?frame=raw&upgrade=false').maybe_follow()
     assert res.json['schema_version'] == schema['properties']['schema_version']['default']
+
+    assert res.json['starting_amount'] == 666
+    assert res.json['starting_amount_units'] == 'g'
+
+
+def test_biosample_upgrade_starting_amount_explicit_patch(testapp, biosample_1):
+    from snovault.schema_utils import load_schema
+    schema = load_schema('encoded:schemas/biosample.json')
+    biosample_1['starting_amount'] = 0.632
+    biosample_1['starting_amount_units'] = 'g'
+    res = testapp.post_json('/biosample?validate=false&render=uuid', biosample_1)
+    location = res.location
+
+    # The properties are stored un-upgraded.
+    res = testapp.get(location + '?frame=raw&upgrade=false').maybe_follow()
+    assert res.json['schema_version'] == '1'
+
+    # When the item is fetched, it is upgraded automatically.
+    res = testapp.get(location).maybe_follow()
+    assert res.json['schema_version'] == schema['properties']['schema_version']['default']
+
+    res = testapp.patch_json(location, {'starting_amount': 0.263})
+
+    # The stored properties are now upgraded.
+    res = testapp.get(location + '?frame=raw&upgrade=false').maybe_follow()
+    assert res.json['schema_version'] == schema['properties']['schema_version']['default']
+
+    assert res.json['starting_amount'] == 0.263
+    assert res.json['starting_amount_units'] == 'g'
+
+
+def test_biosample_upgrade_starting_amount_unknown(testapp, biosample_1):
+    from snovault.schema_utils import load_schema
+    schema = load_schema('encoded:schemas/biosample.json')
+    biosample_1['starting_amount'] = 'unknown'
+    biosample_1['starting_amount_units'] = 'g'
+    res = testapp.post_json('/biosample?validate=false&render=uuid', biosample_1)
+    location = res.location
+
+    # The properties are stored un-upgraded.
+    res = testapp.get(location + '?frame=raw&upgrade=false').maybe_follow()
+    assert res.json['schema_version'] == '1'
+
+    # When the item is fetched, it is upgraded automatically.
+    res = testapp.get(location).maybe_follow()
+    assert res.json['schema_version'] == schema['properties']['schema_version']['default']
+
+    res = testapp.patch_json(location, {})
+
+    # The stored properties are now upgraded.
+    res = testapp.get(location + '?frame=raw&upgrade=false').maybe_follow()
+    assert res.json['schema_version'] == schema['properties']['schema_version']['default']
+
     assert 'starting_amount' not in res.json
+    assert 'starting_amount_units' not in res.json
 
 
 def test_biosample_worm_life_stage(upgrader, biosample_7):
@@ -324,3 +419,28 @@ def test_biosample_unique_array(root, upgrader, biosample, biosample_11, dummy_r
     assert value['schema_version'] == '12'
     assert len(value['dbxrefs']) == len(set(value['dbxrefs']))
     assert len(value['aliases']) == len(set(value['aliases']))
+
+
+def test_upgrade_biosample_12_to_13(root, upgrader, biosample, biosample_12, dummy_request):
+    context = root.get_by_uuid(biosample['uuid'])
+    dummy_request.context = context
+    value = upgrader.upgrade('biosample', biosample_12, target_version='13', context=context)
+    assert value['schema_version'] == '13'
+    assert 'note' not in value
+    assert value['submitter_comment'] == 'Different value in submitter_comment.; Value in note.'
+    assert 'starting_amount_units' not in value
+    assert 'starting_amount' not in value
+    assert 'protocol_documents' not in value
+    assert 'documents' in value
+
+
+def test_upgrade_biosample_13_to_14(root, upgrader, biosample, biosample_13, dummy_request):
+    context = root.get_by_uuid(biosample['uuid'])
+    dummy_request.context = context
+    value = upgrader.upgrade('biosample', biosample_13, target_version='14', context=context)
+    assert value['schema_version'] == '14'
+    assert value['notes'] == ' leading and trailing whitespace '.strip()
+    assert value['submitter_comment'] == ' leading and trailing whitespace '.strip()
+    assert value['description'] == ' leading and trailing whitespace '.strip()
+    assert value['product_id'] == ' leading and trailing whitespace '.strip()
+    assert value['lot_id'] == ' leading and trailing whitespace '.strip()

@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 var panel = require('../libs/bootstrap/panel');
+var {Modal, ModalHeader, ModalBody, ModalFooter} = require('../libs/bootstrap/modal');
 var url = require('url');
 var _ = require('underscore');
 var graph = require('./graph');
@@ -17,7 +18,7 @@ var doc = require('./doc');
 var Breadcrumbs = navigation.Breadcrumbs;
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
-var SoftwareVersionList = software.SoftwareVersionList;
+var softwareVersionList = software.softwareVersionList;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
@@ -45,7 +46,8 @@ var Pipeline = module.exports.Pipeline = React.createClass({
 
     getInitialState: function() {
         return {
-            infoNodeId: '' // ID of node whose info panel is open
+            infoNodeId: '', // ID of node whose info panel is open
+            infoModalOpen: false // Graph information modal open
         };
     },
 
@@ -157,21 +159,29 @@ var Pipeline = module.exports.Pipeline = React.createClass({
     },
 
     handleNodeClick: function(nodeId) {
-        this.setState({infoNodeId: this.state.infoNodeId !== nodeId ? nodeId : ''});
+        this.setState({
+            infoNodeId: nodeId,
+            infoModalOpen: true
+        });
+    },
+
+    closeModal: function() {
+        // Called when user wants to close modal somehow
+        this.setState({infoModalOpen: false});
     },
 
     render: function() {
-        var context = this.props.context;
-        var itemClass = globals.itemClass(context, 'view-item');
+        let context = this.props.context;
+        let itemClass = globals.itemClass(context, 'view-item');
 
-        var assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
-        var assayName = context[assayTerm];
-        var crumbs = [
+        let assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
+        let assayName = context[assayTerm];
+        let crumbs = [
             {id: 'Pipelines'},
             {id: assayName, query:  assayTerm + '=' + assayName, tip: assayName}
         ];
 
-        var documents = {};
+        let documents = {};
         if (context.documents) {
             context.documents.forEach(function(doc, i) {
                 documents[doc['@id']] = PanelLookup({context: doc, key: i + 1});
@@ -182,11 +192,12 @@ var Pipeline = module.exports.Pipeline = React.createClass({
         this.jsonGraph = this.assembleGraph();
 
         // Find the selected step, if any
-        var selectedStep, selectedNode;
+        let selectedStep, selectedNode, meta;
         if (this.state.infoNodeId) {
             selectedNode = this.jsonGraph.getNode(this.state.infoNodeId);
             if (selectedNode) {
                 selectedStep = selectedNode.metadata.ref;
+                meta = AnalysisStep(selectedStep, selectedNode);
             }
         }
 
@@ -204,7 +215,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="biosample-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="biosample-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody>
                         <dl className="key-value">
@@ -251,22 +262,24 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                 {this.jsonGraph ?
                     <div>
                         <h3>Pipeline schematic</h3>
-                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} forceRedraw>
-                            <div className="graph-node-info">
-                                {selectedStep ?
-                                    <PanelBody>
-                                        <AnalysisStep step={selectedStep} node={selectedNode} />
-                                    </PanelBody>
-                                : null}
-                            </div>
-                        </Graph>
+                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} forceRedraw />
+                        {meta && this.state.infoModalOpen ?
+                            <Modal closeModal={this.closeModal}>
+                                <ModalHeader closeModal={this.closeModal}>
+                                    {meta ? meta.header : null}
+                                </ModalHeader>
+                                <ModalBody>
+                                    {meta ? meta.body : null}
+                                </ModalBody>
+                                <ModalFooter closeModal={<button className="btn btn-info" onClick={this.closeModal}>Close</button>} />
+                            </Modal>
+                        : null}
                     </div>
                 : null}
                 {context.documents && context.documents.length ?
                     <DocumentsPanel documentSpecs={[{documents: context.documents}]} />
                 : null}
             </div>
-
         );
     }
 });
@@ -274,12 +287,13 @@ globals.content_views.register(Pipeline, 'Pipeline');
 
 
 
-var AnalysisStep = module.exports.AnalysisStep = React.createClass({
-    render: function() {
-        var stepVersions, swVersions, swStepVersions;
-        var step = this.props.step;
-        var node = this.props.node;
-        var typesList = step.analysis_step_types.join(", ");
+function AnalysisStep(step, node) {
+    let header = null;
+    let body = null;
+
+    if (step) {
+        let stepVersions, swVersions, swStepVersions;
+        let typesList = step.analysis_step_types.join(", ");
 
         // node.metadata.stepVersion is set by the experiment file graph. It's undefined for pipeline graphs.
         if (node.metadata && node.metadata.stepVersion) {
@@ -291,26 +305,26 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
             swStepVersions = _.compact(stepVersions.map(function(version) {
                 if (version.software_versions && version.software_versions.length) {
                     return (
-                        <span className="sw-step-versions" key={version.uuid}><strong>Version {version.version}</strong>: {SoftwareVersionList(version.software_versions)}<br /></span>
+                        <span className="sw-step-versions" key={version.uuid}><strong>Version {version.version}</strong>: {softwareVersionList(version.software_versions)}<br /></span>
                     );
                 }
-                return null;
+                return {header: null, body: null};
             }));
         }
 
-        return (
+        header = (
+            <div className="details-view-info">
+                <h4>
+                    {swVersions ?
+                        <span>{step.title + ' — Version ' + node.metadata.stepVersion.version}</span>
+                    :
+                        <span>{step.title}</span>
+                    }
+                </h4>
+            </div>
+        );
+        body = (
             <div>
-                <div className="details-view-header">
-                    <div className="details-view-info">
-                        <h4>
-                            {swVersions ?
-                                <span>{step.title + ' — Version ' + node.metadata.stepVersion.version}</span>
-                            :
-                                <span>{step.title}</span>
-                            }
-                        </h4>
-                    </div>
-                </div>
                 <dl className="key-value">
                     <div data-test="steptype">
                         <dt>Step type</dt>
@@ -378,7 +392,7 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
                     {swVersions ?
                         <div data-test="swversions">
                             <dt>Software</dt>
-                            <dd>{SoftwareVersionList(swVersions)}</dd>
+                            <dd>{softwareVersionList(swVersions)}</dd>
                         </div>
                     : stepVersions && stepVersions.length ?
                         <div data-test="swstepversions">
@@ -402,7 +416,8 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
             </div>
         );
     }
-});
+    return {header: header, body: body};
+}
 
 
 // Display the metadata of the selected analysis step in the graph
@@ -413,9 +428,9 @@ var StepDetailView = module.exports.StepDetailView = function(node) {
     var meta;
 
     if (selectedStep) {
-        return <AnalysisStep step={selectedStep} node={node} />;
+        return AnalysisStep(selectedStep, node);
     } else {
-        return <p className="browser-error">Missing step_run derivation information for {node.metadata.fileAccession}</p>;
+        return {header: <h4>Software unknown</h4>, body: <p className="browser-error">Missing step_run derivation information for {node.metadata.fileAccession}</p>};
     }
 };
 
@@ -468,7 +483,7 @@ var Listing = React.createClass({
                         : null}
                     </div>
                 </div>
-                <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
+                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     }

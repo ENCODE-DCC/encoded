@@ -39,12 +39,13 @@ pipelines_with_read_depth = {
     'Histone ChIP-seq': {
         'narrow': 20000000,
         'broad': 45000000
-        },
+    },
     'Transcription factor ChIP-seq pipeline (modERN)': 3000000
     }
 
 special_assays_with_read_depth = {
     'shRNA knockdown followed by RNA-seq': 10000000,
+    'siRNA knockdown followed by RNA-seq': 10000000,
     'CRISPR genome editing followed by RNA-seq': 10000000,
     'single cell isolation followed by RNA-seq': 5000000
     }
