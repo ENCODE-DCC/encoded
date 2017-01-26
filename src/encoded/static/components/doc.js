@@ -135,14 +135,12 @@ var Document = module.exports.Document = React.createClass({
             <section className="flexcol panel-doc">
                 <Panel addClasses={globals.itemClass(context, 'document')}>
                     <DocumentHeaderView doc={context} label={this.props.label} />
-                    <PanelBody>
-                        <div className="document__intro">
-                            <DocumentCaptionView doc={context} />
-                            <DocumentPreviewView doc={context} />
-                        </div>
-                        <DocumentFileView doc={context} detailOpen={this.state.panelOpen} detailSwitch={this.handleClick} />
-                        <DocumentDetailView doc={context} detailOpen={this.state.panelOpen} id={context['@id']} />
-                    </PanelBody>
+                    <div className="document__intro">
+                        <DocumentCaptionView doc={context} />
+                        <DocumentPreviewView doc={context} />
+                    </div>
+                    <DocumentFileView doc={context} detailOpen={this.state.panelOpen} detailSwitch={this.handleClick} />
+                    <DocumentDetailView doc={context} detailOpen={this.state.panelOpen} id={context['@id']} />
                 </Panel>
             </section>
         );
@@ -226,16 +224,16 @@ var DocumentFile = module.exports.DocumentFile = React.createClass({
 
             return (
                 <div className="document__file">
-                    <i className="icon icon-download"></i>&nbsp;
-                    <a data-bypass="true" title={dlFileTitle} href={attachmentHref} download={doc.attachment.download}>
-                        {doc.attachment.download}
-                    </a>
+                    <div className="document__file-name">
+                        <i className="icon icon-download document__file-name-icon" />
+                        <a data-bypass="true" className="document__file-name-link" title={dlFileTitle} href={attachmentHref} download={doc.attachment.download}>
+                            {doc.attachment.download}
+                        </a>
+                    </div>
                     {detailSwitch ?
-                        <div className="detail-switch">
-                            <a href="#" data-trigger onClick={detailSwitch} className="collapsing-doc">
-                                {collapseIcon(!this.props.detailOpen)}
-                            </a>
-                        </div>
+                        <a href="#" data-trigger onClick={detailSwitch} className="document__file-detail-switch">
+                            {collapseIcon(!this.props.detailOpen)}
+                        </a>
                     : null}
                 </div>
             );

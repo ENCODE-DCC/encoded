@@ -484,6 +484,8 @@ $attachment-button-margin: 3px;
 }
 
 // Document styles, normally added to a <Panel> component's classes.
+$detail-switch-height: 30px;
+$detail-switch-width: 30px;
 .document {
     margin-top: 0;
 
@@ -497,7 +499,6 @@ $attachment-button-margin: 3px;
 
     @at-root #{&}__intro {
         display: flex;
-        margin: -10px;
         border-bottom: 1px solid #c0c0c0;
     }
 
@@ -513,6 +514,47 @@ $attachment-button-margin: 3px;
         border-left: 1px solid #c0c0c0;
     }
 
+    @at-root #{&}__file {
+        display: flex;
+
+        @at-root #{&}-name {
+            flex: 1 1 auto;
+
+            @at-root #{&}-icon {
+                display: inline-block;
+                padding: 0 5px;
+                line-height: $detail-switch-height;
+            }
+
+            @at-root #{&}-link {
+                display: inline;
+                line-height: $detail-switch-height;
+            }
+        }
+
+        @at-root #{&}-detail-switch {
+            flex: 0 0 $detail-switch-width;
+            padding: 5px;
+            height: $detail-switch-height;
+            line-height: $detail-switch-height;
+            background-color: #e8e8e8;
+
+            &:hover {
+                background-color: #b8c7d5;
+            }
+        }
+    }
+
+    @at-root #{&}__detail {
+        display: none;
+        margin: 0;
+        padding: 10px 5px;
+        border-top: 1px solid #c0c0c0;
+
+        &.active {
+            display: block;
+        }
+    }
 }
 
 
@@ -548,37 +590,24 @@ $attachment-button-margin: 3px;
 
 // ***************************************
 // Document download file bar classes
-$dl-bar-height: 30px;
 
 // THe file bar itself
 .dl-bar {
     position: relative;
-    height: $dl-bar-height;
+    height: $detail-switch-height;
     padding: 0 10px 0 10px;
-    line-height: $dl-bar-height;
+    line-height: $detail-switch-height;
     border-bottom: 1px solid #e8e8e8;
     white-space: nowrap;
     overflow: hidden;
-}
-
-// Box containing the switch to drop down the details panel
-.detail-switch {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    width: $dl-bar-height;
-    height: $dl-bar-height;
-    background-color: #e8e8e8;
-    border-left: 1px solid #e0e0e0;
 }
 
 // Icon within .detail-switch to show the current state of the switch
 .detail-trigger {
     @extend .icon-caret-down;
     display: block;
-    height: $dl-bar-height;
-    line-height: $dl-bar-height;
+    height: $detail-switch-height;
+    line-height: $detail-switch-height;
     font-size: 1.4rem;
     cursor: pointer;
     text-align: center;
