@@ -14,5 +14,6 @@ NTR_assay_lookup = {
     'NTR:0003082': 'single cell isolation followed by RNA-seq',
     'NTR:0003660': 'microRNA counts',
     'NTR:0003814': 'CRISPR genome editing followed by RNA-seq',
-    'NTR:0000612': 'Switchgear'
+    'NTR:0000612': 'Switchgear',
+    'NTR:0004774': 'DNA accessibility'
 }

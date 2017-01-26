@@ -2930,12 +2930,17 @@ def audit_experiment_assay(value, system):
         detail = 'Assay_term_id is a New Term Request ({} - {})'.format(term_id, term_name)
         yield AuditFailure('NTR assay', detail, level='INTERNAL_ACTION')
 
-        if term_name != NTR_assay_lookup[term_id]:
-            detail = 'Experiment has a mismatch between assay_term_name "{}" and assay_term_id "{}"'.format(
-                term_name,
-                term_id,
-            )
-            yield AuditFailure('mismatched assay_term_name', detail, level='INTERNAL_ACTION')
+        if NTR_assay_lookup.get(term_id):
+            if term_name != NTR_assay_lookup[term_id]:
+                detail = 'Experiment has a mismatch between ' + \
+                         'assay_term_name "{}" and assay_term_id "{}"'.format(
+                             term_name,
+                             term_id)
+                yield AuditFailure('mismatched assay_term_name', detail, level='INTERNAL_ACTION')
+                return
+        else:
+            detail = 'Assay term id {} not in NTR lookup table'.format(term_id)
+            yield AuditFailure('not updated NTR lookup table', detail, level='INTERNAL_ACTION')
             return
 
     elif term_id not in ontology:
