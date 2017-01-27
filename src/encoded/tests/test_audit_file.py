@@ -679,3 +679,15 @@ def test_audit_file_md5sum(testapp, file1):
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent md5sum'
                for error in errors_list)
+
+
+def test_audit_file_redundant_qc(testapp, file6, chipseq_bam_quality_metric,
+                                 chipseq_bam_quality_metric_2):
+    testapp.patch_json(chipseq_bam_quality_metric_2['@id'], {'quality_metric_of': [file6['@id']]})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'redundant quality metric'
+               for error in errors_list)

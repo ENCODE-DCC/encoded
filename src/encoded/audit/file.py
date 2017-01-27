@@ -780,6 +780,38 @@ def extract_award_version(bam_file):
     return 'ENC3'
 
 
+@audit_checker('File', frame=['quality_metrics'])
+def audit_file_redundant_qc_metrics(value, system):
+    quality_metrics = value.get('quality_metrics')
+    metrics_set = set()
+    if quality_metrics:
+        redundant_types = []
+        for metric in quality_metrics:
+            metric.pop('uuid')
+            metric.pop('@id')
+            metric.pop('date_created')
+            metric_string = str(ordered_representation(metric))
+            if metric_string in metrics_set:
+                redundant_types.append()
+            else:
+                metrics_set.add(metric['@type'][0])
+        if len(metrics_set) < len(quality_metrics):
+            detail = 'File {} '.format(value['@id']) + \
+                     'is associated with redundant quality metrics of the following ' + \
+                     'type(s) {} '.format(
+                         redundant_types)
+            yield AuditFailure('redundant quality metric', detail, level='INTERNAL_ACTION')
+
+
+def ordered_representation(obj):
+    if isinstance(obj, dict):
+        return sorted((k, ordered_representation(v)) for k, v in obj.items())
+    if isinstance(obj, list):
+        return sorted(ordered_representation(x) for x in obj)
+    else:
+        return obj
+
+
 @audit_checker('file', frame=[
     'quality_metrics',
     'analysis_step_version',
