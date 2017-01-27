@@ -17,7 +17,7 @@ var Panel = module.exports.Panel = React.createClass({
 
                     <div data-test="obiid">
                         <dt>OBI ID</dt>
-                        <dd><dbxref value={context.term_id} /></dd>
+                        <dd>{context.term_id}</dd>
                     </div>
 
                     <div data-test="externalresources">
