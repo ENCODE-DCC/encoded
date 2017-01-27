@@ -795,7 +795,7 @@ def audit_file_redundant_qc_metrics(value, system):
                 redundant_types.append()
             else:
                 metrics_set.add(metric['@type'][0])
-        if len(metrics_set) < len(quality_metrics):
+        if redundant_types:
             detail = 'File {} '.format(value['@id']) + \
                      'is associated with redundant quality metrics of the following ' + \
                      'type(s) {} '.format(
