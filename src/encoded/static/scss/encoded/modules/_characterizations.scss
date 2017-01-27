@@ -715,26 +715,40 @@ $detail-switch-width: 30px;
 // **********
 
 // area to hold biosample terms
-.characterization-biosample-terms {
+.document__characterization-reviews {
     display: flex;
-    margin-top: -1px;
     margin-right: -1px;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-content: flex-start;
     align-items: flex-start;
     border-bottom: 1px solid #c0c0c0;
 }
 
 // each biosample term
-.characterization-biosample-term {
-    order: 0;
-    padding: 2px 5px;
+.document__characterization-biosample-term {
+    flex: 1 1 auto;
     align-self: auto;
+    padding: 2px 5px;
+    margin-right: 1px;
     text-align: center;
     background-color: #e8e8e8;
-    border-top: 1px solid #fff;
-    border-right: 1px solid #fff;
     font-size: 0.9rem;
+}
+
+.document__characterization-badge {
+    flex: 1 1 auto;
+    padding: 0 3px;
+
+    .status-list {
+        .label {
+            display: inline-block;
+            margin: 3px 0;
+            padding: 0 17px 0 10px;
+            text-align: center;
+            font-size: 0.85rem;
+            line-height: 24px;
+        }
+    }
 }
