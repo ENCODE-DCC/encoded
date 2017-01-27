@@ -279,6 +279,7 @@ def load_vis_defs():
                 vis_def = json.load(fh)
                 if vis_def:
                     VIS_DEFS_BY_TYPE.update(vis_def)
+    COMPOSITE_VIS_DEFS_DEFAULT = vis_def.get("opaque",{})
 
 
 def get_vis_type(dataset):
