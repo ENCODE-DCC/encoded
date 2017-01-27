@@ -509,8 +509,8 @@ $detail-switch-width: 30px;
 
     @at-root #{&}__preview {
         flex: 0 0 $document-figure-width;
+        align-items: stretch;
         margin: 0;
-        height: $document-figure-height;
         border-left: 1px solid #c0c0c0;
     }
 
@@ -519,11 +519,13 @@ $detail-switch-width: 30px;
 
         @at-root #{&}-name {
             flex: 1 1 auto;
+            overflow: hidden;
+            white-space: nowrap;
 
             @at-root #{&}-icon {
                 display: inline-block;
                 padding: 0 5px;
-                line-height: $detail-switch-height;
+                line-height: $detail-switch-height - 1;
             }
 
             @at-root #{&}-link {

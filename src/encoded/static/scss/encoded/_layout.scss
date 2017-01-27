@@ -137,11 +137,21 @@
     padding-left: 10px;
     width: 100%;
 
-    @media screen and (min-width: $screen-sm-min) {
-        width: 50%;
+
+    @at-root #{&}--doc {
+        @media screen and (min-width: $screen-sm-min) {
+            width: 50%;
+        }
+
+        @media screen and (min-width: $screen-md-min) {
+            width: 33.33333%;
+        }
     }
-    @media screen and (min-width: $screen-md-min) {
-        width: 33.33333%;
+
+    @at-root #{&}--attachment {
+        @media screen and (min-width: $screen-sm-min) {
+            width: 50%;
+        }
     }
 }
 

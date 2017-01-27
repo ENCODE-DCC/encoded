@@ -132,7 +132,7 @@ var Document = module.exports.Document = React.createClass({
         var DocumentDetailView = globals.document_views.detail.lookup(context);
 
         return (
-            <section className="flexcol panel-doc">
+            <section className="flexcol flexcol--doc">
                 <Panel addClasses={globals.itemClass(context, 'document')}>
                     <DocumentHeaderView doc={context} label={this.props.label} />
                     <div className="document__intro">
@@ -314,50 +314,74 @@ globals.document_views.file.register(DocumentFile, 'Document');
 globals.document_views.detail.register(DocumentDetail, 'Document');
 
 
+const QCAttachmentCaption = React.createClass({
+    propTypes: {
+        title: React.PropTypes.string.isRequired, // Title to display for attachment
+    },
+
+    render: function () {
+        const { title } = this.props;
+
+        return (
+            <div className="document__caption">
+                <div data-test="caption">
+                    <strong>Attachment: </strong>
+                    {title}
+                </div>
+            </div>
+        );
+    }
+});
+
+
+const QCAttachmentPreview = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object.isRequired, // QC metric object that owns the attachment to render
+        attachment: React.PropTypes.object.isRequired, // Attachment to render
+    },
+
+    render: function () {
+        const { context, attachment } = this.props;
+
+        return (
+            <figure className="document__preview">
+                <Attachment context={context} attachment={attachment} className="characterization" />
+            </figure>
+        );
+    }
+});
+
 // Display a panel for attachments that aren't a part of an associated document
-var AttachmentPanel = module.exports.AttachmentPanel = React.createClass({
+const AttachmentPanel = module.exports.AttachmentPanel = React.createClass({
     propTypes: {
         context: React.PropTypes.object.isRequired, // Object that owns the attachment; needed for attachment path
         attachment: React.PropTypes.object.isRequired, // Attachment being rendered
         title: React.PropTypes.string // Title to display in the caption area
     },
 
-    render: function() {
-        var {context, attachment, title} = this.props;
+    render: function () {
+        const { context, attachment, title } = this.props;
 
-        // Make the download link
-        var download, attachmentHref;
-        if (attachment.href && attachment.download) {
-            attachmentHref = url.resolve(context['@id'], attachment.href);
-            download = (
-                <div className="dl-link">
-                    <i className="icon icon-download"></i>&nbsp;
-                    <a data-bypass="true" href={attachmentHref} download={attachment.download}>
-                        Download
-                    </a>
-                </div>
-            );
-        } else {
-            download = <em>Attachment not available to download</em>;
-        }
+        // Set up rendering components.
+        const DocumentCaptionView = globals.document_views.caption.lookup(context);
+        const DocumentPreviewView = globals.document_views.preview.lookup(context);
 
         return (
-            <section className="attachment-panel">
-                <Panel addClasses={globals.itemClass(context, 'view-detail quality-metric-header')}>
-                    <div className="document-intro document-meta-data">
-                        {title ?
-                            <div data-test="attachments">
-                                <strong>Attachment: </strong>
-                                {title}
-                            </div>
-                        : null}
-                        {download}
+            <section className="flexcol flexcol--attachment">
+                <Panel addClasses={globals.itemClass(context, 'attachment')}>
+                    <div className="document__intro">
+                        <DocumentCaptionView title={title} />
+                        <DocumentPreviewView context={context} attachment={attachment} />
                     </div>
-                    <figure>
-                        <Attachment context={context} attachment={attachment} className="characterization" />
-                    </figure>
                 </Panel>
             </section>
         );
     }
 });
+
+
+// Register document caption rendering components
+globals.document_views.caption.register(QCAttachmentCaption, 'QualityMetric');
+
+// Register document preview rendering components
+globals.document_views.preview.register(QCAttachmentPreview, 'QualityMetric');

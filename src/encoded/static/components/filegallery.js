@@ -1864,7 +1864,7 @@ function qcDetailsView(metrics) {
                                     {/* If the metrics object has an `attachment` property, display that first, then display the properties
                                         not named `attachment` but which have their own schema attribute, `attachment`, set to true */}
                                     {metrics.ref.attachment ?
-                                        <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} />
+                                        <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} title="Attachment" />
                                     : null}
                                     {qcPanels}
                                 </div>

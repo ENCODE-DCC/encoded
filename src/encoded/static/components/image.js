@@ -133,7 +133,7 @@ var Attachment = module.exports.Attachment = React.createClass({
                     <div className="attachment">
                         <a data-bypass="true" href={attachmentHref} className="attachment__button" target="_blank" title="Open attachment in a new window">
                             <div className="attachment__hover" />
-                            <div clasName="file-generic">Attachment Icon</div>
+                            <div className="file-generic">Attachment Icon</div>
                         </a>
                     </div>
                 );
