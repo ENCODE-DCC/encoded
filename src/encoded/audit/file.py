@@ -787,9 +787,17 @@ def audit_file_redundant_qc_metrics(value, system):
     if quality_metrics:
         redundant_types = []
         for metric in quality_metrics:
-            metric.pop('uuid')
-            metric.pop('@id')
-            metric.pop('date_created')
+            metric.pop('uuid', None)
+            metric.pop('@id', None)
+            metric.pop('date_created', None)
+            metric.pop('audit', None)
+            metric.pop('attachment', None)
+            metric.pop('quality_metric_of', None)
+            metric.pop('schema_version', None)
+            metric.pop('status', None)
+            metric.pop('step_run', None)
+            metric.pop('submitted_by', None)
+
             metric_string = str(ordered_representation(metric))
             if metric_string in metrics_set:
                 redundant_types.append()
