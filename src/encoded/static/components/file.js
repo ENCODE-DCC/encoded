@@ -266,6 +266,13 @@ class FileComponent extends React.Component {
                                         </div>
                                     : null}
 
+                                    {context.content_error_detail ?
+                                        <div data-test="contenterrordetail">
+                                            <dt>Content error detail</dt>
+                                            <dd>{context.content_error_detail}</dd>
+                                        </div>
+                                    : null}
+
                                     {aliasList ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>

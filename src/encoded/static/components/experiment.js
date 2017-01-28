@@ -434,7 +434,7 @@ var ExperimentComponent = React.createClass({
                                         <dd>{context.lab.title}</dd>
                                     </div>
 
-                                    <AwardRef context={context} loggedIn={loggedIn} />
+                                    <AwardRef context={context} />
 
                                     <div data-test="project">
                                         <dt>Project</dt>

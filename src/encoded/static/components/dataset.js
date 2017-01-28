@@ -203,7 +203,7 @@ const AnnotationComponent = React.createClass({
                                         </div>
                                     : null}
 
-                                    <AwardRef context={context} loggedIn={loggedIn} />
+                                    <AwardRef context={context} />
 
                                     {context.aliases.length ?
                                         <div data-test="aliases">
@@ -371,7 +371,7 @@ const PublicationDataComponent = React.createClass({
                                         </div>
                                     : null}
 
-                                    <AwardRef context={context} loggedIn={loggedIn} />
+                                    <AwardRef context={context} />
 
                                     <div data-test="externalresources">
                                         <dt>External resources</dt>
@@ -525,7 +525,7 @@ const ReferenceComponent = React.createClass({
                                         </div>
                                     : null}
 
-                                    <AwardRef context={context} loggedIn={loggedIn} />
+                                    <AwardRef context={context} />
 
                                     {context.aliases.length ?
                                         <div data-test="aliases">
@@ -710,7 +710,7 @@ const ProjectComponent = React.createClass({
                                         </div>
                                     : null}
 
-                                    <AwardRef context={context} loggedIn={loggedIn} />
+                                    <AwardRef context={context} />
 
                                     {context.aliases.length ?
                                         <div data-test="aliases">
@@ -881,7 +881,7 @@ const UcscBrowserCompositeComponent = React.createClass({
                                         </div>
                                     : null}
 
-                                    <AwardRef context={context} loggedIn={loggedIn} />
+                                    <AwardRef context={context} />
 
                                     {context.aliases.length ?
                                         <div data-test="aliases">
@@ -1300,7 +1300,7 @@ export const SeriesComponent = React.createClass({
                                         <dd>{context.lab.title}</dd>
                                     </div>
 
-                                    <AwardRef context={context} loggedIn={loggedIn} />
+                                    <AwardRef context={context} />
 
                                     <div data-test="project">
                                         <dt>Project</dt>
