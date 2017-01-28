@@ -133,8 +133,6 @@
     flex-basis: auto;
     flex-grow: 0;
     min-height: 1px;
-    padding-right: 10px;
-    padding-left: 10px;
     width: 100%;
 
 
@@ -149,8 +147,26 @@
     }
 
     @at-root #{&}--attachment {
+        margin: 3px;
+
         @media screen and (min-width: $screen-sm-min) {
-            width: 50%;
+            width: 32.8%;
+        }
+
+        .panel {
+            margin: 0;
+        }
+    }
+
+    @at-root #{&}--attachment-modal {
+        margin: 3px;
+
+        @media screen and (min-width: $screen-sm-min) {
+            width: 48%;
+        }
+
+        .panel {
+            margin: 0;
         }
     }
 }

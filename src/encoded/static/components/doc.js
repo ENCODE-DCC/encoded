@@ -356,20 +356,25 @@ const AttachmentPanel = module.exports.AttachmentPanel = React.createClass({
     propTypes: {
         context: React.PropTypes.object.isRequired, // Object that owns the attachment; needed for attachment path
         attachment: React.PropTypes.object.isRequired, // Attachment being rendered
-        title: React.PropTypes.string // Title to display in the caption area
+        title: React.PropTypes.string, // Title to display in the caption area
+        modal: React.PropTypes.bool, // `true` if attachments are displayed in a modal
     },
 
     render: function () {
-        const { context, attachment, title } = this.props;
+        const { context, attachment, title, modal } = this.props;
 
         // Set up rendering components.
         const DocumentCaptionView = globals.document_views.caption.lookup(context);
         const DocumentPreviewView = globals.document_views.preview.lookup(context);
 
+        // Determine the attachment area CSS classes based on whether they're displayed in a modal
+        // or not.
+        const attachmentClasses = `flexcol flexcol--attachment${modal ? '-modal' : ''}`;
+
         return (
-            <section className="flexcol flexcol--attachment">
+            <section className={attachmentClasses}>
                 <Panel addClasses={globals.itemClass(context, 'attachment')}>
-                    <div className="document__intro">
+                    <div className="document__intro document__intro--attachment-only">
                         <DocumentCaptionView title={title} />
                         <DocumentPreviewView context={context} attachment={attachment} />
                     </div>

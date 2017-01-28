@@ -479,15 +479,11 @@ $attachment-button-margin: 3px;
     word-break: break-all;
 }
 
-.type-QualityMetric {
-    @include type-panel($qualitymetric-figure-width, $qualitymetric-figure-width);
-}
-
 // Document styles, normally added to a <Panel> component's classes.
 $detail-switch-height: 30px;
 $detail-switch-width: 30px;
 .document {
-    margin-top: 0;
+    margin: 3px;
 
     // Document header; normally a document type and/or label
     @at-root #{&}__header {
@@ -500,6 +496,10 @@ $detail-switch-width: 30px;
     @at-root #{&}__intro {
         display: flex;
         border-bottom: 1px solid #c0c0c0;
+
+        @at-root #{&}--attachment-only {
+            border-bottom: none;
+        }
     }
 
     @at-root #{&}__caption {
@@ -560,11 +560,6 @@ $detail-switch-width: 30px;
     }
 }
 
-
-.quality-metric-header {
-    height: auto;
-    overflow: visible;
-}
 
 %panel-intro {
     padding: 5px;
