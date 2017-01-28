@@ -90,7 +90,7 @@ var AdvSearch = React.createClass({
 
     handleAutocompleteClick: function(term, id, name) {
         var newTerms = {};
-        var inputNode = this.refs.annotation.getDOMNode();
+        var inputNode = this.refs.annotation;
         inputNode.value = term;
         newTerms[name] = id;
         this.setState({terms: newTerms});

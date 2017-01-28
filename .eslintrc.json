@@ -5,6 +5,7 @@
     },
     "rules": {
         "func-names": 0,
+        "global-require": 0,
         "indent": [
             2,
             4
@@ -19,6 +20,7 @@
                 "props": false
             }
         ],
+        
         "no-underscore-dangle": 0,
         "no-restricted-properties": 0,
         "object-shorthand": 0,

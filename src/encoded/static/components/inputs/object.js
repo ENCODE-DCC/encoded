@@ -72,9 +72,9 @@ var ObjectPicker = module.exports.ObjectPicker = React.createClass({
 
     componentDidUpdate: function(prevProps, prevState) {
         if (!this.props.value && !this.state.searchInput && this.state.searchInput != prevState.searchInput) {
-            this.refs.input.getDOMNode().focus();
+            this.refs.input.focus();
         } else if (this.props.value != prevProps.value) {
-            this.refs.clear.getDOMNode().focus();
+            this.refs.clear.focus();
         }
     },
 

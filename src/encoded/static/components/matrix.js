@@ -44,7 +44,7 @@ var Matrix = module.exports.Matrix = React.createClass({
     // Called when the Visualize button dropdown menu gets opened or closed. `dropdownEl` is the DOM node for the dropdown menu.
     // This sets inline CSS to set the height of the wrapper <div> to make room for the dropdown.
     updateElement: function(dropdownEl) {
-        var wrapperEl = this.refs.hubscontrols.getDOMNode();
+        var wrapperEl = this.refs.hubscontrols;
         var dropdownHeight = dropdownEl.clientHeight;
         if (dropdownHeight === 0) {
             // The dropdown menu has closed

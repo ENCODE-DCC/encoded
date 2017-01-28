@@ -51,7 +51,7 @@ var Home = module.exports.Home = React.createClass({
 
     newsLoaded: function () {
         // Called once the news content gets loaded
-        let newsEl = this.refs.newslisting.getDOMNode();
+        let newsEl = this.refs.newslisting;
         this.setState({ socialHeight: newsEl.clientHeight });
     },
 
@@ -886,7 +886,7 @@ var TwitterWidget = React.createClass({
     injectTwitter: function () {
         var js, link;
         if (!this.initialized) {
-            link = this.refs.link.getDOMNode();
+            link = this.refs.link;
             this.initialized = true;
             js = document.createElement("script");
             js.id = "twitter-wjs";

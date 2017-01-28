@@ -39,6 +39,6 @@ module.exports.DropdownMenu = React.createClass({
 
 module.exports.DropdownMenuSep = React.createClass({
     render: function() {
-        return <li className="dropdown-sep"></li>;
+        return <div className="dropdown-sep"></div>;
     }
 });

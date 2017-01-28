@@ -1,4 +1,4 @@
-import React from 'react/addons';
+import React from 'react';
 import _ from 'underscore';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { DropdownButton } from '../libs/bootstrap/button';

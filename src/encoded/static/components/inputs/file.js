@@ -37,7 +37,7 @@ var FileInput = module.exports.FileInput = React.createClass({
 
     onChange: function(e, file) {
         if (file === undefined) {
-            var input = this.refs.input.getDOMNode();
+            var input = this.refs.input;
             file = input.files[0];
         }
         var reader = new FileReader();

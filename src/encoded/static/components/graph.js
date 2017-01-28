@@ -177,7 +177,7 @@ export const Graph = React.createClass({
                     this.d3 = require('d3');
                     this.dagreD3 = require('dagre-d3');
 
-                    const el = this.refs.graphdisplay.getDOMNode();
+                    const el = this.refs.graphdisplay;
 
                     // Add SVG element to the graph component, and assign it classes, sizes, and a group
                     const svg = this.d3.select(el).insert('svg', '#graph-node-info')
@@ -203,14 +203,14 @@ export const Graph = React.createClass({
             });
         } else {
             // Output text indicating that graphs aren't supported.
-            let el = this.refs.graphdisplay.getDOMNode();
+            let el = this.refs.graphdisplay;
             const para = document.createElement('p');
             para.className = 'browser-error';
             para.innerHTML = 'Graphs not supported in your browser. You need a more modern browser to view it.';
             el.appendChild(para);
 
             // Disable the download button
-            el = this.refs.dlButton.getDOMNode();
+            el = this.refs.dlButton;
             el.setAttribute('disabled', 'disabled');
         }
 
@@ -223,7 +223,7 @@ export const Graph = React.createClass({
     // State change; redraw the graph
     componentDidUpdate: function () {
         if (this.dagreD3 && !this.cv.zoomMouseDown) {
-            const el = this.refs.graphdisplay.getDOMNode(); // Change in React 0.14
+            const el = this.refs.graphdisplay; // Change in React 0.14
             const { viewBoxWidth, viewBoxHeight } = this.drawGraph(el);
 
             // Bind node/subnode click handlers to parent component handlers
@@ -486,7 +486,7 @@ export const Graph = React.createClass({
 
     rangeDoubleClick: function () {
         // Handle a double click in the zoom slider
-        const el = this.refs.graphdisplay.getDOMNode();
+        const el = this.refs.graphdisplay;
         const zoomLevel = this.setInitialZoomLevel(el, this.cv.savedSvg);
         this.setState({ zoomLevel: zoomLevel });
     },
@@ -510,11 +510,13 @@ export const Graph = React.createClass({
             <Panel noDefaultClasses={noDefaultClasses}>
                 <div className="zoom-control-area">
                     <table className="zoom-control">
-                        <tr>
-                            <td className="zoom-indicator"><i className="icon icon-minus" /></td>
-                            <td className="zomm-controller"><input type="range" className="zoom-slider" min={minZoom} max={maxZoom} value={this.state.zoomLevel} onChange={this.rangeChange} onDoubleClick={this.rangeDoubleClick} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} /></td>
-                            <td className="zoom-indicator"><i className="icon icon-plus" /></td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td className="zoom-indicator"><i className="icon icon-minus" /></td>
+                                <td className="zomm-controller"><input type="range" className="zoom-slider" min={minZoom} max={maxZoom} value={this.state.zoomLevel} onChange={this.rangeChange} onDoubleClick={this.rangeDoubleClick} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} /></td>
+                                <td className="zoom-indicator"><i className="icon icon-plus" /></td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
                 <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler} />

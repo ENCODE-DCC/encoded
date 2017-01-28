@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 
 // Display a modal dialog box that blocks all other page input until the user dismisses it. The
@@ -265,7 +266,7 @@ export const Modal = React.createClass({
     },
 
     componentWillUnmount: function () {
-        React.unmountComponentAtNode(this.modalEl);
+        ReactDOM.unmountComponentAtNode(this.modalEl);
         document.body.removeChild(this.modalEl);
         document.removeEventListener('keydown', this.handleEsc, false);
     },
@@ -301,7 +302,7 @@ export const Modal = React.createClass({
     // lets us properly render the fixed-position backdrop so that it overlays the fixed-position
     // navigation bar.
     renderModal: function () {
-        React.render(
+        ReactDOM.render(
             <div>
                 {!this.props.actuator || this.state.modalOpen ?
                     <div>

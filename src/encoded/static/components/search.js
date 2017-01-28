@@ -144,7 +144,7 @@ var StatusIndicator = React.createClass({
         var whiteSpace = 'nowrap';
         var resultBounds = document.getElementById('result-table').getBoundingClientRect();
         var resultWidth = resultBounds.right - resultBounds.left;
-        var tipBounds = _.clone(getNextElementSibling(this.refs.indicator.getDOMNode()).getBoundingClientRect());
+        var tipBounds = _.clone(getNextElementSibling(this.refs.indicator).getBoundingClientRect());
         var tipWidth = tipBounds.right - tipBounds.left;
         var width = tipWidth;
         if (tipWidth > resultWidth) {

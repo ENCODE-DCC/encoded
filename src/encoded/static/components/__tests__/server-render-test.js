@@ -19,8 +19,8 @@ describe("Server rendering", function () {
     };
 
     beforeEach(function () {
-        require('../../libs/react-patches');
         React = require('react');
+        ReactDOM = requite('react-dom');
         App = require('..');
         var server_app = <App context={home} href={home_url} />;
         var markup = '<!DOCTYPE html>\n' + React.renderToString(server_app);
@@ -40,7 +40,7 @@ describe("Server rendering", function () {
 
     it("mounts the application over the rendered html", function () {
         var props = App.getRenderedProps(document);
-        var app = React.render(<App {...props} />, document);
+        var app = ReactDOM.render(<App {...props} />, document);
         expect(app.getDOMNode()).toBe(document.documentElement);
     });
 });
