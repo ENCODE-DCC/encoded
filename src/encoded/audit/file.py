@@ -800,9 +800,10 @@ def audit_file_redundant_qc_metrics(value, system):
 
             metric_string = str(ordered_representation(metric))
             if metric_string in metrics_set:
-                redundant_types.append()
+                redundant_types.append(metric['@type'][0])
             else:
-                metrics_set.add(metric['@type'][0])
+                metrics_set.add(metric_string)
+
         if redundant_types:
             detail = 'File {} '.format(value['@id']) + \
                      'is associated with redundant quality metrics of the following ' + \
