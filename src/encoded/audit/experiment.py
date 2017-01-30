@@ -818,7 +818,7 @@ def check_experiment_dnase_seq_standards(experiment,
                                                  'DuplicatesQualityMetric',
                                                  desired_assembly)
         if duplicates_quality_metrics:
-            for metric in samtools_flagstat_metrics:
+            for metric in duplicates_quality_metrics:
                 percentage = metric.get('Percent Duplication')
                 if percentage:
                     percentage = percentage * 100
@@ -843,9 +843,9 @@ def check_experiment_dnase_seq_standards(experiment,
                                  'respectively is considered acceptable.  ' + \
                                  '(See {} )'.format(link_to_standards)
                         if percentage < upper_threshold:
-                            yield AuditFailure('high duplicatioon rate', detail, level='WARNING')
+                            yield AuditFailure('high duplication rate', detail, level='WARNING')
                         else:
-                            yield AuditFailure('extremely high duplicatioon rate',
+                            yield AuditFailure('extremely high duplication rate',
                                                detail, level='ERROR')
 
         hotspot_assemblies = {}
