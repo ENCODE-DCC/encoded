@@ -785,7 +785,7 @@ def audit_file_redundant_qc_metrics(value, system):
     quality_metrics = value.get('quality_metrics')
     metrics_set = set()
     if quality_metrics:
-        redundant_types = []
+        redundant_types = set()
         for metric in quality_metrics:
             metric.pop('uuid', None)
             metric.pop('@id', None)
@@ -800,7 +800,7 @@ def audit_file_redundant_qc_metrics(value, system):
 
             metric_string = str(ordered_representation(metric))
             if metric_string in metrics_set:
-                redundant_types.append(metric['@type'][0])
+                redundant_types.add(metric['@type'][0])
             else:
                 metrics_set.add(metric_string)
 
@@ -808,7 +808,7 @@ def audit_file_redundant_qc_metrics(value, system):
             detail = 'File {} '.format(value['@id']) + \
                      'is associated with redundant quality metrics of the following ' + \
                      'type(s) {} '.format(
-                         redundant_types)
+                         ', '.join(list(redundant_types)))
             yield AuditFailure('redundant quality metric', detail, level='INTERNAL_ACTION')
 
 
