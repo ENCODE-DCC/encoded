@@ -252,3 +252,14 @@ class IDRQualityMetric(QualityMetric, CalculatedAssayTermID):
 class GenericQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'generic_quality_metric'
     schema = load_schema('encoded:schemas/generic_quality_metric.json')
+
+
+@collection(
+    name='atacseq-quality-metrics',
+    properties={
+        'title': "ATAC-seq Quality Metric",
+        'description': "ATAC-seq quality metric",
+    })
+class ATACseqQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'atacseq_quality_metric'
+    schema = load_schema('encoded:schemas/atacseq_quality_metric.json')
