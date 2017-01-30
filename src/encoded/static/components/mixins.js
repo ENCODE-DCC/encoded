@@ -104,9 +104,9 @@ module.exports.Auth0 = {
         if (session['auth.userid']) {
             this.fetchSessionProperties();
         }
-        this.setProps({
+        this.setState({
+            session_cookie: session_cookie,
             href: window.location.href,
-            session_cookie: session_cookie
         });
 
         // Make a URL for the logo.
@@ -277,7 +277,7 @@ module.exports.Auth0 = {
                     }
                 }
                 // If there is an error, show the error messages
-                this.setProps({context: data});
+                this.setState({context: data});
             });
         });
     },
@@ -310,7 +310,7 @@ module.exports.Auth0 = {
         }, err => {
             parseError(err).then(data => {
                 data.title = 'Logout failure: ' + data.title;
-                this.setProps({context: data});
+                this.setState({context: data});
             });
         });
     }
@@ -352,12 +352,6 @@ module.exports.HistoryAndTriggers = {
         return {
             adviseUnsavedChanges: this.adviseUnsavedChanges,
             navigate: this.navigate
-        };
-    },
-
-    getDefaultProps: function() {
-        return {
-            slow: false
         };
     },
 
@@ -417,7 +411,7 @@ module.exports.HistoryAndTriggers = {
 
     onHashChange: function (event) {
         // IE8/9
-        this.setProps({href: window.location.href});
+        this.setState({href: window.location.href});
     },
 
     trigger: function (name) {
@@ -552,9 +546,9 @@ module.exports.HistoryAndTriggers = {
                 this.requestAborted = true;
                 this.requestCurrent = false;
             }
-            this.setProps({
+            this.setState({
+                href: href,  // href should be consistent with context
                 context: event.state,
-                href: href  // href should be consistent with context
             });
         }
         // Always async update in case of server side changes.
@@ -627,7 +621,7 @@ module.exports.HistoryAndTriggers = {
             } else {
                 window.history.pushState(window.state, '', href + fragment);
             }
-            this.setProps({href: href + fragment});
+            this.setState({ href: href + fragment });
             return;
         }
 
@@ -640,7 +634,7 @@ module.exports.HistoryAndTriggers = {
 
         Promise.race([request, timeout.promise]).then(v => {
             if (v instanceof Timeout) {
-                this.setProps({'slow': true});
+                this.setState({ slow: true });
             } else {
                 // Request has returned data
                 this.requestCurrent = false;
@@ -670,7 +664,7 @@ module.exports.HistoryAndTriggers = {
             } else {
                 window.history.pushState(null, '', response_url + fragment);
             }
-            this.setProps({
+            this.setState({
                 href: response_url + fragment
             });
             if (!response.ok) {
@@ -704,16 +698,16 @@ module.exports.HistoryAndTriggers = {
         // gotten a response. If the requestAborted flag is set, then a request was aborted and so we have
         // the data for a Network Request Error. Don't render that, but clear the requestAboerted flag.
         // Otherwise we have good page data to render.
-        var newProps = {slow: false};
+        var newState = { slow: false };
         if (!this.requestAborted) {
             // Real page to render
-            newProps.context = data;
+            newState.context = data;
         } else {
             // data holds network error. Don't render that, but clear the requestAborted flag so we're ready
             // for the next navigation click.
             this.requestAborted = false;
         }
-        this.setProps(newProps);
+        this.setState({ context: newState.context });
     },
 
     componentDidUpdate: function () {

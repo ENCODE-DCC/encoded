@@ -728,9 +728,6 @@ const Form = module.exports.Form = React.createClass({
             skipAttributes: ['dependencies'],
         });
 
-        // for debugging:
-        console.log(validation);
-
         // `jsonschema` uses field paths like
         //   `instance.aliases[0]`
         // but we use paths like

@@ -94,6 +94,9 @@ var App = React.createClass({
 
     getInitialState: function() {
         return {
+            context: this.props.context,
+            slow: this.props.slow,
+            href: this.props.href,
             errors: [],
             assayTermNameColors: null,
             dropdownComponent: undefined
@@ -122,7 +125,7 @@ var App = React.createClass({
             dropdownComponent: this.state.dropdownComponent, // ID of component with visible dropdown
             listActionsFor: this.listActionsFor,
             currentResource: this.currentResource,
-            location_href: this.props.href,
+            location_href: this.state.href,
             portal: portal,
             hidePublicAudits: false, // True if audits should be hidden on the UI while logged out
             projectColors: projectColors,
@@ -158,11 +161,11 @@ var App = React.createClass({
     },
 
     currentResource: function() {
-        return this.props.context;
+        return this.state.context;
     },
 
     currentAction: function() {
-        var href_url = url.parse(this.props.href);
+        var href_url = url.parse(this.state.href);
         var hash = href_url.hash || '';
         var name;
         if (hash.slice(0, 2) === '#!') {
@@ -174,8 +177,8 @@ var App = React.createClass({
     render: function() {
         console.log('render app');
         var content, containerClass;
-        var context = this.props.context;
-        var href_url = url.parse(this.props.href);
+        var context = this.state.context;
+        var href_url = url.parse(this.state.href);
         // Switching between collections may leave component in place
         var key = context && context['@id'] && context['@id'].split('?')[0];
         var current_action = this.currentAction();
@@ -199,7 +202,7 @@ var App = React.createClass({
         });
 
         var appClass = 'done';
-        if (this.props.slow) {
+        if (this.state.slow) {
             appClass = 'communicating';
         }
 
@@ -210,7 +213,7 @@ var App = React.createClass({
             title = portal.portal_title;
         }
 
-        var canonical = this.props.href;
+        var canonical = this.state.href;
         if (context.canonical_uri) {
             if (href_url.host) {
                 canonical = (href_url.protocol || '') + '//' + href_url.host + context.canonical_uri;
@@ -242,7 +245,7 @@ var App = React.createClass({
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
                     <script data-prop-name="context" type="application/ld+json" dangerouslySetInnerHTML={{
-                        __html: '\n\n' + jsonScriptEscape(JSON.stringify(this.props.context)) + '\n\n'
+                        __html: '\n\n' + jsonScriptEscape(JSON.stringify(this.state.context)) + '\n\n'
                     }}></script>
                     <div id="slot-application">
                         <div id="application" className={appClass}>

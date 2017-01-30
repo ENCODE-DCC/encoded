@@ -113,7 +113,16 @@ var FetchedData = module.exports.FetchedData = React.createClass({
 
     handleFetch: function(result) {
         // Set state to returned search result data to cause rerender of child components
+        console.log('MOUNT: ' + this.mounted);
         this.setState(result);
+    },
+
+    componentDidMount: function() {
+        this.mounted = true;
+    },
+
+    componentWillUnmount: function() {
+        this.mounted = false;
     },
 
     render: function () {
