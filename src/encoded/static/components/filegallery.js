@@ -717,14 +717,6 @@ const RawSequencingTable = React.createClass({
                                 const groupFiles = pairedRepGroups[pairedRepKey];
                                 const bottomClass = j < (pairedRepKeys.length - 1) ? 'merge-bottom' : '';
 
-                                // Render an array of biological replicate and library to display on
-                                // the first row of files, spanned to all rows for that replicate and
-                                // library
-                                const spanned = [
-                                    <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>{groupFiles[0].biological_replicates[0]}</td>,
-                                    <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right + table-raw-merged`}>{groupFiles[0].replicate.library.accession}</td>,
-                                ];
-
                                 // Render each file's row, with the biological replicate and library
                                 // cells only on the first row.
                                 return groupFiles.sort((a, b) => (a.pairSortKey < b.pairSortKey ? -1 : 1)).map((file, i) => {
@@ -748,7 +740,12 @@ const RawSequencingTable = React.createClass({
 
                                     return (
                                         <tr key={file['@id']} className={file.restricted ? 'file-restricted' : ''}>
-                                            {i === 0 ? { spanned } : null}
+                                            {i === 0 ?
+                                                <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>{groupFiles[0].biological_replicates[0]}</td>
+                                            : null}
+                                            {i === 0 ?
+                                                <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right + table-raw-merged`}>{groupFiles[0].replicate.library.accession}</td>
+                                            : null}
                                             <td className={pairClass}>
                                                 <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
                                             </td>

@@ -176,7 +176,7 @@ module.exports.Auth0 = {
         return cookie(document).get('session');
     },
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillUpdate: function (nextProps) {
         if (!this.state.session || (this.props.session_cookie !== nextProps.session_cookie)) {
             var nextState = {};
             nextState.session = this.parseSessionCookie(nextProps.session_cookie);
@@ -707,7 +707,7 @@ module.exports.HistoryAndTriggers = {
             // for the next navigation click.
             this.requestAborted = false;
         }
-        this.setState({ context: newState.context });
+        this.setState({ context: newState });
     },
 
     componentDidUpdate: function () {

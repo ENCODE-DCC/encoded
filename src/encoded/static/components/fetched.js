@@ -113,16 +113,7 @@ var FetchedData = module.exports.FetchedData = React.createClass({
 
     handleFetch: function(result) {
         // Set state to returned search result data to cause rerender of child components
-        console.log('MOUNT: ' + this.mounted);
         this.setState(result);
-    },
-
-    componentDidMount: function() {
-        this.mounted = true;
-    },
-
-    componentWillUnmount: function() {
-        this.mounted = false;
     },
 
     render: function () {
@@ -170,7 +161,13 @@ var FetchedData = module.exports.FetchedData = React.createClass({
             .filter(obj => obj && (obj['@type'] || []).indexOf('Error') > -1);
 
         // If we got an error, display the error string on the web page
-        if (!this.props.ignoreErrors && errors.length) {
+        if (errors.length) {
+            // If we don't want to see the Network Error in the browser, just render nothing.
+            if (this.props.ignoreErrors) {
+                return null;
+            }
+
+            // Render whatever error we got back from the server on the page.
             return (
                 <div className="error done">
                     {errors.map(error => {
