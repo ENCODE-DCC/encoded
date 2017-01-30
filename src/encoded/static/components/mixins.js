@@ -707,7 +707,7 @@ module.exports.HistoryAndTriggers = {
             // for the next navigation click.
             this.requestAborted = false;
         }
-        this.setState({ context: newState });
+        this.setState(newState);
     },
 
     componentDidUpdate: function () {
