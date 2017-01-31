@@ -63,7 +63,7 @@ DEFAULT_DOC_TYPES = [
 ]
 
 
-def get_pagination(request, news_search):
+def get_pagination(request, news_search=False):
     from_ = request.params.get('from') or 0
     size = request.params.get('limit', 25)
     if size in ('all', ''):
@@ -849,7 +849,7 @@ def report(context, request):
 
     # Ignore large limits, which make `search` return a Response
     # -- UNLESS we're being embedded by the download_report view
-    from_, size = get_pagination(request, False)
+    from_, size = get_pagination(request)
     if ('limit' in request.GET and request.__parent__ is None
             and (size is None or size > 1000)):
         del request.GET['limit']
