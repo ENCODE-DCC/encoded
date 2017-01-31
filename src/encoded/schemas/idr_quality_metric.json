@@ -33,7 +33,7 @@
         "N1": {
             "title": "# rep1 self-pseudoreplicate peaks",
             "type": "number",
-            "description": "Number of peaks from replicate 1 self-pseudoreplicates"
+            "description": "Number of peaks from replicate 1 self-pseudoreplicates or the number of stable peaks that pass the internal psuedoreplication IDR threhold, when self-pseudoreplication is done on unreplicated experiments."
         },
         "N2": {
             "title": "# rep2 self-pseudoreplicate peaks",
