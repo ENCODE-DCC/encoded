@@ -849,7 +849,7 @@ def report(context, request):
 
     # Ignore large limits, which make `search` return a Response
     # -- UNLESS we're being embedded by the download_report view
-    from_, size = get_pagination(request)
+    from_, size = get_pagination(request, False)
     if ('limit' in request.GET and request.__parent__ is None
             and (size is None or size > 1000)):
         del request.GET['limit']
