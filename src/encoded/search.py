@@ -63,14 +63,11 @@ DEFAULT_DOC_TYPES = [
 ]
 
 
-def get_pagination(request, news_search):
+def get_pagination(request):
     from_ = request.params.get('from') or 0
     size = request.params.get('limit', 25)
     if size in ('all', ''):
-        if news_search:
-            size = 1000
-        else:
-            size = None
+        size = None
     else:
         try:
             size = int(size)
@@ -629,6 +626,8 @@ def search(context, request, search_type=None, return_generator=False):
     es_index = request.registry.settings['snovault.elasticsearch.index']
     search_audit = request.has_permission('search_audit')
 
+    from_, size = get_pagination(request)
+
     search_term = prepare_search_term(request)
 
     if search_type is None:
@@ -638,12 +637,6 @@ def search(context, request, search_type=None, return_generator=False):
 
     else:
         doc_types = [search_type]
-
-    # Determine if we're displaying a news search page
-    news_search = len(doc_types) == 1 and doc_types[0] == 'Page' and request.params.get('news')
-
-    # Always display most recent 1000 news items. Otherwise it depends on type of request.
-    from_, size = get_pagination(request, news_search)
 
     # Normalize to item_type
     try:
@@ -743,10 +736,9 @@ def search(context, request, search_type=None, return_generator=False):
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
     # Decide whether to use scan for results.
-    do_scan = (size is None or size > 1000) and not news_search
+    do_scan = size is None or size > 1000
     # Execute the query
     if do_scan:
-        print('***DOSCAN***')
         es_results = es.search(body=query, index=es_index, search_type='count')
     else:
         es_results = es.search(body=query, index=es_index, from_=from_, size=size)
@@ -1044,3 +1036,4 @@ def matrix(context, request):
         result['notification'] = 'No results found'
 
     return result
+    
