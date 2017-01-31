@@ -461,7 +461,7 @@ let HomepageChart = React.createClass({
             <div>
                 <div className="title">
                     Project
-                    <center> <hr width="80%" position="static" color="blue"></hr> </center>
+                    <center> <hr width="80%" color="blue"></hr> </center>
                 </div>
                 {this.facetData.length && total ?
                     <div id="chart-wrapper-1" className="chart-wrapper">
@@ -648,7 +648,7 @@ var HomepageChart2 = React.createClass({
             <div>
                 <div className="title">
                     Biosample Type
-                    <center> <hr width="80%" position="static" color="blue"></hr> </center>
+                    <center> <hr width="80%" color="blue"></hr> </center>
                 </div>
                 {this.facetData.length && total ?
                     <div id="chart-wrapper-2" className="chart-wrapper">
@@ -812,7 +812,7 @@ let HomepageChart3 = React.createClass({
             <div>
                 <div className="title">
                     Assay Categories
-                    <center> <hr width="80%" position="static" color="blue"></hr> </center>
+                    <center> <hr width="80%" color="blue"></hr> </center>
                 </div>
                 {this.facetData.length && total ?
                     <div id="chart-wrapper-3" className="chart-wrapper">
