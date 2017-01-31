@@ -411,7 +411,8 @@
                 "small RNA-seq",
                 "Bru-seq",
                 "BruChase-seq",
-                "genetic modification followed by DNase-seq"
+                "genetic modification followed by DNase-seq",
+                "CRISPRi followed by RNA-seq"
             ]
         }
     },
