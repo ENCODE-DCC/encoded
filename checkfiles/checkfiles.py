@@ -396,8 +396,8 @@ def process_fastq_file(job, fastq_data_stream, session, url):
             try:
                 line = encoded_line.decode('utf-8')
             except UnicodeDecodeError:
-                errors['fastq line decoding error'] = 'Error occured, while decoding fastq line : ' + \
-                                                      encoded_line + ' in file ' + item['accession']
+                errors['fastq line decoding error'] = 'Error occured, while decoding fastq line ' + \
+                                                      ' in file ' + item['accession']
                 break
             else:
                 line_index += 1
