@@ -276,6 +276,13 @@ const File = React.createClass({
                                         </div>
                                     : null}
 
+                                    {context.content_error_detail ?
+                                        <div data-test="contenterrordetail">
+                                            <dt>Content error detail</dt>
+                                            <dd>{context.content_error_detail}</dd>
+                                        </div>
+                                    : null}
+
                                     {aliasList ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
@@ -326,6 +333,7 @@ const SequenceFileInfo = React.createClass({
     render: function () {
         const { file } = this.props;
         const pairedWithAccession = file.paired_with ? globals.atIdToAccession(file.paired_with) : '';
+        const platformAccession = file.platform ? decodeURIComponent(globals.atIdToAccession(file.platform)) : '';
 
         return (
             <Panel>
@@ -338,7 +346,7 @@ const SequenceFileInfo = React.createClass({
                         {file.platform ?
                             <div data-test="platform">
                                 <dt>Platform</dt>
-                                <dd><a href={file.platform['@id']} title="View page for this platform">{file.platform.title ? file.platform.title : file.platform.term_id}</a></dd>
+                                <dd><a href={file.platform} title="View page for this platform">{platformAccession}</a></dd>
                             </div>
                         : null}
 
