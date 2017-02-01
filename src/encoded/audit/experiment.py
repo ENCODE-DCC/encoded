@@ -3579,3 +3579,49 @@ def audit_missing_construct(value, system):
                     ' match that of the linked construct {}, {}.'.format(c['@id'],
                                                                          c['target']['@id'])
                 yield AuditFailure('mismatched construct target', detail, level='ERROR')
+
+
+def get_mapped_length(bam_file):
+    mapped_length = bam_file.get('mapped_read_length')
+    if mapped_length:
+        return mapped_length
+    derived_from_fastqs = get_derived_from_files_set([bam_file], 'fastq', True)
+    for f in derived_from_fastqs:
+        length = f.get('read_length')
+        if length:
+            return length
+    return None
+
+
+@audit_checker(
+    'Experiment',
+    frame=[
+        'original_files',
+        'original_files.derived_from',
+        'original_files.derived_from.derived_from'
+        ])
+def audit_experiment_mapped_read_length(value, system):
+    assay_term_id = value.get('assay_term_id')
+    if not assay_term_id or assay_term_id != 'OBI:0000716':  # not a ChIP-seq
+        return
+    peaks_files = scan_files_for_file_format_output_type(value['original_files'],
+                                                         'bed', 'peaks')
+    for peaks_file in peaks_files:
+        derived_from_bams = get_derived_from_files_set([peaks_file], 'bam', True)
+        read_lengths_set = set()
+        for bam_file in derived_from_bams:
+            mapped_read_length = get_mapped_length(bam_file)
+            if mapped_read_length:
+                read_lengths_set.add(mapped_read_length)
+            else:
+                detail = 'Experiment {} '.format(value['@id']) + \
+                         'contains an alignments .bam file {} '.format(bam_file['@id']) + \
+                         'that lacks mapped reads length information.'
+                yield AuditFailure('missing mapped reads lengths', detail, level='INTERNAL_ACTION')
+        if len(read_lengths_set) > 1:
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     'contains a processed .bed file {} '.format(peaks_file['@id']) + \
+                     'that was derived from alignments files with inconsistent mapped ' + \
+                     'reads lengths {}.'.format(sorted(list(read_lengths_set)))
+            yield AuditFailure('inconsistent mapped reads lengths',
+                               detail, level='INTERNAL_ACTION')
