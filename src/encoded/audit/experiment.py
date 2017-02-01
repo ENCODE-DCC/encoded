@@ -3607,21 +3607,25 @@ def audit_experiment_mapped_read_length(value, system):
     peaks_files = scan_files_for_file_format_output_type(value['original_files'],
                                                          'bed', 'peaks')
     for peaks_file in peaks_files:
-        derived_from_bams = get_derived_from_files_set([peaks_file], 'bam', True)
-        read_lengths_set = set()
-        for bam_file in derived_from_bams:
-            mapped_read_length = get_mapped_length(bam_file)
-            if mapped_read_length:
-                read_lengths_set.add(mapped_read_length)
-            else:
-                detail = 'Experiment {} '.format(value['@id']) + \
-                         'contains an alignments .bam file {} '.format(bam_file['@id']) + \
-                         'that lacks mapped reads length information.'
-                yield AuditFailure('missing mapped reads lengths', detail, level='INTERNAL_ACTION')
-        if len(read_lengths_set) > 1:
-            detail = 'Experiment {} '.format(value['@id']) + \
-                     'contains a processed .bed file {} '.format(peaks_file['@id']) + \
-                     'that was derived from alignments files with inconsistent mapped ' + \
-                     'reads lengths {}.'.format(sorted(list(read_lengths_set)))
-            yield AuditFailure('inconsistent mapped reads lengths',
-                               detail, level='INTERNAL_ACTION')
+        if peaks_file['lab'] == '/labs/encode-processing-pipeline/':
+            derived_from_bams = get_derived_from_files_set([peaks_file], 'bam', True)
+            read_lengths_set = set()
+            for bam_file in derived_from_bams:
+                if bam_file['lab'] == '/labs/encode-processing-pipeline/':
+                    mapped_read_length = get_mapped_length(bam_file)
+                    if mapped_read_length:
+                        read_lengths_set.add(mapped_read_length)
+                    else:
+                        detail = 'Experiment {} '.format(value['@id']) + \
+                                 'contains an alignments .bam file {} '.format(bam_file['@id']) + \
+                                 'that lacks mapped reads length information.'
+                        yield AuditFailure('missing mapped reads lengths', detail,
+                                           level='INTERNAL_ACTION')
+            if len(read_lengths_set) > 1:
+                if max(read_lengths_set) - min(read_lengths_set) >= 4:
+                    detail = 'Experiment {} '.format(value['@id']) + \
+                             'contains a processed .bed file {} '.format(peaks_file['@id']) + \
+                             'that was derived from alignments files with inconsistent mapped ' + \
+                             'reads lengths {}.'.format(sorted(list(read_lengths_set)))
+                    yield AuditFailure('inconsistent mapped reads lengths',
+                                       detail, level='INTERNAL_ACTION')
