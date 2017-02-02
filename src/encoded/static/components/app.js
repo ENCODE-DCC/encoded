@@ -8,7 +8,7 @@ var mixins = require('./mixins');
 var Navigation = require('./navigation');
 var Footer = require('./footer');
 var url = require('url');
-var {Home} = require('./home');
+import Home from './home';
 var {NewsHead} = require('./page');
 
 var portal = {

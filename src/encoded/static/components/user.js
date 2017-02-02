@@ -7,7 +7,7 @@ var globals = require('./globals');
 var _ = require('underscore');
 var parseAndLogError = require('./mixins').parseAndLogError;
 var navigation = require('./navigation');
-var {Modal, ModalHeader, ModalBody, ModalFooter, ModalMixin} = require('../libs/bootstrap/modal');
+var { Modal, ModalHeader, ModalBody, ModalFooter } = require('../libs/bootstrap/modal');
 var ItemStore = require('./lib/store').ItemStore;
 var Form = require('./form').Form;
 var ObjectPicker = require('./inputs').ObjectPicker;
@@ -25,8 +25,6 @@ class AccessKeyStore extends ItemStore {
 
 
 var AccessKeyTable = React.createClass({
-    mixins: [ModalMixin],
-
     contextTypes: {
         fetch: React.PropTypes.func,
         session_properties: React.PropTypes.object
