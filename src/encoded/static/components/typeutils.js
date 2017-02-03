@@ -174,28 +174,16 @@ export const BiosampleTableFooter = React.createClass({
 export const AwardRef = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // Object containing the award property
-        loggedIn: React.PropTypes.bool, // True if user's logged in
     },
 
     render: function () {
-        const { context, loggedIn } = this.props;
+        const { context } = this.props;
 
-        if (context.award) {
+        if (context.award && context.award.pi && context.award.pi.lab) {
             return (
                 <div data-test="awardpi">
                     <dt>Award</dt>
-                    <dd>
-                        {context.award.status === 'current' || loggedIn ?
-                            <a href={context.award['@id']}>
-                                {context.award.name}
-                            </a>
-                        :
-                            <span>{context.award.name}</span>
-                        }
-                        {context.award.pi && context.award.pi.lab ?
-                            <span> ({context.award.pi.lab.title})</span>
-                        : null}
-                    </dd>
+                    <dd>{context.award.pi.lab.title}</dd>
                 </div>
             );
         }
