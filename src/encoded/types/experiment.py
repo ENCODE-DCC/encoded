@@ -396,7 +396,7 @@ class Experiment(Dataset,
         if assay_term_id in registry['ontology']:
             preferred_name = registry['ontology'][assay_term_id].get('preferred_name',
                                                                      assay_term_name)
-            if preferred_name == 'RNA-seq' and replicates is not None:
+            if preferred_name == 'total RNA-seq' and replicates is not None:
                 for rep in replicates:
                     replicateObject = request.embed(rep, '@@object')
                     if replicateObject['status'] == 'deleted':
