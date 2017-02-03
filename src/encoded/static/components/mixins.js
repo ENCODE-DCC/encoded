@@ -1,11 +1,9 @@
-/*jshint scripturl:true */
-'use strict';
-var _ = require('underscore');
-var React = require('react');
-var url = require('url');
-var origin = require('../libs/origin');
-var serialize = require('form-serialize');
-var ga = require('google-analytics');
+import React from 'react';
+import _ from 'underscore';
+import url from 'url';
+import ga from 'google-analytics';
+import serialize from 'form-serialize';
+import origin from '../libs/origin';
 
 var parseError = module.exports.parseError = function (response) {
     if (response instanceof Error) {
@@ -75,246 +73,268 @@ class Timeout {
 }
 
 
-module.exports.Auth0 = {
-    childContextTypes: {
+function extractSessionCookie() {
+    const cookie = require('cookie-monster');
+    return cookie(document).get('session');
+}
+
+function parseSessionCookie(sessionCookie) {
+    const buffer = require('buffer').Buffer;
+    let session;
+    if (sessionCookie) {
+        // URL-safe base64
+        const mutatedSessionCookie = sessionCookie.replace(/\-/g, '+').replace(/\_/g, '/');
+        // First 64 chars is the sha-512 server signature
+        // Payload is [accessed, created, data]
+        try {
+            session = JSON.parse(buffer(mutatedSessionCookie, 'base64').slice(64).toString())[2];
+        } catch (e) {
+        }
+    }
+    return session || {};
+}
+
+
+/* eslint new-cap: ["error", { "newIsCapExceptions": ["default"] }]*/
+
+const Auth0Decor = module.exports.Auth0Decor = (Auth0Component) => {
+    class Auth0Class extends React.Component {
+        constructor() {
+            super();
+
+            // React component state.
+            this.state = {
+                session: null,
+                session_properties: {},
+                session_cookie: '',
+            };
+
+            // Bind this to non-React methods.
+            this.fetch = this.fetch.bind(this);
+            this.fetchSessionProperties = this.fetchSessionProperties.bind(this);
+            this.handleAuth0Login = this.handleAuth0Login.bind(this);
+            this.triggerLogin = this.triggerLogin.bind(this);
+            this.triggerLogout = this.triggerLogout.bind(this);
+        }
+
+        getChildContext() {
+            return {
+                fetch: this.fetch,
+                session: this.state.session,
+                session_properties: this.state.session_properties
+            };
+        }
+
+        componentDidMount() {
+            // Login / logout actions must be deferred until Auth0 is ready.
+            const sessionCookie = extractSessionCookie();
+            const session = parseSessionCookie(sessionCookie);
+            if (session['auth.userid']) {
+                this.fetchSessionProperties();
+            }
+            this.setState({
+                session_cookie: sessionCookie,
+                href: window.location.href,
+            });
+
+            // Make a URL for the logo.
+            const hrefInfo = url.parse(this.props.href);
+            const logoHrefInfo = {
+                hostname: hrefInfo.hostname,
+                port: hrefInfo.port,
+                protocol: hrefInfo.protocol,
+                pathname: '/static/img/encode-logo-small-2x.png',
+            };
+            const logoUrl = url.format(logoHrefInfo);
+
+            const lock_ = require('auth0-lock');
+            this.lock = new lock_.default('WIOr638GdDdEGPJmABPhVzMn6SYUIdIH', 'encode.auth0.com', {
+                auth: {
+                    redirect: false,
+                },
+                theme: {
+                    logo: logoUrl,
+                },
+                socialButtonStyle: 'big',
+                languageDictionary: {
+                    title: 'Log in to ENCODE',
+                },
+                allowedConnections: ['github', 'google-oauth2', 'facebook', 'linkedin'],
+            });
+            this.lock.on('authenticated', this.handleAuth0Login);
+        }
+
+        componentWillUpdate(nextProps, nextState) {
+            if (!this.state.session || (this.state.session_cookie !== nextState.session_cookie)) {
+                const updateState = {};
+                updateState.session = parseSessionCookie(nextState.session_cookie);
+                if (!updateState.session['auth.userid']) {
+                    updateState.session_properties = {};
+                } else if (updateState.session['auth.userid'] !== (this.state.session && this.state.session['auth.userid'])) {
+                    this.fetchSessionProperties();
+                }
+                this.setState(updateState);
+            }
+        }
+
+        componentDidUpdate(prevProps, prevState) {
+            if (this.props) {
+                Object.keys(this.props).forEach((propKey) => {
+                    if (this.props[propKey] !== prevProps[propKey]) {
+                        console.log('changed props: %s', propKey);
+                    }
+                });
+            }
+            if (this.state) {
+                Object.keys(this.state).forEach((stateKey) => {
+                    if (this.state[stateKey] !== prevState[stateKey]) {
+                        console.log('changed state: %s', stateKey);
+                    }
+                });
+            }
+        }
+
+        fetch(uri, options) {
+            let reqUri = uri;
+            const extendedOptions = _.extend({ credentials: 'same-origin' }, options);
+            const httpMethod = extendedOptions.method || 'GET';
+            if (!(httpMethod === 'GET' || httpMethod === 'HEAD')) {
+                const headers = extendedOptions.headers = _.extend({}, extendedOptions.headers);
+                const session = this.state.session;
+                if (session && session._csrft_) {
+                    headers['X-CSRF-Token'] = session._csrft_;
+                }
+            }
+            // Strip url fragment.
+            const urlHash = reqUri.indexOf('#');
+            if (urlHash > -1) {
+                reqUri = reqUri.slice(0, urlHash);
+            }
+            const request = fetch(reqUri, options);
+            request.xhr_begin = 1 * new Date();
+            request.then((response) => {
+                request.xhr_end = 1 * new Date();
+                const statsHeader = response.headers.get('X-Stats') || '';
+                request.server_stats = require('querystring').parse(statsHeader);
+                request.etag = response.headers.get('ETag');
+                const sessionCookie = extractSessionCookie();
+                if (this.state.session_cookie !== sessionCookie) {
+                    this.setState({ session_cookie: sessionCookie });
+                }
+            });
+            return request;
+        }
+
+        fetchSessionProperties() {
+            if (this.sessionPropertiesRequest) {
+                return;
+            }
+            this.sessionPropertiesRequest = true;
+            this.fetch('/session-properties', {
+                headers: { Accept: 'application/json' },
+            }).then((response) => {
+                this.sessionPropertiesRequest = null;
+                if (!response.ok) {
+                    throw response;
+                }
+                return response.json();
+            }).then((sessionProperties) => {
+                this.setState({ session_properties: sessionProperties });
+            });
+        }
+
+        handleAuth0Login(authResult, retrying) {
+            const accessToken = authResult.accessToken;
+            if (!accessToken) {
+                return;
+            }
+            this.sessionPropertiesRequest = true;
+            this.fetch('/login', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ accessToken: accessToken }),
+            }).then((response) => {
+                this.lock.hide();
+                if (!response.ok) {
+                    throw response;
+                }
+                return response.json();
+            }).then((sessionProperties) => {
+                this.setState({ session_properties: sessionProperties });
+                this.sessionPropertiesRequest = null;
+                let nextUrl = window.location.href;
+                if (window.location.hash === '#logged-out') {
+                    nextUrl = window.location.pathname + window.location.search;
+                }
+                this.navigate(nextUrl, { replace: true });
+            }, (err) => {
+                this.sessionPropertiesRequest = null;
+                parseError(err).then((data) => {
+                    // Server session creds might have changed.
+                    if (data.code === 400 && data.detail.indexOf('CSRF') !== -1) {
+                        if (!retrying) {
+                            window.setTimeout(this.handleAuth0Login.bind(this, accessToken, true));
+                            return;
+                        }
+                    }
+                    // If there is an error, show the error messages
+                    this.setState({ context: data });
+                });
+            });
+        }
+
+        triggerLogin() {
+            if (this.state.session && !this.state.session._csrft_) {
+                this.fetch('/session');
+            }
+            this.lock.show();
+        }
+
+        triggerLogout() {
+            console.log('Logging out (Auth0)');
+            const session = this.state.session;
+            if (!(session && session['auth.userid'])) return;
+            this.fetch('/logout?redirect=false', {
+                headers: { Accept: 'application/json' },
+            }).then((response) => {
+                if (!response.ok) throw response;
+                return response.json();
+            }).then(() => {
+                this.DISABLE_POPSTATE = true;
+                const oldPath = window.location.pathname + window.location.search;
+                window.location.assign('/#logged-out');
+                if (oldPath === '/') {
+                    window.location.reload();
+                }
+            }, (err) => {
+                parseError(err).then((data) => {
+                    data.title = `Logout failure: ${data.title}`;
+                    this.setState({ context: data });
+                });
+            });
+        }
+
+        render() {
+            return <Auth0Component {...this.props} />;
+        }
+    }
+
+    Auth0Class.propTypes = {
+        href: React.PropTypes.string.isRequired,
+    }
+
+    Auth0Class.childContextTypes = {
         fetch: React.PropTypes.func,
         session: React.PropTypes.object,
         session_properties: React.PropTypes.object
-    },
-
-    getChildContext: function() {
-        return {
-            fetch: this.fetch,
-            session: this.state.session,
-            session_properties: this.state.session_properties
-        };
-    },
-
-    getInitialState: function () {
-        return {
-            session: null,
-            session_properties: {}
-        };
-    },
-
-    componentDidMount: function () {
-        // Login / logout actions must be deferred until Auth0 is ready.
-        var session_cookie = this.extractSessionCookie();
-        var session = this.parseSessionCookie(session_cookie);
-        if (session['auth.userid']) {
-            this.fetchSessionProperties();
-        }
-        this.setState({
-            session_cookie: session_cookie,
-            href: window.location.href,
-        });
-
-        // Make a URL for the logo.
-        const hrefInfo = url.parse(this.props.href);
-        const logoHrefInfo = {
-            hostname: hrefInfo.hostname,
-            port: hrefInfo.port,
-            protocol: hrefInfo.protocol,
-            pathname: '/static/img/encode-logo-small-2x.png'
-        };
-        const logoUrl = url.format(logoHrefInfo);
-
-        var lock_ = require('auth0-lock');
-        this.lock = new lock_.default('WIOr638GdDdEGPJmABPhVzMn6SYUIdIH', 'encode.auth0.com', {
-            auth: {
-                redirect: false
-            },
-            theme: {
-                logo: logoUrl
-            },
-            socialButtonStyle: 'big',
-            languageDictionary: {
-                title: "Log in to ENCODE"
-            },
-            allowedConnections: ['github', 'google-oauth2', 'facebook', 'linkedin']
-        });
-        this.lock.on("authenticated", this.handleAuth0Login);
-    },
-
-    fetch: function (url, options) {
-        options = _.extend({credentials: 'same-origin'}, options);
-        var http_method = options.method || 'GET';
-        if (!(http_method === 'GET' || http_method === 'HEAD')) {
-            var headers = options.headers = _.extend({}, options.headers);
-            var session = this.state.session;
-            //var userid = session['auth.userid'];
-            //if (userid) {
-            //    // Server uses this to check user is logged in
-            //    headers['X-If-Match-User'] = userid;
-            //}
-            if (session && session._csrft_) {
-                headers['X-CSRF-Token'] = session._csrft_;
-            }
-        }
-        // Strip url fragment.
-        var url_hash = url.indexOf('#');
-        if (url_hash > -1) {
-            url = url.slice(0, url_hash);
-        }
-        var request = fetch(url, options);
-        request.xhr_begin = 1 * new Date();
-        request.then(response => {
-            request.xhr_end = 1 * new Date();
-            var stats_header = response.headers.get('X-Stats') || '';
-            request.server_stats = require('querystring').parse(stats_header);
-            request.etag = response.headers.get('ETag');
-            var session_cookie = this.extractSessionCookie();
-            if (this.state.session_cookie !== session_cookie) {
-                this.setState({session_cookie: session_cookie});
-            }
-        });
-        return request;
-    },
-
-    extractSessionCookie: function () {
-        var cookie = require('cookie-monster');
-        return cookie(document).get('session');
-    },
-
-    componentWillUpdate: function (nextProps, nextState) {
-        if (!this.state.session || (this.state.session_cookie !== nextState.session_cookie)) {
-            var updateState = {};
-            updateState.session = this.parseSessionCookie(nextState.session_cookie);
-            if (!updateState.session['auth.userid']) {
-                updateState.session_properties = {};
-            } else if (updateState.session['auth.userid'] !== (this.state.session && this.state.session['auth.userid'])) {
-                this.fetchSessionProperties();
-            }
-            this.setState(updateState);
-        }
-    },
-
-    componentDidUpdate: function (prevProps, prevState) {
-        var key;
-        if (this.props) {
-            for (key in this.props) {
-                if (this.props[key] !== prevProps[key]) {
-                    console.log('changed props: %s', key);
-                }
-            }
-        }
-        if (this.state) {
-            for (key in this.state) {
-                if (this.state[key] !== prevState[key]) {
-                    console.log('changed state: %s', key);
-                }
-            }
-        }
-    },
-
-    parseSessionCookie: function (session_cookie) {
-        var Buffer = require('buffer').Buffer;
-        var session;
-        if (session_cookie) {
-            // URL-safe base64
-            session_cookie = session_cookie.replace(/\-/g, '+').replace(/\_/g, '/');
-            // First 64 chars is the sha-512 server signature
-            // Payload is [accessed, created, data]
-            try {
-                session = JSON.parse(Buffer(session_cookie, 'base64').slice(64).toString())[2];
-            } catch (e) {
-            }
-        }
-        return session || {};
-    },
-
-    fetchSessionProperties: function() {
-        if (this.sessionPropertiesRequest) {
-            return;
-        }
-        this.sessionPropertiesRequest = true;
-        this.fetch('/session-properties', {
-            headers: {'Accept': 'application/json'}
-        })
-        .then(response => {
-            this.sessionPropertiesRequest = null;
-            if (!response.ok) throw response;
-            return response.json();
-        })
-        .then(session_properties => {
-            this.setState({session_properties: session_properties});
-        });
-    },
-
-    handleAuth0Login: function (authResult, retrying) {
-        var accessToken = authResult.accessToken;
-        if (!accessToken) return;
-        this.sessionPropertiesRequest = true;
-        this.fetch('/login', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({accessToken: accessToken})
-        })
-        .then(response => {
-            this.lock.hide();
-            if (!response.ok) throw response;
-            return response.json();
-        })
-        .then(session_properties => {
-            this.setState({session_properties: session_properties});
-            this.sessionPropertiesRequest = null;
-            var next_url = window.location.href;
-            if (window.location.hash == '#logged-out') {
-                next_url = window.location.pathname + window.location.search;
-            }
-            this.navigate(next_url, {replace: true});
-        }, err => {
-            this.sessionPropertiesRequest = null;
-            parseError(err).then(data => {
-                // Server session creds might have changed.
-                if (data.code === 400 && data.detail.indexOf('CSRF') !== -1) {
-                    if (!retrying) {
-                        window.setTimeout(this.handleAuth0Login.bind(this, accessToken, true));
-                        return;
-                    }
-                }
-                // If there is an error, show the error messages
-                this.setState({context: data});
-            });
-        });
-    },
-
-    triggerLogin: function (event) {
-        if (this.state.session && !this.state.session._csrft_) {
-            this.fetch('/session');
-        }
-        this.lock.show();
-    },
-
-    triggerLogout: function (event) {
-        console.log('Logging out (Auth0)');
-        var session = this.state.session;
-        if (!(session && session['auth.userid'])) return;
-        this.fetch('/logout?redirect=false', {
-            headers: {'Accept': 'application/json'}
-        })
-        .then(response => {
-            if (!response.ok) throw response;
-            return response.json();
-        })
-        .then(data => {
-            this.DISABLE_POPSTATE = true;
-            var old_path = window.location.pathname + window.location.search;
-            window.location.assign('/#logged-out');
-            if (old_path == '/') {
-                window.location.reload();
-            }
-        }, err => {
-            parseError(err).then(data => {
-                data.title = 'Logout failure: ' + data.title;
-                this.setState({context: data});
-            });
-        });
     }
+
+    return Auth0Class;
 };
+
 
 class UnsavedChangesToken {
     constructor(manager) {
@@ -625,7 +645,7 @@ module.exports.HistoryAndTriggers = {
             return;
         }
 
-        request = this.fetch(href, {
+        request = fetch(href, {
             headers: {'Accept': 'application/json'}
         });
         this.requestCurrent = true; // Remember we have an outstanding GET request
@@ -735,29 +755,4 @@ module.exports.HistoryAndTriggers = {
             window.scrollTo(0, 0);
         }
     },
-
-    statics: {
-        recordServerStats: function (server_stats, timingVar) {
-            // server_stats *_time are microsecond values...
-            Object.keys(server_stats).forEach(function (name) {
-                if (name.indexOf('_time') === -1) return;
-                ga('send', 'timing', {
-                    'timingCategory': name,
-                    'timingVar': timingVar,
-                    'timingValue': Math.round(server_stats[name] / 1000)
-                });
-            });
-        },
-        recordBrowserStats: function (browser_stats, timingVar) {
-            Object.keys(browser_stats).forEach(function (name) {
-                if (name.indexOf('_time') === -1) return;
-                ga('send', 'timing', {
-                    'timingCategory': name,
-                    'timingVar': timingVar,
-                    'timingValue': browser_stats[name]
-                });
-            });
-        }
-    }
-
 };

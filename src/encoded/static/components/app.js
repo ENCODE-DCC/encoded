@@ -1,15 +1,15 @@
 'use strict';
 import DataColors from './datacolors';
 
-var React = require('react');
-var jsonScriptEscape = require('../libs/jsonScriptEscape');
-var globals = require('./globals');
-var mixins = require('./mixins');
-var Navigation = require('./navigation');
-var Footer = require('./footer');
-var url = require('url');
+import React from 'react';
+import jsonScriptEscape from '../libs/jsonScriptEscape';
+import globals from './globals';
+import mixins from './mixins';
+import Navigation from './navigation';
+import Footer from './footer';
+import url from 'url';
 import Home from './home';
-var {NewsHead} = require('./page');
+import { NewsHead } from './page';
 
 var portal = {
     portal_title: 'ENCODE',
@@ -84,8 +84,8 @@ var Title = React.createClass({
 // App is the root component, mounted on document.body.
 // It lives for the entire duration the page is loaded.
 // App maintains state for the
-var App = React.createClass({
-    mixins: [mixins.Auth0, mixins.HistoryAndTriggers],
+var AppComponent = React.createClass({
+    mixins: [mixins.HistoryAndTriggers],
     triggers: {
         login: 'triggerLogin',
         profile: 'triggerProfile',
@@ -267,26 +267,6 @@ var App = React.createClass({
             </html>
         );
     },
-
-    statics: {
-        getRenderedProps: function (document) {
-            var props = {};
-            // Ensure the initial render is exactly the same
-            props.href = document.querySelector('link[rel="canonical"]').getAttribute('href');
-            props.styles = document.querySelector('link[rel="stylesheet"]').getAttribute('href');
-            var script_props = document.querySelectorAll('script[data-prop-name]');
-            for (var i = 0; i < script_props.length; i++) {
-                var elem = script_props[i];
-                var value = elem.text;
-                var elem_type = elem.getAttribute('type') || '';
-                if (elem_type == 'application/json' || elem_type.slice(-5) == '+json') {
-                    value = JSON.parse(value);
-                }
-                props[elem.getAttribute('data-prop-name')] = value;
-            }
-            return props;
-        }
-    }
 });
 
-module.exports = App;
+module.exports = mixins.Auth0Decor(AppComponent);
