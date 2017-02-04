@@ -5,66 +5,43 @@ import ga from 'google-analytics';
 import serialize from 'form-serialize';
 import origin from '../libs/origin';
 
-var parseError = module.exports.parseError = function (response) {
+const parseError = module.exports.parseError = function (response) {
     if (response instanceof Error) {
         return Promise.resolve({
             status: 'error',
             title: response.message,
-            '@type': ['AjaxError', 'Error']
+            '@type': ['AjaxError', 'Error'],
         });
     }
-    var content_type = response.headers.get('Content-Type') || '';
-    content_type = content_type.split(';')[0];
-    if (content_type == 'application/json') {
+    let contentType = response.headers.get('Content-Type') || '';
+    contentType = contentType.split(';')[0];
+    if (contentType === 'application/json') {
         return response.json();
     }
     return Promise.resolve({
         status: 'error',
         title: response.statusText,
         code: response.status,
-        '@type': ['AjaxError', 'Error']
+        '@type': ['AjaxError', 'Error'],
     });
 };
 
-var parseAndLogError = module.exports.parseAndLogError = function (cause, response) {
-    var promise = parseError(response);
-    promise.then(data => {
+const parseAndLogError = module.exports.parseAndLogError = function (cause, response) {
+    const promise = parseError(response);
+    promise.then((data) => {
         ga('send', 'exception', {
-            'exDescription': '' + cause + ':' + data.code + ':' + data.title,
-            'location': window.location.href
+            exDescription: `${cause}:${data.code}:${data.title}`,
+            location: window.location.href,
         });
     });
     return promise;
 };
 
 
-var contentTypeIsJSON = module.exports.contentTypeIsJSON = function (content_type) {
-    return (content_type || '').split(';')[0].split('/').pop().split('+').pop() === 'json';
+const contentTypeIsJSON = module.exports.contentTypeIsJSON = function (contentType) {
+    return (contentType || '').split(';')[0].split('/').pop().split('+').pop() === 'json';
 };
 
-
-module.exports.RenderLess = {
-    shouldComponentUpdate: function (nextProps, nextState) {
-        var key;
-        if (nextProps) {
-            for (key in nextProps) {
-                if (nextProps[key] !== this.props[key]) {
-                    console.log('changed props: %s', key);
-                    return true;
-                }
-            }
-        }
-        if (nextState) {
-            for (key in nextState) {
-                if (nextState[key] !== this.state[key]) {
-                    console.log('changed state: %s', key);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-};
 
 class Timeout {
     constructor(timeout) {
@@ -83,12 +60,13 @@ function parseSessionCookie(sessionCookie) {
     let session;
     if (sessionCookie) {
         // URL-safe base64
-        const mutatedSessionCookie = sessionCookie.replace(/\-/g, '+').replace(/\_/g, '/');
+        const mutatedSessionCookie = sessionCookie.replace(/-/g, '+').replace(/_/g, '/');
         // First 64 chars is the sha-512 server signature
         // Payload is [accessed, created, data]
         try {
             session = JSON.parse(buffer(mutatedSessionCookie, 'base64').slice(64).toString())[2];
         } catch (e) {
+            console.warn('session parse err %o', session);
         }
     }
     return session || {};
@@ -97,7 +75,7 @@ function parseSessionCookie(sessionCookie) {
 
 /* eslint new-cap: ["error", { "newIsCapExceptions": ["default"] }]*/
 
-const Auth0Decor = module.exports.Auth0Decor = (Auth0Component) => {
+const Auth0Decor = (Auth0Component) => {
     class Auth0Class extends React.Component {
         constructor() {
             super();
@@ -109,7 +87,13 @@ const Auth0Decor = module.exports.Auth0Decor = (Auth0Component) => {
                 session_cookie: '',
             };
 
-            // Bind this to non-React methods.
+            this.triggers = {
+                login: 'triggerLogin',
+                profile: 'triggerProfile',
+                logout: 'triggerLogout',
+            };
+
+            // Bind `this` to non-React methods.
             this.fetch = this.fetch.bind(this);
             this.fetchSessionProperties = this.fetchSessionProperties.bind(this);
             this.handleAuth0Login = this.handleAuth0Login.bind(this);
@@ -121,7 +105,7 @@ const Auth0Decor = module.exports.Auth0Decor = (Auth0Component) => {
             return {
                 fetch: this.fetch,
                 session: this.state.session,
-                session_properties: this.state.session_properties
+                session_properties: this.state.session_properties,
             };
         }
 
@@ -318,22 +302,31 @@ const Auth0Decor = module.exports.Auth0Decor = (Auth0Component) => {
         }
 
         render() {
-            return <Auth0Component {...this.props} />;
+            return (
+                <Auth0Component
+                    {...this.props}
+                    triggers={this.triggers}
+                    triggerLogin={this.triggerLogin}
+                    triggerLogout={this.triggerLogout}
+                />
+            );
         }
     }
 
     Auth0Class.propTypes = {
         href: React.PropTypes.string.isRequired,
-    }
+    };
 
     Auth0Class.childContextTypes = {
         fetch: React.PropTypes.func,
         session: React.PropTypes.object,
-        session_properties: React.PropTypes.object
-    }
+        session_properties: React.PropTypes.object,
+    };
 
     return Auth0Class;
 };
+
+module.exports.Auth0Decor = Auth0Decor;
 
 
 class UnsavedChangesToken {
@@ -347,51 +340,435 @@ class UnsavedChangesToken {
 }
 
 
-module.exports.HistoryAndTriggers = {
-    SLOW_REQUEST_TIME: 250,
-    // Detect HTML5 history support
-    historyEnabled: !!(typeof window != 'undefined' && window.history && window.history.pushState),
+const SLOW_REQUEST_TIME = 250;
 
-    childContextTypes: {
-        adviseUnsavedChanges: React.PropTypes.func,
-        navigate: React.PropTypes.func
-    },
-
-    adviseUnsavedChanges: function () {
-        var token = new UnsavedChangesToken(this);
-        this.setState({unsavedChanges: this.state.unsavedChanges.concat([token])});
-        return token;
-    },
-
-    releaseUnsavedChanges: function (token) {
-        console.assert(this.state.unsavedChanges.indexOf(token) != -1);
-        this.setState({unsavedChanges: this.state.unsavedChanges.filter(x => x !== token)});
-    },
-
-    getChildContext: function() {
-        return {
-            adviseUnsavedChanges: this.adviseUnsavedChanges,
-            navigate: this.navigate
-        };
-    },
-
-    getInitialState: function () {
-        return {
-            unsavedChanges: [],
-            promisePending: false
-        };
-    },
-
-    componentWillMount: function () {
-        if (typeof window !== 'undefined') {
-            // IE8 compatible event registration
-            window.onerror = this.handleError;
+/* eslint no-script-url: 0 */ // We're not *using* a javascript: link -- just checking them.
+const HistoryAndTriggersDecor = (HistoryAndTriggersComponent) => {
+    class HistoryAndTriggersClass extends React.Component {
+        static historyEnabled() {
+            return !!(typeof window !== 'undefined' && window.history && window.history.pushState);
         }
-    },
 
-    componentDidMount: function () {
-        if (this.historyEnabled) {
-            var data = this.props.context;
+        static scrollTo() {
+            const hash = window.location.hash;
+            if (hash && document.getElementById(hash.slice(1))) {
+                window.location.replace(hash);
+            } else {
+                window.scrollTo(0, 0);
+            }
+        }
+
+        constructor() {
+            super();
+
+            // React component state
+            this.state = {
+                context: null,
+                contextRequest: null,
+                unsavedChanges: [],
+                promisePending: false,
+                href: '',
+            };
+
+            // Bind `this` to non-React methods.
+            this.adviseUnsavedChanges = this.adviseUnsavedChanges.bind(this);
+            this.releaseUnsavedChanges = this.releaseUnsavedChanges.bind(this);
+            this.onHashChange = this.onHashChange.bind(this);
+            this.trigger = this.trigger.bind(this);
+            this.handleError = this.handleError.bind(this);
+            this.handleClick = this.handleClick.bind(this);
+            this.handleSubmit = this.handleSubmit.bind(this);
+            this.handlePopState = this.handlePopState.bind(this);
+            this.confirmNavigation = this.confirmNavigation.bind(this);
+            this.handleBeforeUnload = this.handleBeforeUnload.bind(this);
+            this.navigate = this.navigate.bind(this);
+            this.receiveContextResponse = this.receiveContextResponse.bind(this);
+        }
+
+        getChildContext() {
+            return {
+                adviseUnsavedChanges: this.adviseUnsavedChanges,
+                navigate: this.navigate,
+            };
+        }
+
+        componentDidMount() {
+            if (this.constructor.historyEnabled()) {
+                const data = this.props.context;
+                try {
+                    window.history.replaceState(data, '', window.location.href);
+                } catch (exc) {
+                    // Might fail due to too large data
+                    window.history.replaceState(null, '', window.location.href);
+                }
+
+                // If it looks like an anchor target link, scroll to it, plus an offset for the fixed navbar
+                // Hints from https://dev.opera.com/articles/fixing-the-scrolltop-bug/
+                if (this.props.href) {
+                    const splitHref = this.props.href.split('#');
+                    if (splitHref.length >= 2 && splitHref[1][0] !== '!') {
+                        // URL has hash tag, but not the '#!edit' type
+                        const hashTarget = splitHref[1];
+                        const domTarget = document.getElementById(hashTarget);
+                        if (domTarget) {
+                            // DOM has a matching anchor; scroll to it
+                            const elTop = domTarget.getBoundingClientRect().top;
+                            const docTop = document.documentElement.scrollTop || document.body.scrollTop;
+                            document.documentElement.scrollTop = document.body.scrollTop = (elTop + docTop) - (window.innerWidth >= 960 ? 75 : 0);
+                        }
+                    }
+                }
+
+                // Avoid popState on load, see: http://stackoverflow.com/q/6421769/199100
+                const register = window.addEventListener.bind(window, 'popstate', this.handlePopState, true);
+                if (window._onload_event_fired) {
+                    register();
+                } else {
+                    window.addEventListener('load', setTimeout.bind(window, register));
+                }
+            } else {
+                window.onhashchange = this.onHashChange;
+            }
+            window.onbeforeunload = this.handleBeforeUnload;
+        }
+
+        componentDidUpdate() {
+            const xhr = this.state.contextRequest;
+            if (!xhr || !xhr.xhr_end || xhr.browser_stats) {
+                return;
+            }
+            const browserEnd = 1 * new Date();
+
+            ga('set', 'location', window.location.href);
+            ga('send', 'pageview');
+            this.constructor.recordServerStats(xhr.server_stats, 'contextRequest');
+
+            xhr.browser_stats = {};
+            xhr.browser_stats.xhr_time = xhr.xhr_end - xhr.xhr_begin;
+            xhr.browser_stats.browser_time = browserEnd - xhr.xhr_end;
+            xhr.browser_stats.total_time = browserEnd - xhr.xhr_begin;
+            this.constructor.recordBrowserStats(xhr.browser_stats, 'contextRequest');
+        }
+
+        onHashChange() {
+            // IE8/9
+            this.setState({ href: window.location.href });
+        }
+
+        adviseUnsavedChanges() {
+            const token = new UnsavedChangesToken(this);
+            this.setState({ unsavedChanges: this.state.unsavedChanges.concat([token]) });
+            return token;
+        }
+
+        releaseUnsavedChanges(token) {
+            console.assert(this.state.unsavedChanges.indexOf(token) !== -1);
+            this.setState({ unsavedChanges: this.state.unsavedChanges.filter(x => x !== token) });
+        }
+
+        trigger(name) {
+            const methodName = this.props.triggers[name];
+            if (methodName) {
+                this.props[methodName].call(this);
+            }
+        }
+
+        handleError(msg, uri, line, column) {
+            let mutatableUri = uri;
+
+            // When an unhandled exception occurs, reload the page on navigation
+            this.historyEnabled = false;
+            const parsed = mutatableUri && require('url').parse(mutatableUri);
+            if (mutatableUri && parsed.hostname === window.location.hostname) {
+                mutatableUri = parsed.path;
+            }
+            ga('send', 'exception', {
+                exDescription: `${mutatableUri}@${line},${column}: ${msg}`,
+                exFatal: true,
+                location: window.location.href,
+            });
+        }
+
+        handleClick(event) {
+            // https://github.com/facebook/react/issues/1691
+            if (event.isDefaultPrevented()) {
+                return;
+            }
+
+            let target = event.target;
+            const nativeEvent = event.nativeEvent;
+
+            // SVG anchor elements have tagName == 'a' while HTML anchor elements have tagName == 'A'
+            while (target && (target.tagName.toLowerCase() !== 'a' || target.getAttribute('data-href'))) {
+                target = target.parentElement;
+            }
+            if (!target) {
+                return;
+            }
+
+            if (target.getAttribute('disabled')) {
+                event.preventDefault();
+                return;
+            }
+
+            // data-trigger links invoke custom handlers.
+            const dataTrigger = target.getAttribute('data-trigger');
+            if (dataTrigger !== null) {
+                event.preventDefault();
+                this.trigger(dataTrigger);
+                return;
+            }
+
+            // Ensure this is a plain click
+            if (nativeEvent.which > 1 || nativeEvent.shiftKey || nativeEvent.altKey || nativeEvent.metaKey) {
+                return;
+            }
+
+            // Skip links with a data-bypass attribute.
+            if (target.getAttribute('data-bypass')) {
+                return;
+            }
+
+            let href = target.getAttribute('href');
+            if (href === null) {
+                href = target.getAttribute('data-href');
+            }
+            if (href === null) {
+                return;
+            }
+
+            // Skip javascript links
+            if (href.indexOf('javascript:') === 0) {
+                return;
+            }
+
+            // Skip external links
+            if (!origin.same(href)) {
+                return;
+            }
+
+            // Skip links with a different target
+            if (target.getAttribute('target')) {
+                return;
+            }
+
+            // Skip @@download links
+            if (href.indexOf('/@@download') !== -1) {
+                return;
+            }
+
+            // With HTML5 history supported, local navigation is passed
+            // through the navigate method.
+            if (this.historyEnabled) {
+                event.preventDefault();
+                this.navigate(href);
+            }
+        }
+
+        // Submitted forms are treated the same as links
+        handleSubmit(event) {
+            const target = event.target;
+
+            // Skip POST forms
+            if (target.method !== 'get') {
+                return;
+            }
+
+            // Skip forms with a data-bypass attribute.
+            if (target.getAttribute('data-bypass')) {
+                return;
+            }
+
+            // Skip external forms
+            if (!origin.same(target.action)) {
+                return;
+            }
+
+            const options = {};
+            const actionUrl = url.parse(url.resolve(this.props.href, target.action));
+            options.replace = actionUrl.pathname === url.parse(this.props.href).pathname;
+            let search = serialize(target);
+            if (target.getAttribute('data-removeempty')) {
+                search = search.split('&').filter(item => item.slice(-1) !== '=').join('&');
+            }
+            let href = actionUrl.pathname;
+            if (search) {
+                href += `?${search}`;
+            }
+            options.skipRequest = target.getAttribute('data-skiprequest');
+
+            if (this.historyEnabled) {
+                event.preventDefault();
+                this.navigate(href, options);
+            }
+        }
+
+        handlePopState(event) {
+            if (this.DISABLE_POPSTATE) {
+                return;
+            }
+            if (!this.confirmNavigation()) {
+                window.history.pushState(window.state, '', this.props.href);
+                return;
+            }
+            if (!this.historyEnabled) {
+                window.location.reload();
+                return;
+            }
+            const request = this.state.contextRequest;
+            const href = window.location.href;
+            if (event.state) {
+                // Abort inflight xhr before setProps
+                if (request && this.requestCurrent) {
+                    // Abort the current request, then remember we've aborted it so that we don't render
+                    // the Network Request Error page.
+                    request.abort();
+                    this.requestAborted = true;
+                    this.requestCurrent = false;
+                }
+                this.setState({
+                    href: href,  // href should be consistent with context
+                    context: event.state,
+                });
+            }
+            // Always async update in case of server side changes.
+            // Triggers standard analytics handling.
+            this.navigate(href, { replace: true });
+        }
+
+        /* eslint no-alert: 0 */
+        confirmNavigation() {
+            // check for beforeunload confirmation
+            if (this.state.unsavedChanges.length) {
+                const res = window.confirm('You have unsaved changes. Are you sure you want to lose them?');
+                if (res) {
+                    this.setState({ unsavedChanges: [] });
+                }
+                return res;
+            }
+            return true;
+        }
+
+        handleBeforeUnload() {
+            if (this.state.unsavedChanges.length) {
+                return 'You have unsaved changes.';
+            }
+            return '';
+        }
+
+        navigate(href, options) {
+            const mutatableOptions = options || {};
+            if (!this.confirmNavigation()) {
+                return null;
+            }
+
+            // options.skipRequest only used by collection search form
+            // options.replace only used handleSubmit, handlePopState, handleAuth0Login
+            let mutatableHref = url.resolve(this.props.href, href);
+
+            // Strip url fragment.
+            let fragment = '';
+            const hrefHashPos = mutatableHref.indexOf('#');
+            if (hrefHashPos > -1) {
+                fragment = mutatableHref.slice(hrefHashPos);
+                mutatableHref = mutatableHref.slice(0, hrefHashPos);
+            }
+
+            if (!this.constructor.historyEnabled()) {
+                if (mutatableOptions.replace) {
+                    window.location.replace(mutatableHref + fragment);
+                } else {
+                    const oldPath = (window.location.toString()).split('#')[0];
+                    window.location.assign(mutatableHref + fragment);
+                    if (oldPath === mutatableHref) {
+                        window.location.reload();
+                    }
+                }
+                return null;
+            }
+
+            let request = this.state.contextRequest;
+
+            if (request && this.requestCurrent) {
+                // Abort the current request, then remember we've aborted the request so that we
+                // don't render the Network Request Error page.
+                request.abort();
+                this.requestAborted = true;
+                this.requestCurrent = false;
+            }
+
+            if (mutatableOptions.skipRequest) {
+                if (mutatableOptions.replace) {
+                    window.history.replaceState(window.state, '', mutatableHref + fragment);
+                } else {
+                    window.history.pushState(window.state, '', mutatableHref + fragment);
+                }
+                this.setState({ href: mutatableHref + fragment });
+                return null;
+            }
+
+            request = this.context.fetch(href, {
+                headers: { Accept: 'application/json' },
+            });
+            this.requestCurrent = true; // Remember we have an outstanding GET request
+
+            const timeout = new Timeout(SLOW_REQUEST_TIME);
+
+            Promise.race([request, timeout.promise]).then((v) => {
+                if (v instanceof Timeout) {
+                    this.setState({ slow: true });
+                } else {
+                    // Request has returned data
+                    this.requestCurrent = false;
+                }
+            });
+
+            const promise = request.then((response) => {
+                // Request has returned data
+                this.requestCurrent = false;
+
+                // navigate normally to URL of unexpected non-JSON response so back button works.
+                if (!contentTypeIsJSON(response.headers.get('Content-Type'))) {
+                    if (options.replace) {
+                        window.location.replace(href + fragment);
+                    } else {
+                        const oldPath = (window.location.toString()).split('#')[0];
+                        window.location.assign(href + fragment);
+                        if (oldPath === href) {
+                            window.location.reload();
+                        }
+                    }
+                }
+                // The URL may have redirected
+                const responseUrl = (response.url || href) + fragment;
+                if (options.replace) {
+                    window.history.replaceState(null, '', responseUrl);
+                } else {
+                    window.history.pushState(null, '', responseUrl);
+                }
+                this.setState({
+                    href: responseUrl,
+                });
+                if (!response.ok) {
+                    throw response;
+                }
+                return response.json();
+            })
+            .catch(parseAndLogError.bind(undefined, 'contextRequest'))
+            .then(this.receiveContextResponse);
+
+            if (!options.replace) {
+                promise.then(this.constructor.scrollTo);
+            }
+
+            this.setState({
+                contextRequest: request,
+            });
+            return request;
+        }
+
+        receiveContextResponse(data) {
+            // title currently ignored by browsers
             try {
                 window.history.replaceState(data, '', window.location.href);
             } catch (exc) {
@@ -399,360 +776,51 @@ module.exports.HistoryAndTriggers = {
                 window.history.replaceState(null, '', window.location.href);
             }
 
-            // If it looks like an anchor target link, scroll to it, plus an offset for the fixed navbar
-            // Hints from https://dev.opera.com/articles/fixing-the-scrolltop-bug/
-            if (this.props.href) {
-                var splitHref = this.props.href.split('#');
-                if (splitHref.length >= 2 && splitHref[1][0] !== '!') {
-                    // URL has hash tag, but not the '#!edit' type
-                    var hashTarget = splitHref[1];
-                    var domTarget = document.getElementById(hashTarget);
-                    if (domTarget) {
-                        // DOM has a matching anchor; scroll to it
-                        var elTop = domTarget.getBoundingClientRect().top;
-                        var docTop = document.documentElement.scrollTop || document.body.scrollTop;
-                        document.documentElement.scrollTop = document.body.scrollTop = elTop + docTop - (window.innerWidth >= 960 ? 75 : 0);
-                    }
-                }
-            }
-
-            // Avoid popState on load, see: http://stackoverflow.com/q/6421769/199100
-            var register = window.addEventListener.bind(window, 'popstate', this.handlePopState, true);
-            if (window._onload_event_fired) {
-                register();
+            // Set up new properties for the page after a navigation click. First disable slow now that we've
+            // gotten a response. If the requestAborted flag is set, then a request was aborted and so we have
+            // the data for a Network Request Error. Don't render that, but clear the requestAboerted flag.
+            // Otherwise we have good page data to render.
+            const newState = { slow: false };
+            if (!this.requestAborted) {
+                // Real page to render
+                newState.context = data;
             } else {
-                window.addEventListener('load', setTimeout.bind(window, register));
+                // data holds network error. Don't render that, but clear the requestAborted flag so we're ready
+                // for the next navigation click.
+                this.requestAborted = false;
             }
-        } else {
-            window.onhashchange = this.onHashChange;
-        }
-        window.onbeforeunload = this.handleBeforeUnload;
-    },
-
-    onHashChange: function (event) {
-        // IE8/9
-        this.setState({href: window.location.href});
-    },
-
-    trigger: function (name) {
-        var method_name = this.triggers[name];
-        if (method_name) {
-            this[method_name].call(this);
-        }
-    },
-
-    handleError: function(msg, url, line, column) {
-        // When an unhandled exception occurs, reload the page on navigation
-        this.historyEnabled = false;
-        var parsed = url && require('url').parse(url);
-        if (url && parsed.hostname === window.location.hostname) {
-            url = parsed.path;
-        }
-        ga('send', 'exception', {
-            'exDescription': url + '@' + line + ',' + column + ': ' + msg,
-            'exFatal': true,
-            'location': window.location.href
-        });
-    },
-
-    handleClick: function(event) {
-        // https://github.com/facebook/react/issues/1691
-        if (event.isDefaultPrevented()) return;
-
-        var target = event.target;
-        var nativeEvent = event.nativeEvent;
-
-        // SVG anchor elements have tagName == 'a' while HTML anchor elements have tagName == 'A'
-        while (target && (target.tagName.toLowerCase() != 'a' || target.getAttribute('data-href'))) {
-            target = target.parentElement;
-        }
-        if (!target) return;
-
-        if (target.getAttribute('disabled')) {
-            event.preventDefault();
-            return;
+            this.setState(newState);
         }
 
-        // data-trigger links invoke custom handlers.
-        var data_trigger = target.getAttribute('data-trigger');
-        if (data_trigger !== null) {
-            event.preventDefault();
-            this.trigger(data_trigger);
-            return;
+        render() {
+            return (
+                <HistoryAndTriggersComponent
+                    {...this.props}
+                    handleClick={this.handleClick}
+                    handleSubmit={this.handleSubmit}
+                />
+            );
         }
+    }
 
-        // Ensure this is a plain click
-        if (nativeEvent.which > 1 || nativeEvent.shiftKey || nativeEvent.altKey || nativeEvent.metaKey) return;
+    HistoryAndTriggersClass.childContextTypes = {
+        adviseUnsavedChanges: React.PropTypes.func,
+        navigate: React.PropTypes.func,
+    };
 
-        // Skip links with a data-bypass attribute.
-        if (target.getAttribute('data-bypass')) return;
+    HistoryAndTriggersClass.defaultProps = {
+        context: null,
+        href: '',
+        triggers: {},
+    };
 
-        var href = target.getAttribute('href');
-        if (href === null) href = target.getAttribute('data-href');
-        if (href === null) return;
+    HistoryAndTriggersClass.propTypes = {
+        context: React.PropTypes.object,
+        href: React.PropTypes.string,
+        triggers: React.PropTypes.object,
+    };
 
-        // Skip javascript links
-        if (href.indexOf('javascript:') === 0) return;
-
-        // Skip external links
-        if (!origin.same(href)) return;
-
-        // Skip links with a different target
-        if (target.getAttribute('target')) return;
-
-        // Skip @@download links
-        if (href.indexOf('/@@download') != -1) return;
-
-        // With HTML5 history supported, local navigation is passed
-        // through the navigate method.
-        if (this.historyEnabled) {
-            event.preventDefault();
-            this.navigate(href);
-        }
-    },
-
-    // Submitted forms are treated the same as links
-    handleSubmit: function(event) {
-        var target = event.target;
-
-        // Skip POST forms
-        if (target.method != 'get') return;
-
-        // Skip forms with a data-bypass attribute.
-        if (target.getAttribute('data-bypass')) return;
-
-        // Skip external forms
-        if (!origin.same(target.action)) return;
-
-        var options = {};
-        var action_url = url.parse(url.resolve(this.props.href, target.action));
-        options.replace = action_url.pathname == url.parse(this.props.href).pathname;
-        var search = serialize(target);
-        if (target.getAttribute('data-removeempty')) {
-            search = search.split('&').filter(function (item) {
-                return item.slice(-1) != '=';
-            }).join('&');
-        }
-        var href = action_url.pathname;
-        if (search) {
-            href += '?' + search;
-        }
-        options.skipRequest = target.getAttribute('data-skiprequest');
-
-        if (this.historyEnabled) {
-            event.preventDefault();
-            this.navigate(href, options);
-        }
-    },
-
-    handlePopState: function (event) {
-        if (this.DISABLE_POPSTATE) return;
-        if (!this.confirmNavigation()) {
-            window.history.pushState(window.state, '', this.props.href);
-            return;
-        }
-        if (!this.historyEnabled) {
-            window.location.reload();
-            return;
-        }
-        var request = this.state.contextRequest;
-        var href = window.location.href;
-        if (event.state) {
-            // Abort inflight xhr before setProps
-            if (request && this.requestCurrent) {
-                // Abort the current request, then remember we've aborted it so that we don't render
-                // the Network Request Error page.
-                request.abort();
-                this.requestAborted = true;
-                this.requestCurrent = false;
-            }
-            this.setState({
-                href: href,  // href should be consistent with context
-                context: event.state,
-            });
-        }
-        // Always async update in case of server side changes.
-        // Triggers standard analytics handling.
-        this.navigate(href, {replace: true});
-    },
-
-    confirmNavigation: function() {
-        // check for beforeunload confirmation
-        if (this.state.unsavedChanges.length) {
-            var res = window.confirm('You have unsaved changes. Are you sure you want to lose them?');
-            if (res) {
-                this.setState({unsavedChanges: []});
-            }
-            return res;
-        }
-        return true;
-    },
-
-    handleBeforeUnload: function() {
-        if (this.state.unsavedChanges.length) {
-            return 'You have unsaved changes.';
-        }
-    },
-
-    navigate: function (href, options) {
-        if (!this.confirmNavigation()) {
-            return;
-        }
-
-        // options.skipRequest only used by collection search form
-        // options.replace only used handleSubmit, handlePopState, handleAuth0Login
-        options = options || {};
-        href = url.resolve(this.props.href, href);
-
-        // Strip url fragment.
-        var fragment = '';
-        var href_hash_pos = href.indexOf('#');
-        if (href_hash_pos > -1) {
-            fragment = href.slice(href_hash_pos);
-            href = href.slice(0, href_hash_pos);
-        }
-
-        if (!this.historyEnabled) {
-            if (options.replace) {
-                window.location.replace(href + fragment);
-            } else {
-                var old_path = ('' + window.location).split('#')[0];
-                window.location.assign(href + fragment);
-                if (old_path == href) {
-                    window.location.reload();
-                }
-            }
-            return;
-        }
-
-        var request = this.state.contextRequest;
-
-        if (request && this.requestCurrent) {
-            // Abort the current request, then remember we've aborted the request so that we
-            // don't render the Network Request Error page.
-            request.abort();
-            this.requestAborted = true;
-            this.requestCurrent = false;
-        }
-
-        if (options.skipRequest) {
-            if (options.replace) {
-                window.history.replaceState(window.state, '', href + fragment);
-            } else {
-                window.history.pushState(window.state, '', href + fragment);
-            }
-            this.setState({ href: href + fragment });
-            return;
-        }
-
-        request = fetch(href, {
-            headers: {'Accept': 'application/json'}
-        });
-        this.requestCurrent = true; // Remember we have an outstanding GET request
-
-        var timeout = new Timeout(this.SLOW_REQUEST_TIME);
-
-        Promise.race([request, timeout.promise]).then(v => {
-            if (v instanceof Timeout) {
-                this.setState({ slow: true });
-            } else {
-                // Request has returned data
-                this.requestCurrent = false;
-            }
-        });
-
-        var promise = request.then(response => {
-            // Request has returned data
-            this.requestCurrent = false;
-
-            // navigate normally to URL of unexpected non-JSON response so back button works.
-            if (!contentTypeIsJSON(response.headers.get('Content-Type'))) {
-                if (options.replace) {
-                    window.location.replace(href + fragment);
-                } else {
-                    var old_path = ('' + window.location).split('#')[0];
-                    window.location.assign(href + fragment);
-                    if (old_path == href) {
-                        window.location.reload();
-                    }
-                }
-            }
-            // The URL may have redirected
-            var response_url = response.url || href;
-            if (options.replace) {
-                window.history.replaceState(null, '', response_url + fragment);
-            } else {
-                window.history.pushState(null, '', response_url + fragment);
-            }
-            this.setState({
-                href: response_url + fragment
-            });
-            if (!response.ok) {
-                throw response;
-            }
-            return response.json();
-        })
-        .catch(parseAndLogError.bind(undefined, 'contextRequest'))
-        .then(this.receiveContextResponse);
-
-        if (!options.replace) {
-            promise = promise.then(this.scrollTo);
-        }
-
-        this.setState({
-            contextRequest: request
-        });
-        return request;
-    },
-
-    receiveContextResponse: function (data) {
-        // title currently ignored by browsers
-        try {
-            window.history.replaceState(data, '', window.location.href);
-        } catch (exc) {
-            // Might fail due to too large data
-            window.history.replaceState(null, '', window.location.href);
-        }
-
-        // Set up new properties for the page after a navigation click. First disable slow now that we've
-        // gotten a response. If the requestAborted flag is set, then a request was aborted and so we have
-        // the data for a Network Request Error. Don't render that, but clear the requestAboerted flag.
-        // Otherwise we have good page data to render.
-        var newState = { slow: false };
-        if (!this.requestAborted) {
-            // Real page to render
-            newState.context = data;
-        } else {
-            // data holds network error. Don't render that, but clear the requestAborted flag so we're ready
-            // for the next navigation click.
-            this.requestAborted = false;
-        }
-        this.setState(newState);
-    },
-
-    componentDidUpdate: function () {
-        var xhr = this.state.contextRequest;
-        if (!xhr || !xhr.xhr_end || xhr.browser_stats) return;
-        var browser_end = 1 * new Date();
-
-        ga('set', 'location', window.location.href);
-        ga('send', 'pageview');
-        this.constructor.recordServerStats(xhr.server_stats, 'contextRequest');
-
-        xhr.browser_stats = {};
-        xhr.browser_stats['xhr_time'] = xhr.xhr_end - xhr.xhr_begin;
-        xhr.browser_stats['browser_time'] = browser_end - xhr.xhr_end;
-        xhr.browser_stats['total_time'] = browser_end - xhr.xhr_begin;
-        this.constructor.recordBrowserStats(xhr.browser_stats, 'contextRequest');
-
-    },
-
-    scrollTo: function() {
-        var hash = window.location.hash;
-        if (hash && document.getElementById(hash.slice(1))) {
-            window.location.replace(hash);
-        } else {
-            window.scrollTo(0, 0);
-        }
-    },
+    return HistoryAndTriggersClass;
 };
+
+module.exports.HistoryAndTriggersDecor = HistoryAndTriggersDecor;

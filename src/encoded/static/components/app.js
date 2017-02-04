@@ -4,7 +4,7 @@ import DataColors from './datacolors';
 import React from 'react';
 import jsonScriptEscape from '../libs/jsonScriptEscape';
 import globals from './globals';
-import mixins from './mixins';
+import { Auth0Decor, HistoryAndTriggersDecor } from './mixins';
 import Navigation from './navigation';
 import Footer from './footer';
 import url from 'url';
@@ -85,13 +85,6 @@ var Title = React.createClass({
 // It lives for the entire duration the page is loaded.
 // App maintains state for the
 var AppComponent = React.createClass({
-    mixins: [mixins.HistoryAndTriggers],
-    triggers: {
-        login: 'triggerLogin',
-        profile: 'triggerProfile',
-        logout: 'triggerLogout'
-    },
-
     getInitialState: function() {
         return {
             context: this.props.context,
@@ -243,7 +236,7 @@ var AppComponent = React.createClass({
                     <link rel="stylesheet" href={this.props.styles} />
                     {NewsHead(this.props, href_url.protocol + '//' + href_url.host)}
                 </head>
-                <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
+                <body onClick={this.props.handleClick} onSubmit={this.props.handleSubmit}>
                     <script data-prop-name="context" type="application/ld+json" dangerouslySetInnerHTML={{
                         __html: '\n\n' + jsonScriptEscape(JSON.stringify(this.state.context)) + '\n\n'
                     }}></script>
@@ -269,4 +262,4 @@ var AppComponent = React.createClass({
     },
 });
 
-module.exports = mixins.Auth0Decor(AppComponent);
+module.exports = Auth0Decor(HistoryAndTriggersDecor(AppComponent));
