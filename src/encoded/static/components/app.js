@@ -108,6 +108,11 @@ var AppComponent = React.createClass({
         biosampleTypeColors: React.PropTypes.object,
     },
 
+    contextTypes: {
+        session: React.PropTypes.object, // Login information
+        session_properties: React.PropTypes.object,
+    },
+
     // Retrieve current React context
     getChildContext: function() {
         // Make `project` and `biosample_type` color mappings for downstream modules to use.
@@ -146,7 +151,7 @@ var AppComponent = React.createClass({
             return context_actions;
         }
         if (category === 'user') {
-            return this.state.session_properties.user_actions || [];
+            return this.context.session_properties.user_actions || [];
         }
         if (category === 'global_sections') {
             return portal.global_sections;

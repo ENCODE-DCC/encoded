@@ -194,7 +194,7 @@ const Auth0Decor = (Auth0Component) => {
             if (urlHash > -1) {
                 reqUri = reqUri.slice(0, urlHash);
             }
-            const request = fetch(reqUri, options);
+            const request = fetch(reqUri, extendedOptions);
             request.xhr_begin = 1 * new Date();
             request.then((response) => {
                 request.xhr_end = 1 * new Date();
@@ -342,6 +342,32 @@ class UnsavedChangesToken {
 
 const SLOW_REQUEST_TIME = 250;
 
+function recordServerStats(serverStats, timingVar) {
+    // server_stats *_time are microsecond values...
+    Object.keys(serverStats).forEach((name) => {
+        if (name.indexOf('_time') !== -1) {
+            ga('send', 'timing', {
+                timingCategory: name,
+                timingVar: timingVar,
+                timingValue: Math.round(serverStats[name] / 1000),
+            });
+        }
+    });
+}
+
+function recordBrowserStats(browserStats, timingVar) {
+    Object.keys(browserStats).forEach((name) => {
+        if (name.indexOf('_time') !== -1) {
+            ga('send', 'timing', {
+                timingCategory: name,
+                timingVar: timingVar,
+                timingValue: browserStats[name],
+            });
+        }
+    });
+}
+
+
 /* eslint no-script-url: 0 */ // We're not *using* a javascript: link -- just checking them.
 const HistoryAndTriggersDecor = (HistoryAndTriggersComponent) => {
     class HistoryAndTriggersClass extends React.Component {
@@ -441,13 +467,13 @@ const HistoryAndTriggersDecor = (HistoryAndTriggersComponent) => {
 
             ga('set', 'location', window.location.href);
             ga('send', 'pageview');
-            this.constructor.recordServerStats(xhr.server_stats, 'contextRequest');
+            recordServerStats(xhr.server_stats, 'contextRequest');
 
             xhr.browser_stats = {};
             xhr.browser_stats.xhr_time = xhr.xhr_end - xhr.xhr_begin;
             xhr.browser_stats.browser_time = browserEnd - xhr.xhr_end;
             xhr.browser_stats.total_time = browserEnd - xhr.xhr_begin;
-            this.constructor.recordBrowserStats(xhr.browser_stats, 'contextRequest');
+            recordBrowserStats(xhr.browser_stats, 'contextRequest');
         }
 
         onHashChange() {
@@ -653,7 +679,7 @@ const HistoryAndTriggersDecor = (HistoryAndTriggersComponent) => {
             if (this.state.unsavedChanges.length) {
                 return 'You have unsaved changes.';
             }
-            return '';
+            return null;
         }
 
         navigate(href, options) {
@@ -729,7 +755,7 @@ const HistoryAndTriggersDecor = (HistoryAndTriggersComponent) => {
 
                 // navigate normally to URL of unexpected non-JSON response so back button works.
                 if (!contentTypeIsJSON(response.headers.get('Content-Type'))) {
-                    if (options.replace) {
+                    if (mutatableOptions.replace) {
                         window.location.replace(href + fragment);
                     } else {
                         const oldPath = (window.location.toString()).split('#')[0];
@@ -741,7 +767,7 @@ const HistoryAndTriggersDecor = (HistoryAndTriggersComponent) => {
                 }
                 // The URL may have redirected
                 const responseUrl = (response.url || href) + fragment;
-                if (options.replace) {
+                if (mutatableOptions.replace) {
                     window.history.replaceState(null, '', responseUrl);
                 } else {
                     window.history.pushState(null, '', responseUrl);
@@ -757,7 +783,7 @@ const HistoryAndTriggersDecor = (HistoryAndTriggersComponent) => {
             .catch(parseAndLogError.bind(undefined, 'contextRequest'))
             .then(this.receiveContextResponse);
 
-            if (!options.replace) {
+            if (!mutatableOptions.replace) {
                 promise.then(this.constructor.scrollTo);
             }
 
@@ -806,6 +832,10 @@ const HistoryAndTriggersDecor = (HistoryAndTriggersComponent) => {
     HistoryAndTriggersClass.childContextTypes = {
         adviseUnsavedChanges: React.PropTypes.func,
         navigate: React.PropTypes.func,
+    };
+
+    HistoryAndTriggersClass.contextTypes = {
+        fetch: React.PropTypes.func,
     };
 
     HistoryAndTriggersClass.defaultProps = {
