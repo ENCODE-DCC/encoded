@@ -16,6 +16,8 @@ from pkg_resources import resource_filename
 # Note: Required for Bek's cache priming solution.
 from pyramid.events import subscriber
 from .peak_indexer import AfterIndexedExperimentsAndDatasets
+import subprocess
+import boto3
 
 import logging
 from .search import _ASSEMBLY_MAPPER
@@ -693,6 +695,7 @@ def add_to_es(request, comp_id, composite):
         es.indices.create(index=key, body={'index': {'number_of_shards': 1}})
         mapping = {'default': {"_all":    {"enabled": False},
                                "_source": {"enabled": True},
+                               "_timestamp": {"enabled": "true","store": "yes"}
                                # "_id":     {"index": "not_analyzed", "store": True},
                                # "_ttl":    {"enabled": True, "default": "1d"},
                                }}
@@ -1770,6 +1773,46 @@ def remodel_acc_to_ihec_json(acc_composites, request=None):
     return ihec_json
 
 
+HOST_OF_PARTY = None
+
+def host_of_the_party(request=None):
+    '''returns the host'''
+    global HOST_OF_PARTY
+
+    if request:  # prefer the request version
+        host = request.host_url
+        if host is not None and host.find("localhost") == -1:
+            HOST_OF_PARTY = host
+    if HOST_OF_PARTY is not None:
+        return HOST_OF_PARTY
+    try:
+        # Using instance-id query aws about the instance Name (in tags)
+        instance_id = subprocess.check_output(["ec2metadata","--instance-id"]).strip().decode("utf-8")
+        session = boto3.Session(region_name='us-west-2')
+        ec2 = session.resource('ec2')
+        instance = ec2.Instance(instance_id)
+        instance_name = None
+        for tag in instance.tags:  # a list of dicts containing literally "Key"/"Value" keys
+            if tag["Key"] == 'Name':
+                instance_name = tag["Value"]
+                break
+
+        if instance_name is not None:
+            if instance_name.find("master") > -1:
+                if instance_name.find("test") > -1:
+                    HOST_OF_PARTY = "https://test.encodedcc.org"
+                if instance_name.find("rc") == -1:  # Not an RC
+                    HOST_OF_PARTY = "https://www.encodeproject.org"
+            if HOST_OF_PARTY is None:
+                HOST_OF_PARTY = ("https://%s.demo.encodedcc.org" % instance_name)
+            log.info("DISCOVERED HOST: %s  instance-id: %s  name:%s" %
+                                                (HOST_OF_PARTY,instance_id,instance_name))
+            return HOST_OF_PARTY
+    except:
+        pass
+    return "https://www.encodeproject.org"  # If all else fails return the production site
+
+
 def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False, regen=False):
     '''Returns json for a single experiment 'acc_composite'.'''
     acc_composite = None
@@ -1784,9 +1827,7 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False,
             dataset = request.embed("/datasets/" + acc + '/', as_user=True)
             # log.debug("find_or_make_acc_composite len(results) = %d   %.3f secs" %
             #           (len(results),(time.time() - PROFILE_START_TIME)))
-        host=request.host_url
-        if host is None or host.find("localhost") > -1:
-            host = "https://www.encodeproject.org"
+        host = host_of_the_party(request)
 
         acc_composite = make_acc_composite(dataset, assembly, host=host, hide=hide)
         if USE_CACHE:
