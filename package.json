@@ -75,5 +75,6 @@
     "source-map-support": "^0.2.7",
     "subprocess-middleware": "^0.1.0",
     "underscore": "^1.8.3",
+    "whatwg-fetch": "git+https://github.com/lrowe/fetch.git#bf5d58b738fb2ed6d60791b944d36075fee8604a"
   }
 }

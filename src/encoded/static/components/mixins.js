@@ -718,6 +718,7 @@ const HistoryAndTriggersDecor = (HistoryAndTriggersComponent) => {
             if (request && this.requestCurrent) {
                 // Abort the current request, then remember we've aborted the request so that we
                 // don't render the Network Request Error page.
+                console.log('REQ %s:%o', this.requestCurrent, request);
                 request.abort();
                 this.requestAborted = true;
                 this.requestCurrent = false;
@@ -733,7 +734,7 @@ const HistoryAndTriggersDecor = (HistoryAndTriggersComponent) => {
                 return null;
             }
 
-            request = this.context.fetch(href, {
+            request = this.context.fetch(mutatableHref, {
                 headers: { Accept: 'application/json' },
             });
             this.requestCurrent = true; // Remember we have an outstanding GET request
@@ -756,17 +757,17 @@ const HistoryAndTriggersDecor = (HistoryAndTriggersComponent) => {
                 // navigate normally to URL of unexpected non-JSON response so back button works.
                 if (!contentTypeIsJSON(response.headers.get('Content-Type'))) {
                     if (mutatableOptions.replace) {
-                        window.location.replace(href + fragment);
+                        window.location.replace(mutatableHref + fragment);
                     } else {
                         const oldPath = (window.location.toString()).split('#')[0];
-                        window.location.assign(href + fragment);
-                        if (oldPath === href) {
+                        window.location.assign(mutatableHref + fragment);
+                        if (oldPath === mutatableHref) {
                             window.location.reload();
                         }
                     }
                 }
                 // The URL may have redirected
-                const responseUrl = (response.url || href) + fragment;
+                const responseUrl = (response.url || mutatableHref) + fragment;
                 if (mutatableOptions.replace) {
                     window.history.replaceState(null, '', responseUrl);
                 } else {

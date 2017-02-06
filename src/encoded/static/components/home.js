@@ -240,7 +240,7 @@ const BannerOverlayButton = (props) => {
             width={width}
             height={height}
             className={`rectangle-box${selected ? ' selected' : ''}`}
-            onClick={() => { clickHandler(item); }}
+            onClick={(e) => { clickHandler(item, e); }}
         />
     );
 };
