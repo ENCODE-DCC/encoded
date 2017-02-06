@@ -147,7 +147,7 @@ preferred_name = {
     "OBI:0001463": "RNA microarray",
     "OBI:0001863": "WGBS",
     "OBI:0001923": "MS-MS",
-    "OBI:0001271": "total RNA-seq",
+    "OBI:0001271": "RNA-seq",
     "OBI:0000716": "ChIP-seq",
     "OBI:0001853": "DNase-seq",
     "OBI:0001920": "Repli-seq",

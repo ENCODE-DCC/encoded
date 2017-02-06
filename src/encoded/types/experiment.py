@@ -396,7 +396,7 @@ class Experiment(Dataset,
         if assay_term_id in registry['ontology']:
             preferred_name = registry['ontology'][assay_term_id].get('preferred_name',
                                                                      assay_term_name)
-            if preferred_name == 'total RNA-seq' and replicates is not None:
+            if preferred_name == 'RNA-seq' and replicates is not None:
                 for rep in replicates:
                     replicateObject = request.embed(rep, '@@object')
                     if replicateObject['status'] == 'deleted':
@@ -415,6 +415,8 @@ class Experiment(Dataset,
                              libraryObject['nucleic_acid_term_name'] == 'polyadenylated mRNA':
                             preferred_name = 'polyA mRNA RNA-seq'
                             break
+                        else:
+                            preferred_name = 'total RNA-seq'
             return preferred_name or assay_term_name
         return assay_term_name
 
