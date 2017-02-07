@@ -1036,4 +1036,3 @@ def matrix(context, request):
         result['notification'] = 'No results found'
 
     return result
-    
