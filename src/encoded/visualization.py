@@ -279,6 +279,7 @@ def load_vis_defs():
                 vis_def = json.load(fh)
                 if vis_def:
                     VIS_DEFS_BY_TYPE.update(vis_def)
+    COMPOSITE_VIS_DEFS_DEFAULT = vis_def.get("opaque",{})
 
 
 def get_vis_type(dataset):
@@ -1783,8 +1784,11 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False,
             dataset = request.embed("/datasets/" + acc + '/', as_user=True)
             # log.debug("find_or_make_acc_composite len(results) = %d   %.3f secs" %
             #           (len(results),(time.time() - PROFILE_START_TIME)))
+        host=request.host_url
+        if host is None or host.find("localhost") > -1:
+            host = "https://www.encodeproject.org"
 
-        acc_composite = make_acc_composite(dataset, assembly, host=request.host_url, hide=hide)
+        acc_composite = make_acc_composite(dataset, assembly, host=host, hide=hide)
         if USE_CACHE:
             add_to_es(request, es_key, acc_composite)
         found_or_made = "made"
