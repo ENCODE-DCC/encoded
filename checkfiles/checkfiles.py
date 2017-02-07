@@ -518,8 +518,8 @@ def check_for_fastq_signature_conflicts(session,
                                         signatures_to_check):
     conflicts = []
     for signature in sorted(list(signatures_to_check)):
-        query = '/search/?type=File&status!=replaced&file_format=fastq&fastq_signature=' + \
-                signature
+        query = '/search/?type=File&status!=replaced&file_format=fastq&' + \
+                'datastore=database&fastq_signature=' + signature
         try:
             r = session.get(urljoin(url, query))
         except requests.exceptions.RequestException as e:  # This is the correct syntax
@@ -569,7 +569,7 @@ def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url
         errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
         update_content_error(errors, 'Fastq file content md5sum format error')
     else:
-        query = '/search/?type=File&status!=replaced&content_md5sum=' + result[
+        query = '/search/?type=File&status!=replaced&datastore=database&content_md5sum=' + result[
             'content_md5sum']
         try:
             r = session.get(urljoin(url, query))
@@ -746,7 +746,7 @@ def remove_local_file(path_to_the_file, errors):
 
 def fetch_files(session, url, search_query, out, include_unexpired_upload=False):
     r = session.get(
-        urljoin(url, '/search/?field=@id&limit=all&type=File&' + search_query))
+        urljoin(url, '/search/?field=@id&limit=all&type=File&datastore=database&' + search_query))
     r.raise_for_status()
     out.write("PROCESSING: %d files in query: %s\n" % (len(r.json()['@graph']), search_query))
     for result in r.json()['@graph']:
@@ -820,9 +820,12 @@ def patch_file(session, url, job):
                 }
     if data:
         item_url = urljoin(url, job['@id'])
+        for key in data:
+            job['item'][key] = data['key']
+        job['item'].pop('content_error_detail')
         r = session.patch(
             item_url,
-            data=json.dumps(data),
+            data=json.dumps(job['item']),
             headers={
                 'If-Match': job['etag'],
                 'Content-Type': 'application/json',
@@ -857,7 +860,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
     except multiprocessing.NotImplmentedError:
         nprocesses = 1
 
-    version = '1.07'
+    version = '1.08'
 
     out.write("STARTING Checkfiles version %s (%s): with %d processes %s at %s\n" %
               (version, search_query, nprocesses, dr, datetime.datetime.now()))
