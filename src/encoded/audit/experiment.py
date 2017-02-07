@@ -563,7 +563,8 @@ def audit_experiment_standards_dispatcher(value, system):
                                         'siRNA knockdown followed by RNA-seq',
                                         'CRISPR genome editing followed by RNA-seq',
                                         'single cell isolation followed by RNA-seq',
-                                        'whole-genome shotgun bisulfite sequencing']:
+                                        'whole-genome shotgun bisulfite sequencing',
+                                        'genetic modification followed by DNase-seq']:
         return
     if 'original_files' not in value or len(value['original_files']) == 0:
         return
@@ -596,7 +597,7 @@ def audit_experiment_standards_dispatcher(value, system):
 
     standards_version = 'ENC3'
 
-    if value['assay_term_name'] in ['DNase-seq']:
+    if value['assay_term_name'] in ['DNase-seq', 'genetic modification followed by DNase-seq']:
         hotspots = scanFilesForOutputType(value['original_files'],
                                           'hotspots')
         signal_files = scanFilesForOutputType(value['original_files'],
@@ -2896,12 +2897,17 @@ def audit_experiment_assay(value, system):
         detail = 'Assay_term_id is a New Term Request ({} - {})'.format(term_id, term_name)
         yield AuditFailure('NTR assay', detail, level='INTERNAL_ACTION')
 
-        if term_name != NTR_assay_lookup[term_id]:
-            detail = 'Experiment has a mismatch between assay_term_name "{}" and assay_term_id "{}"'.format(
-                term_name,
-                term_id,
-            )
-            yield AuditFailure('mismatched assay_term_name', detail, level='INTERNAL_ACTION')
+        if NTR_assay_lookup.get(term_id):
+            if term_name != NTR_assay_lookup[term_id]:
+                detail = 'Experiment has a mismatch between ' + \
+                         'assay_term_name "{}" and assay_term_id "{}"'.format(
+                             term_name,
+                             term_id)
+                yield AuditFailure('mismatched assay_term_name', detail, level='INTERNAL_ACTION')
+                return
+        else:
+            detail = 'Assay term id {} not in NTR lookup table'.format(term_id)
+            yield AuditFailure('not updated NTR lookup table', detail, level='INTERNAL_ACTION')
             return
 
     elif term_id not in ontology:

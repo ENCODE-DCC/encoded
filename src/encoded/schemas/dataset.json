@@ -84,7 +84,10 @@
                     "ENCORE",
                     "ENTEx",
                     "SESCC",
-                    "dbGaP"]
+                    "dbGaP",
+                    "ENCYCLOPEDIAv3",
+                    "ENCYCLOPEDIAv4"
+                ]
             }
         },
         "status": {
