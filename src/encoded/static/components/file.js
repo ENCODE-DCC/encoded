@@ -4,8 +4,9 @@ import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import globals from './globals';
 import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
 import { DbxrefList } from './dbxref';
+import { DocumentsPanel } from './doc';
 import { FetchedItems } from './fetched';
-import { requestFiles } from './objectutils';
+import { requestFiles, requestObjects } from './objectutils';
 import { ProjectBadge } from './image';
 import { PickerActionsMixin } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
@@ -103,15 +104,50 @@ const File = React.createClass({
     getInitialState: function () {
         return {
             derivedFromFiles: [], // List of derived-from files
+            fileFormatSpecs: [], // List of file_format_specifications
         };
     },
 
     componentDidMount: function () {
-        const { context } = this.props;
-        const derivedFromFileIds = context.derived_from && context.derived_from.length ? context.derived_from : [];
+        // Now that this page is mounted, request the list of derived_from files and file
+        // documents.
+        this.requestFileDependencies();
+
+        // In case the logged-in state changes, we have to keep track of the old logged-in state.
+        this.loggedIn = !!(this.context.session && this.context.session['auth.userid']);
+    },
+
+    componentWillReceiveProps: function (nextProps) {
+        // If the logged-in state has changed since the last time we rendered, request files again
+        // in case logging in changes the list of dependent files.
+        const currLoggedIn = !!(this.context.session && this.context.session['auth.userid']);
+        if (this.loggedIn != currLoggedIn) {
+            this.requestFileDependencies();
+            this.loggedIn = currLoggedIn;
+        }
+    },
+
+    requestFileDependencies: function () {
+        // Perform GET requests of files that derive from this one, as well as file format
+        // specification documents. This avoids embedding these arrays of objects in the file
+        // object.
+        const file = this.props.context;
+
+        // Retrieve an array of file @ids that this file derives from. Once this array arrives.
+        // it sets the derivedFromFiles React state that causes the list to render.
+        const derivedFromFileIds = file.derived_from && file.derived_from.length ? file.derived_from : [];
         if (derivedFromFileIds.length) {
             requestFiles(derivedFromFileIds).then((derivedFromFiles) => {
                 this.setState({ derivedFromFiles: derivedFromFiles });
+            });
+        }
+
+        // Retrieve an array of file format specification document @ids. Once the array arrives,
+        // set the fileFormatSpecs React state that causes the list to render.
+        const fileFormatSpecs = file.file_format_specifications && file.file_format_specifications.length ? file.file_format_specifications : [];
+        if (fileFormatSpecs.length) {
+            requestObjects(fileFormatSpecs, '/search/?type=Document&limit=all&status!=deleted&status!=revoked&status!=replaced').then((docs) => {
+                this.setState({ fileFormatSpecs: docs });
             });
         }
     },
@@ -316,6 +352,10 @@ const File = React.createClass({
                     session={this.context.session}
                     ignoreErrors
                 />
+
+                {this.state.fileFormatSpecs.length ?
+                    <DocumentsPanel documentSpecs={[{documents: this.state.fileFormatSpecs}]} />
+                : null}
             </div>
         );
     },

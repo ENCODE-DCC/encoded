@@ -94,6 +94,38 @@
             }
         }
     },
+    "columns": {
+        "document_type": {
+            "title": "Type"
+        },
+        "description": {
+            "title": "Description"
+        },
+        "attachment.href": {
+            "comment": "Internal webapp URL for document file"
+        },
+        "attachment.type": {
+            "title": "MIME type"
+        },
+        "attachment.width": {
+            "title": "Image width"
+        },
+        "attachment.height": {
+            "title": "Image height"
+        },
+        "attachment.download": {
+            "title": "File Name"
+        },
+        "award.name": {
+            "title": "Grant"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "submitted_by.title": {
+            "title": "Submitted by"
+        }
+    },
     "boost_values": {
         "description": 1.0,
         "document_type": 1.0,
