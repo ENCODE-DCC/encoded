@@ -820,12 +820,9 @@ def patch_file(session, url, job):
                 }
     if data:
         item_url = urljoin(url, job['@id'])
-        for key in data:
-            job['item'][key] = data['key']
-        job['item'].pop('content_error_detail')
         r = session.patch(
             item_url,
-            data=json.dumps(job['item']),
+            data=json.dumps(data),
             headers={
                 'If-Match': job['etag'],
                 'Content-Type': 'application/json',
