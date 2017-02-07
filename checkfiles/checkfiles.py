@@ -457,13 +457,13 @@ def process_fastq_file(job, fastq_data_stream, session, url):
             else:
                 signatures_for_comparison = signatures_set
 
-        if check_for_fastq_signature_conflicts(
-           session,
-           url,
-           errors,
-           item,
-           signatures_for_comparison):
-            result['fastq_signature'] = sorted(list(signatures_for_comparison))
+        result['fastq_signature'] = sorted(list(signatures_for_comparison))
+        check_for_fastq_signature_conflicts(
+            session,
+            url,
+            errors,
+            item,
+            signatures_for_comparison)
 
 
 def process_barcodes(signatures_set):
@@ -623,7 +623,6 @@ def check_file(config, session, url, job):
         file_stat = os.stat(local_path)
     except FileNotFoundError:
         errors['file_not_found'] = 'File has not been uploaded yet.'
-        update_content_error(errors, 'File was not uploaded to S3')
         if job['run'] < job['upload_expiration']:
             job['skip'] = True
         return job
@@ -704,31 +703,27 @@ def check_file(config, session, url, job):
                         errors['bed_comments_remove_failure'] = e.output.decode(
                             errors='replace').rstrip('\n')
 
-    if not errors:
-        if is_local_bed_present:
-            check_format(config['encValData'], job, unzipped_modified_bed_path)
-            remove_local_file(unzipped_modified_bed_path, errors)
-        else:
-            check_format(config['encValData'], job, local_path)
-        if item['file_format'] == 'fastq':
-            try:
-                print ('checking file ' + local_path[-20:-9])
-                process_fastq_file(job,
-                                   subprocess.Popen(['gunzip --stdout {}'.format(
-                                                    local_path)],
-                                                    shell=True,
-                                                    executable='/bin/bash',
-                                                    stdout=subprocess.PIPE),
-                                   session, url)
-            except subprocess.CalledProcessError as e:
-                errors['fastq_information_extraction'] = 'Failed to extract information from ' + \
-                                                         local_path
+    if is_local_bed_present:
+        check_format(config['encValData'], job, unzipped_modified_bed_path)
+        remove_local_file(unzipped_modified_bed_path, errors)
+    else:
+        check_format(config['encValData'], job, local_path)
+
+    if item['file_format'] == 'fastq':
+        try:
+            process_fastq_file(job,
+                               subprocess.Popen(['gunzip --stdout {}'.format(
+                                                local_path)],
+                                                shell=True,
+                                                executable='/bin/bash',
+                                                stdout=subprocess.PIPE),
+                               session, url)
+        except subprocess.CalledProcessError as e:
+            errors['fastq_information_extraction'] = 'Failed to extract information from ' + \
+                                                     local_path
     if item['status'] != 'uploading':
         errors['status_check'] = \
             "status '{}' is not 'uploading'".format(item['status'])
-        update_content_error(errors, 'Submitted file status was {} '.format(
-            item['status']) +
-            'instead of \'uploading\'.')
     if errors:
         errors['gathered information'] = 'Gathered information about the file was: {}.'.format(
             str(result))
@@ -806,36 +801,21 @@ def patch_file(session, url, job):
         if 'fastq_signature' in result and \
            result['fastq_signature'] != []:
             data['fastq_signature'] = result['fastq_signature']
-
         if 'content_md5sum' in result:
             data['content_md5sum'] = result['content_md5sum']
     else:
-        to_patch = True
-        for e in errors.keys():
-            if e in [
-               'unzipped_fastq_streaming',
-               'lookup_for_fastq_signature',
-               'lookup_for_content_md5sum',
-               'file_not_found',
-               'bed_unzip_failure',
-               'grep_bed_problem',
-               'bed_comments_remove_failure',
-               'content_md5sum_calculation',
-               'file_remove_error',
-               'lookup_for_fastq_signature',
-               'fastq_information_extraction']:
-                to_patch = False
-                break
-        if to_patch:  # will change into if 'content_error' in errors
-            if 'fastq_format_readname' in errors:
-                update_content_error(errors,
-                                     'Fastq file contains read names that don’t follow ' +
-                                     'the Illumina standard naming schema; for example {}'.format(
-                                         errors['fastq_format_readname']))
+        if 'fastq_format_readname' in errors:
+            update_content_error(errors,
+                                 'Fastq file contains read names that don’t follow ' +
+                                 'the Illumina standard naming schema; for example {}'.format(
+                                     errors['fastq_format_readname']))
+        if 'content_error' in errors:
             data = {
-                # place holder for content_error patching
-                # 'content_error': errors['content_error'],
-                #
+                'status': 'content error',
+                'content_error_detail': errors['content_error'].strip()
+                }
+        if 'file_not_found' in errors:
+            data = {
                 'status': 'upload failed'
                 }
     if data:
@@ -877,7 +857,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
     except multiprocessing.NotImplmentedError:
         nprocesses = 1
 
-    version = '1.04'
+    version = '1.07'
 
     out.write("STARTING Checkfiles version %s (%s): with %d processes %s at %s\n" %
               (version, search_query, nprocesses, dr, datetime.datetime.now()))
