@@ -132,6 +132,9 @@ slim_shims = {
         'OBI:0001923': 'Proteomics',  # OBI:0000615': 'MS-MS'
         'OBI:0001849': 'Genotyping',  # OBI:0000435 (DNA-PET)
         'OBI:0002044': 'RNA binding',  # OBI:0001854 (RNA-Bind-N-Seq)
+        'OBI:0002091': 'Transcription',
+        'OBI:0002092': 'Transcription',
+        'OBI:0002093': 'Transcription'
     }
 
 }
@@ -238,45 +241,6 @@ ntr_assays = {
         "systems": [],
         "types": []
     },
-    "NTR:0001684": {
-        "assay": ['Transcription'],
-        "category": [],
-        "developmental": [],
-        "name": "5' RLM RACE",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0002490": {
-        "assay": ['DNA methylation'],
-        "category": [],
-        "developmental": [],
-        "name": "TAB-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0003027": {
-        "assay": ['RNA binding'],
-        "category": [],
-        "developmental": [],
-        "name": "eCLIP",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
     "NTR:0001132": {
         "assay": ['RNA binding'],
         "category": [],
@@ -303,14 +267,14 @@ ntr_assays = {
         "systems": [],
         "types": []
     },
-    "NTR:0003508": {
-        "assay": ['Genotyping'],
+    "NTR:0004774": {
+        "assay": ['DNA accessibility'],
         "category": [],
         "developmental": [],
-        "name": "Whole genome shotgun sequencing",
+        "name": "genetic modification followed by DNase-seq",
         "objectives": [],
         "organs": [],
-        "preferred_name": "WGS",
+        "preferred_name": "genetic modification DNase-seq",
         "slims": [],
         "synonyms": [],
         "systems": [],
