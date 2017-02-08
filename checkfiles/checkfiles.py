@@ -567,7 +567,7 @@ def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url
         int(result['content_md5sum'], 16)
     except ValueError:
         errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
-        update_content_error(errors, 'Fastq file content md5sum format error')
+        update_content_error(errors, 'File content md5sum format error')
     else:
         query = '/search/?type=File&status!=replaced&datastore=database&content_md5sum=' + result[
             'content_md5sum']
@@ -599,7 +599,7 @@ def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url
                 if len(conflicts) > 0:
                     errors['content_md5sum'] = str(conflicts)
                     update_content_error(errors,
-                                         'Fastq file content md5sum conflicts with content ' +
+                                         'File content md5sum conflicts with content ' +
                                          'md5sum of existing file(s) {}'.format(
                                              ', '.join(map(str, conflicts))))
 
@@ -630,7 +630,7 @@ def check_file(config, session, url, job):
     if 'file_size' in item and file_stat.st_size != item['file_size']:
         errors['file_size'] = 'uploaded {} does not match item {}'.format(
             file_stat.st_size, item['file_size'])
-        update_content_error(errors, 'Fastq metadata-specified file size {} '.format(
+        update_content_error(errors, 'Metadata-specified file size {} '.format(
             item['file_size']) +
             'doesn’t match the calculated file size {}'.format(file_stat.st_size))
 
@@ -654,7 +654,7 @@ def check_file(config, session, url, job):
             errors['md5sum'] = \
                 'checked %s does not match item %s' % (result['md5sum'], item['md5sum'])
             update_content_error(errors,
-                                 'Fastq file metadata-specified md5sum {} '.format(item['md5sum']) +
+                                 'File metadata-specified md5sum {} '.format(item['md5sum']) +
                                  'does not match the calculated md5sum {}'.format(result['md5sum']))
     is_gzipped = is_path_gzipped(local_path)
     if item['file_format'] not in GZIP_TYPES:
