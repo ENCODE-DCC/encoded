@@ -56,6 +56,7 @@ const Annotation = React.createClass({
 
     contextTypes: {
         session: React.PropTypes.object, // Login session information
+        session_properties: React.PropTypes.object,
     },
 
     mixins: [AuditMixin],
@@ -63,7 +64,8 @@ const Annotation = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const loggedIn = this.context.session && this.context.session['auth.userid'];
+        const adminUser = !!this.context.session_properties.admin;
+
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -205,7 +207,7 @@ const Annotation = React.createClass({
                                         </div>
                                     : null}
 
-                                    <AwardRef context={context} />
+                                    <AwardRef context={context} adminUser={adminUser} />
 
                                     {context.aliases.length ?
                                         <div data-test="aliases">
