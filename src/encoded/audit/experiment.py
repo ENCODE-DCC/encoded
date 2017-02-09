@@ -418,10 +418,14 @@ def get_assemblies(list_of_files):
     'original_files.derived_from.dataset',
     'original_files.derived_from.dataset.original_files'])
 def audit_experiment_control_out_of_date_analysis(value, system):
+    log_file = open('/srv/encoded/audit_experiment_control_out_of_date_analysis.log', 'a')
+    start = time.time()
     if value['assay_term_name'] not in ['ChIP-seq']:
+        profiler_log(value, log_file, time.time() - start)
         return
     if 'target' in value and 'investigated_as' in value['target'] and \
        'control' in value['target']['investigated_as']:
+        profiler_log(value, log_file, time.time() - start)
         return
     all_signal_files = scan_files_for_file_format_output_type(value['original_files'],
                                                               'bigWig', 'signal p-value')
@@ -431,6 +435,7 @@ def audit_experiment_control_out_of_date_analysis(value, system):
             signal_files.append(signal_file)
 
     if len(signal_files) == 0:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     derived_from_bams = get_derived_from_files_set(signal_files, 'bam', True)
@@ -441,6 +446,7 @@ def audit_experiment_control_out_of_date_analysis(value, system):
                      'processed files are using alignment files from a control ' + \
                      'replicate that is out of date.'
             yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
+            profiler_log(value, log_file, time.time() - start)
             return
 
 
@@ -487,7 +493,10 @@ def is_outdated_bams_replicate(bam_file):
 
 @audit_checker('Experiment', frame=['original_files'])
 def audit_experiment_with_uploading_files(value, system):
+    log_file = open('/srv/encoded/audit_experiment_with_uploading_files.log', 'a')
+    start = time.time()
     if 'original_files' not in value:
+        profiler_log(value, log_file, time.time() - start)
         return
     for f in value['original_files']:
         if f['status'] in ['uploading', 'upload failed']:
@@ -495,12 +504,15 @@ def audit_experiment_with_uploading_files(value, system):
                      'contains a file {} '.format(f['@id']) + \
                      'with the status {}.'.format(f['status'])
             yield AuditFailure('not uploaded files', detail, level='INTERNAL_ACTION')
+    profiler_log(value, log_file, time.time() - start)
 
 
 @audit_checker('Experiment', frame=['original_files',
                                     'original_files.replicate',
                                     'original_files.derived_from'])
 def audit_experiment_out_of_date_analysis(value, system):
+    log_file = open('/srv/encoded/audit_experiment_with_uploading_files.log', 'a')
+    start = time.time()
     alignment_files = scan_files_for_file_format_output_type(value['original_files'],
                                                              'bam', 'alignments')
     not_filtered_alignments = scan_files_for_file_format_output_type(
@@ -511,6 +523,7 @@ def audit_experiment_out_of_date_analysis(value, system):
                                                                       'transcriptome alignments')
     if len(alignment_files) == 0 and len(transcriptome_alignments) == 0 and \
        len(not_filtered_alignments) == 0:
+        profiler_log(value, log_file, time.time() - start)
         return  # probably needs pipeline, since there are no processed files
 
     uniform_pipeline_flag = False
@@ -527,6 +540,7 @@ def audit_experiment_out_of_date_analysis(value, system):
             uniform_pipeline_flag = True
             break
     if uniform_pipeline_flag is False:
+        profiler_log(value, log_file, time.time() - start)
         return
     alignment_derived_from = get_derived_from_files_set(alignment_files, 'fastq', False)
     transcriptome_alignment_derived_from = get_derived_from_files_set(
@@ -569,7 +583,7 @@ def audit_experiment_out_of_date_analysis(value, system):
                  'processed files contain in derived_from list FASTQ files {} '.format(lost_fastqs) + \
                  ' that are no longer eligible for analysis.'
         yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
-
+    profiler_log(value, log_file, time.time() - start)
 
 def get_file_accessions(list_of_files):
     accessions_set = set()
@@ -614,12 +628,16 @@ def get_derived_from_files_set(list_of_files, file_format, object_flag):
                                     'original_files.analysis_step_version.analysis_step.pipelines'],
                condition=rfa('ENCODE3', 'ENCODE2-Mouse', 'ENCODE2', 'ENCODE', 'Roadmap'))
 def audit_experiment_standards_dispatcher(value, system):
+    log_file = open('/srv/encoded/audit_experiment_standards_dispatcher.log', 'a')
+    start = time.time()
+ 
     '''
     Dispatcher function that will redirect to other functions that would
     deal with specific assay types standards
     '''
     #if value['status'] not in ['released', 'release ready']:
     if value['status'] in ['revoked', 'deleted', 'replaced']:
+        profiler_log(value, log_file, time.time() - start)
         return
     if 'assay_term_name' not in value or \
        value['assay_term_name'] not in ['DNase-seq', 'RAMPAGE', 'RNA-seq', 'ChIP-seq', 'CAGE',
@@ -629,10 +647,13 @@ def audit_experiment_standards_dispatcher(value, system):
                                         'single cell isolation followed by RNA-seq',
                                         'whole-genome shotgun bisulfite sequencing',
                                         'genetic modification followed by DNase-seq']:
+        profiler_log(value, log_file, time.time() - start)
         return
     if 'original_files' not in value or len(value['original_files']) == 0:
+        profiler_log(value, log_file, time.time() - start)
         return
     if 'replicates' not in value:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     num_bio_reps = set()
@@ -640,6 +661,7 @@ def audit_experiment_standards_dispatcher(value, system):
         num_bio_reps.add(rep['biological_replicate_number'])
 
     if len(num_bio_reps) < 1:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     organism_name = get_organism_name(value['replicates'])  # human/mouse
@@ -651,6 +673,7 @@ def audit_experiment_standards_dispatcher(value, system):
             desired_assembly = 'mm10'
             desired_annotation = 'M4'
         else:
+            profiler_log(value, log_file, time.time() - start)
             return
 
     alignment_files = scan_files_for_file_format_output_type(value['original_files'],
@@ -675,6 +698,7 @@ def audit_experiment_standards_dispatcher(value, system):
                                                             desired_annotation,
                                                             ' /data-standards/dnase-seq/ '):
             yield failure
+        profiler_log(value, log_file, time.time() - start)
         return
     if value['assay_term_name'] in ['RAMPAGE', 'RNA-seq', 'CAGE',
                                     'shRNA knockdown followed by RNA-seq',
@@ -691,6 +715,7 @@ def audit_experiment_standards_dispatcher(value, system):
                                                           desired_annotation,
                                                           standards_version):
             yield failure
+        profiler_log(value, log_file, time.time() - start)
         return
     if value['assay_term_name'] == 'ChIP-seq':
         optimal_idr_peaks = scanFilesForOutputType(value['original_files'],
@@ -701,6 +726,7 @@ def audit_experiment_standards_dispatcher(value, system):
                                                            optimal_idr_peaks,
                                                            standards_version):
             yield failure
+        profiler_log(value, log_file, time.time() - start)
         return
     if standards_version == 'ENC3' and \
             value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
@@ -714,6 +740,7 @@ def audit_experiment_standards_dispatcher(value, system):
                                                                cpg_quantifications,
                                                                desired_assembly):
             yield failure
+        profiler_log(value, log_file, time.time() - start)
         return
 
 
@@ -738,18 +765,24 @@ def audit_experiment_standards_dispatcher(value, system):
                                     'original_files.analysis_step_version.analysis_step.pipelines'],
                condition=rfa('modERN'))
 def audit_modERN_experiment_standards_dispatcher(value, system):
+    log_file = open('/srv/encoded/audit_modERN_experiment_standards_dispatcher.log', 'a')
+    start = time.time()
     '''
     Dispatcher function that will redirect to other functions that would
     deal with specific assay types standards. This version is for the modERN project
     '''
 
     if value['status'] in ['revoked', 'deleted', 'replaced']:
+        profiler_log(value, log_file, time.time() - start)
         return
     if 'assay_term_name' not in value or value['assay_term_name'] not in ['ChIP-seq']:
+        profiler_log(value, log_file, time.time() - start)
         return
     if 'original_files' not in value or len(value['original_files']) == 0:
+        profiler_log(value, log_file, time.time() - start)
         return
     if 'replicates' not in value:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     alignment_files = scan_files_for_file_format_output_type(value['original_files'],
@@ -767,7 +800,7 @@ def audit_modERN_experiment_standards_dispatcher(value, system):
                                                            optimal_idr_peaks,
                                                            'modERN'):
                 yield failure
-
+    profiler_log(value, log_file, time.time() - start)
 
 def check_experiment_dnase_seq_standards(experiment,
                                          fastq_files,
@@ -2219,11 +2252,14 @@ def getPipelines(alignment_files):
                                     'replicates', 'replicates.library'],
                condition=rfa('ENCODE3'))
 def audit_experiment_needs_pipeline(value, system):
-
+    log_file = open('/srv/encoded/audit_experiment_needs_pipeline.log', 'a')
+    start = time.time()
     if value['status'] not in ['released', 'ready for review']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if 'assay_term_name' not in value:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if value['assay_term_name'] not in ['whole-genome shotgun bisulfite sequencing',
@@ -2232,10 +2268,12 @@ def audit_experiment_needs_pipeline(value, system):
                                         'shRNA knockdown followed by RNA-seq',
                                         'siRNA knockdown followed by RNA-seq',
                                         'RAMPAGE']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if 'original_files' not in value or len(value['original_files']) == 0:
         #  possible ERROR to throw
+        profiler_log(value, log_file, time.time() - start)
         return
 
     pipelines_dict = {'WGBS': ['WGBS single-end pipeline', 'WGBS single-end pipeline - version 2',
@@ -2250,11 +2288,15 @@ def audit_experiment_needs_pipeline(value, system):
         if scanFilesForPipeline(value['original_files'], pipelines_dict['WGBS']) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
                      ' needs to be processed by WGBS pipeline.'
-            raise AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
+            yield AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
+            profiler_log(value, log_file, time.time() - start)
+            return
         else:
+            profiler_log(value, log_file, time.time() - start)
             return
 
     if 'replicates' not in value:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     file_size_range = 0
@@ -2269,6 +2311,7 @@ def audit_experiment_needs_pipeline(value, system):
                 break
 
     if size_flag is False:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     run_type = 'unknown'
@@ -2279,6 +2322,7 @@ def audit_experiment_needs_pipeline(value, system):
             break
 
     if run_type == 'unknown':
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if value['assay_term_name'] == 'RAMPAGE' and \
@@ -2287,8 +2331,11 @@ def audit_experiment_needs_pipeline(value, system):
         if scanFilesForPipeline(value['original_files'], pipelines_dict['RAMPAGE']) is False:
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by pipeline {}.'.format(pipelines_dict['RAMPAGE'][0])
-            raise AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
+            yield AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
+            profiler_log(value, log_file, time.time() - start)
+            return
         else:
+            profiler_log(value, log_file, time.time() - start)
             return
 
     if value['assay_term_name'] in ['RNA-seq', 'shRNA knockdown followed by RNA-seq',
@@ -2300,8 +2347,10 @@ def audit_experiment_needs_pipeline(value, system):
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by ' + \
                      'pipeline {}.'.format(pipelines_dict['RNA-seq-long-single'][0])
-            raise AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
+            yield AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
+            profiler_log(value, log_file, time.time() - start)
         else:
+            profiler_log(value, log_file, time.time() - start)
             return
 
     if value['assay_term_name'] in ['RNA-seq', 'shRNA knockdown followed by RNA-seq'
@@ -2313,8 +2362,11 @@ def audit_experiment_needs_pipeline(value, system):
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by ' + \
                      'pipeline {}.'.format(pipelines_dict['RNA-seq-long-paired'][0])
-            raise AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
+            yield AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
+            profiler_log(value, log_file, time.time() - start)
+            return
         else:
+            profiler_log(value, log_file, time.time() - start)
             return
 
     if value['assay_term_name'] == 'RNA-seq' and \
@@ -2325,8 +2377,11 @@ def audit_experiment_needs_pipeline(value, system):
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by ' + \
                      'pipeline {}.'.format(pipelines_dict['RNA-seq-short'][0])
-            raise AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
+            yield AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
+            profiler_log(value, log_file, time.time() - start)
+            return
         else:
+            profiler_log(value, log_file, time.time() - start)
             return
 
     investigated_as_histones = False
@@ -2340,9 +2395,13 @@ def audit_experiment_needs_pipeline(value, system):
             detail = 'Experiment {} '.format(value['@id']) + \
                      'needs to be processed by ' + \
                      'pipeline {}.'.format(pipelines_dict['ChIP'])
-            raise AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
-        else:
+            yield AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
+            profiler_log(value, log_file, time.time() - start)
             return
+        else:
+            profiler_log(value, log_file, time.time() - start)
+            return
+    profiler_log(value, log_file, time.time() - start)
     return
 
 
@@ -2381,8 +2440,10 @@ def get_biosamples(experiment):
                                     'replicates.library',
                                     'replicates.library.biosample'])
 def audit_experiment_internal_tag(value, system):
-
+    log_file = open('/srv/encoded/audit_experiment_internal_tag.log', 'a')
+    start = time.time()
     if value['status'] in ['deleted', 'replaced']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     experimental_tags = []
@@ -2447,7 +2508,7 @@ def audit_experiment_internal_tag(value, system):
                              'other biosamples are assigned.'
                     yield AuditFailure('inconsistent internal tags',
                                        detail, level='INTERNAL_ACTION')
-
+    profiler_log(value, log_file, time.time() - start)
 
 def is_gtex_experiment(experiment_to_check):
     for rep in experiment_to_check['replicates']:
@@ -2463,17 +2524,22 @@ def is_gtex_experiment(experiment_to_check):
                                     'replicates.library.biosample',
                                     'replicates.library.biosample.donor'])
 def audit_experiment_gtex_biosample(value, system):
+    log_file = open('/srv/encoded/audit_experiment_gtex_biosample.log', 'a')
+    start = time.time()
     '''
     GTEx experiments should include biosample(s) from the same tissue and same donor
     The number of biosamples could be > 1.
     '''
     if value['status'] in ['deleted', 'replaced']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if len(value['replicates']) < 2:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if is_gtex_experiment(value) is False:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     donors_set = set()
@@ -2498,18 +2564,22 @@ def audit_experiment_gtex_biosample(value, system):
                  'tissue types, while according to HRWG decision it should have ' + \
                  'been perfomed using a single tissue type.'
         yield AuditFailure('invalid modelling of GTEx experiment ', detail, level='INTERNAL_ACTION')
-
+    profiler_log(value, log_file, time.time() - start)
     return
 
 
 @audit_checker('Experiment', frame=['object'])
 def audit_experiment_geo_submission(value, system):
+    log_file = open('/srv/encoded/audit_experiment_geo_submission.log', 'a')
+    start = time.time()
     if value['status'] not in ['released']:
+        profiler_log(value, log_file, time.time() - start)
         return
     if 'assay_term_id' in value and \
        value['assay_term_id'] in ['NTR:0000612',
                                   'OBI:0001923',
                                   'OBI:0002044']:
+        profiler_log(value, log_file, time.time() - start)
         return
     submitted_flag = False
     detail = 'Experiment {} '.format(value['@id']) + \
@@ -2522,15 +2592,20 @@ def audit_experiment_geo_submission(value, system):
         detail = 'Experiment {} '.format(value['@id']) + \
                  'is released, but is not submitted to GEO.'
         yield AuditFailure('experiment not submitted to GEO', detail, level='INTERNAL_ACTION')
+    profiler_log(value, log_file, time.time() - start)
     return
 
 
 @audit_checker('experiment', frame=['object'])
 def audit_experiment_biosample_term_id(value, system):
+    log_file = open('/srv/encoded/audit_experiment_biosample_term_id.log', 'a')
+    start = time.time()
     if value['status'] in ['deleted', 'replaced', 'revoked']:
+        profiler_log(value, log_file, time.time() - start)
         return
     # excluding Bind-n-Seq because they dont have biosamples
     if 'assay_term_name' in value and value['assay_term_name'] == 'RNA Bind-n-Seq':
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if value['status'] not in ['preliminary', 'proposed']:
@@ -2542,22 +2617,30 @@ def audit_experiment_biosample_term_id(value, system):
             detail = 'Experiment {} '.format(value['@id']) + \
                      'has no biosample_type'
             yield AuditFailure('experiment missing biosample_type', detail, level='INTERNAL_ACTION')
+    profiler_log(value, log_file, time.time() - start)
     return
 
 
 @audit_checker('experiment',
                frame=['replicates', 'original_files', 'original_files.replicate'])
 def audit_experiment_consistent_sequencing_runs(value, system):
+    log_file = open('/srv/encoded/audit_experiment_consistent_sequencing_runs.log', 'a')
+    start = time.time()
     if value['status'] in ['deleted', 'replaced', 'revoked']:
+        profiler_log(value, log_file, time.time() - start)
         return
     if 'replicates' not in value:
+        profiler_log(value, log_file, time.time() - start)
         return
     if len(value['replicates']) == 0:
+        profiler_log(value, log_file, time.time() - start)
         return
     if 'assay_term_name' not in value:  # checked in audit_experiment_assay
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if value.get('assay_term_name') not in ['ChIP-seq', 'DNase-seq']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     replicate_pairing_statuses = {}
@@ -2648,7 +2731,7 @@ def audit_experiment_consistent_sequencing_runs(value, system):
                              ' which has {}.'.format(j_pairs)
                     yield AuditFailure('mixed run types',
                                        detail, level='WARNING')
-
+    profiler_log(value, log_file, time.time() - start)
     return
 
 
@@ -2657,16 +2740,23 @@ def audit_experiment_consistent_sequencing_runs(value, system):
                condition=rfa("ENCODE3", "modERN", "ENCODE2", "GGR", "Roadmap",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicate_with_no_files(value, system):
+    log_file = open('/srv/encoded/audit_experiment_replicate_with_no_files.log', 'a')
+    start = time.time()
     if 'internal_tags' in value and 'DREAM' in value['internal_tags']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if value['status'] in ['deleted', 'replaced', 'revoked', 'proposed', 'preliminary']:
+        profiler_log(value, log_file, time.time() - start)
         return
     if 'replicates' not in value:
+        profiler_log(value, log_file, time.time() - start)
         return
     if len(value['replicates']) == 0:
+        profiler_log(value, log_file, time.time() - start)
         return
     if 'assay_term_name' not in value:  # checked in audit_experiment_assay
+        profiler_log(value, log_file, time.time() - start)
         return
 
     seq_assay_flag = False
@@ -2712,6 +2802,7 @@ def audit_experiment_replicate_with_no_files(value, system):
                                  key)
                     yield AuditFailure('missing raw data in replicate',
                                        detail, level=audit_level)
+    profiler_log(value, log_file, time.time() - start)
     return
 
 
@@ -2789,11 +2880,14 @@ def audit_experiment_replicates_with_no_libraries(value, system):
                                     'replicates.library',
                                     'replicates.library.biosample'])
 def audit_experiment_isogeneity(value, system):
-
+    log_file = open('/srv/encoded/audit_experiment_isogeneity.log', 'a')
+    start = time.time()
     if value['status'] in ['deleted', 'replaced', 'revoked']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if len(value['replicates']) < 2:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if value.get('replication_type') is None:
@@ -2817,17 +2911,21 @@ def audit_experiment_isogeneity(value, system):
             else:
                 # If I have a library without a biosample,
                 # I cannot make a call about replicate structure
+                profiler_log(value, log_file, time.time() - start)
                 return
         else:
             # REPLICATES WITH NO LIBRARIES WILL BE CAUGHT BY AUDIT (TICKET 3268)
             # If I have a replicate without a library,
             # I cannot make a call about the replicate structure
+            profiler_log(value, log_file, time.time() - start)
             return
 
     if len(biosample_dict.keys()) < 2:
-            return  # unreplicated
+        profiler_log(value, log_file, time.time() - start)
+        return  # unreplicated
 
     if biosample_species == '/organisms/human/':
+        profiler_log(value, log_file, time.time() - start)
         return  # humans are handled in the the replication_type
 
     if len(biosample_donor_set) > 1:
@@ -2847,6 +2945,7 @@ def audit_experiment_isogeneity(value, system):
         detail = 'Replicates of this experiment were prepared using biosamples ' + \
                  'of different sexes {}.'.format(sexes_list)
         yield AuditFailure('inconsistent sex', detail, level='NOT_COMPLIANT')
+    profiler_log(value, log_file, time.time() - start)
     return
 
 
@@ -3119,10 +3218,14 @@ def audit_experiment_control(value, system):
                                     'original_files',
                                     'original_files.platform'])
 def audit_experiment_platforms_mismatches(value, system):
+    log_file = open('/srv/encoded/audit_experiment_platforms_mismatches.log', 'a')
+    start = time.time()
     if value['status'] in ['deleted', 'replaced']:
+        profiler_log(value, log_file, time.time() - start)
         return
     if 'original_files' not in value or \
        value['original_files'] == []:
+        profiler_log(value, log_file, time.time() - start)
         return
     platforms = get_platforms_used_in_experiment(value)
     if len(platforms) > 1:
@@ -3155,6 +3258,7 @@ def audit_experiment_platforms_mismatches(value, system):
                              'which is not compatible with platform {} '.format(platform_term_name) + \
                              'used in this experiment.'
                     yield AuditFailure('inconsistent platforms', detail, level='WARNING')
+    profiler_log(value, log_file, time.time() - start)
     return
 
 
@@ -3188,19 +3292,24 @@ def get_platforms_used_in_experiment(experiment):
                                     'possible_controls.target'],
                condition=rfa('ENCODE3', 'Roadmap'))
 def audit_experiment_ChIP_control(value, system):
-
+    log_file = open('/srv/encoded/audit_experiment_ChIP_control.log', 'a')
+    start = time.time()
     if value['status'] in ['deleted', 'proposed', 'preliminary', 'replaced', 'revoked']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     # Currently controls are only be required for ChIP-seq
     if value.get('assay_term_name') != 'ChIP-seq':
+        profiler_log(value, log_file, time.time() - start)
         return
 
     # We do not want controls
     if 'target' in value and 'control' in value['target']['investigated_as']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if not value['possible_controls']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     num_IgG_controls = 0
@@ -3209,8 +3318,9 @@ def audit_experiment_ChIP_control(value, system):
             detail = 'Experiment {} is ChIP-seq but its control {} is not linked to a target with investigated.as = control'.format(
                 value['@id'],
                 control['@id'])
-            raise AuditFailure('invalid possible_control', detail, level='ERROR')
-
+            yield AuditFailure('invalid possible_control', detail, level='ERROR')
+            profiler_log(value, log_file, time.time() - start)
+            return
         if not control['replicates']:
             continue
 
@@ -3224,7 +3334,9 @@ def audit_experiment_ChIP_control(value, system):
             detail = 'Experiment {} is ChIP-seq and requires at least one input control, as agreed upon by the binding group. {} is not an input control'.format(
                 value['@id'],
                 control['@id'])
-            raise AuditFailure('missing input control', detail, level='NOT_COMPLIANT')
+            yield AuditFailure('missing input control', detail, level='NOT_COMPLIANT')
+            profiler_log(value, log_file, time.time() - start)
+            return
 
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'],
@@ -3542,11 +3654,14 @@ def audit_library_RNA_size_range(value, system):
         'replicates.library.biosample.model_organism_donor_constructs',
         'replicates.library.biosample.model_organism_donor_constructs.target'])
 def audit_missing_construct(value, system):
-
+    log_file = open('/srv/encoded/audit_missing_construct.log', 'a')
+    start = time.time()
     if value['status'] in ['deleted', 'replaced', 'proposed', 'revoked']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if 'target' not in value:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     '''
@@ -3560,6 +3675,7 @@ def audit_missing_construct(value, system):
     '''
     target = value['target']
     if 'recombinant protein' not in target['investigated_as']:
+        profiler_log(value, log_file, time.time() - start)
         return
     else:
         biosamples = get_biosamples(value)
@@ -3609,3 +3725,4 @@ def audit_missing_construct(value, system):
                     ' match that of the linked construct {}, {}.'.format(c['@id'],
                                                                          c['target']['@id'])
                 yield AuditFailure('mismatched construct target', detail, level='ERROR')
+    profiler_log(value, log_file, time.time() - start)
