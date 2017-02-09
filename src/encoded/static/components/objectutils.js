@@ -1,4 +1,5 @@
 import React from 'react';
+import cloneWithProps from 'react/lib/cloneWithProps';
 
 
 // Display a summary sentence for a single treatment.
@@ -188,3 +189,204 @@ export function donorDiversity(dataset) {
     }
     return diversity;
 }
+
+
+// Render the Download icon while allowing the hovering tooltip.
+const DownloadIcon = React.createClass({
+    propTypes: {
+        hoverDL: React.PropTypes.func, // Function to call when hovering or stop hovering over the icon
+        file: React.PropTypes.object, // File associated with this download button
+        adminUser: React.PropTypes.bool, // True if logged-in user is an admin
+    },
+
+    onMouseEnter: function () {
+        this.props.hoverDL(true);
+    },
+
+    onMouseLeave: function () {
+        this.props.hoverDL(false);
+    },
+
+    render: function () {
+        const { file, adminUser } = this.props;
+
+        return (
+            <i className="icon icon-download" style={!file.restricted || adminUser ? {} : { opacity: '0.3' }} onMouseEnter={file.restricted ? this.onMouseEnter : null} onMouseLeave={file.restricted ? this.onMouseLeave : null}>
+                <span className="sr-only">Download</span>
+            </i>
+        );
+    },
+});
+
+
+// Render an accession as a button if clicking it sets a graph node, or just as text if not.
+const FileAccessionButton = React.createClass({
+    propTypes: {
+        file: React.PropTypes.object.isRequired, // File whose button is being rendered
+    },
+
+    render: function () {
+        const { file } = this.props;
+        return <a href={file['@id']} title={`Go to page for ${file.title}`}>{file.title}</a>;
+    },
+});
+
+
+// Display a button to open the file information modal.
+const FileInfoButton = React.createClass({
+    propTypes: {
+        file: React.PropTypes.object.isRequired, // File whose information is to be displayed
+        clickHandler: React.PropTypes.func, // Function to call when the info button is clicked
+    },
+
+    onClick: function () {
+        this.props.clickHandler(`file:${this.props.file['@id']}`);
+    },
+
+    render: function () {
+        return (
+            <button className="file-table-btn" onClick={this.onClick}>
+                <i className="icon icon-info-circle">
+                    <span className="sr-only">Open file information</span>
+                </i>
+            </button>
+        );
+    },
+});
+
+
+// Render a download button for a file that reacts to login state and admin status to render a
+// tooltip about the restriction based on those things.
+const RestrictedDownloadButton = React.createClass({
+    propTypes: {
+        file: React.PropTypes.object, // File containing `href` to use as download link
+        adminUser: React.PropTypes.bool, // True if logged in user is admin
+        downloadComponent: React.PropTypes.object, // Optional component to render the download button, insetad of default
+    },
+
+    getInitialState: function () {
+        return {
+            tip: false, // True if tip is visible
+        };
+    },
+
+    timer: null, // Holds timer for the tooltip
+    tipHovering: false, // True if currently hovering over the tooltip
+
+    hoverDL: function (hovering) {
+        if (hovering) {
+            // Started hovering over the DL button; show the tooltip.
+            this.setState({ tip: true });
+
+            // If we happen to have a running timer, clear it so we don't clear the tooltip while
+            // hovering over the DL button.
+            if (this.timer) {
+                clearTimeout(this.timer);
+                this.timer = null;
+            }
+        } else {
+            // No longer hovering over the DL button; start a timer that might hide the tooltip
+            // after a second passes. It won't hide the tooltip if they're now hovering over the
+            // tooltip itself.
+            this.timer = setTimeout(() => {
+                this.timer = null;
+                if (!this.tipHovering) {
+                    this.setState({ tip: false });
+                }
+            }, 1000);
+        }
+    },
+
+    hoverTip: function (hovering) {
+        if (hovering) {
+            // Started hovering over the tooltip. This prevents the timer from hiding the tooltip.
+            this.tipHovering = true;
+        } else {
+            // Stopped hovering over the tooltip. If the DL button hover time isn't running, hide
+            // the tooltip here.
+            this.tipHovering = false;
+            if (!this.timer) {
+                this.setState({ tip: false });
+            }
+        }
+    },
+
+    hoverTipIn: function () {
+        this.hoverTip(true);
+    },
+
+    hoverTipOut: function () {
+        this.hoverTip(false);
+    },
+
+    render: function () {
+        const { file, adminUser } = this.props;
+        const tooltipOpenClass = this.state.tip ? ' tooltip-open' : '';
+        const buttonEnabled = !file.restricted || adminUser;
+
+        // If the user provided us with a component for downloading files, add the download
+        // properties to the component before rendering.
+        const downloadComponent = this.props.downloadComponent ? cloneWithProps(this.props.downloadComponent, {
+            file: file,
+            href: file.href,
+            download: file.href.substr(file.href.lastIndexOf('/') + 1),
+            hoverDL: this.hoverDL,
+            adminUser: adminUser,
+            buttonEnabled: buttonEnabled,
+        }) : null;
+
+        // Supply a default icon for the user to click to download, if the caller didn't supply one
+        // in downloadComponent.
+        const icon = (downloadComponent ? <DownloadIcon file={file} adminUser={adminUser} hoverDL={this.hoverDL} /> : null);
+
+        return (
+            <div className="dl-tooltip-trigger">
+                {buttonEnabled ?
+                    <span>
+                        {downloadComponent ?
+                            <span>{downloadComponent}</span>
+                        :
+                            <a href={file.href} download={file.href.substr(file.href.lastIndexOf('/') + 1)} data-bypass="true">
+                                {icon}
+                            </a>
+                        }
+                    </span>
+                :
+                    <span>{icon}</span>
+                }
+                {file.restricted ?
+                    <div className={`tooltip right${tooltipOpenClass}`} role="tooltip" onMouseEnter={this.hoverTipIn} onMouseLeave={this.hoverTipOut}>
+                        <div className="tooltip-arrow" />
+                        <div className="tooltip-inner">
+                            If you are a collaborator or owner of this file,<br />
+                            please contact <a href="mailto:encode-help@lists.stanford.edu">encode-help@lists.stanford.edu</a><br />
+                            to receive a copy of this file
+                        </div>
+                    </div>
+                : null}
+            </div>
+        );
+    },
+});
+
+
+export const DownloadableAccession = React.createClass({
+    propTypes: {
+        file: React.PropTypes.object.isRequired, // File whose accession to render
+        buttonEnabled: React.PropTypes.bool, // True if accession should be a button
+        clickHandler: React.PropTypes.func, // Function to call when button is clicked
+        loggedIn: React.PropTypes.bool, // True if current user is logged in
+        adminUser: React.PropTypes.bool, // True if current user is logged in and admin
+    },
+
+    render: function () {
+        const { file, buttonEnabled, clickHandler, loggedIn, adminUser } = this.props;
+        return (
+            <span className="file-table-accession">
+                <FileAccessionButton file={file} clickHandler={clickHandler} />
+                {buttonEnabled ? <FileInfoButton file={file} clickHandler={clickHandler} /> : null}
+                <RestrictedDownloadButton file={file} loggedIn={loggedIn} adminUser={adminUser} />
+            </span>
+        );
+    },
+});
