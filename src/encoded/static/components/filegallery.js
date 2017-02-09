@@ -1821,7 +1821,14 @@ function qcDetailsView(metrics) {
 
                 // Generate the JSX for the panel. Use the property name as the key to get the corresponding human-readable description for the title
                 if (attachment) {
-                    return <AttachmentPanel context={metrics.ref} attachment={metrics.ref[attachmentPropertyName]} title={attachmentPropertyInfo[attachmentPropertyName]} />;
+                    return (
+                        <AttachmentPanel
+                            context={metrics.ref}
+                            attachment={metrics.ref[attachmentPropertyName]}
+                            title={attachmentPropertyInfo[attachmentPropertyName]}
+                            modal
+                        />
+                    );
                 }
                 return null;
             })).compact();
@@ -1864,7 +1871,7 @@ function qcDetailsView(metrics) {
                                     {/* If the metrics object has an `attachment` property, display that first, then display the properties
                                         not named `attachment` but which have their own schema attribute, `attachment`, set to true */}
                                     {metrics.ref.attachment ?
-                                        <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} />
+                                        <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} title="Attachment" modal />
                                     : null}
                                     {qcPanels}
                                 </div>
