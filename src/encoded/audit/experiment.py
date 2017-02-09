@@ -18,7 +18,7 @@ from .pipeline_structures import (
     encode_rampage_experiment_replicate,
     encode_rampage_experiment_pooled
     )
-
+import time
 
 targetBasedAssayList = [
     'ChIP-seq',
@@ -73,16 +73,27 @@ non_seq_assays = [
     ]
 
 
+def profiler_log(value, f_name, elapsed_time):
+    f_name.write('Audited {} for {} \n'.format(value['@id'],
+                                               elapsed_time))
+    f_name.flush()
+
+
 @audit_checker('experiment', frame=['replicates',
                                     'replicates.library'])
 def audit_experiment_mixed_libraries(value, system):
     '''
     Experiments should not have mixed libraries nucleic acids
     '''
+    log_file = open('/srv/encoded/audit_experiment_mixed_libraries.log', 'a')
+    start = time.time()
+
     if value['status'] in ['deleted', 'replaced']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if 'replicates' not in value:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     nucleic_acids = set()
@@ -98,6 +109,7 @@ def audit_experiment_mixed_libraries(value, system):
         detail = 'Experiment {} '.format(value['@id']) + \
                  'contains libraries with mixed nucleic acids {} '.format(nucleic_acids)
         yield AuditFailure('mixed libraries', detail, level='INTERNAL_ACTION')
+    profiler_log(value, log_file, time.time() - start)
     return
 
 
@@ -108,9 +120,13 @@ def audit_experiment_mixed_libraries(value, system):
                                     'original_files.analysis_step_version.analysis_step',
                                     'original_files.analysis_step_version.analysis_step.pipelines'])
 def audit_experiment_pipeline_assay_details(value, system):
+    log_file = open('/srv/encoded/audit_experiment_pipeline_assay_details.log', 'a')
+    start = time.time()
     if 'original_files' not in value or len(value['original_files']) == 0:
+        profiler_log(value, log_file, time.time() - start)
         return
     if 'assay_term_id' not in value:
+        profiler_log(value, log_file, time.time() - start)
         return
     files_to_check = []
     for f in value['original_files']:
@@ -129,6 +145,7 @@ def audit_experiment_pipeline_assay_details(value, system):
                          'pipeline {} '.format(p['@id']) + \
                          'which assay_term_id does not match experiments\'s asssay_term_id.'
                 yield AuditFailure('inconsistent assay_term_name', detail, level='INTERNAL_ACTION')
+    profiler_log(value, log_file, time.time() - start)
 
 
 @audit_checker('Experiment', frame=['original_files',
@@ -141,6 +158,8 @@ def audit_experiment_pipeline_assay_details(value, system):
                                     'replicates'],
                condition=rfa('modERN'))
 def audit_experiment_missing_processed_files(value, system):
+    log_file = open('/srv/encoded/audit_experiment_missing_processed_files.log', 'a')
+    start = time.time()
     alignment_files = scan_files_for_file_format_output_type(value['original_files'],
                                                              'bam', 'alignments')
     alignment_files.extend(scan_files_for_file_format_output_type(value['original_files'],
@@ -152,16 +171,19 @@ def audit_experiment_missing_processed_files(value, system):
 
     # if there are no bam files - we don't know what pipeline, exit
     if len(alignment_files) == 0:
+        profiler_log(value, log_file, time.time() - start)
         return
     # find out the pipeline
     pipelines = getPipelines(alignment_files)
     if len(pipelines) == 0:  # no pipelines detected
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if 'Transcription factor ChIP-seq pipeline (modERN)' in pipelines:
         # check if control
         target = value.get('target')
         if target is None:
+            profiler_log(value, log_file, time.time() - start)
             return
         if 'control' in target.get('investigated_as'):
             replicate_structures = create_pipeline_structures(value['original_files'],
@@ -173,6 +195,7 @@ def audit_experiment_missing_processed_files(value, system):
                                                               'modERN')
             for failure in check_structures(replicate_structures, False, value):
                 yield failure
+    profiler_log(value, log_file, time.time() - start)
 
 
 @audit_checker('Experiment', frame=['original_files',
@@ -181,9 +204,13 @@ def audit_experiment_missing_processed_files(value, system):
                                     'original_files.analysis_step_version.analysis_step.pipelines',
                                     'original_files.derived_from'])
 def audit_experiment_missing_unfiltered_bams(value, system):
+    log_file = open('/srv/encoded/audit_experiment_missing_unfiltered_bams.log', 'a')
+    start = time.time()
     if 'assay_term_id' not in value:  # unknown assay
+        profiler_log(value, log_file, time.time() - start)
         return
     if value['assay_term_id'] != 'OBI:0000716':  # not a ChIP-seq
+        profiler_log(value, log_file, time.time() - start)
         return
 
     alignment_files = scan_files_for_file_format_output_type(value['original_files'],
@@ -194,11 +221,13 @@ def audit_experiment_missing_unfiltered_bams(value, system):
                                                                         'unfiltered alignments')
     # if there are no bam files - we don't know what pipeline, exit
     if len(alignment_files) == 0:
+        profiler_log(value, log_file, time.time() - start)
         return
     # find out the pipeline
     pipelines = getPipelines(alignment_files)
 
     if len(pipelines) == 0:  # no pipelines detected
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if 'Histone ChIP-seq' in pipelines or \
@@ -214,6 +243,7 @@ def audit_experiment_missing_unfiltered_bams(value, system):
                          'a {} assembly, '.format(filtered_file['assembly']) + \
                          'but has no unfiltered alignments file.'
                 yield AuditFailure('missing unfiltered alignments', detail, level='INTERNAL_ACTION')
+    profiler_log(value, log_file, time.time() - start)
 
 
 def has_only_raw_files_in_derived_from(bam_file):
