@@ -6,6 +6,7 @@ from .conditions import (
     rfa,
 )
 from .standards_data import pipelines_with_read_depth
+import time
 
 current_statuses = ['released', 'in progress']
 not_current_statuses = ['revoked', 'obsolete', 'deleted']
@@ -25,12 +26,21 @@ paired_end_assays = [
     ]
 
 
+def profiler_log(value, f_name, elapsed_time):
+    f_name.write('Audited {} for {} \n'.format(value['@id'],
+                                               elapsed_time))
+    f_name.flush()
+
+
 @audit_checker('File', frame=[
     'analysis_step_version',
     'analysis_step_version.analysis_step',
     'analysis_step_version.analysis_step.pipelines'])
 def audit_file_pipeline_status(value, system):
+    log_file = open('/srv/encoded/audit_file_pipeline_status.log', 'a')
+    start = time.time()
     if value['status'] not in ['released']:
+        profiler_log(value, log_file, time.time() - start)
         return
     if 'analysis_step_version' in value and \
        'analysis_step' in value['analysis_step_version'] and \
@@ -42,11 +52,15 @@ def audit_file_pipeline_status(value, system):
                          'that has a status of {}.'.format(p['status'])
                 yield AuditFailure('inconsistent pipeline status',
                                    detail, level='INTERNAL_ACTION')
+    profiler_log(value, log_file, time.time() - start)
 
 
 @audit_checker('File', frame=['derived_from'])
 def audit_file_md5sum_integrity(value, system):
+    log_file = open('/srv/encoded/audit_file_md5sum_integrity.log', 'a')
+    start = time.time()
     if value['status'] in ['deleted', 'replaced', 'revoked']:
+        profiler_log(value, log_file, time.time() - start)
         return
     md5sum = value['md5sum']
     try:
@@ -63,16 +77,23 @@ def audit_file_md5sum_integrity(value, system):
                  'which is not a valid hexadecimal number.'
         yield AuditFailure('inconsistent md5sum',
                            detail, level='INTERNAL_ACTION')
+    profiler_log(value, log_file, time.time() - start)
 
 
 @audit_checker('File', frame=['derived_from'])
 def audit_file_bam_derived_from(value, system):
+    log_file = open('/srv/encoded/audit_file_bam_derived_from.log', 'a')
+    start = time.time()
     if value['file_format'] != 'bam':
+        profiler_log(value, log_file, time.time() - start)
         return
+
     if value['status'] in ['deleted', 'replaced', 'revoked']:
+        profiler_log(value, log_file, time.time() - start)
         return
     if 'derived_from' not in value or \
        'derived_from' in value and len(value['derived_from']) == 0:
+        profiler_log(value, log_file, time.time() - start)
         return
     derived_from_files = value.get('derived_from')
     fastq_bam_counter = 0
@@ -100,6 +121,7 @@ def audit_file_bam_derived_from(value, system):
                  'is missing the requisite file specification in its derived_from list.'
         yield AuditFailure('missing derived_from',
                            detail, level='INTERNAL_ACTION')
+    profiler_log(value, log_file, time.time() - start)
 
 
 @audit_checker('File', frame=['object'],
@@ -108,26 +130,34 @@ def audit_file_bam_derived_from(value, system):
                              'modERN',
                              'GGR'))
 def audit_file_processed_empty_derived_from(value, system):
+    log_file = open('/srv/encoded/audit_file_processed_empty_derived_from.log', 'a')
+    start = time.time()
     if value['output_category'] in ['raw data',
                                     'reference']:
+        profiler_log(value, log_file, time.time() - start)
         return
     if value['status'] in ['deleted', 'replaced', 'revoked']:
-            return
+        profiler_log(value, log_file, time.time() - start)
+        return
     if 'derived_from' not in value or \
        'derived_from' in value and len(value['derived_from']) == 0:
-            detail = 'derived_from is a list of files that were used to create a given file; ' + \
-                     'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
-                     'Processed file {} '.format(value['@id']) + \
-                     'is missing the requisite file specification in its derived_from list.'
-            yield AuditFailure('missing derived_from',
-                               detail, level='INTERNAL_ACTION')
-            return
+        detail = 'derived_from is a list of files that were used to create a given file; ' + \
+                 'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
+                 'Processed file {} '.format(value['@id']) + \
+                 'is missing the requisite file specification in its derived_from list.'
+        yield AuditFailure('missing derived_from',
+                           detail, level='INTERNAL_ACTION')
+        profiler_log(value, log_file, time.time() - start)
+        return
 
 
 @audit_checker('File', frame=['derived_from'])
 def audit_file_derived_from_revoked(value, system):
+    log_file = open('/srv/encoded/audit_file_derived_from_revoked.log', 'a')
+    start = time.time()
     if value['status'] in ['deleted', 'replaced', 'revoked']:
-            return
+        profiler_log(value, log_file, time.time() - start)
+        return
     if 'derived_from' in value and len(value['derived_from']) > 0:
         for f in value['derived_from']:
             if f['status'] == 'revoked':
@@ -137,12 +167,16 @@ def audit_file_derived_from_revoked(value, system):
                          'that has a status \'revoked\'.'
                 yield AuditFailure('mismatched file status',
                                    detail, level='INTERNAL_ACTION')
+                profiler_log(value, log_file, time.time() - start)
                 return
 
 
 @audit_checker('file', frame=['dataset', 'derived_from'])
 def audit_file_assembly(value, system):
+    log_file = open('/srv/encoded/audit_file_assembly.log', 'a')
+    start = time.time()
     if value['status'] in ['deleted', 'replaced', 'revoked']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if value['output_category'] in ['raw data']:
@@ -152,7 +186,8 @@ def audit_file_assembly(value, system):
                      'has improperly specified assembly value.'
             yield AuditFailure('unexpected property',
                                detail, level='INTERNAL_ACTION')
-        return
+            profiler_log(value, log_file, time.time() - start)
+            return
     else:  # not row data file
         # special treatment of RNA-Bind-n-Seq
         if 'assay_term_name' in value['dataset'] and \
@@ -162,6 +197,7 @@ def audit_file_assembly(value, system):
                          'has improperly specified assembly value.'
                 yield AuditFailure('unexpected property',
                                    detail, level='INTERNAL_ACTION')
+                profiler_log(value, log_file, time.time() - start)
                 return
         #  any other asssay processed file
         else:
@@ -170,8 +206,10 @@ def audit_file_assembly(value, system):
                          'does not have assembly specified.'
                 yield AuditFailure('missing assembly',
                                    detail, level='INTERNAL_ACTION')
+                profiler_log(value, log_file, time.time() - start)
                 return
             if 'derived_from' not in value:
+                profiler_log(value, log_file, time.time() - start)
                 return
             for f in value['derived_from']:
                 if 'assembly' in f:
@@ -184,6 +222,7 @@ def audit_file_assembly(value, system):
                             'it was derived from.'
                         yield AuditFailure('inconsistent assembly',
                                            detail, level='INTERNAL_ACTION')
+                        profiler_log(value, log_file, time.time() - start)
                         return
 
 
@@ -191,14 +230,18 @@ def audit_file_assembly(value, system):
                               'derived_from', 'derived_from.replicate',
                               'derived_from.replicate.experiment'])
 def audit_file_biological_replicate_number_match(value, system):
-
+    log_file = open('/srv/encoded/audit_file_biological_replicate_number_match.log', 'a')
+    start = time.time()
     if value['status'] in ['deleted', 'replaced', 'revoked']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if 'replicate' not in value:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if 'derived_from' not in value or len(value['derived_from']) == 0:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     bio_rep_number = value['replicate']['biological_replicate_number']
@@ -227,20 +270,25 @@ def audit_file_biological_replicate_number_match(value, system):
                              derived_replicate[1])
                 yield AuditFailure('inconsistent replicate',
                                    detail, level='ERROR')
+                profiler_log(value, log_file, time.time() - start)
                 return
-
+    profiler_log(value, log_file, time.time() - start)
 
 @audit_checker('file', frame=['replicate', 'dataset', 'replicate.experiment'])
 def audit_file_replicate_match(value, system):
+    log_file = open('/srv/encoded/audit_file_replicate_match.log', 'a')
+    start = time.time() 
     '''
     A file's replicate should belong to the same experiment that the file
     does.  These tend to get confused when replacing objects.
     '''
 
     if value['status'] in ['deleted', 'replaced', 'revoked']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if 'replicate' not in value:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     rep_exp = value['replicate']['experiment']['uuid']
@@ -255,55 +303,69 @@ def audit_file_replicate_match(value, system):
                      value['replicate']['@id']) + \
                  'experiment {}.'.format(value['replicate']['experiment']['@id'])
         yield AuditFailure('inconsistent replicate', detail, level='ERROR')
+        profiler_log(value, log_file, time.time() - start)
         return
-
+    profiler_log(value, log_file, time.time() - start)
 
 @audit_checker('file', frame=['award'],
                condition=rfa("ENCODE3", "modERN", "GGR"))
 def audit_file_platform(value, system):
+    log_file = open('/srv/encoded/audit_file_platform.log', 'a')
+    start = time.time() 
     '''
     A raw data file should have a platform specified.
     Should be in the schema.
     '''
 
     if value['status'] in ['deleted', 'replaced', 'revoked']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if value['file_format'] not in raw_data_formats:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if 'award' in value and 'rfa' in value['award'] and \
        'platform' not in value:
         detail = 'File {} metadata lacks information on the instrument/platform '.format(value['@id']) + \
                  'used to produce it.'
-        raise AuditFailure('missing platform', detail, level='ERROR')
+        yield AuditFailure('missing platform', detail, level='ERROR')
+    profiler_log(value, log_file, time.time() - start)
+    return
 
 
 @audit_checker('file', frame=['dataset'],
                condition=rfa('ENCODE3', 'modERN', 'ENCODE',
                              'ENCODE2', 'ENCODE2-Mouse'))
 def audit_file_read_length(value, system):
+    log_file = open('/srv/encoded/audit_file_read_length.log', 'a')
+    start = time.time()    
     '''
     Reads files should have a read_length
     '''
 
     if value['status'] in ['deleted', 'replaced', 'revoked']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if value['output_type'] != 'reads':
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if value['file_format'] == 'csqual':
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if 'read_length' not in value:
         detail = 'Reads file {} missing read_length'.format(value['@id'])
         yield AuditFailure('missing read_length', detail, level='INTERNAL_ACTION')
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if value['read_length'] == 0:
         detail = 'Reads file {} has read_length of 0'.format(value['@id'])
         yield AuditFailure('missing read_length', detail, level='INTERNAL_ACTION')
+        profiler_log(value, log_file, time.time() - start)
         return
 
 
@@ -330,11 +392,14 @@ def check_presence(file_to_check, files_list):
                              'ENCODE3',
                              'modERN'))
 def audit_file_controlled_by(value, system):
+    log_file = open('/srv/encoded/audit_file_controlled_by.log', 'a')
+    start = time.time()   
     '''
     A fastq in a ChIP-seq experiment should have a controlled_by
     '''
 
     if value['status'] in ['deleted', 'replaced', 'revoked', 'archived']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if value['dataset'].get('assay_term_name') not in ['ChIP-seq',
@@ -344,13 +409,16 @@ def audit_file_controlled_by(value, system):
                                                        'siRNA knockdown followed by RNA-seq',
                                                        'CRISPR genome editing followed by RNA-seq']:
 
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if value['file_format'] not in ['fastq']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if 'target' in value['dataset'] and \
        'control' in value['dataset']['target'].get('investigated_as', []):
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if 'controlled_by' not in value:
@@ -365,6 +433,7 @@ def audit_file_controlled_by(value, system):
                      value['@id']) + \
                  'is missing the requisite file specification in controlled_by list.'
         yield AuditFailure('missing controlled_by', detail, level='NOT_COMPLIANT')
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if value['dataset'].get('assay_term_name') in ['ChIP-seq',
@@ -423,6 +492,7 @@ def audit_file_controlled_by(value, system):
                              ff['@id'],
                              ff['dataset'].get('biosample_term_name'))
                 yield AuditFailure('inconsistent control', detail, level='ERROR')
+                profiler_log(value, log_file, time.time() - start)
                 return
 
             if ff['file_format'] != value['file_format']:
@@ -434,6 +504,7 @@ def audit_file_controlled_by(value, system):
                              ff['@id'],
                              ff['file_format'])
                 yield AuditFailure('inconsistent control', detail, level='ERROR')
+                profiler_log(value, log_file, time.time() - start)
                 return
 
             if (possible_controls is None) or (ff['dataset']['@id'] not in possible_controls):
@@ -448,6 +519,7 @@ def audit_file_controlled_by(value, system):
                          'is not specified in possible_controls list of this experiment.'
 
                 yield AuditFailure('inconsistent control', detail, level='ERROR')
+                profiler_log(value, log_file, time.time() - start)
                 return
 
             if (run_type is None) or (control_run is None):
@@ -482,28 +554,37 @@ def audit_file_controlled_by(value, system):
                     )
                 yield AuditFailure('inconsistent control read length',
                                    detail, level='WARNING')
+                profiler_log(value, log_file, time.time() - start)
                 return
-
+    profiler_log(value, log_file, time.time() - start)
+    return
 
 @audit_checker('file', frame='object')
 def audit_file_flowcells(value, system):
+    log_file = open('/srv/encoded/audit_file_flowcells.log', 'a')
+    start = time.time() 
     '''
     A fastq file could have its flowcell details.
     '''
 
     if value['status'] in ['deleted', 'replaced', 'revoked']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if value['file_format'] not in ['fastq']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if 'flowcell_details' not in value or (value['flowcell_details'] == []):
         detail = 'Fastq file {} is missing flowcell_details'.format(value['@id'])
-        raise AuditFailure('missing flowcell_details', detail, level='WARNING')
-
+        yield AuditFailure('missing flowcell_details', detail, level='WARNING')
+        profiler_log(value, log_file, time.time() - start)
+        return
 
 @audit_checker('file', frame=['paired_with'],)
 def audit_paired_with(value, system):
+    log_file = open('/srv/encoded/audit_paired_with.log', 'a')
+    start = time.time() 
     '''
     A file with a paired_end needs a paired_with.
     Should be handled in the schema.
@@ -511,9 +592,11 @@ def audit_paired_with(value, system):
     '''
 
     if value['status'] in ['deleted', 'replaced', 'revoked']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if 'paired_end' not in value:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if 'paired_with' not in value:
@@ -526,25 +609,29 @@ def audit_paired_with(value, system):
             'paired-end sequencing run according to the submitted metadata. ' + \
             'An association with a read{} file needs to be specified.'.format(
                 paired_number)
-        raise AuditFailure('missing paired_with', detail, level='ERROR')
-
+        yield AuditFailure('missing paired_with', detail, level='ERROR')
+        profiler_log(value, log_file, time.time() - start)
+        return
     if 'replicate' not in value['paired_with']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if 'replicate' not in value:
         detail = 'File {} has paired_end = {}. It requires a replicate'.format(
             value['@id'],
             value['paired_end'])
-        raise AuditFailure('missing replicate', detail, level='INTERNAL_ACTION')
-
+        yield AuditFailure('missing replicate', detail, level='INTERNAL_ACTION')
+        profiler_log(value, log_file, time.time() - start)
+        return
     if value['replicate'] != value['paired_with']['replicate']:
         detail = 'File {} has replicate {}. It is paired_with file {} with replicate {}'.format(
             value['@id'],
             value.get('replicate'),
             value['paired_with']['@id'],
             value['paired_with'].get('replicate'))
-        raise AuditFailure('inconsistent paired_with', detail, level='ERROR')
-
+        yield AuditFailure('inconsistent paired_with', detail, level='ERROR')
+        profiler_log(value, log_file, time.time() - start)
+        return
     if value['paired_end'] == '1':
         context = system['context']
         paired_with = context.get_rev_links('paired_with')
@@ -553,36 +640,44 @@ def audit_paired_with(value, system):
                 value['@id'],
                 paired_with,
             )
-            raise AuditFailure('multiple paired_with', detail, level='ERROR')
-
+            yield AuditFailure('multiple paired_with', detail, level='ERROR')
+            profiler_log(value, log_file, time.time() - start)
+            return
 
 @audit_checker('file', frame=['step_run',
                               'dataset'], condition=rfa('modERN'))
 def audit_modERN_ChIP_pipeline_steps(value, system):
-
+    log_file = open('/srv/encoded/audit_modERN_ChIP_pipeline_steps.log', 'a')
+    start = time.time() 
     expt = value['dataset']
     if 'Experiment' not in expt['@type']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if expt['assay_term_name'] != 'ChIP-seq':
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if value['status'] in ['archived', 'revoked', 'deleted', 'replaced']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if value['file_format'] == 'fastq':
         if 'step_run' in value:
             detail = 'Fastq file {} should not have an associated step_run'.format(value['@id'])
             yield AuditFailure('unexpected step_run', detail, level='ERROR')
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if 'step_run' not in value:
         detail = 'File {} is missing a step_run'.format(value['@id'])
         yield AuditFailure('missing step_run', detail, level='WARNING')
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if (value['file_format'] != 'fastq') and ('derived_from' not in value):
         detail = 'File {} is missing its derived_from'.format(value['@id'])
+        profiler_log(value, log_file, time.time() - start)
         return
 
     step = value['step_run']
@@ -619,7 +714,8 @@ def audit_modERN_ChIP_pipeline_steps(value, system):
         if (value['file_format_type'] == 'narrowPeak') and (step['aliases'][0] != 'modern:chip-seq-optimal-idr-step-run-v-1-virtual'):
             detail = 'Optimal IDR thresholded peaks {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
             yield AuditFailure('wrong step_run for IDR peaks', detail, level='WARNING')
-
+    profiler_log(value, log_file, time.time() - start)
+    return
 
 @audit_checker('file', frame='object')
 def audit_file_size(value, system):
@@ -646,6 +742,8 @@ def audit_file_format_specifications(value, system):
 
 @audit_checker('file', frame='object')
 def audit_file_paired_ended_run_type(value, system):
+    log_file = open('/srv/encoded/audit_file_paired_ended_run_type.log', 'a')
+    start = time.time()
     '''
     Audit to catch those files that were upgraded to have run_type = paired ended
     resulting from its migration out of replicate but lack the paired_end property
@@ -654,9 +752,11 @@ def audit_file_paired_ended_run_type(value, system):
     '''
 
     if value['status'] in ['deleted', 'replaced', 'revoked', 'upload failed']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if value['file_format'] not in ['fastq', 'fasta', 'csfasta']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if (value['output_type'] == 'reads') and (value.get('run_type') == 'paired-ended'):
@@ -665,7 +765,11 @@ def audit_file_paired_ended_run_type(value, system):
                      'is the result of a paired-end sequencing run ' + \
                      'according to the submitted metadata, but is missing the requisite ' + \
                      'information to classify it as read1 or read2 in the pair.'
-            raise AuditFailure('missing paired_end', detail, level='ERROR')
+            yield AuditFailure('missing paired_end', detail, level='ERROR')
+            profiler_log(value, log_file, time.time() - start)
+            return
+    profiler_log(value, log_file, time.time() - start)
+    return
 
 
 def get_chip_seq_bam_read_depth(bam_file):
@@ -804,45 +908,55 @@ def extract_award_version(bam_file):
     'derived_from.controlled_by.dataset.original_files.analysis_step_version.software_versions',
     'derived_from.controlled_by.dataset.original_files.analysis_step_version.software_versions.software'])
 def audit_file_chip_seq_control_read_depth(value, system):
+    log_file = open('/srv/encoded/audit_file_chip_seq_control_read_depth.log', 'a')
+    start = time.time()
     '''
     An alignment file from the ENCODE Processing Pipeline should have read depth
     in accordance with the criteria
     '''
 
     if value['status'] in ['deleted', 'replaced', 'revoked']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if value['file_format'] != 'bam':
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if value['output_type'] in ['transcriptome alignments', 'unfiltered alignments']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if value['lab'] not in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/']:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if 'analysis_step_version' not in value:
         detail = 'ENCODE Processed alignment file {} has '.format(value['@id']) + \
                  'no analysis step version'
         yield AuditFailure('missing analysis step version', detail, level='INTERNAL_ACTION')
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if 'analysis_step' not in value['analysis_step_version']:
         detail = 'ENCODE Processed alignment file {} has '.format(value['@id']) + \
                  'no analysis step in {}'.format(value['analysis_step_version']['@id'])
         yield AuditFailure('missing analysis step', detail, level='INTERNAL_ACTION')
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if 'pipelines' not in value['analysis_step_version']['analysis_step']:
         detail = 'ENCODE Processed alignment file {} has '.format(value['@id']) + \
                  'no pipelines in {}'.format(value['analysis_step_version']['analysis_step']['@id'])
         yield AuditFailure('missing pipelines in analysis step', detail, level='INTERNAL_ACTION')
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if 'software_versions' not in value['analysis_step_version']:
         detail = 'ENCODE Processed alignment file {} has '.format(value['@id']) + \
                  'no software_versions in {}'.format(value['analysis_step_version']['@id'])
         yield AuditFailure('missing software versions', detail, level='INTERNAL_ACTION')
+        profiler_log(value, log_file, time.time() - start)
         return
 
     if value['analysis_step_version']['software_versions'] == []:
@@ -850,6 +964,7 @@ def audit_file_chip_seq_control_read_depth(value, system):
                  'softwares listed in software_versions,' + \
                  ' under {}'.format(value['analysis_step_version']['@id'])
         yield AuditFailure('missing software', detail, level='INTERNAL_ACTION')
+        profiler_log(value, log_file, time.time() - start)
         return
 
     chip_flag = False
@@ -857,18 +972,22 @@ def audit_file_chip_seq_control_read_depth(value, system):
         if p['title'] == 'Histone ChIP-seq':
             chip_flag = True
         if p['title'] == 'Raw mapping with no filtration':
+            profiler_log(value, log_file, time.time() - start)
             return
 
     if chip_flag is False:
+        profiler_log(value, log_file, time.time() - start)
         return
 
     quality_metrics = value.get('quality_metrics')
 
     if (quality_metrics is None) or (quality_metrics == []):
+        profiler_log(value, log_file, time.time() - start)
         return
 
     derived_from_files = value.get('derived_from')
     if (derived_from_files is None) or (derived_from_files == []):
+        profiler_log(value, log_file, time.time() - start)
         return
 
     target_name = 'empty'
@@ -894,7 +1013,8 @@ def audit_file_chip_seq_control_read_depth(value, system):
                                                                   target_investigated_as,
                                                                   standards_version):
                     yield failure
-
+    profiler_log(value, log_file, time.time() - start)
+    return
 
 def check_control_read_depth_standards(value,
                                        read_depth,
