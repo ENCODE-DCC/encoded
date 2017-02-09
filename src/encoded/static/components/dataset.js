@@ -264,6 +264,7 @@ const PublicationData = React.createClass({
 
     contextTypes: {
         session: React.PropTypes.object, // Login session information
+        session_properties: React.PropTypes.object,
     },
 
     mixins: [AuditMixin],
@@ -271,7 +272,7 @@ const PublicationData = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const loggedIn = this.context.session && this.context.session['auth.userid'];
+        const adminUser = !!this.context.session_properties.admin;
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -375,7 +376,7 @@ const PublicationData = React.createClass({
                                         </div>
                                     : null}
 
-                                    <AwardRef context={context} />
+                                    <AwardRef context={context} adminUser={adminUser} />
 
                                     <div data-test="externalresources">
                                         <dt>External resources</dt>
@@ -425,6 +426,7 @@ const Reference = React.createClass({
 
     contextTypes: {
         session: React.PropTypes.object, // Login session information
+        session_properties: React.PropTypes.object,
     },
 
     mixins: [AuditMixin],
@@ -432,7 +434,7 @@ const Reference = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const loggedIn = this.context.session && this.context.session['auth.userid'];
+        const adminUser = !!this.context.session_properties.admin;
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -529,7 +531,7 @@ const Reference = React.createClass({
                                         </div>
                                     : null}
 
-                                    <AwardRef context={context} />
+                                    <AwardRef context={context} adminUser={adminUser} />
 
                                     {context.aliases.length ?
                                         <div data-test="aliases">
@@ -586,6 +588,7 @@ const Project = React.createClass({
 
     contextTypes: {
         session: React.PropTypes.object, // Login session information
+        session_properties: React.PropTypes.object,
     },
 
     mixins: [AuditMixin],
@@ -593,7 +596,7 @@ const Project = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const loggedIn = this.context.session && this.context.session['auth.userid'];
+        const adminUser = !!this.context.session_properties.admin;
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -714,7 +717,7 @@ const Project = React.createClass({
                                         </div>
                                     : null}
 
-                                    <AwardRef context={context} />
+                                    <AwardRef context={context} adminUser={adminUser} />
 
                                     {context.aliases.length ?
                                         <div data-test="aliases">
@@ -771,6 +774,7 @@ const UcscBrowserComposite = React.createClass({
 
     contextTypes: {
         session: React.PropTypes.object, // Login session information
+        session_properties: React.PropTypes.object,
     },
 
     mixins: [AuditMixin],
@@ -778,7 +782,7 @@ const UcscBrowserComposite = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const loggedIn = this.context.session && this.context.session['auth.userid'];
+        const adminUser = !!this.context.session_properties.admin;
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -885,7 +889,7 @@ const UcscBrowserComposite = React.createClass({
                                         </div>
                                     : null}
 
-                                    <AwardRef context={context} />
+                                    <AwardRef context={context} adminUser={adminUser} />
 
                                     {context.aliases.length ?
                                         <div data-test="aliases">
@@ -1164,6 +1168,7 @@ export const Series = React.createClass({
 
     contextTypes: {
         session: React.PropTypes.object,
+        session_properties: React.PropTypes.object,
     },
 
     mixins: [AuditMixin],
@@ -1181,7 +1186,7 @@ export const Series = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const loggedIn = this.context.session && this.context.session['auth.userid'];
+        const adminUser = !!this.context.session_properties.admin;
         let experiments = {};
         const statuses = [{ status: context.status, title: 'Status' }];
         context.files.forEach((file) => {
@@ -1304,7 +1309,7 @@ export const Series = React.createClass({
                                         <dd>{context.lab.title}</dd>
                                     </div>
 
-                                    <AwardRef context={context} />
+                                    <AwardRef context={context} adminUser={adminUser} />
 
                                     <div data-test="project">
                                         <dt>Project</dt>

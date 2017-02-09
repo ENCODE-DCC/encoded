@@ -181,15 +181,15 @@ export const AwardRef = React.createClass({
         const { context, adminUser } = this.props;
         const award = context.award;
 
-        if (context.award && context.award.pi && context.award.pi.lab) {
+        if (award && award.pi && award.pi.lab) {
             return (
                 <div data-test="awardpi">
                     <dt>Award</dt>
                     <dd>
                         {adminUser || award.status === 'current' || award.status === 'disabled' ?
-                            <span>{award.name}</span>
-                        :
                             <a href={award['@id']} title={`View page for award ${award.name}`}>{award.name}</a>
+                        :
+                            <span>{award.name}</span>
                         }
                         {award.pi && award.pi.lab ?
                             <span> ({award.pi.lab.title})</span>
