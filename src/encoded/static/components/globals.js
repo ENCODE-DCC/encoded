@@ -25,7 +25,7 @@ module.exports.graph_detail = new Registry();
 // | header                                |
 // +---------------------------+-----------+
 // |                           |           |
-// |          caption          |  preview  |
+// |          caption          |  preview  | <--This row Called a document "intro" in the code
 // |                           |           |
 // +---------------------------+-----------+
 // | file                                  |

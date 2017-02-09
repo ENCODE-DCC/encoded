@@ -89,7 +89,7 @@ describe('Experiment Page', function() {
         it('has a single proper download link', function() {
             var url = require('url');
 
-            var dlBar = doc.getElementsByClassName('dl-bar');
+            var dlBar = doc.getElementsByClassName('document__file');
             expect(dlBar.length).toEqual(1);
             var anchors = dlBar[0].getElementsByTagName('a');
             expect(anchors.length).toEqual(2);
@@ -97,7 +97,7 @@ describe('Experiment Page', function() {
         });
 
         it('has two key-value pairs, and proper DL link', function() {
-            var trigger = doc.getElementsByClassName('detail-switch');
+            var trigger = doc.getElementsByClassName('document__file-detail-switch');
             TestUtils.Simulate.click(trigger[0]);
 
             var docKeyValue = doc.getElementsByClassName('key-value-doc');
