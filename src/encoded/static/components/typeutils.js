@@ -109,7 +109,7 @@ export const BiosampleTable = React.createClass({
         items: React.PropTypes.array, // Array of biosamples to display
         total: React.PropTypes.number, // Total number of biosamples matching search criteria (can be more than biosamples in `items`)
         limit: React.PropTypes.number, // Maximum number of biosamples to display in the table
-        title: React.PropTypes.oneOf([ // Title to display in table header, as string or component
+        title: React.PropTypes.oneOfType([ // Title to display in table header, as string or component
             React.PropTypes.string,
             React.PropTypes.node,
         ]),
