@@ -64,7 +64,7 @@ const Annotation = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const adminUser = !!this.context.session_properties.admin;
+        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
 
         const statuses = [{ status: context.status, title: 'Status' }];
 
@@ -272,7 +272,7 @@ const PublicationData = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const adminUser = !!this.context.session_properties.admin;
+        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -434,7 +434,7 @@ const Reference = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const adminUser = !!this.context.session_properties.admin;
+        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -596,7 +596,7 @@ const Project = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const adminUser = !!this.context.session_properties.admin;
+        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -782,7 +782,7 @@ const UcscBrowserComposite = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const adminUser = !!this.context.session_properties.admin;
+        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -1186,7 +1186,7 @@ export const Series = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const adminUser = !!this.context.session_properties.admin;
+        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
         let experiments = {};
         const statuses = [{ status: context.status, title: 'Status' }];
         context.files.forEach((file) => {

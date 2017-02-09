@@ -70,7 +70,7 @@ var Experiment = module.exports.Experiment = React.createClass({
     render: function() {
         var condensedReplicates = [];
         var context = this.props.context;
-        const adminUser = !!this.context.session_properties.admin;
+        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
         var itemClass = globals.itemClass(context, 'view-item');
         var replicates = context.replicates;
         if (replicates) {
