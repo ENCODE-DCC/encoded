@@ -6,7 +6,7 @@ import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel } from './doc';
 import { FetchedItems } from './fetched';
-import { requestFiles, requestObjects } from './objectutils';
+import { requestFiles, requestObjects, RestrictedDownloadButton } from './objectutils';
 import { ProjectBadge } from './image';
 import { PickerActionsMixin } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
@@ -90,6 +90,45 @@ const DerivedFromFiles = React.createClass({
 });
 
 
+// Display a file download button.
+const FileDownloadButton = React.createClass({
+    propTypes: {
+        file: React.PropTypes.object, // File we're possibly downloading by clicking this button
+        hoverDL: React.PropTypes.func, // Function to call when hovering starts/stops over button
+        buttonEnabled: React.PropTypes.bool, // `true` if button is enabled
+    },
+
+    onMouseEnter: function () {
+        this.props.hoverDL(true);
+    },
+
+    onMouseLeave: function () {
+        this.props.hoverDL(false);
+    },
+
+    render: function () {
+        const { file, buttonEnabled } = this.props;
+
+        return (
+            <div className="tooltip-button-wrapper">
+                <a
+                    className="btn btn-info"
+                    href={file.href} 
+                    download={file.href.substr(file.href.lastIndexOf('/') + 1)}
+                    data-bypass="true"
+                    disabled={!buttonEnabled}
+                    onMouseEnter={file.restricted ? this.onMouseEnter : null}
+                    onMouseLeave={file.restricted ? this.onMouseLeave : null}
+                >Download {file.accession}</a>
+                {!buttonEnabled ?
+                    <div className="tooltip-button-overlay" onMouseEnter={file.restricted ? this.onMouseEnter : null} onMouseLeave={file.restricted ? this.onMouseLeave : null} />
+                : null}
+            </div>
+        );
+    },
+});
+
+
 const File = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // File object being displayed
@@ -97,6 +136,7 @@ const File = React.createClass({
 
     contextTypes: {
         session: React.PropTypes.object, // Login information
+        session_properties: React.PropTypes.object,
     },
 
     mixins: [AuditMixin],
@@ -158,6 +198,7 @@ const File = React.createClass({
         const altacc = (context.alternate_accessions && context.alternate_accessions.length) ? context.alternate_accessions.join(', ') : null;
         const aliasList = (context.aliases && context.aliases.length) ? context.aliases.join(', ') : '';
         const datasetAccession = globals.atIdToAccession(context.dataset);
+        const adminUser = !!this.context.session_properties.admin;
 
         // Make array of superceded_by accessions.
         let supersededBys = [];
@@ -270,6 +311,10 @@ const File = React.createClass({
                                             <dd>{context.mapped_read_length}</dd>
                                         </div>
                                     : null}
+
+                                    <div className="file-download-section">
+                                        <RestrictedDownloadButton file={context} adminUser={adminUser} downloadComponent={<FileDownloadButton />} />
+                                    </div>
                                 </dl>
                             </div>
                         </div>

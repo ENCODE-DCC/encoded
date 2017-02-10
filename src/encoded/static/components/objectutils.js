@@ -257,7 +257,7 @@ const FileInfoButton = React.createClass({
 
 // Render a download button for a file that reacts to login state and admin status to render a
 // tooltip about the restriction based on those things.
-const RestrictedDownloadButton = React.createClass({
+export const RestrictedDownloadButton = React.createClass({
     propTypes: {
         file: React.PropTypes.object, // File containing `href` to use as download link
         adminUser: React.PropTypes.bool, // True if logged in user is admin
@@ -337,7 +337,7 @@ const RestrictedDownloadButton = React.createClass({
 
         // Supply a default icon for the user to click to download, if the caller didn't supply one
         // in downloadComponent.
-        const icon = (downloadComponent ? <DownloadIcon file={file} adminUser={adminUser} hoverDL={this.hoverDL} /> : null);
+        const icon = (!downloadComponent ? <DownloadIcon file={file} adminUser={adminUser} hoverDL={this.hoverDL} /> : null);
 
         return (
             <div className="dl-tooltip-trigger">
@@ -352,7 +352,13 @@ const RestrictedDownloadButton = React.createClass({
                         }
                     </span>
                 :
-                    <span>{icon}</span>
+                    <span>
+                        {downloadComponent ?
+                            <span>{downloadComponent}</span>
+                        :
+                            <span>{icon}</span>
+                        }
+                    </span>
                 }
                 {file.restricted ?
                     <div className={`tooltip right${tooltipOpenClass}`} role="tooltip" onMouseEnter={this.hoverTipIn} onMouseLeave={this.hoverTipOut}>
