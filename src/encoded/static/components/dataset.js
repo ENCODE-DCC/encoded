@@ -63,7 +63,6 @@ const Annotation = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const loggedIn = this.context.session && this.context.session['auth.userid'];
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -93,6 +92,12 @@ const Annotation = React.createClass({
             supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
         }
 
+        // Make array of supersedes accessions
+        let supersedes = [];
+        if (context.supersedes && context.supersedes.length) {
+            supersedes = context.supersedes.map(supersede => globals.atIdToAccession(supersede));
+        }
+
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
 
@@ -110,6 +115,7 @@ const Annotation = React.createClass({
                         <h2>Summary for annotation file set {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
+                        {supersedes.length ? <h4 className="superseded-acc">Supersedes {supersedes.join(', ')}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -205,7 +211,7 @@ const Annotation = React.createClass({
                                         </div>
                                     : null}
 
-                                    <AwardRef context={context} loggedIn={loggedIn} />
+                                    <AwardRef context={context} />
 
                                     {context.aliases.length ?
                                         <div data-test="aliases">
@@ -373,7 +379,7 @@ const PublicationData = React.createClass({
                                         </div>
                                     : null}
 
-                                    <AwardRef context={context} loggedIn={loggedIn} />
+                                    <AwardRef context={context} />
 
                                     <div data-test="externalresources">
                                         <dt>External resources</dt>
@@ -527,7 +533,7 @@ const Reference = React.createClass({
                                         </div>
                                     : null}
 
-                                    <AwardRef context={context} loggedIn={loggedIn} />
+                                    <AwardRef context={context} />
 
                                     {context.aliases.length ?
                                         <div data-test="aliases">
@@ -712,7 +718,7 @@ const Project = React.createClass({
                                         </div>
                                     : null}
 
-                                    <AwardRef context={context} loggedIn={loggedIn} />
+                                    <AwardRef context={context} />
 
                                     {context.aliases.length ?
                                         <div data-test="aliases">
@@ -883,7 +889,7 @@ const UcscBrowserComposite = React.createClass({
                                         </div>
                                     : null}
 
-                                    <AwardRef context={context} loggedIn={loggedIn} />
+                                    <AwardRef context={context} />
 
                                     {context.aliases.length ?
                                         <div data-test="aliases">
@@ -1302,7 +1308,7 @@ export const Series = React.createClass({
                                         <dd>{context.lab.title}</dd>
                                     </div>
 
-                                    <AwardRef context={context} loggedIn={loggedIn} />
+                                    <AwardRef context={context} />
 
                                     <div data-test="project">
                                         <dt>Project</dt>
