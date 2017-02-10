@@ -402,6 +402,7 @@ class Experiment(Dataset,
                     if replicateObject['status'] == 'deleted':
                         continue
                     if 'library' in replicateObject:
+                        preferred_name = 'total RNA-seq'
                         libraryObject = request.embed(replicateObject['library'], '@@object')
                         if 'size_range' in libraryObject and \
                            libraryObject['size_range'] == '<200':
@@ -415,8 +416,6 @@ class Experiment(Dataset,
                              libraryObject['nucleic_acid_term_name'] == 'polyadenylated mRNA':
                             preferred_name = 'polyA mRNA RNA-seq'
                             break
-                        else:
-                            preferred_name = 'total RNA-seq'
             return preferred_name or assay_term_name
         return assay_term_name
 
