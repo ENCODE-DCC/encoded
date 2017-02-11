@@ -832,7 +832,7 @@ def check_experiment_dnase_seq_standards(experiment,
                             file_names.append(f['@id'].split('/')[2])
                         file_names_string = str(file_names).replace('\'', ' ')
 
-                        detail = 'Alignment file(s) ( {} ) '.format(file_names_string) + \
+                        detail = 'Alignment file(s) {} '.format(file_names_string) + \
                                  'produced by {} '.format(pipelines[0]['title']) + \
                                  '( {} ) '.format(pipelines[0]['@id']) + \
                                  assemblies_detail(extract_assemblies(alignments_assemblies, file_names)) + \
