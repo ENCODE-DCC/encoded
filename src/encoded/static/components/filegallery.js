@@ -9,7 +9,7 @@ import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
 import { StatusLabel } from './statuslabel';
 import { requestFiles, DownloadableAccession } from './objectutils';
 import { Graph, JsonGraph } from './graph';
-import { qcModalContent } from './quality_metric';
+import { qcModalContent, qcIdToDisplay } from './quality_metric';
 import { softwareVersionList } from './software';
 import { FetchedData, Param } from './fetched';
 import { collapseIcon } from '../libs/svg-icons';
@@ -1821,18 +1821,6 @@ const FileGraph = React.createClass({
         return null;
     },
 });
-
-
-// Extract a displayable string from a QualityMetric object passed in the `qc` parameter.
-function qcIdToDisplay(qc) {
-    let qcName = qc['@id'].match(/^\/([a-z0-9-]*)\/.*$/i);
-    if (qcName && qcName[1]) {
-        qcName = qcName[1].replace(/-/g, ' ');
-        qcName = qcName[0].toUpperCase() + qcName.substring(1);
-        return qcName;
-    }
-    return '';
-}
 
 
 // Display a QC button in the file modal.

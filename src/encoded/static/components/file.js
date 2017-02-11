@@ -8,6 +8,7 @@ import { DocumentsPanel } from './doc';
 import { FetchedItems } from './fetched';
 import { requestFiles, requestObjects, RestrictedDownloadButton } from './objectutils';
 import { ProjectBadge } from './image';
+import { QualityMetricsPanel } from './quality_metric';
 import { PickerActionsMixin } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import { StatusLabel } from './statuslabel';
@@ -407,6 +408,10 @@ const File = React.createClass({
 
                 {this.state.fileFormatSpecs.length ?
                     <DocumentsPanel documentSpecs={[{documents: this.state.fileFormatSpecs}]} />
+                : null}
+
+                {context.quality_metrics && context.quality_metrics.length ?
+                    <QualityMetricsPanel qcMetrics={context.quality_metrics} />
                 : null}
             </div>
         );

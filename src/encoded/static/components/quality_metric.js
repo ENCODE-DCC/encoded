@@ -1,6 +1,8 @@
 import React from 'react';
 import _ from 'underscore';
+import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { AttachmentPanel } from './doc';
+import { FetchedData, Param } from './fetched';
 import globals from './globals';
 
 
@@ -128,3 +130,126 @@ export function qcModalContent(qc, file) {
     );
     return { header: header, body: body };
 }
+
+
+// Extract a displayable string from a QualityMetric object passed in the `qc` parameter.
+export function qcIdToDisplay(qc) {
+    let qcName = qc['@id'].match(/^\/([a-z0-9-]*)\/.*$/i);
+    if (qcName && qcName[1]) {
+        qcName = qcName[1].replace(/-/g, ' ');
+        qcName = qcName[0].toUpperCase() + qcName.substring(1);
+        return qcName;
+    }
+    return '';
+}
+
+
+export const QualityMetricsPanel = React.createClass({
+    propTypes: {
+        qcMetrics: React.PropTypes.array, // Array of quality metrics objects to display
+    },
+
+    render: function () {
+        return (
+            <FetchedData>
+                <Param name="schemas" url="/profiles/" />
+                <QualityMetricsPanelRenderer qcMetrics={this.props.qcMetrics} />
+            </FetchedData>
+        );
+    },
+});
+
+
+// Render a panel for an individual quality metric object
+const QCIndividualPanel = React.createClass({
+    propTypes: {
+        qcMetric: React.PropTypes.object.isRequired, // QC metric object whose properties we're displaying
+        qcSchema: React.PropTypes.object.isRequired, // Schema that applies to the given qcMetric object
+        genericQCSchema: React.PropTypes.object.isRequired, // Generic quality metric schema
+    },
+
+    render: function () {
+        const { qcMetric, qcSchema, genericQCSchema } = this.props;
+
+        // Got a matching schema, so render it with full titles.
+        return (
+            <Panel addClasses="qc-individual-panel">
+                <PanelHeading addClasses="qc-individual-panel__title">
+                    {qcIdToDisplay(qcMetric)}
+                </PanelHeading>
+                <PanelBody>
+                    <dl className="key-value">
+                        {Object.keys(qcMetric).map((key) => {
+                            if (!genericQCSchema.properties[key]) {
+                                // The property doesn't exist in the generic schema, so render
+                                // any string or number types.
+                                const schemaProperty = qcSchema.properties[key];
+                                if (schemaProperty) {
+                                    if (schemaProperty.type === 'number' || schemaProperty.type === 'string') {
+                                        return (
+                                            <div data-test={key}>
+                                                <dt className="sentence-case">{schemaProperty.title}</dt>
+                                                <dd>{qcMetric[key]}</dd>
+                                            </div>
+                                        );
+                                    }
+                                    return null;
+                                }
+
+                                // Got a matching schema, but property didn't match anything in
+                                // it. Ignore the property in that case.
+                                return null;
+                            }
+
+                            // The property *does* exist in the generic QC schema, so don't
+                            // display it.
+                            return null;
+                        })}
+                    </dl>
+                </PanelBody>
+            </Panel>
+        );
+    }
+});
+
+
+// Display a panel of an array of quality metrics objects.
+const QualityMetricsPanelRenderer = React.createClass({
+    propTypes: {
+        qcMetrics: React.PropTypes.array, // Array of quality metrics objects to display
+        schemas: React.PropTypes.object, // All schemas in the system keyed by @type; used to get QC titles
+    },
+
+    render: function () {
+        const { qcMetrics, schemas } = this.props;
+
+        // Extract the GenericQualityMetric schema. We don't display properties that exist in this
+        // schema because they're generic properties, not interesting QC proeprties.
+        const genericQCSchema = schemas.GenericQualityMetric;
+        if (!genericQCSchema) {
+            // Not having this schema would be very weird, but just in case...
+            return null;
+        }
+
+        return (
+            <Panel>
+                <PanelHeading>
+                    <h4>Quality metrics</h4>
+                </PanelHeading>
+                <PanelBody addClasses="qc-panel">
+                    {qcMetrics.map((qcMetric) => {
+                        // Get the schema specific for this quality metric, as identified by the
+                        // first @type in this QC metric.
+                        const qcSchema = schemas[qcMetric['@type'][0]];
+                        if (qcSchema && qcSchema.properties) {
+                            return <QCIndividualPanel qcMetric={qcMetric} qcSchema={qcSchema} genericQCSchema={genericQCSchema} />
+                        }
+
+                        // Weirdly, no matching schema. Render properties generically.
+                        return null;
+                    })}
+                </PanelBody>
+            </Panel>
+        );
+    },
+});
