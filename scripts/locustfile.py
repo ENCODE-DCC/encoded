@@ -41,8 +41,8 @@ class UserBehavior(TaskSet):
         l.client.get("/search/?searchTerm=skin")
         l.client.get("/search/?searchTerm=skin&type=Experiment")
         l.client.get("/search/?searchTerm=skin&type=Experiment&award.project=ENCODE")
-        l.client.get("/search/?searchTerm=skin&type=Experiment&award.project=ENCODE&assay_title=RNA-seq")
-        l.client.get("/search/?searchTerm=skin&type=Experiment&award.project=ENCODE&assay_title=RNA-seq&replicates.library.biosample.life_stage=adult")
+        l.client.get("/search/?searchTerm=skin&type=Experiment&award.project=ENCODE&assay_title=total+RNA-seq")
+        l.client.get("/search/?searchTerm=skin&type=Experiment&award.project=ENCODE&assay_title=total+RNA-seq&replicates.library.biosample.life_stage=adult")
 
 class WebsiteUser(HttpLocust):
     task_set = UserBehavior
