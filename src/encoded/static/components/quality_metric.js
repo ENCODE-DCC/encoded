@@ -1,9 +1,13 @@
 import React from 'react';
 import _ from 'underscore';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
+import { collapseIcon } from '../libs/svg-icons';
 import { AttachmentPanel } from './doc';
 import { FetchedData, Param } from './fetched';
 import globals from './globals';
+
+
+const collapsedHeight = 200; // Match collapsed-height from _quality_metrics.scss
 
 
 // For each type of quality metric, make a list of attachment properties. If the quality_metric object has an attachment
@@ -160,6 +164,29 @@ export const QualityMetricsPanel = React.createClass({
 });
 
 
+// Draw the collapse trigger at the bottom of the QC panel
+const ExpandTrigger = React.createClass({
+    propTypes: {
+        expanded: React.PropTypes.bool.isRequired, // True if the panel this trigger controls is expanded
+        clickHandler: React.PropTypes.func.isRequired, // Function to call to handle a click in the trigger
+        id: React.PropTypes.string.isRequired, // ID of the panel this trigger controls
+    },
+
+    // Handle a click anywhere in the trigger button.
+    handleClick: function () {
+        this.props.clickHandler();
+    },
+
+    render: function () {
+        return (
+            <button className="qc-individual-panel__expand-trigger" onClick={this.handleClick} aria-controls={this.props.id}>
+                {collapseIcon(!this.props.expanded)}
+            </button>
+        );
+    },
+});
+
+
 // Render a panel for an individual quality metric object
 const QCIndividualPanel = React.createClass({
     propTypes: {
@@ -168,16 +195,40 @@ const QCIndividualPanel = React.createClass({
         genericQCSchema: React.PropTypes.object.isRequired, // Generic quality metric schema
     },
 
+    getInitialState: function () {
+        return {
+            expanded: false, // True if panel is collapsed to its smaller size
+            triggerVisible: true, // `true` if ExpandTrigger should be visible; `false` if data too short for ExpandTrigger to be needed
+        };
+    },
+
+    componentDidMount: function () {
+        // If the body of the panel is shorter than the collapsed height of the panel, we don't
+        // need the trigger.
+        const panelHeading = this.refs.qcPanelHeading.getDOMNode();
+        const panelBody = this.refs.qcPanelBody.getDOMNode();
+        if (panelBody.clientHeight + panelHeading.clientHeight <= collapsedHeight) {
+            this.setState({ triggerVisible: false });
+        }
+    },
+
+    expandClick: function () {
+        this.setState({ expanded: !this.state.expanded });
+    },
+
     render: function () {
         const { qcMetric, qcSchema, genericQCSchema } = this.props;
 
+        // Calculate the classes for the individual panel.
+        const panelClasses = `qc-individual-panel${this.state.expanded ? ' expanded' : ''}`;
+
         // Got a matching schema, so render it with full titles.
         return (
-            <Panel addClasses="qc-individual-panel">
-                <PanelHeading addClasses="qc-individual-panel__title">
-                    <h4>{qcIdToDisplay(qcMetric)}</h4>
+            <Panel id={qcMetric.uuid} addClasses={panelClasses} aria-expanded={this.state.expanded} aria-labelledby={`${qcMetric.uuid}-label`}>
+                <PanelHeading ref="qcPanelHeading" addClasses="qc-individual-panel__title">
+                    <h4 id={`${qcMetric.uuid}-label`}>{qcIdToDisplay(qcMetric)}</h4>
                 </PanelHeading>
-                <PanelBody>
+                <PanelBody ref="qcPanelBody">
                     <dl className="key-value">
                         {Object.keys(qcMetric).map((key) => {
                             if (!genericQCSchema.properties[key]) {
@@ -210,9 +261,12 @@ const QCIndividualPanel = React.createClass({
                         })}
                     </dl>
                 </PanelBody>
+                {this.state.triggerVisible ?
+                    <ExpandTrigger expanded={this.state.expanded} clickHandler={this.expandClick} id={qcMetric.uuid} />
+                : null}
             </Panel>
         );
-    }
+    },
 });
 
 
@@ -245,7 +299,7 @@ const QualityMetricsPanelRenderer = React.createClass({
                         // first @type in this QC metric.
                         const qcSchema = schemas[qcMetric['@type'][0]];
                         if (qcSchema && qcSchema.properties) {
-                            return <QCIndividualPanel qcMetric={qcMetric} qcSchema={qcSchema} genericQCSchema={genericQCSchema} />
+                            return <QCIndividualPanel key={qcMetric.uuid} qcMetric={qcMetric} qcSchema={qcSchema} genericQCSchema={genericQCSchema} />;
                         }
 
                         // Weirdly, no matching schema. Render properties generically.

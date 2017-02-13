@@ -8,11 +8,21 @@
     }
 }
 
-$horzontal-margin: .5%;
+$horzontal-margin: .5%; // Margin at left and right of qc-individual-panel
+$collapsed-height: 200px; // Height of qc-individual-panel when collapsed
+$collapse-trigger-height: 25px; // Height of collapse trigger
 
-// Individual QC panels inside .qc-panel
+// Individual QC panels inside .qc-panel.
 .qc-individual-panel {
+    position: relative;
     margin: 10px;
+    height: $collapsed-height;
+    overflow: hidden;
+
+    &.expanded {
+        height: auto;
+        padding-bottom: $collapse-trigger-height;
+    }
 
     @media screen and (min-width: $screen-sm-min) {
         margin: 5px $horzontal-margin;
@@ -28,11 +38,27 @@ $horzontal-margin: .5%;
         padding: 5px 10px;
     }
 
+    // Panel title for individual QC panels.
     @at-root #{&}__title {
         padding: 8px 5px;
 
         h4 {
             font-size: 1.1rem;
+        }
+    }
+
+    // Collapse trigger for individual QC panels.
+    @at-root #{&}__expand-trigger {
+        position: absolute;
+        bottom: 0;
+        height: $collapse-trigger-height;
+        width: 100%;
+        border: none;
+        border-top: 1px solid #c0c0c0;
+        background-color: #e8e8e8;
+
+        &:hover {
+            background-color: #b8c7d5;
         }
     }
 }
