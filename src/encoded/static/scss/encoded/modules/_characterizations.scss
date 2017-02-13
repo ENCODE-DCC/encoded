@@ -12,54 +12,7 @@ $characterization-figure-width: 64px;
 $characterization-figure-height: 64px;
 $qualitymetric-figure-width: 96px;
 $qualitymetric-figure-height: 96px;
-
-
-.type-Document.view-detail {
-    padding: 0;
-    overflow: hidden;
-
-    figure {
-        margin: 14px;
-        padding: 10px;
-        text-align: center;
-    }
-
-    figcaption {
-        font-weight: bold;
-        text-align: center;
-        padding: 5px;
-    }
-}
-
-
-.type-Characterization.view-detail {
-    @extend .type-Document.view-detail;
-
-    header {
-        margin: 0 15px;
-
-        h3 {
-            margin-bottom: 0;
-        }
-    }
-}
-
-
-.type-QualityMetric.view-detail {
-    padding: 0;
-
-    figure {
-        margin: 14px;
-        padding: 10px;
-        text-align: center;
-    }
-
-    figcaption {
-        font-weight: bold;
-        text-align: center;
-        padding: 5px;
-    }
-}
+$attachment-button-margin: 3px;
 
 
 .document-title {
@@ -70,20 +23,6 @@ $qualitymetric-figure-height: 96px;
     font-weight: bold;
     text-align: left;
     font-size: 1rem;
-}
-
-.document-label {
-    display: inline-block;
-    padding: 0 5px;
-    font-size: 0.9rem;
-    color: #fff;
-    background-color: #808080;
-    border-radius: 4px;
-}
-
-.characterization-title {
-    @extend .document-title;
-    padding: 10px;
 }
 
 
@@ -102,8 +41,7 @@ $qualitymetric-figure-height: 96px;
     @include status-colors($state-success-bg, $state-success-text);
 }
 
-.type-Characterization.view-detail.status-not-compliant,
-.type-Document.view-detail.status-deleted {
+.type-Characterization.view-detail.status-not-compliant {
     @include status-colors($state-danger-bg, $state-danger-text);
 }
 
@@ -113,8 +51,7 @@ $qualitymetric-figure-height: 96px;
 
 .type-Characterization.view-detail.status-in-progress,
 .type-Characterization.view-detail.status-not-submitted-for-review-by-lab,
-.type-Characterization.view-detail.status-not-reviewed,
-.type-Document.view-detail.status-none {
+.type-Characterization.view-detail.status-not-reviewed {
     @include status-colors($bg: #f7f7f9, $text: #333);
 }
 
@@ -154,6 +91,10 @@ $qualitymetric-figure-height: 96px;
     .label {
         display: inline-block;
         font-size: 0.8rem;
+    }
+
+    @media screen and (min-width: $screen-sm-min) {
+        flex: 1 1 auto;
     }
 }
 
@@ -377,8 +318,8 @@ $qualitymetric-figure-height: 96px;
 %file-icon {
     @include img-responsive();
     @include text-hide;
-    width: 80%;
-    height: 80%;
+    width: 100%;
+    height: 100%;
     background-position: center center;
     background-repeat: no-repeat;
     background-size: 80% 80%;
@@ -387,28 +328,16 @@ $qualitymetric-figure-height: 96px;
 .file-pdf {
     @extend %file-icon;
     background-image: url(/static/img/file-pdf.svg);
-
-    .no-svg & {
-        background-image: url(/static/img/file-pdf.png);
-    }
 }
 
 .file-generic {
     @extend %file-icon;
     background-image: url(/static/img/file.svg);
-
-    .no-svg & {
-        background-image: url(/static/img/file.png);
-    }
 }
 
 .file-missing {
     @extend %file-icon;
     background-image: url(/static/img/file-broken.svg);
-
-    .no-svg & {
-        background-image: url(/static/img/file-broken.png);
-    }
 }
 
 .status-indicators {
@@ -422,12 +351,15 @@ $qualitymetric-figure-height: 96px;
 
 
 @mixin type-panel($figure-width, $figure-height) {
-    $attachment-button-margin: 3px;
 
     margin-top: 0;
 
     &.view-detail {
         padding: 0;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: flex;
+        }
 
         figure {
             position: relative;
@@ -482,8 +414,7 @@ $qualitymetric-figure-height: 96px;
             }
 
             @media screen and (min-width: $screen-sm-min) {
-                width: $figure-width;
-                float: right;
+                flex: 0 0 $figure-width;
                 margin: 0 0 0 5px;
             }
 
@@ -497,8 +428,32 @@ $qualitymetric-figure-height: 96px;
 
 
 .attachment {
-    display: table-cell;
-    vertical-align: middle;
+    padding: $attachment-button-margin;
+
+    @at-root #{&}__button {
+        display: block;
+        position: relative;
+        padding: $attachment-button-margin;
+        height: $document-figure-height - (2 * $attachment-button-margin);
+        width: $document-figure-width - (2 * $attachment-button-margin);
+        border-radius: 5px;
+        border: 1px solid #a0a0a0;
+        overflow: hidden;
+    }
+
+    @at-root #{&}__hover {
+        position : absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: transparent;
+        z-index: 1;
+
+        &:hover {
+            background-color:rgba(0,0,0,0.2);
+        }
+    }
 }
 
 
@@ -524,56 +479,87 @@ $qualitymetric-figure-height: 96px;
     word-break: break-all;
 }
 
-.type-Document {
-    @include type-panel($document-figure-width, $document-figure-height);
+// Document styles, normally added to a <Panel> component's classes.
+$detail-switch-height: 30px;
+$detail-switch-width: 30px;
+.document {
+    margin: 3px;
 
-    .panel-body {
-        padding: 0;
+    // Document header; normally a document type and/or label
+    @at-root #{&}__header {
+        padding: 5px;
+        border-bottom: 1px solid #c0c0c0;
+        font-weight: bold;
+        text-transform: capitalize;
+    }
+
+    @at-root #{&}__intro {
+        display: flex;
+        border-bottom: 1px solid #c0c0c0;
+
+        @at-root #{&}--attachment-only {
+            border-bottom: none;
+        }
+    }
+
+    @at-root #{&}__caption {
+        flex: 1 1 auto;
+        margin: 5px;
+    }
+
+    @at-root #{&}__preview {
+        flex: 0 0 $document-figure-width;
+        align-items: stretch;
+        margin: 0;
+        border-left: 1px solid #c0c0c0;
+    }
+
+    @at-root #{&}__file {
+        display: flex;
+
+        @at-root #{&}-name {
+            flex: 1 1 auto;
+            overflow: hidden;
+            white-space: nowrap;
+
+            @at-root #{&}-icon {
+                display: inline-block;
+                padding: 0 5px;
+                line-height: $detail-switch-height - 1;
+            }
+
+            @at-root #{&}-link {
+                display: inline;
+                line-height: $detail-switch-height;
+            }
+        }
+
+        @at-root #{&}-detail-switch {
+            flex: 0 0 $detail-switch-width;
+            padding: 5px;
+            height: $detail-switch-height;
+            line-height: $detail-switch-height;
+            max-width: $detail-switch-width;
+            background-color: #e8e8e8;
+
+            &:hover {
+                background-color: #b8c7d5;
+            }
+        }
+    }
+
+    @at-root #{&}__detail {
+        display: none;
+        margin: 0;
+        padding: 10px 5px;
+        border-top: 1px solid #c0c0c0;
+
+        &.active {
+            display: block;
+        }
     }
 }
 
-.type-Characterization {
-    @include type-panel($document-figure-width, $document-figure-height);
-
-    .panel-body {
-        padding: 0;
-    }
-}
-
-.type-Characterization.type-AntibodyCharacterization {
-    @include type-panel($characterization-figure-width, $characterization-figure-height);
-}
-
-.type-QualityMetric {
-    @include type-panel($qualitymetric-figure-width, $qualitymetric-figure-width);
-}
-
-@mixin panel-header($figure-height) {
-    height: auto;
-    border-bottom: 1px solid #e8e8e8;
-    overflow: hidden;
-
-    @media screen and (min-width: $screen-sm-min) {
-        height: $figure-height;
-    }
-}
-
-.document-header {
-    @include panel-header($document-figure-height);
-}
-
-.characterization-header {
-    @include panel-header($characterization-figure-height);
-
-    &.panel-body {
-        padding: 0;
-    }
-}
-
-.quality-metric-header {
-    height: auto;
-    overflow: hidden;
-}
 
 %panel-intro {
     padding: 5px;
@@ -602,37 +588,24 @@ $qualitymetric-figure-height: 96px;
 
 // ***************************************
 // Document download file bar classes
-$dl-bar-height: 30px;
 
 // THe file bar itself
 .dl-bar {
     position: relative;
-    height: $dl-bar-height;
+    height: $detail-switch-height;
     padding: 0 10px 0 10px;
-    line-height: $dl-bar-height;
+    line-height: $detail-switch-height;
     border-bottom: 1px solid #e8e8e8;
     white-space: nowrap;
     overflow: hidden;
-}
-
-// Box containing the switch to drop down the details panel
-.detail-switch {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    width: $dl-bar-height;
-    height: $dl-bar-height;
-    background-color: #e8e8e8;
-    border-left: 1px solid #e0e0e0;
 }
 
 // Icon within .detail-switch to show the current state of the switch
 .detail-trigger {
     @extend .icon-caret-down;
     display: block;
-    height: $dl-bar-height;
-    line-height: $dl-bar-height;
+    height: $detail-switch-height;
+    line-height: $detail-switch-height;
     font-size: 1.4rem;
     cursor: pointer;
     text-align: center;
@@ -740,26 +713,40 @@ $dl-bar-height: 30px;
 // **********
 
 // area to hold biosample terms
-.characterization-biosample-terms {
+.document__characterization-reviews {
     display: flex;
-    margin-top: -1px;
     margin-right: -1px;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-content: flex-start;
     align-items: flex-start;
     border-bottom: 1px solid #c0c0c0;
 }
 
 // each biosample term
-.characterization-biosample-term {
-    order: 0;
-    padding: 2px 5px;
+.document__characterization-biosample-term {
+    flex: 1 1 auto;
     align-self: auto;
+    padding: 2px 5px;
+    margin-right: 1px;
     text-align: center;
     background-color: #e8e8e8;
-    border-top: 1px solid #fff;
-    border-right: 1px solid #fff;
     font-size: 0.9rem;
+}
+
+.document__characterization-badge {
+    flex: 1 1 auto;
+    padding: 0 3px;
+
+    .status-list {
+        .label {
+            display: inline-block;
+            margin: 3px 0;
+            padding: 0 17px 0 10px;
+            text-align: center;
+            font-size: 0.85rem;
+            line-height: 24px;
+        }
+    }
 }

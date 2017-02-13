@@ -328,7 +328,6 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms)
         'files.quality_metrics.step_run',
         'files.quality_metrics.step_run.analysis_step_version.analysis_step',
         'files.replicate.library',
-        'supersedes',
     ]
     rev = Dataset.rev.copy()
     rev.update({
