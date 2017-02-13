@@ -162,9 +162,7 @@ def audit_item_aliases(value, system):
         for a in aliases:
             if alias_pattern.match(a) is None:
                 detail = 'Found \"bad\" alias: {}.'.format(a)
-                yield AuditFailure('flagged alias', detail, level='INTERNAL_ACTION')
-            else:
-                print (alias_pattern.match(a))
+                yield AuditFailure('inconsistent alias', detail, level='INTERNAL_ACTION')
 
 
 @audit_checker('Item', frame='object')
