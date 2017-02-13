@@ -129,6 +129,12 @@ const File = React.createClass({
             supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
         }
 
+        // Make array of supersedes accessions
+        let supersedes = [];
+        if (context.supersedes && context.supersedes.length) {
+            supersedes = context.supersedes.map(supersede => globals.atIdToAccession(supersede));
+        }
+
         // Collect up relevant pipelines.
         let pipelines = [];
         if (context.analysis_step_version && context.analysis_step_version.analysis_step.pipelines && context.analysis_step_version.analysis_step.pipelines.length) {
@@ -142,6 +148,7 @@ const File = React.createClass({
                         <h2>File summary for {context.accession}{' / '}<span className="sentence-case">{`${context.file_format}${context.file_format_type ? ` (${context.file_format_type})` : ''}`}</span></h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
+                        {supersedes.length ? <h4 className="superseded-acc">Supersedes {supersedes.join(', ')}</h4> : null}
                         <div className="status-line">
                             {context.status ?
                                 <div className="characterization-status-labels">
@@ -276,6 +283,13 @@ const File = React.createClass({
                                         </div>
                                     : null}
 
+                                    {context.content_error_detail ?
+                                        <div data-test="contenterrordetail">
+                                            <dt>Content error detail</dt>
+                                            <dd>{context.content_error_detail}</dd>
+                                        </div>
+                                    : null}
+
                                     {aliasList ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
@@ -326,6 +340,7 @@ const SequenceFileInfo = React.createClass({
     render: function () {
         const { file } = this.props;
         const pairedWithAccession = file.paired_with ? globals.atIdToAccession(file.paired_with) : '';
+        const platformAccession = file.platform ? decodeURIComponent(globals.atIdToAccession(file.platform)) : '';
 
         return (
             <Panel>
@@ -338,7 +353,7 @@ const SequenceFileInfo = React.createClass({
                         {file.platform ?
                             <div data-test="platform">
                                 <dt>Platform</dt>
-                                <dd><a href={file.platform['@id']} title="View page for this platform">{file.platform.title ? file.platform.title : file.platform.term_id}</a></dd>
+                                <dd><a href={file.platform} title="View page for this platform">{platformAccession}</a></dd>
                             </div>
                         : null}
 
