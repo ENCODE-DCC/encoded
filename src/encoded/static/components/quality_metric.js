@@ -175,7 +175,7 @@ const QCIndividualPanel = React.createClass({
         return (
             <Panel addClasses="qc-individual-panel">
                 <PanelHeading addClasses="qc-individual-panel__title">
-                    {qcIdToDisplay(qcMetric)}
+                    <h4>{qcIdToDisplay(qcMetric)}</h4>
                 </PanelHeading>
                 <PanelBody>
                     <dl className="key-value">

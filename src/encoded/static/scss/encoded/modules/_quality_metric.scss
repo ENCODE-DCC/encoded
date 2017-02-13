@@ -1,5 +1,7 @@
 // Panel that displays all QC panels.
 .qc-panel {
+    padding: 5px;
+
     @media screen and (min-width: $screen-sm-min) {
         display: flex;
         flex-wrap: wrap;
@@ -13,12 +15,24 @@ $horzontal-margin: .5%;
     margin: 10px;
 
     @media screen and (min-width: $screen-sm-min) {
-        margin: 10px $horzontal-margin;
+        margin: 5px $horzontal-margin;
         flex: 0 1 (50% - (2 * $horzontal-margin));
     }
 
     @media screen and (min-width: $screen-md-min) {
-        margin: 10px $horzontal-margin;
+        margin: 5px $horzontal-margin;
         flex: 0 1 (33.3333% - (2 * $horzontal-margin));
+    }
+
+    .panel-body {
+        padding: 5px 10px;
+    }
+
+    @at-root #{&}__title {
+        padding: 8px 5px;
+
+        h4 {
+            font-size: 1.1rem;
+        }
     }
 }
