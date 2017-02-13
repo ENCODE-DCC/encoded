@@ -668,7 +668,7 @@ const RawSequencingTable = React.createClass({
                 <table className="table table-sortable table-raw">
                     <thead>
                         <tr className="table-section">
-                            <th colSpan={loggedIn ? '11' : '10'}>
+                            <th colSpan="11">
                                 <CollapsingTitle title="Raw sequencing data" collapsed={this.state.collapsed} handleCollapse={this.handleCollapse} />
                             </th>
                         </tr>
@@ -685,7 +685,7 @@ const RawSequencingTable = React.createClass({
                                 <th>Date added</th>
                                 <th>File size</th>
                                 <th>Audit status</th>
-                                {loggedIn ? <th>File status</th> : null}
+                                <th>File status</th>
                             </tr>
                         : null}
                     </thead>
@@ -739,7 +739,7 @@ const RawSequencingTable = React.createClass({
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={pairClass}>{humanFileSize(file.file_size)}</td>
                                             <td className={pairClass}>{fileAuditStatus(file)}</td>
-                                            {loggedIn ? <td className={`${pairClass} characterization-meta-data`}><StatusLabel status={file.status} /></td> : null}
+                                            <td className={`${pairClass} characterization-meta-data`}><StatusLabel status={file.status} /></td>
                                         </tr>
                                     );
                                 });
@@ -774,7 +774,7 @@ const RawSequencingTable = React.createClass({
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{humanFileSize(file.file_size)}</td>
                                         <td>{fileAuditStatus(file)}</td>
-                                        {loggedIn ? <td className="characterization-meta-data"><StatusLabel status={file.status} /></td> : null}
+                                        <td className="characterization-meta-data"><StatusLabel status={file.status} /></td>
                                     </tr>
                                 );
                             })}
@@ -783,7 +783,7 @@ const RawSequencingTable = React.createClass({
 
                     <tfoot>
                         <tr>
-                            <td className={`file-table-footer${this.state.collapsed ? ' hiding' : ''}`} colSpan={loggedIn ? '11' : '10'} />
+                            <td className={`file-table-footer${this.state.collapsed ? ' hiding' : ''}`} colSpan="11" />
                         </tr>
                     </tfoot>
                 </table>
@@ -848,7 +848,7 @@ const RawFileTable = React.createClass({
                 <table className="table table-sortable table-raw">
                     <thead>
                         <tr className="table-section">
-                            <th colSpan={loggedIn ? '11' : '10'}>
+                            <th colSpan="11">
                                 <CollapsingTitle title="Raw data" collapsed={this.state.collapsed} handleCollapse={this.handleCollapse} />
                             </th>
                         </tr>
@@ -865,7 +865,7 @@ const RawFileTable = React.createClass({
                                 <th>Date added</th>
                                 <th>File size</th>
                                 <th>Audit status</th>
-                                {loggedIn ? <th>File status</th> : null}
+                                <th>File status</th>
                             </tr>
                         : null}
                     </thead>
@@ -916,7 +916,7 @@ const RawFileTable = React.createClass({
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={pairClass}>{humanFileSize(file.file_size)}</td>
                                             <td className={pairClass}>{fileAuditStatus(file)}</td>
-                                            {loggedIn ? <td className={`${pairClass} characterization-meta-data`}><StatusLabel status={file.status} /></td> : null}
+                                            <td className={`${pairClass} characterization-meta-data`}><StatusLabel status={file.status} /></td>
                                         </tr>
                                     );
                                 });
@@ -945,7 +945,7 @@ const RawFileTable = React.createClass({
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{humanFileSize(file.file_size)}</td>
                                         <td>{fileAuditStatus(file)}</td>
-                                        {loggedIn ? <td className="characterization-meta-data"><StatusLabel status={file.status} /></td> : null}
+                                        <td className="characterization-meta-data"><StatusLabel status={file.status} /></td>
                                     </tr>
                                 );
                             })}
@@ -954,7 +954,7 @@ const RawFileTable = React.createClass({
 
                     <tfoot>
                         <tr>
-                            <td className={`file-table-footer${this.state.collapsed ? ' hiding' : ''}`} colSpan={loggedIn ? '11' : '10'} />
+                            <td className={`file-table-footer${this.state.collapsed ? ' hiding' : ''}`} colSpan="11" />
                         </tr>
                     </tfoot>
                 </table>

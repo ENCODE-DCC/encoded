@@ -259,6 +259,12 @@ var Experiment = module.exports.Experiment = React.createClass({
             supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
         }
 
+        // Make array of supersedes accessions
+        let supersedes = [];
+        if (context.supersedes && context.supersedes.length) {
+            supersedes = context.supersedes.map(supersede => globals.atIdToAccession(supersede));
+        }
+
         // Determine whether the experiment is isogenic or anisogenic. No replication_type indicates isogenic.
         var anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
 
@@ -318,6 +324,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <h2>Experiment summary for {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
+                        {supersedes.length ? <h4 className="superseded-acc">Supersedes {supersedes.join(', ')}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
