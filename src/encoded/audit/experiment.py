@@ -483,6 +483,8 @@ def audit_experiment_with_uploading_files(value, system):
                                     'original_files.dataset',
                                     'original_files.dataset.original_files'])
 def audit_experiment_out_of_date_analysis(value, system):
+    if value['assay_term_name'] not in ['ChIP-seq', 'DNase-seq']:
+        return
     alignment_files = scan_files_for_file_format_output_type(value['original_files'],
                                                              'bam', 'alignments')
     not_filtered_alignments = scan_files_for_file_format_output_type(
