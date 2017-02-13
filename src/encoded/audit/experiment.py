@@ -32,6 +32,7 @@ targetBasedAssayList = [
     'shRNA knockdown followed by RNA-seq',
     'siRNA knockdown followed by RNA-seq',
     'CRISPR genome editing followed by RNA-seq',
+    'CRISPRi followed by RNA-seq'
     ]
 
 controlRequiredAssayList = [
@@ -45,6 +46,7 @@ controlRequiredAssayList = [
     'shRNA knockdown followed by RNA-seq',
     'siRNA knockdown followed by RNA-seq',
     'CRISPR genome editing followed by RNA-seq',
+    'CRISPRi followed by RNA-seq'
     ]
 
 seq_assays = [
@@ -595,9 +597,11 @@ def audit_experiment_standards_dispatcher(value, system):
        value['assay_term_name'] not in ['DNase-seq', 'RAMPAGE', 'RNA-seq', 'ChIP-seq', 'CAGE',
                                         'shRNA knockdown followed by RNA-seq',
                                         'siRNA knockdown followed by RNA-seq',
+                                        'CRISPRi followed by RNA-seq',
                                         'CRISPR genome editing followed by RNA-seq',
                                         'single cell isolation followed by RNA-seq',
-                                        'whole-genome shotgun bisulfite sequencing']:
+                                        'whole-genome shotgun bisulfite sequencing',
+                                        'genetic modification followed by DNase-seq']:
         return
     if 'original_files' not in value or len(value['original_files']) == 0:
         return
@@ -630,7 +634,7 @@ def audit_experiment_standards_dispatcher(value, system):
 
     standards_version = 'ENC3'
 
-    if value['assay_term_name'] in ['DNase-seq']:
+    if value['assay_term_name'] in ['DNase-seq', 'genetic modification followed by DNase-seq']:
         hotspots = scanFilesForOutputType(value['original_files'],
                                           'hotspots')
         signal_files = scanFilesForOutputType(value['original_files'],
@@ -648,6 +652,7 @@ def audit_experiment_standards_dispatcher(value, system):
     if value['assay_term_name'] in ['RAMPAGE', 'RNA-seq', 'CAGE',
                                     'shRNA knockdown followed by RNA-seq',
                                     'siRNA knockdown followed by RNA-seq',
+                                    'CRISPRi followed by RNA-seq',
                                     'CRISPR genome editing followed by RNA-seq',
                                     'single cell isolation followed by RNA-seq']:
         gene_quantifications = scanFilesForOutputType(value['original_files'],
@@ -808,6 +813,16 @@ def check_experiment_dnase_seq_standards(experiment,
                      'lack read depth information.'
             yield AuditFailure('missing read depth', detail, level='WARNING')
 
+        hotspot_assemblies = {}
+        for hotspot_file in hotspots_files:
+            if 'assembly' in hotspot_file:
+                hotspot_assemblies[hotspot_file['accession']] = hotspot_file['assembly']
+
+        signal_assemblies = {}
+        for signal_file in signal_files:
+            if 'assembly' in signal_file:
+                signal_assemblies[signal_file['accession']] = signal_file['assembly']
+
         hotspot_quality_metrics = get_metrics(hotspots_files,
                                               'HotspotQualityMetric',
                                               desired_assembly)
@@ -817,14 +832,14 @@ def check_experiment_dnase_seq_standards(experiment,
                 if "SPOT score" in metric:
                     file_names = []
                     for f in metric['quality_metric_of']:
-                        file_names.append(f['@id'])
+                        file_names.append(f['@id'].split('/')[2])
                     file_names_string = str(file_names).replace('\'', ' ')
-
                     detail = "Signal Portion of Tags (SPOT) is a measure of enrichment, " + \
                              "analogous to the commonly used fraction of reads in peaks metric. " + \
                              "ENCODE processed hotspots files {} ".format(file_names_string) + \
                              "produced by {} ".format(pipelines[0]['title']) + \
                              "( {} ) ".format(pipelines[0]['@id']) + \
+                             assemblies_detail(extract_assemblies(hotspot_assemblies, file_names)) + \
                              "have a SPOT score of {0:.2f}. ".format(metric["SPOT score"]) + \
                              "According to ENCODE standards, " + \
                              "SPOT score of 0.4 or higher is considered a product of high quality " + \
@@ -834,6 +849,7 @@ def check_experiment_dnase_seq_standards(experiment,
                              "SPOT score of 0.25 is considered minimally acceptable " + \
                              "for rare and hard to find primary tissues. (See {} )".format(
                                  link_to_standards)
+
                     if 0.3 <= metric["SPOT score"] < 0.4:
                         yield AuditFailure('low spot score', detail, level='WARNING')
                     elif 0.25 <= metric["SPOT score"] < 0.3:
@@ -856,15 +872,15 @@ def check_experiment_dnase_seq_standards(experiment,
                 if 'Pearson correlation' in metric:
                     file_names = []
                     for f in metric['quality_metric_of']:
-                        file_names.append(f['@id'])
+                        file_names.append(f['@id'].split('/')[2])
                     file_names_string = str(file_names).replace('\'', ' ')
-
                     detail = 'Replicate concordance in DNase-seq expriments is measured by ' + \
                         'calculating the Pearson correlation between signal quantification ' + \
                         'of the replicates. ' + \
                         'ENCODE processed signal files {} '.format(file_names_string) + \
                         'produced by {} '.format(pipelines[0]['title']) + \
                         '( {} ) '.format(pipelines[0]['@id']) + \
+                        assemblies_detail(extract_assemblies(signal_assemblies, file_names)) + \
                         'have a Pearson correlation of {0:.2f}. '.format(metric['Pearson correlation']) + \
                         'According to ENCODE standards, in an {} '.format(experiment['replication_type']) + \
                         'assay a Pearson correlation value > {} '.format(threshold) + \
@@ -874,6 +890,26 @@ def check_experiment_dnase_seq_standards(experiment,
                     if metric['Pearson correlation'] < threshold:
                         yield AuditFailure('insufficient replicate concordance',
                                            detail, level='NOT_COMPLIANT')
+
+
+def extract_assemblies(assemblies, file_names):
+    to_return = set()
+    for f_name in file_names:
+        if f_name in assemblies:
+            to_return.add(assemblies[f_name])
+    return sorted(list(to_return))
+
+
+def assemblies_detail(assemblies):
+    assemblies_detail = ''
+    if assemblies:
+        if len(assemblies) > 1:
+            assemblies_detail = "for {} assemblies ".format(
+                str(assemblies).replace('\'', ' '))
+        else:
+            assemblies_detail = "for {} assembly ".format(
+                assemblies[0])
+    return assemblies_detail
 
 
 def check_experiment_rna_seq_standards(value,
@@ -1167,6 +1203,7 @@ def check_experiment_long_rna_standards(experiment,
 
                 if experiment['assay_term_name'] in ['shRNA knockdown followed by RNA-seq',
                                                      'siRNA knockdown followed by RNA-seq',
+                                                     'CRISPRi followed by RNA-seq',
                                                      'CRISPR genome editing followed by RNA-seq']:
                     for failure in check_file_read_depth(f, read_depth, 10000000, 10000000, 1000000,
                                                          experiment['assay_term_name'],
@@ -2169,6 +2206,7 @@ def audit_experiment_needs_pipeline(value, system):
                                         'RNA-seq',
                                         'shRNA knockdown followed by RNA-seq',
                                         'siRNA knockdown followed by RNA-seq',
+                                        'CRISPRi followed by RNA-seq',
                                         'RAMPAGE']:
         return
 
@@ -2230,7 +2268,7 @@ def audit_experiment_needs_pipeline(value, system):
             return
 
     if value['assay_term_name'] in ['RNA-seq', 'shRNA knockdown followed by RNA-seq',
-                                    'siRNA knockdown followed by RNA-seq'] and \
+                                    'siRNA knockdown followed by RNA-seq', 'CRISPRi followed by RNA-seq'] and \
        run_type == 'single-ended' and \
        file_size_range == '>200':
         if scanFilesForPipeline(value['original_files'],
@@ -2243,7 +2281,7 @@ def audit_experiment_needs_pipeline(value, system):
             return
 
     if value['assay_term_name'] in ['RNA-seq', 'shRNA knockdown followed by RNA-seq'
-                                    'siRNA knockdown followed by RNA-seq'] and \
+                                    'siRNA knockdown followed by RNA-seq', 'CRISPRi followed by RNA-seq'] and \
        run_type == 'paired-ended' and \
        file_size_range == '>200':
         if scanFilesForPipeline(value['original_files'],
@@ -2614,8 +2652,11 @@ def audit_experiment_replicate_with_no_files(value, system):
     rep_dictionary = {}
     rep_numbers = {}
     for rep in value['replicates']:
+        if rep['status'] in ['deleted', 'replaced', 'revoked']:
+            continue
         rep_dictionary[rep['@id']] = []
-        rep_numbers[rep['@id']] = (rep['biological_replicate_number'],rep['technical_replicate_number'])
+        rep_numbers[rep['@id']] = (rep['biological_replicate_number'],
+                                   rep['technical_replicate_number'])
 
     for file_object in value['original_files']:
         if file_object['status'] in ['deleted', 'replaced', 'revoked']:
@@ -2899,12 +2940,17 @@ def audit_experiment_assay(value, system):
         detail = 'Assay_term_id is a New Term Request ({} - {})'.format(term_id, term_name)
         yield AuditFailure('NTR assay', detail, level='INTERNAL_ACTION')
 
-        if term_name != NTR_assay_lookup[term_id]:
-            detail = 'Experiment has a mismatch between assay_term_name "{}" and assay_term_id "{}"'.format(
-                term_name,
-                term_id,
-            )
-            yield AuditFailure('mismatched assay_term_name', detail, level='INTERNAL_ACTION')
+        if NTR_assay_lookup.get(term_id):
+            if term_name != NTR_assay_lookup[term_id]:
+                detail = 'Experiment has a mismatch between ' + \
+                         'assay_term_name "{}" and assay_term_id "{}"'.format(
+                             term_name,
+                             term_id)
+                yield AuditFailure('mismatched assay_term_name', detail, level='INTERNAL_ACTION')
+                return
+        else:
+            detail = 'Assay term id {} not in NTR lookup table'.format(term_id)
+            yield AuditFailure('not updated NTR lookup table', detail, level='INTERNAL_ACTION')
             return
 
     elif term_id not in ontology:
@@ -2951,6 +2997,7 @@ def audit_experiment_target(value, system):
     if value['assay_term_name'] in ['RNA Bind-n-Seq',
                                     'shRNA knockdown followed by RNA-seq',
                                     'siRNA knockdown followed by RNA-seq',
+                                    'CRISPRi followed by RNA-seq',
                                     'CRISPR genome editing followed by RNA-seq']:
         return
 
@@ -3334,7 +3381,7 @@ def audit_experiment_antibody_characterized(value, system):
         return
 
     if value['assay_term_name'] in ['RNA Bind-n-Seq', 'shRNA knockdown followed by RNA-seq',
-                                    'siRNA knockdown followed by RNA-seq']:
+                                    'siRNA knockdown followed by RNA-seq', 'CRISPRi followed by RNA-seq']:
         return
 
     for rep in value['replicates']:

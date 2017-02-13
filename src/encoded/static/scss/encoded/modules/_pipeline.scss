@@ -203,6 +203,12 @@ g.pipeline-node-qc-metric {
 }
 
 .quality-metrics-attachments {
+    margin-top: 20px;
+
+    @media screen and (min-width: $screen-md-min) {
+        margin-top: 0;
+    }
+
     h5 {
         margin-top: 0;
     }
