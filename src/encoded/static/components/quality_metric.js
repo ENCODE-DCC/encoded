@@ -193,6 +193,9 @@ const QCIndividualPanel = React.createClass({
                                             </div>
                                         );
                                     }
+
+                                    // Not a string or number; probably an attachment so we'll
+                                    // display it in a modal if asked by the user.
                                     return null;
                                 }
 

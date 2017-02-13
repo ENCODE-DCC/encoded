@@ -1,0 +1,24 @@
+// Panel that displays all QC panels.
+.qc-panel {
+    @media screen and (min-width: $screen-sm-min) {
+        display: flex;
+        flex-wrap: wrap;
+    }
+}
+
+$horzontal-margin: .5%;
+
+// Individual QC panels inside .qc-panel
+.qc-individual-panel {
+    margin: 10px;
+
+    @media screen and (min-width: $screen-sm-min) {
+        margin: 10px $horzontal-margin;
+        flex: 0 1 (50% - (2 * $horzontal-margin));
+    }
+
+    @media screen and (min-width: $screen-md-min) {
+        margin: 10px $horzontal-margin;
+        flex: 0 1 (33.3333% - (2 * $horzontal-margin));
+    }
+}
