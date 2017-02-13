@@ -396,3 +396,10 @@ export const DownloadableAccession = React.createClass({
         );
     },
 });
+
+
+// Return `true` if the given dataset is viewable by people not logged in, or people logged in
+// but not as admin.
+export function publicDataset(dataset) {
+    return dataset.status === 'released' || dataset.status === 'archived' || dataset.status === 'revoked';
+}
