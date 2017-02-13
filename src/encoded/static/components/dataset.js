@@ -10,7 +10,7 @@ import { FetchedItems } from './fetched';
 import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
 import { StatusLabel } from './statuslabel';
 import { pubReferenceList } from './reference';
-import { donorDiversity } from './objectutils';
+import { donorDiversity, publicDataset } from './objectutils';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
@@ -63,7 +63,6 @@ const Annotation = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const loggedIn = this.context.session && this.context.session['auth.userid'];
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -93,6 +92,12 @@ const Annotation = React.createClass({
             supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
         }
 
+        // Make array of supersedes accessions
+        let supersedes = [];
+        if (context.supersedes && context.supersedes.length) {
+            supersedes = context.supersedes.map(supersede => globals.atIdToAccession(supersede));
+        }
+
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
 
@@ -110,6 +115,7 @@ const Annotation = React.createClass({
                         <h2>Summary for annotation file set {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
+                        {supersedes.length ? <h4 className="superseded-acc">Supersedes {supersedes.join(', ')}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -962,14 +968,18 @@ export const FilePanelHeader = React.createClass({
 });
 
 
-function displayPossibleControls(item) {
+function displayPossibleControls(item, adminUser) {
     if (item.possible_controls && item.possible_controls.length) {
         return (
             <span>
                 {item.possible_controls.map((control, i) =>
                     <span key={control.uuid}>
                         {i > 0 ? <span>, </span> : null}
-                        <a href={control['@id']}>{control.accession}</a>
+                        {adminUser || publicDataset(control) ?
+                            <a href={control['@id']}>{control.accession}</a>
+                        :
+                            <span>{control.accession}</span>
+                        }
                     </span>,
                 )}
             </span>
@@ -982,7 +992,14 @@ function displayPossibleControls(item) {
 const basicTableColumns = {
     accession: {
         title: 'Accession',
-        display: experiment => <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>,
+        display: (experiment, meta) =>
+            <span>
+                {meta.adminUser || publicDataset(experiment) ?
+                    <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
+                :
+                    <span>{experiment.accession}</span>
+                }
+            </span>,
     },
 
     assay_term_name: {
@@ -1002,17 +1019,29 @@ const basicTableColumns = {
         title: 'Lab',
         getValue: experiment => (experiment.lab ? experiment.lab.title : null),
     },
+
+    status: {
+        title: 'Status',
+        display: experiment => <div className="characterization-meta-data"><StatusLabel status={experiment.status} /></div>,
+    },
 };
 
 const treatmentSeriesTableColumns = {
     accession: {
         title: 'Accession',
-        display: experiment => <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>,
+        display: (experiment, meta) =>
+            <span>
+                {meta.adminUser || publicDataset(experiment) ?
+                    <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
+                :
+                    <span>{experiment.accession}</span>
+                }
+            </span>,
     },
 
     possible_controls: {
         title: 'Possible controls',
-        display: displayPossibleControls,
+        display: (experiment, meta) => displayPossibleControls(experiment, meta.adminUser),
         sorter: false,
     },
 
@@ -1033,17 +1062,29 @@ const treatmentSeriesTableColumns = {
         title: 'Lab',
         getValue: experiment => (experiment.lab ? experiment.lab.title : null),
     },
+
+    status: {
+        title: 'Status',
+        display: experiment => <div className="characterization-meta-data"><StatusLabel status={experiment.status} /></div>,
+    },
 };
 
 const replicationTimingSeriesTableColumns = {
     accession: {
         title: 'Accession',
-        display: item => <a href={item['@id']} title={`View page for experiment ${item.accession}`}>{item.accession}</a>,
+        display: (experiment, meta) =>
+            <span>
+                {meta.adminUser || publicDataset(experiment) ?
+                    <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
+                :
+                    <span>{experiment.accession}</span>
+                }
+            </span>,
     },
 
     possible_controls: {
         title: 'Possible controls',
-        display: displayPossibleControls,
+        display: (experiment, meta) => displayPossibleControls(experiment, meta.adminUser),
         sorter: false,
     },
 
@@ -1078,17 +1119,29 @@ const replicationTimingSeriesTableColumns = {
         title: 'Lab',
         getValue: experiment => (experiment.lab ? experiment.lab.title : null),
     },
+
+    status: {
+        title: 'Status',
+        display: experiment => <div className="characterization-meta-data"><StatusLabel status={experiment.status} /></div>,
+    },
 };
 
 const organismDevelopmentSeriesTableColumns = {
     accession: {
         title: 'Accession',
-        display: experiment => <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>,
+        display: (experiment, meta) =>
+            <span>
+                {meta.adminUser || publicDataset(experiment) ?
+                    <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
+                :
+                    <span>{experiment.accession}</span>
+                }
+            </span>,
     },
 
     possible_controls: {
         title: 'Possible controls',
-        display: displayPossibleControls,
+        display: (experiment, meta) => displayPossibleControls(experiment, meta.adminUser),
         sorter: false,
     },
     assay_term_name: {
@@ -1153,6 +1206,11 @@ const organismDevelopmentSeriesTableColumns = {
         title: 'Lab',
         getValue: item => (item.lab ? item.lab.title : null),
     },
+
+    status: {
+        title: 'Status',
+        display: experiment => <div className="characterization-meta-data"><StatusLabel status={experiment.status} /></div>,
+    },
 };
 
 export const Series = React.createClass({
@@ -1162,6 +1220,7 @@ export const Series = React.createClass({
 
     contextTypes: {
         session: React.PropTypes.object,
+        session_properties: React.PropTypes.object,
     },
 
     mixins: [AuditMixin],
@@ -1180,6 +1239,7 @@ export const Series = React.createClass({
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const loggedIn = this.context.session && this.context.session['auth.userid'];
+        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
         let experiments = {};
         const statuses = [{ status: context.status, title: 'Status' }];
         context.files.forEach((file) => {
@@ -1354,7 +1414,13 @@ export const Series = React.createClass({
                 {context.related_datasets.length ?
                     <div>
                         <SortTablePanel title={`Experiments in ${seriesTitle} ${context.accession}`}>
-                            <SortTable list={context.related_datasets} columns={seriesComponent.table} />
+                            <SortTable
+                                list={context.related_datasets}
+                                columns={seriesComponent.table}
+                                meta={{
+                                    adminUser: adminUser,
+                                }}
+                            />
                         </SortTablePanel>
                     </div>
                 : null }
