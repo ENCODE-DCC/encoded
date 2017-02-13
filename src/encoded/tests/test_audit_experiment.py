@@ -2385,6 +2385,7 @@ def test_audit_experiment_out_of_date_analysis_added_fastq(testapp,
                                                            file_fastq_4,
                                                            file_bam_1_1,
                                                            file_bam_2_1):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
     testapp.patch_json(file_fastq_4['@id'], {'replicate': replicate_1_1['@id']})
     testapp.patch_json(file_bam_1_1['@id'], {'derived_from': [file_fastq_3['@id']]})
     testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_3['@id']]})
@@ -2404,6 +2405,7 @@ def test_audit_experiment_out_of_date_analysis_removed_fastq(testapp,
                                                              file_fastq_4,
                                                              file_bam_1_1,
                                                              file_bam_2_1):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
     testapp.patch_json(file_bam_1_1['@id'], {'derived_from': [file_fastq_3['@id']]})
     testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']]})
     testapp.patch_json(file_fastq_3['@id'], {'status': 'deleted'})
