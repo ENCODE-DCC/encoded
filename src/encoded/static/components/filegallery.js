@@ -840,6 +840,7 @@ export const FileGallery = React.createClass({
         return (
             <FetchedData ignoreErrors>
                 <Param name="data" url={globals.unreleased_files_url(context)} />
+                <Param name="schemas" url="/profiles/" />
                 <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} hideGraph={hideGraph} altFilterDefault={altFilterDefault} />
             </FetchedData>
         );
@@ -1358,6 +1359,7 @@ const FileGalleryRenderer = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // Dataset whose files we're rendering
         data: React.PropTypes.object, // File data retrieved from search request
+        schemas: React.PropTypes.object, // Schemas for the entire system; used for QC property titles
         hideGraph: React.PropTypes.bool, // T to hide graph display
         altFilterDefault: React.PropTypes.bool, // T to default to All Assemblies and Annotations
     },
@@ -1429,7 +1431,7 @@ const FileGalleryRenderer = React.createClass({
     },
 
     render: function () {
-        const { context, data } = this.props;
+        const { context, data, schemas } = this.props;
         let selectedAssembly = '';
         let selectedAnnotation = '';
         let jsonGraph;
@@ -1500,6 +1502,7 @@ const FileGalleryRenderer = React.createClass({
                         setInfoNodeId={this.setInfoNodeId}
                         infoNodeVisible={this.state.infoNodeVisible}
                         setInfoNodeVisible={this.setInfoNodeVisible}
+                        schemas={schemas}
                         adminUser={!!this.context.session_properties.admin}
                         forceRedraw
                     />
@@ -1587,12 +1590,20 @@ const FilterMenu = React.createClass({
 });
 
 
-export function qcDetailsView(metrics) {
-    if (metrics) {
-        const qc = metrics.ref;
+export function qcDetailsView(metrics, schemas) {
+    const qc = metrics.ref;
+
+    // Extract the GenericQualityMetric schema. We don't display properties that exist in this
+    // schema because they're generic properties, not interesting QC proeprties.
+    const genericQCSchema = schemas.GenericQualityMetric;
+
+    // Extract the schema specific for the given quality metric.
+    const qcSchema = schemas[qc['@type'][0]];
+
+    if (metrics && genericQCSchema && qcSchema && qcSchema.properties) {
         const file = metrics.parent;
 
-        return qcModalContent(qc, file);
+        return qcModalContent(qc, file, qcSchema, genericQCSchema);
     }
     return { header: null, body: null };
 }
@@ -1669,6 +1680,7 @@ const FileGraph = React.createClass({
         setInfoNodeVisible: React.PropTypes.func, // Function to call to set the visibility of the node's modal
         infoNodeId: React.PropTypes.string, // ID of selected node in graph
         infoNodeVisible: React.PropTypes.bool, // True if node's modal is vibible
+        schemas: React.PropTypes.object, // System-wide schemas
         session: React.PropTypes.object, // Current user's login information
         adminUser: React.PropTypes.bool, // True if logged in user is an admin
     },
@@ -1696,7 +1708,7 @@ const FileGraph = React.createClass({
                 // QC subnode.
                 const subnode = jsonGraph.getSubnode(infoNodeId);
                 if (subnode) {
-                    meta = qcDetailsView(subnode);
+                    meta = qcDetailsView(subnode, this.props.schemas);
                     meta.type = subnode['@type'][0];
                 }
             } else if (infoNodeId.indexOf('coalesced:') >= 0) {
