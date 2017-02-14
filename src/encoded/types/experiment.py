@@ -546,13 +546,13 @@ class Experiment(Dataset,
         'y': {
             'facets': [
                 'replicates.library.biosample.donor.organism.scientific_name',
-                'replicates.library.biosample.biosample_type',
+                'biosample_type',
                 'organ_slims',
                 'award.project',
                 'assembly',
                 'internal_status'
             ],
-            'group_by': ['replicates.library.biosample.biosample_type', 'biosample_term_name'],
+            'group_by': ['biosample_type', 'biosample_term_name'],
             'label': 'Biosample',
         },
         'x': {

@@ -215,7 +215,7 @@
         "target.investigated_as": {
             "title": "Target of assay"
         },
-        "replicates.library.biosample.biosample_type": {
+        "biosample_type": {
             "title": "Biosample type"
         },
         "organ_slims": {
