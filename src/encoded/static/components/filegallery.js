@@ -677,7 +677,7 @@ const RawSequencingTable = React.createClass({
                 <table className="table table-sortable table-raw">
                     <thead>
                         <tr className="table-section">
-                            <th colSpan={loggedIn ? '11' : '10'}>
+                            <th colSpan="11">
                                 <CollapsingTitle title="Raw sequencing data" collapsed={this.state.collapsed} handleCollapse={this.handleCollapse} />
                             </th>
                         </tr>
@@ -694,7 +694,7 @@ const RawSequencingTable = React.createClass({
                                 <th>Date added</th>
                                 <th>File size</th>
                                 <th>Audit status</th>
-                                {loggedIn ? <th>File status</th> : null}
+                                <th>File status</th>
                             </tr>
                         : null}
                     </thead>
@@ -752,7 +752,7 @@ const RawSequencingTable = React.createClass({
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={pairClass}>{humanFileSize(file.file_size)}</td>
                                             <td className={pairClass}>{fileAuditStatus(file)}</td>
-                                            {loggedIn ? <td className={`${pairClass} characterization-meta-data`}><StatusLabel status={file.status} /></td> : null}
+                                            <td className={`${pairClass} characterization-meta-data`}><StatusLabel status={file.status} /></td>
                                         </tr>
                                     );
                                 });
@@ -787,7 +787,7 @@ const RawSequencingTable = React.createClass({
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{humanFileSize(file.file_size)}</td>
                                         <td>{fileAuditStatus(file)}</td>
-                                        {loggedIn ? <td className="characterization-meta-data"><StatusLabel status={file.status} /></td> : null}
+                                        <td className="characterization-meta-data"><StatusLabel status={file.status} /></td>
                                     </tr>
                                 );
                             })}
@@ -796,7 +796,7 @@ const RawSequencingTable = React.createClass({
 
                     <tfoot>
                         <tr>
-                            <td className={`file-table-footer${this.state.collapsed ? ' hiding' : ''}`} colSpan={loggedIn ? '11' : '10'} />
+                            <td className={`file-table-footer${this.state.collapsed ? ' hiding' : ''}`} colSpan="11" />
                         </tr>
                     </tfoot>
                 </table>
@@ -861,7 +861,7 @@ const RawFileTable = React.createClass({
                 <table className="table table-sortable table-raw">
                     <thead>
                         <tr className="table-section">
-                            <th colSpan={loggedIn ? '11' : '10'}>
+                            <th colSpan="11">
                                 <CollapsingTitle title="Raw data" collapsed={this.state.collapsed} handleCollapse={this.handleCollapse} />
                             </th>
                         </tr>
@@ -878,7 +878,7 @@ const RawFileTable = React.createClass({
                                 <th>Date added</th>
                                 <th>File size</th>
                                 <th>Audit status</th>
-                                {loggedIn ? <th>File status</th> : null}
+                                <th>File status</th>
                             </tr>
                         : null}
                     </thead>
@@ -929,7 +929,7 @@ const RawFileTable = React.createClass({
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={pairClass}>{humanFileSize(file.file_size)}</td>
                                             <td className={pairClass}>{fileAuditStatus(file)}</td>
-                                            {loggedIn ? <td className={`${pairClass} characterization-meta-data`}><StatusLabel status={file.status} /></td> : null}
+                                            <td className={`${pairClass} characterization-meta-data`}><StatusLabel status={file.status} /></td>
                                         </tr>
                                     );
                                 });
@@ -958,7 +958,7 @@ const RawFileTable = React.createClass({
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{humanFileSize(file.file_size)}</td>
                                         <td>{fileAuditStatus(file)}</td>
-                                        {loggedIn ? <td className="characterization-meta-data"><StatusLabel status={file.status} /></td> : null}
+                                        <td className="characterization-meta-data"><StatusLabel status={file.status} /></td>
                                     </tr>
                                 );
                             })}
@@ -967,7 +967,7 @@ const RawFileTable = React.createClass({
 
                     <tfoot>
                         <tr>
-                            <td className={`file-table-footer${this.state.collapsed ? ' hiding' : ''}`} colSpan={loggedIn ? '11' : '10'} />
+                            <td className={`file-table-footer${this.state.collapsed ? ' hiding' : ''}`} colSpan="11" />
                         </tr>
                     </tfoot>
                 </table>
@@ -1834,7 +1834,14 @@ function qcDetailsView(metrics) {
 
                 // Generate the JSX for the panel. Use the property name as the key to get the corresponding human-readable description for the title
                 if (attachment) {
-                    return <AttachmentPanel context={metrics.ref} attachment={metrics.ref[attachmentPropertyName]} title={attachmentPropertyInfo[attachmentPropertyName]} />;
+                    return (
+                        <AttachmentPanel
+                            context={metrics.ref}
+                            attachment={metrics.ref[attachmentPropertyName]}
+                            title={attachmentPropertyInfo[attachmentPropertyName]}
+                            modal
+                        />
+                    );
                 }
                 return null;
             })).compact();
@@ -1877,7 +1884,7 @@ function qcDetailsView(metrics) {
                                     {/* If the metrics object has an `attachment` property, display that first, then display the properties
                                         not named `attachment` but which have their own schema attribute, `attachment`, set to true */}
                                     {metrics.ref.attachment ?
-                                        <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} />
+                                        <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} title="Attachment" modal />
                                     : null}
                                     {qcPanels}
                                 </div>
