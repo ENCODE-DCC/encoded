@@ -114,7 +114,7 @@ const FileDownloadButton = React.createClass({
             <div className="tooltip-button-wrapper">
                 <a
                     className="btn btn-info"
-                    href={file.href} 
+                    href={file.href}
                     download={file.href.substr(file.href.lastIndexOf('/') + 1)}
                     data-bypass="true"
                     disabled={!buttonEnabled}
@@ -158,11 +158,11 @@ const File = React.createClass({
         this.loggedIn = !!(this.context.session && this.context.session['auth.userid']);
     },
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function () {
         // If the logged-in state has changed since the last time we rendered, request files again
         // in case logging in changes the list of dependent files.
         const currLoggedIn = !!(this.context.session && this.context.session['auth.userid']);
-        if (this.loggedIn != currLoggedIn) {
+        if (this.loggedIn !== currLoggedIn) {
             this.requestFileDependencies();
             this.loggedIn = currLoggedIn;
         }
@@ -407,7 +407,7 @@ const File = React.createClass({
                 />
 
                 {this.state.fileFormatSpecs.length ?
-                    <DocumentsPanel documentSpecs={[{documents: this.state.fileFormatSpecs}]} />
+                    <DocumentsPanel title="File format specifications" documentSpecs={[{ documents: this.state.fileFormatSpecs }]} />
                 : null}
 
                 {context.quality_metrics && context.quality_metrics.length ?

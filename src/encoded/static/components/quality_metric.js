@@ -31,10 +31,6 @@ const qcAttachmentProperties = {
 };
 
 
-// List of quality metric properties to not display
-const qcReservedProperties = ['uuid', 'assay_term_name', 'assay_term_id', 'attachment', 'award', 'lab', 'submitted_by', 'level', 'status', 'date_created', 'step_run', 'schema_version'];
-
-
 // Display QC metrics of the selected QC sub-node in a file node.
 export function qcModalContent(qc, file, qcSchema, genericQCSchema) {
     let qcPanels = []; // Each QC metric panel to display
@@ -56,10 +52,6 @@ export function qcModalContent(qc, file, qcSchema, genericQCSchema) {
             return '';
         }).filter(acc => !!acc);
     }
-
-    // Filter out QC metrics properties not to display based on the qcReservedProperties list, as well as those properties with keys
-    // beginning with '@'. Sort the list of property keys as well.
-    const sortedKeys = Object.keys(qc).filter(key => key[0] !== '@' && qcReservedProperties.indexOf(key) === -1).sort();
 
     // Get the list of attachment properties for the given qc object @type. and generate the JSX for their display panels.
     // The list of keys for attachment properties to display comes from qcAttachmentProperties. Use the @type for the attachment
@@ -205,7 +197,7 @@ const ExpandTrigger = React.createClass({
     render: function () {
         const { expanded, id } = this.props;
         return (
-            <button className="qc-individual-panel__expand-trigger" onClick={this.handleClick} aria-controls={id} title={expanded ? "Collapse this panel to a smaller size" : "Expand this panel to show all data"}>
+            <button className="qc-individual-panel__expand-trigger" onClick={this.handleClick} aria-controls={id} title={expanded ? 'Collapse this panel to a smaller size' : 'Expand this panel to show all data'}>
                 {collapseIcon(!expanded)}
             </button>
         );
@@ -294,7 +286,7 @@ const QCIndividualPanel = React.createClass({
                 <Panel id={qcMetric.uuid} addClasses={panelClasses} aria-expanded={this.state.expanded} aria-labelledby={`${qcMetric.uuid}-label`}>
                     <PanelHeading ref="qcPanelHeading" addClasses="qc-individual-panel__heading">
                         <h4 id={`${qcMetric.uuid}-label`} className="qc-individual-panel__title">{qcIdToDisplay(qcMetric)}</h4>
-                        <QualityMetricsModal qc={qcMetric} file={file} qcSchema={qcSchema} genericQCSchema={genericQCSchema}  />
+                        <QualityMetricsModal qc={qcMetric} file={file} qcSchema={qcSchema} genericQCSchema={genericQCSchema} />
                     </PanelHeading>
                     <PanelBody ref="qcPanelBody">
                         <QCDataDisplay qcMetric={qcMetric} qcSchema={qcSchema} genericQCSchema={genericQCSchema} />
