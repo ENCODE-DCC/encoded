@@ -216,7 +216,7 @@ const ExpandTrigger = React.createClass({
 });
 
 
-// Render a panel for an individual quality metric object
+// Render a panel for an individual quality metric object.
 const QCIndividualPanel = React.createClass({
     propTypes: {
         qcMetric: React.PropTypes.object.isRequired, // QC metric object whose properties we're displaying
@@ -243,6 +243,7 @@ const QCIndividualPanel = React.createClass({
     },
 
     expandClick: function () {
+        // Toggle the expanded state of the QC panel in response to a click in ExpandTrigger.
         this.setState({ expanded: !this.state.expanded });
     },
 
@@ -251,6 +252,19 @@ const QCIndividualPanel = React.createClass({
 
         // Calculate the classes for the individual panel.
         const panelClasses = `qc-individual-panel${this.state.expanded ? ' expanded' : ''}`;
+
+        // Make a list of QC metric object keys to display. Filter to only display strings and
+        // numbers -- not objects which are usually attachments that we only display in the modals.
+        // Also filter out anything in the generic QC schema, as those properties (@id, uuid, etc.)
+        // aren't interesting for the QC panel. Also sort the keys case insensitively.
+        const displayKeys = Object.keys(qcMetric).filter((key) => {
+            const schemaProperty = qcSchema.properties[key];
+            return !genericQCSchema.properties[key] && (schemaProperty.type === 'number' || schemaProperty.type === 'string');
+        }).sort((a, b) => {
+            const aUp = a.toUpperCase();
+            const bUp = b.toUpperCase();
+            return aUp < bUp ? -1 : (aUp > bUp ? 1 : 0);
+        });
 
         // Got a matching schema, so render it with full titles.
         return (
@@ -261,35 +275,12 @@ const QCIndividualPanel = React.createClass({
                 </PanelHeading>
                 <PanelBody ref="qcPanelBody">
                     <dl className="key-value">
-                        {Object.keys(qcMetric).map((key) => {
-                            if (!genericQCSchema.properties[key]) {
-                                // The property doesn't exist in the generic schema, so render
-                                // any string or number types.
-                                const schemaProperty = qcSchema.properties[key];
-                                if (schemaProperty) {
-                                    if (schemaProperty.type === 'number' || schemaProperty.type === 'string') {
-                                        return (
-                                            <div key={key} data-test={key}>
-                                                <dt className="sentence-case">{schemaProperty.title}</dt>
-                                                <dd>{qcMetric[key]}</dd>
-                                            </div>
-                                        );
-                                    }
-
-                                    // Not a string or number; probably an attachment so we'll
-                                    // display it in a modal if asked by the user.
-                                    return null;
-                                }
-
-                                // Got a matching schema, but property didn't match anything in
-                                // it. Ignore the property in that case.
-                                return null;
-                            }
-
-                            // The property *does* exist in the generic QC schema, so don't
-                            // display it.
-                            return null;
-                        })}
+                        {displayKeys.map(key =>
+                            <div key={key} data-test={key}>
+                                <dt className="sentence-case">{qcSchema.properties[key].title}</dt>
+                                <dd>{qcMetric[key]}</dd>
+                            </div>
+                        )}
                     </dl>
                 </PanelBody>
                 {this.state.triggerVisible ?
