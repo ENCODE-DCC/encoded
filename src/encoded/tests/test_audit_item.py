@@ -76,4 +76,4 @@ def test_audit_item_aliases(testapp, file):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-        assert any(error['category'] == 'flagged alias' for error in errors_list)
+        assert any(error['category'] == 'inconsistent alias' for error in errors_list)
