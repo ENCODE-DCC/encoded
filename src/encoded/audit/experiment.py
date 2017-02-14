@@ -32,6 +32,7 @@ targetBasedAssayList = [
     'shRNA knockdown followed by RNA-seq',
     'siRNA knockdown followed by RNA-seq',
     'CRISPR genome editing followed by RNA-seq',
+    'CRISPRi followed by RNA-seq'
     ]
 
 controlRequiredAssayList = [
@@ -45,6 +46,7 @@ controlRequiredAssayList = [
     'shRNA knockdown followed by RNA-seq',
     'siRNA knockdown followed by RNA-seq',
     'CRISPR genome editing followed by RNA-seq',
+    'CRISPRi followed by RNA-seq'
     ]
 
 seq_assays = [
@@ -595,6 +597,7 @@ def audit_experiment_standards_dispatcher(value, system):
        value['assay_term_name'] not in ['DNase-seq', 'RAMPAGE', 'RNA-seq', 'ChIP-seq', 'CAGE',
                                         'shRNA knockdown followed by RNA-seq',
                                         'siRNA knockdown followed by RNA-seq',
+                                        'CRISPRi followed by RNA-seq',
                                         'CRISPR genome editing followed by RNA-seq',
                                         'single cell isolation followed by RNA-seq',
                                         'whole-genome shotgun bisulfite sequencing',
@@ -649,6 +652,7 @@ def audit_experiment_standards_dispatcher(value, system):
     if value['assay_term_name'] in ['RAMPAGE', 'RNA-seq', 'CAGE',
                                     'shRNA knockdown followed by RNA-seq',
                                     'siRNA knockdown followed by RNA-seq',
+                                    'CRISPRi followed by RNA-seq',
                                     'CRISPR genome editing followed by RNA-seq',
                                     'single cell isolation followed by RNA-seq']:
         gene_quantifications = scanFilesForOutputType(value['original_files'],
@@ -1199,6 +1203,7 @@ def check_experiment_long_rna_standards(experiment,
 
                 if experiment['assay_term_name'] in ['shRNA knockdown followed by RNA-seq',
                                                      'siRNA knockdown followed by RNA-seq',
+                                                     'CRISPRi followed by RNA-seq',
                                                      'CRISPR genome editing followed by RNA-seq']:
                     for failure in check_file_read_depth(f, read_depth, 10000000, 10000000, 1000000,
                                                          experiment['assay_term_name'],
@@ -2201,6 +2206,7 @@ def audit_experiment_needs_pipeline(value, system):
                                         'RNA-seq',
                                         'shRNA knockdown followed by RNA-seq',
                                         'siRNA knockdown followed by RNA-seq',
+                                        'CRISPRi followed by RNA-seq',
                                         'RAMPAGE']:
         return
 
@@ -2262,7 +2268,7 @@ def audit_experiment_needs_pipeline(value, system):
             return
 
     if value['assay_term_name'] in ['RNA-seq', 'shRNA knockdown followed by RNA-seq',
-                                    'siRNA knockdown followed by RNA-seq'] and \
+                                    'siRNA knockdown followed by RNA-seq', 'CRISPRi followed by RNA-seq'] and \
        run_type == 'single-ended' and \
        file_size_range == '>200':
         if scanFilesForPipeline(value['original_files'],
@@ -2275,7 +2281,7 @@ def audit_experiment_needs_pipeline(value, system):
             return
 
     if value['assay_term_name'] in ['RNA-seq', 'shRNA knockdown followed by RNA-seq'
-                                    'siRNA knockdown followed by RNA-seq'] and \
+                                    'siRNA knockdown followed by RNA-seq', 'CRISPRi followed by RNA-seq'] and \
        run_type == 'paired-ended' and \
        file_size_range == '>200':
         if scanFilesForPipeline(value['original_files'],
@@ -2646,8 +2652,11 @@ def audit_experiment_replicate_with_no_files(value, system):
     rep_dictionary = {}
     rep_numbers = {}
     for rep in value['replicates']:
+        if rep['status'] in ['deleted', 'replaced', 'revoked']:
+            continue
         rep_dictionary[rep['@id']] = []
-        rep_numbers[rep['@id']] = (rep['biological_replicate_number'],rep['technical_replicate_number'])
+        rep_numbers[rep['@id']] = (rep['biological_replicate_number'],
+                                   rep['technical_replicate_number'])
 
     for file_object in value['original_files']:
         if file_object['status'] in ['deleted', 'replaced', 'revoked']:
@@ -2988,6 +2997,7 @@ def audit_experiment_target(value, system):
     if value['assay_term_name'] in ['RNA Bind-n-Seq',
                                     'shRNA knockdown followed by RNA-seq',
                                     'siRNA knockdown followed by RNA-seq',
+                                    'CRISPRi followed by RNA-seq',
                                     'CRISPR genome editing followed by RNA-seq']:
         return
 
@@ -3372,7 +3382,7 @@ def audit_experiment_antibody_characterized(value, system):
         return
 
     if value['assay_term_name'] in ['RNA Bind-n-Seq', 'shRNA knockdown followed by RNA-seq',
-                                    'siRNA knockdown followed by RNA-seq']:
+                                    'siRNA knockdown followed by RNA-seq', 'CRISPRi followed by RNA-seq']:
         return
 
     for rep in value['replicates']:
