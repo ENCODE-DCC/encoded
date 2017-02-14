@@ -203,9 +203,10 @@ const ExpandTrigger = React.createClass({
     },
 
     render: function () {
+        const { expanded, id } = this.props;
         return (
-            <button className="qc-individual-panel__expand-trigger" onClick={this.handleClick} aria-controls={this.props.id}>
-                {collapseIcon(!this.props.expanded)}
+            <button className="qc-individual-panel__expand-trigger" onClick={this.handleClick} aria-controls={id} title={expanded ? "Collapse this panel to a smaller size" : "Expand this panel to show all data"}>
+                {collapseIcon(!expanded)}
             </button>
         );
     },
