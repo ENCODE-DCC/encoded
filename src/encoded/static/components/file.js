@@ -411,7 +411,7 @@ const File = React.createClass({
                 : null}
 
                 {context.quality_metrics && context.quality_metrics.length ?
-                    <QualityMetricsPanel qcMetrics={context.quality_metrics} />
+                    <QualityMetricsPanel qcMetrics={context.quality_metrics} file={context} />
                 : null}
             </div>
         );

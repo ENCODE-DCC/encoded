@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'underscore';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { collapseIcon } from '../libs/svg-icons';
 import { AttachmentPanel } from './doc';
@@ -49,8 +50,8 @@ export function qcModalContent(qc, file) {
             const match = globals.atIdToAccession(metricId);
 
             // Return matches that *don't* match the file whose QC node we've clicked
-            if (match && (match[1] !== file.title)) {
-                return match[1];
+            if (match !== file.title) {
+                return match;
             }
             return '';
         }).filter(acc => !!acc);
@@ -74,6 +75,7 @@ export function qcModalContent(qc, file) {
             if (attachment) {
                 return (
                     <AttachmentPanel
+                        key={attachmentPropertyName}
                         context={qc}
                         attachment={qc[attachmentPropertyName]}
                         title={attachmentPropertyInfo[attachmentPropertyName]}
@@ -148,16 +150,43 @@ export function qcIdToDisplay(qc) {
 }
 
 
+// The modal and actuator for the quality metrics modal.
+const QualityMetricsModal = React.createClass({
+    propTypes: {
+        qc: React.PropTypes.object, // QC object we're displaying
+        file: React.PropTypes.object, // File this QC object belongs to
+    },
+
+    render: function () {
+        const { qc, file } = this.props;
+        const meta = qcModalContent(qc, file);
+
+        return (
+            <Modal actuator={<button className="btn btn-info qc-individual-panel__modal-actuator"><i className="icon icon-info-circle" /></button>}>
+                <ModalHeader closeModal addCss="graph-modal-quality-metric">
+                    {meta ? meta.header : null}
+                </ModalHeader>
+                <ModalBody>
+                    {meta ? meta.body : null}
+                </ModalBody>
+                <ModalFooter closeModal={<a className="btn btn-info btn-sm">Close</a>} />
+            </Modal>
+        );
+    },
+});
+
+
 export const QualityMetricsPanel = React.createClass({
     propTypes: {
-        qcMetrics: React.PropTypes.array, // Array of quality metrics objects to display
+        qcMetrics: React.PropTypes.array.isRequired, // Array of quality metrics objects to display
+        file: React.PropTypes.object.isRequired, // File whose QC objects are being displayed
     },
 
     render: function () {
         return (
             <FetchedData>
                 <Param name="schemas" url="/profiles/" />
-                <QualityMetricsPanelRenderer qcMetrics={this.props.qcMetrics} />
+                <QualityMetricsPanelRenderer qcMetrics={this.props.qcMetrics} file={this.props.file} />
             </FetchedData>
         );
     },
@@ -193,6 +222,7 @@ const QCIndividualPanel = React.createClass({
         qcMetric: React.PropTypes.object.isRequired, // QC metric object whose properties we're displaying
         qcSchema: React.PropTypes.object.isRequired, // Schema that applies to the given qcMetric object
         genericQCSchema: React.PropTypes.object.isRequired, // Generic quality metric schema
+        file: React.PropTypes.object.isRequired, // FIle whose QC object is being displayed
     },
 
     getInitialState: function () {
@@ -217,7 +247,7 @@ const QCIndividualPanel = React.createClass({
     },
 
     render: function () {
-        const { qcMetric, qcSchema, genericQCSchema } = this.props;
+        const { qcMetric, qcSchema, genericQCSchema, file } = this.props;
 
         // Calculate the classes for the individual panel.
         const panelClasses = `qc-individual-panel${this.state.expanded ? ' expanded' : ''}`;
@@ -225,8 +255,9 @@ const QCIndividualPanel = React.createClass({
         // Got a matching schema, so render it with full titles.
         return (
             <Panel id={qcMetric.uuid} addClasses={panelClasses} aria-expanded={this.state.expanded} aria-labelledby={`${qcMetric.uuid}-label`}>
-                <PanelHeading ref="qcPanelHeading" addClasses="qc-individual-panel__title">
-                    <h4 id={`${qcMetric.uuid}-label`}>{qcIdToDisplay(qcMetric)}</h4>
+                <PanelHeading ref="qcPanelHeading" addClasses="qc-individual-panel__heading">
+                    <h4 id={`${qcMetric.uuid}-label`} className="qc-individual-panel__title">{qcIdToDisplay(qcMetric)}</h4>
+                    <QualityMetricsModal qc={qcMetric} file={file} />
                 </PanelHeading>
                 <PanelBody ref="qcPanelBody">
                     <dl className="key-value">
@@ -238,7 +269,7 @@ const QCIndividualPanel = React.createClass({
                                 if (schemaProperty) {
                                     if (schemaProperty.type === 'number' || schemaProperty.type === 'string') {
                                         return (
-                                            <div data-test={key}>
+                                            <div key={key} data-test={key}>
                                                 <dt className="sentence-case">{schemaProperty.title}</dt>
                                                 <dd>{qcMetric[key]}</dd>
                                             </div>
@@ -273,12 +304,13 @@ const QCIndividualPanel = React.createClass({
 // Display a panel of an array of quality metrics objects.
 const QualityMetricsPanelRenderer = React.createClass({
     propTypes: {
-        qcMetrics: React.PropTypes.array, // Array of quality metrics objects to display
-        schemas: React.PropTypes.object, // All schemas in the system keyed by @type; used to get QC titles
+        qcMetrics: React.PropTypes.array.isRequired, // Array of quality metrics objects to display
+        schemas: React.PropTypes.object.isRequired, // All schemas in the system keyed by @type; used to get QC titles
+        file: React.PropTypes.object.isRequired, // File whose QC objects we're displaying
     },
 
     render: function () {
-        const { qcMetrics, schemas } = this.props;
+        const { qcMetrics, schemas, file } = this.props;
 
         // Extract the GenericQualityMetric schema. We don't display properties that exist in this
         // schema because they're generic properties, not interesting QC proeprties.
@@ -299,7 +331,7 @@ const QualityMetricsPanelRenderer = React.createClass({
                         // first @type in this QC metric.
                         const qcSchema = schemas[qcMetric['@type'][0]];
                         if (qcSchema && qcSchema.properties) {
-                            return <QCIndividualPanel key={qcMetric.uuid} qcMetric={qcMetric} qcSchema={qcSchema} genericQCSchema={genericQCSchema} />;
+                            return <QCIndividualPanel key={qcMetric.uuid} qcMetric={qcMetric} qcSchema={qcSchema} genericQCSchema={genericQCSchema} file={file} />;
                         }
 
                         // Weirdly, no matching schema. Render properties generically.

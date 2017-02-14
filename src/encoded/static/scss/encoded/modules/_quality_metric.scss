@@ -11,6 +11,7 @@
 $horzontal-margin: .5%; // Margin at left and right of qc-individual-panel
 $collapsed-height: 200px; // Height of qc-individual-panel when collapsed
 $collapse-trigger-height: 25px; // Height of collapse trigger
+$qc-actuator-size: 30px; // Height and width of QC modal actuator on file page
 
 // Individual QC panels inside .qc-panel.
 .qc-individual-panel {
@@ -39,11 +40,27 @@ $collapse-trigger-height: 25px; // Height of collapse trigger
     }
 
     // Panel title for individual QC panels.
-    @at-root #{&}__title {
-        padding: 8px 5px;
+    @at-root #{&}__heading {
+        display: flex;
+        padding: 3px 3px 3px 10px;
+    }
 
-        h4 {
-            font-size: 1.1rem;
+    @at-root #{&}__title {
+        flex: 1 1 auto;
+        font-size: 1.1rem;
+        line-height: $qc-actuator-size;
+    }
+
+    @at-root #{&}__modal-actuator {
+        display: block;
+        flex: 0 0 $qc-actuator-size;
+        width: $qc-actuator-size;
+        height: $qc-actuator-size;
+        padding: 0;
+        background-color: #e8e8e8;
+
+        &:hover {
+            background-color: #b8c7d5;
         }
     }
 
@@ -59,6 +76,11 @@ $collapse-trigger-height: 25px; // Height of collapse trigger
 
         &:hover {
             background-color: #b8c7d5;
+        }
+
+        &:focus {
+            outline: none;
+            box-shadow: 0 0 3px 2px #94bfe7 inset;
         }
     }
 }
