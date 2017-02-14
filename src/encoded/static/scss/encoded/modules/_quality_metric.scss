@@ -1,6 +1,6 @@
 // Panel that displays all QC panels.
 .qc-panel {
-    padding: 5px;
+    padding: 0;
 
     @media screen and (min-width: $screen-sm-min) {
         display: flex;
@@ -14,26 +14,27 @@ $collapsed-height: 200px; // Height of qc-individual-panel when collapsed
 $collapse-trigger-height: 25px; // Height of collapse trigger
 $qc-actuator-size: 30px; // Height and width of QC modal actuator on file page
 
+.qc-individual-panel__wrapper {
+    @media screen and (min-width: $screen-sm-min) {
+        flex: 0 1 50%;
+    }
+
+    @media screen and (min-width: $screen-md-min) {
+        flex: 0 1 33.3333%;
+    }
+}
+
+
 // Individual QC panels inside .qc-panel.
 .qc-individual-panel {
     position: relative;
-    margin: 10px;
+    margin: 3px;
     height: $collapsed-height;
     overflow: hidden;
 
     &.expanded {
         height: auto;
         padding-bottom: $collapse-trigger-height;
-    }
-
-    @media screen and (min-width: $screen-sm-min) {
-        margin: 5px $horzontal-margin;
-        flex: 0 1 (50% - (2 * $horzontal-margin));
-    }
-
-    @media screen and (min-width: $screen-md-min) {
-        margin: 5px $horzontal-margin;
-        flex: 0 1 (33.3333% - (2 * $horzontal-margin));
     }
 
     .panel-body {

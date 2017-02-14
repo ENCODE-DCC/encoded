@@ -290,18 +290,20 @@ const QCIndividualPanel = React.createClass({
 
         // Got a matching schema, so render it with full titles.
         return (
-            <Panel id={qcMetric.uuid} addClasses={panelClasses} aria-expanded={this.state.expanded} aria-labelledby={`${qcMetric.uuid}-label`}>
-                <PanelHeading ref="qcPanelHeading" addClasses="qc-individual-panel__heading">
-                    <h4 id={`${qcMetric.uuid}-label`} className="qc-individual-panel__title">{qcIdToDisplay(qcMetric)}</h4>
-                    <QualityMetricsModal qc={qcMetric} file={file} qcSchema={qcSchema} genericQCSchema={genericQCSchema}  />
-                </PanelHeading>
-                <PanelBody ref="qcPanelBody">
-                    <QCDataDisplay qcMetric={qcMetric} qcSchema={qcSchema} genericQCSchema={genericQCSchema} />
-                </PanelBody>
-                {this.state.triggerVisible ?
-                    <ExpandTrigger expanded={this.state.expanded} clickHandler={this.expandClick} id={qcMetric.uuid} />
-                : null}
-            </Panel>
+            <div className="qc-individual-panel__wrapper">
+                <Panel id={qcMetric.uuid} addClasses={panelClasses} aria-expanded={this.state.expanded} aria-labelledby={`${qcMetric.uuid}-label`}>
+                    <PanelHeading ref="qcPanelHeading" addClasses="qc-individual-panel__heading">
+                        <h4 id={`${qcMetric.uuid}-label`} className="qc-individual-panel__title">{qcIdToDisplay(qcMetric)}</h4>
+                        <QualityMetricsModal qc={qcMetric} file={file} qcSchema={qcSchema} genericQCSchema={genericQCSchema}  />
+                    </PanelHeading>
+                    <PanelBody ref="qcPanelBody">
+                        <QCDataDisplay qcMetric={qcMetric} qcSchema={qcSchema} genericQCSchema={genericQCSchema} />
+                    </PanelBody>
+                    {this.state.triggerVisible ?
+                        <ExpandTrigger expanded={this.state.expanded} clickHandler={this.expandClick} id={qcMetric.uuid} />
+                    : null}
+                </Panel>
+            </div>
         );
     },
 });
