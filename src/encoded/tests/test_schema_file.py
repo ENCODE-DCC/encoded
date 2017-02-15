@@ -148,6 +148,7 @@ def test_not_content_error_with_message_bad(testapp, file_no_error):
 
 
 def test_file_bad_md5(testapp, file_with_replicate):
+    # A newline character should not be allowed in a valid Md5
     res = testapp.patch_json(file_with_replicate['@id'],
                              {'md5sum': 'e003cd204df36d93dd070ef0712b8eed\n'},
                              expect_errors=True)
