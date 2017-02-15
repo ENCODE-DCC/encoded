@@ -1,6 +1,5 @@
 import React from 'react';
 import _ from 'underscore';
-import url from 'url';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { collapseIcon } from '../libs/svg-icons';
 import { auditDecor } from './audit';
@@ -24,7 +23,7 @@ const GM_TECHNIQUE_MAP = {
 };
 
 
-const geneticModificationCharacterizations = React.createClass({
+const GeneticModificationCharacterizations = React.createClass({
     propTypes: {
         characterizations: React.PropTypes.array, // Genetic modificiation characterizations to display
     },
@@ -40,7 +39,7 @@ const geneticModificationCharacterizations = React.createClass({
                 <PanelBody addClasses="attachment-panel-outer">
                     <section className="flexrow attachment-panel-inner">
                         {characterizations.map(characterization =>
-                            <AttachmentPanel key={characterization.uuid} context={characterization} attachment={characterization.attachment} title={characterization.characterization_method} />
+                            <AttachmentPanel key={characterization.uuid} context={characterization} attachment={characterization.attachment} title={characterization.characterization_method} />,
                         )}
                     </section>
                 </PanelBody>
@@ -273,7 +272,7 @@ export const GeneticModificationComponent = React.createClass({
                 </Panel>
 
                 {context.characterizations && context.characterizations.length ?
-                    <geneticModificationCharacterizations characterizations={context.characterizations} />
+                    <GeneticModificationCharacterizations characterizations={context.characterizations} />
                 : null}
 
                 <DocumentsPanel
@@ -295,9 +294,52 @@ export const GeneticModificationComponent = React.createClass({
     },
 });
 
-const GeneticModification = auditDecor(GeneticModificationComponent);
-
 globals.content_views.register(GeneticModification, 'GeneticModification');
+
+
+const GMAttachmentCaption = React.createClass({
+    propTypes: {
+        title: React.PropTypes.string.isRequired, // Title to display for attachment
+    },
+
+    render: function () {
+        const { title } = this.props;
+
+        return (
+            <div className="document__caption">
+                <div data-test="caption">
+                    <strong>Attachment: </strong>
+                    {title}
+                </div>
+            </div>
+        );
+    },
+});
+
+
+const GMAttachmentPreview = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object.isRequired, // QC metric object that owns the attachment to render
+        attachment: React.PropTypes.object.isRequired, // Attachment to render
+    },
+
+    render: function () {
+        const { context, attachment } = this.props;
+
+        return (
+            <figure className="document__preview">
+                <Attachment context={context} attachment={attachment} className="characterization" />
+            </figure>
+        );
+    },
+});
+
+
+// Register document caption rendering components
+globals.document_views.caption.register(GMAttachmentCaption, 'GeneticModificationCharacterization');
+
+// Register document preview rendering components
+globals.document_views.preview.register(GMAttachmentPreview, 'GeneticModificationCharacterization');
 
 
 // Display modification technique specific to the CRISPR type.

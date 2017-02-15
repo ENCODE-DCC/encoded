@@ -1116,7 +1116,7 @@ var CharacterizationHeader = React.createClass({
         var doc = this.props.doc;
 
         return (
-            <div className="panel-header document-title sentence-case">
+            <div className="document__header">
                 {doc.characterization_method}
             </div>
         );
@@ -1137,7 +1137,7 @@ var CharacterizationCaption = React.createClass({
         }
 
         return (
-            <div className="document-intro document-meta-data">
+            <div className="document__caption">
                 {excerpt || caption ?
                     <div data-test="caption">
                         <strong>{excerpt ? 'Caption excerpt: ' : 'Caption: '}</strong>
@@ -1159,7 +1159,7 @@ var CharacterizationDetail = React.createClass({
 
     render: function() {
         var doc = this.props.doc;
-        var keyClass = 'document-slider' + (this.props.detailOpen ? ' active' : '');
+        var keyClass = 'document__detail' + (this.props.detailOpen ? ' active' : '');
         var excerpt = doc.description && doc.description.length > EXCERPT_LENGTH;
 
         return (

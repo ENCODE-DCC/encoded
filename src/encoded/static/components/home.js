@@ -673,11 +673,7 @@ class HomepageChart2 extends React.Component {
         if (facets) {
             let assayFacet;
             this.computationalPredictions = this.props.assayCategory === 'COMPPRED';
-            if (this.computationalPredictions) {
-                assayFacet = facets.find(facet => facet.field === 'biosample_type');
-            } else {
-                assayFacet = facets.find(facet => facet.field === 'replicates.library.biosample.biosample_type');
-            }
+            assayFacet = facets.find(facet => facet.field === 'biosample_type');
             this.facetData = assayFacet ? assayFacet.terms : [];
             const docCounts = this.facetData.length ? this.facetData.map(data => data.doc_count) : [];
             total = docCounts.length ? docCounts.reduce((prev, curr) => prev + curr) : 0;

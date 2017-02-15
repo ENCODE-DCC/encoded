@@ -17,7 +17,7 @@ var Platform = module.exports.Platform = React.createClass({
 
                     <div data-test="obiid">
                         <dt>OBI ID</dt>
-                        <dd><dbxref value={context.term_id} /></dd>
+                        <dd>{context.term_id}</dd>
                     </div>
 
                     <div data-test="externalresources">
