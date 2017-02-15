@@ -80,3 +80,12 @@ def test_audit_antibody_lot_target(testapp, antibody_lot, base_antibody_characte
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent target' for error in errors_list)
+
+
+def test_audit_antibody_ar_dbxrefs(testapp, antibody_lot):
+    res = testapp.get(antibody_lot['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing antibody registry reference' for error in errors_list)
