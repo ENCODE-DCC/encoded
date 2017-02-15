@@ -116,6 +116,9 @@
         "attachment.download": {
             "title": "File Name"
         },
+        "award.@id": {
+            "title": "Grant href"
+        },
         "award.name": {
             "title": "Grant"
         },
