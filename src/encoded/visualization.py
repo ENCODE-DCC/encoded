@@ -16,8 +16,6 @@ from pkg_resources import resource_filename
 # Note: Required for Bek's cache priming solution.
 from pyramid.events import subscriber
 from .peak_indexer import AfterIndexedExperimentsAndDatasets
-import subprocess
-import boto3
 
 import logging
 from .search import _ASSEMBLY_MAPPER
@@ -948,9 +946,9 @@ def replicates_pair(a_file):
     if "replicate" in a_file:
         bio_rep = a_file["replicate"]["biological_replicate_number"]
         tech_rep = a_file["replicate"]["technical_replicate_number"]
-        # metadata_pairs['replicate&#32;biological'] = str(bio_rep)
-        # metadata_pairs['replicate&#32;technical'] = str(tech_rep)
-        return ('replicate&#32;(bio_tech)', "%d_%d" % (bio_rep, tech_rep))
+        # metadata_pairs['replicate biological'] = str(bio_rep)
+        # metadata_pairs['replicate technical'] = str(tech_rep)
+        return ('replicate (bio_tech)', "%d_%d" % (bio_rep, tech_rep))
 
     bio_reps = a_file.get('biological_replicates')
     tech_reps = a_file.get('technical_replicates')
@@ -965,7 +963,7 @@ def replicates_pair(a_file):
             for tech_rep in tech_reps:
                 if tech_rep.startswith(br + '_'):
                     found = True
-                    rep_key = '&#32;(bio_tech)'
+                    rep_key = ' (bio_tech)'
                     if len(rep_val) > 0:
                         rep_val += ', '
                     rep_val += tech_rep
@@ -1093,15 +1091,16 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
                 track["longLabel"] = track["longLabel"] + " (" + addendum[0:-1] + ")"
 
             metadata_pairs = {}
-            metadata_pairs['file&#32;download'] = ( \
-                '"<a href=\'%s%s\' title=\'Download this file from the ENCODE portal\'>%s</a>"' %
+            meta_formatted = \
+                ('<a href=\'%s%s\' title=\'Download this file from the ENCODE portal\'>%s</a>' %
                 (host, a_file["href"], a_file["accession"]))
+            metadata_pairs['file download'] = [a_file["accession"],meta_formatted]
             lab = convert_mask("{lab.title}", dataset)
             if len(lab) > 0 and not lab.startswith('unknown'):
-                metadata_pairs['laboratory'] = '"' + sanitize_label(lab) + '"'  # 'lab' is UCSC word
+                metadata_pairs['laboratory'] = sanitize_label(lab)  # 'lab' is UCSC word
             (rep_key, rep_val) = replicates_pair(a_file)
             if rep_key != "":
-                metadata_pairs[rep_key] = '"' + rep_val + '"'
+                metadata_pairs[rep_key] = rep_val
 
             # Expecting short label to change when making assay based composites
             shortLabel = vis_defs.get('file_defs', {}).get('shortLabel',
@@ -1134,23 +1133,28 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
                     for (subgroup_tag, subgroup) in subgroups.items():
                         membership[group_tag] = subgroup["tag"]
                         if "url" in subgroup:
-                            metadata_pairs[group_title] = ( \
-                                '"<a href=\'%s/%s/\' TARGET=\'_blank\' title=\'%s details at the ENCODE portal\'>%s</a>"' %
-                                (host, subgroup["url"], group_title, subgroup["title"]))
+                            meta_formatted = \
+                                ('<a href=\'%s/%s/\' TARGET=\'_blank\' title=\'%s details at the ENCODE portal\'>%s</a>' %
+                                (host, subgroup["url"], group_title,subgroup["title"]))
+                            metadata_pairs[group_title] = [subgroup["title"], meta_formatted]
                         elif group_title == "Biosample":
                             bs_value = sanitize_label(dataset.get("biosample_summary", ""))
                             if len(bs_value) == 0:
                                 bs_value = subgroup["title"]
+                            bs_term = bs_value
                             biosamples = biosamples_for_file(a_file, dataset)
                             if len(biosamples) > 0:
                                 for bs_acc in sorted(biosamples.keys()):
                                     bs_value += ( \
-                                        " <a href=\'%s%s\' TARGET=\'_blank\' title=\' %s details at the ENCODE portal\'>%s</a>" %
+                                        " <a href=\'%s%s\' TARGET=\'_blank\' title=\'%s details at the ENCODE portal\'>%s</a>" %
                                         (host, biosamples[bs_acc]["@id"], group_title,
                                                   bs_acc))
-                            metadata_pairs[group_title] = '"%s"' % (bs_value)
+                            if len(bs_term) == len(bs_value):
+                                metadata_pairs[group_title] = '%s' % (bs_value)
+                            else:
+                                metadata_pairs[group_title] = [bs_term,'%s' % (bs_value)]
                         else:
-                            metadata_pairs[group_title] = '"%s"' % (subgroup["title"])
+                            metadata_pairs[group_title] = '%s' % (subgroup["title"])
                 else:
                     assert(group_tag == "Don't know this group!")
 
@@ -1537,7 +1541,10 @@ def ucsc_trackDb_composite_blob(composite, title):
             if metadata_pairs is not None:
                 metadata_line = ""
                 for meta_tag in sorted(metadata_pairs.keys()):
-                    metadata_line += ' %s=%s' % (meta_tag.lower(), metadata_pairs[meta_tag])
+                    if isinstance(metadata_pairs[meta_tag],list):
+                        metadata_line += ' %s="%s"' % (sanitize_title(meta_tag.lower()), metadata_pairs[meta_tag][-1])
+                    else:
+                        metadata_line += ' %s="%s"' % (sanitize_title(meta_tag.lower()), metadata_pairs[meta_tag])
                 if len(metadata_line) > 0:
                     blob += "        metadata%s\n" % metadata_line
 
@@ -1759,13 +1766,10 @@ def remodel_acc_to_ihec_json(acc_composites, request=None):
                 ihec_track["view"] = view["title"]
                 metadata_pairs = track.get("metadata_pairs", {})
                 for meta_key in metadata_pairs:
-                    ihec_track[meta_key.replace('&#32;', ' ')] = metadata_pairs[meta_key][1:-1]
-                # Could refine download link:
-                # if metadata_pairs:
-                #     file_download = metadata_pairs.get('file&#32;download')
-                #     if file_download:
-                #         file_download = file_download.split()[1][6:-1]
-                #         ihec_track["file download"] = file_download
+                    if isinstance(metadata_pairs[meta_key],list):
+                        ihec_track[meta_key] = metadata_pairs[meta_key][0]  # TODO [-1] term?
+                    else:
+                        ihec_track[meta_key] = metadata_pairs[meta_key]
                 ihec_view.append(ihec_track)
             if len(ihec_view) > 0:
                 browser[view["title"]] = ihec_view
@@ -1811,6 +1815,168 @@ def host_of_the_party(request=None):
     except:
         pass
     return "https://www.encodeproject.org"  # If all else fails return the production site
+
+
+UCSC_TO_WASHU_VIS = {"hide":"hide", "full":"full",
+                     "dense":"density", "squish":"thin", "pack":"show"} # these are questionable
+# According to https://github.com/epgg/eg/blob/master/cgi-bin/ucsc2jsonhub.py, UCSC vis is OK
+
+
+def color_digits_to_hex(color):
+    '''Takes UCSC color triplet and converts to html hex string.'''
+    rgb = color.split(',')
+    return "#%02x%02x%02x" % (int(rgb[0]), int(rgb[1]), int(rgb[2])) # 'rgb('+color+')'
+
+
+def add_to_washu_metadata(var, val, meta):
+    '''Adds var, val pairs to washu metadata.'''
+    if var not in meta["metadata"]["vocabulary"].keys():
+        meta["metadata"]["vocabulary"][var] = []
+    if val not in meta["terms_to_ix"].keys():
+        meta["max_ix"] += 1
+        #meta["metadata"]["terms"][meta["max_ix"]] = val
+        meta["metadata"]["termname"][meta["max_ix"]] = val  # Documented as "terms"
+        meta["terms_to_ix"][val] = meta["max_ix"]
+        meta["metadata"]["vocabulary"][var].append(meta["max_ix"])
+        meta["cur_ix"] = meta["max_ix"]
+    else:
+        meta["cur_ix"] = meta["terms_to_ix"][val]
+    ###meta["cur_ix"] = 1  # FIXME: Debug only
+    return meta
+
+
+def remodel_acc_to_washu_json(acc_composites, request=None):
+    '''remodels 1+ acc_composites into an WASHU hub json structure.'''
+    if acc_composites is None or len(acc_composites) == 0:
+        return {}
+
+    # ASSEMBLY?
+
+    # From http://wiki.wubrowse.org/Datahub
+    # [
+    # {
+    #     # this is comment
+    #     type:"bedgraph",
+    #     url:"http://vizhub.wustl.edu/hubSample/hg19/GSM432686.gz",
+    #     name:"my track",
+    #     mode:"show",
+    #     colorpositive:"#ff33cc",
+    #     height:50,
+    #     metadata: {"Cell lines":[1]}
+    # },
+    # ]
+    # Others: defaultmode,colornegative,backgroundcolor,barplot_bg,geo,group
+
+    # From http://wiki.wubrowse.org/Metadata
+    # {
+    # vocabulary:{
+    #     "Cell lines":[1,2,3]
+    # },
+    # terms:{
+    # 1:["H1","H1 ES cells"],
+    # 2:["IMR90","human lung fibroblast cells (IMR90)"],
+    # 3:["PBMPC","peripheral blood mononuclear primary cells"],
+    # },
+    # }
+
+    if request:
+        host = request.host_url
+    else:
+        host = "https://www.encodeproject.org"
+
+    washu_json = []
+    washu_meta = {}
+    washu_meta["type"] = "metadata"
+    #washu_meta["terms"] = {}
+    washu_meta["termname"] = {}  # Documented as "terms"
+    washu_meta["vocabulary"] = {}
+    terms_to_index = {}
+    terms_max_ix = 0
+    terms_this_ix = 0
+    meta_bundle = {"cur_ix":0, "max_ix":0, "terms_to_ix":{}, "metadata":washu_meta}
+    view_ix = 0
+    washu_groups = {}
+    groups_ix = 0
+
+    # Walk through composites
+    for acc in acc_composites.keys():
+        acc_composite = acc_composites[acc]
+        if acc_composite is None or len(acc_composite) == 0:
+            # log.debug("Found empty acc_composite for %s" % (acc))
+            continue  # wounded composite can be dropped or added for evidence
+
+        # Walk through views
+        views = acc_composite.get("view", [])
+        for view_tag in views["group_order"]:
+            view = views["groups"][view_tag]
+            # views should go in metadata too!
+            meta_bundle = add_to_washu_metadata("views", view["title"],meta_bundle)
+            view_ix = meta_bundle["cur_ix"]
+
+            # View group?  If there is a viewLimits 0:1
+            grouped =False
+            if "viewLimits" in view:
+                (min,max) = tuple(view["viewLimits"].split(':'))
+                groups_ix += 1
+                washu_groups[groups_ix] = {"min":min, "max":max}
+                grouped = True
+
+            # Add tracks to views
+            tracks = view.get("tracks", [])
+            if len(tracks) == 0:
+                continue
+
+            # Walk through tracks
+            for track in tracks:
+                washu_track = {}
+
+                # What about longLabel, shortLabel, name?
+                washu_track["name"] = track["longLabel"] # track["name"]
+                washu_track["type"] = track.get("type",view["type"]).split()[0].lower()
+                #washu_track["url"] = host + '/' + track["bigDataUrl"][0:-11]  # DEBUG remove ?proxy=true
+                washu_track["url"] = host + '/' + track["bigDataUrl"]
+                washu_track["mode"] = UCSC_TO_WASHU_VIS[track.get("visibility",view["visibility"])]
+                if "maxHeightPixels" in view:
+                    washu_track["height"] = view["maxHeightPixels"].split(':')[1]
+                color = track.get("color",view.get("color"))
+                if color:
+                    washu_track["colorpositive"] = color_digits_to_hex(color)
+                if washu_track["type"] == "bigWig":  # bigwig only?
+                    altcolor = track.get("altColor",view.get("altColor"))
+                    if color:
+                        washu_track["colornegative"] = color_digits_to_hex(altcolor)
+                if grouped:
+                    washu_track["group"] = groups_ix
+                elif "viewLimits" in track:
+                    (min,max) = tuple(track["viewLimits"].split(':'))
+                    washu_track["fixedscale"] = {"min":min, "max":max}
+
+                washu_track["custom_annotation"] = {}  # NOTE: documented as term "metadata"
+                washu_track["custom_annotation"]["views"] = view_ix
+
+                # Digest metadata_pairs to build library of metadata terms
+                metadata_pairs = track.get("metadata_pairs", {})
+                for var in metadata_pairs:
+                    if isinstance(metadata_pairs[var],list):
+                        val = metadata_pairs[var][0]  # TODO: use formated [-1]?
+                    else:
+                        val = metadata_pairs[var]
+                    var = sanitize_name(var) #### TODO: Not quite
+                    #if var == "file download": # alway 1 to 1 for a track
+                    #    washu_track["metadata"][var] = val
+                    #else:
+                    meta_bundle = add_to_washu_metadata(var, val, meta_bundle)
+                    washu_track["custom_annotation"][var] = meta_bundle["cur_ix"]
+                washu_json.append(washu_track)
+
+    if washu_groups:
+        washu_json.append({"type":"group_yscale_fixed", "groups":washu_groups})
+    washu_mata = meta_bundle["metadata"]  # Don't really need to do this, because pass by reference
+    #if washu_meta["terms"]:
+    if washu_meta["termname"]:  # Documented as "terms"
+        washu_json.append(washu_meta)
+
+    return washu_json
 
 
 def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False, regen=False):
@@ -1872,11 +2038,15 @@ def generate_trackDb(request, dataset, assembly, hide=False, regen=False):
     # del dataset
     json_out = (request.url.find("jsonout") > -1)
     ihec_out = (request.url.find("ihecjson") > -1)
+    washu_out = (request.url.find("washujson") > -1)
     if json_out:
         return json.dumps(acc_composite, indent=4, sort_keys=True)
     elif ihec_out:
         ihec_json = remodel_acc_to_ihec_json({acc: acc_composite}, request)
         return json.dumps(ihec_json, indent=4, sort_keys=True)
+    elif washu_out:
+        washu_json = remodel_acc_to_washu_json({acc: acc_composite}, request)
+        return json.dumps(washu_json, indent=4, sort_keys=True)
     return ucsc_trackDb_composite_blob(acc_composite, acc)
 
 
@@ -1969,9 +2139,13 @@ def generate_batch_trackDb(request, hide=False, regen=False):
     set_composites = {}
     if found > 0 or made > 0:
         ihec_out = (request.url.find("ihecjson") > -1)  # ...&ambly=hg19&ihecjson/hg19/trackDb.txt
+        washu_out = (request.url.find("washujson") > -1)  # ...&ambly=hg19&washujson/hg19/trackDb.txt
         if ihec_out:
             ihec_json = remodel_acc_to_ihec_json(acc_composites, request)
             blob = json.dumps(ihec_json, indent=4, sort_keys=True)
+        elif washu_out:
+            washu_json = remodel_acc_to_washu_json(acc_composites, request)
+            blob = json.dumps(washu_json, indent=4, sort_keys=True)
         else:
             set_composites = remodel_acc_to_set_composites(acc_composites, hide_after=100)
 
@@ -2016,6 +2190,21 @@ def readable_time(secs_float):
     return result
 
 
+def get_dataset_from_es(request, uuid):
+    '''Returns composite json blob from elastic-search, or None if not found.'''
+    es = request.registry.get(ELASTIC_SEARCH, None)
+    es_index = request.registry.settings['snovault.elasticsearch.index']
+    if es and es.indices.exists(es_index):
+        try:
+            for doc_type in VISIBLE_DATASET_TYPES_LC:  # ["experiments","annotations"]
+                result = es.get(index=es_index, doc_type=doc_type, id=uuid)
+                if result['found']:
+                    return result['_source']['embedded']
+        except:
+            pass
+    return None
+
+
 # Note: Required for Bek's cache priming solution.
 @subscriber(AfterIndexedExperimentsAndDatasets)
 def prime_vis_es_cache(event):
@@ -2037,17 +2226,27 @@ def prime_vis_es_cache(event):
     else:
         log.debug("Starting prime_vis_es_cache: %d uuids" % (raw_count))
 
-    visualizabe_types = set(VISIBLE_DATASET_TYPES)
+    visualizable_types = set(VISIBLE_DATASET_TYPES)
     count = 0
     for uuid in uuids:
-        dataset = request.embed(uuid)
-        # Try to limit the sets we are interested in
+        # CYCLE_START_TIME = time.time()                                  # PROFILING
+        dataset = get_dataset_from_es(request, uuid)   # mean: 0.0148 secs
+        #dataset = request.embed(uuid, '@@embedded')   # mean: 3.21 secs
+        if dataset is None:
+            continue
+        # log.debug("cycle vis_es_cache got object   for %s %.3f secs" %  # PROFILING
+        #           (uuid, (time.time() - CYCLE_START_TIME)))             # PROFILING
+        # Limit the datasets we are interested in
         if dataset.get('status', 'none') not in VISIBLE_DATASET_STATUSES:
             continue
-        if visualizabe_types.isdisjoint(dataset['@type']):
+        if visualizable_types.isdisjoint(dataset['@type']):
+            continue
+        if len(dataset.get('files', [])) == 0:
+            continue
+        assemblies = dataset.get('assembly', [])
+        if len(assemblies) == 0:
             continue
         acc = dataset['accession']
-        assemblies = dataset.get('assembly', [])
         for assembly in assemblies:
             ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
             (made, acc_composite) = find_or_make_acc_composite(request, ucsc_assembly,
@@ -2057,18 +2256,14 @@ def prime_vis_es_cache(event):
                 log.debug("primed vis_es_cache with acc_composite %s_%s '%s'  %.3f secs" %
                           (acc, ucsc_assembly,
                            acc_composite.get('vis_type', ''), (time.time() - PROFILE_START_TIME)))
-            # Took 12h32m on initial
-            # else:
-            #    log.debug("prime_vis_es_cache for %s_%s unvisualizable '%s'" % \
-            #                                (acc,ucsc_assembly,get_vis_type(dataset)))
-    # if count == 0:
+
+    # Took 17h52m with embed(), 5m31s with get_dataset_from_es()
     if raw_count >= verbose_threshold or count >= verbose_threshold/10:
         log.info("prime_vis_es_cache made %d acc_composites  %s" %
                  (count, readable_time(time.time() - PROFILE_START_TIME)))
     else:
         log.debug("prime_vis_es_cache made %d acc_composites  %s" %
                   (count, readable_time(time.time() - PROFILE_START_TIME)))
-    log.setLevel(logging.NOTSET)  # Not sure if this is needed.
 
 
 def render(data):

@@ -336,7 +336,7 @@ def index_file(request):
             files_indexed = 0
             for uuid in invalidated_files:
                 uuid_current = uuid
-                if TRACKHUB_CACHING and not th_indexer_run and files_indexed % 100 == 0:
+                if TRACKHUB_CACHING and not th_indexer_run and files_indexed % 10 == 0:
                     # Temporary 'simple most efficient' solution, b4 separate index_trackhub process
                     try:
                         if object_indexer_done(registry, last_xmin):

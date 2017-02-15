@@ -1,5 +1,6 @@
 {
     "SRNA": {
+        "rule": "'{assay_term_name}' == 'small RNA-seq'",
         "assay_composite": {
             "longLabel":  "Collection of ENCODE small-RNA-seq experiments",
             "shortLabel": "ENCODE small-RNA-seq"
