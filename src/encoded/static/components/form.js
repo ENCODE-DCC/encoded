@@ -470,6 +470,16 @@ const Field = module.exports.Field = React.createClass({
         return { readonly: !!(this.context.readonly || this.props.schema.readonly) };
     },
 
+    // Don't update when state is changed.
+    // (Without this, the update to isDirty from handleChange causes
+    // the input to re-render before the new value prop has propagated
+    // from the parent, causing the cursor position to be lost.
+    // See https://github.com/facebook/react/issues/955)
+    // This should be safe as long as Field's state only contains isDirty.
+    shouldComponentUpdate(nextProps) {
+        return nextProps !== this.props;
+    },
+
     // Propagate updates from children to parent
     updateChild,
 

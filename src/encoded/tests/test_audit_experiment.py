@@ -2385,6 +2385,8 @@ def test_audit_experiment_out_of_date_analysis_added_fastq(testapp,
                                                            file_fastq_4,
                                                            file_bam_1_1,
                                                            file_bam_2_1):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
+    testapp.patch_json(file_fastq_4['@id'], {'replicate': replicate_1_1['@id']})
     testapp.patch_json(file_bam_1_1['@id'], {'derived_from': [file_fastq_3['@id']]})
     testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_3['@id']]})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
@@ -2403,6 +2405,7 @@ def test_audit_experiment_out_of_date_analysis_removed_fastq(testapp,
                                                              file_fastq_4,
                                                              file_bam_1_1,
                                                              file_bam_2_1):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
     testapp.patch_json(file_bam_1_1['@id'], {'derived_from': [file_fastq_3['@id']]})
     testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']]})
     testapp.patch_json(file_fastq_3['@id'], {'status': 'deleted'})
@@ -2424,6 +2427,45 @@ def test_audit_experiment_no_out_of_date_analysis(testapp,
                                                   file_bam_2_1):
     testapp.patch_json(file_bam_1_1['@id'], {'derived_from': [file_fastq_3['@id']]})
     testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']]})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'out of date analysis' for error in errors_list)
+
+
+def test_audit_experiment_control_out_of_date_analysis_paired_fastqs(
+    testapp,
+    base_experiment,
+    replicate_1_1,
+    replicate_2_1,
+    file_fastq_3,
+    file_fastq_4,
+    file_bam_1_1,
+    file_bam_2_1,
+    control_target,
+    ctrl_experiment
+):
+
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
+    testapp.patch_json(ctrl_experiment['@id'], {'target': control_target['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'experiment': ctrl_experiment['@id']})
+
+    testapp.patch_json(file_bam_1_1['@id'], {'assembly': 'mm10',
+                                             'output_type': 'signal of unique reads',
+                                             'file_format': 'bigWig',
+                                             'output_type': 'signal p-value',
+                                             'derived_from': [file_bam_2_1['@id']]})
+    testapp.patch_json(file_fastq_3['@id'], {'dataset': ctrl_experiment['@id'],
+                                             'replicate': replicate_2_1['@id'],
+                                             'paired_end': '1'})
+    testapp.patch_json(file_fastq_4['@id'], {'dataset': ctrl_experiment['@id'],
+                                             'replicate': replicate_2_1['@id'],
+                                             'paired_end': '2',
+                                             'paired_with': file_fastq_3['@id']})
+    testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']],
+                                             'dataset': ctrl_experiment['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
