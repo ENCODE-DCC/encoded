@@ -538,15 +538,14 @@ var HomepageChart2 = React.createClass({
                     legendCallback: function (chart) { // allows for legend clicking
                         let data = chart.data.datasets[0].data;
                         let text = [];
-                        let query = this.computationalPredictions ? 'biosample_type=' : 'replicates.library.biosample.biosample_type=';
                         text.push('<ul>');
                         for (let i = 0; i < data.length; i++) {
                             if (data[i]) {
                                 text.push('<li>');
-                                text.push('<a href="/matrix/' + this.props.query + '&' + query + chart.data.labels[i] + '">'); // go to matrix view when clicked
-                                text.push('<span class="chart-legend-chip" style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
+                                text.push(`<a href="/matrix/${this.props.query}&biosample_type=${chart.data.labels[i]}">`); // go to matrix view when clicked
+                                text.push(`<span class="chart-legend-chip" style="background-color:${chart.data.datasets[0].backgroundColor[i]}"></span>`);
                                 if (chart.data.labels[i]) {
-                                    text.push('<span class="chart-legend-label">' + chart.data.labels[i] + '</span>');
+                                    text.push(`<span class="chart-legend-label">${chart.data.labels[i]}</span>`);
                                 }
                                 text.push('</a></li>');
                             }
@@ -556,12 +555,11 @@ var HomepageChart2 = React.createClass({
                     }.bind(this),
                     onClick: function (e) {
                         // React to clicks on pie sections
-                        let query = this.computationalPredictions ? 'biosample_type=' : 'replicates.library.biosample.biosample_type=';
                         let activePoints = this.myPieChart.getElementAtEvent(e);
                         if (activePoints[0]) {
                             let clickedElementIndex = activePoints[0]._index;
                             let term = this.myPieChart.data.labels[clickedElementIndex];
-                            this.context.navigate('/matrix/' + this.props.query + '&' + query + term); // go to matrix view
+                            this.context.navigate(`/matrix/${this.props.query}&biosample_type=${term}`); // go to matrix view
                         }
                     }.bind(this)
                 }
@@ -622,11 +620,7 @@ var HomepageChart2 = React.createClass({
         // Our data source will be different for computational predictions
         if (facets) {
             this.computationalPredictions = this.props.assayCategory === 'COMPPRED';
-            if (this.computationalPredictions) {
-                assayFacet = facets.find(facet => facet.field === 'biosample_type');
-            } else {
-                assayFacet = facets.find(facet => facet.field === 'replicates.library.biosample.biosample_type');
-            }
+            assayFacet = facets.find(facet => facet.field === 'biosample_type');
             this.facetData = assayFacet ? assayFacet.terms : [];
             let docCounts = this.facetData.length ? this.facetData.map(data => data.doc_count) : [];
             total = docCounts.length ? docCounts.reduce((prev, curr) => prev + curr) : 0;
