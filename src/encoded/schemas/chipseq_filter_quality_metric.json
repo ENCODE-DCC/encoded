@@ -1,4 +1,5 @@
 {
+    "title": "ChIP-seq library complexity and cross-correlation quality metric",
     "description": "Schema for reporting ChIP library complexity and cross-correlation quality metrics",
     "id": "/profiles/chipseq_filter_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",

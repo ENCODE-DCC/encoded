@@ -88,7 +88,7 @@ To run with a debugger::
 Specific tests to run locally for schema changes::
 
     $ bin/test -k test_load_workbook
-    $ bin/test -k test_edw_sync
+    $ bin/test -k test_load_schema
 
 Run the Pyramid tests with::
 
