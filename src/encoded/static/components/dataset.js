@@ -56,11 +56,14 @@ const AnnotationComponent = React.createClass({
 
     contextTypes: {
         session: React.PropTypes.object, // Login session information
+        session_properties: React.PropTypes.object,
     },
 
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
+        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -209,7 +212,7 @@ const AnnotationComponent = React.createClass({
                                         </div>
                                     : null}
 
-                                    <AwardRef context={context} />
+                                    <AwardRef context={context} adminUser={adminUser} />
 
                                     {context.aliases.length ?
                                         <div data-test="aliases">
@@ -268,12 +271,13 @@ const PublicationDataComponent = React.createClass({
 
     contextTypes: {
         session: React.PropTypes.object, // Login session information
+        session_properties: React.PropTypes.object,
     },
 
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
+        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -377,7 +381,7 @@ const PublicationDataComponent = React.createClass({
                                         </div>
                                     : null}
 
-                                    <AwardRef context={context} />
+                                    <AwardRef context={context} adminUser={adminUser} />
 
                                     <div data-test="externalresources">
                                         <dt>External resources</dt>
@@ -429,12 +433,13 @@ const ReferenceComponent = React.createClass({
 
     contextTypes: {
         session: React.PropTypes.object, // Login session information
+        session_properties: React.PropTypes.object,
     },
 
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
+        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -531,7 +536,7 @@ const ReferenceComponent = React.createClass({
                                         </div>
                                     : null}
 
-                                    <AwardRef context={context} />
+                                    <AwardRef context={context} adminUser={adminUser} />
 
                                     {context.aliases.length ?
                                         <div data-test="aliases">
@@ -590,12 +595,13 @@ const ProjectComponent = React.createClass({
 
     contextTypes: {
         session: React.PropTypes.object, // Login session information
+        session_properties: React.PropTypes.object,
     },
 
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
+        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -716,7 +722,7 @@ const ProjectComponent = React.createClass({
                                         </div>
                                     : null}
 
-                                    <AwardRef context={context} />
+                                    <AwardRef context={context} adminUser={adminUser} />
 
                                     {context.aliases.length ?
                                         <div data-test="aliases">
@@ -775,12 +781,13 @@ const UcscBrowserCompositeComponent = React.createClass({
 
     contextTypes: {
         session: React.PropTypes.object, // Login session information
+        session_properties: React.PropTypes.object,
     },
 
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
+        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
         const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
@@ -887,7 +894,7 @@ const UcscBrowserCompositeComponent = React.createClass({
                                         </div>
                                     : null}
 
-                                    <AwardRef context={context} />
+                                    <AwardRef context={context} adminUser={adminUser} />
 
                                     {context.aliases.length ?
                                         <div data-test="aliases">
@@ -1018,8 +1025,8 @@ const basicTableColumns = {
     lab: {
         title: 'Lab',
         getValue: experiment => (experiment.lab ? experiment.lab.title : null),
-    },
 
+    },
     status: {
         title: 'Status',
         display: experiment => <div className="characterization-meta-data"><StatusLabel status={experiment.status} /></div>,
@@ -1236,7 +1243,6 @@ export const SeriesComponent = React.createClass({
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
         let experiments = {};
         const statuses = [{ status: context.status, title: 'Status' }];
@@ -1360,7 +1366,7 @@ export const SeriesComponent = React.createClass({
                                         <dd>{context.lab.title}</dd>
                                     </div>
 
-                                    <AwardRef context={context} />
+                                    <AwardRef context={context} adminUser={adminUser} />
 
                                     <div data-test="project">
                                         <dt>Project</dt>

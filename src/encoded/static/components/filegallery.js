@@ -1708,7 +1708,7 @@ const FileGalleryRenderer = React.createClass({
                         setInfoNodeId={this.setInfoNodeId}
                         infoNodeVisible={this.state.infoNodeVisible}
                         setInfoNodeVisible={this.setInfoNodeVisible}
-                        adminUser={!!this.context.session_properties.admin}
+                        adminUser={!!(this.context.session_properties && this.context.session_properties.admin)}
                         forceRedraw
                     />
                 : null}
@@ -1731,7 +1731,7 @@ const FileGalleryRenderer = React.createClass({
                     setInfoNodeVisible={this.setInfoNodeVisible}
                     showFileCount
                     noDefaultClasses
-                    adminUser={!!this.context.session_properties.admin}
+                    adminUser={!!(this.context.session_properties && this.context.session_properties.admin)}
                 />
             </Panel>
         );

@@ -60,12 +60,14 @@ var PanelLookup = function (props) {
 
 var ExperimentComponent = React.createClass({
     contextTypes: {
-        session: React.PropTypes.object
+        session: React.PropTypes.object,
+        session_properties: React.PropTypes.object,
     },
 
     render: function() {
         var condensedReplicates = [];
         var context = this.props.context;
+        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
         var itemClass = globals.itemClass(context, 'view-item');
         var replicates = context.replicates;
         if (replicates) {
@@ -441,7 +443,7 @@ var ExperimentComponent = React.createClass({
                                         <dd>{context.lab.title}</dd>
                                     </div>
 
-                                    <AwardRef context={context} />
+                                    <AwardRef context={context} adminUser={adminUser} />
 
                                     <div data-test="project">
                                         <dt>Project</dt>
