@@ -2,7 +2,7 @@
 Change log for fly_donor.json
 =============================
 
-Schema version 3
+Schema version 6
 ----------------
 
 * *donor_documents* was removed from the schema as it was replaced by *documents*.

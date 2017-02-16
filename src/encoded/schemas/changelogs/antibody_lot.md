@@ -2,6 +2,11 @@
 Change log for antibody_lot.json
 ================================
 
+Schema version 6
+----------------
+
+* Free text properties *notes* and *antigen_description* are no longer allowed to have leading or trailing whitespace or allowed to contain just an empty string.
+
 Schema version 5
 ----------------
 
