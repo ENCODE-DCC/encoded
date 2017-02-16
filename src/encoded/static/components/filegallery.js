@@ -971,8 +971,8 @@ const RawFileTable = React.createClass({
 
                                 return (
                                     <tr key={file['@id']} className={rowClasses.join(' ')}>
-                                        <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : ''}</td>
-                                        <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
+                                        <td className="table-raw-biorep">{(file.biological_replicates && file.biological_replicates.length) ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td>
+                                        <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
                                         <td>
                                             <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
                                         </td>
