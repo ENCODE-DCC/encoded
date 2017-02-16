@@ -137,7 +137,6 @@ class Experiment(Dataset,
         'possible_controls',
         'target.organism',
         'references',
-        'supersedes',
     ]
     audit_inherit = [
         'original_files',
@@ -402,6 +401,7 @@ class Experiment(Dataset,
                     if replicateObject['status'] == 'deleted':
                         continue
                     if 'library' in replicateObject:
+                        preferred_name = 'total RNA-seq'
                         libraryObject = request.embed(replicateObject['library'], '@@object')
                         if 'size_range' in libraryObject and \
                            libraryObject['size_range'] == '<200':
@@ -546,13 +546,13 @@ class Experiment(Dataset,
         'y': {
             'facets': [
                 'replicates.library.biosample.donor.organism.scientific_name',
-                'replicates.library.biosample.biosample_type',
+                'biosample_type',
                 'organ_slims',
                 'award.project',
                 'assembly',
                 'internal_status'
             ],
-            'group_by': ['replicates.library.biosample.biosample_type', 'biosample_term_name'],
+            'group_by': ['biosample_type', 'biosample_term_name'],
             'label': 'Biosample',
         },
         'x': {

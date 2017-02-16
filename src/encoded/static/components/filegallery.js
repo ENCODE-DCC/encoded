@@ -60,8 +60,6 @@ const FileInfoButton = React.createClass({
     },
 
     render: function () {
-        const { file } = this.props;
-
         return (
             <button className="file-table-btn" onClick={this.onClick}>
                 <i className="icon icon-info-circle">
@@ -626,24 +624,29 @@ const RawSequencingTable = React.createClass({
                 }
 
                 // See if the file qualifies as a pair element
-                if (file.paired_with &&
-                    file.biological_replicates && file.biological_replicates.length === 1 &&
-                    file.replicate && file.replicate.library) {
-                    // File is paired and has exactly one biological replicate. Now make sure its
-                    // partner exists and also qualifies.
+                if (file.paired_with) {
+                    // File is paired; make sure its partner exists and points back at `file`.
                     const partner = filesKeyed[file.paired_with];
-                    if (partner && partner.paired_with === file['@id'] &&
-                        partner.biological_replicates && partner.biological_replicates.length === 1 &&
-                        partner.replicate && partner.replicate.library &&
-                        partner.biological_replicates[0] === file.biological_replicates[0]) {
-                        // Both the file and its partner qualify as good pairs of each other. Let
-                        // them pass the filter, and record set their sort keys to the lower of
-                        // the two accessions -- that's how pairs will sort within a biological
-                        // replicate
-                        file.pairSortKey = partner.pairSortKey = file.title < partner.title ? file.title : partner.title;
-                        file.pairSortKey += file.paired_end;
-                        partner.pairSortKey += partner.paired_end;
-                        return true;
+                    if (partner && partner.paired_with === file['@id']) {
+                        // The file and its partner properly paired with each other. Now see if
+                        // their biological replicates and libraries allow them to pair up in the
+                        // file table. Either they must share the same single biological replicate
+                        // or they must share the fact that neither have a biological replicate
+                        // which can be true for csqual and csfasta files.
+                        if ((file.biological_replicates && file.biological_replicates.length === 1 &&
+                                partner.biological_replicates && partner.biological_replicates.length === 1 &&
+                                file.biological_replicates[0] === partner.biological_replicates[0]) ||
+                                ((!file.biological_replicates || file.biological_replicates.length === 0) &&
+                                (!partner.biological_replicates || partner.biological_replicates.length === 0))) {
+                            // Both the file and its partner qualify as good pairs of each other. Let
+                            // them pass the filter, and record set their sort keys to the lower of
+                            // the two accessions -- that's how pairs will sort within a biological
+                            // replicate.
+                            file.pairSortKey = partner.pairSortKey = file.title < partner.title ? file.title : partner.title;
+                            file.pairSortKey += file.paired_end;
+                            partner.pairSortKey += partner.paired_end;
+                            return true;
+                        }
                     }
                 }
 
@@ -654,11 +657,15 @@ const RawSequencingTable = React.createClass({
 
             // Group paired files by biological replicate and library -- four-digit biological
             // replicate concatenated with library accession becomes the group key, and all files
-            // with that biological replicate and library form an array under that key.
+            // with that biological replicate and library form an array under that key. If the pair
+            // don't belong to a biological replicate, sort them under the fake replicate `Z   `
+            // so that they'll sort at the end.
             let pairedRepGroups = {};
             let pairedRepKeys = [];
             if (pairedFiles.length) {
-                pairedRepGroups = _(pairedFiles).groupBy(file => globals.zeroFill(file.biological_replicates[0]) + file.replicate.library.accession);
+                pairedRepGroups = _(pairedFiles).groupBy(file => (
+                    (file.biological_replicates && file.biological_replicates.length === 1) ? globals.zeroFill(file.biological_replicates[0]) + file.replicate.library.accession : 'Z'
+                ));
 
                 // Make a sorted list of keys
                 pairedRepKeys = Object.keys(pairedRepGroups).sort();
@@ -668,7 +675,7 @@ const RawSequencingTable = React.createClass({
                 <table className="table table-sortable table-raw">
                     <thead>
                         <tr className="table-section">
-                            <th colSpan={loggedIn ? '11' : '10'}>
+                            <th colSpan="11">
                                 <CollapsingTitle title="Raw sequencing data" collapsed={this.state.collapsed} handleCollapse={this.handleCollapse} />
                             </th>
                         </tr>
@@ -685,7 +692,7 @@ const RawSequencingTable = React.createClass({
                                 <th>Date added</th>
                                 <th>File size</th>
                                 <th>Audit status</th>
-                                {loggedIn ? <th>File status</th> : null}
+                                <th>File status</th>
                             </tr>
                         : null}
                     </thead>
@@ -701,8 +708,12 @@ const RawSequencingTable = React.createClass({
                                 // the first row of files, spanned to all rows for that replicate and
                                 // library
                                 const spanned = [
-                                    <td key="br" rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>{groupFiles[0].biological_replicates[0]}</td>,
-                                    <td key="lib" rowSpan={groupFiles.length} className={`${bottomClass} merge-right + table-raw-merged`}>{groupFiles[0].replicate.library.accession}</td>,
+                                    <td key="br" rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>
+                                        {groupFiles[0].biological_replicates && groupFiles[0].biological_replicates.length ? <span>{groupFiles[0].biological_replicates[0]}</span> : <i>N/A</i>}
+                                    </td>,
+                                    <td key="lib" rowSpan={groupFiles.length} className={`${bottomClass} merge-right + table-raw-merged`}>
+                                        {groupFiles[0].replicate && groupFiles[0].replicate.library ? <span>{groupFiles[0].replicate.library.accession}</span> : <i>N/A</i>}
+                                    </td>,
                                 ];
 
                                 // Render each file's row, with the biological replicate and library
@@ -739,7 +750,7 @@ const RawSequencingTable = React.createClass({
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={pairClass}>{humanFileSize(file.file_size)}</td>
                                             <td className={pairClass}>{fileAuditStatus(file)}</td>
-                                            {loggedIn ? <td className={`${pairClass} characterization-meta-data`}><StatusLabel status={file.status} /></td> : null}
+                                            <td className={`${pairClass} characterization-meta-data`}><StatusLabel status={file.status} /></td>
                                         </tr>
                                     );
                                 });
@@ -762,8 +773,8 @@ const RawSequencingTable = React.createClass({
 
                                 return (
                                     <tr key={i} className={rowClasses.join(' ')}>
-                                        <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : ''}</td>
-                                        <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
+                                        <td className="table-raw-biorep">{file.biological_replicates && file.biological_replicates.length ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td>
+                                        <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
                                         <td>
                                             <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
                                         </td>
@@ -774,7 +785,7 @@ const RawSequencingTable = React.createClass({
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{humanFileSize(file.file_size)}</td>
                                         <td>{fileAuditStatus(file)}</td>
-                                        {loggedIn ? <td className="characterization-meta-data"><StatusLabel status={file.status} /></td> : null}
+                                        <td className="characterization-meta-data"><StatusLabel status={file.status} /></td>
                                     </tr>
                                 );
                             })}
@@ -783,7 +794,7 @@ const RawSequencingTable = React.createClass({
 
                     <tfoot>
                         <tr>
-                            <td className={`file-table-footer${this.state.collapsed ? ' hiding' : ''}`} colSpan={loggedIn ? '11' : '10'} />
+                            <td className={`file-table-footer${this.state.collapsed ? ' hiding' : ''}`} colSpan="11" />
                         </tr>
                     </tfoot>
                 </table>
@@ -848,7 +859,7 @@ const RawFileTable = React.createClass({
                 <table className="table table-sortable table-raw">
                     <thead>
                         <tr className="table-section">
-                            <th colSpan={loggedIn ? '11' : '10'}>
+                            <th colSpan="11">
                                 <CollapsingTitle title="Raw data" collapsed={this.state.collapsed} handleCollapse={this.handleCollapse} />
                             </th>
                         </tr>
@@ -865,7 +876,7 @@ const RawFileTable = React.createClass({
                                 <th>Date added</th>
                                 <th>File size</th>
                                 <th>Audit status</th>
-                                {loggedIn ? <th>File status</th> : null}
+                                <th>File status</th>
                             </tr>
                         : null}
                     </thead>
@@ -916,7 +927,7 @@ const RawFileTable = React.createClass({
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={pairClass}>{humanFileSize(file.file_size)}</td>
                                             <td className={pairClass}>{fileAuditStatus(file)}</td>
-                                            {loggedIn ? <td className={`${pairClass} characterization-meta-data`}><StatusLabel status={file.status} /></td> : null}
+                                            <td className={`${pairClass} characterization-meta-data`}><StatusLabel status={file.status} /></td>
                                         </tr>
                                     );
                                 });
@@ -933,8 +944,8 @@ const RawFileTable = React.createClass({
 
                                 return (
                                     <tr key={i} className={rowClasses.join(' ')}>
-                                        <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : ''}</td>
-                                        <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
+                                        <td className="table-raw-biorep">{(file.biological_replicates && file.biological_replicates.length) ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td>
+                                        <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
                                         <td>
                                             <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
                                         </td>
@@ -945,7 +956,7 @@ const RawFileTable = React.createClass({
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{humanFileSize(file.file_size)}</td>
                                         <td>{fileAuditStatus(file)}</td>
-                                        {loggedIn ? <td className="characterization-meta-data"><StatusLabel status={file.status} /></td> : null}
+                                        <td className="characterization-meta-data"><StatusLabel status={file.status} /></td>
                                     </tr>
                                 );
                             })}
@@ -954,7 +965,7 @@ const RawFileTable = React.createClass({
 
                     <tfoot>
                         <tr>
-                            <td className={`file-table-footer${this.state.collapsed ? ' hiding' : ''}`} colSpan={loggedIn ? '11' : '10'} />
+                            <td className={`file-table-footer${this.state.collapsed ? ' hiding' : ''}`} colSpan="11" />
                         </tr>
                     </tfoot>
                 </table>
@@ -1644,7 +1655,7 @@ const FileGalleryRenderer = React.createClass({
                                         {Object.keys(context.visualize_ucsc).map(assembly =>
                                             <a key={assembly} data-bypass="true" target="_blank" rel="noopener noreferrer" href={context.visualize_ucsc[assembly]}>
                                                 {assembly}
-                                            </a>
+                                            </a>,
                                         )}
                                     </DropdownMenu>
                                 </DropdownButton>
@@ -1749,7 +1760,7 @@ const FilterMenu = React.createClass({
                 <option value="default" key="title">All Assemblies and Annotations</option>
                 <option disabled="disabled" />
                 {filterOptions.map((option, i) =>
-                    <option key={i} value={i}>{`${option.assembly + (option.annotation ? ` ${option.annotation}` : '')}`}</option>
+                    <option key={i} value={i}>{`${option.assembly + (option.annotation ? ` ${option.annotation}` : '')}`}</option>,
                 )}
             </select>
         );
@@ -1821,7 +1832,14 @@ function qcDetailsView(metrics) {
 
                 // Generate the JSX for the panel. Use the property name as the key to get the corresponding human-readable description for the title
                 if (attachment) {
-                    return <AttachmentPanel context={metrics.ref} attachment={metrics.ref[attachmentPropertyName]} title={attachmentPropertyInfo[attachmentPropertyName]} />;
+                    return (
+                        <AttachmentPanel
+                            context={metrics.ref}
+                            attachment={metrics.ref[attachmentPropertyName]}
+                            title={attachmentPropertyInfo[attachmentPropertyName]}
+                            modal
+                        />
+                    );
                 }
                 return null;
             })).compact();
@@ -1851,7 +1869,7 @@ function qcDetailsView(metrics) {
                                         <dt>{key}</dt>
                                         <dd>{metrics.ref[key]}</dd>
                                     </div>
-                                : null)
+                                : null),
                             )}
                         </dl>
                     </div>
@@ -1864,7 +1882,7 @@ function qcDetailsView(metrics) {
                                     {/* If the metrics object has an `attachment` property, display that first, then display the properties
                                         not named `attachment` but which have their own schema attribute, `attachment`, set to true */}
                                     {metrics.ref.attachment ?
-                                        <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} />
+                                        <AttachmentPanel context={metrics.ref} attachment={metrics.ref.attachment} title="Attachment" modal />
                                     : null}
                                     {qcPanels}
                                 </div>
@@ -2274,7 +2292,7 @@ const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
                             <dt>File quality metrics</dt>
                             <dd className="file-qc-buttons">
                                 {selectedFile.quality_metrics.map(qc =>
-                                    <FileQCButton qc={qc} file={selectedFile} handleClick={qcClick} />
+                                    <FileQCButton qc={qc} file={selectedFile} handleClick={qcClick} />,
                                 )}
                             </dd>
                         </div>
