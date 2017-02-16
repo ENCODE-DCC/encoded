@@ -19,6 +19,7 @@
                 "props": false
             }
         ],
+        "no-restricted-properties": 0,
         "no-underscore-dangle": 0,
         "object-shorthand": 0,
         "import/no-named-as-default-member": 0,
