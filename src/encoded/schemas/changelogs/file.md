@@ -2,6 +2,13 @@
 Change log for file.json
 =========================
 
+Schema version 9
+----------------
+
+* property *supercedes* was renamed to *supersedes*
+* *assembly* values are no longer accepted for *file_format* = fastq
+
+
 Schema version 8
 ----------------
 

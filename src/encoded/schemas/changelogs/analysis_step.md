@@ -2,6 +2,11 @@
 Change log for analysis_step.json
 =================================
 
+Schema version 4
+----------------
+
+* *analysis_step_types*, *input_file_types*, *output_file_types*, *qa_stats_generated*, *parents*, *aliases*, *documents* arrays must contain unique elements.
+
 Schema version 3
 ----------------
 

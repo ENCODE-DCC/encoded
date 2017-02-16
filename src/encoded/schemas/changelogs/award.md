@@ -1,6 +1,11 @@
 Change log for award.json
 =========================
 
+Schema version 3
+----------------
+
+* Broke out enum value "ENCODE" in viewing_group to ENCODE3 and ENCODE4
+
 
 Schema version 2
 ----------------
