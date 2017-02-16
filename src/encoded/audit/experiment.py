@@ -462,11 +462,11 @@ def audit_experiment_with_uploading_files(value, system):
     if 'original_files' not in value:
         return
     for f in value['original_files']:
-        if f['status'] in ['uploading', 'upload failed']:
+        if f['status'] in ['uploading', 'upload failed', 'content error']:
             detail = 'Experiment {} '.format(value['@id']) + \
                      'contains a file {} '.format(f['@id']) + \
                      'with the status {}.'.format(f['status'])
-            yield AuditFailure('not uploaded files', detail, level='INTERNAL_ACTION')
+            yield AuditFailure('file validation error', detail, level='INTERNAL_ACTION')
 
 
 @audit_checker('Experiment', frame=['original_files',

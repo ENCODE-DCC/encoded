@@ -1259,7 +1259,7 @@ def test_audit_experiment_not_uploaded_files(testapp, file_bam,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'not uploaded files' for error in errors_list)
+    assert any(error['category'] == 'file validation error' for error in errors_list)
 
 
 def test_audit_experiment_replicate_with_no_fastq_files(testapp, file_bam,
