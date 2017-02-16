@@ -763,8 +763,8 @@ const RawFileTable = React.createClass({
 
                                 return (
                                     <tr key={i} className={rowClasses.join(' ')}>
-                                        <td className="table-raw-biorep">{file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : ''}</td>
-                                        <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : ''}</td>
+                                        <td className="table-raw-biorep">{(file.biological_replicates && file.biological_replicates.length) ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td>
+                                        <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
                                         <td>
                                             <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
                                         </td>
@@ -1476,7 +1476,7 @@ const FileGalleryRenderer = React.createClass({
                                         {Object.keys(context.visualize_ucsc).map(assembly =>
                                             <a key={assembly} data-bypass="true" target="_blank" rel="noopener noreferrer" href={context.visualize_ucsc[assembly]}>
                                                 {assembly}
-                                            </a>
+                                            </a>,
                                         )}
                                     </DropdownMenu>
                                 </DropdownButton>
@@ -1582,7 +1582,7 @@ const FilterMenu = React.createClass({
                 <option value="default" key="title">All Assemblies and Annotations</option>
                 <option disabled="disabled" />
                 {filterOptions.map((option, i) =>
-                    <option key={i} value={i}>{`${option.assembly + (option.annotation ? ` ${option.annotation}` : '')}`}</option>
+                    <option key={i} value={i}>{`${option.assembly + (option.annotation ? ` ${option.annotation}` : '')}`}</option>,
                 )}
             </select>
         );
@@ -1992,7 +1992,7 @@ const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
                             <dt>File quality metrics</dt>
                             <dd className="file-qc-buttons">
                                 {selectedFile.quality_metrics.map(qc =>
-                                    <FileQCButton qc={qc} file={selectedFile} handleClick={qcClick} />
+                                    <FileQCButton qc={qc} file={selectedFile} handleClick={qcClick} />,
                                 )}
                             </dd>
                         </div>
