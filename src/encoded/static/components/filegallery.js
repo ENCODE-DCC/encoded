@@ -664,7 +664,8 @@ const RawSequencingTable = React.createClass({
                             // them pass the filter, and record set their sort keys to the lower of
                             // the two accessions -- that's how pairs will sort within a biological
                             // replicate.
-                            file.pairSortKey = partner.pairSortKey = file.title < partner.title ? file.title : partner.title;
+                            partner.pairSortKey = file.title < partner.title ? file.title : partner.title;
+                            file.pairSortKey = partner.pairSortKey;
                             file.pairSortKey += file.paired_end;
                             partner.pairSortKey += partner.paired_end;
                             return true;
@@ -725,18 +726,6 @@ const RawSequencingTable = React.createClass({
                                 // groupFiles is an array of files under a bioreplicate/library
                                 const groupFiles = pairedRepGroups[pairedRepKey];
                                 const bottomClass = j < (pairedRepKeys.length - 1) ? 'merge-bottom' : '';
-
-                                // Render an array of biological replicate and library to display on
-                                // the first row of files, spanned to all rows for that replicate and
-                                // library
-                                const spanned = [
-                                    <td key="br" rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>
-                                        {groupFiles[0].biological_replicates && groupFiles[0].biological_replicates.length ? <span>{groupFiles[0].biological_replicates[0]}</span> : <i>N/A</i>}
-                                    </td>,
-                                    <td key="lib" rowSpan={groupFiles.length} className={`${bottomClass} merge-right + table-raw-merged`}>
-                                        {groupFiles[0].replicate && groupFiles[0].replicate.library ? <span>{groupFiles[0].replicate.library.accession}</span> : <i>N/A</i>}
-                                    </td>,
-                                ];
 
                                 // Render each file's row, with the biological replicate and library
                                 // cells only on the first row.
@@ -2222,10 +2211,8 @@ const FileDetailView = function (node, qcClick, auditIndicators, auditDetail, lo
         );
 
         // Determine if the file has audits or not.
-        let fileAudits = false;
         if (selectedFile.audit) {
             const fileAuditKeys = Object.keys(selectedFile.audit);
-            fileAudits = !!(fileAuditKeys && fileAuditKeys.length);
         }
 
         body = (

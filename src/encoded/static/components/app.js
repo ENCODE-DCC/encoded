@@ -87,9 +87,7 @@ var Title = React.createClass({
 var AppComponent = React.createClass({
     getInitialState: function() {
         return {
-            context: this.props.context,
             slow: this.props.slow,
-            href: this.props.href,
             errors: [],
             assayTermNameColors: null,
             dropdownComponent: undefined
@@ -123,7 +121,7 @@ var AppComponent = React.createClass({
             dropdownComponent: this.state.dropdownComponent, // ID of component with visible dropdown
             listActionsFor: this.listActionsFor,
             currentResource: this.currentResource,
-            location_href: this.state.href,
+            location_href: this.props.href,
             portal: portal,
             hidePublicAudits: false, // True if audits should be hidden on the UI while logged out
             projectColors: projectColors,
@@ -159,11 +157,11 @@ var AppComponent = React.createClass({
     },
 
     currentResource: function() {
-        return this.state.context;
+        return this.props.context;
     },
 
     currentAction: function() {
-        var href_url = url.parse(this.state.href);
+        var href_url = url.parse(this.props.href);
         var hash = href_url.hash || '';
         var name;
         if (hash.slice(0, 2) === '#!') {
@@ -175,8 +173,8 @@ var AppComponent = React.createClass({
     render: function() {
         console.log('render app');
         var content, containerClass;
-        var context = this.state.context;
-        var href_url = url.parse(this.state.href);
+        var context = this.props.context;
+        var href_url = url.parse(this.props.href);
         // Switching between collections may leave component in place
         var key = context && context['@id'] && context['@id'].split('?')[0];
         var current_action = this.currentAction();
@@ -211,7 +209,7 @@ var AppComponent = React.createClass({
             title = portal.portal_title;
         }
 
-        var canonical = this.state.href;
+        var canonical = this.props.href;
         if (context.canonical_uri) {
             if (href_url.host) {
                 canonical = (href_url.protocol || '') + '//' + href_url.host + context.canonical_uri;
@@ -243,7 +241,7 @@ var AppComponent = React.createClass({
                 </head>
                 <body onClick={this.props.handleClick} onSubmit={this.props.handleSubmit}>
                     <script data-prop-name="context" type="application/ld+json" dangerouslySetInnerHTML={{
-                        __html: '\n\n' + jsonScriptEscape(JSON.stringify(this.state.context)) + '\n\n'
+                        __html: '\n\n' + jsonScriptEscape(JSON.stringify(this.props.context)) + '\n\n'
                     }}></script>
                     <div id="slot-application">
                         <div id="application" className={appClass}>

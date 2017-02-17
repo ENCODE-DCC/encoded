@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'underscore';
+import url from 'url';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { collapseIcon } from '../libs/svg-icons';
 import { auditDecor } from './audit';
@@ -25,7 +26,7 @@ const GM_TECHNIQUE_MAP = {
 
 const GeneticModificationCharacterizations = React.createClass({
     propTypes: {
-        characterizations: React.PropTypes.array, // Genetic modificiation characterizations to display
+        characterizations: React.PropTypes.array.isRequired, // Genetic modificiation characterizations to display
     },
 
     render: function () {
@@ -64,7 +65,9 @@ function geneticModificationTechniques(techniques) {
 
 export const GeneticModificationComponent = React.createClass({
     propTypes: {
-        context: React.PropTypes.object, // GM object being displayed
+        context: React.PropTypes.object.isRequired, // GM object being displayed
+        auditIndicators: React.PropTypes.func.isRequired, // Audit HOC function to display audit indicators
+        auditDetail: React.PropTypes.func.isRequired, // Audit HOC function to display audit details
     },
 
     render: function () {
@@ -294,6 +297,8 @@ export const GeneticModificationComponent = React.createClass({
     },
 });
 
+const GeneticModification = auditDecor(GeneticModificationComponent);
+
 globals.content_views.register(GeneticModification, 'GeneticModification');
 
 
@@ -345,7 +350,7 @@ globals.document_views.preview.register(GMAttachmentPreview, 'GeneticModificatio
 // Display modification technique specific to the CRISPR type.
 const TechniqueCrispr = React.createClass({
     propTypes: {
-        context: React.PropTypes.object, // CRISPR genetic modificiation technique to display
+        context: React.PropTypes.object.isRequired, // CRISPR genetic modificiation technique to display
     },
 
     render: function () {
@@ -408,7 +413,7 @@ globals.panel_views.register(TechniqueCrispr, 'Crispr');
 // Display modification technique specific to the TALE type.
 const TechniqueTale = React.createClass({
     propTypes: {
-        context: React.PropTypes.object, // TALE genetic modificiation technique to display
+        context: React.PropTypes.object.isRequired, // TALE genetic modificiation technique to display
     },
 
     render: function () {
@@ -479,6 +484,12 @@ export const AttachmentPanel = React.createClass({
         title: React.PropTypes.string, // Title to display in the caption area
     },
 
+    getDefaultProps: function () {
+        return {
+            title: '',
+        };
+    },
+
     render: function () {
         const { context, attachment, title } = this.props;
 
@@ -523,7 +534,9 @@ export const AttachmentPanel = React.createClass({
 
 const ListingComponent = React.createClass({
     propTypes: {
-        context: React.PropTypes.object, // Search results object
+        context: React.PropTypes.object.isRequired, // Search results object
+        auditDetail: React.PropTypes.func.isRequired, // Audit HOC function to show audit details
+        auditIndicators: React.PropTypes.func.isRequired, // Audit HOC function to display audit indicators
     },
 
     render: function () {
@@ -676,8 +689,8 @@ export const GeneticModificationSummary = React.createClass({
 // treatments. A group is an array of GM objects.
 export const GeneticModificationGroup = React.createClass({
     propTypes: {
-        groupSentence: React.PropTypes.string, // GM group detail sentence to display
-        gms: React.PropTypes.array, // GM objects to display within a group
+        groupSentence: React.PropTypes.string.isRequired, // GM group detail sentence to display
+        gms: React.PropTypes.array.isRequired, // GM objects to display within a group
     },
 
     getInitialState: function () {

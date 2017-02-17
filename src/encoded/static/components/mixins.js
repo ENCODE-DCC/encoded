@@ -5,7 +5,7 @@ import ga from 'google-analytics';
 import serialize from 'form-serialize';
 import origin from '../libs/origin';
 
-const parseError = module.exports.parseError = function (response) {
+function parseError(response) {
     if (response instanceof Error) {
         return Promise.resolve({
             status: 'error',
@@ -24,9 +24,9 @@ const parseError = module.exports.parseError = function (response) {
         code: response.status,
         '@type': ['AjaxError', 'Error'],
     });
-};
+}
 
-const parseAndLogError = module.exports.parseAndLogError = function (cause, response) {
+export function parseAndLogError(cause, response) {
     const promise = parseError(response);
     promise.then((data) => {
         ga('send', 'exception', {
@@ -35,12 +35,12 @@ const parseAndLogError = module.exports.parseAndLogError = function (cause, resp
         });
     });
     return promise;
-};
+}
 
 
-const contentTypeIsJSON = module.exports.contentTypeIsJSON = function (contentType) {
+function contentTypeIsJSON(contentType) {
     return (contentType || '').split(';')[0].split('/').pop().split('+').pop() === 'json';
-};
+}
 
 
 class Timeout {
@@ -54,6 +54,7 @@ function extractSessionCookie() {
     const cookie = require('cookie-monster');
     return cookie(document).get('session');
 }
+
 
 function parseSessionCookie(sessionCookie) {
     const buffer = require('buffer').Buffer;
@@ -75,13 +76,15 @@ function parseSessionCookie(sessionCookie) {
 
 /* eslint new-cap: ["error", { "newIsCapExceptions": ["default"] }]*/
 
-const Auth0Decor = (Auth0Component) => {
+export const Auth0Decor = (Auth0Component) => {
     class Auth0Class extends React.Component {
-        constructor() {
+        constructor(props) {
             super();
 
             // React component state.
             this.state = {
+                href: '',
+                context: props.context,
                 session: null,
                 session_properties: {},
                 session_cookie: '',
@@ -99,6 +102,7 @@ const Auth0Decor = (Auth0Component) => {
             this.handleAuth0Login = this.handleAuth0Login.bind(this);
             this.triggerLogin = this.triggerLogin.bind(this);
             this.triggerLogout = this.triggerLogout.bind(this);
+            this.setGlobalState = this.setGlobalState.bind(this);
         }
 
         getChildContext() {
@@ -117,8 +121,8 @@ const Auth0Decor = (Auth0Component) => {
                 this.fetchSessionProperties();
             }
             this.setState({
-                session_cookie: sessionCookie,
                 href: window.location.href,
+                session_cookie: sessionCookie,
             });
 
             // Make a URL for the logo.
@@ -178,12 +182,17 @@ const Auth0Decor = (Auth0Component) => {
             }
         }
 
+        setGlobalState(newState) {
+            this.setState(newState);
+        }
+
         fetch(uri, options) {
             let reqUri = uri;
             const extendedOptions = _.extend({ credentials: 'same-origin' }, options);
             const httpMethod = extendedOptions.method || 'GET';
             if (!(httpMethod === 'GET' || httpMethod === 'HEAD')) {
-                const headers = extendedOptions.headers = _.extend({}, extendedOptions.headers);
+                const headers = _.extend({}, extendedOptions.headers);
+                extendedOptions.headers = headers;
                 const session = this.state.session;
                 if (session && session._csrft_) {
                     headers['X-CSRF-Token'] = session._csrft_;
@@ -202,9 +211,7 @@ const Auth0Decor = (Auth0Component) => {
                 request.server_stats = require('querystring').parse(statsHeader);
                 request.etag = response.headers.get('ETag');
                 const sessionCookie = extractSessionCookie();
-                if (this.state.session_cookie !== sessionCookie) {
-                    this.setState({ session_cookie: sessionCookie });
-                }
+                this.setState({ session_cookie: sessionCookie });
             });
             return request;
         }
@@ -305,6 +312,9 @@ const Auth0Decor = (Auth0Component) => {
             return (
                 <Auth0Component
                     {...this.props}
+                    href={this.state.href}
+                    context={this.state.context}
+                    setGlobalState={this.setGlobalState}
                     triggers={this.triggers}
                     triggerLogin={this.triggerLogin}
                     triggerLogout={this.triggerLogout}
@@ -315,6 +325,7 @@ const Auth0Decor = (Auth0Component) => {
 
     Auth0Class.propTypes = {
         href: React.PropTypes.string.isRequired,
+        context: React.PropTypes.object.isRequired,
     };
 
     Auth0Class.childContextTypes = {
@@ -325,8 +336,6 @@ const Auth0Decor = (Auth0Component) => {
 
     return Auth0Class;
 };
-
-module.exports.Auth0Decor = Auth0Decor;
 
 
 class UnsavedChangesToken {
@@ -389,11 +398,10 @@ const HistoryAndTriggersDecor = (HistoryAndTriggersComponent) => {
 
             // React component state
             this.state = {
-                context: null,
                 contextRequest: null,
                 unsavedChanges: [],
                 promisePending: false,
-                href: '',
+                slow: false,
             };
 
             // Bind `this` to non-React methods.
@@ -440,7 +448,9 @@ const HistoryAndTriggersDecor = (HistoryAndTriggersComponent) => {
                             // DOM has a matching anchor; scroll to it
                             const elTop = domTarget.getBoundingClientRect().top;
                             const docTop = document.documentElement.scrollTop || document.body.scrollTop;
-                            document.documentElement.scrollTop = document.body.scrollTop = (elTop + docTop) - (window.innerWidth >= 960 ? 75 : 0);
+                            const scrollTop = (elTop + docTop) - (window.innerWidth >= 960 ? 75 : 0);
+                            document.documentElement.scrollTop = scrollTop;
+                            document.body.scrollTop = scrollTop;
                         }
                     }
                 }
@@ -478,7 +488,7 @@ const HistoryAndTriggersDecor = (HistoryAndTriggersComponent) => {
 
         onHashChange() {
             // IE8/9
-            this.setState({ href: window.location.href });
+            this.props.setGlobalState({ href: window.location.href });
         }
 
         adviseUnsavedChanges() {
@@ -652,7 +662,7 @@ const HistoryAndTriggersDecor = (HistoryAndTriggersComponent) => {
                     this.requestAborted = true;
                     this.requestCurrent = false;
                 }
-                this.setState({
+                this.props.setGlobalState({
                     href: href,  // href should be consistent with context
                     context: event.state,
                 });
@@ -730,7 +740,7 @@ const HistoryAndTriggersDecor = (HistoryAndTriggersComponent) => {
                 } else {
                     window.history.pushState(window.state, '', mutatableHref + fragment);
                 }
-                this.setState({ href: mutatableHref + fragment });
+                this.props.setGlobalState({ href: mutatableHref + fragment });
                 return null;
             }
 
@@ -773,7 +783,7 @@ const HistoryAndTriggersDecor = (HistoryAndTriggersComponent) => {
                 } else {
                     window.history.pushState(null, '', responseUrl);
                 }
-                this.setState({
+                this.props.setGlobalState({
                     href: responseUrl,
                 });
                 if (!response.ok) {
@@ -810,7 +820,7 @@ const HistoryAndTriggersDecor = (HistoryAndTriggersComponent) => {
             const newState = { slow: false };
             if (!this.requestAborted) {
                 // Real page to render
-                newState.context = data;
+                this.props.setGlobalState({ context: data });
             } else {
                 // data holds network error. Don't render that, but clear the requestAborted flag so we're ready
                 // for the next navigation click.
@@ -849,6 +859,7 @@ const HistoryAndTriggersDecor = (HistoryAndTriggersComponent) => {
         context: React.PropTypes.object,
         href: React.PropTypes.string,
         triggers: React.PropTypes.object,
+        setGlobalState: React.PropTypes.func.isRequired,
     };
 
     return HistoryAndTriggersClass;

@@ -126,7 +126,7 @@ var AdvSearch = React.createClass({
         return (
             <Panel>
                 <PanelBody>
-                    <form id="panel1" className="adv-search-form" ref="adv-search" role="form" autoComplete="off" aria-labeledby="tab1">
+                    <form id="panel1" className="adv-search-form" ref="adv-search" role="form" autoComplete="off" aria-labelledby="tab1">
                         <input type="hidden" name="annotation" value={this.state.terms['annotation']} />
                         <div className="form-group">
                             <label>Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID</label>
