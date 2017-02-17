@@ -346,6 +346,12 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     }
 }
 
+.file-download-section {
+    padding: 5px 0;
+    text-align: center;
+    border-top: 1px solid #c0c0c0;
+}
+
 // Collapsing title bar
 .collapsing-title {
     position: relative;

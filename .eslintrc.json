@@ -4,6 +4,10 @@
         "browser": true
     },
     "rules": {
+        "comma-dangle": ["error", {
+            "arrays": "always-multiline",
+            "objects": "always-multiline"
+        }],
         "func-names": 0,
         "global-require": 0,
         "indent": [
