@@ -1,54 +1,67 @@
-'use strict';
-import DataColors from './datacolors';
-
 import React from 'react';
+import url from 'url';
 import jsonScriptEscape from '../libs/jsonScriptEscape';
 import globals from './globals';
-import { Auth0Decor, HistoryAndTriggersDecor } from './mixins';
+import DataColors from './datacolors';
 import Navigation from './navigation';
 import Footer from './footer';
-import url from 'url';
 import Home from './home';
 import { NewsHead } from './page';
 
-var portal = {
+const portal = {
     portal_title: 'ENCODE',
     global_sections: [
-        {id: 'data', title: 'Data', children: [
-            {id: 'assaymatrix', title: 'Matrix', url: '/matrix/?type=Experiment'},
-            {id: 'assaysearch', title: 'Search', url: '/search/?type=Experiment'},
-            {id: 'region-search', title: 'Search by region', url: '/region-search/'},
-            {id: 'reference-epigenomes', title: 'Reference epigenomes', url: '/search/?type=ReferenceEpigenome'},
-            {id: 'publications', title: 'Publications', url: '/publications/'}
-        ]},
-        {id: 'encyclopedia', title: 'Encyclopedia', children: [
-            {id: 'aboutannotations', title: 'About', url: '/data/annotations/'},
-            {id: 'annotationmatrix', title: 'Matrix', url: '/matrix/?type=Annotation&encyclopedia_version=3'},
-            {id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation&encyclopedia_version=3'}
-        ]},
-        {id: 'materialsmethods', title: 'Materials & Methods', children: [
-            {id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot'},
-            {id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample'},
-            {id: 'references', title: 'Genome references', url: '/data-standards/reference-sequences/'},
-            {id: 'sep-mm-1'},
-            {id: 'datastandards', title: 'Standards and guidelines', url: '/data-standards/'},
-            {id: 'ontologies', title: 'Ontologies', url: '/help/getting-started/#Ontologies'},
-            {id: 'fileformats', title: 'File formats', url: '/help/file-formats/'},
-            {id: 'softwaretools', title: 'Software tools', url: '/software/'},
-            {id: 'pipelines', title: 'Pipelines', url: '/pipelines/'},
-            {id: 'datause', title: 'Release policy', url: '/about/data-use-policy/'},
-            {id: 'dataaccess', title: 'Data access', url: '/about/data-access/'}
-        ]},
-        {id: 'help', title: 'Help', children: [
-            {id: 'gettingstarted', title: 'Getting started', url: '/help/getting-started/'},
-            {id: 'restapi', title: 'REST API', url: '/help/rest-api/'},
-            {id: 'projectoverview', title: 'Project overview', url: '/about/contributors/'},
-            {id: 'tutorials', title: 'Tutorials', url: '/tutorials/'},
-            {id: 'news', title: 'News', url: '/search/?type=Page&news=true&status=released'},
-            {id: 'acknowledgements', title: 'Acknowledgements', url: '/acknowledgements/'},
-            {id: 'contact', title: 'Contact', url: '/help/contacts/'}
-        ]}
-    ]
+        {
+            id: 'data',
+            title: 'Data',
+            children: [
+                { id: 'assaymatrix', title: 'Matrix', url: '/matrix/?type=Experiment' },
+                { id: 'assaysearch', title: 'Search', url: '/search/?type=Experiment' },
+                { id: 'region-search', title: 'Search by region', url: '/region-search/' },
+                { id: 'reference-epigenomes', title: 'Reference epigenomes', url: '/search/?type=ReferenceEpigenome' },
+                { id: 'publications', title: 'Publications', url: '/publications/' },
+            ],
+        },
+        {
+            id: 'encyclopedia',
+            title: 'Encyclopedia',
+            children: [
+                { id: 'aboutannotations', title: 'About', url: '/data/annotations/' },
+                { id: 'annotationmatrix', title: 'Matrix', url: '/matrix/?type=Annotation&encyclopedia_version=3' },
+                { id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation&encyclopedia_version=3' },
+            ],
+        },
+        {
+            id: 'materialsmethods',
+            title: 'Materials & Methods',
+            children: [
+                { id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot' },
+                { id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample' },
+                { id: 'references', title: 'Genome references', url: '/data-standards/reference-sequences/' },
+                { id: 'sep-mm-1' },
+                { id: 'datastandards', title: 'Standards and guidelines', url: '/data-standards/' },
+                { id: 'ontologies', title: 'Ontologies', url: '/help/getting-started/#Ontologies' },
+                { id: 'fileformats', title: 'File formats', url: '/help/file-formats/' },
+                { id: 'softwaretools', title: 'Software tools', url: '/software/' },
+                { id: 'pipelines', title: 'Pipelines', url: '/pipelines/' },
+                { id: 'datause', title: 'Release policy', url: '/about/data-use-policy/' },
+                { id: 'dataaccess', title: 'Data access', url: '/about/data-access/' },
+            ],
+        },
+        {
+            id: 'help',
+            title: 'Help',
+            children: [
+                { id: 'gettingstarted', title: 'Getting started', url: '/help/getting-started/' },
+                { id: 'restapi', title: 'REST API', url: '/help/rest-api/' },
+                { id: 'projectoverview', title: 'Project overview', url: '/about/contributors/' },
+                { id: 'tutorials', title: 'Tutorials', url: '/tutorials/' },
+                { id: 'news', title: 'News', url: '/search/?type=Page&news=true&status=released' },
+                { id: 'acknowledgements', title: 'Acknowledgements', url: '/acknowledgements/' },
+                { id: 'contact', title: 'Contact', url: '/help/contacts/' },
+            ],
+        },
+    ],
 };
 
 
@@ -60,7 +73,7 @@ const projectList = [
     'Roadmap',
     'modENCODE',
     'modERN',
-    'GGR'
+    'GGR',
 ];
 const biosampleTypeList = [
     'immortalized cell line',
@@ -69,50 +82,44 @@ const biosampleTypeList = [
     'whole organisms',
     'stem cell',
     'in vitro differentiated cells',
-    'induced pluripotent stem cell line'
+    'induced pluripotent stem cell line',
 ];
 
 
 // See https://github.com/facebook/react/issues/2323 for an IE8 fix removed for Redmine #4755.
-var Title = React.createClass({
-    render: function() {
-        return <title {...this.props}>{this.props.children}</title>;
-    },
-});
+const Title = props => <title {...props}>{props.children}</title>;
+
+Title.propTypes = {
+    children: React.PropTypes.node.isRequired,
+};
 
 
 // App is the root component, mounted on document.body.
 // It lives for the entire duration the page is loaded.
 // App maintains state for the
-var AppComponent = React.createClass({
-    getInitialState: function() {
-        return {
-            slow: this.props.slow,
+export default class App extends React.Component {
+    constructor(props) {
+        super();
+        this.state = {
+            href: '',
+            slow: false,
             errors: [],
             assayTermNameColors: null,
-            dropdownComponent: undefined
+            dropdownComponent: undefined,
+            context: props.context,
+            session: null,
+            session_properties: {},
+            session_cookie: '',
         };
-    },
 
-    // Dropdown context using React context mechanism.
-    childContextTypes: {
-        dropdownComponent: React.PropTypes.string,
-        listActionsFor: React.PropTypes.func,
-        currentResource: React.PropTypes.func,
-        location_href: React.PropTypes.string,
-        portal: React.PropTypes.object,
-        hidePublicAudits: React.PropTypes.bool,
-        projectColors: React.PropTypes.object,
-        biosampleTypeColors: React.PropTypes.object,
-    },
+        // Bind this to non-React methods.
+        this.listActionsFor = this.listActionsFor.bind(this);
+        this.currentResource = this.currentResource.bind(this);
+        this.currentAction = this.currentAction.bind(this);
+    }
 
-    contextTypes: {
-        session: React.PropTypes.object, // Login information
-        session_properties: React.PropTypes.object,
-    },
-
-    // Retrieve current React context
-    getChildContext: function() {
+    // Data for child components to subscrie to.
+    getChildContext() {
         // Make `project` and `biosample_type` color mappings for downstream modules to use.
         const projectColors = new DataColors(projectList);
         const biosampleTypeColors = new DataColors(biosampleTypeList);
@@ -121,107 +128,108 @@ var AppComponent = React.createClass({
             dropdownComponent: this.state.dropdownComponent, // ID of component with visible dropdown
             listActionsFor: this.listActionsFor,
             currentResource: this.currentResource,
-            location_href: this.props.href,
+            location_href: this.state.href,
             portal: portal,
             hidePublicAudits: false, // True if audits should be hidden on the UI while logged out
             projectColors: projectColors,
             biosampleTypeColors: biosampleTypeColors,
         };
-    },
+    }
 
-    listActionsFor: function(category) {
+    listActionsFor(category) {
         if (category === 'context') {
-            var context = this.currentResource();
-            var name = this.currentAction();
-            var context_actions = [];
-            Array.prototype.push.apply(context_actions, context.actions || []);
+            let context = this.currentResource();
+            const name = this.currentAction();
+            const contextActions = [];
+            Array.prototype.push.apply(contextActions, context.actions || []);
             if (!name && context.default_page) {
                 context = context.default_page;
-                var actions = context.actions || [];
-                for (var i = 0; i < actions.length; i++) {
-                    var action = actions[i];
-                    if (action.href[0] == '#') {
+                const actions = context.actions || [];
+                for (let i = 0; i < actions.length; i += 1) {
+                    const action = actions[i];
+                    if (action.href[0] === '#') {
                         action.href = context['@id'] + action.href;
                     }
-                    context_actions.push(action);
+                    contextActions.push(action);
                 }
             }
-            return context_actions;
+            return contextActions;
         }
         if (category === 'user') {
-            return this.context.session_properties.user_actions || [];
+            return this.state.session_properties.user_actions || [];
         }
         if (category === 'global_sections') {
             return portal.global_sections;
         }
-    },
+        return null;
+    }
 
-    currentResource: function() {
-        return this.props.context;
-    },
+    currentResource() {
+        return this.state.context;
+    }
 
-    currentAction: function() {
-        var href_url = url.parse(this.props.href);
-        var hash = href_url.hash || '';
-        var name;
+    currentAction() {
+        const hrefUrl = url.parse(this.state.href);
+        const hash = hrefUrl.hash || '';
+        let name = '';
         if (hash.slice(0, 2) === '#!') {
             name = hash.slice(2);
         }
         return name;
-    },
+    }
 
-    render: function() {
+    render() {
         console.log('render app');
-        var content, containerClass;
-        var context = this.props.context;
-        var href_url = url.parse(this.props.href);
+        let content;
+        let containerClass;
+        let context = this.state.context;
+        const hrefUrl = url.parse(this.state.href);
         // Switching between collections may leave component in place
-        var key = context && context['@id'] && context['@id'].split('?')[0];
-        var current_action = this.currentAction();
-        var isHomePage = context.default_page && context.default_page.name === 'homepage' && (!href_url.hash || href_url.hash === '#logged-out');
+        const key = context && context['@id'] && context['@id'].split('?')[0];
+        const currentAction = this.currentAction();
+        const isHomePage = context.default_page && context.default_page.name === 'homepage' && (!hrefUrl.hash || hrefUrl.hash === '#logged-out');
         if (isHomePage) {
             context = context.default_page;
             content = <Home context={context} />;
             containerClass = 'container-homepage';
         } else {
-            if (!current_action && context.default_page) {
+            if (!currentAction && context.default_page) {
                 context = context.default_page;
             }
             if (context) {
-                var ContentView = globals.content_views.lookup(context, current_action);
+                const ContentView = globals.content_views.lookup(context, currentAction);
                 content = <ContentView context={context} />;
                 containerClass = 'container';
             }
         }
-        var errors = this.state.errors.map(function (error) {
-            return <div className="alert alert-error"></div>;
-        });
+        const errors = this.state.errors.map(() => <div className="alert alert-error" />);
 
-        var appClass = 'done';
+        let appClass = 'done';
         if (this.state.slow) {
             appClass = 'communicating';
         }
 
-        var title = context.title || context.name || context.accession || context['@id'];
-        if (title && title != 'Home') {
-            title = title + ' – ' + portal.portal_title;
+        let title = context.title || context.name || context.accession || context['@id'];
+        if (title && title !== 'Home') {
+            title = `${title} – ${portal.portal_title}`;
         } else {
             title = portal.portal_title;
         }
 
-        var canonical = this.props.href;
+        let canonical = this.state.href;
         if (context.canonical_uri) {
-            if (href_url.host) {
-                canonical = (href_url.protocol || '') + '//' + href_url.host + context.canonical_uri;
+            if (hrefUrl.host) {
+                canonical = `${hrefUrl.protocol || ''}//${hrefUrl.host + context.canonical_uri}`;
             } else {
                 canonical = context.canonical_uri;
             }
         }
 
         // Google does not update the content of 301 redirected pages
-        var base;
-        if (({'http://www.encodeproject.org/': 1, 'http://encodeproject.org/': 1})[canonical]) {
-            base = canonical = 'https://www.encodeproject.org/';
+        let base;
+        if (({ 'http://www.encodeproject.org/': 1, 'http://encodeproject.org/': 1 })[canonical]) {
+            base = 'https://www.encodeproject.org/';
+            canonical = base;
             this.historyEnabled = false;
         }
 
@@ -232,21 +240,25 @@ var AppComponent = React.createClass({
                     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
                     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                     <Title>{title}</Title>
-                    {base ? <base href={base}/> : null}
+                    {base ? <base href={base} /> : null}
                     <link rel="canonical" href={canonical} />
-                    <script async src='//www.google-analytics.com/analytics.js'></script>
-                    <script data-prop-name="inline" dangerouslySetInnerHTML={{__html: this.props.inline}}></script>
+                    <script async src="://www.google-analytics.com/analytics.js" />
+                    <script data-prop-name="inline" dangerouslySetInnerHTML={{ __html: this.props.inline }} />
                     <link rel="stylesheet" href={this.props.styles} />
-                    {NewsHead(this.props, href_url.protocol + '//' + href_url.host)}
+                    {NewsHead(this.props, `${hrefUrl.protocol}//${hrefUrl.host}`)}
                 </head>
-                <body onClick={this.props.handleClick} onSubmit={this.props.handleSubmit}>
-                    <script data-prop-name="context" type="application/ld+json" dangerouslySetInnerHTML={{
-                        __html: '\n\n' + jsonScriptEscape(JSON.stringify(this.props.context)) + '\n\n'
-                    }}></script>
+                <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
+                    <script
+                        data-prop-name="context"
+                        type="application/ld+json"
+                        dangerouslySetInnerHTML={{
+                            __html: `\n\n'${jsonScriptEscape(JSON.stringify(this.state.context))}\n\n`,
+                        }}
+                    />
                     <div id="slot-application">
                         <div id="application" className={appClass}>
 
-                        <div className="loading-spinner"></div>
+                        <div className="loading-spinner" />
 
                             <div id="layout">
                                 <Navigation isHomePage={isHomePage} />
@@ -254,7 +266,7 @@ var AppComponent = React.createClass({
                                     {content}
                                 </div>
                                 {errors}
-                                <div id="layout-footer"></div>
+                                <div id="layout-footer" />
                             </div>
                             <Footer version={this.props.context.app_version} />
                         </div>
@@ -262,7 +274,22 @@ var AppComponent = React.createClass({
                 </body>
             </html>
         );
-    },
-});
+    }
+}
 
-module.exports = Auth0Decor(HistoryAndTriggersDecor(AppComponent));
+App.propTypes = {
+    styles: React.PropTypes.string.isRequired,
+    inline: React.PropTypes.string.isRequired,
+    context: React.PropTypes.object.isRequired,
+};
+
+App.childContextTypes = {
+    dropdownComponent: React.PropTypes.string,
+    listActionsFor: React.PropTypes.func,
+    currentResource: React.PropTypes.func,
+    location_href: React.PropTypes.string,
+    portal: React.PropTypes.object,
+    hidePublicAudits: React.PropTypes.bool,
+    projectColors: React.PropTypes.object,
+    biosampleTypeColors: React.PropTypes.object,
+};
