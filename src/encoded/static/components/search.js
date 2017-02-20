@@ -830,7 +830,6 @@ var TextFilter = search.TextFilter = React.createClass({
 var FacetList = search.FacetList = React.createClass({
     contextTypes: {
         session: React.PropTypes.object,
-        hidePublicAudits: React.PropTypes.bool
     },
 
     getDefaultProps: function() {
@@ -884,7 +883,7 @@ var FacetList = search.FacetList = React.createClass({
                     : null}
                     {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
                     {facets.map(facet => {
-                        if ((hideTypes && facet.field == 'type') || (!loggedIn && this.context.hidePublicAudits && facet.field.substring(0, 6) === 'audit.')) {
+                        if ((hideTypes && facet.field == 'type') || (!loggedIn && facet.field.substring(0, 6) === 'audit.')) {
                             return <span key={facet.field} />;
                         } else {
                             return <Facet {...this.props} key={facet.field} facet={facet} filters={filters}

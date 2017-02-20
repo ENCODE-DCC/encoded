@@ -119,7 +119,7 @@ var NewsShareList = React.createClass({
 
 
 // Write Facebook meta tags to the site header.
-var NewsHead = module.exports.NewsHead = function(props, siteUrl) {
+var newsHead = module.exports.newsHead = function(props, siteUrl) {
     var context = props.context;
 
     if (context.news) {

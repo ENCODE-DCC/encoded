@@ -1,4 +1,7 @@
 import React from 'react';
+import cookie from 'cookie-monster';
+import Lock from 'auth0-lock';
+import _ from 'underscore';
 import url from 'url';
 import jsonScriptEscape from '../libs/jsonScriptEscape';
 import globals from './globals';
@@ -6,7 +9,7 @@ import DataColors from './datacolors';
 import Navigation from './navigation';
 import Footer from './footer';
 import Home from './home';
-import { NewsHead } from './page';
+import { newsHead } from './page';
 
 const portal = {
     portal_title: 'ENCODE',
@@ -94,6 +97,53 @@ Title.propTypes = {
 };
 
 
+function parseError(response) {
+    if (response instanceof Error) {
+        return Promise.resolve({
+            status: 'error',
+            title: response.message,
+            '@type': ['AjaxError', 'Error'],
+        });
+    }
+    let contentType = response.headers.get('Content-Type') || '';
+    contentType = contentType.split(';')[0];
+    if (contentType === 'application/json') {
+        return response.json();
+    }
+    return Promise.resolve({
+        status: 'error',
+        title: response.statusText,
+        code: response.status,
+        '@type': ['AjaxError', 'Error'],
+    });
+}
+
+
+// Get the current browser cookie from the DOM.
+function extractSessionCookie() {
+    return cookie(document).get('session');
+}
+
+
+// Extract the current session information from the current browser cookie.
+function parseSessionCookie(sessionCookie) {
+    const buffer = require('buffer').Buffer;
+    let session;
+    if (sessionCookie) {
+        // URL-safe base64
+        const mutatedSessionCookie = sessionCookie.replace(/-/g, '+').replace(/_/g, '/');
+        // First 64 chars is the sha-512 server signature
+        // Payload is [accessed, created, data]
+        try {
+            session = JSON.parse(buffer(mutatedSessionCookie, 'base64').slice(64).toString())[2];
+        } catch (e) {
+            console.warn('session parse err %o', session);
+        }
+    }
+    return session || {};
+}
+
+
 // App is the root component, mounted on document.body.
 // It lives for the entire duration the page is loaded.
 // App maintains state for the
@@ -101,15 +151,20 @@ export default class App extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            href: '',
-            slow: false,
+            href: '', // Current URL bar
+            slow: false, // `true` if we expect response from server, but it seems slow
             errors: [],
             assayTermNameColors: null,
-            dropdownComponent: undefined,
             context: props.context,
             session: null,
             session_properties: {},
             session_cookie: '',
+        };
+
+        this.triggers = {
+            login: 'triggerLogin',
+            profile: 'triggerProfile',
+            logout: 'triggerLogout',
         };
 
         // Bind this to non-React methods.
@@ -125,15 +180,174 @@ export default class App extends React.Component {
         const biosampleTypeColors = new DataColors(biosampleTypeList);
 
         return {
-            dropdownComponent: this.state.dropdownComponent, // ID of component with visible dropdown
             listActionsFor: this.listActionsFor,
             currentResource: this.currentResource,
             location_href: this.state.href,
             portal: portal,
-            hidePublicAudits: false, // True if audits should be hidden on the UI while logged out
             projectColors: projectColors,
             biosampleTypeColors: biosampleTypeColors,
         };
+    }
+
+    /* eslint new-cap: ["error", { "properties": false }] */
+    componentDidMount() {
+        // Login / logout actions must be deferred until Auth0 is ready.
+        const sessionCookie = extractSessionCookie();
+        const session = parseSessionCookie(sessionCookie);
+        if (session['auth.userid']) {
+            this.fetchSessionProperties();
+        }
+        this.setState({
+            href: window.location.href,
+            session_cookie: sessionCookie,
+        });
+
+        // Make a URL for the logo.
+        const hrefInfo = url.parse(this.props.href);
+        const logoHrefInfo = {
+            hostname: hrefInfo.hostname,
+            port: hrefInfo.port,
+            protocol: hrefInfo.protocol,
+            pathname: '/static/img/encode-logo-small-2x.png',
+        };
+        const logoUrl = url.format(logoHrefInfo);
+
+        this.lock = new Lock.default('WIOr638GdDdEGPJmABPhVzMn6SYUIdIH', 'encode.auth0.com', {
+            auth: {
+                redirect: false,
+            },
+            theme: {
+                logo: logoUrl,
+            },
+            socialButtonStyle: 'big',
+            languageDictionary: {
+                title: 'Log in to ENCODE',
+            },
+            allowedConnections: ['github', 'google-oauth2', 'facebook', 'linkedin'],
+        });
+        this.lock.on('authenticated', this.handleAuth0Login);
+    }
+
+    componentWillUpdate(nextProps, nextState) {
+        if (!this.state.session || (this.state.session_cookie !== nextState.session_cookie)) {
+            const updateState = {};
+            updateState.session = parseSessionCookie(nextState.session_cookie);
+            if (!updateState.session['auth.userid']) {
+                updateState.session_properties = {};
+            } else if (updateState.session['auth.userid'] !== (this.state.session && this.state.session['auth.userid'])) {
+                this.fetchSessionProperties();
+            }
+            this.setState(updateState);
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props) {
+            Object.keys(this.props).forEach((propKey) => {
+                if (this.props[propKey] !== prevProps[propKey]) {
+                    console.log('changed props: %s', propKey);
+                }
+            });
+        }
+        if (this.state) {
+            Object.keys(this.state).forEach((stateKey) => {
+                if (this.state[stateKey] !== prevState[stateKey]) {
+                    console.log('changed state: %s', stateKey);
+                }
+            });
+        }
+    }
+
+    // Handle http requests to the server, using the given URL and options.
+    fetch(uri, options) {
+        let reqUri = uri;
+        const extendedOptions = _.extend({ credentials: 'same-origin' }, options);
+        const httpMethod = extendedOptions.method || 'GET';
+        if (!(httpMethod === 'GET' || httpMethod === 'HEAD')) {
+            const headers = _.extend({}, extendedOptions.headers);
+            extendedOptions.headers = headers;
+            const session = this.state.session;
+            if (session && session._csrft_) {
+                headers['X-CSRF-Token'] = session._csrft_;
+            }
+        }
+        // Strip url fragment.
+        const urlHash = reqUri.indexOf('#');
+        if (urlHash > -1) {
+            reqUri = reqUri.slice(0, urlHash);
+        }
+        const request = fetch(reqUri, extendedOptions);
+        request.xhr_begin = 1 * new Date();
+        request.then((response) => {
+            request.xhr_end = 1 * new Date();
+            const statsHeader = response.headers.get('X-Stats') || '';
+            request.server_stats = require('querystring').parse(statsHeader);
+            request.etag = response.headers.get('ETag');
+            const sessionCookie = extractSessionCookie();
+            this.setState({ session_cookie: sessionCookie });
+        });
+        return request;
+    }
+
+    fetchSessionProperties() {
+        if (this.sessionPropertiesRequest) {
+            return;
+        }
+        this.sessionPropertiesRequest = true;
+        this.fetch('/session-properties', {
+            headers: { Accept: 'application/json' },
+        }).then((response) => {
+            this.sessionPropertiesRequest = null;
+            if (!response.ok) {
+                throw response;
+            }
+            return response.json();
+        }).then((sessionProperties) => {
+            this.setState({ session_properties: sessionProperties });
+        });
+    }
+
+    handleAuth0Login(authResult, retrying) {
+        const accessToken = authResult.accessToken;
+        if (!accessToken) {
+            return;
+        }
+        this.sessionPropertiesRequest = true;
+        this.fetch('/login', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ accessToken: accessToken }),
+        }).then((response) => {
+            this.lock.hide();
+            if (!response.ok) {
+                throw response;
+            }
+            return response.json();
+        }).then((sessionProperties) => {
+            this.setState({ session_properties: sessionProperties });
+            this.sessionPropertiesRequest = null;
+            let nextUrl = window.location.href;
+            if (window.location.hash === '#logged-out') {
+                nextUrl = window.location.pathname + window.location.search;
+            }
+            this.navigate(nextUrl, { replace: true });
+        }, (err) => {
+            this.sessionPropertiesRequest = null;
+            parseError(err).then((data) => {
+                // Server session creds might have changed.
+                if (data.code === 400 && data.detail.indexOf('CSRF') !== -1) {
+                    if (!retrying) {
+                        window.setTimeout(this.handleAuth0Login.bind(this, accessToken, true));
+                        return;
+                    }
+                }
+                // If there is an error, show the error messages
+                this.setState({ context: data });
+            });
+        });
     }
 
     listActionsFor(category) {
@@ -245,7 +459,7 @@ export default class App extends React.Component {
                     <script async src="://www.google-analytics.com/analytics.js" />
                     <script data-prop-name="inline" dangerouslySetInnerHTML={{ __html: this.props.inline }} />
                     <link rel="stylesheet" href={this.props.styles} />
-                    {NewsHead(this.props, `${hrefUrl.protocol}//${hrefUrl.host}`)}
+                    {newsHead(this.props, `${hrefUrl.protocol}//${hrefUrl.host}`)}
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
                     <script
@@ -278,18 +492,17 @@ export default class App extends React.Component {
 }
 
 App.propTypes = {
+    href: React.PropTypes.string.isRequired,
     styles: React.PropTypes.string.isRequired,
     inline: React.PropTypes.string.isRequired,
     context: React.PropTypes.object.isRequired,
 };
 
 App.childContextTypes = {
-    dropdownComponent: React.PropTypes.string,
     listActionsFor: React.PropTypes.func,
     currentResource: React.PropTypes.func,
     location_href: React.PropTypes.string,
     portal: React.PropTypes.object,
-    hidePublicAudits: React.PropTypes.bool,
     projectColors: React.PropTypes.object,
     biosampleTypeColors: React.PropTypes.object,
 };

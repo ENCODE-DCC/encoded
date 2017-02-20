@@ -29,7 +29,6 @@ const MODAL_CONTEXT = {
     adviseUnsavedChanges: React.PropTypes.func,
     navigate: React.PropTypes.func,
     // App
-    dropdownComponent: React.PropTypes.string,
     listActionsFor: React.PropTypes.func,
     currentResource: React.PropTypes.func,
     location_href: React.PropTypes.string,
