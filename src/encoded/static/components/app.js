@@ -524,7 +524,7 @@ class App extends React.Component {
     trigger(name) {
         const methodName = this.triggers[name];
         if (methodName) {
-            this.props[methodName].call(this);
+            this[methodName].call(this);
         }
     }
 
