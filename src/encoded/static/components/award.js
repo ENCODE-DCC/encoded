@@ -187,9 +187,8 @@ const LabChart = React.createClass({
         const { labs } = this.props;
         return (
             <div className="award-charts__chart">
-                <div className="title">
+                <div className="award-charts__title">
                     Lab
-                    <center><hr width="80%" position="static" color="blue" /></center>
                 </div>
                 {labs.length ?
                     <div>
@@ -276,9 +275,8 @@ const AssayChart = React.createClass({
         const { assays } = this.props;
         return (
             <div className="award-charts__chart">
-                <div className="title">
+                <div className="award-charts__title">
                     Assay Type
-                    <center><hr width="80%" position="static" color="blue" /></center>
                 </div>
                 {assays.length ?
                     <div>
@@ -364,9 +362,8 @@ const StatusChart = React.createClass({
         const { statuses } = this.props;
         return (
             <div className="award-charts__chart">
-                <div className="title">
+                <div className="award-charts__title">
                     Status
-                    <center><hr width="80%" position="static" color="blue" /></center>
                 </div>
                 {statuses.length ?
                     <div>
