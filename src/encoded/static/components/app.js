@@ -250,6 +250,7 @@ class App extends React.Component {
             projectColors: projectColors,
             biosampleTypeColors: biosampleTypeColors,
             fetch: this.fetch,
+            navigate: this.navigate,
             session: this.state.session,
             session_properties: this.state.session_properties,
         };
@@ -1002,6 +1003,7 @@ App.childContextTypes = {
     currentResource: React.PropTypes.func,
     location_href: React.PropTypes.string,
     fetch: React.PropTypes.func,
+    navigate: React.PropTypes.func,
     portal: React.PropTypes.object,
     projectColors: React.PropTypes.object,
     biosampleTypeColors: React.PropTypes.object,
